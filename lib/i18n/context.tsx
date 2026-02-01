@@ -21,6 +21,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("zh");
   const [mounted, setMounted] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  // Required pattern for SSR hydration with localStorage
   useEffect(() => {
     setMounted(true);
     // Load saved locale from localStorage
@@ -29,6 +31,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       setLocaleState(savedLocale);
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);

@@ -3,24 +3,30 @@
 import { useState } from "react";
 import { CodeBlock } from "./code-block";
 import type { ComponentTemplate } from "@/lib/styles";
+import { useI18n } from "@/lib/i18n/context";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
 }
 
-const tabLabels: Record<string, string> = {
-  button: "按钮",
-  card: "卡片",
-  input: "输入框",
-  nav: "导航栏",
-  hero: "Hero",
-  footer: "页脚",
-};
-
 export function ComponentPreview({ components }: ComponentPreviewProps) {
   const componentKeys = Object.keys(components);
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
   const activeComponent = components[activeTab];
+  const { t } = useI18n();
+
+  // Tab labels with i18n support
+  const getTabLabel = (key: string): string => {
+    const labelMap: Record<string, string> = {
+      button: t("preview.tab.button"),
+      card: t("preview.tab.card"),
+      input: t("preview.tab.input"),
+      nav: t("preview.tab.nav"),
+      hero: "Hero",
+      footer: t("preview.tab.footer"),
+    };
+    return labelMap[key] || components[key].name;
+  };
 
   if (!activeComponent) return null;
 
@@ -35,10 +41,10 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
             className={`px-4 py-3 text-sm tracking-wide whitespace-nowrap transition-colors ${
               activeTab === key
                 ? "bg-foreground text-background"
-                : "text-muted hover:text-foreground hover:bg-zinc-50"
+                : "text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800"
             }`}
           >
-            {tabLabels[key] || components[key].name}
+            {getTabLabel(key)}
           </button>
         ))}
       </div>
@@ -52,7 +58,7 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
       </div>
 
       {/* Preview Area */}
-      <div className="p-6 md:p-10 bg-white flex items-center justify-center min-h-[200px]">
+      <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
         <div
           dangerouslySetInnerHTML={{
             __html: activeComponent.preview || generatePreviewHTML(activeComponent.code),

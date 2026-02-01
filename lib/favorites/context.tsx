@@ -25,6 +25,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  // Required pattern for SSR hydration with localStorage
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -39,6 +41,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       }
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (mounted) {

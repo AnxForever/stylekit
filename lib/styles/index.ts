@@ -70,7 +70,18 @@ export function getStyleBySlug(slug: string): DesignStyle | undefined {
 }
 
 // 获取所有风格的简要信息（用于目录页）
-export function getAllStylesMeta() {
+export interface StyleMeta {
+  slug: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  cover: string;
+  category: StyleCategory;
+  keywords: string[];
+  colors: DesignStyle["colors"];
+}
+
+export function getAllStylesMeta(): StyleMeta[] {
   return styles.map((style) => ({
     slug: style.slug,
     name: style.name,

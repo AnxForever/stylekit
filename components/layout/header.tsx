@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { mainNav, externalNav } from "@/lib/nav-config";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +23,8 @@ export function Header() {
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
+
+  const linkClass = "text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
   return (
     <header className="border-b border-border">
@@ -53,32 +56,22 @@ export function Header() {
               <span>{t("nav.search")}</span>
               <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">⌘K</kbd>
             </button>
-            <Link
-              href="/styles"
-              className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-            >
-              {t("nav.styles")}
-            </Link>
-            <Link
-              href="/components"
-              className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-            >
-              {t("nav.components")}
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-            >
-              {t("nav.about")}
-            </Link>
-            <a
-              href="https://github.com/AnxForever/stylekit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-            >
-              GitHub
-            </a>
+            {mainNav.map((item) => (
+              <Link key={item.href} href={item.href} className={linkClass}>
+                {t(item.labelKey)}
+              </Link>
+            ))}
+            {externalNav.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkClass}
+              >
+                {item.label}
+              </a>
+            ))}
             {mounted && <LanguageSwitcher />}
             {mounted && (
               <button
@@ -127,35 +120,27 @@ export function Header() {
         {isMenuOpen && (
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              <Link
-                href="/styles"
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("nav.styles")}
-              </Link>
-              <Link
-                href="/components"
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("nav.components")}
-              </Link>
-              <Link
-                href="/about"
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("nav.about")}
-              </Link>
-              <a
-                href="https://github.com/AnxForever/stylekit"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-              >
-                GitHub
-              </a>
+              {mainNav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={linkClass}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+              {externalNav.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={linkClass}
+                >
+                  {item.label}
+                </a>
+              ))}
               <div className="pt-2 border-t border-border flex items-center gap-4">
                 <LanguageSwitcher />
                 {mounted && (
