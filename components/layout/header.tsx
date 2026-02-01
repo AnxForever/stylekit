@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useI18n } from "@/lib/i18n/context";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { t } = useI18n();
 
   /* eslint-disable react-hooks/set-state-in-effect */
   // Required pattern for SSR hydration with next-themes
@@ -47,40 +50,41 @@ export function Header() {
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <span>搜索</span>
+              <span>{t("nav.search")}</span>
               <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">⌘K</kbd>
             </button>
             <Link
               href="/styles"
               className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
             >
-              风格目录
+              {t("nav.styles")}
             </Link>
             <Link
               href="/components"
               className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
             >
-              组件库
+              {t("nav.components")}
             </Link>
             <Link
               href="/about"
               className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
             >
-              关于项目
+              {t("nav.about")}
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/AnxForever/stylekit"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
             >
               GitHub
             </a>
+            {mounted && <LanguageSwitcher />}
             {mounted && (
               <button
                 onClick={toggleTheme}
                 className="p-2 text-muted hover:text-foreground transition-colors"
-                aria-label={resolvedTheme === "dark" ? "切换为浅色模式" : "切换为深色模式"}
+                aria-label={resolvedTheme === "dark" ? t("theme.switchToLight") : t("theme.switchToDark")}
               >
                 {resolvedTheme === "dark" ? (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -128,30 +132,51 @@ export function Header() {
                 className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                风格目录
+                {t("nav.styles")}
               </Link>
               <Link
                 href="/components"
                 className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                组件库
+                {t("nav.components")}
               </Link>
               <Link
                 href="/about"
                 className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                关于项目
+                {t("nav.about")}
               </Link>
               <a
-                href="https://github.com"
+                href="https://github.com/AnxForever/stylekit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
               >
                 GitHub
               </a>
+              <div className="pt-2 border-t border-border flex items-center gap-4">
+                <LanguageSwitcher />
+                {mounted && (
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 text-muted hover:text-foreground transition-colors"
+                    aria-label={resolvedTheme === "dark" ? t("theme.switchToLight") : t("theme.switchToDark")}
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <circle cx="12" cy="12" r="5" />
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                      </svg>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           </nav>
         )}

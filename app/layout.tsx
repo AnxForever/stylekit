@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
+import { I18nProvider } from "@/lib/i18n/context";
+import { FavoritesProvider } from "@/lib/favorites/context";
 import { CommandPalette } from "@/components/ui/command-palette";
 import "./globals.css";
 
@@ -43,8 +45,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <CommandPalette />
-          {children}
+          <I18nProvider>
+            <FavoritesProvider>
+              <CommandPalette />
+              {children}
+            </FavoritesProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

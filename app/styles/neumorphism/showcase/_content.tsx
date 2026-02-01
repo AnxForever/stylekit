@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   NeuButton,
   NeuCard,
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/neumorphism";
 
 export default function ShowcaseContent() {
+  const router = useRouter();
   const [progress, setProgress] = useState(65);
   const [sliderValue, setSliderValue] = useState(50);
 
@@ -355,7 +357,7 @@ export default function ShowcaseContent() {
           <NeuButton
             variant="primary"
             size="lg"
-            onClick={() => window.location.href = "/styles/neumorphism"}
+            onClick={() => router.push("/styles/neumorphism")}
           >
             查看完整文档
           </NeuButton>

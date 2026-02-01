@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles";
+import { useI18n } from "@/lib/i18n/context";
+import { FavoriteButton } from "@/components/favorite-button";
 
 export default function Home() {
   const styles = getAllStylesMeta();
   const featuredStyle = styles[0]; // 第一个作为精选
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,35 +24,34 @@ export default function Home() {
               {/* Left: Title & Intro */}
               <div>
                 <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                  设计风格集合 · Design Style Gallery
+                  {t("home.subtitle")}
                 </p>
                 <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
-                  让 AI 生成的<br />
-                  网站更加<br />
-                  <span className="italic">美观</span>
+                  {t("home.title.line1")}<br />
+                  {t("home.title.line2")}<br />
+                  <span className="italic">{t("home.title.line3")}</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted leading-relaxed max-w-md mb-8">
-                  精选优质 Web 设计风格，提供文档、组件模板、代码片段，
-                  以及可直接导出的 AI Rules。
+                  {t("home.description")}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
                     href="/styles"
                     className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
                   >
-                    浏览风格
+                    {t("home.browseStyles")}
                   </Link>
                   <Link
                     href="/components"
                     className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
                   >
-                    组件库
+                    {t("home.components")}
                   </Link>
                   <Link
                     href="/about"
                     className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wide text-muted hover:text-foreground transition-colors"
                   >
-                    了解更多
+                    {t("home.learnMore")}
                   </Link>
                 </div>
               </div>
@@ -78,7 +82,7 @@ export default function Home() {
                     href={`/styles/${featuredStyle.slug}`}
                     className="absolute bottom-0 right-0 bg-black text-white px-4 py-2 text-xs tracking-wide hover:bg-[#ff006e] transition-colors border-t-4 border-l-4 border-black"
                   >
-                    查看详情 →
+                    {t("home.viewDetails")} →
                   </Link>
                 </div>
               )}
@@ -90,25 +94,25 @@ export default function Home() {
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
             <p className="text-xs tracking-widest uppercase text-muted mb-8">
-              核心功能
+              {t("home.coreFeatures")}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
               <div>
-                <h3 className="text-xl md:text-2xl mb-3">设计文档</h3>
+                <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.docs.title")}</h3>
                 <p className="text-muted leading-relaxed">
-                  每个风格都有详细的设计哲学、必须做和禁止做的规则，帮助你理解风格的精髓。
+                  {t("home.feature.docs.desc")}
                 </p>
               </div>
               <div>
-                <h3 className="text-xl md:text-2xl mb-3">组件预览</h3>
+                <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.preview.title")}</h3>
                 <p className="text-muted leading-relaxed">
-                  实时预览按钮、卡片、表单等常用组件，一键复制 Tailwind 代码。
+                  {t("home.feature.preview.desc")}
                 </p>
               </div>
               <div>
-                <h3 className="text-xl md:text-2xl mb-3">AI Rules 导出</h3>
+                <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.export.title")}</h3>
                 <p className="text-muted leading-relaxed">
-                  导出适用于 Trae、Cursor、Claude Code 的 AI Rules，让 AI 按规范生成代码。
+                  {t("home.feature.export.desc")}
                 </p>
               </div>
             </div>
@@ -121,15 +125,15 @@ export default function Home() {
             <div className="flex items-end justify-between mb-8 md:mb-12">
               <div>
                 <p className="text-xs tracking-widest uppercase text-muted mb-2">
-                  收录风格
+                  {t("home.styleCollection")}
                 </p>
-                <h2 className="text-3xl md:text-4xl">风格目录</h2>
+                <h2 className="text-3xl md:text-4xl">{t("home.styleCatalog")}</h2>
               </div>
               <Link
                 href="/styles"
                 className="text-sm text-muted hover:text-foreground transition-colors"
               >
-                查看全部 →
+                {t("home.viewAll")} →
               </Link>
             </div>
 
@@ -166,13 +170,16 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="p-4 md:p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg md:text-xl group-hover:text-accent transition-colors">
-                        {style.name}
-                      </h3>
-                      <span className="text-sm text-muted">
-                        {style.nameEn}
-                      </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg md:text-xl group-hover:text-accent transition-colors">
+                          {style.name}
+                        </h3>
+                        <span className="text-sm text-muted">
+                          {style.nameEn}
+                        </span>
+                      </div>
+                      <FavoriteButton slug={style.slug} size="sm" />
                     </div>
                     <p className="text-sm text-muted line-clamp-2">
                       {style.description}

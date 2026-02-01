@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n/context";
 
 export function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="border-t border-border mt-auto">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -9,28 +14,27 @@ export function Footer() {
           <div>
             <p className="masthead text-lg mb-4">StyleKit</p>
             <p className="text-sm text-muted leading-relaxed">
-              精选 Web 设计风格集合，<br />
-              让 AI 生成的网站更加美观。
+              {t("footer.tagline")}
             </p>
           </div>
 
           {/* Links */}
           <div>
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              导航
+              {t("footer.navigation")}
             </p>
             <nav className="flex flex-col gap-2">
               <Link
                 href="/styles"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                风格目录
+                {t("nav.styles")}
               </Link>
               <Link
                 href="/about"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                关于项目
+                {t("nav.about")}
               </Link>
             </nav>
           </div>
@@ -38,22 +42,22 @@ export function Footer() {
           {/* Resources */}
           <div>
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              资源
+              {t("footer.resources")}
             </p>
             <nav className="flex flex-col gap-2">
               <a
-                href="https://github.com"
+                href="https://github.com/AnxForever/stylekit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                GitHub 仓库
+                {t("footer.githubRepo")}
               </a>
               <a
                 href="#"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                提交风格
+                {t("footer.submitStyle")}
               </a>
             </nav>
           </div>
@@ -62,12 +66,8 @@ export function Footer() {
         <hr className="my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
-          <p>© 2025 StyleKit. 开源项目。</p>
-          <p>
-            用{" "}
-            <span className="font-serif italic">杂志排版</span>{" "}
-            风格构建
-          </p>
+          <p>{t("footer.openSource")}</p>
+          <p>{t("footer.builtWith")}</p>
         </div>
       </div>
     </footer>
