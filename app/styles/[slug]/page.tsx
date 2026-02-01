@@ -6,6 +6,7 @@ import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { RulesExporter } from "@/components/style-preview/rules-exporter";
 import { CodeBlock } from "@/components/style-preview/code-block";
+import { TokensExportButton } from "@/components/tokens-export-button";
 import { getStyleBySlug, styles } from "@/lib/styles";
 
 // 生成静态参数
@@ -76,12 +77,15 @@ export default async function StyleDetailPage({
                   ))}
                 </div>
 
-                <Link
-                  href={`/styles/${style.slug}/showcase`}
-                  className="inline-flex items-center justify-center mt-6 px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
-                >
-                  查看完整 Showcase →
-                </Link>
+                <div className="flex flex-wrap gap-4 mt-6">
+                  <Link
+                    href={`/styles/${style.slug}/showcase`}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
+                  >
+                    查看完整 Showcase →
+                  </Link>
+                  <TokensExportButton style={style} />
+                </div>
               </div>
 
               {/* Color Palette */}
