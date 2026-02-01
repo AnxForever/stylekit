@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StyleKit
 
-## Getting Started
+StyleKit 是一个设计风格工具包，帮助 AI 生成一致的 UI 代码。通过清晰的风格规范和组件模板，让 AI 在明确的边界内输出高质量、风格统一的前端代码。
 
-First, run the development server:
+## 技术栈
+
+- **Next.js 16** + Turbopack
+- **React 19**
+- **Tailwind CSS 4**
+- **Radix UI** 无障碍基础组件
+- **TypeScript**
+
+## 功能特性
+
+- 4 种设计风格：新野兽派、柔和野兽派、俏皮野兽派、编辑杂志风
+- 30+ Neo-Brutalist 组件库
+- 风格规范导出（Trae Rules / Cursor Rules / Prompt）
+- 完整的无障碍支持 (a11y)
+- 响应式设计
+
+## 快速开始
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 项目结构
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  ├── page.tsx              # 首页
+  ├── about/                # 关于页
+  ├── components/           # 组件展示页
+  └── styles/
+      ├── page.tsx          # 风格列表
+      ├── [slug]/           # 风格详情（动态路由）
+      └── */showcase/       # 各风格 Showcase
+components/
+  ├── ui/brutal/            # Neo-Brutalist 组件库
+  └── layout/               # 布局组件
+lib/
+  └── styles/               # 风格定义数据
+```
 
-## Learn More
+## 命令
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # 启动开发服务器
+npm run build    # 生产构建
+npm run lint     # 代码检查
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 许可
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
