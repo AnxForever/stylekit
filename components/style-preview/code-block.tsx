@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface CodeBlockProps {
   code: string;
@@ -9,6 +10,7 @@ interface CodeBlockProps {
 
 export function CodeBlock({ code, language = "tsx" }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const { t } = useI18n();
 
   const handleCopy = async () => {
     try {
@@ -36,7 +38,7 @@ export function CodeBlock({ code, language = "tsx" }: CodeBlockProps) {
           onClick={handleCopy}
           className="text-xs text-zinc-400 hover:text-white transition-colors px-2 py-1"
         >
-          {copied ? "已复制" : "复制代码"}
+          {copied ? t("export.copied") : t("export.copyCode")}
         </button>
       </div>
       <pre className="!mt-0 !rounded-none">

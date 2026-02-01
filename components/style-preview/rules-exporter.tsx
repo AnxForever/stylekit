@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface RulesExporterProps {
   aiRules: string;
@@ -17,6 +18,7 @@ export function RulesExporter({
 }: RulesExporterProps) {
   const [format, setFormat] = useState<ExportFormat>("trae");
   const [copied, setCopied] = useState(false);
+  const { t } = useI18n();
 
   const getContent = () => {
     switch (format) {
@@ -25,7 +27,7 @@ export function RulesExporter({
       case "cursor":
         return `# ${styleName} Design Style Rules\n\n${aiRules}`;
       case "prompt":
-        return `请按照以下设计风格生成代码：\n\n风格：${styleName}\n\n${aiRules}\n\n## 全局 CSS\n\n\`\`\`css\n${globalCss}\n\`\`\``;
+        return `${t("export.promptPrefix")}\n\n${t("export.styleLabel")}${styleName}\n\n${aiRules}\n\n## ${t("export.globalCss")}\n\n\`\`\`css\n${globalCss}\n\`\`\``;
     }
   };
 
@@ -82,7 +84,7 @@ export function RulesExporter({
             className={`px-4 py-3 text-sm tracking-wide transition-colors ${
               format === f.key
                 ? "bg-foreground text-background"
-                : "text-muted hover:text-foreground hover:bg-zinc-50"
+                : "text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800"
             }`}
           >
             {f.label}
@@ -91,9 +93,9 @@ export function RulesExporter({
       </div>
 
       {/* Preview */}
-      <div className="p-4 md:p-6 max-h-[400px] overflow-y-auto bg-zinc-50">
+      <div className="p-4 md:p-6 max-h-[400px] overflow-y-auto bg-zinc-50 dark:bg-zinc-900">
         <pre className="!bg-transparent !p-0 text-sm whitespace-pre-wrap text-foreground">
-          <code className="text-zinc-800">{getContent()}</code>
+          <code className="text-zinc-800 dark:text-zinc-200">{getContent()}</code>
         </pre>
       </div>
 
@@ -101,15 +103,15 @@ export function RulesExporter({
       <div className="flex border-t border-border">
         <button
           onClick={handleCopy}
-          className="flex-1 px-4 py-3 text-sm tracking-wide hover:bg-zinc-50 transition-colors border-r border-border"
+          className="flex-1 px-4 py-3 text-sm tracking-wide hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-r border-border"
         >
-          {copied ? "已复制到剪贴板" : "复制到剪贴板"}
+          {copied ? t("export.copied") : t("export.copy")}
         </button>
         <button
           onClick={handleDownload}
-          className="flex-1 px-4 py-3 text-sm tracking-wide hover:bg-zinc-50 transition-colors"
+          className="flex-1 px-4 py-3 text-sm tracking-wide hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
         >
-          下载文件
+          {t("export.download")}
         </button>
       </div>
     </div>

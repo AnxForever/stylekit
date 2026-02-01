@@ -133,7 +133,7 @@ export default function PlaygroundPage() {
         return (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Variant</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.variant")}</label>
               <div className="flex flex-wrap gap-2">
                 {(["primary", "secondary", "outline", "ghost", "danger"] as const).map((v) => (
                   <button
@@ -151,7 +151,7 @@ export default function PlaygroundPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Size</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.size")}</label>
               <div className="flex gap-2">
                 {(["sm", "md", "lg"] as const).map((s) => (
                   <button
@@ -169,7 +169,7 @@ export default function PlaygroundPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Text</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.text")}</label>
               <Input
                 value={state.buttonText}
                 onChange={(e) => updateState("buttonText", e.target.value)}
@@ -182,14 +182,14 @@ export default function PlaygroundPage() {
                   checked={state.buttonLoading}
                   onCheckedChange={(c) => updateState("buttonLoading", !!c)}
                 />
-                <span className="text-sm">Loading</span>
+                <span className="text-sm">{t("playground.loading")}</span>
               </label>
               <label className="flex items-center gap-2">
                 <Checkbox
                   checked={state.buttonDisabled}
                   onCheckedChange={(c) => updateState("buttonDisabled", !!c)}
                 />
-                <span className="text-sm">Disabled</span>
+                <span className="text-sm">{t("playground.disabled")}</span>
               </label>
             </div>
           </div>
@@ -199,25 +199,25 @@ export default function PlaygroundPage() {
         return (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Type</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.type")}</label>
               <div className="flex gap-2">
-                {(["text", "email", "password"] as const).map((t) => (
+                {(["text", "email", "password"] as const).map((inputType) => (
                   <button
-                    key={t}
-                    onClick={() => updateState("inputType", t)}
+                    key={inputType}
+                    onClick={() => updateState("inputType", inputType)}
                     className={`px-3 py-1 text-sm border rounded ${
-                      state.inputType === t
+                      state.inputType === inputType
                         ? "bg-foreground text-background"
                         : "border-border hover:border-foreground"
                     }`}
                   >
-                    {t}
+                    {inputType}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Placeholder</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.placeholder")}</label>
               <Input
                 value={state.inputPlaceholder}
                 onChange={(e) => updateState("inputPlaceholder", e.target.value)}
@@ -229,7 +229,7 @@ export default function PlaygroundPage() {
                 checked={state.inputDisabled}
                 onCheckedChange={(c) => updateState("inputDisabled", !!c)}
               />
-              <span className="text-sm">Disabled</span>
+              <span className="text-sm">{t("playground.disabled")}</span>
             </label>
           </div>
         );
@@ -238,7 +238,7 @@ export default function PlaygroundPage() {
         return (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Title</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.title.label")}</label>
               <Input
                 value={state.cardTitle}
                 onChange={(e) => updateState("cardTitle", e.target.value)}
@@ -246,7 +246,7 @@ export default function PlaygroundPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Content</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.content")}</label>
               <textarea
                 value={state.cardContent}
                 onChange={(e) => updateState("cardContent", e.target.value)}
@@ -260,7 +260,7 @@ export default function PlaygroundPage() {
         return (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Variant</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.variant")}</label>
               <div className="flex flex-wrap gap-2">
                 {(["default", "success", "warning", "error"] as const).map((v) => (
                   <button
@@ -278,7 +278,7 @@ export default function PlaygroundPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Title</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.title.label")}</label>
               <Input
                 value={state.alertTitle}
                 onChange={(e) => updateState("alertTitle", e.target.value)}
@@ -286,7 +286,7 @@ export default function PlaygroundPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Message</label>
+              <label className="text-sm font-medium mb-2 block">{t("playground.message")}</label>
               <Input
                 value={state.alertMessage}
                 onChange={(e) => updateState("alertMessage", e.target.value)}
@@ -301,7 +301,7 @@ export default function PlaygroundPage() {
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium mb-2 block">
-                Value: {state.progressValue}%
+                {t("playground.value")}: {state.progressValue}%
               </label>
               <input
                 type="range"
@@ -317,7 +317,7 @@ export default function PlaygroundPage() {
                 checked={state.progressShowLabel}
                 onCheckedChange={(c) => updateState("progressShowLabel", !!c)}
               />
-              <span className="text-sm">Show Label</span>
+              <span className="text-sm">{t("playground.showLabel")}</span>
             </label>
           </div>
         );
@@ -333,11 +333,11 @@ export default function PlaygroundPage() {
         <section className="border-b border-border">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Interactive
+              {t("playground.subtitle")}
             </p>
-            <h1 className="text-4xl md:text-5xl mb-4">Component Playground</h1>
+            <h1 className="text-4xl md:text-5xl mb-4">{t("playground.title")}</h1>
             <p className="text-lg text-muted max-w-2xl">
-              Experiment with component props in real-time. Adjust settings and see changes instantly.
+              {t("playground.description")}
             </p>
           </div>
         </section>
@@ -370,26 +370,26 @@ export default function PlaygroundPage() {
 
               {/* Controls */}
               <div className="border border-border p-6">
-                <h3 className="text-lg font-medium mb-4">Props</h3>
+                <h3 className="text-lg font-medium mb-4">{t("playground.props")}</h3>
                 {renderControls()}
               </div>
             </div>
 
             {/* Quick Links */}
             <div className="mt-12 pt-8 border-t border-border">
-              <p className="text-sm text-muted mb-4">Want to see more components?</p>
+              <p className="text-sm text-muted mb-4">{t("playground.moreComponents")}</p>
               <div className="flex gap-4">
                 <Link
                   href="/components"
                   className="text-sm text-foreground hover:text-accent transition-colors"
                 >
-                  View All Components →
+                  {t("playground.viewAllComponents")} →
                 </Link>
                 <Link
                   href="/styles"
                   className="text-sm text-foreground hover:text-accent transition-colors"
                 >
-                  Explore Styles →
+                  {t("playground.exploreStyles")} →
                 </Link>
               </div>
             </div>

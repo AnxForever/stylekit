@@ -5,6 +5,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Search, FileText, Palette, Layers, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getAllStylesMeta } from "@/lib/styles";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SearchResult {
   id: string;
@@ -15,36 +16,37 @@ interface SearchResult {
   keywords?: string[];
 }
 
-// Component list for search
-const componentItems: SearchResult[] = [
-  { id: "button", type: "component", title: "Button", description: "按钮组件", href: "/components#button", keywords: ["按钮", "button", "点击"] },
-  { id: "card", type: "component", title: "Card", description: "卡片组件", href: "/components#card", keywords: ["卡片", "card", "容器"] },
-  { id: "input", type: "component", title: "Input", description: "输入框组件", href: "/components#input", keywords: ["输入", "input", "表单"] },
-  { id: "dialog", type: "component", title: "Dialog", description: "对话框组件", href: "/components#dialog", keywords: ["对话框", "modal", "弹窗"] },
-  { id: "tooltip", type: "component", title: "Tooltip", description: "工具提示组件", href: "/components#tooltip", keywords: ["提示", "tooltip"] },
-  { id: "tabs", type: "component", title: "Tabs", description: "标签页组件", href: "/components#tabs", keywords: ["标签", "tabs", "切换"] },
-  { id: "accordion", type: "component", title: "Accordion", description: "手风琴组件", href: "/components#accordion", keywords: ["折叠", "accordion"] },
-  { id: "drawer", type: "component", title: "Drawer", description: "抽屉组件", href: "/components#drawer", keywords: ["抽屉", "drawer", "侧边"] },
-  { id: "popover", type: "component", title: "Popover", description: "弹出框组件", href: "/components#popover", keywords: ["弹出", "popover"] },
-  { id: "toast", type: "component", title: "Toast", description: "消息提示组件", href: "/components#toast", keywords: ["消息", "toast", "通知"] },
-];
-
-// Page items for search
-const pageItems: SearchResult[] = [
-  { id: "home", type: "page", title: "首页", description: "StyleKit 首页", href: "/", keywords: ["home", "首页"] },
-  { id: "styles", type: "page", title: "风格目录", description: "浏览所有设计风格", href: "/styles", keywords: ["风格", "styles", "目录"] },
-  { id: "components", type: "page", title: "组件库", description: "查看所有 UI 组件", href: "/components", keywords: ["组件", "components", "UI"] },
-  { id: "templates", type: "page", title: "页面模板", description: "完整页面模板", href: "/templates", keywords: ["模板", "templates", "页面"] },
-  { id: "compare", type: "page", title: "风格对比", description: "对比不同风格的组件", href: "/compare", keywords: ["对比", "compare", "比较"] },
-  { id: "about", type: "page", title: "关于", description: "了解 StyleKit", href: "/about", keywords: ["关于", "about"] },
-];
-
 export function CommandPalette() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const { t } = useI18n();
+
+  // Component list for search (i18n aware)
+  const componentItems: SearchResult[] = React.useMemo(() => [
+    { id: "button", type: "component", title: "Button", description: t("search.comp.button"), href: "/components#button", keywords: ["按钮", "button", "点击"] },
+    { id: "card", type: "component", title: "Card", description: t("search.comp.card"), href: "/components#card", keywords: ["卡片", "card", "容器"] },
+    { id: "input", type: "component", title: "Input", description: t("search.comp.input"), href: "/components#input", keywords: ["输入", "input", "表单"] },
+    { id: "dialog", type: "component", title: "Dialog", description: t("search.comp.dialog"), href: "/components#dialog", keywords: ["对话框", "modal", "弹窗"] },
+    { id: "tooltip", type: "component", title: "Tooltip", description: t("search.comp.tooltip"), href: "/components#tooltip", keywords: ["提示", "tooltip"] },
+    { id: "tabs", type: "component", title: "Tabs", description: t("search.comp.tabs"), href: "/components#tabs", keywords: ["标签", "tabs", "切换"] },
+    { id: "accordion", type: "component", title: "Accordion", description: t("search.comp.accordion"), href: "/components#accordion", keywords: ["折叠", "accordion"] },
+    { id: "drawer", type: "component", title: "Drawer", description: t("search.comp.drawer"), href: "/components#drawer", keywords: ["抽屉", "drawer", "侧边"] },
+    { id: "popover", type: "component", title: "Popover", description: t("search.comp.popover"), href: "/components#popover", keywords: ["弹出", "popover"] },
+    { id: "toast", type: "component", title: "Toast", description: t("search.comp.toast"), href: "/components#toast", keywords: ["消息", "toast", "通知"] },
+  ], [t]);
+
+  // Page items for search (i18n aware)
+  const pageItems: SearchResult[] = React.useMemo(() => [
+    { id: "home", type: "page", title: t("search.page.home"), description: t("search.page.homeDesc"), href: "/", keywords: ["home", "首页"] },
+    { id: "styles", type: "page", title: t("search.page.styles"), description: t("search.page.stylesDesc"), href: "/styles", keywords: ["风格", "styles", "目录"] },
+    { id: "components", type: "page", title: t("search.page.components"), description: t("search.page.componentsDesc"), href: "/components", keywords: ["组件", "components", "UI"] },
+    { id: "templates", type: "page", title: t("search.page.templates"), description: t("search.page.templatesDesc"), href: "/templates", keywords: ["模板", "templates", "页面"] },
+    { id: "compare", type: "page", title: t("search.page.compare"), description: t("search.page.compareDesc"), href: "/compare", keywords: ["对比", "compare", "比较"] },
+    { id: "about", type: "page", title: t("search.page.about"), description: t("search.page.aboutDesc"), href: "/about", keywords: ["关于", "about"] },
+  ], [t]);
 
   // Get all styles and convert to search results
   const styleItems: SearchResult[] = React.useMemo(() => {
@@ -62,7 +64,7 @@ export function CommandPalette() {
   // Combine all searchable items
   const allItems = React.useMemo(
     () => [...styleItems, ...componentItems, ...pageItems],
-    [styleItems]
+    [styleItems, componentItems, pageItems]
   );
 
   // Filter results based on query
@@ -85,9 +87,9 @@ export function CommandPalette() {
   // Group results by type
   const groupedResults = React.useMemo(() => {
     const groups: { type: string; label: string; items: SearchResult[] }[] = [
-      { type: "style", label: "设计风格", items: [] },
-      { type: "component", label: "组件", items: [] },
-      { type: "page", label: "页面", items: [] },
+      { type: "style", label: t("search.group.styles"), items: [] },
+      { type: "component", label: t("search.group.components"), items: [] },
+      { type: "page", label: t("search.group.pages"), items: [] },
     ];
 
     filteredResults.forEach((item) => {
@@ -98,7 +100,7 @@ export function CommandPalette() {
     });
 
     return groups.filter((g) => g.items.length > 0);
-  }, [filteredResults]);
+  }, [filteredResults, t]);
 
   // Flatten for keyboard navigation
   const flatResults = React.useMemo(
@@ -180,7 +182,7 @@ export function CommandPalette() {
             <input
               ref={inputRef}
               type="text"
-              placeholder="搜索风格、组件、页面..."
+              placeholder={t("search.placeholder")}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -200,7 +202,7 @@ export function CommandPalette() {
           <div className="max-h-[400px] overflow-y-auto p-2">
             {groupedResults.length === 0 ? (
               <div className="py-8 text-center text-muted text-sm">
-                没有找到匹配的结果
+                {t("common.noResults")}
               </div>
             ) : (
               groupedResults.map((group) => (
@@ -251,15 +253,15 @@ export function CommandPalette() {
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px]">↑↓</kbd>
-                <span>导航</span>
+                <span>{t("search.navigate")}</span>
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px]">↵</kbd>
-                <span>打开</span>
+                <span>{t("search.open")}</span>
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px]">esc</kbd>
-                <span>关闭</span>
+                <span>{t("search.close")}</span>
               </span>
             </div>
           </div>
