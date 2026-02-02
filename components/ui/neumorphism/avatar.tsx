@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { NEU_SHADOWS } from "./styles";
 
@@ -34,8 +35,13 @@ export const NeuAvatar = React.forwardRef<HTMLDivElement, NeuAvatarProps>(
         {...props}
       >
         {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={alt || ""} className="w-full h-full object-cover" />
+          <Image
+            src={src}
+            alt={alt || ""}
+            fill
+            className="object-cover"
+            unoptimized
+          />
         ) : (
           <span className="text-gray-500 font-medium">{fallback || "?"}</span>
         )}

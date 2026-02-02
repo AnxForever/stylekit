@@ -7,6 +7,8 @@ export const neoBrutalistSoft: DesignStyle = {
   description:
     "Neo-Brutalist 的温和版本。保留硬边缘阴影和无圆角特性，但使用更柔和的配色、较细的边框和更温和的对比度。",
   cover: "/styles/neo-brutalist-soft.png",
+  styleType: "visual",
+  tags: ["modern", "expressive"],
   category: "expressive",
   colors: {
     primary: "#1a1a1a",

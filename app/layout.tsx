@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
-import { I18nProvider } from "@/lib/i18n/context";
-import { FavoritesProvider } from "@/lib/favorites/context";
+import { ClientProviders } from "@/components/providers/client-providers";
 import { CommandPalette } from "@/components/ui/command-palette";
 import "./globals.css";
 
@@ -39,19 +37,10 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <I18nProvider>
-            <FavoritesProvider>
-              <CommandPalette />
-              {children}
-            </FavoritesProvider>
-          </I18nProvider>
-        </ThemeProvider>
+        <ClientProviders>
+          <CommandPalette />
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

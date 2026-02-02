@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Sparkles, TrendingUp, Settings } from "lucide-react";
 
 export default function GlassLandingTemplate() {
   return (
@@ -26,7 +27,7 @@ export default function GlassLandingTemplate() {
       <section className="pt-40 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block mb-6 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-            <span className="text-white/80 text-sm">✨ 全新设计系统</span>
+            <span className="text-white/80 text-sm">NEW 全新设计系统</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             打造现代化的<br />透明界面体验
@@ -54,12 +55,12 @@ export default function GlassLandingTemplate() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: "🎨", title: "美观设计", desc: "精心设计的毛玻璃组件，开箱即用" },
-              { icon: "⚡", title: "高性能", desc: "优化的 CSS 实现，流畅的动画效果" },
-              { icon: "🔧", title: "易于定制", desc: "灵活的配置选项，适应各种场景" },
+              { icon: <Sparkles className="w-8 h-8 text-white" />, title: "美观设计", desc: "精心设计的毛玻璃组件，开箱即用" },
+              { icon: <TrendingUp className="w-8 h-8 text-white" />, title: "高性能", desc: "优化的 CSS 实现，流畅的动画效果" },
+              { icon: <Settings className="w-8 h-8 text-white" />, title: "易于定制", desc: "灵活的配置选项，适应各种场景" },
             ].map((f, i) => (
               <div key={i} className="p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl hover:-translate-y-1 transition-transform">
-                <span className="text-4xl mb-4 block">{f.icon}</span>
+                <span className="mb-4 block">{f.icon}</span>
                 <h3 className="text-xl font-semibold text-white mb-2">{f.title}</h3>
                 <p className="text-white/60">{f.desc}</p>
               </div>

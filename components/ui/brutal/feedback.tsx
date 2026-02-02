@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { Info, Check, AlertTriangle, X } from "lucide-react";
 
 // ============================================
 // Neo-Brutalist Alert
@@ -22,11 +23,11 @@ export const BrutalAlert = React.forwardRef<HTMLDivElement, BrutalAlertProps>(
     };
 
     const icons = {
-      default: "ℹ",
-      success: "✓",
-      warning: "⚠",
-      error: "✗",
-      info: "ℹ",
+      default: <Info className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />,
+      success: <Check className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />,
+      warning: <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />,
+      error: <X className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />,
+      info: <Info className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />,
     };
 
     return (
@@ -42,7 +43,7 @@ export const BrutalAlert = React.forwardRef<HTMLDivElement, BrutalAlertProps>(
         {...props}
       >
         <div className="flex gap-3 md:gap-4">
-          <span className="text-xl md:text-2xl font-black">{icons[variant]}</span>
+          <span className="font-black">{icons[variant]}</span>
           <div className="flex-1">
             {title && (
               <h4 className="font-black text-base md:text-lg mb-1">{title}</h4>
@@ -143,7 +144,7 @@ export const BrutalToast: React.FC<BrutalToastProps> = ({
           onClick={onClose}
           className="font-black hover:text-brutal-pink transition-colors"
         >
-          ✕
+          <X className="w-4 h-4" strokeWidth={3} />
         </button>
       </div>
     </div>

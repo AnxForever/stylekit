@@ -7,6 +7,8 @@ export const glassmorphism: DesignStyle = {
   description:
     "半透明毛玻璃效果，通过 backdrop-blur 模糊背景、柔和边框和微妙阴影，创造现代感十足的层叠界面。",
   cover: "/styles/glassmorphism.png",
+  styleType: "visual",
+  tags: ["modern"],
   category: "modern",
   colors: {
     primary: "rgba(255, 255, 255, 0.25)",
