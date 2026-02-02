@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
-import { getAllStylesMeta } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 import { lintCode, type LintResult } from "@/lib/linter";
 import { Copy, Check, AlertTriangle, CheckCircle2, Code2, FileWarning } from "lucide-react";
 

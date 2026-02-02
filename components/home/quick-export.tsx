@@ -2,13 +2,14 @@
 
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { styles, getStyleBySlug } from "@/lib/styles";
+import { stylesMeta } from "@/lib/styles/meta";
+import { getStyleBySlug } from "@/lib/styles";
 import { ChevronDown, Copy, Check, Download } from "lucide-react";
 
 type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt";
 
 export function QuickExport() {
-  const [selectedSlug, setSelectedSlug] = useState(styles[0].slug);
+  const [selectedSlug, setSelectedSlug] = useState(stylesMeta[0].slug);
   const [format, setFormat] = useState<ExportFormat>("claude-code");
   const [copied, setCopied] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -133,7 +134,7 @@ When generating UI components, always:
 
           {isDropdownOpen && (
             <div className="absolute z-10 top-full left-0 right-0 mt-1 border border-border bg-background shadow-lg max-h-64 overflow-y-auto">
-              {styles.map((style) => (
+              {stylesMeta.map((style) => (
                 <button
                   key={style.slug}
                   onClick={() => {

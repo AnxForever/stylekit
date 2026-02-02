@@ -68,6 +68,20 @@ export interface ArchetypeSection {
 
   /** Slot definitions for content */
   slots?: SectionSlot[];
+
+  // ============ Conversion strategy fields (from knowledge base) ============
+
+  /** Conversion strategy for this section (e.g., "Social proof placement") */
+  conversionStrategy?: string;
+
+  /** CTA placement recommendation */
+  ctaPlacement?: string;
+
+  /** Color strategy for this section */
+  colorStrategy?: string;
+
+  /** Recommended visual effects */
+  recommendedEffects?: string;
 }
 
 /**

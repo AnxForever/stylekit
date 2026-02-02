@@ -1,0 +1,451 @@
+// Knowledge Base - Product Type Recommendations
+// Data converted from products.csv
+
+import type { ProductRecommendation } from "./types";
+import { BM25 } from "./search";
+
+export const productRecommendations: ProductRecommendation[] = [
+  {
+    type: "SaaS (General)",
+    keywords: ["app", "b2b", "cloud", "general", "saas", "software", "subscription"],
+    primaryStyle: "Glassmorphism + Flat Design",
+    secondaryStyles: ["Soft UI Evolution", "Minimalism"],
+    landingPattern: "Hero + Features + CTA",
+    dashboardStyle: "Data-Dense + Real-Time Monitoring",
+    colorFocus: "Trust blue + accent contrast",
+    considerations: "Balance modern feel with clarity. Focus on CTAs.",
+  },
+  {
+    type: "Micro SaaS",
+    keywords: ["indie", "micro", "niche", "saas", "small", "solo", "tool"],
+    primaryStyle: "Minimalism + Accent Pop",
+    secondaryStyles: ["Flat Design 2.0", "Playful Minimal"],
+    landingPattern: "Minimal Single Column",
+    dashboardStyle: "Compact + Task-Oriented",
+    colorFocus: "Single accent + neutral base",
+    considerations: "Keep it simple. Emphasize single value prop.",
+  },
+  {
+    type: "E-commerce (General)",
+    keywords: ["cart", "commerce", "ecommerce", "online", "retail", "shop", "store"],
+    primaryStyle: "Clean Commerce + Card Grid",
+    secondaryStyles: ["Minimalism", "Flat Design"],
+    landingPattern: "Product Grid + Hero",
+    dashboardStyle: "Order Management + Analytics",
+    colorFocus: "Trust + urgency CTA",
+    considerations: "Fast loading. Clear product hierarchy. Trust signals.",
+  },
+  {
+    type: "E-commerce Luxury",
+    keywords: ["boutique", "fashion", "high-end", "luxury", "premium", "upscale"],
+    primaryStyle: "Editorial + Whitespace",
+    secondaryStyles: ["Minimalism", "Dark Elegance"],
+    landingPattern: "Visual Storytelling",
+    dashboardStyle: "Clean + Premium Feel",
+    colorFocus: "Black/gold + muted luxury",
+    considerations: "Visual-first. Large imagery. Premium feel.",
+  },
+  {
+    type: "Fintech",
+    keywords: ["banking", "finance", "fintech", "investment", "money", "payment", "trading"],
+    primaryStyle: "Trust Minimalism + Data Focus",
+    secondaryStyles: ["Glassmorphism", "Dark Mode Professional"],
+    landingPattern: "Hero + Trust Signals + Features",
+    dashboardStyle: "Financial Dashboard + Charts",
+    colorFocus: "Trust blue/green + stability",
+    considerations: "Security focus. Clear data visualization. Trust signals.",
+  },
+  {
+    type: "Healthcare",
+    keywords: ["clinic", "health", "healthcare", "hospital", "medical", "patient", "wellness"],
+    primaryStyle: "Calm + Accessible",
+    secondaryStyles: ["Soft UI", "Clean Medical"],
+    landingPattern: "Trust + Services + CTA",
+    dashboardStyle: "Patient Portal + Records",
+    colorFocus: "Calm blue/green + clean white",
+    considerations: "Accessibility first. Clear navigation. HIPAA compliance.",
+  },
+  {
+    type: "EdTech",
+    keywords: ["course", "education", "edtech", "learning", "lms", "school", "student", "teach"],
+    primaryStyle: "Playful + Structured",
+    secondaryStyles: ["Gamification UI", "Clean Educational"],
+    landingPattern: "Hero + Course Grid + Testimonials",
+    dashboardStyle: "Learning Dashboard + Progress",
+    colorFocus: "Engaging + progress indicators",
+    considerations: "Progress visibility. Gamification elements. Clear paths.",
+  },
+  {
+    type: "Developer Tools",
+    keywords: ["api", "code", "developer", "devtools", "github", "sdk", "terminal"],
+    primaryStyle: "Dark Mode + Monospace",
+    secondaryStyles: ["Minimalism", "Terminal Aesthetic"],
+    landingPattern: "Code Hero + Docs + Features",
+    dashboardStyle: "API Dashboard + Logs",
+    colorFocus: "Dark bg + syntax highlighting",
+    considerations: "Code-first. Fast docs access. Dark mode default.",
+  },
+  {
+    type: "AI/ML Platform",
+    keywords: ["ai", "artificial", "gpt", "intelligence", "llm", "machine", "ml", "model"],
+    primaryStyle: "Futuristic + Glassmorphism",
+    secondaryStyles: ["Aurora UI", "Dark Mode AI"],
+    landingPattern: "Demo Hero + Features + Use Cases",
+    dashboardStyle: "Model Dashboard + Metrics",
+    colorFocus: "Purple/blue gradients + glow effects",
+    considerations: "Show AI in action. Clear pricing. Trust through transparency.",
+  },
+  {
+    type: "Crypto/Web3",
+    keywords: ["blockchain", "crypto", "dao", "defi", "nft", "token", "wallet", "web3"],
+    primaryStyle: "Dark Mode + Neon Accents",
+    secondaryStyles: ["Cyberpunk", "Glassmorphism"],
+    landingPattern: "Hero + Stats + Features",
+    dashboardStyle: "Wallet Dashboard + Charts",
+    colorFocus: "Dark + neon purple/green",
+    considerations: "Trust signals. Real-time data. Security emphasis.",
+  },
+  {
+    type: "Gaming",
+    keywords: ["esports", "game", "gaming", "play", "player", "stream", "twitch"],
+    primaryStyle: "Bold + Dark + Animated",
+    secondaryStyles: ["Cyberpunk", "Neon Brutalism"],
+    landingPattern: "Video Hero + Features + Community",
+    dashboardStyle: "Stats + Leaderboards",
+    colorFocus: "Dark + vibrant accents",
+    considerations: "Performance critical. Engaging visuals. Community focus.",
+  },
+  {
+    type: "Social Platform",
+    keywords: ["chat", "community", "feed", "network", "post", "share", "social"],
+    primaryStyle: "Clean + Card Feed",
+    secondaryStyles: ["Soft UI", "Minimalism"],
+    landingPattern: "Value Prop + Demo + Social Proof",
+    dashboardStyle: "Feed + Notifications",
+    colorFocus: "Brand color + neutral feed",
+    considerations: "Content-first. Fast interactions. Notification UX.",
+  },
+  {
+    type: "Productivity Tool",
+    keywords: ["checklist", "notes", "organize", "productivity", "task", "todo", "workflow"],
+    primaryStyle: "Minimal + Functional",
+    secondaryStyles: ["Notion-like", "Clean Utility"],
+    landingPattern: "Feature Hero + Use Cases",
+    dashboardStyle: "Workspace + Sidebar Nav",
+    colorFocus: "Neutral + task status colors",
+    considerations: "Fast performance. Keyboard shortcuts. Clean workspace.",
+  },
+  {
+    type: "Marketing Agency",
+    keywords: ["agency", "brand", "creative", "design", "marketing", "studio"],
+    primaryStyle: "Bold + Creative",
+    secondaryStyles: ["Editorial", "Brutalism"],
+    landingPattern: "Portfolio Hero + Case Studies",
+    dashboardStyle: "Project Dashboard + Reports",
+    colorFocus: "Brand-forward + creative palette",
+    considerations: "Showcase work. Strong visuals. Clear CTA.",
+  },
+  {
+    type: "Restaurant/Food",
+    keywords: ["cafe", "delivery", "food", "menu", "order", "restaurant"],
+    primaryStyle: "Warm + Appetizing",
+    secondaryStyles: ["Clean Food UI", "Local Charm"],
+    landingPattern: "Visual Menu + Location + Order CTA",
+    dashboardStyle: "Order Management",
+    colorFocus: "Warm + appetite-inducing",
+    considerations: "Food photography. Mobile-first. Fast ordering.",
+  },
+  {
+    type: "Real Estate",
+    keywords: ["apartment", "home", "house", "property", "real estate", "realtor", "rent"],
+    primaryStyle: "Clean + Visual Listings",
+    secondaryStyles: ["Minimalism", "Card Grid"],
+    landingPattern: "Search Hero + Listings Grid",
+    dashboardStyle: "Listing Management",
+    colorFocus: "Trust blue + property images",
+    considerations: "Map integration. Filter UX. High-quality images.",
+  },
+  {
+    type: "Travel/Booking",
+    keywords: ["booking", "flight", "hotel", "travel", "trip", "vacation"],
+    primaryStyle: "Visual + Search Focus",
+    secondaryStyles: ["Card UI", "Clean Booking"],
+    landingPattern: "Search Hero + Deals + Destinations",
+    dashboardStyle: "Booking Management",
+    colorFocus: "Adventure + trust signals",
+    considerations: "Complex search UX. Mobile booking. Trust signals.",
+  },
+  {
+    type: "News/Media",
+    keywords: ["article", "blog", "content", "journal", "media", "news", "publication"],
+    primaryStyle: "Editorial + Typography Focus",
+    secondaryStyles: ["Clean Reading", "Magazine Layout"],
+    landingPattern: "Headlines + Categories + Featured",
+    dashboardStyle: "Content Management",
+    colorFocus: "High contrast + readability",
+    considerations: "Reading experience. Fast loading. Ad integration.",
+  },
+  {
+    type: "Portfolio (Personal)",
+    keywords: ["cv", "freelance", "personal", "portfolio", "resume", "showcase"],
+    primaryStyle: "Minimal + Personal Brand",
+    secondaryStyles: ["Creative", "One-Page"],
+    landingPattern: "Hero + Work + Contact",
+    dashboardStyle: "N/A",
+    colorFocus: "Personal brand colors",
+    considerations: "Showcase best work. Clear contact CTA. Fast loading.",
+  },
+  {
+    type: "Enterprise Software",
+    keywords: ["b2b", "crm", "enterprise", "erp", "salesforce", "sap"],
+    primaryStyle: "Professional + Data-Dense",
+    secondaryStyles: ["Minimalism", "Corporate Clean"],
+    landingPattern: "Value Prop + Demo Request + Trust",
+    dashboardStyle: "Enterprise Dashboard + Reports",
+    colorFocus: "Professional blue + corporate",
+    considerations: "Complex data. Role-based UI. Integration focus.",
+  },
+  {
+    type: "IoT/Hardware",
+    keywords: ["device", "firmware", "hardware", "iot", "sensor", "smart"],
+    primaryStyle: "Technical + Clean",
+    secondaryStyles: ["Dark Mode Industrial", "Minimalism"],
+    landingPattern: "Product Hero + Specs + Use Cases",
+    dashboardStyle: "Device Management + Monitoring",
+    colorFocus: "Technical blue + status indicators",
+    considerations: "Real-time data. Device status. Technical specs.",
+  },
+  {
+    type: "Legal Services",
+    keywords: ["attorney", "contract", "law", "lawyer", "legal"],
+    primaryStyle: "Professional + Trust",
+    secondaryStyles: ["Corporate Clean", "Minimalism"],
+    landingPattern: "Trust Hero + Services + Contact",
+    dashboardStyle: "Case Management",
+    colorFocus: "Navy + gold/trust accents",
+    considerations: "Trust first. Professional tone. Clear services.",
+  },
+  {
+    type: "Nonprofit/Charity",
+    keywords: ["cause", "charity", "donate", "foundation", "ngo", "nonprofit"],
+    primaryStyle: "Warm + Human-Centered",
+    secondaryStyles: ["Storytelling", "Impact Focus"],
+    landingPattern: "Impact Story + Donate CTA + Progress",
+    dashboardStyle: "Donation Dashboard",
+    colorFocus: "Warm + hopeful + brand colors",
+    considerations: "Emotional connection. Clear impact. Easy donation.",
+  },
+  {
+    type: "Event/Conference",
+    keywords: ["conference", "event", "meetup", "summit", "ticket", "webinar"],
+    primaryStyle: "Bold + Exciting",
+    secondaryStyles: ["Countdown", "Speaker Focus"],
+    landingPattern: "Event Hero + Speakers + Schedule + Tickets",
+    dashboardStyle: "Event Management",
+    colorFocus: "Event brand + urgency",
+    considerations: "Countdown urgency. Speaker showcase. Easy registration.",
+  },
+  {
+    type: "Fitness/Gym",
+    keywords: ["exercise", "fitness", "gym", "health", "training", "workout"],
+    primaryStyle: "Bold + Energetic",
+    secondaryStyles: ["Dark Mode Fitness", "Motivational"],
+    landingPattern: "Hero + Programs + Trainers + CTA",
+    dashboardStyle: "Workout Dashboard + Progress",
+    colorFocus: "Energetic + motivational",
+    considerations: "Motivational imagery. Progress tracking. Mobile-first.",
+  },
+  {
+    type: "Music/Audio",
+    keywords: ["audio", "music", "playlist", "podcast", "sound", "streaming"],
+    primaryStyle: "Dark + Visual Waveforms",
+    secondaryStyles: ["Gradient", "Player Focus"],
+    landingPattern: "Player Hero + Discovery + Artists",
+    dashboardStyle: "Audio Dashboard + Analytics",
+    colorFocus: "Dark + vibrant album art",
+    considerations: "Audio player UX. Discovery. Artist showcase.",
+  },
+  {
+    type: "Video Platform",
+    keywords: ["channel", "stream", "video", "vod", "watch", "youtube"],
+    primaryStyle: "Dark + Video Focus",
+    secondaryStyles: ["Card Grid", "Theater Mode"],
+    landingPattern: "Video Hero + Categories + Trending",
+    dashboardStyle: "Creator Dashboard + Analytics",
+    colorFocus: "Dark + video thumbnails",
+    considerations: "Video player UX. Recommendations. Creator tools.",
+  },
+  {
+    type: "Marketplace",
+    keywords: ["buy", "listing", "marketplace", "peer", "sell", "trade"],
+    primaryStyle: "Clean Grid + Trust",
+    secondaryStyles: ["Card UI", "Flat Design"],
+    landingPattern: "Search + Categories + Featured",
+    dashboardStyle: "Seller Dashboard + Orders",
+    colorFocus: "Trust + category colors",
+    considerations: "Trust signals. Search UX. Seller/buyer balance.",
+  },
+  {
+    type: "Documentation",
+    keywords: ["api docs", "documentation", "guide", "help", "manual", "reference", "wiki"],
+    primaryStyle: "Clean + Readable",
+    secondaryStyles: ["Sidebar Nav", "Code Focus"],
+    landingPattern: "Search + Categories + Quick Start",
+    dashboardStyle: "N/A",
+    colorFocus: "High contrast + code syntax",
+    considerations: "Search-first. Code highlighting. Version switching.",
+  },
+  {
+    type: "CRM/Sales",
+    keywords: ["crm", "deal", "lead", "pipeline", "sales"],
+    primaryStyle: "Professional + Pipeline View",
+    secondaryStyles: ["Card Kanban", "Data Tables"],
+    landingPattern: "Demo Hero + Features + Integrations",
+    dashboardStyle: "Sales Dashboard + Pipeline",
+    colorFocus: "Professional + deal stage colors",
+    considerations: "Pipeline visualization. Quick actions. Reporting.",
+  },
+  {
+    type: "HR/Recruiting",
+    keywords: ["applicant", "candidate", "hr", "jobs", "recruit", "talent"],
+    primaryStyle: "Professional + Organized",
+    secondaryStyles: ["Card Grid", "Pipeline View"],
+    landingPattern: "Jobs Hero + Search + Company Culture",
+    dashboardStyle: "Recruiting Dashboard + Pipeline",
+    colorFocus: "Professional + stage indicators",
+    considerations: "Applicant tracking. Job posting. Interview scheduling.",
+  },
+  {
+    type: "Analytics Platform",
+    keywords: ["analytics", "bi", "data", "insights", "metrics", "tracking"],
+    primaryStyle: "Data-Dense + Clean Charts",
+    secondaryStyles: ["Dashboard Focus", "Dark Mode Data"],
+    landingPattern: "Demo Hero + Integrations + Features",
+    dashboardStyle: "Analytics Dashboard + Custom Reports",
+    colorFocus: "Chart colors + data visualization",
+    considerations: "Chart performance. Custom dashboards. Data density.",
+  },
+  {
+    type: "Project Management",
+    keywords: ["agile", "board", "jira", "kanban", "project", "sprint", "task"],
+    primaryStyle: "Organized + Kanban View",
+    secondaryStyles: ["Card UI", "Timeline View"],
+    landingPattern: "Feature Hero + Templates + Teams",
+    dashboardStyle: "Project Dashboard + Boards",
+    colorFocus: "Status colors + neutral base",
+    considerations: "Board/list views. Quick actions. Team collaboration.",
+  },
+  {
+    type: "Email Marketing",
+    keywords: ["campaign", "email", "mailchimp", "newsletter", "outreach"],
+    primaryStyle: "Clean + Template Focus",
+    secondaryStyles: ["Card Grid", "Stats Dashboard"],
+    landingPattern: "Feature Hero + Templates + Pricing",
+    dashboardStyle: "Campaign Dashboard + Analytics",
+    colorFocus: "Brand colors + engagement metrics",
+    considerations: "Template builder. Analytics. List management.",
+  },
+  {
+    type: "Customer Support",
+    keywords: ["helpdesk", "support", "ticket", "zendesk"],
+    primaryStyle: "Clean + Organized",
+    secondaryStyles: ["Ticket View", "Chat Interface"],
+    landingPattern: "Help Hero + Categories + Contact",
+    dashboardStyle: "Support Dashboard + Tickets",
+    colorFocus: "Priority colors + status indicators",
+    considerations: "Ticket management. Knowledge base. Live chat.",
+  },
+  {
+    type: "Scheduling/Calendar",
+    keywords: ["booking", "calendar", "meeting", "schedule", "time"],
+    primaryStyle: "Clean Calendar + Time Focus",
+    secondaryStyles: ["Minimalism", "Event Cards"],
+    landingPattern: "Calendar Hero + Features + Integrations",
+    dashboardStyle: "Calendar Dashboard + Bookings",
+    colorFocus: "Time-based colors + availability",
+    considerations: "Calendar UX. Time zones. Integration focus.",
+  },
+  {
+    type: "Survey/Forms",
+    keywords: ["feedback", "form", "poll", "questionnaire", "survey"],
+    primaryStyle: "Clean + Progress Focus",
+    secondaryStyles: ["Step-by-Step", "Card Questions"],
+    landingPattern: "Template Hero + Use Cases + Features",
+    dashboardStyle: "Response Dashboard + Analytics",
+    colorFocus: "Neutral + progress indicators",
+    considerations: "Form builder. Response analytics. Conditional logic.",
+  },
+  {
+    type: "File Storage/Cloud",
+    keywords: ["backup", "cloud", "drive", "file", "storage", "sync"],
+    primaryStyle: "Clean + File Grid",
+    secondaryStyles: ["Folder View", "Minimalism"],
+    landingPattern: "Storage Hero + Features + Pricing",
+    dashboardStyle: "File Manager + Storage Stats",
+    colorFocus: "File type colors + storage indicators",
+    considerations: "File management. Upload UX. Sharing controls.",
+  },
+  {
+    type: "Security Platform",
+    keywords: ["antivirus", "cybersecurity", "protection", "security", "threat"],
+    primaryStyle: "Trust + Professional",
+    secondaryStyles: ["Dark Mode Security", "Shield Focus"],
+    landingPattern: "Security Hero + Features + Trust Signals",
+    dashboardStyle: "Security Dashboard + Alerts",
+    colorFocus: "Trust green + alert indicators",
+    considerations: "Trust signals. Alert visibility. Compliance focus.",
+  },
+  {
+    type: "Design Tool",
+    keywords: ["canvas", "creative", "design", "figma", "sketch", "tool"],
+    primaryStyle: "Canvas + Tool Panels",
+    secondaryStyles: ["Dark Mode Design", "Minimal Chrome"],
+    landingPattern: "Demo Hero + Features + Community",
+    dashboardStyle: "Design Dashboard + Projects",
+    colorFocus: "Neutral chrome + canvas focus",
+    considerations: "Canvas performance. Tool accessibility. Collaboration.",
+  },
+];
+
+// Pre-built BM25 index for product search
+let productSearchIndex: BM25<ProductRecommendation> | null = null;
+
+function getProductSearchIndex(): BM25<ProductRecommendation> {
+  if (!productSearchIndex) {
+    productSearchIndex = new BM25(
+      productRecommendations,
+      (p) => `${p.type} ${p.keywords.join(" ")} ${p.primaryStyle} ${p.considerations}`
+    );
+  }
+  return productSearchIndex;
+}
+
+/**
+ * Search product recommendations by query
+ */
+export function searchProducts(
+  query: string,
+  maxResults = 5
+): ProductRecommendation[] {
+  return getProductSearchIndex().search(query, maxResults);
+}
+
+/**
+ * Get product recommendation by exact type match
+ */
+export function getProductByType(type: string): ProductRecommendation | undefined {
+  const typeLower = type.toLowerCase();
+  return productRecommendations.find(
+    (p) => p.type.toLowerCase() === typeLower
+  );
+}
+
+/**
+ * Get product recommendations by keyword
+ */
+export function getProductsByKeyword(keyword: string): ProductRecommendation[] {
+  const keywordLower = keyword.toLowerCase();
+  return productRecommendations.filter((p) =>
+    p.keywords.some((k) => k.toLowerCase().includes(keywordLower))
+  );
+}
