@@ -1,10 +1,8 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { TemplatesFilter, typeLabels } from "@/components/templates/templates-filter";
 
 interface Template {
   id: string;
@@ -42,16 +40,14 @@ const templates: Template[] = [
   },
 ];
 
-const typeLabels: Record<string, string> = {
-  all: "全部",
-  landing: "着陆页",
-  dashboard: "仪表盘",
-  blog: "博客",
-};
+interface PageProps {
+  searchParams: Promise<{ type?: string }>;
+}
 
-export default function TemplatesPage() {
+export default async function TemplatesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const activeType = params.type || "all";
   const styles = getAllStylesMeta();
-  const [activeType, setActiveType] = useState<string>("all");
 
   const filteredTemplates = activeType === "all"
     ? templates
@@ -80,25 +76,10 @@ export default function TemplatesPage() {
         {/* Filter + Grid */}
         <section className="py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            {/* Type Filter */}
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-sm text-muted">类型：</span>
-              {Object.entries(typeLabels).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveType(key)}
-                  className={`px-3 py-1.5 text-sm transition-colors ${
-                    activeType === key
-                      ? "bg-foreground text-background"
-                      : "border border-border hover:border-foreground"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            {/* Type Filter (Client Component) */}
+            <TemplatesFilter />
 
-            {/* Templates Grid */}
+            {/* Templates Grid (Server Rendered) */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTemplates.map((template) => {
                 const style = getStyle(template.styleSlug);

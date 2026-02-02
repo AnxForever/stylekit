@@ -85,12 +85,12 @@ export const styleComponents: Record<
   },
   "neo-brutalist-playful": {
     button: () => (
-      <button className="px-6 py-3 bg-[#fbbf24] text-black font-black rounded-full border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] hover:rotate-1 transition-all">
+      <button className="px-6 py-3 bg-[#fbbf24] text-black font-black rounded-full border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] hover:rotate-1 transition-all">
         点击按钮
       </button>
     ),
     card: () => (
-      <div className="p-6 bg-[#c4b5fd] rounded-3xl border-3 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-1">
+      <div className="p-6 bg-[#c4b5fd] rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-1">
         <h3 className="font-black text-xl mb-2">Playful Card</h3>
         <p className="text-sm">活泼有趣的设计风格</p>
       </div>
@@ -99,7 +99,7 @@ export const styleComponents: Record<
       <input
         type="text"
         placeholder="输入内容..."
-        className="w-full px-4 py-3 bg-[#fef3c7] rounded-full border-3 border-black font-mono focus:outline-none focus:rotate-1 transition-transform"
+        className="w-full px-4 py-3 bg-[#fef3c7] rounded-full border-[3px] border-black font-mono focus:outline-none focus:rotate-1 transition-transform"
       />
     ),
     coverPreview: () => (
