@@ -12,3 +12,7 @@ export { ToastSection } from "./toast-section";
 export { ListSection } from "./list-section";
 export { PaginationSection } from "./pagination-section";
 export { TreeSection } from "./tree-section";
+
+// Phase 6 Components
+export { InputOTPSection } from "./input-otp-section";
+export { ResizableSection } from "./resizable-section";

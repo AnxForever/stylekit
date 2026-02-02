@@ -361,6 +361,9 @@ export default function ShowcaseContent() {
                   <label key={label} className="flex items-center justify-between p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
                     <span className="font-serif text-stone-700">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -386,6 +389,9 @@ export default function ShowcaseContent() {
                 {["Sustainable design", "Warm palette", "Organic shapes"].map((label, i) => (
                   <label key={label} className="flex items-center gap-3 p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
                     <button
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];

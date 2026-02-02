@@ -42,3 +42,12 @@ next-env.d.ts
 
 # windows invalid
 nul
+
+# Agent/IDE Rules
+CLAUDE.md
+trae-rules.md
+PHASE-5A-SUMMARY.md
+.claude/
+.trae/
+skills/ui-ux-pro-max/
+

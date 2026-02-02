@@ -309,6 +309,9 @@ export default function ShowcaseContent() {
                   <label key={label} className={`flex items-center justify-between p-4 bg-white border-4 border-black shadow-[4px_4px_0px_0px_black] cursor-pointer ${i % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]"}`}>
                     <span className="font-black">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -334,6 +337,9 @@ export default function ShowcaseContent() {
                 {["Extra fun", "More colors", "Maximum joy"].map((label, i) => (
                   <label key={label} className={`flex items-center gap-4 p-4 bg-white border-4 border-black shadow-[4px_4px_0px_0px_black] cursor-pointer ${i % 2 === 0 ? "rotate-[1deg]" : "rotate-[-1deg]"}`}>
                     <button
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];
