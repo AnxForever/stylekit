@@ -254,4 +254,43 @@ shadow 变为彩色 + hover:-translate-y-1 md:hover:-translate-y-2 transition-al
 3. 边框是纯黑
 4. hover 有位移
 5. 有 md: 响应式前缀`,
+
+  examplePrompts: [
+    {
+      title: "SaaS 产品着陆页",
+      titleEn: "SaaS Product Landing Page",
+      description: "包含 Hero、特性卡片、定价表、CTA",
+      descriptionEn: "Includes Hero, feature cards, pricing table, CTA",
+      prompt: `用 Neo-Brutalist 风格生成一个 SaaS 产品着陆页，要求：
+1. Hero 区域：大标题使用 font-black，鲜艳背景色（如 #ccff00），黑色粗边框按钮
+2. 特性区域：3 个卡片，每个有硬边缘阴影，hover 时阴影变为粉色
+3. 定价表：3 列，中间推荐列用强调色背景
+4. CTA：全宽黑色背景，白色大标题，粉色按钮
+所有元素必须：无圆角、黑色粗边框、硬边缘阴影、hover 位移效果`,
+    },
+    {
+      title: "博客文章页",
+      titleEn: "Blog Article Page",
+      description: "包含标题、作者信息、正文、相关文章",
+      descriptionEn: "Includes title, author info, content, related posts",
+      prompt: `用 Neo-Brutalist 风格创建一个博客文章页面，要求：
+1. 顶部：超大标题 font-black，作者信息带头像
+2. 正文：使用 font-mono，段落间距适中
+3. 侧边栏：相关文章卡片，有硬边缘阴影
+4. 分享按钮：图标按钮带黑色边框，hover 位移
+所有元素遵循 Neo-Brutalist 规范：无圆角、纯黑边框、高对比配色`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "网格布局展示项目作品",
+      descriptionEn: "Grid layout to showcase projects",
+      prompt: `用 Neo-Brutalist 风格设计一个作品集页面，要求：
+1. 导航栏：左侧 Logo 用 font-black，右侧链接 font-mono
+2. Hero：个人介绍，使用鲜艳背景色块
+3. 作品网格：2-3 列布局，每个卡片有缩略图和标题
+4. 卡片效果：黑色粗边框，hover 时阴影变色 + 轻微上移
+5. 联系区：简洁表单，输入框 focus 时出现硬阴影`,
+    },
+  ],
 };

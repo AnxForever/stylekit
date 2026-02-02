@@ -7,6 +7,8 @@ import { ColorPalette } from "@/components/style-preview/color-palette";
 import { RulesExporter } from "@/components/style-preview/rules-exporter";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
+import { ExamplePrompts } from "@/components/style-preview/example-prompts";
+import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
 import { getStyleBySlug, styles } from "@/lib/styles";
 
 // 生成静态参数
@@ -96,6 +98,14 @@ export default async function StyleDetailPage({
                 <ColorPalette colors={style.colors} />
               </div>
             </div>
+
+            {/* Quick Start Guide */}
+            <div className="mt-12">
+              <QuickStartGuide
+                aiRules={style.aiRules}
+                styleName={style.name}
+              />
+            </div>
           </div>
         </section>
 
@@ -175,6 +185,26 @@ export default async function StyleDetailPage({
             <CodeBlock code={style.globalCss} language="css" />
           </div>
         </section>
+
+        {/* Example Prompts */}
+        {style.examplePrompts && style.examplePrompts.length > 0 && (
+          <section className="border-b border-border">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+              <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                快速开始
+              </p>
+              <h2 className="text-2xl md:text-3xl mb-4">示例 Prompts</h2>
+              <p className="text-muted mb-8 max-w-2xl">
+                复制这些经过验证的 Prompt，快速开始用 AI 生成 {style.name} 风格的界面。
+              </p>
+              <ExamplePrompts
+                prompts={style.examplePrompts}
+                styleName={style.name}
+                aiRules={style.aiRules}
+              />
+            </div>
+          </section>
+        )}
 
         {/* AI Rules Export */}
         <section>

@@ -165,6 +165,23 @@ export const translations = {
     "playground.moreComponents": "想查看更多组件？",
     "playground.viewAllComponents": "查看全部组件",
     "playground.exploreStyles": "探索风格",
+
+    // Quick Start Guide
+    "quickStart.title": "快速开始：3 步使用 AI 生成",
+    "quickStart.step1.title": "复制 AI Rules",
+    "quickStart.step1.button": "一键复制规则",
+    "quickStart.step2.title": "粘贴到你的 AI 工具",
+    "quickStart.step2.cursor": "粘贴到 .cursorrules 文件",
+    "quickStart.step2.claudeCode": "粘贴到 CLAUDE.md 文件",
+    "quickStart.step2.trae": "粘贴到 trae-rules.md 文件",
+    "quickStart.step3.title": "开始生成",
+    "quickStart.step3.example": "尝试：\"用 {style} 风格生成一个着陆页\"",
+    "quickStart.viewAllFormats": "查看所有导出格式",
+
+    // Example Prompts
+    "examplePrompts.title": "示例 Prompts",
+    "examplePrompts.subtitle": "复制这些经过验证的 Prompt，快速开始生成",
+    "examplePrompts.hint": "提示：复制时会自动附带该风格的设计规范",
   },
   en: {
     // Navigation
@@ -330,6 +347,23 @@ export const translations = {
     "playground.moreComponents": "Want to see more components?",
     "playground.viewAllComponents": "View All Components",
     "playground.exploreStyles": "Explore Styles",
+
+    // Quick Start Guide
+    "quickStart.title": "Quick Start: 3 Steps to AI Generation",
+    "quickStart.step1.title": "Copy AI Rules",
+    "quickStart.step1.button": "Copy Rules",
+    "quickStart.step2.title": "Paste into Your AI Tool",
+    "quickStart.step2.cursor": "Paste into .cursorrules file",
+    "quickStart.step2.claudeCode": "Paste into CLAUDE.md file",
+    "quickStart.step2.trae": "Paste into trae-rules.md file",
+    "quickStart.step3.title": "Start Generating",
+    "quickStart.step3.example": "Try: \"Generate a landing page in {style} style\"",
+    "quickStart.viewAllFormats": "View All Export Formats",
+
+    // Example Prompts
+    "examplePrompts.title": "Example Prompts",
+    "examplePrompts.subtitle": "Copy these verified prompts to quickly start generating",
+    "examplePrompts.hint": "Tip: Design rules will be automatically included when copying",
   },
 } as const;
 

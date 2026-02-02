@@ -288,4 +288,46 @@ Emoji 使用：
 - 模糊阴影
 - 渐变
 - 灰暗配色`,
+
+  examplePrompts: [
+    {
+      title: "儿童教育网站",
+      titleEn: "Kids Education Website",
+      description: "活泼有趣的学习平台",
+      descriptionEn: "Fun and engaging learning platform",
+      prompt: `用 Neo-Brutalist Playful 风格创建一个儿童教育网站，要求：
+1. 导航：彩色按钮，每个用不同鲜艳色
+2. Hero：大标题带颜色高亮，可爱插图
+3. 课程卡片：彩色边框和阴影，hover 放大 + 上浮
+4. 进度条：彩色条纹或波浪效果
+5. 按钮：圆形装饰点缀，hover 时旋转
+配色：明黄、粉红、天蓝、青绿交替使用`,
+    },
+    {
+      title: "活动报名页",
+      titleEn: "Event Registration Page",
+      description: "有趣的活动宣传和报名",
+      descriptionEn: "Fun event promotion and registration",
+      prompt: `用 Neo-Brutalist Playful 风格设计一个活动报名页，要求：
+1. Hero：大胆标题，彩色文字或高亮背景
+2. 活动信息：卡片式布局，每个信息点用不同色块
+3. 时间线：彩色圆点连接，每阶段不同色
+4. 报名表单：彩色边框输入框，提交按钮醒目
+5. 装饰：几何图形点缀（方块、圆点）
+整体活泼但保持野兽派的硬边缘和粗边框`,
+    },
+    {
+      title: "创意作品集",
+      titleEn: "Creative Portfolio",
+      description: "个性化的作品展示",
+      descriptionEn: "Personalized work showcase",
+      prompt: `用 Neo-Brutalist Playful 风格创建一个创意作品集，要求：
+1. 首页：大胆的自我介绍，彩色文字
+2. 作品网格：每个项目卡片用不同彩色阴影
+3. 项目详情：全屏图片，彩色边框
+4. 技能展示：彩色进度条或图标
+5. 联系区：趣味表单，彩色按钮
+保持无圆角、粗边框、硬阴影的野兽派特征`,
+    },
+  ],
 };

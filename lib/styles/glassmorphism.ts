@@ -228,4 +228,43 @@ export const glassmorphism: DesignStyle = {
 3. 使用半透明背景色
 4. 有柔和阴影
 5. 文字可读性良好`,
+
+  examplePrompts: [
+    {
+      title: "登录/注册页",
+      titleEn: "Login/Register Page",
+      description: "毛玻璃风格的认证页面",
+      descriptionEn: "Glassmorphic authentication page",
+      prompt: `用 Glassmorphism 风格创建一个登录页面，要求：
+1. 背景：全屏渐变（紫粉或蓝紫色系）
+2. 登录卡片：居中，bg-white/10 backdrop-blur-xl，圆角 rounded-2xl
+3. 表单：输入框半透明背景，focus 时边框发光
+4. 按钮：渐变背景或半透明白色，hover 时更亮
+5. 装饰：添加一些模糊的圆形光斑作为背景装饰`,
+    },
+    {
+      title: "音乐播放器",
+      titleEn: "Music Player",
+      description: "现代感音乐播放界面",
+      descriptionEn: "Modern music player interface",
+      prompt: `用 Glassmorphism 风格设计一个音乐播放器界面，要求：
+1. 背景：当前播放歌曲的模糊封面图
+2. 播放卡片：毛玻璃效果，显示封面、歌曲信息
+3. 控制栏：播放/暂停/上下曲按钮，半透明背景
+4. 进度条：渐变色轨道，毛玻璃滑块
+5. 播放列表：侧边栏，半透明背景，每行歌曲 hover 时更亮`,
+    },
+    {
+      title: "天气应用",
+      titleEn: "Weather App",
+      description: "精美的天气展示界面",
+      descriptionEn: "Beautiful weather display interface",
+      prompt: `用 Glassmorphism 风格创建一个天气应用界面，要求：
+1. 背景：根据天气变化的渐变（晴天蓝黄、阴天灰蓝等）
+2. 主卡片：当前天气，大温度数字，天气图标
+3. 小时预报：横向滚动，每个时间点一个小卡片
+4. 周预报：列表形式，每行一天
+5. 所有卡片：backdrop-blur, bg-white/20, rounded-xl, shadow-lg`,
+    },
+  ],
 };

@@ -231,4 +231,44 @@ body {
 - 禁止过多颜色
 - 禁止标题用无衬线
 - 禁止元素堆积`,
+
+  examplePrompts: [
+    {
+      title: "杂志风格博客",
+      titleEn: "Magazine Style Blog",
+      description: "经典杂志排版的博客首页",
+      descriptionEn: "Classic magazine layout blog homepage",
+      prompt: `用 Editorial 杂志排版风格创建一个博客首页，要求：
+1. 导航栏：细边框分隔，链接使用小写字母 + 字间距
+2. 特色文章：大图配衬线字体大标题，作者信息用 text-xs uppercase
+3. 文章网格：2-3 列，每篇文章有分类标签、标题、摘要
+4. 排版：标题用 font-serif，正文用 font-sans，大量留白
+5. 颜色：黑白为主，仅标签或链接用强调色`,
+    },
+    {
+      title: "产品详情页",
+      titleEn: "Product Detail Page",
+      description: "高端产品展示页面",
+      descriptionEn: "Premium product showcase page",
+      prompt: `用 Editorial 风格设计一个高端产品详情页，要求：
+1. Hero：全宽产品图，标题用衬线字体
+2. 产品信息：左图右文布局，规格用细边框表格
+3. 特性列表：图标 + 文字，保持简洁
+4. 购买区：价格突出，按钮用细边框 + hover 变黑
+5. 整体：极简配色，大量留白，细边框分割区域`,
+    },
+    {
+      title: "关于我们页面",
+      titleEn: "About Us Page",
+      description: "公司/团队介绍页",
+      descriptionEn: "Company/Team introduction page",
+      prompt: `用 Editorial 风格创建一个公司介绍页面，要求：
+1. Hero：大标题 font-serif，配简短 slogan
+2. 公司故事：左右交替布局，图文搭配
+3. 团队成员：网格展示，照片 + 姓名 + 职位
+4. 数据展示：大数字 + 小标签说明
+5. 联系方式：简洁表单，细边框输入框
+风格要点：衬线标题、无衬线正文、细边框、大留白`,
+    },
+  ],
 };

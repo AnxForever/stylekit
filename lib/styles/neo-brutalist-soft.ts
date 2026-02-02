@@ -251,4 +251,46 @@ body {
 - 高饱和纯色
 - 圆角
 - 模糊阴影`,
+
+  examplePrompts: [
+    {
+      title: "待办事项应用",
+      titleEn: "Todo App",
+      description: "柔和野兽派风格的任务管理",
+      descriptionEn: "Soft brutalist task management",
+      prompt: `用 Neo-Brutalist Soft 风格创建一个待办事项应用，要求：
+1. 整体色调：柔和的灰色边框（zinc-300），淡粉/淡蓝/淡绿背景
+2. 任务卡片：无圆角，浅色硬阴影，可拖拽
+3. 添加按钮：柔和彩色背景，hover 时阴影消失 + 位移
+4. 复选框：方形，选中时背景变为柔和强调色
+5. 分类标签：不同柔和色区分
+保持野兽派的硬边缘，但用柔和色彩降低视觉冲击`,
+    },
+    {
+      title: "笔记应用",
+      titleEn: "Notes App",
+      description: "简洁的笔记记录界面",
+      descriptionEn: "Clean note-taking interface",
+      prompt: `用 Neo-Brutalist Soft 风格设计一个笔记应用，要求：
+1. 侧边栏：笔记列表，每项有柔和色标签
+2. 编辑区：大面积留白，无圆角边框
+3. 工具栏：简洁图标按钮，hover 时柔和背景
+4. 标签系统：柔和色彩的方形标签
+5. 搜索框：zinc-300 边框，focus 时阴影出现
+整体用柔和粉、蓝、绿、黄作为点缀色`,
+    },
+    {
+      title: "个人博客",
+      titleEn: "Personal Blog",
+      description: "温和风格的博客主页",
+      descriptionEn: "Gentle style blog homepage",
+      prompt: `用 Neo-Brutalist Soft 风格创建一个个人博客，要求：
+1. 导航：细灰边框，链接 hover 变柔和粉色
+2. 文章卡片：白色背景，浅色硬阴影，hover 上浮
+3. 标签：柔和彩色背景，无圆角
+4. 侧边栏：关于我、归档、标签云
+5. 页脚：简洁，细边框分隔
+色彩：zinc-300 边框，强调用 pink-200, sky-200, lime-200`,
+    },
+  ],
 };
