@@ -1,9 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [toggleStates, setToggleStates] = useState([true, false]);
+  const [checkboxStates, setCheckboxStates] = useState([true, false, true]);
+
   return (
     <div className="min-h-screen bg-white text-black">
       {/* Navigation */}
@@ -199,6 +205,342 @@ export default function ShowcaseContent() {
             <button className="w-full px-8 py-4 bg-black text-white font-bold uppercase tracking-widest hover:bg-red-500 transition-colors duration-200">
               Submit
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Tabs
+          </h2>
+          <div className="border-4 border-black">
+            <div className="flex">
+              {["Overview", "Details", "Media"].map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={`flex-1 px-4 py-4 font-bold uppercase tracking-widest text-sm transition-colors duration-200 ${
+                    activeTab === i
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-yellow-400"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="p-6 md:p-8 border-t-4 border-black">
+              <p className="text-gray-600 font-medium">
+                {activeTab === 0 && "Overview content — Bold geometric navigation provides clear visual feedback and structure."}
+                {activeTab === 1 && "Details content — High contrast tab states ensure immediate recognition of active selection."}
+                {activeTab === 2 && "Media content — Full-width tab layouts maximize screen real estate and visual impact."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Badges */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-yellow-400 relative overflow-hidden">
+        <div className="absolute -top-10 -left-10 w-40 h-40 border-4 border-black rotate-12" />
+        <div className="absolute bottom-10 right-10 w-20 h-20 bg-red-500 rounded-full" />
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Badges
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-black/60 mb-4">Square</p>
+              <div className="flex flex-wrap gap-3">
+                <span className="px-4 py-2 bg-black text-white font-bold uppercase text-xs tracking-widest">New</span>
+                <span className="px-4 py-2 bg-red-500 text-white font-bold uppercase text-xs tracking-widest">Hot</span>
+                <span className="px-4 py-2 bg-blue-600 text-white font-bold uppercase text-xs tracking-widest">Pro</span>
+                <span className="px-4 py-2 bg-white text-black border-4 border-black font-bold uppercase text-xs tracking-widest">Draft</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-black/60 mb-4">Circle</p>
+              <div className="flex flex-wrap gap-3">
+                <span className="w-12 h-12 bg-black text-white rounded-full font-bold uppercase text-xs flex items-center justify-center">01</span>
+                <span className="w-12 h-12 bg-red-500 text-white rounded-full font-bold uppercase text-xs flex items-center justify-center">02</span>
+                <span className="w-12 h-12 bg-blue-600 text-white rounded-full font-bold uppercase text-xs flex items-center justify-center">03</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Progress */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Progress
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="font-bold uppercase text-xs tracking-widest">Loading</span>
+                <span className="font-bold uppercase text-xs tracking-widest">75%</span>
+              </div>
+              <div className="h-6 bg-white border-4 border-black">
+                <div className="h-full w-3/4 bg-black" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="font-bold uppercase text-xs tracking-widest">Progress</span>
+                <span className="font-bold uppercase text-xs tracking-widest text-red-500">45%</span>
+              </div>
+              <div className="h-6 bg-white border-4 border-black">
+                <div className="h-full w-[45%] bg-red-500" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="font-bold uppercase text-xs tracking-widest">Complete</span>
+                <span className="font-bold uppercase text-xs tracking-widest text-blue-600">100%</span>
+              </div>
+              <div className="h-6 bg-white border-4 border-black">
+                <div className="h-full w-full bg-blue-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Alerts */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-black text-white relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-24 h-24 border-4 border-white/20 rotate-45" />
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Alerts
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 p-4 bg-white text-black border-4 border-black">
+              <Info className="w-6 h-6 flex-shrink-0" />
+              <p className="flex-1 font-medium">Information alert with bold geometric styling.</p>
+              <button className="font-bold uppercase text-xs tracking-widest hover:text-red-500">Dismiss</button>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-blue-600 text-white border-4 border-white">
+              <Check className="w-6 h-6 flex-shrink-0" />
+              <p className="flex-1 font-medium">Success! Your action was completed.</p>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-yellow-400 text-black border-4 border-black">
+              <AlertTriangle className="w-6 h-6 flex-shrink-0" />
+              <p className="flex-1 font-medium">Warning! Please review before continuing.</p>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-red-500 text-white border-4 border-white">
+              <X className="w-6 h-6 flex-shrink-0" />
+              <p className="flex-1 font-medium">Error! Something went wrong.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Controls */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Controls
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Toggles</p>
+              {["Dark Mode", "Notifications"].map((label, i) => (
+                <div key={label} className="flex items-center justify-between p-4 border-4 border-black">
+                  <span className="font-bold uppercase text-sm tracking-widest">{label}</span>
+                  <button
+                    onClick={() => {
+                      const newStates = [...toggleStates];
+                      newStates[i] = !newStates[i];
+                      setToggleStates(newStates);
+                    }}
+                    className={`w-16 h-8 relative transition-colors duration-200 ${
+                      toggleStates[i] ? "bg-black" : "bg-white border-4 border-black"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 w-6 h-6 transition-all duration-200 ${
+                        toggleStates[i] ? "left-9 bg-white" : "left-1 bg-black"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-4">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Checkboxes</p>
+              {["Option A", "Option B", "Option C"].map((label, i) => (
+                <label key={label} className="flex items-center gap-4 p-4 border-4 border-black cursor-pointer hover:bg-yellow-400 transition-colors">
+                  <button
+                    onClick={() => {
+                      const newStates = [...checkboxStates];
+                      newStates[i] = !newStates[i];
+                      setCheckboxStates(newStates);
+                    }}
+                    className={`w-8 h-8 border-4 border-black flex items-center justify-center transition-colors ${
+                      checkboxStates[i] ? "bg-black text-white" : "bg-white"
+                    }`}
+                  >
+                    {checkboxStates[i] && <Check className="w-4 h-4" />}
+                  </button>
+                  <span className="font-bold uppercase text-sm tracking-widest">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dropdown */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-red-500 text-white relative overflow-hidden">
+        <div className="absolute bottom-10 left-10 w-32 h-32 bg-black rotate-12" />
+
+        <div className="max-w-xs mx-auto relative z-10">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12 text-center">
+            Dropdown
+          </h2>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full px-4 py-4 bg-white text-black border-4 border-black font-bold uppercase tracking-widest text-sm flex items-center justify-between hover:bg-yellow-400 transition-colors"
+            >
+              <span>Select</span>
+              <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 bg-white border-4 border-black border-t-0 z-10">
+                {["Option 1", "Option 2", "Option 3", "Option 4"].map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-4 py-3 text-left text-black font-bold uppercase text-sm hover:bg-black hover:text-white transition-colors"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Table */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Table
+          </h2>
+          <div className="border-4 border-black overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-black text-white">
+                  <th className="px-4 py-4 text-left font-bold uppercase text-xs tracking-widest">Project</th>
+                  <th className="px-4 py-4 text-left font-bold uppercase text-xs tracking-widest">Status</th>
+                  <th className="px-4 py-4 text-right font-bold uppercase text-xs tracking-widest">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { name: "Website Redesign", status: "Active" },
+                  { name: "Brand Identity", status: "Complete" },
+                  { name: "App Development", status: "Draft" },
+                ].map((row, i) => (
+                  <tr key={i} className="border-t-4 border-black hover:bg-yellow-400 transition-colors">
+                    <td className="px-4 py-4 font-bold uppercase text-sm">{row.name}</td>
+                    <td className="px-4 py-4">
+                      <span className={`px-3 py-1 text-xs font-bold uppercase tracking-widest ${
+                        row.status === "Active" ? "bg-blue-600 text-white" :
+                        row.status === "Complete" ? "bg-black text-white" : "border-2 border-black"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-right">
+                      <button className="font-bold uppercase text-xs tracking-widest hover:text-red-500 transition-colors">View</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-blue-600 text-white relative overflow-hidden">
+        <div className="absolute top-10 right-10 w-40 h-40 border-4 border-white/20 rounded-full" />
+        <div className="absolute bottom-10 left-10 w-20 h-20 bg-yellow-400" />
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Stats
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { value: "100+", label: "Projects" },
+              { value: "50K", label: "Users" },
+              { value: "99%", label: "Uptime" },
+              { value: "24/7", label: "Support" },
+            ].map((stat, i) => (
+              <div key={i} className="bg-white text-black border-4 border-black p-6 text-center">
+                <div className="font-black text-3xl md:text-5xl uppercase">{stat.value}</div>
+                <div className="font-bold uppercase text-xs tracking-widest mt-2 text-gray-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avatars */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-black text-3xl md:text-5xl uppercase tracking-tight mb-8 md:mb-12">
+            Avatars
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Sizes</p>
+              <div className="flex items-end gap-4">
+                <div className="w-12 h-12 bg-black text-white flex items-center justify-center">
+                  <User className="w-6 h-6" />
+                </div>
+                <div className="w-16 h-16 bg-black text-white flex items-center justify-center">
+                  <User className="w-8 h-8" />
+                </div>
+                <div className="w-20 h-20 bg-black text-white flex items-center justify-center">
+                  <User className="w-10 h-10" />
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Circle</p>
+              <div className="flex items-end gap-4">
+                <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center font-bold">A</div>
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">B</div>
+                <div className="w-20 h-20 bg-yellow-400 text-black rounded-full flex items-center justify-center font-bold text-xl">C</div>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Stacked</p>
+              <div className="flex -space-x-4">
+                {["bg-black", "bg-red-500", "bg-blue-600", "bg-yellow-400"].map((bg, i) => (
+                  <div
+                    key={i}
+                    className={`w-14 h-14 ${bg} ${bg === "bg-yellow-400" ? "text-black" : "text-white"} border-4 border-white flex items-center justify-center font-bold`}
+                  >
+                    {i + 1}
+                  </div>
+                ))}
+                <div className="w-14 h-14 bg-white text-black border-4 border-black flex items-center justify-center font-bold text-xs">
+                  +5
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

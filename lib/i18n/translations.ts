@@ -15,6 +15,7 @@ export const translations = {
     "nav.linter": "风格检查",
     "nav.promptBuilder": "Prompt 构建",
     "nav.developers": "开发者工具",
+    "nav.tools": "工具",
 
     // Home page
     "home.subtitle": "设计风格集合 · Design Style Gallery",
@@ -265,6 +266,7 @@ export const translations = {
     "nav.about": "About",
     "nav.guide": "Guide",
     "nav.developers": "Developers",
+    "nav.tools": "Tools",
     "nav.export": "Export",
     "nav.playground": "Playground",
     "nav.search": "Search",
