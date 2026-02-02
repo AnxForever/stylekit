@@ -36,7 +36,7 @@ export interface LayoutArchetype {
   tags?: string[];
 }
 
-export type ArchetypeCategory = "landing" | "dashboard" | "blog" | "form" | "list" | "detail";
+export type ArchetypeCategory = "landing" | "dashboard" | "blog" | "form" | "list" | "detail" | "ecommerce" | "portfolio" | "auth";
 
 /**
  * A section within a layout archetype
