@@ -1,25 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { mainNav, externalNav } from "@/lib/nav-config";
-import { Download } from "lucide-react";
+import { mainNav, secondaryNav, toolsDropdown, externalNav } from "@/lib/nav-config";
+import { Download, ChevronDown } from "lucide-react";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { t } = useI18n();
+  const toolsRef = useRef<HTMLDivElement>(null);
 
-  /* eslint-disable react-hooks/set-state-in-effect */
-  // Required pattern for SSR hydration with next-themes
   useEffect(() => {
     setMounted(true);
   }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (toolsRef.current && !toolsRef.current.contains(event.target as Node)) {
+        setIsToolsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -57,18 +67,50 @@ export function Header() {
               <span>{t("nav.search")}</span>
               <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">⌘K</kbd>
             </button>
-            <Link
-              href="/guide"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-foreground text-background hover:bg-foreground/90 transition-colors"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>{t("nav.export")}</span>
-            </Link>
+
+            {/* Main Nav Items */}
             {mainNav.map((item) => (
               <Link key={item.href} href={item.href} className={linkClass}>
                 {t(item.labelKey)}
               </Link>
             ))}
+
+            {/* Tools Dropdown */}
+            <div className="relative" ref={toolsRef}>
+              <button
+                onClick={() => setIsToolsOpen(!isToolsOpen)}
+                className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
+                  isToolsOpen ? "text-foreground" : "text-muted hover:text-foreground"
+                }`}
+              >
+                {t(toolsDropdown.labelKey)}
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isToolsOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {isToolsOpen && (
+                <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background border border-border shadow-lg z-50">
+                  {toolsDropdown.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                      onClick={() => setIsToolsOpen(false)}
+                    >
+                      {t(item.labelKey)}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Secondary Nav Items */}
+            {secondaryNav.map((item) => (
+              <Link key={item.href} href={item.href} className={linkClass}>
+                {t(item.labelKey)}
+              </Link>
+            ))}
+
+            {/* External Links */}
             {externalNav.map((item) => (
               <a
                 key={item.href}
@@ -80,6 +122,7 @@ export function Header() {
                 {item.label}
               </a>
             ))}
+
             {mounted && <LanguageSwitcher />}
             {mounted && (
               <button
@@ -128,14 +171,7 @@ export function Header() {
         {isMenuOpen && (
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              <Link
-                href="/guide"
-                className="flex items-center gap-2 px-4 py-2 text-sm bg-foreground text-background"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Download className="w-4 h-4" />
-                {t("nav.export")}
-              </Link>
+              {/* Main Nav */}
               {mainNav.map((item) => (
                 <Link
                   key={item.href}
@@ -146,6 +182,39 @@ export function Header() {
                   {t(item.labelKey)}
                 </Link>
               ))}
+
+              {/* Tools Section */}
+              <div className="pt-2 border-t border-border">
+                <p className="text-xs uppercase tracking-widest text-muted mb-2">
+                  {t(toolsDropdown.labelKey)}
+                </p>
+                {toolsDropdown.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`block py-2 ${linkClass}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Secondary Nav */}
+              <div className="pt-2 border-t border-border">
+                {secondaryNav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`block py-2 ${linkClass}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                ))}
+              </div>
+
+              {/* External Links */}
               {externalNav.map((item) => (
                 <a
                   key={item.href}
@@ -157,6 +226,7 @@ export function Header() {
                   {item.label}
                 </a>
               ))}
+
               <div className="pt-2 border-t border-border flex items-center gap-4">
                 <LanguageSwitcher />
                 {mounted && (

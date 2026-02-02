@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, X, AlertCircle, Info, Sparkles, Heart, Star } from "lucide-react";
+import { ArrowLeft, Check, X, AlertCircle, Info, Sparkles, Heart, Star, ChevronDown, User } from "lucide-react";
 
 export default function ShowcaseContent() {
   const [inputValue, setInputValue] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [toggleStates, setToggleStates] = useState([true, false]);
+  const [checkboxStates, setCheckboxStates] = useState([true, false, true]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -262,6 +266,293 @@ export default function ShowcaseContent() {
                 <p className="font-semibold text-red-900">Error</p>
                 <p className="text-sm text-red-700">Something went wrong. Please try again.</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Tabs</h2>
+          <p className="text-slate-600 mb-10">Pill-shaped tabs with soft transitions.</p>
+          <div className="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50">
+            <div className="inline-flex bg-slate-100 rounded-2xl p-1.5 mb-6">
+              {["Overview", "Features", "Pricing"].map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                    activeTab === i
+                      ? "bg-white text-slate-800 shadow-lg shadow-slate-200/50"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="text-slate-600">
+              {activeTab === 0 && "A gentle introduction to our soft, approachable design system that delights users."}
+              {activeTab === 1 && "Explore the beautiful features including colored shadows, rounded corners, and smooth animations."}
+              {activeTab === 2 && "Simple and transparent pricing with no hidden fees or surprises."}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Badges */}
+      <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-slate-50 to-slate-100">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Badges</h2>
+          <p className="text-slate-600 mb-10">Soft badges with colored shadows.</p>
+          <div className="flex flex-wrap gap-4">
+            <span className="px-4 py-2 bg-indigo-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-indigo-500/30">
+              Primary
+            </span>
+            <span className="px-4 py-2 bg-purple-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-purple-500/30">
+              Secondary
+            </span>
+            <span className="px-4 py-2 bg-pink-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-pink-500/30">
+              Accent
+            </span>
+            <span className="px-4 py-2 bg-green-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-green-500/30">
+              Success
+            </span>
+            <span className="px-4 py-2 bg-white text-slate-700 rounded-xl font-semibold text-sm shadow-lg shadow-slate-200/50">
+              Ghost
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Progress */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Progress</h2>
+          <p className="text-slate-600 mb-10">Rounded progress bars with soft fills.</p>
+          <div className="space-y-6">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-semibold text-slate-700">Design</span>
+                <span className="text-slate-500">78%</span>
+              </div>
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full w-[78%] bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-semibold text-slate-700">Development</span>
+                <span className="text-slate-500">62%</span>
+              </div>
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full w-[62%] bg-purple-500 rounded-full shadow-lg shadow-purple-500/30" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-semibold text-slate-700">Testing</span>
+                <span className="text-slate-500">45%</span>
+              </div>
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full w-[45%] bg-pink-500 rounded-full shadow-lg shadow-pink-500/30" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Controls */}
+      <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-slate-100 to-slate-50">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Controls</h2>
+          <p className="text-slate-600 mb-10">Soft toggles and checkboxes with smooth transitions.</p>
+          <div className="space-y-8">
+            <div>
+              <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Toggles</p>
+              <div className="space-y-3">
+                {["Notifications", "Dark mode"].map((label, i) => (
+                  <label key={label} className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-lg shadow-slate-200/50 cursor-pointer">
+                    <span className="font-semibold text-slate-700">{label}</span>
+                    <button
+                      onClick={() => {
+                        const newStates = [...toggleStates];
+                        newStates[i] = !newStates[i];
+                        setToggleStates(newStates);
+                      }}
+                      className={`w-14 h-8 rounded-full transition-all relative ${
+                        toggleStates[i]
+                          ? "bg-indigo-500 shadow-lg shadow-indigo-500/30"
+                          : "bg-slate-200"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all ${
+                          toggleStates[i] ? "left-7" : "left-1"
+                        }`}
+                      />
+                    </button>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Checkboxes</p>
+              <div className="space-y-3">
+                {["Email updates", "Push notifications", "Weekly digest"].map((label, i) => (
+                  <label key={label} className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-lg shadow-slate-200/50 cursor-pointer">
+                    <button
+                      onClick={() => {
+                        const newStates = [...checkboxStates];
+                        newStates[i] = !newStates[i];
+                        setCheckboxStates(newStates);
+                      }}
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                        checkboxStates[i]
+                          ? "bg-indigo-500 shadow-lg shadow-indigo-500/30"
+                          : "bg-slate-100"
+                      }`}
+                    >
+                      {checkboxStates[i] && <Check className="w-4 h-4 text-white" />}
+                    </button>
+                    <span className="font-semibold text-slate-700">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dropdown */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-md mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Dropdown</h2>
+          <p className="text-slate-600 mb-10">Floating dropdowns with soft shadows.</p>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between px-5 py-3.5 bg-white rounded-2xl font-semibold text-slate-700 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+            >
+              <span>Select option</span>
+              <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden z-10">
+                {["Design", "Development", "Marketing", "Analytics"].map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-5 py-3.5 text-left font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-500 transition-colors"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Table */}
+      <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-slate-50 to-slate-100">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Table</h2>
+          <p className="text-slate-600 mb-10">Clean tables with soft cell styling.</p>
+          <div className="bg-white rounded-3xl shadow-lg shadow-slate-200/50 overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-slate-50">
+                  <th className="px-6 py-4 text-left font-semibold text-slate-800">Name</th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-800">Role</th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-800">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { name: "Sarah Chen", role: "Designer", status: "Active" },
+                  { name: "Alex Kim", role: "Developer", status: "Active" },
+                  { name: "Jordan Lee", role: "Manager", status: "Away" },
+                ].map((row) => (
+                  <tr key={row.name} className="border-t border-slate-100">
+                    <td className="px-6 py-4 font-semibold text-slate-700">{row.name}</td>
+                    <td className="px-6 py-4 text-slate-500">{row.role}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1.5 rounded-xl text-sm font-semibold ${
+                        row.status === "Active"
+                          ? "bg-green-100 text-green-600 shadow-sm shadow-green-500/20"
+                          : "bg-amber-100 text-amber-600 shadow-sm shadow-amber-500/20"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Stats</h2>
+          <p className="text-slate-600 mb-10">Elevated stat cards with colored accents.</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: "24K", label: "Users", color: "indigo" },
+              { value: "98%", label: "Satisfaction", color: "green" },
+              { value: "1.2M", label: "Downloads", color: "purple" },
+              { value: "4.9", label: "Rating", color: "pink" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className={`bg-white rounded-3xl p-6 text-center shadow-lg shadow-${stat.color}-500/10 hover:shadow-xl hover:shadow-${stat.color}-500/20 hover:-translate-y-1 transition-all`}
+              >
+                <p className={`text-3xl md:text-4xl font-bold bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-400 bg-clip-text text-transparent mb-2`}>
+                  {stat.value}
+                </p>
+                <p className="text-sm text-slate-500 font-semibold">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avatars */}
+      <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-slate-100 to-slate-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Avatars</h2>
+          <p className="text-slate-600 mb-10">Soft avatar styles with shadows.</p>
+          <div className="flex flex-wrap items-end gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <User className="w-8 h-8 text-indigo-500" />
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <User className="w-7 h-7 text-purple-500" />
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center shadow-lg shadow-pink-500/20">
+              <User className="w-6 h-6 text-pink-500" />
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shadow-lg shadow-green-500/20">
+              <User className="w-5 h-5 text-green-500" />
+            </div>
+            <div className="flex -space-x-3">
+              {[
+                { bg: "bg-indigo-500", shadow: "shadow-indigo-500/30" },
+                { bg: "bg-purple-500", shadow: "shadow-purple-500/30" },
+                { bg: "bg-pink-500", shadow: "shadow-pink-500/30" },
+                { bg: "bg-green-500", shadow: "shadow-green-500/30" },
+              ].map((style, i) => (
+                <div
+                  key={i}
+                  className={`w-10 h-10 rounded-xl ${style.bg} flex items-center justify-center ring-2 ring-white shadow-lg ${style.shadow}`}
+                >
+                  <User className="w-5 h-5 text-white" />
+                </div>
+              ))}
             </div>
           </div>
         </div>

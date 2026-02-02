@@ -1,7 +1,17 @@
 // Prompt Builder - Generator
 // Assembles complete prompts from config, style rules, and templates
+// Enhanced with v0 three-element framework
 
-import type { PromptConfig, PageType, TechStack, CompLib, InteractionLevel } from "./types";
+import type {
+  PromptConfig,
+  PageType,
+  TechStack,
+  CompLib,
+  InteractionLevel,
+  TargetAudience,
+  BrandMood,
+  DesignPriority,
+} from "./types";
 import { pageTemplates } from "./templates";
 import { getStyleBySlug } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
@@ -17,6 +27,13 @@ import {
   type UXGuideline,
   type StackGuideline,
 } from "@/lib/knowledge";
+import {
+  gradients,
+  getGradientsByCategory,
+  recommendGradientsForStyle,
+  type Gradient,
+  type GradientCategory,
+} from "@/lib/gradients";
 
 interface GeneratedPrompt {
   content: string;
@@ -33,6 +50,11 @@ interface GeneratedPrompt {
     stackGuidelines?: string;
     typography?: string;
     colorPalette?: string;
+    // v0 Framework sections
+    productSurface?: string;
+    contextOfUse?: string;
+    constraints?: string;
+    gradients?: string;
   };
 }
 
@@ -77,6 +99,22 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
     ? generateColorPaletteSection(recommendation)
     : undefined;
 
+  // v0 Framework sections
+  const productSurfaceSection = config.productSurface
+    ? generateProductSurfaceSection(config.productSurface)
+    : undefined;
+  const contextOfUseSection = config.contextOfUse
+    ? generateContextOfUseSection(config.contextOfUse)
+    : undefined;
+  const constraintsSection = config.constraints
+    ? generateConstraintsSection(config.constraints)
+    : undefined;
+
+  // Gradient section
+  const gradientsSection = config.includeGradients
+    ? generateGradientsSection(config.style, config.gradientCategory as GradientCategory | undefined)
+    : undefined;
+
   const sections = {
     header,
     techStack,
@@ -90,14 +128,23 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
     ...(stackGuidelinesSection && { stackGuidelines: stackGuidelinesSection }),
     ...(typographySection && { typography: typographySection }),
     ...(colorPaletteSection && { colorPalette: colorPaletteSection }),
+    ...(productSurfaceSection && { productSurface: productSurfaceSection }),
+    ...(contextOfUseSection && { contextOfUse: contextOfUseSection }),
+    ...(constraintsSection && { constraints: constraintsSection }),
+    ...(gradientsSection && { gradients: gradientsSection }),
   };
 
   const content = [
     header,
+    // v0 Framework sections first (if provided)
+    productSurfaceSection,
+    contextOfUseSection,
+    constraintsSection,
     techStack,
     pageStructure,
     designRules,
     tokenSection,
+    gradientsSection,
     productRecommendation,
     typographySection,
     colorPaletteSection,
@@ -535,4 +582,207 @@ function generateColorPaletteSection(
 \`\`\`
 
 > ${colors.notes}`;
+}
+
+// ============ V0 FRAMEWORK SECTION GENERATORS ============
+
+/**
+ * Generate Product Surface section (v0 Framework Element 1)
+ * Specifies exact components, data, and features
+ */
+function generateProductSurfaceSection(
+  productSurface: NonNullable<PromptConfig["productSurface"]>
+): string {
+  const lines = [`## Product Surface (产品表面)`];
+
+  lines.push(`
+> 明确指定组件、数据和功能需求，避免模糊描述。`);
+
+  if (productSurface.features && productSurface.features.length > 0) {
+    lines.push(`
+### 功能需求
+${productSurface.features.map((f) => `- ${f}`).join("\n")}`);
+  }
+
+  if (productSurface.dataTypes && productSurface.dataTypes.length > 0) {
+    lines.push(`
+### 数据展示类型
+${productSurface.dataTypes.map((d) => `- ${d}`).join("\n")}`);
+  }
+
+  if (productSurface.userActions && productSurface.userActions.length > 0) {
+    lines.push(`
+### 核心用户操作
+${productSurface.userActions.map((a) => `- ${a}`).join("\n")}`);
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Generate Context of Use section (v0 Framework Element 2)
+ * Defines who uses it, when, and what decisions they're making
+ */
+function generateContextOfUseSection(
+  contextOfUse: NonNullable<PromptConfig["contextOfUse"]>
+): string {
+  const audienceLabels: Record<TargetAudience, string> = {
+    consumer: "消费者 (B2C)",
+    enterprise: "企业用户 (B2B)",
+    developer: "开发者",
+    creative: "创意工作者",
+    general: "通用",
+  };
+
+  const deviceLabels: Record<string, string> = {
+    mobile: "移动端优先",
+    desktop: "桌面端优先",
+    both: "响应式 (同等重要)",
+  };
+
+  const lines = [`## Context of Use (使用场景)`];
+
+  lines.push(`
+> 定义用户群体、使用场景和决策点，帮助 AI 做出更智能的 UX 决策。`);
+
+  if (contextOfUse.targetAudience) {
+    lines.push(`
+### 目标受众
+**${audienceLabels[contextOfUse.targetAudience]}**`);
+  }
+
+  if (contextOfUse.useCase) {
+    lines.push(`
+### 使用场景
+${contextOfUse.useCase}`);
+  }
+
+  if (contextOfUse.userDecisions && contextOfUse.userDecisions.length > 0) {
+    lines.push(`
+### 用户决策点
+用户在此页面需要做出的关键决策：
+${contextOfUse.userDecisions.map((d) => `- ${d}`).join("\n")}`);
+  }
+
+  if (contextOfUse.devicePriority) {
+    lines.push(`
+### 设备优先级
+**${deviceLabels[contextOfUse.devicePriority]}**`);
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Generate Constraints & Taste section (v0 Framework Element 3)
+ * Sets style preferences, platform requirements, and design parameters
+ */
+function generateConstraintsSection(
+  constraints: NonNullable<PromptConfig["constraints"]>
+): string {
+  const moodLabels: Record<BrandMood, { zh: string; desc: string }> = {
+    professional: { zh: "专业稳重", desc: "适合 B2B、金融、法律" },
+    playful: { zh: "活泼有趣", desc: "适合社交、游戏、儿童" },
+    luxurious: { zh: "高端奢华", desc: "适合奢侈品、高端服务" },
+    minimal: { zh: "极简现代", desc: "适合科技、工具、效率" },
+    bold: { zh: "大胆前卫", desc: "适合创意、艺术、潮流" },
+    friendly: { zh: "亲切友好", desc: "适合社区、教育、健康" },
+    trustworthy: { zh: "可信赖", desc: "适合医疗、政府、安全" },
+  };
+
+  const priorityLabels: Record<DesignPriority, string> = {
+    conversion: "转化优先 - 优化 CTA、减少干扰、清晰路径",
+    readability: "可读性优先 - 清晰排版、合适行高、对比度",
+    "visual-impact": "视觉冲击优先 - 大胆色彩、动画效果、独特布局",
+    accessibility: "无障碍优先 - WCAG 2.1 AA、键盘导航、屏幕阅读器",
+    performance: "性能优先 - 最小 JS、懒加载、骨架屏",
+  };
+
+  const lines = [`## Constraints & Taste (约束与品味)`];
+
+  lines.push(`
+> 设置风格偏好和设计参数，确保输出符合品牌要求。`);
+
+  if (constraints.brandMood) {
+    const mood = moodLabels[constraints.brandMood];
+    lines.push(`
+### 品牌调性
+**${mood.zh}** - ${mood.desc}`);
+  }
+
+  if (constraints.designPriority) {
+    lines.push(`
+### 设计优先级
+**${priorityLabels[constraints.designPriority]}**`);
+  }
+
+  if (constraints.mustHave && constraints.mustHave.length > 0) {
+    lines.push(`
+### 必须包含
+${constraints.mustHave.map((m) => `- [O] ${m}`).join("\n")}`);
+  }
+
+  if (constraints.mustNotHave && constraints.mustNotHave.length > 0) {
+    lines.push(`
+### 禁止包含
+${constraints.mustNotHave.map((m) => `- [X] ${m}`).join("\n")}`);
+  }
+
+  if (constraints.references && constraints.references.length > 0) {
+    lines.push(`
+### 参考风格
+${constraints.references.map((r) => `- ${r}`).join("\n")}`);
+  }
+
+  return lines.join("\n");
+}
+
+// ============ GRADIENT SECTION GENERATOR ============
+
+/**
+ * Generate gradients section with recommended or filtered gradients
+ */
+function generateGradientsSection(
+  styleSlug: string,
+  category?: GradientCategory
+): string {
+  const selectedGradients = category
+    ? getGradientsByCategory(category)
+    : recommendGradientsForStyle(styleSlug);
+
+  if (selectedGradients.length === 0) {
+    return "";
+  }
+
+  const gradientsList = selectedGradients
+    .slice(0, 6)
+    .map(
+      (g) => `
+### ${g.nameZh} (${g.name})
+- **颜色**: ${g.colors.join(" -> ")}
+- **角度**: ${g.angle}deg
+- **情绪**: ${g.mood.join(", ")}
+
+**CSS:**
+\`\`\`css
+background: ${g.css};
+\`\`\`
+
+**Tailwind:**
+\`\`\`html
+<div class="${g.tailwind}">...</div>
+\`\`\``
+    )
+    .join("\n");
+
+  return `## 推荐渐变色
+
+以下渐变色与当前风格搭配良好：
+${gradientsList}
+
+### 使用建议
+- 用于 Hero 区域背景
+- 用于 CTA 按钮
+- 用于卡片装饰元素
+- 避免在文字背景大面积使用（影响可读性）`;
 }

@@ -15,13 +15,18 @@ import {
   TECH_STACK_OPTIONS,
   COMP_LIB_OPTIONS,
   INTERACTION_OPTIONS,
+  TARGET_AUDIENCE_OPTIONS,
+  BRAND_MOOD_OPTIONS,
+  DESIGN_PRIORITY_OPTIONS,
   type PromptConfig,
 } from "@/lib/prompt-builder/types";
-import { Copy, Check, Download, Wand2, FileJson } from "lucide-react";
+import { getGradientCategories } from "@/lib/gradients";
+import { Copy, Check, Download, Wand2, FileJson, Sparkles, Users, Palette } from "lucide-react";
 
 export default function PromptBuilderPage() {
   const { t, locale } = useI18n();
   const styles = getAllStylesMeta();
+  const gradientCategories = useMemo(() => getGradientCategories(), []);
 
   const [config, setConfig] = useState<PromptConfig>({
     style: styles[0]?.slug || "",
@@ -33,7 +38,15 @@ export default function PromptBuilderPage() {
     includeExamples: true,
     includeUIPlan: false,
     archetypeId: undefined,
+    // v0 Framework options
+    contextOfUse: undefined,
+    constraints: undefined,
+    includeGradients: false,
+    gradientCategory: undefined,
   });
+
+  // Toggle for showing v0 advanced options
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [copied, setCopied] = useState(false);
 
@@ -233,7 +246,42 @@ export default function PromptBuilderPage() {
                       {locale === "zh" ? "输出 UI Plan JSON" : "Output UI Plan JSON"}
                     </span>
                   </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={config.includeGradients}
+                      onChange={(e) => setConfig((c) => ({ ...c, includeGradients: e.target.checked }))}
+                      className="w-4 h-4 border border-border bg-transparent"
+                    />
+                    <span className="text-sm flex items-center gap-1.5">
+                      <Palette className="w-3.5 h-3.5" />
+                      {locale === "zh" ? "包含渐变色推荐" : "Include Gradient Recommendations"}
+                    </span>
+                  </label>
                 </div>
+
+                {/* Gradient Category Selector */}
+                {config.includeGradients && (
+                  <div className="pt-4 border-t border-border">
+                    <label className="text-xs tracking-widest uppercase text-muted mb-3 block">
+                      {locale === "zh" ? "渐变色类别" : "Gradient Category"}
+                    </label>
+                    <select
+                      value={config.gradientCategory || ""}
+                      onChange={(e) => setConfig((c) => ({ ...c, gradientCategory: e.target.value || undefined }))}
+                      className="w-full px-4 py-2 border border-border bg-transparent focus:outline-none focus:border-foreground"
+                    >
+                      <option value="">
+                        {locale === "zh" ? "自动推荐" : "Auto recommend"}
+                      </option>
+                      {gradientCategories.map((cat) => (
+                        <option key={cat.category} value={cat.category}>
+                          {cat.labelZh} ({cat.count})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Archetype Selector (shown when UI Plan is enabled) */}
                 {config.includeUIPlan && availableArchetypes.length > 0 && (
@@ -264,6 +312,132 @@ export default function PromptBuilderPage() {
                     </p>
                   </div>
                 )}
+
+                {/* v0 Framework Advanced Options */}
+                <div className="pt-4 border-t border-border">
+                  <button
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                    className="w-full flex items-center justify-between text-sm text-muted hover:text-foreground transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      {locale === "zh" ? "v0 高级选项" : "v0 Advanced Options"}
+                    </span>
+                    <span className="text-xs">{showAdvanced ? "[-]" : "[+]"}</span>
+                  </button>
+
+                  {showAdvanced && (
+                    <div className="mt-4 space-y-4">
+                      {/* Target Audience */}
+                      <div>
+                        <label className="text-xs tracking-widest uppercase text-muted mb-2 block flex items-center gap-1.5">
+                          <Users className="w-3 h-3" />
+                          {locale === "zh" ? "目标受众" : "Target Audience"}
+                        </label>
+                        <select
+                          value={config.contextOfUse?.targetAudience || ""}
+                          onChange={(e) => setConfig((c) => ({
+                            ...c,
+                            contextOfUse: {
+                              ...c.contextOfUse,
+                              targetAudience: e.target.value as "consumer" | "enterprise" | "developer" | "creative" | "general" || undefined,
+                            },
+                          }))}
+                          className="w-full px-4 py-2 border border-border bg-transparent focus:outline-none focus:border-foreground text-sm"
+                        >
+                          <option value="">{locale === "zh" ? "不指定" : "Not specified"}</option>
+                          {TARGET_AUDIENCE_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {locale === "zh" ? opt.labelZh : opt.labelEn}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Brand Mood */}
+                      <div>
+                        <label className="text-xs tracking-widest uppercase text-muted mb-2 block">
+                          {locale === "zh" ? "品牌调性" : "Brand Mood"}
+                        </label>
+                        <select
+                          value={config.constraints?.brandMood || ""}
+                          onChange={(e) => setConfig((c) => ({
+                            ...c,
+                            constraints: {
+                              ...c.constraints,
+                              brandMood: e.target.value as "professional" | "playful" | "luxurious" | "minimal" | "bold" | "friendly" | "trustworthy" || undefined,
+                            },
+                          }))}
+                          className="w-full px-4 py-2 border border-border bg-transparent focus:outline-none focus:border-foreground text-sm"
+                        >
+                          <option value="">{locale === "zh" ? "不指定" : "Not specified"}</option>
+                          {BRAND_MOOD_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {locale === "zh" ? opt.labelZh : opt.labelEn} - {opt.description}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Design Priority */}
+                      <div>
+                        <label className="text-xs tracking-widest uppercase text-muted mb-2 block">
+                          {locale === "zh" ? "设计优先级" : "Design Priority"}
+                        </label>
+                        <select
+                          value={config.constraints?.designPriority || ""}
+                          onChange={(e) => setConfig((c) => ({
+                            ...c,
+                            constraints: {
+                              ...c.constraints,
+                              designPriority: e.target.value as "conversion" | "readability" | "visual-impact" | "accessibility" | "performance" || undefined,
+                            },
+                          }))}
+                          className="w-full px-4 py-2 border border-border bg-transparent focus:outline-none focus:border-foreground text-sm"
+                        >
+                          <option value="">{locale === "zh" ? "不指定" : "Not specified"}</option>
+                          {DESIGN_PRIORITY_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {locale === "zh" ? opt.labelZh : opt.labelEn}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Device Priority */}
+                      <div>
+                        <label className="text-xs tracking-widest uppercase text-muted mb-2 block">
+                          {locale === "zh" ? "设备优先" : "Device Priority"}
+                        </label>
+                        <div className="flex gap-2">
+                          {[
+                            { value: "mobile", labelZh: "移动端", labelEn: "Mobile" },
+                            { value: "desktop", labelZh: "桌面端", labelEn: "Desktop" },
+                            { value: "both", labelZh: "响应式", labelEn: "Both" },
+                          ].map((opt) => (
+                            <button
+                              key={opt.value}
+                              onClick={() => setConfig((c) => ({
+                                ...c,
+                                contextOfUse: {
+                                  ...c.contextOfUse,
+                                  devicePriority: opt.value as "mobile" | "desktop" | "both",
+                                },
+                              }))}
+                              className={`flex-1 px-3 py-2 text-xs transition-colors ${
+                                config.contextOfUse?.devicePriority === opt.value
+                                  ? "bg-foreground text-background"
+                                  : "border border-border hover:border-foreground"
+                              }`}
+                            >
+                              {locale === "zh" ? opt.labelZh : opt.labelEn}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Current config summary */}
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-900 text-sm">

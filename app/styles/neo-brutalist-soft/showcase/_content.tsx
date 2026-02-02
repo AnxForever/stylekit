@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
 
 export default function ShowcaseContent() {
   const [progress, setProgress] = useState(65);
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [toggleStates, setToggleStates] = useState([true, false]);
+  const [checkboxStates, setCheckboxStates] = useState([true, false, true]);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
@@ -211,6 +216,250 @@ export default function ShowcaseContent() {
                 <span className="inline-flex items-center justify-center min-w-6 h-6 px-1 border-2 border-gray-800 bg-lime-400 font-bold text-xs">99+</span>
                 <span className="inline-flex items-center justify-center min-w-6 h-6 px-1 border-2 border-gray-800 bg-sky-400 text-white font-bold text-xs">NEW</span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">选项卡 Tabs</h2>
+          <div className="bg-gray-50 border-2 border-gray-800 p-6 md:p-8">
+            <div className="flex gap-2 mb-6">
+              {["Overview", "Details", "Settings"].map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={`px-5 py-2.5 font-bold text-sm border-2 border-gray-800 transition-all ${
+                    activeTab === i
+                      ? "bg-pink-400 text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)]"
+                      : "bg-white hover:bg-lime-200"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="font-mono text-gray-600">
+              {activeTab === 0 && "A gentle overview of the soft brutalist design system."}
+              {activeTab === 1 && "Detailed specifications with muted colors and soft shadows."}
+              {activeTab === 2 && "Configure your preferences with ease and comfort."}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Alerts */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-gray-50">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">提示 Alerts</h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-lime-100 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)]">
+              <Check className="w-5 h-5 text-lime-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-gray-800 mb-1">Success</p>
+                <p className="font-mono text-sm text-gray-600">Operation completed successfully.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-amber-100 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)]">
+              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-gray-800 mb-1">Warning</p>
+                <p className="font-mono text-sm text-gray-600">Please review before continuing.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-pink-100 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)]">
+              <X className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-gray-800 mb-1">Error</p>
+                <p className="font-mono text-sm text-gray-600">Something went wrong.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-sky-100 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)]">
+              <Info className="w-5 h-5 text-sky-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-gray-800 mb-1">Info</p>
+                <p className="font-mono text-sm text-gray-600">Here is some useful information.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Controls */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-pink-50">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">控件 Controls</h2>
+          <div className="space-y-8">
+            <div>
+              <p className="font-bold text-sm text-gray-600 mb-4">Toggles</p>
+              <div className="space-y-3">
+                {["Soft mode", "Pastel colors"].map((label, i) => (
+                  <label key={label} className="flex items-center justify-between p-4 bg-white border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] cursor-pointer">
+                    <span className="font-bold text-gray-800">{label}</span>
+                    <button
+                      onClick={() => {
+                        const newStates = [...toggleStates];
+                        newStates[i] = !newStates[i];
+                        setToggleStates(newStates);
+                      }}
+                      className={`w-14 h-7 border-2 border-gray-800 transition-colors relative ${
+                        toggleStates[i] ? "bg-pink-400" : "bg-gray-200"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 w-5 h-5 bg-white border border-gray-800 transition-all ${
+                          toggleStates[i] ? "left-7" : "left-0.5"
+                        }`}
+                      />
+                    </button>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="font-bold text-sm text-gray-600 mb-4">Checkboxes</p>
+              <div className="space-y-3">
+                {["Muted shadows", "Gray borders", "Soft palette"].map((label, i) => (
+                  <label key={label} className="flex items-center gap-3 p-4 bg-white border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] cursor-pointer">
+                    <button
+                      onClick={() => {
+                        const newStates = [...checkboxStates];
+                        newStates[i] = !newStates[i];
+                        setCheckboxStates(newStates);
+                      }}
+                      className={`w-6 h-6 border-2 border-gray-800 flex items-center justify-center transition-colors ${
+                        checkboxStates[i] ? "bg-lime-400" : "bg-white"
+                      }`}
+                    >
+                      {checkboxStates[i] && <Check className="w-4 h-4 text-gray-800" />}
+                    </button>
+                    <span className="font-bold text-gray-800">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dropdown */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-white">
+        <div className="max-w-md mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">下拉 Dropdown</h2>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between px-5 py-3 bg-gray-50 border-2 border-gray-800 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+            >
+              <span>Select option</span>
+              <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] z-10">
+                {["Pink", "Lime", "Sky", "Amber"].map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-5 py-3 text-left font-bold text-gray-700 hover:bg-lime-100 transition-colors border-b border-gray-200 last:border-0"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Table */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-sky-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">表格 Table</h2>
+          <div className="border-2 border-gray-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-800 text-white">
+                  <th className="px-6 py-4 text-left font-bold">Name</th>
+                  <th className="px-6 py-4 text-left font-bold">Type</th>
+                  <th className="px-6 py-4 text-left font-bold">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { name: "Component A", type: "Primary", status: "Active" },
+                  { name: "Component B", type: "Secondary", status: "Active" },
+                  { name: "Component C", type: "Tertiary", status: "Pending" },
+                ].map((row, idx) => (
+                  <tr key={row.name} className={`border-t-2 border-gray-800 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                    <td className="px-6 py-4 font-bold text-gray-800">{row.name}</td>
+                    <td className="px-6 py-4 font-mono text-gray-600">{row.type}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 font-bold text-xs border-2 border-gray-800 ${
+                        row.status === "Active"
+                          ? "bg-lime-200"
+                          : "bg-amber-200"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-lime-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">统计 Stats</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: "98%", label: "Softness", bg: "bg-pink-100" },
+              { value: "2.4k", label: "Components", bg: "bg-lime-100" },
+              { value: "156", label: "Colors", bg: "bg-sky-100" },
+              { value: "4.9", label: "Rating", bg: "bg-amber-100" },
+            ].map((stat) => (
+              <div key={stat.label} className={`${stat.bg} border-2 border-gray-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] p-6 text-center`}>
+                <p className="font-bold text-3xl md:text-4xl text-gray-800 mb-2">
+                  {stat.value}
+                </p>
+                <p className="font-mono text-sm text-gray-600">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avatars */}
+      <section className="border-b-2 border-gray-800 px-4 md:px-8 py-12 md:py-20 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">头像 Avatars</h2>
+          <div className="flex flex-wrap items-end gap-6">
+            <div className="w-16 h-16 bg-pink-400 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] flex items-center justify-center">
+              <User className="w-8 h-8 text-white" />
+            </div>
+            <div className="w-14 h-14 bg-lime-400 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] flex items-center justify-center">
+              <User className="w-7 h-7 text-gray-800" />
+            </div>
+            <div className="w-12 h-12 bg-sky-400 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] flex items-center justify-center">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <div className="w-10 h-10 bg-amber-400 border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] flex items-center justify-center">
+              <User className="w-5 h-5 text-gray-800" />
+            </div>
+            <div className="flex -space-x-1">
+              {["bg-pink-400", "bg-lime-400", "bg-sky-400", "bg-amber-400"].map((bg, i) => (
+                <div
+                  key={i}
+                  className={`w-10 h-10 ${bg} border-2 border-gray-800 flex items-center justify-center`}
+                >
+                  <User className="w-5 h-5 text-white" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
