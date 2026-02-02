@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { ChevronDown, Check, X, AlertTriangle, Info, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#0a0a0a]">
       {/* Navigation */}
@@ -176,6 +182,253 @@ export default function ShowcaseContent() {
               当我们谈论留白时，我们实际上是在讨论内容之间的关系。每一处间距都是经过深思熟虑的决定，它们共同构成了页面的节奏和韵律。
             </p>
           </article>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">导航元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">标签页 Tabs</h2>
+          <div className="border border-[#e5e5e5]">
+            <div className="flex border-b border-[#e5e5e5]">
+              {["概述", "详情", "评论"].map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={`px-6 py-4 text-sm tracking-wide transition-colors ${
+                    activeTab === i
+                      ? "bg-white border-b-2 border-[#0a0a0a] -mb-px"
+                      : "text-[#6b7280] hover:text-[#0a0a0a]"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="p-6 text-sm text-[#6b7280] leading-relaxed">
+              {activeTab === 0 && "概述内容 — 简洁的产品或服务介绍，突出核心价值主张。"}
+              {activeTab === 1 && "详情内容 — 深入的功能说明和技术规格，满足专业用户需求。"}
+              {activeTab === 2 && "评论内容 — 用户反馈和评价，建立信任和社会证明。"}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tags / Badges */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">标记元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">标签 Tags</h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分类标签</p>
+              <div className="flex flex-wrap gap-3">
+                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">设计</span>
+                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">排版</span>
+                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">品牌</span>
+                <span className="px-3 py-1 text-xs tracking-widest uppercase bg-[#0a0a0a] text-white">精选</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">状态标签</p>
+              <div className="flex flex-wrap gap-3">
+                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#0a0a0a]">新品</span>
+                <span className="px-3 py-1 text-xs tracking-widest uppercase bg-[#e63946] text-white">限量</span>
+                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#6b7280] text-[#6b7280]">已售罄</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Alerts */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">通知元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">提示 Alerts</h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 border border-[#e5e5e5]">
+              <Info className="w-5 h-5 text-[#6b7280] flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">信息提示</p>
+                <p className="text-sm text-[#6b7280]">这是一条普通的信息通知，用于传达一般性内容。</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 border-l-2 border-l-[#0a0a0a] border border-[#e5e5e5]">
+              <Check className="w-5 h-5 text-[#0a0a0a] flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">操作成功</p>
+                <p className="text-sm text-[#6b7280]">您的更改已成功保存。</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 border-l-2 border-l-amber-500 border border-[#e5e5e5]">
+              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">注意事项</p>
+                <p className="text-sm text-[#6b7280]">请在继续之前仔细检查您的输入。</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 border-l-2 border-l-[#e63946] border border-[#e5e5e5]">
+              <X className="w-5 h-5 text-[#e63946] flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">错误提示</p>
+                <p className="text-sm text-[#6b7280]">操作失败，请稍后重试。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dropdown */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-xs mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4 text-center">选择元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12 text-center">下拉菜单</h2>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full px-4 py-3 border border-[#e5e5e5] text-sm flex items-center justify-between hover:border-[#0a0a0a] transition-colors"
+            >
+              <span>选择分类</span>
+              <ChevronDown className={`w-4 h-4 text-[#6b7280] transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-px bg-white border border-[#e5e5e5] z-10">
+                {["全部分类", "设计", "排版", "品牌", "摄影"].map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-[#fafafa] transition-colors border-b border-[#e5e5e5] last:border-b-0"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Table */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">数据展示</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">表格 Table</h2>
+          <div className="border border-[#e5e5e5] overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#e5e5e5] bg-[#fafafa]">
+                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">作品</th>
+                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">类型</th>
+                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">日期</th>
+                  <th className="px-4 py-3 text-right text-xs tracking-widest uppercase text-[#6b7280] font-normal">状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { title: "品牌视觉设计", type: "品牌", date: "2024.01", status: "已发布" },
+                  { title: "杂志排版设计", type: "排版", date: "2024.02", status: "进行中" },
+                  { title: "产品摄影", type: "摄影", date: "2024.03", status: "草稿" },
+                ].map((row, i) => (
+                  <tr key={i} className="border-b border-[#e5e5e5] last:border-b-0 hover:bg-white transition-colors">
+                    <td className="px-4 py-4 text-sm font-medium">{row.title}</td>
+                    <td className="px-4 py-4 text-sm text-[#6b7280]">{row.type}</td>
+                    <td className="px-4 py-4 text-sm text-[#6b7280]">{row.date}</td>
+                    <td className="px-4 py-4 text-right">
+                      <span className={`text-xs tracking-widest uppercase ${
+                        row.status === "已发布" ? "text-[#0a0a0a]" :
+                        row.status === "进行中" ? "text-[#e63946]" : "text-[#6b7280]"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Blockquote */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">引用元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">引言 Quote</h2>
+          <blockquote className="border-l-2 border-[#0a0a0a] pl-6 md:pl-8">
+            <p className="font-serif text-xl md:text-2xl italic leading-relaxed mb-4">
+              "设计不仅仅是外观和感觉。设计是它如何运作的。"
+            </p>
+            <footer className="text-sm text-[#6b7280]">
+              <span className="tracking-widest uppercase">— Steve Jobs</span>
+            </footer>
+          </blockquote>
+        </div>
+      </section>
+
+      {/* Pagination */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分页导航</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">分页 Pagination</h2>
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              className="w-10 h-10 border border-[#e5e5e5] flex items-center justify-center hover:border-[#0a0a0a] transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            {[1, 2, 3, 4, 5].map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-10 h-10 text-sm transition-colors ${
+                  currentPage === page
+                    ? "bg-[#0a0a0a] text-white"
+                    : "border border-[#e5e5e5] hover:border-[#0a0a0a]"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage(Math.min(5, currentPage + 1))}
+              className="w-10 h-10 border border-[#e5e5e5] flex items-center justify-center hover:border-[#0a0a0a] transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Dividers */}
+      <section className="border-b border-[#e5e5e5]">
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分隔元素</p>
+          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">分隔线 Divider</h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">简单分隔</p>
+              <hr className="border-t border-[#e5e5e5]" />
+            </div>
+            <div>
+              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">带文字</p>
+              <div className="flex items-center gap-4">
+                <hr className="flex-1 border-t border-[#e5e5e5]" />
+                <span className="text-xs tracking-widest uppercase text-[#6b7280]">或</span>
+                <hr className="flex-1 border-t border-[#e5e5e5]" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">装饰分隔</p>
+              <div className="flex items-center justify-center gap-2">
+                <span className="w-2 h-2 bg-[#0a0a0a]" />
+                <span className="w-2 h-2 bg-[#6b7280]" />
+                <span className="w-2 h-2 bg-[#e5e5e5]" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

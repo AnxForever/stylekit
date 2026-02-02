@@ -26,5 +26,9 @@ export * from "./progress";
 // Advanced Components - Phase 5
 export * from "./tree";
 
+// New Components - Phase 6
+export * from "./input-otp";
+export * from "./resizable";
+
 // Style Variants
 export * from "./brutal";

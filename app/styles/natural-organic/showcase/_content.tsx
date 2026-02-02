@@ -1,9 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Leaf, Sun, Droplets, Mountain } from "lucide-react";
+import { ArrowLeft, Leaf, Sun, Droplets, Mountain, Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [toggleStates, setToggleStates] = useState([true, false]);
+  const [checkboxStates, setCheckboxStates] = useState([true, false, true]);
+
   return (
     <div className="min-h-screen bg-[#faf6f1] text-stone-800">
       {/* Navigation */}
@@ -203,6 +209,331 @@ export default function ShowcaseContent() {
             <button className="w-full px-6 py-3 bg-stone-800 text-[#faf6f1] rounded-full font-serif hover:bg-stone-700 transition-colors">
               Send Message
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Tabs
+          </h2>
+          <div className="bg-[#faf6f1] rounded-[2rem] p-6 md:p-8 border border-stone-100">
+            <div className="flex gap-2 mb-6 border-b border-stone-200 pb-4">
+              {["Overview", "Details", "Reviews"].map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={`px-5 py-2.5 rounded-full font-serif text-sm transition-all ${
+                    activeTab === i
+                      ? "bg-stone-800 text-[#faf6f1]"
+                      : "text-stone-500 hover:bg-stone-100"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="text-stone-600 text-sm leading-relaxed">
+              {activeTab === 0 && "A gentle overview with warm, inviting content that feels natural and organic."}
+              {activeTab === 1 && "Detailed information presented in a calm, structured manner with earth-tone accents."}
+              {activeTab === 2 && "Thoughtful reviews from our community, shared with care and authenticity."}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Badges */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Badges
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            <span className="px-4 py-1.5 bg-stone-800 text-[#faf6f1] rounded-full font-serif text-sm">
+              Default
+            </span>
+            <span className="px-4 py-1.5 bg-[#8b9d77] text-white rounded-full font-serif text-sm">
+              Sage
+            </span>
+            <span className="px-4 py-1.5 bg-[#c4826d] text-white rounded-full font-serif text-sm">
+              Terracotta
+            </span>
+            <span className="px-4 py-1.5 bg-[#d4c4a8] text-stone-800 rounded-full font-serif text-sm">
+              Sand
+            </span>
+            <span className="px-4 py-1.5 border border-stone-300 text-stone-600 rounded-full font-serif text-sm">
+              Outline
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Progress */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Progress
+          </h2>
+          <div className="space-y-6">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-serif text-stone-600">Growth</span>
+                <span className="text-stone-400">72%</span>
+              </div>
+              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
+                <div className="h-full w-[72%] bg-[#8b9d77] rounded-full transition-all" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-serif text-stone-600">Warmth</span>
+                <span className="text-stone-400">58%</span>
+              </div>
+              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
+                <div className="h-full w-[58%] bg-[#c4826d] rounded-full transition-all" />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-serif text-stone-600">Balance</span>
+                <span className="text-stone-400">85%</span>
+              </div>
+              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
+                <div className="h-full w-[85%] bg-stone-700 rounded-full transition-all" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Alerts */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Alerts
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-5 bg-[#8b9d77]/10 border border-[#8b9d77]/20 rounded-[1.5rem]">
+              <Check className="w-5 h-5 text-[#8b9d77] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-serif font-bold text-stone-800 mb-1">Success</p>
+                <p className="text-sm text-stone-600">Your changes have been saved naturally.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 bg-amber-50 border border-amber-200 rounded-[1.5rem]">
+              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-serif font-bold text-stone-800 mb-1">Warning</p>
+                <p className="text-sm text-stone-600">Please review your input carefully.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 bg-[#c4826d]/10 border border-[#c4826d]/20 rounded-[1.5rem]">
+              <X className="w-5 h-5 text-[#c4826d] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-serif font-bold text-stone-800 mb-1">Error</p>
+                <p className="text-sm text-stone-600">Something needs your attention.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 bg-stone-100 border border-stone-200 rounded-[1.5rem]">
+              <Info className="w-5 h-5 text-stone-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-serif font-bold text-stone-800 mb-1">Info</p>
+                <p className="text-sm text-stone-600">Here is some helpful information.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Controls */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Controls
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-sm text-stone-400 mb-4">Toggles</p>
+              <div className="space-y-3">
+                {["Natural mode", "Organic sync"].map((label, i) => (
+                  <label key={label} className="flex items-center justify-between p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
+                    <span className="font-serif text-stone-700">{label}</span>
+                    <button
+                      onClick={() => {
+                        const newStates = [...toggleStates];
+                        newStates[i] = !newStates[i];
+                        setToggleStates(newStates);
+                      }}
+                      className={`w-12 h-7 rounded-full transition-colors relative ${
+                        toggleStates[i] ? "bg-[#8b9d77]" : "bg-stone-300"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform shadow-sm ${
+                          toggleStates[i] ? "translate-x-6" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-stone-400 mb-4">Checkboxes</p>
+              <div className="space-y-3">
+                {["Sustainable design", "Warm palette", "Organic shapes"].map((label, i) => (
+                  <label key={label} className="flex items-center gap-3 p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
+                    <button
+                      onClick={() => {
+                        const newStates = [...checkboxStates];
+                        newStates[i] = !newStates[i];
+                        setCheckboxStates(newStates);
+                      }}
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
+                        checkboxStates[i]
+                          ? "bg-[#8b9d77] text-white"
+                          : "border-2 border-stone-300"
+                      }`}
+                    >
+                      {checkboxStates[i] && <Check className="w-4 h-4" />}
+                    </button>
+                    <span className="font-serif text-stone-700">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dropdown */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
+        <div className="max-w-md mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Dropdown
+          </h2>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between px-5 py-3 bg-white border border-stone-200 rounded-2xl font-serif text-stone-700 hover:bg-stone-50 transition-colors"
+            >
+              <span>Select a season</span>
+              <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-stone-200 rounded-2xl shadow-lg overflow-hidden z-10">
+                {["Spring", "Summer", "Autumn", "Winter"].map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-5 py-3 text-left font-serif text-stone-700 hover:bg-[#8b9d77]/10 transition-colors"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Table */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Table
+          </h2>
+          <div className="bg-[#faf6f1] rounded-[2rem] overflow-hidden border border-stone-100">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-stone-200">
+                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Element</th>
+                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Type</th>
+                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { element: "Leaf", type: "Organic", status: "Active" },
+                  { element: "Stone", type: "Natural", status: "Active" },
+                  { element: "Earth", type: "Grounded", status: "Pending" },
+                ].map((row) => (
+                  <tr key={row.element} className="border-b border-stone-100 last:border-0">
+                    <td className="px-6 py-4 font-serif text-stone-700">{row.element}</td>
+                    <td className="px-6 py-4 text-stone-500">{row.type}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-serif ${
+                        row.status === "Active"
+                          ? "bg-[#8b9d77]/15 text-[#8b9d77]"
+                          : "bg-amber-100 text-amber-700"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Stats
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: "98%", label: "Organic", color: "text-[#8b9d77]" },
+              { value: "2.4k", label: "Elements", color: "text-stone-800" },
+              { value: "156", label: "Patterns", color: "text-[#c4826d]" },
+              { value: "12", label: "Seasons", color: "text-amber-700" },
+            ].map((stat) => (
+              <div key={stat.label} className="bg-white rounded-[1.5rem] p-6 text-center border border-stone-100">
+                <p className={`font-serif text-3xl md:text-4xl font-bold ${stat.color} mb-2`}>
+                  {stat.value}
+                </p>
+                <p className="text-sm text-stone-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avatars */}
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
+            Avatars
+          </h2>
+          <div className="flex flex-wrap items-end gap-6">
+            <div className="w-16 h-16 rounded-full bg-[#8b9d77]/15 flex items-center justify-center">
+              <User className="w-8 h-8 text-[#8b9d77]" />
+            </div>
+            <div className="w-14 h-14 rounded-full bg-[#c4826d]/15 flex items-center justify-center">
+              <User className="w-7 h-7 text-[#c4826d]" />
+            </div>
+            <div className="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center">
+              <User className="w-6 h-6 text-stone-500" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+              <User className="w-5 h-5 text-amber-700" />
+            </div>
+            <div className="flex -space-x-3">
+              {["#8b9d77", "#c4826d", "#d4c4a8", "#78716c"].map((color, i) => (
+                <div
+                  key={i}
+                  className="w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-[#faf6f1]"
+                  style={{ backgroundColor: color }}
+                >
+                  <User className="w-5 h-5 text-white" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
