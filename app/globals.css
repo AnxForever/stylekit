@@ -85,8 +85,8 @@ hr {
 
 /* Code block styling */
 pre {
-  background: #1a1a1a;
-  color: #e5e5e5;
+  background: var(--background);
+  color: var(--foreground);
   padding: 1.5rem;
   overflow-x: auto;
   font-size: 0.875rem;

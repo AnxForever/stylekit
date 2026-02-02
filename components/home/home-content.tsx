@@ -18,22 +18,22 @@ export function HomeContent({ styles }: HomeContentProps) {
     <>
       {/* Hero - Magazine Cover Style */}
       <section className="relative border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Title & Intro */}
             <div>
               <p className="text-xs tracking-widest uppercase text-muted mb-4">
                 {t("home.subtitle")}
               </p>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6">
                 {t("home.title.line1")}<br />
                 {t("home.title.line2")}<br />
                 <span className="italic">{t("home.title.line3")}</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted leading-relaxed max-w-md mb-8">
+              <p className="text-lg text-muted leading-relaxed max-w-md mb-8">
                 {t("home.description")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-wrap gap-3">
                 <Link
                   href="/styles"
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
@@ -61,64 +61,48 @@ export function HomeContent({ styles }: HomeContentProps) {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Features + Quick Export Combined */}
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-muted mb-8">
-            {t("home.coreFeatures")}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <div>
-              <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.docs.title")}</h3>
-              <p className="text-muted leading-relaxed">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+            <div className="p-6 border border-border">
+              <p className="text-xs tracking-widest uppercase text-muted mb-3">01</p>
+              <h3 className="text-lg mb-2">{t("home.feature.docs.title")}</h3>
+              <p className="text-sm text-muted leading-relaxed">
                 {t("home.feature.docs.desc")}
               </p>
             </div>
-            <div>
-              <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.preview.title")}</h3>
-              <p className="text-muted leading-relaxed">
+            <div className="p-6 border border-border">
+              <p className="text-xs tracking-widest uppercase text-muted mb-3">02</p>
+              <h3 className="text-lg mb-2">{t("home.feature.preview.title")}</h3>
+              <p className="text-sm text-muted leading-relaxed">
                 {t("home.feature.preview.desc")}
               </p>
             </div>
-            <div>
-              <h3 className="text-xl md:text-2xl mb-3">{t("home.feature.export.title")}</h3>
-              <p className="text-muted leading-relaxed">
+            <div className="p-6 border border-border">
+              <p className="text-xs tracking-widest uppercase text-muted mb-3">03</p>
+              <h3 className="text-lg mb-2">{t("home.feature.export.title")}</h3>
+              <p className="text-sm text-muted leading-relaxed">
                 {t("home.feature.export.desc")}
               </p>
             </div>
           </div>
+
+          {/* Quick Export - Compact Horizontal */}
+          <QuickExport />
         </div>
       </section>
 
-      {/* Quick Export */}
-      <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                {t("quickExport.label")}
-              </p>
-              <h2 className="text-2xl md:text-3xl mb-4">
-                {t("quickExport.title")}
-              </h2>
-              <p className="text-muted leading-relaxed">
-                {t("quickExport.description")}
-              </p>
-            </div>
-            <QuickExport />
-          </div>
-        </div>
-      </section>
-
-      {/* Style Preview List */}
+      {/* Style Catalog - 3-4 Columns */}
       <section>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <div className="flex items-end justify-between mb-8 md:mb-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="flex items-end justify-between mb-8">
             <div>
               <p className="text-xs tracking-widest uppercase text-muted mb-2">
                 {t("home.styleCollection")}
               </p>
-              <h2 className="text-3xl md:text-4xl">{t("home.styleCatalog")}</h2>
+              <h2 className="text-2xl md:text-3xl">{t("home.styleCatalog")}</h2>
             </div>
             <Link
               href="/styles"
@@ -128,9 +112,9 @@ export function HomeContent({ styles }: HomeContentProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
             {styles.map((style) => (
-              <StyleCard key={style.slug} style={style} />
+              <StyleCard key={style.slug} style={style} variant="compact" />
             ))}
           </div>
         </div>

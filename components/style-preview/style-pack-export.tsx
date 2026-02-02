@@ -127,14 +127,15 @@ export function StylePackExport({ style }: StylePackExportProps) {
       {/* Preview Modal - rendered via Portal to body */}
       {mounted && previewFile && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) setPreviewFile(null);
           }}
         >
-          <div className="w-full max-w-3xl max-h-[80vh] bg-background border border-border flex flex-col shadow-2xl">
-            <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="w-full max-w-3xl max-h-[80vh] bg-background border border-border flex flex-col shadow-lg">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
+                <p className="text-xs tracking-widest uppercase text-muted mb-1">Preview</p>
                 <p className="font-medium">{previewFile.name}</p>
                 <p className="text-xs text-muted">{previewFile.filename}</p>
               </div>
@@ -164,8 +165,8 @@ export function StylePackExport({ style }: StylePackExportProps) {
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-auto">
-              <pre className="p-4 text-xs font-mono whitespace-pre-wrap">
+            <div className="flex-1 overflow-auto p-6">
+              <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
                 {previewFile.content}
               </pre>
             </div>

@@ -47,24 +47,25 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-2xl max-h-[90vh] bg-background border border-border shadow-xl mx-4 flex flex-col">
+      <div className="relative w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-lg mx-4 flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
-            <h2 className="text-xl font-medium">Export Design Tokens</h2>
-            <p className="text-sm text-muted mt-1">{style.name} - {style.nameEn}</p>
+            <p className="text-xs tracking-widest uppercase text-muted mb-1">Export</p>
+            <h2 className="text-lg">Design Tokens</h2>
+            <p className="text-sm text-muted">{style.name} - {style.nameEn}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6 6 18M6 6l12 12" />
@@ -73,8 +74,8 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
         </div>
 
         {/* Format Selection */}
-        <div className="p-6 border-b border-border">
-          <p className="text-sm text-muted mb-3">Export Format</p>
+        <div className="px-6 py-4 border-b border-border">
+          <p className="text-xs tracking-widest uppercase text-muted mb-3">Format</p>
           <div className="flex flex-wrap gap-2">
             {formatOptions.map((format) => (
               <button
@@ -96,9 +97,9 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
         </div>
 
         {/* Preview */}
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-hidden px-6 py-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-sm text-muted">Preview</p>
+            <p className="text-xs tracking-widest uppercase text-muted">Preview</p>
             <div className="flex gap-2">
               <button
                 onClick={handleCopy}
@@ -114,13 +115,15 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
               </button>
             </div>
           </div>
-          <pre className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-lg text-xs overflow-auto max-h-[300px] font-mono">
-            {preview}
-          </pre>
+          <div className="border border-border overflow-auto max-h-[280px]">
+            <pre className="p-4 text-xs font-mono text-foreground whitespace-pre-wrap">
+              {preview}
+            </pre>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="px-6 py-4 border-t border-border">
           <p className="text-xs text-muted">
             Tip: Use the <strong>Figma Tokens</strong> plugin to import these tokens directly into your Figma project.
           </p>
