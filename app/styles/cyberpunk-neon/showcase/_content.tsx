@@ -413,6 +413,9 @@ export default function ShowcaseContent() {
                   <div key={label} className="flex items-center justify-between">
                     <span className="font-mono text-xs text-gray-400">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -437,6 +440,9 @@ export default function ShowcaseContent() {
                 {["ENCRYPT_DATA", "BACKUP_AUTO", "LOG_EVENTS"].map((label, i) => (
                   <label key={label} className="flex items-center gap-3 cursor-pointer group">
                     <div
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];

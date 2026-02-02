@@ -1,0 +1,35 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative elements -->
+  <rect x="60" y="60" width="120" height="120" fill="#ff006e" stroke="#fff" stroke-width="4"/>
+  <rect x="200" y="80" width="80" height="80" fill="#00d4ff" stroke="#fff" stroke-width="4"/>
+  <rect x="1020" y="450" width="120" height="120" fill="#ffbe0b" stroke="#fff" stroke-width="4"/>
+
+  <!-- Main title -->
+  <text x="600" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="900" fill="#ffffff" text-anchor="middle">StyleKit</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#888888" text-anchor="middle">AI-Friendly Design System</text>
+
+  <!-- Feature tags -->
+  <rect x="320" y="420" width="160" height="44" fill="transparent" stroke="#ff006e" stroke-width="3"/>
+  <text x="400" y="450" font-family="monospace" font-size="18" fill="#ff006e" text-anchor="middle">16+ Styles</text>
+
+  <rect x="520" y="420" width="160" height="44" fill="transparent" stroke="#00d4ff" stroke-width="3"/>
+  <text x="600" y="450" font-family="monospace" font-size="18" fill="#00d4ff" text-anchor="middle">20+ Components</text>
+
+  <rect x="720" y="420" width="160" height="44" fill="transparent" stroke="#ffbe0b" stroke-width="3"/>
+  <text x="800" y="450" font-family="monospace" font-size="18" fill="#ffbe0b" text-anchor="middle">AI Prompts</text>
+
+  <!-- URL -->
+  <text x="600" y="560" font-family="monospace" font-size="24" fill="#666666" text-anchor="middle">stylekit.cc</text>
+</svg>

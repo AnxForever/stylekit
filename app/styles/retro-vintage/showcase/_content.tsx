@@ -374,6 +374,9 @@ export default function ShowcaseContent() {
                   <label key={label} className="flex items-center justify-between p-4 bg-[#f5e6d3] border-2 border-[#8b4513] cursor-pointer">
                     <span className="font-serif text-[#8b4513]">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -401,6 +404,9 @@ export default function ShowcaseContent() {
                 {["Original packaging", "Restoration history", "Provenance documents"].map((label, i) => (
                   <label key={label} className="flex items-center gap-3 p-4 bg-[#f5e6d3] border-2 border-[#8b4513] cursor-pointer">
                     <button
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];

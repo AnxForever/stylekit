@@ -1,4 +1,4 @@
-import { styles, getAllStylesMeta } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 import { NextResponse } from "next/server";
 
 export async function GET() {

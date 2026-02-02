@@ -21,6 +21,8 @@ import {
   ListSection,
   PaginationSection,
   TreeSection,
+  InputOTPSection,
+  ResizableSection,
 } from "./sections";
 
 export default function ComponentsPage() {
@@ -48,7 +50,7 @@ export default function ComponentsPage() {
                 UI Components
               </h1>
               <p className="text-lg text-muted max-w-2xl">
-                基于 Radix UI + Tailwind CSS 构建的 18 个通用组件，支持主题定制和无障碍访问。
+                基于 Radix UI + Tailwind CSS 构建的 20 个通用组件，支持主题定制和无障碍访问。
               </p>
             </div>
           </section>
@@ -84,6 +86,8 @@ export default function ComponentsPage() {
           <ListSection expandedProps={expandedProps} toggleProps={toggleProps} />
           <PaginationSection expandedProps={expandedProps} toggleProps={toggleProps} />
           <TreeSection expandedProps={expandedProps} toggleProps={toggleProps} />
+          <InputOTPSection expandedProps={expandedProps} toggleProps={toggleProps} />
+          <ResizableSection expandedProps={expandedProps} toggleProps={toggleProps} />
         </main>
 
         <Footer />
