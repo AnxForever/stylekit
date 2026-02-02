@@ -7,6 +7,8 @@ export const neumorphism: DesignStyle = {
   description:
     "柔和的内凹外凸立体效果，通过双重阴影模拟光源，浅色背景配同色系元素，营造精致的立体感。",
   cover: "/styles/neumorphism.png",
+  styleType: "visual",
+  tags: ["modern", "minimal"],
   category: "modern",
   colors: {
     primary: "#e0e5ec",

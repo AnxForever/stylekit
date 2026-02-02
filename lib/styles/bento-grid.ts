@@ -7,6 +7,9 @@ export const bentoGrid: DesignStyle = {
   description:
     "灵感源于日式便当盒的不规则网格布局，通过大小不一的卡片组合创造视觉层次，常用于作品集和产品展示。",
   cover: "/styles/bento-grid.png",
+  styleType: "layout",
+  tags: ["modern", "responsive"],
+  compatibleWith: ["glassmorphism", "neo-brutalist", "editorial", "neumorphism"],
   category: "modern",
   colors: {
     primary: "#18181b",
@@ -69,7 +72,7 @@ export const bentoGrid: DesignStyle = {
   transition-shadow
 ">
   <div className="w-10 h-10 bg-blue-500 rounded-xl mb-4 flex items-center justify-center">
-    <span className="text-white text-xl">✦</span>
+    <span className="text-white text-xl">*</span>
   </div>
   <h3 className="text-lg font-semibold text-zinc-900 mb-2">
     Feature Title
@@ -146,11 +149,11 @@ export const bentoGrid: DesignStyle = {
 
       {/* 小卡片 */}
       <div className="p-6 bg-orange-100 rounded-2xl">
-        <span className="text-2xl">🚀</span>
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 12l1.5 1.5L12 7l6.5 6.5L20 12L12 2z"/></svg>
       </div>
 
       <div className="p-6 bg-green-100 rounded-2xl">
-        <span className="text-2xl">✨</span>
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/></svg>
       </div>
     </div>
   </div>

@@ -1,7 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { Monitor } from "lucide-react";
+import {
+  Monitor,
+  Rocket,
+  Zap,
+  CheckCircle,
+  Users,
+  Palette,
+  Sparkles,
+  Smartphone,
+  Shield,
+  Globe,
+  BarChart3,
+  Plug,
+  MessageCircle,
+  Target,
+  Settings,
+  TrendingUp
+} from "lucide-react";
 
 export default function BentoGridShowcase() {
   return (
@@ -53,7 +70,7 @@ export default function BentoGridShowcase() {
             <div className="md:col-span-2 md:row-span-2 p-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl text-white">
               <div className="h-full flex flex-col justify-between">
                 <div>
-                  <span className="text-5xl mb-4 block">🚀</span>
+                  <Rocket className="w-12 h-12 mb-4" />
                   <h3 className="text-2xl font-bold mb-3">主要功能</h3>
                   <p className="text-white/80">
                     这是最重要的功能展示区域，用于突出核心价值主张
@@ -69,7 +86,7 @@ export default function BentoGridShowcase() {
             <div className="md:col-span-2 p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
-                  <span className="text-2xl">⚡</span>
+                  <Zap className="w-6 h-6 text-orange-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-zinc-900 mb-1">
@@ -84,34 +101,34 @@ export default function BentoGridShowcase() {
 
             {/* Small Card 1 */}
             <div className="p-6 bg-green-100 rounded-2xl">
-              <span className="text-3xl mb-3 block">✅</span>
+              <CheckCircle className="w-8 h-8 text-green-600 mb-3" />
               <h3 className="font-semibold text-zinc-900">99.9%</h3>
               <p className="text-zinc-600 text-sm">可用性保证</p>
             </div>
 
             {/* Small Card 2 */}
             <div className="p-6 bg-pink-100 rounded-2xl">
-              <span className="text-3xl mb-3 block">💜</span>
+              <Users className="w-8 h-8 text-pink-600 mb-3" />
               <h3 className="font-semibold text-zinc-900">10K+</h3>
               <p className="text-zinc-600 text-sm">活跃用户</p>
             </div>
 
             {/* Tall Card */}
             <div className="md:row-span-2 p-6 bg-zinc-900 rounded-2xl text-white">
-              <span className="text-3xl mb-4 block">🎨</span>
+              <Palette className="w-8 h-8 mb-4" />
               <h3 className="text-xl font-bold mb-3">设计系统</h3>
               <p className="text-zinc-400 text-sm mb-4">
                 完整的设计规范和组件库，确保一致的用户体验
               </p>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
-                  <span className="text-green-400">✓</span> 50+ 组件
+                  <CheckCircle className="w-4 h-4 text-green-400" /> 50+ 组件
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-green-400">✓</span> 暗色模式
+                  <CheckCircle className="w-4 h-4 text-green-400" /> 暗色模式
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-green-400">✓</span> 响应式
+                  <CheckCircle className="w-4 h-4 text-green-400" /> 响应式
                 </li>
               </ul>
             </div>
@@ -127,13 +144,13 @@ export default function BentoGridShowcase() {
                     更多激动人心的功能正在开发中
                   </p>
                 </div>
-                <span className="text-4xl">🎉</span>
+                <Sparkles className="w-10 h-10 text-amber-600" />
               </div>
             </div>
 
             {/* Small Card 3 */}
             <div className="p-6 bg-cyan-100 rounded-2xl text-center">
-              <span className="text-3xl">📱</span>
+              <Smartphone className="w-8 h-8 text-cyan-600 mx-auto" />
               <p className="text-zinc-600 text-sm mt-2">移动优先</p>
             </div>
           </div>
@@ -148,20 +165,20 @@ export default function BentoGridShowcase() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: "🔒", title: "安全可靠", color: "bg-red-50" },
-              { icon: "🌍", title: "全球 CDN", color: "bg-blue-50" },
-              { icon: "📊", title: "数据分析", color: "bg-green-50" },
-              { icon: "🔌", title: "API 集成", color: "bg-purple-50" },
-              { icon: "💬", title: "实时协作", color: "bg-yellow-50" },
-              { icon: "🎯", title: "精准定位", color: "bg-pink-50" },
-              { icon: "⚙️", title: "自定义配置", color: "bg-indigo-50" },
-              { icon: "🚀", title: "持续更新", color: "bg-orange-50" },
+              { icon: Shield, title: "安全可靠", color: "bg-red-50", iconColor: "text-red-500" },
+              { icon: Globe, title: "全球 CDN", color: "bg-blue-50", iconColor: "text-blue-500" },
+              { icon: BarChart3, title: "数据分析", color: "bg-green-50", iconColor: "text-green-500" },
+              { icon: Plug, title: "API 集成", color: "bg-purple-50", iconColor: "text-purple-500" },
+              { icon: MessageCircle, title: "实时协作", color: "bg-yellow-50", iconColor: "text-yellow-600" },
+              { icon: Target, title: "精准定位", color: "bg-pink-50", iconColor: "text-pink-500" },
+              { icon: Settings, title: "自定义配置", color: "bg-indigo-50", iconColor: "text-indigo-500" },
+              { icon: TrendingUp, title: "持续更新", color: "bg-orange-50", iconColor: "text-orange-500" },
             ].map((item, i) => (
               <div
                 key={i}
                 className={`p-6 ${item.color} rounded-2xl text-center hover:scale-105 transition-transform`}
               >
-                <span className="text-3xl block mb-2">{item.icon}</span>
+                <item.icon className={`w-8 h-8 ${item.iconColor} mx-auto mb-2`} />
                 <h3 className="font-medium text-zinc-900">{item.title}</h3>
               </div>
             ))}

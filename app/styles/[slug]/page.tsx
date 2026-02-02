@@ -9,6 +9,8 @@ import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
+import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { StylePackExport } from "@/components/style-preview/style-pack-export";
 import { getStyleBySlug, styles } from "@/lib/styles";
 
 // 生成静态参数
@@ -139,7 +141,7 @@ export default async function StyleDetailPage({
                 <ul className="space-y-3">
                   {style.doList.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="text-green-600 mt-1">✓</span>
+                      <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
                       <span className="text-sm leading-relaxed">{item}</span>
                     </li>
                   ))}
@@ -154,7 +156,7 @@ export default async function StyleDetailPage({
                 <ul className="space-y-3">
                   {style.dontList.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="text-red-600 mt-1">✗</span>
+                      <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
                       <span className="text-sm leading-relaxed">{item}</span>
                     </li>
                   ))}
@@ -206,6 +208,58 @@ export default async function StyleDetailPage({
           </section>
         )}
 
+        {/* Compatible Styles (for layout patterns only) */}
+        {style.styleType === "layout" && style.compatibleWith && style.compatibleWith.length > 0 && (
+          <section className="border-b border-border">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+              <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                兼容的视觉风格
+              </p>
+              <h2 className="text-2xl md:text-3xl mb-4">试试搭配</h2>
+              <p className="text-muted mb-8 max-w-2xl">
+                {style.name} 是一种布局模式，可以与以下视觉风格搭配使用。
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {style.compatibleWith.map((compatSlug) => {
+                  const compatStyle = getStyleBySlug(compatSlug);
+                  if (!compatStyle) return null;
+                  return (
+                    <Link
+                      key={compatSlug}
+                      href={`/compare?left=${style.slug}&right=${compatSlug}`}
+                      className="group block border border-border hover:border-foreground transition-colors"
+                    >
+                      <div className="aspect-square overflow-hidden">
+                        <StyleCoverPreview styleSlug={compatSlug} />
+                      </div>
+                      <div className="p-3">
+                        <p className="text-sm font-medium group-hover:text-accent transition-colors">
+                          {compatStyle.name}
+                        </p>
+                        <p className="text-xs text-muted">{compatStyle.nameEn}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Style Pack Export */}
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              Style Pack
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">导出风格包</h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              获取完整的可机器读取风格资源，包括 Design Tokens、Tailwind 预设、CSS 变量和 shadcn/ui 主题。
+            </p>
+            <StylePackExport style={style} />
+          </div>
+        </section>
+
         {/* AI Rules Export */}
         <section>
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -220,6 +274,7 @@ export default async function StyleDetailPage({
               aiRules={style.aiRules}
               globalCss={style.globalCss}
               styleName={style.name}
+              styleSlug={slug}
             />
           </div>
         </section>

@@ -1,6 +1,19 @@
 // 设计风格数据类型定义
 
+// 保留旧分类用于兼容
 export type StyleCategory = "modern" | "retro" | "minimal" | "expressive";
+
+// 新增：主类型分类
+export type StyleType = "visual" | "layout" | "animation";
+
+// 新增：标签系统
+export type StyleTag =
+  | "modern"
+  | "retro"
+  | "minimal"
+  | "expressive"
+  | "high-contrast"
+  | "responsive";
 
 export interface DesignStyle {
   slug: string;
@@ -8,7 +21,15 @@ export interface DesignStyle {
   nameEn: string;
   description: string;
   cover: string;
+
+  // 新分类系统
+  styleType: StyleType;
+  tags: StyleTag[];
+  compatibleWith?: string[]; // 仅用于 layout 类型，列出可搭配的视觉风格
+
+  // 旧分类（保留兼容）
   category: StyleCategory;
+
   colors: {
     primary: string;
     secondary: string;
@@ -88,6 +109,9 @@ export interface StyleMeta {
   description: string;
   cover: string;
   category: StyleCategory;
+  styleType: StyleType;
+  tags: StyleTag[];
+  compatibleWith?: string[];
   keywords: string[];
   colors: DesignStyle["colors"];
 }
@@ -100,6 +124,9 @@ export function getAllStylesMeta(): StyleMeta[] {
     description: style.description,
     cover: style.cover,
     category: style.category,
+    styleType: style.styleType,
+    tags: style.tags,
+    compatibleWith: style.compatibleWith,
     keywords: style.keywords,
     colors: style.colors,
   }));

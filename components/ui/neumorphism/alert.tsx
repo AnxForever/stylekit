@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { NEU_SHADOWS } from "./styles";
+import { Info, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 
 // ============================================
 // NeuAlert - 提示
@@ -23,11 +24,11 @@ export const NeuAlert = React.forwardRef<HTMLDivElement, NeuAlertProps>(
     };
 
     const iconMap = {
-      default: "ℹ️",
-      success: "✓",
-      warning: "⚠",
-      error: "✕",
-      info: "ℹ",
+      default: <Info className="w-5 h-5 text-gray-500" />,
+      success: <CheckCircle className="w-5 h-5 text-[#4ecdc4]" />,
+      warning: <AlertTriangle className="w-5 h-5 text-[#ffe66d]" />,
+      error: <XCircle className="w-5 h-5 text-[#ff6b6b]" />,
+      info: <Info className="w-5 h-5 text-[#6d5dfc]" />,
     };
 
     return (
@@ -43,7 +44,7 @@ export const NeuAlert = React.forwardRef<HTMLDivElement, NeuAlertProps>(
         {...props}
       >
         <div className="flex items-start gap-3">
-          <span className="text-lg">{iconMap[variant]}</span>
+          {iconMap[variant]}
           <div>
             {title && <p className="font-semibold text-gray-800 mb-1">{title}</p>}
             <div className="text-gray-600 text-sm">{children}</div>

@@ -1,27 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
+import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
+import { getStyleBySlug } from "@/lib/styles";
 
 interface RulesExporterProps {
   aiRules: string;
   globalCss: string;
   styleName: string;
+  styleSlug?: string; // 用于查找 tokens
 }
 
-type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt";
+type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt" | "enhanced";
 
 export function RulesExporter({
   aiRules,
   globalCss,
   styleName,
+  styleSlug,
 }: RulesExporterProps) {
-  const [format, setFormat] = useState<ExportFormat>("trae");
+  const [format, setFormat] = useState<ExportFormat>(
+    styleSlug && hasStyleTokens(styleSlug) ? "enhanced" : "trae"
+  );
   const [copied, setCopied] = useState(false);
   const { t } = useI18n();
 
+  // 检查是否有增强 tokens 可用
+  const hasEnhanced = useMemo(
+    () => styleSlug && hasStyleTokens(styleSlug),
+    [styleSlug]
+  );
+
+  // 生成增强规则（仅在需要时）
+  const enhancedRules = useMemo(() => {
+    if (!styleSlug || !hasEnhanced) return null;
+    const tokens = getStyleTokens(styleSlug);
+    const style = getStyleBySlug(styleSlug);
+    if (!tokens || !style) return null;
+    return generateEnhancedAIRules({
+      style,
+      tokens,
+      format: "full",
+    });
+  }, [styleSlug, hasEnhanced]);
+
   const getContent = () => {
     switch (format) {
+      case "enhanced":
+        return enhancedRules || aiRules;
       case "trae":
         return aiRules;
       case "cursor":
@@ -73,6 +101,9 @@ When generating UI components, always:
     const content = getContent();
     let filename: string;
     switch (format) {
+      case "enhanced":
+        filename = `${styleName.toLowerCase().replace(/\s+/g, "-")}-enhanced-rules.md`;
+        break;
       case "trae":
         filename = "trae-rules.md";
         break;
@@ -96,18 +127,30 @@ When generating UI components, always:
     URL.revokeObjectURL(url);
   };
 
+  // 格式选项列表
+  const formatOptions = useMemo(() => {
+    const options: { key: ExportFormat; label: string; recommended?: boolean }[] = [];
+
+    // 如果有增强版本，优先显示
+    if (hasEnhanced) {
+      options.push({ key: "enhanced", label: "Enhanced", recommended: true });
+    }
+
+    options.push(
+      { key: "trae", label: "Trae Rules" },
+      { key: "cursor", label: "Cursor Rules" },
+      { key: "claude-code", label: "Claude Code" },
+      { key: "prompt", label: "Prompt" }
+    );
+
+    return options;
+  }, [hasEnhanced]);
+
   return (
     <div className="border border-border">
       {/* Format Tabs */}
       <div className="flex flex-wrap border-b border-border">
-        {(
-          [
-            { key: "trae", label: "Trae Rules" },
-            { key: "cursor", label: "Cursor Rules" },
-            { key: "claude-code", label: "Claude Code" },
-            { key: "prompt", label: "Prompt" },
-          ] as { key: ExportFormat; label: string }[]
-        ).map((f) => (
+        {formatOptions.map((f) => (
           <button
             key={f.key}
             onClick={() => setFormat(f.key)}
@@ -115,7 +158,7 @@ When generating UI components, always:
               format === f.key
                 ? "bg-foreground text-background"
                 : "text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800"
-            }`}
+            } ${f.recommended ? "font-medium" : ""}`}
           >
             {f.label}
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Monitor } from "lucide-react";
+import { Monitor, Palette, Zap, Smartphone } from "lucide-react";
 
 export default function GlassmorphismShowcase() {
   return (
@@ -36,7 +36,7 @@ export default function GlassmorphismShowcase() {
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block mb-6 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-            <span className="text-white/80 text-sm">✨ 玻璃拟态设计风格</span>
+            <span className="text-white/80 text-sm">玻璃拟态设计风格</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
             Glassmorphism
@@ -65,7 +65,7 @@ export default function GlassmorphismShowcase() {
             {/* Card 1 */}
             <div className="p-6 bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-2xl">🎨</span>
+                <Palette className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">
                 设计系统
@@ -78,7 +78,7 @@ export default function GlassmorphismShowcase() {
             {/* Card 2 */}
             <div className="p-6 bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-2xl">⚡</span>
+                <Zap className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">
                 高性能
@@ -91,7 +91,7 @@ export default function GlassmorphismShowcase() {
             {/* Card 3 */}
             <div className="p-6 bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-2xl">📱</span>
+                <Smartphone className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">
                 响应式

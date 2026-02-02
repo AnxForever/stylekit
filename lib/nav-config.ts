@@ -18,7 +18,9 @@ export interface ExternalNavItem {
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/components", labelKey: "nav.components" },
-  { href: "/playground", labelKey: "nav.playground" },
+  { href: "/linter", labelKey: "nav.linter" },
+  { href: "/prompt-builder", labelKey: "nav.promptBuilder" },
+  { href: "/guide", labelKey: "nav.guide" },
   { href: "/about", labelKey: "nav.about" },
 ];
 

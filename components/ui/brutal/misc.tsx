@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // ============================================
@@ -33,8 +34,13 @@ export const BrutalAvatar = React.forwardRef<HTMLDivElement, BrutalAvatarProps>(
         {...props}
       >
         {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={alt || ""} className="w-full h-full object-cover" />
+          <Image
+            src={src}
+            alt={alt || ""}
+            fill
+            className="object-cover"
+            unoptimized
+          />
         ) : (
           <span>{fallback || "?"}</span>
         )}
