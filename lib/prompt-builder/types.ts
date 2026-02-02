@@ -15,6 +15,12 @@ export interface PromptConfig {
   includeExamples: boolean;
   includeUIPlan: boolean;
   archetypeId?: string;
+  /** Product type for knowledge-based recommendations (e.g., "SaaS", "E-commerce") */
+  productType?: string;
+  /** Include UX Do/Don't guidelines from knowledge base */
+  includeUXGuidelines?: boolean;
+  /** Include stack-specific coding guidelines from knowledge base */
+  includeStackGuidelines?: boolean;
 }
 
 export const PAGE_TYPE_OPTIONS: { value: PageType; labelZh: string; labelEn: string }[] = [

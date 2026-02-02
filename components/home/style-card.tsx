@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/favorite-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
-import type { StyleMeta } from "@/lib/styles";
+import type { StyleMeta } from "@/lib/styles/meta";
 
 interface StyleCardProps {
   style: StyleMeta;

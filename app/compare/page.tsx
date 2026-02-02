@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { getAllStylesMeta, getStyleBySlug } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
+import { getStyleBySlug } from "@/lib/styles";
 import type { DesignStyle } from "@/lib/styles";
 import {
   componentLabels,

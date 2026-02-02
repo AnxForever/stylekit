@@ -31,9 +31,9 @@ export const bentoGridTokens: StyleTokens = {
       hero: "text-4xl md:text-5xl lg:text-6xl",
       h1: "text-3xl md:text-4xl",
       h2: "text-2xl md:text-3xl",
-      h3: "text-lg md:text-xl",
+      h3: "text-xl md:text-2xl",
       body: "text-sm md:text-base",
-      small: "text-xs md:text-sm",
+      small: "text-xs",
     },
   },
 

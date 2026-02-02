@@ -37,8 +37,8 @@ export const neumorphismTokens: StyleTokens = {
       h1: "text-3xl md:text-4xl",
       h2: "text-2xl md:text-3xl",
       h3: "text-xl md:text-2xl",
-      body: "text-base",
-      small: "text-sm",
+      body: "text-sm md:text-base",
+      small: "text-xs",
     },
   },
 

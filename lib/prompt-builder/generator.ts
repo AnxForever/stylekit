@@ -8,6 +8,15 @@ import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getArchetype, getArchetypesByCategory } from "@/lib/archetypes";
 import { getStyleRecipes } from "@/lib/recipes";
 import { generatePlanPromptInstructions } from "@/lib/schema/ui-plan";
+import {
+  getDesignRecommendation,
+  searchUXGuidelines,
+  searchStackGuidelines,
+  type StackId,
+  type DesignRecommendation,
+  type UXGuideline,
+  type StackGuideline,
+} from "@/lib/knowledge";
 
 interface GeneratedPrompt {
   content: string;
@@ -19,6 +28,11 @@ interface GeneratedPrompt {
     tokens?: string;
     examples?: string;
     uiPlan?: string;
+    productRecommendation?: string;
+    uxGuidelines?: string;
+    stackGuidelines?: string;
+    typography?: string;
+    colorPalette?: string;
   };
 }
 
@@ -31,6 +45,12 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
     throw new Error(`Style not found: ${config.style}`);
   }
 
+  // Get knowledge-based recommendation if product type specified
+  const stackId = techStackToStackId(config.techStack);
+  const recommendation = config.productType
+    ? getDesignRecommendation(config.productType, { stackId })
+    : null;
+
   const header = generateHeader(style.name, style.nameEn, config);
   const techStack = generateTechStackSection(config);
   const pageStructure = generatePageStructure(config.pageType, config.interactionLevel);
@@ -38,6 +58,24 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
   const tokenSection = config.includeTokens && tokens ? generateTokenSection(tokens) : undefined;
   const examples = config.includeExamples ? generateExamplesSection(style) : undefined;
   const uiPlanSection = config.includeUIPlan ? generateUIPlanSection(config) : undefined;
+
+  // Knowledge-based sections
+  const productRecommendation = recommendation
+    ? generateProductRecommendationSection(recommendation)
+    : undefined;
+  const uxGuidelinesSection = config.includeUXGuidelines
+    ? generateUXGuidelinesSection(config.pageType)
+    : undefined;
+  const stackGuidelinesSection =
+    config.includeStackGuidelines && stackId
+      ? generateStackGuidelinesSection(stackId, config.pageType)
+      : undefined;
+  const typographySection = recommendation?.typography
+    ? generateTypographySection(recommendation)
+    : undefined;
+  const colorPaletteSection = recommendation?.colors
+    ? generateColorPaletteSection(recommendation)
+    : undefined;
 
   const sections = {
     header,
@@ -47,6 +85,11 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
     ...(tokenSection && { tokens: tokenSection }),
     ...(examples && { examples }),
     ...(uiPlanSection && { uiPlan: uiPlanSection }),
+    ...(productRecommendation && { productRecommendation }),
+    ...(uxGuidelinesSection && { uxGuidelines: uxGuidelinesSection }),
+    ...(stackGuidelinesSection && { stackGuidelines: stackGuidelinesSection }),
+    ...(typographySection && { typography: typographySection }),
+    ...(colorPaletteSection && { colorPalette: colorPaletteSection }),
   };
 
   const content = [
@@ -55,6 +98,11 @@ export function generatePrompt(config: PromptConfig): GeneratedPrompt {
     pageStructure,
     designRules,
     tokenSection,
+    productRecommendation,
+    typographySection,
+    colorPaletteSection,
+    uxGuidelinesSection,
+    stackGuidelinesSection,
     examples,
     uiPlanSection,
   ]
@@ -272,4 +320,219 @@ ${archetypeDetails}
 1. **第一步**: 输出 UI Plan JSON（以 \`\`\`json 包裹）
 2. **第二步**: 根据 UI Plan 生成完整代码
 3. **第三步**: 确保代码与 Plan 一致`;
+}
+
+// ============ KNOWLEDGE-BASED SECTION GENERATORS ============
+
+/**
+ * Map TechStack to StackId for knowledge lookup
+ */
+function techStackToStackId(techStack: TechStack): StackId | undefined {
+  const mapping: Record<TechStack, StackId | undefined> = {
+    nextjs: "nextjs",
+    react: "react",
+    vue: "vue",
+    vanilla: "html-tailwind",
+  };
+  return mapping[techStack];
+}
+
+/**
+ * Generate product type recommendation section
+ */
+function generateProductRecommendationSection(
+  recommendation: DesignRecommendation
+): string {
+  const { productType, reasoning, style, landingPattern } = recommendation;
+
+  const lines = [`## 产品类型推荐 (${productType})`];
+
+  if (reasoning) {
+    lines.push(`
+### 推荐模式
+- **布局模式**: ${reasoning.recommendedPattern}
+- **风格优先级**: ${reasoning.stylePriority.join(" > ")}
+- **色彩情绪**: ${reasoning.colorMood}
+- **字体情绪**: ${reasoning.typographyMood}
+- **关键效果**: ${reasoning.keyEffects}
+
+### 反模式 (避免)
+${reasoning.antiPatterns.map((p) => `- [X] ${p}`).join("\n")}`);
+  }
+
+  if (landingPattern) {
+    lines.push(`
+### 推荐页面结构
+${landingPattern.sectionOrder.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+
+- **CTA 位置**: ${landingPattern.primaryCtaPlacement}
+- **色彩策略**: ${landingPattern.colorStrategy}
+- **转化优化**: ${landingPattern.conversionOptimization}`);
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Generate UX guidelines section
+ */
+function generateUXGuidelinesSection(pageType: PageType): string {
+  // Get relevant UX guidelines for the page type
+  const queryMap: Record<PageType, string> = {
+    landing: "conversion CTA scroll animation",
+    dashboard: "data visualization navigation performance",
+    blog: "reading typography scroll accessibility",
+    form: "validation input error accessibility",
+    list: "pagination loading virtualize filter",
+  };
+
+  const guidelines = searchUXGuidelines(queryMap[pageType] || "web interface", 5);
+
+  if (guidelines.length === 0) return "";
+
+  const guidelinesList = guidelines
+    .map(
+      (g: UXGuideline) => `
+### ${g.category}: ${g.issue}
+${g.description}
+
+- **Do**: ${g.do}
+- **Don't**: ${g.dont}
+
+\`\`\`
+// Good
+${g.codeGood}
+
+// Bad
+${g.codeBad}
+\`\`\``
+    )
+    .join("\n");
+
+  return `## UX 指南
+
+以下是针对 ${pageType} 页面的关键 UX 最佳实践:
+${guidelinesList}`;
+}
+
+/**
+ * Generate stack-specific guidelines section
+ */
+function generateStackGuidelinesSection(
+  stackId: StackId,
+  pageType: PageType
+): string {
+  // Get relevant stack guidelines
+  const queryMap: Record<PageType, string> = {
+    landing: "performance SEO rendering",
+    dashboard: "state data fetching performance",
+    blog: "SEO content routing",
+    form: "validation state forms",
+    list: "lists virtualization pagination",
+  };
+
+  const guidelines = searchStackGuidelines(
+    stackId,
+    queryMap[pageType] || "components",
+    5
+  );
+
+  if (guidelines.length === 0) return "";
+
+  const guidelinesList = guidelines
+    .map(
+      (g: StackGuideline) => `
+### ${g.category}: ${g.guideline}
+${g.description}
+
+- **Do**: ${g.do}
+- **Don't**: ${g.dont}
+
+\`\`\`
+// Good
+${g.codeGood}
+
+// Bad
+${g.codeBad}
+\`\`\`
+${g.docsUrl ? `- [文档](${g.docsUrl})` : ""}`
+    )
+    .join("\n");
+
+  return `## ${stackId.toUpperCase()} 编码指南
+
+以下是针对该技术栈的关键最佳实践:
+${guidelinesList}`;
+}
+
+/**
+ * Generate typography recommendation section
+ */
+function generateTypographySection(
+  recommendation: DesignRecommendation
+): string {
+  const { typography } = recommendation;
+  if (!typography) return "";
+
+  return `## 推荐字体搭配
+
+### ${typography.name}
+- **标题字体**: ${typography.headingFont}
+- **正文字体**: ${typography.bodyFont}
+- **风格关键词**: ${typography.mood.join(", ")}
+- **最适合**: ${typography.bestFor.join(", ")}
+
+### Google Fonts 导入
+\`\`\`css
+${typography.cssImport}
+\`\`\`
+
+### Tailwind 配置
+\`\`\`js
+// tailwind.config.js
+theme: {
+  extend: {
+    ${typography.tailwindConfig}
+  }
+}
+\`\`\`
+
+${typography.notes ? `> ${typography.notes}` : ""}`;
+}
+
+/**
+ * Generate color palette section
+ */
+function generateColorPaletteSection(
+  recommendation: DesignRecommendation
+): string {
+  const { colors } = recommendation;
+  if (!colors) return "";
+
+  return `## 推荐色彩方案
+
+针对 **${colors.productType}** 类型产品的色彩搭配:
+
+| 用途 | 颜色代码 |
+|------|----------|
+| 主色 (Primary) | \`${colors.primary}\` |
+| 辅色 (Secondary) | \`${colors.secondary}\` |
+| CTA 按钮 | \`${colors.cta}\` |
+| 背景色 | \`${colors.background}\` |
+| 文字色 | \`${colors.text}\` |
+| 边框色 | \`${colors.border}\` |
+
+### Tailwind CSS 变量
+\`\`\`css
+:root {
+  --primary: ${colors.primary};
+  --secondary: ${colors.secondary};
+  --cta: ${colors.cta};
+  --background: ${colors.background};
+  --foreground: ${colors.text};
+  --border: ${colors.border};
+}
+\`\`\`
+
+> ${colors.notes}`;
 }

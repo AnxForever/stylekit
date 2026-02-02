@@ -4,7 +4,7 @@ import * as React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Search, FileText, Palette, Layers, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getAllStylesMeta } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 import { useI18n } from "@/lib/i18n/context";
 
 interface SearchResult {

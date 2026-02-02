@@ -1,19 +1,16 @@
 // 设计风格数据类型定义
 
-// 保留旧分类用于兼容
-export type StyleCategory = "modern" | "retro" | "minimal" | "expressive";
-
-// 新增：主类型分类
-export type StyleType = "visual" | "layout" | "animation";
-
-// 新增：标签系统
-export type StyleTag =
-  | "modern"
-  | "retro"
-  | "minimal"
-  | "expressive"
-  | "high-contrast"
-  | "responsive";
+// Re-export lightweight metadata types and functions from meta.ts
+// Client components should import from "@/lib/styles/meta" directly
+export {
+  type StyleCategory,
+  type StyleType,
+  type StyleTag,
+  type StyleMeta,
+  stylesMeta,
+  getAllStylesMeta,
+  getStyleMetaBySlug,
+} from "./meta";
 
 export interface DesignStyle {
   slug: string;
@@ -23,12 +20,12 @@ export interface DesignStyle {
   cover: string;
 
   // 新分类系统
-  styleType: StyleType;
-  tags: StyleTag[];
+  styleType: "visual" | "layout" | "animation";
+  tags: ("modern" | "retro" | "minimal" | "expressive" | "high-contrast" | "responsive")[];
   compatibleWith?: string[]; // 仅用于 layout 类型，列出可搭配的视觉风格
 
   // 旧分类（保留兼容）
-  category: StyleCategory;
+  category: "modern" | "retro" | "minimal" | "expressive";
 
   colors: {
     primary: string;
@@ -84,6 +81,16 @@ import { editorial } from "./editorial";
 import { neumorphism } from "./neumorphism";
 import { glassmorphism } from "./glassmorphism";
 import { bentoGrid } from "./bento-grid";
+// 新增风格
+import { corporateClean } from "./corporate-clean";
+import { minimalistFlat } from "./minimalist-flat";
+import { softUI } from "./soft-ui";
+import { cyberpunkNeon } from "./cyberpunk-neon";
+import { naturalOrganic } from "./natural-organic";
+import { modernGradient } from "./modern-gradient";
+import { retroVintage } from "./retro-vintage";
+import { darkMode } from "./dark-mode";
+import { geometricBold } from "./geometric-bold";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -94,6 +101,16 @@ export const styles: DesignStyle[] = [
   neumorphism,
   glassmorphism,
   bentoGrid,
+  // 新增风格
+  corporateClean,
+  minimalistFlat,
+  softUI,
+  cyberpunkNeon,
+  naturalOrganic,
+  modernGradient,
+  retroVintage,
+  darkMode,
+  geometricBold,
 ];
 
 // 根据 slug 获取风格
@@ -101,33 +118,3 @@ export function getStyleBySlug(slug: string): DesignStyle | undefined {
   return styles.find((style) => style.slug === slug);
 }
 
-// 获取所有风格的简要信息（用于目录页）
-export interface StyleMeta {
-  slug: string;
-  name: string;
-  nameEn: string;
-  description: string;
-  cover: string;
-  category: StyleCategory;
-  styleType: StyleType;
-  tags: StyleTag[];
-  compatibleWith?: string[];
-  keywords: string[];
-  colors: DesignStyle["colors"];
-}
-
-export function getAllStylesMeta(): StyleMeta[] {
-  return styles.map((style) => ({
-    slug: style.slug,
-    name: style.name,
-    nameEn: style.nameEn,
-    description: style.description,
-    cover: style.cover,
-    category: style.category,
-    styleType: style.styleType,
-    tags: style.tags,
-    compatibleWith: style.compatibleWith,
-    keywords: style.keywords,
-    colors: style.colors,
-  }));
-}

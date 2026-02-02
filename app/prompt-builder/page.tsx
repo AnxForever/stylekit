@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
-import { getAllStylesMeta } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 import { hasStyleTokens } from "@/lib/styles/tokens-registry";
 import { getArchetypesByCategory } from "@/lib/archetypes";
 import {
