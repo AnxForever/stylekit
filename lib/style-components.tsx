@@ -653,6 +653,184 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  // ============ 布局风格渲染器 ============
+  "masonry-flow": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-zinc-100 flex items-center justify-center p-3">
+        <div className="w-full max-w-[220px] columns-3 gap-1.5">
+          <div className="break-inside-avoid mb-1.5 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-14 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-lg" />
+        </div>
+      </div>
+    ),
+  },
+  "split-screen": {
+    coverPreview: () => (
+      <div className="w-full h-full flex">
+        <div className="flex-1 bg-zinc-900 flex items-center justify-center p-3">
+          <div className="text-white text-center">
+            <div className="text-xs font-bold mb-1">LEFT</div>
+            <div className="text-[10px] text-white/60">Dark Side</div>
+          </div>
+        </div>
+        <div className="flex-1 bg-white flex items-center justify-center p-3">
+          <div className="text-zinc-900 text-center">
+            <div className="text-xs font-bold mb-1">RIGHT</div>
+            <div className="text-[10px] text-zinc-500">Light Side</div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "full-page-scroll": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-black flex flex-col">
+        <div className="flex-1 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center border-b border-white/20">
+          <div className="text-white text-center">
+            <div className="text-xs font-bold">SECTION 1</div>
+          </div>
+        </div>
+        <div className="flex-1 bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center border-b border-white/20">
+          <div className="text-white text-center">
+            <div className="text-xs font-bold">SECTION 2</div>
+          </div>
+        </div>
+        <div className="flex-1 bg-zinc-900 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="text-xs font-bold">SECTION 3</div>
+          </div>
+        </div>
+        {/* Navigation dots */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+        </div>
+      </div>
+    ),
+  },
+  "timeline-vertical": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-[180px] relative">
+          {/* Central line */}
+          <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-200" />
+          {/* Timeline items */}
+          <div className="space-y-3">
+            <div className="relative pl-8">
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow" />
+              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
+                <div className="text-[10px] font-semibold text-blue-500">2024</div>
+                <div className="text-xs font-bold text-slate-900">Event A</div>
+              </div>
+            </div>
+            <div className="relative pl-8">
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white shadow" />
+              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
+                <div className="text-[10px] font-semibold text-emerald-500">2023</div>
+                <div className="text-xs font-bold text-slate-900">Event B</div>
+              </div>
+            </div>
+            <div className="relative pl-8">
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-white shadow" />
+              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
+                <div className="text-[10px] font-semibold text-amber-500">2022</div>
+                <div className="text-xs font-bold text-slate-900">Event C</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "card-stack": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <div className="relative w-32 h-24">
+          {/* Back card */}
+          <div className="absolute inset-0 bg-white rounded-xl shadow-lg transform translate-y-4 scale-90 opacity-50" />
+          {/* Middle card */}
+          <div className="absolute inset-0 bg-white rounded-xl shadow-lg transform translate-y-2 scale-95 opacity-75" />
+          {/* Front card */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-xl flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="text-xs font-bold">STACK</div>
+              <div className="text-[10px] text-white/70">Depth Effect</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "sidebar-fixed": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-zinc-100 flex">
+        {/* Sidebar */}
+        <div className="w-1/4 bg-white border-r border-zinc-200 flex flex-col p-2">
+          <div className="w-6 h-1.5 bg-zinc-900 rounded mb-3" />
+          <div className="space-y-1.5">
+            <div className="h-2 bg-blue-100 rounded w-full" />
+            <div className="h-2 bg-zinc-100 rounded w-3/4" />
+            <div className="h-2 bg-zinc-100 rounded w-3/4" />
+          </div>
+          <div className="mt-auto">
+            <div className="w-4 h-4 bg-zinc-200 rounded-full" />
+          </div>
+        </div>
+        {/* Main content */}
+        <div className="flex-1 p-2">
+          <div className="h-2 bg-zinc-300 rounded w-1/2 mb-2" />
+          <div className="grid grid-cols-2 gap-1.5">
+            <div className="h-8 bg-white rounded-lg shadow-sm" />
+            <div className="h-8 bg-white rounded-lg shadow-sm" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "magazine-grid": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-zinc-50 p-2">
+        <div className="grid grid-cols-4 gap-1.5 h-full">
+          {/* Featured - 2x2 */}
+          <div className="col-span-2 row-span-2 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg relative overflow-hidden">
+            <div className="absolute bottom-2 left-2 right-2">
+              <div className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded inline-block mb-1">Featured</div>
+              <div className="text-white text-[10px] font-bold">Main Article</div>
+            </div>
+          </div>
+          {/* Small articles */}
+          <div className="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg" />
+          <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg" />
+          <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg" />
+          <div className="bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg" />
+        </div>
+      </div>
+    ),
+  },
+  "hero-fullscreen": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-violet-600 via-purple-600 to-blue-700 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <div className="relative z-10 text-center px-4">
+          <div className="text-white/60 text-[8px] uppercase tracking-wider mb-1">Fullscreen</div>
+          <div className="text-white font-bold text-sm mb-1">Hero Layout</div>
+          <div className="text-white/70 text-[10px]">Immersive viewport fill</div>
+        </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50">
+          <div className="text-[8px]">Scroll</div>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7" />
+          </svg>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件
