@@ -1,28 +1,57 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { stylesMeta } from "@/lib/styles/meta";
-import { getStyleBySlug } from "@/lib/styles";
-import { ChevronDown, Copy, Check, Download } from "lucide-react";
+import { ChevronDown, Copy, Check, Download, Loader2 } from "lucide-react";
 
 type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt";
+
+interface StyleExportData {
+  name: string;
+  aiRules: string;
+  globalCss: string;
+}
 
 export function QuickExport() {
   const [selectedSlug, setSelectedSlug] = useState(stylesMeta[0].slug);
   const [format, setFormat] = useState<ExportFormat>("claude-code");
   const [copied, setCopied] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { t, locale } = useI18n();
+  const [styleData, setStyleData] = useState<StyleExportData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { t } = useI18n();
 
-  const selectedStyle = useMemo(
-    () => getStyleBySlug(selectedSlug),
-    [selectedSlug]
-  );
+  // Fetch style data on-demand
+  const fetchStyleData = useCallback(async (slug: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/styles/${slug}`);
+      if (res.ok) {
+        const data = await res.json();
+        setStyleData({
+          name: data.name,
+          aiRules: data.aiRules,
+          globalCss: data.globalCss,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch style data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Load initial style data
+  useEffect(() => {
+    fetchStyleData(selectedSlug);
+  }, [selectedSlug, fetchStyleData]);
+
+  const selectedMeta = stylesMeta.find((s) => s.slug === selectedSlug);
 
   const getContent = () => {
-    if (!selectedStyle) return "";
-    const { aiRules, globalCss, name } = selectedStyle;
+    if (!styleData) return "";
+    const { aiRules, globalCss, name } = styleData;
 
     switch (format) {
       case "trae":
@@ -85,7 +114,7 @@ When generating UI components, always:
         filename = "CLAUDE.md";
         break;
       case "prompt":
-        filename = `${selectedStyle?.name.toLowerCase().replace(/\s+/g, "-")}-prompt.md`;
+        filename = `${styleData?.name.toLowerCase().replace(/\s+/g, "-")}-prompt.md`;
         break;
     }
 
@@ -124,8 +153,8 @@ When generating UI components, always:
             className="w-full flex items-center justify-between px-4 py-2.5 border border-border bg-background hover:border-foreground/50 transition-colors text-sm"
           >
             <span>
-              {selectedStyle?.name}{" "}
-              <span className="text-muted">({selectedStyle?.nameEn})</span>
+              {selectedMeta?.name}{" "}
+              <span className="text-muted">({selectedMeta?.nameEn})</span>
             </span>
             <ChevronDown
               className={`w-4 h-4 text-muted transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
@@ -176,17 +205,24 @@ When generating UI components, always:
 
       {/* Preview */}
       <div className="px-6 py-4 max-h-48 overflow-y-auto">
-        <pre className="text-xs text-muted whitespace-pre-wrap line-clamp-6">
-          {getContent().slice(0, 500)}
-          {getContent().length > 500 && "..."}
-        </pre>
+        {loading ? (
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="w-5 h-5 animate-spin text-muted" />
+          </div>
+        ) : (
+          <pre className="text-xs text-muted whitespace-pre-wrap line-clamp-6">
+            {getContent().slice(0, 500)}
+            {getContent().length > 500 && "..."}
+          </pre>
+        )}
       </div>
 
       {/* Actions */}
       <div className="flex border-t border-border">
         <button
           onClick={handleCopy}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-r border-border"
+          disabled={loading || !styleData}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-r border-border disabled:opacity-50"
         >
           {copied ? (
             <>
@@ -202,7 +238,8 @@ When generating UI components, always:
         </button>
         <button
           onClick={handleDownload}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          disabled={loading || !styleData}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
         >
           <Download className="w-4 h-4" />
           {t("export.download")}

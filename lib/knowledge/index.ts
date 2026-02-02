@@ -283,3 +283,15 @@ export function getDomainDescription(domain: SearchDomain): string {
   };
   return descriptions[domain];
 }
+
+// ============ SMART RECOMMENDER ============
+
+export {
+  getSmartRecommendation,
+  compareStyles,
+  suggestStyleByConstraints,
+  type RecommendationContext,
+  type SmartRecommendation,
+  type ScoredRecommendation,
+  type StyleScore,
+} from "./smart-recommender";

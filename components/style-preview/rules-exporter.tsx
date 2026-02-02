@@ -2,15 +2,12 @@
 
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
-import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
-import { getStyleBySlug } from "@/lib/styles";
 
 interface RulesExporterProps {
   aiRules: string;
   globalCss: string;
   styleName: string;
-  styleSlug?: string; // 用于查找 tokens
+  enhancedRules?: string | null; // Pre-generated from server
 }
 
 type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt" | "enhanced";
@@ -19,32 +16,14 @@ export function RulesExporter({
   aiRules,
   globalCss,
   styleName,
-  styleSlug,
+  enhancedRules,
 }: RulesExporterProps) {
+  const hasEnhanced = Boolean(enhancedRules);
   const [format, setFormat] = useState<ExportFormat>(
-    styleSlug && hasStyleTokens(styleSlug) ? "enhanced" : "trae"
+    hasEnhanced ? "enhanced" : "trae"
   );
   const [copied, setCopied] = useState(false);
   const { t } = useI18n();
-
-  // 检查是否有增强 tokens 可用
-  const hasEnhanced = useMemo(
-    () => styleSlug && hasStyleTokens(styleSlug),
-    [styleSlug]
-  );
-
-  // 生成增强规则（仅在需要时）
-  const enhancedRules = useMemo(() => {
-    if (!styleSlug || !hasEnhanced) return null;
-    const tokens = getStyleTokens(styleSlug);
-    const style = getStyleBySlug(styleSlug);
-    if (!tokens || !style) return null;
-    return generateEnhancedAIRules({
-      style,
-      tokens,
-      format: "full",
-    });
-  }, [styleSlug, hasEnhanced]);
 
   const getContent = () => {
     switch (format) {
@@ -85,7 +64,6 @@ When generating UI components, always:
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
       const textArea = document.createElement("textarea");
       textArea.value = getContent();
       document.body.appendChild(textArea);
@@ -127,11 +105,9 @@ When generating UI components, always:
     URL.revokeObjectURL(url);
   };
 
-  // 格式选项列表
   const formatOptions = useMemo(() => {
     const options: { key: ExportFormat; label: string; recommended?: boolean }[] = [];
 
-    // 如果有增强版本，优先显示
     if (hasEnhanced) {
       options.push({ key: "enhanced", label: "Enhanced", recommended: true });
     }
