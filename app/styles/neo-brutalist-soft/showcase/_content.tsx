@@ -299,6 +299,9 @@ export default function ShowcaseContent() {
                   <label key={label} className="flex items-center justify-between p-4 bg-white border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] cursor-pointer">
                     <span className="font-bold text-gray-800">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -324,6 +327,9 @@ export default function ShowcaseContent() {
                 {["Muted shadows", "Gray borders", "Soft palette"].map((label, i) => (
                   <label key={label} className="flex items-center gap-3 p-4 bg-white border-2 border-gray-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] cursor-pointer">
                     <button
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];

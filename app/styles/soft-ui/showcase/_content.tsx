@@ -376,6 +376,9 @@ export default function ShowcaseContent() {
                   <label key={label} className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-lg shadow-slate-200/50 cursor-pointer">
                     <span className="font-semibold text-slate-700">{label}</span>
                     <button
+                      role="switch"
+                      aria-checked={toggleStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...toggleStates];
                         newStates[i] = !newStates[i];
@@ -403,6 +406,9 @@ export default function ShowcaseContent() {
                 {["Email updates", "Push notifications", "Weekly digest"].map((label, i) => (
                   <label key={label} className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-lg shadow-slate-200/50 cursor-pointer">
                     <button
+                      role="checkbox"
+                      aria-checked={checkboxStates[i]}
+                      aria-label={label}
                       onClick={() => {
                         const newStates = [...checkboxStates];
                         newStates[i] = !newStates[i];
@@ -502,16 +508,16 @@ export default function ShowcaseContent() {
           <p className="text-slate-600 mb-10">Elevated stat cards with colored accents.</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "24K", label: "Users", color: "indigo" },
-              { value: "98%", label: "Satisfaction", color: "green" },
-              { value: "1.2M", label: "Downloads", color: "purple" },
-              { value: "4.9", label: "Rating", color: "pink" },
+              { value: "24K", label: "Users", shadowClass: "shadow-indigo-500/10 hover:shadow-indigo-500/20", gradientClass: "from-indigo-500 to-indigo-400" },
+              { value: "98%", label: "Satisfaction", shadowClass: "shadow-green-500/10 hover:shadow-green-500/20", gradientClass: "from-green-500 to-green-400" },
+              { value: "1.2M", label: "Downloads", shadowClass: "shadow-purple-500/10 hover:shadow-purple-500/20", gradientClass: "from-purple-500 to-purple-400" },
+              { value: "4.9", label: "Rating", shadowClass: "shadow-pink-500/10 hover:shadow-pink-500/20", gradientClass: "from-pink-500 to-pink-400" },
             ].map((stat) => (
               <div
                 key={stat.label}
-                className={`bg-white rounded-3xl p-6 text-center shadow-lg shadow-${stat.color}-500/10 hover:shadow-xl hover:shadow-${stat.color}-500/20 hover:-translate-y-1 transition-all`}
+                className={`bg-white rounded-3xl p-6 text-center shadow-lg ${stat.shadowClass} hover:shadow-xl hover:-translate-y-1 transition-all`}
               >
-                <p className={`text-3xl md:text-4xl font-bold bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-400 bg-clip-text text-transparent mb-2`}>
+                <p className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${stat.gradientClass} bg-clip-text text-transparent mb-2`}>
                   {stat.value}
                 </p>
                 <p className="text-sm text-slate-500 font-semibold">{stat.label}</p>
