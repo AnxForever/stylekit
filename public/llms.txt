@@ -1,0 +1,249 @@
+# StyleKit - AI-Friendly Design System Library
+
+> A comprehensive library of design styles with machine-readable constraints, tokens, and component recipes for AI-assisted UI generation.
+
+## Overview
+
+StyleKit provides structured design systems that AI can use to generate consistent, high-quality user interfaces. Each style includes:
+
+- Design Tokens (colors, spacing, typography, shadows, borders)
+- Component Recipes (parameterized component templates with variants)
+- Layout Archetypes (pre-defined page structure patterns)
+- AI Rules (do's, don'ts, and style-specific constraints)
+- Code Examples (React + Tailwind CSS implementations)
+
+## Quick Start for AI Assistants
+
+1. Browse available styles: /api/styles
+2. Get a specific style pack: /api/styles/[slug]
+3. Get design tokens: /api/styles/[slug]/tokens
+4. Get component recipes: /api/styles/[slug]/recipes
+5. Get layout archetypes: /api/archetypes
+
+## Available Styles
+
+### Visual Styles
+
+- **Neo-Brutalist** (`neo-brutalist`) - Bold borders, high contrast, raw aesthetic
+  - Soft variant: `neo-brutalist-soft`
+  - Playful variant: `neo-brutalist-playful`
+- **Neumorphism** (`neumorphism`) - Soft shadows, subtle depth, minimalist
+- **Glassmorphism** (`glassmorphism`) - Frosted glass, transparency, blur effects
+- **Editorial** (`editorial`) - Typography-first, magazine-inspired, elegant
+- **Corporate Clean** (`corporate-clean`) - Professional, trustworthy, B2B SaaS
+- **Minimalist Flat** (`minimalist-flat`) - Ultra-minimal, no shadows, high contrast
+- **Soft UI** (`soft-ui`) - Friendly, approachable, consumer apps
+- **Cyberpunk Neon** (`cyberpunk-neon`) - Futuristic, neon glow, dark background
+- **Natural Organic** (`natural-organic`) - Earth tones, warm, sustainable brands
+- **Modern Gradient** (`modern-gradient`) - Vibrant gradients, glass morphism, dynamic
+- **Retro Vintage** (`retro-vintage`) - Nostalgic, classic typography, aged textures
+- **Dark Mode** (`dark-mode`) - Professional dark interface, low contrast
+- **Geometric Bold** (`geometric-bold`) - Strong shapes, artistic, high impact
+
+### Layout Patterns
+
+- **Bento Grid** (`bento-grid`) - Asymmetric grid layout, card-based
+
+## API Endpoints
+
+### Styles
+- `GET /api/styles` - List all available styles
+- `GET /api/styles/[slug]` - Get complete style pack (tokens + rules + examples)
+- `GET /api/styles/[slug]/tokens` - Get design tokens only
+- `GET /api/styles/[slug]/recipes` - Get component recipes
+- `GET /api/styles/[slug]/skill-pack` - Get SKILL.md format for AI tools
+
+### Archetypes
+- `GET /api/archetypes` - List all layout archetypes
+- `GET /api/archetypes/[id]` - Get specific archetype details
+
+### UI Plan
+- `POST /api/ui-plan/validate` - Validate a UI Plan JSON against schema
+- `GET /api/ui-plan/schema` - Get JSON Schema for UI Plan
+
+### Knowledge Base (NEW)
+- `GET /api/knowledge/search?q={query}&domain={domain}&limit={n}` - Search across all design knowledge
+- `GET /api/knowledge/recommend?q={productQuery}&stack={stackId}` - Get comprehensive design recommendation
+- `GET /api/knowledge/domains` - List all knowledge domains
+- `GET /api/knowledge/stacks` - List tech stacks with guidelines
+- `GET /api/knowledge/stacks?id={stackId}` - Get stack-specific guidelines
+
+### AI Design System Generator (NEW)
+- `POST /api/generate/design-system` - Generate complete design system package
+- `GET /api/generate/design-system` - Get available options and usage info
+
+## Usage Examples
+
+### Example 1: Generate a Neo-Brutalist Landing Page
+
+```
+1. Fetch style pack: GET /api/styles/neo-brutalist
+2. Fetch landing archetype: GET /api/archetypes/landing-hero-centered
+3. Use tokens and recipes to generate components
+4. Follow do's/don'ts from style rules
+```
+
+### Example 2: Create a UI Plan
+
+```
+1. Review schema: GET /api/ui-plan/schema
+2. Create JSON plan with sections and components
+3. Validate: POST /api/ui-plan/validate
+4. Generate code following the plan
+```
+
+### Example 3: AI Design System Generator (Recommended)
+
+```
+1. POST /api/generate/design-system with body:
+   {
+     "productType": "SaaS dashboard",
+     "stylePreference": "auto",
+     "colorScheme": "light",
+     "stackId": "nextjs"
+   }
+2. Receive complete design system package with:
+   - Selected style and tokens
+   - Color palette recommendations
+   - Typography pairings
+   - Component code examples
+   - UX and stack-specific guidelines
+3. Use the aiRules for consistent code generation
+```
+
+## Design Tokens Structure
+
+Each style provides tokens in this format:
+
+```json
+{
+  "border": {
+    "width": "2px",
+    "color": "border-black",
+    "radius": "0px"
+  },
+  "shadow": {
+    "sm": "2px 2px 0 black",
+    "md": "4px 4px 0 black",
+    "lg": "8px 8px 0 black",
+    "hover": "6px 6px 0 black"
+  },
+  "interaction": {
+    "hoverTranslate": "-translate-x-1 -translate-y-1",
+    "transition": "transition-all duration-150"
+  },
+  "typography": {
+    "heading": "font-bold tracking-tight",
+    "body": "font-normal leading-relaxed"
+  },
+  "required": {
+    "button": ["border-2", "border-black", "shadow-[4px_4px_0_black]"],
+    "card": ["border-2", "border-black", "bg-white"],
+    "input": ["border-2", "border-black", "focus:outline-none"]
+  },
+  "forbidden": {
+    "classes": ["rounded-full", "shadow-sm", "opacity-50"],
+    "patterns": ["gradient backgrounds", "subtle shadows", "soft borders"]
+  }
+}
+```
+
+## Component Recipes Structure
+
+Recipes define parameterized component templates:
+
+```json
+{
+  "id": "button",
+  "name": "Button",
+  "skeleton": {
+    "baseClasses": "inline-flex items-center justify-center font-medium transition-all",
+    "structure": "<button class=\"{classes}\">{content}</button>"
+  },
+  "parameters": [
+    {
+      "name": "size",
+      "type": "enum",
+      "options": ["sm", "md", "lg"],
+      "default": "md"
+    }
+  ],
+  "variants": {
+    "primary": { "classes": "bg-black text-white border-2 border-black" },
+    "secondary": { "classes": "bg-white text-black border-2 border-black" }
+  }
+}
+```
+
+## Layout Archetypes Structure
+
+Archetypes define page structure patterns:
+
+```json
+{
+  "id": "landing-hero-centered",
+  "name": "Centered Hero Landing",
+  "category": "landing",
+  "sections": [
+    {
+      "id": "hero",
+      "name": "Hero Section",
+      "layout": {
+        "type": "centered",
+        "maxWidth": "max-w-4xl",
+        "padding": "py-20 px-6"
+      }
+    }
+  ],
+  "responsive": {
+    "mobile": "Single column, stacked sections",
+    "tablet": "Maintain single column, increase spacing",
+    "desktop": "Full width hero, constrained content"
+  }
+}
+```
+
+## Best Practices for AI Generation
+
+1. **Always fetch tokens first** - Use exact class names from `required` arrays
+2. **Respect forbidden patterns** - Never use classes/patterns in `forbidden` lists
+3. **Use recipes for consistency** - Generate components from recipes, not from scratch
+4. **Follow archetypes for layout** - Use predefined section structures
+5. **Validate UI Plans** - Create structured plan before generating code
+6. **Check do's and don'ts** - Review style-specific rules before generation
+
+## Technical Stack
+
+- Framework: Next.js 15 (App Router)
+- Styling: Tailwind CSS v4
+- Components: Radix UI primitives
+- Icons: Lucide React
+- Language: TypeScript (strict mode)
+
+## Full Documentation
+
+For complete documentation with all styles, tokens, recipes, and examples:
+- Full text format: /llms-full.txt
+- Markdown format: /llms.md
+
+### Markdown Variants (LLM-Optimized)
+
+Per the llms.txt specification, these Markdown variants are available for easier parsing:
+- `/llms.md` - Structured overview with links
+- `/api/styles/[slug]/md` - Full style documentation in Markdown
+
+## Optional
+
+- [Figma MCP Integration](/docs/figma-mcp-integration.md): Import design tokens from Figma
+- [Skills Pack](/skills/): SKILL.md format for AI tools (skills.sh compatible)
+- [MCP Server](/mcp/): Model Context Protocol server for direct AI tool integration
+
+## Support & Updates
+
+- GitHub: [Repository URL]
+- Issues: [Issues URL]
+- Last Updated: 2026-02-02
+
+---
+
+This file follows the llms.txt specification: https://llmstxt.org/

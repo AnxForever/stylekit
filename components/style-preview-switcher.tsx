@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
-import { getAllStylesMeta } from "@/lib/styles";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 import { renderStyleComponent, componentLabels, type ComponentType } from "@/lib/style-components";
 import { ChevronDown } from "lucide-react";
 

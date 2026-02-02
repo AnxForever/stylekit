@@ -1,0 +1,18 @@
+{
+  "name": "stylekit-mcp",
+  "version": "1.0.0",
+  "description": "StyleKit MCP Server - Design knowledge base for AI assistants",
+  "main": "server.ts",
+  "type": "module",
+  "scripts": {
+    "start": "npx tsx server.ts"
+  },
+  "keywords": [
+    "mcp",
+    "design-system",
+    "ai",
+    "stylekit"
+  ],
+  "author": "",
+  "license": "MIT"
+}

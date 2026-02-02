@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ClientProviders } from "@/components/providers/client-providers";
-import { CommandPalette } from "@/components/ui/command-palette";
+import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="antialiased">
         <ClientProviders>
-          <CommandPalette />
+          <LazyCommandPalette />
           {children}
         </ClientProviders>
       </body>
