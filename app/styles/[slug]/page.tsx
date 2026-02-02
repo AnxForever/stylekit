@@ -12,6 +12,8 @@ import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
 import { getStyleBySlug, styles } from "@/lib/styles";
+import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
+import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 
 // 生成静态参数
 export function generateStaticParams() {
@@ -274,7 +276,15 @@ export default async function StyleDetailPage({
               aiRules={style.aiRules}
               globalCss={style.globalCss}
               styleName={style.name}
-              styleSlug={slug}
+              enhancedRules={
+                hasStyleTokens(slug)
+                  ? generateEnhancedAIRules({
+                      style,
+                      tokens: getStyleTokens(slug)!,
+                      format: "full",
+                    })
+                  : null
+              }
             />
           </div>
         </section>

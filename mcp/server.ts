@@ -37,12 +37,17 @@ import {
   getStack,
   getCriticalGuidelines,
   searchStackGuidelines,
+  getSmartRecommendation,
+  compareStyles,
+  suggestStyleByConstraints,
 } from "../lib/knowledge";
-import type { SearchDomain, StackId } from "../lib/knowledge";
+import type { SearchDomain, StackId, RecommendationContext } from "../lib/knowledge";
 import { getStyleBySlug, styles } from "../lib/styles";
 import { getStyleTokens } from "../lib/styles/tokens-registry";
 import { getStyleRecipes } from "../lib/recipes";
 import { mapStyleToSlug } from "../lib/styles/style-mapping";
+import { lintCode, getFixSuggestions, formatLintResult } from "../lib/linter/style-linter";
+import { getStyleLintRules, getStylesWithLintRules } from "../lib/styles/lint-rules";
 
 // ---- Minimal MCP stdio transport (no SDK dependency) ----
 
@@ -218,6 +223,164 @@ const TOOLS = [
       required: ["productType"],
     },
   },
+  {
+    name: "lint_code",
+    description:
+      "Check if code follows a specific design style's guidelines. Returns errors for forbidden classes and warnings for missing required classes.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        code: {
+          type: "string",
+          description: "The code to lint (JSX/TSX with Tailwind classes)",
+        },
+        style: {
+          type: "string",
+          description: "Style slug to check against (e.g. 'neo-brutalist', 'glassmorphism')",
+        },
+        format: {
+          type: "string",
+          enum: ["json", "text"],
+          description: "Output format (default: json)",
+          default: "json",
+        },
+      },
+      required: ["code", "style"],
+    },
+  },
+  {
+    name: "get_lint_rules",
+    description:
+      "Get the lint rules for a specific style. Shows forbidden classes, required classes, and recommendations.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        style: {
+          type: "string",
+          description: "Style slug (e.g. 'neo-brutalist', 'glassmorphism')",
+        },
+      },
+      required: ["style"],
+    },
+  },
+  {
+    name: "list_lintable_styles",
+    description: "List all styles that have lint rules available.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "smart_recommend",
+    description:
+      "Get intelligent design recommendations with scoring, explanations, and context-aware adjustments. More advanced than get_design_recommendation.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        productQuery: {
+          type: "string",
+          description: "Product type or description (e.g. 'SaaS dashboard', 'e-commerce store')",
+        },
+        context: {
+          type: "object",
+          description: "Optional context for personalized recommendations",
+          properties: {
+            targetAudience: {
+              type: "string",
+              enum: ["consumer", "enterprise", "developer", "creative"],
+              description: "Primary target audience",
+            },
+            ageGroup: {
+              type: "string",
+              enum: ["young", "adult", "senior", "all"],
+              description: "Target age group",
+            },
+            primaryDevice: {
+              type: "string",
+              enum: ["desktop", "mobile", "tablet", "all"],
+              description: "Primary device for the product",
+            },
+            brandMood: {
+              type: "string",
+              enum: ["playful", "professional", "luxury", "minimal", "bold"],
+              description: "Desired brand mood",
+            },
+            darkModePreferred: {
+              type: "boolean",
+              description: "Prefer dark mode colors",
+            },
+            accessibilityPriority: {
+              type: "boolean",
+              description: "Prioritize accessibility (high contrast, etc.)",
+            },
+            performancePriority: {
+              type: "boolean",
+              description: "Prioritize performance (lightweight styles)",
+            },
+          },
+        },
+      },
+      required: ["productQuery"],
+    },
+  },
+  {
+    name: "compare_styles",
+    description:
+      "Compare two design styles for a specific product type. Returns detailed comparison with scores and winner.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        productQuery: {
+          type: "string",
+          description: "Product type or description",
+        },
+        style1: {
+          type: "string",
+          description: "First style slug to compare (e.g. 'neo-brutalist')",
+        },
+        style2: {
+          type: "string",
+          description: "Second style slug to compare (e.g. 'glassmorphism')",
+        },
+        context: {
+          type: "object",
+          description: "Optional context for comparison",
+        },
+      },
+      required: ["productQuery", "style1", "style2"],
+    },
+  },
+  {
+    name: "suggest_style_by_constraints",
+    description:
+      "Get style suggestions based on specific constraints and priorities. Useful when you have specific requirements.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mustHave: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Features the style must have (e.g. 'high-contrast', 'rounded-corners', 'minimal', 'bold', 'elegant')",
+        },
+        mustNotHave: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Features to avoid (e.g. 'no-animations', 'no-blur', 'no-shadows')",
+        },
+        priorities: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: ["performance", "accessibility", "visual-impact", "professionalism"],
+          },
+          description: "Priority order for style selection",
+        },
+      },
+    },
+  },
 ];
 
 // ---- Tool handlers ----
@@ -370,6 +533,75 @@ function handleTool(name: string, args: Record<string, unknown>): unknown {
         },
         icons: recommendation.icons,
       };
+    }
+
+    case "lint_code": {
+      const code = args.code as string;
+      const style = args.style as string;
+      const format = (args.format as string) || "json";
+
+      const result = lintCode(code, style);
+      const fixes = getFixSuggestions(result);
+
+      if (format === "text") {
+        return formatLintResult(result) + "\n\nFixes:\n" + fixes.map(f => `  - ${f}`).join("\n");
+      }
+
+      return {
+        ...result,
+        fixes,
+      };
+    }
+
+    case "get_lint_rules": {
+      const style = args.style as string;
+      const rules = getStyleLintRules(style);
+
+      if (!rules) {
+        return { error: `No lint rules found for style: ${style}` };
+      }
+
+      return {
+        style: rules.slug,
+        name: rules.name,
+        forbidden: {
+          classes: rules.forbidden.classes,
+          patterns: rules.forbidden.patterns.map(p => p.source),
+          reasons: rules.forbidden.reasons,
+        },
+        required: rules.required,
+        recommended: rules.recommended,
+        colors: rules.colors,
+        typography: rules.typography,
+      };
+    }
+
+    case "list_lintable_styles": {
+      return {
+        styles: getStylesWithLintRules(),
+        count: getStylesWithLintRules().length,
+      };
+    }
+
+    case "smart_recommend": {
+      const productQuery = args.productQuery as string;
+      const context = (args.context as RecommendationContext) || {};
+      return getSmartRecommendation(productQuery, context);
+    }
+
+    case "compare_styles": {
+      const productQuery = args.productQuery as string;
+      const style1 = args.style1 as string;
+      const style2 = args.style2 as string;
+      const context = (args.context as RecommendationContext) || {};
+      return compareStyles(productQuery, style1, style2, context);
+    }
+
+    case "suggest_style_by_constraints": {
+      const mustHave = (args.mustHave as string[]) || [];
+      const mustNotHave = (args.mustNotHave as string[]) || [];
+      const priorities = (args.priorities as ("performance" | "accessibility" | "visual-impact" | "professionalism")[]) || [];
+      return suggestStyleByConstraints({ mustHave, mustNotHave, priorities });
     }
 
     default:

@@ -158,3 +158,135 @@ export function ShowcaseHero({
     </section>
   );
 }
+
+// ============================
+// Color Palette Grid
+// ============================
+export interface ColorItem {
+  name: string;
+  hex: string;
+  bg: string;
+  border?: boolean;
+}
+
+interface ColorPaletteGridProps {
+  colors: ColorItem[];
+  cardClassName?: string;
+  colorBlockClassName?: string;
+  labelClassName?: string;
+  hexClassName?: string;
+}
+
+/**
+ * Reusable color palette grid for Showcase pages.
+ */
+export function ColorPaletteGrid({
+  colors,
+  cardClassName = "rounded-xl overflow-hidden border border-gray-200",
+  colorBlockClassName = "h-20 md:h-24",
+  labelClassName = "text-sm font-semibold",
+  hexClassName = "text-xs opacity-60 font-mono",
+}: ColorPaletteGridProps) {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+      {colors.map((color) => (
+        <div key={color.name} className={cardClassName}>
+          <div className={cn(colorBlockClassName, color.bg, color.border && "border-b")} />
+          <div className="p-3 md:p-4">
+            <p className={labelClassName}>{color.name}</p>
+            <p className={hexClassName}>{color.hex}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ============================
+// Design Rules Grid
+// ============================
+interface DesignRulesGridProps {
+  doList: string[];
+  dontList: string[];
+  containerClassName?: string;
+  doTitleClassName?: string;
+  dontTitleClassName?: string;
+  itemClassName?: string;
+  doTitle?: string;
+  dontTitle?: string;
+}
+
+/**
+ * Reusable design rules display for Showcase pages.
+ */
+export function DesignRulesGrid({
+  doList,
+  dontList,
+  containerClassName = "grid md:grid-cols-2 gap-8",
+  doTitleClassName = "text-lg font-semibold mb-4 text-green-600",
+  dontTitleClassName = "text-lg font-semibold mb-4 text-red-600",
+  itemClassName = "text-sm",
+  doTitle = "Do",
+  dontTitle = "Don't",
+}: DesignRulesGridProps) {
+  return (
+    <div className={containerClassName}>
+      <div>
+        <h3 className={doTitleClassName}>{doTitle}</h3>
+        <ul className="space-y-2">
+          {doList.map((item, i) => (
+            <li key={i} className={cn("flex gap-2", itemClassName)}>
+              <span className="text-green-500 shrink-0">+</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3 className={dontTitleClassName}>{dontTitle}</h3>
+        <ul className="space-y-2">
+          {dontList.map((item, i) => (
+            <li key={i} className={cn("flex gap-2", itemClassName)}>
+              <span className="text-red-500 shrink-0">-</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// ============================
+// Section Wrapper
+// ============================
+interface ShowcaseSectionProps {
+  children: React.ReactNode;
+  className?: string;
+  title?: string;
+  subtitle?: string;
+  titleClassName?: string;
+  subtitleClassName?: string;
+}
+
+/**
+ * Reusable section wrapper for Showcase pages.
+ */
+export function ShowcaseSection({
+  children,
+  className = "py-16 md:py-24 px-4 md:px-8",
+  title,
+  subtitle,
+  titleClassName = "text-2xl md:text-4xl font-bold mb-4",
+  subtitleClassName = "mb-10 opacity-70",
+}: ShowcaseSectionProps) {
+  return (
+    <section className={className}>
+      <div className="max-w-6xl mx-auto">
+        {title && <h2 className={titleClassName}>{title}</h2>}
+        {subtitle && <p className={subtitleClassName}>{subtitle}</p>}
+        {children}
+      </div>
+    </section>
+  );
+}
