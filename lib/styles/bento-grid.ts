@@ -257,4 +257,46 @@ export const bentoGrid: DesignStyle = {
 3. 间隙一致
 4. 有响应式处理
 5. 圆角统一`,
+
+  examplePrompts: [
+    {
+      title: "功能特性展示",
+      titleEn: "Feature Showcase",
+      description: "产品功能的 Bento 网格布局",
+      descriptionEn: "Bento grid layout for product features",
+      prompt: `用 Bento Grid 风格展示产品的 6 个核心功能，要求：
+1. 使用 CSS Grid 创建不规则网格布局
+2. 突出功能占据 col-span-2 或 row-span-2
+3. 每个卡片包含：图标、标题、简短描述
+4. 部分卡片使用强调色背景（如 sky-400）
+5. 响应式：移动端单列，桌面端多列
+所有卡片 rounded-2xl，统一 gap-4，hover 轻微上浮`,
+    },
+    {
+      title: "个人主页",
+      titleEn: "Personal Homepage",
+      description: "个人信息和链接的 Bento 布局",
+      descriptionEn: "Bento layout for personal info and links",
+      prompt: `用 Bento Grid 风格创建一个个人主页，要求：
+1. 大卡片：个人照片 + 简介
+2. 社交链接：小方块卡片，各一个图标
+3. 技能展示：横向长条卡片
+4. 最新项目：中等大小卡片，带缩略图
+5. 联系方式：底部全宽卡片
+网格布局参考 Apple 风格，色彩柔和但有亮点`,
+    },
+    {
+      title: "数据仪表盘",
+      titleEn: "Data Dashboard",
+      description: "数据统计卡片的网格布局",
+      descriptionEn: "Grid layout for data statistics cards",
+      prompt: `用 Bento Grid 风格设计一个数据仪表盘，要求：
+1. 大卡片：主要图表（占 2x2）
+2. 数据卡片：关键指标数字 + 趋势
+3. 列表卡片：最近活动或待办事项
+4. 小卡片：快捷操作按钮
+5. 全宽卡片：时间线或进度条
+使用 CSS Grid，深色卡片配亮色文字，浅色卡片配深色文字`,
+    },
+  ],
 };

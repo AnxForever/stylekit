@@ -35,6 +35,17 @@ export interface DesignStyle {
   tailwindConfig?: string;
   globalCss: string;
   aiRules: string;
+
+  // 示例 Prompts（帮助用户快速上手）
+  examplePrompts?: ExamplePrompt[];
+}
+
+export interface ExamplePrompt {
+  title: string;        // 如 "生成 SaaS 着陆页"
+  titleEn: string;      // 如 "Generate SaaS Landing Page"
+  description: string;  // 如 "包含 Hero、Features、Pricing"
+  descriptionEn: string;
+  prompt: string;       // 完整的 prompt 文本
 }
 
 export interface ComponentTemplate {

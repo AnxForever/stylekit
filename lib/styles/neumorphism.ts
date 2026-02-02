@@ -240,4 +240,46 @@ export const neumorphism: DesignStyle = {
 - Active/Pressed: 变为凹陷阴影
 - Focus: 阴影略微增大或添加强调色
 - Disabled: 阴影减弱，透明度降低`,
+
+  examplePrompts: [
+    {
+      title: "智能家居控制面板",
+      titleEn: "Smart Home Control Panel",
+      description: "设备控制和状态展示",
+      descriptionEn: "Device control and status display",
+      prompt: `用 Neumorphism 风格设计一个智能家居控制面板，要求：
+1. 背景：统一浅灰色 #e0e5ec
+2. 设备卡片：凸起效果，显示设备图标和状态
+3. 开关按钮：圆形，开启时凹陷 + 强调色图标
+4. 温度滑块：凹槽轨道，凸起滑块
+5. 场景按钮：按下时从凸起变凹陷
+所有阴影使用双色：右下深色 + 左上亮色`,
+    },
+    {
+      title: "计算器应用",
+      titleEn: "Calculator App",
+      description: "拟物风格计算器界面",
+      descriptionEn: "Skeuomorphic calculator interface",
+      prompt: `用 Neumorphism 风格创建一个计算器界面，要求：
+1. 外框：大圆角凸起容器
+2. 显示屏：凹陷区域，深色背景，显示数字
+3. 数字按钮：4x3 网格，凸起效果
+4. 运算符：右侧一列，用强调色
+5. 按下效果：从凸起变凹陷
+背景色 #e0e5ec，阴影用 #a3b1c6 和 #ffffff`,
+    },
+    {
+      title: "音频控制器",
+      titleEn: "Audio Controller",
+      description: "音量和均衡器控制",
+      descriptionEn: "Volume and equalizer controls",
+      prompt: `用 Neumorphism 风格设计一个音频控制器，要求：
+1. 主容器：大圆角凸起面板
+2. 旋钮：圆形凸起，带刻度指示
+3. 推子/滑块：垂直凹槽，凸起滑块
+4. 均衡器：多个垂直滑块并排
+5. 按钮：静音/预设等，按下时凹陷
+保持统一的浅灰色调，通过阴影创造立体感`,
+    },
+  ],
 };

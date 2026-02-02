@@ -9,7 +9,7 @@ interface RulesExporterProps {
   styleName: string;
 }
 
-type ExportFormat = "trae" | "cursor" | "prompt";
+type ExportFormat = "trae" | "cursor" | "claude-code" | "prompt";
 
 export function RulesExporter({
   aiRules,
@@ -26,6 +26,26 @@ export function RulesExporter({
         return aiRules;
       case "cursor":
         return `# ${styleName} Design Style Rules\n\n${aiRules}`;
+      case "claude-code":
+        return `# ${styleName} Design Style Guidelines
+
+## Overview
+This document defines the design rules for ${styleName} style. All generated code must strictly follow these guidelines.
+
+## AI Instructions
+${aiRules}
+
+## Global CSS
+\`\`\`css
+${globalCss}
+\`\`\`
+
+## Usage
+When generating UI components, always:
+1. Follow the design patterns specified above
+2. Use the color palette defined in the rules
+3. Apply the correct spacing, typography, and interaction styles
+4. Verify the output matches the style requirements`;
       case "prompt":
         return `${t("export.promptPrefix")}\n\n${t("export.styleLabel")}${styleName}\n\n${aiRules}\n\n## ${t("export.globalCss")}\n\n\`\`\`css\n${globalCss}\n\`\`\``;
     }
@@ -51,12 +71,21 @@ export function RulesExporter({
 
   const handleDownload = () => {
     const content = getContent();
-    const filename =
-      format === "trae"
-        ? "trae-rules.md"
-        : format === "cursor"
-          ? ".cursorrules"
-          : `${styleName.toLowerCase().replace(/\s+/g, "-")}-prompt.md`;
+    let filename: string;
+    switch (format) {
+      case "trae":
+        filename = "trae-rules.md";
+        break;
+      case "cursor":
+        filename = ".cursorrules";
+        break;
+      case "claude-code":
+        filename = "CLAUDE.md";
+        break;
+      case "prompt":
+        filename = `${styleName.toLowerCase().replace(/\s+/g, "-")}-prompt.md`;
+        break;
+    }
 
     const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
@@ -70,11 +99,12 @@ export function RulesExporter({
   return (
     <div className="border border-border">
       {/* Format Tabs */}
-      <div className="flex border-b border-border">
+      <div className="flex flex-wrap border-b border-border">
         {(
           [
             { key: "trae", label: "Trae Rules" },
             { key: "cursor", label: "Cursor Rules" },
+            { key: "claude-code", label: "Claude Code" },
             { key: "prompt", label: "Prompt" },
           ] as { key: ExportFormat; label: string }[]
         ).map((f) => (
