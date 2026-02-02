@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Zap, Palette, Shield, Tag } from "lucide-react";
 import {
   BrutalButton,
   BrutalCard,
@@ -44,7 +45,7 @@ export default function BrutalLandingTemplate() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <BrutalTag className="mb-6">🚀 新产品发布</BrutalTag>
+              <BrutalTag className="mb-6">NEW 新产品发布</BrutalTag>
               <h1 className="text-5xl md:text-7xl font-black leading-[1.1] mb-6">
                 让你的<br />
                 想法<br />
@@ -99,7 +100,7 @@ export default function BrutalLandingTemplate() {
       <BrutalSection id="features" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <BrutalTag className="mb-4">✨ 核心功能</BrutalTag>
+            <BrutalTag className="mb-4">CORE 核心功能</BrutalTag>
             <h2 className="text-4xl md:text-5xl font-black">
               为什么选择我们？
             </h2>
@@ -107,26 +108,26 @@ export default function BrutalLandingTemplate() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                emoji: "⚡",
+                icon: <Zap className="w-10 h-10" />,
                 title: "超级快速",
                 desc: "毫秒级响应，让用户体验流畅无比",
                 color: "bg-[#ff006e]",
               },
               {
-                emoji: "🎨",
+                icon: <Palette className="w-10 h-10" />,
                 title: "高度可定制",
                 desc: "完全自定义的设计系统，满足各种需求",
                 color: "bg-[#ccff00]",
               },
               {
-                emoji: "🔒",
+                icon: <Shield className="w-10 h-10" />,
                 title: "安全可靠",
                 desc: "企业级安全标准，数据加密存储",
                 color: "bg-[#00d9ff]",
               },
             ].map((feature, i) => (
               <BrutalCard key={i} className={`${feature.color} p-8`}>
-                <span className="text-5xl block mb-4">{feature.emoji}</span>
+                <span className="block mb-4">{feature.icon}</span>
                 <h3 className="text-2xl font-black mb-3">{feature.title}</h3>
                 <p className="text-sm">{feature.desc}</p>
               </BrutalCard>
@@ -139,7 +140,7 @@ export default function BrutalLandingTemplate() {
       <BrutalSection id="pricing" className="py-20 bg-[#f0f0f0]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <BrutalTag className="mb-4">💰 透明定价</BrutalTag>
+            <BrutalTag className="mb-4"><Tag className="w-4 h-4 inline mr-1" /> 透明定价</BrutalTag>
             <h2 className="text-4xl md:text-5xl font-black">
               简单明了的价格
             </h2>

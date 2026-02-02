@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { mainNav, externalNav } from "@/lib/nav-config";
+import { Download } from "lucide-react";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,6 +57,13 @@ export function Header() {
               <span>{t("nav.search")}</span>
               <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">⌘K</kbd>
             </button>
+            <Link
+              href="/guide"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-foreground text-background hover:bg-foreground/90 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{t("nav.export")}</span>
+            </Link>
             {mainNav.map((item) => (
               <Link key={item.href} href={item.href} className={linkClass}>
                 {t(item.labelKey)}
@@ -120,6 +128,14 @@ export function Header() {
         {isMenuOpen && (
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
+              <Link
+                href="/guide"
+                className="flex items-center gap-2 px-4 py-2 text-sm bg-foreground text-background"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Download className="w-4 h-4" />
+                {t("nav.export")}
+              </Link>
               {mainNav.map((item) => (
                 <Link
                   key={item.href}

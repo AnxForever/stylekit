@@ -1,16 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
-import { FavoriteButton } from "@/components/favorite-button";
+import { QuickExport } from "@/components/home/quick-export";
+import { StyleCard } from "@/components/home/style-card";
+import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Home() {
   const styles = getAllStylesMeta();
-  const featuredStyle = styles[0]; // 第一个作为精选
+  const [featuredIndex, setFeaturedIndex] = useState(0);
+  const featuredStyle = styles.length > 0 ? styles[featuredIndex] : null;
   const { t } = useI18n();
+
+  const nextStyle = () => {
+    if (styles.length > 0) {
+      setFeaturedIndex((i) => (i + 1) % styles.length);
+    }
+  };
+  const prevStyle = () => {
+    if (styles.length > 0) {
+      setFeaturedIndex((i) => (i - 1 + styles.length) % styles.length);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -59,31 +75,36 @@ export default function Home() {
               {/* Right: Featured Style Preview */}
               {featuredStyle && (
                 <div className="relative">
-                  <div className="aspect-[4/3] bg-[#ccff00] border-4 border-black flex items-center justify-center p-6 md:p-8">
-                    {/* Live Neo-Brutalist Component Preview */}
-                    <div className="w-full max-w-sm space-y-4">
-                      <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-4">
-                        <h3 className="font-black text-lg mb-2">Neo-Brutalist</h3>
-                        <p className="font-mono text-sm text-gray-700 mb-3">
-                          大胆的设计风格
-                        </p>
-                        <button className="bg-[#ff006e] text-white font-black px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm">
-                          探索风格
-                        </button>
-                      </div>
-                      <div className="flex gap-2">
-                        <div className="flex-1 h-3 bg-[#ff006e] border-2 border-black"></div>
-                        <div className="flex-1 h-3 bg-[#00d9ff] border-2 border-black"></div>
-                        <div className="flex-1 h-3 bg-black"></div>
-                      </div>
-                    </div>
-                  </div>
                   <Link
                     href={`/styles/${featuredStyle.slug}`}
-                    className="absolute bottom-0 right-0 bg-black text-white px-4 py-2 text-xs tracking-wide hover:bg-[#ff006e] transition-colors border-t-4 border-l-4 border-black"
+                    className="block aspect-[4/3] border border-border overflow-hidden hover:border-foreground transition-colors"
                   >
-                    {t("home.viewDetails")} →
+                    <StyleCoverPreview styleSlug={featuredStyle.slug} />
                   </Link>
+                  {/* Style name + navigation */}
+                  <div className="flex items-center justify-between mt-3">
+                    <Link href={`/styles/${featuredStyle.slug}`} className="group">
+                      <p className="text-sm font-medium group-hover:text-accent transition-colors">{featuredStyle.name}</p>
+                      <p className="text-xs text-muted">{featuredStyle.nameEn}</p>
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={prevStyle}
+                        className="w-8 h-8 flex items-center justify-center border border-border hover:border-foreground transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <span className="text-xs text-muted tabular-nums">
+                        {featuredIndex + 1}/{styles.length}
+                      </span>
+                      <button
+                        onClick={nextStyle}
+                        className="w-8 h-8 flex items-center justify-center border border-border hover:border-foreground transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -119,6 +140,26 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Quick Export */}
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+              <div>
+                <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                  {t("quickExport.label")}
+                </p>
+                <h2 className="text-2xl md:text-3xl mb-4">
+                  {t("quickExport.title")}
+                </h2>
+                <p className="text-muted leading-relaxed">
+                  {t("quickExport.description")}
+                </p>
+              </div>
+              <QuickExport />
+            </div>
+          </div>
+        </section>
+
         {/* Style Preview List */}
         <section>
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
@@ -139,63 +180,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {styles.map((style) => (
-                <Link
-                  key={style.slug}
-                  href={`/styles/${style.slug}`}
-                  className="group block border border-border hover:border-foreground transition-colors"
-                >
-                  <div className="aspect-[16/9] bg-zinc-100 relative overflow-hidden">
-                    {/* Style color preview */}
-                    <div className="absolute inset-0 flex">
-                      <div
-                        className="flex-1"
-                        style={{ backgroundColor: style.colors.primary }}
-                      />
-                      <div
-                        className="flex-1"
-                        style={{ backgroundColor: style.colors.secondary }}
-                      />
-                      {style.colors.accent.slice(0, 2).map((color, i) => (
-                        <div
-                          key={i}
-                          className="flex-1"
-                          style={{ backgroundColor: color }}
-                        />
-                      ))}
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <span className="text-white font-serif text-2xl md:text-3xl italic">
-                        {style.nameEn}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4 md:p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg md:text-xl group-hover:text-accent transition-colors">
-                          {style.name}
-                        </h3>
-                        <span className="text-sm text-muted">
-                          {style.nameEn}
-                        </span>
-                      </div>
-                      <FavoriteButton slug={style.slug} size="sm" />
-                    </div>
-                    <p className="text-sm text-muted line-clamp-2">
-                      {style.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {style.keywords.slice(0, 4).map((keyword) => (
-                        <span
-                          key={keyword}
-                          className="text-xs px-2 py-1 bg-zinc-100 text-muted"
-                        >
-                          {keyword}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
+                <StyleCard key={style.slug} style={style} />
               ))}
             </div>
           </div>

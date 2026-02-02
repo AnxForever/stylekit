@@ -122,7 +122,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
         {/* Footer */}
         <div className="p-6 border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
           <p className="text-xs text-muted">
-            💡 Tip: Use the <strong>Figma Tokens</strong> plugin to import these tokens directly into your Figma project.
+            Tip: Use the <strong>Figma Tokens</strong> plugin to import these tokens directly into your Figma project.
           </p>
         </div>
       </div>

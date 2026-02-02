@@ -2,6 +2,7 @@
 
 import { List, ListItem, ListItemContent } from "@/components/ui/list";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { FileText, Folder, Image } from "lucide-react";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -18,7 +19,7 @@ export function ListSection({ expandedProps, toggleProps }: Props) {
         <List>
           <ListItem>
             <ListItemContent
-              leading={<span className="text-xl">📄</span>}
+              leading={<FileText className="w-5 h-5 text-muted" />}
               title="文档标题"
               description="这是文档的描述信息"
               trailing={<span className="text-xs text-muted">2024</span>}
@@ -26,14 +27,14 @@ export function ListSection({ expandedProps, toggleProps }: Props) {
           </ListItem>
           <ListItem>
             <ListItemContent
-              leading={<span className="text-xl">📁</span>}
+              leading={<Folder className="w-5 h-5 text-muted" />}
               title="文件夹"
               description="包含 12 个项目"
             />
           </ListItem>
           <ListItem>
             <ListItemContent
-              leading={<span className="text-xl">🖼️</span>}
+              leading={<Image className="w-5 h-5 text-muted" />}
               title="图片文件"
               description="PNG 格式，2.4 MB"
             />

@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { StylePreviewSwitcher } from "@/components/style-preview-switcher";
 
 // Import all sections
 import {
@@ -49,6 +50,13 @@ export default function ComponentsPage() {
               <p className="text-lg text-muted max-w-2xl">
                 基于 Radix UI + Tailwind CSS 构建的 18 个通用组件，支持主题定制和无障碍访问。
               </p>
+            </div>
+          </section>
+
+          {/* Style Preview Switcher */}
+          <section className="border-b border-border">
+            <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
+              <StylePreviewSwitcher />
             </div>
           </section>
 

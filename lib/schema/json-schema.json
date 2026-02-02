@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stylekit.dev/schema/ui-plan.json",
+  "title": "UI Plan",
+  "description": "Structured output format for AI code generation",
+  "type": "object",
+  "required": ["meta", "sections", "globals"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["style", "archetype", "pageType", "timestamp"],
+      "properties": {
+        "style": {
+          "type": "string",
+          "description": "Visual style slug"
+        },
+        "archetype": {
+          "type": "string",
+          "description": "Layout archetype ID"
+        },
+        "pageType": {
+          "type": "string",
+          "enum": ["landing", "dashboard", "blog", "form", "list", "detail"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "techStack": {
+          "type": "string",
+          "enum": ["nextjs", "react", "vue", "vanilla"]
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/section"
+      }
+    },
+    "globals": {
+      "type": "object",
+      "required": ["colorScheme", "maxWidth", "spacing"],
+      "properties": {
+        "colorScheme": {
+          "type": "string",
+          "enum": ["light", "dark", "auto"]
+        },
+        "maxWidth": {
+          "type": "string",
+          "enum": ["sm", "md", "lg", "xl", "2xl", "4xl", "6xl", "7xl", "full"]
+        },
+        "spacing": {
+          "type": "string",
+          "enum": ["compact", "normal", "spacious"]
+        },
+        "locale": {
+          "type": "string",
+          "enum": ["en", "zh"]
+        },
+        "cssVariables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "section": {
+      "type": "object",
+      "required": ["id", "archetype", "components"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "archetype": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/component"
+          }
+        },
+        "styleOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "customClasses": {
+          "type": "string"
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["type", "recipe", "variant", "params", "slots"],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "recipe": {
+          "type": "string"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "boolean" },
+              { "type": "number" }
+            ]
+          }
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tokenOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/component"
+          }
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

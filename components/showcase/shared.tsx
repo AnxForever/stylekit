@@ -108,7 +108,7 @@ export function ShowcaseFooter({
 }
 
 interface ShowcaseHeroProps {
-  /** Badge/tag text (e.g., "✨ 玻璃拟态设计风格") */
+  /** Badge/tag text (e.g., "玻璃拟态设计风格") */
   badge?: string;
   /** Main title */
   title: string;

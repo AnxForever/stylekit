@@ -222,7 +222,7 @@ export default function ShowcaseContent() {
           <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">核心规则</h2>
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             <div>
-              <h3 className="font-bold text-xl md:text-2xl mb-4 text-lime-400">✅ 必须</h3>
+              <h3 className="font-bold text-xl md:text-2xl mb-4 text-lime-400">DO - 必须</h3>
               <ul className="font-mono text-sm md:text-base space-y-2 text-gray-300">
                 <li>• 无圆角 rounded-none</li>
                 <li>• 边框 2px border-gray-800</li>
@@ -233,7 +233,7 @@ export default function ShowcaseContent() {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-xl md:text-2xl mb-4 text-pink-400">⛔ 禁止</h3>
+              <h3 className="font-bold text-xl md:text-2xl mb-4 text-pink-400">DON'T - 禁止</h3>
               <ul className="font-mono text-sm md:text-base space-y-2 text-gray-300">
                 <li>• 圆角 rounded-*</li>
                 <li>• 纯黑边框 border-black</li>

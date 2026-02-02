@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -10,9 +10,18 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useI18n } from "@/lib/i18n/context";
+import { Copy, Check, RotateCcw, Code2, Eye } from "lucide-react";
 
-type ComponentType = "button" | "input" | "card" | "alert" | "progress";
+type ComponentType = "button" | "input" | "card" | "alert" | "progress" | "select" | "radio";
 
 interface PlaygroundState {
   // Button
@@ -35,6 +44,14 @@ interface PlaygroundState {
   // Progress
   progressValue: number;
   progressShowLabel: boolean;
+  // Select
+  selectPlaceholder: string;
+  selectDisabled: boolean;
+  selectOptions: string[];
+  // Radio
+  radioOrientation: "horizontal" | "vertical";
+  radioDisabled: boolean;
+  radioOptions: string[];
 }
 
 const initialState: PlaygroundState = {
@@ -53,11 +70,19 @@ const initialState: PlaygroundState = {
   alertMessage: "This is an alert message.",
   progressValue: 60,
   progressShowLabel: true,
+  selectPlaceholder: "Select an option",
+  selectDisabled: false,
+  selectOptions: ["Option 1", "Option 2", "Option 3"],
+  radioOrientation: "vertical",
+  radioDisabled: false,
+  radioOptions: ["Option A", "Option B", "Option C"],
 };
 
 export default function PlaygroundPage() {
   const [activeComponent, setActiveComponent] = useState<ComponentType>("button");
   const [state, setState] = useState<PlaygroundState>(initialState);
+  const [showCode, setShowCode] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { t } = useI18n();
 
   const components: { key: ComponentType; label: string }[] = [
@@ -66,6 +91,8 @@ export default function PlaygroundPage() {
     { key: "card", label: "Card" },
     { key: "alert", label: "Alert" },
     { key: "progress", label: "Progress" },
+    { key: "select", label: "Select" },
+    { key: "radio", label: "Radio" },
   ];
 
   const updateState = <K extends keyof PlaygroundState>(
@@ -124,7 +151,128 @@ export default function PlaygroundPage() {
             )}
           </div>
         );
+      case "select":
+        return (
+          <Select disabled={state.selectDisabled}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder={state.selectPlaceholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {state.selectOptions.map((opt) => (
+                <SelectItem key={opt} value={opt.toLowerCase().replace(/\s/g, "-")}>
+                  {opt}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      case "radio":
+        return (
+          <RadioGroup
+            defaultValue={state.radioOptions[0]?.toLowerCase().replace(/\s/g, "-")}
+            className={state.radioOrientation === "horizontal" ? "flex gap-4" : "space-y-2"}
+            disabled={state.radioDisabled}
+          >
+            {state.radioOptions.map((opt) => (
+              <RadioGroupItem
+                key={opt}
+                value={opt.toLowerCase().replace(/\s/g, "-")}
+                label={opt}
+              />
+            ))}
+          </RadioGroup>
+        );
     }
+  };
+
+  // Generate code string based on current state
+  const generateCode = useMemo(() => {
+    switch (activeComponent) {
+      case "button": {
+        const props: string[] = [];
+        if (state.buttonVariant !== "primary") props.push(`variant="${state.buttonVariant}"`);
+        if (state.buttonSize !== "md") props.push(`size="${state.buttonSize}"`);
+        if (state.buttonLoading) props.push("loading");
+        if (state.buttonDisabled) props.push("disabled");
+        const propsStr = props.length > 0 ? ` ${props.join(" ")}` : "";
+        return `<Button${propsStr}>\n  ${state.buttonText}\n</Button>`;
+      }
+      case "input": {
+        const props: string[] = [];
+        if (state.inputType !== "text") props.push(`type="${state.inputType}"`);
+        props.push(`placeholder="${state.inputPlaceholder}"`);
+        if (state.inputDisabled) props.push("disabled");
+        return `<Input ${props.join(" ")} />`;
+      }
+      case "card":
+        return `<Card>
+  <CardHeader>
+    <CardTitle>${state.cardTitle}</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>${state.cardContent}</p>
+  </CardContent>
+</Card>`;
+      case "alert": {
+        const props: string[] = [];
+        if (state.alertVariant !== "default") props.push(`variant="${state.alertVariant}"`);
+        const propsStr = props.length > 0 ? ` ${props.join(" ")}` : "";
+        return `<Alert${propsStr}>
+  <strong>${state.alertTitle}</strong>
+  <p>${state.alertMessage}</p>
+</Alert>`;
+      }
+      case "progress": {
+        return `<Progress value={${state.progressValue}} />${
+          state.progressShowLabel ? `\n<p className="text-sm text-muted">${state.progressValue}%</p>` : ""
+        }`;
+      }
+      case "select": {
+        const optionsCode = state.selectOptions
+          .map((opt) => `  <SelectItem value="${opt.toLowerCase().replace(/\s/g, "-")}">${opt}</SelectItem>`)
+          .join("\n");
+        return `<Select${state.selectDisabled ? " disabled" : ""}>
+  <SelectTrigger>
+    <SelectValue placeholder="${state.selectPlaceholder}" />
+  </SelectTrigger>
+  <SelectContent>
+${optionsCode}
+  </SelectContent>
+</Select>`;
+      }
+      case "radio": {
+        const optionsCode = state.radioOptions
+          .map((opt) => `  <RadioGroupItem value="${opt.toLowerCase().replace(/\s/g, "-")}" label="${opt}" />`)
+          .join("\n");
+        const classStr = state.radioOrientation === "horizontal" ? ` className="flex gap-4"` : "";
+        return `<RadioGroup defaultValue="${state.radioOptions[0]?.toLowerCase().replace(/\s/g, "-")}"${classStr}${state.radioDisabled ? " disabled" : ""}>
+${optionsCode}
+</RadioGroup>`;
+      }
+      default:
+        return "";
+    }
+  }, [activeComponent, state]);
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(generateCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textArea = document.createElement("textarea");
+      textArea.value = generateCode;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleReset = () => {
+    setState(initialState);
   };
 
   const renderControls = () => {
@@ -321,6 +469,132 @@ export default function PlaygroundPage() {
             </label>
           </div>
         );
+
+      case "select":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("playground.placeholder")}</label>
+              <Input
+                value={state.selectPlaceholder}
+                onChange={(e) => updateState("selectPlaceholder", e.target.value)}
+                className="max-w-xs"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("playground.options")}</label>
+              <div className="space-y-2">
+                {state.selectOptions.map((opt, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      value={opt}
+                      onChange={(e) => {
+                        const newOpts = [...state.selectOptions];
+                        newOpts[i] = e.target.value;
+                        updateState("selectOptions", newOpts);
+                      }}
+                      className="max-w-[200px]"
+                    />
+                    {state.selectOptions.length > 2 && (
+                      <button
+                        onClick={() => {
+                          const newOpts = state.selectOptions.filter((_, j) => j !== i);
+                          updateState("selectOptions", newOpts);
+                        }}
+                        className="text-xs text-muted hover:text-red-500 transition-colors"
+                      >
+                        {t("playground.remove")}
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {state.selectOptions.length < 6 && (
+                  <button
+                    onClick={() => updateState("selectOptions", [...state.selectOptions, `Option ${state.selectOptions.length + 1}`])}
+                    className="text-xs text-muted hover:text-foreground transition-colors"
+                  >
+                    + {t("playground.addOption")}
+                  </button>
+                )}
+              </div>
+            </div>
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={state.selectDisabled}
+                onCheckedChange={(c) => updateState("selectDisabled", !!c)}
+              />
+              <span className="text-sm">{t("playground.disabled")}</span>
+            </label>
+          </div>
+        );
+
+      case "radio":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("playground.orientation")}</label>
+              <div className="flex gap-2">
+                {(["vertical", "horizontal"] as const).map((dir) => (
+                  <button
+                    key={dir}
+                    onClick={() => updateState("radioOrientation", dir)}
+                    className={`px-3 py-1 text-sm border rounded ${
+                      state.radioOrientation === dir
+                        ? "bg-foreground text-background"
+                        : "border-border hover:border-foreground"
+                    }`}
+                  >
+                    {dir}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("playground.options")}</label>
+              <div className="space-y-2">
+                {state.radioOptions.map((opt, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      value={opt}
+                      onChange={(e) => {
+                        const newOpts = [...state.radioOptions];
+                        newOpts[i] = e.target.value;
+                        updateState("radioOptions", newOpts);
+                      }}
+                      className="max-w-[200px]"
+                    />
+                    {state.radioOptions.length > 2 && (
+                      <button
+                        onClick={() => {
+                          const newOpts = state.radioOptions.filter((_, j) => j !== i);
+                          updateState("radioOptions", newOpts);
+                        }}
+                        className="text-xs text-muted hover:text-red-500 transition-colors"
+                      >
+                        {t("playground.remove")}
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {state.radioOptions.length < 5 && (
+                  <button
+                    onClick={() => updateState("radioOptions", [...state.radioOptions, `Option ${String.fromCharCode(65 + state.radioOptions.length)}`])}
+                    className="text-xs text-muted hover:text-foreground transition-colors"
+                  >
+                    + {t("playground.addOption")}
+                  </button>
+                )}
+              </div>
+            </div>
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={state.radioDisabled}
+                onCheckedChange={(c) => updateState("radioDisabled", !!c)}
+              />
+              <span className="text-sm">{t("playground.disabled")}</span>
+            </label>
+          </div>
+        );
     }
   };
 
@@ -345,27 +619,89 @@ export default function PlaygroundPage() {
         {/* Playground */}
         <section className="py-12 md:py-16">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
-            {/* Component Tabs */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {components.map((c) => (
+            {/* Component Tabs + Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div className="flex flex-wrap gap-2">
+                {components.map((c) => (
+                  <button
+                    key={c.key}
+                    onClick={() => setActiveComponent(c.key)}
+                    className={`px-4 py-2 text-sm font-medium transition-colors ${
+                      activeComponent === c.key
+                        ? "bg-foreground text-background"
+                        : "border border-border hover:border-foreground"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
                 <button
-                  key={c.key}
-                  onClick={() => setActiveComponent(c.key)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    activeComponent === c.key
-                      ? "bg-foreground text-background"
-                      : "border border-border hover:border-foreground"
-                  }`}
+                  onClick={handleReset}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted hover:text-foreground transition-colors border border-border hover:border-foreground"
+                  title={t("playground.reset")}
                 >
-                  {c.label}
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  {t("playground.reset")}
                 </button>
-              ))}
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               {/* Preview */}
-              <div className="border border-border p-8 min-h-[300px] flex items-center justify-center bg-zinc-50 dark:bg-zinc-900/50">
-                {renderPreview()}
+              <div className="border border-border overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-2 bg-zinc-100 dark:bg-zinc-800/50 border-b border-border">
+                  <span className="text-xs text-muted font-medium uppercase tracking-wider">
+                    {t("playground.preview")}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setShowCode(false)}
+                      className={`p-1 rounded transition-colors ${!showCode ? "text-foreground" : "text-muted hover:text-foreground"}`}
+                      title={t("playground.preview")}
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setShowCode(true)}
+                      className={`p-1 rounded transition-colors ${showCode ? "text-foreground" : "text-muted hover:text-foreground"}`}
+                      title={t("playground.code")}
+                    >
+                      <Code2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                {!showCode ? (
+                  <div className="p-8 min-h-[280px] flex items-center justify-center bg-zinc-50 dark:bg-zinc-900/50">
+                    {renderPreview()}
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <div className="flex items-center justify-between px-4 py-1.5 bg-zinc-800">
+                      <span className="text-xs text-zinc-400 font-mono">tsx</span>
+                      <button
+                        onClick={handleCopyCode}
+                        className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors px-2 py-1"
+                      >
+                        {copied ? (
+                          <>
+                            <Check className="w-3 h-3" />
+                            {t("export.copied")}
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            {t("export.copyCode")}
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 bg-zinc-900 text-zinc-100 min-h-[246px] overflow-auto">
+                      <code className="text-sm font-mono whitespace-pre">{generateCode}</code>
+                    </pre>
+                  </div>
+                )}
               </div>
 
               {/* Controls */}
@@ -373,6 +709,34 @@ export default function PlaygroundPage() {
                 <h3 className="text-lg font-medium mb-4">{t("playground.props")}</h3>
                 {renderControls()}
               </div>
+            </div>
+
+            {/* Generated Code (always visible below on larger screens) */}
+            <div className="mt-6 border border-border overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2 bg-zinc-800">
+                <span className="text-xs text-zinc-400 font-mono uppercase tracking-wider">
+                  {t("playground.generatedCode")}
+                </span>
+                <button
+                  onClick={handleCopyCode}
+                  className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors px-2 py-1"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3 h-3" />
+                      {t("export.copied")}
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3" />
+                      {t("export.copyCode")}
+                    </>
+                  )}
+                </button>
+              </div>
+              <pre className="p-4 bg-zinc-900 text-zinc-100 overflow-auto">
+                <code className="text-sm font-mono whitespace-pre">{generateCode}</code>
+              </pre>
             </div>
 
             {/* Quick Links */}

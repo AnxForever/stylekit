@@ -32,10 +32,10 @@ export function QuickStartGuide({ aiRules, styleName, onScrollToRules }: QuickSt
 
   return (
     <div className="border border-border bg-zinc-50 dark:bg-zinc-900/50 p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-lg">🚀</span>
-        <h3 className="font-medium">{t("quickStart.title")}</h3>
-      </div>
+      <p className="text-xs tracking-widest uppercase text-muted mb-2">
+        Quick Start
+      </p>
+      <h3 className="font-medium mb-4">{t("quickStart.title")}</h3>
 
       <div className="space-y-4">
         {/* Step 1 */}
