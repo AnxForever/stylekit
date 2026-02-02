@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 
 // 更新为你的实际域名
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.cc";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://anxforever.shop";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const styles = getAllStylesMeta();

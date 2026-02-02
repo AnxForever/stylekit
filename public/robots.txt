@@ -36,7 +36,7 @@ Allow: /llms-full.txt
 Allow: /api/
 
 # Sitemap
-Sitemap: https://stylekit.cc/sitemap.xml
+Sitemap: https://anxforever.shop/sitemap.xml
 
 # Host
-Host: https://stylekit.cc
+Host: https://anxforever.shop

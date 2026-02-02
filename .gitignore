@@ -46,8 +46,16 @@ nul
 # Agent/IDE Rules
 CLAUDE.md
 trae-rules.md
+NEO-BRUTALIST-GUIDE.md
 PHASE-5A-SUMMARY.md
 .claude/
 .trae/
+.cursor/
+.windsurf/
 skills/ui-ux-pro-max/
+skills/stylekit-design-system/
+
+# Local images
+image.png
+*.local.png
 
