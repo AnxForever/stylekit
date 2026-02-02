@@ -3,7 +3,7 @@ import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.cc";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://anxforever.shop";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
