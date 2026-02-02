@@ -31,18 +31,18 @@ export function CodeBlock({ code, language = "tsx" }: CodeBlockProps) {
   };
 
   return (
-    <div className="relative group">
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-800 border-b border-zinc-700">
-        <span className="text-xs text-zinc-400 font-mono">{language}</span>
+    <div className="border border-border">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+        <span className="text-xs text-muted font-mono uppercase tracking-wider">{language}</span>
         <button
           onClick={handleCopy}
-          className="text-xs text-zinc-400 hover:text-white transition-colors px-2 py-1"
+          className="text-xs text-muted hover:text-foreground transition-colors px-2 py-1"
         >
           {copied ? t("export.copied") : t("export.copyCode")}
         </button>
       </div>
-      <pre className="!mt-0 !rounded-none">
-        <code className="text-sm">{code.trim()}</code>
+      <pre className="!mt-0 !rounded-none !bg-transparent p-4 overflow-auto max-h-[400px]">
+        <code className="text-sm text-foreground">{code.trim()}</code>
       </pre>
     </div>
   );

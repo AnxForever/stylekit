@@ -19,6 +19,7 @@ export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/components", labelKey: "nav.components" },
   { href: "/linter", labelKey: "nav.linter" },
+  { href: "/developers", labelKey: "nav.developers" },
   { href: "/prompt-builder", labelKey: "nav.promptBuilder" },
   { href: "/guide", labelKey: "nav.guide" },
   { href: "/about", labelKey: "nav.about" },

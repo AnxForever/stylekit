@@ -135,34 +135,33 @@ When generating UI components, always:
   ];
 
   return (
-    <div className="border border-border bg-zinc-50 dark:bg-zinc-900/50">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-border">
-        <p className="text-xs tracking-widest uppercase text-muted mb-1">
-          {t("quickExport.label")}
-        </p>
-        <h3 className="text-lg font-medium">{t("quickExport.title")}</h3>
-      </div>
+    <div className="border border-border">
+      {/* Compact Header Row */}
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 p-4 border-b border-border">
+        <div className="flex items-center gap-2">
+          <p className="text-xs tracking-widest uppercase text-muted whitespace-nowrap">
+            {t("quickExport.label")}
+          </p>
+          <span className="text-muted">|</span>
+        </div>
 
-      {/* Style Selector + Format Tabs */}
-      <div className="px-6 py-4 border-b border-border flex flex-col sm:flex-row gap-4">
         {/* Style Dropdown */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between px-4 py-2.5 border border-border bg-background hover:border-foreground/50 transition-colors text-sm"
+            className="w-full flex items-center justify-between px-3 py-2 border border-border bg-background hover:border-foreground/50 transition-colors text-sm"
           >
-            <span>
+            <span className="truncate">
               {selectedMeta?.name}{" "}
               <span className="text-muted">({selectedMeta?.nameEn})</span>
             </span>
             <ChevronDown
-              className={`w-4 h-4 text-muted transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+              className={`w-4 h-4 text-muted transition-transform flex-shrink-0 ml-2 ${isDropdownOpen ? "rotate-180" : ""}`}
             />
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute z-10 top-full left-0 right-0 mt-1 border border-border bg-background shadow-lg max-h-64 overflow-y-auto">
+            <div className="absolute z-20 top-full left-0 right-0 mt-1 border border-border bg-background shadow-lg max-h-64 overflow-y-auto">
               {stylesMeta.map((style) => (
                 <button
                   key={style.slug}
@@ -170,7 +169,7 @@ When generating UI components, always:
                     setSelectedSlug(style.slug);
                     setIsDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${
                     selectedSlug === style.slug
                       ? "bg-zinc-100 dark:bg-zinc-800"
                       : ""
@@ -185,15 +184,15 @@ When generating UI components, always:
         </div>
 
         {/* Format Tabs */}
-        <div className="flex border border-border">
+        <div className="flex border border-border flex-shrink-0">
           {formatOptions.map((f) => (
             <button
               key={f.key}
               onClick={() => setFormat(f.key)}
-              className={`px-3 py-2 text-xs tracking-wide transition-colors ${
+              className={`px-3 py-1.5 text-xs tracking-wide transition-colors ${
                 format === f.key
                   ? "bg-foreground text-background"
-                  : "text-muted hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  : "text-muted hover:text-foreground"
               }`}
               title={f.file}
             >
@@ -201,49 +200,40 @@ When generating UI components, always:
             </button>
           ))}
         </div>
+
+        {/* Actions */}
+        <div className="flex gap-2 flex-shrink-0">
+          <button
+            onClick={handleCopy}
+            disabled={loading || !styleData}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors disabled:opacity-50"
+          >
+            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            <span className="hidden sm:inline">{copied ? t("export.copied") : t("export.copy")}</span>
+          </button>
+          <button
+            onClick={handleDownload}
+            disabled={loading || !styleData}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-50"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{t("export.download")}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Preview */}
-      <div className="px-6 py-4 max-h-48 overflow-y-auto">
+      {/* Preview - Collapsible */}
+      <div className="px-4 py-3 max-h-32 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-4">
-            <Loader2 className="w-5 h-5 animate-spin text-muted" />
+          <div className="flex items-center justify-center py-2">
+            <Loader2 className="w-4 h-4 animate-spin text-muted" />
           </div>
         ) : (
-          <pre className="text-xs text-muted whitespace-pre-wrap line-clamp-6">
-            {getContent().slice(0, 500)}
-            {getContent().length > 500 && "..."}
+          <pre className="text-xs text-foreground/60 whitespace-pre-wrap line-clamp-4">
+            {getContent().slice(0, 400)}
+            {getContent().length > 400 && "..."}
           </pre>
         )}
-      </div>
-
-      {/* Actions */}
-      <div className="flex border-t border-border">
-        <button
-          onClick={handleCopy}
-          disabled={loading || !styleData}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-r border-border disabled:opacity-50"
-        >
-          {copied ? (
-            <>
-              <Check className="w-4 h-4" />
-              {t("export.copied")}
-            </>
-          ) : (
-            <>
-              <Copy className="w-4 h-4" />
-              {t("export.copy")}
-            </>
-          )}
-        </button>
-        <button
-          onClick={handleDownload}
-          disabled={loading || !styleData}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
-        >
-          <Download className="w-4 h-4" />
-          {t("export.download")}
-        </button>
       </div>
     </div>
   );
