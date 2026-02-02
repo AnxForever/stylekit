@@ -15,12 +15,12 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
   const allStyles = getAllStylesMeta();
   const params = await searchParams;
 
-  // Parse filter params from URL
-  const activeType = (params.type as StyleType | "all") || "all";
-  const activeTags = params.tags
+  // 解析 URL 参数作为初始值
+  const initialType = (params.type as StyleType | "all") || "all";
+  const initialTags = params.tags
     ? (params.tags.split(",") as StyleTag[])
     : [];
-  const showFavorites = params.fav === "1";
+  const initialShowFavorites = params.fav === "1";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -28,9 +28,9 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
       <main className="flex-1">
         <StylesContent
           allStyles={allStyles}
-          activeType={activeType}
-          activeTags={activeTags}
-          showFavorites={showFavorites}
+          initialType={initialType}
+          initialTags={initialTags}
+          initialShowFavorites={initialShowFavorites}
         />
       </main>
       <Footer />
