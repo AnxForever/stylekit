@@ -91,6 +91,15 @@ import { modernGradient } from "./modern-gradient";
 import { retroVintage } from "./retro-vintage";
 import { darkMode } from "./dark-mode";
 import { geometricBold } from "./geometric-bold";
+// 新增布局风格
+import { masonryFlow } from "./masonry-flow";
+import { splitScreen } from "./split-screen";
+import { fullPageScroll } from "./full-page-scroll";
+import { timelineVertical } from "./timeline-vertical";
+import { cardStack } from "./card-stack";
+import { sidebarFixed } from "./sidebar-fixed";
+import { magazineGrid } from "./magazine-grid";
+import { heroFullscreen } from "./hero-fullscreen";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -111,6 +120,15 @@ export const styles: DesignStyle[] = [
   retroVintage,
   darkMode,
   geometricBold,
+  // 新增布局风格
+  masonryFlow,
+  splitScreen,
+  fullPageScroll,
+  timelineVertical,
+  cardStack,
+  sidebarFixed,
+  magazineGrid,
+  heroFullscreen,
 ];
 
 // 根据 slug 获取风格

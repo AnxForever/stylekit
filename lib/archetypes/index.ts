@@ -4,12 +4,20 @@ import type { LayoutArchetype, ArchetypeCategory, ArchetypeCollection } from "./
 import { landingArchetypes } from "./landing";
 import { dashboardArchetypes } from "./dashboard";
 import { blogArchetypes } from "./blog";
+import { ecommerceArchetypes } from "./ecommerce";
+import { portfolioArchetypes } from "./portfolio";
+import { formArchetypes } from "./form";
+import { authArchetypes } from "./auth";
 
 // All archetypes by category
 const archetypeCollections: ArchetypeCollection[] = [
   { category: "landing", archetypes: landingArchetypes },
   { category: "dashboard", archetypes: dashboardArchetypes },
   { category: "blog", archetypes: blogArchetypes },
+  { category: "ecommerce", archetypes: ecommerceArchetypes },
+  { category: "portfolio", archetypes: portfolioArchetypes },
+  { category: "form", archetypes: formArchetypes },
+  { category: "auth", archetypes: authArchetypes },
 ];
 
 // Flat registry for quick lookup
