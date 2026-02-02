@@ -142,9 +142,9 @@ When generating UI components, always:
       </div>
 
       {/* Preview */}
-      <div className="p-4 md:p-6 max-h-[400px] overflow-y-auto bg-zinc-50 dark:bg-zinc-900">
-        <pre className="!bg-transparent !p-0 text-sm whitespace-pre-wrap text-foreground">
-          <code className="text-zinc-800 dark:text-zinc-200">{getContent()}</code>
+      <div className="p-4 md:p-6 max-h-[400px] overflow-y-auto border-b border-border">
+        <pre className="text-sm whitespace-pre-wrap text-foreground">
+          <code>{getContent()}</code>
         </pre>
       </div>
 
