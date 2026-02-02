@@ -65,7 +65,7 @@ Visit [http://localhost:3000](http://localhost:3000)
 | Bento Grid | Dashboards, Portfolios | Grid-based layouts |
 | Corporate Clean | Business, Enterprise | Professional, minimal |
 
-[View all 16 styles](https://anxforever.shop/styles)
+[View all 16 styles](https://stylekit.cc/styles)
 
 ## API
 
@@ -108,7 +108,7 @@ StyleKit provides AI-friendly documentation at `/llms.txt` and `/llms-full.txt` 
 
 ### Prompt Builder
 
-Use the [Prompt Builder](https://anxforever.shop/prompt-builder) to generate AI prompts with:
+Use the [Prompt Builder](https://stylekit.cc/prompt-builder) to generate AI prompts with:
 
 - **Product Surface** - What components and features
 - **Context of Use** - Who uses it and when
