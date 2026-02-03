@@ -17,7 +17,8 @@ export type StyleTag =
   | "minimal"
   | "expressive"
   | "high-contrast"
-  | "responsive";
+  | "responsive"
+  | "brand-inspired";
 
 export interface StyleMeta {
   slug: string;
@@ -442,7 +443,7 @@ export const stylesMeta: StyleMeta[] = [
     name: "粘土拟态",
     nameEn: "Claymorphism",
     description: "柔软的粘土质感设计，通过超大圆角、内外阴影组合和柔和渐变，创造出可爱的 3D 立体效果，适合儿童应用和趣味产品。",
-    cover: "/styles/claymorphism.png",
+    cover: "/styles/claymorphism.svg",
     styleType: "visual",
     tags: ["modern", "expressive"],
     category: "modern",
@@ -458,9 +459,9 @@ export const stylesMeta: StyleMeta[] = [
     name: "Notion 风格",
     nameEn: "Notion Style",
     description: "极简清爽的文档工具风格，强调内容可读性和功能性，使用微妙的边框、柔和的悬停效果和清晰的文字层级。",
-    cover: "/styles/notion-style.png",
+    cover: "/styles/notion-style.svg",
     styleType: "visual",
-    tags: ["minimal"],
+    tags: ["minimal", "brand-inspired"],
     category: "minimal",
     colors: {
       primary: "#37352f",
@@ -474,9 +475,9 @@ export const stylesMeta: StyleMeta[] = [
     name: "Stripe 风格",
     nameEn: "Stripe Style",
     description: "精致专业的金融科技风格，以 Stripe 紫为主色调，配合渐变网格背景、精致卡片阴影和流畅动画，适合支付产品和开发者工具。",
-    cover: "/styles/stripe-style.png",
+    cover: "/styles/stripe-style.svg",
     styleType: "visual",
-    tags: ["modern"],
+    tags: ["modern", "brand-inspired"],
     category: "modern",
     colors: {
       primary: "#635bff",
@@ -490,9 +491,9 @@ export const stylesMeta: StyleMeta[] = [
     name: "Apple 风格",
     nameEn: "Apple Style",
     description: "极致简约的高端设计风格，大量留白、精致圆角、微妙阴影和 SF Pro 风格字体，传达高端科技产品的品质感。",
-    cover: "/styles/apple-style.png",
+    cover: "/styles/apple-style.svg",
     styleType: "visual",
-    tags: ["minimal"],
+    tags: ["minimal", "brand-inspired"],
     category: "minimal",
     colors: {
       primary: "#000000",
@@ -506,7 +507,7 @@ export const stylesMeta: StyleMeta[] = [
     name: "像素艺术风",
     nameEn: "Pixel Art",
     description: "复古 8-bit 像素游戏风格，无圆角、像素化边框、硬边阴影和鲜明的 8-bit 配色，适合游戏、复古应用和独立开发者项目。",
-    cover: "/styles/pixel-art.png",
+    cover: "/styles/pixel-art.svg",
     styleType: "visual",
     tags: ["retro", "expressive"],
     category: "retro",

@@ -1,0 +1,25 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#f7f6f3"/>
+
+  <!-- Sidebar -->
+  <rect x="50" y="80" width="280" height="470" rx="8" fill="#ffffff" stroke="#e5e5e5" stroke-width="1"/>
+  <rect x="70" y="100" width="240" height="32" rx="4" fill="#f0f0f0"/>
+  <rect x="70" y="150" width="240" height="28" rx="4" fill="#e5e5e5"/>
+  <rect x="70" y="190" width="240" height="28" rx="4" fill="#37352f" fill-opacity="0.08"/>
+  <rect x="70" y="230" width="240" height="28" rx="4" fill="#e5e5e5"/>
+
+  <!-- Main Content -->
+  <rect x="360" y="80" width="790" height="470" rx="8" fill="#ffffff" stroke="#e5e5e5" stroke-width="1"/>
+  <rect x="390" y="110" width="400" height="48" rx="4" fill="#37352f" fill-opacity="0.05"/>
+  <rect x="390" y="180" width="730" height="16" rx="2" fill="#37352f" fill-opacity="0.6"/>
+  <rect x="390" y="210" width="680" height="16" rx="2" fill="#37352f" fill-opacity="0.4"/>
+  <rect x="390" y="240" width="720" height="16" rx="2" fill="#37352f" fill-opacity="0.4"/>
+
+  <!-- Tags -->
+  <rect x="390" y="290" width="80" height="28" rx="4" fill="#2eaadc" fill-opacity="0.1"/>
+  <rect x="485" y="290" width="90" height="28" rx="4" fill="#0f7b6c" fill-opacity="0.1"/>
+  <rect x="590" y="290" width="70" height="28" rx="4" fill="#eb5757" fill-opacity="0.1"/>
+
+  <!-- Title -->
+  <text x="600" y="590" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="600" fill="#37352f" text-anchor="middle">Notion Style</text>
+</svg>
