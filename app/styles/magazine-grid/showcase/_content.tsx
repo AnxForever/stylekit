@@ -7,13 +7,13 @@ import {
   Clock,
   User,
   TrendingUp,
-  Play,
   Bookmark,
   Share2,
   Newspaper,
   Grid3X3,
   Layers,
   Palette,
+  ChevronRight,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -21,105 +21,102 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Magazine Grid color palette
+// Editorial color palette
 const colors: ColorItem[] = [
-  { name: "Dark", hex: "#1a1a1a", bg: "bg-zinc-900" },
-  { name: "Light", hex: "#fafafa", bg: "bg-zinc-50", border: true },
-  { name: "Red", hex: "#e63946", bg: "bg-red-600" },
-  { name: "Teal", hex: "#2a9d8f", bg: "bg-teal-600" },
-  { name: "Gold", hex: "#e9c46a", bg: "bg-amber-400" },
+  { name: "Ink", hex: "#0a0a0a", bg: "bg-[#0a0a0a]" },
+  { name: "Paper", hex: "#fafafa", bg: "bg-[#fafafa]", border: true },
+  { name: "Accent Red", hex: "#e63946", bg: "bg-[#e63946]" },
+  { name: "Warm Gray", hex: "#6b7280", bg: "bg-gray-500" },
+  { name: "Cream", hex: "#f5f5dc", bg: "bg-[#f5f5dc]", border: true },
 ];
 
 // Design rules
 const designRules = [
   { title: "CSS Grid Layout", desc: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" },
   { title: "Featured Spans", desc: "col-span-2 row-span-2 for hero content" },
-  { title: "Category Labels", desc: "Colored tags for content classification" },
-  { title: "Image Ratios", desc: "Consistent aspect ratios for thumbnails" },
+  { title: "Serif Headlines", desc: "font-serif for editorial elegance" },
+  { title: "Category Labels", desc: "Uppercase tracking for classification" },
   { title: "Line Clamping", desc: "Truncate excerpts with line-clamp" },
-  { title: "Hover Effects", desc: "Image scale on hover for interactivity" },
+  { title: "Hover Effects", desc: "Subtle underlines and color shifts" },
 ];
 
 // Categories
-const categories = ["All", "Technology", "Business", "Culture", "Opinion", "Sports"];
+const categories = ["All", "Essays", "Culture", "Politics", "Science", "Opinion"];
 
 // Articles data
 const articles = [
   {
     id: 1,
-    title: "The Future of AI in Creative Industries",
-    excerpt: "How artificial intelligence is reshaping the way we create and consume content across media, art, and entertainment.",
-    category: "Technology",
-    categoryColor: "bg-blue-600",
-    author: "Sarah Chen",
-    readTime: "8 min read",
+    title: "The Quiet Revolution in How We Think About Time",
+    excerpt: "A meditation on the changing nature of temporal experience in the digital age, and what it means for our collective consciousness.",
+    category: "Essays",
+    author: "Margaret Atwood",
+    readTime: "12 min read",
     featured: true,
   },
   {
     id: 2,
-    title: "Startup Funding Hits Record High",
-    excerpt: "Venture capital investments reach unprecedented levels in Q3.",
-    category: "Business",
-    categoryColor: "bg-emerald-600",
-    author: "Mike Johnson",
-    readTime: "5 min read",
+    title: "The Architecture of Silence",
+    excerpt: "How modern spaces are designed to cultivate contemplation.",
+    category: "Culture",
+    author: "James Baldwin",
+    readTime: "8 min read",
   },
   {
     id: 3,
-    title: "The Rise of Digital Art Collections",
-    excerpt: "Museums embrace virtual galleries and NFT exhibitions.",
-    category: "Culture",
-    categoryColor: "bg-amber-600",
-    author: "Emma Wilson",
-    readTime: "6 min read",
+    title: "Letters from the Edge of Reason",
+    excerpt: "Dispatches from the frontiers of scientific discovery.",
+    category: "Science",
+    author: "Carl Sagan",
+    readTime: "10 min read",
   },
   {
     id: 4,
-    title: "Remote Work Revolution Continues",
-    excerpt: "Companies adopt hybrid models as the new standard.",
-    category: "Business",
-    categoryColor: "bg-emerald-600",
-    author: "Tom Baker",
-    readTime: "4 min read",
-  },
-  {
-    id: 5,
-    title: "Climate Tech Innovations",
-    excerpt: "New technologies tackling environmental challenges.",
-    category: "Technology",
-    categoryColor: "bg-blue-600",
-    author: "Lisa Park",
+    title: "The Democracy of Everyday Things",
+    excerpt: "Finding meaning in the mundane objects that shape our lives.",
+    category: "Essays",
+    author: "Susan Sontag",
     readTime: "7 min read",
   },
   {
-    id: 6,
-    title: "The Psychology of Social Media",
-    excerpt: "Understanding our digital behaviors and habits.",
+    id: 5,
+    title: "On the Nature of Progress",
+    excerpt: "Questioning our assumptions about forward movement.",
     category: "Opinion",
-    categoryColor: "bg-purple-600",
-    author: "Dr. James Lee",
-    readTime: "10 min read",
+    author: "Hannah Arendt",
+    readTime: "9 min read",
+  },
+  {
+    id: 6,
+    title: "The Weight of Words",
+    excerpt: "Language as both prison and liberation in modern discourse.",
+    category: "Politics",
+    author: "George Orwell",
+    readTime: "11 min read",
   },
 ];
 
 export default function ShowcaseContent() {
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <nav className="sticky top-0 z-50 bg-[#fafafa] border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link
               href="/styles/magazine-grid"
-              className="flex items-center gap-2 text-zinc-600 hover:text-zinc-900 transition-colors"
+              className="flex items-center gap-2 text-gray-500 hover:text-[#0a0a0a] transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold hidden sm:inline">Back to Docs</span>
+              <span className="font-medium hidden sm:inline">Back to Docs</span>
             </Link>
-            <span className="text-2xl font-bold text-zinc-900 tracking-tight">THE DAILY</span>
+            <div className="text-center">
+              <span className="font-serif text-2xl font-bold text-[#0a0a0a] italic tracking-tight">The Review</span>
+              <div className="text-xs text-gray-400 uppercase tracking-widest">Est. 1923</div>
+            </div>
             <Link
               href="/styles"
-              className="px-4 py-2 bg-zinc-900 text-white rounded-full text-sm hover:bg-zinc-800 transition-colors"
+              className="px-4 py-2 bg-[#0a0a0a] text-white text-sm hover:bg-gray-800 transition-colors"
             >
               All Styles
             </Link>
@@ -127,17 +124,17 @@ export default function ShowcaseContent() {
         </div>
 
         {/* Category Navigation */}
-        <div className="border-t border-zinc-100">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center gap-6 overflow-x-auto py-3">
+        <div className="border-t border-gray-100">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex items-center gap-8 overflow-x-auto py-3">
               {categories.map((cat, i) => (
                 <button
                   key={cat}
                   className={`
-                    text-sm font-semibold uppercase tracking-wider whitespace-nowrap transition-colors
+                    text-xs font-medium uppercase tracking-widest whitespace-nowrap transition-colors
                     ${i === 0
-                      ? "text-red-600 border-b-2 border-red-600 pb-2 -mb-[13px]"
-                      : "text-zinc-500 hover:text-zinc-900"
+                      ? "text-[#e63946] border-b-2 border-[#e63946] pb-2 -mb-[13px]"
+                      : "text-gray-400 hover:text-[#0a0a0a]"
                     }
                   `}
                 >
@@ -150,37 +147,38 @@ export default function ShowcaseContent() {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-8 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-medium mb-6">
+      <section className="py-12 px-6 bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-8">
             <Newspaper className="w-4 h-4" />
-            <span>Magazine Style Layout</span>
+            <span className="uppercase tracking-widest text-xs">Editorial Style</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-4">
+          <h1 className="font-serif text-5xl md:text-6xl font-bold text-[#0a0a0a] mb-6 italic">
             Magazine Grid
           </h1>
-          <p className="text-xl text-zinc-600 max-w-2xl">
-            Professional editorial layout with mixed-size content blocks, perfect for news sites and content hubs.
+          <p className="text-xl text-gray-500 max-w-xl mx-auto font-serif leading-relaxed">
+            Professional editorial layout with mixed-size content blocks, perfect for longform journalism.
           </p>
+          <div className="mt-8 w-px h-12 bg-[#e63946] mx-auto" />
         </div>
       </section>
 
       {/* Magazine Grid Demo */}
-      <section className="py-8 px-6">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
           {/* Search Bar */}
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-10">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search articles..."
-                className="w-full pl-12 pr-4 py-3 bg-white border border-zinc-200 rounded-xl text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/30"
+                className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 text-[#0a0a0a] placeholder-gray-400 focus:outline-none focus:border-[#0a0a0a] transition-colors"
               />
             </div>
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-zinc-200 rounded-xl text-zinc-600 hover:bg-zinc-50 transition-colors">
-              <TrendingUp className="w-5 h-5" />
-              <span className="hidden sm:inline">Trending</span>
+            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-500 hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors">
+              <TrendingUp className="w-4 h-4" />
+              <span className="hidden sm:inline text-sm">Trending</span>
             </button>
           </div>
 
@@ -189,25 +187,32 @@ export default function ShowcaseContent() {
             {/* Featured Article - Large */}
             <article className="md:col-span-2 lg:row-span-2 group">
               <a href="#" className="block h-full">
-                <div className="relative h-full min-h-[400px] rounded-2xl overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-600 via-rose-500 to-orange-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="relative h-full min-h-[450px] bg-[#0a0a0a] overflow-hidden">
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#e63946]/80 via-[#0a0a0a]/60 to-[#0a0a0a]" />
+
+                  {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                    <span className="inline-block px-3 py-1 text-xs font-semibold uppercase bg-red-600 rounded mb-4">
-                      Featured
-                    </span>
-                    <h2 className="text-2xl lg:text-3xl font-bold mb-3 group-hover:underline">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="px-3 py-1 bg-[#e63946] text-xs font-medium uppercase tracking-wider">
+                        Featured
+                      </span>
+                      <span className="text-white/60 text-xs uppercase tracking-wider">
+                        {articles[0].category}
+                      </span>
+                    </div>
+                    <h2 className="font-serif text-3xl lg:text-4xl font-bold mb-4 italic leading-tight group-hover:underline decoration-2 underline-offset-4">
                       {articles[0].title}
                     </h2>
-                    <p className="text-white/80 mb-4 line-clamp-2">
+                    <p className="text-white/70 mb-6 leading-relaxed line-clamp-3 font-serif">
                       {articles[0].excerpt}
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-white/60">
-                      <span className="flex items-center gap-1">
+                    <div className="flex items-center gap-4 text-sm text-white/50">
+                      <span className="flex items-center gap-1.5">
                         <User className="w-4 h-4" />
                         {articles[0].author}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1.5">
                         <Clock className="w-4 h-4" />
                         {articles[0].readTime}
                       </span>
@@ -221,26 +226,37 @@ export default function ShowcaseContent() {
             {articles.slice(1).map((article) => (
               <article key={article.id} className="group">
                 <a href="#" className="block">
-                  <div className="relative rounded-xl overflow-hidden mb-4">
-                    <div className={`aspect-video ${
-                      article.id % 3 === 0 ? "bg-gradient-to-br from-blue-500 to-cyan-500" :
-                      article.id % 3 === 1 ? "bg-gradient-to-br from-emerald-500 to-teal-500" :
-                      "bg-gradient-to-br from-amber-500 to-orange-500"
+                  <div className="relative aspect-[4/3] bg-gray-100 mb-4 overflow-hidden">
+                    <div className={`absolute inset-0 ${
+                      article.id % 3 === 0 ? "bg-gradient-to-br from-gray-700 to-gray-900" :
+                      article.id % 3 === 1 ? "bg-gradient-to-br from-gray-600 to-gray-800" :
+                      "bg-gradient-to-br from-gray-500 to-gray-700"
                     }`} />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                   </div>
-                  <span className={`inline-block px-2 py-0.5 text-xs font-semibold uppercase text-white ${article.categoryColor} rounded mb-2`}>
-                    {article.category}
-                  </span>
-                  <h3 className="font-bold text-zinc-900 mb-2 group-hover:text-red-600 transition-colors line-clamp-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[#e63946] text-xs font-medium uppercase tracking-wider">
+                      {article.category}
+                    </span>
+                    <span className="text-gray-300">|</span>
+                    <span className="text-gray-400 text-xs">{article.readTime}</span>
+                  </div>
+                  <h3 className="font-serif text-lg font-bold text-[#0a0a0a] mb-2 italic leading-snug group-hover:underline decoration-1 underline-offset-2 line-clamp-2">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-zinc-600 mb-3 line-clamp-2">
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center justify-between text-xs text-zinc-500">
-                    <span>{article.author}</span>
-                    <span>{article.readTime}</span>
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <span className="font-medium">{article.author}</span>
+                    <div className="flex items-center gap-3">
+                      <button className="hover:text-[#0a0a0a] transition-colors">
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+                      <button className="hover:text-[#0a0a0a] transition-colors">
+                        <Share2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </a>
               </article>
@@ -249,8 +265,9 @@ export default function ShowcaseContent() {
 
           {/* Load More */}
           <div className="mt-12 text-center">
-            <button className="px-8 py-3 bg-zinc-900 text-white rounded-full font-semibold hover:bg-zinc-800 transition-colors">
+            <button className="px-8 py-3 bg-[#0a0a0a] text-white font-medium hover:bg-gray-800 transition-colors">
               Load More Articles
+              <ChevronRight className="w-4 h-4 inline ml-2" />
             </button>
           </div>
         </div>
@@ -258,18 +275,18 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="Color System"
-        subtitle="Editorial colors with category accents"
-        className="py-16 px-6 bg-white"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        title="Color Palette"
+        subtitle="Classic editorial colors with a bold accent"
+        className="py-16 px-6 bg-white border-y border-gray-200"
+        titleClassName="font-serif text-3xl font-bold text-[#0a0a0a] mb-4 text-center italic"
+        subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
           <ColorPaletteGrid
             colors={colors}
-            cardClassName="rounded-lg overflow-hidden shadow-sm"
-            labelClassName="font-semibold text-sm text-zinc-900"
-            hexClassName="text-xs text-zinc-500 font-mono"
+            cardClassName="overflow-hidden"
+            labelClassName="font-serif font-semibold text-sm text-[#0a0a0a]"
+            hexClassName="text-xs text-gray-400 font-mono"
           />
         </div>
       </ShowcaseSection>
@@ -277,18 +294,18 @@ export default function ShowcaseContent() {
       {/* Grid Variations */}
       <ShowcaseSection
         title="Grid Variations"
-        subtitle="Different layouts for various content needs"
+        subtitle="Different layouts for various editorial needs"
         className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        titleClassName="font-serif text-3xl font-bold text-[#0a0a0a] mb-4 text-center italic"
+        subtitleClassName="text-gray-500 mb-10 text-center"
       >
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-5xl mx-auto space-y-10">
           {/* 3-Column Grid */}
           <div>
-            <h3 className="font-semibold text-zinc-900 mb-4">3-Column Equal Grid</h3>
+            <h3 className="font-serif font-bold text-[#0a0a0a] mb-4 italic">3-Column Equal Grid</h3>
             <div className="grid grid-cols-3 gap-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="aspect-video bg-gradient-to-br from-zinc-200 to-zinc-300 rounded-xl flex items-center justify-center text-zinc-500 font-medium">
+                <div key={i} className="aspect-[4/3] bg-gray-200 flex items-center justify-center text-gray-400 font-serif italic">
                   Article {i}
                 </div>
               ))}
@@ -297,13 +314,13 @@ export default function ShowcaseContent() {
 
           {/* 4-Column with Featured */}
           <div>
-            <h3 className="font-semibold text-zinc-900 mb-4">4-Column with Featured</h3>
+            <h3 className="font-serif font-bold text-[#0a0a0a] mb-4 italic">4-Column with Featured</h3>
             <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-2 row-span-2 aspect-square bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-white font-medium">
+              <div className="col-span-2 row-span-2 aspect-square bg-[#0a0a0a] flex items-center justify-center text-white font-serif italic">
                 Featured
               </div>
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-video bg-gradient-to-br from-zinc-200 to-zinc-300 rounded-xl flex items-center justify-center text-zinc-500 font-medium text-sm">
+                <div key={i} className="aspect-[4/3] bg-gray-200 flex items-center justify-center text-gray-400 font-serif italic text-sm">
                   Small {i}
                 </div>
               ))}
@@ -314,18 +331,18 @@ export default function ShowcaseContent() {
 
       {/* Design Rules */}
       <ShowcaseSection
-        title="Design Rules"
-        subtitle="Key principles for Magazine Grid layouts"
-        className="py-16 px-6 bg-white"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        title="Design Principles"
+        subtitle="Key patterns for editorial grid layouts"
+        className="py-16 px-6 bg-white border-t border-gray-200"
+        titleClassName="font-serif text-3xl font-bold text-[#0a0a0a] mb-4 text-center italic"
+        subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {designRules.map((rule, i) => (
-              <div key={i} className="p-5 bg-zinc-50 rounded-xl">
-                <h4 className="font-semibold text-zinc-900 mb-2">{rule.title}</h4>
-                <p className="text-sm text-zinc-600">{rule.desc}</p>
+              <div key={i} className="p-6 bg-[#fafafa] border border-gray-200">
+                <h4 className="font-serif font-bold text-[#0a0a0a] mb-2 italic">{rule.title}</h4>
+                <p className="text-sm text-gray-500">{rule.desc}</p>
               </div>
             ))}
           </div>
@@ -334,26 +351,26 @@ export default function ShowcaseContent() {
 
       {/* Use Cases */}
       <ShowcaseSection
-        title="Use Cases"
+        title="Applications"
         subtitle="When to use Magazine Grid layout"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        className="py-16 px-6 border-t border-gray-200"
+        titleClassName="font-serif text-3xl font-bold text-[#0a0a0a] mb-4 text-center italic"
+        subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
           {[
-            { icon: Newspaper, title: "News Websites", desc: "Editorial content with visual hierarchy" },
+            { icon: Newspaper, title: "News Publications", desc: "Editorial content with visual hierarchy" },
             { icon: Grid3X3, title: "Blog Listings", desc: "Mixed article sizes for engagement" },
             { icon: Layers, title: "Content Hubs", desc: "Aggregate multiple content types" },
             { icon: Palette, title: "Portfolio Grids", desc: "Showcase work with varied emphasis" },
           ].map((item, i) => (
-            <div key={i} className="flex gap-4 p-5 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-zinc-100 rounded-lg flex items-center justify-center shrink-0">
-                <item.icon className="w-6 h-6 text-zinc-700" />
+            <div key={i} className="flex gap-4 p-6 bg-white border border-gray-200">
+              <div className="w-12 h-12 bg-[#0a0a0a] flex items-center justify-center shrink-0">
+                <item.icon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-zinc-900 mb-1">{item.title}</h3>
-                <p className="text-sm text-zinc-600">{item.desc}</p>
+                <h3 className="font-serif font-bold text-[#0a0a0a] mb-1 italic">{item.title}</h3>
+                <p className="text-sm text-gray-500">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -361,11 +378,12 @@ export default function ShowcaseContent() {
       </ShowcaseSection>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-zinc-200 bg-white">
+      <footer className="py-12 px-6 border-t border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-zinc-500 text-sm">
+          <div className="w-px h-8 bg-[#e63946] mx-auto mb-6" />
+          <p className="text-gray-400 text-sm">
             Magazine Grid Showcase{" "}
-            <Link href="/" className="text-zinc-900 hover:underline">
+            <Link href="/" className="text-[#0a0a0a] hover:underline">
               StyleKit
             </Link>
           </p>
