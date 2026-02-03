@@ -1,35 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { AssetGallery } from "@/components/assets";
+import { AssetGallery, AssetDownloadDialog } from "@/components/assets";
 import { useAssets } from "@/lib/assets/hooks";
 import { useI18n } from "@/lib/i18n/context";
+import type { AssetMeta } from "@/lib/assets/meta";
 
 export default function AssetsPage() {
   const { t } = useI18n();
   const assets = useAssets();
-  const [downloadingAssetId, setDownloadingAssetId] = useState<string | null>(
-    null
-  );
+  const [selectedAsset, setSelectedAsset] = useState<AssetMeta | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleDownload = async (assetId: string, imageUrl: string, name: string) => {
-    setDownloadingAssetId(assetId);
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${name}.png`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("下载失败:", error);
-    } finally {
-      setDownloadingAssetId(null);
-    }
+  const handleAssetSelect = (asset: AssetMeta) => {
+    setSelectedAsset(asset);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -57,9 +42,7 @@ export default function AssetsPage() {
             showSearch
             showFilter
             variant="default"
-            onDownload={(asset) =>
-              handleDownload(asset.id, asset.image, asset.slug)
-            }
+            onDownload={handleAssetSelect}
           />
         </div>
       </section>
@@ -230,6 +213,15 @@ import type { AssetMeta, AssetCategory } from "@/lib/assets";`}
           </div>
         </div>
       </section>
+
+      {/* Download Dialog */}
+      {selectedAsset && (
+        <AssetDownloadDialog
+          asset={selectedAsset}
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+        />
+      )}
     </main>
   );
 }

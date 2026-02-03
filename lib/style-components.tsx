@@ -852,6 +852,24 @@ export const styleComponents: Record<
     ),
   },
   "claymorphism": {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-br from-amber-100 to-amber-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
+        <h3 className="text-xl font-bold text-amber-800 mb-2">粘土卡片</h3>
+        <p className="text-amber-700">柔软的 3D 立体效果</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-6 py-4 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)] focus:outline-none focus:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.15),inset_-4px_-4px_8px_rgba(255,255,255,0.9),0_0_0_4px_rgba(248,180,217,0.3)] transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100 flex items-center justify-center p-3">
         <div className="w-full max-w-[180px]">
@@ -867,6 +885,24 @@ export const styleComponents: Record<
     ),
   },
   "notion-style": {
+    button: () => (
+      <button className="px-4 py-2 bg-[#2eaadc] rounded-md text-white text-sm font-medium hover:bg-[#2997c9] transition-colors">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <h3 className="text-lg font-semibold text-[#37352f] mb-2">Notion 卡片</h3>
+        <p className="text-gray-600 text-sm">极简清爽的文档风格</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-[#37352f] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2eaadc] focus:border-transparent transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-white flex p-2">
         <div className="w-1/3 bg-[#f7f6f3] border-r border-gray-200 p-2">
@@ -888,6 +924,24 @@ export const styleComponents: Record<
     ),
   },
   "stripe-style": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#635bff] rounded-lg text-white font-medium shadow-[0_2px_4px_rgba(99,91,255,0.2),0_4px_8px_rgba(99,91,255,0.2)] hover:shadow-[0_4px_8px_rgba(99,91,255,0.3),0_8px_16px_rgba(99,91,255,0.2)] hover:-translate-y-0.5 transition-all duration-200">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_16px_32px_rgba(0,0,0,0.1)] transition-shadow duration-300">
+        <h3 className="text-xl font-semibold text-[#0a2540] mb-2">Stripe 卡片</h3>
+        <p className="text-gray-600">专业的金融科技风格</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[#0a2540] placeholder-gray-400 shadow-[0_1px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-[#635bff] focus:border-transparent transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-[#f6f9fc] flex items-center justify-center p-3 relative">
         <div className="absolute inset-0 opacity-30" style={{
@@ -908,6 +962,24 @@ export const styleComponents: Record<
     ),
   },
   "apple-style": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#0071e3] rounded-full text-white font-medium hover:bg-[#0077ed] transition-colors">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+        <h3 className="text-xl font-semibold tracking-tight text-black mb-2">Apple 卡片</h3>
+        <p className="text-gray-500">极致简约的高端设计</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-[#f5f5f7] rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071e3] transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center p-3">
         <div className="w-full max-w-[180px] text-center">
@@ -924,6 +996,24 @@ export const styleComponents: Record<
     ),
   },
   "pixel-art": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[4px_4px_0_#1a1c2c]">
+        <h3 className="text-xl font-bold uppercase text-[#1a1c2c] mb-2">像素卡片</h3>
+        <p className="text-[#5f574f] uppercase text-sm">复古 8-bit 游戏风格</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-white border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] placeholder-[#8b8680] font-mono uppercase focus:outline-none focus:shadow-[inset_0_0_0_2px_#29adff] transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-[#1a1c2c] flex items-center justify-center p-3">
         <div className="w-full max-w-[180px]">
