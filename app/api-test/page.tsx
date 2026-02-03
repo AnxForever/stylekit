@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Check, X, Loader2 } from "lucide-react";
+import { Check, X, Loader2, AlertTriangle } from "lucide-react";
 
 interface EndpointTest {
   name: string;
@@ -119,11 +119,32 @@ export default function ApiTestPage() {
     setTesting(false);
   };
 
+  // 仅在开发环境显示此页面
+  const isProduction = process.env.NODE_ENV === "production";
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1">
+        {isProduction && (
+          <section className="bg-yellow-50 dark:bg-yellow-950/30 border-b-2 border-yellow-400">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 py-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-sm text-yellow-800 dark:text-yellow-200">
+                    开发工具页面
+                  </p>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                    此页面仅用于开发和调试。在生产环境中应该受到限制。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
