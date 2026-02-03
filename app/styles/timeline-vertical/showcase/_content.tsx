@@ -11,6 +11,7 @@ import {
   BookOpen,
   Feather,
   Quote,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -117,9 +118,14 @@ export default function ShowcaseContent() {
       {/* Hero */}
       <section className="py-24 px-6 text-center border-b border-gray-200">
         <div className="max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium mb-8">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium mb-4">
+            <Palette className="w-4 h-4" />
+            <span className="uppercase tracking-widest text-xs">视觉风格: Editorial</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium mb-8 ml-2">
             <Feather className="w-4 h-4" />
-            <span className="uppercase tracking-widest text-xs">Editorial Style</span>
+            <span className="uppercase tracking-widest text-xs">Timeline Vertical Layout</span>
           </div>
           <h1 className="font-serif text-5xl md:text-6xl font-bold text-[#0a0a0a] mb-6 leading-tight italic">
             Vertical Timeline

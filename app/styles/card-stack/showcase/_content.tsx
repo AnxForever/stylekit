@@ -14,6 +14,7 @@ import {
   Sparkles,
   MousePointer,
   Repeat,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -112,9 +113,14 @@ export default function ShowcaseContent() {
       {/* Hero */}
       <section className="relative py-20 px-6 text-center">
         <div className="max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-sm font-medium mb-8 border border-white/20">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-sm font-medium mb-4 border border-white/20">
+            <Palette className="w-4 h-4" />
+            <span>视觉风格: Glassmorphism</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-sm font-medium mb-8 ml-2 border border-white/20">
             <Layers className="w-4 h-4" />
-            <span>Glassmorphism Style</span>
+            <span>Card Stack Layout</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Card Stack

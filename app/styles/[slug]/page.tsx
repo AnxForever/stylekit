@@ -55,12 +55,23 @@ export default async function StyleDetailPage({
         {/* Hero */}
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
-            <div className="flex items-center gap-2 text-sm text-muted mb-4">
-              <Link href="/styles" className="hover:text-foreground transition-colors">
-                风格目录
+            <div className="flex items-center gap-4 mb-4">
+              <Link
+                href="/styles"
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-muted hover:text-foreground border border-border hover:border-foreground transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                返回目录
               </Link>
-              <span>/</span>
-              <span>{style.name}</span>
+              <div className="flex items-center gap-2 text-sm text-muted">
+                <Link href="/styles" className="hover:text-foreground transition-colors">
+                  风格目录
+                </Link>
+                <span>/</span>
+                <span>{style.name}</span>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">

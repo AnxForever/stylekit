@@ -12,6 +12,7 @@ import {
   Check,
   Globe,
   Layers,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -74,9 +75,14 @@ export default function ShowcaseContent() {
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-medium mb-8 border border-white/20">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-medium mb-4 border border-white/20">
+            <Palette className="w-4 h-4" />
+            <span>视觉风格: Modern Gradient</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-medium mb-8 ml-2 border border-white/20">
             <Sparkles className="w-4 h-4" />
-            <span>Modern Gradient Style</span>
+            <span>Full Page Scroll Layout</span>
           </div>
           <h1 className="text-6xl lg:text-8xl font-bold text-white mb-6 leading-tight">
             Immersive<br />

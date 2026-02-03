@@ -100,6 +100,12 @@ import { cardStack } from "./card-stack";
 import { sidebarFixed } from "./sidebar-fixed";
 import { magazineGrid } from "./magazine-grid";
 import { heroFullscreen } from "./hero-fullscreen";
+// 新增视觉风格
+import { claymorphism } from "./claymorphism";
+import { notionStyle } from "./notion-style";
+import { stripeStyle } from "./stripe-style";
+import { appleStyle } from "./apple-style";
+import { pixelArt } from "./pixel-art";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -129,6 +135,12 @@ export const styles: DesignStyle[] = [
   sidebarFixed,
   magazineGrid,
   heroFullscreen,
+  // 新增视觉风格
+  claymorphism,
+  notionStyle,
+  stripeStyle,
+  appleStyle,
+  pixelArt,
 ];
 
 // 根据 slug 获取风格

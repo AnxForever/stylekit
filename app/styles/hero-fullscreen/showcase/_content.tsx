@@ -15,6 +15,7 @@ import {
   Wifi,
   Lock,
   Terminal,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -85,9 +86,14 @@ export default function ShowcaseContent() {
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-8 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-4 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+            <Palette className="w-4 h-4" />
+            <span>视觉风格: Cyberpunk Neon</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-8 ml-2 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
             <Cpu className="w-4 h-4" />
-            <span className="uppercase tracking-widest text-xs">Cyberpunk Neon Style</span>
+            <span className="uppercase tracking-widest text-xs">Hero Fullscreen Layout</span>
           </div>
           <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 leading-none tracking-tight">
             HERO<br />
