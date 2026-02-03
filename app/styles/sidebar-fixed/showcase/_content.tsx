@@ -22,6 +22,7 @@ import {
   DollarSign,
   Calendar,
   ChevronRight,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -205,6 +206,16 @@ export default function ShowcaseContent() {
           <div className="flex items-center justify-between">
             <div className="lg:hidden w-10" />
             <div className="hidden lg:block">
+              {/* 视觉风格标注 */}
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded">
+                  <Palette className="w-3 h-3" />
+                  视觉风格: Corporate Clean
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded">
+                  Sidebar Fixed Layout
+                </span>
+              </div>
               <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
               <p className="text-sm text-slate-500">Welcome back, John</p>
             </div>
