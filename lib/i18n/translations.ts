@@ -317,6 +317,7 @@ export const translations = {
     "styles.tagRetro": "Retro",
     "styles.tagHighContrast": "High Contrast",
     "styles.tagResponsive": "Responsive",
+    "styles.tagBrandInspired": "Brand Inspired",
     "styles.clearTags": "Clear",
     "styles.noFavorites": "No favorites yet",
     "styles.compatibleWith": "Compatible Visual Styles",

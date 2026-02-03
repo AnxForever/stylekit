@@ -44,25 +44,25 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="Notion Style"
-        description="Clean, minimal design inspired by Notion. Focus on content with subtle borders, gentle hover effects, and clear typography hierarchy."
+        description="极简清爽的文档工具风格，微妙边框与柔和悬停效果，专注内容本身"
         className="pt-20 pb-16 px-6 text-center bg-[#f7f6f3]"
         titleClassName="text-4xl md:text-6xl font-semibold text-[#37352f] mb-6"
         descriptionClassName="text-lg text-gray-600 max-w-2xl mx-auto mb-10"
       >
         <div className="flex flex-wrap justify-center gap-4">
           <button className="px-6 py-2.5 bg-[#2eaadc] rounded-md text-white font-medium hover:bg-[#2997c9] transition-colors">
-            Get Started
+            开始使用
           </button>
           <button className="px-6 py-2.5 bg-white border border-gray-200 rounded-md text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-            Learn More
+            查看文档
           </button>
         </div>
       </ShowcaseHero>
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="Color System"
-        subtitle="Minimal palette with subtle accents"
+        title="配色系统"
+        subtitle="极简配色，微妙点缀"
         className="py-16 px-6"
         titleClassName="text-3xl font-semibold text-[#37352f] mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -79,40 +79,40 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="Buttons"
-        subtitle="Simple, functional button styles"
+        title="按钮"
+        subtitle="简洁实用的按钮样式"
         className="py-16 px-6 bg-[#f7f6f3]"
         titleClassName="text-3xl font-semibold text-[#37352f] mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="p-8 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-6">Variants</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-6">变体</p>
             <div className="flex flex-wrap gap-3">
               <button className="px-4 py-2 bg-[#2eaadc] rounded-md text-white text-sm font-medium hover:bg-[#2997c9] transition-colors">
-                Primary
+                主要
               </button>
               <button className="px-4 py-2 bg-white border border-gray-200 rounded-md text-gray-700 text-sm font-medium hover:bg-gray-100 transition-colors">
-                Secondary
+                次要
               </button>
               <button className="px-4 py-2 text-gray-600 text-sm font-medium hover:bg-gray-100 rounded-md transition-colors">
-                Ghost
+                幽灵
               </button>
               <button className="px-4 py-2 bg-[#eb5757] rounded-md text-white text-sm font-medium hover:bg-[#e04545] transition-colors">
-                Danger
+                危险
               </button>
             </div>
 
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-6 mt-10">Sizes</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-6 mt-10">尺寸</p>
             <div className="flex flex-wrap items-center gap-3">
               <button className="px-3 py-1.5 bg-[#2eaadc] rounded-md text-white text-xs font-medium hover:bg-[#2997c9] transition-colors">
-                Small
+                小
               </button>
               <button className="px-4 py-2 bg-[#2eaadc] rounded-md text-white text-sm font-medium hover:bg-[#2997c9] transition-colors">
-                Medium
+                中
               </button>
               <button className="px-5 py-2.5 bg-[#2eaadc] rounded-md text-white text-base font-medium hover:bg-[#2997c9] transition-colors">
-                Large
+                大
               </button>
             </div>
           </div>
@@ -121,8 +121,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="Cards"
-        subtitle="Clean content containers"
+        title="卡片"
+        subtitle="简洁的内容容器"
         className="py-16 px-6"
         titleClassName="text-3xl font-semibold text-[#37352f] mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -132,50 +132,50 @@ export default function ShowcaseContent() {
             <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
               <FileText className="w-6 h-6 text-[#2eaadc]" />
             </div>
-            <h3 className="text-lg font-semibold text-[#37352f] mb-2">Documents</h3>
-            <p className="text-gray-600 text-sm">Create and organize your notes with ease</p>
+            <h3 className="text-lg font-semibold text-[#37352f] mb-2">文档</h3>
+            <p className="text-gray-600 text-sm">轻松创建和组织笔记</p>
           </div>
 
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4">
               <CheckSquare className="w-6 h-6 text-[#0f7b6c]" />
             </div>
-            <h3 className="text-lg font-semibold text-[#37352f] mb-2">Tasks</h3>
-            <p className="text-gray-600 text-sm">Manage your to-dos and projects</p>
+            <h3 className="text-lg font-semibold text-[#37352f] mb-2">任务</h3>
+            <p className="text-gray-600 text-sm">管理待办事项和项目</p>
           </div>
 
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4">
               <Users className="w-6 h-6 text-purple-600" />
             </div>
-            <h3 className="text-lg font-semibold text-[#37352f] mb-2">Collaboration</h3>
-            <p className="text-gray-600 text-sm">Work together with your team</p>
+            <h3 className="text-lg font-semibold text-[#37352f] mb-2">协作</h3>
+            <p className="text-gray-600 text-sm">与团队一起工作</p>
           </div>
         </div>
       </ShowcaseSection>
 
       {/* Form Elements */}
       <ShowcaseSection
-        title="Form Elements"
-        subtitle="Clean inputs with focus states"
+        title="表单元素"
+        subtitle="简洁的输入框与聚焦状态"
         className="py-16 px-6 bg-[#f7f6f3]"
         titleClassName="text-3xl font-semibold text-[#37352f] mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-md mx-auto">
           <div className="p-8 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold text-[#37352f] mb-6">Create Page</h3>
+            <h3 className="text-xl font-semibold text-[#37352f] mb-6">创建页面</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Page Title</label>
+                <label className="block text-sm text-gray-700 mb-2">页面标题</label>
                 <input
                   type="text"
-                  placeholder="Untitled"
+                  placeholder="无标题"
                   className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-[#37352f] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2eaadc] focus:border-transparent transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Description</label>
+                <label className="block text-sm text-gray-700 mb-2">描述</label>
                 <textarea
                   placeholder="Add a description..."
                   rows={4}
