@@ -57,17 +57,17 @@ export default function AssetsPage() {
     <main className="min-h-screen bg-background">
       {/* Header */}
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+          <div className="flex items-center gap-2 sm:gap-4 mb-6">
             <ScrollBackButton label="返回" />
           </div>
-          <p className="text-xs tracking-widest uppercase text-muted mb-3">
+          <p className="text-xs tracking-widest uppercase text-muted mb-2 sm:mb-3">
             素材库
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl leading-tight sm:leading-[1.2] md:leading-[1.1] mb-3 sm:mb-4">
             Claymorphism Cats v1
           </h1>
-          <p className="text-lg text-muted max-w-2xl">
+          <p className="text-base sm:text-lg text-muted max-w-2xl leading-relaxed">
             3D粘土风格的可爱小猫图标集合。包含功能图标、表情、装饰素材等多个系列。
           </p>
         </div>
@@ -75,37 +75,37 @@ export default function AssetsPage() {
 
       {/* Icon Collections by Category */}
       <section>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <div className="space-y-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+          <div className="space-y-10 sm:space-y-12 md:space-y-16">
             {Object.entries(groupedAssets).map(([category, categoryAssets]) => {
               const label =
                 categoryLabels[category as keyof typeof categoryLabels];
               if (!label) return null;
 
               return (
-                <div key={category} className="space-y-4">
-                  <div className="mb-6">
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-2">
+                <div key={category} className="space-y-3 sm:space-y-4">
+                  <div className="mb-4 sm:mb-6">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2">
                       {label.name}
                     </h2>
-                    <p className="text-muted text-sm">{label.description}</p>
+                    <p className="text-muted text-xs sm:text-sm">{label.description}</p>
                   </div>
 
                   {/* Grid of icons */}
-                  <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 sm:gap-3">
                     {categoryAssets.map((asset) => (
                       <button
                         key={asset.id}
                         onClick={() => handleAssetSelect(asset)}
-                        className="aspect-square rounded border border-border bg-background hover:border-foreground hover:shadow-md transition-all group relative overflow-hidden"
+                        className="aspect-square rounded border border-border bg-background hover:border-foreground hover:shadow-md transition-all group relative overflow-hidden active:scale-95"
                         title={asset.name}
                       >
                         <img
                           src={asset.image}
                           alt={asset.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          className="w-full h-full object-cover group-hover:scale-110 active:scale-100 transition-transform"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 active:bg-black/30 transition-colors" />
                       </button>
                     ))}
                   </div>
@@ -118,27 +118,27 @@ export default function AssetsPage() {
 
       {/* Workflow Guide - Simplified 3 Steps */}
       <section className="border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <div className="mb-12">
-            <p className="text-xs tracking-widest uppercase text-muted mb-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+          <div className="mb-8 sm:mb-12">
+            <p className="text-xs tracking-widest uppercase text-muted mb-2 sm:mb-3">
               快速指南
             </p>
-            <h2 className="text-3xl md:text-4xl font-semibold">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
               3 步生成图标集
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {/* Step 1 */}
-            <div className="border border-border bg-background p-6 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold mb-4">
+            <div className="border border-border bg-background p-4 sm:p-6 rounded-lg">
+              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold mb-4 flex-shrink-0">
                 1
               </div>
-              <h3 className="text-xl font-semibold mb-3">明确需求</h3>
-              <p className="text-sm text-muted mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">明确需求</h3>
+              <p className="text-xs sm:text-sm text-muted mb-3 sm:mb-4">
                 确定风格、主角、图标列表和用途。
               </p>
-              <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded text-xs font-mono space-y-1">
+              <div className="bg-zinc-100 dark:bg-zinc-800 p-2 sm:p-3 rounded text-xs font-mono space-y-1 leading-tight">
                 <p>• 风格: Claymorphism</p>
                 <p>• 主角: Cream Colored Cat</p>
                 <p>• 数量: 12 icons</p>
@@ -147,12 +147,12 @@ export default function AssetsPage() {
             </div>
 
             {/* Step 2 */}
-            <div className="border border-border bg-background p-6 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 flex items-center justify-center font-bold mb-4">
+            <div className="border border-border bg-background p-4 sm:p-6 rounded-lg">
+              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 flex items-center justify-center font-bold mb-4 flex-shrink-0">
                 2
               </div>
-              <h3 className="text-xl font-semibold mb-3">生成提示词</h3>
-              <p className="text-sm text-muted mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">生成提示词</h3>
+              <p className="text-xs sm:text-sm text-muted mb-3 sm:mb-4">
                 使用模板让 AI 生成网格图片。
               </p>
               <button
@@ -173,23 +173,24 @@ BACKGROUND:
 - Solid #00FF00 (pure green)`
                   );
                 }}
-                className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded flex items-center gap-2 w-full justify-center"
+                className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3 py-2 rounded flex items-center justify-center gap-2 w-full transition-colors"
               >
                 <Copy className="w-4 h-4" />
-                {copied ? "已复制" : "复制提示词模板"}
+                <span className="hidden sm:inline">{copied ? "已复制" : "复制提示词"}</span>
+                <span className="sm:hidden">{copied ? "已复制" : "复制"}</span>
               </button>
             </div>
 
             {/* Step 3 */}
-            <div className="border border-border bg-background p-6 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold mb-4">
+            <div className="border border-border bg-background p-4 sm:p-6 rounded-lg sm:col-span-2 md:col-span-1">
+              <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold mb-4 flex-shrink-0">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-3">处理图片</h3>
-              <p className="text-sm text-muted mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">处理图片</h3>
+              <p className="text-xs sm:text-sm text-muted mb-3 sm:mb-4">
                 运行脚本去背景、切割、居中。
               </p>
-              <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded text-xs font-mono space-y-1">
+              <div className="bg-zinc-100 dark:bg-zinc-800 p-2 sm:p-3 rounded text-xs font-mono space-y-1 leading-tight">
                 <p>$ python</p>
                 <p>process_single_icon</p>
                 <p>_sheet.py</p>
@@ -198,12 +199,12 @@ BACKGROUND:
           </div>
 
           {/* Key Tips */}
-          <div className="mt-12 border border-border bg-background p-6 rounded-lg">
-            <h4 className="font-semibold text-lg mb-4">关键要点</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-8 sm:mt-10 md:mt-12 border border-border bg-background p-4 sm:p-6 rounded-lg">
+            <h4 className="font-semibold text-base sm:text-lg mb-3 sm:mb-4">关键要点</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="flex gap-3">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div>
+                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
                   <p className="text-sm font-medium">绿幕背景 (#00FF00)</p>
                   <p className="text-xs text-muted">
                     易于检测，不与3D阴影混淆
@@ -211,8 +212,8 @@ BACKGROUND:
                 </div>
               </div>
               <div className="flex gap-3">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div>
+                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
                   <p className="text-sm font-medium">明确尺寸约束</p>
                   <p className="text-xs text-muted">
                     指定像素尺寸，AI生成一致性强
@@ -220,8 +221,8 @@ BACKGROUND:
                 </div>
               </div>
               <div className="flex gap-3">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div>
+                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
                   <p className="text-sm font-medium">"NO overlapping"</p>
                   <p className="text-xs text-muted">
                     强调间距要求，防止图标相接
@@ -229,8 +230,8 @@ BACKGROUND:
                 </div>
               </div>
               <div className="flex gap-3">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div>
+                <Check className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
                   <p className="text-sm font-medium">分行描述图标</p>
                   <p className="text-xs text-muted">
                     按网格行列清晰地列出每个图标
@@ -244,20 +245,20 @@ BACKGROUND:
 
       {/* Resource Links */}
       <section className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8">工具和模板</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6 sm:mb-8">工具和模板</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <a
               href="/docs/PROMPT_TEMPLATE.md"
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-border bg-background p-6 rounded-lg hover:border-foreground hover:shadow-md transition-all"
+              className="border border-border bg-background p-4 sm:p-6 rounded-lg hover:border-foreground hover:shadow-md transition-all"
             >
-              <p className="text-lg font-semibold mb-2">提示词模板</p>
-              <p className="text-sm text-muted mb-4">
+              <p className="text-base sm:text-lg font-semibold mb-2">提示词模板</p>
+              <p className="text-xs sm:text-sm text-muted mb-4">
                 完整的提示词模板、为什么这样写、注意事项
               </p>
-              <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <ExternalLink className="w-4 h-4" />
                 查看文档
               </div>
@@ -265,21 +266,21 @@ BACKGROUND:
 
             <a
               href="#"
-              className="border border-border bg-background p-6 rounded-lg hover:border-foreground hover:shadow-md transition-all"
+              className="border border-border bg-background p-4 sm:p-6 rounded-lg hover:border-foreground hover:shadow-md transition-all"
             >
-              <p className="text-lg font-semibold mb-2">处理脚本</p>
-              <p className="text-sm text-muted mb-4">
+              <p className="text-base sm:text-lg font-semibold mb-2">处理脚本</p>
+              <p className="text-xs sm:text-sm text-muted mb-4">
                 自动去背景、切割、居中的Python脚本
               </p>
-              <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                 <Download className="w-4 h-4" />
                 scripts/process_single_icon_sheet.py
               </div>
             </a>
 
-            <div className="border border-border bg-background p-6 rounded-lg">
-              <p className="text-lg font-semibold mb-2">快速检查清单</p>
-              <ul className="text-sm text-muted space-y-2">
+            <div className="border border-border bg-background p-4 sm:p-6 rounded-lg">
+              <p className="text-base sm:text-lg font-semibold mb-2">快速检查清单</p>
+              <ul className="text-xs sm:text-sm text-muted space-y-1.5">
                 <li className="flex gap-2">
                   <span>✓</span>
                   <span>背景完全透明</span>
