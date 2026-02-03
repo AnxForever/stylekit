@@ -2,9 +2,6 @@
   "name": "stylekit",
   "version": "0.1.0",
   "private": true,
-  "bin": {
-    "stylekit": "./cli/stylekit.ts"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

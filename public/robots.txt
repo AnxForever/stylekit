@@ -2,6 +2,9 @@
 User-agent: *
 Allow: /
 
+# Block internal testing pages
+Disallow: /api-test
+
 # AI-specific crawlers
 User-agent: GPTBot
 Allow: /
@@ -36,7 +39,7 @@ Allow: /llms-full.txt
 Allow: /api/
 
 # Sitemap
-Sitemap: https://anxforever.shop/sitemap.xml
+Sitemap: https://stylekit.top/sitemap.xml
 
 # Host
-Host: https://anxforever.shop
+Host: https://stylekit.top
