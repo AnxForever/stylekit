@@ -67,6 +67,7 @@ export function StylesContent({
     "retro",
     "high-contrast",
     "responsive",
+    "brand-inspired",
   ];
 
   const tagLabels: Record<StyleTag, string> = {
@@ -76,6 +77,7 @@ export function StylesContent({
     retro: t("styles.tagRetro"),
     "high-contrast": t("styles.tagHighContrast"),
     responsive: t("styles.tagResponsive"),
+    "brand-inspired": t("styles.tagBrandInspired"),
   };
 
   // 过滤处理（使用 useTransition 保持响应性）

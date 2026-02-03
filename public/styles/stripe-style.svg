@@ -1,0 +1,39 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Grid Background -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#635bff" stroke-width="1" opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#f6f9fc"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Cards -->
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="100" y="120" width="320" height="200" rx="12" fill="#ffffff"/>
+    <rect x="100" y="120" width="320" height="60" rx="12" fill="#635bff" fill-opacity="0.05"/>
+    <circle cx="140" cy="150" r="20" fill="#635bff"/>
+  </g>
+
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="440" y="120" width="320" height="200" rx="12" fill="#ffffff"/>
+    <rect x="440" y="120" width="320" height="60" rx="12" fill="#00d4ff" fill-opacity="0.05"/>
+    <circle cx="480" cy="150" r="20" fill="#00d4ff"/>
+  </g>
+
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="780" y="120" width="320" height="200" rx="12" fill="#ffffff"/>
+    <rect x="780" y="120" width="320" height="60" rx="12" fill="#7a73ff" fill-opacity="0.05"/>
+    <circle cx="820" cy="150" r="20" fill="#7a73ff"/>
+  </g>
+
+  <!-- Button -->
+  <g filter="drop-shadow(0 2px 8px rgba(99,91,255,0.3))">
+    <rect x="450" y="380" width="300" height="60" rx="30" fill="#635bff"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="520" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="700" fill="#0a2540" text-anchor="middle">Stripe Style</text>
+  <text x="600" y="570" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#635bff" text-anchor="middle">Professional Fintech Design</text>
+</svg>

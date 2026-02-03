@@ -60,6 +60,7 @@ export const translations = {
     "styles.tagRetro": "复古",
     "styles.tagHighContrast": "高对比",
     "styles.tagResponsive": "响应式",
+    "styles.tagBrandInspired": "品牌风格",
     "styles.clearTags": "清除",
     "styles.noFavorites": "还没有收藏任何风格",
     "styles.compatibleWith": "兼容的视觉风格",

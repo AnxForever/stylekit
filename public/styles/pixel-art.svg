@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1a1c2c"/>
+
+  <!-- Pixel Border -->
+  <rect x="96" y="96" width="1008" height="438" fill="none" stroke="#ff004d" stroke-width="8"/>
+  <rect x="104" y="104" width="992" height="422" fill="none" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- Pixel Blocks -->
+  <rect x="150" y="150" width="200" height="200" fill="#ff004d" stroke="#ffffff" stroke-width="4"/>
+  <rect x="154" y="154" width="192" height="192" fill="#ff004d"/>
+
+  <rect x="380" y="150" width="200" height="200" fill="#00e436" stroke="#ffffff" stroke-width="4"/>
+  <rect x="384" y="154" width="192" height="192" fill="#00e436"/>
+
+  <rect x="610" y="150" width="200" height="200" fill="#29adff" stroke="#ffffff" stroke-width="4"/>
+  <rect x="614" y="154" width="192" height="192" fill="#29adff"/>
+
+  <rect x="840" y="150" width="200" height="200" fill="#ffec27" stroke="#ffffff" stroke-width="4"/>
+  <rect x="844" y="154" width="192" height="192" fill="#ffec27"/>
+
+  <!-- Title -->
+  <text x="600" y="450" font-family="monospace" font-size="64" font-weight="700" fill="#ffec27" text-anchor="middle" letter-spacing="4">PIXEL ART</text>
+  <text x="600" y="500" font-family="monospace" font-size="24" fill="#29adff" text-anchor="middle" letter-spacing="2">8-BIT RETRO STYLE</text>
+</svg>

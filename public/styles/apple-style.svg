@@ -1,0 +1,26 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#f5f5f7"/>
+
+  <!-- Product Cards -->
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="150" y="120" width="220" height="220" rx="18" fill="#ffffff"/>
+    <rect x="170" y="140" width="180" height="180" rx="12" fill="#f5f5f7"/>
+  </g>
+
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="410" y="120" width="220" height="220" rx="18" fill="#ffffff"/>
+    <rect x="430" y="140" width="180" height="180" rx="12" fill="#f5f5f7"/>
+  </g>
+
+  <g filter="drop-shadow(0 4px 12px rgba(0,0,0,0.08))">
+    <rect x="670" y="120" width="220" height="220" rx="18" fill="#ffffff"/>
+    <rect x="690" y="140" width="180" height="180" rx="12" fill="#f5f5f7"/>
+  </g>
+
+  <!-- Button -->
+  <rect x="480" y="390" width="240" height="50" rx="25" fill="#0071e3"/>
+
+  <!-- Title -->
+  <text x="600" y="520" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="72" font-weight="600" fill="#000000" text-anchor="middle" letter-spacing="-2">Apple Style</text>
+  <text x="600" y="570" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="28" fill="#86868b" text-anchor="middle">Minimal Elegance</text>
+</svg>
