@@ -45,6 +45,12 @@ export function HomeContent({ styles }: HomeContentProps) {
                   {t("home.browseStyles")}
                 </Link>
                 <Link
+                  href="/assets"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
+                >
+                  素材库
+                </Link>
+                <Link
                   href="/components"
                   className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
                 >
