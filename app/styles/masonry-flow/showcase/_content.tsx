@@ -12,6 +12,7 @@ import {
   TreeDeciduous,
   Mountain,
   Coffee,
+  Palette,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -101,9 +102,14 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-6 text-center">
         <div className="max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b9d77]/20 text-[#606c38] rounded-full text-sm font-medium mb-8">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b9d77]/20 text-[#606c38] rounded-full text-sm font-medium mb-4">
+            <Palette className="w-4 h-4" />
+            <span>视觉风格: Natural Organic</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b9d77]/20 text-[#606c38] rounded-full text-sm font-medium mb-8 ml-2">
             <Flower2 className="w-4 h-4" />
-            <span>Natural Organic Style</span>
+            <span>Masonry Flow Layout</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-[#5c4033] mb-6 leading-tight">
             Masonry Flow
