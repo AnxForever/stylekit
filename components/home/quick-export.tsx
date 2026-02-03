@@ -184,7 +184,7 @@ When generating UI components, always:
         </div>
 
         {/* Format Tabs */}
-        <div className="flex border border-border flex-shrink-0">
+        <div className="flex flex-wrap border border-border flex-shrink-0">
           {formatOptions.map((f) => (
             <button
               key={f.key}

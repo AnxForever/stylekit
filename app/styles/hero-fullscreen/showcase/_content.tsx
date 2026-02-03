@@ -5,13 +5,16 @@ import {
   ArrowLeft,
   ArrowDown,
   Play,
-  Sparkles,
   Zap,
   Globe,
   Shield,
   ChevronRight,
   Star,
   Check,
+  Cpu,
+  Wifi,
+  Lock,
+  Terminal,
 } from "lucide-react";
 import {
   ShowcaseSection,
@@ -19,48 +22,61 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Hero Fullscreen 配色
+// Cyberpunk Neon color palette
 const colors: ColorItem[] = [
-  { name: "White", hex: "#ffffff", bg: "bg-white", border: true },
-  { name: "Black", hex: "#000000", bg: "bg-black" },
-  { name: "Coral", hex: "#ff6b6b", bg: "bg-[#ff6b6b]" },
-  { name: "Teal", hex: "#4ecdc4", bg: "bg-[#4ecdc4]" },
-  { name: "Purple", hex: "#6c5ce7", bg: "bg-[#6c5ce7]" },
+  { name: "Void", hex: "#0a0a0f", bg: "bg-[#0a0a0f]" },
+  { name: "Cyan", hex: "#00ffff", bg: "bg-[#00ffff]" },
+  { name: "Magenta", hex: "#ff00ff", bg: "bg-[#ff00ff]" },
+  { name: "Hot Pink", hex: "#ff0080", bg: "bg-[#ff0080]" },
+  { name: "Electric Blue", hex: "#0080ff", bg: "bg-[#0080ff]" },
 ];
 
-// 设计规则
+// Design rules
 const designRules = [
-  { title: "全屏高度", desc: "min-h-screen 或 h-screen 确保占满视口" },
-  { title: "背景覆盖", desc: "object-cover 保持图片比例填充" },
-  { title: "遮罩层", desc: "渐变或半透明遮罩保证文字可读" },
-  { title: "内容居中", desc: "flex items-center justify-center 居中内容" },
-  { title: "滚动提示", desc: "底部添加滚动指示器引导用户" },
-  { title: "视频静音", desc: "视频背景必须 muted autoplay loop" },
+  { title: "Full Viewport", desc: "min-h-screen or h-screen for immersive impact" },
+  { title: "Neon Glow", desc: "shadow-[0_0_20px_#00ffff] for glow effects" },
+  { title: "Dark Base", desc: "Near-black backgrounds (#0a0a0f) for contrast" },
+  { title: "Gradient Text", desc: "bg-clip-text for neon gradient typography" },
+  { title: "Scan Lines", desc: "Subtle overlay patterns for tech aesthetic" },
+  { title: "Animated Glow", desc: "Pulsing animations on key elements" },
 ];
 
 export default function ShowcaseContent() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section 1 - Gradient Background */}
+    <div className="min-h-screen bg-[#0a0a0f]">
+      {/* Hero Section 1 - Main Cyberpunk Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-blue-700" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0f0a1a] to-[#0a0a0f]" />
+
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: `linear-gradient(#00ffff 1px, transparent 1px), linear-gradient(90deg, #00ffff 1px, transparent 1px)`,
+          backgroundSize: "50px 50px"
+        }} />
+
+        {/* Neon glow orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00ffff]/20 rounded-full blur-[150px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#ff00ff]/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-[#ff0080]/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: "2s" }} />
 
         {/* Navigation */}
         <nav className="absolute top-0 left-0 right-0 z-50 px-6 py-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link
               href="/styles/hero-fullscreen"
-              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-[#00ffff]/70 hover:text-[#00ffff] transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold">Back to Docs</span>
+              <span className="font-medium">Back to Docs</span>
             </Link>
-            <span className="font-bold text-xl text-white">Hero Fullscreen</span>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-[#00ffff] rounded-full animate-pulse shadow-[0_0_10px_#00ffff]" />
+              <span className="font-bold text-xl text-white tracking-wider">NEXUS</span>
+            </div>
             <Link
               href="/styles"
-              className="px-4 py-2 bg-white/10 backdrop-blur text-white rounded-full text-sm hover:bg-white/20 transition-colors"
+              className="px-4 py-2 bg-[#00ffff]/10 text-[#00ffff] rounded text-sm hover:bg-[#00ffff]/20 transition-colors border border-[#00ffff]/30"
             >
               All Styles
             </Link>
@@ -69,82 +85,99 @@ export default function ShowcaseContent() {
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-8">
-            <Sparkles className="w-4 h-4" />
-            <span>Fullscreen Hero Layout</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-8 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+            <Cpu className="w-4 h-4" />
+            <span className="uppercase tracking-widest text-xs">Cyberpunk Neon Style</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Make a Bold<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-pink-300">
-              First Impression
+          <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 leading-none tracking-tight">
+            HERO<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffff] via-[#ff00ff] to-[#ff0080] drop-shadow-[0_0_30px_rgba(0,255,255,0.5)]">
+              FULLSCREEN
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Capture attention instantly with full-viewport hero sections that create immersive brand experiences.
+          <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light">
+            Immersive full-viewport experiences with neon aesthetics that demand attention.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-white text-purple-600 font-semibold text-lg rounded-full hover:bg-white/90 transition-colors shadow-lg">
-              Get Started Free
+            <button className="px-8 py-4 bg-[#00ffff] text-[#0a0a0f] font-bold text-lg hover:bg-[#00ffff]/90 transition-colors shadow-[0_0_30px_rgba(0,255,255,0.5)] hover:shadow-[0_0_50px_rgba(0,255,255,0.7)]">
+              INITIALIZE
             </button>
-            <button className="px-8 py-4 bg-white/10 backdrop-blur text-white font-semibold text-lg rounded-full border border-white/30 hover:bg-white/20 transition-colors flex items-center justify-center gap-2">
-              <Play className="w-5 h-5" /> Watch Demo
+            <button className="px-8 py-4 bg-transparent text-[#ff00ff] font-bold text-lg border-2 border-[#ff00ff] hover:bg-[#ff00ff]/10 transition-colors shadow-[0_0_20px_rgba(255,0,255,0.3)] flex items-center justify-center gap-2">
+              <Play className="w-5 h-5" /> WATCH DEMO
             </button>
           </div>
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70 animate-bounce">
-          <span className="text-sm">Scroll to explore</span>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#00ffff]/50 animate-bounce">
+          <span className="text-xs uppercase tracking-widest">Scroll</span>
           <ArrowDown className="w-5 h-5" />
         </div>
+
+        {/* Corner decorations */}
+        <div className="absolute top-20 left-6 w-20 h-20 border-l-2 border-t-2 border-[#00ffff]/30" />
+        <div className="absolute bottom-20 right-6 w-20 h-20 border-r-2 border-b-2 border-[#ff00ff]/30" />
       </section>
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="Color System"
-        subtitle="High contrast for text readability on dramatic backgrounds"
-        className="py-20 px-6 bg-white"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        title="NEON PALETTE"
+        subtitle="High-contrast colors that glow against the void"
+        className="py-20 px-6 bg-[#0f0a1a] border-y border-[#00ffff]/20"
+        titleClassName="text-3xl font-bold text-white mb-4 text-center tracking-wider"
+        subtitleClassName="text-white/40 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
           <ColorPaletteGrid
             colors={colors}
-            cardClassName="rounded-lg overflow-hidden shadow-sm"
-            labelClassName="font-semibold text-sm text-zinc-900"
-            hexClassName="text-xs text-zinc-500 font-mono"
+            cardClassName="border border-white/10"
+            labelClassName="font-bold text-sm text-white uppercase tracking-wider"
+            hexClassName="text-xs text-white/40 font-mono"
           />
         </div>
       </ShowcaseSection>
 
-      {/* Hero Section 2 - Dark with Overlay */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-zinc-900" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+      {/* Hero Section 2 - Feature Grid */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
+        <div className="absolute inset-0 bg-[#0a0a0f]" />
 
-        {/* Decorative elements */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/30 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/30 rounded-full blur-[100px]" />
+        {/* Scan lines effect */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
+          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.1) 2px, rgba(0,255,255,0.1) 4px)`
+        }} />
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Dark & Dramatic
-          </h2>
-          <p className="text-xl text-white/70 mb-10 max-w-xl mx-auto">
-            Dark backgrounds with gradient overlays create mystery and focus attention on your message.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6 mt-12">
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              SYSTEM <span className="text-[#ff00ff]">FEATURES</span>
+            </h2>
+            <p className="text-white/50 max-w-xl mx-auto">
+              Advanced capabilities for the next generation of digital experiences.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: Zap, title: "High Impact", desc: "Instant visual grab" },
-              { icon: Globe, title: "Brand Focus", desc: "Reinforce identity" },
-              { icon: Shield, title: "Memorable", desc: "Lasting impression" },
+              { icon: Zap, title: "INSTANT LOAD", desc: "Sub-second rendering with optimized assets", color: "#00ffff" },
+              { icon: Globe, title: "GLOBAL REACH", desc: "Edge-deployed for worldwide performance", color: "#ff00ff" },
+              { icon: Shield, title: "SECURE", desc: "Military-grade encryption protocols", color: "#ff0080" },
+              { icon: Wifi, title: "CONNECTED", desc: "Real-time sync across all devices", color: "#00ffff" },
+              { icon: Lock, title: "PRIVATE", desc: "Zero-knowledge architecture", color: "#ff00ff" },
+              { icon: Terminal, title: "HACKABLE", desc: "Full API access for developers", color: "#ff0080" },
             ].map((item, i) => (
-              <div key={i} className="p-6 bg-white/5 backdrop-blur rounded-2xl border border-white/10">
-                <item.icon className="w-10 h-10 text-purple-400 mb-4 mx-auto" />
-                <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-white/60 text-sm">{item.desc}</p>
+              <div
+                key={i}
+                className="group p-6 bg-white/5 border border-white/10 hover:border-[color:var(--accent)]/50 transition-all duration-300"
+                style={{ "--accent": item.color } as React.CSSProperties}
+              >
+                <div
+                  className="w-12 h-12 mb-4 flex items-center justify-center border"
+                  style={{ borderColor: item.color, boxShadow: `0 0 20px ${item.color}40` }}
+                >
+                  <item.icon className="w-6 h-6" style={{ color: item.color }} />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2 tracking-wider">{item.title}</h3>
+                <p className="text-white/40 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -153,130 +186,117 @@ export default function ShowcaseContent() {
 
       {/* Design Rules */}
       <ShowcaseSection
-        title="Design Rules"
-        subtitle="Key principles for Fullscreen Hero layouts"
-        className="py-20 px-6 bg-zinc-50"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        title="DESIGN PROTOCOLS"
+        subtitle="Key patterns for cyberpunk hero layouts"
+        className="py-20 px-6 bg-[#0f0a1a]"
+        titleClassName="text-3xl font-bold text-white mb-4 text-center tracking-wider"
+        subtitleClassName="text-white/40 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {designRules.map((rule, i) => (
-              <div key={i} className="p-5 bg-white rounded-xl shadow-sm">
-                <h4 className="font-semibold text-zinc-900 mb-2">{rule.title}</h4>
-                <p className="text-sm text-zinc-600">{rule.desc}</p>
+              <div key={i} className="p-5 bg-white/5 border border-white/10">
+                <h4 className="font-bold text-[#00ffff] mb-2 uppercase tracking-wider text-sm">{rule.title}</h4>
+                <p className="text-sm text-white/40">{rule.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </ShowcaseSection>
 
-      {/* Hero Section 3 - Light with CTA */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 to-orange-100">
-        {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm font-medium mb-6">
-              <Star className="w-4 h-4" />
-              <span>New Release</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-6 leading-tight">
-              Light Heroes Work Too
-            </h2>
-            <p className="text-xl text-zinc-600 mb-8">
-              Not all heroes need dark backgrounds. Light, warm gradients create inviting, friendly experiences.
-            </p>
-            <ul className="space-y-3 mb-8">
-              {["Approachable brand feel", "Great for lifestyle products", "Warm and inviting"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-zinc-700">
-                  <Check className="w-5 h-5 text-amber-600" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button className="px-8 py-4 bg-zinc-900 text-white font-semibold rounded-full hover:bg-zinc-800 transition-colors">
-              Explore Now <ChevronRight className="w-5 h-5 inline ml-1" />
+      {/* Hero Section 3 - Pricing/CTA */}
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#1a0a1f] to-[#0a0a0f]" />
+
+        {/* Animated border */}
+        <div className="absolute inset-4 border border-[#00ffff]/20" />
+
+        {/* Glow effects */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff00ff]/10 rounded-full blur-[200px]" />
+
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+          <div className="inline-block px-4 py-2 bg-[#ff00ff]/10 border border-[#ff00ff]/30 text-[#ff00ff] text-xs font-bold uppercase tracking-widest mb-8 shadow-[0_0_20px_rgba(255,0,255,0.3)]">
+            Limited Access
+          </div>
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+            READY TO<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffff] to-[#ff00ff]">
+              JACK IN?
+            </span>
+          </h2>
+          <p className="text-xl text-white/50 mb-10 max-w-xl mx-auto">
+            Create stunning fullscreen hero experiences with cyberpunk aesthetics that captivate.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <button className="px-10 py-5 bg-gradient-to-r from-[#00ffff] to-[#00ffff] text-[#0a0a0f] font-bold text-lg shadow-[0_0_40px_rgba(0,255,255,0.5)] hover:shadow-[0_0_60px_rgba(0,255,255,0.7)] transition-all">
+              GET ACCESS NOW
             </button>
           </div>
-          <div className="relative">
-            <div className="aspect-square bg-gradient-to-br from-orange-400 to-amber-500 rounded-3xl shadow-2xl" />
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white rounded-2xl shadow-xl flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-zinc-900">4.9</div>
-                <div className="flex gap-0.5 justify-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
+
+          {/* Trust indicators */}
+          <div className="flex flex-wrap justify-center gap-8">
+            {[
+              { icon: Star, label: "4.9 RATING" },
+              { icon: Cpu, label: "10K+ USERS" },
+              { icon: Shield, label: "SECURE" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 text-white/30">
+                <item.icon className="w-4 h-4" />
+                <span className="text-xs font-bold tracking-wider">{item.label}</span>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Overlay Types */}
+      {/* Overlay Types Demo */}
       <ShowcaseSection
-        title="Overlay Variations"
-        subtitle="Different overlay styles for different moods"
-        className="py-20 px-6 bg-white"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
+        title="OVERLAY MODES"
+        subtitle="Different overlay styles for various moods"
+        className="py-20 px-6 bg-[#0a0a0f]"
+        titleClassName="text-3xl font-bold text-white mb-4 text-center tracking-wider"
+        subtitleClassName="text-white/40 mb-10 text-center"
       >
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-          {/* Solid Overlay */}
-          <div className="relative h-64 rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600" />
-            <div className="absolute inset-0 bg-black/50" />
+          {/* Cyan Glow */}
+          <div className="relative h-64 overflow-hidden border border-[#00ffff]/30">
+            <div className="absolute inset-0 bg-[#0a0a0f]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#00ffff]/30 via-transparent to-transparent" />
             <div className="relative z-10 h-full flex flex-col items-center justify-center text-white p-6">
-              <h3 className="font-bold text-lg mb-2">Solid Overlay</h3>
-              <p className="text-sm text-white/70 text-center">bg-black/50</p>
+              <h3 className="font-bold text-lg mb-2 tracking-wider text-[#00ffff]">CYAN GLOW</h3>
+              <p className="text-sm text-white/40 text-center">from-[#00ffff]/30</p>
             </div>
           </div>
 
-          {/* Gradient Overlay */}
-          <div className="relative h-64 rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-500 to-orange-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+          {/* Magenta Glow */}
+          <div className="relative h-64 overflow-hidden border border-[#ff00ff]/30">
+            <div className="absolute inset-0 bg-[#0a0a0f]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#ff00ff]/30 via-transparent to-transparent" />
             <div className="relative z-10 h-full flex flex-col items-center justify-center text-white p-6">
-              <h3 className="font-bold text-lg mb-2">Gradient Overlay</h3>
-              <p className="text-sm text-white/70 text-center">from-black/80 to-transparent</p>
+              <h3 className="font-bold text-lg mb-2 tracking-wider text-[#ff00ff]">MAGENTA GLOW</h3>
+              <p className="text-sm text-white/40 text-center">from-[#ff00ff]/30</p>
             </div>
           </div>
 
-          {/* Color Tint Overlay */}
-          <div className="relative h-64 rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-zinc-800" />
-            <div className="absolute inset-0 bg-purple-600/60 mix-blend-multiply" />
+          {/* Dual Glow */}
+          <div className="relative h-64 overflow-hidden border border-[#ff0080]/30">
+            <div className="absolute inset-0 bg-[#0a0a0f]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00ffff]/20 via-transparent to-[#ff00ff]/20" />
             <div className="relative z-10 h-full flex flex-col items-center justify-center text-white p-6">
-              <h3 className="font-bold text-lg mb-2">Color Tint</h3>
-              <p className="text-sm text-white/70 text-center">mix-blend-multiply</p>
+              <h3 className="font-bold text-lg mb-2 tracking-wider text-[#ff0080]">DUAL GLOW</h3>
+              <p className="text-sm text-white/40 text-center">Diagonal gradient</p>
             </div>
           </div>
         </div>
       </ShowcaseSection>
 
-      {/* CTA Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-zinc-900">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50" />
-        <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Make an Impact?
-          </h2>
-          <p className="text-xl text-white/70 mb-10">
-            Start building stunning fullscreen heroes that captivate your audience.
-          </p>
-          <button className="px-10 py-5 bg-white text-zinc-900 font-semibold text-lg rounded-full hover:bg-zinc-100 transition-colors shadow-lg">
-            Get Started Today
-          </button>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-zinc-200 bg-white">
+      <footer className="py-8 px-6 border-t border-white/10 bg-[#0a0a0f]">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-zinc-500 text-sm">
+          <p className="text-white/30 text-sm tracking-wider">
             Hero Fullscreen Showcase{" "}
-            <Link href="/" className="text-zinc-900 hover:underline">
+            <Link href="/" className="text-[#00ffff] hover:underline">
               StyleKit
             </Link>
           </p>
