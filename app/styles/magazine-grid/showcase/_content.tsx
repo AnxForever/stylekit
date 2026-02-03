@@ -149,9 +149,14 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <section className="py-12 px-6 bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-8">
+          {/* 视觉风格标注 */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-4">
+            <Palette className="w-4 h-4" />
+            <span className="uppercase tracking-widest text-xs">视觉风格: Editorial</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-8 ml-2">
             <Newspaper className="w-4 h-4" />
-            <span className="uppercase tracking-widest text-xs">Editorial Style</span>
+            <span className="uppercase tracking-widest text-xs">Magazine Grid Layout</span>
           </div>
           <h1 className="font-serif text-5xl md:text-6xl font-bold text-[#0a0a0a] mb-6 italic">
             Magazine Grid

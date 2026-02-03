@@ -656,23 +656,26 @@ export const styleComponents: Record<
   // ============ 布局风格渲染器 ============
   "masonry-flow": {
     coverPreview: () => (
-      <div className="w-full h-full bg-zinc-100 flex items-center justify-center p-3">
+      // Natural Organic 风格 - 大地色调
+      <div className="w-full h-full bg-[#faf6f1] flex items-center justify-center p-3">
         <div className="w-full max-w-[220px] columns-3 gap-1.5">
-          <div className="break-inside-avoid mb-1.5 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-lg" />
-          <div className="break-inside-avoid mb-1.5 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg" />
-          <div className="break-inside-avoid mb-1.5 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg" />
-          <div className="break-inside-avoid mb-1.5 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg" />
-          <div className="break-inside-avoid mb-1.5 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg" />
-          <div className="break-inside-avoid mb-1.5 h-14 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-lg" />
+          <div className="break-inside-avoid mb-1.5 h-16 bg-gradient-to-br from-[#606c38] to-[#8b9d77] rounded-2xl" />
+          <div className="break-inside-avoid mb-1.5 h-10 bg-gradient-to-br from-[#d4a373] to-[#bc6c25] rounded-2xl" />
+          <div className="break-inside-avoid mb-1.5 h-20 bg-gradient-to-br from-[#5c4033] to-[#8b7355] rounded-2xl" />
+          <div className="break-inside-avoid mb-1.5 h-12 bg-[#8b9d77]/30 rounded-2xl border border-[#8b9d77]/40" />
+          <div className="break-inside-avoid mb-1.5 h-8 bg-gradient-to-br from-[#8b9d77] to-[#a3b18a] rounded-2xl" />
+          <div className="break-inside-avoid mb-1.5 h-14 bg-gradient-to-br from-[#bc6c25] to-[#d4a373] rounded-2xl" />
         </div>
       </div>
     ),
   },
   "split-screen": {
     coverPreview: () => (
+      // Modern Gradient 风格
       <div className="w-full h-full flex">
-        <div className="flex-1 bg-zinc-900 flex items-center justify-center p-3">
-          <div className="text-white text-center">
+        <div className="flex-1 bg-zinc-900 flex items-center justify-center p-3 relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
+          <div className="text-white text-center relative z-10">
             <div className="text-xs font-bold mb-1">LEFT</div>
             <div className="text-[10px] text-white/60">Dark Side</div>
           </div>
@@ -688,18 +691,19 @@ export const styleComponents: Record<
   },
   "full-page-scroll": {
     coverPreview: () => (
-      <div className="w-full h-full bg-black flex flex-col">
-        <div className="flex-1 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center border-b border-white/20">
+      // Modern Gradient 风格 - 渐变色
+      <div className="w-full h-full flex flex-col relative">
+        <div className="flex-1 bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 flex items-center justify-center border-b border-white/20">
           <div className="text-white text-center">
             <div className="text-xs font-bold">SECTION 1</div>
           </div>
         </div>
-        <div className="flex-1 bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center border-b border-white/20">
+        <div className="flex-1 bg-gradient-to-br from-fuchsia-600 via-pink-500 to-orange-400 flex items-center justify-center border-b border-white/20">
           <div className="text-white text-center">
             <div className="text-xs font-bold">SECTION 2</div>
           </div>
         </div>
-        <div className="flex-1 bg-zinc-900 flex items-center justify-center">
+        <div className="flex-1 bg-gradient-to-br from-cyan-600 via-blue-600 to-violet-700 flex items-center justify-center">
           <div className="text-white text-center">
             <div className="text-xs font-bold">SECTION 3</div>
           </div>
@@ -715,31 +719,32 @@ export const styleComponents: Record<
   },
   "timeline-vertical": {
     coverPreview: () => (
-      <div className="w-full h-full bg-slate-50 flex items-center justify-center p-4">
+      // Editorial 风格 - 衬线字体、红色强调
+      <div className="w-full h-full bg-[#fafafa] flex items-center justify-center p-4">
         <div className="w-full max-w-[180px] relative">
           {/* Central line */}
-          <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-200" />
+          <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-gray-200" />
           {/* Timeline items */}
           <div className="space-y-3">
             <div className="relative pl-8">
-              <div className="absolute left-1.5 top-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow" />
-              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
-                <div className="text-[10px] font-semibold text-blue-500">2024</div>
-                <div className="text-xs font-bold text-slate-900">Event A</div>
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-[#e63946] rounded-full border-2 border-[#fafafa]" />
+              <div className="bg-white p-2 border border-gray-200">
+                <div className="text-[10px] font-semibold text-[#e63946]">2024</div>
+                <div className="text-xs font-serif italic text-[#0a0a0a]">Event A</div>
               </div>
             </div>
             <div className="relative pl-8">
-              <div className="absolute left-1.5 top-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white shadow" />
-              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
-                <div className="text-[10px] font-semibold text-emerald-500">2023</div>
-                <div className="text-xs font-bold text-slate-900">Event B</div>
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-gray-300 rounded-full border-2 border-[#fafafa]" />
+              <div className="bg-white p-2 border border-gray-200">
+                <div className="text-[10px] font-semibold text-gray-500">2023</div>
+                <div className="text-xs font-serif italic text-[#0a0a0a]">Event B</div>
               </div>
             </div>
             <div className="relative pl-8">
-              <div className="absolute left-1.5 top-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-white shadow" />
-              <div className="bg-white rounded-lg shadow-sm p-2 border border-slate-100">
-                <div className="text-[10px] font-semibold text-amber-500">2022</div>
-                <div className="text-xs font-bold text-slate-900">Event C</div>
+              <div className="absolute left-1.5 top-1 w-3 h-3 bg-gray-300 rounded-full border-2 border-[#fafafa]" />
+              <div className="bg-white p-2 border border-gray-200">
+                <div className="text-[10px] font-semibold text-gray-500">2022</div>
+                <div className="text-xs font-serif italic text-[#0a0a0a]">Event C</div>
               </div>
             </div>
           </div>
@@ -749,17 +754,21 @@ export const styleComponents: Record<
   },
   "card-stack": {
     coverPreview: () => (
-      <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-4">
+      // Glassmorphism 风格 - 毛玻璃效果
+      <div className="w-full h-full bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-950 flex items-center justify-center p-4 relative overflow-hidden">
+        {/* 背景光晕 */}
+        <div className="absolute top-1/4 left-1/4 w-20 h-20 bg-violet-500/30 rounded-full blur-xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-16 h-16 bg-cyan-500/20 rounded-full blur-xl" />
         <div className="relative w-32 h-24">
           {/* Back card */}
-          <div className="absolute inset-0 bg-white rounded-xl shadow-lg transform translate-y-4 scale-90 opacity-50" />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 transform translate-y-4 scale-90 opacity-50" />
           {/* Middle card */}
-          <div className="absolute inset-0 bg-white rounded-xl shadow-lg transform translate-y-2 scale-95 opacity-75" />
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 transform translate-y-2 scale-95 opacity-75" />
           {/* Front card */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-xl flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/80 to-purple-600/80 backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl flex items-center justify-center">
             <div className="text-white text-center">
               <div className="text-xs font-bold">STACK</div>
-              <div className="text-[10px] text-white/70">Depth Effect</div>
+              <div className="text-[10px] text-white/70">Glass Effect</div>
             </div>
           </div>
         </div>
@@ -768,25 +777,26 @@ export const styleComponents: Record<
   },
   "sidebar-fixed": {
     coverPreview: () => (
-      <div className="w-full h-full bg-zinc-100 flex">
+      // Corporate Clean 风格 - 专业企业风格
+      <div className="w-full h-full bg-slate-50 flex">
         {/* Sidebar */}
-        <div className="w-1/4 bg-white border-r border-zinc-200 flex flex-col p-2">
-          <div className="w-6 h-1.5 bg-zinc-900 rounded mb-3" />
+        <div className="w-1/4 bg-[#1e3a5f] flex flex-col p-2">
+          <div className="w-6 h-1.5 bg-blue-500 rounded mb-3" />
           <div className="space-y-1.5">
-            <div className="h-2 bg-blue-100 rounded w-full" />
-            <div className="h-2 bg-zinc-100 rounded w-3/4" />
-            <div className="h-2 bg-zinc-100 rounded w-3/4" />
+            <div className="h-2 bg-blue-600 rounded w-full" />
+            <div className="h-2 bg-white/10 rounded w-3/4" />
+            <div className="h-2 bg-white/10 rounded w-3/4" />
           </div>
           <div className="mt-auto">
-            <div className="w-4 h-4 bg-zinc-200 rounded-full" />
+            <div className="w-4 h-4 bg-blue-400/30 rounded-full" />
           </div>
         </div>
         {/* Main content */}
         <div className="flex-1 p-2">
-          <div className="h-2 bg-zinc-300 rounded w-1/2 mb-2" />
+          <div className="h-2 bg-slate-300 rounded w-1/2 mb-2" />
           <div className="grid grid-cols-2 gap-1.5">
-            <div className="h-8 bg-white rounded-lg shadow-sm" />
-            <div className="h-8 bg-white rounded-lg shadow-sm" />
+            <div className="h-8 bg-white rounded-xl shadow-sm border border-slate-200" />
+            <div className="h-8 bg-white rounded-xl shadow-sm border border-slate-200" />
           </div>
         </div>
       </div>
@@ -794,35 +804,45 @@ export const styleComponents: Record<
   },
   "magazine-grid": {
     coverPreview: () => (
-      <div className="w-full h-full bg-zinc-50 p-2">
+      // Editorial 风格 - 杂志编排
+      <div className="w-full h-full bg-[#fafafa] p-2">
         <div className="grid grid-cols-4 gap-1.5 h-full">
           {/* Featured - 2x2 */}
-          <div className="col-span-2 row-span-2 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg relative overflow-hidden">
+          <div className="col-span-2 row-span-2 bg-[#0a0a0a] relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#e63946]/80 via-[#0a0a0a]/60 to-[#0a0a0a]" />
             <div className="absolute bottom-2 left-2 right-2">
-              <div className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded inline-block mb-1">Featured</div>
-              <div className="text-white text-[10px] font-bold">Main Article</div>
+              <div className="bg-[#e63946] text-white text-[8px] px-1.5 py-0.5 inline-block mb-1">Featured</div>
+              <div className="text-white text-[10px] font-serif italic">Main Article</div>
             </div>
           </div>
           {/* Small articles */}
-          <div className="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg" />
-          <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg" />
-          <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg" />
-          <div className="bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg" />
+          <div className="bg-gradient-to-br from-gray-700 to-gray-900" />
+          <div className="bg-gradient-to-br from-gray-600 to-gray-800" />
+          <div className="bg-gradient-to-br from-gray-500 to-gray-700" />
+          <div className="bg-gradient-to-br from-gray-600 to-gray-800" />
         </div>
       </div>
     ),
   },
   "hero-fullscreen": {
     coverPreview: () => (
-      <div className="w-full h-full bg-gradient-to-br from-violet-600 via-purple-600 to-blue-700 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+      // Cyberpunk Neon 风格 - 霓虹发光
+      <div className="w-full h-full bg-[#0a0a0f] flex items-center justify-center relative overflow-hidden">
+        {/* 网格背景 */}
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: `linear-gradient(#00ffff 1px, transparent 1px), linear-gradient(90deg, #00ffff 1px, transparent 1px)`,
+          backgroundSize: "20px 20px"
+        }} />
+        {/* 霓虹光晕 */}
+        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-[#00ffff]/20 rounded-full blur-xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-[#ff00ff]/20 rounded-full blur-xl" />
         <div className="relative z-10 text-center px-4">
-          <div className="text-white/60 text-[8px] uppercase tracking-wider mb-1">Fullscreen</div>
-          <div className="text-white font-bold text-sm mb-1">Hero Layout</div>
-          <div className="text-white/70 text-[10px]">Immersive viewport fill</div>
+          <div className="text-[#00ffff]/60 text-[8px] uppercase tracking-wider mb-1">Fullscreen</div>
+          <div className="text-white font-bold text-sm mb-1" style={{textShadow: '0 0 10px rgba(0,255,255,0.5)'}}>Hero Layout</div>
+          <div className="text-[#00ffff]/70 text-[10px]">Neon glow effect</div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center text-[#00ffff]/50">
           <div className="text-[8px]">Scroll</div>
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7" />
