@@ -851,6 +851,96 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "claymorphism": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100 flex items-center justify-center p-3">
+        <div className="w-full max-w-[180px]">
+          <div className="bg-gradient-to-br from-white to-pink-50 rounded-[24px] p-4 shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.6),inset_-2px_-2px_4px_rgba(0,0,0,0.05)]">
+            <div className="text-pink-600 font-bold text-sm mb-2">Clay Card</div>
+            <p className="text-pink-500 text-[10px] mb-3">柔软的粘土质感</p>
+            <button className="w-full py-2 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white text-xs font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
+              Button
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "notion-style": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex p-2">
+        <div className="w-1/3 bg-[#f7f6f3] border-r border-gray-200 p-2">
+          <div className="h-3 w-16 bg-gray-200 rounded mb-2" />
+          <div className="h-2 w-full bg-gray-100 rounded mb-1" />
+          <div className="h-2 w-full bg-[#37352f]/10 rounded mb-1" />
+          <div className="h-2 w-full bg-gray-100 rounded" />
+        </div>
+        <div className="flex-1 p-2">
+          <div className="h-4 w-24 bg-[#37352f]/80 rounded mb-2" />
+          <div className="h-2 w-full bg-gray-200 rounded mb-1" />
+          <div className="h-2 w-3/4 bg-gray-200 rounded mb-3" />
+          <div className="flex gap-1">
+            <span className="px-1.5 py-0.5 bg-blue-50 text-[8px] text-[#2eaadc] rounded">Tag</span>
+            <span className="px-1.5 py-0.5 bg-green-50 text-[8px] text-[#0f7b6c] rounded">Tag</span>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "stripe-style": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f6f9fc] flex items-center justify-center p-3 relative">
+        <div className="absolute inset-0 opacity-30" style={{
+          backgroundImage: `linear-gradient(to right, rgba(99,91,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(99,91,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: "20px 20px"
+        }} />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-white rounded-xl p-4 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#635bff] to-[#00d4ff] rounded-lg mb-3" />
+            <div className="text-[#0a2540] font-semibold text-sm mb-1">Payments</div>
+            <p className="text-gray-500 text-[10px] mb-3">Accept payments online</p>
+            <button className="w-full py-2 bg-[#635bff] rounded-lg text-white text-xs font-medium">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "apple-style": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center p-3">
+        <div className="w-full max-w-[180px] text-center">
+          <div className="bg-white rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)] mb-3">
+            <div className="w-12 h-12 bg-[#f5f5f7] rounded-xl mx-auto mb-2" />
+            <div className="text-black font-semibold text-sm">Product</div>
+            <div className="text-gray-500 text-[10px]">From $999</div>
+          </div>
+          <button className="px-4 py-1.5 bg-[#0071e3] rounded-full text-white text-xs font-medium">
+            Buy
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  "pixel-art": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a1c2c] flex items-center justify-center p-3">
+        <div className="w-full max-w-[180px]">
+          <div className="bg-white border-4 border-[#1a1c2c] p-3 shadow-[4px_4px_0_#ff004d]">
+            <div className="text-[#1a1c2c] font-bold text-sm uppercase mb-2">Pixel</div>
+            <p className="text-[#5f574f] text-[10px] uppercase mb-3">8-bit style</p>
+            <div className="flex gap-2">
+              <div className="w-4 h-4 bg-[#ff004d] border-2 border-[#1a1c2c]" />
+              <div className="w-4 h-4 bg-[#00e436] border-2 border-[#1a1c2c]" />
+              <div className="w-4 h-4 bg-[#29adff] border-2 border-[#1a1c2c]" />
+              <div className="w-4 h-4 bg-[#ffec27] border-2 border-[#1a1c2c]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

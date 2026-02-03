@@ -5,6 +5,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { QuickExport } from "@/components/home/quick-export";
 import { StyleCard } from "@/components/home/style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
+import { AssetGallery } from "@/components/assets";
+import { useAssets } from "@/lib/assets/hooks";
 import type { StyleMeta } from "@/lib/styles/meta";
 
 interface HomeContentProps {
@@ -13,6 +15,8 @@ interface HomeContentProps {
 
 export function HomeContent({ styles }: HomeContentProps) {
   const { t } = useI18n();
+  const assets = useAssets();
+  const featuredAssets = assets.slice(0, 4);
 
   return (
     <>
@@ -117,6 +121,37 @@ export function HomeContent({ styles }: HomeContentProps) {
               <StyleCard key={style.slug} style={style} variant="compact" />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Asset Library - Featured Assets */}
+      <section className="border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-xs tracking-widest uppercase text-muted mb-2">
+                素材库
+              </p>
+              <h2 className="text-2xl md:text-3xl">可爱卡通素材</h2>
+            </div>
+            <Link
+              href="/assets"
+              className="text-sm text-muted hover:text-foreground transition-colors"
+            >
+              查看全部 →
+            </Link>
+          </div>
+
+          <p className="text-sm text-muted mb-8 max-w-2xl">
+            精选由AI工具生成的高质量卡通图案素材。可用于按钮装饰、页面点缀、徽章标记等多种场景。
+          </p>
+
+          <AssetGallery
+            assets={featuredAssets}
+            showSearch={false}
+            showFilter={false}
+            variant="compact"
+          />
         </div>
       </section>
     </>
