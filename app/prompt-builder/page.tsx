@@ -117,7 +117,7 @@ export default function PromptBuilderPage() {
                   <label className="text-xs tracking-widest uppercase text-muted mb-3 block">
                     {t("promptBuilder.style")}
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {styles.map((style) => (
                       <button
                         key={style.slug}
@@ -485,7 +485,7 @@ export default function PromptBuilderPage() {
                     </button>
                   </div>
                 </div>
-                <div className="border border-border bg-zinc-50 dark:bg-zinc-900 h-[600px] overflow-y-auto">
+                <div className="border border-border bg-zinc-50 dark:bg-zinc-900 h-[50vh] min-h-[300px] md:h-[600px] overflow-y-auto">
                   {prompt ? (
                     <pre className="p-4 md:p-6 text-sm font-mono whitespace-pre-wrap">
                       {prompt.content}
