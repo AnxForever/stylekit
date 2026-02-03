@@ -20,6 +20,18 @@ export function AssetDownloadDialog({
 
   if (!isOpen) return null;
 
+  // 防止背景滚动
+  if (typeof window !== "undefined") {
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+  }
+
+  const handleClose = () => {
+    if (typeof window !== "undefined") {
+      document.body.style.overflow = "auto";
+    }
+    onClose();
+  };
+
   const handleDownload = async () => {
     setDownloading(true);
     try {
@@ -80,11 +92,11 @@ const ${asset.slug.replace(/-/g, "_")} = getAssetBySlug("${asset.slug}");`;
   ];
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* Dialog */}
@@ -99,7 +111,7 @@ const ${asset.slug.replace(/-/g, "_")} = getAssetBySlug("${asset.slug}");`;
             <p className="text-sm text-muted">{asset.nameEn}</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <svg
@@ -269,7 +281,7 @@ const ${asset.slug.replace(/-/g, "_")} = getAssetBySlug("${asset.slug}");`}
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border sticky bottom-0 bg-background">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="px-4 py-2 text-sm border border-border hover:border-foreground transition-colors rounded"
           >
             关闭

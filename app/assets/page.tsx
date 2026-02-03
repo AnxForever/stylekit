@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AssetGallery, AssetDownloadDialog } from "@/components/assets";
+import { ScrollBackButton } from "@/components/scroll-back-button";
 import { useAssets } from "@/lib/assets/hooks";
 import { useI18n } from "@/lib/i18n/context";
 import type { AssetMeta } from "@/lib/assets/meta";
@@ -57,6 +58,9 @@ export default function AssetsPage() {
       {/* Header */}
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="flex items-center gap-4 mb-6">
+            <ScrollBackButton label="返回" />
+          </div>
           <p className="text-xs tracking-widest uppercase text-muted mb-3">
             素材库
           </p>
