@@ -621,20 +621,19 @@ ${optionsCode}
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             {/* Component Tabs + Actions */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-              <div className="flex flex-wrap gap-2">
-                {components.map((c) => (
-                  <button
-                    key={c.key}
-                    onClick={() => setActiveComponent(c.key)}
-                    className={`px-4 py-2 text-sm font-medium transition-colors ${
-                      activeComponent === c.key
-                        ? "bg-foreground text-background"
-                        : "border border-border hover:border-foreground"
-                    }`}
-                  >
-                    {c.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted">组件:</span>
+                <select
+                  value={activeComponent}
+                  onChange={(e) => setActiveComponent(e.target.value as ComponentType)}
+                  className="px-4 py-2 text-sm border border-border bg-background focus:border-foreground focus:outline-none transition-colors"
+                >
+                  {components.map((c) => (
+                    <option key={c.key} value={c.key}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex items-center gap-2">
                 <button

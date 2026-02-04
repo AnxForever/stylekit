@@ -117,21 +117,17 @@ export default function PromptBuilderPage() {
                   <label className="text-xs tracking-widest uppercase text-muted mb-3 block">
                     {t("promptBuilder.style")}
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <select
+                    value={config.style}
+                    onChange={(e) => setConfig((c) => ({ ...c, style: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border bg-background text-foreground focus:border-foreground focus:outline-none transition-colors"
+                  >
                     {styles.map((style) => (
-                      <button
-                        key={style.slug}
-                        onClick={() => setConfig((c) => ({ ...c, style: style.slug }))}
-                        className={`px-3 py-2 text-sm text-left transition-colors ${
-                          config.style === style.slug
-                            ? "bg-foreground text-background"
-                            : "border border-border hover:border-foreground"
-                        }`}
-                      >
-                        {style.name}
-                      </button>
+                      <option key={style.slug} value={style.slug}>
+                        {style.name} ({style.nameEn})
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
                 {/* Page Type */}

@@ -1,0 +1,48 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Grid lines -->
+  <g stroke="#e5e5e5" stroke-width="1">
+    <line x1="0" y1="157.5" x2="1200" y2="157.5"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="472.5" x2="1200" y2="472.5"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+
+  <!-- Primary shapes -->
+  <!-- Yellow circle -->
+  <circle cx="250" cy="200" r="120" fill="#ffcc00"/>
+
+  <!-- Red triangle -->
+  <polygon points="900,100 1050,350 750,350" fill="#ff0000"/>
+
+  <!-- Blue square -->
+  <rect x="150" y="380" width="180" height="180" fill="#0000ff"/>
+
+  <!-- Black elements -->
+  <rect x="500" y="150" width="300" height="20" fill="#000000"/>
+  <rect x="500" y="200" width="200" height="10" fill="#000000"/>
+  <rect x="800" y="400" width="20" height="150" fill="#000000"/>
+  <rect x="850" y="450" width="150" height="20" fill="#000000"/>
+
+  <!-- Small accent shapes -->
+  <circle cx="950" cy="180" r="30" fill="#ff0000"/>
+  <rect x="400" y="450" width="60" height="60" fill="#ffcc00"/>
+  <circle cx="700" cy="500" r="40" fill="#0000ff"/>
+
+  <!-- Title -->
+  <text x="600" y="340" font-family="Helvetica, Arial, sans-serif" font-size="96" font-weight="900" fill="#000000" text-anchor="middle">BAUHAUS</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#666666" text-anchor="middle" letter-spacing="0.3em">FORM FOLLOWS FUNCTION</text>
+
+  <!-- Bottom text -->
+  <text x="600" y="580" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#999999" text-anchor="middle" letter-spacing="0.2em">1919 — WEIMAR — DESSAU — BERLIN</text>
+
+  <!-- Decorative lines -->
+  <line x1="200" y1="550" x2="400" y2="550" stroke="#000000" stroke-width="3"/>
+  <line x1="800" y1="550" x2="1000" y2="550" stroke="#000000" stroke-width="3"/>
+</svg>

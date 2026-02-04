@@ -1,0 +1,69 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gold gradient -->
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="25%" stop-color="#f5d67a"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="75%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+    <!-- Sunburst pattern -->
+    <pattern id="sunburst" x="0" y="0" width="100%" height="100%" patternUnits="userSpaceOnUse">
+      <rect width="1200" height="630" fill="#1a1a2e"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#1a1a2e"/>
+
+  <!-- Radial lines from center -->
+  <g opacity="0.15" stroke="#d4af37" stroke-width="1">
+    <line x1="600" y1="315" x2="0" y2="0"/>
+    <line x1="600" y1="315" x2="300" y2="0"/>
+    <line x1="600" y1="315" x2="600" y2="0"/>
+    <line x1="600" y1="315" x2="900" y2="0"/>
+    <line x1="600" y1="315" x2="1200" y2="0"/>
+    <line x1="600" y1="315" x2="1200" y2="315"/>
+    <line x1="600" y1="315" x2="1200" y2="630"/>
+    <line x1="600" y1="315" x2="900" y2="630"/>
+    <line x1="600" y1="315" x2="600" y2="630"/>
+    <line x1="600" y1="315" x2="300" y2="630"/>
+    <line x1="600" y1="315" x2="0" y2="630"/>
+    <line x1="600" y1="315" x2="0" y2="315"/>
+  </g>
+
+  <!-- Decorative frame -->
+  <rect x="100" y="80" width="1000" height="470" fill="none" stroke="url(#gold)" stroke-width="2"/>
+  <rect x="120" y="100" width="960" height="430" fill="none" stroke="url(#gold)" stroke-width="1"/>
+
+  <!-- Corner decorations -->
+  <path d="M100 80 L100 140 M100 80 L160 80" stroke="url(#gold)" stroke-width="4"/>
+  <path d="M1100 80 L1100 140 M1100 80 L1040 80" stroke="url(#gold)" stroke-width="4"/>
+  <path d="M100 550 L100 490 M100 550 L160 550" stroke="url(#gold)" stroke-width="4"/>
+  <path d="M1100 550 L1100 490 M1100 550 L1040 550" stroke="url(#gold)" stroke-width="4"/>
+
+  <!-- Central diamond -->
+  <polygon points="600,180 700,315 600,450 500,315" fill="none" stroke="url(#gold)" stroke-width="2"/>
+  <polygon points="600,210 670,315 600,420 530,315" fill="none" stroke="url(#gold)" stroke-width="1"/>
+
+  <!-- Horizontal dividers -->
+  <line x1="200" y1="200" x2="450" y2="200" stroke="url(#gold)" stroke-width="1"/>
+  <line x1="750" y1="200" x2="1000" y2="200" stroke="url(#gold)" stroke-width="1"/>
+  <line x1="200" y1="430" x2="450" y2="430" stroke="url(#gold)" stroke-width="1"/>
+  <line x1="750" y1="430" x2="1000" y2="430" stroke="url(#gold)" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="600" y="300" font-family="Georgia, serif" font-size="64" font-weight="400" fill="url(#gold)" text-anchor="middle" letter-spacing="0.3em">ART DECO</text>
+
+  <!-- Subtitle divider -->
+  <line x1="400" y1="340" x2="800" y2="340" stroke="url(#gold)" stroke-width="1"/>
+  <circle cx="600" cy="340" r="5" fill="#d4af37"/>
+
+  <text x="600" y="380" font-family="Georgia, serif" font-size="24" fill="#d4af37" text-anchor="middle" letter-spacing="0.2em">THE GOLDEN AGE</text>
+
+  <!-- Bottom decoration -->
+  <path d="M500 480 L550 500 L600 480 L650 500 L700 480" stroke="url(#gold)" stroke-width="2" fill="none"/>
+
+  <text x="600" y="530" font-family="Georgia, serif" font-size="18" fill="#8b7355" text-anchor="middle" letter-spacing="0.15em">Elegance • Geometry • Luxury</text>
+</svg>
