@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import "./globals.css";
@@ -123,6 +124,7 @@ export default function RootLayout({
           <LazyCommandPalette />
           {children}
         </ClientProviders>
+        <Analytics />
       </body>
     </html>
   );
