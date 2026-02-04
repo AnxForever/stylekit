@@ -21,9 +21,17 @@ export const StyleCard = React.memo(function StyleCard({
 }: StyleCardProps) {
   const isCompact = variant === "compact";
 
+  // 保存当前滚动位置，用于返回时恢复
+  const handleClick = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("styles-scroll-position", window.scrollY.toString());
+    }
+  };
+
   return (
     <Link
       href={`/styles/${style.slug}`}
+      onClick={handleClick}
       className="group block border border-border hover:border-foreground transition-colors"
     >
       {/* Cover preview */}

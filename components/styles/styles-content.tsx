@@ -51,6 +51,20 @@ export function StylesContent({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [tagDropdownOpen]);
 
+  // 页面加载时恢复滚动位置
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem("styles-scroll-position");
+    if (savedScroll) {
+      const y = parseInt(savedScroll, 10);
+      // 延迟确保 DOM 完全渲染
+      setTimeout(() => {
+        window.scrollTo(0, y);
+      }, 100);
+      // 恢复后清除，避免刷新页面也滚动
+      sessionStorage.removeItem("styles-scroll-position");
+    }
+  }, []);
+
   // URL 同步（不阻塞 UI）
   const syncToUrl = useCallback(
     (type: TypeFilter, tags: StyleTag[], fav: boolean) => {
