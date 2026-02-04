@@ -2,20 +2,80 @@ import { DesignStyle } from "./index";
 
 export const vaporwave: DesignStyle = {
   slug: "vaporwave",
-  name: "蒸汽波",
-  nameEn: "Vaporwave",
+  name: "霓虹复古",
+  nameEn: "Neon Retro",
   description:
-    "80-90年代复古未来主义美学，粉紫渐变、霓虹色彩、故障艺术效果、希腊雕塑和日文元素，充满怀旧与超现实感。",
+    "80-90年代复古未来主义美学，粉紫渐变、霓虹色彩、故障艺术效果。包含蒸汽波、合成波、赛博朋克三种变体。",
   cover: "/styles/vaporwave.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro", "expressive", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff71ce",
     secondary: "#01cdfe",
     accent: ["#05ffa1", "#b967ff", "#fffb96"],
   },
-  keywords: ["蒸汽波", "复古未来", "霓虹", "80年代", "故障艺术", "赛博"],
+  keywords: ["蒸汽波", "复古未来", "霓虹", "80年代", "故障艺术", "赛博", "合成波", "赛博朋克", "vaporwave", "synthwave", "cyberpunk"],
+
+  // 风格变体
+  variants: [
+    {
+      id: "vaporwave",
+      name: "蒸汽波",
+      nameEn: "Vaporwave",
+      description: "80-90年代消费主义、日文元素、希腊雕塑、故障艺术",
+      colors: {
+        primary: "#ff71ce",
+        secondary: "#01cdfe",
+        accent: ["#05ffa1", "#b967ff", "#fffb96"],
+      },
+    },
+    {
+      id: "synthwave",
+      name: "合成波",
+      nameEn: "Synthwave",
+      description: "80年代合成器音乐、网格地平线、日落渐变、科幻电影感",
+      colors: {
+        primary: "#ff00ff",
+        secondary: "#00ffff",
+        accent: ["#ff6ec7", "#7b68ee", "#ff1493"],
+      },
+      cssOverrides: `
+/* Synthwave variant - more saturated, grid horizon */
+.synth-grid {
+  background: linear-gradient(to bottom, transparent 0%, #ff00ff33 100%),
+    repeating-linear-gradient(90deg, #ff00ff22 0px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(0deg, #ff00ff22 0px, transparent 1px, transparent 80px);
+}
+.synth-sun {
+  background: linear-gradient(to bottom, #ff6ec7, #ff1493, #7b68ee);
+  border-radius: 50% 50% 0 0;
+}
+`,
+    },
+    {
+      id: "cyberpunk",
+      name: "赛博朋克",
+      nameEn: "Cyberpunk",
+      description: "深色背景、霓虹发光、未来都市、科技感",
+      colors: {
+        primary: "#00ffff",
+        secondary: "#0a0a0f",
+        accent: ["#ff00ff", "#ffff00", "#00ff00"],
+      },
+      cssOverrides: `
+/* Cyberpunk variant - dark background, strong neon */
+body { background: #0a0a0f; }
+.cyber-neon {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+}
+.cyber-border {
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 10px #00ffff, inset 0 0 10px #00ffff33;
+}
+`,
+    },
+  ],
 
   philosophy: `Vaporwave（蒸汽波）是一种源于2010年代初的网络亚文化美学，融合了80-90年代的消费主义符号、日本文化元素和早期互联网美学。
 

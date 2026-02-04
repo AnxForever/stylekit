@@ -12,6 +12,21 @@ export {
   getStyleMetaBySlug,
 } from "./meta";
 
+// 风格变体定义
+export interface StyleVariant {
+  id: string;           // 变体标识，如 "vaporwave"
+  name: string;         // 中文名，如 "蒸汽波"
+  nameEn: string;       // 英文名，如 "Vaporwave"
+  description: string;  // 变体特点描述
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string[];
+  };
+  // 变体特有的样式覆盖
+  cssOverrides?: string;
+}
+
 export interface DesignStyle {
   slug: string;
   name: string;
@@ -33,6 +48,9 @@ export interface DesignStyle {
     accent: string[];
   };
   keywords: string[];
+
+  // 风格变体（配色方案）
+  variants?: StyleVariant[];
 
   // 文档内容
   philosophy: string;
@@ -75,8 +93,6 @@ export interface ComponentTemplate {
 
 // 导入所有风格
 import { neoBrutalist } from "./neo-brutalist";
-import { neoBrutalistSoft } from "./neo-brutalist-soft";
-import { neoBrutalistPlayful } from "./neo-brutalist-playful";
 import { editorial } from "./editorial";
 import { neumorphism } from "./neumorphism";
 import { glassmorphism } from "./glassmorphism";
@@ -85,7 +101,6 @@ import { bentoGrid } from "./bento-grid";
 import { corporateClean } from "./corporate-clean";
 import { minimalistFlat } from "./minimalist-flat";
 import { softUI } from "./soft-ui";
-import { cyberpunkNeon } from "./cyberpunk-neon";
 import { naturalOrganic } from "./natural-organic";
 import { modernGradient } from "./modern-gradient";
 import { retroVintage } from "./retro-vintage";
@@ -112,7 +127,6 @@ import { y2k } from "./y2k";
 import { memphis } from "./memphis";
 import { artDeco } from "./art-deco";
 import { bauhaus } from "./bauhaus";
-import { synthwave } from "./synthwave";
 // 新增风格 - 批次2
 import { skeuomorphism } from "./skeuomorphism";
 import { swissStyle } from "./swiss-style";
@@ -123,8 +137,6 @@ import { fluentDesign } from "./fluent-design";
 // 风格列表
 export const styles: DesignStyle[] = [
   neoBrutalist,
-  neoBrutalistSoft,
-  neoBrutalistPlayful,
   editorial,
   neumorphism,
   glassmorphism,
@@ -133,7 +145,6 @@ export const styles: DesignStyle[] = [
   corporateClean,
   minimalistFlat,
   softUI,
-  cyberpunkNeon,
   naturalOrganic,
   modernGradient,
   retroVintage,
@@ -160,7 +171,6 @@ export const styles: DesignStyle[] = [
   memphis,
   artDeco,
   bauhaus,
-  synthwave,
   // 新增风格 - 批次2
   skeuomorphism,
   swissStyle,
