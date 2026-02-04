@@ -21,7 +21,7 @@ export interface DesignStyle {
 
   // 新分类系统
   styleType: "visual" | "layout" | "animation";
-  tags: ("modern" | "retro" | "minimal" | "expressive" | "high-contrast" | "responsive")[];
+  tags: ("modern" | "retro" | "minimal" | "expressive" | "high-contrast" | "responsive" | "brand-inspired")[];
   compatibleWith?: string[]; // 仅用于 layout 类型，列出可搭配的视觉风格
 
   // 旧分类（保留兼容）
@@ -113,6 +113,12 @@ import { memphis } from "./memphis";
 import { artDeco } from "./art-deco";
 import { bauhaus } from "./bauhaus";
 import { synthwave } from "./synthwave";
+// 新增风格 - 批次2
+import { skeuomorphism } from "./skeuomorphism";
+import { swissStyle } from "./swiss-style";
+import { ghibliStyle } from "./ghibli-style";
+import { materialDesign } from "./material-design";
+import { fluentDesign } from "./fluent-design";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -155,6 +161,12 @@ export const styles: DesignStyle[] = [
   artDeco,
   bauhaus,
   synthwave,
+  // 新增风格 - 批次2
+  skeuomorphism,
+  swissStyle,
+  ghibliStyle,
+  materialDesign,
+  fluentDesign,
 ];
 
 // 根据 slug 获取风格
