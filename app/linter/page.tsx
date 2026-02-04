@@ -59,24 +59,21 @@ export default function LinterPage() {
               <label className="text-xs tracking-widest uppercase text-muted mb-3 block">
                 {t("linter.selectStyle")}
               </label>
-              <div className="flex flex-wrap gap-2">
+              <select
+                value={selectedStyle}
+                onChange={(e) => {
+                  setSelectedStyle(e.target.value);
+                  setResult(null);
+                }}
+                className="w-full max-w-md px-4 py-3 border border-border bg-background text-foreground focus:border-foreground focus:outline-none transition-colors appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+              >
                 {styles.map((style) => (
-                  <button
-                    key={style.slug}
-                    onClick={() => {
-                      setSelectedStyle(style.slug);
-                      setResult(null);
-                    }}
-                    className={`px-4 py-2 text-sm transition-colors ${
-                      selectedStyle === style.slug
-                        ? "bg-foreground text-background"
-                        : "border border-border hover:border-foreground"
-                    }`}
-                  >
-                    {style.name}
-                  </button>
+                  <option key={style.slug} value={style.slug}>
+                    {style.name} ({style.nameEn})
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
 
             {/* Editor and Results Grid */}

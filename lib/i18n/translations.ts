@@ -62,6 +62,8 @@ export const translations = {
     "styles.tagResponsive": "响应式",
     "styles.tagBrandInspired": "品牌风格",
     "styles.clearTags": "清除",
+    "styles.selectTags": "选择标签",
+    "styles.tagsSelected": "个标签",
     "styles.noFavorites": "还没有收藏任何风格",
     "styles.compatibleWith": "兼容的视觉风格",
     "styles.tryWith": "试试搭配",

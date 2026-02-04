@@ -1,0 +1,59 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient Background -->
+    <linearGradient id="y2kBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffe4f3"/>
+      <stop offset="50%" stop-color="#e0f4ff"/>
+      <stop offset="100%" stop-color="#f0e6ff"/>
+    </linearGradient>
+    <!-- Metallic Gradient -->
+    <linearGradient id="metallic" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#e8e8e8"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#d0d0d0"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <!-- Rainbow Gradient -->
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#ff69b4"/>
+      <stop offset="25%" stop-color="#00ffff"/>
+      <stop offset="50%" stop-color="#ff00ff"/>
+      <stop offset="75%" stop-color="#87ceeb"/>
+      <stop offset="100%" stop-color="#ff69b4"/>
+    </linearGradient>
+    <!-- Bubble effect -->
+    <radialGradient id="bubble" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#y2kBg)"/>
+
+  <!-- Floating bubbles -->
+  <circle cx="150" cy="150" r="60" fill="url(#bubble)" opacity="0.6"/>
+  <circle cx="1050" cy="200" r="80" fill="url(#bubble)" opacity="0.5"/>
+  <circle cx="200" cy="450" r="40" fill="url(#bubble)" opacity="0.4"/>
+  <circle cx="1000" cy="500" r="50" fill="url(#bubble)" opacity="0.5"/>
+  <circle cx="900" cy="120" r="35" fill="url(#bubble)" opacity="0.4"/>
+
+  <!-- Main Card -->
+  <rect x="300" y="180" width="600" height="300" rx="40" fill="url(#metallic)" stroke="url(#rainbow)" stroke-width="4"/>
+
+  <!-- Inner elements -->
+  <circle cx="450" cy="280" r="50" fill="#ff69b4" opacity="0.3"/>
+  <circle cx="750" cy="280" r="50" fill="#00ffff" opacity="0.3"/>
+  <circle cx="600" cy="380" r="40" fill="#ff00ff" opacity="0.3"/>
+
+  <!-- Stars -->
+  <text x="380" y="220" font-size="24" fill="#ff69b4">✨</text>
+  <text x="800" y="220" font-size="24" fill="#00ffff">✨</text>
+  <text x="590" y="450" font-size="20" fill="#ff00ff">✨</text>
+
+  <!-- Title -->
+  <text x="600" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="url(#rainbow)" text-anchor="middle">Y2K</text>
+  <text x="600" y="560" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="600" fill="#ff69b4" text-anchor="middle">The Future is Shiny ✨</text>
+  <text x="600" y="600" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#87ceeb" text-anchor="middle">Millennium Aesthetic</text>
+</svg>
