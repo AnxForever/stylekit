@@ -1,0 +1,74 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Primary Gradient -->
+    <linearGradient id="materialPrimary" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#6200ee"/>
+      <stop offset="100%" stop-color="#b388ff"/>
+    </linearGradient>
+    <!-- Secondary Color -->
+    <linearGradient id="materialSecondary" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#03dac6"/>
+      <stop offset="100%" stop-color="#018786"/>
+    </linearGradient>
+    <!-- Elevation Shadows -->
+    <filter id="elevation1" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.24"/>
+    </filter>
+    <filter id="elevation3" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.19"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="3" flood-color="#000000" flood-opacity="0.23"/>
+    </filter>
+    <filter id="elevation4" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000000" flood-opacity="0.25"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="5" flood-color="#000000" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#fafafa"/>
+
+  <!-- App Bar -->
+  <rect x="0" y="0" width="1200" height="64" fill="#6200ee" filter="url(#elevation3)"/>
+  <text x="40" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="500" fill="white">Material Design</text>
+  <text x="1160" y="42" font-family="system-ui" font-size="14" fill="white" opacity="0.8" text-anchor="end">ALL STYLES</text>
+
+  <!-- Hero Card -->
+  <rect x="300" y="120" width="600" height="280" rx="16" fill="white" filter="url(#elevation3)"/>
+  <!-- Card Header Image -->
+  <rect x="300" y="120" width="600" height="140" rx="16" fill="url(#materialPrimary)"/>
+  <rect x="300" y="244" width="600" height="20" fill="white"/>
+  <text x="600" y="200" font-family="system-ui" font-size="48" font-weight="700" fill="white" text-anchor="middle">Material</text>
+  <!-- Card Content -->
+  <text x="340" y="310" font-family="system-ui" font-size="24" font-weight="500" fill="#000000" opacity="0.87">Design System</text>
+  <text x="340" y="345" font-family="system-ui" font-size="16" fill="#000000" opacity="0.6">Build beautiful, usable products faster.</text>
+  <!-- Card Actions -->
+  <text x="340" y="385" font-family="system-ui" font-size="14" font-weight="500" fill="#6200ee" letter-spacing="0.1em">LEARN MORE</text>
+  <text x="500" y="385" font-family="system-ui" font-size="14" font-weight="500" fill="#6200ee" letter-spacing="0.1em">GET STARTED</text>
+
+  <!-- Feature Cards -->
+  <g transform="translate(100, 440)">
+    <rect x="0" y="0" width="300" height="120" rx="12" fill="white" filter="url(#elevation1)"/>
+    <rect x="20" y="20" width="48" height="48" rx="8" fill="url(#materialPrimary)"/>
+    <text x="88" y="45" font-family="system-ui" font-size="16" font-weight="500" fill="#000000" opacity="0.87">Elevation</text>
+    <text x="88" y="65" font-family="system-ui" font-size="13" fill="#000000" opacity="0.6">Shadow depth system</text>
+  </g>
+
+  <g transform="translate(450, 440)">
+    <rect x="0" y="0" width="300" height="120" rx="12" fill="white" filter="url(#elevation1)"/>
+    <rect x="20" y="20" width="48" height="48" rx="8" fill="url(#materialSecondary)"/>
+    <text x="88" y="45" font-family="system-ui" font-size="16" font-weight="500" fill="#000000" opacity="0.87">Color</text>
+    <text x="88" y="65" font-family="system-ui" font-size="13" fill="#000000" opacity="0.6">Bold and intentional</text>
+  </g>
+
+  <g transform="translate(800, 440)">
+    <rect x="0" y="0" width="300" height="120" rx="12" fill="white" filter="url(#elevation1)"/>
+    <rect x="20" y="20" width="48" height="48" rx="8" fill="#7c4dff"/>
+    <text x="88" y="45" font-family="system-ui" font-size="16" font-weight="500" fill="#000000" opacity="0.87">Motion</text>
+    <text x="88" y="65" font-family="system-ui" font-size="13" fill="#000000" opacity="0.6">Meaningful animation</text>
+  </g>
+
+  <!-- FAB -->
+  <circle cx="1100" cy="340" r="28" fill="#03dac6" filter="url(#elevation4)"/>
+  <text x="1100" y="348" font-family="system-ui" font-size="28" fill="#000000" text-anchor="middle">+</text>
+</svg>
