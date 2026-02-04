@@ -67,7 +67,12 @@ export const translations = {
     "styles.tryWith": "试试搭配",
     "styles.submitCta.title": "有喜欢的设计风格？",
     "styles.submitCta.desc": "欢迎提交你发现的优质设计风格，一起丰富这个集合。",
-    "styles.submitCta.button": "在 GitHub 提交",
+    "styles.submitCta.button": "提交风格",
+
+    // Submit page
+    "submit.title": "提交新风格",
+    "submit.subtitle": "Submit Style",
+    "submit.description": "填写以下表单来提交你发现的优质设计风格，帮助丰富 StyleKit 风格集合。",
 
     // Components page
     "components.subtitle": "组件库",
@@ -324,7 +329,12 @@ export const translations = {
     "styles.tryWith": "Try With",
     "styles.submitCta.title": "Found a great design style?",
     "styles.submitCta.desc": "Submit your favorite design styles to help enrich this collection.",
-    "styles.submitCta.button": "Submit on GitHub",
+    "styles.submitCta.button": "Submit Style",
+
+    // Submit page
+    "submit.title": "Submit New Style",
+    "submit.subtitle": "Submit Style",
+    "submit.description": "Fill out the form below to submit a design style you've discovered.",
 
     // Components page
     "components.subtitle": "Component Library",

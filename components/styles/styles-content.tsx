@@ -240,14 +240,12 @@ export function StylesContent({
             {t("styles.submitCta.title")}
           </h2>
           <p className="text-muted mb-6">{t("styles.submitCta.desc")}</p>
-          <a
-            href="https://github.com/AnxForever/stylekit"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/submit"
             className="inline-flex items-center justify-center px-6 py-3 border border-border hover:border-foreground transition-colors text-sm tracking-wide"
           >
             {t("styles.submitCta.button")}
-          </a>
+          </Link>
         </div>
       </section>
     </>

@@ -53,12 +53,12 @@ export function Footer() {
               >
                 {t("footer.githubRepo")}
               </a>
-              <a
-                href="#"
+              <Link
+                href="/submit"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("footer.submitStyle")}
-              </a>
+              </Link>
             </nav>
           </div>
         </div>
