@@ -1031,6 +1031,253 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  // ============ 新增风格 - Vaporwave, Y2K, Memphis, Art Deco, Bauhaus, Synthwave ============
+  "vaporwave": {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(255,113,206,0.5)] hover:shadow-[0_0_30px_rgba(255,113,206,0.7)] transition-all">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-br from-purple-900/80 to-pink-900/80 border border-pink-500/30 shadow-[0_0_30px_rgba(255,113,206,0.3)]">
+        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-2">蒸汽波卡片</h3>
+        <p className="text-pink-200/70">复古未来主义美学</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-purple-900/50 border border-pink-500/30 text-pink-100 placeholder-pink-400/50 focus:outline-none focus:border-pink-500 focus:shadow-[0_0_15px_rgba(255,113,206,0.3)] transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-purple-900 via-pink-900 to-indigo-900 flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Grid background */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,113,206,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,113,206,0.1)_1px,transparent_1px)] bg-[size:20px_20px]" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-purple-900/60 backdrop-blur-sm border border-pink-500/30 p-4 shadow-[0_0_20px_rgba(255,113,206,0.3)]">
+            <div className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 font-bold text-sm mb-2">VAPORWAVE</div>
+            <p className="text-pink-300/60 text-[10px] mb-3">アエステティック</p>
+            <button className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold uppercase shadow-[0_0_15px_rgba(255,113,206,0.5)]">
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "y2k": {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 rounded-full text-white font-bold shadow-[0_4px_15px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_20px_rgba(255,105,180,0.6)] hover:scale-105 transition-all">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-br from-white/60 to-pink-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-2">Y2K 卡片</h3>
+        <p className="text-gray-600">千禧年未来主义</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/60 text-gray-700 placeholder-gray-400 focus:outline-none focus:shadow-[0_0_20px_rgba(255,105,180,0.3)] transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-pink-100 via-white to-cyan-100 flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Bubbles */}
+        <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-gradient-to-br from-pink-200/50 to-transparent blur-sm" />
+        <div className="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200/50 to-transparent blur-sm" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-gradient-to-br from-white/70 to-pink-100/50 backdrop-blur-md rounded-3xl border border-white/60 p-4 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+            <div className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 font-bold text-sm mb-2">Y2K</div>
+            <p className="text-gray-500 text-[10px] mb-3">千禧年美学</p>
+            <button className="w-full py-2 bg-gradient-to-r from-pink-400 to-cyan-400 rounded-full text-white text-xs font-bold shadow-[0_4px_15px_rgba(255,105,180,0.3)]">
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "memphis": {
+    button: () => (
+      <button className="relative px-6 py-3 bg-yellow-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] transition-all">
+        <span className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-black" />
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="relative p-6 bg-pink-300 border-4 border-black shadow-[8px_8px_0px_#000]">
+        <div className="absolute -top-3 -left-3 w-6 h-6 bg-yellow-400 rounded-full border-2 border-black" />
+        <div className="absolute -bottom-2 -right-2 w-0 h-0 border-l-[15px] border-l-transparent border-b-[25px] border-b-cyan-400 border-r-[15px] border-r-transparent" />
+        <h3 className="text-xl font-black text-black uppercase mb-2">孟菲斯卡片</h3>
+        <p className="text-black/70 font-medium">大胆有趣的设计</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-white border-4 border-black text-black font-bold placeholder-gray-400 shadow-[4px_4px_0px_#48dbfb] focus:shadow-[4px_4px_0px_#ff6b6b] focus:outline-none transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-yellow-300 via-pink-300 to-cyan-300 flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Decorative shapes */}
+        <div className="absolute top-2 left-2 w-6 h-6 bg-red-500 rounded-full border-2 border-black" />
+        <div className="absolute bottom-3 right-3 w-5 h-5 bg-blue-500 border-2 border-black rotate-45" />
+        <div className="absolute top-1/3 right-4 w-0 h-0 border-l-[10px] border-l-transparent border-b-[16px] border-b-green-400 border-r-[10px] border-r-transparent" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="relative bg-white border-4 border-black p-4 shadow-[6px_6px_0px_#000]">
+            <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full border-2 border-black" />
+            <div className="font-black text-sm text-black uppercase mb-2">MEMPHIS</div>
+            <p className="text-gray-600 text-[10px] mb-3">大胆撞色风格</p>
+            <button className="w-full py-2 bg-pink-400 border-2 border-black text-black text-xs font-black uppercase shadow-[3px_3px_0px_#000]">
+              Fun!
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "art-deco": {
+    button: () => (
+      <button className="px-8 py-3 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.2em] border-2 border-yellow-400 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="relative p-6 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-yellow-500" />
+        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-yellow-500" />
+        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-yellow-500" />
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-500" />
+        <h3 className="text-xl font-serif text-yellow-500 text-center mb-2 tracking-wider">装饰艺术</h3>
+        <p className="text-gray-400 text-center text-sm">奢华典雅的设计</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-slate-900 border border-yellow-600/50 text-yellow-100 placeholder-yellow-600/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Radial lines */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px]">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute top-1/2 left-1/2 w-full h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left"
+                style={{ transform: `rotate(${i * 45}deg)` }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="relative w-full max-w-[180px]">
+          <div className="relative bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50 p-4">
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-yellow-500" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-yellow-500" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-500" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-500" />
+            <div className="font-serif text-yellow-500 text-sm text-center mb-1 tracking-wider">ART DECO</div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto mb-2" />
+            <p className="text-gray-400 text-[10px] text-center mb-3">黄金时代</p>
+            <button className="w-full py-2 border border-yellow-500 text-yellow-500 text-xs font-serif uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition-all">
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "bauhaus": {
+    button: () => (
+      <button className="px-6 py-3 bg-red-600 text-white font-bold uppercase tracking-wider hover:bg-black transition-colors">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="relative p-6 bg-white border-4 border-black">
+        <div className="absolute -top-4 -left-4 w-8 h-8 bg-yellow-400 rounded-full" />
+        <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-blue-600" />
+        <h3 className="text-xl font-bold text-black uppercase tracking-wider mb-2">包豪斯卡片</h3>
+        <p className="text-gray-700">形式追随功能</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-white border-4 border-black text-black font-medium placeholder-gray-400 focus:border-red-600 focus:outline-none transition-colors"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Geometric shapes */}
+        <div className="absolute top-3 right-3 w-12 h-12 bg-yellow-400 rounded-full" />
+        <div className="absolute bottom-4 right-6 w-8 h-8 bg-blue-600" />
+        <div className="absolute top-8 right-10 w-0 h-0 border-l-[16px] border-l-transparent border-b-[28px] border-b-red-600 border-r-[16px] border-r-transparent" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="relative bg-white border-4 border-black p-4">
+            <div className="absolute -top-3 -left-3 w-6 h-6 bg-yellow-400 rounded-full" />
+            <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-600" />
+            <div className="font-black text-lg text-black uppercase tracking-wider mb-1">BAU<br/>HAUS</div>
+            <p className="text-gray-600 text-[10px] mb-3">功能主义</p>
+            <button className="w-full py-2 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-red-600 transition-colors">
+              Explore
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "synthwave": {
+    button: () => (
+      <button className="px-6 py-3 bg-transparent border-2 border-pink-500 text-pink-500 font-bold uppercase tracking-wider shadow-[0_0_10px_rgba(255,0,255,0.5),inset_0_0_10px_rgba(255,0,255,0.1)] hover:bg-pink-500 hover:text-black hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] transition-all">
+        点击按钮
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-b from-purple-900/80 to-black/80 border border-pink-500/50 shadow-[0_0_20px_rgba(255,0,255,0.2)]">
+        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500 mb-2">合成波卡片</h3>
+        <p className="text-pink-200/70">复古未来主义</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="输入内容..."
+        className="w-full px-4 py-3 bg-black/50 border-2 border-cyan-500/50 text-cyan-100 placeholder-cyan-500/50 shadow-[0_0_10px_rgba(0,255,255,0.1)] focus:border-pink-500 focus:shadow-[0_0_20px_rgba(255,0,255,0.3)] focus:outline-none transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-purple-900 via-pink-900 to-orange-900 flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Sun */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-12 bg-gradient-to-t from-orange-500 via-pink-500 to-purple-500 rounded-t-full opacity-60" />
+        {/* Grid floor */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-[linear-gradient(transparent_0%,rgba(255,0,255,0.1)_100%)]">
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,0,255,0.3)_1px,transparent_1px),linear-gradient(rgba(255,0,255,0.3)_1px,transparent_1px)] bg-[size:15px_8px] [transform:perspective(100px)_rotateX(60deg)] origin-bottom" />
+        </div>
+        <div className="relative w-full max-w-[180px] z-10">
+          <div className="bg-gradient-to-b from-purple-900/80 to-black/80 backdrop-blur-sm border border-pink-500/30 p-4 shadow-[0_0_20px_rgba(255,0,255,0.3)]">
+            <div className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 font-bold text-sm mb-2">SYNTHWAVE</div>
+            <p className="text-pink-300/60 text-[10px] mb-3">Ride into sunset</p>
+            <button className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold uppercase shadow-[0_0_15px_rgba(255,0,255,0.5)]">
+              Drive
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

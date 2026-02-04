@@ -1,0 +1,64 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient Background -->
+    <linearGradient id="vaporBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a0533"/>
+      <stop offset="40%" stop-color="#4a1942"/>
+      <stop offset="70%" stop-color="#ff71ce"/>
+      <stop offset="100%" stop-color="#01cdfe"/>
+    </linearGradient>
+    <!-- Sun Gradient -->
+    <linearGradient id="sunGrad" x1="600" y1="280" x2="600" y2="480" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff71ce"/>
+      <stop offset="50%" stop-color="#ff9de6"/>
+      <stop offset="100%" stop-color="#01cdfe"/>
+    </linearGradient>
+    <!-- Neon Glow -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#vaporBg)"/>
+
+  <!-- Grid Floor -->
+  <g opacity="0.6">
+    <!-- Horizontal lines -->
+    <line x1="0" y1="400" x2="1200" y2="400" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="0" y1="440" x2="1200" y2="440" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="0" y1="480" x2="1200" y2="480" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="0" y1="520" x2="1200" y2="520" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="0" y1="560" x2="1200" y2="560" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="0" y1="600" x2="1200" y2="600" stroke="#ff71ce" stroke-width="1"/>
+    <!-- Vertical lines (perspective) -->
+    <line x1="600" y1="380" x2="600" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="400" y1="380" x2="200" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="800" y1="380" x2="1000" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="500" y1="380" x2="400" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="700" y1="380" x2="800" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="300" y1="380" x2="0" y2="630" stroke="#ff71ce" stroke-width="1"/>
+    <line x1="900" y1="380" x2="1200" y2="630" stroke="#ff71ce" stroke-width="1"/>
+  </g>
+
+  <!-- Sun -->
+  <circle cx="600" cy="380" r="120" fill="url(#sunGrad)" filter="url(#neonGlow)"/>
+  <!-- Sun stripes -->
+  <rect x="480" y="340" width="240" height="8" fill="#1a0533" opacity="0.3"/>
+  <rect x="480" y="360" width="240" height="6" fill="#1a0533" opacity="0.3"/>
+  <rect x="480" y="380" width="240" height="5" fill="#1a0533" opacity="0.3"/>
+  <rect x="480" y="400" width="240" height="4" fill="#1a0533" opacity="0.3"/>
+
+  <!-- Title -->
+  <text x="600" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="700" fill="#ff71ce" text-anchor="middle" filter="url(#neonGlow)">VAPORWAVE</text>
+  <text x="600" y="230" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#01cdfe" text-anchor="middle" filter="url(#neonGlow)">アエステティック</text>
+
+  <!-- Decorative elements -->
+  <text x="100" y="100" font-family="system-ui" font-size="48" fill="#ff71ce" opacity="0.5">永</text>
+  <text x="1050" y="100" font-family="system-ui" font-size="48" fill="#01cdfe" opacity="0.5">遠</text>
+</svg>

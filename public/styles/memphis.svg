@@ -1,0 +1,59 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="memphisBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#feca57"/>
+      <stop offset="50%" stop-color="#ff9ff3"/>
+      <stop offset="100%" stop-color="#48dbfb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#memphisBg)"/>
+
+  <!-- Geometric shapes -->
+  <!-- Large circle -->
+  <circle cx="200" cy="150" r="100" fill="#ff6b6b" stroke="#000" stroke-width="6"/>
+
+  <!-- Square -->
+  <rect x="900" y="80" width="150" height="150" fill="#48dbfb" stroke="#000" stroke-width="6" transform="rotate(15 975 155)"/>
+
+  <!-- Triangle -->
+  <polygon points="600,100 700,280 500,280" fill="#1dd1a1" stroke="#000" stroke-width="6"/>
+
+  <!-- Squiggle line -->
+  <path d="M100 400 Q150 350 200 400 Q250 450 300 400 Q350 350 400 400" stroke="#000" stroke-width="6" fill="none"/>
+
+  <!-- Dots pattern -->
+  <circle cx="800" cy="400" r="8" fill="#000"/>
+  <circle cx="830" cy="400" r="8" fill="#000"/>
+  <circle cx="860" cy="400" r="8" fill="#000"/>
+  <circle cx="800" cy="430" r="8" fill="#000"/>
+  <circle cx="830" cy="430" r="8" fill="#000"/>
+  <circle cx="860" cy="430" r="8" fill="#000"/>
+  <circle cx="800" cy="460" r="8" fill="#000"/>
+  <circle cx="830" cy="460" r="8" fill="#000"/>
+  <circle cx="860" cy="460" r="8" fill="#000"/>
+
+  <!-- Main card -->
+  <rect x="350" y="200" width="500" height="280" fill="#ff9ff3" stroke="#000" stroke-width="8"/>
+  <rect x="370" y="220" width="500" height="280" fill="#feca57" stroke="#000" stroke-width="8"/>
+
+  <!-- Small decorative shapes -->
+  <circle cx="420" cy="270" r="25" fill="#ff6b6b" stroke="#000" stroke-width="4"/>
+  <rect x="780" y="420" width="40" height="40" fill="#5f27cd" stroke="#000" stroke-width="4"/>
+
+  <!-- Zigzag -->
+  <path d="M950 350 L980 380 L950 410 L980 440 L950 470" stroke="#000" stroke-width="6" fill="none"/>
+
+  <!-- Title with shadow effect -->
+  <text x="608" y="378" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="900" fill="#48dbfb" text-anchor="middle">MEMPHIS</text>
+  <text x="604" y="374" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="900" fill="#ff6b6b" text-anchor="middle">MEMPHIS</text>
+  <text x="600" y="370" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="900" fill="#000" text-anchor="middle">MEMPHIS</text>
+
+  <text x="600" y="430" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#000" text-anchor="middle">Bold • Colorful • Fun</text>
+
+  <!-- More decorative elements -->
+  <circle cx="150" cy="500" r="40" fill="#5f27cd" stroke="#000" stroke-width="4"/>
+  <polygon points="1050,500 1100,580 1000,580" fill="#ff6b6b" stroke="#000" stroke-width="4"/>
+</svg>
