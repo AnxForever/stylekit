@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8f9fa"/>
+
+  <!-- F-pattern visualization -->
+  <!-- First horizontal line (top scan) -->
+  <g opacity="0.15">
+    <line x1="50" y1="50" x2="350" y2="50" stroke="#e63946" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="6" fill="#e63946"/>
+    <circle cx="350" cy="50" r="6" fill="#e63946"/>
+  </g>
+
+  <!-- Second horizontal line (shorter) -->
+  <g opacity="0.15">
+    <line x1="50" y1="100" x2="250" y2="100" stroke="#e63946" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="50" cy="100" r="5" fill="#e63946"/>
+    <circle cx="250" cy="100" r="5" fill="#e63946"/>
+  </g>
+
+  <!-- Vertical line (left edge scan) -->
+  <g opacity="0.15">
+    <line x1="50" y1="50" x2="50" y2="250" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="50" cy="250" r="4" fill="#e63946"/>
+  </g>
+
+  <!-- Header bar -->
+  <rect x="50" y="30" width="300" height="35" rx="4" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="60" y="42" width="60" height="12" rx="2" fill="#1a1a2e"/>
+  <g transform="translate(300, 48)">
+    <rect x="0" y="-4" width="30" height="8" rx="2" fill="#e5e7eb"/>
+  </g>
+
+  <!-- Featured content (second row) -->
+  <rect x="50" y="80" width="200" height="50" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="60" y="92" width="40" height="8" rx="2" fill="#e63946"/>
+  <rect x="60" y="108" width="120" height="10" rx="2" fill="#1a1a2e"/>
+
+  <!-- Content list (vertical) -->
+  <g transform="translate(50, 145)">
+    <rect width="200" height="40" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="10" y="10" width="25" height="20" rx="4" fill="#e5e7eb"/>
+    <rect x="45" y="12" width="80" height="8" rx="2" fill="#1a1a2e"/>
+    <rect x="45" y="24" width="100" height="6" rx="2" fill="#e5e7eb"/>
+  </g>
+
+  <g transform="translate(50, 195)">
+    <rect width="200" height="40" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="10" y="10" width="25" height="20" rx="4" fill="#e5e7eb"/>
+    <rect x="45" y="12" width="70" height="8" rx="2" fill="#1a1a2e"/>
+    <rect x="45" y="24" width="90" height="6" rx="2" fill="#e5e7eb"/>
+  </g>
+
+  <!-- Sidebar -->
+  <rect x="265" y="80" width="85" height="155" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="275" y="100" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Sidebar</text>
+  <rect x="275" y="110" width="65" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="275" y="122" width="55" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="275" y="134" width="60" height="6" rx="2" fill="#e5e7eb"/>
+
+  <!-- F letter indicator -->
+  <text x="25" y="160" font-family="Arial Black, sans-serif" font-size="80" fill="#e63946" fill-opacity="0.1">F</text>
+
+  <!-- Footer text -->
+  <text x="200" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">Eye-tracking optimized reading pattern</text>
+</svg>

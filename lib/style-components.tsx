@@ -1498,6 +1498,299 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  // ============ 新增风格 - 批次3 ============
+  "comic-style": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ff3333] border-4 border-black rounded-none text-white font-black uppercase shadow-[4px_4px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition-all duration-100">
+        CLICK!
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white border-4 border-black rounded-none shadow-[6px_6px_0_#000] relative">
+        <div className="absolute -top-3 -right-3 bg-[#ffcc00] border-2 border-black px-2 py-1 font-black text-xs rotate-3">NEW!</div>
+        <h3 className="text-lg font-black uppercase text-black mb-2">COMIC CARD</h3>
+        <p className="text-gray-700 text-sm">A panel from the story!</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="TYPE HERE..."
+        className="w-full px-4 py-3 bg-white border-4 border-black rounded-none text-black placeholder-gray-400 font-bold uppercase focus:outline-none focus:shadow-[inset_0_0_0_2px_#ff3333]"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex items-center justify-center p-3 relative">
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
+          backgroundSize: '6px 6px'
+        }} />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-white border-4 border-black p-4 shadow-[5px_5px_0_#000] relative">
+            <div className="absolute -top-2 -right-2 bg-[#ffcc00] border-2 border-black px-2 py-0.5 font-black text-[8px] rotate-3">POW!</div>
+            <div className="font-black text-sm text-black uppercase mb-2">COMIC</div>
+            <p className="text-gray-600 text-[10px] mb-3">Manga style panels</p>
+            <button className="w-full py-2 bg-[#ff3333] border-3 border-black text-white text-xs font-black uppercase shadow-[3px_3px_0_#000]">
+              READ!
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "sketch-style": {
+    button: () => (
+      <button className="px-6 py-3 bg-transparent border-2 border-dashed border-[#2c2c2c] rounded-sm text-[#2c2c2c] font-serif italic hover:bg-[#2c2c2c] hover:text-[#f5f0e8] transition-all duration-200">
+        Click here
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e8] border-2 border-[#2c2c2c] rounded-sm rotate-[-0.5deg] shadow-[3px_3px_0_rgba(44,44,44,0.15)]">
+        <h3 className="text-lg font-serif italic text-[#2c2c2c] mb-2">Sketch Card</h3>
+        <p className="text-[#666] font-serif text-sm">Drawn with pencil</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Write something..."
+        className="w-full px-4 py-3 bg-transparent border-0 border-b-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] placeholder-[#999] font-serif italic focus:outline-none focus:border-solid focus:border-[#e74c3c]"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e8] flex items-center justify-center p-3 relative">
+        <div className="absolute inset-0 opacity-5" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232c2c2c' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E")`
+        }} />
+        <div className="relative w-full max-w-[180px] rotate-[-0.5deg]">
+          <div className="bg-white border-2 border-[#2c2c2c] border-dashed p-4 shadow-[3px_3px_0_rgba(44,44,44,0.15)]">
+            <div className="absolute top-2 right-2 w-2 h-2 rounded-full border border-[#2c2c2c]" />
+            <div className="font-serif italic text-sm text-[#2c2c2c] mb-2">Sketch</div>
+            <p className="text-[#666] font-serif text-[10px] italic mb-3">Hand-drawn feel</p>
+            <button className="w-full py-2 bg-[#2c2c2c] text-[#f5f0e8] text-xs font-serif italic rounded-sm">
+              Draw
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "watercolor-style": {
+    button: () => (
+      <button className="px-8 py-4 bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80 rounded-full text-white font-serif shadow-lg shadow-[#4a6fa5]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+        Explore
+      </button>
+    ),
+    card: () => (
+      <div className="p-8 bg-gradient-to-br from-[#e8a87c]/20 via-white to-[#85cdca]/20 rounded-3xl shadow-lg shadow-[#4a6fa5]/10 border border-[#4a6fa5]/10">
+        <h3 className="text-lg font-serif text-[#4a6fa5] mb-2">Watercolor Card</h3>
+        <p className="text-[#6b7280] text-sm">Colors flowing like water</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Write here..."
+        className="w-full px-5 py-4 bg-white/60 border border-[#4a6fa5]/20 rounded-2xl text-[#4a6fa5] placeholder-[#4a6fa5]/40 font-serif focus:outline-none focus:border-[#4a6fa5]/40 focus:bg-white/80 transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#faf8f5] flex items-center justify-center p-3 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-24 h-24 bg-[#e8a87c]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-28 h-28 bg-[#85cdca]/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-[#c38d94]/10 rounded-full blur-2xl" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-gradient-to-br from-[#e8a87c]/15 via-white/80 to-[#85cdca]/15 rounded-3xl p-4 border border-[#4a6fa5]/10 shadow-lg shadow-[#4a6fa5]/10">
+            <div className="font-serif italic text-sm text-[#4a6fa5] mb-2">Watercolor</div>
+            <p className="text-[#6b7280] text-[10px] mb-3">Soft flowing colors</p>
+            <button className="w-full py-2 bg-gradient-to-r from-[#4a6fa5]/70 to-[#85cdca]/70 text-white text-xs font-serif rounded-full">
+              Paint
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "f-pattern-layout": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f8f9fa] flex flex-col p-2">
+        {/* F的第一笔 - 顶部横条 */}
+        <div className="h-8 bg-white border-b border-gray-200 mb-2 flex items-center px-2">
+          <div className="w-12 h-3 bg-[#1a1a2e] rounded" />
+          <div className="ml-auto flex gap-1">
+            <div className="w-6 h-2 bg-gray-200 rounded" />
+            <div className="w-6 h-2 bg-gray-200 rounded" />
+          </div>
+        </div>
+        {/* F的第二笔 - 特色内容 */}
+        <div className="h-10 bg-white rounded-lg mb-2 p-2 shadow-sm">
+          <div className="w-8 h-1.5 bg-[#e63946] rounded mb-1" />
+          <div className="w-16 h-2 bg-[#1a1a2e] rounded" />
+        </div>
+        {/* F的竖线 - 左侧内容列表 */}
+        <div className="flex-1 flex gap-2">
+          <div className="flex-1 space-y-1.5">
+            <div className="h-8 bg-white rounded-lg shadow-sm flex items-center p-2 gap-2">
+              <div className="w-5 h-5 bg-gray-200 rounded" />
+              <div className="flex-1">
+                <div className="w-12 h-1.5 bg-[#1a1a2e] rounded mb-1" />
+                <div className="w-16 h-1 bg-gray-200 rounded" />
+              </div>
+            </div>
+            <div className="h-8 bg-white rounded-lg shadow-sm flex items-center p-2 gap-2">
+              <div className="w-5 h-5 bg-gray-200 rounded" />
+              <div className="flex-1">
+                <div className="w-10 h-1.5 bg-[#1a1a2e] rounded mb-1" />
+                <div className="w-14 h-1 bg-gray-200 rounded" />
+              </div>
+            </div>
+          </div>
+          <div className="w-12 bg-white rounded-lg shadow-sm p-1.5">
+            <div className="text-[6px] text-gray-400 mb-1">Sidebar</div>
+            <div className="space-y-1">
+              <div className="w-full h-1 bg-gray-200 rounded" />
+              <div className="w-3/4 h-1 bg-gray-200 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "z-pattern-layout": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex flex-col p-2">
+        {/* Z的第一笔 - Logo(左) → CTA(右) */}
+        <div className="flex items-center justify-between mb-2 px-1">
+          <div className="w-10 h-3 bg-[#0f172a] rounded" />
+          <div className="w-12 h-4 bg-[#6366f1] rounded-md" />
+        </div>
+        {/* Z的对角线 - 核心内容 */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center px-2">
+            <div className="w-24 h-4 bg-[#0f172a] rounded mx-auto mb-2" />
+            <div className="w-20 h-2 bg-gray-200 rounded mx-auto mb-3" />
+            <div className="flex gap-1 justify-center">
+              <div className="w-14 h-5 bg-[#6366f1] rounded-lg" />
+              <div className="w-12 h-5 border border-gray-200 rounded-lg" />
+            </div>
+          </div>
+        </div>
+        {/* Z的第二笔 - 信任(左) → CTA(右) */}
+        <div className="flex items-center justify-between px-1 pt-2 border-t border-gray-100">
+          <div className="flex gap-1">
+            <div className="w-4 h-4 bg-gray-200 rounded" />
+            <div className="w-4 h-4 bg-gray-200 rounded" />
+          </div>
+          <div className="w-14 h-4 bg-[#0f172a] rounded-md" />
+        </div>
+      </div>
+    ),
+  },
+  "holy-grail-layout": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f1f5f9] flex flex-col">
+        {/* Header */}
+        <div className="h-6 bg-white border-b border-gray-200 flex items-center px-2">
+          <div className="w-10 h-2 bg-[#1e293b] rounded" />
+          <div className="ml-auto flex gap-1">
+            <div className="w-4 h-1.5 bg-gray-200 rounded" />
+            <div className="w-4 h-1.5 bg-gray-200 rounded" />
+          </div>
+        </div>
+        {/* 三列主体 */}
+        <div className="flex-1 flex">
+          {/* 左侧导航 */}
+          <div className="w-10 bg-white border-r border-gray-200 p-1.5">
+            <div className="space-y-1">
+              <div className="h-2 bg-[#3b82f6]/20 rounded" />
+              <div className="h-2 bg-gray-100 rounded" />
+              <div className="h-2 bg-gray-100 rounded" />
+            </div>
+          </div>
+          {/* 主内容区 */}
+          <div className="flex-1 p-2">
+            <div className="h-4 w-12 bg-[#1e293b] rounded mb-2" />
+            <div className="grid grid-cols-2 gap-1">
+              <div className="h-8 bg-white rounded shadow-sm" />
+              <div className="h-8 bg-white rounded shadow-sm" />
+            </div>
+          </div>
+          {/* 右侧边栏 */}
+          <div className="w-10 bg-white border-l border-gray-200 p-1.5">
+            <div className="text-[6px] text-gray-400 mb-1">Activity</div>
+            <div className="space-y-1">
+              <div className="h-1.5 bg-gray-100 rounded" />
+              <div className="h-1.5 bg-gray-100 rounded" />
+            </div>
+          </div>
+        </div>
+        {/* Footer */}
+        <div className="h-5 bg-white border-t border-gray-200 flex items-center justify-center">
+          <div className="w-16 h-1.5 bg-gray-200 rounded" />
+        </div>
+      </div>
+    ),
+  },
+  "dashboard-layout": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f9fafb] flex">
+        {/* 深色侧边栏 */}
+        <div className="w-12 bg-[#111827] flex flex-col p-1.5">
+          <div className="w-5 h-1.5 bg-white/80 rounded mb-2" />
+          <div className="space-y-1">
+            <div className="h-2 bg-white/20 rounded" />
+            <div className="h-2 bg-white/10 rounded" />
+            <div className="h-2 bg-white/10 rounded" />
+          </div>
+        </div>
+        {/* 主区域 */}
+        <div className="flex-1 flex flex-col">
+          {/* 顶部工具栏 */}
+          <div className="h-5 bg-white border-b border-gray-200 flex items-center px-2">
+            <div className="w-8 h-1.5 bg-[#111827] rounded" />
+            <div className="ml-auto w-4 h-4 bg-[#6366f1] rounded-full" />
+          </div>
+          {/* 内容区 */}
+          <div className="flex-1 p-1.5">
+            {/* KPI 卡片 */}
+            <div className="grid grid-cols-4 gap-1 mb-1.5">
+              <div className="bg-white rounded p-1 shadow-sm">
+                <div className="text-[6px] text-gray-400">Rev</div>
+                <div className="text-[8px] font-bold text-[#111827]">$48K</div>
+                <div className="text-[6px] text-[#10b981]">+12%</div>
+              </div>
+              <div className="bg-white rounded p-1 shadow-sm">
+                <div className="text-[6px] text-gray-400">Users</div>
+                <div className="text-[8px] font-bold text-[#111827]">2.4K</div>
+                <div className="text-[6px] text-[#10b981]">+5%</div>
+              </div>
+              <div className="bg-white rounded p-1 shadow-sm">
+                <div className="text-[6px] text-gray-400">Orders</div>
+                <div className="text-[8px] font-bold text-[#111827]">1.2K</div>
+                <div className="text-[6px] text-[#ef4444]">-2%</div>
+              </div>
+              <div className="bg-white rounded p-1 shadow-sm">
+                <div className="text-[6px] text-gray-400">Conv</div>
+                <div className="text-[8px] font-bold text-[#111827]">3.6%</div>
+                <div className="text-[6px] text-[#f59e0b]">+0.3</div>
+              </div>
+            </div>
+            {/* 图表区 */}
+            <div className="grid grid-cols-3 gap-1">
+              <div className="col-span-2 bg-white rounded p-1.5 shadow-sm">
+                <div className="text-[6px] text-gray-500 mb-1">Revenue Trend</div>
+                <div className="h-10 bg-gray-50 rounded" />
+              </div>
+              <div className="bg-white rounded p-1.5 shadow-sm">
+                <div className="text-[6px] text-gray-500 mb-1">Dist</div>
+                <div className="h-10 bg-gray-50 rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

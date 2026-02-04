@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Dark sidebar -->
+  <rect x="30" y="30" width="70" height="220" rx="6" fill="#111827"/>
+  <rect x="40" y="45" width="35" height="10" rx="2" fill="#ffffff" fill-opacity="0.9"/>
+  <rect x="40" y="70" width="50" height="8" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+  <rect x="40" y="85" width="50" height="8" rx="2" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="40" y="100" width="50" height="8" rx="2" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="40" y="115" width="50" height="8" rx="2" fill="#ffffff" fill-opacity="0.1"/>
+  <!-- User avatar -->
+  <circle cx="55" cy="225" r="12" fill="#6366f1"/>
+
+  <!-- Main area -->
+  <!-- Top toolbar -->
+  <rect x="105" y="30" width="265" height="35" rx="4" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="115" y="42" width="60" height="12" rx="2" fill="#111827"/>
+  <circle cx="345" cy="48" r="12" fill="#6366f1"/>
+
+  <!-- KPI Cards -->
+  <g transform="translate(105, 75)">
+    <rect width="60" height="50" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Revenue</text>
+    <text x="10" y="35" font-family="Arial Black, sans-serif" font-size="14" fill="#111827">$48K</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="8" fill="#10b981">+12%</text>
+  </g>
+  <g transform="translate(170, 75)">
+    <rect width="60" height="50" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Users</text>
+    <text x="10" y="35" font-family="Arial Black, sans-serif" font-size="14" fill="#111827">2.4K</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="8" fill="#10b981">+5%</text>
+  </g>
+  <g transform="translate(235, 75)">
+    <rect width="60" height="50" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Orders</text>
+    <text x="10" y="35" font-family="Arial Black, sans-serif" font-size="14" fill="#111827">1.2K</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="8" fill="#ef4444">-2%</text>
+  </g>
+  <g transform="translate(300, 75)">
+    <rect width="70" height="50" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Conversion</text>
+    <text x="10" y="35" font-family="Arial Black, sans-serif" font-size="14" fill="#111827">3.6%</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="8" fill="#f59e0b">+0.3%</text>
+  </g>
+
+  <!-- Charts -->
+  <g transform="translate(105, 135)">
+    <rect width="170" height="95" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="9" fill="#6b7280">Revenue Trend</text>
+    <rect x="10" y="28" width="150" height="55" rx="4" fill="#f9fafb"/>
+    <!-- Chart line -->
+    <polyline points="15,70 45,55 75,60 105,45 135,40 155,50" fill="none" stroke="#6366f1" stroke-width="2"/>
+  </g>
+  <g transform="translate(280, 135)">
+    <rect width="90" height="95" rx="6" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+    <text x="10" y="18" font-family="Arial, sans-serif" font-size="9" fill="#6b7280">Distribution</text>
+    <circle cx="45" cy="60" r="30" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+    <circle cx="45" cy="60" r="30" fill="none" stroke="#6366f1" stroke-width="8" stroke-dasharray="70 118.5" transform="rotate(-90, 45, 60)"/>
+    <circle cx="45" cy="60" r="30" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="40 148.5" transform="rotate(40, 45, 60)"/>
+  </g>
+
+  <!-- Footer text -->
+  <text x="200" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">Data panels & analytics view</text>
+</svg>
