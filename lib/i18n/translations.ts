@@ -326,6 +326,8 @@ export const translations = {
     "styles.tagResponsive": "Responsive",
     "styles.tagBrandInspired": "Brand Inspired",
     "styles.clearTags": "Clear",
+    "styles.selectTags": "Select tags",
+    "styles.tagsSelected": " tags",
     "styles.noFavorites": "No favorites yet",
     "styles.compatibleWith": "Compatible Visual Styles",
     "styles.tryWith": "Try With",
