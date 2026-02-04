@@ -17,7 +17,7 @@ export function HomeContent({ styles }: HomeContentProps) {
   const { t } = useI18n();
   const assets = useAssets();
   const featuredAssets = assets.slice(0, 6);
-  const featuredStyles = styles.slice(0, 6);
+  const featuredStyles = styles.slice(0, 8);
 
   return (
     <>
