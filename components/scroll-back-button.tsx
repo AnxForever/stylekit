@@ -39,8 +39,20 @@ export function ScrollBackButton({
       sessionStorage.setItem(`scroll-${pathname}`, window.scrollY.toString());
     }
 
-    // 返回或导航到指定href
+    // 返回到styles列表页面时，尝试恢复之前保存的URL（包含过滤器参数）
     if (href) {
+      // 如果指定了href，检查是否有保存的styles列表URL
+      if (href === "/styles") {
+        const savedStylesUrl = sessionStorage.getItem("styles-return-url");
+        if (savedStylesUrl) {
+          // 解析URL获取路径和查询参数
+          const url = new URL(savedStylesUrl);
+          const pathAndQuery = url.pathname + url.search;
+          sessionStorage.removeItem("styles-return-url");
+          router.push(pathAndQuery);
+          return;
+        }
+      }
       router.push(href);
     } else {
       router.back();

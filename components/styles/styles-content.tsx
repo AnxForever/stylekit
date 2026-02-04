@@ -52,14 +52,18 @@ export function StylesContent({
   }, [tagDropdownOpen]);
 
   // 页面加载时恢复滚动位置
+  // 重要：在 state 状态确定后才恢复滚动，避免state改变时被打断
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("styles-scroll-position");
     if (savedScroll) {
       const y = parseInt(savedScroll, 10);
-      // 延迟确保 DOM 完全渲染
+      // 使用更大的延迟以确保：
+      // 1. DOM 完全渲染
+      // 2. 所有state都已稳定
+      // 3. 列表已根据filter重新排列
       setTimeout(() => {
         window.scrollTo(0, y);
-      }, 100);
+      }, 150);
       // 恢复后清除，避免刷新页面也滚动
       sessionStorage.removeItem("styles-scroll-position");
     }
