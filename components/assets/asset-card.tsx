@@ -7,7 +7,7 @@ import type { AssetMeta } from "@/lib/assets/meta";
 
 interface AssetCardProps {
   asset: AssetMeta;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "mini";
   onFavorite?: (assetId: string) => void;
   isFavorite?: boolean;
   onDownload?: (asset: AssetMeta) => void;
@@ -21,6 +21,27 @@ export const AssetCard = React.memo(function AssetCard({
   onDownload,
 }: AssetCardProps) {
   const isCompact = variant === "compact";
+  const isMini = variant === "mini";
+
+  // Mini variant - 极简展示
+  if (isMini) {
+    return (
+      <div className="group relative border border-border hover:border-foreground transition-colors overflow-hidden">
+        <div className="relative overflow-hidden bg-zinc-50 dark:bg-zinc-900 aspect-square">
+          <Image
+            src={asset.image}
+            alt={asset.name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="120px"
+          />
+        </div>
+        <div className="p-2">
+          <h3 className="text-xs truncate">{asset.name}</h3>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="group relative border border-border hover:border-foreground transition-colors overflow-hidden">

@@ -10,7 +10,7 @@ interface AssetGalleryProps {
   title?: string;
   showSearch?: boolean;
   showFilter?: boolean;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "mini";
   onDownload?: (asset: AssetMeta) => void;
 }
 
@@ -122,7 +122,9 @@ export function AssetGallery({
       {filteredAssets.length > 0 ? (
         <div
           className={`grid gap-4 ${
-            variant === "compact"
+            variant === "mini"
+              ? "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
+              : variant === "compact"
               ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
               : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           }`}
