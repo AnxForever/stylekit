@@ -17,6 +17,54 @@ export const neoBrutalist: DesignStyle = {
   },
   keywords: ["粗边框", "硬阴影", "无圆角", "高对比", "功能主义"],
 
+  // 风格变体
+  variants: [
+    {
+      id: "classic",
+      name: "经典",
+      nameEn: "Classic",
+      description: "原始野兽派风格，纯黑边框，高对比度",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#ff006e", "#ccff00", "#00d9ff", "#ff9500"],
+      },
+    },
+    {
+      id: "soft",
+      name: "柔和",
+      nameEn: "Soft",
+      description: "较细边框，灰色阴影，马卡龙色调，温和对比",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#f5f5f5",
+        accent: ["#f472b6", "#a3e635", "#38bdf8", "#fbbf24"],
+      },
+      cssOverrides: `
+/* Soft variant overrides */
+.brutal-border { border-width: 2px; border-color: #374151; }
+.brutal-shadow { box-shadow: 4px 4px 0 rgba(0,0,0,0.2); }
+`,
+    },
+    {
+      id: "playful",
+      name: "俏皮",
+      nameEn: "Playful",
+      description: "多彩配色，元素倾斜，活泼动效，年轻化",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#95e1d3", "#f38181"],
+      },
+      cssOverrides: `
+/* Playful variant overrides */
+.brutal-card { transform: rotate(-1deg); }
+.brutal-card:nth-child(even) { transform: rotate(1deg); }
+.brutal-button:hover { transform: scale(1.05); }
+`,
+    },
+  ],
+
   philosophy: `Neo-Brutalist（新野兽派）设计风格源于建筑领域的野兽派运动，强调原始、未经修饰的功能美学。在 Web 设计中，这种风格通过大胆的黑色边框、硬边缘阴影、锐利的直角和高对比度的配色方案来表达。
 
 核心理念：
