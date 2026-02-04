@@ -1,7 +1,7 @@
 # StyleKit Style Inventory
 
 > Last Updated: 2026-02-04
-> Total Styles: 36 (after merging similar styles)
+> Total Styles: 43 (after merging similar styles)
 
 This document tracks all design styles in StyleKit to prevent duplicates when adding new styles.
 
@@ -13,7 +13,7 @@ StyleKit uses a variant system to handle closely related styles. Instead of sepa
 - **Neo-Brutalist** includes: Classic, Soft (softer colors), Playful (colorful, rotations)
 - **Neon Retro (Vaporwave)** includes: Vaporwave, Synthwave, Cyberpunk
 
-## Visual Styles (26)
+## Visual Styles (29)
 
 ### Morphism Family
 | Slug | Name | Key Characteristics |
@@ -65,8 +65,11 @@ StyleKit uses a variant system to handle closely related styles. Instead of sepa
 | `geometric-bold` | Geometric Bold | Bold geometric shapes, strong colors |
 | `editorial` | Editorial | Magazine-style, typography-focused, elegant |
 | `ghibli-style` | Ghibli Style | Anime-inspired, warm colors, dreamy, soft |
+| `comic-style` | Comic Style | Manga/comic aesthetic, halftone dots, speech bubbles, action lines |
+| `sketch-style` | Sketch Style | Hand-drawn pencil lines, paper texture, sketchy borders |
+| `watercolor-style` | Watercolor Style | Soft watercolor washes, gradient bleeds, artistic edges |
 
-## Layout Styles (8)
+## Layout Styles (14)
 
 | Slug | Name | Key Characteristics |
 |------|------|---------------------|
@@ -79,6 +82,10 @@ StyleKit uses a variant system to handle closely related styles. Instead of sepa
 | `sidebar-fixed` | Sidebar Fixed | Fixed navigation sidebar |
 | `magazine-grid` | Magazine Grid | Editorial grid, mixed content |
 | `hero-fullscreen` | Hero Fullscreen | Full-viewport hero sections |
+| `f-pattern-layout` | F-Pattern Layout | Eye-tracking optimized, content scannable |
+| `z-pattern-layout` | Z-Pattern Layout | Landing page visual path, CTA focused |
+| `holy-grail-layout` | Holy Grail Layout | Classic 3-column, header/footer fixed |
+| `dashboard-layout` | Dashboard Layout | Data panels, sidebar nav, KPI cards |
 
 ---
 

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <defs>
+    <!-- Watercolor wash gradients -->
+    <radialGradient id="wash1" cx="30%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8a87c" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#e8a87c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wash2" cx="70%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#85cdca" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#85cdca" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wash3" cx="50%" cy="80%" r="40%">
+      <stop offset="0%" stop-color="#c38d94" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#c38d94" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8a87c" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#85cdca" stop-opacity="0.15"/>
+    </linearGradient>
+    <filter id="soft-blur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <!-- Paper background -->
+  <rect width="400" height="300" fill="#faf8f5"/>
+
+  <!-- Watercolor washes -->
+  <ellipse cx="120" cy="80" rx="150" ry="120" fill="url(#wash1)"/>
+  <ellipse cx="300" cy="180" rx="130" ry="100" fill="url(#wash2)"/>
+  <ellipse cx="200" cy="250" rx="100" ry="80" fill="url(#wash3)"/>
+
+  <!-- Main card -->
+  <g filter="url(#soft-blur)">
+    <rect x="100" y="70" width="200" height="140" rx="24" fill="url(#cardGrad)"/>
+  </g>
+  <rect x="100" y="70" width="200" height="140" rx="24" fill="url(#cardGrad)" stroke="#4a6fa5" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="200" y="115" text-anchor="middle" font-family="Georgia, serif" font-size="26" font-style="italic" fill="#4a6fa5">Watercolor</text>
+
+  <!-- Description -->
+  <text x="200" y="145" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b7280">Soft flowing colors</text>
+
+  <!-- Button -->
+  <g transform="translate(200, 180)">
+    <rect x="-45" y="-14" width="90" height="28" rx="14" fill="#4a6fa5" fill-opacity="0.7"/>
+    <rect x="-45" y="-14" width="90" height="28" rx="14" fill="url(#wash2)" fill-opacity="0.5"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#ffffff">Explore</text>
+  </g>
+
+  <!-- Footer text -->
+  <text x="200" y="270" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-style="italic" fill="#6b7280">Gentle gradients & paper texture</text>
+</svg>
