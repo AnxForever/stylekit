@@ -84,6 +84,7 @@ const stepInfo = [
 
 export function SubmitStyleForm() {
   const { t } = useI18n();
+  const router = useRouter();
   const [formData, setFormData] = useState<StyleFormData>(initialFormData);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
