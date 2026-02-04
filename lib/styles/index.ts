@@ -106,6 +106,13 @@ import { notionStyle } from "./notion-style";
 import { stripeStyle } from "./stripe-style";
 import { appleStyle } from "./apple-style";
 import { pixelArt } from "./pixel-art";
+// 新增风格 - 批次1
+import { vaporwave } from "./vaporwave";
+import { y2k } from "./y2k";
+import { memphis } from "./memphis";
+import { artDeco } from "./art-deco";
+import { bauhaus } from "./bauhaus";
+import { synthwave } from "./synthwave";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -141,6 +148,13 @@ export const styles: DesignStyle[] = [
   stripeStyle,
   appleStyle,
   pixelArt,
+  // 新增风格 - 批次1
+  vaporwave,
+  y2k,
+  memphis,
+  artDeco,
+  bauhaus,
+  synthwave,
 ];
 
 // 根据 slug 获取风格
