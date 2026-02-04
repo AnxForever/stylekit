@@ -16,7 +16,7 @@ interface HomeContentProps {
 export function HomeContent({ styles }: HomeContentProps) {
   const { t } = useI18n();
   const assets = useAssets();
-  const featuredAssets = assets.slice(0, 4);
+  const featuredAssets = assets.slice(0, 6);
   const featuredStyles = styles.slice(0, 6);
 
   return (
@@ -157,7 +157,7 @@ export function HomeContent({ styles }: HomeContentProps) {
             assets={featuredAssets}
             showSearch={false}
             showFilter={false}
-            variant="compact"
+            variant="mini"
           />
         </div>
       </section>
