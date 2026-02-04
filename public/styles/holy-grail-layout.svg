@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f1f5f9"/>
+
+  <!-- Holy Grail structure -->
+  <!-- Header -->
+  <rect x="50" y="30" width="300" height="30" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="60" y="42" width="50" height="10" rx="2" fill="#1e293b"/>
+  <g transform="translate(270, 47)">
+    <rect x="0" y="-4" width="25" height="8" rx="2" fill="#e2e8f0"/>
+    <rect x="30" y="-4" width="25" height="8" rx="2" fill="#e2e8f0"/>
+  </g>
+
+  <!-- Three columns -->
+  <!-- Left sidebar -->
+  <rect x="50" y="65" width="60" height="150" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="58" y="75" width="44" height="10" rx="2" fill="#3b82f6" fill-opacity="0.2"/>
+  <rect x="58" y="92" width="44" height="8" rx="2" fill="#e2e8f0"/>
+  <rect x="58" y="107" width="44" height="8" rx="2" fill="#e2e8f0"/>
+  <rect x="58" y="122" width="44" height="8" rx="2" fill="#e2e8f0"/>
+
+  <!-- Main content -->
+  <rect x="115" y="65" width="175" height="150" rx="4" fill="#f8fafc"/>
+  <rect x="125" y="75" width="80" height="14" rx="2" fill="#1e293b"/>
+  <g transform="translate(125, 100)">
+    <rect width="75" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="85" y="0" width="75" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  </g>
+  <g transform="translate(125, 160)">
+    <rect width="155" height="45" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  </g>
+
+  <!-- Right sidebar -->
+  <rect x="295" y="65" width="55" height="150" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="303" y="82" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Activity</text>
+  <rect x="303" y="90" width="38" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="303" y="102" width="38" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="303" y="114" width="38" height="6" rx="2" fill="#e2e8f0"/>
+
+  <!-- Footer -->
+  <rect x="50" y="220" width="300" height="25" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="160" y="230" width="80" height="8" rx="2" fill="#e2e8f0"/>
+
+  <!-- Column labels -->
+  <text x="80" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9ca3af">Nav</text>
+  <text x="200" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9ca3af">Main Content</text>
+  <text x="322" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9ca3af">Aside</text>
+
+  <!-- Footer text -->
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">Classic 3-column web layout</text>
+</svg>

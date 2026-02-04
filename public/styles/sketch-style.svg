@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Paper background -->
+  <rect width="400" height="300" fill="#f5f0e8"/>
+  <pattern id="paper-texture" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+    <path d="M5 0h1L0 6V5zM6 5v1H5z" fill="#2c2c2c" fill-opacity="0.03"/>
+  </pattern>
+  <rect width="400" height="300" fill="url(#paper-texture)"/>
+
+  <!-- Main sketch card (slightly rotated) -->
+  <g transform="translate(200, 130) rotate(-1)">
+    <rect x="-120" y="-70" width="240" height="140" fill="#ffffff" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="8,4"/>
+    <!-- Small decorative circle -->
+    <circle cx="100" cy="-50" r="6" fill="none" stroke="#2c2c2c" stroke-width="1.5"/>
+  </g>
+
+  <!-- Title -->
+  <text x="200" y="90" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-style="italic" fill="#2c2c2c">Sketch</text>
+
+  <!-- Underline (wavy hand-drawn style) -->
+  <path d="M140 100 Q160 105 180 100 Q200 95 220 100 Q240 105 260 100" fill="none" stroke="#2c2c2c" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Description -->
+  <text x="200" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#666666">Hand-drawn pencil feel</text>
+
+  <!-- Sketch button -->
+  <g transform="translate(200, 170)">
+    <rect x="-50" y="-15" width="100" height="30" fill="#2c2c2c" rx="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#f5f0e8">Draw</text>
+  </g>
+
+  <!-- Decorative sketch elements -->
+  <g stroke="#2c2c2c" stroke-width="1.5" fill="none" opacity="0.4">
+    <!-- Top left doodle -->
+    <circle cx="60" cy="50" r="15" stroke-dasharray="4,4"/>
+    <line x1="60" y1="35" x2="60" y2="25"/>
+
+    <!-- Bottom right doodle -->
+    <rect x="320" y="220" width="30" height="30" transform="rotate(-5, 335, 235)" stroke-dasharray="4,4"/>
+
+    <!-- Arrow doodle -->
+    <path d="M70 240 Q90 220 110 230" stroke-dasharray="6,3"/>
+    <polygon points="110,230 105,222 115,225" fill="#2c2c2c"/>
+  </g>
+
+  <!-- Footer text -->
+  <text x="200" y="270" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-style="italic" fill="#888888">Paper texture & pencil strokes</text>
+</svg>
