@@ -133,6 +133,15 @@ import { swissStyle } from "./swiss-style";
 import { ghibliStyle } from "./ghibli-style";
 import { materialDesign } from "./material-design";
 import { fluentDesign } from "./fluent-design";
+// 新增风格 - 批次3（视觉风格）
+import { comicStyle } from "./comic-style";
+import { sketchStyle } from "./sketch-style";
+import { watercolorStyle } from "./watercolor-style";
+// 新增布局风格 - 批次3
+import { fPatternLayout } from "./f-pattern-layout";
+import { zPatternLayout } from "./z-pattern-layout";
+import { holyGrailLayout } from "./holy-grail-layout";
+import { dashboardLayout } from "./dashboard-layout";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -177,6 +186,15 @@ export const styles: DesignStyle[] = [
   ghibliStyle,
   materialDesign,
   fluentDesign,
+  // 新增风格 - 批次3（视觉风格）
+  comicStyle,
+  sketchStyle,
+  watercolorStyle,
+  // 新增布局风格 - 批次3
+  fPatternLayout,
+  zPatternLayout,
+  holyGrailLayout,
+  dashboardLayout,
 ];
 
 // 根据 slug 获取风格

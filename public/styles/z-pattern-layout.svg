@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#ffffff"/>
+
+  <!-- Z-pattern visualization -->
+  <!-- Z path -->
+  <g opacity="0.15">
+    <line x1="50" y1="50" x2="350" y2="50" stroke="#6366f1" stroke-width="8" stroke-linecap="round"/>
+    <line x1="350" y1="50" x2="50" y2="220" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+    <line x1="50" y1="220" x2="350" y2="220" stroke="#6366f1" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="8" fill="#6366f1"/>
+    <circle cx="350" cy="50" r="8" fill="#6366f1"/>
+    <circle cx="50" cy="220" r="6" fill="#6366f1"/>
+    <circle cx="350" cy="220" r="8" fill="#6366f1"/>
+  </g>
+
+  <!-- Top bar: Logo (left) → CTA (right) -->
+  <rect x="50" y="35" width="70" height="20" rx="4" fill="#0f172a"/>
+  <rect x="300" y="35" width="50" height="20" rx="6" fill="#6366f1"/>
+
+  <!-- Center: Main content -->
+  <g transform="translate(200, 130)">
+    <rect x="-120" y="-25" width="240" height="20" rx="4" fill="#0f172a"/>
+    <rect x="-90" y="5" width="180" height="12" rx="3" fill="#e5e7eb"/>
+    <g transform="translate(0, 35)">
+      <rect x="-65" y="0" width="60" height="24" rx="8" fill="#6366f1"/>
+      <rect x="5" y="0" width="60" height="24" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    </g>
+  </g>
+
+  <!-- Bottom bar: Trust (left) → Final CTA (right) -->
+  <g transform="translate(50, 220)">
+    <!-- Trust indicators -->
+    <circle cx="15" cy="0" r="12" fill="#e5e7eb"/>
+    <circle cx="45" cy="0" r="12" fill="#e5e7eb"/>
+    <circle cx="75" cy="0" r="12" fill="#e5e7eb"/>
+    <text x="100" y="5" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">10K+ users</text>
+  </g>
+  <rect x="280" y="208" width="70" height="24" rx="6" fill="#0f172a"/>
+
+  <!-- Z letter indicator -->
+  <text x="365" y="160" font-family="Arial Black, sans-serif" font-size="80" fill="#6366f1" fill-opacity="0.1">Z</text>
+
+  <!-- Footer text -->
+  <text x="200" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">Visual path for landing pages</text>
+</svg>
