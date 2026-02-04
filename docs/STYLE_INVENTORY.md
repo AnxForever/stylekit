@@ -1,9 +1,17 @@
 # StyleKit Style Inventory
 
 > Last Updated: 2026-02-04
-> Total Styles: 41
+> Total Styles: 36 (after merging similar styles)
 
 This document tracks all design styles in StyleKit to prevent duplicates when adding new styles.
+
+## Style Variants System
+
+StyleKit uses a variant system to handle closely related styles. Instead of separate entries, similar styles are grouped under one main style with color/behavior variants.
+
+**Current merged styles:**
+- **Neo-Brutalist** includes: Classic, Soft (softer colors), Playful (colorful, rotations)
+- **Neon Retro (Vaporwave)** includes: Vaporwave, Synthwave, Cyberpunk
 
 ## Visual Styles (26)
 
@@ -26,16 +34,13 @@ This document tracks all design styles in StyleKit to prevent duplicates when ad
 ### Neo-Brutalist Family
 | Slug | Name | Key Characteristics |
 |------|------|---------------------|
-| `neo-brutalist` | Neo-Brutalist | Bold borders, raw aesthetic, high contrast |
-| `neo-brutalist-soft` | Neo-Brutalist Soft | Softer neo-brutalism with rounded elements |
-| `neo-brutalist-playful` | Neo-Brutalist Playful | Colorful, fun neo-brutalism |
+| `neo-brutalist` | Neo-Brutalist | Bold borders, raw aesthetic, high contrast. **Variants:** Classic, Soft, Playful |
 
 ### Retro Family
 | Slug | Name | Key Characteristics |
 |------|------|---------------------|
 | `retro-vintage` | Retro Vintage | Sepia tones, aged textures, classic typography |
-| `vaporwave` | Vaporwave | 80-90s nostalgia, pink/cyan, glitch art, Japanese elements |
-| `synthwave` | Synthwave | 80s neon, grid horizon, sunset gradients, sci-fi |
+| `vaporwave` | Neon Retro | 80-90s neon aesthetic. **Variants:** Vaporwave, Synthwave, Cyberpunk |
 | `y2k` | Y2K | 2000s aesthetic, metallic, bubbly, tech-optimism |
 | `memphis` | Memphis | 80s Memphis Group, geometric shapes, bold patterns |
 | `art-deco` | Art Deco | 1920s geometric, gold accents, symmetry |
@@ -54,7 +59,6 @@ This document tracks all design styles in StyleKit to prevent duplicates when ad
 ### Other Visual Styles
 | Slug | Name | Key Characteristics |
 |------|------|---------------------|
-| `cyberpunk-neon` | Cyberpunk Neon | Dark background, neon glows, futuristic |
 | `natural-organic` | Natural Organic | Earth tones, organic shapes, nature-inspired |
 | `modern-gradient` | Modern Gradient | Vibrant gradients, mesh backgrounds |
 | `dark-mode` | Dark Mode | Dark backgrounds, reduced eye strain |
