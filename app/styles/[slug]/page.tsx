@@ -12,6 +12,7 @@ import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
+import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { getStyleBySlug, styles } from "@/lib/styles";
 import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
@@ -52,7 +53,8 @@ export default async function StyleDetailPage({
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1">
+      <DisableAutoScroll>
+        <main className="flex-1">
         {/* Hero */}
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
@@ -293,6 +295,7 @@ export default async function StyleDetailPage({
           </div>
         </section>
       </main>
+      </DisableAutoScroll>
 
       <Footer />
     </div>

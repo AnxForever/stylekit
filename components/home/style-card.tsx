@@ -21,10 +21,13 @@ export const StyleCard = React.memo(function StyleCard({
 }: StyleCardProps) {
   const isCompact = variant === "compact";
 
-  // 保存当前滚动位置，用于返回时恢复
+  // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("styles-scroll-position", window.scrollY.toString());
+      // 保存当前URL中的过滤器参数，以便返回时恢复
+      const currentUrl = window.location.href;
+      sessionStorage.setItem("styles-return-url", currentUrl);
     }
   };
 
