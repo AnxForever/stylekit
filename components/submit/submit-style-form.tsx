@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import {
   Check, Copy, Eye, Send, AlertCircle, ChevronRight,
@@ -432,6 +433,13 @@ export function SubmitStyleForm() {
       {/* Page Header */}
       <section className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-16">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-6"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            返回
+          </button>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <p className="text-xs tracking-widest uppercase text-muted mb-2 md:mb-4">
