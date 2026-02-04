@@ -17,6 +17,7 @@ export function HomeContent({ styles }: HomeContentProps) {
   const { t } = useI18n();
   const assets = useAssets();
   const featuredAssets = assets.slice(0, 4);
+  const featuredStyles = styles.slice(0, 6);
 
   return (
     <>
@@ -123,7 +124,7 @@ export function HomeContent({ styles }: HomeContentProps) {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-            {styles.map((style) => (
+            {featuredStyles.map((style) => (
               <StyleCard key={style.slug} style={style} variant="compact" />
             ))}
           </div>
