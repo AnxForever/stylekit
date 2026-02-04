@@ -1278,6 +1278,226 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  // ============ 新增风格 - Skeuomorphism, Swiss, Ghibli, Material, Fluent ============
+  "skeuomorphism": {
+    button: () => (
+      <button className="px-8 py-4 bg-gradient-to-b from-gray-100 via-gray-200 to-gray-300 border border-gray-400 rounded-lg text-gray-700 font-semibold shadow-[0_4px_6px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(0,0,0,0.1)] hover:from-gray-200 hover:via-gray-300 hover:to-gray-400 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] active:translate-y-[1px] transition-all duration-100">
+        Press Me
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-b from-amber-50 to-amber-100 border border-amber-300 rounded-xl shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.5)] relative overflow-hidden">
+        <h3 className="text-xl font-bold text-amber-900 mb-2">Leather Card</h3>
+        <p className="text-amber-800">Realistic texture and depth</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type here..."
+        className="w-full px-4 py-3 bg-gradient-to-b from-white to-gray-100 border border-gray-300 rounded-lg text-gray-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_1px_0_rgba(255,255,255,0.8)] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.15),0_0_8px_rgba(59,130,246,0.3)] transition-all"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-stone-200 via-stone-300 to-stone-400 flex items-center justify-center p-3 relative">
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-gradient-to-b from-white/90 to-gray-100/90 rounded-2xl p-4 shadow-[0_8px_20px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.8)] border border-white/50">
+            <div className="font-bold text-sm text-gray-800 mb-2" style={{textShadow: '0 1px 0 rgba(255,255,255,0.8)'}}>Skeuomorphism</div>
+            <p className="text-xs text-gray-600 mb-3">Realistic textures</p>
+            <button className="w-full py-2 bg-gradient-to-b from-blue-400 to-blue-600 rounded-lg text-white text-xs font-bold shadow-[0_3px_6px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)]">
+              Button
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "swiss-style": {
+    button: () => (
+      <button className="px-6 py-3 bg-black text-white text-sm font-medium uppercase tracking-[0.2em] hover:bg-red-600 transition-colors duration-200">
+        Action
+      </button>
+    ),
+    card: () => (
+      <div className="p-8 bg-white border-l-4 border-black">
+        <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-500 mb-2">Category</p>
+        <h3 className="text-2xl font-bold text-black mb-4">Helvetica Neue</h3>
+        <p className="text-gray-700 leading-relaxed">Clean, objective, rational design principles.</p>
+      </div>
+    ),
+    input: () => (
+      <div>
+        <label className="block text-xs font-medium uppercase tracking-[0.2em] text-gray-500 mb-2">Email</label>
+        <input
+          type="text"
+          placeholder="your@email.com"
+          className="w-full px-0 py-2 bg-transparent border-0 border-b-2 border-black text-black focus:outline-none focus:border-red-600 transition-colors"
+        />
+      </div>
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex items-center justify-center p-3">
+        <div className="w-full max-w-[180px] grid grid-cols-8 gap-2">
+          <div className="col-span-6">
+            <p className="text-[8px] font-medium uppercase tracking-[0.2em] text-gray-500 mb-1">International</p>
+            <h3 className="text-xl font-bold text-black leading-none mb-2">Swiss<br/>Design</h3>
+            <p className="text-[10px] text-gray-600 mb-3">Grid, typography, clarity.</p>
+            <button className="px-3 py-1.5 bg-black text-white text-[10px] font-medium uppercase tracking-[0.15em] hover:bg-red-600 transition-colors">
+              Explore
+            </button>
+          </div>
+          <div className="col-span-2 flex items-center justify-center">
+            <div className="w-8 h-8 bg-red-600" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "ghibli-style": {
+    button: () => (
+      <button className="px-8 py-4 bg-gradient-to-b from-[#7cb9a8] to-[#5a9a8a] text-white font-medium rounded-full border-2 border-[#5a9a8a]/30 shadow-[0_4px_14px_rgba(124,185,168,0.4)] hover:shadow-[0_6px_20px_rgba(124,185,168,0.5)] hover:-translate-y-0.5 transition-all duration-300">
+        Begin Journey
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-br from-[#f4e4bc]/90 to-[#e8d5a3]/90 rounded-3xl border border-[#d4c49a]/50 shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#85cdca] to-[#7cb9a8] rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-[#5a4a3a] mb-2">Sky Garden</h3>
+        <p className="text-[#7a6a5a]">Where dreams float among the clouds</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Write your story..."
+        className="w-full px-5 py-4 bg-[#f4e4bc]/60 border-2 border-[#d4c49a]/40 rounded-2xl text-[#5a4a3a] placeholder-[#a89a7a] focus:outline-none focus:border-[#7cb9a8] focus:bg-[#f4e4bc]/80 transition-all duration-300"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-[#87ceeb] via-[#b4e4f5] to-[#f4e4bc] flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Clouds */}
+        <div className="absolute top-3 left-2 w-16 h-8 bg-white/50 rounded-full blur-sm" />
+        <div className="absolute top-6 right-4 w-12 h-6 bg-white/40 rounded-full blur-sm" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-gradient-to-br from-[#f4e4bc]/90 to-[#e8d5a3]/90 rounded-3xl p-4 border border-[#d4c49a]/50 shadow-[0_8px_20px_rgba(0,0,0,0.08)]">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#85cdca] to-[#7cb9a8] rounded-full flex items-center justify-center mb-3">
+              <div className="w-5 h-5 bg-white/80 rounded-full" />
+            </div>
+            <div className="font-semibold text-sm text-[#5a4a3a] mb-1">Ghibli Style</div>
+            <p className="text-[10px] text-[#7a6a5a] mb-3">Warm and dreamy</p>
+            <button className="w-full py-2 bg-gradient-to-b from-[#7cb9a8] to-[#5a9a8a] text-white text-xs font-medium rounded-full shadow-[0_3px_10px_rgba(124,185,168,0.4)]">
+              Adventure
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "material-design": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#6200ee] text-white font-medium uppercase tracking-wider text-sm rounded-full shadow-[0_3px_5px_-1px_rgba(0,0,0,0.2),0_6px_10px_0_rgba(0,0,0,0.14),0_1px_18px_0_rgba(0,0,0,0.12)] hover:shadow-[0_5px_5px_-3px_rgba(0,0,0,0.2),0_8px_10px_1px_rgba(0,0,0,0.14),0_3px_14px_2px_rgba(0,0,0,0.12)] hover:bg-[#7c4dff] active:bg-[#651fff] transition-all duration-200">
+        Click Me
+      </button>
+    ),
+    card: () => (
+      <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] hover:shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] transition-shadow duration-300 overflow-hidden">
+        <div className="h-32 bg-gradient-to-br from-[#6200ee] to-[#b388ff]" />
+        <div className="p-6">
+          <h3 className="text-xl font-medium text-gray-900 mb-2">Material Card</h3>
+          <p className="text-gray-600">Surfaces that cast shadows based on elevation.</p>
+        </div>
+      </div>
+    ),
+    input: () => (
+      <div className="relative">
+        <input
+          type="text"
+          placeholder=" "
+          className="peer w-full px-4 pt-5 pb-2 bg-gray-100 border-0 border-b-2 border-gray-300 rounded-t-lg text-gray-900 focus:outline-none focus:border-[#6200ee] focus:bg-gray-50 transition-all"
+        />
+        <label className="absolute left-4 top-4 text-gray-500 text-sm transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#6200ee] peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs">
+          Email Address
+        </label>
+      </div>
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fafafa] flex items-center justify-center p-3 relative">
+        {/* App Bar */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-[#6200ee] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14)]">
+          <div className="h-full flex items-center px-3">
+            <div className="text-white text-xs font-medium">Material</div>
+          </div>
+        </div>
+        <div className="relative w-full max-w-[180px] mt-4">
+          <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] overflow-hidden">
+            <div className="h-16 bg-gradient-to-br from-[#6200ee] via-[#7c4dff] to-[#b388ff]" />
+            <div className="p-3">
+              <div className="font-medium text-sm text-gray-900 mb-1">Card Title</div>
+              <p className="text-[10px] text-gray-600 mb-2">Elevation shadows</p>
+              <button className="px-3 py-1.5 bg-[#03dac6] text-black text-xs font-medium rounded-full shadow-md">
+                Action
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "fluent-design": {
+    button: () => (
+      <button className="px-6 py-2.5 bg-[#0078d4] text-white font-medium rounded-sm border border-[#0078d4] hover:bg-[#106ebe] active:bg-[#005a9e] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 transition-colors duration-100">
+        Primary Button
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_16px_32px_rgba(0,0,0,0.12)] transition-shadow duration-300">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-12 h-12 bg-[#0078d4] rounded-lg flex items-center justify-center">
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Fluent Card</h3>
+            <p className="text-sm text-gray-500">Acrylic material</p>
+          </div>
+        </div>
+        <p className="text-gray-700">Light, depth, motion, material, and scale working together.</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Enter text..."
+        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0078d4] focus:border-2 hover:border-gray-400 transition-colors duration-100"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-[#0078d4] via-[#106ebe] to-[#005a9e] flex items-center justify-center p-3 relative overflow-hidden">
+        {/* Acrylic overlay shapes */}
+        <div className="absolute top-2 -left-4 w-16 h-16 bg-white/10 rounded-full blur-xl" />
+        <div className="absolute bottom-4 -right-4 w-12 h-12 bg-white/10 rounded-full blur-xl" />
+        <div className="relative w-full max-w-[180px]">
+          <div className="bg-white/70 backdrop-blur-xl rounded-lg p-4 border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-[#0078d4] rounded-lg flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded" />
+              </div>
+              <div className="font-semibold text-sm text-gray-900">Fluent</div>
+            </div>
+            <p className="text-[10px] text-gray-600 mb-3">Acrylic & depth</p>
+            <button className="w-full py-2 bg-[#0078d4] text-white text-xs font-medium rounded-sm hover:bg-[#106ebe] transition-colors">
+              Action
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

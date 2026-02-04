@@ -1,0 +1,81 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Fluent Blue Gradient -->
+    <linearGradient id="fluentBlue" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0078d4"/>
+      <stop offset="50%" stop-color="#106ebe"/>
+      <stop offset="100%" stop-color="#005a9e"/>
+    </linearGradient>
+    <!-- Acrylic Effect -->
+    <filter id="acrylic" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="blur"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.04"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+    <!-- Light Glow -->
+    <radialGradient id="lightGlow1" cx="20%" cy="20%" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="white" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lightGlow2" cx="80%" cy="80%" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#fluentBlue)"/>
+
+  <!-- Acrylic Light Effects -->
+  <ellipse cx="200" cy="100" rx="300" ry="200" fill="url(#lightGlow1)"/>
+  <ellipse cx="1000" cy="530" rx="250" ry="200" fill="url(#lightGlow2)"/>
+
+  <!-- Main Acrylic Card -->
+  <rect x="300" y="140" width="600" height="360" rx="8" fill="rgba(255,255,255,0.7)" filter="url(#acrylic)"/>
+  <rect x="301" y="141" width="598" height="358" rx="7" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+  <!-- Icon -->
+  <rect x="380" y="180" width="64" height="64" rx="8" fill="#0078d4"/>
+  <rect x="400" y="200" width="24" height="24" rx="4" fill="white"/>
+
+  <!-- Title -->
+  <text x="380" y="290" font-family="Segoe UI, system-ui, sans-serif" font-size="42" font-weight="600" fill="#1a1a1a">Fluent Design</text>
+  <text x="380" y="330" font-family="Segoe UI, system-ui, sans-serif" font-size="18" fill="#666">Light, depth, motion, material, and scale</text>
+
+  <!-- Feature Pills -->
+  <g transform="translate(380, 370)">
+    <rect x="0" y="0" width="80" height="32" rx="4" fill="#0078d4"/>
+    <text x="40" y="21" font-family="Segoe UI" font-size="12" fill="white" text-anchor="middle">Light</text>
+
+    <rect x="90" y="0" width="80" height="32" rx="4" fill="rgba(0,120,212,0.1)" stroke="#0078d4" stroke-width="1"/>
+    <text x="130" y="21" font-family="Segoe UI" font-size="12" fill="#0078d4" text-anchor="middle">Depth</text>
+
+    <rect x="180" y="0" width="80" height="32" rx="4" fill="rgba(0,120,212,0.1)" stroke="#0078d4" stroke-width="1"/>
+    <text x="220" y="21" font-family="Segoe UI" font-size="12" fill="#0078d4" text-anchor="middle">Motion</text>
+
+    <rect x="270" y="0" width="90" height="32" rx="4" fill="rgba(0,120,212,0.1)" stroke="#0078d4" stroke-width="1"/>
+    <text x="315" y="21" font-family="Segoe UI" font-size="12" fill="#0078d4" text-anchor="middle">Material</text>
+  </g>
+
+  <!-- Action Buttons -->
+  <rect x="380" y="440" width="140" height="40" rx="2" fill="#0078d4"/>
+  <text x="450" y="466" font-family="Segoe UI" font-size="14" font-weight="500" fill="white" text-anchor="middle">Get Started</text>
+
+  <rect x="540" y="440" width="140" height="40" rx="2" fill="transparent" stroke="#666" stroke-width="1"/>
+  <text x="610" y="466" font-family="Segoe UI" font-size="14" font-weight="500" fill="#1a1a1a" text-anchor="middle">Learn More</text>
+
+  <!-- Side Cards -->
+  <g transform="translate(100, 200)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="rgba(255,255,255,0.6)" filter="url(#acrylic)"/>
+    <rect x="1" y="1" width="138" height="98" rx="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <rect x="20" y="20" width="32" height="32" rx="6" fill="#0078d4"/>
+    <text x="20" y="75" font-family="Segoe UI" font-size="13" font-weight="600" fill="#1a1a1a">Acrylic</text>
+  </g>
+
+  <g transform="translate(960, 280)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="rgba(255,255,255,0.6)" filter="url(#acrylic)"/>
+    <rect x="1" y="1" width="138" height="98" rx="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <rect x="20" y="20" width="32" height="32" rx="6" fill="#ffb900"/>
+    <text x="20" y="75" font-family="Segoe UI" font-size="13" font-weight="600" fill="#1a1a1a">Reveal</text>
+  </g>
+</svg>

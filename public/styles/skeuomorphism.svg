@@ -1,0 +1,83 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="skeugBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c9c0b0"/>
+      <stop offset="100%" stop-color="#a89a85"/>
+    </linearGradient>
+    <!-- Button Gradient -->
+    <linearGradient id="btnGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#f0f0f0"/>
+      <stop offset="50%" stop-color="#d0d0d0"/>
+      <stop offset="100%" stop-color="#b0b0b0"/>
+    </linearGradient>
+    <!-- Blue Button -->
+    <linearGradient id="blueBtnGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#5cb3f0"/>
+      <stop offset="50%" stop-color="#3498db"/>
+      <stop offset="100%" stop-color="#2980b9"/>
+    </linearGradient>
+    <!-- Card Gradient -->
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e8e8e8"/>
+    </linearGradient>
+    <!-- Leather Gradient -->
+    <linearGradient id="leatherGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#f5e6d3"/>
+      <stop offset="100%" stop-color="#d4c4a8"/>
+    </linearGradient>
+    <!-- Inner Shadow Filter -->
+    <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset dx="2" dy="2" result="offsetBlur"/>
+      <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3"/>
+      <feComposite in2="shadowDiff" operator="in"/>
+      <feComposite in2="SourceGraphic" operator="over"/>
+    </filter>
+    <!-- Drop Shadow -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="4" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#skeugBg)"/>
+
+  <!-- Main Card -->
+  <rect x="300" y="120" width="600" height="400" rx="20" fill="url(#cardGrad)" filter="url(#dropShadow)"/>
+  <!-- Card highlight -->
+  <rect x="302" y="122" width="596" height="396" rx="18" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+
+  <!-- Title -->
+  <text x="600" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#5a4a3a" text-anchor="middle">Skeuomorphism</text>
+  <text x="600" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#8a7a6a" text-anchor="middle">Digital meets physical</text>
+
+  <!-- Leather Card -->
+  <rect x="380" y="280" width="180" height="120" rx="12" fill="url(#leatherGrad)" filter="url(#dropShadow)"/>
+  <rect x="382" y="282" width="176" height="116" rx="10" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <text x="470" y="330" font-family="system-ui" font-size="14" font-weight="600" fill="#8b7355" text-anchor="middle">Leather</text>
+  <text x="470" y="350" font-family="system-ui" font-size="12" fill="#a89a7a" text-anchor="middle">Rich texture</text>
+  <rect x="420" y="370" width="100" height="20" rx="4" fill="url(#btnGrad)" stroke="#999" stroke-width="1"/>
+  <text x="470" y="384" font-family="system-ui" font-size="10" font-weight="600" fill="#666" text-anchor="middle">Details</text>
+
+  <!-- Metal Card -->
+  <rect x="640" y="280" width="180" height="120" rx="12" fill="url(#btnGrad)" filter="url(#dropShadow)"/>
+  <rect x="642" y="282" width="176" height="116" rx="10" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
+  <text x="730" y="330" font-family="system-ui" font-size="14" font-weight="600" fill="#666" text-anchor="middle">Metal</text>
+  <text x="730" y="350" font-family="system-ui" font-size="12" fill="#888" text-anchor="middle">Brushed finish</text>
+  <rect x="680" y="370" width="100" height="20" rx="4" fill="url(#blueBtnGrad)" stroke="#2471a3" stroke-width="1"/>
+  <text x="730" y="384" font-family="system-ui" font-size="10" font-weight="600" fill="white" text-anchor="middle">Action</text>
+
+  <!-- Bottom CTA Button -->
+  <rect x="480" y="440" width="240" height="50" rx="10" fill="url(#blueBtnGrad)" filter="url(#dropShadow)"/>
+  <rect x="482" y="442" width="236" height="20" rx="8" fill="rgba(255,255,255,0.2)"/>
+  <text x="600" y="472" font-family="system-ui" font-size="16" font-weight="700" fill="white" text-anchor="middle">Get Started</text>
+
+  <!-- Decorative 3D elements -->
+  <circle cx="150" cy="315" r="40" fill="url(#btnGrad)" filter="url(#dropShadow)"/>
+  <circle cx="150" cy="315" r="30" fill="url(#innerShadow)" stroke="#ccc" stroke-width="2"/>
+  <circle cx="1050" cy="315" r="40" fill="url(#btnGrad)" filter="url(#dropShadow)"/>
+  <circle cx="1050" cy="315" r="30" fill="url(#innerShadow)" stroke="#ccc" stroke-width="2"/>
+</svg>

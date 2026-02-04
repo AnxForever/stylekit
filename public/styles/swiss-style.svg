@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Grid Pattern -->
+    <pattern id="swissGrid" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="white"/>
+
+  <!-- Grid -->
+  <rect width="1200" height="630" fill="url(#swissGrid)" opacity="0.5"/>
+
+  <!-- Red Accent Square -->
+  <rect x="900" y="100" width="200" height="200" fill="#ff0000"/>
+
+  <!-- Title -->
+  <text x="100" y="120" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#888" letter-spacing="0.3em">INTERNATIONAL STYLE</text>
+
+  <text x="100" y="220" font-family="Helvetica, Arial, sans-serif" font-size="120" font-weight="700" fill="black" letter-spacing="-0.02em">Swiss</text>
+  <text x="100" y="340" font-family="Helvetica, Arial, sans-serif" font-size="120" font-weight="700" fill="black" letter-spacing="-0.02em">Design</text>
+
+  <!-- Body Text -->
+  <text x="100" y="400" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#555">The grid is the foundation.</text>
+  <text x="100" y="430" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#555">Typography is the voice.</text>
+  <text x="100" y="460" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#555">Clarity is the goal.</text>
+
+  <!-- Button -->
+  <rect x="100" y="500" width="180" height="50" fill="black"/>
+  <text x="190" y="532" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="500" fill="white" text-anchor="middle" letter-spacing="0.2em">EXPLORE</text>
+
+  <!-- Cards on right -->
+  <g transform="translate(600, 350)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="250" height="100" fill="white" stroke="black" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="100" fill="black"/>
+    <text x="20" y="30" font-family="Helvetica" font-size="12" font-weight="500" fill="#888" letter-spacing="0.2em">01</text>
+    <text x="20" y="55" font-family="Helvetica" font-size="20" font-weight="700" fill="black">Clarity</text>
+    <text x="20" y="80" font-family="Helvetica" font-size="12" fill="#666">Design serves content</text>
+
+    <!-- Card 2 -->
+    <rect x="270" y="0" width="250" height="100" fill="white" stroke="black" stroke-width="1"/>
+    <rect x="270" y="0" width="4" height="100" fill="#ff0000"/>
+    <text x="290" y="30" font-family="Helvetica" font-size="12" font-weight="500" fill="#888" letter-spacing="0.2em">02</text>
+    <text x="290" y="55" font-family="Helvetica" font-size="20" font-weight="700" fill="black">Grid</text>
+    <text x="290" y="80" font-family="Helvetica" font-size="12" fill="#666">Mathematical precision</text>
+  </g>
+
+  <!-- Decorative line -->
+  <rect x="100" y="550" width="400" height="2" fill="black"/>
+
+  <!-- Small geometric elements -->
+  <rect x="1050" y="500" width="50" height="50" fill="black"/>
+  <rect x="950" y="550" width="30" height="30" fill="#0057b8"/>
+</svg>
