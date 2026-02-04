@@ -30,6 +30,8 @@ export const mainNav: NavItem[] = [
 export const toolsDropdown: NavDropdown = {
   labelKey: "nav.tools",
   items: [
+    { href: "/generate", labelKey: "nav.generator" },
+    { href: "/create-style", labelKey: "nav.createStyle" },
     { href: "/linter", labelKey: "nav.linter" },
     { href: "/developers", labelKey: "nav.developers" },
     { href: "/prompt-builder", labelKey: "nav.promptBuilder" },
