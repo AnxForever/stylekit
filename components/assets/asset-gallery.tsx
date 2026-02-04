@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { AssetCard } from "./asset-card";
-import { useAssetSearch, useAssetFavorites } from "@/lib/assets/hooks";
+import { useAssetFavorites } from "@/lib/assets/hooks";
 import type { AssetMeta, AssetCategory } from "@/lib/assets/meta";
 
 interface AssetGalleryProps {
@@ -22,17 +22,26 @@ export function AssetGallery({
   variant = "default",
   onDownload,
 }: AssetGalleryProps) {
-  const { query, results, handleSearch } = useAssetSearch();
-  const { favorites, toggleFavorite, isFavorite } = useAssetFavorites();
+  const { toggleFavorite, isFavorite } = useAssetFavorites();
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | "all">("all");
+  const [query, setQuery] = useState("");
+
+  // Filter by search query
+  const searchedAssets = query.trim()
+    ? assets.filter(
+        (asset) =>
+          asset.name.toLowerCase().includes(query.toLowerCase()) ||
+          asset.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
+      )
+    : assets;
 
   // Filter by category
   const filteredAssets =
     selectedCategory === "all"
-      ? results
-      : results.filter((asset) => asset.category === selectedCategory);
+      ? searchedAssets
+      : searchedAssets.filter((asset) => asset.category === selectedCategory);
 
-  // Get unique categories
+  // Get unique categories from passed assets
   const categories = Array.from(
     new Set(assets.map((asset) => asset.category))
   ) as AssetCategory[];
@@ -55,7 +64,7 @@ export function AssetGallery({
                 type="text"
                 placeholder="搜索素材..."
                 value={query}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
                 className="w-full px-4 py-2 border border-border rounded focus:outline-none focus:border-foreground transition-colors"
               />
               <svg
