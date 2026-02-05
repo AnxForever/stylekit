@@ -231,7 +231,7 @@ export default function ShowcaseContent() {
       >
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] overflow-hidden">
-            {["Inbox", "Starred", "Send email", "Drafts"].map((item, i) => (
+            {["Inbox", "Starred", "Send email", "Drafts"].map((item) => (
               <div
                 key={item}
                 className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-100 last:border-0"

@@ -113,9 +113,9 @@ export interface Guideline {
   severity: Severity;
 }
 
-export interface UXGuideline extends Guideline {}
-export interface WebGuideline extends Guideline {}
-export interface ReactGuideline extends Guideline {}
+export type UXGuideline = Guideline;
+export type WebGuideline = Guideline;
+export type ReactGuideline = Guideline;
 
 // ============ STACK GUIDELINES ============
 

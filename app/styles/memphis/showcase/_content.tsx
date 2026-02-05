@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Zap, Triangle, Circle, Square } from "lucide-react";
+import { ArrowLeft, Zap, Circle, Square } from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,

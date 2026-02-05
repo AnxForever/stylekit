@@ -97,6 +97,7 @@ export function buildComponentClass(
   component: "button" | "card" | "input",
   variant?: string
 ): string {
+  void variant;
   const base = tokens.required[component].join(" ");
   return base;
 }

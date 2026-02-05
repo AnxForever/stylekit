@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { mainNav, secondaryNav, toolsDropdown, externalNav } from "@/lib/nav-config";
-import { Download, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,6 +17,7 @@ export function Header() {
   const toolsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
     setMounted(true);
   }, []);
 
@@ -65,7 +66,7 @@ export function Header() {
                 <path d="m21 21-4.3-4.3" />
               </svg>
               <span>{t("nav.search")}</span>
-              <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">⌘K</kbd>
+              <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">Ctrl K</kbd>
             </button>
 
             {/* Main Nav Items */}

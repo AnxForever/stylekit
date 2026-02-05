@@ -358,7 +358,7 @@ export default function ShowcaseContent() {
           <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">引言 Quote</h2>
           <blockquote className="border-l-2 border-[#0a0a0a] pl-6 md:pl-8">
             <p className="font-serif text-xl md:text-2xl italic leading-relaxed mb-4">
-              "设计不仅仅是外观和感觉。设计是它如何运作的。"
+              &ldquo;设计不仅仅是外观和感觉。设计是它如何运作的。&rdquo;
             </p>
             <footer className="text-sm text-[#6b7280]">
               <span className="tracking-widest uppercase">— Steve Jobs</span>

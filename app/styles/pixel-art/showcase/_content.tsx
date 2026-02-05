@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Gamepad2, Trophy, Star, Heart } from "lucide-react";
+import { ArrowLeft, Gamepad2, Trophy, Star } from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,

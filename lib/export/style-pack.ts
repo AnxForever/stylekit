@@ -3,6 +3,7 @@
 
 import type { DesignStyle } from "../styles";
 import type { StyleTokens } from "../styles/tokens";
+import JSZip from "jszip";
 import { exportStyleTokens } from "./figma-tokens";
 import { generateTailwindPresetJS } from "./tailwind-preset";
 import { generateShadcnThemeJSON, generateShadcnThemeCSS } from "./shadcn-theme";
@@ -85,10 +86,24 @@ export function downloadFile(file: StylePackFile): void {
 }
 
 export function downloadAllAsZip(style: DesignStyle, tokens?: StyleTokens): void {
-  // Since we can't use JSZip in the browser without a dependency,
-  // we'll download files individually
+  void downloadAllAsZipAsync(style, tokens);
+}
+
+async function downloadAllAsZipAsync(style: DesignStyle, tokens?: StyleTokens): Promise<void> {
   const files = generateStylePack(style, tokens);
-  files.forEach((file, i) => {
-    setTimeout(() => downloadFile(file), i * 300);
-  });
+  const zip = new JSZip();
+
+  for (const file of files) {
+    zip.file(file.filename, file.content);
+  }
+
+  const blob = await zip.generateAsync({ type: "blob" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${style.slug}-style-pack.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
