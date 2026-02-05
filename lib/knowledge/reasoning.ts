@@ -2,7 +2,7 @@
 // Product type -> Design decision rules
 // Data converted from ui-reasoning.csv
 
-import type { ReasoningRule, Severity } from "./types";
+import type { ReasoningRule } from "./types";
 import { BM25 } from "./search";
 
 export const reasoningRules: ReasoningRule[] = [

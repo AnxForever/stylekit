@@ -234,7 +234,7 @@ export default async function StyleDetailPage({
                   return (
                     <Link
                       key={compatSlug}
-                      href={`/compare?left=${style.slug}&right=${compatSlug}`}
+                      href={`/styles/${compatSlug}`}
                       className="group block border border-border hover:border-foreground transition-colors"
                     >
                       <div className="aspect-square overflow-hidden">

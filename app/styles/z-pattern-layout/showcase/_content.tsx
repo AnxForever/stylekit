@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft, Zap, ChevronRight, Check, Star, Users, ArrowRight } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

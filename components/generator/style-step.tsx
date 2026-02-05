@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { Plus, Palette } from "lucide-react";
 import type { DesignStyle } from "@/lib/styles";
 import type { StoredCustomStyle } from "@/lib/style-creator/types";
-import { getStoredStyles } from "@/lib/style-creator/storage";
 
 interface StyleStepProps {
   styles: DesignStyle[];
+  customStyles: StoredCustomStyle[];
   selectedSlug: string | null;
   selectedCustomId: string | null;
   onSelect: (slug: string, isCustom: boolean) => void;
@@ -18,17 +17,12 @@ interface StyleStepProps {
 
 export function StyleStep({
   styles,
+  customStyles,
   selectedSlug,
   selectedCustomId,
   onSelect,
 }: StyleStepProps) {
   const { t } = useI18n();
-  const [customStyles, setCustomStyles] = useState<StoredCustomStyle[]>([]);
-
-  // Load custom styles on mount
-  useEffect(() => {
-    setCustomStyles(getStoredStyles());
-  }, []);
 
   return (
     <div>

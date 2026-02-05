@@ -9,15 +9,13 @@
  * - Style compatibility scoring
  */
 
-import { searchProducts, getProductByType, productRecommendations } from "./products";
+import { searchProducts, productRecommendations } from "./products";
 import { searchColors, colorPalettes } from "./colors";
 import { searchTypography, fontPairings } from "./typography";
-import { searchLandingPatterns, landingPatterns } from "./landing-patterns";
-import { searchUXGuidelines } from "./ux-guidelines";
-import { getReasoningForProduct, reasoningRules } from "./reasoning";
+import { searchLandingPatterns } from "./landing-patterns";
+import { reasoningRules } from "./reasoning";
 import { styles, getStyleBySlug } from "../styles";
-import { getStyleTokens } from "../styles/tokens-registry";
-import type { ProductRecommendation, ColorPalette, FontPairing, LandingPattern, ReasoningRule } from "./types";
+import type { ColorPalette, FontPairing, LandingPattern } from "./types";
 
 // ============ TYPES ============
 
@@ -290,7 +288,7 @@ export function getSmartRecommendation(
   const topColor = colors[0] || colorPalettes[0];
 
   // Adjust for dark mode preference
-  let colorReasons = [`Recommended palette for ${productType}`];
+  const colorReasons = [`Recommended palette for ${productType}`];
   if (context.darkModePreferred && topColor.productType.toLowerCase().includes("dark")) {
     colorReasons.push("Matches dark mode preference");
   }

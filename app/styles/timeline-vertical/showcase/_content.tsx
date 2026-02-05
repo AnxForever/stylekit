@@ -3,12 +3,10 @@
 import Link from "next/link";
 import {
   ArrowLeft,
-  Calendar,
   MapPin,
   Briefcase,
   GraduationCap,
   Award,
-  BookOpen,
   Feather,
   Quote,
   Palette,

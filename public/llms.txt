@@ -14,11 +14,17 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ## Quick Start for AI Assistants
 
-1. Browse available styles: /api/styles
-2. Get a specific style pack: /api/styles/[slug]
-3. Get design tokens: /api/styles/[slug]/tokens
-4. Get component recipes: /api/styles/[slug]/recipes
-5. Get layout archetypes: /api/archetypes
+### Path A: Reference URL -> Extract -> Generate
+
+1. Extract style evidence from a public URL: POST /api/style-extract
+2. Import/normalize in product: /create-style
+3. Generate output in 3 steps: /generate
+
+### Path B: Preset Style -> Template -> Generate
+
+1. Browse preset styles: /styles or /api/styles
+2. Select template and output format: /generate
+3. Edit content with live preview and download ZIP
 
 ## Available Styles
 
@@ -52,6 +58,15 @@ StyleKit provides structured design systems that AI can use to generate consiste
 - `GET /api/styles/[slug]/tokens` - Get design tokens only
 - `GET /api/styles/[slug]/recipes` - Get component recipes
 - `GET /api/styles/[slug]/skill-pack` - Get SKILL.md format for AI tools
+- `POST /api/style-extract` - Extract style draft from a public URL for replication workflow
+
+### MCP Core Tools
+- `search_knowledge` - Search design knowledge domains
+- `smart_recommend` - Context-aware recommendation with scoring
+- `get_style` - Get one style with tokens and recipes
+- `list_styles` - List all styles
+- `lint_code` - Validate code against style rules
+- `get_stack_guidelines` - Get stack-specific engineering guidance
 
 ### Archetypes
 - `GET /api/archetypes` - List all layout archetypes
@@ -214,7 +229,7 @@ Archetypes define page structure patterns:
 
 ## Technical Stack
 
-- Framework: Next.js 15 (App Router)
+- Framework: Next.js 16 (App Router)
 - Styling: Tailwind CSS v4
 - Components: Radix UI primitives
 - Icons: Lucide React

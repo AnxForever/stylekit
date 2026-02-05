@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { styles } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
@@ -32,11 +31,36 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
   sections.push(`
 
+## Core Workflows
+
+### Path A: Reference URL -> Extract -> Generate
+
+1. Extract style evidence from a public URL: [POST /api/style-extract](/api/style-extract)
+2. Normalize/import extracted draft in [Create Style](/create-style)
+3. Generate project output in [Generator](/generate)
+
+### Path B: Preset Style -> Template -> Generate
+
+1. Browse presets in [Styles](/styles)
+2. Select template and output format in [Generator](/generate)
+3. Edit content with live preview and download ZIP
+
 ## API Endpoints
 
 - [All Styles](/api/styles): List all available design styles
-- [Archetypes](/api/archetypes): Layout patterns (landing, dashboard, blog)
-- [UI Plan Schema](/api/ui-plan/schema): JSON Schema for UI Plan validation
+- [Style Details](/api/styles/[slug]): Full style metadata and examples
+- [Style Tokens](/api/styles/[slug]/tokens): Machine-readable design tokens
+- [Style Recipes](/api/styles/[slug]/recipes): Component recipe templates
+- [Style Extractor](/api/style-extract): Extract style draft from public websites
+
+## MCP Core Tools
+
+- search_knowledge: Search design knowledge domains
+- smart_recommend: Context-aware recommendation with scoring
+- get_style: Get one style pack (rules + tokens + recipes)
+- list_styles: List all styles
+- lint_code: Lint code against style constraints
+- get_stack_guidelines: Get stack-specific implementation guidance
 
 ## Documentation
 

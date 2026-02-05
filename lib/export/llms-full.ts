@@ -4,6 +4,7 @@
 import { styles } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
+import type { ComponentRecipe, RecipeParameter, RecipeSlot } from "@/lib/recipes/types";
 import { getAllArchetypes } from "@/lib/archetypes";
 
 export function generateLlmsFullText(): string {
@@ -189,7 +190,7 @@ Component recipes provide parameterized templates for generating consistent comp
 
 `);
 
-  const allRecipes = new Map<string, any>();
+  const allRecipes = new Map<string, ComponentRecipe>();
   styles.forEach((style) => {
     const recipes = getStyleRecipes(style.slug);
     if (recipes) {
@@ -207,11 +208,11 @@ Component recipes provide parameterized templates for generating consistent comp
 **Description**: ${recipe.description}
 
 **Parameters**:
-${recipe.parameters.map((p: any) => `- \`${p.name}\` (${p.type}): ${p.description || "No description"}`).join("\n")}
+${recipe.parameters.map((p: RecipeParameter) => `- \`${p.id}\` (${p.type}): ${p.label}`).join("\n")}
 
 **Variants**: ${Object.keys(recipe.variants).join(", ")}
 
-**Slots**: ${recipe.slots.map((s: any) => `\`${s.name}\``).join(", ")}
+**Slots**: ${recipe.slots.map((s: RecipeSlot) => `\`${s.id}\``).join(", ")}
 
 `);
   });
@@ -263,23 +264,27 @@ ${archetype.sections.map((s) => `- \`${s.id}\`: ${s.name} (${s.layout.type})`).j
   // Usage Guidelines
   sections.push(`## 6. Usage Guidelines
 
-### Step-by-Step Generation Process
+### Core Product Flows
 
-1. **Select Style**: Choose from available styles based on project requirements
-2. **Fetch Tokens**: Get design tokens via \`/api/styles/[slug]/tokens\`
-3. **Choose Archetype**: Select layout pattern from \`/api/archetypes\`
-4. **Create UI Plan**: Generate structured JSON plan following schema
-5. **Validate Plan**: POST to \`/api/ui-plan/validate\`
-6. **Generate Components**: Use recipes and tokens to create components
-7. **Follow Rules**: Respect do's, don'ts, and forbidden patterns
+#### Path A: Reference URL -> Extract -> Generate
+
+1. **Extract**: POST \`/api/style-extract\` with a public website URL
+2. **Normalize**: Import extracted draft into \`/create-style\`
+3. **Generate**: Use \`/generate\` (3-step flow) to select template, edit content, and download ZIP
+
+#### Path B: Preset Style -> Template -> Generate
+
+1. **Select Style**: Choose from preset styles via \`/styles\` or \`/api/styles\`
+2. **Choose Output**: Select template + output format in \`/generate\`
+3. **Edit & Download**: Complete content editing with live preview and download ZIP
 
 ### Critical Rules
 
 1. **Always use exact token classes** - Don't approximate or substitute
 2. **Never use forbidden classes** - Check forbidden lists before generating
 3. **Follow component recipes** - Use parameterized templates, not ad-hoc code
-4. **Respect archetype structure** - Maintain section order and layout types
-5. **Validate before generating** - Create UI Plan first, then code
+4. **Preserve extracted evidence** - Keep palette, spacing rhythm, and motion cues from source sites
+5. **Validate before shipping** - Run lint/validation in API or CI flow
 
 ### API Endpoints Reference
 
@@ -287,49 +292,27 @@ ${archetype.sections.map((s) => `- \`${s.id}\`: ${s.name} (${s.layout.type})`).j
 - \`GET /api/styles/[slug]\` - Get complete style pack
 - \`GET /api/styles/[slug]/tokens\` - Get tokens only
 - \`GET /api/styles/[slug]/recipes\` - Get recipes only
-- \`GET /api/archetypes\` - List all archetypes
-- \`GET /api/archetypes/[id]\` - Get archetype details
-- \`POST /api/ui-plan/validate\` - Validate UI Plan JSON
+- \`POST /api/style-extract\` - Extract style draft from public URL
+- \`POST /api/lint\` - Validate generated code against style rules
+- \`POST /api/knowledge/smart\` - Context-aware recommendation/compare
 
-### Example Workflow
+### Example Workflow (Path A)
 
 \`\`\`
-# Generate a Neo-Brutalist landing page
+# Replicate a reference site style and generate code
 
-1. GET /api/styles/neo-brutalist
-   → Receive tokens, rules, examples
-
-2. GET /api/archetypes/landing-hero-centered
-   → Receive section structure
-
-3. Create UI Plan JSON:
+1. POST /api/style-extract
    {
-     "meta": {
-       "style": "neo-brutalist",
-       "archetype": "landing-hero-centered",
-       "pageType": "landing"
-     },
-     "sections": [
-       {
-         "id": "hero",
-         "components": [
-           {
-             "recipe": "button",
-             "variant": "primary",
-             "params": { "size": "lg" }
-           }
-         ]
-       }
-     ]
+     "url": "https://example.com"
    }
 
-4. POST /api/ui-plan/validate
-   → Verify plan is valid
+2. Import extracted markdown/json in /create-style
+   -> normalize palette, tokens, and evidence
 
-5. Generate code using tokens and recipes
-   → Use exact classes from required arrays
-   → Follow component structure from recipes
-   → Respect forbidden patterns
+3. Open /generate
+   -> choose template and output format
+   -> edit content with live preview
+   -> download ZIP
 \`\`\`
 
 ---
@@ -342,6 +325,5 @@ For the latest updates and interactive documentation, visit:
 
 This file follows the llms.txt specification: https://llmstxt.org/
 `);
-
   return sections.join("\n");
 }

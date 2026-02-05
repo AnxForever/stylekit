@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Zap, Star, MessageCircle, Target, Flame, Shield } from "lucide-react";
+import { ArrowLeft, Zap, Star, Shield } from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,

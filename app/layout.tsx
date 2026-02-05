@@ -9,10 +9,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "StyleKit - AI-Friendly Design System | 16+ Visual Styles",
+    default: "StyleKit - AI-Friendly Design System | 40+ Visual Styles",
     template: "%s | StyleKit",
   },
-  description: "AI-friendly design system with 16+ visual styles including Neo-Brutalist, Glassmorphism, Neumorphism. Export design tokens, component recipes, and AI prompts for consistent UI generation.",
+  description: "AI-friendly design system with 40+ visual styles including Neo-Brutalist, Glassmorphism, Neumorphism. Export design tokens, component recipes, and AI prompts for consistent UI generation.",
   keywords: [
     "design system",
     "UI components",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: "StyleKit",
     title: "StyleKit - AI-Friendly Design System",
-    description: "16+ visual styles with design tokens, component recipes, and AI prompts. Make AI-generated UI beautiful and consistent.",
+    description: "40+ visual styles with design tokens, component recipes, and AI prompts. Make AI-generated UI beautiful and consistent.",
     images: [
       {
         url: "/og-image.svg",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "StyleKit - AI-Friendly Design System",
-    description: "16+ visual styles with design tokens, component recipes, and AI prompts.",
+    description: "40+ visual styles with design tokens, component recipes, and AI prompts.",
     images: ["/og-image.svg"],
     creator: "@stylekit",
   },
@@ -102,7 +102,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "StyleKit",
-              description: "AI-friendly design system with 16+ visual styles, design tokens, component recipes, and AI prompts.",
+              description: "AI-friendly design system with 40+ visual styles, design tokens, component recipes, and AI prompts.",
               url: BASE_URL,
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
