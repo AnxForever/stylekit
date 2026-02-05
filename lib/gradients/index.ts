@@ -344,8 +344,13 @@ export function generateGradientCSSVariables(gradient: Gradient): string {
 }
 
 // Get all gradient categories with counts
-export function getGradientCategories(): { category: GradientCategory; count: number; labelZh: string }[] {
-  const categoryLabels: Record<GradientCategory, string> = {
+export function getGradientCategories(): {
+  category: GradientCategory;
+  count: number;
+  labelZh: string;
+  labelEn: string;
+}[] {
+  const categoryLabelsZh: Record<GradientCategory, string> = {
     warm: "暖色调",
     cool: "冷色调",
     vibrant: "鲜艳",
@@ -356,11 +361,23 @@ export function getGradientCategories(): { category: GradientCategory; count: nu
     neon: "霓虹",
   };
 
+  const categoryLabelsEn: Record<GradientCategory, string> = {
+    warm: "Warm",
+    cool: "Cool",
+    vibrant: "Vibrant",
+    pastel: "Pastel",
+    dark: "Dark",
+    sunset: "Sunset",
+    nature: "Nature",
+    neon: "Neon",
+  };
+
   const categories = [...new Set(gradients.map((g) => g.category))];
   return categories.map((category) => ({
     category,
     count: gradients.filter((g) => g.category === category).length,
-    labelZh: categoryLabels[category],
+    labelZh: categoryLabelsZh[category],
+    labelEn: categoryLabelsEn[category],
   }));
 }
 

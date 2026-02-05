@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Zap, Terminal, Shield, Cpu, AlertTriangle, Check, X, ChevronDown, ChevronRight, User, Database, Activity } from "lucide-react";
+import { ArrowLeft, Zap, Terminal, Shield, Cpu, AlertTriangle, Check, X, ChevronDown, User, Database, Activity } from "lucide-react";
 
 export default function ShowcaseContent() {
   const [activeTab, setActiveTab] = useState(0);
@@ -79,7 +79,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // COLOR_SYSTEM
+            {"//"} COLOR_SYSTEM
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
             {[
@@ -105,7 +105,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // BUTTONS
+            {"//"} BUTTONS
           </h2>
           <div className="space-y-8">
             <div>
@@ -146,7 +146,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // DATA_CARDS
+            {"//"} DATA_CARDS
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="border border-cyan-400/30 bg-[#0a0a0f] p-6 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(0,255,255,0.2)] transition-all group">
@@ -193,7 +193,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // INPUT_FIELDS
+            {"//"} INPUT_FIELDS
           </h2>
           <div className="space-y-6">
             <div>
@@ -231,7 +231,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // TAB_SYSTEM
+            {"//"} TAB_SYSTEM
           </h2>
           <div className="border border-cyan-400/30">
             <div className="flex border-b border-cyan-400/30">
@@ -277,7 +277,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // BADGES
+            {"//"} BADGES
           </h2>
           <div className="space-y-6">
             <div>
@@ -314,7 +314,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // PROGRESS
+            {"//"} PROGRESS
           </h2>
           <div className="space-y-8">
             <div>
@@ -359,7 +359,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // ALERTS
+            {"//"} ALERTS
           </h2>
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 border border-cyan-400/50 bg-cyan-400/10">
@@ -402,7 +402,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // CONTROLS
+            {"//"} CONTROLS
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Toggles */}
@@ -490,7 +490,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-md mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // DROPDOWN
+            {"//"} DROPDOWN
           </h2>
           <div className="relative">
             <button
@@ -521,7 +521,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // DATA_TABLE
+            {"//"} DATA_TABLE
           </h2>
           <div className="border border-cyan-400/30 overflow-hidden">
             <table className="w-full">
@@ -568,7 +568,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-fuchsia-500">
-            // STATISTICS
+            {"//"} STATISTICS
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="border border-cyan-400/30 p-6 text-center hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,255,255,0.2)] transition-all">
@@ -599,7 +599,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // AVATARS
+            {"//"} AVATARS
           </h2>
           <div className="flex flex-wrap items-end gap-6">
             <div className="w-16 h-16 border border-cyan-400 flex items-center justify-center bg-cyan-400/20 shadow-[0_0_15px_rgba(0,255,255,0.3)]">
@@ -633,7 +633,7 @@ export default function ShowcaseContent() {
       <section className="py-16 md:py-24 px-4 md:px-8 border-t border-cyan-400/20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-mono text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-cyan-400">
-            // CORE_RULES
+            {"// CORE_RULES"}
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="border border-cyan-400/30 p-6">

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, LayoutDashboard, Users, ShoppingCart, DollarSign,
-  TrendingUp, TrendingDown, Bell, Search, Settings, ChevronDown,
+  TrendingUp, TrendingDown, Bell, Search, Settings,
   BarChart3, PieChart, Activity, Calendar, MoreHorizontal
 } from "lucide-react";
 import {

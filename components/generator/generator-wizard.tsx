@@ -14,13 +14,12 @@ import { StepIndicator } from "./step-indicator";
 import { StyleStep } from "./style-step";
 import { TemplateStep } from "./template-step";
 import { ContentStep } from "./content-step";
-import { PreviewStep } from "./preview-step";
 
 interface GeneratorWizardProps {
   styles: DesignStyle[];
 }
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3;
 
 export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const { t } = useI18n();
@@ -182,8 +181,6 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         return !!selectedTemplate;
       case 3:
         return true;
-      case 4:
-        return true;
       default:
         return false;
     }
@@ -206,7 +203,6 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     t("generator.step1"),
     t("generator.step2"),
     t("generator.step3"),
-    t("generator.step4"),
   ];
 
   return (
@@ -236,6 +232,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         {currentStep === 1 && (
           <StyleStep
             styles={styles}
+            customStyles={customStyles}
             selectedSlug={selectedStyleSlug}
             selectedCustomId={selectedCustomId}
             onSelect={handleSelectStyle}
@@ -252,30 +249,33 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         )}
 
         {currentStep === 3 && templateDef && (
-          <ContentStep
-            templateDef={templateDef}
-            sections={sections}
-            globalContent={globalContent}
-            onUpdateSection={handleUpdateSection}
-            onUpdateSectionContent={handleUpdateSectionContent}
-            onUpdateGlobalContent={setGlobalContent}
-            previewHtml={previewHtml}
-          />
-        )}
+          <div className="space-y-6">
+            <ContentStep
+              templateDef={templateDef}
+              sections={sections}
+              globalContent={globalContent}
+              onUpdateSection={handleUpdateSection}
+              onUpdateSectionContent={handleUpdateSectionContent}
+              onUpdateGlobalContent={setGlobalContent}
+              previewHtml={previewHtml}
+            />
 
-        {currentStep === 4 && styleInput && (
-          <PreviewStep
-            previewHtml={previewHtml}
-            styleName={
-              styleInput.type === "builtin"
-                ? `${styleInput.style.name} (${styleInput.style.nameEn})`
-                : `${styleInput.style.name} (${styleInput.style.nameEn})`
-            }
-            templateType={selectedTemplate}
-            outputFormat={selectedFormat}
-            isDownloading={isDownloading}
-            onDownload={handleDownload}
-          />
+            {styleInput && (
+              <div className="border border-border p-4 md:p-5">
+                <div className="text-sm text-muted">
+                  <p>{t("generator.preview")}</p>
+                  <p>
+                    {styleInput.style.name} /{" "}
+                    {selectedTemplate === "landing"
+                      ? t("generator.landing")
+                      : selectedTemplate === "portfolio"
+                        ? t("generator.portfolio")
+                        : selectedTemplate}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -308,7 +308,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         ) : (
           <button
             onClick={handleDownload}
-            disabled={isDownloading}
+            disabled={isDownloading || !styleInput}
             className="px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors disabled:opacity-50"
           >
             {isDownloading ? t("generator.downloading") : t("generator.download")}

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
-import { useAssets, useAssetsByCategory } from "@/lib/assets/hooks";
+import { useAssets } from "@/lib/assets/hooks";
 import type { AssetMeta, AssetCategory } from "@/lib/assets/meta";
 
 interface AssetPickerProps {
@@ -21,9 +21,12 @@ export function AssetPicker({
 }: AssetPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const allAssets = useAssets();
-  const assets = category
-    ? useAssetsByCategory(category)
-    : allAssets;
+
+  // Filter by category using useMemo instead of conditional hook
+  const assets = useMemo(() => {
+    if (!category) return allAssets;
+    return allAssets.filter((asset) => asset.category === category);
+  }, [allAssets, category]);
 
   const selectedAsset = assets.find((a) => a.id === selectedAssetId);
 

@@ -2,7 +2,7 @@
  * Template Generator Type Definitions
  */
 
-import type { DesignStyle, StyleMeta } from "@/lib/styles";
+import type { DesignStyle } from "@/lib/styles";
 
 // Template types
 export type TemplateType = "landing" | "portfolio" | "blog" | "dashboard";

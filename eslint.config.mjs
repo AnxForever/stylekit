@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Dev extraction templates contain placeholder syntax and are not executable TS.
+    "style-extractor-dev/templates/**",
   ]),
 ]);
 

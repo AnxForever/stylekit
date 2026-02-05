@@ -179,7 +179,6 @@ export function ResizablePanel({
   className,
 }: ResizablePanelProps) {
   const context = React.useContext(ResizableContext);
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   React.useEffect(() => {
     if (context) {
@@ -191,7 +190,9 @@ export function ResizablePanel({
     return <div className={className}>{children}</div>;
   }
 
-  const size = isCollapsed ? collapsedSize : context.getPanelSize(id);
+  const baseSize = context.getPanelSize(id);
+  const isCollapsed = collapsible && baseSize <= collapsedSize;
+  const size = isCollapsed ? collapsedSize : baseSize;
   const { direction } = context;
 
   const style: React.CSSProperties =

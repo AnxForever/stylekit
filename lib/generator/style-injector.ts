@@ -3,7 +3,7 @@
  */
 
 import type { DesignStyle } from "@/lib/styles";
-import type { CustomStyleDefinition, StoredCustomStyle, GeneratorStyle } from "./types";
+import type { CustomStyleDefinition, GeneratorStyle } from "./types";
 
 /**
  * Generate CSS variables from a built-in style

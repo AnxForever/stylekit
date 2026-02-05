@@ -46,8 +46,19 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-tooltip",
     ],
   },
+  // Product simplification redirects
+  async redirects() {
+    return [
+      { source: "/prompt-builder", destination: "/generate", permanent: false },
+      { source: "/linter", destination: "/generate", permanent: false },
+      { source: "/playground", destination: "/generate", permanent: false },
+      { source: "/compare", destination: "/styles", permanent: false },
+      { source: "/assets", destination: "/styles", permanent: false },
+      { source: "/api-test", destination: "/developers", permanent: false },
+      { source: "/submit", destination: "/create-style", permanent: false },
+    ];
+  },
 
-  // Turbopack 配置
   turbopack: {},
 };
 

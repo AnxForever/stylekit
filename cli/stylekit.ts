@@ -19,10 +19,9 @@ import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 
 // Import from lib (relative paths for tsx execution)
-import { lintCode, getFixSuggestions, formatLintResult } from "../lib/linter/style-linter";
+import { lintCode, getFixSuggestions } from "../lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "../lib/styles/lint-rules";
-import { styles, getStyleBySlug } from "../lib/styles";
-import { getStyleTokens } from "../lib/styles/tokens-registry";
+import { styles } from "../lib/styles";
 import { searchKnowledge, getDesignRecommendation, getSmartRecommendation, compareStyles } from "../lib/knowledge";
 import type { RecommendationContext } from "../lib/knowledge";
 
@@ -158,7 +157,7 @@ function cmdLint(filePath: string, styleSlug: string): void {
   const code = readFileSync(absolutePath, "utf-8");
 
   // Lint
-  const result = lintCode(code, styleSlug);
+  const result = lintCode(styleSlug, code);
   const fixes = getFixSuggestions(result);
 
   // Output
@@ -169,20 +168,20 @@ function cmdLint(filePath: string, styleSlug: string): void {
   if (result.valid) {
     console.log(colorize("[PASS] No forbidden classes found", "green"));
   } else {
-    console.log(colorize(`[FAIL] ${result.stats.forbiddenCount} forbidden classes found`, "red"));
+    console.log(colorize(`[FAIL] ${result.stats.errorCount} forbidden classes found`, "red"));
   }
 
-  if (result.stats.missingRequired > 0) {
-    console.log(colorize(`[WARN] ${result.stats.missingRequired} required classes missing`, "yellow"));
+  if (result.stats.warningCount > 0) {
+    console.log(colorize(`[WARN] ${result.stats.warningCount} warnings`, "yellow"));
   }
 
   console.log(`\nClasses checked: ${result.stats.totalClasses}`);
 
-  if (result.issues.length > 0) {
+  if (result.violations.length > 0) {
     console.log(colorize("\nIssues:", "bold"));
-    for (const issue of result.issues) {
-      const icon = issue.type === "error" ? colorize("[x]", "red") : colorize("[!]", "yellow");
-      console.log(`  ${icon} ${issue.message}`);
+    for (const violation of result.violations) {
+      const icon = violation.severity === "error" ? colorize("[x]", "red") : colorize("[!]", "yellow");
+      console.log(`  ${icon} ${violation.class}: ${violation.reason}`);
     }
   }
 

@@ -89,9 +89,9 @@ ${style.philosophy.split("\n\n")[0]}`);
     if (recipes) {
       sections.push(`## Component Recipes`);
 
-      for (const [id, recipe] of Object.entries(recipes.recipes)) {
+      for (const [, recipe] of Object.entries(recipes.recipes)) {
         const variants = Object.entries(recipe.variants)
-          .map(([vid, v]) => `- ${v.label}: \`${v.classes.join(" ")}\``)
+          .map(([, v]) => `- ${v.label}: \`${v.classes.join(" ")}\``)
           .join("\n");
 
         const baseClasses = recipe.skeleton.baseClasses.join(" ");

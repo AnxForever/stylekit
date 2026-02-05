@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { lintCode, getFixSuggestions } from "@/lib/linter/style-linter";
+import { lintCode, getFixSuggestions } from "@/lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "@/lib/styles/lint-rules";
 
 /**
@@ -40,14 +40,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = lintCode(code, style);
+    const result = lintCode(style, code);
     const fixes = getFixSuggestions(result);
 
     return NextResponse.json({
       ...result,
       fixes,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Invalid request body" },
       { status: 400 }

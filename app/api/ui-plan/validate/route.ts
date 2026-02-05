@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       errors: validation.errors,
       warnings: validation.warnings,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Invalid JSON format" },
       { status: 400 }

@@ -17,8 +17,8 @@ export function generateEnhancedAIRules({ style, tokens, format }: EnhancedRules
     generateForbiddenRules(tokens),
     generateRequiredPatterns(tokens),
     generateBeforeAfterExamples(style, tokens),
-    generateSkeletonTemplates(style),
-    generateSelfCheckList(tokens),
+    generateSkeletonTemplates(),
+    generateSelfCheckList(),
     generateExamplePrompts(style),
   ];
 
@@ -27,7 +27,7 @@ export function generateEnhancedAIRules({ style, tokens, format }: EnhancedRules
       generateHeader(style),
       generateTokenDictionary(tokens),
       generateForbiddenRules(tokens),
-      generateSelfCheckList(tokens),
+      generateSelfCheckList(),
     ].join("\n\n");
   }
 
@@ -191,7 +191,7 @@ function generateBeforeAfterExamples(style: DesignStyle, tokens: StyleTokens): s
 \`\`\``;
 }
 
-function generateSkeletonTemplates(style: DesignStyle): string {
+function generateSkeletonTemplates(): string {
   return `## [TEMPLATES] 页面骨架模板
 
 使用以下模板生成页面，只需替换 \`{PLACEHOLDER}\` 部分：
@@ -264,7 +264,7 @@ function generateSkeletonTemplates(style: DesignStyle): string {
 \`\`\``;
 }
 
-function generateSelfCheckList(tokens: StyleTokens): string {
+function generateSelfCheckList(): string {
   return `## [CHECKLIST] 生成后自检清单
 
 **在输出代码前，必须逐项验证以下每一条。如有违反，立即修正后再输出：**

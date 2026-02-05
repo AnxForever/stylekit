@@ -23,25 +23,22 @@ export interface ExternalNavItem {
 // Main navigation items (shown directly in nav bar)
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
-  { href: "/components", labelKey: "nav.components" },
+  { href: "/templates", labelKey: "nav.templates" },
+  { href: "/generate", labelKey: "nav.generator" },
 ];
 
 // Tools dropdown menu
 export const toolsDropdown: NavDropdown = {
   labelKey: "nav.tools",
   items: [
-    { href: "/generate", labelKey: "nav.generator" },
     { href: "/create-style", labelKey: "nav.createStyle" },
-    { href: "/linter", labelKey: "nav.linter" },
     { href: "/developers", labelKey: "nav.developers" },
-    { href: "/prompt-builder", labelKey: "nav.promptBuilder" },
   ],
 };
 
 // Secondary navigation
 export const secondaryNav: NavItem[] = [
   { href: "/guide", labelKey: "nav.guide" },
-  { href: "/about", labelKey: "nav.about" },
 ];
 
 export const externalNav: ExternalNavItem[] = [

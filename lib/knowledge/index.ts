@@ -17,7 +17,7 @@ import type {
   ReasoningRule,
 } from "./types";
 import { detectDomain } from "./search";
-import { searchProducts, getProductByType, getProductsByKeyword } from "./products";
+import { searchProducts } from "./products";
 import { searchColors, getColorsByProductType } from "./colors";
 import { searchTypography, getFontPairingsByMood } from "./typography";
 import { searchLandingPatterns, getLandingPatternByName } from "./landing-patterns";

@@ -1,8 +1,9 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import type { TemplateType, OutputFormat } from "@/lib/generator/types";
-import { FileText, Briefcase, BookOpen, LayoutDashboard, Code, FileCode } from "lucide-react";
+import { FileText, Briefcase, Code, FileCode } from "lucide-react";
 
 interface TemplateStepProps {
   selectedTemplate: TemplateType;
@@ -16,35 +17,18 @@ const templates: {
   labelKey: string;
   descKey: string;
   icon: React.ReactNode;
-  available: boolean;
 }[] = [
   {
     type: "landing",
     labelKey: "generator.landing",
     descKey: "generator.landingDesc",
     icon: <FileText className="w-6 h-6" />,
-    available: true,
   },
   {
     type: "portfolio",
     labelKey: "generator.portfolio",
     descKey: "generator.portfolioDesc",
     icon: <Briefcase className="w-6 h-6" />,
-    available: true,
-  },
-  {
-    type: "blog",
-    labelKey: "templates.typeBlog",
-    descKey: "templates.description",
-    icon: <BookOpen className="w-6 h-6" />,
-    available: false,
-  },
-  {
-    type: "dashboard",
-    labelKey: "templates.typeDashboard",
-    descKey: "templates.description",
-    icon: <LayoutDashboard className="w-6 h-6" />,
-    available: false,
   },
 ];
 
@@ -79,17 +63,13 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-3xl mb-10">
         {templates.map((template) => {
           const isSelected = template.type === selectedTemplate;
-          const isDisabled = !template.available;
 
           return (
             <button
               key={template.type}
-              onClick={() => template.available && onSelect(template.type)}
-              disabled={isDisabled}
+              onClick={() => onSelect(template.type)}
               className={`group text-left p-6 border transition-all ${
-                isDisabled
-                  ? "border-border opacity-50 cursor-not-allowed"
-                  : isSelected
+                isSelected
                   ? "border-foreground ring-2 ring-foreground ring-offset-2"
                   : "border-border hover:border-foreground"
               }`}
@@ -106,19 +86,14 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium">{t(template.labelKey as any)}</p>
+                    <p className="font-medium">{t(template.labelKey as TranslationKey)}</p>
                     {isSelected && (
                       <span className="text-xs px-2 py-0.5 bg-foreground text-background">
                         {t("generator.selected")}
                       </span>
                     )}
-                    {isDisabled && (
-                      <span className="text-xs px-2 py-0.5 bg-zinc-200 dark:bg-zinc-700 text-muted">
-                        Coming Soon
-                      </span>
-                    )}
                   </div>
-                  <p className="text-sm text-muted">{t(template.descKey as any)}</p>
+                  <p className="text-sm text-muted">{t(template.descKey as TranslationKey)}</p>
                 </div>
               </div>
             </button>
@@ -146,9 +121,9 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
             >
               {item.icon}
               <div className="text-left">
-                <p className="font-medium text-sm">{t(item.labelKey as any)}</p>
+                <p className="font-medium text-sm">{t(item.labelKey as TranslationKey)}</p>
                 <p className={`text-xs ${isSelected ? "text-background/70" : "text-muted"}`}>
-                  {t(item.descKey as any)}
+                  {t(item.descKey as TranslationKey)}
                 </p>
               </div>
             </button>

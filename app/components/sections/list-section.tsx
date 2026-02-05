@@ -2,7 +2,7 @@
 
 import { List, ListItem, ListItemContent } from "@/components/ui/list";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
-import { FileText, Folder, Image } from "lucide-react";
+import { FileText, Folder, Image as ImageIcon } from "lucide-react";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -34,7 +34,7 @@ export function ListSection({ expandedProps, toggleProps }: Props) {
           </ListItem>
           <ListItem>
             <ListItemContent
-              leading={<Image className="w-5 h-5 text-muted" />}
+              leading={<ImageIcon className="w-5 h-5 text-muted" />}
               title="图片文件"
               description="PNG 格式，2.4 MB"
             />

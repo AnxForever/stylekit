@@ -6,11 +6,11 @@ import { styles } from "@/lib/styles";
 
 export const metadata: Metadata = {
   title: "模板生成器 - StyleKit",
-  description: "选择风格和模板类型，一键生成完整的静态网站代码。",
+  description: "三步完成：选择风格、选择模板、编辑内容并下载代码。",
 };
 
 export default function GeneratePage() {
-  // Get only visual styles (not layout styles)
+  // Keep generator focused on visual style systems.
   const visualStyles = styles.filter((s) => s.styleType === "visual");
 
   return (

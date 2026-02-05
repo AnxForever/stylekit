@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
-import { generateStylePack, downloadFile, type StylePackFile } from "@/lib/export/style-pack";
+import { generateStylePack, downloadFile, downloadAllAsZip, type StylePackFile } from "@/lib/export/style-pack";
 import { generateSkillPack, getSkillPackFileInfo } from "@/lib/export/skill-pack";
 import { Download, Check, Package, FileJson, FileCode, Palette, Code2, Copy, BookOpen, X } from "lucide-react";
 
@@ -32,6 +32,7 @@ export function StylePackExport({ style }: StylePackExportProps) {
 
   // For portal rendering
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
     setMounted(true);
   }, []);
 
@@ -60,12 +61,8 @@ export function StylePackExport({ style }: StylePackExportProps) {
   };
 
   const handleDownloadAll = () => {
-    files.forEach((file, i) => {
-      setTimeout(() => {
-        downloadFile(file);
-        setDownloadedFiles((prev) => new Set([...prev, file.filename]));
-      }, i * 300);
-    });
+    downloadAllAsZip(style, tokens);
+    setDownloadedFiles(new Set(files.map((file) => file.filename)));
   };
 
   const handleCopyContent = async () => {

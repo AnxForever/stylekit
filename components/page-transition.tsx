@@ -17,6 +17,7 @@ export function PageTransition({ children }: PageTransitionProps) {
 
   useEffect(() => {
     // Reset and trigger animation on route change
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- valid animation trigger pattern
     setIsVisible(false);
     const timer = requestAnimationFrame(() => {
       setIsVisible(true);

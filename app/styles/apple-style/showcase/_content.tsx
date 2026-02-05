@@ -223,7 +223,7 @@ export default function ShowcaseContent() {
                 Continue
               </button>
               <p className="text-center text-sm text-gray-500">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <a href="#" className="text-[#0071e3] hover:underline">
                   Create yours now
                 </a>

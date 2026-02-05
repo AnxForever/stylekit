@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Download, Copy, Check } from "lucide-react";
 import type { AssetMeta } from "@/lib/assets/meta";
 
@@ -135,10 +136,13 @@ const ${asset.slug.replace(/-/g, "_")} = getAssetBySlug("${asset.slug}");`;
               预览
             </p>
             <div className="border border-border rounded p-3 sm:p-6 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center min-h-[150px] sm:min-h-[200px]">
-              <img
+              <Image
                 src={asset.image}
                 alt={asset.name}
-                className="max-w-full max-h-[150px] sm:max-h-[200px] object-contain"
+                width={asset.size?.width ?? 240}
+                height={asset.size?.height ?? 240}
+                unoptimized
+                className="max-w-full max-h-[150px] sm:max-h-[200px] h-auto object-contain"
               />
             </div>
           </div>

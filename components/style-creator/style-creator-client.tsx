@@ -17,6 +17,14 @@ import {
   deleteStyle,
   generateCssFromCustomStyle,
 } from "@/lib/style-creator";
+import {
+  parseStyleExtractorInput,
+  type ExtractedStyleDraft,
+} from "@/lib/style-extractor/adapter";
+import {
+  applyExtractedDraftToCustomStyle,
+  type ExtractedEvidenceSnapshot,
+} from "@/lib/style-extractor/to-custom-style";
 import { ColorSection } from "./color-section";
 import { TypographySection } from "./typography-section";
 import { BordersSection } from "./borders-section";
@@ -24,6 +32,26 @@ import { PreviewPanel } from "./preview-panel";
 import { SaveDialog } from "./save-dialog";
 import { MyStylesList } from "./my-styles-list";
 import { Copy, Check, ArrowRight } from "lucide-react";
+
+interface ExtractEvidence extends ExtractedEvidenceSnapshot {
+  stylesheetRequested?: number;
+  stylesheetFetched?: number;
+  colorCount?: number;
+  hasGridLayout?: boolean;
+}
+
+interface ExtractResponse {
+  draft?: ExtractedStyleDraft;
+  raw?: string;
+  error?: string;
+  evidence?: ExtractEvidence;
+}
+
+interface ImportSummary {
+  source: "json" | "markdown" | "url";
+  draft: ExtractedStyleDraft;
+  evidence?: ExtractEvidence;
+}
 
 export function StyleCreatorClient() {
   const { t } = useI18n();
@@ -36,6 +64,14 @@ export function StyleCreatorClient() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [copiedCss, setCopiedCss] = useState(false);
   const [savedStyles, setSavedStyles] = useState<StoredCustomStyle[]>([]);
+  const [importUrl, setImportUrl] = useState("");
+  const [importInput, setImportInput] = useState("");
+  const [importingFromUrl, setImportingFromUrl] = useState(false);
+  const [importStatus, setImportStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
 
   // Load saved styles on mount
   useEffect(() => {
@@ -109,6 +145,116 @@ export function StyleCreatorClient() {
     setShowSaveDialog(true);
   }, []);
 
+  const applyImportedDraft = useCallback(
+    (draft: ExtractedStyleDraft, source: ImportSummary["source"], evidence?: ExtractEvidence) => {
+      setDefinition((prev) => applyExtractedDraftToCustomStyle(draft, prev, evidence));
+      setImportSummary({ source, draft, evidence });
+      setImportStatus({
+        type: "success",
+        message: `${t("styleCreator.importSuccess")} ${
+          source === "json"
+            ? t("styleCreator.importSourceJson")
+            : source === "markdown"
+              ? t("styleCreator.importSourceMarkdown")
+              : t("styleCreator.importSourceUrl")
+        }`,
+      });
+    },
+    [t]
+  );
+
+  const handleApplyImportInput = useCallback(() => {
+    if (!importInput.trim()) {
+      setImportStatus({
+        type: "error",
+        message: t("styleCreator.importErrorEmpty"),
+      });
+      return;
+    }
+
+    const parsed = parseStyleExtractorInput(importInput);
+    if (!parsed.ok || !parsed.data) {
+      setImportStatus({
+        type: "error",
+        message: `${t("styleCreator.importErrorPrefix")} ${parsed.error ?? "Unknown format."}`,
+      });
+      return;
+    }
+
+    applyImportedDraft(parsed.data, parsed.source);
+  }, [applyImportedDraft, importInput, t]);
+
+  const handleImportFromUrl = useCallback(async () => {
+    const trimmedUrl = importUrl.trim();
+    if (!trimmedUrl) {
+      setImportStatus({
+        type: "error",
+        message: t("styleCreator.importErrorUrlRequired"),
+      });
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(trimmedUrl)) {
+      setImportStatus({
+        type: "error",
+        message: t("styleCreator.importErrorUrlProtocol"),
+      });
+      return;
+    }
+
+    setImportingFromUrl(true);
+    setImportStatus(null);
+    try {
+      const response = await fetch("/api/style-extract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: trimmedUrl }),
+      });
+      const payload = (await response.json()) as ExtractResponse;
+
+      if (!response.ok) {
+        setImportStatus({
+          type: "error",
+          message: `${t("styleCreator.importErrorPrefix")} ${
+            payload.error ?? `HTTP ${response.status}`
+          }`,
+        });
+        return;
+      }
+
+      if (!payload.draft) {
+        setImportStatus({
+          type: "error",
+          message: `${t("styleCreator.importErrorPrefix")} Empty draft from extractor.`,
+        });
+        return;
+      }
+
+      if (typeof payload.raw === "string" && payload.raw.trim()) {
+        setImportInput(payload.raw);
+      }
+      applyImportedDraft(payload.draft, "url", payload.evidence);
+    } catch (error) {
+      setImportStatus({
+        type: "error",
+        message: `${t("styleCreator.importErrorPrefix")} ${(error as Error).message}`,
+      });
+    } finally {
+      setImportingFromUrl(false);
+    }
+  }, [applyImportedDraft, importUrl, t]);
+
+  const clearImportInputs = useCallback(() => {
+    setImportInput("");
+    setImportStatus(null);
+    setImportSummary(null);
+  }, []);
+
+  const evidenceBoolText = useCallback(
+    (value: boolean | undefined) => (value ? t("styleCreator.importYes") : t("styleCreator.importNo")),
+    [t]
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
       {/* Page Header */}
@@ -127,6 +273,126 @@ export function StyleCreatorClient() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Left: Editor */}
         <div className="space-y-8">
+          {/* Extractor Import */}
+          <div className="border border-border p-4 md:p-5 space-y-4 bg-zinc-50/40 dark:bg-zinc-900/20">
+            <div>
+              <p className="text-xs tracking-widest uppercase text-muted mb-2">
+                {t("styleCreator.importTitle")}
+              </p>
+              <p className="text-sm text-muted">
+                {t("styleCreator.importDescription")}
+              </p>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-2">
+              <input
+                value={importUrl}
+                onChange={(event) => setImportUrl(event.target.value)}
+                placeholder={t("styleCreator.importUrlPlaceholder")}
+                className="flex-1 px-3 py-2 text-sm border border-border bg-background"
+              />
+              <button
+                onClick={handleImportFromUrl}
+                disabled={importingFromUrl}
+                className="px-4 py-2 border border-border hover:border-foreground disabled:opacity-60 disabled:cursor-not-allowed text-sm transition-colors"
+              >
+                {importingFromUrl
+                  ? t("styleCreator.importing")
+                  : t("styleCreator.importFromUrl")}
+              </button>
+            </div>
+
+            <textarea
+              value={importInput}
+              onChange={(event) => setImportInput(event.target.value)}
+              placeholder={t("styleCreator.importTextPlaceholder")}
+              className="w-full min-h-[180px] p-3 border border-border bg-background text-xs font-mono leading-relaxed"
+            />
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={handleApplyImportInput}
+                className="px-4 py-2 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors"
+              >
+                {t("styleCreator.applyImport")}
+              </button>
+              <button
+                onClick={clearImportInputs}
+                className="px-4 py-2 border border-border hover:border-foreground text-sm transition-colors"
+              >
+                {t("styleCreator.clearImport")}
+              </button>
+            </div>
+
+            {importStatus && (
+              <p
+                className={`text-sm ${
+                  importStatus.type === "success" ? "text-emerald-600" : "text-red-600"
+                }`}
+              >
+                {importStatus.message}
+              </p>
+            )}
+
+            {importSummary && (
+              <div className="border border-border bg-background p-3 space-y-3">
+                <p className="text-sm font-medium">
+                  {importSummary.draft.nameEn ??
+                    importSummary.draft.name ??
+                    t("styleCreator.importUnnamed")}
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="px-2 py-1 border border-border">
+                    {importSummary.source === "json"
+                      ? t("styleCreator.importSourceJson")
+                      : importSummary.source === "markdown"
+                        ? t("styleCreator.importSourceMarkdown")
+                        : t("styleCreator.importSourceUrl")}
+                  </span>
+                  {importSummary.draft.category && (
+                    <span className="px-2 py-1 border border-border">{importSummary.draft.category}</span>
+                  )}
+                  {importSummary.draft.styleType && (
+                    <span className="px-2 py-1 border border-border">{importSummary.draft.styleType}</span>
+                  )}
+                  {importSummary.draft.primaryColor && (
+                    <span className="px-2 py-1 border border-border">{importSummary.draft.primaryColor}</span>
+                  )}
+                </div>
+                {importSummary.evidence && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted">
+                    <p>
+                      {t("styleCreator.importEvidenceStylesheets")}:{" "}
+                      {importSummary.evidence.stylesheetFetched ??
+                        importSummary.evidence.stylesheetRequested ??
+                        0}
+                    </p>
+                    <p>
+                      {t("styleCreator.importEvidenceColors")}:{" "}
+                      {importSummary.evidence.colorCount ?? 0}
+                    </p>
+                    <p>
+                      {t("styleCreator.importEvidenceAnimation")}:{" "}
+                      {evidenceBoolText(importSummary.evidence.hasAnimation)}
+                    </p>
+                    <p>
+                      {t("styleCreator.importEvidenceLayout")}:{" "}
+                      {evidenceBoolText(importSummary.evidence.hasGridLayout)}
+                    </p>
+                    <p>
+                      {t("styleCreator.importEvidenceGlass")}:{" "}
+                      {evidenceBoolText(importSummary.evidence.hasGlassEffect)}
+                    </p>
+                    <p>
+                      {t("styleCreator.importEvidenceNeon")}:{" "}
+                      {evidenceBoolText(importSummary.evidence.hasNeonEffect)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Color Presets */}
           <div>
             <p className="text-xs tracking-widest uppercase text-muted mb-4">

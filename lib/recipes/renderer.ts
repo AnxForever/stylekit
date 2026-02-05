@@ -4,7 +4,6 @@ import type {
   ComponentRecipe,
   RecipeRenderParams,
   RecipeRenderResult,
-  RecipeParameter,
 } from "./types";
 
 /**
@@ -96,7 +95,7 @@ function generateCode(
   const selfClosing = ["input", "img", "br", "hr"].includes(element);
 
   if (selfClosing) {
-    const additionalProps = buildAdditionalProps(recipe, params, "jsx");
+    const additionalProps = buildAdditionalProps(recipe, params);
     return `<${element}${additionalProps}
   className="${formattedClassName}"
 />`;
@@ -125,7 +124,7 @@ function generatePreview(
   const selfClosing = ["input", "img", "br", "hr"].includes(element);
 
   if (selfClosing) {
-    const additionalProps = buildAdditionalProps(recipe, params, "html");
+    const additionalProps = buildAdditionalProps(recipe, params);
     return `<${element}${additionalProps} class="${className}" />`;
   }
 
@@ -167,8 +166,7 @@ function buildSlotContent(
  */
 function buildAdditionalProps(
   recipe: ComponentRecipe,
-  params: RecipeRenderParams,
-  format: "jsx" | "html"
+  params: RecipeRenderParams
 ): string {
   const props: string[] = [];
 

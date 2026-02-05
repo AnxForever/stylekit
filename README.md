@@ -1,7 +1,7 @@
 # StyleKit
 
 <p align="center">
-  <strong>AI-Friendly Design System with 16+ Visual Styles</strong>
+  <strong>AI-Friendly Design System with 40+ Visual Styles</strong>
 </p>
 
 <p align="center">
@@ -26,10 +26,10 @@ StyleKit is a design system toolkit that helps AI generate consistent, high-qual
 
 ## Features
 
-- **16+ Visual Styles** - Neo-Brutalist, Glassmorphism, Neumorphism, Editorial, Cyberpunk, and more
+- **40+ Visual Styles** - Neo-Brutalist, Glassmorphism, Neumorphism, Editorial, Cyberpunk, and more
 - **25+ UI Components** - Built on Radix UI with full accessibility support
 - **Design Tokens** - Export CSS variables, Tailwind presets, and Figma tokens
-- **AI Prompt Builder** - Generate v0-style prompts with the three-element framework
+- **3-Step Generator** - Select style, select template, edit content, then download code
 - **Smart Recommender** - Context-aware design suggestions based on audience and brand
 - **Style Linter** - Validate code against specific design styles
 - **Gradient Library** - 24 curated gradients across 8 categories
@@ -65,7 +65,7 @@ Visit [http://localhost:3000](http://localhost:3000)
 | Bento Grid | Dashboards, Portfolios | Grid-based layouts |
 | Corporate Clean | Business, Enterprise | Professional, minimal |
 
-[View all 16 styles](https://stylekit.cc/styles)
+[View all styles](https://stylekit.top/styles)
 
 ## API
 
@@ -106,13 +106,13 @@ npx skills add AnxForever/stylekit
 
 StyleKit provides AI-friendly documentation at `/llms.txt` and `/llms-full.txt` endpoints.
 
-### Prompt Builder
+### Generator
 
-Use the [Prompt Builder](https://stylekit.cc/prompt-builder) to generate AI prompts with:
+Use the [Generator](https://stylekit.top/generate) as a simple 3-step flow:
 
-- **Product Surface** - What components and features
-- **Context of Use** - Who uses it and when
-- **Constraints & Taste** - Style preferences and requirements
+1. Choose a built-in style or create/import one from [Create Style](https://stylekit.top/create-style)
+2. Choose template type and output format (HTML or React + Tailwind)
+3. Edit content with live preview and download ZIP
 
 ### Developer Portal
 
@@ -137,7 +137,7 @@ Visit `/developers` to access comprehensive integration guides, including:
 app/
   ├── page.tsx              # Home
   ├── components/           # Component showcase
-  ├── prompt-builder/       # AI prompt generator
+  ├── generate/             # Code generation flow
   ├── styles/               # Style gallery & details
   └── api/                  # REST APIs
 components/
@@ -146,7 +146,7 @@ components/
 lib/
   ├── styles/               # Style definitions & tokens
   ├── gradients/            # Gradient library
-  └── prompt-builder/       # Prompt generation logic
+  └── style-extractor/      # Style draft parsing + normalization
 skills/
   └── stylekit/             # Skills.sh package
 ```

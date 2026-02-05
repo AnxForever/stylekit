@@ -207,7 +207,7 @@ export function convertFigmaToStyleKitTokens(
   } = {}
 ): Partial<StyleTokens> {
   const { variables } = response;
-  const { modeId, styleName = "imported" } = options;
+  const { modeId } = options;
 
   const colors = convertFigmaColorsToTokens(variables, modeId);
   const spacing = convertFigmaSpacingToTokens(variables, modeId);

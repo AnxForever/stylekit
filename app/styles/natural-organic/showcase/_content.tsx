@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Leaf, Sun, Droplets, Mountain, Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
+import { ArrowLeft, Leaf, Sun, Mountain, Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
 
 export default function ShowcaseContent() {
   const [activeTab, setActiveTab] = useState(0);
