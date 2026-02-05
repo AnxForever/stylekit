@@ -99,10 +99,10 @@ export function StylePreviewSwitcher() {
               →
             </Link>
             <Link
-              href={`/compare?left=${selectedSlug}&right=${styles[0]?.slug !== selectedSlug ? styles[0]?.slug : styles[1]?.slug}`}
+              href="/styles"
               className="text-sm text-muted hover:text-foreground transition-colors"
             >
-              {locale === "zh" ? "对比其他风格" : "Compare with others"} →
+              {locale === "zh" ? "对比其他风格" : "Browse more styles"} →
             </Link>
           </div>
         </div>

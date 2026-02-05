@@ -2,7 +2,6 @@
  * HTML Renderer - Generates complete HTML files from templates
  */
 
-import type { DesignStyle } from "@/lib/styles";
 import type { GeneratorConfig, GeneratedFile, SectionConfig, StyleInput } from "../types";
 import {
   generateBaseCss,
@@ -11,7 +10,6 @@ import {
   generateCssVariablesFromCustomStyle,
 } from "../style-injector";
 import {
-  landingTemplate,
   generateHeroHtml,
   generateFeaturesHtml,
   generateCtaHtml,
@@ -19,7 +17,6 @@ import {
   generateLandingCss,
 } from "../templates/landing";
 import {
-  portfolioTemplate,
   generatePortfolioHeroHtml,
   generatePortfolioProjectsHtml,
   generatePortfolioAboutHtml,

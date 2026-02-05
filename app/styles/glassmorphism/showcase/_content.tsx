@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Palette, Zap, Smartphone, Check, X, Bell, User, Settings, ChevronDown } from "lucide-react";
+import { ArrowLeft, Palette, Zap, Smartphone, Check, X, Bell, ChevronDown } from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,

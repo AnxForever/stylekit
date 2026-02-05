@@ -1,7 +1,6 @@
 import {
   Skeleton,
   NavSkeleton,
-  PageHeaderSkeleton,
   ComponentSectionSkeleton,
 } from "@/components/ui/skeleton";
 

@@ -17,7 +17,8 @@ const templates: Template[] = [
   {
     id: "brutal-landing",
     name: "Brutal Landing Page",
-    description: "大胆冲击力的 Neo-Brutalist 风格着陆页，适合产品发布和品牌展示",
+    description:
+      "High-impact Neo-Brutalist landing page for launches and brand-first campaigns.",
     styleSlug: "neo-brutalist",
     type: "landing",
     href: "/templates/brutal-landing",
@@ -25,7 +26,8 @@ const templates: Template[] = [
   {
     id: "glass-landing",
     name: "Glass Landing Page",
-    description: "毛玻璃效果的现代着陆页，适合 SaaS 产品和科技类网站",
+    description:
+      "Modern glassmorphism landing page ideal for SaaS products and technology showcases.",
     styleSlug: "glassmorphism",
     type: "landing",
     href: "/templates/glass-landing",
@@ -33,10 +35,20 @@ const templates: Template[] = [
   {
     id: "editorial-blog",
     name: "Editorial Blog",
-    description: "杂志排版风格的博客页面，适合内容驱动型网站",
+    description:
+      "Magazine-inspired reading layout focused on typography, rhythm, and long-form content.",
     styleSlug: "editorial",
     type: "blog",
     href: "/templates/editorial-blog",
+  },
+  {
+    id: "anx-blog",
+    name: "Anx Avant Blog",
+    description:
+      "Experimental portfolio-blog mix with loud typography, brutal borders, and kinetic sections.",
+    styleSlug: "neo-brutalist",
+    type: "blog",
+    href: "/templates/anx-blog",
   },
 ];
 
@@ -49,9 +61,8 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
   const activeType = params.type || "all";
   const styles = getAllStylesMeta();
 
-  const filteredTemplates = activeType === "all"
-    ? templates
-    : templates.filter((t) => t.type === activeType);
+  const filteredTemplates =
+    activeType === "all" ? templates : templates.filter((t) => t.type === activeType);
 
   const getStyle = (slug: string) => styles.find((s) => s.slug === slug);
 
@@ -60,26 +71,20 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
       <Header />
 
       <main className="flex-1">
-        {/* Header */}
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Page Templates
-            </p>
-            <h1 className="text-4xl md:text-5xl mb-4">页面模板</h1>
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">Page Templates</p>
+            <h1 className="text-4xl md:text-5xl mb-4">Template Gallery</h1>
             <p className="text-lg text-muted max-w-2xl">
-              每个风格的完整页面模板，可直接复制使用或作为设计参考。
+              Production-ready pages designed for adaptation. Pick a visual direction, then fork and tailor.
             </p>
           </div>
         </section>
 
-        {/* Filter + Grid */}
         <section className="py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            {/* Type Filter (Client Component) */}
             <TemplatesFilter />
 
-            {/* Templates Grid (Server Rendered) */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTemplates.map((template) => {
                 const style = getStyle(template.styleSlug);
@@ -89,7 +94,6 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
                     href={template.href}
                     className="group block border border-border hover:border-foreground transition-colors"
                   >
-                    {/* Preview Area */}
                     <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                       {style && (
                         <div className="absolute inset-0 flex">
@@ -100,29 +104,20 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
                           ))}
                         </div>
                       )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <span className="text-white font-serif text-xl italic">
-                          {template.name}
-                        </span>
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+                        <span className="text-white font-serif text-xl italic">{template.name}</span>
                       </div>
                     </div>
 
-                    {/* Info */}
                     <div className="p-5">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg group-hover:text-accent transition-colors">
-                          {template.name}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-muted mb-3">
-                        {template.description}
-                      </p>
+                      <h3 className="text-lg group-hover:text-accent transition-colors">{template.name}</h3>
+                      <p className="text-sm text-muted mt-2 mb-3">{template.description}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
                           {typeLabels[template.type]}
                         </span>
                         <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                          {style?.name}
+                          {style?.nameEn || style?.name || "Style"}
                         </span>
                       </div>
                     </div>
@@ -131,11 +126,8 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
               })}
             </div>
 
-            {/* Empty State */}
             {filteredTemplates.length === 0 && (
-              <div className="text-center py-16 text-muted">
-                此分类下暂无模板
-              </div>
+              <div className="text-center py-16 text-muted">No templates in this category yet.</div>
             )}
           </div>
         </section>

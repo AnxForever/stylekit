@@ -4,8 +4,9 @@ import { Footer } from "@/components/layout/footer";
 import { StyleCreatorClient } from "@/components/style-creator/style-creator-client";
 
 export const metadata: Metadata = {
-  title: "风格创建器 - StyleKit",
-  description: "可视化创建自定义设计风格，保存后可在模板生成器中使用。",
+  title: "Create Style - StyleKit",
+  description:
+    "Create a custom style or import style-extractor results, then reuse it in the generator.",
 };
 
 export default function CreateStylePage() {
@@ -19,3 +20,4 @@ export default function CreateStylePage() {
     </div>
   );
 }
+

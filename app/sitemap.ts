@@ -22,13 +22,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/components`,
+      url: `${BASE_URL}/generate`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/prompt-builder`,
+      url: `${BASE_URL}/create-style`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
@@ -40,28 +40,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${BASE_URL}/developers`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
       url: `${BASE_URL}/guide`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/compare`,
+      url: `${BASE_URL}/components`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/playground`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/linter`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
     },
     {
       url: `${BASE_URL}/about`,
