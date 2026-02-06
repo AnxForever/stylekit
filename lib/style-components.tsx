@@ -1791,6 +1791,658 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  // New styles - Batch 4
+  "art-nouveau": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#2d5016] text-[#f5f0e1] font-serif tracking-wide border border-[#c9a227] rounded hover:bg-[#c9a227] hover:text-[#2d5016] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e1] border border-[#c9a227] rounded">
+        <h3 className="font-serif text-xl text-[#2d5016] mb-2">Art Nouveau Card</h3>
+        <p className="text-sm text-[#2d5016]/70">Organic elegance</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Type here..." className="w-full px-4 py-3 bg-[#f5f0e1] border border-[#c9a227] rounded text-[#2d5016] placeholder-[#2d5016]/40 focus:outline-none focus:border-[#2d5016] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a227] rounded p-4 bg-[#f5f0e1]">
+          <div className="font-serif text-base text-[#2d5016] mb-2">Art Nouveau</div>
+          <p className="text-xs text-[#2d5016]/60 mb-3">Organic curves</p>
+          <button className="bg-[#2d5016] text-[#f5f0e1] text-xs px-4 py-2 rounded border border-[#c9a227]">Action</button>
+        </div>
+      </div>
+    ),
+  },
+  "surrealism": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1a1a3e] text-[#f0ece4] font-serif tracking-wide border border-[#7b68a8] rounded-lg hover:bg-[#7b68a8] hover:text-[#f0ece4] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f0ece4] border border-[#7b68a8] rounded-lg">
+        <h3 className="font-serif text-xl text-[#1a1a3e] mb-2">Surrealism Card</h3>
+        <p className="text-sm text-[#1a1a3e]/70">Dream meets reality</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Enter dream..." className="w-full px-4 py-3 bg-[#f0ece4] border border-[#7b68a8] rounded-lg text-[#1a1a3e] placeholder-[#1a1a3e]/40 focus:outline-none focus:border-[#d4a574] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f0ece4] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#7b68a8] rounded-lg p-4 bg-[#f0ece4]">
+          <div className="font-serif text-base text-[#1a1a3e] mb-2">Surrealism</div>
+          <p className="text-xs text-[#1a1a3e]/60 mb-3">Beyond reality</p>
+          <button className="bg-[#1a1a3e] text-[#f0ece4] text-xs px-4 py-2 rounded-lg border border-[#7b68a8]">Explore</button>
+        </div>
+      </div>
+    ),
+  },
+  "ukiyo-e-digital": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1a3055] text-[#f5f0e1] font-serif tracking-wide border border-[#d4553a] rounded hover:bg-[#d4553a] hover:text-[#f5f0e1] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e1] border border-[#1a3055] rounded">
+        <h3 className="font-serif text-xl text-[#1a3055] mb-2">Ukiyo-e Card</h3>
+        <p className="text-sm text-[#1a3055]/70">Digital woodblock</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Type here..." className="w-full px-4 py-3 bg-[#f5f0e1] border border-[#1a3055] rounded text-[#1a3055] placeholder-[#1a3055]/40 focus:outline-none focus:border-[#d4553a] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#1a3055] rounded p-4 bg-[#f5f0e1]">
+          <div className="font-serif text-base text-[#1a3055] mb-2">Ukiyo-e</div>
+          <p className="text-xs text-[#1a3055]/60 mb-3">Floating world</p>
+          <button className="bg-[#d4553a] text-[#f5f0e1] text-xs px-4 py-2 rounded">Action</button>
+        </div>
+      </div>
+    ),
+  },
+  "gothic": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#2d1b4e] text-[#c9a227] font-serif tracking-widest border border-[#c9a227] hover:bg-[#8b1a1a] hover:text-[#c9a227] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border border-[#c9a227]">
+        <h3 className="font-serif text-xl text-[#c9a227] mb-2">Gothic Card</h3>
+        <p className="text-sm text-[#c9a227]/60">Dark elegance</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Enter text..." className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#c9a227] text-[#c9a227] placeholder-[#c9a227]/30 focus:outline-none focus:border-[#8b1a1a] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a227] p-4 bg-[#0a0a0a]">
+          <div className="font-serif text-base text-[#c9a227] mb-2">Gothic</div>
+          <p className="text-xs text-[#c9a227]/50 mb-3">Dark mystery</p>
+          <button className="bg-[#2d1b4e] text-[#c9a227] text-xs px-4 py-2 border border-[#c9a227]">Enter</button>
+        </div>
+      </div>
+    ),
+  },
+  "outrun": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ff006e] text-white font-bold tracking-wider border border-[#ff6ec7] rounded hover:bg-[#a020f0] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border border-[#ff006e] rounded">
+        <h3 className="font-bold text-xl text-[#ff006e] mb-2">Outrun Card</h3>
+        <p className="text-sm text-[#00d4ff]">Retro futurism</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Type..." className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#a020f0] rounded text-[#ff006e] placeholder-[#ff006e]/40 focus:outline-none focus:border-[#00d4ff] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#ff006e] rounded p-4 bg-[#0a0a0a]">
+          <div className="font-bold text-base text-[#ff006e] mb-2">Outrun</div>
+          <p className="text-xs text-[#00d4ff] mb-3">Neon speed</p>
+          <button className="bg-[#a020f0] text-white text-xs px-4 py-2 rounded border border-[#ff6ec7]">Go</button>
+        </div>
+      </div>
+    ),
+  },
+  "dark-academia": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#3d2b1f] text-[#f5f0e1] font-serif tracking-wide border border-[#8b7355] rounded hover:bg-[#6b4c3b] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e1] border border-[#8b7355] rounded">
+        <h3 className="font-serif text-xl text-[#3d2b1f] mb-2">Dark Academia Card</h3>
+        <p className="text-sm text-[#3d2b1f]/70">Classical knowledge</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Search texts..." className="w-full px-4 py-3 bg-[#f5f0e1] border border-[#8b7355] rounded text-[#3d2b1f] placeholder-[#3d2b1f]/40 focus:outline-none focus:border-[#3d2b1f] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#8b7355] rounded p-4 bg-[#f5f0e1]">
+          <div className="font-serif text-base text-[#3d2b1f] mb-2">Dark Academia</div>
+          <p className="text-xs text-[#3d2b1f]/60 mb-3">Scholar aesthetics</p>
+          <button className="bg-[#3d2b1f] text-[#f5f0e1] text-xs px-4 py-2 rounded border border-[#8b7355]">Read</button>
+        </div>
+      </div>
+    ),
+  },
+  "cottagecore": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#5a8f5a] text-[#f5f0e1] font-serif tracking-wide border border-[#8b7355] rounded-lg hover:bg-[#f5d75f] hover:text-[#5a8f5a] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e1] border border-[#5a8f5a] rounded-lg">
+        <h3 className="font-serif text-xl text-[#5a8f5a] mb-2">Cottagecore Card</h3>
+        <p className="text-sm text-[#8b7355]">Pastoral charm</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Garden notes..." className="w-full px-4 py-3 bg-[#f5f0e1] border border-[#5a8f5a] rounded-lg text-[#5a8f5a] placeholder-[#5a8f5a]/40 focus:outline-none focus:border-[#8b7355] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#5a8f5a] rounded-lg p-4 bg-[#f5f0e1]">
+          <div className="font-serif text-base text-[#5a8f5a] mb-2">Cottagecore</div>
+          <p className="text-xs text-[#8b7355] mb-3">Simple living</p>
+          <button className="bg-[#5a8f5a] text-[#f5f0e1] text-xs px-4 py-2 rounded-lg border border-[#8b7355]">Bloom</button>
+        </div>
+      </div>
+    ),
+  },
+  "risograph": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ff6b9d] text-[#f5f5f0] font-bold tracking-wide border-2 border-[#2563eb] rounded hover:bg-[#2563eb] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f5f0] border-2 border-[#ff6b9d] rounded">
+        <h3 className="font-bold text-xl text-[#2563eb] mb-2">Risograph Card</h3>
+        <p className="text-sm text-[#ff6b9d]">Overprint aesthetic</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Print here..." className="w-full px-4 py-3 bg-[#f5f5f0] border-2 border-[#2563eb] rounded text-[#ff6b9d] placeholder-[#ff6b9d]/40 focus:outline-none focus:border-[#ff8a00] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f5f0] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#ff6b9d] rounded p-4 bg-[#f5f5f0]">
+          <div className="font-bold text-base text-[#2563eb] mb-2">Risograph</div>
+          <p className="text-xs text-[#ff6b9d] mb-3">Spot color print</p>
+          <button className="bg-[#ff6b9d] text-[#f5f5f0] text-xs px-4 py-2 rounded border-2 border-[#2563eb]">Print</button>
+        </div>
+      </div>
+    ),
+  },
+  "mecha": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1a2744] text-[#fbbf24] font-bold tracking-widest border-2 border-[#4a5c3a] uppercase hover:bg-[#ef4444] hover:text-white transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#e5e5e5] border-2 border-[#1a2744]">
+        <h3 className="font-bold text-xl text-[#1a2744] tracking-wider mb-2">Mecha Card</h3>
+        <p className="text-sm text-[#4a5c3a] uppercase tracking-wide">Unit status: active</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="INPUT CMD..." className="w-full px-4 py-3 bg-[#e5e5e5] border-2 border-[#1a2744] text-[#1a2744] font-mono placeholder-[#1a2744]/40 focus:outline-none focus:border-[#fbbf24] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#e5e5e5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#1a2744] p-4 bg-[#e5e5e5]">
+          <div className="font-bold text-base text-[#1a2744] tracking-wider mb-2">MECHA</div>
+          <p className="text-xs text-[#4a5c3a] uppercase mb-3">System online</p>
+          <button className="bg-[#1a2744] text-[#fbbf24] text-xs px-4 py-2 border border-[#4a5c3a] uppercase tracking-wider">Launch</button>
+        </div>
+      </div>
+    ),
+  },
+  "gothic-lolita": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#4a1a4a] text-[#c9a2c9] font-serif tracking-wide border border-[#8b1a2a] rounded hover:bg-[#8b1a2a] hover:text-[#e5e5e5] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#e5e5e5] border border-[#4a1a4a] rounded">
+        <h3 className="font-serif text-xl text-[#4a1a4a] mb-2">Gothic Lolita Card</h3>
+        <p className="text-sm text-[#8b1a2a]">Dark romantic elegance</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Whisper..." className="w-full px-4 py-3 bg-[#e5e5e5] border border-[#4a1a4a] rounded text-[#4a1a4a] placeholder-[#4a1a4a]/40 focus:outline-none focus:border-[#8b1a2a] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#e5e5e5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#4a1a4a] rounded p-4 bg-[#e5e5e5]">
+          <div className="font-serif text-base text-[#4a1a4a] mb-2">Gothic Lolita</div>
+          <p className="text-xs text-[#8b1a2a] mb-3">Lace and shadow</p>
+          <button className="bg-[#4a1a4a] text-[#c9a2c9] text-xs px-4 py-2 rounded border border-[#8b1a2a]">Enter</button>
+        </div>
+      </div>
+    ),
+  },
+  "cyber-chinese": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#d4553a] text-[#c9a227] font-bold tracking-wider border border-[#c9a227] hover:bg-[#a020f0] hover:text-[#00d4ff] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border border-[#d4553a]">
+        <h3 className="font-bold text-xl text-[#d4553a] mb-2">Cyber Chinese Card</h3>
+        <p className="text-sm text-[#00d4ff]">Eastern futurism</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Input..." className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#c9a227] text-[#d4553a] placeholder-[#d4553a]/40 focus:outline-none focus:border-[#00d4ff] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#d4553a] p-4 bg-[#0a0a0a]">
+          <div className="font-bold text-base text-[#d4553a] mb-2">Cyber Chinese</div>
+          <p className="text-xs text-[#00d4ff] mb-3">Neon dynasty</p>
+          <button className="bg-[#d4553a] text-[#c9a227] text-xs px-4 py-2 border border-[#c9a227]">Enter</button>
+        </div>
+      </div>
+    ),
+  },
+  // New styles - Batch 5
+  "acid-graphics": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#39ff14] text-[#0a0a0a] font-black tracking-wider uppercase hover:bg-[#e6ff00] hover:text-[#a020f0] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border-2 border-[#39ff14]">
+        <h3 className="font-black text-xl text-[#39ff14] mb-2">Acid Graphics Card</h3>
+        <p className="text-sm text-[#e6ff00]">Rave culture aesthetics</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Enter text..." className="w-full px-4 py-3 bg-[#0a0a0a] border-2 border-[#39ff14] text-[#39ff14] placeholder-[#39ff14]/40 focus:outline-none focus:border-[#e6ff00] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#39ff14] p-4 bg-[#0a0a0a]">
+          <div className="font-black text-base text-[#39ff14] uppercase mb-2">Acid</div>
+          <p className="text-xs text-[#e6ff00] mb-3">Fluorescent chaos</p>
+          <button className="bg-[#39ff14] text-[#0a0a0a] text-xs px-4 py-2 font-black uppercase">Enter</button>
+        </div>
+      </div>
+    ),
+  },
+  "hand-drawn-doodle": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#fffef5] text-[#2c2c2c] font-medium border-2 border-[#2c2c2c] rounded-lg hover:bg-[#ff6b6b] hover:text-white transition-colors" style={{ borderStyle: "dashed" }}>
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#fffef5] border-2 border-[#2c2c2c] rounded-lg" style={{ borderStyle: "dashed" }}>
+        <h3 className="text-xl text-[#2c2c2c] mb-2">Doodle Card</h3>
+        <p className="text-sm text-[#2c2c2c]/60">Sketched by hand</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Scribble here..." className="w-full px-4 py-3 bg-[#fffef5] border-2 border-[#2c2c2c] rounded-lg text-[#2c2c2c] placeholder-[#2c2c2c]/40 focus:outline-none focus:border-[#4ecdc4] transition-colors" style={{ borderStyle: "dashed" }} />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fffef5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#2c2c2c] rounded-lg p-4 bg-[#fffef5]" style={{ borderStyle: "dashed" }}>
+          <div className="text-base text-[#2c2c2c] mb-2">Doodle</div>
+          <p className="text-xs text-[#2c2c2c]/60 mb-3">Hand-drawn feel</p>
+          <button className="bg-[#ff6b6b] text-white text-xs px-4 py-2 rounded-lg">Draw</button>
+        </div>
+      </div>
+    ),
+  },
+  "swiss-poster": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ff0000] text-white font-black uppercase tracking-widest hover:bg-[#000000] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#ffffff] border-4 border-[#000000]">
+        <h3 className="font-black text-xl text-[#000000] uppercase tracking-wider mb-2">Swiss Poster Card</h3>
+        <p className="text-sm text-[#000000]/60 uppercase">Bold typography</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="TYPE HERE..." className="w-full px-4 py-3 bg-[#ffffff] border-4 border-[#000000] text-[#000000] font-bold uppercase placeholder-[#000000]/30 focus:outline-none focus:border-[#ff0000] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#ffffff] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-4 border-[#000000] p-4 bg-[#ffffff]">
+          <div className="font-black text-base text-[#000000] uppercase tracking-wider mb-2">Swiss</div>
+          <p className="text-xs text-[#000000]/60 uppercase mb-3">Grid system</p>
+          <button className="bg-[#ff0000] text-white text-xs px-4 py-2 font-black uppercase">Action</button>
+        </div>
+      </div>
+    ),
+  },
+  "watercolor-art": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#d4a0a0] text-white font-medium rounded-full hover:bg-[#87ceeb] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#faf8f5] border border-[#d4a0a0]/30 rounded-2xl">
+        <h3 className="text-xl text-[#d4a0a0] mb-2">Watercolor Card</h3>
+        <p className="text-sm text-[#d4a0a0]/60">Soft washes of color</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Paint here..." className="w-full px-4 py-3 bg-[#faf8f5] border border-[#d4a0a0]/30 rounded-full text-[#d4a0a0] placeholder-[#d4a0a0]/40 focus:outline-none focus:border-[#87ceeb] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#faf8f5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#d4a0a0]/30 rounded-2xl p-4 bg-[#faf8f5]">
+          <div className="text-base text-[#d4a0a0] mb-2">Watercolor</div>
+          <p className="text-xs text-[#d4a0a0]/60 mb-3">Soft art</p>
+          <button className="bg-[#d4a0a0] text-white text-xs px-4 py-2 rounded-full">Paint</button>
+        </div>
+      </div>
+    ),
+  },
+  "impressionist-oil": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#e8a87c] text-[#f5f0e1] font-serif tracking-wide rounded hover:bg-[#c0392b] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e1] border border-[#e8a87c] rounded">
+        <h3 className="font-serif text-xl text-[#2c3e50] mb-2">Impressionist Card</h3>
+        <p className="text-sm text-[#e8a87c]">Brushstroke textures</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Paint words..." className="w-full px-4 py-3 bg-[#f5f0e1] border border-[#e8a87c] rounded text-[#2c3e50] placeholder-[#2c3e50]/40 focus:outline-none focus:border-[#c0392b] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#e8a87c] rounded p-4 bg-[#f5f0e1]">
+          <div className="font-serif text-base text-[#2c3e50] mb-2">Impressionist</div>
+          <p className="text-xs text-[#e8a87c] mb-3">Oil on canvas</p>
+          <button className="bg-[#e8a87c] text-[#f5f0e1] text-xs px-4 py-2 rounded">Create</button>
+        </div>
+      </div>
+    ),
+  },
+  "collage-art": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#e74c3c] text-white font-bold tracking-wide border-2 border-[#2d2d2d] rounded hover:bg-[#3498db] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f5f0e8] border-2 border-[#2d2d2d] rounded rotate-1">
+        <h3 className="font-bold text-xl text-[#2d2d2d] mb-2">Collage Card</h3>
+        <p className="text-sm text-[#9b59b6]">Cut and paste</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Paste here..." className="w-full px-4 py-3 bg-[#f5f0e8] border-2 border-[#2d2d2d] rounded text-[#2d2d2d] placeholder-[#2d2d2d]/40 focus:outline-none focus:border-[#e74c3c] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e8] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#2d2d2d] rounded p-4 bg-[#f5f0e8] rotate-1">
+          <div className="font-bold text-base text-[#2d2d2d] mb-2">Collage</div>
+          <p className="text-xs text-[#9b59b6] mb-3">Mixed media</p>
+          <button className="bg-[#e74c3c] text-white text-xs px-4 py-2 rounded border border-[#2d2d2d]">Clip</button>
+        </div>
+      </div>
+    ),
+  },
+  "glitch-art": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#00ffff] text-[#0a0a0a] font-bold tracking-widest uppercase hover:bg-[#ff00ff] hover:text-white transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border border-[#00ffff]">
+        <h3 className="font-bold text-xl text-[#00ffff] mb-2">Glitch Card</h3>
+        <p className="text-sm text-[#ff00ff]">Data corrupted</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="ERR0R..." className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#00ffff] text-[#00ffff] font-mono placeholder-[#00ffff]/40 focus:outline-none focus:border-[#ff00ff] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#00ffff] p-4 bg-[#0a0a0a]">
+          <div className="font-bold text-base text-[#00ffff] uppercase tracking-wider mb-2">Glitch</div>
+          <p className="text-xs text-[#ff00ff] mb-3">Signal lost</p>
+          <button className="bg-[#00ffff] text-[#0a0a0a] text-xs px-4 py-2 font-bold uppercase">Hack</button>
+        </div>
+      </div>
+    ),
+  },
+  "visual-novel": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#6366f1] text-white font-medium rounded-lg hover:bg-[#ec4899] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f7fafc] border border-[#6366f1]/30 rounded-lg">
+        <h3 className="text-xl text-[#4a5568] mb-2">Visual Novel Card</h3>
+        <p className="text-sm text-[#6366f1]">Choose your path</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Enter choice..." className="w-full px-4 py-3 bg-[#f7fafc] border border-[#6366f1]/30 rounded-lg text-[#4a5568] placeholder-[#4a5568]/40 focus:outline-none focus:border-[#6366f1] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f7fafc] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#6366f1]/30 rounded-lg p-4 bg-[#f7fafc]">
+          <div className="text-base text-[#4a5568] mb-2">Visual Novel</div>
+          <p className="text-xs text-[#6366f1] mb-3">Story unfolds</p>
+          <button className="bg-[#6366f1] text-white text-xs px-4 py-2 rounded-lg">Choose</button>
+        </div>
+      </div>
+    ),
+  },
+  "shoujo-manga": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ffb7c5] text-white font-medium rounded-full hover:bg-[#c4b5fd] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#fff5f7] border border-[#ffb7c5] rounded-2xl">
+        <h3 className="text-xl text-[#ffb7c5] mb-2">Shoujo Card</h3>
+        <p className="text-sm text-[#c4b5fd]">Romantic sparkle</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Whisper..." className="w-full px-4 py-3 bg-[#fff5f7] border border-[#ffb7c5] rounded-full text-[#ffb7c5] placeholder-[#ffb7c5]/40 focus:outline-none focus:border-[#c4b5fd] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fff5f7] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#ffb7c5] rounded-2xl p-4 bg-[#fff5f7]">
+          <div className="text-base text-[#ffb7c5] mb-2">Shoujo</div>
+          <p className="text-xs text-[#c4b5fd] mb-3">Petal dreams</p>
+          <button className="bg-[#ffb7c5] text-white text-xs px-4 py-2 rounded-full">Love</button>
+        </div>
+      </div>
+    ),
+  },
+  "cyber-anime": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#7c3aed] text-white font-bold tracking-wider border border-[#06d6a0] hover:bg-[#ff006e] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0f0f1a] border border-[#7c3aed]">
+        <h3 className="font-bold text-xl text-[#06d6a0] mb-2">Cyber Anime Card</h3>
+        <p className="text-sm text-[#38bdf8]">Holographic UI</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Input data..." className="w-full px-4 py-3 bg-[#0f0f1a] border border-[#7c3aed] text-[#06d6a0] placeholder-[#06d6a0]/40 focus:outline-none focus:border-[#ff006e] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0f0f1a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#7c3aed] p-4 bg-[#0f0f1a]">
+          <div className="font-bold text-base text-[#06d6a0] mb-2">Cyber Anime</div>
+          <p className="text-xs text-[#38bdf8] mb-3">Neon future</p>
+          <button className="bg-[#7c3aed] text-white text-xs px-4 py-2 border border-[#06d6a0]">Launch</button>
+        </div>
+      </div>
+    ),
+  },
+  "pixel-anime": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#4a90d9] text-white font-bold uppercase border-4 border-[#2d1b69] hover:bg-[#ff6b6b] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#2d1b69] border-4 border-[#4a90d9]">
+        <h3 className="font-bold text-xl text-[#ffd93d] mb-2">Pixel Anime Card</h3>
+        <p className="text-sm text-[#4a90d9]">8-bit adventure</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="TYPE..." className="w-full px-4 py-3 bg-[#2d1b69] border-4 border-[#4a90d9] text-[#ffd93d] font-mono placeholder-[#ffd93d]/40 focus:outline-none focus:border-[#ff6b6b] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#2d1b69] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-4 border-[#4a90d9] p-4 bg-[#2d1b69]">
+          <div className="font-bold text-base text-[#ffd93d] uppercase mb-2">Pixel</div>
+          <p className="text-xs text-[#4a90d9] mb-3">Retro game</p>
+          <button className="bg-[#4a90d9] text-white text-xs px-4 py-2 border-2 border-[#ffd93d] font-bold uppercase">Play</button>
+        </div>
+      </div>
+    ),
+  },
+  "japanese-fresh": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#64b5f6] text-white font-light tracking-wide rounded-full hover:bg-[#98d8c8] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#fafaf8] border border-[#64b5f6]/20 rounded-2xl">
+        <h3 className="text-xl text-[#64b5f6] font-light mb-2">Fresh Card</h3>
+        <p className="text-sm text-[#98d8c8]">Light and airy</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Type gently..." className="w-full px-4 py-3 bg-[#fafaf8] border border-[#64b5f6]/20 rounded-full text-[#64b5f6] placeholder-[#64b5f6]/30 focus:outline-none focus:border-[#98d8c8] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fafaf8] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#64b5f6]/20 rounded-2xl p-4 bg-[#fafaf8]">
+          <div className="text-base text-[#64b5f6] font-light mb-2">Fresh</div>
+          <p className="text-xs text-[#98d8c8] mb-3">Calm breeze</p>
+          <button className="bg-[#64b5f6] text-white text-xs px-4 py-2 rounded-full font-light">Explore</button>
+        </div>
+      </div>
+    ),
+  },
+  "neon-samurai": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#dc2626] text-white font-bold tracking-widest uppercase border border-[#fbbf24] hover:bg-[#a020f0] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a0a] border border-[#dc2626]">
+        <h3 className="font-bold text-xl text-[#dc2626] mb-2">Neon Samurai Card</h3>
+        <p className="text-sm text-[#38bdf8]">Blade of light</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Command..." className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#dc2626] text-[#fbbf24] placeholder-[#fbbf24]/40 focus:outline-none focus:border-[#a020f0] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#dc2626] p-4 bg-[#0a0a0a]">
+          <div className="font-bold text-base text-[#dc2626] uppercase tracking-wider mb-2">Samurai</div>
+          <p className="text-xs text-[#38bdf8] mb-3">Neon bushido</p>
+          <button className="bg-[#dc2626] text-white text-xs px-4 py-2 border border-[#fbbf24] uppercase">Strike</button>
+        </div>
+      </div>
+    ),
+  },
+  "magic-circle": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1e1b4b] text-[#fbbf24] font-medium tracking-wide border border-[#818cf8] rounded hover:bg-[#818cf8] hover:text-[#1e1b4b] transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0f0e2e] border border-[#818cf8] rounded">
+        <h3 className="text-xl text-[#fbbf24] mb-2">Magic Circle Card</h3>
+        <p className="text-sm text-[#e2e8f0]/60">Arcane symbols</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Cast spell..." className="w-full px-4 py-3 bg-[#0f0e2e] border border-[#818cf8] rounded text-[#fbbf24] placeholder-[#fbbf24]/40 focus:outline-none focus:border-[#fbbf24] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0f0e2e] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#818cf8] rounded p-4 bg-[#0f0e2e]">
+          <div className="text-base text-[#fbbf24] mb-2">Magic Circle</div>
+          <p className="text-xs text-[#e2e8f0]/60 mb-3">Rune glow</p>
+          <button className="bg-[#1e1b4b] text-[#fbbf24] text-xs px-4 py-2 rounded border border-[#818cf8]">Invoke</button>
+        </div>
+      </div>
+    ),
+  },
+  "cyber-wafuu": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1e3a5f] text-[#c9a227] font-bold tracking-wide border border-[#c41e3a] hover:bg-[#c41e3a] hover:text-white transition-colors">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0a0a14] border border-[#1e3a5f]">
+        <h3 className="font-bold text-xl text-[#c9a227] mb-2">Cyber Wafuu Card</h3>
+        <p className="text-sm text-[#38bdf8]">Digital tradition</p>
+      </div>
+    ),
+    input: () => (
+      <input type="text" placeholder="Input..." className="w-full px-4 py-3 bg-[#0a0a14] border border-[#1e3a5f] text-[#c9a227] placeholder-[#c9a227]/40 focus:outline-none focus:border-[#c41e3a] transition-colors" />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a14] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#1e3a5f] p-4 bg-[#0a0a14]">
+          <div className="font-bold text-base text-[#c9a227] mb-2">Cyber Wafuu</div>
+          <p className="text-xs text-[#38bdf8] mb-3">Neo-Japanese</p>
+          <button className="bg-[#c41e3a] text-white text-xs px-4 py-2 border border-[#c9a227]">Enter</button>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

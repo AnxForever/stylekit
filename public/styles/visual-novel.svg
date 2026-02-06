@@ -1,0 +1,59 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vnBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e0e7ff"/>
+      <stop offset="100%" stop-color="#f7fafc"/>
+    </linearGradient>
+    <!-- Soft blur filter -->
+    <filter id="vnBlur">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Gradient background -->
+  <rect width="1200" height="630" fill="url(#vnBg)"/>
+
+  <!-- Soft decorative blurs -->
+  <circle cx="200" cy="150" r="120" fill="#6366f1" opacity="0.06" filter="url(#vnBlur)"/>
+  <circle cx="1000" cy="100" r="100" fill="#ec4899" opacity="0.05" filter="url(#vnBlur)"/>
+  <circle cx="900" cy="500" r="80" fill="#10b981" opacity="0.04" filter="url(#vnBlur)"/>
+
+  <!-- Character silhouette area (subtle) -->
+  <ellipse cx="300" cy="450" rx="120" ry="200" fill="#4a5568" opacity="0.04"/>
+
+  <!-- Dialog box at bottom -->
+  <rect x="100" y="380" width="1000" height="180" rx="12" fill="#1a202c" opacity="0.75"/>
+  <rect x="100" y="380" width="1000" height="180" rx="12" stroke="#6366f1" stroke-width="1" opacity="0.2" fill="none"/>
+
+  <!-- Character name label -->
+  <text x="140" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#6366f1" opacity="0.9">Sakura</text>
+
+  <!-- Dialog text -->
+  <text x="140" y="460" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ffffff" opacity="0.85">&quot;The cherry blossoms are beautiful this time of year...&quot;</text>
+  <text x="140" y="495" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ffffff" opacity="0.85">&quot;I always feel a little nostalgic when spring arrives.&quot;</text>
+
+  <!-- Choice buttons -->
+  <rect x="150" y="530" width="380" height="45" rx="8" fill="#ffffff" opacity="0.12" stroke="#6366f1" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="200" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#ffffff" opacity="0.7">They remind me of our first meeting.</text>
+
+  <rect x="560" y="530" width="380" height="45" rx="8" fill="#ffffff" opacity="0.12" stroke="#ec4899" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="610" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#ffffff" opacity="0.7">Let&apos;s make new memories together.</text>
+
+  <!-- Title -->
+  <text x="600" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="400" fill="#4a5568" text-anchor="middle" opacity="0.9">Visual Novel</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="230" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6366f1" text-anchor="middle" opacity="0.5" letter-spacing="4">INTERACTIVE STORYTELLING</text>
+
+  <!-- Decorative dots -->
+  <circle cx="420" cy="300" r="3" fill="#6366f1" opacity="0.3"/>
+  <circle cx="600" cy="290" r="4" fill="#ec4899" opacity="0.25"/>
+  <circle cx="780" cy="305" r="3" fill="#10b981" opacity="0.3"/>
+
+  <!-- Color swatches -->
+  <rect x="440" y="270" width="40" height="40" rx="6" fill="#4a5568" opacity="0.7"/>
+  <rect x="495" y="270" width="40" height="40" rx="6" fill="#6366f1" opacity="0.7"/>
+  <rect x="550" y="270" width="40" height="40" rx="6" fill="#ec4899" opacity="0.7"/>
+  <rect x="605" y="270" width="40" height="40" rx="6" fill="#10b981" opacity="0.7"/>
+  <rect x="660" y="270" width="40" height="40" rx="6" fill="#f7fafc" opacity="0.7" stroke="#4a5568" stroke-width="1" stroke-opacity="0.15"/>
+</svg>

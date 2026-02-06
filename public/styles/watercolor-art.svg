@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Paper texture -->
+    <filter id="wcPaper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence baseFrequency="0.3" numOctaves="4" seed="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="multiply" result="paper"/>
+    </filter>
+    <!-- Watercolor blur -->
+    <filter id="wcBlur">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+    <filter id="wcBlurSm">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+
+  <!-- Warm paper background -->
+  <rect width="1200" height="630" fill="#faf8f5"/>
+
+  <!-- Subtle paper grain -->
+  <rect width="1200" height="630" fill="#f5f0eb" opacity="0.3"/>
+
+  <!-- Large watercolor wash - blush pink -->
+  <ellipse cx="350" cy="280" rx="280" ry="220" fill="#d4a0a0" opacity="0.15" filter="url(#wcBlur)"/>
+
+  <!-- Watercolor wash - sky blue -->
+  <ellipse cx="800" cy="350" rx="250" ry="200" fill="#87ceeb" opacity="0.12" filter="url(#wcBlur)"/>
+
+  <!-- Watercolor wash - mint green -->
+  <ellipse cx="600" cy="480" rx="200" ry="150" fill="#98d8c8" opacity="0.1" filter="url(#wcBlur)"/>
+
+  <!-- Small watercolor spots -->
+  <circle cx="200" cy="120" r="60" fill="#c3b1e1" opacity="0.12" filter="url(#wcBlurSm)"/>
+  <circle cx="1000" cy="150" r="45" fill="#d4a0a0" opacity="0.15" filter="url(#wcBlurSm)"/>
+  <circle cx="900" cy="500" r="70" fill="#87ceeb" opacity="0.1" filter="url(#wcBlurSm)"/>
+  <circle cx="150" cy="450" r="50" fill="#98d8c8" opacity="0.12" filter="url(#wcBlurSm)"/>
+
+  <!-- Bleed drip effects -->
+  <ellipse cx="450" cy="200" rx="30" ry="80" fill="#d4a0a0" opacity="0.08" filter="url(#wcBlurSm)" transform="rotate(15 450 200)"/>
+  <ellipse cx="750" cy="180" rx="25" ry="60" fill="#87ceeb" opacity="0.08" filter="url(#wcBlurSm)" transform="rotate(-10 750 180)"/>
+
+  <!-- Title -->
+  <text x="600" y="260" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="600" fill="#d4a0a0" text-anchor="middle" opacity="0.9">Watercolor</text>
+  <text x="600" y="340" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="600" fill="#87ceeb" text-anchor="middle" opacity="0.7">Art</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#4a3535" text-anchor="middle" opacity="0.4" letter-spacing="6">SOFT WASHES ON WARM PAPER</text>
+
+  <!-- Color swatches with soft edges -->
+  <circle cx="420" cy="490" r="30" fill="#d4a0a0" opacity="0.6"/>
+  <circle cx="500" cy="490" r="30" fill="#87ceeb" opacity="0.6"/>
+  <circle cx="580" cy="490" r="30" fill="#98d8c8" opacity="0.6"/>
+  <circle cx="660" cy="490" r="30" fill="#c3b1e1" opacity="0.6"/>
+  <circle cx="740" cy="490" r="30" fill="#faf8f5" opacity="0.6" stroke="#d4a0a0" stroke-width="1" stroke-opacity="0.3"/>
+</svg>

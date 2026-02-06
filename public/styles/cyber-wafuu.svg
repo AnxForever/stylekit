@@ -1,0 +1,123 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Blue glow filter -->
+    <filter id="blueGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feFlood flood-color="#38bdf8" flood-opacity="0.4" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#c41e3a" flood-opacity="0.4" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Seigaiha wave pattern -->
+    <pattern id="seigaiha" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="40" r="18" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.08"/>
+      <circle cx="20" cy="40" r="12" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.05"/>
+      <circle cx="0" cy="40" r="18" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.08"/>
+      <circle cx="40" cy="40" r="18" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.08"/>
+    </pattern>
+    <!-- Circuit pattern -->
+    <pattern id="circuit" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="30" x2="20" y2="30" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+      <line x1="30" y1="0" x2="30" y2="20" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="30" cy="30" r="2" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0a0a14"/>
+
+  <!-- Seigaiha pattern overlay -->
+  <rect width="600" height="630" fill="url(#seigaiha)"/>
+
+  <!-- Circuit pattern overlay (right side) -->
+  <rect x="600" y="0" width="600" height="630" fill="url(#circuit)"/>
+
+  <!-- Background glow -->
+  <ellipse cx="600" cy="315" rx="350" ry="220" fill="#1e3a5f" opacity="0.05"/>
+  <ellipse cx="300" cy="400" rx="150" ry="120" fill="#c41e3a" opacity="0.03"/>
+  <ellipse cx="900" cy="200" rx="150" ry="120" fill="#38bdf8" opacity="0.03"/>
+
+  <!-- Origami crane silhouette -->
+  <g transform="translate(150, 120)" opacity="0.6">
+    <!-- Left wing -->
+    <polygon points="0,180 120,80 100,200" fill="#c41e3a" opacity="0.3" filter="url(#redGlow)"/>
+    <!-- Right wing -->
+    <polygon points="240,180 120,80 140,200" fill="#c41e3a" opacity="0.25"/>
+    <!-- Body -->
+    <polygon points="100,200 140,200 120,250" fill="#c41e3a" opacity="0.35"/>
+    <!-- Head -->
+    <polygon points="120,80 130,50 110,50" fill="#c41e3a" opacity="0.4"/>
+    <!-- Fold lines -->
+    <line x1="120" y1="80" x2="100" y2="200" stroke="#c9a227" stroke-width="0.5" opacity="0.3"/>
+    <line x1="120" y1="80" x2="140" y2="200" stroke="#c9a227" stroke-width="0.5" opacity="0.3"/>
+    <line x1="120" y1="80" x2="120" y2="250" stroke="#c9a227" stroke-width="0.5" opacity="0.2"/>
+  </g>
+
+  <!-- Digital wave pattern (right side) -->
+  <g transform="translate(750, 300)" opacity="0.3">
+    <path d="M 0 0 Q 50 -30 100 0 Q 150 30 200 0 Q 250 -30 300 0" fill="none" stroke="#38bdf8" stroke-width="1" filter="url(#blueGlow)"/>
+    <path d="M 0 30 Q 50 0 100 30 Q 150 60 200 30 Q 250 0 300 30" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.6"/>
+    <path d="M 0 60 Q 50 30 100 60 Q 150 90 200 60 Q 250 30 300 60" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.4"/>
+  </g>
+
+  <!-- Circuit line decorations -->
+  <g stroke="#38bdf8" stroke-width="0.5" opacity="0.2">
+    <line x1="0" y1="500" x2="200" y2="500"/>
+    <circle cx="200" cy="500" r="3" fill="none"/>
+    <line x1="206" y1="500" x2="300" y2="500"/>
+    <line x1="300" y1="500" x2="300" y2="470"/>
+    <circle cx="300" cy="467" r="3" fill="none"/>
+  </g>
+  <g stroke="#c9a227" stroke-width="0.5" opacity="0.15">
+    <line x1="900" y1="130" x2="1100" y2="130"/>
+    <circle cx="1100" cy="130" r="3" fill="none"/>
+    <line x1="1103" y1="130" x2="1200" y2="130"/>
+  </g>
+
+  <!-- Gold foil accents -->
+  <rect x="580" y="440" width="40" height="2" fill="#c9a227" opacity="0.3"/>
+  <rect x="580" y="450" width="40" height="1" fill="#c9a227" opacity="0.2"/>
+
+  <!-- Title text -->
+  <text x="600" y="280" font-family="'Helvetica Neue', Arial, sans-serif" font-size="75" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="8" filter="url(#blueGlow)">CYBER</text>
+  <text x="600" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="75" font-weight="700" fill="#c41e3a" text-anchor="middle" letter-spacing="8" filter="url(#redGlow)">WAFUU</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="405" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#e2e8f0" text-anchor="middle" opacity="0.3" letter-spacing="6">DIGITAL TRADITION</text>
+
+  <!-- Corner accent marks (Japanese-inspired) -->
+  <g stroke="#c9a227" stroke-width="1" opacity="0.25">
+    <line x1="40" y1="40" x2="80" y2="40"/>
+    <line x1="40" y1="40" x2="40" y2="80"/>
+  </g>
+  <g stroke="#38bdf8" stroke-width="1" opacity="0.25">
+    <line x1="1160" y1="40" x2="1120" y2="40"/>
+    <line x1="1160" y1="40" x2="1160" y2="80"/>
+  </g>
+  <g stroke="#c41e3a" stroke-width="1" opacity="0.25">
+    <line x1="40" y1="590" x2="80" y2="590"/>
+    <line x1="40" y1="590" x2="40" y2="550"/>
+  </g>
+  <g stroke="#c9a227" stroke-width="1" opacity="0.25">
+    <line x1="1160" y1="590" x2="1120" y2="590"/>
+    <line x1="1160" y1="590" x2="1160" y2="550"/>
+  </g>
+
+  <!-- Color swatches -->
+  <rect x="390" y="490" width="50" height="50" fill="#1e3a5f" opacity="0.8"/>
+  <rect x="460" y="490" width="50" height="50" fill="#c41e3a" opacity="0.8"/>
+  <rect x="530" y="490" width="50" height="50" fill="#c9a227" opacity="0.8"/>
+  <rect x="600" y="490" width="50" height="50" fill="#38bdf8" opacity="0.8"/>
+  <rect x="670" y="490" width="50" height="50" fill="#0a0a14" stroke="#1e3a5f" stroke-width="1" opacity="0.8"/>
+</svg>

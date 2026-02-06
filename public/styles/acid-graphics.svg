@@ -1,0 +1,57 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Scanline pattern -->
+    <pattern id="acidScanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="4" y2="0" stroke="#39ff14" stroke-width="0.5" opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Scanline overlay -->
+  <rect width="1200" height="630" fill="url(#acidScanlines)"/>
+
+  <!-- Large warped shapes -->
+  <ellipse cx="300" cy="300" rx="180" ry="220" fill="#39ff14" opacity="0.08" transform="rotate(-15 300 300)"/>
+  <ellipse cx="320" cy="310" rx="180" ry="220" fill="#a020f0" opacity="0.06" transform="rotate(10 320 310)"/>
+
+  <!-- Geometric accents -->
+  <rect x="800" y="100" width="250" height="180" fill="#a020f0" opacity="0.1" transform="rotate(5 925 190)"/>
+  <rect x="810" y="110" width="250" height="180" fill="#39ff14" opacity="0.08" transform="rotate(-3 935 200)"/>
+
+  <!-- Small fluorescent shapes -->
+  <rect x="100" y="80" width="60" height="60" fill="#ff6ec7" opacity="0.15" transform="rotate(15 130 110)"/>
+  <rect x="108" y="88" width="60" height="60" fill="#e6ff00" opacity="0.1" transform="rotate(-5 138 118)"/>
+
+  <polygon points="950,450 1020,380 1090,450" fill="#e6ff00" opacity="0.12"/>
+  <polygon points="958,453 1028,383 1098,453" fill="#39ff14" opacity="0.08"/>
+
+  <rect x="80" y="450" width="100" height="70" fill="#a020f0" opacity="0.12"/>
+  <rect x="86" y="456" width="100" height="70" fill="#ff6ec7" opacity="0.08"/>
+
+  <!-- Title - glitch effect -->
+  <text x="604" y="274" font-family="ui-monospace, 'Courier New', monospace" font-size="100" font-weight="900" fill="#ff6ec7" text-anchor="middle" opacity="0.4">ACID</text>
+  <text x="596" y="270" font-family="ui-monospace, 'Courier New', monospace" font-size="100" font-weight="900" fill="#a020f0" text-anchor="middle" opacity="0.4">ACID</text>
+  <text x="600" y="272" font-family="ui-monospace, 'Courier New', monospace" font-size="100" font-weight="900" fill="#39ff14" text-anchor="middle">ACID</text>
+
+  <text x="604" y="364" font-family="ui-monospace, 'Courier New', monospace" font-size="80" font-weight="900" fill="#a020f0" text-anchor="middle" opacity="0.4">GRAPHICS</text>
+  <text x="596" y="360" font-family="ui-monospace, 'Courier New', monospace" font-size="80" font-weight="900" fill="#ff6ec7" text-anchor="middle" opacity="0.4">GRAPHICS</text>
+  <text x="600" y="362" font-family="ui-monospace, 'Courier New', monospace" font-size="80" font-weight="900" fill="#e6ff00" text-anchor="middle">GRAPHICS</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="415" font-family="ui-monospace, 'Courier New', monospace" font-size="18" fill="#39ff14" text-anchor="middle" opacity="0.4" letter-spacing="8">DISTORT // WARP // DISSOLVE</text>
+
+  <!-- Color swatches at bottom -->
+  <rect x="390" y="470" width="70" height="50" fill="#39ff14" opacity="0.9"/>
+  <rect x="480" y="470" width="70" height="50" fill="#e6ff00" opacity="0.9"/>
+  <rect x="570" y="470" width="70" height="50" fill="#a020f0" opacity="0.9"/>
+  <rect x="660" y="470" width="70" height="50" fill="#ff6ec7" opacity="0.9"/>
+  <rect x="750" y="470" width="70" height="50" fill="#0a0a0a" stroke="#39ff14" stroke-width="2"/>
+
+  <!-- Offset shadows on swatches -->
+  <rect x="394" y="474" width="70" height="50" fill="#a020f0" opacity="0.2"/>
+  <rect x="484" y="474" width="70" height="50" fill="#39ff14" opacity="0.15"/>
+  <rect x="574" y="474" width="70" height="50" fill="#ff6ec7" opacity="0.2"/>
+  <rect x="664" y="474" width="70" height="50" fill="#e6ff00" opacity="0.15"/>
+</svg>

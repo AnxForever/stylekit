@@ -1,0 +1,117 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gold glow filter -->
+    <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#fbbf24" flood-opacity="0.4" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="indigoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#818cf8" flood-opacity="0.3" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Deep navy background -->
+  <rect width="1200" height="630" fill="#0f0e2e"/>
+
+  <!-- Subtle radial glow -->
+  <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.04"/>
+    <stop offset="100%" stop-color="#0f0e2e" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#centerGlow)"/>
+
+  <!-- Outer magic circle -->
+  <circle cx="600" cy="315" r="240" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.25" filter="url(#goldGlow)"/>
+  <circle cx="600" cy="315" r="238" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.15"/>
+
+  <!-- Second circle -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.2" stroke-dasharray="8 4"/>
+
+  <!-- Third circle -->
+  <circle cx="600" cy="315" r="160" fill="none" stroke="#818cf8" stroke-width="0.5" opacity="0.2" filter="url(#indigoGlow)"/>
+
+  <!-- Inner circle -->
+  <circle cx="600" cy="315" r="120" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.3" filter="url(#goldGlow)"/>
+
+  <!-- Innermost circle -->
+  <circle cx="600" cy="315" r="60" fill="none" stroke="#e2e8f0" stroke-width="0.5" opacity="0.15"/>
+
+  <!-- Hexagram (Star of David / magic seal) -->
+  <g opacity="0.2" filter="url(#goldGlow)">
+    <polygon points="600,155 690,315 600,475 510,315" fill="none" stroke="#fbbf24" stroke-width="1"/>
+    <polygon points="510,195 690,195 690,435 510,435" fill="none" stroke="#fbbf24" stroke-width="0.5" transform="rotate(30, 600, 315)"/>
+  </g>
+
+  <!-- Rune-like marks on outer circle -->
+  <g stroke="#fbbf24" stroke-width="1" opacity="0.3">
+    <!-- Top -->
+    <line x1="600" y1="75" x2="600" y2="90"/>
+    <line x1="595" y1="80" x2="605" y2="80"/>
+    <!-- Right -->
+    <line x1="840" y1="315" x2="825" y2="315"/>
+    <line x1="832" y1="310" x2="832" y2="320"/>
+    <!-- Bottom -->
+    <line x1="600" y1="555" x2="600" y2="540"/>
+    <line x1="595" y1="548" x2="605" y2="548"/>
+    <!-- Left -->
+    <line x1="360" y1="315" x2="375" y2="315"/>
+    <line x1="368" y1="310" x2="368" y2="320"/>
+  </g>
+
+  <!-- Diagonal rune marks -->
+  <g stroke="#818cf8" stroke-width="0.5" opacity="0.2">
+    <line x1="770" y1="145" x2="760" y2="155"/>
+    <line x1="430" y1="145" x2="440" y2="155"/>
+    <line x1="770" y1="485" x2="760" y2="475"/>
+    <line x1="430" y1="485" x2="440" y2="475"/>
+  </g>
+
+  <!-- Small decorative circles at cardinal points -->
+  <circle cx="600" cy="75" r="4" fill="#fbbf24" opacity="0.4"/>
+  <circle cx="840" cy="315" r="4" fill="#fbbf24" opacity="0.4"/>
+  <circle cx="600" cy="555" r="4" fill="#fbbf24" opacity="0.4"/>
+  <circle cx="360" cy="315" r="4" fill="#fbbf24" opacity="0.4"/>
+
+  <!-- Small circles at diagonal points -->
+  <circle cx="770" cy="145" r="3" fill="#818cf8" opacity="0.3"/>
+  <circle cx="430" cy="145" r="3" fill="#818cf8" opacity="0.3"/>
+  <circle cx="770" cy="485" r="3" fill="#818cf8" opacity="0.3"/>
+  <circle cx="430" cy="485" r="3" fill="#818cf8" opacity="0.3"/>
+
+  <!-- Center dot -->
+  <circle cx="600" cy="315" r="5" fill="#fbbf24" opacity="0.5" filter="url(#goldGlow)"/>
+
+  <!-- Floating particles -->
+  <circle cx="200" cy="100" r="1.5" fill="#fbbf24" opacity="0.3"/>
+  <circle cx="350" cy="80" r="1" fill="#e2e8f0" opacity="0.2"/>
+  <circle cx="900" cy="150" r="1.5" fill="#818cf8" opacity="0.25"/>
+  <circle cx="1050" cy="200" r="1" fill="#fbbf24" opacity="0.2"/>
+  <circle cx="150" cy="450" r="1" fill="#818cf8" opacity="0.2"/>
+  <circle cx="1000" cy="500" r="1.5" fill="#fbbf24" opacity="0.25"/>
+  <circle cx="250" cy="530" r="1" fill="#e2e8f0" opacity="0.15"/>
+
+  <!-- Title -->
+  <text x="600" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="70" font-weight="700" fill="#fbbf24" text-anchor="middle" filter="url(#goldGlow)">MAGIC</text>
+  <text x="600" y="360" font-family="Georgia, 'Times New Roman', serif" font-size="70" font-weight="700" fill="#818cf8" text-anchor="middle" filter="url(#indigoGlow)">CIRCLE</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#e2e8f0" text-anchor="middle" opacity="0.35" letter-spacing="6">MYSTICAL GEOMETRY</text>
+
+  <!-- Color swatches at bottom -->
+  <rect x="420" y="520" width="50" height="50" rx="2" fill="#1e1b4b" stroke="#fbbf24" stroke-width="0.5" opacity="0.7"/>
+  <rect x="490" y="520" width="50" height="50" rx="2" fill="#0f0e2e" stroke="#fbbf24" stroke-width="0.5" opacity="0.7"/>
+  <rect x="560" y="520" width="50" height="50" rx="2" fill="#fbbf24" opacity="0.8"/>
+  <rect x="630" y="520" width="50" height="50" rx="2" fill="#e2e8f0" opacity="0.8"/>
+  <rect x="700" y="520" width="50" height="50" rx="2" fill="#818cf8" opacity="0.8"/>
+</svg>

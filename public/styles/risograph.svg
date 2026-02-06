@@ -1,0 +1,79 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Halftone pattern -->
+    <pattern id="risoHalftone" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#ff6b9d" opacity="0.15"/>
+    </pattern>
+    <pattern id="risoHalftoneBlue" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.5" fill="#2563eb" opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <!-- Paper background -->
+  <rect width="1200" height="630" fill="#fffbf0"/>
+
+  <!-- Halftone texture overlays -->
+  <rect width="1200" height="630" fill="url(#risoHalftone)"/>
+  <rect width="600" height="630" fill="url(#risoHalftoneBlue)"/>
+
+  <!-- Large overprint circles -->
+  <circle cx="350" cy="315" r="200" fill="#ff6b9d" opacity="0.2"/>
+  <circle cx="420" cy="325" r="200" fill="#2563eb" opacity="0.15"/>
+
+  <!-- Offset rectangles -->
+  <rect x="750" y="150" width="300" height="200" fill="#ff6b9d" opacity="0.2"/>
+  <rect x="760" y="160" width="300" height="200" fill="#2563eb" opacity="0.15"/>
+
+  <!-- Small geometric shapes -->
+  <circle cx="150" cy="100" r="40" fill="#ff8a00" opacity="0.25"/>
+  <circle cx="155" cy="105" r="40" fill="#22c55e" opacity="0.15"/>
+
+  <rect x="950" y="450" width="120" height="80" fill="#22c55e" opacity="0.2"/>
+  <rect x="956" y="456" width="120" height="80" fill="#ff6b9d" opacity="0.15"/>
+
+  <!-- Triangle -->
+  <polygon points="100,500 180,400 260,500" fill="#2563eb" opacity="0.15"/>
+  <polygon points="106,503 186,403 266,503" fill="#ff8a00" opacity="0.12"/>
+
+  <!-- Registration marks - corners -->
+  <g stroke="#1a1a1a" stroke-width="1" opacity="0.3">
+    <!-- Top-left -->
+    <line x1="40" y1="30" x2="70" y2="30"/>
+    <line x1="55" y1="15" x2="55" y2="45"/>
+    <circle cx="55" cy="30" r="8" fill="none"/>
+    <!-- Top-right -->
+    <line x1="1130" y1="30" x2="1160" y2="30"/>
+    <line x1="1145" y1="15" x2="1145" y2="45"/>
+    <circle cx="1145" cy="30" r="8" fill="none"/>
+    <!-- Bottom-left -->
+    <line x1="40" y1="600" x2="70" y2="600"/>
+    <line x1="55" y1="585" x2="55" y2="615"/>
+    <circle cx="55" cy="600" r="8" fill="none"/>
+    <!-- Bottom-right -->
+    <line x1="1130" y1="600" x2="1160" y2="600"/>
+    <line x1="1145" y1="585" x2="1145" y2="615"/>
+    <circle cx="1145" cy="600" r="8" fill="none"/>
+  </g>
+
+  <!-- Title - overprint effect -->
+  <text x="604" y="284" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#2563eb" text-anchor="middle" opacity="0.5">RISO</text>
+  <text x="600" y="280" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#ff6b9d" text-anchor="middle">RISO</text>
+
+  <text x="604" y="354" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#ff6b9d" text-anchor="middle" opacity="0.5">GRAPH</text>
+  <text x="600" y="350" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#2563eb" text-anchor="middle">GRAPH</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="ui-monospace, 'Courier New', monospace" font-size="20" fill="#1a1a1a" text-anchor="middle" opacity="0.5" letter-spacing="6">PRINT AESTHETICS</text>
+
+  <!-- Color swatches at bottom -->
+  <rect x="420" y="450" width="60" height="60" fill="#ff6b9d" opacity="0.8"/>
+  <rect x="500" y="450" width="60" height="60" fill="#2563eb" opacity="0.8"/>
+  <rect x="580" y="450" width="60" height="60" fill="#ff8a00" opacity="0.8"/>
+  <rect x="660" y="450" width="60" height="60" fill="#22c55e" opacity="0.8"/>
+
+  <!-- Offset shadow on swatches -->
+  <rect x="424" y="454" width="60" height="60" fill="#2563eb" opacity="0.15"/>
+  <rect x="504" y="454" width="60" height="60" fill="#ff6b9d" opacity="0.15"/>
+  <rect x="584" y="454" width="60" height="60" fill="#22c55e" opacity="0.15"/>
+  <rect x="664" y="454" width="60" height="60" fill="#ff6b9d" opacity="0.15"/>
+</svg>

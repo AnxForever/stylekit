@@ -1,0 +1,91 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Pixel grid pattern -->
+    <pattern id="pixelGrid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="none" stroke="#1a1040" stroke-width="0.3" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark purple background -->
+  <rect width="1200" height="630" fill="#2d1b69"/>
+
+  <!-- Pixel grid overlay -->
+  <rect width="1200" height="630" fill="url(#pixelGrid)"/>
+
+  <!-- Pixel art decorative blocks -->
+  <!-- Top-left pixel cluster -->
+  <rect x="80" y="80" width="16" height="16" fill="#4a90d9" opacity="0.4"/>
+  <rect x="96" y="80" width="16" height="16" fill="#4a90d9" opacity="0.6"/>
+  <rect x="112" y="80" width="16" height="16" fill="#4a90d9" opacity="0.4"/>
+  <rect x="96" y="64" width="16" height="16" fill="#4a90d9" opacity="0.3"/>
+  <rect x="96" y="96" width="16" height="16" fill="#4a90d9" opacity="0.3"/>
+
+  <!-- Top-right pixel cluster -->
+  <rect x="1040" y="100" width="16" height="16" fill="#ff6b6b" opacity="0.5"/>
+  <rect x="1056" y="100" width="16" height="16" fill="#ff6b6b" opacity="0.7"/>
+  <rect x="1072" y="100" width="16" height="16" fill="#ff6b6b" opacity="0.5"/>
+  <rect x="1056" y="84" width="16" height="16" fill="#ff6b6b" opacity="0.3"/>
+  <rect x="1056" y="116" width="16" height="16" fill="#ff6b6b" opacity="0.3"/>
+
+  <!-- Bottom-left pixel stars -->
+  <rect x="120" y="480" width="8" height="8" fill="#ffd93d" opacity="0.6"/>
+  <rect x="140" y="500" width="8" height="8" fill="#ffd93d" opacity="0.4"/>
+  <rect x="160" y="470" width="8" height="8" fill="#ffd93d" opacity="0.5"/>
+
+  <!-- Bottom-right pixel cluster -->
+  <rect x="1000" y="480" width="16" height="16" fill="#50c878" opacity="0.4"/>
+  <rect x="1016" y="480" width="16" height="16" fill="#50c878" opacity="0.6"/>
+  <rect x="1000" y="496" width="16" height="16" fill="#50c878" opacity="0.3"/>
+  <rect x="1016" y="496" width="16" height="16" fill="#50c878" opacity="0.4"/>
+
+  <!-- Game UI panel (pixel border) -->
+  <rect x="150" y="160" width="280" height="160" fill="#1a1040" stroke="#4a90d9" stroke-width="4"/>
+  <!-- Inner panel border -->
+  <rect x="158" y="168" width="264" height="144" fill="none" stroke="#4a90d9" stroke-width="1" opacity="0.3"/>
+  <!-- HP bar inside panel -->
+  <rect x="170" y="200" width="200" height="12" fill="#1a1040" stroke="#1a1040" stroke-width="2"/>
+  <rect x="172" y="202" width="140" height="8" fill="#ff6b6b"/>
+  <!-- MP bar -->
+  <rect x="170" y="224" width="200" height="12" fill="#1a1040" stroke="#1a1040" stroke-width="2"/>
+  <rect x="172" y="226" width="180" height="8" fill="#4a90d9"/>
+  <!-- Text label -->
+  <text x="170" y="195" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="#ffd93d" font-weight="700">LV.42 WARRIOR</text>
+  <text x="170" y="260" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.6">ATK 128 DEF 96 SPD 74</text>
+
+  <!-- Game panel right side -->
+  <rect x="780" y="350" width="280" height="140" fill="#1a1040" stroke="#ffd93d" stroke-width="4"/>
+  <rect x="788" y="358" width="264" height="124" fill="none" stroke="#ffd93d" stroke-width="1" opacity="0.3"/>
+  <text x="800" y="385" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="#ffd93d" font-weight="700">QUEST LOG</text>
+  <text x="800" y="410" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.5">[ ] Defeat the dragon</text>
+  <text x="800" y="430" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#50c878" opacity="0.6">[x] Find the sword</text>
+  <text x="800" y="450" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.5">[ ] Save the village</text>
+
+  <!-- Title with pixel offset -->
+  <text x="604" y="290" font-family="ui-monospace, 'Courier New', monospace" font-size="88" font-weight="700" fill="#1a1040" text-anchor="middle">PIXEL</text>
+  <text x="600" y="286" font-family="ui-monospace, 'Courier New', monospace" font-size="88" font-weight="700" fill="#4a90d9" text-anchor="middle">PIXEL</text>
+
+  <text x="604" y="374" font-family="ui-monospace, 'Courier New', monospace" font-size="88" font-weight="700" fill="#1a1040" text-anchor="middle">ANIME</text>
+  <text x="600" y="370" font-family="ui-monospace, 'Courier New', monospace" font-size="88" font-weight="700" fill="#ffd93d" text-anchor="middle">ANIME</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="415" font-family="ui-monospace, 'Courier New', monospace" font-size="18" fill="#e0e0ff" text-anchor="middle" opacity="0.4" letter-spacing="4">8-BIT DREAMS ANIME SOUL</text>
+
+  <!-- Color swatches (pixel style) -->
+  <rect x="424" y="460" width="48" height="48" fill="#4a90d9" stroke="#1a1040" stroke-width="4"/>
+  <rect x="492" y="460" width="48" height="48" fill="#ff6b6b" stroke="#1a1040" stroke-width="4"/>
+  <rect x="560" y="460" width="48" height="48" fill="#ffd93d" stroke="#1a1040" stroke-width="4"/>
+  <rect x="628" y="460" width="48" height="48" fill="#50c878" stroke="#1a1040" stroke-width="4"/>
+  <rect x="696" y="460" width="48" height="48" fill="#2d1b69" stroke="#1a1040" stroke-width="4"/>
+
+  <!-- Pixel shadow on swatches -->
+  <rect x="428" y="512" width="48" height="4" fill="#1a1040" opacity="0.6"/>
+  <rect x="496" y="512" width="48" height="4" fill="#1a1040" opacity="0.6"/>
+  <rect x="564" y="512" width="48" height="4" fill="#1a1040" opacity="0.6"/>
+  <rect x="632" y="512" width="48" height="4" fill="#1a1040" opacity="0.6"/>
+  <rect x="700" y="512" width="48" height="4" fill="#1a1040" opacity="0.6"/>
+  <rect x="476" y="464" width="4" height="48" fill="#1a1040" opacity="0.6"/>
+  <rect x="544" y="464" width="4" height="48" fill="#1a1040" opacity="0.6"/>
+  <rect x="612" y="464" width="4" height="48" fill="#1a1040" opacity="0.6"/>
+  <rect x="680" y="464" width="4" height="48" fill="#1a1040" opacity="0.6"/>
+  <rect x="748" y="464" width="4" height="48" fill="#1a1040" opacity="0.6"/>
+</svg>

@@ -1,0 +1,109 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark background -->
+    <linearGradient id="ccBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <!-- Vermilion to gold gradient -->
+    <linearGradient id="ccTitle" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#d4553a"/>
+      <stop offset="100%" stop-color="#c9a227"/>
+    </linearGradient>
+    <!-- Neon glow filter -->
+    <filter id="ccGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Vermilion glow -->
+    <filter id="ccVGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#ccBg)"/>
+
+  <!-- Cyber grid -->
+  <g stroke="#d4553a" stroke-width="0.5" opacity="0.08">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="1200" y1="0" x2="1200" y2="630"/>
+  </g>
+  <g stroke="#c9a227" stroke-width="0.5" opacity="0.06">
+    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/><line x1="0" y1="480" x2="1200" y2="480"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/><line x1="0" y1="600" x2="1200" y2="600"/>
+  </g>
+
+  <!-- Seal stamp - top right -->
+  <g transform="translate(980, 80) rotate(12)">
+    <rect x="-40" y="-40" width="80" height="80" fill="none" stroke="#d4553a" stroke-width="3" opacity="0.6"/>
+    <rect x="-34" y="-34" width="68" height="68" fill="none" stroke="#d4553a" stroke-width="1" opacity="0.4"/>
+    <text x="0" y="12" font-family="system-ui, sans-serif" font-size="36" fill="#d4553a" text-anchor="middle" opacity="0.7" font-weight="bold">印</text>
+  </g>
+
+  <!-- Lantern decorations - left -->
+  <g opacity="0.4">
+    <rect x="80" y="200" width="16" height="28" fill="#d4553a" rx="2" filter="url(#ccVGlow)"/>
+    <rect x="78" y="196" width="20" height="4" fill="#c9a227"/>
+    <line x1="88" y1="192" x2="88" y2="196" stroke="#c9a227" stroke-width="1"/>
+  </g>
+  <!-- Lantern - right -->
+  <g opacity="0.4">
+    <rect x="1104" y="200" width="16" height="28" fill="#d4553a" rx="2" filter="url(#ccVGlow)"/>
+    <rect x="1102" y="196" width="20" height="4" fill="#c9a227"/>
+    <line x1="1112" y1="192" x2="1112" y2="196" stroke="#c9a227" stroke-width="1"/>
+  </g>
+
+  <!-- Cloud pattern decorations -->
+  <g opacity="0.12">
+    <path d="M200 400 Q220 380 240 400 Q260 380 280 400" fill="none" stroke="#c9a227" stroke-width="1.5"/>
+    <path d="M920 400 Q940 380 960 400 Q980 380 1000 400" fill="none" stroke="#c9a227" stroke-width="1.5"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="700" fill="url(#ccTitle)" text-anchor="middle" filter="url(#ccGlow)">CYBER CHINESE</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="#00d4ff" text-anchor="middle" filter="url(#ccGlow)" opacity="0.8">TRADITION MEETS TOMORROW</text>
+
+  <!-- Decorative neon lines -->
+  <line x1="200" y1="300" x2="460" y2="300" stroke="#d4553a" stroke-width="2" filter="url(#ccGlow)" opacity="0.6"/>
+  <line x1="740" y1="300" x2="1000" y2="300" stroke="#00d4ff" stroke-width="2" filter="url(#ccGlow)" opacity="0.6"/>
+
+  <!-- Color swatches -->
+  <rect x="300" y="380" width="80" height="80" fill="#d4553a"/>
+  <rect x="400" y="380" width="80" height="80" fill="#c9a227"/>
+  <rect x="500" y="380" width="80" height="80" fill="#0a0a0a" stroke="#d4553a" stroke-width="0.5"/>
+  <rect x="600" y="380" width="80" height="80" fill="#00d4ff"/>
+  <rect x="700" y="380" width="80" height="80" fill="#a020f0"/>
+
+  <!-- Color labels -->
+  <text x="340" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Vermilion</text>
+  <text x="440" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Gold</text>
+  <text x="540" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Black</text>
+  <text x="640" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Neon Blue</text>
+  <text x="740" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Neon Purple</text>
+
+  <!-- Bottom neon accent -->
+  <line x1="300" y1="540" x2="900" y2="540" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
+</svg>
