@@ -50,26 +50,32 @@ import { fPatternLayoutTokens } from "./f-pattern-layout-tokens";
 import { zPatternLayoutTokens } from "./z-pattern-layout-tokens";
 import { holyGrailLayoutTokens } from "./holy-grail-layout-tokens";
 import { dashboardLayoutTokens } from "./dashboard-layout-tokens";
+// Dedicated tokens for variant styles
+import { geometricBoldTokens } from "./geometric-bold-tokens";
+import { minimalistFlatTokens } from "./minimalist-flat-tokens";
+import { neoBrutalistPlayfulTokens } from "./neo-brutalist-playful-tokens";
+import { neoBrutalistSoftTokens } from "./neo-brutalist-soft-tokens";
+import { retroVintageTokens } from "./retro-vintage-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
   "neo-brutalist": neoBrutalistTokens,
-  "neo-brutalist-soft": neoBrutalistTokens,      // 使用相同的 tokens
-  "neo-brutalist-playful": neoBrutalistTokens,   // 使用相同的 tokens
+  "neo-brutalist-soft": neoBrutalistSoftTokens,
+  "neo-brutalist-playful": neoBrutalistPlayfulTokens,
   "editorial": editorialTokens,
   "neumorphism": neumorphismTokens,
   "glassmorphism": glassmorphismTokens,
   "bento-grid": bentoGridTokens,
   // New styles
   "corporate-clean": corporateCleanTokens,
-  "minimalist-flat": editorialTokens,            // Similar constraints
+  "minimalist-flat": minimalistFlatTokens,
   "soft-ui": softUITokens,
   "cyberpunk-neon": cyberpunkNeonTokens,
   "natural-organic": naturalOrganicTokens,
   "modern-gradient": modernGradientTokens,
-  "retro-vintage": editorialTokens,              // Similar typography focus
+  "retro-vintage": retroVintageTokens,
   "dark-mode": darkModeTokens,
-  "geometric-bold": neoBrutalistTokens,          // Similar bold approach
+  "geometric-bold": geometricBoldTokens,
   // New visual styles
   "claymorphism": claymorphismTokens,
   "notion-style": notionStyleTokens,

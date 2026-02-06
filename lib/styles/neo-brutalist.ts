@@ -6,7 +6,7 @@ export const neoBrutalist: DesignStyle = {
   nameEn: "Neo-Brutalist",
   description:
     "大胆的黑色粗边框、硬边缘阴影、无圆角、高对比度配色。源于建筑野兽派，强调功能与原始美学。",
-  cover: "/styles/neo-brutalist.png",
+  cover: "/styles/neo-brutalist.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
   category: "expressive",

@@ -6,7 +6,7 @@ export const softUI: DesignStyle = {
   nameEn: "Soft UI",
   description:
     "温和友好的界面风格，柔和的阴影、圆润的边角、低饱和度的配色。适合消费类应用、社交产品、生活服务类 App。",
-  cover: "/styles/soft-ui.png",
+  cover: "/styles/soft-ui.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
   category: "modern",

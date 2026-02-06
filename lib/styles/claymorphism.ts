@@ -6,7 +6,7 @@ export const claymorphism: DesignStyle = {
   nameEn: "Claymorphism",
   description:
     "柔软的粘土质感设计，通过超大圆角、内外阴影组合和柔和渐变，创造出可爱的 3D 立体效果，适合儿童应用和趣味产品。",
-  cover: "/styles/claymorphism.png",
+  cover: "/styles/claymorphism.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
   category: "modern",

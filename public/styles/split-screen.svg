@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Left panel - Dark -->
+  <rect x="30" y="20" width="165" height="230" rx="8" fill="#0f0f0f"/>
+  <!-- Left content -->
+  <rect x="55" y="70" width="100" height="12" rx="3" fill="#ffffff" fill-opacity="0.9"/>
+  <rect x="55" y="92" width="120" height="6" rx="2" fill="#ffffff" fill-opacity="0.25"/>
+  <rect x="55" y="106" width="100" height="6" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+  <rect x="55" y="120" width="80" height="6" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+  <!-- Left CTA -->
+  <rect x="55" y="150" width="80" height="28" rx="6" fill="#ffffff"/>
+  <text x="95" y="168" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#0f0f0f">Sign Up</text>
+
+  <!-- Right panel - Light -->
+  <rect x="200" y="20" width="170" height="230" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <!-- Right content -->
+  <rect x="225" y="70" width="100" height="12" rx="3" fill="#18181b"/>
+  <rect x="225" y="92" width="120" height="6" rx="2" fill="#d4d4d8"/>
+  <rect x="225" y="106" width="100" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="225" y="120" width="80" height="6" rx="2" fill="#e5e7eb"/>
+  <!-- Right CTA -->
+  <rect x="225" y="150" width="80" height="28" rx="6" fill="#18181b"/>
+  <text x="265" y="168" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ffffff">Log In</text>
+
+  <!-- Center divider line -->
+  <line x1="197" y1="40" x2="197" y2="230" stroke="#6366f1" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <!-- Label -->
+  <text x="200" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#18181b">SPLIT SCREEN</text>
+  <text x="200" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Dual-panel content layout</text>
+</svg>

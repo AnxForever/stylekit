@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <!-- Minimal lines -->
+  <line x1="100" y1="180" x2="400" y2="180" stroke="#000000" stroke-width="1.5" opacity="0.15"/>
+  <line x1="800" y1="180" x2="1100" y2="180" stroke="#000000" stroke-width="1.5" opacity="0.15"/>
+  <line x1="100" y1="450" x2="400" y2="450" stroke="#000000" stroke-width="1.5" opacity="0.15"/>
+  <line x1="800" y1="450" x2="1100" y2="450" stroke="#000000" stroke-width="1.5" opacity="0.15"/>
+  <!-- Accent block -->
+  <rect x="570" y="140" width="60" height="4" fill="#ff3366"/>
+  <!-- Vertical accent line -->
+  <line x1="100" y1="250" x2="100" y2="380" stroke="#ff3366" stroke-width="3" opacity="0.6"/>
+  <!-- Simple blocks -->
+  <rect x="150" y="260" width="180" height="3" fill="#000000" opacity="0.12"/>
+  <rect x="150" y="280" width="140" height="3" fill="#000000" opacity="0.08"/>
+  <rect x="150" y="300" width="160" height="3" fill="#000000" opacity="0.08"/>
+  <!-- Right side blocks -->
+  <rect x="880" y="260" width="180" height="3" fill="#000000" opacity="0.12"/>
+  <rect x="880" y="280" width="130" height="3" fill="#000000" opacity="0.08"/>
+  <rect x="880" y="300" width="150" height="3" fill="#000000" opacity="0.08"/>
+  <!-- Bottom accent -->
+  <rect x="570" y="486" width="60" height="4" fill="#ff3366"/>
+  <!-- Center title -->
+  <text x="600" y="310" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="64" font-weight="300" fill="#000000" letter-spacing="2">MINIMALIST</text>
+  <text x="600" y="370" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="64" font-weight="300" fill="#000000" letter-spacing="2">FLAT</text>
+  <!-- Subtitle -->
+  <text x="600" y="420" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#999999" letter-spacing="8">LESS IS MORE</text>
+  <!-- Corner marks -->
+  <line x1="40" y1="40" x2="80" y2="40" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="40" y1="40" x2="40" y2="80" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="1120" y1="40" x2="1160" y2="40" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="1160" y1="40" x2="1160" y2="80" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="40" y1="590" x2="80" y2="590" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="40" y1="550" x2="40" y2="590" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="1120" y1="590" x2="1160" y2="590" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="1160" y1="550" x2="1160" y2="590" stroke="#000" stroke-width="1" opacity="0.2"/>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Hero area - large -->
+  <rect x="30" y="20" width="340" height="170" rx="8" fill="#111827"/>
+  <!-- Hero gradient overlay -->
+  <rect x="30" y="120" width="340" height="70" rx="0" fill="url(#heroGrad)"/>
+  <defs>
+    <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#111827" stop-opacity="0"/>
+      <stop offset="1" stop-color="#111827" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <!-- Hero text overlay -->
+  <rect x="60" y="80" width="140" height="14" rx="3" fill="#ffffff" fill-opacity="0.9"/>
+  <rect x="60" y="102" width="200" height="8" rx="2" fill="#ffffff" fill-opacity="0.3"/>
+  <rect x="60" y="116" width="160" height="8" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+  <!-- Hero CTA button -->
+  <rect x="60" y="140" width="80" height="28" rx="6" fill="#6366f1"/>
+  <text x="100" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ffffff">Get Started</text>
+
+  <!-- Content below hero -->
+  <g transform="translate(30, 200)">
+    <rect width="105" height="55" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="10" y="12" width="50" height="8" rx="2" fill="#18181b"/>
+    <rect x="10" y="28" width="80" height="5" rx="2" fill="#d4d4d8"/>
+    <rect x="10" y="38" width="65" height="5" rx="2" fill="#d4d4d8"/>
+  </g>
+  <g transform="translate(148, 200)">
+    <rect width="105" height="55" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="10" y="12" width="50" height="8" rx="2" fill="#18181b"/>
+    <rect x="10" y="28" width="80" height="5" rx="2" fill="#d4d4d8"/>
+    <rect x="10" y="38" width="65" height="5" rx="2" fill="#d4d4d8"/>
+  </g>
+  <g transform="translate(265, 200)">
+    <rect width="105" height="55" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="10" y="12" width="50" height="8" rx="2" fill="#18181b"/>
+    <rect x="10" y="28" width="80" height="5" rx="2" fill="#d4d4d8"/>
+    <rect x="10" y="38" width="65" height="5" rx="2" fill="#d4d4d8"/>
+  </g>
+
+  <!-- Label -->
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#18181b">HERO FULLSCREEN</text>
+  <text x="200" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Full viewport hero with content below</text>
+</svg>

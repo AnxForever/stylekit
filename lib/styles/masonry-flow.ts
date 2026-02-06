@@ -6,7 +6,7 @@ export const masonryFlow: DesignStyle = {
   nameEn: "Masonry Flow",
   description:
     "Pinterest 风格的不等高卡片瀑布流布局，通过 CSS columns 或 masonry grid 实现自然流动的视觉效果，适合图片展示、作品集、社交媒体。",
-  cover: "/styles/masonry-flow.png",
+  cover: "/styles/masonry-flow.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
   compatibleWith: ["glassmorphism", "minimalist-flat", "soft-ui", "natural-organic", "editorial"],

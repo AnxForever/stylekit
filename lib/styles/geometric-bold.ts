@@ -6,7 +6,7 @@ export const geometricBold: DesignStyle = {
   nameEn: "Geometric Bold",
   description:
     "大胆的几何图形设计，强烈的形状对比、鲜明的色块、动态的构图。适合艺术展览、设计机构、创意品牌。",
-  cover: "/styles/geometric-bold.png",
+  cover: "/styles/geometric-bold.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
   category: "expressive",

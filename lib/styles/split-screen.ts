@@ -6,7 +6,7 @@ export const splitScreen: DesignStyle = {
   nameEn: "Split Screen",
   description:
     "左右对称或不对称的分屏布局，通过对比和平衡创造视觉张力，常用于产品展示、品牌故事、比较页面。",
-  cover: "/styles/split-screen.png",
+  cover: "/styles/split-screen.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
   compatibleWith: ["neo-brutalist", "minimalist-flat", "editorial", "modern-gradient", "geometric-bold"],

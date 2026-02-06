@@ -6,7 +6,7 @@ export const fullPageScroll: DesignStyle = {
   nameEn: "Full Page Scroll",
   description:
     "每一屏占满整个视口的沉浸式滚动体验，通过滚动切换完整场景，适合品牌故事、产品介绍、作品集展示。",
-  cover: "/styles/full-page-scroll.png",
+  cover: "/styles/full-page-scroll.svg",
   styleType: "layout",
   tags: ["modern", "expressive"],
   compatibleWith: ["glassmorphism", "modern-gradient", "cyberpunk-neon", "minimalist-flat", "geometric-bold"],

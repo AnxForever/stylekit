@@ -6,7 +6,7 @@ export const notionStyle: DesignStyle = {
   nameEn: "Notion Style",
   description:
     "极简清爽的文档工具风格，强调内容可读性和功能性，使用微妙的边框、柔和的悬停效果和清晰的文字层级。",
-  cover: "/styles/notion-style.png",
+  cover: "/styles/notion-style.svg",
   styleType: "visual",
   tags: ["minimal"],
   category: "minimal",

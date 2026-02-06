@@ -6,7 +6,7 @@ export const minimalistFlat: DesignStyle = {
   nameEn: "Minimalist Flat",
   description:
     "极致简约的扁平设计，无阴影无渐变，通过颜色和留白创造层次。适合作品集、创意机构、艺术网站。",
-  cover: "/styles/minimalist-flat.png",
+  cover: "/styles/minimalist-flat.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
   category: "minimal",

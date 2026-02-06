@@ -6,7 +6,7 @@ export const modernGradient: DesignStyle = {
   nameEn: "Modern Gradient",
   description:
     "充满活力的现代渐变风格，多彩渐变背景、玻璃质感卡片、动态光影效果。适合创业公司、数字产品、活动页面。",
-  cover: "/styles/modern-gradient.png",
+  cover: "/styles/modern-gradient.svg",
   styleType: "visual",
   tags: ["expressive", "modern"],
   category: "expressive",

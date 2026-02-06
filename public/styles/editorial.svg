@@ -1,0 +1,71 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clean near-white background -->
+  <rect width="1200" height="630" fill="#fafafa"/>
+
+  <!-- Top rule -->
+  <line x1="120" y1="80" x2="1080" y2="80" stroke="#0a0a0a" stroke-width="0.5"/>
+  <line x1="120" y1="83" x2="1080" y2="83" stroke="#0a0a0a" stroke-width="2.5"/>
+
+  <!-- Date and issue number -->
+  <text x="120" y="70" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" letter-spacing="0.15em">VOL. XLII</text>
+  <text x="1080" y="70" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="end" letter-spacing="0.15em">DESIGN QUARTERLY</text>
+
+  <!-- Main title -->
+  <text x="600" y="200" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#0a0a0a" text-anchor="middle" font-weight="400" letter-spacing="-0.02em">EDITORIAL</text>
+
+  <!-- Elegant thin rule under title -->
+  <line x1="350" y1="225" x2="850" y2="225" stroke="#0a0a0a" stroke-width="0.5"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="268" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#666666" text-anchor="middle" letter-spacing="0.25em" font-style="italic">The Art of Typography and Layout</text>
+
+  <!-- Divider rule -->
+  <line x1="120" y1="300" x2="1080" y2="300" stroke="#0a0a0a" stroke-width="0.5"/>
+
+  <!-- Three column layout indicators -->
+  <!-- Column 1 -->
+  <text x="260" y="340" font-family="Georgia, serif" font-size="36" fill="#0a0a0a" text-anchor="middle" font-weight="400">I</text>
+  <line x1="220" y1="350" x2="300" y2="350" stroke="#0a0a0a" stroke-width="0.5"/>
+  <rect x="175" y="370" width="170" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="386" width="170" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="402" width="140" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="418" width="170" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="434" width="155" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="450" width="170" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="175" y="466" width="130" height="6" rx="1" fill="#d4d4d4"/>
+
+  <!-- Column separator -->
+  <line x1="400" y1="310" x2="400" y2="500" stroke="#0a0a0a" stroke-width="0.3"/>
+
+  <!-- Column 2 -->
+  <text x="600" y="340" font-family="Georgia, serif" font-size="36" fill="#0a0a0a" text-anchor="middle" font-weight="400">II</text>
+  <line x1="560" y1="350" x2="640" y2="350" stroke="#0a0a0a" stroke-width="0.5"/>
+  <rect x="500" y="370" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="386" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="402" width="175" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="418" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="434" width="185" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="450" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="500" y="466" width="160" height="6" rx="1" fill="#d4d4d4"/>
+
+  <!-- Column separator -->
+  <line x1="800" y1="310" x2="800" y2="500" stroke="#0a0a0a" stroke-width="0.3"/>
+
+  <!-- Column 3 -->
+  <text x="940" y="340" font-family="Georgia, serif" font-size="36" fill="#0a0a0a" text-anchor="middle" font-weight="400">III</text>
+  <line x1="900" y1="350" x2="980" y2="350" stroke="#0a0a0a" stroke-width="0.5"/>
+  <rect x="840" y="370" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="386" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="402" width="165" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="418" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="434" width="180" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="450" width="200" height="6" rx="1" fill="#d4d4d4"/>
+  <rect x="840" y="466" width="145" height="6" rx="1" fill="#d4d4d4"/>
+
+  <!-- Bottom rules -->
+  <line x1="120" y1="510" x2="1080" y2="510" stroke="#0a0a0a" stroke-width="0.5"/>
+  <line x1="120" y1="513" x2="1080" y2="513" stroke="#0a0a0a" stroke-width="0.3"/>
+
+  <!-- Footer -->
+  <text x="600" y="560" font-family="Georgia, serif" font-size="14" fill="#999999" text-anchor="middle" letter-spacing="0.2em" font-style="italic">Clarity through restraint</text>
+</svg>

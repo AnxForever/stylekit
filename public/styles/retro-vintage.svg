@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5e6d3"/>
+  <!-- Subtle aged texture -->
+  <rect width="1200" height="630" fill="#d4b896" opacity="0.08"/>
+  <!-- Border frame -->
+  <rect x="40" y="30" width="1120" height="570" fill="none" stroke="#8b4513" stroke-width="2" opacity="0.4"/>
+  <rect x="50" y="40" width="1100" height="550" fill="none" stroke="#8b4513" stroke-width="1" opacity="0.25"/>
+  <!-- Corner ornaments - top left -->
+  <g transform="translate(50, 40)" opacity="0.5">
+    <path d="M0 30 Q0 0 30 0" fill="none" stroke="#8b4513" stroke-width="2"/>
+    <path d="M5 25 Q5 5 25 5" fill="none" stroke="#8b4513" stroke-width="1.5"/>
+    <circle cx="15" cy="15" r="3" fill="#8b4513" opacity="0.5"/>
+  </g>
+  <!-- Corner ornaments - top right -->
+  <g transform="translate(1150, 40) scale(-1, 1)" opacity="0.5">
+    <path d="M0 30 Q0 0 30 0" fill="none" stroke="#8b4513" stroke-width="2"/>
+    <path d="M5 25 Q5 5 25 5" fill="none" stroke="#8b4513" stroke-width="1.5"/>
+    <circle cx="15" cy="15" r="3" fill="#8b4513" opacity="0.5"/>
+  </g>
+  <!-- Corner ornaments - bottom left -->
+  <g transform="translate(50, 590) scale(1, -1)" opacity="0.5">
+    <path d="M0 30 Q0 0 30 0" fill="none" stroke="#8b4513" stroke-width="2"/>
+    <path d="M5 25 Q5 5 25 5" fill="none" stroke="#8b4513" stroke-width="1.5"/>
+    <circle cx="15" cy="15" r="3" fill="#8b4513" opacity="0.5"/>
+  </g>
+  <!-- Corner ornaments - bottom right -->
+  <g transform="translate(1150, 590) scale(-1, -1)" opacity="0.5">
+    <path d="M0 30 Q0 0 30 0" fill="none" stroke="#8b4513" stroke-width="2"/>
+    <path d="M5 25 Q5 5 25 5" fill="none" stroke="#8b4513" stroke-width="1.5"/>
+    <circle cx="15" cy="15" r="3" fill="#8b4513" opacity="0.5"/>
+  </g>
+  <!-- Top decorative divider -->
+  <g transform="translate(600, 160)" opacity="0.5">
+    <line x1="-250" y1="0" x2="-30" y2="0" stroke="#8b4513" stroke-width="1"/>
+    <line x1="30" y1="0" x2="250" y2="0" stroke="#8b4513" stroke-width="1"/>
+    <path d="M-20 -8 L0 -16 L20 -8 L0 0 Z" fill="none" stroke="#8b4513" stroke-width="1"/>
+    <circle cx="0" cy="-8" r="3" fill="#c94c4c" opacity="0.6"/>
+  </g>
+  <!-- Accent banner -->
+  <rect x="400" y="195" width="400" height="36" fill="#c94c4c" opacity="0.12" rx="2"/>
+  <text x="600" y="220" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#c94c4c" letter-spacing="8" font-weight="400">ESTABLISHED STYLE</text>
+  <!-- Main title -->
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="700" fill="#8b4513" letter-spacing="4">RETRO</text>
+  <text x="600" y="380" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="700" fill="#8b4513" letter-spacing="4">VINTAGE</text>
+  <!-- Bottom decorative divider -->
+  <g transform="translate(600, 420)" opacity="0.5">
+    <line x1="-250" y1="0" x2="-30" y2="0" stroke="#8b4513" stroke-width="1"/>
+    <line x1="30" y1="0" x2="250" y2="0" stroke="#8b4513" stroke-width="1"/>
+    <path d="M-20 8 L0 16 L20 8 L0 0 Z" fill="none" stroke="#8b4513" stroke-width="1"/>
+    <circle cx="0" cy="8" r="3" fill="#2e4a3f" opacity="0.6"/>
+  </g>
+  <!-- Subtitle -->
+  <text x="600" y="470" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#8b4513" letter-spacing="6" opacity="0.6">WARM &amp; NOSTALGIC</text>
+  <!-- Small decorative elements -->
+  <g transform="translate(200, 315)" opacity="0.3">
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="#2e4a3f" stroke-width="1"/>
+    <circle cx="0" cy="0" r="4" fill="none" stroke="#2e4a3f" stroke-width="1"/>
+  </g>
+  <g transform="translate(1000, 315)" opacity="0.3">
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="#2e4a3f" stroke-width="1"/>
+    <circle cx="0" cy="0" r="4" fill="none" stroke="#2e4a3f" stroke-width="1"/>
+  </g>
+  <!-- Color swatches at bottom -->
+  <circle cx="520" cy="530" r="12" fill="#c94c4c" opacity="0.5"/>
+  <circle cx="560" cy="530" r="12" fill="#8b4513" opacity="0.5"/>
+  <circle cx="600" cy="530" r="12" fill="#2e4a3f" opacity="0.5"/>
+  <circle cx="640" cy="530" r="12" fill="#d4a574" opacity="0.5"/>
+  <circle cx="680" cy="530" r="12" fill="#f5e6d3" stroke="#8b4513" stroke-width="1" opacity="0.5"/>
+</svg>

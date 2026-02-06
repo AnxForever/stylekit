@@ -6,7 +6,7 @@ export const bentoGrid: DesignStyle = {
   nameEn: "Bento Grid",
   description:
     "灵感源于日式便当盒的不规则网格布局，通过大小不一的卡片组合创造视觉层次，常用于作品集和产品展示。",
-  cover: "/styles/bento-grid.png",
+  cover: "/styles/bento-grid.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
   compatibleWith: ["glassmorphism", "neo-brutalist", "editorial", "neumorphism"],

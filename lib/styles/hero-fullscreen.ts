@@ -6,7 +6,7 @@ export const heroFullscreen: DesignStyle = {
   nameEn: "Fullscreen Hero",
   description:
     "以全屏大图或视频为背景的英雄区布局，通过震撼的视觉效果抓住注意力，适合品牌展示、产品发布、活动宣传。",
-  cover: "/styles/hero-fullscreen.png",
+  cover: "/styles/hero-fullscreen.svg",
   styleType: "layout",
   tags: ["expressive", "modern"],
   compatibleWith: ["glassmorphism", "modern-gradient", "cyberpunk-neon", "minimalist-flat", "dark-mode"],

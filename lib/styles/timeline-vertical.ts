@@ -6,7 +6,7 @@ export const timelineVertical: DesignStyle = {
   nameEn: "Vertical Timeline",
   description:
     "垂直时间轴布局，通过连接线串联时间节点，适合展示历史进程、项目里程碑、工作经历、流程步骤。",
-  cover: "/styles/timeline-vertical.png",
+  cover: "/styles/timeline-vertical.svg",
   styleType: "layout",
   tags: ["modern", "minimal"],
   compatibleWith: ["editorial", "corporate-clean", "minimalist-flat", "soft-ui", "natural-organic"],

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Section 1 - Dark -->
+  <rect x="60" y="20" width="280" height="55" rx="6" fill="#18181b"/>
+  <rect x="80" y="38" width="80" height="8" rx="2" fill="#ffffff" fill-opacity="0.8"/>
+  <rect x="80" y="52" width="120" height="5" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+
+  <!-- Divider dot -->
+  <circle cx="200" cy="82" r="3" fill="#6366f1"/>
+
+  <!-- Section 2 - Light -->
+  <rect x="60" y="90" width="280" height="55" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="80" y="108" width="80" height="8" rx="2" fill="#18181b"/>
+  <rect x="80" y="122" width="120" height="5" rx="2" fill="#d4d4d8"/>
+
+  <!-- Divider dot -->
+  <circle cx="200" cy="152" r="3" fill="#6366f1"/>
+
+  <!-- Section 3 - Dark -->
+  <rect x="60" y="160" width="280" height="55" rx="6" fill="#27272a"/>
+  <rect x="80" y="178" width="80" height="8" rx="2" fill="#ffffff" fill-opacity="0.8"/>
+  <rect x="80" y="192" width="120" height="5" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+
+  <!-- Divider dot -->
+  <circle cx="200" cy="222" r="3" fill="#6366f1"/>
+
+  <!-- Section 4 - Light -->
+  <rect x="60" y="230" width="280" height="30" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="80" y="241" width="80" height="8" rx="2" fill="#18181b"/>
+
+  <!-- Scroll indicator on right -->
+  <rect x="355" y="20" width="4" height="240" rx="2" fill="#e5e7eb"/>
+  <rect x="355" y="20" width="4" height="60" rx="2" fill="#6366f1"/>
+
+  <!-- Label -->
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#18181b">FULL PAGE SCROLL</text>
+  <text x="200" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Snap-scrolling full sections</text>
+</svg>
