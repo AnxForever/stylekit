@@ -1,69 +1,122 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Watercolor bleeding displacement -->
-    <filter id="wcBleed" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="3" seed="3" result="turbulence"/>
-      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+    <!-- Soft watercolor edge blur for cards -->
+    <filter id="wcEdge" x="-8%" y="-8%" width="116%" height="116%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
     </filter>
-    <!-- Soft watercolor blur -->
-    <filter id="wcSoft">
-      <feGaussianBlur stdDeviation="20"/>
+    <!-- Heavier blur for card boundary softness -->
+    <filter id="wcSoft" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
     </filter>
-    <!-- Medium blur -->
-    <filter id="wcMed">
-      <feGaussianBlur stdDeviation="10"/>
+    <!-- Subtle card shadow (watercolor bloom) -->
+    <filter id="wcBloom" x="-12%" y="-12%" width="124%" height="124%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#d4a0a0" flood-opacity="0.15"/>
+      <feComposite in2="blur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
-    <!-- Fine blur for splatter -->
-    <filter id="wcFine">
-      <feGaussianBlur stdDeviation="4"/>
-    </filter>
+    <!-- Grain pattern for paper texture -->
+    <pattern id="grain" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#e8ddd0" opacity="0.15"/>
+      <rect x="1" y="1" width="1" height="1" fill="#d4c8b8" opacity="0.08"/>
+      <rect x="3" y="0" width="1" height="1" fill="#c8baa8" opacity="0.06"/>
+    </pattern>
   </defs>
 
-  <!-- Warm paper solid background -->
-  <rect width="1200" height="630" fill="#faf6f0"/>
+  <!-- Warm paper background -->
+  <rect width="1200" height="630" fill="#faf8f5"/>
+  <rect width="1200" height="630" fill="url(#grain)"/>
 
-  <!-- Large watercolor wash - Rose (HIGH opacity) -->
-  <ellipse cx="300" cy="230" rx="340" ry="260" fill="#d4a0a0" opacity="0.30" filter="url(#wcBleed)"/>
+  <!-- Background watercolor washes (subtle, secondary) -->
+  <ellipse cx="250" cy="200" rx="200" ry="150" fill="#d4a0a0" opacity="0.08" filter="url(#wcSoft)"/>
+  <ellipse cx="950" cy="450" rx="180" ry="130" fill="#7bb8d4" opacity="0.07" filter="url(#wcSoft)"/>
+  <ellipse cx="600" cy="550" rx="220" ry="100" fill="#8cc5a8" opacity="0.06" filter="url(#wcSoft)"/>
 
-  <!-- Secondary wash - Cerulean blue -->
-  <ellipse cx="880" cy="280" rx="300" ry="230" fill="#7bb8d4" opacity="0.25" filter="url(#wcBleed)"/>
+  <!-- Card 1 - top left: watercolor wash card -->
+  <g filter="url(#wcBloom)">
+    <rect x="70" y="100" width="260" height="170" rx="16" fill="#ffffff" fill-opacity="0.65" filter="url(#wcEdge)"/>
+    <rect x="70" y="100" width="260" height="170" rx="16" fill="#d4a0a0" fill-opacity="0.12"/>
+    <!-- Heading bar -->
+    <rect x="98" y="130" width="90" height="8" rx="4" fill="#d4a0a0" opacity="0.55"/>
+    <!-- Text lines -->
+    <rect x="98" y="150" width="200" height="5" rx="2.5" fill="#b8a898" opacity="0.35"/>
+    <rect x="98" y="164" width="170" height="5" rx="2.5" fill="#b8a898" opacity="0.30"/>
+    <rect x="98" y="178" width="145" height="5" rx="2.5" fill="#b8a898" opacity="0.25"/>
+    <!-- Watercolor spot accent -->
+    <circle cx="280" cy="238" r="14" fill="#d4a0a0" opacity="0.25" filter="url(#wcEdge)"/>
+    <circle cx="255" cy="240" r="10" fill="#c3a0d4" opacity="0.20" filter="url(#wcEdge)"/>
+  </g>
 
-  <!-- Tertiary wash - Sage green -->
-  <ellipse cx="560" cy="480" rx="280" ry="170" fill="#8cc5a8" opacity="0.20" filter="url(#wcBleed)"/>
+  <!-- Card 2 - top right: blue wash card -->
+  <g filter="url(#wcBloom)">
+    <rect x="870" y="80" width="250" height="190" rx="16" fill="#ffffff" fill-opacity="0.60" filter="url(#wcEdge)"/>
+    <rect x="870" y="80" width="250" height="190" rx="16" fill="#7bb8d4" fill-opacity="0.10"/>
+    <!-- Heading bar -->
+    <rect x="900" y="112" width="100" height="8" rx="4" fill="#7bb8d4" opacity="0.50"/>
+    <!-- Text lines -->
+    <rect x="900" y="134" width="190" height="5" rx="2.5" fill="#b8a898" opacity="0.35"/>
+    <rect x="900" y="148" width="160" height="5" rx="2.5" fill="#b8a898" opacity="0.30"/>
+    <rect x="900" y="162" width="130" height="5" rx="2.5" fill="#b8a898" opacity="0.25"/>
+    <!-- Progress bar -->
+    <rect x="900" y="190" width="190" height="7" rx="3.5" fill="#e8ddd0" opacity="0.40"/>
+    <rect x="900" y="190" width="120" height="7" rx="3.5" fill="#7bb8d4" opacity="0.35"/>
+    <!-- Button -->
+    <rect x="900" y="216" width="70" height="24" rx="12" fill="#7bb8d4" fill-opacity="0.20"/>
+    <rect x="910" y="225" width="50" height="5" rx="2.5" fill="#7bb8d4" opacity="0.45"/>
+  </g>
 
-  <!-- Wet-on-wet bloom spots - visible -->
-  <circle cx="180" cy="120" r="70" fill="#c3a0d4" opacity="0.20" filter="url(#wcSoft)"/>
-  <circle cx="1030" cy="130" r="60" fill="#d4a0a0" opacity="0.22" filter="url(#wcMed)"/>
-  <circle cx="140" cy="460" r="55" fill="#8cc5a8" opacity="0.20" filter="url(#wcMed)"/>
+  <!-- Card 3 - bottom left: green wash card -->
+  <g filter="url(#wcBloom)">
+    <rect x="100" y="380" width="230" height="155" rx="16" fill="#ffffff" fill-opacity="0.60" filter="url(#wcEdge)"/>
+    <rect x="100" y="380" width="230" height="155" rx="16" fill="#8cc5a8" fill-opacity="0.10"/>
+    <!-- Icon placeholder -->
+    <rect x="128" y="408" width="45" height="45" rx="10" fill="#8cc5a8" opacity="0.18" filter="url(#wcEdge)"/>
+    <!-- Text lines beside icon -->
+    <rect x="186" y="415" width="110" height="6" rx="3" fill="#8cc5a8" opacity="0.45"/>
+    <rect x="186" y="432" width="90" height="5" rx="2.5" fill="#b8a898" opacity="0.30"/>
+    <!-- Bottom text lines -->
+    <rect x="128" y="475" width="170" height="5" rx="2.5" fill="#b8a898" opacity="0.30"/>
+    <rect x="128" y="490" width="140" height="5" rx="2.5" fill="#b8a898" opacity="0.25"/>
+    <!-- Watercolor accent dot -->
+    <circle cx="295" cy="505" r="10" fill="#8cc5a8" opacity="0.22" filter="url(#wcEdge)"/>
+  </g>
 
-  <!-- Botanical leaf shapes with visible opacity -->
-  <path d="M90 340 Q130 290, 175 320 Q130 350, 90 340Z" fill="#8cc5a8" opacity="0.30" filter="url(#wcFine)"/>
-  <path d="M105 355 Q145 305, 190 335 Q145 365, 105 355Z" fill="#6ba88c" opacity="0.25" filter="url(#wcFine)"/>
-  <path d="M1040 360 Q1080 320, 1120 350 Q1080 380, 1040 360Z" fill="#c3a0d4" opacity="0.28" filter="url(#wcFine)"/>
-  <path d="M1055 380 Q1095 340, 1135 370 Q1095 400, 1055 380Z" fill="#a080b8" opacity="0.25" filter="url(#wcFine)"/>
+  <!-- Card 4 - bottom right: purple wash card -->
+  <g filter="url(#wcBloom)">
+    <rect x="840" y="360" width="280" height="170" rx="16" fill="#ffffff" fill-opacity="0.60" filter="url(#wcEdge)"/>
+    <rect x="840" y="360" width="280" height="170" rx="16" fill="#c3a0d4" fill-opacity="0.10"/>
+    <!-- Heading bar -->
+    <rect x="872" y="392" width="110" height="8" rx="4" fill="#c3a0d4" opacity="0.50"/>
+    <!-- Progress bars -->
+    <rect x="872" y="418" width="216" height="7" rx="3.5" fill="#e8ddd0" opacity="0.40"/>
+    <rect x="872" y="418" width="150" height="7" rx="3.5" fill="#c3a0d4" opacity="0.30"/>
+    <rect x="872" y="438" width="216" height="7" rx="3.5" fill="#e8ddd0" opacity="0.40"/>
+    <rect x="872" y="438" width="90" height="7" rx="3.5" fill="#d4a0a0" opacity="0.30"/>
+    <rect x="872" y="458" width="216" height="7" rx="3.5" fill="#e8ddd0" opacity="0.40"/>
+    <rect x="872" y="458" width="175" height="7" rx="3.5" fill="#7bb8d4" opacity="0.28"/>
+    <!-- Button -->
+    <rect x="872" y="484" width="80" height="26" rx="13" fill="#c3a0d4" fill-opacity="0.18"/>
+    <rect x="885" y="494" width="54" height="5" rx="2.5" fill="#c3a0d4" opacity="0.45"/>
+  </g>
 
-  <!-- Paint splatter dots - varied sizes, visible -->
-  <circle cx="260" cy="410" r="8" fill="#d4a0a0" opacity="0.35" filter="url(#wcFine)"/>
-  <circle cx="820" cy="120" r="6" fill="#7bb8d4" opacity="0.40" filter="url(#wcFine)"/>
-  <circle cx="420" cy="520" r="10" fill="#8cc5a8" opacity="0.30" filter="url(#wcFine)"/>
-  <circle cx="950" cy="430" r="7" fill="#c3a0d4" opacity="0.35" filter="url(#wcFine)"/>
-  <circle cx="700" cy="100" r="5" fill="#d4a0a0" opacity="0.38" filter="url(#wcFine)"/>
+  <!-- Card 5 - small floating card mid-area -->
+  <g filter="url(#wcBloom)">
+    <rect x="410" y="110" width="160" height="100" rx="14" fill="#ffffff" fill-opacity="0.55" filter="url(#wcEdge)"/>
+    <rect x="410" y="110" width="160" height="100" rx="14" fill="#e8c87a" fill-opacity="0.08"/>
+    <rect x="434" y="134" width="60" height="7" rx="3.5" fill="#e8c87a" opacity="0.50"/>
+    <rect x="434" y="152" width="110" height="5" rx="2.5" fill="#b8a898" opacity="0.30"/>
+    <rect x="434" y="166" width="85" height="5" rx="2.5" fill="#b8a898" opacity="0.25"/>
+  </g>
 
-  <!-- Title "Watercolor" with shadow -->
-  <text x="602" y="262" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="600" fill="#c28585" text-anchor="middle" opacity="0.20">Watercolor</text>
-  <text x="600" y="260" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="600" fill="#5a3e3e" text-anchor="middle">Watercolor</text>
+  <!-- Title -->
+  <text x="600" y="305" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="72" font-weight="600" fill="#5a3e3e" opacity="0.85">WATERCOLOR ART</text>
+  <text x="600" y="345" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#d4a0a0" letter-spacing="6" opacity="0.60">SOFT PIGMENTS ON WARM PAPER</text>
 
-  <!-- Subtitle "Art" in watercolor accent color -->
-  <text x="600" y="345" font-family="Georgia, 'Palatino Linotype', serif" font-size="72" font-weight="600" fill="#7bb8d4" text-anchor="middle" opacity="0.80">Art</text>
-
-  <!-- Descriptive tagline -->
-  <text x="600" y="400" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#5a3e3e" text-anchor="middle" opacity="0.40" letter-spacing="8">BLEEDING PIGMENTS ON WARM PAPER</text>
-
-  <!-- Round watercolor swatch circles at bottom - HIGH opacity -->
-  <circle cx="370" cy="510" r="35" fill="#d4a0a0" opacity="0.65" filter="url(#wcFine)"/>
-  <circle cx="460" cy="507" r="33" fill="#7bb8d4" opacity="0.65" filter="url(#wcFine)"/>
-  <circle cx="548" cy="512" r="34" fill="#8cc5a8" opacity="0.60" filter="url(#wcFine)"/>
-  <circle cx="636" cy="509" r="32" fill="#c3a0d4" opacity="0.60" filter="url(#wcFine)"/>
-  <circle cx="722" cy="511" r="35" fill="#e8c87a" opacity="0.60" filter="url(#wcFine)"/>
-  <circle cx="810" cy="508" r="33" fill="#faf6f0" opacity="0.70" stroke="#d4a0a0" stroke-width="2" stroke-opacity="0.40"/>
+  <!-- Small paint splatter accents -->
+  <circle cx="520" cy="440" r="5" fill="#d4a0a0" opacity="0.18" filter="url(#wcEdge)"/>
+  <circle cx="720" cy="180" r="4" fill="#7bb8d4" opacity="0.15" filter="url(#wcEdge)"/>
+  <circle cx="680" cy="510" r="3" fill="#8cc5a8" opacity="0.12" filter="url(#wcEdge)"/>
 </svg>

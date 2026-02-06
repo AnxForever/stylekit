@@ -1,131 +1,184 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
     <!-- Hexagonal grid pattern -->
     <pattern id="caHexGrid" x="0" y="0" width="60" height="52" patternUnits="userSpaceOnUse">
-      <path d="M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z" fill="none" stroke="#7c3aed" stroke-width="0.4" opacity="0.18"/>
+      <path d="M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z" fill="none" stroke="#7c3aed" stroke-width="0.4" opacity="0.15"/>
     </pattern>
-    <!-- Neon glow filter -->
-    <filter id="caGlowPurple" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+    <!-- Scan line pattern -->
+    <pattern id="caScanLines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="1" fill="#ffffff" opacity="0.03"/>
+    </pattern>
+    <!-- Circuit trace pattern -->
+    <pattern id="caCircuit" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M0 40 L20 40 L25 35 L40 35" stroke="#7c3aed" stroke-width="0.3" fill="none" opacity="0.1"/>
+      <path d="M40 0 L40 20 L35 25 L35 40" stroke="#06d6a0" stroke-width="0.3" fill="none" opacity="0.08"/>
+      <circle cx="40" cy="35" r="1.5" fill="#7c3aed" opacity="0.12"/>
+    </pattern>
+    <!-- Neon glow filters -->
     <filter id="caGlowCyan" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="caGlowPink" x="-50%" y="-50%" width="200%" height="200%">
+    <filter id="caGlowPurple" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 
   <!-- Dark base -->
-  <rect width="1200" height="630" fill="#0a0a14"/>
-  <rect width="1200" height="630" fill="#0f0f1a" opacity="0.8"/>
+  <rect width="1200" height="630" fill="#0a0f1e"/>
 
-  <!-- Hexagonal grid overlay (boosted from 0.1 to 0.18) -->
+  <!-- Hexagonal grid overlay -->
   <rect width="1200" height="630" fill="url(#caHexGrid)"/>
+  <!-- Circuit traces -->
+  <rect width="1200" height="630" fill="url(#caCircuit)"/>
 
-  <!-- Deep glow orbs (boosted) -->
-  <circle cx="250" cy="300" r="220" fill="#7c3aed" opacity="0.10"/>
-  <circle cx="950" cy="350" r="200" fill="#06d6a0" opacity="0.09"/>
-  <circle cx="600" cy="150" r="180" fill="#ff006e" opacity="0.08"/>
+  <!-- Deep glow orbs -->
+  <circle cx="200" cy="300" r="200" fill="#7c3aed" opacity="0.07"/>
+  <circle cx="1000" cy="350" r="180" fill="#06d6a0" opacity="0.06"/>
+  <circle cx="600" cy="100" r="150" fill="#ff006e" opacity="0.05"/>
 
-  <!-- HUD Frame Corners - angled mecha style (kept at 0.6) -->
-  <g stroke="#06d6a0" stroke-width="2" opacity="0.6">
-    <!-- Top-left HUD corner -->
-    <line x1="30" y1="30" x2="100" y2="30"/>
-    <line x1="30" y1="30" x2="30" y2="100"/>
-    <line x1="30" y1="30" x2="50" y2="50"/>
-    <!-- Top-right HUD corner -->
-    <line x1="1100" y1="30" x2="1170" y2="30"/>
-    <line x1="1170" y1="30" x2="1170" y2="100"/>
-    <line x1="1170" y1="30" x2="1150" y2="50"/>
-    <!-- Bottom-left HUD corner -->
-    <line x1="30" y1="530" x2="30" y2="600"/>
-    <line x1="30" y1="600" x2="100" y2="600"/>
-    <line x1="30" y1="600" x2="50" y2="580"/>
-    <!-- Bottom-right HUD corner -->
-    <line x1="1170" y1="530" x2="1170" y2="600"/>
-    <line x1="1100" y1="600" x2="1170" y2="600"/>
-    <line x1="1170" y1="600" x2="1150" y2="580"/>
+  <!-- HUD Frame Corners -->
+  <g stroke="#06d6a0" stroke-width="1.5" opacity="0.5">
+    <line x1="25" y1="25" x2="90" y2="25"/>
+    <line x1="25" y1="25" x2="25" y2="90"/>
+    <line x1="25" y1="25" x2="42" y2="42"/>
+    <line x1="1110" y1="25" x2="1175" y2="25"/>
+    <line x1="1175" y1="25" x2="1175" y2="90"/>
+    <line x1="1175" y1="25" x2="1158" y2="42"/>
+    <line x1="25" y1="540" x2="25" y2="605"/>
+    <line x1="25" y1="605" x2="90" y2="605"/>
+    <line x1="25" y1="605" x2="42" y2="588"/>
+    <line x1="1175" y1="540" x2="1175" y2="605"/>
+    <line x1="1110" y1="605" x2="1175" y2="605"/>
+    <line x1="1175" y1="605" x2="1158" y2="588"/>
   </g>
 
-  <!-- Mecha panel left - angled corners clipped -->
-  <polygon points="80,140 370,140 390,160 390,340 370,360 80,360 60,340 60,160" fill="#0f0f1a" stroke="#7c3aed" stroke-width="1" opacity="0.6"/>
-  <polygon points="80,140 370,140 390,160 390,340 370,360 80,360 60,340 60,160" fill="#7c3aed" opacity="0.05"/>
-  <!-- Data readout inside left panel (boosted text) -->
-  <text x="90" y="175" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#06d6a0" opacity="0.7">SYS://NEURAL_CORE</text>
-  <line x1="80" y1="185" x2="350" y2="185" stroke="#7c3aed" stroke-width="0.5" opacity="0.55"/>
-  <text x="90" y="205" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#e0e0ff" opacity="0.60">STATUS: ONLINE</text>
-  <text x="90" y="220" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#e0e0ff" opacity="0.60">SYNC: 99.7%</text>
-  <text x="90" y="235" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#e0e0ff" opacity="0.60">LATENCY: 0.003ms</text>
-  <!-- Bar graph in left panel -->
-  <rect x="90" y="255" width="120" height="6" fill="#1a1a2e" opacity="0.8"/>
-  <rect x="90" y="255" width="105" height="6" fill="#7c3aed" opacity="0.6"/>
-  <rect x="90" y="268" width="120" height="6" fill="#1a1a2e" opacity="0.8"/>
-  <rect x="90" y="268" width="80" height="6" fill="#06d6a0" opacity="0.6"/>
-  <rect x="90" y="281" width="120" height="6" fill="#1a1a2e" opacity="0.8"/>
-  <rect x="90" y="281" width="95" height="6" fill="#ff006e" opacity="0.5"/>
-  <!-- Status dots -->
-  <circle cx="90" cy="310" r="3" fill="#06d6a0" opacity="0.7"/>
-  <circle cx="105" cy="310" r="3" fill="#06d6a0" opacity="0.5"/>
-  <circle cx="120" cy="310" r="3" fill="#7c3aed" opacity="0.7"/>
-  <circle cx="135" cy="310" r="3" fill="#ff006e" opacity="0.5"/>
-  <text x="150" y="313" font-family="ui-monospace, 'Courier New', monospace" font-size="8" fill="#e0e0ff" opacity="0.55">NODES ACTIVE</text>
+  <!-- Card 1 - top left: System Status HUD panel -->
+  <g>
+    <!-- Angular clipped card shape -->
+    <polygon points="60,100 320,100 340,120 340,300 320,320 60,320 40,300 40,120" fill="#0a0f1e" stroke="#7c3aed" stroke-width="1.2" opacity="0.8"/>
+    <polygon points="60,100 320,100 340,120 340,300 320,320 60,320 40,300 40,120" fill="#7c3aed" opacity="0.04"/>
+    <!-- Scan line overlay -->
+    <polygon points="60,100 320,100 340,120 340,300 320,320 60,320 40,300 40,120" fill="url(#caScanLines)"/>
+    <!-- Monospace heading -->
+    <text x="70" y="132" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#06d6a0" opacity="0.8">SYS://CORE_STATUS</text>
+    <line x1="60" y1="140" x2="320" y2="140" stroke="#7c3aed" stroke-width="0.5" opacity="0.4"/>
+    <!-- Status readout lines -->
+    <text x="70" y="162" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.6">CPU_LOAD:</text>
+    <rect x="150" y="155" width="140" height="6" rx="1" fill="#1a1a2e"/>
+    <rect x="150" y="155" width="115" height="6" rx="1" fill="#7c3aed" opacity="0.6"/>
+    <text x="300" y="162" font-family="ui-monospace, monospace" font-size="8" fill="#7c3aed" opacity="0.6">82%</text>
+    <text x="70" y="182" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.6">MEM_USE:</text>
+    <rect x="150" y="175" width="140" height="6" rx="1" fill="#1a1a2e"/>
+    <rect x="150" y="175" width="95" height="6" rx="1" fill="#06d6a0" opacity="0.6"/>
+    <text x="300" y="182" font-family="ui-monospace, monospace" font-size="8" fill="#06d6a0" opacity="0.6">68%</text>
+    <text x="70" y="202" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.6">NET_BW:</text>
+    <rect x="150" y="195" width="140" height="6" rx="1" fill="#1a1a2e"/>
+    <rect x="150" y="195" width="125" height="6" rx="1" fill="#ff006e" opacity="0.5"/>
+    <text x="300" y="202" font-family="ui-monospace, monospace" font-size="8" fill="#ff006e" opacity="0.6">89%</text>
+    <!-- Hexagonal icon -->
+    <polygon points="100,250 115,240 130,250 130,268 115,278 100,268" fill="none" stroke="#06d6a0" stroke-width="1" opacity="0.5"/>
+    <polygon points="107,254 115,248 123,254 123,264 115,270 107,264" fill="#06d6a0" opacity="0.15"/>
+    <!-- Status text -->
+    <text x="145" y="260" font-family="ui-monospace, monospace" font-size="9" fill="#06d6a0" opacity="0.7">STATUS: ONLINE</text>
+    <text x="145" y="275" font-family="ui-monospace, monospace" font-size="8" fill="#e0e0ff" opacity="0.5">UPTIME: 847:23:41</text>
+    <!-- Neon corner accents -->
+    <line x1="40" y1="120" x2="55" y2="105" stroke="#06d6a0" stroke-width="1" opacity="0.4"/>
+    <line x1="340" y1="120" x2="325" y2="105" stroke="#06d6a0" stroke-width="1" opacity="0.4"/>
+  </g>
 
-  <!-- Mecha panel right -->
-  <polygon points="830,320 1120,320 1140,340 1140,520 1120,540 830,540 810,520 810,340" fill="#0f0f1a" stroke="#06d6a0" stroke-width="1" opacity="0.5"/>
-  <polygon points="830,320 1120,320 1140,340 1140,520 1120,540 830,540 810,520 810,340" fill="#06d6a0" opacity="0.05"/>
-  <!-- Neural network pattern in right panel (boosted nodes and lines) -->
-  <circle cx="870" cy="400" r="4" fill="#06d6a0" opacity="0.65"/>
-  <circle cx="920" cy="380" r="3" fill="#7c3aed" opacity="0.65"/>
-  <circle cx="960" cy="410" r="4" fill="#06d6a0" opacity="0.65"/>
-  <circle cx="1010" cy="370" r="3" fill="#ff006e" opacity="0.65"/>
-  <circle cx="1050" cy="400" r="4" fill="#7c3aed" opacity="0.65"/>
-  <circle cx="1090" cy="385" r="3" fill="#06d6a0" opacity="0.65"/>
-  <line x1="870" y1="400" x2="920" y2="380" stroke="#06d6a0" stroke-width="0.5" opacity="0.50"/>
-  <line x1="920" y1="380" x2="960" y2="410" stroke="#7c3aed" stroke-width="0.5" opacity="0.50"/>
-  <line x1="960" y1="410" x2="1010" y2="370" stroke="#06d6a0" stroke-width="0.5" opacity="0.50"/>
-  <line x1="1010" y1="370" x2="1050" y2="400" stroke="#ff006e" stroke-width="0.5" opacity="0.50"/>
-  <line x1="1050" y1="400" x2="1090" y2="385" stroke="#7c3aed" stroke-width="0.5" opacity="0.50"/>
-  <text x="830" y="460" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#38bdf8" opacity="0.6">NEURAL_STREAM://</text>
-  <text x="830" y="480" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#e0e0ff" opacity="0.55">BANDWIDTH: 12.4 TB/s</text>
-  <text x="830" y="495" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#e0e0ff" opacity="0.55">PROTOCOL: QUANTUM-7</text>
+  <!-- Card 2 - top right: Neural Stream panel -->
+  <g>
+    <polygon points="860,80 1120,80 1140,100 1140,280 1120,300 860,300 840,280 840,100" fill="#0a0f1e" stroke="#06d6a0" stroke-width="1.2" opacity="0.7"/>
+    <polygon points="860,80 1120,80 1140,100 1140,280 1120,300 860,300 840,280 840,100" fill="#06d6a0" opacity="0.03"/>
+    <polygon points="860,80 1120,80 1140,100 1140,280 1120,300 860,300 840,280 840,100" fill="url(#caScanLines)"/>
+    <!-- Monospace heading -->
+    <text x="870" y="112" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#38bdf8" opacity="0.8">NET://NEURAL_STREAM</text>
+    <line x1="860" y1="120" x2="1120" y2="120" stroke="#06d6a0" stroke-width="0.5" opacity="0.35"/>
+    <!-- Network nodes visualization -->
+    <circle cx="890" cy="160" r="4" fill="#06d6a0" opacity="0.6"/>
+    <circle cx="940" cy="148" r="3" fill="#7c3aed" opacity="0.6"/>
+    <circle cx="990" cy="165" r="4" fill="#06d6a0" opacity="0.6"/>
+    <circle cx="1040" cy="145" r="3" fill="#ff006e" opacity="0.5"/>
+    <circle cx="1090" cy="158" r="4" fill="#7c3aed" opacity="0.6"/>
+    <line x1="890" y1="160" x2="940" y2="148" stroke="#06d6a0" stroke-width="0.5" opacity="0.4"/>
+    <line x1="940" y1="148" x2="990" y2="165" stroke="#7c3aed" stroke-width="0.5" opacity="0.4"/>
+    <line x1="990" y1="165" x2="1040" y2="145" stroke="#06d6a0" stroke-width="0.5" opacity="0.4"/>
+    <line x1="1040" y1="145" x2="1090" y2="158" stroke="#ff006e" stroke-width="0.5" opacity="0.4"/>
+    <!-- Data readout -->
+    <text x="870" y="200" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">BANDWIDTH: 12.4 TB/s</text>
+    <text x="870" y="215" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">PROTOCOL: QUANTUM-7</text>
+    <text x="870" y="230" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">LATENCY:  0.003ms</text>
+    <!-- Status bars -->
+    <rect x="870" y="248" width="200" height="5" rx="1" fill="#1a1a2e"/>
+    <rect x="870" y="248" width="170" height="5" rx="1" fill="#38bdf8" opacity="0.5"/>
+    <rect x="870" y="260" width="200" height="5" rx="1" fill="#1a1a2e"/>
+    <rect x="870" y="260" width="130" height="5" rx="1" fill="#7c3aed" opacity="0.45"/>
+    <!-- Corner accents -->
+    <line x1="840" y1="100" x2="855" y2="85" stroke="#06d6a0" stroke-width="1" opacity="0.35"/>
+    <line x1="1140" y1="100" x2="1125" y2="85" stroke="#06d6a0" stroke-width="1" opacity="0.35"/>
+  </g>
 
-  <!-- Horizontal neon accent lines (boosted) -->
-  <line x1="60" y1="420" x2="380" y2="420" stroke="#ff006e" stroke-width="1" opacity="0.50" filter="url(#caGlowPink)"/>
-  <line x1="60" y1="432" x2="260" y2="432" stroke="#ff006e" stroke-width="0.5" opacity="0.45"/>
+  <!-- Card 3 - bottom left: Threat Detection panel -->
+  <g>
+    <polygon points="60,400 280,400 300,420 300,570 280,590 60,590 40,570 40,420" fill="#0a0f1e" stroke="#ff006e" stroke-width="1" opacity="0.7"/>
+    <polygon points="60,400 280,400 300,420 300,570 280,590 60,590 40,570 40,420" fill="#ff006e" opacity="0.03"/>
+    <polygon points="60,400 280,400 300,420 300,570 280,590 60,590 40,570 40,420" fill="url(#caScanLines)"/>
+    <text x="70" y="428" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#ff006e" opacity="0.75">ALERT://THREAT_DET</text>
+    <line x1="60" y1="436" x2="280" y2="436" stroke="#ff006e" stroke-width="0.5" opacity="0.35"/>
+    <!-- Threat level indicator -->
+    <text x="70" y="458" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">THREAT_LVL: LOW</text>
+    <circle cx="220" cy="454" r="4" fill="#06d6a0" opacity="0.7"/>
+    <text x="70" y="478" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">FIREWALL:  ACTIVE</text>
+    <text x="70" y="498" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.55">SCANS:     1,247</text>
+    <!-- Mini bar graph -->
+    <rect x="70" y="518" width="100" height="5" rx="1" fill="#1a1a2e"/>
+    <rect x="70" y="518" width="25" height="5" rx="1" fill="#06d6a0" opacity="0.6"/>
+    <rect x="70" y="530" width="100" height="5" rx="1" fill="#1a1a2e"/>
+    <rect x="70" y="530" width="15" height="5" rx="1" fill="#06d6a0" opacity="0.5"/>
+    <rect x="70" y="542" width="100" height="5" rx="1" fill="#1a1a2e"/>
+    <rect x="70" y="542" width="8" height="5" rx="1" fill="#06d6a0" opacity="0.5"/>
+    <!-- Hexagonal icon -->
+    <polygon points="230,520 242,512 254,520 254,534 242,542 230,534" fill="none" stroke="#ff006e" stroke-width="0.8" opacity="0.4"/>
+    <polygon points="235,523 242,518 249,523 249,531 242,536 235,531" fill="#ff006e" opacity="0.1"/>
+  </g>
 
-  <line x1="820" y1="270" x2="1140" y2="270" stroke="#38bdf8" stroke-width="1" opacity="0.55"/>
-  <line x1="820" y1="282" x2="1000" y2="282" stroke="#38bdf8" stroke-width="0.5" opacity="0.45"/>
+  <!-- Card 4 - bottom right: Comms panel -->
+  <g>
+    <polygon points="850,370 1120,370 1140,390 1140,570 1120,590 850,590 830,570 830,390" fill="#0a0f1e" stroke="#7c3aed" stroke-width="1.2" opacity="0.7"/>
+    <polygon points="850,370 1120,370 1140,390 1140,570 1120,590 850,590 830,570 830,390" fill="#7c3aed" opacity="0.03"/>
+    <polygon points="850,370 1120,370 1140,390 1140,570 1120,590 850,590 830,570 830,390" fill="url(#caScanLines)"/>
+    <text x="862" y="398" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#7c3aed" opacity="0.8">COMM://ENCRYPTED</text>
+    <line x1="850" y1="406" x2="1120" y2="406" stroke="#7c3aed" stroke-width="0.5" opacity="0.35"/>
+    <!-- Message rows -->
+    <rect x="862" y="420" width="8" height="8" rx="2" fill="#06d6a0" opacity="0.4"/>
+    <rect x="880" y="421" width="140" height="5" rx="2" fill="#e0e0ff" opacity="0.15"/>
+    <rect x="880" y="432" width="100" height="4" rx="2" fill="#e0e0ff" opacity="0.1"/>
+    <rect x="862" y="450" width="8" height="8" rx="2" fill="#7c3aed" opacity="0.4"/>
+    <rect x="880" y="451" width="160" height="5" rx="2" fill="#e0e0ff" opacity="0.15"/>
+    <rect x="880" y="462" width="120" height="4" rx="2" fill="#e0e0ff" opacity="0.1"/>
+    <rect x="862" y="480" width="8" height="8" rx="2" fill="#38bdf8" opacity="0.4"/>
+    <rect x="880" y="481" width="130" height="5" rx="2" fill="#e0e0ff" opacity="0.15"/>
+    <rect x="880" y="492" width="90" height="4" rx="2" fill="#e0e0ff" opacity="0.1"/>
+    <!-- Input bar at bottom -->
+    <rect x="862" y="520" width="220" height="28" rx="2" fill="#1a1a2e" stroke="#7c3aed" stroke-width="0.5" opacity="0.5"/>
+    <text x="875" y="538" font-family="ui-monospace, monospace" font-size="9" fill="#e0e0ff" opacity="0.3">Enter message...</text>
+    <!-- Send button -->
+    <rect x="1092" y="520" width="36" height="28" rx="2" fill="#7c3aed" opacity="0.25"/>
+    <polygon points="1105,530 1105,542 1118,536" fill="#7c3aed" opacity="0.6"/>
+    <!-- Corner accents -->
+    <line x1="830" y1="390" x2="845" y2="375" stroke="#7c3aed" stroke-width="1" opacity="0.35"/>
+    <line x1="1140" y1="390" x2="1125" y2="375" stroke="#7c3aed" stroke-width="1" opacity="0.35"/>
+  </g>
 
-  <!-- Title - CYBER with multi-layer glow -->
-  <text x="600" y="270" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#7c3aed" text-anchor="middle" letter-spacing="12" opacity="0.15" filter="url(#caGlowPurple)">CYBER</text>
-  <text x="600" y="270" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#7c3aed" text-anchor="middle" letter-spacing="12" opacity="0.4" filter="url(#caGlowPurple)">CYBER</text>
-  <text x="600" y="270" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#7c3aed" text-anchor="middle" letter-spacing="12">CYBER</text>
+  <!-- Title - CYBER ANIME with multi-layer glow -->
+  <text x="600" y="310" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="80" font-weight="800" fill="#7c3aed" text-anchor="middle" letter-spacing="8" opacity="0.12" filter="url(#caGlowPurple)">CYBER ANIME</text>
+  <text x="600" y="310" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="80" font-weight="800" fill="#7c3aed" text-anchor="middle" letter-spacing="8" opacity="0.35" filter="url(#caGlowPurple)">CYBER ANIME</text>
+  <text x="600" y="310" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="80" font-weight="800" fill="#e0e0ff" text-anchor="middle" letter-spacing="8">CYBER ANIME</text>
+  <!-- Subtitle -->
+  <text x="600" y="348" font-family="ui-monospace, 'Courier New', monospace" font-size="13" fill="#06d6a0" text-anchor="middle" opacity="0.5" letter-spacing="8">HUD // HOLOGRAPHIC // MECHA</text>
 
-  <!-- Title - ANIME with cyan glow -->
-  <text x="600" y="370" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#06d6a0" text-anchor="middle" letter-spacing="12" opacity="0.15" filter="url(#caGlowCyan)">ANIME</text>
-  <text x="600" y="370" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#06d6a0" text-anchor="middle" letter-spacing="12" opacity="0.4" filter="url(#caGlowCyan)">ANIME</text>
-  <text x="600" y="370" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="96" font-weight="800" fill="#06d6a0" text-anchor="middle" letter-spacing="12">ANIME</text>
-
-  <!-- Subtitle (boosted from 0.35 to 0.50) -->
-  <text x="600" y="418" font-family="ui-monospace, 'Courier New', monospace" font-size="14" fill="#e0e0ff" text-anchor="middle" opacity="0.50" letter-spacing="10">HUD // HOLOGRAPHIC // MECHA</text>
-
-  <!-- Color swatches in HUD frame -->
-  <rect x="415" y="468" width="54" height="44" fill="#7c3aed" opacity="0.85"/>
-  <rect x="415" y="468" width="54" height="44" fill="none" stroke="#7c3aed" stroke-width="1" opacity="0.5"/>
-  <rect x="485" y="468" width="54" height="44" fill="#06d6a0" opacity="0.85"/>
-  <rect x="485" y="468" width="54" height="44" fill="none" stroke="#06d6a0" stroke-width="1" opacity="0.5"/>
-  <rect x="555" y="468" width="54" height="44" fill="#ff006e" opacity="0.85"/>
-  <rect x="555" y="468" width="54" height="44" fill="none" stroke="#ff006e" stroke-width="1" opacity="0.5"/>
-  <rect x="625" y="468" width="54" height="44" fill="#38bdf8" opacity="0.85"/>
-  <rect x="625" y="468" width="54" height="44" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
-  <rect x="695" y="468" width="54" height="44" fill="#0f0f1a" stroke="#7c3aed" stroke-width="1" opacity="0.85"/>
-  <!-- Angled corner decorations on swatch bar (boosted from 0.4 to 0.6) -->
-  <line x1="400" y1="465" x2="415" y2="465" stroke="#06d6a0" stroke-width="1" opacity="0.6"/>
-  <line x1="400" y1="465" x2="400" y2="475" stroke="#06d6a0" stroke-width="1" opacity="0.6"/>
-  <line x1="764" y1="515" x2="749" y2="515" stroke="#06d6a0" stroke-width="1" opacity="0.6"/>
-  <line x1="764" y1="515" x2="764" y2="505" stroke="#06d6a0" stroke-width="1" opacity="0.6"/>
+  <!-- Accent neon lines -->
+  <line x1="420" y1="365" x2="780" y2="365" stroke="#7c3aed" stroke-width="0.5" opacity="0.25"/>
 </svg>
