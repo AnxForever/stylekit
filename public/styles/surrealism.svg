@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="sr-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a3e"/>
+      <stop offset="40%" stop-color="#2a2a5e"/>
+      <stop offset="70%" stop-color="#1a1a3e"/>
+      <stop offset="100%" stop-color="#2a2a5e"/>
+    </linearGradient>
+    <radialGradient id="sr-orb1" cx="0.3" cy="0.3" r="0.5">
+      <stop offset="0%" stop-color="#d4a574" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#d4a574" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sr-orb2" cx="0.7" cy="0.7" r="0.5">
+      <stop offset="0%" stop-color="#c38d94" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#c38d94" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#sr-bg)"/>
+
+  <!-- Dream orbs -->
+  <circle cx="300" cy="200" r="200" fill="url(#sr-orb1)"/>
+  <circle cx="900" cy="450" r="180" fill="url(#sr-orb2)"/>
+  <circle cx="700" cy="150" r="120" fill="#4a3f6b" opacity="0.15"/>
+  <circle cx="150" cy="500" r="100" fill="#d4a574" opacity="0.08"/>
+
+  <!-- Melting clock shape -->
+  <ellipse cx="850" cy="250" rx="60" ry="40" fill="none" stroke="#d4a574" stroke-width="1.5" opacity="0.3" transform="rotate(-15 850 250)"/>
+  <path d="M830,230 Q850,260 870,230" stroke="#d4a574" stroke-width="1" fill="none" opacity="0.2"/>
+
+  <!-- Organic blobs -->
+  <path d="M200,400 Q220,350 280,370 Q340,390 320,440 Q300,490 240,470 Q180,450 200,400" fill="#c38d94" opacity="0.08"/>
+  <path d="M900,100 Q940,80 960,120 Q980,160 940,170 Q900,180 880,140 Q860,100 900,100" fill="#d4a574" opacity="0.1"/>
+
+  <!-- Floating geometric elements -->
+  <rect x="100" y="150" width="30" height="30" rx="8" fill="none" stroke="#f0ece4" stroke-width="1" opacity="0.15" transform="rotate(15 115 165)"/>
+  <rect x="1050" y="350" width="25" height="25" rx="6" fill="none" stroke="#d4a574" stroke-width="1" opacity="0.2" transform="rotate(-20 1062 362)"/>
+
+  <!-- Central title area -->
+  <text x="600" y="285" font-family="Georgia, serif" font-size="80" fill="#f0ece4" text-anchor="middle" font-style="italic" opacity="0.95">Surrealism</text>
+  <text x="600" y="345" font-family="Georgia, serif" font-size="22" fill="#d4a574" text-anchor="middle" font-style="italic" opacity="0.7">Dreamlike Scenes &amp; Melting Forms</text>
+
+  <!-- Subtle horizon line -->
+  <line x1="200" y1="480" x2="1000" y2="480" stroke="#d4a574" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Stars/dots -->
+  <circle cx="400" cy="120" r="2" fill="#f0ece4" opacity="0.4"/>
+  <circle cx="550" cy="80" r="1.5" fill="#f0ece4" opacity="0.3"/>
+  <circle cx="750" cy="100" r="2" fill="#f0ece4" opacity="0.35"/>
+  <circle cx="650" cy="550" r="1.5" fill="#d4a574" opacity="0.3"/>
+  <circle cx="350" cy="530" r="2" fill="#c38d94" opacity="0.25"/>
+</svg>

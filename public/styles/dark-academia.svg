@@ -1,0 +1,90 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="daBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3d2b1f"/>
+      <stop offset="50%" stop-color="#2d4a3e"/>
+      <stop offset="100%" stop-color="#3d2b1f"/>
+    </linearGradient>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="#8b7355"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <!-- Parchment texture simulation -->
+    <filter id="parchment" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="#f5f0e1" surfaceScale="1" result="diffLight">
+        <feDistantLight azimuth="45" elevation="55"/>
+      </feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="diffLight" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#daBg)"/>
+
+  <!-- Bookshelf lines -->
+  <g stroke="#8b7355" stroke-width="1" opacity="0.2">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="430" x2="1200" y2="430"/>
+    <line x1="0" y1="530" x2="1200" y2="530"/>
+  </g>
+
+  <!-- Book spines (left section) -->
+  <g opacity="0.3">
+    <rect x="50" y="100" width="30" height="200" fill="#5c4033" rx="2"/>
+    <rect x="85" y="100" width="25" height="200" fill="#8b7355" rx="2"/>
+    <rect x="115" y="100" width="35" height="200" fill="#3d2b1f" rx="2"/>
+    <rect x="155" y="100" width="20" height="200" fill="#2d4a3e" rx="2"/>
+    <rect x="180" y="100" width="28" height="200" fill="#5c4033" rx="2"/>
+    <rect x="213" y="100" width="32" height="200" fill="#8b7355" rx="2"/>
+    <rect x="250" y="100" width="22" height="200" fill="#3d2b1f" rx="2"/>
+  </g>
+
+  <!-- Book spines (right section) -->
+  <g opacity="0.3">
+    <rect x="920" y="100" width="28" height="200" fill="#3d2b1f" rx="2"/>
+    <rect x="953" y="100" width="35" height="200" fill="#5c4033" rx="2"/>
+    <rect x="993" y="100" width="22" height="200" fill="#8b7355" rx="2"/>
+    <rect x="1020" y="100" width="30" height="200" fill="#2d4a3e" rx="2"/>
+    <rect x="1055" y="100" width="25" height="200" fill="#3d2b1f" rx="2"/>
+    <rect x="1085" y="100" width="32" height="200" fill="#5c4033" rx="2"/>
+    <rect x="1122" y="100" width="28" height="200" fill="#8b7355" rx="2"/>
+  </g>
+
+  <!-- Central parchment area -->
+  <rect x="350" y="120" width="500" height="380" rx="4" fill="#f5f0e1" opacity="0.9"/>
+  <rect x="350" y="120" width="500" height="380" rx="4" fill="none" stroke="#8b7355" stroke-width="2" opacity="0.6"/>
+  <!-- Inner border -->
+  <rect x="370" y="140" width="460" height="340" rx="2" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+
+  <!-- Book spine accent on parchment -->
+  <rect x="350" y="120" width="8" height="380" fill="#8b7355" opacity="0.4"/>
+
+  <!-- Title on parchment -->
+  <text x="600" y="240" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" fill="#3d2b1f" text-anchor="middle">Dark Academia</text>
+  <text x="600" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#8b7355" text-anchor="middle" letter-spacing="4" font-style="italic">Knowledge illuminates the darkness</text>
+
+  <!-- Decorative divider -->
+  <line x1="430" y1="320" x2="770" y2="320" stroke="url(#goldLine)" stroke-width="1"/>
+
+  <!-- Small book icon -->
+  <g transform="translate(575, 350)" fill="#3d2b1f" opacity="0.6">
+    <rect x="0" y="5" width="50" height="40" rx="2" fill="none" stroke="#3d2b1f" stroke-width="2"/>
+    <line x1="25" y1="5" x2="25" y2="45" stroke="#3d2b1f" stroke-width="1"/>
+    <line x1="10" y1="18" x2="22" y2="18" stroke="#8b7355" stroke-width="1"/>
+    <line x1="10" y1="25" x2="22" y2="25" stroke="#8b7355" stroke-width="1"/>
+    <line x1="10" y1="32" x2="22" y2="32" stroke="#8b7355" stroke-width="1"/>
+    <line x1="28" y1="18" x2="40" y2="18" stroke="#8b7355" stroke-width="1"/>
+    <line x1="28" y1="25" x2="40" y2="25" stroke="#8b7355" stroke-width="1"/>
+    <line x1="28" y1="32" x2="40" y2="32" stroke="#8b7355" stroke-width="1"/>
+  </g>
+
+  <!-- Decorative elements -->
+  <text x="600" y="440" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#8b7355" text-anchor="middle" opacity="0.5" letter-spacing="6">MMXXVI</text>
+
+  <!-- Bottom decorative line -->
+  <line x1="200" y1="560" x2="1000" y2="560" stroke="url(#goldLine)" stroke-width="1" opacity="0.4"/>
+</svg>

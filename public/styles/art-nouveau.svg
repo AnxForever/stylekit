@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#f5f0e1"/>
+
+  <!-- Organic vine curves -->
+  <path d="M0,315 Q200,100 400,315 T800,315 T1200,315" stroke="#2d5016" stroke-width="3" fill="none" opacity="0.3"/>
+  <path d="M0,250 Q300,150 500,350 T900,250 T1200,350" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.4"/>
+  <path d="M0,400 Q250,300 450,450 T850,380 T1200,450" stroke="#8b6db5" stroke-width="1.5" fill="none" opacity="0.25"/>
+  <path d="M0,200 Q150,50 350,200 T700,180 T1050,220 T1200,180" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.2"/>
+  <path d="M0,500 Q300,420 500,520 T900,480 T1200,530" stroke="#c9a227" stroke-width="1.5" fill="none" opacity="0.3"/>
+
+  <!-- Flower decorations -->
+  <circle cx="200" cy="200" r="30" fill="#c9a227" opacity="0.15"/>
+  <circle cx="200" cy="200" r="18" fill="#2d5016" opacity="0.1"/>
+  <circle cx="950" cy="450" r="25" fill="#8b6db5" opacity="0.15"/>
+  <circle cx="950" cy="450" r="14" fill="#c9a227" opacity="0.1"/>
+  <circle cx="700" cy="150" r="20" fill="#2d5016" opacity="0.12"/>
+
+  <!-- Leaf shapes -->
+  <ellipse cx="350" cy="380" rx="40" ry="15" transform="rotate(-30 350 380)" fill="#2d5016" opacity="0.1"/>
+  <ellipse cx="850" cy="250" rx="35" ry="12" transform="rotate(20 850 250)" fill="#4a7c3f" opacity="0.1"/>
+
+  <!-- Central decorative frame -->
+  <rect x="300" y="180" width="600" height="270" rx="40" fill="none" stroke="#c9a227" stroke-width="3" opacity="0.4"/>
+  <rect x="315" y="195" width="570" height="240" rx="32" fill="none" stroke="#2d5016" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Title -->
+  <text x="600" y="295" font-family="Georgia, serif" font-size="72" fill="#2d5016" text-anchor="middle" font-weight="400">Art Nouveau</text>
+  <text x="600" y="345" font-family="Georgia, serif" font-size="24" fill="#c9a227" text-anchor="middle" font-style="italic" opacity="0.8">Organic Curves &amp; Flowing Vines</text>
+
+  <!-- Corner vine decorations -->
+  <path d="M300,180 Q280,160 260,180 Q240,200 260,220" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M900,180 Q920,160 940,180 Q960,200 940,220" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M300,450 Q280,470 260,450 Q240,430 260,410" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M900,450 Q920,470 940,450 Q960,430 940,410" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.3"/>
+
+  <!-- Gold accent dots -->
+  <circle cx="100" cy="100" r="4" fill="#c9a227" opacity="0.3"/>
+  <circle cx="1100" cy="530" r="4" fill="#c9a227" opacity="0.3"/>
+  <circle cx="150" cy="530" r="3" fill="#8b6db5" opacity="0.25"/>
+  <circle cx="1050" cy="100" r="3" fill="#8b6db5" opacity="0.25"/>
+</svg>

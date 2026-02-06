@@ -1,0 +1,96 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cottageBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#faf6f0"/>
+      <stop offset="50%" stop-color="#f5d75f" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#d4a0a0" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="cottageSoft" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#cottageBg)"/>
+
+  <!-- Linen texture pattern -->
+  <g opacity="0.04">
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="#8b7355" stroke-width="0.5"/>
+    <line x1="0" y1="20" x2="1200" y2="20" stroke="#8b7355" stroke-width="0.5"/>
+    <line x1="0" y1="40" x2="1200" y2="40" stroke="#8b7355" stroke-width="0.5"/>
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="#8b7355" stroke-width="0.5"/>
+    <line x1="0" y1="80" x2="1200" y2="80" stroke="#8b7355" stroke-width="0.5"/>
+  </g>
+
+  <!-- Rolling hills -->
+  <path d="M0,480 Q200,420 400,460 Q600,500 800,440 Q1000,380 1200,430 L1200,630 L0,630 Z" fill="#5a8f5a" opacity="0.15"/>
+  <path d="M0,520 Q300,470 500,500 Q700,530 900,480 Q1100,440 1200,470 L1200,630 L0,630 Z" fill="#5a8f5a" opacity="0.1"/>
+
+  <!-- Decorative flowers - left -->
+  <g transform="translate(120, 200)">
+    <circle cx="0" cy="0" r="20" fill="#d4a0a0" opacity="0.6"/>
+    <circle cx="16" cy="-10" r="16" fill="#d4a0a0" opacity="0.5"/>
+    <circle cx="-14" cy="-12" r="14" fill="#d4a0a0" opacity="0.5"/>
+    <circle cx="10" cy="14" r="12" fill="#d4a0a0" opacity="0.4"/>
+    <circle cx="-10" cy="12" r="14" fill="#d4a0a0" opacity="0.4"/>
+    <circle cx="0" cy="0" r="8" fill="#f5d75f" opacity="0.8"/>
+  </g>
+
+  <!-- Decorative flowers - right -->
+  <g transform="translate(1050, 180)">
+    <circle cx="0" cy="0" r="18" fill="#d4a0a0" opacity="0.5"/>
+    <circle cx="14" cy="-8" r="14" fill="#d4a0a0" opacity="0.4"/>
+    <circle cx="-12" cy="-10" r="12" fill="#d4a0a0" opacity="0.4"/>
+    <circle cx="8" cy="12" r="10" fill="#d4a0a0" opacity="0.3"/>
+    <circle cx="-8" cy="10" r="12" fill="#d4a0a0" opacity="0.3"/>
+    <circle cx="0" cy="0" r="6" fill="#f5d75f" opacity="0.7"/>
+  </g>
+
+  <!-- Small daisies scattered -->
+  <g opacity="0.4">
+    <circle cx="250" cy="350" r="6" fill="#f5d75f"/>
+    <circle cx="250" cy="340" r="4" fill="white"/>
+    <circle cx="260" cy="348" r="4" fill="white"/>
+    <circle cx="240" cy="348" r="4" fill="white"/>
+    <circle cx="256" cy="358" r="4" fill="white"/>
+    <circle cx="244" cy="358" r="4" fill="white"/>
+  </g>
+  <g opacity="0.3">
+    <circle cx="900" cy="380" r="5" fill="#f5d75f"/>
+    <circle cx="900" cy="372" r="3" fill="white"/>
+    <circle cx="907" cy="378" r="3" fill="white"/>
+    <circle cx="893" cy="378" r="3" fill="white"/>
+    <circle cx="905" cy="386" r="3" fill="white"/>
+    <circle cx="895" cy="386" r="3" fill="white"/>
+  </g>
+
+  <!-- Leaves -->
+  <g opacity="0.25">
+    <ellipse cx="180" cy="300" rx="20" ry="8" fill="#5a8f5a" transform="rotate(-30 180 300)"/>
+    <ellipse cx="200" cy="310" rx="18" ry="7" fill="#5a8f5a" transform="rotate(15 200 310)"/>
+    <ellipse cx="1000" cy="280" rx="22" ry="8" fill="#5a8f5a" transform="rotate(20 1000 280)"/>
+    <ellipse cx="980" cy="295" rx="18" ry="7" fill="#5a8f5a" transform="rotate(-25 980 295)"/>
+  </g>
+
+  <!-- Mushroom -->
+  <g transform="translate(350, 440)" opacity="0.3">
+    <rect x="-4" y="0" width="8" height="20" fill="#8b7355" rx="2"/>
+    <ellipse cx="0" cy="0" rx="18" ry="12" fill="#d4a0a0"/>
+    <circle cx="-6" cy="-3" r="3" fill="#faf6f0" opacity="0.5"/>
+    <circle cx="5" cy="-2" r="2" fill="#faf6f0" opacity="0.4"/>
+    <circle cx="0" cy="4" r="2.5" fill="#faf6f0" opacity="0.3"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="260" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#8b7355" text-anchor="middle">Cottagecore</text>
+  <text x="600" y="310" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#8b7355" opacity="0.6" text-anchor="middle">A simpler life among wildflowers</text>
+
+  <!-- Decorative line with leaves -->
+  <line x1="350" y1="350" x2="500" y2="350" stroke="#5a8f5a" stroke-width="1.5" opacity="0.3"/>
+  <line x1="700" y1="350" x2="850" y2="350" stroke="#5a8f5a" stroke-width="1.5" opacity="0.3"/>
+  <circle cx="600" cy="350" r="6" fill="#d4a0a0" opacity="0.4"/>
+</svg>
