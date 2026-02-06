@@ -1,96 +1,133 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="cottageBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#faf6f0"/>
-      <stop offset="50%" stop-color="#f5d75f" stop-opacity="0.1"/>
-      <stop offset="100%" stop-color="#d4a0a0" stop-opacity="0.2"/>
-    </linearGradient>
-    <filter id="cottageSoft" x="-5%" y="-5%" width="110%" height="110%">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
+    <filter id="warmShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="3" dy="5" result="shadow"/>
+      <feFlood flood-color="#8b6f47" flood-opacity="0.18"/>
+      <feComposite in2="shadow" operator="in"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <pattern id="linenTex" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="none"/>
+      <line x1="0" y1="10" x2="20" y2="10" stroke="#c9b896" stroke-width="0.3" opacity="0.4"/>
+      <line x1="10" y1="0" x2="10" y2="20" stroke="#c9b896" stroke-width="0.3" opacity="0.3"/>
+    </pattern>
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="630" fill="url(#cottageBg)"/>
+  <rect width="1200" height="630" fill="#faf5f0"/>
+  <rect width="1200" height="630" fill="url(#linenTex)"/>
 
-  <!-- Linen texture pattern -->
-  <g opacity="0.04">
-    <line x1="0" y1="0" x2="1200" y2="0" stroke="#8b7355" stroke-width="0.5"/>
-    <line x1="0" y1="20" x2="1200" y2="20" stroke="#8b7355" stroke-width="0.5"/>
-    <line x1="0" y1="40" x2="1200" y2="40" stroke="#8b7355" stroke-width="0.5"/>
-    <line x1="0" y1="60" x2="1200" y2="60" stroke="#8b7355" stroke-width="0.5"/>
-    <line x1="0" y1="80" x2="1200" y2="80" stroke="#8b7355" stroke-width="0.5"/>
+  <!-- Soft botanical background accents -->
+  <circle cx="150" cy="550" r="120" fill="#a8c686" opacity="0.08"/>
+  <circle cx="1050" cy="100" r="100" fill="#d4a0a0" opacity="0.08"/>
+  <circle cx="600" cy="315" r="200" fill="#c9b896" opacity="0.05"/>
+
+  <!-- Small botanical leaf paths as decoration -->
+  <path d="M180 80 Q200 60 220 80 Q200 90 180 80Z" fill="#7a9e5a" opacity="0.15"/>
+  <path d="M200 85 Q220 65 240 85 Q220 95 200 85Z" fill="#7a9e5a" opacity="0.12"/>
+  <path d="M1000 530 Q1020 510 1040 530 Q1020 540 1000 530Z" fill="#7a9e5a" opacity="0.15"/>
+  <path d="M1020 535 Q1040 515 1060 535 Q1040 545 1020 535Z" fill="#7a9e5a" opacity="0.12"/>
+
+  <!-- Card 1 - Top left: Recipe card -->
+  <g filter="url(#warmShadow)">
+    <rect x="70" y="100" width="260" height="190" rx="16" fill="#fdf8f2" stroke="#d4b896" stroke-width="1.5"/>
+    <!-- Floral corner decoration -->
+    <circle cx="90" cy="120" r="6" fill="#d4a0a0" opacity="0.5"/>
+    <circle cx="84" cy="114" r="3" fill="#d4a0a0" opacity="0.35"/>
+    <circle cx="96" cy="114" r="3" fill="#d4a0a0" opacity="0.35"/>
+    <circle cx="90" cy="108" r="2.5" fill="#e8c4c4" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="100" y="135" width="90" height="8" rx="4" fill="#8b6f47" opacity="0.55"/>
+    <!-- Warm accent bar -->
+    <rect x="100" y="155" width="200" height="3" rx="1.5" fill="#d4a0a0" opacity="0.4"/>
+    <!-- Text lines -->
+    <rect x="100" y="172" width="210" height="5" rx="2.5" fill="#c9b896" opacity="0.45"/>
+    <rect x="100" y="187" width="180" height="5" rx="2.5" fill="#c9b896" opacity="0.4"/>
+    <rect x="100" y="202" width="160" height="5" rx="2.5" fill="#c9b896" opacity="0.35"/>
+    <!-- Leaf icon -->
+    <path d="M290 250 Q280 230 295 225 Q310 230 300 250 Q295 245 290 250Z" fill="#7a9e5a" opacity="0.5"/>
   </g>
 
-  <!-- Rolling hills -->
-  <path d="M0,480 Q200,420 400,460 Q600,500 800,440 Q1000,380 1200,430 L1200,630 L0,630 Z" fill="#5a8f5a" opacity="0.15"/>
-  <path d="M0,520 Q300,470 500,500 Q700,530 900,480 Q1100,440 1200,470 L1200,630 L0,630 Z" fill="#5a8f5a" opacity="0.1"/>
-
-  <!-- Decorative flowers - left -->
-  <g transform="translate(120, 200)">
-    <circle cx="0" cy="0" r="20" fill="#d4a0a0" opacity="0.6"/>
-    <circle cx="16" cy="-10" r="16" fill="#d4a0a0" opacity="0.5"/>
-    <circle cx="-14" cy="-12" r="14" fill="#d4a0a0" opacity="0.5"/>
-    <circle cx="10" cy="14" r="12" fill="#d4a0a0" opacity="0.4"/>
-    <circle cx="-10" cy="12" r="14" fill="#d4a0a0" opacity="0.4"/>
-    <circle cx="0" cy="0" r="8" fill="#f5d75f" opacity="0.8"/>
+  <!-- Card 2 - Top right: Garden journal -->
+  <g filter="url(#warmShadow)">
+    <rect x="860" y="80" width="270" height="200" rx="16" fill="#fdf8f2" stroke="#d4b896" stroke-width="1.5"/>
+    <!-- Floral corner decoration -->
+    <circle cx="1110" cy="100" r="6" fill="#d4a0a0" opacity="0.5"/>
+    <circle cx="1104" cy="94" r="3" fill="#d4a0a0" opacity="0.35"/>
+    <circle cx="1116" cy="94" r="3" fill="#d4a0a0" opacity="0.35"/>
+    <circle cx="1110" cy="88" r="2.5" fill="#e8c4c4" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="890" y="115" width="110" height="8" rx="4" fill="#8b6f47" opacity="0.55"/>
+    <!-- Warm accent bar -->
+    <rect x="890" y="135" width="210" height="3" rx="1.5" fill="#a8c686" opacity="0.45"/>
+    <!-- Text lines -->
+    <rect x="890" y="155" width="220" height="5" rx="2.5" fill="#c9b896" opacity="0.45"/>
+    <rect x="890" y="170" width="190" height="5" rx="2.5" fill="#c9b896" opacity="0.4"/>
+    <rect x="890" y="185" width="200" height="5" rx="2.5" fill="#c9b896" opacity="0.35"/>
+    <!-- Progress bar (garden progress) -->
+    <rect x="890" y="210" width="180" height="8" rx="4" fill="#e8ddd0"/>
+    <rect x="890" y="210" width="120" height="8" rx="4" fill="#a8c686" opacity="0.6"/>
+    <!-- Button -->
+    <rect x="890" y="240" width="80" height="24" rx="12" fill="#d4a0a0" opacity="0.3"/>
+    <text x="930" y="256" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10" fill="#8b6f47" font-weight="500">View</text>
   </g>
 
-  <!-- Decorative flowers - right -->
-  <g transform="translate(1050, 180)">
-    <circle cx="0" cy="0" r="18" fill="#d4a0a0" opacity="0.5"/>
-    <circle cx="14" cy="-8" r="14" fill="#d4a0a0" opacity="0.4"/>
-    <circle cx="-12" cy="-10" r="12" fill="#d4a0a0" opacity="0.4"/>
-    <circle cx="8" cy="12" r="10" fill="#d4a0a0" opacity="0.3"/>
-    <circle cx="-8" cy="10" r="12" fill="#d4a0a0" opacity="0.3"/>
-    <circle cx="0" cy="0" r="6" fill="#f5d75f" opacity="0.7"/>
+  <!-- Card 3 - Bottom left: Pantry list -->
+  <g filter="url(#warmShadow)">
+    <rect x="100" y="390" width="230" height="170" rx="16" fill="#fdf8f2" stroke="#d4b896" stroke-width="1.5"/>
+    <!-- Floral corner decoration -->
+    <circle cx="310" cy="410" r="6" fill="#a8c686" opacity="0.45"/>
+    <circle cx="304" cy="404" r="3" fill="#a8c686" opacity="0.3"/>
+    <circle cx="316" cy="404" r="3" fill="#a8c686" opacity="0.3"/>
+    <!-- Heading -->
+    <rect x="130" y="420" width="70" height="8" rx="4" fill="#8b6f47" opacity="0.55"/>
+    <!-- Checklist items -->
+    <circle cx="140" cy="450" r="4" fill="none" stroke="#a8c686" stroke-width="1.5" opacity="0.6"/>
+    <rect x="155" y="447" width="140" height="5" rx="2.5" fill="#c9b896" opacity="0.45"/>
+    <circle cx="140" cy="468" r="4" fill="#a8c686" opacity="0.5"/>
+    <path d="M137 468 L139 470 L143 466" stroke="#fdf8f2" stroke-width="1.5" fill="none"/>
+    <rect x="155" y="465" width="120" height="5" rx="2.5" fill="#c9b896" opacity="0.35"/>
+    <circle cx="140" cy="486" r="4" fill="none" stroke="#a8c686" stroke-width="1.5" opacity="0.6"/>
+    <rect x="155" y="483" width="130" height="5" rx="2.5" fill="#c9b896" opacity="0.45"/>
+    <!-- Small flower -->
+    <circle cx="295" cy="525" r="5" fill="#d4a0a0" opacity="0.4"/>
+    <circle cx="289" cy="520" r="2.5" fill="#d4a0a0" opacity="0.3"/>
+    <circle cx="301" cy="520" r="2.5" fill="#d4a0a0" opacity="0.3"/>
   </g>
 
-  <!-- Small daisies scattered -->
-  <g opacity="0.4">
-    <circle cx="250" cy="350" r="6" fill="#f5d75f"/>
-    <circle cx="250" cy="340" r="4" fill="white"/>
-    <circle cx="260" cy="348" r="4" fill="white"/>
-    <circle cx="240" cy="348" r="4" fill="white"/>
-    <circle cx="256" cy="358" r="4" fill="white"/>
-    <circle cx="244" cy="358" r="4" fill="white"/>
-  </g>
-  <g opacity="0.3">
-    <circle cx="900" cy="380" r="5" fill="#f5d75f"/>
-    <circle cx="900" cy="372" r="3" fill="white"/>
-    <circle cx="907" cy="378" r="3" fill="white"/>
-    <circle cx="893" cy="378" r="3" fill="white"/>
-    <circle cx="905" cy="386" r="3" fill="white"/>
-    <circle cx="895" cy="386" r="3" fill="white"/>
-  </g>
-
-  <!-- Leaves -->
-  <g opacity="0.25">
-    <ellipse cx="180" cy="300" rx="20" ry="8" fill="#5a8f5a" transform="rotate(-30 180 300)"/>
-    <ellipse cx="200" cy="310" rx="18" ry="7" fill="#5a8f5a" transform="rotate(15 200 310)"/>
-    <ellipse cx="1000" cy="280" rx="22" ry="8" fill="#5a8f5a" transform="rotate(20 1000 280)"/>
-    <ellipse cx="980" cy="295" rx="18" ry="7" fill="#5a8f5a" transform="rotate(-25 980 295)"/>
-  </g>
-
-  <!-- Mushroom -->
-  <g transform="translate(350, 440)" opacity="0.3">
-    <rect x="-4" y="0" width="8" height="20" fill="#8b7355" rx="2"/>
-    <ellipse cx="0" cy="0" rx="18" ry="12" fill="#d4a0a0"/>
-    <circle cx="-6" cy="-3" r="3" fill="#faf6f0" opacity="0.5"/>
-    <circle cx="5" cy="-2" r="2" fill="#faf6f0" opacity="0.4"/>
-    <circle cx="0" cy="4" r="2.5" fill="#faf6f0" opacity="0.3"/>
+  <!-- Card 4 - Bottom right: Mood board -->
+  <g filter="url(#warmShadow)">
+    <rect x="830" y="370" width="290" height="180" rx="16" fill="#fdf8f2" stroke="#d4b896" stroke-width="1.5"/>
+    <!-- Floral corner decoration -->
+    <circle cx="850" cy="390" r="6" fill="#e8c4c4" opacity="0.5"/>
+    <circle cx="844" cy="384" r="3" fill="#e8c4c4" opacity="0.35"/>
+    <circle cx="856" cy="384" r="3" fill="#e8c4c4" opacity="0.35"/>
+    <!-- Heading -->
+    <rect x="860" y="405" width="100" height="8" rx="4" fill="#8b6f47" opacity="0.55"/>
+    <!-- Accent divider -->
+    <rect x="860" y="425" width="240" height="3" rx="1.5" fill="#d4a0a0" opacity="0.35"/>
+    <!-- Text lines -->
+    <rect x="860" y="445" width="240" height="5" rx="2.5" fill="#c9b896" opacity="0.45"/>
+    <rect x="860" y="460" width="200" height="5" rx="2.5" fill="#c9b896" opacity="0.4"/>
+    <rect x="860" y="475" width="220" height="5" rx="2.5" fill="#c9b896" opacity="0.35"/>
+    <!-- Metric boxes -->
+    <rect x="860" y="498" width="60" height="30" rx="8" fill="#a8c686" opacity="0.15"/>
+    <text x="890" y="518" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#7a9e5a" font-weight="600">24</text>
+    <rect x="930" y="498" width="60" height="30" rx="8" fill="#d4a0a0" opacity="0.15"/>
+    <text x="960" y="518" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#a07070" font-weight="600">18</text>
+    <rect x="1000" y="498" width="60" height="30" rx="8" fill="#c9b896" opacity="0.2"/>
+    <text x="1030" y="518" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#8b6f47" font-weight="600">42</text>
   </g>
 
   <!-- Title -->
-  <text x="600" y="260" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#8b7355" text-anchor="middle">Cottagecore</text>
-  <text x="600" y="310" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#8b7355" opacity="0.6" text-anchor="middle">A simpler life among wildflowers</text>
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700" fill="#6b5240" letter-spacing="2">COTTAGECORE</text>
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="400" fill="#a8c686" letter-spacing="5" opacity="0.7">WARM &amp; BOTANICAL</text>
 
-  <!-- Decorative line with leaves -->
-  <line x1="350" y1="350" x2="500" y2="350" stroke="#5a8f5a" stroke-width="1.5" opacity="0.3"/>
-  <line x1="700" y1="350" x2="850" y2="350" stroke="#5a8f5a" stroke-width="1.5" opacity="0.3"/>
-  <circle cx="600" cy="350" r="6" fill="#d4a0a0" opacity="0.4"/>
+  <!-- Scattered small leaves -->
+  <path d="M520 440 Q530 425 540 440 Q530 445 520 440Z" fill="#7a9e5a" opacity="0.12"/>
+  <path d="M680 180 Q690 165 700 180 Q690 185 680 180Z" fill="#7a9e5a" opacity="0.1"/>
 </svg>

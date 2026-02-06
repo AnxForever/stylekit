@@ -1,109 +1,160 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
   <defs>
-    <!-- Dark background -->
-    <linearGradient id="ccBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0a0a0a"/>
-      <stop offset="100%" stop-color="#0a0a0a"/>
-    </linearGradient>
-    <!-- Vermilion to gold gradient -->
-    <linearGradient id="ccTitle" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="#d4553a"/>
-      <stop offset="100%" stop-color="#c9a227"/>
-    </linearGradient>
-    <!-- Neon glow filter -->
-    <filter id="ccGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
+    <filter id="redNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#ff2a2a" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
       <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="blur"/>
+        <feMergeNode in="glow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <!-- Vermilion glow -->
-    <filter id="ccVGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
+    <filter id="goldNeonGlow" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feFlood flood-color="#ffd700" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode in="glow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <!-- Lattice pattern for borders -->
+    <pattern id="lattice" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="none"/>
+      <path d="M0,8 L8,0 M8,16 L16,8" stroke="#ff2a2a" stroke-width="0.6" opacity="0.5"/>
+      <path d="M0,8 L8,16 M8,0 L16,8" stroke="#ff2a2a" stroke-width="0.6" opacity="0.5"/>
+    </pattern>
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="630" fill="url(#ccBg)"/>
+  <rect width="1200" height="630" fill="#0a0a14"/>
 
-  <!-- Cyber grid -->
-  <g stroke="#d4553a" stroke-width="0.5" opacity="0.08">
-    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
-    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
-    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
-    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
-    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
-    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
-    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
-    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
-    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
-    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
-    <line x1="1200" y1="0" x2="1200" y2="630"/>
-  </g>
-  <g stroke="#c9a227" stroke-width="0.5" opacity="0.06">
-    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
-    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
-    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="360" x2="1200" y2="360"/>
-    <line x1="0" y1="420" x2="1200" y2="420"/><line x1="0" y1="480" x2="1200" y2="480"/>
-    <line x1="0" y1="540" x2="1200" y2="540"/><line x1="0" y1="600" x2="1200" y2="600"/>
+  <!-- Faint cloud motif -->
+  <g opacity="0.04" stroke="#ff2a2a" stroke-width="1" fill="none">
+    <path d="M200,500 Q230,470 260,480 Q280,460 310,475 Q340,455 370,470 Q390,460 410,480 Q430,470 450,490"/>
+    <path d="M750,100 Q780,70 810,80 Q830,60 860,75 Q890,55 920,70 Q940,60 960,80"/>
   </g>
 
-  <!-- Seal stamp - top right -->
-  <g transform="translate(980, 80) rotate(12)">
-    <rect x="-40" y="-40" width="80" height="80" fill="none" stroke="#d4553a" stroke-width="3" opacity="0.6"/>
-    <rect x="-34" y="-34" width="68" height="68" fill="none" stroke="#d4553a" stroke-width="1" opacity="0.4"/>
-    <text x="0" y="12" font-family="system-ui, sans-serif" font-size="36" fill="#d4553a" text-anchor="middle" opacity="0.7" font-weight="bold">印</text>
+  <!-- Faint dragon line motif -->
+  <g opacity="0.04" stroke="#ffd700" stroke-width="0.8" fill="none">
+    <path d="M100,300 Q130,280 150,290 Q170,270 200,285 Q220,265 250,280 Q270,260 300,275"/>
+    <path d="M900,350 Q930,330 950,340 Q970,320 1000,335 Q1020,315 1050,330 Q1070,310 1100,325"/>
   </g>
 
-  <!-- Lantern decorations - left -->
-  <g opacity="0.4">
-    <rect x="80" y="200" width="16" height="28" fill="#d4553a" rx="2" filter="url(#ccVGlow)"/>
-    <rect x="78" y="196" width="20" height="4" fill="#c9a227"/>
-    <line x1="88" y1="192" x2="88" y2="196" stroke="#c9a227" stroke-width="1"/>
-  </g>
-  <!-- Lantern - right -->
-  <g opacity="0.4">
-    <rect x="1104" y="200" width="16" height="28" fill="#d4553a" rx="2" filter="url(#ccVGlow)"/>
-    <rect x="1102" y="196" width="20" height="4" fill="#c9a227"/>
-    <line x1="1112" y1="192" x2="1112" y2="196" stroke="#c9a227" stroke-width="1"/>
-  </g>
+  <!-- Card 1: Top-left -->
+  <rect x="70" y="90" width="290" height="190" rx="4" fill="#0f0f20"/>
+  <!-- Lattice border -->
+  <rect x="70" y="90" width="290" height="190" rx="4" fill="url(#lattice)" opacity="0.3"/>
+  <rect x="70" y="90" width="290" height="190" rx="4" fill="none" stroke="#ff2a2a" stroke-width="1.5"/>
+  <!-- Pagoda roof header -->
+  <path d="M70,120 L215,108 L360,120" fill="none" stroke="#ff2a2a" stroke-width="1.2" opacity="0.6"/>
+  <path d="M80,120 L215,112 L350,120" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.4"/>
+  <!-- Neon accent lines -->
+  <line x1="70" y1="125" x2="360" y2="125" stroke="#ff2a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Content -->
+  <rect x="95" y="140" width="100" height="8" rx="2" fill="#ff2a2a" opacity="0.7"/>
+  <!-- Red seal stamp -->
+  <rect x="310" y="135" width="24" height="24" rx="2" fill="#ff2a2a" opacity="0.15" stroke="#ff2a2a" stroke-width="1"/>
+  <rect x="316" y="141" width="12" height="12" rx="1" fill="#ff2a2a" opacity="0.3"/>
+  <!-- Text lines -->
+  <rect x="95" y="162" width="220" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="95" y="175" width="190" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="95" y="188" width="200" height="5" rx="2" fill="#2a2a44"/>
+  <!-- Progress bar -->
+  <rect x="95" y="210" width="180" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="95" y="210" width="120" height="8" rx="2" fill="#ff2a2a" opacity="0.4"/>
+  <rect x="95" y="226" width="180" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="95" y="226" width="80" height="8" rx="2" fill="#ffd700" opacity="0.3"/>
 
-  <!-- Cloud pattern decorations -->
-  <g opacity="0.12">
-    <path d="M200 400 Q220 380 240 400 Q260 380 280 400" fill="none" stroke="#c9a227" stroke-width="1.5"/>
-    <path d="M920 400 Q940 380 960 400 Q980 380 1000 400" fill="none" stroke="#c9a227" stroke-width="1.5"/>
-  </g>
+  <!-- Card 2: Top-center -->
+  <rect x="420" y="70" width="330" height="210" rx="4" fill="#0f0f20"/>
+  <rect x="420" y="70" width="330" height="210" rx="4" fill="url(#lattice)" opacity="0.3"/>
+  <rect x="420" y="70" width="330" height="210" rx="4" fill="none" stroke="#ff2a2a" stroke-width="1.5"/>
+  <!-- Pagoda roof -->
+  <path d="M420,100 L585,86 L750,100" fill="none" stroke="#ff2a2a" stroke-width="1.2" opacity="0.6"/>
+  <path d="M430,100 L585,90 L740,100" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.4"/>
+  <line x1="420" y1="105" x2="750" y2="105" stroke="#ff2a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Content -->
+  <rect x="445" y="120" width="120" height="8" rx="2" fill="#ff2a2a" opacity="0.7"/>
+  <!-- Seal -->
+  <rect x="700" y="115" width="24" height="24" rx="2" fill="#ff2a2a" opacity="0.15" stroke="#ff2a2a" stroke-width="1"/>
+  <rect x="706" y="121" width="12" height="12" rx="1" fill="#ff2a2a" opacity="0.3"/>
+  <rect x="445" y="142" width="270" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="445" y="155" width="250" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="445" y="168" width="230" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="445" y="181" width="200" height="5" rx="2" fill="#2a2a44"/>
+  <!-- Bars -->
+  <rect x="445" y="205" width="220" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="445" y="205" width="160" height="8" rx="2" fill="#ff2a2a" opacity="0.4"/>
+  <rect x="445" y="221" width="220" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="445" y="221" width="100" height="8" rx="2" fill="#ffd700" opacity="0.3"/>
+  <!-- Button -->
+  <rect x="445" y="245" width="90" height="22" rx="3" fill="none" stroke="#ff2a2a" stroke-width="1.2"/>
+  <rect x="455" y="252" width="45" height="6" rx="2" fill="#ff2a2a" opacity="0.6"/>
+
+  <!-- Card 3: Top-right -->
+  <rect x="810" y="90" width="290" height="190" rx="4" fill="#0f0f20"/>
+  <rect x="810" y="90" width="290" height="190" rx="4" fill="url(#lattice)" opacity="0.3"/>
+  <rect x="810" y="90" width="290" height="190" rx="4" fill="none" stroke="#ff2a2a" stroke-width="1.5"/>
+  <path d="M810,120 L955,108 L1100,120" fill="none" stroke="#ff2a2a" stroke-width="1.2" opacity="0.6"/>
+  <path d="M820,120 L955,112 L1090,120" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.4"/>
+  <line x1="810" y1="125" x2="1100" y2="125" stroke="#ff2a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Content -->
+  <rect x="835" y="140" width="85" height="8" rx="2" fill="#ff2a2a" opacity="0.7"/>
+  <rect x="1060" y="135" width="24" height="24" rx="2" fill="#ff2a2a" opacity="0.15" stroke="#ff2a2a" stroke-width="1"/>
+  <rect x="1066" y="141" width="12" height="12" rx="1" fill="#ff2a2a" opacity="0.3"/>
+  <rect x="835" y="162" width="220" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="835" y="175" width="200" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="835" y="195" width="160" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="835" y="195" width="110" height="8" rx="2" fill="#ff2a2a" opacity="0.4"/>
+  <!-- Button -->
+  <rect x="835" y="220" width="80" height="22" rx="3" fill="none" stroke="#ffd700" stroke-width="1"/>
+  <rect x="845" y="227" width="40" height="6" rx="2" fill="#ffd700" opacity="0.5"/>
+
+  <!-- Card 4: Bottom-left -->
+  <rect x="150" y="360" width="340" height="200" rx="4" fill="#0f0f20"/>
+  <rect x="150" y="360" width="340" height="200" rx="4" fill="url(#lattice)" opacity="0.3"/>
+  <rect x="150" y="360" width="340" height="200" rx="4" fill="none" stroke="#ff2a2a" stroke-width="1.5"/>
+  <path d="M150,390 L320,376 L490,390" fill="none" stroke="#ff2a2a" stroke-width="1.2" opacity="0.6"/>
+  <path d="M160,390 L320,380 L480,390" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.4"/>
+  <line x1="150" y1="395" x2="490" y2="395" stroke="#ff2a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Content -->
+  <rect x="175" y="410" width="110" height="8" rx="2" fill="#ff2a2a" opacity="0.7"/>
+  <rect x="445" y="405" width="24" height="24" rx="2" fill="#ff2a2a" opacity="0.15" stroke="#ff2a2a" stroke-width="1"/>
+  <rect x="451" y="411" width="12" height="12" rx="1" fill="#ff2a2a" opacity="0.3"/>
+  <rect x="175" y="432" width="280" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="175" y="445" width="260" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="175" y="458" width="230" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="175" y="480" width="240" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="175" y="480" width="180" height="8" rx="2" fill="#ff2a2a" opacity="0.4"/>
+  <rect x="175" y="496" width="240" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="175" y="496" width="120" height="8" rx="2" fill="#ffd700" opacity="0.3"/>
+  <rect x="175" y="520" width="90" height="22" rx="3" fill="none" stroke="#ff2a2a" stroke-width="1.2"/>
+  <rect x="185" y="527" width="45" height="6" rx="2" fill="#ff2a2a" opacity="0.6"/>
+  <rect x="280" y="520" width="90" height="22" rx="3" fill="none" stroke="#ffd700" stroke-width="1"/>
+  <rect x="290" y="527" width="45" height="6" rx="2" fill="#ffd700" opacity="0.5"/>
+
+  <!-- Card 5: Bottom-right -->
+  <rect x="560" y="360" width="340" height="200" rx="4" fill="#0f0f20"/>
+  <rect x="560" y="360" width="340" height="200" rx="4" fill="url(#lattice)" opacity="0.3"/>
+  <rect x="560" y="360" width="340" height="200" rx="4" fill="none" stroke="#ff2a2a" stroke-width="1.5"/>
+  <path d="M560,390 L730,376 L900,390" fill="none" stroke="#ff2a2a" stroke-width="1.2" opacity="0.6"/>
+  <path d="M570,390 L730,380 L890,390" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.4"/>
+  <line x1="560" y1="395" x2="900" y2="395" stroke="#ff2a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Content -->
+  <rect x="585" y="410" width="95" height="8" rx="2" fill="#ff2a2a" opacity="0.7"/>
+  <rect x="855" y="405" width="24" height="24" rx="2" fill="#ff2a2a" opacity="0.15" stroke="#ff2a2a" stroke-width="1"/>
+  <rect x="861" y="411" width="12" height="12" rx="1" fill="#ff2a2a" opacity="0.3"/>
+  <rect x="585" y="432" width="270" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="585" y="445" width="240" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="585" y="458" width="220" height="5" rx="2" fill="#2a2a44"/>
+  <rect x="585" y="480" width="220" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="585" y="480" width="150" height="8" rx="2" fill="#ff2a2a" opacity="0.4"/>
+  <rect x="585" y="496" width="220" height="8" rx="2" fill="#1a1a30"/>
+  <rect x="585" y="496" width="100" height="8" rx="2" fill="#ffd700" opacity="0.3"/>
+  <rect x="585" y="520" width="80" height="22" rx="3" fill="none" stroke="#ff2a2a" stroke-width="1.2"/>
+  <rect x="595" y="527" width="40" height="6" rx="2" fill="#ff2a2a" opacity="0.6"/>
 
   <!-- Title -->
-  <text x="600" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="700" fill="url(#ccTitle)" text-anchor="middle" filter="url(#ccGlow)">CYBER CHINESE</text>
-
-  <!-- Subtitle -->
-  <text x="600" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="#00d4ff" text-anchor="middle" filter="url(#ccGlow)" opacity="0.8">TRADITION MEETS TOMORROW</text>
-
-  <!-- Decorative neon lines -->
-  <line x1="200" y1="300" x2="460" y2="300" stroke="#d4553a" stroke-width="2" filter="url(#ccGlow)" opacity="0.6"/>
-  <line x1="740" y1="300" x2="1000" y2="300" stroke="#00d4ff" stroke-width="2" filter="url(#ccGlow)" opacity="0.6"/>
-
-  <!-- Color swatches -->
-  <rect x="300" y="380" width="80" height="80" fill="#d4553a"/>
-  <rect x="400" y="380" width="80" height="80" fill="#c9a227"/>
-  <rect x="500" y="380" width="80" height="80" fill="#0a0a0a" stroke="#d4553a" stroke-width="0.5"/>
-  <rect x="600" y="380" width="80" height="80" fill="#00d4ff"/>
-  <rect x="700" y="380" width="80" height="80" fill="#a020f0"/>
-
-  <!-- Color labels -->
-  <text x="340" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Vermilion</text>
-  <text x="440" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Gold</text>
-  <text x="540" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Black</text>
-  <text x="640" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Neon Blue</text>
-  <text x="740" y="490" font-family="system-ui, sans-serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Neon Purple</text>
-
-  <!-- Bottom neon accent -->
-  <line x1="300" y1="540" x2="900" y2="540" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
+  <text x="600" y="325" text-anchor="middle" font-family="'Courier New', monospace" font-size="26" font-weight="bold" fill="#ff2a2a" filter="url(#redNeonGlow)" letter-spacing="6">CYBER CHINESE</text>
 </svg>
