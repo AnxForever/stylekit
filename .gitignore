@@ -57,5 +57,9 @@ skills/stylekit-design-system/
 
 # Local images
 image.png
+image.jpg
 *.local.png
+
+# Temporary
+.tmp/
 
