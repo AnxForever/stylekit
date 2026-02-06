@@ -1,87 +1,159 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Grid pattern -->
-    <pattern id="mechaGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="0" y2="40" stroke="#4a5c3a" stroke-width="0.5" opacity="0.2"/>
-      <line x1="0" y1="0" x2="40" y2="0" stroke="#4a5c3a" stroke-width="0.5" opacity="0.2"/>
+    <filter id="mechaShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="2" dy="3" result="shadow"/>
+      <feFlood flood-color="#000" flood-opacity="0.4"/>
+      <feComposite in2="shadow" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Tech grid pattern -->
+    <pattern id="techGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none"/>
+      <line x1="0" y1="40" x2="40" y2="40" stroke="#3a5580" stroke-width="0.3" opacity="0.25"/>
+      <line x1="40" y1="0" x2="40" y2="40" stroke="#3a5580" stroke-width="0.3" opacity="0.25"/>
     </pattern>
     <!-- Warning stripe pattern -->
-    <pattern id="mechaWarning" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
-      <rect width="10" height="20" fill="#fbbf24"/>
-      <rect x="10" width="10" height="20" fill="#1a2744"/>
+    <pattern id="warnStripe" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="12" fill="#f0c030"/>
+      <rect x="6" width="6" height="12" fill="#1a2744"/>
     </pattern>
   </defs>
 
-  <!-- Background -->
+  <!-- Dark navy background -->
   <rect width="1200" height="630" fill="#1a2744"/>
+  <rect width="1200" height="630" fill="url(#techGrid)"/>
 
-  <!-- Tech grid -->
-  <rect width="1200" height="630" fill="url(#mechaGrid)"/>
+  <!-- Warning stripes at top and bottom edges -->
+  <rect x="0" y="0" width="1200" height="8" fill="url(#warnStripe)" opacity="0.35"/>
+  <rect x="0" y="622" width="1200" height="8" fill="url(#warnStripe)" opacity="0.35"/>
 
-  <!-- Warning stripe top -->
-  <rect x="0" y="0" width="1200" height="8" fill="url(#mechaWarning)" opacity="0.8"/>
-  <!-- Warning stripe bottom -->
-  <rect x="0" y="622" width="1200" height="8" fill="url(#mechaWarning)" opacity="0.8"/>
+  <!-- Card 1 - Top left: System Status -->
+  <g filter="url(#mechaShadow)">
+    <rect x="60" y="80" width="280" height="200" rx="2" fill="#0f1a2e" stroke="#4a6a8a" stroke-width="2"/>
+    <!-- Angular cut corners -->
+    <path d="M60 80 L80 80 L60 100Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <path d="M340 80 L320 80 L340 100Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <!-- Rivet dots at corners -->
+    <circle cx="72" cy="92" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="328" cy="92" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="72" cy="268" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="328" cy="268" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <!-- Warning stripe accent bar -->
+    <rect x="80" y="105" width="220" height="10" fill="url(#warnStripe)" opacity="0.5" rx="1"/>
+    <!-- Tech label -->
+    <text x="310" y="96" text-anchor="end" font-family="ui-monospace, 'Courier New', monospace" font-size="7" fill="#4a6a8a" opacity="0.6">SYS-001</text>
+    <!-- Monospace heading -->
+    <rect x="80" y="128" width="110" height="8" rx="1" fill="#6aaa8a" opacity="0.5"/>
+    <!-- Status bars -->
+    <text x="80" y="155" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.7">POWER</text>
+    <rect x="130" y="147" width="180" height="8" rx="1" fill="#0a1020"/>
+    <rect x="130" y="147" width="150" height="8" rx="1" fill="#6aaa8a" opacity="0.6"/>
+    <text x="80" y="175" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.7">ARMOR</text>
+    <rect x="130" y="167" width="180" height="8" rx="1" fill="#0a1020"/>
+    <rect x="130" y="167" width="120" height="8" rx="1" fill="#f0c030" opacity="0.6"/>
+    <text x="80" y="195" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.7">HEAT</text>
+    <rect x="130" y="187" width="180" height="8" rx="1" fill="#0a1020"/>
+    <rect x="130" y="187" width="70" height="8" rx="1" fill="#d04040" opacity="0.6"/>
+    <!-- Warning icon triangle -->
+    <path d="M90 240 L100 222 L110 240Z" fill="none" stroke="#f0c030" stroke-width="1.5" opacity="0.5"/>
+    <text x="100" y="237" text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="#f0c030" opacity="0.5">!</text>
+    <text x="120" y="237" font-family="ui-monospace, 'Courier New', monospace" font-size="8" fill="#6a8aaa" opacity="0.5">HEAT WARNING</text>
+  </g>
 
-  <!-- Large armor panel - left -->
-  <rect x="60" y="80" width="350" height="460" fill="none" stroke="#4a5c3a" stroke-width="2"/>
-  <rect x="64" y="84" width="342" height="452" fill="none" stroke="#4a5c3a" stroke-width="0.5" opacity="0.3"/>
-  <!-- Panel corners -->
-  <rect x="60" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
-  <rect x="60" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
-  <rect x="390" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
-  <rect x="406" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
+  <!-- Card 2 - Top right: Weapons Bay -->
+  <g filter="url(#mechaShadow)">
+    <rect x="860" y="60" width="270" height="220" rx="2" fill="#0f1a2e" stroke="#4a6a8a" stroke-width="2"/>
+    <path d="M860 60 L880 60 L860 80Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <path d="M1130 60 L1110 60 L1130 80Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <!-- Rivets -->
+    <circle cx="872" cy="72" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="1118" cy="72" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="872" cy="268" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="1118" cy="268" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <!-- Warning stripe bar -->
+    <rect x="880" y="85" width="210" height="10" fill="url(#warnStripe)" opacity="0.5" rx="1"/>
+    <!-- Tech label -->
+    <text x="1100" y="76" text-anchor="end" font-family="ui-monospace, 'Courier New', monospace" font-size="7" fill="#4a6a8a" opacity="0.6">WPN-BAY</text>
+    <!-- Heading -->
+    <rect x="880" y="108" width="90" height="8" rx="1" fill="#d04040" opacity="0.5"/>
+    <!-- Weapon entries -->
+    <rect x="880" y="130" width="210" height="30" rx="2" fill="#0a1020" stroke="#3a5580" stroke-width="0.5"/>
+    <rect x="890" y="137" width="60" height="5" rx="1" fill="#6a8aaa" opacity="0.4"/>
+    <rect x="890" y="148" width="180" height="5" rx="1" fill="#4a6a8a" opacity="0.25"/>
+    <rect x="880" y="168" width="210" height="30" rx="2" fill="#0a1020" stroke="#3a5580" stroke-width="0.5"/>
+    <rect x="890" y="175" width="50" height="5" rx="1" fill="#6a8aaa" opacity="0.4"/>
+    <rect x="890" y="186" width="180" height="5" rx="1" fill="#4a6a8a" opacity="0.25"/>
+    <rect x="880" y="206" width="210" height="30" rx="2" fill="#0a1020" stroke="#3a5580" stroke-width="0.5"/>
+    <rect x="890" y="213" width="70" height="5" rx="1" fill="#6a8aaa" opacity="0.4"/>
+    <rect x="890" y="224" width="180" height="5" rx="1" fill="#4a6a8a" opacity="0.25"/>
+    <!-- Ammo count -->
+    <text x="1080" y="148" text-anchor="end" font-family="ui-monospace, monospace" font-size="8" fill="#6aaa8a" opacity="0.5">120/120</text>
+    <text x="1080" y="186" text-anchor="end" font-family="ui-monospace, monospace" font-size="8" fill="#f0c030" opacity="0.5">45/80</text>
+    <text x="1080" y="224" text-anchor="end" font-family="ui-monospace, monospace" font-size="8" fill="#d04040" opacity="0.5">8/20</text>
+  </g>
 
-  <!-- Panel unit label -->
-  <rect x="75" y="95" width="8" height="8" fill="#fbbf24"/>
-  <text x="92" y="103" font-family="ui-monospace, 'Courier New', monospace" font-size="11" fill="#4a5c3a" letter-spacing="3">UNIT-01 // MAIN FRAME</text>
+  <!-- Card 3 - Bottom left: Navigation -->
+  <g filter="url(#mechaShadow)">
+    <rect x="80" y="380" width="260" height="170" rx="2" fill="#0f1a2e" stroke="#4a6a8a" stroke-width="2"/>
+    <path d="M80 380 L100 380 L80 400Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <path d="M340 380 L320 380 L340 400Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <!-- Rivets -->
+    <circle cx="92" cy="392" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="328" cy="392" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="92" cy="538" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="328" cy="538" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <!-- Warning bar -->
+    <rect x="100" y="405" width="200" height="10" fill="url(#warnStripe)" opacity="0.5" rx="1"/>
+    <!-- Tech label -->
+    <text x="310" y="396" text-anchor="end" font-family="ui-monospace, 'Courier New', monospace" font-size="7" fill="#4a6a8a" opacity="0.6">NAV-SYS</text>
+    <!-- Heading -->
+    <rect x="100" y="428" width="80" height="8" rx="1" fill="#6aaa8a" opacity="0.5"/>
+    <!-- Coordinate readouts -->
+    <text x="100" y="455" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.6">LAT  35.6762</text>
+    <text x="100" y="470" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.6">LON 139.6503</text>
+    <text x="100" y="485" font-family="ui-monospace, 'Courier New', monospace" font-size="9" fill="#6a8aaa" opacity="0.6">ALT    420 M</text>
+    <!-- Heading indicator -->
+    <circle cx="280" cy="490" r="25" fill="none" stroke="#4a6a8a" stroke-width="1" opacity="0.4"/>
+    <line x1="280" y1="470" x2="280" y2="480" stroke="#6aaa8a" stroke-width="1.5" opacity="0.5"/>
+    <text x="280" y="494" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#6a8aaa" opacity="0.5">N</text>
+  </g>
 
-  <!-- Armor sections inside left panel -->
-  <rect x="80" y="130" width="310" height="80" fill="#4a5c3a" opacity="0.15" stroke="#4a5c3a" stroke-width="1"/>
-  <rect x="80" y="220" width="150" height="120" fill="#4a5c3a" opacity="0.1" stroke="#4a5c3a" stroke-width="1"/>
-  <rect x="240" y="220" width="150" height="120" fill="#ef4444" opacity="0.08" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
-  <rect x="80" y="350" width="310" height="60" fill="#fbbf24" opacity="0.08" stroke="#fbbf24" stroke-width="1" opacity="0.3"/>
+  <!-- Card 4 - Bottom right: Comms -->
+  <g filter="url(#mechaShadow)">
+    <rect x="830" y="370" width="290" height="180" rx="2" fill="#0f1a2e" stroke="#4a6a8a" stroke-width="2"/>
+    <path d="M830 370 L850 370 L830 390Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <path d="M1120 370 L1100 370 L1120 390Z" fill="#1a2744" stroke="#4a6a8a" stroke-width="1"/>
+    <!-- Rivets -->
+    <circle cx="842" cy="382" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="1108" cy="382" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="842" cy="538" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <circle cx="1108" cy="538" r="3" fill="#6a8aaa" opacity="0.6"/>
+    <!-- Warning bar -->
+    <rect x="850" y="395" width="230" height="10" fill="url(#warnStripe)" opacity="0.5" rx="1"/>
+    <!-- Tech label -->
+    <text x="1090" y="386" text-anchor="end" font-family="ui-monospace, 'Courier New', monospace" font-size="7" fill="#4a6a8a" opacity="0.6">COMM-02</text>
+    <!-- Heading -->
+    <rect x="850" y="418" width="100" height="8" rx="1" fill="#6aaa8a" opacity="0.5"/>
+    <!-- Message entries -->
+    <rect x="850" y="440" width="250" height="5" rx="1" fill="#6a8aaa" opacity="0.3"/>
+    <rect x="850" y="455" width="220" height="5" rx="1" fill="#6a8aaa" opacity="0.25"/>
+    <rect x="850" y="470" width="240" height="5" rx="1" fill="#6a8aaa" opacity="0.28"/>
+    <rect x="850" y="485" width="200" height="5" rx="1" fill="#6a8aaa" opacity="0.23"/>
+    <!-- Signal indicator -->
+    <rect x="850" y="508" width="60" height="20" rx="2" fill="#0a1020" stroke="#6aaa8a" stroke-width="0.8" opacity="0.5"/>
+    <text x="880" y="522" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#6aaa8a" opacity="0.6">ONLINE</text>
+    <!-- Signal bars -->
+    <rect x="930" y="520" width="4" height="8" fill="#6aaa8a" opacity="0.5"/>
+    <rect x="938" y="516" width="4" height="12" fill="#6aaa8a" opacity="0.5"/>
+    <rect x="946" y="512" width="4" height="16" fill="#6aaa8a" opacity="0.5"/>
+    <rect x="954" y="508" width="4" height="20" fill="#6aaa8a" opacity="0.5"/>
+  </g>
 
-  <!-- Warning icon in red panel -->
-  <polygon points="315,260 300,290 330,290" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.6"/>
-  <line x1="315" y1="270" x2="315" y2="282" stroke="#ef4444" stroke-width="2" opacity="0.6"/>
-  <circle cx="315" cy="286" r="1.5" fill="#ef4444" opacity="0.6"/>
-
-  <!-- Large armor panel - right -->
-  <rect x="790" y="80" width="350" height="460" fill="none" stroke="#4a5c3a" stroke-width="2"/>
-  <rect x="794" y="84" width="342" height="452" fill="none" stroke="#4a5c3a" stroke-width="0.5" opacity="0.3"/>
-  <!-- Panel corners -->
-  <rect x="790" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
-  <rect x="790" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
-  <rect x="1120" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
-  <rect x="1136" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
-
-  <!-- Panel unit label -->
-  <rect x="805" y="95" width="8" height="8" fill="#ef4444"/>
-  <text x="822" y="103" font-family="ui-monospace, 'Courier New', monospace" font-size="11" fill="#ef4444" letter-spacing="3">UNIT-02 // SUB FRAME</text>
-
-  <!-- Status bars in right panel -->
-  <rect x="810" y="130" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
-  <rect x="810" y="130" width="250" height="12" fill="#fbbf24" opacity="0.4"/>
-  <rect x="810" y="155" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
-  <rect x="810" y="155" width="200" height="12" fill="#4a5c3a" opacity="0.4"/>
-  <rect x="810" y="180" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
-  <rect x="810" y="180" width="280" height="12" fill="#ef4444" opacity="0.3"/>
-
-  <!-- Hexagonal shape in right panel -->
-  <polygon points="965,320 1005,290 1045,320 1045,370 1005,400 965,370" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
-  <polygon points="975,330 1005,308 1035,330 1035,360 1005,382 975,360" fill="none" stroke="#4a5c3a" stroke-width="1" opacity="0.3"/>
-
-  <!-- Center title area -->
-  <text x="600" y="250" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="#4a5c3a" text-anchor="middle" letter-spacing="8" opacity="0.6">// SYSTEM ONLINE</text>
-  <text x="600" y="320" font-family="ui-monospace, 'Courier New', monospace" font-size="100" font-weight="700" fill="#fbbf24" text-anchor="middle">MECHA</text>
-  <text x="600" y="370" font-family="ui-monospace, 'Courier New', monospace" font-size="18" fill="#4a5c3a" text-anchor="middle" letter-spacing="10">ARMOR CLASS // OPERATIONAL</text>
-
-  <!-- Decorative lines -->
-  <line x1="440" y1="400" x2="540" y2="400" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
-  <line x1="660" y1="400" x2="760" y2="400" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
-  <rect x="590" y="394" width="20" height="12" fill="#ef4444" opacity="0.5"/>
-
-  <!-- Status text at bottom center -->
-  <text x="600" y="480" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#4a5c3a" text-anchor="middle" letter-spacing="4" opacity="0.5">THREAT LEVEL: NOMINAL | ARMOR: 98.7% | POWER: FULL</text>
+  <!-- Title -->
+  <text x="600" y="300" text-anchor="middle" font-family="ui-monospace, 'Courier New', monospace" font-size="80" font-weight="700" fill="#c8d8e8" letter-spacing="6" opacity="0.85">MECHA</text>
+  <text x="600" y="340" text-anchor="middle" font-family="ui-monospace, 'Courier New', monospace" font-size="14" font-weight="400" fill="#6aaa8a" letter-spacing="8" opacity="0.55">MECHANICAL COMBAT SYSTEM</text>
 </svg>

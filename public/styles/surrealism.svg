@@ -1,53 +1,119 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
-  <!-- Gradient background -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="sr-bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1a1a3e"/>
-      <stop offset="40%" stop-color="#2a2a5e"/>
-      <stop offset="70%" stop-color="#1a1a3e"/>
-      <stop offset="100%" stop-color="#2a2a5e"/>
+    <!-- Deep atmospheric gradient -->
+    <linearGradient id="srBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0d2b"/>
+      <stop offset="55%" stop-color="#1a1a3e"/>
+      <stop offset="100%" stop-color="#3d2b1a"/>
     </linearGradient>
-    <radialGradient id="sr-orb1" cx="0.3" cy="0.3" r="0.5">
-      <stop offset="0%" stop-color="#d4a574" stop-opacity="0.3"/>
+    <!-- Dramatic long shadow for floating cards -->
+    <filter id="srShadow" x="-20%" y="-10%" width="150%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+      <feOffset dx="12" dy="20" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.35"/>
+      <feComposite in2="offset" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Lighter shadow variant -->
+    <filter id="srShadowLight" x="-15%" y="-10%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feOffset dx="8" dy="14" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.30"/>
+      <feComposite in2="offset" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Warm glow for floating shapes -->
+    <radialGradient id="srGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#d4a574" stop-opacity="0.20"/>
       <stop offset="100%" stop-color="#d4a574" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="sr-orb2" cx="0.7" cy="0.7" r="0.5">
-      <stop offset="0%" stop-color="#c38d94" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#c38d94" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#sr-bg)"/>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#srBg)"/>
 
-  <!-- Dream orbs -->
-  <circle cx="300" cy="200" r="200" fill="url(#sr-orb1)"/>
-  <circle cx="900" cy="450" r="180" fill="url(#sr-orb2)"/>
-  <circle cx="700" cy="150" r="120" fill="#4a3f6b" opacity="0.15"/>
-  <circle cx="150" cy="500" r="100" fill="#d4a574" opacity="0.08"/>
+  <!-- Atmospheric glow orbs -->
+  <circle cx="300" cy="250" r="160" fill="url(#srGlow)"/>
+  <circle cx="900" cy="400" r="130" fill="#c38d94" opacity="0.06"/>
 
-  <!-- Melting clock shape -->
-  <ellipse cx="850" cy="250" rx="60" ry="40" fill="none" stroke="#d4a574" stroke-width="1.5" opacity="0.3" transform="rotate(-15 850 250)"/>
-  <path d="M830,230 Q850,260 870,230" stroke="#d4a574" stroke-width="1" fill="none" opacity="0.2"/>
-
-  <!-- Organic blobs -->
-  <path d="M200,400 Q220,350 280,370 Q340,390 320,440 Q300,490 240,470 Q180,450 200,400" fill="#c38d94" opacity="0.08"/>
-  <path d="M900,100 Q940,80 960,120 Q980,160 940,170 Q900,180 880,140 Q860,100 900,100" fill="#d4a574" opacity="0.1"/>
-
-  <!-- Floating geometric elements -->
-  <rect x="100" y="150" width="30" height="30" rx="8" fill="none" stroke="#f0ece4" stroke-width="1" opacity="0.15" transform="rotate(15 115 165)"/>
-  <rect x="1050" y="350" width="25" height="25" rx="6" fill="none" stroke="#d4a574" stroke-width="1" opacity="0.2" transform="rotate(-20 1062 362)"/>
-
-  <!-- Central title area -->
-  <text x="600" y="285" font-family="Georgia, serif" font-size="80" fill="#f0ece4" text-anchor="middle" font-style="italic" opacity="0.95">Surrealism</text>
-  <text x="600" y="345" font-family="Georgia, serif" font-size="22" fill="#d4a574" text-anchor="middle" font-style="italic" opacity="0.7">Dreamlike Scenes &amp; Melting Forms</text>
-
-  <!-- Subtle horizon line -->
-  <line x1="200" y1="480" x2="1000" y2="480" stroke="#d4a574" stroke-width="0.5" opacity="0.2"/>
+  <!-- Floating geometric shapes (background) -->
+  <rect x="110" y="480" width="35" height="35" rx="6" fill="none" stroke="#d4a574" stroke-width="1" opacity="0.20" transform="rotate(25 127 497)"/>
+  <circle cx="1060" cy="140" r="20" fill="none" stroke="#f0ece4" stroke-width="1" opacity="0.18"/>
+  <polygon points="680,520 700,490 720,520" fill="none" stroke="#c38d94" stroke-width="1" opacity="0.15"/>
 
   <!-- Stars/dots -->
-  <circle cx="400" cy="120" r="2" fill="#f0ece4" opacity="0.4"/>
-  <circle cx="550" cy="80" r="1.5" fill="#f0ece4" opacity="0.3"/>
-  <circle cx="750" cy="100" r="2" fill="#f0ece4" opacity="0.35"/>
-  <circle cx="650" cy="550" r="1.5" fill="#d4a574" opacity="0.3"/>
-  <circle cx="350" cy="530" r="2" fill="#c38d94" opacity="0.25"/>
+  <circle cx="400" cy="90" r="1.5" fill="#f0ece4" opacity="0.50"/>
+  <circle cx="550" cy="60" r="1" fill="#f0ece4" opacity="0.40"/>
+  <circle cx="800" cy="80" r="1.5" fill="#f0ece4" opacity="0.45"/>
+  <circle cx="250" cy="140" r="1" fill="#f0ece4" opacity="0.35"/>
+  <circle cx="1000" cy="100" r="1.5" fill="#d4a574" opacity="0.30"/>
+
+  <!-- Card 1 - tilted 18deg, top-left area, with melting bottom -->
+  <g filter="url(#srShadow)" transform="rotate(-18 220 200)">
+    <path d="M90,120 L330,120 L330,120 Q330,120 330,128 L330,260 Q325,285 310,290 Q290,298 270,280 Q250,295 230,285 Q210,300 190,290 Q170,295 150,282 Q130,290 110,280 Q95,278 90,260 L90,128 Q90,120 98,120 Z" fill="#f0ece4" opacity="0.92"/>
+    <!-- Heading -->
+    <rect x="118" y="148" width="90" height="9" rx="4.5" fill="#d4a574" opacity="0.60"/>
+    <!-- Text lines -->
+    <rect x="118" y="170" width="180" height="5" rx="2.5" fill="#4a3f6b" opacity="0.30"/>
+    <rect x="118" y="184" width="150" height="5" rx="2.5" fill="#4a3f6b" opacity="0.25"/>
+    <rect x="118" y="198" width="165" height="5" rx="2.5" fill="#4a3f6b" opacity="0.22"/>
+    <!-- Eye accent -->
+    <ellipse cx="280" cy="240" rx="18" ry="12" fill="none" stroke="#4a3f6b" stroke-width="1.5" opacity="0.35"/>
+    <circle cx="280" cy="240" r="5" fill="#d4a574" opacity="0.40"/>
+  </g>
+
+  <!-- Card 2 - tilted +20deg, right side, overlapping with card 3 -->
+  <g filter="url(#srShadow)" transform="rotate(20 960 180)">
+    <path d="M840,90 L1100,90 Q1108,90 1108,98 L1108,230 Q1103,255 1088,260 Q1068,268 1048,250 Q1028,265 1008,255 Q988,268 968,258 Q948,265 928,252 Q910,260 895,248 Q882,245 840,230 L840,98 Q840,90 848,90 Z" fill="#f0ece4" opacity="0.90"/>
+    <!-- Heading -->
+    <rect x="872" y="118" width="100" height="9" rx="4.5" fill="#c38d94" opacity="0.55"/>
+    <!-- Text lines -->
+    <rect x="872" y="142" width="200" height="5" rx="2.5" fill="#4a3f6b" opacity="0.28"/>
+    <rect x="872" y="156" width="170" height="5" rx="2.5" fill="#4a3f6b" opacity="0.24"/>
+    <rect x="872" y="170" width="185" height="5" rx="2.5" fill="#4a3f6b" opacity="0.20"/>
+    <!-- Geometric triangle accent -->
+    <polygon points="1050,200 1070,180 1070,220" fill="#d4a574" opacity="0.25"/>
+  </g>
+
+  <!-- Card 3 - tilted -15deg, bottom-left, partially behind card 1 -->
+  <g filter="url(#srShadowLight)" transform="rotate(15 250 440)">
+    <path d="M80,370 L310,370 Q318,370 318,378 L318,490 Q313,510 300,514 Q282,520 264,505 Q246,518 228,508 Q210,520 192,510 Q174,518 156,505 Q138,512 120,502 Q105,498 80,490 L80,378 Q80,370 88,370 Z" fill="#f0ece4" opacity="0.88"/>
+    <!-- Heading -->
+    <rect x="108" y="396" width="80" height="8" rx="4" fill="#4a3f6b" opacity="0.50"/>
+    <!-- Text lines -->
+    <rect x="108" y="416" width="180" height="5" rx="2.5" fill="#4a3f6b" opacity="0.25"/>
+    <rect x="108" y="430" width="150" height="5" rx="2.5" fill="#4a3f6b" opacity="0.22"/>
+    <!-- Button -->
+    <rect x="108" y="456" width="65" height="22" rx="4" fill="#c38d94" opacity="0.20"/>
+    <rect x="118" y="464" width="45" height="5" rx="2.5" fill="#c38d94" opacity="0.45"/>
+  </g>
+
+  <!-- Card 4 - tilted -22deg, bottom-right, impossible overlap -->
+  <g filter="url(#srShadow)" transform="rotate(-22 950 420)">
+    <path d="M830,350 L1090,350 Q1098,350 1098,358 L1098,490 Q1093,512 1078,516 Q1060,524 1042,508 Q1024,522 1006,512 Q988,524 970,514 Q952,522 934,508 Q916,516 898,505 Q882,502 830,490 L830,358 Q830,350 838,350 Z" fill="#f0ece4" opacity="0.88"/>
+    <!-- Heading -->
+    <rect x="862" y="380" width="105" height="9" rx="4.5" fill="#d4a574" opacity="0.55"/>
+    <!-- Text lines -->
+    <rect x="862" y="404" width="200" height="5" rx="2.5" fill="#4a3f6b" opacity="0.28"/>
+    <rect x="862" y="418" width="170" height="5" rx="2.5" fill="#4a3f6b" opacity="0.24"/>
+    <!-- Progress bar -->
+    <rect x="862" y="442" width="200" height="7" rx="3.5" fill="#1a1a3e" opacity="0.20"/>
+    <rect x="862" y="442" width="130" height="7" rx="3.5" fill="#d4a574" opacity="0.35"/>
+    <!-- Geometric accent -->
+    <circle cx="1040" cy="470" r="12" fill="none" stroke="#c38d94" stroke-width="1.5" opacity="0.30"/>
+    <circle cx="1040" cy="470" r="4" fill="#c38d94" opacity="0.25"/>
+  </g>
+
+  <!-- Subtle horizon line -->
+  <line x1="180" y1="530" x2="1020" y2="530" stroke="#d4a574" stroke-width="0.5" opacity="0.20"/>
+
+  <!-- Title -->
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="74" font-style="italic" fill="#f0ece4" opacity="0.90">SURREALISM</text>
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#d4a574" letter-spacing="5" opacity="0.55">DREAMLIKE SCENES AND MELTING FORMS</text>
 </svg>

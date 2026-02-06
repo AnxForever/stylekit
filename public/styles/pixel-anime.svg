@@ -37,7 +37,7 @@
   <text x="85" y="196" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#50c878" font-weight="700">EXP</text>
   <rect x="110" y="186" width="200" height="12" fill="#1a1040" stroke="#1a1040" stroke-width="2"/>
   <rect x="112" y="188" width="130" height="8" fill="#50c878"/>
-  <!-- Stats (boosted from 0.5 to 0.65) -->
+  <!-- Stats -->
   <text x="85" y="225" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.65">ATK 128  DEF  96</text>
   <text x="85" y="240" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.65">SPD  74  MAG  42</text>
   <text x="85" y="255" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.65">LCK  38  CHR  60</text>
@@ -50,7 +50,7 @@
   <rect x="1112" y="336" width="12" height="12" fill="#ffd93d"/>
   <rect x="776" y="542" width="12" height="12" fill="#ffd93d"/>
   <rect x="1112" y="542" width="12" height="12" fill="#ffd93d"/>
-  <!-- Quest list (boosted from 0.6 to 0.75, 0.7 to 0.85) -->
+  <!-- Quest list -->
   <text x="800" y="378" font-family="ui-monospace, 'Courier New', monospace" font-size="13" fill="#ffd93d" font-weight="700">QUEST LOG</text>
   <line x1="800" y1="386" x2="1090" y2="386" stroke="#ffd93d" stroke-width="1" opacity="0.3"/>
   <text x="800" y="408" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#e0e0ff" opacity="0.75">* Defeat the Dragon King</text>
@@ -62,7 +62,7 @@
   <polygon points="800,510 812,516 800,522" fill="#ffd93d" opacity="0.7"/>
   <text x="820" y="520" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#ffd93d" opacity="0.75">3/5 COMPLETED</text>
 
-  <!-- Pixel art decorative blocks - scattered (all boosted +0.15) -->
+  <!-- Pixel art decorative blocks - scattered -->
   <!-- Top-right pixel cluster (cross shape) -->
   <rect x="1040" y="80" width="8" height="8" fill="#ff6b6b" opacity="0.75"/>
   <rect x="1048" y="72" width="8" height="8" fill="#ff6b6b" opacity="0.55"/>
@@ -89,7 +89,7 @@
   <text x="604" y="374" font-family="ui-monospace, 'Courier New', monospace" font-size="96" font-weight="700" fill="#1a1040" text-anchor="middle" letter-spacing="4">ANIME</text>
   <text x="600" y="370" font-family="ui-monospace, 'Courier New', monospace" font-size="96" font-weight="700" fill="#ffd93d" text-anchor="middle" letter-spacing="4">ANIME</text>
 
-  <!-- Subtitle (boosted from 0.4 to 0.55) -->
+  <!-- Subtitle -->
   <text x="600" y="415" font-family="ui-monospace, 'Courier New', monospace" font-size="14" fill="#e0e0ff" text-anchor="middle" opacity="0.55" letter-spacing="6">JRPG // 8-BIT // NES PALETTE</text>
 
   <!-- RPG Menu style buttons at bottom -->
@@ -114,24 +114,6 @@
   <rect x="746" y="482" width="8" height="8" fill="#50c878"/>
   <text x="695" y="474" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="white" font-weight="700" text-anchor="middle">HEAL</text>
 
-  <!-- Pixel arrow cursor (boosted from 0.7 to 0.85) -->
+  <!-- Pixel arrow cursor -->
   <polygon points="422,504 422,524 430,520 434,526 438,524 434,518 440,518" fill="#ffd93d" opacity="0.85"/>
-
-  <!-- Color palette swatches bottom -->
-  <rect x="420" y="545" width="48" height="40" fill="#4a90d9" stroke="#1a1040" stroke-width="4"/>
-  <rect x="480" y="545" width="48" height="40" fill="#ff6b6b" stroke="#1a1040" stroke-width="4"/>
-  <rect x="540" y="545" width="48" height="40" fill="#ffd93d" stroke="#1a1040" stroke-width="4"/>
-  <rect x="600" y="545" width="48" height="40" fill="#50c878" stroke="#1a1040" stroke-width="4"/>
-  <rect x="660" y="545" width="48" height="40" fill="#2d1b69" stroke="#1a1040" stroke-width="4"/>
-  <!-- Pixel offset shadows for swatches -->
-  <rect x="424" y="589" width="48" height="4" fill="#1a1040" opacity="0.6"/>
-  <rect x="484" y="589" width="48" height="4" fill="#1a1040" opacity="0.6"/>
-  <rect x="544" y="589" width="48" height="4" fill="#1a1040" opacity="0.6"/>
-  <rect x="604" y="589" width="48" height="4" fill="#1a1040" opacity="0.6"/>
-  <rect x="664" y="589" width="48" height="4" fill="#1a1040" opacity="0.6"/>
-  <rect x="472" y="549" width="4" height="40" fill="#1a1040" opacity="0.6"/>
-  <rect x="532" y="549" width="4" height="40" fill="#1a1040" opacity="0.6"/>
-  <rect x="592" y="549" width="4" height="40" fill="#1a1040" opacity="0.6"/>
-  <rect x="652" y="549" width="4" height="40" fill="#1a1040" opacity="0.6"/>
-  <rect x="712" y="549" width="4" height="40" fill="#1a1040" opacity="0.6"/>
 </svg>

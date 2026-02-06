@@ -1,41 +1,140 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
-  <rect width="1200" height="630" fill="#f5f0e1"/>
+  <defs>
+    <filter id="softWarm" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Vine pattern for background -->
+    <pattern id="vinePattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M0,30 Q15,15 30,30 Q45,45 60,30" fill="none" stroke="#8b7355" stroke-width="0.4" opacity="0.15"/>
+      <path d="M30,0 Q15,15 30,30 Q45,15 30,0" fill="none" stroke="#8b7355" stroke-width="0.3" opacity="0.1"/>
+    </pattern>
+  </defs>
 
-  <!-- Organic vine curves -->
-  <path d="M0,315 Q200,100 400,315 T800,315 T1200,315" stroke="#2d5016" stroke-width="3" fill="none" opacity="0.3"/>
-  <path d="M0,250 Q300,150 500,350 T900,250 T1200,350" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.4"/>
-  <path d="M0,400 Q250,300 450,450 T850,380 T1200,450" stroke="#8b6db5" stroke-width="1.5" fill="none" opacity="0.25"/>
-  <path d="M0,200 Q150,50 350,200 T700,180 T1050,220 T1200,180" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.2"/>
-  <path d="M0,500 Q300,420 500,520 T900,480 T1200,530" stroke="#c9a227" stroke-width="1.5" fill="none" opacity="0.3"/>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f5f0e5"/>
 
-  <!-- Flower decorations -->
-  <circle cx="200" cy="200" r="30" fill="#c9a227" opacity="0.15"/>
-  <circle cx="200" cy="200" r="18" fill="#2d5016" opacity="0.1"/>
-  <circle cx="950" cy="450" r="25" fill="#8b6db5" opacity="0.15"/>
-  <circle cx="950" cy="450" r="14" fill="#c9a227" opacity="0.1"/>
-  <circle cx="700" cy="150" r="20" fill="#2d5016" opacity="0.12"/>
+  <!-- Subtle vine pattern -->
+  <rect width="1200" height="630" fill="url(#vinePattern)"/>
 
-  <!-- Leaf shapes -->
-  <ellipse cx="350" cy="380" rx="40" ry="15" transform="rotate(-30 350 380)" fill="#2d5016" opacity="0.1"/>
-  <ellipse cx="850" cy="250" rx="35" ry="12" transform="rotate(20 850 250)" fill="#4a7c3f" opacity="0.1"/>
+  <!-- Card 1: Top-left with organic vine border -->
+  <path d="M100,100 Q100,90 115,90 L340,90 Q355,90 355,105 L355,260 Q355,275 340,275 L115,275 Q100,275 100,260 Z" fill="#faf6ed" stroke="#8b7355" stroke-width="2"/>
+  <!-- Whiplash vine curves on border -->
+  <path d="M100,130 Q85,160 90,190 Q82,220 100,250" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <path d="M355,130 Q370,160 365,190 Q373,220 355,250" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <!-- Floral corner ornament top-left -->
+  <circle cx="107" cy="97" r="6" fill="#c4956a" opacity="0.3"/>
+  <path d="M100,90 Q107,84 115,90" fill="none" stroke="#6b8e4e" stroke-width="1.2" opacity="0.5"/>
+  <!-- Floral corner ornament bottom-right -->
+  <circle cx="348" cy="268" r="6" fill="#c4956a" opacity="0.3"/>
+  <path d="M340,275 Q348,281 355,275" fill="none" stroke="#6b8e4e" stroke-width="1.2" opacity="0.5"/>
+  <!-- Stained glass panel fill -->
+  <rect x="110" y="100" width="235" height="30" rx="2" fill="#d4a574" opacity="0.1"/>
+  <!-- Content -->
+  <rect x="120" y="112" width="90" height="8" rx="3" fill="#8b5e3c" opacity="0.7"/>
+  <rect x="120" y="140" width="200" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="120" y="153" width="180" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="120" y="166" width="160" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <!-- Decorative initial cap -->
+  <rect x="120" y="190" width="20" height="20" rx="3" fill="#6b8e4e" opacity="0.15" stroke="#6b8e4e" stroke-width="0.8"/>
+  <rect x="150" y="195" width="160" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="150" y="208" width="140" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <!-- Progress bar -->
+  <rect x="120" y="235" width="180" height="8" rx="4" fill="#e8e0d0"/>
+  <rect x="120" y="235" width="120" height="8" rx="4" fill="#c4956a" opacity="0.4"/>
 
-  <!-- Central decorative frame -->
-  <rect x="300" y="180" width="600" height="270" rx="40" fill="none" stroke="#c9a227" stroke-width="3" opacity="0.4"/>
-  <rect x="315" y="195" width="570" height="240" rx="32" fill="none" stroke="#2d5016" stroke-width="1.5" opacity="0.25"/>
+  <!-- Card 2: Top-center -->
+  <path d="M430,80 Q430,68 445,68 L720,68 Q735,68 735,83 L735,270 Q735,285 720,285 L445,285 Q430,285 430,270 Z" fill="#faf6ed" stroke="#8b7355" stroke-width="2"/>
+  <!-- Vine borders -->
+  <path d="M430,115 Q413,150 418,190 Q410,230 430,265" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <path d="M735,115 Q752,150 747,190 Q755,230 735,265" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <!-- Floral ornaments -->
+  <circle cx="437" cy="75" r="6" fill="#c4956a" opacity="0.3"/>
+  <path d="M430,68 Q437,62 445,68" fill="none" stroke="#6b8e4e" stroke-width="1.2" opacity="0.5"/>
+  <circle cx="728" cy="278" r="6" fill="#c4956a" opacity="0.3"/>
+  <path d="M720,285 Q728,291 735,285" fill="none" stroke="#6b8e4e" stroke-width="1.2" opacity="0.5"/>
+  <!-- Stained glass header -->
+  <rect x="440" y="78" width="285" height="30" rx="2" fill="#6b8e4e" opacity="0.08"/>
+  <!-- Content -->
+  <rect x="450" y="92" width="110" height="8" rx="3" fill="#8b5e3c" opacity="0.7"/>
+  <rect x="450" y="122" width="260" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="450" y="135" width="240" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="450" y="148" width="220" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="450" y="161" width="200" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <!-- Decorative divider -->
+  <path d="M460,180 Q530,172 580,180 Q630,188 710,180" fill="none" stroke="#c4956a" stroke-width="1" opacity="0.4"/>
+  <!-- Initial cap + text -->
+  <rect x="450" y="195" width="20" height="20" rx="3" fill="#8b5e3c" opacity="0.1" stroke="#8b5e3c" stroke-width="0.8"/>
+  <rect x="480" y="200" width="200" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="480" y="213" width="180" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <!-- Button -->
+  <path d="M450,240 Q450,234 458,234 L530,234 Q538,234 538,240 L538,254 Q538,260 530,260 L458,260 Q450,260 450,254 Z" fill="none" stroke="#8b7355" stroke-width="1.2"/>
+  <rect x="462" y="243" width="45" height="5" rx="2" fill="#8b5e3c" opacity="0.5"/>
+
+  <!-- Card 3: Top-right -->
+  <path d="M800,100 Q800,90 815,90 L1080,90 Q1095,90 1095,105 L1095,260 Q1095,275 1080,275 L815,275 Q800,275 800,260 Z" fill="#faf6ed" stroke="#8b7355" stroke-width="2"/>
+  <path d="M800,130 Q785,160 790,190 Q782,220 800,250" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <path d="M1095,130 Q1110,160 1105,190 Q1113,220 1095,250" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <circle cx="807" cy="97" r="6" fill="#c4956a" opacity="0.3"/>
+  <path d="M800,90 Q807,84 815,90" fill="none" stroke="#6b8e4e" stroke-width="1.2" opacity="0.5"/>
+  <circle cx="1088" cy="268" r="6" fill="#c4956a" opacity="0.3"/>
+  <rect x="810" y="100" width="275" height="30" rx="2" fill="#d4a574" opacity="0.08"/>
+  <!-- Content -->
+  <rect x="820" y="112" width="85" height="8" rx="3" fill="#8b5e3c" opacity="0.7"/>
+  <rect x="820" y="140" width="220" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="820" y="153" width="200" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="820" y="173" width="20" height="20" rx="3" fill="#6b8e4e" opacity="0.12" stroke="#6b8e4e" stroke-width="0.8"/>
+  <rect x="850" y="178" width="170" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="850" y="191" width="150" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="820" y="220" width="200" height="8" rx="4" fill="#e8e0d0"/>
+  <rect x="820" y="220" width="140" height="8" rx="4" fill="#6b8e4e" opacity="0.3"/>
+
+  <!-- Card 4: Bottom-left -->
+  <path d="M140,370 Q140,358 155,358 L470,358 Q485,358 485,373 L485,560 Q485,575 470,575 L155,575 Q140,575 140,560 Z" fill="#faf6ed" stroke="#8b7355" stroke-width="2"/>
+  <path d="M140,400 Q123,435 128,470 Q120,510 140,545" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <path d="M485,400 Q502,435 497,470 Q505,510 485,545" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <circle cx="147" cy="365" r="6" fill="#c4956a" opacity="0.3"/>
+  <circle cx="478" cy="568" r="6" fill="#c4956a" opacity="0.3"/>
+  <rect x="150" y="368" width="325" height="30" rx="2" fill="#c4956a" opacity="0.06"/>
+  <!-- Content -->
+  <rect x="165" y="382" width="105" height="8" rx="3" fill="#8b5e3c" opacity="0.7"/>
+  <rect x="165" y="410" width="290" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="165" y="423" width="270" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="165" y="436" width="240" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <path d="M175,458 Q260,450 320,458 Q380,466 460,458" fill="none" stroke="#c4956a" stroke-width="1" opacity="0.4"/>
+  <rect x="165" y="475" width="260" height="8" rx="4" fill="#e8e0d0"/>
+  <rect x="165" y="475" width="180" height="8" rx="4" fill="#c4956a" opacity="0.35"/>
+  <rect x="165" y="495" width="260" height="8" rx="4" fill="#e8e0d0"/>
+  <rect x="165" y="495" width="120" height="8" rx="4" fill="#6b8e4e" opacity="0.3"/>
+  <!-- Button -->
+  <path d="M165,520 Q165,514 173,514 L245,514 Q253,514 253,520 L253,534 Q253,540 245,540 L173,540 Q165,540 165,534 Z" fill="none" stroke="#8b7355" stroke-width="1.2"/>
+  <rect x="177" y="523" width="45" height="5" rx="2" fill="#8b5e3c" opacity="0.5"/>
+
+  <!-- Card 5: Bottom-right -->
+  <path d="M560,370 Q560,358 575,358 L890,358 Q905,358 905,373 L905,560 Q905,575 890,575 L575,575 Q560,575 560,560 Z" fill="#faf6ed" stroke="#8b7355" stroke-width="2"/>
+  <path d="M560,400 Q543,435 548,470 Q540,510 560,545" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <path d="M905,400 Q922,435 917,470 Q925,510 905,545" fill="none" stroke="#6b8e4e" stroke-width="1.8" opacity="0.5"/>
+  <circle cx="567" cy="365" r="6" fill="#c4956a" opacity="0.3"/>
+  <circle cx="898" cy="568" r="6" fill="#c4956a" opacity="0.3"/>
+  <rect x="570" y="368" width="325" height="30" rx="2" fill="#6b8e4e" opacity="0.06"/>
+  <!-- Content -->
+  <rect x="585" y="382" width="95" height="8" rx="3" fill="#8b5e3c" opacity="0.7"/>
+  <rect x="585" y="410" width="280" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="585" y="423" width="260" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="585" y="436" width="230" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="585" y="456" width="20" height="20" rx="3" fill="#8b5e3c" opacity="0.1" stroke="#8b5e3c" stroke-width="0.8"/>
+  <rect x="615" y="461" width="220" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <rect x="615" y="474" width="200" height="5" rx="2" fill="#c4b89a" opacity="0.5"/>
+  <path d="M595,498 Q680,490 740,498 Q800,506 880,498" fill="none" stroke="#c4956a" stroke-width="1" opacity="0.4"/>
+  <rect x="585" y="515" width="260" height="8" rx="4" fill="#e8e0d0"/>
+  <rect x="585" y="515" width="160" height="8" rx="4" fill="#c4956a" opacity="0.35"/>
+  <!-- Button -->
+  <path d="M585,540 Q585,534 593,534 L665,534 Q673,534 673,540 L673,554 Q673,560 665,560 L593,560 Q585,560 585,554 Z" fill="none" stroke="#8b7355" stroke-width="1.2"/>
+  <rect x="597" y="543" width="45" height="5" rx="2" fill="#8b5e3c" opacity="0.5"/>
 
   <!-- Title -->
-  <text x="600" y="295" font-family="Georgia, serif" font-size="72" fill="#2d5016" text-anchor="middle" font-weight="400">Art Nouveau</text>
-  <text x="600" y="345" font-family="Georgia, serif" font-size="24" fill="#c9a227" text-anchor="middle" font-style="italic" opacity="0.8">Organic Curves &amp; Flowing Vines</text>
-
-  <!-- Corner vine decorations -->
-  <path d="M300,180 Q280,160 260,180 Q240,200 260,220" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.3"/>
-  <path d="M900,180 Q920,160 940,180 Q960,200 940,220" stroke="#2d5016" stroke-width="2" fill="none" opacity="0.3"/>
-  <path d="M300,450 Q280,470 260,450 Q240,430 260,410" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.3"/>
-  <path d="M900,450 Q920,470 940,450 Q960,430 940,410" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.3"/>
-
-  <!-- Gold accent dots -->
-  <circle cx="100" cy="100" r="4" fill="#c9a227" opacity="0.3"/>
-  <circle cx="1100" cy="530" r="4" fill="#c9a227" opacity="0.3"/>
-  <circle cx="150" cy="530" r="3" fill="#8b6db5" opacity="0.25"/>
-  <circle cx="1050" cy="100" r="3" fill="#8b6db5" opacity="0.25"/>
+  <text x="600" y="330" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="28" font-weight="bold" fill="#8b5e3c" filter="url(#softWarm)" letter-spacing="5">ART NOUVEAU</text>
 </svg>

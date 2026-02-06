@@ -1,124 +1,120 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Torn paper edge displacement -->
-    <filter id="colTear" x="-2%" y="-2%" width="104%" height="104%">
-      <feTurbulence baseFrequency="0.04 0.15" numOctaves="3" seed="7" result="tear"/>
-      <feDisplacementMap in="SourceGraphic" in2="tear" scale="6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <!-- Paper grain texture -->
-    <filter id="colGrain" x="0" y="0" width="100%" height="100%">
-      <feTurbulence baseFrequency="0.7" numOctaves="4" seed="3" stitchTiles="stitch" result="grain"/>
-      <feColorMatrix type="saturate" values="0" in="grain" result="mono"/>
-      <feBlend in="SourceGraphic" in2="mono" mode="multiply"/>
-    </filter>
-    <!-- Washi tape semi-transparency -->
-    <filter id="colTape">
-      <feGaussianBlur stdDeviation="0.5"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.8"/>
-      </feComponentTransfer>
-    </filter>
-    <!-- Stamp ink bleed -->
-    <filter id="colStamp">
-      <feMorphology operator="dilate" radius="0.5"/>
-      <feGaussianBlur stdDeviation="0.4"/>
-    </filter>
+    <pattern id="paperGrain" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.3" fill="#c4a882" opacity="0.15"/>
+    </pattern>
   </defs>
 
   <!-- Aged paper base -->
   <rect width="1200" height="630" fill="#f5f0e8"/>
-  <!-- Paper grain layer -->
-  <rect width="1200" height="630" fill="#ebe4d8" opacity="0.30" filter="url(#colGrain)"/>
+  <rect width="1200" height="630" fill="url(#paperGrain)"/>
 
-  <!-- Background paper scraps - BOOSTED to 0.20-0.25 -->
-  <rect x="40" y="30" width="260" height="180" fill="#e74c3c" opacity="0.22" transform="rotate(5 170 120)" filter="url(#colTear)"/>
-  <rect x="880" y="20" width="240" height="170" fill="#3498db" opacity="0.22" transform="rotate(-4 1000 105)" filter="url(#colTear)"/>
-  <rect x="50" y="410" width="230" height="150" fill="#f39c12" opacity="0.20" transform="rotate(3 165 485)" filter="url(#colTear)"/>
-  <rect x="890" y="430" width="250" height="160" fill="#9b59b6" opacity="0.20" transform="rotate(-5 1015 510)" filter="url(#colTear)"/>
+  <!-- Background paper scraps -->
+  <rect x="30" y="20" width="180" height="120" fill="#e74c3c" opacity="0.12" transform="rotate(8 120 80)"/>
+  <rect x="1000" y="30" width="160" height="100" fill="#3498db" opacity="0.12" transform="rotate(-5 1080 80)"/>
+  <rect x="50" y="500" width="150" height="100" fill="#f39c12" opacity="0.1" transform="rotate(3 125 550)"/>
+  <rect x="1020" y="510" width="140" height="90" fill="#9b59b6" opacity="0.1" transform="rotate(-4 1090 555)"/>
 
-  <!-- Layered paper cutout shapes with torn displacement -->
-  <g filter="url(#colTear)">
-    <rect x="150" y="120" width="280" height="180" fill="#e74c3c" opacity="0.20" transform="rotate(2.5 290 210)"/>
-    <rect x="158" y="128" width="280" height="180" fill="#f5f0e8" opacity="0.92" transform="rotate(2.5 298 218)" stroke="#2d2d2d" stroke-width="2"/>
-  </g>
-  <g filter="url(#colTear)">
-    <rect x="720" y="100" width="260" height="200" fill="#3498db" opacity="0.20" transform="rotate(-3 850 200)"/>
-    <rect x="728" y="108" width="260" height="200" fill="#f5f0e8" opacity="0.92" transform="rotate(-3 858 208)" stroke="#2d2d2d" stroke-width="2"/>
+  <!-- Stamp mark -->
+  <g transform="translate(1050, 50) rotate(12)" opacity="0.2">
+    <rect width="70" height="70" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-dasharray="4 3"/>
+    <text x="35" y="30" font-family="'Courier New', monospace" font-size="8" fill="#e74c3c" text-anchor="middle" font-weight="700">ORIGINAL</text>
+    <text x="35" y="48" font-family="'Courier New', monospace" font-size="8" fill="#e74c3c" text-anchor="middle" font-weight="700">COPY</text>
   </g>
 
-  <!-- Washi tape strips - BOOSTED to 0.78 -->
-  <g filter="url(#colTape)">
-    <rect x="310" y="105" width="85" height="22" fill="#f39c12" opacity="0.78" transform="rotate(4 352 116)"/>
-    <line x1="320" y1="106" x2="320" y2="128" stroke="#fff" stroke-width="1.5" opacity="0.30" transform="rotate(4 352 116)"/>
-    <line x1="335" y1="106" x2="335" y2="128" stroke="#fff" stroke-width="1.5" opacity="0.30" transform="rotate(4 352 116)"/>
-    <line x1="350" y1="106" x2="350" y2="128" stroke="#fff" stroke-width="1.5" opacity="0.30" transform="rotate(4 352 116)"/>
-    <line x1="365" y1="106" x2="365" y2="128" stroke="#fff" stroke-width="1.5" opacity="0.30" transform="rotate(4 352 116)"/>
-    <line x1="380" y1="106" x2="380" y2="128" stroke="#fff" stroke-width="1.5" opacity="0.30" transform="rotate(4 352 116)"/>
-  </g>
-  <g filter="url(#colTape)">
-    <rect x="800" y="85" width="75" height="20" fill="#9b59b6" opacity="0.75" transform="rotate(-6 837 95)"/>
-    <line x1="810" y1="86" x2="810" y2="106" stroke="#fff" stroke-width="1.5" opacity="0.25" transform="rotate(-6 837 95)"/>
-    <line x1="825" y1="86" x2="825" y2="106" stroke="#fff" stroke-width="1.5" opacity="0.25" transform="rotate(-6 837 95)"/>
-    <line x1="840" y1="86" x2="840" y2="106" stroke="#fff" stroke-width="1.5" opacity="0.25" transform="rotate(-6 837 95)"/>
-    <line x1="855" y1="86" x2="855" y2="106" stroke="#fff" stroke-width="1.5" opacity="0.25" transform="rotate(-6 837 95)"/>
-  </g>
-
-  <!-- Dashed scissor cut lines - BOOSTED to 0.32 -->
-  <line x1="80" y1="370" x2="520" y2="370" stroke="#2d2d2d" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.32"/>
-  <line x1="680" y1="390" x2="1120" y2="390" stroke="#2d2d2d" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.32"/>
-
-  <!-- Scissors icon at cut line - BOOSTED to 0.35 -->
-  <g transform="translate(510, 362)" opacity="0.35">
-    <line x1="0" y1="0" x2="14" y2="9" stroke="#2d2d2d" stroke-width="2"/>
-    <line x1="0" y1="18" x2="14" y2="9" stroke="#2d2d2d" stroke-width="2"/>
-    <circle cx="0" cy="0" r="4.5" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
-    <circle cx="0" cy="18" r="4.5" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
+  <!-- Card 1: Top-left, rotated -->
+  <g transform="rotate(-2 260 170)">
+    <rect x="128" y="78" width="250" height="175" fill="#ebe4d8" stroke="#2d2d2d" stroke-width="2.5"/>
+    <rect x="132" y="82" width="242" height="167" fill="none" stroke="#2d2d2d" stroke-width="0.8"/>
+    <!-- Washi tape -->
+    <rect x="210" y="68" width="80" height="20" rx="2" fill="#f39c12" opacity="0.7"/>
+    <line x1="220" y1="69" x2="220" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="232" y1="69" x2="232" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="244" y1="69" x2="244" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="256" y1="69" x2="256" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="268" y1="69" x2="268" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="280" y1="69" x2="280" y2="88" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <!-- Serif heading -->
+    <text x="155" y="125" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-weight="700" fill="#2d2d2d">Overview</text>
+    <rect x="155" y="140" width="195" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="155" y="152" width="165" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="155" y="164" width="180" height="5" rx="2" fill="#b8b0a0"/>
+    <!-- Torn edge divider -->
+    <path d="M155,182 L170,180 L185,183 L200,179 L215,184 L230,180 L245,183 L260,179 L275,184 L290,180 L305,183 L320,180 L340,182" fill="none" stroke="#2d2d2d" stroke-width="1" opacity="0.3"/>
+    <text x="155" y="205" font-family="Arial, sans-serif" font-size="9" fill="#2d2d2d" opacity="0.5" letter-spacing="2">SECTION A</text>
   </g>
 
-  <!-- Title - mixed fonts with rotation, collage style -->
-  <text x="480" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" fill="#2d2d2d" text-anchor="middle" transform="rotate(-1.5 480 290)">COLLAGE</text>
-  <!-- Shadow layer for ART - BOOSTED -->
-  <text x="738" y="362" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="900" fill="#2d2d2d" text-anchor="middle" opacity="0.20" transform="rotate(1 738 362)">ART</text>
-  <text x="735" y="360" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="900" fill="#e74c3c" text-anchor="middle" transform="rotate(0.5 735 360)">ART</text>
-
-  <!-- Subtitle -->
-  <text x="600" y="422" font-family="'Courier New', monospace" font-size="15" fill="#2d2d2d" text-anchor="middle" opacity="0.40" letter-spacing="8">CUT / TEAR / PASTE / LAYER</text>
-
-  <!-- Color swatch cutouts with torn edges and VISIBLE hard shadows (0.25) -->
-  <g transform="rotate(-2 375 525)">
-    <rect x="349" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="345" y="490" width="52" height="52" fill="#2d2d2d" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
-  </g>
-  <g transform="rotate(1.5 445 523)">
-    <rect x="419" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="415" y="490" width="52" height="52" fill="#e74c3c" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
-  </g>
-  <g transform="rotate(-1 515 527)">
-    <rect x="489" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="485" y="490" width="52" height="52" fill="#3498db" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
-  </g>
-  <g transform="rotate(2 585 524)">
-    <rect x="559" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="555" y="490" width="52" height="52" fill="#f39c12" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
-  </g>
-  <g transform="rotate(-0.5 655 526)">
-    <rect x="629" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="625" y="490" width="52" height="52" fill="#9b59b6" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
-  </g>
-  <g transform="rotate(1 725 525)">
-    <rect x="699" y="494" width="52" height="52" fill="#2d2d2d" opacity="0.25"/>
-    <rect x="695" y="490" width="52" height="52" fill="#f5f0e8" stroke="#2d2d2d" stroke-width="2" filter="url(#colTear)"/>
+  <!-- Card 2: Top-right, rotated -->
+  <g transform="rotate(3 900 170)">
+    <rect x="778" y="78" width="250" height="175" fill="#f5f0e8" stroke="#2d2d2d" stroke-width="2.5"/>
+    <rect x="782" y="82" width="242" height="167" fill="none" stroke="#2d2d2d" stroke-width="0.8"/>
+    <rect x="860" y="68" width="75" height="20" rx="2" fill="#9b59b6" opacity="0.6"/>
+    <line x1="870" y1="69" x2="870" y2="88" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="882" y1="69" x2="882" y2="88" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="894" y1="69" x2="894" y2="88" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="906" y1="69" x2="906" y2="88" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="918" y1="69" x2="918" y2="88" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <!-- Sans heading -->
+    <text x="805" y="125" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900" fill="#2d2d2d">Statistics</text>
+    <rect x="805" y="140" width="200" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="805" y="152" width="170" height="5" rx="2" fill="#b8b0a0"/>
+    <!-- Number highlight -->
+    <text x="805" y="195" font-family="Georgia, serif" font-size="32" font-weight="700" fill="#e74c3c">2,847</text>
+    <text x="805" y="215" font-family="Arial, sans-serif" font-size="9" fill="#2d2d2d" opacity="0.5" letter-spacing="2">TOTAL ITEMS</text>
   </g>
 
-  <!-- Decorative stamp mark - BOOSTED to 0.28 -->
-  <g transform="translate(1040, 450) rotate(12)" opacity="0.28" filter="url(#colStamp)">
-    <rect x="0" y="0" width="80" height="80" fill="none" stroke="#e74c3c" stroke-width="3" stroke-dasharray="4 3"/>
-    <text x="40" y="48" font-family="'Courier New', monospace" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700">APPROVED</text>
+  <!-- Card 3: Bottom-left, rotated -->
+  <g transform="rotate(2.5 260 475)">
+    <rect x="128" y="398" width="250" height="175" fill="#ebe4d8" stroke="#2d2d2d" stroke-width="2.5"/>
+    <rect x="132" y="402" width="242" height="167" fill="none" stroke="#2d2d2d" stroke-width="0.8"/>
+    <rect x="215" y="388" width="70" height="20" rx="2" fill="#3498db" opacity="0.6"/>
+    <line x1="225" y1="389" x2="225" y2="408" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="237" y1="389" x2="237" y2="408" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="249" y1="389" x2="249" y2="408" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="261" y1="389" x2="261" y2="408" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <line x1="273" y1="389" x2="273" y2="408" stroke="#fff" stroke-width="1" opacity="0.25"/>
+    <!-- Serif heading -->
+    <text x="155" y="440" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#2d2d2d">Progress</text>
+    <rect x="155" y="455" width="200" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="155" y="467" width="170" height="5" rx="2" fill="#b8b0a0"/>
+    <!-- Progress bar -->
+    <rect x="155" y="485" width="200" height="12" fill="#d4c9b8" stroke="#2d2d2d" stroke-width="1"/>
+    <rect x="155" y="485" width="130" height="12" fill="#e74c3c" opacity="0.6"/>
+    <!-- Torn edge divider -->
+    <path d="M155,510 L172,508 L188,511 L204,507 L220,512 L236,508 L252,511 L268,507 L284,512 L300,508 L316,511 L332,509 L348,510" fill="none" stroke="#2d2d2d" stroke-width="1" opacity="0.3"/>
+    <text x="155" y="535" font-family="Arial, sans-serif" font-size="9" fill="#2d2d2d" opacity="0.5" letter-spacing="2">65% COMPLETE</text>
   </g>
 
-  <!-- Pin/pushpin decorations - BOOSTED to 0.70 -->
-  <circle cx="290" cy="135" r="7" fill="#e74c3c" opacity="0.70"/>
-  <circle cx="290" cy="135" r="2.5" fill="#f5f0e8" opacity="0.80"/>
-  <circle cx="850" cy="115" r="7" fill="#3498db" opacity="0.70"/>
-  <circle cx="850" cy="115" r="2.5" fill="#f5f0e8" opacity="0.80"/>
+  <!-- Card 4: Bottom-right, rotated -->
+  <g transform="rotate(-3 900 475)">
+    <rect x="778" y="398" width="250" height="175" fill="#f5f0e8" stroke="#2d2d2d" stroke-width="2.5"/>
+    <rect x="782" y="402" width="242" height="167" fill="none" stroke="#2d2d2d" stroke-width="0.8"/>
+    <rect x="865" y="388" width="65" height="20" rx="2" fill="#f39c12" opacity="0.7"/>
+    <line x1="875" y1="389" x2="875" y2="408" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="887" y1="389" x2="887" y2="408" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="899" y1="389" x2="899" y2="408" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <line x1="911" y1="389" x2="911" y2="408" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <!-- Sans heading -->
+    <text x="805" y="440" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#2d2d2d">Notes</text>
+    <rect x="805" y="455" width="200" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="805" y="467" width="175" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="805" y="479" width="190" height="5" rx="2" fill="#b8b0a0"/>
+    <rect x="805" y="491" width="155" height="5" rx="2" fill="#b8b0a0"/>
+    <!-- Button -->
+    <rect x="805" y="515" width="80" height="24" fill="#2d2d2d" stroke="#2d2d2d" stroke-width="2"/>
+    <rect x="815" y="523" width="60" height="7" rx="3" fill="#f5f0e8"/>
+  </g>
+
+  <!-- Dashed cut line -->
+  <line x1="420" y1="320" x2="780" y2="320" stroke="#2d2d2d" stroke-width="1.2" stroke-dasharray="8 4" opacity="0.2"/>
+
+  <!-- Pushpin decorations -->
+  <circle cx="260" cy="90" r="6" fill="#e74c3c" opacity="0.6"/>
+  <circle cx="260" cy="90" r="2" fill="#f5f0e8"/>
+  <circle cx="900" cy="90" r="6" fill="#3498db" opacity="0.6"/>
+  <circle cx="900" cy="90" r="2" fill="#f5f0e8"/>
+
+  <!-- Title: COLLAGE ART centered -->
+  <text x="520" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="#2d2d2d" text-anchor="middle" transform="rotate(-1 520 290)">COLLAGE</text>
+  <text x="700" y="350" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#e74c3c" text-anchor="middle" transform="rotate(0.5 700 350)">ART</text>
 </svg>

@@ -1,76 +1,128 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="gothicBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0a0a0a"/>
-      <stop offset="40%" stop-color="#2d1b4e"/>
-      <stop offset="70%" stop-color="#1a0f2e"/>
-      <stop offset="100%" stop-color="#0a0a0a"/>
-    </linearGradient>
-    <linearGradient id="goldShine" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#8b6914"/>
-      <stop offset="50%" stop-color="#c9a227"/>
-      <stop offset="100%" stop-color="#8b6914"/>
-    </linearGradient>
-    <filter id="gothicGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
+    <filter id="gothicShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="2" dy="4" result="shadow"/>
+      <feFlood flood-color="#000000" flood-opacity="0.5"/>
+      <feComposite in2="shadow" operator="in"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <!-- Rose window pattern -->
-    <radialGradient id="roseWindow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#c9a227" stop-opacity="0.4"/>
-      <stop offset="30%" stop-color="#8b1a1a" stop-opacity="0.3"/>
-      <stop offset="60%" stop-color="#2d1b4e" stop-opacity="0.2"/>
-      <stop offset="100%" stop-color="#0a0a0a" stop-opacity="0"/>
-    </radialGradient>
+    <pattern id="stoneTex" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="none"/>
+      <circle cx="4" cy="4" r="0.5" fill="#333" opacity="0.25"/>
+      <circle cx="12" cy="12" r="0.5" fill="#333" opacity="0.2"/>
+      <circle cx="8" cy="2" r="0.3" fill="#333" opacity="0.15"/>
+      <circle cx="2" cy="10" r="0.4" fill="#333" opacity="0.2"/>
+      <circle cx="14" cy="6" r="0.3" fill="#333" opacity="0.15"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#gothicBg)"/>
+  <!-- Dark background with stone texture -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect width="1200" height="630" fill="url(#stoneTex)"/>
 
-  <!-- Rose window decoration -->
-  <circle cx="600" cy="200" r="160" fill="url(#roseWindow)" stroke="#c9a227" stroke-width="2" opacity="0.6"/>
-  <circle cx="600" cy="200" r="120" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.4"/>
-  <circle cx="600" cy="200" r="80" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <!-- Rose window spokes -->
-  <g stroke="#c9a227" stroke-width="1" opacity="0.3">
-    <line x1="600" y1="40" x2="600" y2="360"/>
-    <line x1="440" y1="200" x2="760" y2="200"/>
-    <line x1="487" y1="87" x2="713" y2="313"/>
-    <line x1="713" y1="87" x2="487" y2="313"/>
+  <!-- Subtle jewel tone accents -->
+  <circle cx="600" cy="315" r="280" fill="#3a0a2e" opacity="0.08"/>
+  <circle cx="200" cy="500" r="150" fill="#1a0a2e" opacity="0.06"/>
+  <circle cx="1000" cy="150" r="130" fill="#2a0a0a" opacity="0.06"/>
+
+  <!-- Card 1 - Top left: pointed arch -->
+  <g filter="url(#gothicShadow)">
+    <path d="M80 260 L80 150 Q80 95 200 80 Q320 95 320 150 L320 260 Z" fill="#1a1a1e" stroke="#555" stroke-width="2"/>
+    <path d="M88 255 L88 152 Q88 102 200 88 Q312 102 312 152 L312 255 Z" fill="none" stroke="#444" stroke-width="0.8" opacity="0.5"/>
+    <!-- Rose window geometric accent -->
+    <circle cx="200" cy="120" r="16" fill="none" stroke="#6b1a3a" stroke-width="1.2" opacity="0.6"/>
+    <circle cx="200" cy="120" r="8" fill="#6b1a3a" opacity="0.2"/>
+    <line x1="200" y1="104" x2="200" y2="136" stroke="#6b1a3a" stroke-width="0.6" opacity="0.4"/>
+    <line x1="184" y1="120" x2="216" y2="120" stroke="#6b1a3a" stroke-width="0.6" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="120" y="150" width="80" height="7" rx="2" fill="#888" opacity="0.5"/>
+    <!-- Ornate divider -->
+    <line x1="120" y1="168" x2="280" y2="168" stroke="#555" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="200" cy="168" r="2" fill="#6b1a3a" opacity="0.5"/>
+    <!-- Text lines -->
+    <rect x="120" y="180" width="160" height="5" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="120" y="195" width="140" height="5" rx="2" fill="#666" opacity="0.28"/>
+    <rect x="120" y="210" width="150" height="5" rx="2" fill="#666" opacity="0.25"/>
+    <!-- Cross accent -->
+    <line x1="270" y1="232" x2="270" y2="252" stroke="#555" stroke-width="1.5" opacity="0.35"/>
+    <line x1="262" y1="238" x2="278" y2="238" stroke="#555" stroke-width="1.5" opacity="0.35"/>
   </g>
 
-  <!-- Gothic arches -->
-  <g stroke="#c9a227" stroke-width="2" fill="none" opacity="0.5">
-    <!-- Left arch -->
-    <path d="M150,630 L150,350 Q150,250 250,200 Q350,250 350,350 L350,630"/>
-    <!-- Right arch -->
-    <path d="M850,630 L850,350 Q850,250 950,200 Q1050,250 1050,350 L1050,630"/>
-    <!-- Center tall arch -->
-    <path d="M450,630 L450,300 Q450,150 600,100 Q750,150 750,300 L750,630"/>
+  <!-- Card 2 - Top right: pointed arch -->
+  <g filter="url(#gothicShadow)">
+    <path d="M860 280 L860 140 Q860 80 990 62 Q1120 80 1120 140 L1120 280 Z" fill="#1a1a1e" stroke="#555" stroke-width="2"/>
+    <path d="M868 275 L868 142 Q868 88 990 72 Q1112 88 1112 142 L1112 275 Z" fill="none" stroke="#444" stroke-width="0.8" opacity="0.5"/>
+    <!-- Rose window -->
+    <circle cx="990" cy="100" r="16" fill="none" stroke="#3a1a6b" stroke-width="1.2" opacity="0.6"/>
+    <circle cx="990" cy="100" r="8" fill="#3a1a6b" opacity="0.2"/>
+    <line x1="990" y1="84" x2="990" y2="116" stroke="#3a1a6b" stroke-width="0.6" opacity="0.4"/>
+    <line x1="974" y1="100" x2="1006" y2="100" stroke="#3a1a6b" stroke-width="0.6" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="910" y="130" width="90" height="7" rx="2" fill="#888" opacity="0.5"/>
+    <!-- Divider -->
+    <line x1="910" y1="148" x2="1070" y2="148" stroke="#555" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="990" cy="148" r="2" fill="#3a1a6b" opacity="0.5"/>
+    <!-- Text lines -->
+    <rect x="910" y="162" width="160" height="5" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="910" y="177" width="140" height="5" rx="2" fill="#666" opacity="0.28"/>
+    <rect x="910" y="192" width="150" height="5" rx="2" fill="#666" opacity="0.25"/>
+    <!-- Stat bars -->
+    <rect x="910" y="215" width="140" height="6" rx="3" fill="#222"/>
+    <rect x="910" y="215" width="100" height="6" rx="3" fill="#6b1a3a" opacity="0.5"/>
+    <rect x="910" y="230" width="140" height="6" rx="3" fill="#222"/>
+    <rect x="910" y="230" width="70" height="6" rx="3" fill="#3a1a6b" opacity="0.5"/>
   </g>
 
-  <!-- Vertical ornamental lines -->
-  <line x1="150" y1="400" x2="150" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <line x1="350" y1="400" x2="350" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <line x1="450" y1="350" x2="450" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <line x1="750" y1="350" x2="750" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <line x1="850" y1="400" x2="850" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
-  <line x1="1050" y1="400" x2="1050" y2="630" stroke="#c9a227" stroke-width="1" opacity="0.3"/>
+  <!-- Card 3 - Bottom left: rectangular stone panel -->
+  <g filter="url(#gothicShadow)">
+    <rect x="80" y="370" width="260" height="180" rx="4" fill="#1a1a1e" stroke="#555" stroke-width="2"/>
+    <rect x="86" y="376" width="248" height="168" rx="2" fill="none" stroke="#444" stroke-width="0.8" opacity="0.5"/>
+    <!-- Heading -->
+    <rect x="110" y="398" width="100" height="7" rx="2" fill="#888" opacity="0.5"/>
+    <!-- Ornate divider -->
+    <line x1="110" y1="416" x2="310" y2="416" stroke="#555" stroke-width="0.8" opacity="0.5"/>
+    <path d="M205 412 L210 416 L215 412" fill="none" stroke="#555" stroke-width="0.8" opacity="0.4"/>
+    <path d="M205 420 L210 416 L215 420" fill="none" stroke="#555" stroke-width="0.8" opacity="0.4"/>
+    <!-- Text lines -->
+    <rect x="110" y="432" width="200" height="5" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="110" y="447" width="180" height="5" rx="2" fill="#666" opacity="0.28"/>
+    <rect x="110" y="462" width="190" height="5" rx="2" fill="#666" opacity="0.25"/>
+    <!-- Button -->
+    <rect x="110" y="490" width="90" height="26" rx="3" fill="none" stroke="#6b1a3a" stroke-width="1.2" opacity="0.5"/>
+    <text x="155" y="508" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#888" opacity="0.6">Enter</text>
+    <!-- Cross -->
+    <line x1="300" y1="485" x2="300" y2="510" stroke="#555" stroke-width="1.5" opacity="0.3"/>
+    <line x1="290" y1="493" x2="310" y2="493" stroke="#555" stroke-width="1.5" opacity="0.3"/>
+  </g>
+
+  <!-- Card 4 - Bottom right: stone panel -->
+  <g filter="url(#gothicShadow)">
+    <rect x="840" y="380" width="280" height="170" rx="4" fill="#1a1a1e" stroke="#555" stroke-width="2"/>
+    <rect x="846" y="386" width="268" height="158" rx="2" fill="none" stroke="#444" stroke-width="0.8" opacity="0.5"/>
+    <!-- Heading -->
+    <rect x="870" y="405" width="80" height="7" rx="2" fill="#888" opacity="0.5"/>
+    <!-- Divider -->
+    <line x1="870" y1="423" x2="1090" y2="423" stroke="#555" stroke-width="0.8" opacity="0.5"/>
+    <!-- Grid items -->
+    <rect x="870" y="440" width="60" height="40" rx="3" fill="#222" stroke="#444" stroke-width="0.5"/>
+    <rect x="878" y="448" width="44" height="4" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="878" y="458" width="36" height="4" rx="2" fill="#666" opacity="0.25"/>
+    <rect x="945" y="440" width="60" height="40" rx="3" fill="#222" stroke="#444" stroke-width="0.5"/>
+    <rect x="953" y="448" width="44" height="4" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="953" y="458" width="36" height="4" rx="2" fill="#666" opacity="0.25"/>
+    <rect x="1020" y="440" width="60" height="40" rx="3" fill="#222" stroke="#444" stroke-width="0.5"/>
+    <rect x="1028" y="448" width="44" height="4" rx="2" fill="#666" opacity="0.3"/>
+    <rect x="1028" y="458" width="36" height="4" rx="2" fill="#666" opacity="0.25"/>
+    <!-- Bottom text -->
+    <rect x="870" y="500" width="200" height="5" rx="2" fill="#666" opacity="0.25"/>
+    <rect x="870" y="515" width="160" height="5" rx="2" fill="#666" opacity="0.22"/>
+  </g>
 
   <!-- Title -->
-  <text x="600" y="460" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="700" fill="#c9a227" text-anchor="middle" filter="url(#gothicGlow)">GOTHIC</text>
-  <text x="600" y="520" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#8b1a1a" text-anchor="middle" letter-spacing="8">IN TENEBRIS LUX</text>
-
-  <!-- Decorative gold lines -->
-  <line x1="200" y1="560" x2="450" y2="560" stroke="url(#goldShine)" stroke-width="2" filter="url(#gothicGlow)"/>
-  <line x1="750" y1="560" x2="1000" y2="560" stroke="url(#goldShine)" stroke-width="2" filter="url(#gothicGlow)"/>
-
-  <!-- Small decorative crosses -->
-  <g fill="#c9a227" opacity="0.4">
-    <rect x="597" y="545" width="6" height="30"/>
-    <rect x="588" y="554" width="24" height="6"/>
-  </g>
+  <text x="600" y="310" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="700" fill="#c8c8c8" letter-spacing="4" opacity="0.85">GOTHIC</text>
+  <text x="600" y="348" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="400" fill="#6b1a3a" letter-spacing="6" opacity="0.6">DARK &amp; ORNATE</text>
 </svg>

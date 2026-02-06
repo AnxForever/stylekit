@@ -1,94 +1,167 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
     <linearGradient id="vnSkyBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#4a6fa5"/>
-      <stop offset="40%" stop-color="#7b9cc7"/>
-      <stop offset="70%" stop-color="#c4a882"/>
+      <stop offset="35%" stop-color="#7b9cc7"/>
+      <stop offset="65%" stop-color="#c4a882"/>
       <stop offset="100%" stop-color="#e8c19a"/>
     </linearGradient>
-    <linearGradient id="vnDialogGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a1f35" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#0f1220" stop-opacity="0.95"/>
-    </linearGradient>
-    <filter id="vnSoftBlur">
-      <feGaussianBlur stdDeviation="40"/>
+    <filter id="vnSoftBlur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="25"/>
     </filter>
-    <filter id="vnGlow">
-      <feGaussianBlur stdDeviation="2"/>
+    <filter id="vnCardBlur" x="-5%" y="-5%" width="115%" height="115%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="1" dy="2" result="shadow"/>
+      <feFlood flood-color="#1a1f35" flood-opacity="0.2"/>
+      <feComposite in2="shadow" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
 
   <!-- Sunset sky gradient background -->
   <rect width="1200" height="630" fill="url(#vnSkyBg)"/>
 
-  <!-- Atmospheric light orbs -->
-  <circle cx="900" cy="350" r="200" fill="#e8c19a" opacity="0.15" filter="url(#vnSoftBlur)"/>
-  <circle cx="300" cy="200" r="120" fill="#7b9cc7" opacity="0.10" filter="url(#vnSoftBlur)"/>
+  <!-- Atmospheric light orbs (bokeh) -->
+  <circle cx="900" cy="200" r="160" fill="#e8c19a" opacity="0.12" filter="url(#vnSoftBlur)"/>
+  <circle cx="250" cy="150" r="100" fill="#7b9cc7" opacity="0.1" filter="url(#vnSoftBlur)"/>
+  <circle cx="600" cy="500" r="120" fill="#c4a882" opacity="0.08" filter="url(#vnSoftBlur)"/>
 
-  <!-- Distant treeline silhouette - boosted from 0.3 to 0.4 -->
-  <path d="M0 420 Q80 380, 150 400 Q200 370, 280 390 Q340 360, 420 385 Q500 355, 580 380 Q650 350, 720 375 Q800 345, 880 370 Q950 350, 1020 365 Q1080 340, 1120 360 Q1160 345, 1200 355 L1200 630 L0 630Z" fill="#2d3748" opacity="0.4"/>
+  <!-- Bokeh dots -->
+  <circle cx="150" cy="100" r="8" fill="#ffffff" opacity="0.08"/>
+  <circle cx="350" cy="160" r="5" fill="#ffffff" opacity="0.06"/>
+  <circle cx="820" cy="120" r="6" fill="#ffffff" opacity="0.07"/>
+  <circle cx="1050" cy="180" r="9" fill="#ffffff" opacity="0.06"/>
+  <circle cx="500" cy="80" r="4" fill="#ffffff" opacity="0.05"/>
+  <circle cx="700" cy="550" r="7" fill="#ffffff" opacity="0.06"/>
+  <circle cx="200" cy="480" r="5" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1000" cy="500" r="6" fill="#ffffff" opacity="0.05"/>
 
-  <!-- Character silhouette (left position) - boosted from 0.12 to 0.25 -->
-  <ellipse cx="280" cy="400" rx="80" ry="180" fill="#2d3748" opacity="0.25"/>
+  <!-- Distant treeline silhouette -->
+  <path d="M0 440 Q100 400, 200 420 Q300 390, 400 410 Q500 380, 600 400 Q700 375, 800 395 Q900 370, 1000 390 Q1100 370, 1200 380 L1200 630 L0 630Z" fill="#2d3748" opacity="0.3"/>
 
-  <!-- Character silhouette (right position) - boosted from 0.08 to 0.20 -->
-  <ellipse cx="900" cy="410" rx="70" ry="160" fill="#2d3748" opacity="0.20"/>
+  <!-- Character silhouette positions -->
+  <ellipse cx="250" cy="420" rx="70" ry="170" fill="#2d3748" opacity="0.18"/>
+  <ellipse cx="950" cy="430" rx="60" ry="150" fill="#2d3748" opacity="0.14"/>
 
-  <!-- ADV-style dialogue panel at bottom -->
-  <rect x="60" y="400" width="1080" height="190" rx="8" fill="url(#vnDialogGrad)"/>
-  <rect x="60" y="400" width="1080" height="190" rx="8" stroke="#6366f1" stroke-width="1" stroke-opacity="0.25" fill="none"/>
+  <!-- Card 1 - top left: Character Info panel -->
+  <g filter="url(#vnCardBlur)">
+    <rect x="60" y="80" width="260" height="200" rx="10" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.25"/>
+    <!-- Ornate corners -->
+    <path d="M68 86 L68 96 L78 96" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M312 86 L312 96 L302 96" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M68 274 L68 264 L78 264" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M312 274 L312 264 L302 264" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <!-- Nameplate header -->
+    <rect x="80" y="95" width="100" height="24" rx="4" fill="#6366f1" opacity="0.85"/>
+    <text x="130" y="112" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Sakura</text>
+    <!-- Character stat lines -->
+    <rect x="80" y="135" width="200" height="5" rx="2.5" fill="#ffffff" opacity="0.15"/>
+    <rect x="80" y="150" width="170" height="5" rx="2.5" fill="#ffffff" opacity="0.12"/>
+    <rect x="80" y="165" width="185" height="5" rx="2.5" fill="#ffffff" opacity="0.12"/>
+    <!-- Affinity bar -->
+    <text x="80" y="196" font-family="system-ui, sans-serif" font-size="9" fill="#ffffff" opacity="0.5">Affinity</text>
+    <rect x="80" y="202" width="200" height="6" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+    <rect x="80" y="202" width="150" height="6" rx="3" fill="#ec4899" opacity="0.5"/>
+    <!-- Choice button -->
+    <rect x="80" y="230" width="100" height="26" rx="5" fill="#ffffff" fill-opacity="0.08" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.4"/>
+    <text x="130" y="248" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ffffff" opacity="0.6">View Profile</text>
+  </g>
 
-  <!-- Ornate corner decorations on dialogue panel -->
-  <!-- Top-left corner - inner boosted from 0.3 to 0.5 -->
-  <path d="M70 405 L70 415 L80 415" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
-  <path d="M72 407 L72 413 L78 413" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.5" fill="none"/>
-  <!-- Top-right corner -->
-  <path d="M1130 405 L1130 415 L1120 415" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
-  <path d="M1128 407 L1128 413 L1122 413" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.5" fill="none"/>
-  <!-- Bottom-left corner -->
-  <path d="M70 585 L70 575 L80 575" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
-  <path d="M72 583 L72 577 L78 577" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.5" fill="none"/>
-  <!-- Bottom-right corner -->
-  <path d="M1130 585 L1130 575 L1120 575" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
-  <path d="M1128 583 L1128 577 L1122 577" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.5" fill="none"/>
+  <!-- Card 2 - top right: Scene Select panel -->
+  <g filter="url(#vnCardBlur)">
+    <rect x="880" y="60" width="260" height="210" rx="10" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.22"/>
+    <!-- Ornate corners -->
+    <path d="M888 66 L888 76 L898 76" stroke="#ec4899" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M1132 66 L1132 76 L1122 76" stroke="#ec4899" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M888 264 L888 254 L898 254" stroke="#ec4899" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M1132 264 L1132 254 L1122 254" stroke="#ec4899" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <!-- Nameplate header -->
+    <rect x="900" y="76" width="110" height="24" rx="4" fill="#ec4899" opacity="0.8"/>
+    <text x="955" y="93" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Scene Select</text>
+    <!-- Scene list items -->
+    <rect x="900" y="116" width="12" height="12" rx="3" fill="#6366f1" opacity="0.3"/>
+    <rect x="920" y="118" width="160" height="5" rx="2.5" fill="#ffffff" opacity="0.15"/>
+    <rect x="920" y="130" width="120" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+    <rect x="900" y="148" width="12" height="12" rx="3" fill="#10b981" opacity="0.3"/>
+    <rect x="920" y="150" width="140" height="5" rx="2.5" fill="#ffffff" opacity="0.15"/>
+    <rect x="920" y="162" width="100" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+    <rect x="900" y="180" width="12" height="12" rx="3" fill="#ec4899" opacity="0.3"/>
+    <rect x="920" y="182" width="150" height="5" rx="2.5" fill="#ffffff" opacity="0.15"/>
+    <rect x="920" y="194" width="130" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+    <!-- Continue button -->
+    <rect x="900" y="220" width="110" height="26" rx="5" fill="#ffffff" fill-opacity="0.08" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.4"/>
+    <text x="955" y="238" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ffffff" opacity="0.6">Continue</text>
+    <!-- Advance indicator -->
+    <polygon points="1115,238 1125,233 1125,243" fill="#ec4899" opacity="0.4"/>
+  </g>
 
-  <!-- Character nameplate -->
-  <rect x="90" y="390" width="120" height="28" rx="4" fill="#6366f1" opacity="0.9"/>
-  <text x="150" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Sakura</text>
+  <!-- Card 3 - bottom left: Dialogue Log panel -->
+  <g filter="url(#vnCardBlur)">
+    <rect x="70" y="380" width="240" height="185" rx="10" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.25"/>
+    <!-- Ornate corners -->
+    <path d="M78 386 L78 396 L88 396" stroke="#10b981" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M302 386 L302 396 L292 396" stroke="#10b981" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M78 559 L78 549 L88 549" stroke="#10b981" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M302 559 L302 549 L292 549" stroke="#10b981" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <!-- Nameplate header -->
+    <rect x="90" y="396" width="95" height="22" rx="4" fill="#10b981" opacity="0.75"/>
+    <text x="137" y="411" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#ffffff">Log</text>
+    <!-- Dialogue lines -->
+    <text x="90" y="440" font-family="Georgia, serif" font-size="10" fill="#ffffff" opacity="0.5">Sakura:</text>
+    <rect x="90" y="448" width="180" height="4" rx="2" fill="#ffffff" opacity="0.12"/>
+    <rect x="90" y="458" width="150" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+    <text x="90" y="482" font-family="Georgia, serif" font-size="10" fill="#ffffff" opacity="0.5">Ren:</text>
+    <rect x="90" y="490" width="190" height="4" rx="2" fill="#ffffff" opacity="0.12"/>
+    <rect x="90" y="500" width="140" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+    <!-- Scroll indicator -->
+    <rect x="288" y="430" width="3" height="50" rx="1.5" fill="#ffffff" fill-opacity="0.08"/>
+    <rect x="288" y="430" width="3" height="20" rx="1.5" fill="#10b981" opacity="0.3"/>
+    <!-- Choice button -->
+    <rect x="90" y="524" width="180" height="24" rx="5" fill="#ffffff" fill-opacity="0.06" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.35"/>
+    <text x="180" y="540" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ffffff" opacity="0.55">Read full history</text>
+  </g>
 
-  <!-- Dialog text lines -->
-  <text x="110" y="450" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#ffffff" opacity="0.9">&quot;The cherry blossoms are beautiful this time of year...&quot;</text>
-  <text x="110" y="480" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#ffffff" opacity="0.75">&quot;I always feel a little nostalgic when spring arrives.&quot;</text>
+  <!-- Card 4 - bottom right: Save/Load panel -->
+  <g filter="url(#vnCardBlur)">
+    <rect x="870" y="360" width="270" height="200" rx="10" fill="#ffffff" fill-opacity="0.09" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.22"/>
+    <!-- Ornate corners -->
+    <path d="M878 366 L878 376 L888 376" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M1132 366 L1132 376 L1122 376" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M878 554 L878 544 L888 544" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <path d="M1132 554 L1132 544 L1122 544" stroke="#6366f1" stroke-width="1" stroke-opacity="0.4" fill="none"/>
+    <!-- Nameplate header -->
+    <rect x="890" y="376" width="80" height="22" rx="4" fill="#6366f1" opacity="0.8"/>
+    <text x="930" y="391" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#ffffff">Save</text>
+    <!-- Save slot rows -->
+    <rect x="890" y="412" width="220" height="32" rx="6" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.12"/>
+    <rect x="900" y="420" width="8" height="8" rx="2" fill="#6366f1" opacity="0.4"/>
+    <rect x="916" y="420" width="100" height="5" rx="2.5" fill="#ffffff" opacity="0.13"/>
+    <text x="1080" y="432" text-anchor="end" font-family="system-ui, sans-serif" font-size="8" fill="#ffffff" opacity="0.35">Ch.3 - 14:23</text>
+    <rect x="890" y="452" width="220" height="32" rx="6" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.12"/>
+    <rect x="900" y="460" width="8" height="8" rx="2" fill="#ec4899" opacity="0.4"/>
+    <rect x="916" y="460" width="120" height="5" rx="2.5" fill="#ffffff" opacity="0.13"/>
+    <text x="1080" y="472" text-anchor="end" font-family="system-ui, sans-serif" font-size="8" fill="#ffffff" opacity="0.35">Ch.1 - 08:45</text>
+    <rect x="890" y="492" width="220" height="32" rx="6" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.08"/>
+    <text x="1000" y="512" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ffffff" opacity="0.25">Empty Slot</text>
+    <!-- Action buttons -->
+    <rect x="890" y="534" width="70" height="22" rx="5" fill="#6366f1" opacity="0.3"/>
+    <text x="925" y="549" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#ffffff" opacity="0.6">Save</text>
+    <rect x="970" y="534" width="70" height="22" rx="5" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.2"/>
+    <text x="1005" y="549" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#ffffff" opacity="0.5">Load</text>
+  </g>
 
-  <!-- Text advance indicator (blinking triangle) -->
-  <polygon points="1105,575 1115,570 1115,580" fill="#6366f1" opacity="0.6"/>
+  <!-- Decorative diamond separators -->
+  <rect x="555" y="250" width="7" height="7" fill="#6366f1" opacity="0.35" transform="rotate(45 558.5 253.5)"/>
+  <rect x="597" y="250" width="7" height="7" fill="#ec4899" opacity="0.3" transform="rotate(45 600.5 253.5)"/>
+  <rect x="639" y="250" width="7" height="7" fill="#10b981" opacity="0.3" transform="rotate(45 642.5 253.5)"/>
 
-  <!-- Choice buttons - background boosted from 0.08 to 0.15, border from 0.35 to 0.5 -->
-  <rect x="200" y="520" width="360" height="48" rx="6" fill="#ffffff" opacity="0.15" stroke="#6366f1" stroke-width="1" stroke-opacity="0.50"/>
-  <text x="380" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" opacity="0.75">They remind me of our first meeting.</text>
-
-  <rect x="600" y="520" width="360" height="48" rx="6" fill="#ffffff" opacity="0.15" stroke="#ec4899" stroke-width="1" stroke-opacity="0.50"/>
-  <text x="780" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" opacity="0.75">Let&apos;s make new memories together.</text>
-
-  <!-- Title shadow layer for depth (offset 2px, same color at 0.3) -->
-  <text x="602" y="162" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#1a1f35" text-anchor="middle" opacity="0.3">Visual Novel</text>
-  <!-- Title in sky area -->
-  <text x="600" y="160" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#ffffff" text-anchor="middle" opacity="0.9">Visual Novel</text>
-  <text x="601" y="161" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#6366f1" text-anchor="middle" opacity="0.15">Visual Novel</text>
-
-  <!-- Subtitle - boosted from 0.45 to 0.55 -->
-  <text x="600" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" opacity="0.55" letter-spacing="6">INTERACTIVE STORYTELLING</text>
-
-  <!-- Decorative diamond separators - boosted from 0.3-0.4 to 0.5-0.6 -->
-  <rect x="445" y="230" width="8" height="8" fill="#6366f1" opacity="0.6" transform="rotate(45 449 234)"/>
-  <rect x="597" y="230" width="8" height="8" fill="#ec4899" opacity="0.5" transform="rotate(45 601 234)"/>
-  <rect x="749" y="230" width="8" height="8" fill="#10b981" opacity="0.55" transform="rotate(45 753 234)"/>
-
-  <!-- Color swatches -->
-  <rect x="420" y="280" width="44" height="44" rx="6" fill="#1a202c" opacity="0.8"/>
-  <rect x="478" y="280" width="44" height="44" rx="6" fill="#6366f1" opacity="0.8"/>
-  <rect x="536" y="280" width="44" height="44" rx="6" fill="#ec4899" opacity="0.8"/>
-  <rect x="594" y="280" width="44" height="44" rx="6" fill="#10b981" opacity="0.8"/>
-  <rect x="652" y="280" width="44" height="44" rx="6" fill="#e0e7ff" opacity="0.8"/>
-  <rect x="710" y="280" width="44" height="44" rx="6" fill="#f7fafc" opacity="0.8" stroke="#4a5568" stroke-width="1" stroke-opacity="0.15"/>
+  <!-- Title -->
+  <text x="602" y="302" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" fill="#1a1f35" text-anchor="middle" opacity="0.2">VISUAL NOVEL</text>
+  <text x="600" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" fill="#ffffff" text-anchor="middle" opacity="0.85">VISUAL NOVEL</text>
+  <text x="601" y="301" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" fill="#6366f1" text-anchor="middle" opacity="0.12">VISUAL NOVEL</text>
+  <!-- Subtitle -->
+  <text x="600" y="338" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" opacity="0.45" letter-spacing="6">INTERACTIVE STORYTELLING</text>
 </svg>

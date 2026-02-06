@@ -1,79 +1,112 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Halftone pattern -->
-    <pattern id="risoHalftone" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
-      <circle cx="3" cy="3" r="1.2" fill="#ff6b9d" opacity="0.15"/>
+    <pattern id="halftonePink" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#ff6b9d"/>
     </pattern>
-    <pattern id="risoHalftoneBlue" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-      <circle cx="4" cy="4" r="1.5" fill="#2563eb" opacity="0.1"/>
+    <pattern id="halftoneBlue" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#2563eb"/>
+    </pattern>
+    <pattern id="halftoneYellow" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#f59e0b"/>
+    </pattern>
+    <pattern id="risoPaper" width="3" height="3" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="0.2" fill="#c4a882" opacity="0.08"/>
     </pattern>
   </defs>
 
   <!-- Paper background -->
   <rect width="1200" height="630" fill="#fffbf0"/>
+  <rect width="1200" height="630" fill="url(#risoPaper)"/>
 
-  <!-- Halftone texture overlays -->
-  <rect width="1200" height="630" fill="url(#risoHalftone)"/>
-  <rect width="600" height="630" fill="url(#risoHalftoneBlue)"/>
+  <!-- Subtle halftone overlay -->
+  <rect width="600" height="630" fill="url(#halftonePink)" opacity="0.04"/>
+  <rect x="600" width="600" height="630" fill="url(#halftoneBlue)" opacity="0.04"/>
 
-  <!-- Large overprint circles -->
-  <circle cx="350" cy="315" r="200" fill="#ff6b9d" opacity="0.2"/>
-  <circle cx="420" cy="325" r="200" fill="#2563eb" opacity="0.15"/>
-
-  <!-- Offset rectangles -->
-  <rect x="750" y="150" width="300" height="200" fill="#ff6b9d" opacity="0.2"/>
-  <rect x="760" y="160" width="300" height="200" fill="#2563eb" opacity="0.15"/>
-
-  <!-- Small geometric shapes -->
-  <circle cx="150" cy="100" r="40" fill="#ff8a00" opacity="0.25"/>
-  <circle cx="155" cy="105" r="40" fill="#22c55e" opacity="0.15"/>
-
-  <rect x="950" y="450" width="120" height="80" fill="#22c55e" opacity="0.2"/>
-  <rect x="956" y="456" width="120" height="80" fill="#ff6b9d" opacity="0.15"/>
-
-  <!-- Triangle -->
-  <polygon points="100,500 180,400 260,500" fill="#2563eb" opacity="0.15"/>
-  <polygon points="106,503 186,403 266,503" fill="#ff8a00" opacity="0.12"/>
-
-  <!-- Registration marks - corners -->
-  <g stroke="#1a1a1a" stroke-width="1" opacity="0.3">
-    <!-- Top-left -->
-    <line x1="40" y1="30" x2="70" y2="30"/>
-    <line x1="55" y1="15" x2="55" y2="45"/>
-    <circle cx="55" cy="30" r="8" fill="none"/>
-    <!-- Top-right -->
-    <line x1="1130" y1="30" x2="1160" y2="30"/>
-    <line x1="1145" y1="15" x2="1145" y2="45"/>
-    <circle cx="1145" cy="30" r="8" fill="none"/>
-    <!-- Bottom-left -->
-    <line x1="40" y1="600" x2="70" y2="600"/>
-    <line x1="55" y1="585" x2="55" y2="615"/>
-    <circle cx="55" cy="600" r="8" fill="none"/>
-    <!-- Bottom-right -->
-    <line x1="1130" y1="600" x2="1160" y2="600"/>
-    <line x1="1145" y1="585" x2="1145" y2="615"/>
-    <circle cx="1145" cy="600" r="8" fill="none"/>
+  <!-- Registration marks -->
+  <g stroke="#1a1a1a" stroke-width="1" opacity="0.25">
+    <line x1="40" y1="30" x2="65" y2="30"/>
+    <line x1="52" y1="18" x2="52" y2="42"/>
+    <circle cx="52" cy="30" r="7" fill="none"/>
+    <line x1="1135" y1="30" x2="1160" y2="30"/>
+    <line x1="1147" y1="18" x2="1147" y2="42"/>
+    <circle cx="1147" cy="30" r="7" fill="none"/>
+    <line x1="40" y1="600" x2="65" y2="600"/>
+    <line x1="52" y1="588" x2="52" y2="612"/>
+    <circle cx="52" cy="600" r="7" fill="none"/>
+    <line x1="1135" y1="600" x2="1160" y2="600"/>
+    <line x1="1147" y1="588" x2="1147" y2="612"/>
+    <circle cx="1147" cy="600" r="7" fill="none"/>
   </g>
 
-  <!-- Title - overprint effect -->
-  <text x="604" y="284" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#2563eb" text-anchor="middle" opacity="0.5">RISO</text>
-  <text x="600" y="280" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#ff6b9d" text-anchor="middle">RISO</text>
+  <!-- Card 1: Top-left -->
+  <rect x="83" y="83" width="260" height="175" fill="#2563eb" opacity="0.15"/>
+  <rect x="80" y="80" width="260" height="175" fill="#fffbf0" stroke="#1a1a1a" stroke-width="1.5"/>
+  <rect x="80" y="80" width="260" height="175" fill="url(#halftonePink)" opacity="0.08"/>
+  <text x="105" y="118" font-family="ui-monospace, 'Courier New', monospace" font-size="20" font-weight="700" fill="#ff6b9d">Dashboard</text>
+  <rect x="105" y="132" width="210" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.3"/>
+  <rect x="105" y="145" width="180" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.3"/>
+  <rect x="105" y="158" width="195" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.3"/>
+  <rect x="105" y="178" width="210" height="4" fill="#ff6b9d" opacity="0.6"/>
+  <rect x="105" y="195" width="160" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.2"/>
+  <rect x="105" y="208" width="130" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.2"/>
+  <rect x="105" y="225" width="80" height="20" fill="#ff6b9d" opacity="0.7"/>
+  <rect x="108" y="228" width="80" height="20" fill="#2563eb" opacity="0.12"/>
 
-  <text x="604" y="354" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#ff6b9d" text-anchor="middle" opacity="0.5">GRAPH</text>
-  <text x="600" y="350" font-family="ui-monospace, 'Courier New', monospace" font-size="90" font-weight="700" fill="#2563eb" text-anchor="middle">GRAPH</text>
+  <!-- Card 2: Top-right -->
+  <rect x="863" y="83" width="260" height="175" fill="#ff6b9d" opacity="0.15"/>
+  <rect x="860" y="80" width="260" height="175" fill="#fffbf0" stroke="#1a1a1a" stroke-width="1.5"/>
+  <rect x="860" y="80" width="260" height="175" fill="url(#halftoneBlue)" opacity="0.06"/>
+  <text x="885" y="118" font-family="ui-monospace, 'Courier New', monospace" font-size="20" font-weight="700" fill="#2563eb">Metrics</text>
+  <rect x="885" y="132" width="210" height="5" rx="2" fill="url(#halftonePink)" opacity="0.3"/>
+  <rect x="885" y="145" width="175" height="5" rx="2" fill="url(#halftonePink)" opacity="0.3"/>
+  <rect x="885" y="165" width="210" height="4" fill="#2563eb" opacity="0.6"/>
+  <text x="885" y="215" font-family="ui-monospace, 'Courier New', monospace" font-size="36" font-weight="700" fill="#ff6b9d">1,204</text>
+  <text x="888" y="218" font-family="ui-monospace, 'Courier New', monospace" font-size="36" font-weight="700" fill="#2563eb" opacity="0.2">1,204</text>
+  <rect x="885" y="230" width="120" height="5" rx="2" fill="url(#halftonePink)" opacity="0.2"/>
 
-  <!-- Subtitle -->
-  <text x="600" y="400" font-family="ui-monospace, 'Courier New', monospace" font-size="20" fill="#1a1a1a" text-anchor="middle" opacity="0.5" letter-spacing="6">PRINT AESTHETICS</text>
+  <!-- Card 3: Bottom-left -->
+  <rect x="83" y="403" width="260" height="175" fill="#f59e0b" opacity="0.12"/>
+  <rect x="80" y="400" width="260" height="175" fill="#fffbf0" stroke="#1a1a1a" stroke-width="1.5"/>
+  <rect x="80" y="400" width="260" height="175" fill="url(#halftoneYellow)" opacity="0.06"/>
+  <text x="105" y="438" font-family="ui-monospace, 'Courier New', monospace" font-size="20" font-weight="700" fill="#f59e0b">Activity</text>
+  <text x="108" y="441" font-family="ui-monospace, 'Courier New', monospace" font-size="20" font-weight="700" fill="#ff6b9d" opacity="0.2">Activity</text>
+  <rect x="105" y="452" width="210" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.25"/>
+  <rect x="105" y="465" width="180" height="5" rx="2" fill="url(#halftoneBlue)" opacity="0.25"/>
+  <rect x="105" y="482" width="210" height="4" fill="#f59e0b" opacity="0.6"/>
+  <!-- Chart bars with misregistration -->
+  <rect x="108" y="513" width="28" height="48" fill="#2563eb" opacity="0.15"/>
+  <rect x="105" y="510" width="28" height="48" fill="#ff6b9d" opacity="0.6"/>
+  <rect x="148" y="523" width="28" height="38" fill="#ff6b9d" opacity="0.15"/>
+  <rect x="145" y="520" width="28" height="38" fill="#2563eb" opacity="0.6"/>
+  <rect x="188" y="503" width="28" height="48" fill="#2563eb" opacity="0.15"/>
+  <rect x="185" y="500" width="28" height="48" fill="#f59e0b" opacity="0.6"/>
+  <rect x="228" y="528" width="28" height="28" fill="#f59e0b" opacity="0.15"/>
+  <rect x="225" y="525" width="28" height="28" fill="#ff6b9d" opacity="0.6"/>
+  <rect x="268" y="513" width="28" height="38" fill="#ff6b9d" opacity="0.15"/>
+  <rect x="265" y="510" width="28" height="38" fill="#2563eb" opacity="0.6"/>
 
-  <!-- Color swatches at bottom -->
-  <rect x="420" y="450" width="60" height="60" fill="#ff6b9d" opacity="0.8"/>
-  <rect x="500" y="450" width="60" height="60" fill="#2563eb" opacity="0.8"/>
-  <rect x="580" y="450" width="60" height="60" fill="#ff8a00" opacity="0.8"/>
-  <rect x="660" y="450" width="60" height="60" fill="#22c55e" opacity="0.8"/>
+  <!-- Card 4: Bottom-right -->
+  <rect x="863" y="403" width="260" height="175" fill="#2563eb" opacity="0.12"/>
+  <rect x="860" y="400" width="260" height="175" fill="#fffbf0" stroke="#1a1a1a" stroke-width="1.5"/>
+  <rect x="860" y="400" width="260" height="175" fill="url(#halftonePink)" opacity="0.05"/>
+  <text x="885" y="438" font-family="ui-monospace, 'Courier New', monospace" font-size="20" font-weight="700" fill="#2563eb">Status</text>
+  <rect x="885" y="452" width="210" height="5" rx="2" fill="url(#halftonePink)" opacity="0.3"/>
+  <rect x="885" y="465" width="175" height="5" rx="2" fill="url(#halftonePink)" opacity="0.3"/>
+  <rect x="885" y="482" width="210" height="4" fill="#ff6b9d" opacity="0.5"/>
+  <!-- Progress bars with misregistration -->
+  <rect x="888" y="500" width="200" height="10" fill="#f59e0b" opacity="0.08"/>
+  <rect x="885" y="497" width="140" height="10" fill="#ff6b9d" opacity="0.5"/>
+  <rect x="888" y="520" width="200" height="10" fill="#ff6b9d" opacity="0.08"/>
+  <rect x="885" y="517" width="180" height="10" fill="#2563eb" opacity="0.5"/>
+  <rect x="888" y="540" width="200" height="10" fill="#2563eb" opacity="0.08"/>
+  <rect x="885" y="537" width="100" height="10" fill="#f59e0b" opacity="0.5"/>
 
-  <!-- Offset shadow on swatches -->
-  <rect x="424" y="454" width="60" height="60" fill="#2563eb" opacity="0.15"/>
-  <rect x="504" y="454" width="60" height="60" fill="#ff6b9d" opacity="0.15"/>
-  <rect x="584" y="454" width="60" height="60" fill="#22c55e" opacity="0.15"/>
-  <rect x="664" y="454" width="60" height="60" fill="#ff6b9d" opacity="0.15"/>
+  <!-- Overprint circle decoration -->
+  <circle cx="520" cy="310" r="60" fill="#ff6b9d" opacity="0.08"/>
+  <circle cx="530" cy="315" r="60" fill="#2563eb" opacity="0.06"/>
+
+  <!-- Title: RISOGRAPH centered with overprint -->
+  <text x="604" y="306" font-family="ui-monospace, 'Courier New', monospace" font-size="52" font-weight="700" fill="#2563eb" text-anchor="middle" opacity="0.45">RISOGRAPH</text>
+  <text x="600" y="302" font-family="ui-monospace, 'Courier New', monospace" font-size="52" font-weight="700" fill="#ff6b9d" text-anchor="middle">RISOGRAPH</text>
+  <text x="600" y="340" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="#1a1a1a" text-anchor="middle" opacity="0.4" letter-spacing="5">PRINT AESTHETICS</text>
 </svg>
