@@ -1,112 +1,71 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Canvas weave texture -->
-    <filter id="impWeave" x="0" y="0" width="100%" height="100%">
-      <feTurbulence baseFrequency="0.8 0.4" numOctaves="2" seed="12" stitchTiles="stitch" result="weave"/>
-      <feColorMatrix type="saturate" values="0" in="weave" result="mono"/>
-      <feBlend in="SourceGraphic" in2="mono" mode="multiply"/>
+    <!-- Soft blur for dappled light -->
+    <filter id="impDapple">
+      <feGaussianBlur stdDeviation="15"/>
     </filter>
-    <!-- Brushstroke smear -->
-    <filter id="impSmear">
-      <feGaussianBlur stdDeviation="5 2"/>
-    </filter>
-    <!-- Dappled light filter -->
-    <filter id="impDapple" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence baseFrequency="0.06" numOctaves="2" seed="8" result="noise"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 0.91  0 0 0 0 0.66  0 0 0 0 0.49  0 0 0 0.12 0" in="noise" result="warm"/>
-      <feComposite in="warm" in2="SourceGraphic" operator="atop"/>
-      <feMerge>
-        <feMergeNode in="SourceGraphic"/>
-        <feMergeNode/>
-      </feMerge>
-    </filter>
-    <!-- Impasto thick paint -->
-    <filter id="impThick">
-      <feGaussianBlur stdDeviation="3"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="1.5"/>
-      </feComponentTransfer>
+    <!-- Slight blur for brushstrokes -->
+    <filter id="impBrush">
+      <feGaussianBlur stdDeviation="3 1.5"/>
     </filter>
   </defs>
 
-  <!-- Canvas cream base -->
+  <!-- Canvas texture background - solid warm cream -->
   <rect width="1200" height="630" fill="#f5f0e1"/>
 
-  <!-- Canvas texture layer -->
-  <rect width="1200" height="630" fill="#ede5d0" opacity="0.35" filter="url(#impWeave)"/>
+  <!-- Subtle canvas color variation -->
+  <rect width="1200" height="630" fill="#ede5d0" opacity="0.25"/>
 
-  <!-- Warm golden light wash -->
-  <ellipse cx="600" cy="280" rx="550" ry="300" fill="#e8a87c" opacity="0.06" filter="url(#impThick)"/>
+  <!-- Large visible brushstroke shapes - warm orange cluster (top-left) -->
+  <rect x="50" y="60" width="250" height="18" rx="9" fill="#e8a87c" opacity="0.50" transform="rotate(-5 175 69)" filter="url(#impBrush)"/>
+  <rect x="70" y="90" width="220" height="16" rx="8" fill="#e8a87c" opacity="0.55" transform="rotate(3 180 98)" filter="url(#impBrush)"/>
+  <rect x="90" y="118" width="190" height="14" rx="7" fill="#d4956a" opacity="0.45" transform="rotate(-2 185 125)" filter="url(#impBrush)"/>
+  <rect x="60" y="145" width="170" height="12" rx="6" fill="#e8a87c" opacity="0.40" transform="rotate(4 145 151)" filter="url(#impBrush)"/>
 
-  <!-- Dappled light spots across canvas -->
-  <circle cx="250" cy="160" r="45" fill="#f5d88a" opacity="0.10"/>
-  <circle cx="420" cy="120" r="35" fill="#e8a87c" opacity="0.08"/>
-  <circle cx="680" cy="100" r="40" fill="#f5d88a" opacity="0.09"/>
-  <circle cx="900" cy="140" r="50" fill="#e8a87c" opacity="0.07"/>
-  <circle cx="1050" cy="180" r="30" fill="#f5d88a" opacity="0.08"/>
-  <circle cx="180" cy="480" r="38" fill="#f5d88a" opacity="0.08"/>
-  <circle cx="400" cy="520" r="42" fill="#e8a87c" opacity="0.06"/>
-  <circle cx="750" cy="510" r="35" fill="#f5d88a" opacity="0.07"/>
-  <circle cx="1000" cy="490" r="45" fill="#e8a87c" opacity="0.06"/>
+  <!-- Vermillion strokes (mid-right) -->
+  <rect x="880" y="140" width="230" height="17" rx="8" fill="#c0392b" opacity="0.45" transform="rotate(-4 995 149)" filter="url(#impBrush)"/>
+  <rect x="900" y="170" width="200" height="15" rx="7" fill="#c0392b" opacity="0.50" transform="rotate(2 1000 178)" filter="url(#impBrush)"/>
+  <rect x="920" y="198" width="180" height="13" rx="6" fill="#a83024" opacity="0.40" transform="rotate(-3 1010 205)" filter="url(#impBrush)"/>
 
-  <!-- Bold brushstroke elements - horizontal impasto strokes -->
-  <rect x="60" y="85" width="220" height="14" rx="7" fill="#c0392b" opacity="0.25" transform="rotate(-3 170 92)" filter="url(#impSmear)"/>
-  <rect x="80" y="110" width="180" height="12" rx="6" fill="#e8a87c" opacity="0.30" transform="rotate(2 170 116)" filter="url(#impSmear)"/>
-  <rect x="100" y="135" width="160" height="10" rx="5" fill="#1abc9c" opacity="0.18" transform="rotate(-1 180 140)" filter="url(#impSmear)"/>
+  <!-- Turquoise strokes (bottom area) -->
+  <rect x="60" y="480" width="260" height="16" rx="8" fill="#1abc9c" opacity="0.45" transform="rotate(3 190 488)" filter="url(#impBrush)"/>
+  <rect x="80" y="510" width="220" height="14" rx="7" fill="#1abc9c" opacity="0.50" transform="rotate(-2 190 517)" filter="url(#impBrush)"/>
+  <rect x="850" y="470" width="240" height="15" rx="7" fill="#1abc9c" opacity="0.40" transform="rotate(-4 970 478)" filter="url(#impBrush)"/>
+  <rect x="870" y="498" width="210" height="13" rx="6" fill="#16a085" opacity="0.45" transform="rotate(2 975 505)" filter="url(#impBrush)"/>
 
-  <rect x="900" y="70" width="200" height="13" rx="6" fill="#2c3e50" opacity="0.15" transform="rotate(-5 1000 77)" filter="url(#impSmear)"/>
-  <rect x="920" y="95" width="170" height="11" rx="5" fill="#e8a87c" opacity="0.22" transform="rotate(3 1005 101)" filter="url(#impSmear)"/>
-  <rect x="940" y="120" width="150" height="10" rx="5" fill="#c0392b" opacity="0.16" transform="rotate(-2 1015 125)" filter="url(#impSmear)"/>
+  <!-- Dark accent strokes -->
+  <rect x="900" y="65" width="180" height="12" rx="6" fill="#2c3e50" opacity="0.30" transform="rotate(-6 990 71)" filter="url(#impBrush)"/>
+  <rect x="70" y="500" width="180" height="11" rx="5" fill="#2c3e50" opacity="0.25" transform="rotate(5 160 506)" filter="url(#impBrush)"/>
 
-  <!-- Bottom brushstrokes -->
-  <rect x="70" y="500" width="240" height="15" rx="7" fill="#1abc9c" opacity="0.18" transform="rotate(3 190 508)" filter="url(#impSmear)"/>
-  <rect x="90" y="525" width="200" height="12" rx="6" fill="#e8a87c" opacity="0.20" transform="rotate(-2 190 531)" filter="url(#impSmear)"/>
-  <rect x="860" y="490" width="230" height="14" rx="7" fill="#c0392b" opacity="0.15" transform="rotate(-4 975 497)" filter="url(#impSmear)"/>
-  <rect x="880" y="515" width="190" height="11" rx="5" fill="#2c3e50" opacity="0.12" transform="rotate(2 975 521)" filter="url(#impSmear)"/>
+  <!-- Dappled light: golden circles with blur -->
+  <circle cx="300" cy="200" r="60" fill="#f5d88a" opacity="0.25" filter="url(#impDapple)"/>
+  <circle cx="700" cy="150" r="50" fill="#f5d88a" opacity="0.22" filter="url(#impDapple)"/>
+  <circle cx="500" cy="450" r="55" fill="#e8a87c" opacity="0.20" filter="url(#impDapple)"/>
+  <circle cx="1000" cy="350" r="45" fill="#f5d88a" opacity="0.28" filter="url(#impDapple)"/>
 
-  <!-- Pointillist color dots cluster -->
-  <g opacity="0.12">
-    <circle cx="280" cy="340" r="4.5" fill="#e8a87c"/>
-    <circle cx="292" cy="335" r="3.5" fill="#c0392b"/>
-    <circle cx="286" cy="348" r="3" fill="#1abc9c"/>
-    <circle cx="298" cy="343" r="4" fill="#f5d88a"/>
-    <circle cx="274" cy="332" r="3" fill="#2c3e50"/>
-    <circle cx="304" cy="338" r="3.5" fill="#e8a87c"/>
-    <circle cx="270" cy="345" r="3" fill="#c0392b"/>
-  </g>
-  <g opacity="0.10">
-    <circle cx="880" cy="310" r="4" fill="#c0392b"/>
-    <circle cx="892" cy="305" r="3.5" fill="#e8a87c"/>
-    <circle cx="886" cy="318" r="3" fill="#2c3e50"/>
-    <circle cx="898" cy="313" r="4" fill="#1abc9c"/>
-    <circle cx="874" cy="302" r="3" fill="#f5d88a"/>
-    <circle cx="904" cy="308" r="3.5" fill="#e8a87c"/>
-  </g>
+  <!-- Title "Impression" - Georgia serif, large and readable -->
+  <text x="604" y="295" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="700" fill="#c0392b" text-anchor="middle" opacity="0.25">Impression</text>
+  <text x="600" y="290" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="700" fill="#2c3e50" text-anchor="middle">Impression</text>
 
-  <!-- Golden light rays from upper-left -->
-  <line x1="0" y1="0" x2="600" y2="630" stroke="#f5d88a" stroke-width="1.5" opacity="0.04"/>
-  <line x1="100" y1="0" x2="700" y2="630" stroke="#e8a87c" stroke-width="1" opacity="0.035"/>
-  <line x1="200" y1="0" x2="800" y2="630" stroke="#f5d88a" stroke-width="1" opacity="0.03"/>
+  <!-- Subtitle "Soleil Levant" in italic warm accent -->
+  <text x="600" y="365" font-family="Georgia, 'Palatino Linotype', serif" font-size="52" font-style="italic" font-weight="700" fill="#e8a87c" text-anchor="middle">Soleil Levant</text>
 
-  <!-- Title with impasto paint shadow effect -->
-  <text x="604" y="273" font-family="Georgia, 'Palatino Linotype', serif" font-size="90" font-weight="700" fill="#c0392b" text-anchor="middle" opacity="0.12">Impression</text>
-  <text x="602" y="271" font-family="Georgia, 'Palatino Linotype', serif" font-size="90" font-weight="700" fill="#2c3e50" text-anchor="middle" opacity="0.08">Impression</text>
-  <text x="600" y="268" font-family="Georgia, 'Palatino Linotype', serif" font-size="90" font-weight="700" fill="#e8a87c" text-anchor="middle" opacity="0.92">Impression</text>
+  <!-- Descriptive tagline -->
+  <text x="600" y="415" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#2c3e50" text-anchor="middle" opacity="0.40" letter-spacing="7">BRUSHSTROKES OF LIGHT AND COLOR</text>
 
-  <text x="600" y="352" font-family="Georgia, 'Palatino Linotype', serif" font-size="58" font-weight="700" fill="#2c3e50" text-anchor="middle" opacity="0.80">Soleil Levant</text>
+  <!-- Paint dab palette swatches - elliptical, slightly rotated -->
+  <ellipse cx="370" cy="530" rx="40" ry="27" fill="#e8a87c" opacity="0.85" transform="rotate(-4 370 530)"/>
+  <ellipse cx="372" cy="533" rx="40" ry="27" fill="#c48060" opacity="0.25" transform="rotate(-4 372 533)"/>
 
-  <!-- Subtitle -->
-  <text x="600" y="408" font-family="Georgia, 'Palatino Linotype', serif" font-size="17" fill="#2c3e50" text-anchor="middle" opacity="0.35" letter-spacing="7">BRUSHSTROKES OF LIGHT AND COLOR</text>
+  <ellipse cx="472" cy="527" rx="38" ry="25" fill="#c0392b" opacity="0.85" transform="rotate(3 472 527)"/>
+  <ellipse cx="474" cy="530" rx="38" ry="25" fill="#8a2015" opacity="0.25" transform="rotate(3 474 530)"/>
 
-  <!-- Paint dab palette swatches -->
-  <ellipse cx="380" cy="510" rx="38" ry="26" fill="#e8a87c" opacity="0.85" transform="rotate(-4 380 510)"/>
-  <ellipse cx="382" cy="512" rx="38" ry="26" fill="#c48060" opacity="0.15" transform="rotate(-4 382 512)"/>
-  <ellipse cx="478" cy="507" rx="36" ry="24" fill="#c0392b" opacity="0.85" transform="rotate(3 478 507)"/>
-  <ellipse cx="480" cy="509" rx="36" ry="24" fill="#8a2015" opacity="0.12" transform="rotate(3 480 509)"/>
-  <ellipse cx="572" cy="512" rx="37" ry="25" fill="#2c3e50" opacity="0.85" transform="rotate(-2 572 512)"/>
-  <ellipse cx="574" cy="514" rx="37" ry="25" fill="#1a252f" opacity="0.12" transform="rotate(-2 574 514)"/>
-  <ellipse cx="668" cy="509" rx="35" ry="26" fill="#1abc9c" opacity="0.85" transform="rotate(4 668 509)"/>
-  <ellipse cx="670" cy="511" rx="35" ry="26" fill="#128c74" opacity="0.12" transform="rotate(4 670 511)"/>
-  <ellipse cx="762" cy="511" rx="37" ry="24" fill="#f5d88a" opacity="0.85" transform="rotate(-3 762 511)"/>
-  <ellipse cx="764" cy="513" rx="37" ry="24" fill="#c4a856" opacity="0.12" transform="rotate(-3 764 513)"/>
+  <ellipse cx="570" cy="532" rx="39" ry="26" fill="#2c3e50" opacity="0.85" transform="rotate(-2 570 532)"/>
+  <ellipse cx="572" cy="535" rx="39" ry="26" fill="#1a252f" opacity="0.25" transform="rotate(-2 572 535)"/>
+
+  <ellipse cx="670" cy="528" rx="37" ry="27" fill="#1abc9c" opacity="0.85" transform="rotate(4 670 528)"/>
+  <ellipse cx="672" cy="531" rx="37" ry="27" fill="#128c74" opacity="0.25" transform="rotate(4 672 531)"/>
+
+  <ellipse cx="768" cy="531" rx="39" ry="25" fill="#f5d88a" opacity="0.85" transform="rotate(-3 768 531)"/>
+  <ellipse cx="770" cy="534" rx="39" ry="25" fill="#c4a856" opacity="0.25" transform="rotate(-3 770 534)"/>
 </svg>

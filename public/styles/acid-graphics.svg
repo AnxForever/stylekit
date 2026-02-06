@@ -1,6 +1,6 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Chrome gradient -->
+    <!-- Chrome gradient for large shape -->
     <linearGradient id="acidChrome" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#39ff14"/>
       <stop offset="25%" stop-color="#a020f0"/>
@@ -8,116 +8,100 @@
       <stop offset="75%" stop-color="#e6ff00"/>
       <stop offset="100%" stop-color="#39ff14"/>
     </linearGradient>
-    <!-- Iridescent gradient -->
-    <linearGradient id="acidIridescent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#39ff14" stop-opacity="0.8"/>
-      <stop offset="33%" stop-color="#a020f0" stop-opacity="0.6"/>
-      <stop offset="66%" stop-color="#ff6ec7" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#e6ff00" stop-opacity="0.6"/>
-    </linearGradient>
-    <!-- Checkerboard pattern -->
-    <pattern id="acidCheckerboard" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <rect width="20" height="20" fill="#39ff14" opacity="0.06"/>
-      <rect x="20" y="20" width="20" height="20" fill="#39ff14" opacity="0.06"/>
+    <!-- Bold checkerboard pattern -->
+    <pattern id="acidCheck" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="#39ff14" opacity="0.30"/>
+      <rect x="20" y="20" width="20" height="20" fill="#39ff14" opacity="0.30"/>
     </pattern>
-    <!-- Wireframe grid -->
-    <pattern id="acidWireGrid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="60" y2="0" stroke="#39ff14" stroke-width="0.5" opacity="0.08"/>
-      <line x1="0" y1="0" x2="0" y2="60" stroke="#39ff14" stroke-width="0.5" opacity="0.08"/>
-    </pattern>
-    <!-- Scanline pattern -->
-    <pattern id="acidScanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="4" y2="0" stroke="#39ff14" stroke-width="0.5" opacity="0.04"/>
+    <!-- Neon scanlines for right side -->
+    <pattern id="acidScan" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="6" y2="0" stroke="#39ff14" stroke-width="1.5" opacity="0.18"/>
     </pattern>
   </defs>
 
   <!-- Dark background -->
   <rect width="1200" height="630" fill="#0a0a0a"/>
 
-  <!-- Wireframe grid overlay -->
-  <rect width="1200" height="630" fill="url(#acidWireGrid)"/>
+  <!-- Bold checkerboard in top-left corner -->
+  <rect x="0" y="0" width="350" height="250" fill="url(#acidCheck)"/>
 
-  <!-- 3D perspective grid floor -->
-  <g opacity="0.12">
-    <line x1="600" y1="630" x2="0" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="200" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="400" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="600" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="800" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="1000" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="600" y1="630" x2="1200" y2="380" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="0" y1="420" x2="1200" y2="420" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="0" y1="470" x2="1200" y2="470" stroke="#39ff14" stroke-width="0.5"/>
-    <line x1="0" y1="530" x2="1200" y2="530" stroke="#39ff14" stroke-width="0.5"/>
+  <!-- 3D wireframe grid floor - visible lines -->
+  <g opacity="0.28">
+    <line x1="600" y1="630" x2="0" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="150" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="300" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="450" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="600" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="750" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="900" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="1050" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <line x1="600" y1="630" x2="1200" y2="400" stroke="#39ff14" stroke-width="1"/>
+    <!-- Horizontal floor lines -->
+    <line x1="0" y1="430" x2="1200" y2="430" stroke="#39ff14" stroke-width="0.8"/>
+    <line x1="0" y1="475" x2="1200" y2="475" stroke="#39ff14" stroke-width="0.8"/>
+    <line x1="0" y1="530" x2="1200" y2="530" stroke="#39ff14" stroke-width="0.8"/>
+    <line x1="0" y1="595" x2="1200" y2="595" stroke="#39ff14" stroke-width="0.8"/>
   </g>
 
-  <!-- Checkerboard section -->
-  <rect x="0" y="0" width="300" height="200" fill="url(#acidCheckerboard)" opacity="0.8"/>
-  <rect x="900" y="430" width="300" height="200" fill="url(#acidCheckerboard)" opacity="0.8"/>
+  <!-- Chrome gradient melting rectangle -->
+  <rect x="820" y="60" width="280" height="200" rx="30" fill="url(#acidChrome)" opacity="0.35" transform="rotate(8 960 160)"/>
+  <rect x="830" y="70" width="260" height="180" rx="25" fill="none" stroke="#0a0a0a" stroke-width="4" opacity="0.5" transform="rotate(8 960 160)"/>
 
-  <!-- Chrome liquid shapes -->
-  <ellipse cx="200" cy="320" rx="140" ry="180" fill="url(#acidChrome)" opacity="0.08" transform="rotate(-20 200 320)"/>
-  <ellipse cx="1000" cy="250" rx="120" ry="160" fill="url(#acidIridescent)" opacity="0.1" transform="rotate(15 1000 250)"/>
+  <!-- Neon green scanlines on right side -->
+  <rect x="900" y="280" width="300" height="340" fill="url(#acidScan)"/>
 
-  <!-- Warped chrome rings -->
-  <ellipse cx="950" cy="180" rx="80" ry="100" stroke="url(#acidChrome)" stroke-width="2" fill="none" opacity="0.15" transform="rotate(10 950 180)"/>
-  <ellipse cx="950" cy="180" rx="60" ry="75" stroke="#39ff14" stroke-width="1" fill="none" opacity="0.1" transform="rotate(-5 950 180)"/>
+  <!-- Title "ACID" - HUGE with RGB offset layers -->
+  <!-- Pink offset layer -->
+  <text x="430" y="260" font-family="ui-monospace, 'Courier New', monospace" font-size="150" font-weight="900" fill="#ff6ec7" opacity="0.55" letter-spacing="-6">ACID</text>
+  <!-- Yellow offset layer -->
+  <text x="424" y="254" font-family="ui-monospace, 'Courier New', monospace" font-size="150" font-weight="900" fill="#e6ff00" opacity="0.45" letter-spacing="-6">ACID</text>
+  <!-- Green main layer -->
+  <text x="427" y="257" font-family="ui-monospace, 'Courier New', monospace" font-size="150" font-weight="900" fill="#39ff14" letter-spacing="-6">ACID</text>
 
-  <!-- Scanline overlay -->
-  <rect width="1200" height="630" fill="url(#acidScanlines)"/>
+  <!-- Subtitle "GRAPHICS" with offset -->
+  <text x="434" y="340" font-family="ui-monospace, 'Courier New', monospace" font-size="68" font-weight="900" fill="#a020f0" opacity="0.50" letter-spacing="4">GRAPHICS</text>
+  <text x="430" y="337" font-family="ui-monospace, 'Courier New', monospace" font-size="68" font-weight="900" fill="#e6ff00" letter-spacing="4">GRAPHICS</text>
 
-  <!-- Title - chrome text layering with multiple offsets -->
-  <text x="604" y="240" font-family="ui-monospace, 'Courier New', monospace" font-size="120" font-weight="900" fill="#ff6ec7" text-anchor="middle" opacity="0.3" letter-spacing="-4">ACID</text>
-  <text x="598" y="236" font-family="ui-monospace, 'Courier New', monospace" font-size="120" font-weight="900" fill="#e6ff00" text-anchor="middle" opacity="0.25" letter-spacing="-4">ACID</text>
-  <text x="601" y="238" font-family="ui-monospace, 'Courier New', monospace" font-size="120" font-weight="900" fill="#a020f0" text-anchor="middle" opacity="0.35" letter-spacing="-4">ACID</text>
-  <text x="600" y="238" font-family="ui-monospace, 'Courier New', monospace" font-size="120" font-weight="900" fill="#39ff14" text-anchor="middle" letter-spacing="-4">ACID</text>
-
-  <!-- Subtitle with iridescent layering -->
-  <text x="604" y="330" font-family="ui-monospace, 'Courier New', monospace" font-size="70" font-weight="900" fill="#a020f0" text-anchor="middle" opacity="0.3" letter-spacing="2">GRAPHICS</text>
-  <text x="597" y="327" font-family="ui-monospace, 'Courier New', monospace" font-size="70" font-weight="900" fill="#ff6ec7" text-anchor="middle" opacity="0.3" letter-spacing="2">GRAPHICS</text>
-  <text x="600" y="328" font-family="ui-monospace, 'Courier New', monospace" font-size="70" font-weight="900" fill="#e6ff00" text-anchor="middle" letter-spacing="2">GRAPHICS</text>
+  <!-- Op-Art stripe divider between title and swatches -->
+  <g opacity="0.55">
+    <rect x="220" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="248" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="276" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="304" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="332" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="360" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="388" y="380" width="16" height="45" fill="#e6ff00"/>
+    <rect x="416" y="380" width="16" height="45" fill="#e6ff00"/>
+    <rect x="444" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="472" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="500" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="528" y="380" width="16" height="45" fill="#e6ff00"/>
+    <rect x="556" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="584" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="612" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="640" y="380" width="16" height="45" fill="#e6ff00"/>
+    <rect x="668" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="696" y="380" width="16" height="45" fill="#39ff14"/>
+    <rect x="724" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="752" y="380" width="16" height="45" fill="#a020f0"/>
+    <rect x="780" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="808" y="380" width="16" height="45" fill="#ff6ec7"/>
+    <rect x="836" y="380" width="16" height="45" fill="#e6ff00"/>
+    <rect x="864" y="380" width="16" height="45" fill="#e6ff00"/>
+  </g>
 
   <!-- Tagline -->
-  <text x="600" y="380" font-family="ui-monospace, 'Courier New', monospace" font-size="14" fill="#39ff14" text-anchor="middle" opacity="0.35" letter-spacing="10">DISTORT // WARP // DISSOLVE</text>
-
-  <!-- Op-Art stripe divider -->
-  <g opacity="0.15">
-    <rect x="300" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="324" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="348" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="372" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="396" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="420" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="444" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="468" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="492" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="516" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="540" y="400" width="12" height="40" fill="#e6ff00"/>
-    <rect x="564" y="400" width="12" height="40" fill="#e6ff00"/>
-    <rect x="588" y="400" width="12" height="40" fill="#e6ff00"/>
-    <rect x="612" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="636" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="660" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="684" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="708" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="732" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="756" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="780" y="400" width="12" height="40" fill="#39ff14"/>
-    <rect x="804" y="400" width="12" height="40" fill="#a020f0"/>
-    <rect x="828" y="400" width="12" height="40" fill="#ff6ec7"/>
-    <rect x="852" y="400" width="12" height="40" fill="#e6ff00"/>
-    <rect x="876" y="400" width="12" height="40" fill="#39ff14"/>
-  </g>
+  <text x="550" y="460" font-family="ui-monospace, 'Courier New', monospace" font-size="14" fill="#39ff14" opacity="0.50" letter-spacing="10">DISTORT // WARP // DISSOLVE</text>
 
   <!-- Color swatches -->
-  <rect x="370" y="480" width="70" height="50" fill="#39ff14" opacity="0.9"/>
-  <rect x="460" y="480" width="70" height="50" fill="#e6ff00" opacity="0.9"/>
-  <rect x="550" y="480" width="70" height="50" fill="#a020f0" opacity="0.9"/>
-  <rect x="640" y="480" width="70" height="50" fill="#ff6ec7" opacity="0.9"/>
-  <rect x="730" y="480" width="70" height="50" fill="#0a0a0a" stroke="#39ff14" stroke-width="2"/>
+  <rect x="310" y="490" width="70" height="50" fill="#39ff14" opacity="0.9"/>
+  <rect x="400" y="490" width="70" height="50" fill="#e6ff00" opacity="0.9"/>
+  <rect x="490" y="490" width="70" height="50" fill="#a020f0" opacity="0.9"/>
+  <rect x="580" y="490" width="70" height="50" fill="#ff6ec7" opacity="0.9"/>
+  <rect x="670" y="490" width="70" height="50" fill="#0a0a0a" stroke="#39ff14" stroke-width="2.5"/>
 
-  <!-- Neon glow accents -->
-  <circle cx="100" cy="550" r="3" fill="#39ff14" opacity="0.4"/>
-  <circle cx="1100" cy="80" r="3" fill="#ff6ec7" opacity="0.4"/>
-  <circle cx="1050" cy="550" r="2" fill="#e6ff00" opacity="0.3"/>
+  <!-- Neon glow corner dots -->
+  <circle cx="80" cy="580" r="4" fill="#39ff14" opacity="0.6"/>
+  <circle cx="1140" cy="50" r="4" fill="#ff6ec7" opacity="0.6"/>
+  <circle cx="1120" cy="580" r="3" fill="#e6ff00" opacity="0.5"/>
 </svg>
