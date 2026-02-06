@@ -1,0 +1,73 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clean white background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.04" stroke="#1e40af" stroke-width="0.5">
+    <line x1="100" y1="0" x2="100" y2="630"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="500" y1="0" x2="500" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="700" y1="0" x2="700" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+    <line x1="1100" y1="0" x2="1100" y2="630"/>
+    <line x1="0" y1="70" x2="1200" y2="70"/>
+    <line x1="0" y1="140" x2="1200" y2="140"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="280" x2="1200" y2="280"/>
+    <line x1="0" y1="350" x2="1200" y2="350"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="490" x2="1200" y2="490"/>
+    <line x1="0" y1="560" x2="1200" y2="560"/>
+  </g>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="#1e40af"/>
+
+  <!-- Left vertical accent -->
+  <rect x="80" y="80" width="3" height="470" fill="#1e40af" opacity="0.15"/>
+
+  <!-- Header area -->
+  <rect x="80" y="80" width="120" height="30" rx="2" fill="#1e40af" opacity="0.08"/>
+  <rect x="230" y="80" width="80" height="30" rx="2" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="340" y="80" width="80" height="30" rx="2" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Main content area -->
+  <text x="600" y="260" font-family="'Inter', 'Segoe UI', sans-serif" font-size="56" fill="#0f172a" text-anchor="middle" font-weight="600" letter-spacing="-0.02em">CORPORATE CLEAN</text>
+
+  <!-- Blue underline -->
+  <rect x="440" y="280" width="320" height="3" fill="#1e40af"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="325" font-family="'Inter', 'Segoe UI', sans-serif" font-size="18" fill="#64748b" text-anchor="middle" font-weight="400" letter-spacing="0.12em">Professional. Trustworthy. Refined.</text>
+
+  <!-- Card row -->
+  <rect x="200" y="380" width="220" height="140" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="210" y="400" width="60" height="8" rx="2" fill="#1e40af" opacity="0.7"/>
+  <rect x="210" y="420" width="190" height="6" rx="2" fill="#cbd5e1"/>
+  <rect x="210" y="435" width="160" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="210" y="480" width="80" height="26" rx="4" fill="#1e40af"/>
+  <text x="250" y="498" font-family="'Inter', sans-serif" font-size="12" fill="#ffffff" font-weight="500">Learn More</text>
+
+  <rect x="460" y="380" width="220" height="140" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="470" y="400" width="70" height="8" rx="2" fill="#1e40af" opacity="0.7"/>
+  <rect x="470" y="420" width="190" height="6" rx="2" fill="#cbd5e1"/>
+  <rect x="470" y="435" width="140" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="470" y="480" width="80" height="26" rx="4" fill="#1e40af"/>
+  <text x="510" y="498" font-family="'Inter', sans-serif" font-size="12" fill="#ffffff" font-weight="500">Learn More</text>
+
+  <rect x="720" y="380" width="220" height="140" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="730" y="400" width="55" height="8" rx="2" fill="#1e40af" opacity="0.7"/>
+  <rect x="730" y="420" width="190" height="6" rx="2" fill="#cbd5e1"/>
+  <rect x="730" y="435" width="170" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="730" y="480" width="80" height="26" rx="4" fill="#1e40af"/>
+  <text x="770" y="498" font-family="'Inter', sans-serif" font-size="12" fill="#ffffff" font-weight="500">Learn More</text>
+
+  <!-- Bottom rule -->
+  <line x1="80" y1="560" x2="1120" y2="560" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="600" y="590" font-family="'Inter', sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle" letter-spacing="0.05em">Enterprise-grade design system</text>
+</svg>

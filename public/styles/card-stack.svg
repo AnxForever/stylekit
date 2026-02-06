@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f1f5f9"/>
+
+  <!-- Back card (deepest) -->
+  <rect x="120" y="30" width="200" height="150" rx="8" fill="#d4d4d8" stroke="#c4c4c8" stroke-width="1"/>
+
+  <!-- Middle card -->
+  <rect x="105" y="45" width="200" height="150" rx="8" fill="#e4e4e7" stroke="#d4d4d8" stroke-width="1"/>
+
+  <!-- Front card -->
+  <rect x="90" y="60" width="200" height="150" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+  <!-- Front card content -->
+  <rect x="108" y="80" width="80" height="10" rx="3" fill="#1a1a2e"/>
+  <rect x="108" y="100" width="160" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="108" y="114" width="140" height="6" rx="2" fill="#e2e8f0"/>
+  <rect x="108" y="128" width="120" height="6" rx="2" fill="#e2e8f0"/>
+  <!-- Card action -->
+  <rect x="108" y="170" width="60" height="24" rx="6" fill="#1a1a2e"/>
+  <text x="138" y="186" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ffffff">Action</text>
+
+  <!-- Shadow hint -->
+  <rect x="90" y="208" width="200" height="4" rx="2" fill="#000000" fill-opacity="0.05"/>
+
+  <!-- Label -->
+  <text x="200" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1a1a2e">CARD STACK</text>
+  <text x="200" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Layered depth card layout</text>
+</svg>

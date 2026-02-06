@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Vertical timeline line -->
+  <line x1="200" y1="25" x2="200" y2="245" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Node 1 - Left card -->
+  <circle cx="200" cy="50" r="6" fill="#6366f1"/>
+  <rect x="60" y="32" width="120" height="40" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="72" y="42" width="60" height="8" rx="2" fill="#1e293b"/>
+  <rect x="72" y="56" width="90" height="5" rx="2" fill="#d4d4d8"/>
+  <!-- Connector -->
+  <line x1="180" y1="50" x2="194" y2="50" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Node 2 - Right card -->
+  <circle cx="200" cy="105" r="6" fill="#6366f1"/>
+  <rect x="220" y="87" width="120" height="40" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="232" y="97" width="60" height="8" rx="2" fill="#1e293b"/>
+  <rect x="232" y="111" width="90" height="5" rx="2" fill="#d4d4d8"/>
+  <!-- Connector -->
+  <line x1="206" y1="105" x2="220" y2="105" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Node 3 - Left card -->
+  <circle cx="200" cy="160" r="6" fill="#6366f1"/>
+  <rect x="60" y="142" width="120" height="40" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="72" y="152" width="60" height="8" rx="2" fill="#1e293b"/>
+  <rect x="72" y="166" width="90" height="5" rx="2" fill="#d4d4d8"/>
+  <!-- Connector -->
+  <line x1="180" y1="160" x2="194" y2="160" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Node 4 - Right card -->
+  <circle cx="200" cy="215" r="6" fill="#6366f1"/>
+  <rect x="220" y="197" width="120" height="40" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="232" y="207" width="60" height="8" rx="2" fill="#1e293b"/>
+  <rect x="232" y="221" width="90" height="5" rx="2" fill="#d4d4d8"/>
+  <!-- Connector -->
+  <line x1="206" y1="215" x2="220" y2="215" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- End dot -->
+  <circle cx="200" cy="245" r="4" fill="#1e293b"/>
+
+  <!-- Label -->
+  <text x="200" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">TIMELINE</text>
+  <text x="200" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Vertical chronological layout</text>
+</svg>

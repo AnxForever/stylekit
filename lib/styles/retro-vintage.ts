@@ -6,7 +6,7 @@ export const retroVintage: DesignStyle = {
   nameEn: "Retro Vintage",
   description:
     "怀旧复古的设计风格，老式排版、复古色调、手工质感元素。适合咖啡馆、复古品牌、独立杂志、音乐厂牌。",
-  cover: "/styles/retro-vintage.png",
+  cover: "/styles/retro-vintage.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
   category: "retro",

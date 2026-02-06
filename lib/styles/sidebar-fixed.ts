@@ -6,7 +6,7 @@ export const sidebarFixed: DesignStyle = {
   nameEn: "Fixed Sidebar",
   description:
     "固定位置的侧边导航栏与可滚动主内容区的应用布局，适合后台管理、文档站点、仪表盘、SaaS 应用。",
-  cover: "/styles/sidebar-fixed.png",
+  cover: "/styles/sidebar-fixed.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
   compatibleWith: ["corporate-clean", "soft-ui", "dark-mode", "minimalist-flat", "neumorphism"],

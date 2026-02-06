@@ -6,7 +6,7 @@ export const appleStyle: DesignStyle = {
   nameEn: "Apple Style",
   description:
     "极致简约的高端设计风格，大量留白、精致圆角、微妙阴影和 SF Pro 风格字体，传达高端科技产品的品质感。",
-  cover: "/styles/apple-style.png",
+  cover: "/styles/apple-style.svg",
   styleType: "visual",
   tags: ["minimal"],
   category: "minimal",

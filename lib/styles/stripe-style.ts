@@ -6,7 +6,7 @@ export const stripeStyle: DesignStyle = {
   nameEn: "Stripe Style",
   description:
     "精致专业的金融科技风格，以 Stripe 紫为主色调，配合渐变网格背景、精致卡片阴影和流畅动画，适合支付产品和开发者工具。",
-  cover: "/styles/stripe-style.png",
+  cover: "/styles/stripe-style.svg",
   styleType: "visual",
   tags: ["modern"],
   category: "modern",

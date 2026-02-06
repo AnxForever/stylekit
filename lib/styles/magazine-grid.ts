@@ -6,7 +6,7 @@ export const magazineGrid: DesignStyle = {
   nameEn: "Magazine Grid",
   description:
     "灵感来自印刷杂志的多栏网格布局，通过不同大小的内容块创造丰富的视觉层次，适合新闻、博客、内容聚合。",
-  cover: "/styles/magazine-grid.png",
+  cover: "/styles/magazine-grid.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
   compatibleWith: ["editorial", "minimalist-flat", "corporate-clean", "retro-vintage", "dark-mode"],

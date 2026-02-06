@@ -6,7 +6,7 @@ export const cardStack: DesignStyle = {
   nameEn: "Card Stack",
   description:
     "卡片前后重叠的立体布局，通过 Z 轴层叠和偏移创造深度感，适合轮播、步骤展示、卡组选择。",
-  cover: "/styles/card-stack.png",
+  cover: "/styles/card-stack.svg",
   styleType: "layout",
   tags: ["modern", "expressive"],
   compatibleWith: ["glassmorphism", "neumorphism", "soft-ui", "modern-gradient", "neo-brutalist"],

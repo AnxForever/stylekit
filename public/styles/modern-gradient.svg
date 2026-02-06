@@ -1,0 +1,66 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main background gradient -->
+    <linearGradient id="mainGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="50%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <!-- Secondary gradient -->
+    <linearGradient id="secGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+    <!-- Glass card filter -->
+    <filter id="cardBlur" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <!-- Soft shadow -->
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Vibrant gradient background -->
+  <rect width="1200" height="630" fill="url(#mainGrad)"/>
+
+  <!-- Mesh-like overlay shapes -->
+  <circle cx="200" cy="100" r="200" fill="#a78bfa" opacity="0.3"/>
+  <circle cx="1000" cy="530" r="250" fill="#f97316" opacity="0.25"/>
+  <circle cx="900" cy="80" r="150" fill="#ec4899" opacity="0.2"/>
+  <circle cx="100" cy="500" r="180" fill="#8b5cf6" opacity="0.2"/>
+
+  <!-- Floating glass card 1 (back) -->
+  <rect x="100" y="120" width="280" height="200" rx="20" fill="white" fill-opacity="0.12" stroke="white" stroke-opacity="0.2" stroke-width="1" filter="url(#softShadow)" transform="rotate(-5, 240, 220)"/>
+  <rect x="130" y="160" width="180" height="10" rx="5" fill="white" fill-opacity="0.25" transform="rotate(-5, 240, 220)"/>
+  <rect x="130" y="185" width="140" height="8" rx="4" fill="white" fill-opacity="0.15" transform="rotate(-5, 240, 220)"/>
+
+  <!-- Floating glass card 2 (back right) -->
+  <rect x="830" y="300" width="280" height="200" rx="20" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.18" stroke-width="1" filter="url(#softShadow)" transform="rotate(4, 970, 400)"/>
+  <rect x="860" y="340" width="160" height="10" rx="5" fill="white" fill-opacity="0.2" transform="rotate(4, 970, 400)"/>
+  <rect x="860" y="365" width="120" height="8" rx="4" fill="white" fill-opacity="0.12" transform="rotate(4, 970, 400)"/>
+
+  <!-- Main center glass card -->
+  <rect x="300" y="160" width="600" height="310" rx="24" fill="white" fill-opacity="0.15" stroke="white" stroke-opacity="0.3" stroke-width="1.5" filter="url(#softShadow)"/>
+
+  <!-- Title -->
+  <text x="600" y="290" font-family="'SF Pro Display', 'Inter', sans-serif" font-size="52" fill="white" text-anchor="middle" font-weight="700" letter-spacing="-0.01em">MODERN GRADIENT</text>
+
+  <!-- Divider -->
+  <rect x="450" y="310" width="300" height="2" rx="1" fill="white" fill-opacity="0.4"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="360" font-family="'Inter', sans-serif" font-size="20" fill="white" fill-opacity="0.85" text-anchor="middle" letter-spacing="0.15em">Vibrant Color Transitions</text>
+
+  <!-- Pill buttons -->
+  <rect x="440" y="395" width="140" height="38" rx="19" fill="white" fill-opacity="0.25" stroke="white" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="510" y="420" font-family="'Inter', sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="500">Explore</text>
+  <rect x="600" y="395" width="140" height="38" rx="19" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="670" y="420" font-family="'Inter', sans-serif" font-size="14" fill="white" fill-opacity="0.8" text-anchor="middle" font-weight="500">Learn More</text>
+
+  <!-- Floating decorative circles -->
+  <circle cx="350" cy="520" r="30" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.15"/>
+  <circle cx="650" cy="540" r="20" fill="white" fill-opacity="0.1"/>
+  <circle cx="850" cy="150" r="15" fill="white" fill-opacity="0.12"/>
+  <circle cx="480" cy="100" r="10" fill="white" fill-opacity="0.15"/>
+</svg>

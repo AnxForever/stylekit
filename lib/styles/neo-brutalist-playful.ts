@@ -6,7 +6,7 @@ export const neoBrutalistPlayful: DesignStyle = {
   nameEn: "Neo-Brutalist Playful",
   description:
     "Neo-Brutalist 的活泼版本。保留核心特征，加入更多色彩、旋转倾斜元素、emoji 和有趣的微交互，适合年轻化品牌。",
-  cover: "/styles/neo-brutalist-playful.png",
+  cover: "/styles/neo-brutalist-playful.svg",
   styleType: "visual",
   tags: ["expressive"],
   category: "expressive",

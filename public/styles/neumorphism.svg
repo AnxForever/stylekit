@@ -1,0 +1,58 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Embossed shadow (raised) -->
+    <filter id="raised" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="-6" dy="-6" stdDeviation="8" flood-color="#ffffff" flood-opacity="0.7"/>
+      <feDropShadow dx="6" dy="6" stdDeviation="8" flood-color="#a3b1c6" flood-opacity="0.5"/>
+    </filter>
+    <!-- Debossed shadow (inset look) -->
+    <filter id="debossed" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="3" dy="3" stdDeviation="5" flood-color="#ffffff" flood-opacity="0.6"/>
+      <feDropShadow dx="-3" dy="-3" stdDeviation="5" flood-color="#a3b1c6" flood-opacity="0.4"/>
+    </filter>
+    <!-- Subtle inner shadow -->
+    <filter id="inset" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="4" flood-color="#a3b1c6" flood-opacity="0.35"/>
+      <feDropShadow dx="-2" dy="-2" stdDeviation="4" flood-color="#ffffff" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Base background -->
+  <rect width="1200" height="630" fill="#e0e5ec"/>
+
+  <!-- Top-left raised circle -->
+  <circle cx="200" cy="180" r="70" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Top-right raised rounded rect -->
+  <rect x="860" y="100" width="200" height="140" rx="20" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Bottom-left raised rounded rect -->
+  <rect x="100" y="400" width="180" height="120" rx="16" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Bottom-right raised circle -->
+  <circle cx="1000" cy="470" r="60" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Small accent circles -->
+  <circle cx="380" cy="140" r="24" fill="#e0e5ec" filter="url(#debossed)"/>
+  <circle cx="820" cy="480" r="28" fill="#e0e5ec" filter="url(#debossed)"/>
+
+  <!-- Center card -->
+  <rect x="340" y="190" width="520" height="250" rx="30" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Title -->
+  <text x="600" y="295" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="52" fill="#6b7b8d" text-anchor="middle" font-weight="600" letter-spacing="0.08em">NEUMORPHISM</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="345" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="20" fill="#8a9bb0" text-anchor="middle" font-weight="400" letter-spacing="0.15em">Soft Surfaces and Depth</text>
+
+  <!-- Debossed divider line -->
+  <rect x="440" y="365" width="320" height="4" rx="2" fill="#d5dbe3" filter="url(#debossed)"/>
+
+  <!-- Toggle / pill shape -->
+  <rect x="530" y="395" width="140" height="30" rx="15" fill="#d5dbe3" filter="url(#debossed)"/>
+  <circle cx="640" cy="410" r="12" fill="#e0e5ec" filter="url(#raised)"/>
+
+  <!-- Floating small elements -->
+  <rect x="140" y="320" width="60" height="60" rx="14" fill="#e0e5ec" filter="url(#raised)"/>
+  <rect x="1000" y="280" width="60" height="60" rx="14" fill="#e0e5ec" filter="url(#raised)"/>
+</svg>

@@ -6,7 +6,7 @@ export const naturalOrganic: DesignStyle = {
   nameEn: "Natural Organic",
   description:
     "温暖自然的有机风格，大地色系、自然纹理、手工感元素。适合健康品牌、有机食品、环保产品、手工艺品。",
-  cover: "/styles/natural-organic.png",
+  cover: "/styles/natural-organic.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
   category: "minimal",

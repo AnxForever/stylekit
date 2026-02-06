@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Bento grid cells -->
+  <!-- Large cell top-left -->
+  <rect x="30" y="30" width="150" height="110" rx="8" fill="#18181b"/>
+  <!-- Small cell top-right -->
+  <rect x="185" y="30" width="85" height="50" rx="8" fill="#18181b"/>
+  <!-- Medium cell top-right -->
+  <rect x="275" y="30" width="95" height="110" rx="8" fill="#18181b"/>
+  <!-- Small cell mid-right -->
+  <rect x="185" y="85" width="85" height="55" rx="8" fill="#27272a"/>
+
+  <!-- Medium cell bottom-left -->
+  <rect x="30" y="145" width="85" height="90" rx="8" fill="#27272a"/>
+  <!-- Wide cell bottom-center -->
+  <rect x="120" y="145" width="150" height="90" rx="8" fill="#18181b"/>
+  <!-- Small cell bottom-right -->
+  <rect x="275" y="145" width="95" height="40" rx="8" fill="#3f3f46"/>
+  <!-- Small cell bottom-right-2 -->
+  <rect x="275" y="190" width="95" height="45" rx="8" fill="#18181b"/>
+
+  <!-- Subtle content lines inside large cell -->
+  <rect x="42" y="50" width="60" height="8" rx="2" fill="#ffffff" fill-opacity="0.3"/>
+  <rect x="42" y="65" width="90" height="6" rx="2" fill="#ffffff" fill-opacity="0.12"/>
+  <rect x="42" y="78" width="75" height="6" rx="2" fill="#ffffff" fill-opacity="0.12"/>
+
+  <!-- Accent dot -->
+  <circle cx="310" cy="210" r="5" fill="#6366f1"/>
+
+  <!-- Label -->
+  <text x="200" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#18181b">BENTO GRID</text>
+  <text x="200" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Irregular multi-size grid layout</text>
+</svg>
