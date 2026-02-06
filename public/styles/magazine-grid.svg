@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Featured large item -->
+  <rect x="30" y="25" width="200" height="155" rx="6" fill="#1a1a1a"/>
+  <rect x="45" y="120" width="100" height="10" rx="2" fill="#ffffff" fill-opacity="0.85"/>
+  <rect x="45" y="138" width="150" height="6" rx="2" fill="#ffffff" fill-opacity="0.25"/>
+  <rect x="45" y="150" width="120" height="6" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+
+  <!-- Small items right column -->
+  <rect x="235" y="25" width="135" height="72" rx="6" fill="#1a1a1a"/>
+  <rect x="248" y="72" width="60" height="8" rx="2" fill="#ffffff" fill-opacity="0.7"/>
+  <rect x="248" y="84" width="100" height="5" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+
+  <rect x="235" y="102" width="135" height="78" rx="6" fill="#27272a"/>
+  <rect x="248" y="148" width="60" height="8" rx="2" fill="#ffffff" fill-opacity="0.7"/>
+  <rect x="248" y="160" width="100" height="5" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+
+  <!-- Bottom row - 3 equal items -->
+  <rect x="30" y="185" width="115" height="70" rx="6" fill="#27272a"/>
+  <rect x="42" y="225" width="50" height="7" rx="2" fill="#ffffff" fill-opacity="0.6"/>
+  <rect x="42" y="238" width="85" height="5" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+
+  <rect x="150" y="185" width="115" height="70" rx="6" fill="#1a1a1a"/>
+  <rect x="162" y="225" width="50" height="7" rx="2" fill="#ffffff" fill-opacity="0.6"/>
+  <rect x="162" y="238" width="85" height="5" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+
+  <rect x="270" y="185" width="100" height="70" rx="6" fill="#27272a"/>
+  <rect x="282" y="225" width="50" height="7" rx="2" fill="#ffffff" fill-opacity="0.6"/>
+  <rect x="282" y="238" width="75" height="5" rx="2" fill="#ffffff" fill-opacity="0.15"/>
+
+  <!-- Label -->
+  <text x="200" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1a1a1a">MAGAZINE GRID</text>
+  <text x="200" y="294" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Editorial multi-column layout</text>
+</svg>

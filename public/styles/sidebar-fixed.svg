@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f9fafb"/>
+
+  <!-- Fixed sidebar -->
+  <rect x="30" y="20" width="80" height="240" rx="6" fill="#1e293b"/>
+  <!-- Logo area -->
+  <rect x="42" y="35" width="40" height="12" rx="3" fill="#ffffff" fill-opacity="0.9"/>
+  <!-- Nav items -->
+  <rect x="42" y="65" width="56" height="10" rx="3" fill="#3b82f6" fill-opacity="0.3"/>
+  <rect x="42" y="82" width="56" height="10" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="42" y="99" width="56" height="10" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="42" y="116" width="56" height="10" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="42" y="133" width="56" height="10" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+  <!-- Sidebar divider -->
+  <line x1="42" y1="155" x2="98" y2="155" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+  <!-- Bottom items -->
+  <rect x="42" y="168" width="56" height="10" rx="3" fill="#ffffff" fill-opacity="0.08"/>
+  <!-- User avatar -->
+  <circle cx="55" cy="235" r="10" fill="#3b82f6"/>
+
+  <!-- Main content area -->
+  <rect x="120" y="20" width="250" height="240" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <!-- Content header -->
+  <rect x="135" y="35" width="100" height="14" rx="3" fill="#1e293b"/>
+  <rect x="135" y="58" width="180" height="6" rx="2" fill="#e2e8f0"/>
+
+  <!-- Content cards -->
+  <rect x="135" y="80" width="105" height="70" rx="4" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="145" y="92" width="50" height="8" rx="2" fill="#1e293b"/>
+  <rect x="145" y="108" width="80" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="145" y="118" width="65" height="5" rx="2" fill="#e2e8f0"/>
+
+  <rect x="250" y="80" width="105" height="70" rx="4" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="260" y="92" width="50" height="8" rx="2" fill="#1e293b"/>
+  <rect x="260" y="108" width="80" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="260" y="118" width="65" height="5" rx="2" fill="#e2e8f0"/>
+
+  <!-- Wide content block -->
+  <rect x="135" y="160" width="220" height="50" rx="4" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="145" y="172" width="80" height="8" rx="2" fill="#1e293b"/>
+  <rect x="145" y="188" width="180" height="5" rx="2" fill="#e2e8f0"/>
+
+  <!-- Scroll indicator -->
+  <rect x="362" y="20" width="3" height="240" rx="1.5" fill="#e5e7eb"/>
+  <rect x="362" y="20" width="3" height="80" rx="1.5" fill="#94a3b8"/>
+
+  <!-- Label -->
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">SIDEBAR FIXED</text>
+  <text x="200" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Fixed nav with scrollable content</text>
+</svg>

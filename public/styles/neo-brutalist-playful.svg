@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <!-- Background confetti shapes -->
+  <rect x="80" y="60" width="30" height="30" fill="#ffe66d" opacity="0.4" transform="rotate(15, 95, 75)"/>
+  <circle cx="1100" cy="80" r="15" fill="#4ecdc4" opacity="0.3"/>
+  <rect x="1000" y="520" width="25" height="25" fill="#ff6b6b" opacity="0.3" transform="rotate(-10, 1012, 532)"/>
+  <circle cx="120" cy="530" r="12" fill="#ffe66d" opacity="0.3"/>
+  <!-- Card 1 - tilted left -->
+  <g transform="rotate(-3, 250, 200)">
+    <rect x="120" y="120" width="260" height="170" rx="4" fill="#ffe66d" stroke="#000000" stroke-width="4"/>
+    <rect x="128" y="128" width="260" height="170" rx="4" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+    <rect x="155" y="155" width="120" height="12" rx="2" fill="#000000"/>
+    <rect x="155" y="180" width="200" height="8" rx="2" fill="#000000" opacity="0.2"/>
+    <rect x="155" y="198" width="170" height="8" rx="2" fill="#000000" opacity="0.2"/>
+    <rect x="155" y="252" width="80" height="30" rx="4" fill="#4ecdc4" stroke="#000000" stroke-width="3"/>
+  </g>
+  <!-- Card 2 - tilted right -->
+  <g transform="rotate(2, 950, 200)">
+    <rect x="828" y="98" width="240" height="200" rx="4" fill="#ff6b6b" stroke="#000000" stroke-width="4"/>
+    <rect x="836" y="106" width="240" height="200" rx="4" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+    <circle cx="956" cy="180" r="35" fill="#ffe66d" stroke="#000000" stroke-width="3"/>
+    <rect x="870" y="236" width="170" height="8" rx="2" fill="#000000" opacity="0.2"/>
+    <rect x="870" y="254" width="130" height="8" rx="2" fill="#000000" opacity="0.2"/>
+  </g>
+  <!-- Card 3 - bottom left -->
+  <g transform="rotate(2, 200, 470)">
+    <rect x="98" y="398" width="220" height="150" rx="4" fill="#4ecdc4" stroke="#000000" stroke-width="4"/>
+    <rect x="106" y="406" width="220" height="150" rx="4" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+    <rect x="130" y="430" width="80" height="60" rx="4" fill="#ff6b6b" stroke="#000000" stroke-width="3"/>
+    <rect x="130" y="506" width="160" height="8" rx="2" fill="#000000" opacity="0.2"/>
+    <rect x="130" y="524" width="120" height="8" rx="2" fill="#000000" opacity="0.2"/>
+  </g>
+  <!-- Card 4 - bottom right -->
+  <g transform="rotate(-2, 1000, 470)">
+    <rect x="858" y="378" width="240" height="170" rx="4" fill="#ffe66d" stroke="#000000" stroke-width="4"/>
+    <rect x="866" y="386" width="240" height="170" rx="4" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+    <rect x="895" y="415" width="180" height="10" rx="2" fill="#000000" opacity="0.15"/>
+    <rect x="895" y="435" width="180" height="10" rx="2" fill="#000000" opacity="0.15"/>
+    <rect x="895" y="455" width="180" height="10" rx="2" fill="#000000" opacity="0.15"/>
+    <rect x="895" y="495" width="100" height="34" rx="4" fill="#ff6b6b" stroke="#000000" stroke-width="3"/>
+  </g>
+  <!-- Main title with offset shadow -->
+  <text x="606" y="326" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="56" font-weight="900" fill="#ff6b6b" letter-spacing="-1">NEO-BRUTALIST</text>
+  <text x="600" y="320" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="56" font-weight="900" fill="#000000" letter-spacing="-1">NEO-BRUTALIST</text>
+  <text x="604" y="382" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="56" font-weight="900" fill="#4ecdc4" letter-spacing="-1">PLAYFUL</text>
+  <text x="600" y="378" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="56" font-weight="900" fill="#000000" letter-spacing="-1">PLAYFUL</text>
+  <!-- Label -->
+  <g transform="rotate(-2, 600, 420)">
+    <rect x="500" y="400" width="200" height="32" rx="4" fill="#ffe66d" stroke="#000000" stroke-width="3"/>
+    <text x="600" y="422" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#000000" letter-spacing="3">FUN &amp; VIBRANT</text>
+  </g>
+</svg>

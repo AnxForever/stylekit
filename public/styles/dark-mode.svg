@@ -1,0 +1,66 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Deep dark background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+
+  <!-- Subtle radial glow -->
+  <defs>
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#centerGlow)"/>
+
+  <!-- Background card layer 1 (deepest) -->
+  <rect x="140" y="100" width="920" height="430" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+
+  <!-- Background card layer 2 -->
+  <rect x="180" y="130" width="840" height="370" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+
+  <!-- Foreground card -->
+  <rect x="240" y="170" width="720" height="290" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+
+  <!-- Nav dots in card header -->
+  <circle cx="275" cy="200" r="6" fill="#ef4444" opacity="0.7"/>
+  <circle cx="297" cy="200" r="6" fill="#eab308" opacity="0.7"/>
+  <circle cx="319" cy="200" r="6" fill="#22c55e" opacity="0.7"/>
+
+  <!-- Header bar line -->
+  <line x1="240" y1="220" x2="960" y2="220" stroke="#334155" stroke-width="1"/>
+
+  <!-- Sidebar -->
+  <rect x="240" y="220" width="180" height="240" fill="#1e293b" stroke="#334155" stroke-width="0.5"/>
+  <rect x="260" y="240" width="140" height="10" rx="3" fill="#334155"/>
+  <rect x="260" y="265" width="120" height="8" rx="3" fill="#334155" opacity="0.6"/>
+  <rect x="260" y="285" width="130" height="8" rx="3" fill="#334155" opacity="0.6"/>
+  <rect x="260" y="305" width="100" height="8" rx="3" fill="#3b82f6" opacity="0.5"/>
+  <rect x="260" y="325" width="115" height="8" rx="3" fill="#334155" opacity="0.6"/>
+  <rect x="260" y="345" width="125" height="8" rx="3" fill="#334155" opacity="0.6"/>
+
+  <!-- Main content area -->
+  <!-- Title -->
+  <text x="630" y="290" font-family="'Inter', 'SF Pro Display', sans-serif" font-size="52" fill="#f1f5f9" text-anchor="middle" font-weight="600" letter-spacing="-0.01em">DARK MODE</text>
+
+  <!-- Blue accent underline -->
+  <rect x="530" y="305" width="200" height="3" rx="1.5" fill="#3b82f6"/>
+
+  <!-- Subtitle -->
+  <text x="630" y="350" font-family="'Inter', sans-serif" font-size="18" fill="#64748b" text-anchor="middle" letter-spacing="0.1em">Elegant Depth and Contrast</text>
+
+  <!-- Code-like elements -->
+  <rect x="480" y="380" width="300" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <rect x="500" y="395" width="80" height="7" rx="2" fill="#3b82f6" opacity="0.5"/>
+  <rect x="590" y="395" width="60" height="7" rx="2" fill="#64748b"/>
+  <rect x="500" y="412" width="100" height="7" rx="2" fill="#64748b"/>
+  <rect x="610" y="412" width="40" height="7" rx="2" fill="#22c55e" opacity="0.5"/>
+  <rect x="500" y="429" width="70" height="7" rx="2" fill="#a78bfa" opacity="0.5"/>
+
+  <!-- Floating accent dot -->
+  <circle cx="1050" cy="150" r="40" fill="#3b82f6" opacity="0.06"/>
+  <circle cx="1050" cy="150" r="20" fill="#3b82f6" opacity="0.1"/>
+
+  <!-- Bottom status bar -->
+  <rect x="240" y="447" width="720" height="13" rx="0 0 10 10" fill="#1e293b"/>
+  <circle cx="260" cy="454" r="3" fill="#22c55e" opacity="0.7"/>
+  <rect x="270" y="451" width="60" height="5" rx="2" fill="#334155"/>
+</svg>
