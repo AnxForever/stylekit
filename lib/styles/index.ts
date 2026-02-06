@@ -142,6 +142,11 @@ import { fPatternLayout } from "./f-pattern-layout";
 import { zPatternLayout } from "./z-pattern-layout";
 import { holyGrailLayout } from "./holy-grail-layout";
 import { dashboardLayout } from "./dashboard-layout";
+// 新增风格 - 批次4
+import { scandinavian } from "./scandinavian";
+import { steampunk } from "./steampunk";
+import { celShading } from "./cel-shading";
+import { wabiSabi } from "./wabi-sabi";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -195,6 +200,11 @@ export const styles: DesignStyle[] = [
   zPatternLayout,
   holyGrailLayout,
   dashboardLayout,
+  // 新增风格 - 批次4
+  scandinavian,
+  steampunk,
+  celShading,
+  wabiSabi,
 ];
 
 // 根据 slug 获取风格
