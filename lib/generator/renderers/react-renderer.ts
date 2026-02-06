@@ -625,6 +625,473 @@ ${socialButtons}
 }
 
 /**
+ * Generate blog page App.tsx
+ */
+function generateBlogAppTsx(config: GeneratorConfig): string {
+  const { sections } = config;
+  const imports: string[] = [];
+  const components: string[] = [];
+
+  if (isSectionEnabled(sections, "hero")) {
+    imports.push('import { BlogHero } from "./components/BlogHero";');
+    components.push("        <BlogHero />");
+  }
+
+  const hasPostsOrSidebar =
+    isSectionEnabled(sections, "posts") || isSectionEnabled(sections, "sidebar");
+
+  if (isSectionEnabled(sections, "posts")) {
+    imports.push('import { BlogPosts } from "./components/BlogPosts";');
+  }
+  if (isSectionEnabled(sections, "sidebar")) {
+    imports.push('import { BlogSidebar } from "./components/BlogSidebar";');
+  }
+  if (isSectionEnabled(sections, "footer")) {
+    imports.push('import { Footer } from "./components/Footer";');
+  }
+
+  let body = "";
+  if (isSectionEnabled(sections, "hero")) {
+    body += "        <BlogHero />\n";
+  }
+
+  if (hasPostsOrSidebar) {
+    body += '        <div className="flex gap-8 max-w-[1200px] mx-auto px-4 py-12">\n';
+    if (isSectionEnabled(sections, "posts")) {
+      body += "          <BlogPosts />\n";
+    }
+    if (isSectionEnabled(sections, "sidebar")) {
+      body += "          <BlogSidebar />\n";
+    }
+    body += "        </div>\n";
+  }
+
+  if (isSectionEnabled(sections, "footer")) {
+    body += "        <Footer />";
+  }
+
+  return `${imports.join("\n")}
+
+export default function App() {
+  return (
+    <main>
+${body}
+    </main>
+  );
+}
+`;
+}
+
+/**
+ * Generate blog hero component
+ */
+function generateBlogHeroComponent(content: Record<string, string>): string {
+  const blogName = content.blogName || "My Blog";
+  const tagline = content.tagline || "Thoughts, stories, and ideas.";
+  const authorName = content.authorName || "Author";
+  const bio = content.bio || "Writer, thinker, maker.";
+
+  return `export function BlogHero() {
+  return (
+    <section className="bg-gradient-to-b from-secondary to-background py-16 md:py-24">
+      <div className="max-w-[1200px] mx-auto px-4 text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-foreground">
+          ${blogName}
+        </h1>
+        <p className="text-lg md:text-xl text-muted mb-8 leading-relaxed">
+          ${tagline}
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-secondary border-2 border-primary flex items-center justify-center text-primary">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div className="text-left">
+            <p className="font-semibold text-foreground">${authorName}</p>
+            <p className="text-sm text-muted">${bio}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+`;
+}
+
+/**
+ * Generate blog posts component
+ */
+function generateBlogPostsComponent(content: Record<string, string>): string {
+  const sectionTitle = content.title || "Latest Posts";
+
+  const posts = [
+    {
+      date: content.post1Date || "Jan 15, 2024",
+      category: content.post1Category || "Design",
+      title: content.post1Title || "Building Better User Interfaces",
+      excerpt: content.post1Excerpt || "Exploring the principles of clean, functional design that users love.",
+    },
+    {
+      date: content.post2Date || "Jan 10, 2024",
+      category: content.post2Category || "Development",
+      title: content.post2Title || "Modern CSS Techniques",
+      excerpt: content.post2Excerpt || "A deep dive into the latest CSS features and how to use them effectively.",
+    },
+    {
+      date: content.post3Date || "Jan 5, 2024",
+      category: content.post3Category || "Workflow",
+      title: content.post3Title || "Streamlining Your Dev Process",
+      excerpt: content.post3Excerpt || "Tips and tools for a more productive development workflow.",
+    },
+  ];
+
+  const postCards = posts
+    .map(
+      (p) => `        <article className="border-b border-muted/30 pb-8 mb-8 last:border-0">
+          <div className="flex items-center gap-3 mb-3">
+            <time className="text-sm text-muted">${p.date}</time>
+            <span className="bg-secondary text-primary text-xs font-medium px-2.5 py-0.5 rounded">${p.category}</span>
+          </div>
+          <h3 className="text-xl font-bold mb-2">
+            <a href="#" className="text-foreground hover:text-primary transition">${p.title}</a>
+          </h3>
+          <p className="text-muted leading-relaxed mb-3">${p.excerpt}</p>
+          <a href="#" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all">
+            Read more
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+        </article>`
+    )
+    .join("\n");
+
+  return `export function BlogPosts() {
+  return (
+    <section className="flex-1">
+      <h2 className="text-2xl font-bold mb-8">${sectionTitle}</h2>
+${postCards}
+    </section>
+  );
+}
+`;
+}
+
+/**
+ * Generate blog sidebar component
+ */
+function generateBlogSidebarComponent(content: Record<string, string>): string {
+  const aboutText = content.about || "A blog about design, development, and creative work.";
+  const categoriesStr = content.categories || "Design, Development, Workflow, Tutorials";
+  const tagsStr = content.tags || "CSS, React, TypeScript, UI, UX, Tailwind, Node.js";
+
+  const categories = categoriesStr.split(",").map((c) => c.trim());
+  const tags = tagsStr.split(",").map((t) => t.trim());
+
+  const categoryItems = categories
+    .map(
+      (cat) =>
+        `            <li>
+              <a href="#" className="text-muted hover:text-foreground transition">${cat}</a>
+            </li>`
+    )
+    .join("\n");
+
+  const tagItems = tags
+    .map(
+      (tag) =>
+        `          <a href="#" className="bg-secondary rounded-full px-3 py-1 text-sm text-foreground hover:bg-primary hover:text-background transition">${tag}</a>`
+    )
+    .join("\n");
+
+  return `export function BlogSidebar() {
+  return (
+    <aside className="w-80 shrink-0 hidden lg:block">
+      <div className="bg-secondary rounded-lg p-4 mb-6">
+        <h3 className="font-bold mb-2">About</h3>
+        <p className="text-sm text-muted leading-relaxed">${aboutText}</p>
+      </div>
+      <div className="mb-6">
+        <h3 className="font-bold mb-3">Categories</h3>
+        <ul className="space-y-2">
+${categoryItems}
+        </ul>
+      </div>
+      <div>
+        <h3 className="font-bold mb-3">Tags</h3>
+        <div className="flex flex-wrap gap-2">
+${tagItems}
+        </div>
+      </div>
+    </aside>
+  );
+}
+`;
+}
+
+/**
+ * Generate blog footer component
+ */
+function generateBlogFooterComponent(content: Record<string, string>): string {
+  const copyright = content.copyright || "2024 My Blog. All rights reserved.";
+  const linksStr = content.links || "RSS, About, Contact, Privacy";
+  const links = linksStr.split(",").map((l) => l.trim());
+
+  const linkElements = links
+    .map(
+      (link) =>
+        `          <a href="#" className="text-sm text-muted hover:text-foreground transition">${link}</a>`
+    )
+    .join("\n");
+
+  return `export function Footer() {
+  return (
+    <footer className="border-t border-muted/30 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex gap-6 flex-wrap justify-center">
+${linkElements}
+        </div>
+        <p className="text-sm text-muted">${copyright}</p>
+      </div>
+    </footer>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard page App.tsx
+ */
+function generateDashboardAppTsx(config: GeneratorConfig): string {
+  const { sections } = config;
+  const imports: string[] = [];
+
+  if (isSectionEnabled(sections, "sidebar")) {
+    imports.push('import { Sidebar } from "./components/Sidebar";');
+  }
+  if (isSectionEnabled(sections, "kpi")) {
+    imports.push('import { KpiCards } from "./components/KpiCards";');
+  }
+  if (isSectionEnabled(sections, "charts")) {
+    imports.push('import { Charts } from "./components/Charts";');
+  }
+  if (isSectionEnabled(sections, "table")) {
+    imports.push('import { DataTable } from "./components/DataTable";');
+  }
+  if (isSectionEnabled(sections, "footer")) {
+    imports.push('import { Footer } from "./components/Footer";');
+  }
+
+  let mainContent = "";
+  if (isSectionEnabled(sections, "kpi")) {
+    mainContent += "            <KpiCards />\n";
+  }
+  if (isSectionEnabled(sections, "charts")) {
+    mainContent += "            <Charts />\n";
+  }
+  if (isSectionEnabled(sections, "table")) {
+    mainContent += "            <DataTable />\n";
+  }
+
+  return `${imports.join("\n")}
+
+export default function App() {
+  return (
+    <div className="flex min-h-screen">
+${isSectionEnabled(sections, "sidebar") ? "      <Sidebar />\n" : ""}      <div className="flex-1 flex flex-col">
+        <div className="flex-1 p-6 space-y-6">
+${mainContent}        </div>
+${isSectionEnabled(sections, "footer") ? "        <Footer />\n" : ""}      </div>
+    </div>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard sidebar component
+ */
+function generateDashboardSidebarComponent(content: Record<string, string>): string {
+  const appName = content.appName || "Dashboard";
+  const navItemsStr = content.navItems || "Overview, Analytics, Reports, Settings";
+  const navItems = navItemsStr.split(",").map((n) => n.trim());
+
+  const navElements = navItems
+    .map(
+      (item, i) =>
+        `          <a
+            href="#"
+            className="${i === 0 ? "flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 text-white font-medium" : "flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white transition"}"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              ${i === 0 ? '<rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />' : i === 1 ? '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />' : i === 2 ? '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />' : '<circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />'}
+            </svg>
+            ${item}
+          </a>`
+    )
+    .join("\n");
+
+  return `export function Sidebar() {
+  return (
+    <aside className="w-64 bg-gray-900 text-white flex flex-col">
+      <div className="px-4 py-5 border-b border-white/10">
+        <h1 className="text-lg font-bold">${appName}</h1>
+      </div>
+      <nav className="flex-1 p-3 space-y-1">
+${navElements}
+      </nav>
+    </aside>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard KPI cards component
+ */
+function generateDashboardKpiComponent(content: Record<string, string>): string {
+  const kpis = [
+    {
+      label: content.kpi1Label || "Total Revenue",
+      value: content.kpi1Value || "$45,231",
+      change: content.kpi1Change || "+20.1%",
+    },
+    {
+      label: content.kpi2Label || "Active Users",
+      value: content.kpi2Value || "2,350",
+      change: content.kpi2Change || "+15.3%",
+    },
+    {
+      label: content.kpi3Label || "Conversion Rate",
+      value: content.kpi3Value || "3.2%",
+      change: content.kpi3Change || "-2.1%",
+    },
+    {
+      label: content.kpi4Label || "Avg. Order Value",
+      value: content.kpi4Value || "$124",
+      change: content.kpi4Change || "+8.4%",
+    },
+  ];
+
+  const kpiCards = kpis
+    .map(
+      (kpi) => `        <div className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm">
+          <p className="text-sm text-muted mb-1">${kpi.label}</p>
+          <p className="text-2xl font-bold text-foreground mb-1">${kpi.value}</p>
+          <p className="${kpi.change.startsWith("+") ? "text-sm text-green-600" : "text-sm text-red-600"}">${kpi.change} from last period</p>
+        </div>`
+    )
+    .join("\n");
+
+  return `export function KpiCards() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+${kpiCards}
+    </div>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard charts component
+ */
+function generateDashboardChartsComponent(content: Record<string, string>): string {
+  const chartTitle = content.title || "Analytics Overview";
+
+  return `export function Charts() {
+  return (
+    <div className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm">
+      <h2 className="text-lg font-bold mb-4">${chartTitle}</h2>
+      <div className="bg-secondary/50 rounded-lg aspect-[2/1] flex items-center justify-center">
+        <p className="text-muted font-medium">Chart Area</p>
+      </div>
+    </div>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard data table component
+ */
+function generateDashboardTableComponent(content: Record<string, string>): string {
+  const tableTitle = content.title || "Recent Transactions";
+  const columnsStr = content.columns || "ID, Customer, Amount, Status, Date";
+  const columns = columnsStr.split(",").map((c) => c.trim());
+
+  const headerCells = columns
+    .map(
+      (col) =>
+        `              <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">${col}</th>`
+    )
+    .join("\n");
+
+  const sampleData = [
+    ["#1001", "Alice Johnson", "$250.00", "Completed", "Jan 15, 2024"],
+    ["#1002", "Bob Smith", "$120.50", "Pending", "Jan 14, 2024"],
+    ["#1003", "Carol White", "$340.00", "Completed", "Jan 13, 2024"],
+    ["#1004", "David Brown", "$89.99", "Failed", "Jan 12, 2024"],
+    ["#1005", "Eve Davis", "$199.00", "Completed", "Jan 11, 2024"],
+  ];
+
+  const rows = sampleData
+    .map(
+      (row, i) =>
+        `            <tr className="${i % 2 === 1 ? "bg-secondary/30" : "bg-background"}">
+${row.map((cell) => `              <td className="px-4 py-3 text-sm">${cell}</td>`).join("\n")}
+            </tr>`
+    )
+    .join("\n");
+
+  return `export function DataTable() {
+  return (
+    <div className="bg-background border border-muted/30 rounded-lg shadow-sm overflow-hidden">
+      <div className="px-5 py-4 border-b border-muted/30">
+        <h2 className="text-lg font-bold">${tableTitle}</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-secondary/50">
+            <tr>
+${headerCells}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-muted/20">
+${rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+`;
+}
+
+/**
+ * Generate dashboard footer component
+ */
+function generateDashboardFooterComponent(content: Record<string, string>): string {
+  const copyright = content.copyright || "2024 Dashboard App. All rights reserved.";
+  const version = content.version || "v1.0.0";
+
+  return `export function Footer() {
+  return (
+    <footer className="py-4 px-6 border-t border-muted/30">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted">${copyright}</p>
+        <p className="text-sm text-muted">${version}</p>
+      </div>
+    </footer>
+  );
+}
+`;
+}
+
+/**
  * Generate all React files for output
  */
 export function generateReactFiles(
@@ -676,6 +1143,39 @@ export function generateReactFiles(
     }
     if (isSectionEnabled(sections, "contact")) {
       files.push({ name: "src/components/Contact.tsx", content: generatePortfolioContactComponent(getSectionContent(sections, "contact")), type: "js" });
+    }
+  } else if (config.templateType === "blog") {
+    files.push({ name: "src/App.tsx", content: generateBlogAppTsx(config), type: "js" });
+
+    if (isSectionEnabled(sections, "hero")) {
+      files.push({ name: "src/components/BlogHero.tsx", content: generateBlogHeroComponent(getSectionContent(sections, "hero")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "posts")) {
+      files.push({ name: "src/components/BlogPosts.tsx", content: generateBlogPostsComponent(getSectionContent(sections, "posts")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "sidebar")) {
+      files.push({ name: "src/components/BlogSidebar.tsx", content: generateBlogSidebarComponent(getSectionContent(sections, "sidebar")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "footer")) {
+      files.push({ name: "src/components/Footer.tsx", content: generateBlogFooterComponent(getSectionContent(sections, "footer")), type: "js" });
+    }
+  } else if (config.templateType === "dashboard") {
+    files.push({ name: "src/App.tsx", content: generateDashboardAppTsx(config), type: "js" });
+
+    if (isSectionEnabled(sections, "sidebar")) {
+      files.push({ name: "src/components/Sidebar.tsx", content: generateDashboardSidebarComponent(getSectionContent(sections, "sidebar")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "kpi")) {
+      files.push({ name: "src/components/KpiCards.tsx", content: generateDashboardKpiComponent(getSectionContent(sections, "kpi")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "charts")) {
+      files.push({ name: "src/components/Charts.tsx", content: generateDashboardChartsComponent(getSectionContent(sections, "charts")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "table")) {
+      files.push({ name: "src/components/DataTable.tsx", content: generateDashboardTableComponent(getSectionContent(sections, "table")), type: "js" });
+    }
+    if (isSectionEnabled(sections, "footer")) {
+      files.push({ name: "src/components/Footer.tsx", content: generateDashboardFooterComponent(getSectionContent(sections, "footer")), type: "js" });
     }
   }
 
