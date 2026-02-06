@@ -4,7 +4,7 @@
     <pattern id="jfLinen" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
       <rect width="6" height="6" fill="#fafaf8"/>
       <rect x="0" y="0" width="1" height="1" fill="#e8e8e4" opacity="0.15"/>
-      <rect x="3" y="3" width="1" height="1" fill="#e8e8e4" opacity="0.1"/>
+      <rect x="3" y="3" width="1" height="1" fill="#e8e8e4" opacity="0.10"/>
     </pattern>
     <!-- Paper grain noise -->
     <filter id="jfGrain">
@@ -21,21 +21,21 @@
   <rect width="1200" height="630" fill="#fafaf8"/>
   <rect width="1200" height="630" fill="url(#jfLinen)"/>
 
-  <!-- Subtle watercolor spots -->
-  <circle cx="180" cy="120" r="60" fill="#98d8c8" opacity="0.04"/>
-  <circle cx="200" cy="140" r="40" fill="#98d8c8" opacity="0.03"/>
-  <circle cx="1020" cy="500" r="50" fill="#ffb7c5" opacity="0.04"/>
-  <circle cx="1000" cy="480" r="35" fill="#ffb7c5" opacity="0.03"/>
-  <circle cx="100" cy="500" r="45" fill="#64b5f6" opacity="0.03"/>
+  <!-- Subtle watercolor spots - boosted from 0.03-0.04 to 0.10-0.12 -->
+  <circle cx="180" cy="120" r="60" fill="#98d8c8" opacity="0.12"/>
+  <circle cx="200" cy="140" r="40" fill="#98d8c8" opacity="0.10"/>
+  <circle cx="1020" cy="500" r="50" fill="#ffb7c5" opacity="0.12"/>
+  <circle cx="1000" cy="480" r="35" fill="#ffb7c5" opacity="0.10"/>
+  <circle cx="100" cy="500" r="45" fill="#64b5f6" opacity="0.10"/>
 
-  <!-- Thin asymmetric frame - intentionally off-center (wabi-sabi) -->
-  <line x1="80" y1="50" x2="400" y2="50" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
-  <line x1="80" y1="50" x2="80" y2="200" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
-  <line x1="800" y1="580" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.4"/>
-  <line x1="1120" y1="430" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.4"/>
+  <!-- Thin asymmetric frame - boosted from 0.4-0.5 to 0.6 -->
+  <line x1="80" y1="50" x2="400" y2="50" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+  <line x1="80" y1="50" x2="80" y2="200" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+  <line x1="800" y1="580" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+  <line x1="1120" y1="430" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
 
-  <!-- Delicate botanical line drawing - single branch with leaves -->
-  <g stroke="#a0aec0" stroke-width="0.7" fill="none" opacity="0.25">
+  <!-- Delicate botanical line drawing - boosted from 0.25 to 0.40 -->
+  <g stroke="#a0aec0" stroke-width="0.7" fill="none" opacity="0.40">
     <!-- Main stem -->
     <path d="M180 520 C180 480, 190 420, 200 380 C210 340, 200 300, 210 260 C215 240, 220 220, 218 200"/>
     <!-- Leaf 1 -->
@@ -50,8 +50,8 @@
     <circle cx="218" cy="198" r="4"/>
   </g>
 
-  <!-- Second botanical accent - right side, very minimal -->
-  <g stroke="#b8d4e3" stroke-width="0.5" fill="none" opacity="0.15">
+  <!-- Second botanical accent - boosted from 0.15 to 0.30 -->
+  <g stroke="#b8d4e3" stroke-width="0.5" fill="none" opacity="0.30">
     <path d="M1050 150 C1040 180, 1035 210, 1038 240"/>
     <path d="M1038 200 C1055 195, 1068 185, 1075 178"/>
     <path d="M1038 220 C1022 215, 1010 208, 1005 200"/>
@@ -59,33 +59,33 @@
 
   <!-- Huge whitespace is intentional - Ma (space) -->
 
-  <!-- Title - light weight, generous spacing -->
-  <text x="600" y="275" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="68" font-weight="200" fill="#4a5568" text-anchor="middle" letter-spacing="4">Japanese Fresh</text>
+  <!-- Title - light weight, generous spacing, color darkened to #3d4a5c -->
+  <text x="600" y="275" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="68" font-weight="200" fill="#3d4a5c" text-anchor="middle" letter-spacing="4">Japanese Fresh</text>
 
-  <!-- Hairline divider -->
-  <line x1="480" y1="305" x2="720" y2="305" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <!-- Hairline divider - boosted from 0.5 to 0.65 -->
+  <line x1="480" y1="305" x2="720" y2="305" stroke="#d4d4cf" stroke-width="0.5" opacity="0.65"/>
 
-  <!-- Japanese subtitle -->
-  <text x="600" y="340" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="12">ma / wabi-sabi / breath</text>
+  <!-- Japanese subtitle - boosted from 0.5 (implicit) to 0.65 -->
+  <text x="600" y="340" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="12" opacity="0.65">ma / wabi-sabi / breath</text>
 
-  <!-- Very subtle warm-neutral dot accents -->
-  <circle cx="470" cy="305" r="2" fill="#98d8c8" opacity="0.3"/>
-  <circle cx="730" cy="305" r="2" fill="#ffb7c5" opacity="0.3"/>
+  <!-- Endpoint dot accents - boosted from 0.3 to 0.5 -->
+  <circle cx="470" cy="305" r="2" fill="#98d8c8" opacity="0.5"/>
+  <circle cx="730" cy="305" r="2" fill="#ffb7c5" opacity="0.5"/>
 
-  <!-- Color swatches - rounded, soft, with extreme spacing -->
-  <rect x="350" y="410" width="48" height="48" rx="10" fill="#64b5f6" opacity="0.7"/>
-  <rect x="430" y="410" width="48" height="48" rx="10" fill="#98d8c8" opacity="0.7"/>
-  <rect x="510" y="410" width="48" height="48" rx="10" fill="#ffb7c5" opacity="0.7"/>
-  <rect x="590" y="410" width="48" height="48" rx="10" fill="#b8d4e3" opacity="0.7"/>
-  <rect x="670" y="410" width="48" height="48" rx="10" fill="#d4d4cf" opacity="0.5"/>
-  <rect x="750" y="410" width="48" height="48" rx="10" fill="#fafaf8" stroke="#e8e8e4" stroke-width="0.5" opacity="0.8"/>
+  <!-- Color swatches - boosted from 0.7 to 0.85 -->
+  <rect x="350" y="410" width="48" height="48" rx="10" fill="#64b5f6" opacity="0.85"/>
+  <rect x="430" y="410" width="48" height="48" rx="10" fill="#98d8c8" opacity="0.85"/>
+  <rect x="510" y="410" width="48" height="48" rx="10" fill="#ffb7c5" opacity="0.85"/>
+  <rect x="590" y="410" width="48" height="48" rx="10" fill="#b8d4e3" opacity="0.85"/>
+  <rect x="670" y="410" width="48" height="48" rx="10" fill="#d4d4cf" opacity="0.65"/>
+  <rect x="750" y="410" width="48" height="48" rx="10" fill="#fafaf8" stroke="#e8e8e4" stroke-width="0.5" opacity="0.85"/>
 
   <!-- Hairline borders on swatches -->
-  <rect x="350" y="410" width="48" height="48" rx="10" fill="none" stroke="#64b5f6" stroke-width="0.3" opacity="0.3"/>
-  <rect x="430" y="410" width="48" height="48" rx="10" fill="none" stroke="#98d8c8" stroke-width="0.3" opacity="0.3"/>
-  <rect x="510" y="410" width="48" height="48" rx="10" fill="none" stroke="#ffb7c5" stroke-width="0.3" opacity="0.3"/>
-  <rect x="590" y="410" width="48" height="48" rx="10" fill="none" stroke="#b8d4e3" stroke-width="0.3" opacity="0.3"/>
+  <rect x="350" y="410" width="48" height="48" rx="10" fill="none" stroke="#64b5f6" stroke-width="0.3" opacity="0.4"/>
+  <rect x="430" y="410" width="48" height="48" rx="10" fill="none" stroke="#98d8c8" stroke-width="0.3" opacity="0.4"/>
+  <rect x="510" y="410" width="48" height="48" rx="10" fill="none" stroke="#ffb7c5" stroke-width="0.3" opacity="0.4"/>
+  <rect x="590" y="410" width="48" height="48" rx="10" fill="none" stroke="#b8d4e3" stroke-width="0.3" opacity="0.4"/>
 
-  <!-- Minimal label beneath -->
-  <text x="600" y="500" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="12" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="6" opacity="0.5">HAIRLINE BORDERS / BOTANICAL / WHITESPACE</text>
+  <!-- Minimal label beneath - boosted from 0.5 to 0.65 -->
+  <text x="600" y="500" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="12" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="6" opacity="0.65">HAIRLINE BORDERS / BOTANICAL / WHITESPACE</text>
 </svg>
