@@ -6,7 +6,7 @@ export const editorial: DesignStyle = {
   nameEn: "Editorial",
   description:
     "优雅的杂志排版风格，衬线标题、无衬线正文、精致的留白和网格系统。灵感来自高端时尚杂志和报纸排版。",
-  cover: "/styles/editorial.png",
+  cover: "/styles/editorial.svg",
   styleType: "visual",
   tags: ["minimal"],
   category: "minimal",

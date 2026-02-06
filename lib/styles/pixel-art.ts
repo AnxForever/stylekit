@@ -6,7 +6,7 @@ export const pixelArt: DesignStyle = {
   nameEn: "Pixel Art",
   description:
     "复古 8-bit 像素游戏风格，无圆角、像素化边框、硬边阴影和鲜明的 8-bit 配色，适合游戏、复古应用和独立开发者项目。",
-  cover: "/styles/pixel-art.png",
+  cover: "/styles/pixel-art.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
   category: "retro",

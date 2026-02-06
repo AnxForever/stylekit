@@ -6,7 +6,7 @@ export const cyberpunkNeon: DesignStyle = {
   nameEn: "Cyberpunk Neon",
   description:
     "未来感十足的赛博朋克风格，霓虹发光效果、深色背景、高科技感的 UI 元素。适合游戏、科技产品、创意工作室。",
-  cover: "/styles/cyberpunk-neon.png",
+  cover: "/styles/cyberpunk-neon.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
   category: "expressive",

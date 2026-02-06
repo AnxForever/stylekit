@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#faf6f1"/>
+  <!-- Subtle texture dots -->
+  <g opacity="0.06">
+    <circle cx="100" cy="80" r="3" fill="#5c4033"/>
+    <circle cx="300" cy="150" r="2" fill="#5c4033"/>
+    <circle cx="500" cy="60" r="3" fill="#5c4033"/>
+    <circle cx="700" cy="120" r="2" fill="#5c4033"/>
+    <circle cx="900" cy="90" r="3" fill="#5c4033"/>
+    <circle cx="1100" cy="140" r="2" fill="#5c4033"/>
+    <circle cx="200" cy="500" r="3" fill="#5c4033"/>
+    <circle cx="400" cy="550" r="2" fill="#5c4033"/>
+    <circle cx="800" cy="520" r="3" fill="#5c4033"/>
+    <circle cx="1000" cy="570" r="2" fill="#5c4033"/>
+  </g>
+  <!-- Background wave -->
+  <path d="M0 420 Q150 370 300 400 T600 380 T900 410 T1200 390 L1200 630 L0 630 Z" fill="#e8ddd0" opacity="0.5"/>
+  <path d="M0 470 Q200 430 400 460 T800 440 T1200 460 L1200 630 L0 630 Z" fill="#d4c4b0" opacity="0.4"/>
+  <!-- Leaf shape left -->
+  <g transform="translate(150, 200) rotate(-15)">
+    <path d="M0 0 Q40 -80 0 -160 Q-40 -80 0 0 Z" fill="#7a9e7e" opacity="0.6"/>
+    <line x1="0" y1="0" x2="0" y2="-155" stroke="#5c6e50" stroke-width="1.5" opacity="0.5"/>
+    <line x1="0" y1="-40" x2="-15" y2="-60" stroke="#5c6e50" stroke-width="1" opacity="0.4"/>
+    <line x1="0" y1="-80" x2="15" y2="-105" stroke="#5c6e50" stroke-width="1" opacity="0.4"/>
+    <line x1="0" y1="-110" x2="-12" y2="-130" stroke="#5c6e50" stroke-width="1" opacity="0.4"/>
+  </g>
+  <!-- Leaf shape right -->
+  <g transform="translate(1050, 180) rotate(20)">
+    <path d="M0 0 Q50 -100 0 -200 Q-50 -100 0 0 Z" fill="#7a9e7e" opacity="0.5"/>
+    <line x1="0" y1="0" x2="0" y2="-195" stroke="#5c6e50" stroke-width="1.5" opacity="0.4"/>
+    <line x1="0" y1="-50" x2="20" y2="-75" stroke="#5c6e50" stroke-width="1" opacity="0.3"/>
+    <line x1="0" y1="-100" x2="-18" y2="-130" stroke="#5c6e50" stroke-width="1" opacity="0.3"/>
+    <line x1="0" y1="-140" x2="14" y2="-165" stroke="#5c6e50" stroke-width="1" opacity="0.3"/>
+  </g>
+  <!-- Small branch top right -->
+  <g transform="translate(950, 80)" opacity="0.35">
+    <path d="M0 0 Q30 -20 60 -10 Q45 -5 30 5 Z" fill="#7a9e7e"/>
+    <path d="M15 5 Q35 15 55 25 Q35 20 20 10 Z" fill="#7a9e7e"/>
+  </g>
+  <!-- Organic circle accents -->
+  <circle cx="250" cy="450" r="35" fill="#c4a882" opacity="0.25"/>
+  <circle cx="950" cy="480" r="25" fill="#c4a882" opacity="0.2"/>
+  <!-- Divider line -->
+  <path d="M420 360 Q500 350 600 355 Q700 360 780 350" stroke="#5c4033" stroke-width="1" fill="none" opacity="0.3"/>
+  <!-- Title text -->
+  <text x="600" y="280" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#5c4033" letter-spacing="8">NATURAL</text>
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="36" font-weight="400" fill="#5c4033" letter-spacing="12">ORGANIC</text>
+  <!-- Subtitle -->
+  <text x="600" y="400" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#8b7355" letter-spacing="4" opacity="0.7">EARTH TONES &amp; FLOWING FORMS</text>
+</svg>

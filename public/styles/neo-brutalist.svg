@@ -1,0 +1,62 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Background grid pattern -->
+  <g opacity="0.06" stroke="#000000" stroke-width="1">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/><line x1="0" y1="480" x2="1200" y2="480"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
+  </g>
+
+  <!-- Hard-shadow rectangle top-left -->
+  <rect x="104" y="104" width="200" height="140" fill="#000000"/>
+  <rect x="100" y="100" width="200" height="140" fill="#ff006e" stroke="#000000" stroke-width="4"/>
+
+  <!-- Hard-shadow rectangle top-right -->
+  <rect x="904" y="84" width="180" height="120" fill="#000000"/>
+  <rect x="900" y="80" width="180" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+
+  <!-- Hard-shadow rectangle bottom-left -->
+  <rect x="124" y="424" width="160" height="100" fill="#000000"/>
+  <rect x="120" y="420" width="160" height="100" fill="#000000" stroke="#000000" stroke-width="4"/>
+  <text x="200" y="478" font-family="Arial Black, sans-serif" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="900">BOLD</text>
+
+  <!-- Hard-shadow rectangle bottom-right -->
+  <rect x="926" y="406" width="180" height="160" fill="#000000"/>
+  <rect x="920" y="400" width="180" height="160" fill="#ff006e" stroke="#000000" stroke-width="4"/>
+
+  <!-- Center title shadow -->
+  <rect x="306" y="236" width="600" height="170" fill="#000000"/>
+  <rect x="300" y="230" width="600" height="170" fill="#ffffff" stroke="#000000" stroke-width="5"/>
+
+  <!-- Title text -->
+  <text x="600" y="305" font-family="Arial Black, sans-serif" font-size="58" fill="#000000" text-anchor="middle" font-weight="900" letter-spacing="-0.02em">NEO-BRUTALIST</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="375" font-family="Arial, sans-serif" font-size="22" fill="#000000" text-anchor="middle" font-weight="700" letter-spacing="0.1em">RAW . BOLD . UNAPOLOGETIC</text>
+
+  <!-- Decorative thick line -->
+  <rect x="300" y="330" width="600" height="5" fill="#ff006e"/>
+
+  <!-- Scattered accent elements -->
+  <rect x="500" y="460" width="40" height="40" fill="#000000" stroke="#000000" stroke-width="3"/>
+  <rect x="560" y="464" width="32" height="32" fill="#ff006e" stroke="#000000" stroke-width="3"/>
+  <rect x="612" y="458" width="44" height="44" fill="#ffffff" stroke="#000000" stroke-width="3"/>
+  <rect x="676" y="462" width="36" height="36" fill="#000000" stroke="#000000" stroke-width="3"/>
+
+  <!-- Border -->
+  <rect x="2" y="2" width="1196" height="626" fill="none" stroke="#000000" stroke-width="4"/>
+</svg>

@@ -6,7 +6,7 @@ export const darkMode: DesignStyle = {
   nameEn: "Dark Mode",
   description:
     "优雅的深色界面设计，低对比度层次、微妙的边框和高亮。适合开发工具、专业应用、深夜阅读模式。",
-  cover: "/styles/dark-mode.png",
+  cover: "/styles/dark-mode.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
   category: "modern",

@@ -6,7 +6,7 @@ export const corporateClean: DesignStyle = {
   nameEn: "Corporate Clean",
   description:
     "专业简洁的企业风格，强调可读性、一致性和信任感。适合B2B SaaS、企业官网、后台管理系统。",
-  cover: "/styles/corporate-clean.png",
+  cover: "/styles/corporate-clean.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
   category: "minimal",
