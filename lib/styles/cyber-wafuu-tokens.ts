@@ -55,18 +55,18 @@ export const cyberWafuuTokens: StyleTokens = {
 
   colors: {
     background: {
-      primary: "bg-[#0a0a14]",
+      primary: "bg-[#080814]",
       secondary: "bg-[#1e3a5f]",
       accent: ["bg-[#c41e3a]", "bg-[#c9a227]", "bg-[#38bdf8]"],
     },
     text: {
       primary: "text-[#e2e8f0]",
       secondary: "text-[#38bdf8]",
-      muted: "text-[#e2e8f0]/40",
+      muted: "text-[#e2e8f0]/35",
     },
     button: {
       primary: "bg-[#1e3a5f] text-[#e2e8f0] shadow-[0_0_12px_rgba(30,58,95,0.4)]",
-      secondary: "bg-[#0a0a14] text-[#38bdf8] border-[#38bdf8]/40 shadow-[0_0_10px_rgba(56,189,248,0.2)]",
+      secondary: "bg-[#080814] text-[#38bdf8] border-[#38bdf8]/40 shadow-[0_0_10px_rgba(56,189,248,0.2)]",
       danger: "bg-[#c41e3a] text-white shadow-[0_0_12px_rgba(196,30,58,0.4)]",
     },
   },
@@ -87,10 +87,10 @@ export const cyberWafuuTokens: StyleTokens = {
       "^shadow-(?:md|lg|xl)$",
     ],
     reasons: {
-      "rounded-full": "Cyber Wafuu uses sharp geometry inspired by origami folds",
-      "bg-white": "Cyber Wafuu requires dark backgrounds",
+      "rounded-full": "Cyber Wafuu uses sharp shoji-grid geometry, no rounded shapes",
+      "bg-white": "Cyber Wafuu requires dark indigo backgrounds",
       "font-serif": "Cyber Wafuu uses clean geometric sans-serif fonts",
-      "shadow-md": "Use neon glow shadows instead of soft shadows",
+      "shadow-md": "Use seigaiha-pattern glow shadows instead of soft shadows",
     },
   },
 
@@ -101,12 +101,12 @@ export const cyberWafuuTokens: StyleTokens = {
       "transition-all duration-300 ease-in-out",
     ],
     card: [
-      "bg-[#0a0a14]",
+      "bg-[#080814]",
       "border border-[#1e3a5f]/30",
       "transition-all duration-300 ease-in-out",
     ],
     input: [
-      "bg-[#0a0a14]",
+      "bg-[#080814]",
       "border border-[#1e3a5f]/30",
       "text-[#e2e8f0]",
       "font-sans",

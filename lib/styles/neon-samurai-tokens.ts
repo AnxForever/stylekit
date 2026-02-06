@@ -20,6 +20,7 @@ export const neonSamuraiTokens: StyleTokens = {
       red: "shadow-[0_0_15px_rgba(220,38,38,0.4)]",
       purple: "shadow-[0_0_15px_rgba(160,32,240,0.4)]",
       blue: "shadow-[0_0_15px_rgba(56,189,248,0.4)]",
+      dualPurpleBlue: "shadow-[0_0_20px_rgba(56,189,248,0.5)]",
     },
   },
 
@@ -55,18 +56,18 @@ export const neonSamuraiTokens: StyleTokens = {
 
   colors: {
     background: {
-      primary: "bg-[#0a0a0a]",
-      secondary: "bg-[#111111]",
+      primary: "bg-[#080818]",
+      secondary: "bg-[#111122]",
       accent: ["bg-[#dc2626]", "bg-[#a020f0]", "bg-[#38bdf8]", "bg-[#fbbf24]"],
     },
     text: {
       primary: "text-white",
       secondary: "text-[#dc2626]",
-      muted: "text-white/50",
+      muted: "text-white/40",
     },
     button: {
       primary: "bg-[#dc2626] text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]",
-      secondary: "bg-[#0a0a0a] text-[#dc2626] border-[#dc2626] shadow-[0_0_10px_rgba(220,38,38,0.3)]",
+      secondary: "bg-[#080818] text-[#dc2626] border-[#dc2626] shadow-[0_0_10px_rgba(220,38,38,0.3)]",
       danger: "bg-[#a020f0] text-white shadow-[0_0_15px_rgba(160,32,240,0.5)]",
     },
   },
@@ -88,9 +89,9 @@ export const neonSamuraiTokens: StyleTokens = {
       "^shadow-(?:md|lg|xl)$",
     ],
     reasons: {
-      "rounded-full": "Neon Samurai uses sharp geometry, no rounded shapes",
-      "bg-white": "Neon Samurai requires dark backgrounds only",
-      "shadow-md": "Use neon glow shadows instead of soft shadows",
+      "rounded-full": "Neon Samurai uses sharp angular geometry, no rounded shapes",
+      "bg-white": "Neon Samurai requires dark navy/black backgrounds only",
+      "shadow-md": "Use neon glow shadows with dual-color effects instead",
       "font-serif": "Neon Samurai uses bold geometric sans-serif only",
     },
   },
@@ -103,13 +104,13 @@ export const neonSamuraiTokens: StyleTokens = {
       "transition-all duration-300 ease-in-out",
     ],
     card: [
-      "bg-[#0a0a0a]",
+      "bg-[#080818]",
       "border border-[#dc2626]/30",
       "transition-all duration-300 ease-in-out",
     ],
     input: [
-      "bg-[#0a0a0a]",
-      "border border-[#dc2626]/20",
+      "bg-[#080818]",
+      "border-b-2 border-[#dc2626]/30",
       "text-white",
       "font-sans",
       "focus:outline-none",
