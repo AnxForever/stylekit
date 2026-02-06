@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import "./globals.css";
