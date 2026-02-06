@@ -1,71 +1,135 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Soft blur for dappled light -->
-    <filter id="impDapple">
-      <feGaussianBlur stdDeviation="15"/>
+    <!-- Canvas texture pattern -->
+    <pattern id="canvas" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#f5f0e0"/>
+      <rect x="0" y="0" width="3" height="3" fill="#ede5d0" opacity="0.20"/>
+      <rect x="3" y="3" width="3" height="3" fill="#e8dcc8" opacity="0.15"/>
+    </pattern>
+    <!-- Heavy impasto shadow: multiple layers for depth -->
+    <filter id="impasto" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#c0392b" flood-opacity="0.12"/>
+      <feDropShadow dx="4" dy="6" stdDeviation="5" flood-color="#d4956a" flood-opacity="0.10"/>
+      <feDropShadow dx="6" dy="10" stdDeviation="8" flood-color="#2c3e50" flood-opacity="0.08"/>
     </filter>
-    <!-- Slight blur for brushstrokes -->
-    <filter id="impBrush">
-      <feGaussianBlur stdDeviation="3 1.5"/>
+    <!-- Lighter impasto for smaller cards -->
+    <filter id="impastoLight" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#e8a87c" flood-opacity="0.15"/>
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#c0392b" flood-opacity="0.10"/>
+      <feDropShadow dx="5" dy="8" stdDeviation="6" flood-color="#2c3e50" flood-opacity="0.07"/>
     </filter>
+    <!-- Brushstroke gradient for accent bars -->
+    <linearGradient id="brushWarm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8a87c"/>
+      <stop offset="50%" stop-color="#f5d88a"/>
+      <stop offset="100%" stop-color="#e8a87c"/>
+    </linearGradient>
+    <linearGradient id="brushRed" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c0392b"/>
+      <stop offset="60%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#a83024"/>
+    </linearGradient>
   </defs>
 
-  <!-- Canvas texture background - solid warm cream -->
-  <rect width="1200" height="630" fill="#f5f0e1"/>
+  <!-- Canvas background -->
+  <rect width="1200" height="630" fill="#f5f0e0"/>
+  <rect width="1200" height="630" fill="url(#canvas)"/>
 
-  <!-- Subtle canvas color variation -->
-  <rect width="1200" height="630" fill="#ede5d0" opacity="0.25"/>
+  <!-- Dappled light blobs (background, secondary) -->
+  <circle cx="200" cy="180" r="80" fill="#f5d88a" opacity="0.10"/>
+  <circle cx="1000" cy="400" r="70" fill="#f5d88a" opacity="0.08"/>
+  <circle cx="600" cy="520" r="60" fill="#e8a87c" opacity="0.06"/>
 
-  <!-- Large visible brushstroke shapes - warm orange cluster (top-left) -->
-  <rect x="50" y="60" width="250" height="18" rx="9" fill="#e8a87c" opacity="0.50" transform="rotate(-5 175 69)" filter="url(#impBrush)"/>
-  <rect x="70" y="90" width="220" height="16" rx="8" fill="#e8a87c" opacity="0.55" transform="rotate(3 180 98)" filter="url(#impBrush)"/>
-  <rect x="90" y="118" width="190" height="14" rx="7" fill="#d4956a" opacity="0.45" transform="rotate(-2 185 125)" filter="url(#impBrush)"/>
-  <rect x="60" y="145" width="170" height="12" rx="6" fill="#e8a87c" opacity="0.40" transform="rotate(4 145 151)" filter="url(#impBrush)"/>
+  <!-- Card 1 - top left: warm golden card -->
+  <g filter="url(#impasto)">
+    <rect x="65" y="95" width="260" height="175" rx="8" fill="url(#canvas)"/>
+    <rect x="65" y="95" width="260" height="175" rx="8" fill="#ffffff" opacity="0.75"/>
+    <!-- Golden heading bar (brushstroke gradient) -->
+    <rect x="92" y="124" width="100" height="10" rx="5" fill="url(#brushWarm)" opacity="0.75"/>
+    <!-- Text lines -->
+    <rect x="92" y="148" width="205" height="6" rx="3" fill="#8b7d6b" opacity="0.35"/>
+    <rect x="92" y="164" width="175" height="6" rx="3" fill="#8b7d6b" opacity="0.30"/>
+    <rect x="92" y="180" width="150" height="6" rx="3" fill="#8b7d6b" opacity="0.25"/>
+    <!-- Brushstroke accent strip -->
+    <rect x="92" y="206" width="205" height="4" rx="2" fill="#e8a87c" opacity="0.30" transform="rotate(-0.5 194 208)"/>
+    <rect x="92" y="214" width="205" height="4" rx="2" fill="#d4956a" opacity="0.25" transform="rotate(0.5 194 216)"/>
+    <!-- Button -->
+    <rect x="92" y="232" width="75" height="24" rx="4" fill="#c0392b" opacity="0.18"/>
+    <rect x="104" y="241" width="50" height="5" rx="2.5" fill="#c0392b" opacity="0.50"/>
+  </g>
 
-  <!-- Vermillion strokes (mid-right) -->
-  <rect x="880" y="140" width="230" height="17" rx="8" fill="#c0392b" opacity="0.45" transform="rotate(-4 995 149)" filter="url(#impBrush)"/>
-  <rect x="900" y="170" width="200" height="15" rx="7" fill="#c0392b" opacity="0.50" transform="rotate(2 1000 178)" filter="url(#impBrush)"/>
-  <rect x="920" y="198" width="180" height="13" rx="6" fill="#a83024" opacity="0.40" transform="rotate(-3 1010 205)" filter="url(#impBrush)"/>
+  <!-- Card 2 - top right: vermillion accent card -->
+  <g filter="url(#impasto)">
+    <rect x="870" y="75" width="255" height="195" rx="8" fill="url(#canvas)"/>
+    <rect x="870" y="75" width="255" height="195" rx="8" fill="#ffffff" opacity="0.75"/>
+    <!-- Red heading bar -->
+    <rect x="900" y="106" width="110" height="10" rx="5" fill="url(#brushRed)" opacity="0.65"/>
+    <!-- Text lines -->
+    <rect x="900" y="132" width="195" height="6" rx="3" fill="#8b7d6b" opacity="0.35"/>
+    <rect x="900" y="148" width="165" height="6" rx="3" fill="#8b7d6b" opacity="0.30"/>
+    <rect x="900" y="164" width="140" height="6" rx="3" fill="#8b7d6b" opacity="0.25"/>
+    <!-- Progress bar with impasto texture -->
+    <rect x="900" y="190" width="195" height="8" rx="4" fill="#ede5d0" opacity="0.50"/>
+    <rect x="900" y="190" width="130" height="8" rx="4" fill="url(#brushRed)" opacity="0.40"/>
+    <!-- Small stat circle -->
+    <circle cx="1075" cy="238" r="18" fill="#c0392b" opacity="0.12"/>
+    <text x="1075" y="243" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#c0392b" opacity="0.55" font-weight="600">67</text>
+  </g>
 
-  <!-- Turquoise strokes (bottom area) -->
-  <rect x="60" y="480" width="260" height="16" rx="8" fill="#1abc9c" opacity="0.45" transform="rotate(3 190 488)" filter="url(#impBrush)"/>
-  <rect x="80" y="510" width="220" height="14" rx="7" fill="#1abc9c" opacity="0.50" transform="rotate(-2 190 517)" filter="url(#impBrush)"/>
-  <rect x="850" y="470" width="240" height="15" rx="7" fill="#1abc9c" opacity="0.40" transform="rotate(-4 970 478)" filter="url(#impBrush)"/>
-  <rect x="870" y="498" width="210" height="13" rx="6" fill="#16a085" opacity="0.45" transform="rotate(2 975 505)" filter="url(#impBrush)"/>
+  <!-- Card 3 - bottom left: teal accent card -->
+  <g filter="url(#impastoLight)">
+    <rect x="100" y="375" width="235" height="155" rx="8" fill="url(#canvas)"/>
+    <rect x="100" y="375" width="235" height="155" rx="8" fill="#ffffff" opacity="0.70"/>
+    <!-- Teal heading -->
+    <rect x="128" y="403" width="85" height="9" rx="4.5" fill="#1abc9c" opacity="0.55"/>
+    <!-- Icon area -->
+    <rect x="128" y="426" width="50" height="50" rx="8" fill="#1abc9c" opacity="0.10"/>
+    <!-- Text beside icon -->
+    <rect x="190" y="433" width="115" height="5" rx="2.5" fill="#8b7d6b" opacity="0.30"/>
+    <rect x="190" y="448" width="90" height="5" rx="2.5" fill="#8b7d6b" opacity="0.25"/>
+    <rect x="190" y="463" width="100" height="5" rx="2.5" fill="#8b7d6b" opacity="0.22"/>
+    <!-- Bottom brush accent -->
+    <rect x="128" y="496" width="175" height="4" rx="2" fill="#1abc9c" opacity="0.25" transform="rotate(0.5 215 498)"/>
+  </g>
 
-  <!-- Dark accent strokes -->
-  <rect x="900" y="65" width="180" height="12" rx="6" fill="#2c3e50" opacity="0.30" transform="rotate(-6 990 71)" filter="url(#impBrush)"/>
-  <rect x="70" y="500" width="180" height="11" rx="5" fill="#2c3e50" opacity="0.25" transform="rotate(5 160 506)" filter="url(#impBrush)"/>
+  <!-- Card 4 - bottom right: mixed warm card -->
+  <g filter="url(#impasto)">
+    <rect x="845" y="345" width="275" height="185" rx="8" fill="url(#canvas)"/>
+    <rect x="845" y="345" width="275" height="185" rx="8" fill="#ffffff" opacity="0.70"/>
+    <!-- Heading -->
+    <rect x="878" y="376" width="120" height="10" rx="5" fill="url(#brushWarm)" opacity="0.70"/>
+    <!-- Three progress bars like stacked brushstrokes -->
+    <rect x="878" y="404" width="210" height="8" rx="4" fill="#ede5d0" opacity="0.45"/>
+    <rect x="878" y="404" width="160" height="8" rx="4" fill="#e8a87c" opacity="0.45"/>
+    <rect x="878" y="424" width="210" height="8" rx="4" fill="#ede5d0" opacity="0.45"/>
+    <rect x="878" y="424" width="100" height="8" rx="4" fill="#c0392b" opacity="0.35"/>
+    <rect x="878" y="444" width="210" height="8" rx="4" fill="#ede5d0" opacity="0.45"/>
+    <rect x="878" y="444" width="180" height="8" rx="4" fill="#1abc9c" opacity="0.35"/>
+    <!-- Button -->
+    <rect x="878" y="476" width="85" height="28" rx="4" fill="#2c3e50" opacity="0.12"/>
+    <text x="920" y="495" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#2c3e50" opacity="0.50" font-weight="500">Details</text>
+  </g>
 
-  <!-- Dappled light: golden circles with blur -->
-  <circle cx="300" cy="200" r="60" fill="#f5d88a" opacity="0.25" filter="url(#impDapple)"/>
-  <circle cx="700" cy="150" r="50" fill="#f5d88a" opacity="0.22" filter="url(#impDapple)"/>
-  <circle cx="500" cy="450" r="55" fill="#e8a87c" opacity="0.20" filter="url(#impDapple)"/>
-  <circle cx="1000" cy="350" r="45" fill="#f5d88a" opacity="0.28" filter="url(#impDapple)"/>
+  <!-- Card 5 - floating small card -->
+  <g filter="url(#impastoLight)">
+    <rect x="400" y="105" width="170" height="110" rx="8" fill="url(#canvas)"/>
+    <rect x="400" y="105" width="170" height="110" rx="8" fill="#ffffff" opacity="0.65"/>
+    <rect x="425" y="130" width="65" height="8" rx="4" fill="#f5d88a" opacity="0.60"/>
+    <rect x="425" y="150" width="120" height="5" rx="2.5" fill="#8b7d6b" opacity="0.30"/>
+    <rect x="425" y="165" width="95" height="5" rx="2.5" fill="#8b7d6b" opacity="0.25"/>
+    <rect x="425" y="185" width="55" height="18" rx="4" fill="#e8a87c" opacity="0.20"/>
+    <rect x="434" y="191" width="38" height="5" rx="2.5" fill="#e8a87c" opacity="0.50"/>
+  </g>
 
-  <!-- Title "Impression" - Georgia serif, large and readable -->
-  <text x="604" y="295" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="700" fill="#c0392b" text-anchor="middle" opacity="0.25">Impression</text>
-  <text x="600" y="290" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="700" fill="#2c3e50" text-anchor="middle">Impression</text>
+  <!-- Decorative brushstroke accents (subtle background) -->
+  <rect x="480" y="460" width="80" height="4" rx="2" fill="#e8a87c" opacity="0.12" transform="rotate(-3 520 462)"/>
+  <rect x="680" y="140" width="60" height="3" rx="1.5" fill="#c0392b" opacity="0.10" transform="rotate(2 710 141)"/>
 
-  <!-- Subtitle "Soleil Levant" in italic warm accent -->
-  <text x="600" y="365" font-family="Georgia, 'Palatino Linotype', serif" font-size="52" font-style="italic" font-weight="700" fill="#e8a87c" text-anchor="middle">Soleil Levant</text>
+  <!-- Title -->
+  <text x="600" y="302" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="70" font-weight="700" fill="#2c3e50" opacity="0.90">IMPRESSIONIST OIL</text>
+  <text x="600" y="342" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#e8a87c" letter-spacing="5" opacity="0.65">BRUSHSTROKES OF LIGHT AND COLOR</text>
 
-  <!-- Descriptive tagline -->
-  <text x="600" y="415" font-family="Georgia, 'Palatino Linotype', serif" font-size="16" fill="#2c3e50" text-anchor="middle" opacity="0.40" letter-spacing="7">BRUSHSTROKES OF LIGHT AND COLOR</text>
-
-  <!-- Paint dab palette swatches - elliptical, slightly rotated -->
-  <ellipse cx="370" cy="530" rx="40" ry="27" fill="#e8a87c" opacity="0.85" transform="rotate(-4 370 530)"/>
-  <ellipse cx="372" cy="533" rx="40" ry="27" fill="#c48060" opacity="0.25" transform="rotate(-4 372 533)"/>
-
-  <ellipse cx="472" cy="527" rx="38" ry="25" fill="#c0392b" opacity="0.85" transform="rotate(3 472 527)"/>
-  <ellipse cx="474" cy="530" rx="38" ry="25" fill="#8a2015" opacity="0.25" transform="rotate(3 474 530)"/>
-
-  <ellipse cx="570" cy="532" rx="39" ry="26" fill="#2c3e50" opacity="0.85" transform="rotate(-2 570 532)"/>
-  <ellipse cx="572" cy="535" rx="39" ry="26" fill="#1a252f" opacity="0.25" transform="rotate(-2 572 535)"/>
-
-  <ellipse cx="670" cy="528" rx="37" ry="27" fill="#1abc9c" opacity="0.85" transform="rotate(4 670 528)"/>
-  <ellipse cx="672" cy="531" rx="37" ry="27" fill="#128c74" opacity="0.25" transform="rotate(4 672 531)"/>
-
-  <ellipse cx="768" cy="531" rx="39" ry="25" fill="#f5d88a" opacity="0.85" transform="rotate(-3 768 531)"/>
-  <ellipse cx="770" cy="534" rx="39" ry="25" fill="#c4a856" opacity="0.25" transform="rotate(-3 770 534)"/>
+  <!-- Floating dappled light dots -->
+  <circle cx="530" cy="430" r="4" fill="#f5d88a" opacity="0.15"/>
+  <circle cx="700" cy="500" r="3" fill="#e8a87c" opacity="0.12"/>
 </svg>

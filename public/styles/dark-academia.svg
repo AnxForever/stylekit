@@ -1,90 +1,127 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="daBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#3d2b1f"/>
-      <stop offset="50%" stop-color="#2d4a3e"/>
-      <stop offset="100%" stop-color="#3d2b1f"/>
-    </linearGradient>
-    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="transparent"/>
-      <stop offset="50%" stop-color="#8b7355"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </linearGradient>
-    <!-- Parchment texture simulation -->
-    <filter id="parchment" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
-      <feDiffuseLighting in="noise" lighting-color="#f5f0e1" surfaceScale="1" result="diffLight">
-        <feDistantLight azimuth="45" elevation="55"/>
-      </feDiffuseLighting>
-      <feComposite in="SourceGraphic" in2="diffLight" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"/>
+    <filter id="daBookShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="3" dy="4" result="shadow"/>
+      <feFlood flood-color="#1a1008" flood-opacity="0.35"/>
+      <feComposite in2="shadow" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
+    <pattern id="leatherTex" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" fill="none"/>
+      <circle cx="3" cy="3" r="0.4" fill="#3d2e1e" opacity="0.3"/>
+      <circle cx="9" cy="9" r="0.4" fill="#3d2e1e" opacity="0.25"/>
+      <circle cx="6" cy="1" r="0.3" fill="#3d2e1e" opacity="0.2"/>
+      <circle cx="1" cy="8" r="0.3" fill="#3d2e1e" opacity="0.2"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#daBg)"/>
+  <!-- Dark leather background -->
+  <rect width="1200" height="630" fill="#2a1f1a"/>
+  <rect width="1200" height="630" fill="url(#leatherTex)"/>
 
-  <!-- Bookshelf lines -->
-  <g stroke="#8b7355" stroke-width="1" opacity="0.2">
-    <line x1="0" y1="100" x2="1200" y2="100"/>
-    <line x1="0" y1="200" x2="1200" y2="200"/>
-    <line x1="0" y1="300" x2="1200" y2="300"/>
-    <line x1="0" y1="430" x2="1200" y2="430"/>
-    <line x1="0" y1="530" x2="1200" y2="530"/>
+  <!-- Gold accent frame lines -->
+  <rect x="30" y="30" width="1140" height="570" fill="none" stroke="#c4a35a" stroke-width="0.8" opacity="0.2"/>
+  <rect x="36" y="36" width="1128" height="558" fill="none" stroke="#c4a35a" stroke-width="0.4" opacity="0.15"/>
+
+  <!-- Card 1 - Top left: Library catalog -->
+  <g filter="url(#daBookShadow)">
+    <rect x="70" y="90" width="270" height="200" rx="4" fill="#f5f0e5"/>
+    <!-- Double-rule border -->
+    <rect x="74" y="94" width="262" height="192" rx="2" fill="none" stroke="#6b5c4a" stroke-width="1"/>
+    <rect x="78" y="98" width="254" height="184" rx="2" fill="none" stroke="#6b5c4a" stroke-width="0.5" opacity="0.5"/>
+    <!-- Serif heading -->
+    <rect x="100" y="120" width="100" height="8" rx="2" fill="#3d2e1e" opacity="0.6"/>
+    <!-- Horizontal rule divider -->
+    <line x1="100" y1="140" x2="310" y2="140" stroke="#c4a35a" stroke-width="1" opacity="0.4"/>
+    <circle cx="205" cy="140" r="2.5" fill="#c4a35a" opacity="0.4"/>
+    <!-- Text lines -->
+    <rect x="100" y="155" width="200" height="5" rx="2" fill="#6b5c4a" opacity="0.35"/>
+    <rect x="100" y="170" width="180" height="5" rx="2" fill="#6b5c4a" opacity="0.3"/>
+    <rect x="100" y="185" width="190" height="5" rx="2" fill="#6b5c4a" opacity="0.28"/>
+    <rect x="100" y="200" width="170" height="5" rx="2" fill="#6b5c4a" opacity="0.25"/>
+    <!-- Book icon -->
+    <rect x="100" y="225" width="18" height="22" rx="2" fill="none" stroke="#6b5c4a" stroke-width="1.2" opacity="0.4"/>
+    <line x1="109" y1="225" x2="109" y2="247" stroke="#6b5c4a" stroke-width="0.6" opacity="0.35"/>
+    <rect x="102" y="228" width="5" height="1" fill="#6b5c4a" opacity="0.3"/>
+    <rect x="102" y="232" width="5" height="1" fill="#6b5c4a" opacity="0.3"/>
   </g>
 
-  <!-- Book spines (left section) -->
-  <g opacity="0.3">
-    <rect x="50" y="100" width="30" height="200" fill="#5c4033" rx="2"/>
-    <rect x="85" y="100" width="25" height="200" fill="#8b7355" rx="2"/>
-    <rect x="115" y="100" width="35" height="200" fill="#3d2b1f" rx="2"/>
-    <rect x="155" y="100" width="20" height="200" fill="#2d4a3e" rx="2"/>
-    <rect x="180" y="100" width="28" height="200" fill="#5c4033" rx="2"/>
-    <rect x="213" y="100" width="32" height="200" fill="#8b7355" rx="2"/>
-    <rect x="250" y="100" width="22" height="200" fill="#3d2b1f" rx="2"/>
+  <!-- Card 2 - Top right: Reading log -->
+  <g filter="url(#daBookShadow)">
+    <rect x="870" y="70" width="260" height="210" rx="4" fill="#f5f0e5"/>
+    <rect x="874" y="74" width="252" height="202" rx="2" fill="none" stroke="#6b5c4a" stroke-width="1"/>
+    <rect x="878" y="78" width="244" height="194" rx="2" fill="none" stroke="#6b5c4a" stroke-width="0.5" opacity="0.5"/>
+    <!-- Heading -->
+    <rect x="900" y="100" width="80" height="8" rx="2" fill="#3d2e1e" opacity="0.6"/>
+    <!-- Divider -->
+    <line x1="900" y1="120" x2="1100" y2="120" stroke="#c4a35a" stroke-width="1" opacity="0.4"/>
+    <circle cx="1000" cy="120" r="2.5" fill="#c4a35a" opacity="0.4"/>
+    <!-- Reading progress entries -->
+    <rect x="900" y="138" width="160" height="5" rx="2" fill="#6b5c4a" opacity="0.35"/>
+    <rect x="900" y="152" width="170" height="7" rx="3" fill="#e8e0d0"/>
+    <rect x="900" y="152" width="120" height="7" rx="3" fill="#8b7355" opacity="0.4"/>
+    <rect x="900" y="172" width="140" height="5" rx="2" fill="#6b5c4a" opacity="0.35"/>
+    <rect x="900" y="186" width="170" height="7" rx="3" fill="#e8e0d0"/>
+    <rect x="900" y="186" width="85" height="7" rx="3" fill="#8b7355" opacity="0.4"/>
+    <rect x="900" y="206" width="150" height="5" rx="2" fill="#6b5c4a" opacity="0.35"/>
+    <rect x="900" y="220" width="170" height="7" rx="3" fill="#e8e0d0"/>
+    <rect x="900" y="220" width="145" height="7" rx="3" fill="#8b7355" opacity="0.4"/>
+    <!-- Page count -->
+    <text x="900" y="252" font-family="Georgia, 'Times New Roman', serif" font-size="10" fill="#8b7355" opacity="0.6">342 / 480 pp.</text>
   </g>
 
-  <!-- Book spines (right section) -->
-  <g opacity="0.3">
-    <rect x="920" y="100" width="28" height="200" fill="#3d2b1f" rx="2"/>
-    <rect x="953" y="100" width="35" height="200" fill="#5c4033" rx="2"/>
-    <rect x="993" y="100" width="22" height="200" fill="#8b7355" rx="2"/>
-    <rect x="1020" y="100" width="30" height="200" fill="#2d4a3e" rx="2"/>
-    <rect x="1055" y="100" width="25" height="200" fill="#3d2b1f" rx="2"/>
-    <rect x="1085" y="100" width="32" height="200" fill="#5c4033" rx="2"/>
-    <rect x="1122" y="100" width="28" height="200" fill="#8b7355" rx="2"/>
+  <!-- Card 3 - Bottom left: Notes -->
+  <g filter="url(#daBookShadow)">
+    <rect x="100" y="380" width="240" height="170" rx="4" fill="#f5f0e5"/>
+    <rect x="104" y="384" width="232" height="162" rx="2" fill="none" stroke="#6b5c4a" stroke-width="1"/>
+    <rect x="108" y="388" width="224" height="154" rx="2" fill="none" stroke="#6b5c4a" stroke-width="0.5" opacity="0.5"/>
+    <!-- Heading -->
+    <rect x="126" y="408" width="70" height="8" rx="2" fill="#3d2e1e" opacity="0.6"/>
+    <!-- Divider -->
+    <line x1="126" y1="428" x2="310" y2="428" stroke="#c4a35a" stroke-width="1" opacity="0.4"/>
+    <!-- Text lines -->
+    <rect x="126" y="445" width="190" height="4" rx="2" fill="#6b5c4a" opacity="0.3"/>
+    <rect x="126" y="458" width="170" height="4" rx="2" fill="#6b5c4a" opacity="0.28"/>
+    <rect x="126" y="471" width="180" height="4" rx="2" fill="#6b5c4a" opacity="0.25"/>
+    <rect x="126" y="484" width="150" height="4" rx="2" fill="#6b5c4a" opacity="0.23"/>
+    <!-- Quill pen icon -->
+    <path d="M300 500 L310 480 L312 482 L302 502Z" fill="#6b5c4a" opacity="0.3"/>
+    <path d="M310 480 Q315 470 320 476" fill="none" stroke="#6b5c4a" stroke-width="0.8" opacity="0.3"/>
   </g>
 
-  <!-- Central parchment area -->
-  <rect x="350" y="120" width="500" height="380" rx="4" fill="#f5f0e1" opacity="0.9"/>
-  <rect x="350" y="120" width="500" height="380" rx="4" fill="none" stroke="#8b7355" stroke-width="2" opacity="0.6"/>
-  <!-- Inner border -->
-  <rect x="370" y="140" width="460" height="340" rx="2" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
-
-  <!-- Book spine accent on parchment -->
-  <rect x="350" y="120" width="8" height="380" fill="#8b7355" opacity="0.4"/>
-
-  <!-- Title on parchment -->
-  <text x="600" y="240" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" fill="#3d2b1f" text-anchor="middle">Dark Academia</text>
-  <text x="600" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#8b7355" text-anchor="middle" letter-spacing="4" font-style="italic">Knowledge illuminates the darkness</text>
-
-  <!-- Decorative divider -->
-  <line x1="430" y1="320" x2="770" y2="320" stroke="url(#goldLine)" stroke-width="1"/>
-
-  <!-- Small book icon -->
-  <g transform="translate(575, 350)" fill="#3d2b1f" opacity="0.6">
-    <rect x="0" y="5" width="50" height="40" rx="2" fill="none" stroke="#3d2b1f" stroke-width="2"/>
-    <line x1="25" y1="5" x2="25" y2="45" stroke="#3d2b1f" stroke-width="1"/>
-    <line x1="10" y1="18" x2="22" y2="18" stroke="#8b7355" stroke-width="1"/>
-    <line x1="10" y1="25" x2="22" y2="25" stroke="#8b7355" stroke-width="1"/>
-    <line x1="10" y1="32" x2="22" y2="32" stroke="#8b7355" stroke-width="1"/>
-    <line x1="28" y1="18" x2="40" y2="18" stroke="#8b7355" stroke-width="1"/>
-    <line x1="28" y1="25" x2="40" y2="25" stroke="#8b7355" stroke-width="1"/>
-    <line x1="28" y1="32" x2="40" y2="32" stroke="#8b7355" stroke-width="1"/>
+  <!-- Card 4 - Bottom right: Schedule -->
+  <g filter="url(#daBookShadow)">
+    <rect x="830" y="370" width="280" height="180" rx="4" fill="#f5f0e5"/>
+    <rect x="834" y="374" width="272" height="172" rx="2" fill="none" stroke="#6b5c4a" stroke-width="1"/>
+    <rect x="838" y="378" width="264" height="164" rx="2" fill="none" stroke="#6b5c4a" stroke-width="0.5" opacity="0.5"/>
+    <!-- Heading -->
+    <rect x="860" y="400" width="90" height="8" rx="2" fill="#3d2e1e" opacity="0.6"/>
+    <!-- Divider -->
+    <line x1="860" y1="420" x2="1080" y2="420" stroke="#c4a35a" stroke-width="1" opacity="0.4"/>
+    <circle cx="970" cy="420" r="2.5" fill="#c4a35a" opacity="0.4"/>
+    <!-- Schedule entries -->
+    <rect x="860" y="438" width="40" height="5" rx="2" fill="#8b7355" opacity="0.5"/>
+    <rect x="910" y="438" width="140" height="5" rx="2" fill="#6b5c4a" opacity="0.3"/>
+    <rect x="860" y="456" width="40" height="5" rx="2" fill="#8b7355" opacity="0.5"/>
+    <rect x="910" y="456" width="120" height="5" rx="2" fill="#6b5c4a" opacity="0.3"/>
+    <rect x="860" y="474" width="40" height="5" rx="2" fill="#8b7355" opacity="0.5"/>
+    <rect x="910" y="474" width="160" height="5" rx="2" fill="#6b5c4a" opacity="0.3"/>
+    <!-- Button -->
+    <rect x="860" y="500" width="80" height="24" rx="3" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.4"/>
+    <text x="900" y="516" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#6b5c4a" opacity="0.6">Details</text>
   </g>
 
-  <!-- Decorative elements -->
-  <text x="600" y="440" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#8b7355" text-anchor="middle" opacity="0.5" letter-spacing="6">MMXXVI</text>
+  <!-- Decorative gold corner flourishes -->
+  <path d="M50 50 Q50 70 70 70" fill="none" stroke="#c4a35a" stroke-width="1.5" opacity="0.25"/>
+  <path d="M1150 50 Q1150 70 1130 70" fill="none" stroke="#c4a35a" stroke-width="1.5" opacity="0.25"/>
+  <path d="M50 580 Q50 560 70 560" fill="none" stroke="#c4a35a" stroke-width="1.5" opacity="0.25"/>
+  <path d="M1150 580 Q1150 560 1130 560" fill="none" stroke="#c4a35a" stroke-width="1.5" opacity="0.25"/>
 
-  <!-- Bottom decorative line -->
-  <line x1="200" y1="560" x2="1000" y2="560" stroke="url(#goldLine)" stroke-width="1" opacity="0.4"/>
+  <!-- Title -->
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700" fill="#f5f0e5" letter-spacing="3" opacity="0.9">DARK ACADEMIA</text>
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="400" fill="#c4a35a" letter-spacing="6" opacity="0.6">CLASSICAL &amp; SCHOLARLY</text>
 </svg>

@@ -1,82 +1,170 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="outrunBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0a0a0a"/>
-      <stop offset="25%" stop-color="#1a0a30"/>
-      <stop offset="50%" stop-color="#4a0a4e"/>
-      <stop offset="70%" stop-color="#ff006e"/>
-      <stop offset="100%" stop-color="#ff6b35"/>
-    </linearGradient>
-    <linearGradient id="outrunSun" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="#a020f0"/>
-      <stop offset="50%" stop-color="#ff006e"/>
-      <stop offset="100%" stop-color="#ff6b35"/>
-    </linearGradient>
-    <filter id="outrunGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
+    <filter id="neonGlow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
       <feMerge>
-        <feMergeNode in="blur"/>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <linearGradient id="sunsetGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0020"/>
+      <stop offset="45%" stop-color="#1a0040"/>
+      <stop offset="60%" stop-color="#ff6090"/>
+      <stop offset="75%" stop-color="#ff9040"/>
+      <stop offset="100%" stop-color="#ffcc40"/>
+    </linearGradient>
+    <linearGradient id="chromeBorder" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6090"/>
+      <stop offset="50%" stop-color="#ff9040"/>
+      <stop offset="100%" stop-color="#ffcc40"/>
+    </linearGradient>
+    <linearGradient id="chromeBorderH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff6090"/>
+      <stop offset="50%" stop-color="#ff9040"/>
+      <stop offset="100%" stop-color="#ffcc40"/>
+    </linearGradient>
+    <!-- Scan line pattern -->
+    <pattern id="scanLines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#000" opacity="0.08"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#outrunBg)"/>
+  <!-- Background with sunset gradient -->
+  <rect width="1200" height="630" fill="#0a0020"/>
+  <!-- Sunset horizon band -->
+  <rect x="0" y="380" width="1200" height="250" fill="url(#sunsetGrad)" opacity="0.15"/>
 
   <!-- Stars -->
-  <circle cx="120" cy="70" r="2" fill="#ffffff" opacity="0.8"/>
-  <circle cx="280" cy="110" r="1.5" fill="#ffffff" opacity="0.6"/>
-  <circle cx="420" cy="50" r="2" fill="#ffffff" opacity="0.7"/>
-  <circle cx="580" cy="90" r="1" fill="#ffffff" opacity="0.5"/>
-  <circle cx="720" cy="40" r="2" fill="#ffffff" opacity="0.8"/>
-  <circle cx="880" cy="80" r="1.5" fill="#ffffff" opacity="0.6"/>
-  <circle cx="1020" cy="60" r="2" fill="#ffffff" opacity="0.7"/>
-  <circle cx="1120" cy="100" r="1" fill="#ffffff" opacity="0.5"/>
+  <circle cx="100" cy="60" r="1.5" fill="#fff" opacity="0.4"/>
+  <circle cx="300" cy="40" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="500" cy="80" r="1.2" fill="#fff" opacity="0.35"/>
+  <circle cx="700" cy="30" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="900" cy="70" r="1.5" fill="#fff" opacity="0.4"/>
+  <circle cx="1100" cy="50" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="200" cy="100" r="0.8" fill="#fff" opacity="0.25"/>
+  <circle cx="800" cy="90" r="0.8" fill="#fff" opacity="0.25"/>
+  <circle cx="1050" cy="110" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="400" cy="120" r="0.8" fill="#fff" opacity="0.2"/>
 
-  <!-- Sun -->
-  <circle cx="600" cy="400" r="140" fill="url(#outrunSun)"/>
-  <!-- Sun stripes -->
-  <rect x="460" y="330" width="280" height="14" fill="#0a0a0a" opacity="0.4"/>
-  <rect x="460" y="360" width="280" height="12" fill="#0a0a0a" opacity="0.4"/>
-  <rect x="460" y="390" width="280" height="10" fill="#0a0a0a" opacity="0.4"/>
-  <rect x="460" y="420" width="280" height="8" fill="#0a0a0a" opacity="0.4"/>
-  <rect x="460" y="450" width="280" height="6" fill="#0a0a0a" opacity="0.4"/>
-
-  <!-- Palm tree silhouettes -->
-  <g fill="#0a0a0a" opacity="0.8">
-    <!-- Left palm -->
-    <path d="M180,490 L185,350 Q160,320 130,290 Q170,310 185,335 Q165,280 150,250 Q180,285 190,330 Q195,270 215,230 Q200,280 192,330 Q210,310 240,290 Q205,325 192,345 L195,490 Z"/>
-    <!-- Right palm -->
-    <path d="M990,490 L995,370 Q970,340 940,310 Q980,330 995,355 Q975,300 960,270 Q990,305 1000,350 Q1005,290 1025,250 Q1010,300 1002,350 Q1020,330 1050,310 Q1015,345 1002,365 L1005,490 Z"/>
+  <!-- Perspective grid floor -->
+  <g opacity="0.2">
+    <!-- Horizontal lines -->
+    <line x1="0" y1="480" x2="1200" y2="480" stroke="#ff6090" stroke-width="0.8"/>
+    <line x1="0" y1="510" x2="1200" y2="510" stroke="#ff6090" stroke-width="0.6"/>
+    <line x1="0" y1="535" x2="1200" y2="535" stroke="#ff6090" stroke-width="0.5"/>
+    <line x1="0" y1="555" x2="1200" y2="555" stroke="#ff6090" stroke-width="0.4"/>
+    <line x1="0" y1="572" x2="1200" y2="572" stroke="#ff6090" stroke-width="0.35"/>
+    <line x1="0" y1="586" x2="1200" y2="586" stroke="#ff6090" stroke-width="0.3"/>
+    <line x1="0" y1="598" x2="1200" y2="598" stroke="#ff6090" stroke-width="0.25"/>
+    <line x1="0" y1="608" x2="1200" y2="608" stroke="#ff6090" stroke-width="0.2"/>
+    <!-- Vertical perspective lines -->
+    <line x1="600" y1="460" x2="600" y2="630" stroke="#ff6090" stroke-width="0.6"/>
+    <line x1="600" y1="460" x2="0" y2="630" stroke="#ff6090" stroke-width="0.4"/>
+    <line x1="600" y1="460" x2="1200" y2="630" stroke="#ff6090" stroke-width="0.4"/>
+    <line x1="600" y1="460" x2="200" y2="630" stroke="#ff6090" stroke-width="0.3"/>
+    <line x1="600" y1="460" x2="1000" y2="630" stroke="#ff6090" stroke-width="0.3"/>
+    <line x1="600" y1="460" x2="400" y2="630" stroke="#ff6090" stroke-width="0.25"/>
+    <line x1="600" y1="460" x2="800" y2="630" stroke="#ff6090" stroke-width="0.25"/>
+    <line x1="600" y1="460" x2="-200" y2="630" stroke="#ff6090" stroke-width="0.3"/>
+    <line x1="600" y1="460" x2="1400" y2="630" stroke="#ff6090" stroke-width="0.3"/>
   </g>
 
-  <!-- Mountains silhouette -->
-  <polygon points="0,490 180,400 320,440 480,370 620,410 780,350 920,390 1080,360 1200,400 1200,630 0,630" fill="#0a0a0a"/>
+  <!-- Sun on horizon -->
+  <circle cx="600" cy="460" r="50" fill="#ff6090" opacity="0.15"/>
+  <circle cx="600" cy="460" r="35" fill="#ff9040" opacity="0.12"/>
+  <circle cx="600" cy="460" r="20" fill="#ffcc40" opacity="0.1"/>
 
-  <!-- Grid floor -->
-  <g stroke="#ff006e" stroke-width="1" opacity="0.6">
-    <line x1="0" y1="490" x2="1200" y2="490"/>
-    <line x1="0" y1="520" x2="1200" y2="520"/>
-    <line x1="0" y1="550" x2="1200" y2="550"/>
-    <line x1="0" y1="580" x2="1200" y2="580"/>
-    <line x1="0" y1="610" x2="1200" y2="610"/>
-    <!-- Perspective verticals -->
-    <line x1="600" y1="470" x2="600" y2="630"/>
-    <line x1="600" y1="470" x2="400" y2="630"/>
-    <line x1="600" y1="470" x2="200" y2="630"/>
-    <line x1="600" y1="470" x2="0" y2="630"/>
-    <line x1="600" y1="470" x2="800" y2="630"/>
-    <line x1="600" y1="470" x2="1000" y2="630"/>
-    <line x1="600" y1="470" x2="1200" y2="630"/>
+  <!-- Card 1 - Top left -->
+  <g filter="url(#neonGlow)">
+    <rect x="60" y="70" width="270" height="190" rx="6" fill="#0c0025" opacity="0.9"/>
+    <!-- Chrome gradient border (simulated with 4 rects) -->
+    <rect x="60" y="70" width="270" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="60" y="256" width="270" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="60" y="70" width="4" height="190" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="326" y="70" width="4" height="190" rx="2" fill="url(#chromeBorder)"/>
+    <!-- Scan lines overlay -->
+    <rect x="64" y="74" width="262" height="182" fill="url(#scanLines)"/>
+    <!-- Heading -->
+    <rect x="88" y="100" width="100" height="8" rx="2" fill="#ff6090" opacity="0.6"/>
+    <!-- Neon accent bar -->
+    <rect x="88" y="120" width="210" height="3" rx="1.5" fill="url(#chromeBorderH)" opacity="0.5"/>
+    <!-- Text lines -->
+    <rect x="88" y="138" width="200" height="5" rx="2" fill="#8060a0" opacity="0.4"/>
+    <rect x="88" y="153" width="180" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="88" y="168" width="190" height="5" rx="2" fill="#8060a0" opacity="0.3"/>
+    <!-- Retro button -->
+    <rect x="88" y="200" width="90" height="28" rx="4" fill="none" stroke="url(#chromeBorderH)" stroke-width="1.5"/>
+    <text x="133" y="219" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ff9040" font-weight="600" opacity="0.7">LAUNCH</text>
+  </g>
+
+  <!-- Card 2 - Top right -->
+  <g filter="url(#neonGlow)">
+    <rect x="870" y="55" width="260" height="200" rx="6" fill="#0c0025" opacity="0.9"/>
+    <rect x="870" y="55" width="260" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="870" y="251" width="260" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="870" y="55" width="4" height="200" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="1126" y="55" width="4" height="200" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="874" y="59" width="252" height="192" fill="url(#scanLines)"/>
+    <!-- Heading -->
+    <rect x="898" y="85" width="80" height="8" rx="2" fill="#ff6090" opacity="0.6"/>
+    <!-- Accent -->
+    <rect x="898" y="105" width="200" height="3" rx="1.5" fill="url(#chromeBorderH)" opacity="0.5"/>
+    <!-- Stats -->
+    <rect x="898" y="125" width="80" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="898" y="140" width="200" height="8" rx="3" fill="#1a0040"/>
+    <rect x="898" y="140" width="140" height="8" rx="3" fill="#ff6090" opacity="0.4"/>
+    <rect x="898" y="160" width="80" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="898" y="175" width="200" height="8" rx="3" fill="#1a0040"/>
+    <rect x="898" y="175" width="100" height="8" rx="3" fill="#ff9040" opacity="0.4"/>
+    <rect x="898" y="195" width="80" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="898" y="210" width="200" height="8" rx="3" fill="#1a0040"/>
+    <rect x="898" y="210" width="170" height="8" rx="3" fill="#ffcc40" opacity="0.4"/>
+  </g>
+
+  <!-- Card 3 - Bottom left -->
+  <g filter="url(#neonGlow)">
+    <rect x="80" y="350" width="250" height="155" rx="6" fill="#0c0025" opacity="0.9"/>
+    <rect x="80" y="350" width="250" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="80" y="501" width="250" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="80" y="350" width="4" height="155" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="326" y="350" width="4" height="155" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="84" y="354" width="242" height="147" fill="url(#scanLines)"/>
+    <!-- Heading -->
+    <rect x="108" y="376" width="90" height="8" rx="2" fill="#ff6090" opacity="0.6"/>
+    <!-- Accent -->
+    <rect x="108" y="396" width="200" height="3" rx="1.5" fill="url(#chromeBorderH)" opacity="0.5"/>
+    <!-- Text lines -->
+    <rect x="108" y="414" width="190" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="108" y="429" width="170" height="5" rx="2" fill="#8060a0" opacity="0.3"/>
+    <rect x="108" y="444" width="180" height="5" rx="2" fill="#8060a0" opacity="0.28"/>
+    <!-- Button -->
+    <rect x="108" y="465" width="80" height="24" rx="4" fill="none" stroke="url(#chromeBorderH)" stroke-width="1.5"/>
+    <text x="148" y="481" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#ffcc40" font-weight="600" opacity="0.7">PLAY</text>
+  </g>
+
+  <!-- Card 4 - Bottom right -->
+  <g filter="url(#neonGlow)">
+    <rect x="850" y="340" width="270" height="165" rx="6" fill="#0c0025" opacity="0.9"/>
+    <rect x="850" y="340" width="270" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="850" y="501" width="270" height="4" rx="2" fill="url(#chromeBorderH)"/>
+    <rect x="850" y="340" width="4" height="165" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="1116" y="340" width="4" height="165" rx="2" fill="url(#chromeBorder)"/>
+    <rect x="854" y="344" width="262" height="157" fill="url(#scanLines)"/>
+    <!-- Heading -->
+    <rect x="878" y="368" width="100" height="8" rx="2" fill="#ff6090" opacity="0.6"/>
+    <!-- Accent -->
+    <rect x="878" y="388" width="220" height="3" rx="1.5" fill="url(#chromeBorderH)" opacity="0.5"/>
+    <!-- Text lines -->
+    <rect x="878" y="408" width="220" height="5" rx="2" fill="#8060a0" opacity="0.35"/>
+    <rect x="878" y="423" width="200" height="5" rx="2" fill="#8060a0" opacity="0.3"/>
+    <rect x="878" y="438" width="210" height="5" rx="2" fill="#8060a0" opacity="0.28"/>
+    <!-- Metric numbers -->
+    <text x="878" y="475" font-family="system-ui, sans-serif" font-size="24" fill="#ff6090" font-weight="700" opacity="0.5">88</text>
+    <text x="940" y="475" font-family="system-ui, sans-serif" font-size="24" fill="#ff9040" font-weight="700" opacity="0.5">MPH</text>
   </g>
 
   <!-- Title -->
-  <text x="600" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="700" fill="#ff006e" text-anchor="middle" filter="url(#outrunGlow)">OUTRUN</text>
-  <text x="600" y="230" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#00d4ff" text-anchor="middle" filter="url(#outrunGlow)">CHASE THE SUNSET</text>
-
-  <!-- Decorative neon lines -->
-  <line x1="200" y1="270" x2="450" y2="270" stroke="#ff006e" stroke-width="2" filter="url(#outrunGlow)"/>
-  <line x1="750" y1="270" x2="1000" y2="270" stroke="#00d4ff" stroke-width="2" filter="url(#outrunGlow)"/>
+  <text x="600" y="285" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="80" font-weight="800" fill="#ff6090" letter-spacing="4" opacity="0.85">OUTRUN</text>
+  <text x="600" y="325" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="400" fill="#ffcc40" letter-spacing="8" opacity="0.5">SUNSET CHROME</text>
 </svg>

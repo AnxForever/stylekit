@@ -1,45 +1,84 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <!-- White background -->
   <rect width="1200" height="630" fill="#ffffff"/>
 
-  <!-- Asymmetric red color block - right column -->
-  <rect x="900" y="0" width="300" height="630" fill="#ff0000"/>
+  <!-- Structural grid lines -->
+  <g stroke="#000000" stroke-width="0.5" opacity="0.07">
+    <line x1="100" y1="0" x2="100" y2="630"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="500" y1="0" x2="500" y2="630"/>
+    <line x1="700" y1="0" x2="700" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="1100" y1="0" x2="1100" y2="630"/>
+    <line x1="0" y1="90" x2="1200" y2="90"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
+  </g>
 
-  <!-- Black horizontal rule - structural divider -->
-  <line x1="0" y1="100" x2="900" y2="100" stroke="#000000" stroke-width="3"/>
+  <!-- Red accent block -->
+  <rect x="900" y="0" width="300" height="90" fill="#ff0000"/>
+  <!-- Yellow accent block -->
+  <rect x="0" y="540" width="100" height="90" fill="#ffcc00"/>
 
-  <!-- Small yellow accent block -->
-  <rect x="0" y="0" width="100" height="100" fill="#ffcc00"/>
+  <!-- Card 1: Top-left -->
+  <rect x="100" y="90" width="280" height="200" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="120" y="130" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900" fill="#000000">Analytics</text>
+  <text x="120" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">Monthly active users have increased</text>
+  <text x="120" y="168" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">by 24% compared to last quarter.</text>
+  <text x="120" y="181" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">Growth is driven by organic traffic.</text>
+  <rect x="120" y="200" width="240" height="1" fill="#000" opacity="0.15"/>
+  <text x="120" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.4">24% increase</text>
+  <text x="340" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.4" text-anchor="end">Q4 2025</text>
+  <rect x="120" y="235" width="240" height="3" fill="#000" opacity="0.08"/>
+  <rect x="120" y="235" width="160" height="3" fill="#000000"/>
+  <rect x="120" y="250" width="240" height="3" fill="#000" opacity="0.08"/>
+  <rect x="120" y="250" width="200" height="3" fill="#ff0000"/>
+  <rect x="120" y="265" width="240" height="3" fill="#000" opacity="0.08"/>
+  <rect x="120" y="265" width="100" height="3" fill="#000000"/>
 
-  <!-- Main title - extreme type scale, flush-left -->
-  <text x="100" y="280" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="200" font-weight="900" fill="#000000" letter-spacing="-12">SWISS</text>
+  <!-- Card 2: Top-right -->
+  <rect x="700" y="90" width="280" height="200" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="720" y="130" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900" fill="#000000">Revenue</text>
+  <text x="720" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">Total revenue for the current period</text>
+  <text x="720" y="168" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">has met projected targets.</text>
+  <rect x="720" y="185" width="240" height="1" fill="#000" opacity="0.15"/>
+  <text x="720" y="240" font-family="'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="900" fill="#000000">$12.4K</text>
+  <text x="720" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.4" letter-spacing="2">MONTHLY RECURRING</text>
 
-  <!-- Secondary title line -->
-  <text x="100" y="420" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="120" font-weight="900" fill="#000000" letter-spacing="-6">POSTER</text>
+  <!-- Card 3: Bottom-left -->
+  <rect x="100" y="420" width="280" height="170" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="120" y="455" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900" fill="#000000">Tasks</text>
+  <text x="120" y="475" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">Active project deliverables</text>
+  <rect x="120" y="488" width="240" height="1" fill="#000" opacity="0.15"/>
+  <rect x="120" y="500" width="8" height="8" fill="#000000"/>
+  <text x="136" y="508" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.6">Design system audit</text>
+  <rect x="120" y="520" width="8" height="8" fill="#ff0000"/>
+  <text x="136" y="528" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.6">Typography guidelines</text>
+  <rect x="120" y="540" width="8" height="8" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="136" y="548" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.6">Grid layout specification</text>
+  <rect x="120" y="560" width="8" height="8" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="136" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.6">Color palette documentation</text>
 
-  <!-- Small body text - extreme contrast with title -->
-  <text x="100" y="480" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="12" font-weight="400" fill="#000000" opacity="0.5" letter-spacing="3">INTERNATIONAL TYPOGRAPHIC STYLE</text>
+  <!-- Card 4: Bottom-right -->
+  <rect x="700" y="420" width="280" height="170" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="720" y="455" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900" fill="#000000">Schedule</text>
+  <text x="720" y="475" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#000" opacity="0.5">Upcoming project milestones</text>
+  <rect x="720" y="488" width="240" height="1" fill="#000" opacity="0.15"/>
+  <text x="720" y="508" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" fill="#000" opacity="0.4">JAN 15</text>
+  <rect x="780" y="500" width="160" height="8" fill="#000" opacity="0.06"/>
+  <rect x="780" y="500" width="80" height="8" fill="#000000"/>
+  <text x="720" y="528" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" fill="#000" opacity="0.4">FEB 01</text>
+  <rect x="780" y="520" width="160" height="8" fill="#000" opacity="0.06"/>
+  <rect x="780" y="520" width="120" height="8" fill="#ff0000"/>
+  <text x="720" y="548" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" fill="#000" opacity="0.4">MAR 10</text>
+  <rect x="780" y="540" width="160" height="8" fill="#000" opacity="0.06"/>
+  <rect x="780" y="540" width="40" height="8" fill="#000000"/>
+  <text x="720" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" fill="#000" opacity="0.4">APR 20</text>
+  <rect x="780" y="560" width="160" height="8" fill="#000" opacity="0.06"/>
 
-  <!-- Vertical text on red block -->
-  <text x="960" y="580" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="6" transform="rotate(-90 960 580)">BOLD TYPOGRAPHY / GRID ALIGNMENT / NO DECORATION</text>
-
-  <!-- Number as design element - boosted from 0.15 to 0.25 -->
-  <text x="920" y="200" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="180" font-weight="900" fill="#ffffff" opacity="0.25">24</text>
-
-  <!-- Horizontal structural lines - boosted from 0.08-0.10 to 0.20 -->
-  <line x1="100" y1="500" x2="850" y2="500" stroke="#000000" stroke-width="1.5" opacity="0.20"/>
-  <line x1="100" y1="440" x2="500" y2="440" stroke="#000000" stroke-width="1" opacity="0.20"/>
-
-  <!-- Color swatches - aligned to grid -->
-  <rect x="100" y="530" width="60" height="50" fill="#000000"/>
-  <rect x="170" y="530" width="60" height="50" fill="#ffffff" stroke="#000000" stroke-width="2"/>
-  <rect x="240" y="530" width="60" height="50" fill="#ff0000"/>
-
-  <!-- Small type labels under swatches -->
-  <text x="100" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">BLACK</text>
-  <text x="170" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">WHITE</text>
-  <text x="240" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">RED</text>
-
-  <!-- Small circle as typographic ornament -->
-  <circle cx="850" cy="290" r="4" fill="#000000"/>
+  <!-- Title: SWISS POSTER centered -->
+  <text x="600" y="355" font-family="'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="900" fill="#000000" text-anchor="middle" letter-spacing="-3">SWISS POSTER</text>
+  <text x="600" y="380" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#000" text-anchor="middle" opacity="0.4" letter-spacing="4">INTERNATIONAL TYPOGRAPHIC STYLE</text>
 </svg>

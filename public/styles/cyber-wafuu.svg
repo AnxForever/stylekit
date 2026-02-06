@@ -1,164 +1,166 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
   <defs>
-    <!-- Blue glow filter -->
-    <filter id="blueGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-      <feFlood flood-color="#38bdf8" flood-opacity="0.5" result="color"/>
-      <feComposite in="color" in2="blur" operator="in" result="glow"/>
-      <feMerge>
-        <feMergeNode in="glow"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Vermillion glow filter -->
-    <filter id="vermGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
-      <feFlood flood-color="#c41e3a" flood-opacity="0.4" result="color"/>
-      <feComposite in="color" in2="blur" operator="in" result="glow"/>
-      <feMerge>
-        <feMergeNode in="glow"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Gold kintsugi glow -->
-    <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <filter id="cyanGlow" x="-15%" y="-15%" width="130%" height="130%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
-      <feFlood flood-color="#c9a227" flood-opacity="0.5" result="color"/>
+      <feFlood flood-color="#00e5ff" result="color"/>
       <feComposite in="color" in2="blur" operator="in" result="glow"/>
       <feMerge>
         <feMergeNode in="glow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <!-- Seigaiha wave pattern (boosted circle strokes from 0.05-0.12 to 0.15-0.25) -->
-    <pattern id="seigaiha" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
-      <circle cx="30" cy="30" r="28" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.25"/>
-      <circle cx="30" cy="30" r="20" fill="none" stroke="#38bdf8" stroke-width="0.4" opacity="0.20"/>
-      <circle cx="30" cy="30" r="12" fill="none" stroke="#38bdf8" stroke-width="0.3" opacity="0.15"/>
-      <circle cx="0" cy="30" r="28" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.25"/>
-      <circle cx="60" cy="30" r="28" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.25"/>
-    </pattern>
-    <!-- Asanoha (hemp leaf) pattern (boosted from 0.15-0.20 to 0.30-0.35) -->
-    <pattern id="asanoha" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="20" x2="20" y2="0" stroke="#1e3a5f" stroke-width="0.4" opacity="0.35"/>
-      <line x1="20" y1="0" x2="40" y2="20" stroke="#1e3a5f" stroke-width="0.4" opacity="0.35"/>
-      <line x1="40" y1="20" x2="20" y2="40" stroke="#1e3a5f" stroke-width="0.4" opacity="0.35"/>
-      <line x1="20" y1="40" x2="0" y2="20" stroke="#1e3a5f" stroke-width="0.4" opacity="0.35"/>
-      <line x1="20" y1="0" x2="20" y2="40" stroke="#1e3a5f" stroke-width="0.3" opacity="0.30"/>
-      <line x1="0" y1="20" x2="40" y2="20" stroke="#1e3a5f" stroke-width="0.3" opacity="0.30"/>
+    <filter id="goldGlowCW" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#c8a84e" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Seigaiha wave pattern -->
+    <pattern id="seigaiha" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+      <path d="M0,20 A20,20 0 0,1 20,0 A20,20 0 0,1 40,20" fill="none" stroke="#00e5ff" stroke-width="0.5" opacity="0.15"/>
+      <path d="M-10,20 A15,15 0 0,1 10,5" fill="none" stroke="#00e5ff" stroke-width="0.3" opacity="0.1"/>
+      <path d="M30,20 A15,15 0 0,1 50,5" fill="none" stroke="#00e5ff" stroke-width="0.3" opacity="0.1"/>
     </pattern>
   </defs>
 
-  <!-- Dark indigo background -->
-  <rect width="1200" height="630" fill="#080814"/>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1a1a2e"/>
 
-  <!-- Seigaiha wave pattern (left half with circuit overlay) -->
-  <rect x="0" y="0" width="600" height="630" fill="url(#seigaiha)"/>
+  <!-- Faint seigaiha wave pattern background -->
+  <rect width="1200" height="630" fill="url(#seigaiha)" opacity="0.4"/>
 
-  <!-- Asanoha pattern (right half) -->
-  <rect x="600" y="0" width="600" height="630" fill="url(#asanoha)"/>
-
-  <!-- Circuit trace overlay (boosted from 0.10-0.15 to 0.25-0.30) -->
-  <g stroke="#38bdf8" stroke-width="0.6" opacity="0.30">
-    <line x1="80" y1="400" x2="200" y2="400"/>
-    <circle cx="200" cy="400" r="3" fill="none"/>
-    <line x1="206" y1="400" x2="280" y2="400"/>
-    <line x1="280" y1="400" x2="280" y2="350"/>
-    <circle cx="280" cy="347" r="3" fill="none"/>
-    <line x1="280" y1="344" x2="280" y2="300"/>
-    <line x1="280" y1="300" x2="400" y2="300"/>
-    <circle cx="403" cy="300" r="3" fill="none"/>
-  </g>
-  <g stroke="#38bdf8" stroke-width="0.5" opacity="0.25">
-    <line x1="800" y1="500" x2="950" y2="500"/>
-    <circle cx="950" cy="500" r="2.5" fill="none"/>
-    <line x1="955" y1="500" x2="1050" y2="500"/>
-    <line x1="1050" y1="500" x2="1050" y2="450"/>
+  <!-- Neon cherry blossom accents -->
+  <g opacity="0.08" fill="#ff69b4">
+    <circle cx="150" cy="80" r="4"/><circle cx="162" cy="74" r="3.5"/><circle cx="158" cy="90" r="3"/>
+    <circle cx="1050" cy="550" r="4"/><circle cx="1062" cy="544" r="3.5"/><circle cx="1058" cy="560" r="3"/>
+    <circle cx="1080" cy="100" r="3"/><circle cx="1090" cy="92" r="2.5"/>
   </g>
 
-  <!-- Background glow effects (boosted from 0.03-0.06 to 0.08-0.12) -->
-  <ellipse cx="600" cy="315" rx="300" ry="200" fill="#1e3a5f" opacity="0.12"/>
-  <ellipse cx="250" cy="400" rx="150" ry="100" fill="#c41e3a" opacity="0.08"/>
-  <ellipse cx="950" cy="200" rx="150" ry="100" fill="#38bdf8" opacity="0.08"/>
+  <!-- Card 1: Top-left -- Shoji grid-frame -->
+  <rect x="80" y="100" width="280" height="180" rx="4" fill="#12122a" stroke="#00e5ff" stroke-width="1.5" opacity="0.9"/>
+  <rect x="80" y="100" width="280" height="180" rx="4" fill="none" stroke="#394073" stroke-width="0.8"/>
+  <!-- Shoji inner cross dividers -->
+  <line x1="220" y1="100" x2="220" y2="280" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <line x1="80" y1="190" x2="360" y2="190" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <!-- Circuit trace corner decoration -->
+  <path d="M85,105 L85,115 L95,115" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M355,105 L355,115 L345,115" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M85,275 L85,265 L95,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M355,275 L355,265 L345,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <!-- Kintsugi gold crack -->
+  <path d="M90,200 L140,195 L160,202 L230,190 L280,198 L350,193" fill="none" stroke="#c8a84e" stroke-width="1.2" filter="url(#goldGlowCW)" opacity="0.6"/>
+  <!-- Content -->
+  <rect x="100" y="120" width="90" height="8" rx="2" fill="#00e5ff" opacity="0.6"/>
+  <rect x="100" y="138" width="200" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="100" y="150" width="170" height="5" rx="2" fill="#2e2e4a"/>
+  <!-- Seigaiha accent strip -->
+  <rect x="100" y="168" width="160" height="12" rx="2" fill="#1a1a35"/>
+  <path d="M105,180 A8,8 0 0,1 113,172 A8,8 0 0,1 121,180" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M121,180 A8,8 0 0,1 129,172 A8,8 0 0,1 137,180" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M137,180 A8,8 0 0,1 145,172 A8,8 0 0,1 153,180" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M153,180 A8,8 0 0,1 161,172 A8,8 0 0,1 169,180" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <rect x="100" y="210" width="100" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="100" y="225" width="120" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="100" y="225" width="80" height="8" rx="2" fill="#00e5ff" opacity="0.3"/>
 
-  <!-- Torii gate frame (boosted pillars 0.5->0.65, beam 0.55->0.70, nuki 0.35->0.50) -->
-  <g transform="translate(440, 60)" filter="url(#vermGlow)">
-    <!-- Left pillar -->
-    <rect x="0" y="40" width="8" height="180" fill="none" stroke="#c41e3a" stroke-width="1.5" opacity="0.65"/>
-    <!-- Right pillar -->
-    <rect x="312" y="40" width="8" height="180" fill="none" stroke="#c41e3a" stroke-width="1.5" opacity="0.65"/>
-    <!-- Kasagi (top beam) -->
-    <path d="M -12 30 L 332 30 L 325 44 L -5 44 Z" fill="none" stroke="#c41e3a" stroke-width="1.5" opacity="0.70"/>
-    <!-- Nuki -->
-    <rect x="4" y="70" width="312" height="4" fill="none" stroke="#c41e3a" stroke-width="1" opacity="0.50"/>
-  </g>
+  <!-- Card 2: Top-center -->
+  <rect x="420" y="80" width="320" height="200" rx="4" fill="#12122a" stroke="#00e5ff" stroke-width="1.5" opacity="0.9"/>
+  <rect x="420" y="80" width="320" height="200" rx="4" fill="none" stroke="#394073" stroke-width="0.8"/>
+  <!-- Shoji cross -->
+  <line x1="580" y1="80" x2="580" y2="280" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <line x1="420" y1="180" x2="740" y2="180" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <!-- Circuit corners -->
+  <path d="M425,85 L425,95 L435,95" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M735,85 L735,95 L725,95" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M425,275 L425,265 L435,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M735,275 L735,265 L725,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <!-- Kintsugi crack -->
+  <path d="M430,185 L490,180 L530,188 L600,178 L660,186 L730,182" fill="none" stroke="#c8a84e" stroke-width="1.2" filter="url(#goldGlowCW)" opacity="0.6"/>
+  <!-- Content -->
+  <rect x="440" y="105" width="110" height="8" rx="2" fill="#00e5ff" opacity="0.6"/>
+  <rect x="440" y="123" width="260" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="440" y="135" width="240" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="440" y="147" width="200" height="5" rx="2" fill="#2e2e4a"/>
+  <!-- Wave strip -->
+  <rect x="440" y="162" width="180" height="12" rx="2" fill="#1a1a35"/>
+  <path d="M445,174 A8,8 0 0,1 453,166 A8,8 0 0,1 461,174" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M461,174 A8,8 0 0,1 469,166 A8,8 0 0,1 477,174" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M477,174 A8,8 0 0,1 485,166 A8,8 0 0,1 493,174" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <path d="M493,174 A8,8 0 0,1 501,166 A8,8 0 0,1 509,174" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <!-- Bars -->
+  <rect x="440" y="200" width="180" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="440" y="200" width="130" height="8" rx="2" fill="#00e5ff" opacity="0.3"/>
+  <rect x="440" y="216" width="180" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="440" y="216" width="90" height="8" rx="2" fill="#ff69b4" opacity="0.25"/>
+  <!-- Button -->
+  <rect x="440" y="240" width="80" height="22" rx="3" fill="none" stroke="#00e5ff" stroke-width="1"/>
+  <rect x="450" y="247" width="40" height="6" rx="2" fill="#00e5ff" opacity="0.5"/>
 
-  <!-- Kintsugi gold crack lines (boosted from 0.25-0.40 to 0.45-0.60) -->
-  <g filter="url(#goldGlow)">
-    <!-- Main crack -->
-    <path d="M 100 250 L 180 280 L 200 260 L 280 310 L 320 290 L 380 320" fill="none" stroke="#c9a227" stroke-width="1.2" opacity="0.60" stroke-linecap="round"/>
-    <!-- Branch cracks -->
-    <path d="M 180 280 L 160 310 L 175 340" fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.50" stroke-linecap="round"/>
-    <path d="M 280 310 L 300 340 L 290 370" fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.50" stroke-linecap="round"/>
-  </g>
-  <!-- Second kintsugi cluster -->
-  <g filter="url(#goldGlow)">
-    <path d="M 820 350 L 880 380 L 920 360 L 980 400 L 1040 380 L 1100 410" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.55" stroke-linecap="round"/>
-    <path d="M 920 360 L 940 330 L 960 340" fill="none" stroke="#c9a227" stroke-width="0.7" opacity="0.45" stroke-linecap="round"/>
-  </g>
+  <!-- Card 3: Top-right -->
+  <rect x="800" y="100" width="280" height="180" rx="4" fill="#12122a" stroke="#00e5ff" stroke-width="1.5" opacity="0.9"/>
+  <rect x="800" y="100" width="280" height="180" rx="4" fill="none" stroke="#394073" stroke-width="0.8"/>
+  <line x1="940" y1="100" x2="940" y2="280" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <line x1="800" y1="190" x2="1080" y2="190" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <path d="M805,105 L805,115 L815,115" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M1075,105 L1075,115 L1065,115" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M805,275 L805,265 L815,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M1075,275 L1075,265 L1065,265" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M810,195 L860,190 L900,197 L950,188 L1000,196 L1070,191" fill="none" stroke="#c8a84e" stroke-width="1.2" filter="url(#goldGlowCW)" opacity="0.6"/>
+  <!-- Content -->
+  <rect x="820" y="120" width="80" height="8" rx="2" fill="#00e5ff" opacity="0.6"/>
+  <rect x="820" y="138" width="210" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="820" y="150" width="180" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="820" y="168" width="140" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="820" y="168" width="100" height="8" rx="2" fill="#00e5ff" opacity="0.3"/>
+  <rect x="820" y="210" width="120" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="820" y="225" width="90" height="5" rx="2" fill="#2e2e4a"/>
 
-  <!-- Cherry blossom with neon outline (boosted group opacity from 0.5 to 0.70) -->
-  <g transform="translate(950, 120)" opacity="0.70">
-    <circle cx="0" cy="-10" r="6" fill="none" stroke="#c41e3a" stroke-width="1" filter="url(#vermGlow)"/>
-    <circle cx="10" cy="-3" r="6" fill="none" stroke="#c41e3a" stroke-width="1"/>
-    <circle cx="6" cy="8" r="6" fill="none" stroke="#c41e3a" stroke-width="1"/>
-    <circle cx="-6" cy="8" r="6" fill="none" stroke="#c41e3a" stroke-width="1"/>
-    <circle cx="-10" cy="-3" r="6" fill="none" stroke="#c41e3a" stroke-width="1"/>
-    <circle cx="0" cy="0" r="3" fill="#c9a227" opacity="0.5" filter="url(#goldGlow)"/>
-  </g>
+  <!-- Card 4: Bottom-left -->
+  <rect x="150" y="360" width="320" height="190" rx="4" fill="#12122a" stroke="#00e5ff" stroke-width="1.5" opacity="0.9"/>
+  <rect x="150" y="360" width="320" height="190" rx="4" fill="none" stroke="#394073" stroke-width="0.8"/>
+  <line x1="310" y1="360" x2="310" y2="550" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <line x1="150" y1="455" x2="470" y2="455" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <path d="M155,365 L155,375 L165,375" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M465,365 L465,375 L455,375" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M155,545 L155,535 L165,535" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M465,545 L465,535 L455,535" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M160,460 L220,455 L260,462 L330,453 L390,461 L460,456" fill="none" stroke="#c8a84e" stroke-width="1.2" filter="url(#goldGlowCW)" opacity="0.6"/>
+  <!-- Content -->
+  <rect x="170" y="385" width="100" height="8" rx="2" fill="#00e5ff" opacity="0.6"/>
+  <rect x="170" y="403" width="270" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="170" y="415" width="250" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="170" y="427" width="210" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="170" y="475" width="200" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="170" y="475" width="150" height="8" rx="2" fill="#00e5ff" opacity="0.3"/>
+  <rect x="170" y="491" width="200" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="170" y="491" width="80" height="8" rx="2" fill="#ff69b4" opacity="0.25"/>
 
-  <!-- Shoji screen grid panel (boosted from 0.2 to 0.35) -->
-  <g transform="translate(850, 420)" stroke="#1e3a5f" stroke-width="0.8" opacity="0.35">
-    <rect x="0" y="0" width="200" height="140" fill="none"/>
-    <line x1="67" y1="0" x2="67" y2="140"/>
-    <line x1="133" y1="0" x2="133" y2="140"/>
-    <line x1="0" y1="47" x2="200" y2="47"/>
-    <line x1="0" y1="93" x2="200" y2="93"/>
-  </g>
+  <!-- Card 5: Bottom-right -->
+  <rect x="540" y="360" width="320" height="190" rx="4" fill="#12122a" stroke="#00e5ff" stroke-width="1.5" opacity="0.9"/>
+  <rect x="540" y="360" width="320" height="190" rx="4" fill="none" stroke="#394073" stroke-width="0.8"/>
+  <line x1="700" y1="360" x2="700" y2="550" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <line x1="540" y1="455" x2="860" y2="455" stroke="#394073" stroke-width="0.8" opacity="0.6"/>
+  <path d="M545,365 L545,375 L555,375" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M855,365 L855,375 L845,375" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M545,545 L545,535 L555,535" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M855,545 L855,535 L845,535" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+  <path d="M550,460 L610,455 L650,462 L720,453 L780,461 L850,456" fill="none" stroke="#c8a84e" stroke-width="1.2" filter="url(#goldGlowCW)" opacity="0.6"/>
+  <!-- Content -->
+  <rect x="560" y="385" width="90" height="8" rx="2" fill="#00e5ff" opacity="0.6"/>
+  <rect x="560" y="403" width="260" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="560" y="415" width="230" height="5" rx="2" fill="#2e2e4a"/>
+  <!-- Buttons -->
+  <rect x="560" y="435" width="80" height="22" rx="3" fill="none" stroke="#00e5ff" stroke-width="1"/>
+  <rect x="570" y="442" width="40" height="6" rx="2" fill="#00e5ff" opacity="0.5"/>
+  <rect x="655" y="435" width="80" height="22" rx="3" fill="none" stroke="#c8a84e" stroke-width="1"/>
+  <rect x="665" y="442" width="40" height="6" rx="2" fill="#c8a84e" opacity="0.5"/>
+  <rect x="560" y="475" width="100" height="5" rx="2" fill="#2e2e4a"/>
+  <rect x="560" y="490" width="140" height="8" rx="2" fill="#1a1a35"/>
+  <rect x="560" y="490" width="100" height="8" rx="2" fill="#00e5ff" opacity="0.3"/>
 
-  <!-- Title text (kept with glow filters) -->
-  <text x="600" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="80" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="10" filter="url(#blueGlow)">CYBER</text>
-  <text x="600" y="365" font-family="'Helvetica Neue', Arial, sans-serif" font-size="80" font-weight="700" fill="#c41e3a" text-anchor="middle" letter-spacing="10" filter="url(#vermGlow)">WAFUU</text>
-
-  <!-- Subtitle (boosted from 0.3 to 0.45) -->
-  <text x="600" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#e2e8f0" text-anchor="middle" opacity="0.45" letter-spacing="8">TRADITION HACKED BY TECHNOLOGY</text>
-
-  <!-- Color swatches at bottom -->
-  <rect x="420" y="565" width="50" height="44" fill="#38bdf8" opacity="0.85"/>
-  <rect x="420" y="565" width="50" height="44" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
-  <rect x="484" y="565" width="50" height="44" fill="#c41e3a" opacity="0.85"/>
-  <rect x="484" y="565" width="50" height="44" fill="none" stroke="#c41e3a" stroke-width="1" opacity="0.5"/>
-  <rect x="548" y="565" width="50" height="44" fill="#c9a227" opacity="0.85"/>
-  <rect x="548" y="565" width="50" height="44" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.5"/>
-  <rect x="612" y="565" width="50" height="44" fill="#1e3a5f" opacity="0.85"/>
-  <rect x="612" y="565" width="50" height="44" fill="none" stroke="#1e3a5f" stroke-width="1" opacity="0.5"/>
-  <rect x="676" y="565" width="50" height="44" fill="#080814" stroke="#38bdf8" stroke-width="1" opacity="0.85"/>
-
-  <!-- Corner accent marks (boosted from 0.3 to 0.50) -->
-  <g stroke="#c9a227" stroke-width="1.2" opacity="0.50">
-    <line x1="35" y1="35" x2="80" y2="35"/>
-    <line x1="35" y1="35" x2="35" y2="80"/>
-  </g>
-  <g stroke="#38bdf8" stroke-width="1.2" opacity="0.50">
-    <line x1="1165" y1="35" x2="1120" y2="35"/>
-    <line x1="1165" y1="35" x2="1165" y2="80"/>
-  </g>
-  <g stroke="#c41e3a" stroke-width="1.2" opacity="0.50">
-    <line x1="35" y1="595" x2="80" y2="595"/>
-    <line x1="35" y1="595" x2="35" y2="550"/>
-  </g>
-  <g stroke="#c9a227" stroke-width="1.2" opacity="0.50">
-    <line x1="1165" y1="595" x2="1120" y2="595"/>
-    <line x1="1165" y1="595" x2="1165" y2="550"/>
-  </g>
+  <!-- Title -->
+  <text x="600" y="325" text-anchor="middle" font-family="'Courier New', monospace" font-size="26" font-weight="bold" fill="#00e5ff" filter="url(#cyanGlow)" letter-spacing="6">CYBER WAFUU</text>
 </svg>

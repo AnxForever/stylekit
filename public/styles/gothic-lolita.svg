@@ -1,113 +1,141 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
-    <!-- Dark gradient background -->
-    <linearGradient id="glBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0a0a0a"/>
-      <stop offset="50%" stop-color="#1a0a1a"/>
-      <stop offset="100%" stop-color="#0a0a0a"/>
-    </linearGradient>
-    <!-- Blood red accent gradient -->
-    <linearGradient id="glAccent" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="transparent"/>
-      <stop offset="50%" stop-color="#8b1a2a"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </linearGradient>
-    <!-- Subtle glow -->
-    <filter id="glGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+    <filter id="glShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="2" dy="3" result="shadow"/>
+      <feFlood flood-color="#1a0018" flood-opacity="0.4"/>
+      <feComposite in2="shadow" operator="in"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#glBg)"/>
+  <!-- Dark background with purple tint -->
+  <rect width="1200" height="630" fill="#0a0a0e"/>
+  <rect width="1200" height="630" fill="#1a0028" opacity="0.3"/>
 
-  <!-- Ornate border frame -->
-  <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#4a1a4a" stroke-width="1" opacity="0.4"/>
-  <rect x="50" y="50" width="1100" height="530" fill="none" stroke="#8b1a2a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Ornate outer frame -->
+  <rect x="24" y="24" width="1152" height="582" fill="none" stroke="#555" stroke-width="0.8" opacity="0.3"/>
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#444" stroke-width="0.4" opacity="0.2"/>
+  <!-- Corner rosettes -->
+  <circle cx="24" cy="24" r="6" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.35"/>
+  <circle cx="1176" cy="24" r="6" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.35"/>
+  <circle cx="24" cy="606" r="6" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.35"/>
+  <circle cx="1176" cy="606" r="6" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.35"/>
 
-  <!-- Corner ornaments - top left -->
-  <line x1="40" y1="40" x2="80" y2="40" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <line x1="40" y1="40" x2="40" y2="80" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <!-- Corner ornaments - top right -->
-  <line x1="1120" y1="40" x2="1160" y2="40" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <line x1="1160" y1="40" x2="1160" y2="80" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <!-- Corner ornaments - bottom left -->
-  <line x1="40" y1="550" x2="40" y2="590" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <line x1="40" y1="590" x2="80" y2="590" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <!-- Corner ornaments - bottom right -->
-  <line x1="1160" y1="550" x2="1160" y2="590" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-  <line x1="1120" y1="590" x2="1160" y2="590" stroke="#4a1a4a" stroke-width="2" opacity="0.6"/>
-
-  <!-- Cross decorations -->
-  <g opacity="0.3">
-    <line x1="200" y1="100" x2="200" y2="140" stroke="#8b1a2a" stroke-width="2"/>
-    <line x1="180" y1="120" x2="220" y2="120" stroke="#8b1a2a" stroke-width="2"/>
-    <line x1="1000" y1="100" x2="1000" y2="140" stroke="#8b1a2a" stroke-width="2"/>
-    <line x1="980" y1="120" x2="1020" y2="120" stroke="#8b1a2a" stroke-width="2"/>
+  <!-- Card 1 - Top left: Wardrobe card -->
+  <g filter="url(#glShadow)">
+    <rect x="70" y="85" width="260" height="195" rx="6" fill="#0e0e12" stroke="#ddd" stroke-width="1.5"/>
+    <!-- Scalloped lace border (top) -->
+    <path d="M78 85 Q86 78 94 85 Q102 78 110 85 Q118 78 126 85 Q134 78 142 85 Q150 78 158 85 Q166 78 174 85 Q182 78 190 85 Q198 78 206 85 Q214 78 222 85 Q230 78 238 85 Q246 78 254 85 Q262 78 270 85 Q278 78 286 85 Q294 78 302 85 Q310 78 318 85 Q326 78 322 85" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Scalloped lace border (bottom) -->
+    <path d="M78 280 Q86 287 94 280 Q102 287 110 280 Q118 287 126 280 Q134 287 142 280 Q150 287 158 280 Q166 287 174 280 Q182 287 190 280 Q198 287 206 280 Q214 287 222 280 Q230 287 238 280 Q246 287 254 280 Q262 287 270 280 Q278 287 286 280 Q294 287 302 280 Q310 287 318 280 Q326 287 322 280" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Cross/rosary ornament at top -->
+    <line x1="200" y1="93" x2="200" y2="112" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <line x1="192" y1="100" x2="208" y2="100" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="200" cy="93" r="3" fill="#8b1a3a" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="100" y="125" width="90" height="7" rx="2" fill="#ccc" opacity="0.5"/>
+    <!-- Blood red accent line -->
+    <line x1="100" y1="142" x2="300" y2="142" stroke="#8b1a3a" stroke-width="1.2" opacity="0.45"/>
+    <!-- Text lines -->
+    <rect x="100" y="158" width="200" height="5" rx="2" fill="#888" opacity="0.35"/>
+    <rect x="100" y="173" width="180" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="100" y="188" width="190" height="5" rx="2" fill="#888" opacity="0.28"/>
+    <!-- Rose accent -->
+    <circle cx="295" cy="245" r="8" fill="#8b1a3a" opacity="0.25"/>
+    <circle cx="295" cy="245" r="4" fill="#8b1a3a" opacity="0.35"/>
+    <circle cx="287" cy="240" r="3" fill="#8b1a3a" opacity="0.2"/>
+    <circle cx="303" cy="240" r="3" fill="#8b1a3a" opacity="0.2"/>
+    <circle cx="290" cy="250" r="2.5" fill="#8b1a3a" opacity="0.18"/>
+    <circle cx="300" cy="250" r="2.5" fill="#8b1a3a" opacity="0.18"/>
   </g>
 
-  <!-- Rose decorations (abstract circles) -->
-  <g opacity="0.2">
-    <circle cx="150" cy="400" r="30" fill="none" stroke="#8b1a2a" stroke-width="1"/>
-    <circle cx="150" cy="400" r="20" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="150" cy="400" r="10" fill="#8b1a2a" opacity="0.3"/>
-    <circle cx="1050" cy="400" r="30" fill="none" stroke="#8b1a2a" stroke-width="1"/>
-    <circle cx="1050" cy="400" r="20" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="1050" cy="400" r="10" fill="#8b1a2a" opacity="0.3"/>
+  <!-- Card 2 - Top right: Collection card -->
+  <g filter="url(#glShadow)">
+    <rect x="870" y="70" width="255" height="210" rx="6" fill="#0e0e12" stroke="#ddd" stroke-width="1.5"/>
+    <!-- Scalloped lace (top) -->
+    <path d="M878 70 Q886 63 894 70 Q902 63 910 70 Q918 63 926 70 Q934 63 942 70 Q950 63 958 70 Q966 63 974 70 Q982 63 990 70 Q998 63 1006 70 Q1014 63 1022 70 Q1030 63 1038 70 Q1046 63 1054 70 Q1062 63 1070 70 Q1078 63 1086 70 Q1094 63 1102 70 Q1110 63 1117 70" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Scalloped lace (bottom) -->
+    <path d="M878 280 Q886 287 894 280 Q902 287 910 280 Q918 287 926 280 Q934 287 942 280 Q950 287 958 280 Q966 287 974 280 Q982 287 990 280 Q998 287 1006 280 Q1014 287 1022 280 Q1030 287 1038 280 Q1046 287 1054 280 Q1062 287 1070 280 Q1078 287 1086 280 Q1094 287 1102 280 Q1110 287 1117 280" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Cross ornament -->
+    <line x1="997" y1="78" x2="997" y2="97" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <line x1="989" y1="85" x2="1005" y2="85" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="997" cy="78" r="3" fill="#8b1a3a" opacity="0.4"/>
+    <!-- Heading -->
+    <rect x="900" y="108" width="80" height="7" rx="2" fill="#ccc" opacity="0.5"/>
+    <!-- Blood red accent -->
+    <line x1="900" y1="125" x2="1095" y2="125" stroke="#8b1a3a" stroke-width="1.2" opacity="0.45"/>
+    <!-- Grid items -->
+    <rect x="900" y="140" width="55" height="50" rx="4" fill="#161620" stroke="#555" stroke-width="0.8"/>
+    <rect x="908" y="150" width="39" height="4" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="908" y="160" width="32" height="4" rx="2" fill="#888" opacity="0.25"/>
+    <rect x="965" y="140" width="55" height="50" rx="4" fill="#161620" stroke="#555" stroke-width="0.8"/>
+    <rect x="973" y="150" width="39" height="4" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="973" y="160" width="32" height="4" rx="2" fill="#888" opacity="0.25"/>
+    <rect x="1030" y="140" width="55" height="50" rx="4" fill="#161620" stroke="#555" stroke-width="0.8"/>
+    <rect x="1038" y="150" width="39" height="4" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="1038" y="160" width="32" height="4" rx="2" fill="#888" opacity="0.25"/>
+    <!-- Text lines below -->
+    <rect x="900" y="205" width="180" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="900" y="220" width="160" height="5" rx="2" fill="#888" opacity="0.25"/>
+    <!-- Button -->
+    <rect x="900" y="242" width="85" height="22" rx="4" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.45"/>
+    <text x="942" y="257" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#aaa" opacity="0.6">View All</text>
   </g>
 
-  <!-- Decorative divider line -->
-  <rect x="300" y="200" width="600" height="1" fill="url(#glAccent)"/>
+  <!-- Card 3 - Bottom left -->
+  <g filter="url(#glShadow)">
+    <rect x="100" y="380" width="240" height="170" rx="6" fill="#0e0e12" stroke="#ddd" stroke-width="1.5"/>
+    <!-- Lace top -->
+    <path d="M108 380 Q116 373 124 380 Q132 373 140 380 Q148 373 156 380 Q164 373 172 380 Q180 373 188 380 Q196 373 204 380 Q212 373 220 380 Q228 373 236 380 Q244 373 252 380 Q260 373 268 380 Q276 373 284 380 Q292 373 300 380 Q308 373 316 380 Q324 373 332 380" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Cross -->
+    <line x1="220" y1="388" x2="220" y2="403" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <line x1="213" y1="393" x2="227" y2="393" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <!-- Heading -->
+    <rect x="130" y="415" width="70" height="7" rx="2" fill="#ccc" opacity="0.5"/>
+    <!-- Red accent -->
+    <line x1="130" y1="432" x2="310" y2="432" stroke="#8b1a3a" stroke-width="1.2" opacity="0.45"/>
+    <!-- Checklist -->
+    <circle cx="142" cy="452" r="4" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.45"/>
+    <rect x="155" y="449" width="140" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <circle cx="142" cy="470" r="4" fill="#8b1a3a" opacity="0.35"/>
+    <path d="M139 470 L141 472 L145 468" stroke="#0e0e12" stroke-width="1.2" fill="none"/>
+    <rect x="155" y="467" width="120" height="5" rx="2" fill="#888" opacity="0.28"/>
+    <circle cx="142" cy="488" r="4" fill="none" stroke="#8b1a3a" stroke-width="1" opacity="0.45"/>
+    <rect x="155" y="485" width="130" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <!-- Rose -->
+    <circle cx="305" cy="515" r="7" fill="#8b1a3a" opacity="0.25"/>
+    <circle cx="305" cy="515" r="3.5" fill="#8b1a3a" opacity="0.35"/>
+  </g>
+
+  <!-- Card 4 - Bottom right -->
+  <g filter="url(#glShadow)">
+    <rect x="830" y="370" width="280" height="180" rx="6" fill="#0e0e12" stroke="#ddd" stroke-width="1.5"/>
+    <!-- Lace top -->
+    <path d="M838 370 Q846 363 854 370 Q862 363 870 370 Q878 363 886 370 Q894 363 902 370 Q910 363 918 370 Q926 363 934 370 Q942 363 950 370 Q958 363 966 370 Q974 363 982 370 Q990 363 998 370 Q1006 363 1014 370 Q1022 363 1030 370 Q1038 363 1046 370 Q1054 363 1062 370 Q1070 363 1078 370 Q1086 363 1094 370 Q1102 363 1102 370" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.5"/>
+    <!-- Cross -->
+    <line x1="970" y1="378" x2="970" y2="393" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <line x1="963" y1="383" x2="977" y2="383" stroke="#8b1a3a" stroke-width="1.5" opacity="0.6"/>
+    <!-- Heading -->
+    <rect x="860" y="405" width="100" height="7" rx="2" fill="#ccc" opacity="0.5"/>
+    <!-- Red accent -->
+    <line x1="860" y1="422" x2="1080" y2="422" stroke="#8b1a3a" stroke-width="1.2" opacity="0.45"/>
+    <!-- Progress bars -->
+    <rect x="860" y="440" width="80" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="860" y="455" width="190" height="7" rx="3" fill="#1a1a20"/>
+    <rect x="860" y="455" width="130" height="7" rx="3" fill="#8b1a3a" opacity="0.4"/>
+    <rect x="860" y="475" width="80" height="5" rx="2" fill="#888" opacity="0.3"/>
+    <rect x="860" y="490" width="190" height="7" rx="3" fill="#1a1a20"/>
+    <rect x="860" y="490" width="95" height="7" rx="3" fill="#8b1a3a" opacity="0.4"/>
+    <!-- Button -->
+    <rect x="860" y="516" width="90" height="22" rx="4" fill="none" stroke="#ddd" stroke-width="0.8" opacity="0.35"/>
+    <text x="905" y="531" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#aaa" opacity="0.6">Details</text>
+  </g>
 
   <!-- Title -->
-  <text x="600" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#e5e5e5" text-anchor="middle" letter-spacing="8">GOTHIC LOLITA</text>
-
-  <!-- Subtitle -->
-  <text x="600" y="240" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#e5e5e5" text-anchor="middle" opacity="0.5" letter-spacing="6">DARK ELEGANCE</text>
-
-  <!-- Decorative divider line below subtitle -->
-  <rect x="300" y="260" width="600" height="1" fill="url(#glAccent)"/>
-
-  <!-- Lace pattern strip -->
-  <g opacity="0.15">
-    <circle cx="350" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="380" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="410" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="440" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="470" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="500" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="530" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="560" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="590" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="620" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="650" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="680" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="710" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="740" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="770" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="800" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="830" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-    <circle cx="860" cy="320" r="8" fill="none" stroke="#4a1a4a" stroke-width="1"/>
-  </g>
-
-  <!-- Color swatches -->
-  <rect x="340" y="380" width="80" height="80" fill="#0a0a0a" stroke="#4a1a4a" stroke-width="0.5" opacity="0.8"/>
-  <rect x="440" y="380" width="80" height="80" fill="#4a1a4a" stroke="#4a1a4a" stroke-width="0.5"/>
-  <rect x="540" y="380" width="80" height="80" fill="#8b1a2a" stroke="#4a1a4a" stroke-width="0.5"/>
-  <rect x="640" y="380" width="80" height="80" fill="#e5e5e5" stroke="#4a1a4a" stroke-width="0.5"/>
-  <rect x="740" y="380" width="80" height="80" fill="#6b2d5b" stroke="#4a1a4a" stroke-width="0.5"/>
-
-  <!-- Color labels -->
-  <text x="380" y="490" font-family="Georgia, serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Black</text>
-  <text x="480" y="490" font-family="Georgia, serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Purple</text>
-  <text x="580" y="490" font-family="Georgia, serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Blood Red</text>
-  <text x="680" y="490" font-family="Georgia, serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Silver</text>
-  <text x="780" y="490" font-family="Georgia, serif" font-size="11" fill="#e5e5e5" text-anchor="middle" opacity="0.5">Plum</text>
-
-  <!-- Bottom decorative line -->
-  <rect x="300" y="530" width="600" height="1" fill="url(#glAccent)"/>
+  <text x="600" y="305" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="700" fill="#e8e0e8" letter-spacing="3" opacity="0.9">GOTHIC LOLITA</text>
+  <text x="600" y="342" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="400" fill="#8b1a3a" letter-spacing="6" opacity="0.6">ELEGANT &amp; DARK</text>
 </svg>

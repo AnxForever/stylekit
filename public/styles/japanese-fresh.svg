@@ -1,91 +1,117 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
     <!-- Linen texture pattern -->
     <pattern id="jfLinen" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
       <rect width="6" height="6" fill="#fafaf8"/>
-      <rect x="0" y="0" width="1" height="1" fill="#e8e8e4" opacity="0.15"/>
-      <rect x="3" y="3" width="1" height="1" fill="#e8e8e4" opacity="0.10"/>
+      <rect x="0" y="0" width="1" height="1" fill="#e8e8e4" opacity="0.12"/>
+      <rect x="3" y="3" width="1" height="1" fill="#e8e8e4" opacity="0.08"/>
     </pattern>
-    <!-- Paper grain noise -->
-    <filter id="jfGrain">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" result="noise"/>
-      <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
-      <feBlend in="SourceGraphic" in2="gray" mode="multiply" result="blended"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.03"/>
-      </feComponentTransfer>
-    </filter>
   </defs>
 
   <!-- Off-white background with linen texture -->
   <rect width="1200" height="630" fill="#fafaf8"/>
   <rect width="1200" height="630" fill="url(#jfLinen)"/>
 
-  <!-- Subtle watercolor spots - boosted from 0.03-0.04 to 0.10-0.12 -->
-  <circle cx="180" cy="120" r="60" fill="#98d8c8" opacity="0.12"/>
-  <circle cx="200" cy="140" r="40" fill="#98d8c8" opacity="0.10"/>
-  <circle cx="1020" cy="500" r="50" fill="#ffb7c5" opacity="0.12"/>
-  <circle cx="1000" cy="480" r="35" fill="#ffb7c5" opacity="0.10"/>
-  <circle cx="100" cy="500" r="45" fill="#64b5f6" opacity="0.10"/>
+  <!-- Muted warm accent area -->
+  <circle cx="1050" cy="520" r="80" fill="#98d8c8" opacity="0.06"/>
+  <circle cx="150" cy="120" r="60" fill="#ffb7c5" opacity="0.05"/>
 
-  <!-- Thin asymmetric frame - boosted from 0.4-0.5 to 0.6 -->
-  <line x1="80" y1="50" x2="400" y2="50" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
-  <line x1="80" y1="50" x2="80" y2="200" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
-  <line x1="800" y1="580" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
-  <line x1="1120" y1="430" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
-
-  <!-- Delicate botanical line drawing - boosted from 0.25 to 0.40 -->
-  <g stroke="#a0aec0" stroke-width="0.7" fill="none" opacity="0.40">
-    <!-- Main stem -->
-    <path d="M180 520 C180 480, 190 420, 200 380 C210 340, 200 300, 210 260 C215 240, 220 220, 218 200"/>
-    <!-- Leaf 1 -->
-    <path d="M200 380 C220 370, 240 350, 250 340 C240 360, 220 375, 200 380"/>
-    <!-- Leaf 2 -->
-    <path d="M205 340 C185 325, 170 310, 160 295 C175 310, 190 328, 205 340"/>
-    <!-- Leaf 3 -->
-    <path d="M210 300 C230 285, 248 268, 255 255 C245 272, 228 290, 210 300"/>
-    <!-- Leaf 4 (smaller) -->
-    <path d="M212 260 C198 248, 188 235, 182 225 C192 238, 202 252, 212 260"/>
-    <!-- Small bud -->
-    <circle cx="218" cy="198" r="4"/>
+  <!-- Card 1 - top left: Overview card -->
+  <g>
+    <!-- Hairline border card, subtle off-white fill -->
+    <rect x="60" y="80" width="280" height="200" rx="4" fill="#fefefe" stroke="#d4d4cf" stroke-width="0.5"/>
+    <!-- Delicate serif heading -->
+    <text x="92" y="120" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="400" fill="#4a5568" letter-spacing="1">Overview</text>
+    <!-- Hairline divider under heading -->
+    <line x1="92" y1="130" x2="200" y2="130" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+    <!-- Widely spaced text lines -->
+    <rect x="92" y="150" width="180" height="4" rx="2" fill="#d4d4cf" opacity="0.45"/>
+    <rect x="92" y="168" width="150" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <rect x="92" y="186" width="170" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <rect x="92" y="204" width="120" height="4" rx="2" fill="#d4d4cf" opacity="0.35"/>
+    <!-- Minimal progress bar -->
+    <rect x="92" y="232" width="200" height="3" rx="1.5" fill="#e8e8e4"/>
+    <rect x="92" y="232" width="140" height="3" rx="1.5" fill="#98d8c8" opacity="0.5"/>
+    <!-- Botanical line drawing accent -->
+    <g stroke="#b8c4b8" stroke-width="0.5" fill="none" opacity="0.3">
+      <path d="M295 240 C292 225, 290 210, 293 195"/>
+      <path d="M293 210 C300 207, 306 200, 310 195"/>
+      <path d="M293 220 C286 217, 280 212, 277 207"/>
+    </g>
   </g>
 
-  <!-- Second botanical accent - boosted from 0.15 to 0.30 -->
-  <g stroke="#b8d4e3" stroke-width="0.5" fill="none" opacity="0.30">
-    <path d="M1050 150 C1040 180, 1035 210, 1038 240"/>
-    <path d="M1038 200 C1055 195, 1068 185, 1075 178"/>
-    <path d="M1038 220 C1022 215, 1010 208, 1005 200"/>
+  <!-- Card 2 - top right: Schedule card -->
+  <g>
+    <rect x="870" y="60" width="270" height="210" rx="4" fill="#fefefe" stroke="#d4d4cf" stroke-width="0.5"/>
+    <text x="902" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="400" fill="#4a5568" letter-spacing="1">Schedule</text>
+    <line x1="902" y1="110" x2="1000" y2="110" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+    <!-- Time entries with generous spacing -->
+    <text x="902" y="136" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.7">09:00</text>
+    <rect x="946" y="130" width="150" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <text x="902" y="162" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.7">11:30</text>
+    <rect x="946" y="156" width="130" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <text x="902" y="188" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.7">14:00</text>
+    <rect x="946" y="182" width="140" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <text x="902" y="214" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.7">16:00</text>
+    <rect x="946" y="208" width="110" height="4" rx="2" fill="#d4d4cf" opacity="0.35"/>
+    <!-- Subtle button -->
+    <rect x="902" y="234" width="70" height="20" rx="3" fill="none" stroke="#d4d4cf" stroke-width="0.5"/>
+    <text x="937" y="248" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#a0aec0">View all</text>
   </g>
 
-  <!-- Huge whitespace is intentional - Ma (space) -->
+  <!-- Card 3 - bottom left: Notes card -->
+  <g>
+    <rect x="80" y="380" width="250" height="185" rx="4" fill="#fefefe" stroke="#d4d4cf" stroke-width="0.5"/>
+    <text x="112" y="418" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="400" fill="#4a5568" letter-spacing="1">Notes</text>
+    <line x1="112" y1="428" x2="195" y2="428" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+    <!-- Widely spaced text lines -->
+    <rect x="112" y="448" width="180" height="4" rx="2" fill="#d4d4cf" opacity="0.45"/>
+    <rect x="112" y="468" width="160" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <rect x="112" y="488" width="170" height="4" rx="2" fill="#d4d4cf" opacity="0.4"/>
+    <rect x="112" y="508" width="130" height="4" rx="2" fill="#d4d4cf" opacity="0.35"/>
+    <!-- Botanical accent -->
+    <g stroke="#b8c4b8" stroke-width="0.5" fill="none" opacity="0.25">
+      <path d="M290 540 C288 520, 285 500, 288 480"/>
+      <path d="M288 500 C296 496, 302 490, 306 484"/>
+      <path d="M288 515 C280 512, 274 506, 270 500"/>
+      <circle cx="288" cy="478" r="3"/>
+    </g>
+  </g>
 
-  <!-- Title - light weight, generous spacing, color darkened to #3d4a5c -->
-  <text x="600" y="275" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="68" font-weight="200" fill="#3d4a5c" text-anchor="middle" letter-spacing="4">Japanese Fresh</text>
+  <!-- Card 4 - bottom right: Metrics card -->
+  <g>
+    <rect x="860" y="370" width="280" height="195" rx="4" fill="#fefefe" stroke="#d4d4cf" stroke-width="0.5"/>
+    <text x="892" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="400" fill="#4a5568" letter-spacing="1">Metrics</text>
+    <line x1="892" y1="418" x2="975" y2="418" stroke="#d4d4cf" stroke-width="0.5" opacity="0.6"/>
+    <!-- Metric rows with minimal bars -->
+    <text x="892" y="444" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.65">Visitors</text>
+    <rect x="960" y="437" width="140" height="3" rx="1.5" fill="#e8e8e4"/>
+    <rect x="960" y="437" width="110" height="3" rx="1.5" fill="#64b5f6" opacity="0.4"/>
+    <text x="892" y="470" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.65">Sessions</text>
+    <rect x="960" y="463" width="140" height="3" rx="1.5" fill="#e8e8e4"/>
+    <rect x="960" y="463" width="85" height="3" rx="1.5" fill="#98d8c8" opacity="0.45"/>
+    <text x="892" y="496" font-family="Georgia, serif" font-size="10" fill="#a0aec0" opacity="0.65">Pages</text>
+    <rect x="960" y="489" width="140" height="3" rx="1.5" fill="#e8e8e4"/>
+    <rect x="960" y="489" width="120" height="3" rx="1.5" fill="#ffb7c5" opacity="0.4"/>
+    <!-- Minimal button -->
+    <rect x="892" y="520" width="75" height="20" rx="3" fill="none" stroke="#d4d4cf" stroke-width="0.5"/>
+    <text x="929" y="534" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#a0aec0">Details</text>
+  </g>
 
-  <!-- Hairline divider - boosted from 0.5 to 0.65 -->
-  <line x1="480" y1="305" x2="720" y2="305" stroke="#d4d4cf" stroke-width="0.5" opacity="0.65"/>
+  <!-- Asymmetric frame lines -->
+  <line x1="60" y1="45" x2="350" y2="45" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <line x1="60" y1="45" x2="60" y2="65" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <line x1="850" y1="585" x2="1140" y2="585" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <line x1="1140" y1="575" x2="1140" y2="585" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
 
-  <!-- Japanese subtitle - boosted from 0.5 (implicit) to 0.65 -->
-  <text x="600" y="340" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="12" opacity="0.65">ma / wabi-sabi / breath</text>
+  <!-- Endpoint dot accents -->
+  <circle cx="460" cy="320" r="2" fill="#98d8c8" opacity="0.45"/>
+  <circle cx="740" cy="320" r="2" fill="#ffb7c5" opacity="0.45"/>
 
-  <!-- Endpoint dot accents - boosted from 0.3 to 0.5 -->
-  <circle cx="470" cy="305" r="2" fill="#98d8c8" opacity="0.5"/>
-  <circle cx="730" cy="305" r="2" fill="#ffb7c5" opacity="0.5"/>
-
-  <!-- Color swatches - boosted from 0.7 to 0.85 -->
-  <rect x="350" y="410" width="48" height="48" rx="10" fill="#64b5f6" opacity="0.85"/>
-  <rect x="430" y="410" width="48" height="48" rx="10" fill="#98d8c8" opacity="0.85"/>
-  <rect x="510" y="410" width="48" height="48" rx="10" fill="#ffb7c5" opacity="0.85"/>
-  <rect x="590" y="410" width="48" height="48" rx="10" fill="#b8d4e3" opacity="0.85"/>
-  <rect x="670" y="410" width="48" height="48" rx="10" fill="#d4d4cf" opacity="0.65"/>
-  <rect x="750" y="410" width="48" height="48" rx="10" fill="#fafaf8" stroke="#e8e8e4" stroke-width="0.5" opacity="0.85"/>
-
-  <!-- Hairline borders on swatches -->
-  <rect x="350" y="410" width="48" height="48" rx="10" fill="none" stroke="#64b5f6" stroke-width="0.3" opacity="0.4"/>
-  <rect x="430" y="410" width="48" height="48" rx="10" fill="none" stroke="#98d8c8" stroke-width="0.3" opacity="0.4"/>
-  <rect x="510" y="410" width="48" height="48" rx="10" fill="none" stroke="#ffb7c5" stroke-width="0.3" opacity="0.4"/>
-  <rect x="590" y="410" width="48" height="48" rx="10" fill="none" stroke="#b8d4e3" stroke-width="0.3" opacity="0.4"/>
-
-  <!-- Minimal label beneath - boosted from 0.5 to 0.65 -->
-  <text x="600" y="500" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="12" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="6" opacity="0.65">HAIRLINE BORDERS / BOTANICAL / WHITESPACE</text>
+  <!-- Title - light weight, generous spacing -->
+  <text x="600" y="290" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="64" font-weight="200" fill="#3d4a5c" text-anchor="middle" letter-spacing="3">JAPANESE FRESH</text>
+  <!-- Hairline divider -->
+  <line x1="470" y1="310" x2="730" y2="310" stroke="#d4d4cf" stroke-width="0.5" opacity="0.55"/>
+  <!-- Subtitle -->
+  <text x="600" y="345" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="14" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="10" opacity="0.55">MA / WABI-SABI / BREATH</text>
 </svg>

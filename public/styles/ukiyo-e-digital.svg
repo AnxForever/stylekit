@@ -1,47 +1,114 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Wave pattern for border decoration -->
+    <pattern id="ukWave" x="0" y="0" width="60" height="20" patternUnits="userSpaceOnUse">
+      <path d="M0,10 Q15,0 30,10 T60,10" stroke="#1a3055" stroke-width="1.5" fill="none" opacity="0.25"/>
+    </pattern>
+  </defs>
+
+  <!-- Off-white background -->
   <rect width="1200" height="630" fill="#f5f0e1"/>
 
-  <!-- Wave pattern at bottom -->
-  <path d="M0,500 Q75,460 150,500 T300,500 T450,500 T600,500 T750,500 T900,500 T1050,500 T1200,500 L1200,630 L0,630 Z" fill="#1a3055" opacity="0.08"/>
-  <path d="M0,520 Q75,480 150,520 T300,520 T450,520 T600,520 T750,520 T900,520 T1050,520 T1200,520 L1200,630 L0,630 Z" fill="#1a3055" opacity="0.05"/>
+  <!-- Wave pattern border decoration -->
+  <rect x="30" y="30" width="1140" height="20" fill="url(#ukWave)"/>
+  <rect x="30" y="580" width="1140" height="20" fill="url(#ukWave)"/>
+  <rect x="30" y="30" width="20" height="570" fill="url(#ukWave)"/>
+  <rect x="1150" y="30" width="20" height="570" fill="url(#ukWave)"/>
 
-  <!-- Mountain silhouette -->
-  <polygon points="0,630 200,400 350,500 500,350 650,480 800,380 1000,450 1200,350 1200,630" fill="#1a3055" opacity="0.06"/>
+  <!-- Outer frame: thick outline -->
+  <rect x="60" y="55" width="1080" height="520" fill="none" stroke="#1a3055" stroke-width="3" opacity="0.30"/>
 
-  <!-- Sun circle -->
-  <circle cx="950" cy="150" r="80" fill="none" stroke="#d4553a" stroke-width="3" opacity="0.25"/>
-  <circle cx="950" cy="150" r="65" fill="#d4553a" opacity="0.08"/>
-  <line x1="950" y1="60" x2="950" y2="240" stroke="#d4553a" stroke-width="1" opacity="0.1"/>
-  <line x1="860" y1="150" x2="1040" y2="150" stroke="#d4553a" stroke-width="1" opacity="0.1"/>
+  <!-- Card 1 - top left: indigo/vermillion card -->
+  <g>
+    <rect x="90" y="90" width="260" height="175" rx="2" fill="#f5f0e1" stroke="#1a3055" stroke-width="3.5"/>
+    <!-- Flat color top band -->
+    <rect x="90" y="90" width="260" height="35" fill="#1a3055"/>
+    <!-- Heading bar inside band -->
+    <rect x="110" y="100" width="90" height="10" rx="2" fill="#c9a227" opacity="0.90"/>
+    <!-- Text lines -->
+    <rect x="110" y="145" width="210" height="6" rx="1" fill="#1a3055" opacity="0.30"/>
+    <rect x="110" y="161" width="180" height="6" rx="1" fill="#1a3055" opacity="0.25"/>
+    <rect x="110" y="177" width="155" height="6" rx="1" fill="#1a3055" opacity="0.20"/>
+    <!-- Flat accent bar -->
+    <rect x="110" y="200" width="210" height="8" rx="1" fill="#f0e8d8"/>
+    <rect x="110" y="200" width="140" height="8" rx="1" fill="#d4553a" opacity="0.70"/>
+    <!-- Button -->
+    <rect x="110" y="226" width="72" height="24" rx="2" fill="#1a3055"/>
+    <rect x="122" y="235" width="48" height="5" rx="1" fill="#f5f0e1" opacity="0.80"/>
+  </g>
 
-  <!-- Block-printed decorative borders -->
-  <rect x="80" y="80" width="1040" height="470" fill="none" stroke="#1a3055" stroke-width="3" opacity="0.15"/>
-  <rect x="90" y="90" width="1020" height="450" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.15"/>
+  <!-- Card 2 - top right: vermillion header card -->
+  <g>
+    <rect x="850" y="75" width="255" height="195" rx="2" fill="#f5f0e1" stroke="#1a3055" stroke-width="3.5"/>
+    <!-- Flat vermillion top band -->
+    <rect x="850" y="75" width="255" height="38" fill="#d4553a"/>
+    <!-- Heading in band -->
+    <rect x="872" y="86" width="100" height="10" rx="2" fill="#f5f0e1" opacity="0.85"/>
+    <!-- Content area -->
+    <rect x="872" y="132" width="205" height="6" rx="1" fill="#1a3055" opacity="0.28"/>
+    <rect x="872" y="148" width="175" height="6" rx="1" fill="#1a3055" opacity="0.24"/>
+    <rect x="872" y="164" width="190" height="6" rx="1" fill="#1a3055" opacity="0.20"/>
+    <!-- Gold accent block -->
+    <rect x="872" y="190" width="50" height="50" rx="2" fill="#c9a227" opacity="0.85"/>
+    <!-- Text beside block -->
+    <rect x="934" y="198" width="120" height="5" rx="1" fill="#1a3055" opacity="0.25"/>
+    <rect x="934" y="212" width="100" height="5" rx="1" fill="#1a3055" opacity="0.22"/>
+    <rect x="934" y="226" width="80" height="5" rx="1" fill="#1a3055" opacity="0.18"/>
+  </g>
 
-  <!-- Wave decorations -->
-  <path d="M100,400 Q175,350 250,400 T400,400" stroke="#1a3055" stroke-width="2" fill="none" opacity="0.12"/>
-  <path d="M100,420 Q175,370 250,420 T400,420" stroke="#2a5a8c" stroke-width="1.5" fill="none" opacity="0.1"/>
+  <!-- Card 3 - bottom left: gold accent card -->
+  <g>
+    <rect x="105" y="370" width="240" height="160" rx="2" fill="#f5f0e1" stroke="#1a3055" stroke-width="3.5"/>
+    <!-- Gold top band -->
+    <rect x="105" y="370" width="240" height="32" fill="#c9a227"/>
+    <rect x="125" y="379" width="85" height="9" rx="2" fill="#1a3055" opacity="0.80"/>
+    <!-- Content -->
+    <rect x="125" y="420" width="195" height="6" rx="1" fill="#1a3055" opacity="0.28"/>
+    <rect x="125" y="436" width="165" height="6" rx="1" fill="#1a3055" opacity="0.24"/>
+    <!-- Flat progress bars -->
+    <rect x="125" y="462" width="195" height="7" rx="1" fill="#f0e8d8"/>
+    <rect x="125" y="462" width="120" height="7" rx="1" fill="#2a5a8c" opacity="0.75"/>
+    <rect x="125" y="479" width="195" height="7" rx="1" fill="#f0e8d8"/>
+    <rect x="125" y="479" width="85" height="7" rx="1" fill="#d4553a" opacity="0.65"/>
+    <!-- Button -->
+    <rect x="125" y="500" width="65" height="20" rx="2" fill="#d4553a"/>
+    <rect x="136" y="507" width="43" height="5" rx="1" fill="#f5f0e1" opacity="0.80"/>
+  </g>
+
+  <!-- Card 4 - bottom right: ocean/indigo card -->
+  <g>
+    <rect x="835" y="350" width="270" height="180" rx="2" fill="#f5f0e1" stroke="#1a3055" stroke-width="3.5"/>
+    <!-- Indigo top band -->
+    <rect x="835" y="350" width="270" height="36" fill="#2a5a8c"/>
+    <rect x="858" y="360" width="95" height="10" rx="2" fill="#f5f0e1" opacity="0.80"/>
+    <!-- Content -->
+    <rect x="858" y="406" width="220" height="6" rx="1" fill="#1a3055" opacity="0.28"/>
+    <rect x="858" y="422" width="190" height="6" rx="1" fill="#1a3055" opacity="0.24"/>
+    <rect x="858" y="438" width="160" height="6" rx="1" fill="#1a3055" opacity="0.20"/>
+    <!-- Flat color accent strip -->
+    <rect x="858" y="462" width="55" height="30" rx="2" fill="#d4553a" opacity="0.80"/>
+    <rect x="922" y="462" width="55" height="30" rx="2" fill="#c9a227" opacity="0.80"/>
+    <rect x="986" y="462" width="55" height="30" rx="2" fill="#1a3055" opacity="0.80"/>
+    <!-- Bottom text -->
+    <rect x="858" y="508" width="180" height="5" rx="1" fill="#1a3055" opacity="0.18"/>
+  </g>
+
+  <!-- Card 5 - small floating card middle area -->
+  <g>
+    <rect x="420" y="100" width="170" height="110" rx="2" fill="#f5f0e1" stroke="#1a3055" stroke-width="3"/>
+    <rect x="420" y="100" width="170" height="28" fill="#1a3055"/>
+    <rect x="438" y="108" width="70" height="8" rx="2" fill="#c9a227" opacity="0.85"/>
+    <rect x="438" y="145" width="130" height="5" rx="1" fill="#1a3055" opacity="0.25"/>
+    <rect x="438" y="160" width="105" height="5" rx="1" fill="#1a3055" opacity="0.22"/>
+    <rect x="438" y="180" width="60" height="18" rx="2" fill="#d4553a"/>
+    <rect x="448" y="186" width="40" height="5" rx="1" fill="#f5f0e1" opacity="0.80"/>
+  </g>
 
   <!-- Stamp/seal decoration -->
-  <rect x="100" y="120" width="60" height="60" rx="2" fill="none" stroke="#d4553a" stroke-width="2" opacity="0.3"/>
-  <text x="130" y="160" font-family="serif" font-size="28" fill="#d4553a" text-anchor="middle" opacity="0.25">印</text>
+  <rect x="80" y="560" width="45" height="45" rx="2" fill="none" stroke="#d4553a" stroke-width="2" opacity="0.40"/>
+  <text x="102" y="590" font-family="serif" font-size="22" fill="#d4553a" text-anchor="middle" opacity="0.35">印</text>
 
-  <!-- Title area with shadow -->
-  <rect x="353" y="223" width="500" height="120" rx="2" fill="#1a3055" opacity="0.06"/>
-  <text x="600" y="285" font-family="sans-serif" font-size="72" fill="#1a3055" text-anchor="middle" font-weight="bold" letter-spacing="12">UKIYO-E</text>
-  <text x="600" y="335" font-family="sans-serif" font-size="22" fill="#d4553a" text-anchor="middle" letter-spacing="6" opacity="0.8">DIGITAL</text>
-  <text x="600" y="380" font-family="serif" font-size="18" fill="#1a3055" text-anchor="middle" opacity="0.5">Wave Patterns &amp; Flat Perspective</text>
-
-  <!-- Horizontal wave lines -->
-  <line x1="350" y1="260" x2="430" y2="260" stroke="#c9a227" stroke-width="2" opacity="0.4"/>
-  <line x1="770" y1="260" x2="850" y2="260" stroke="#c9a227" stroke-width="2" opacity="0.4"/>
-
-  <!-- Block pattern accents -->
-  <rect x="200" y="480" width="20" height="20" fill="#d4553a" opacity="0.15"/>
-  <rect x="230" y="480" width="20" height="20" fill="#1a3055" opacity="0.1"/>
-  <rect x="260" y="480" width="20" height="20" fill="#c9a227" opacity="0.12"/>
-
-  <rect x="900" y="480" width="20" height="20" fill="#c9a227" opacity="0.12"/>
-  <rect x="930" y="480" width="20" height="20" fill="#1a3055" opacity="0.1"/>
-  <rect x="960" y="480" width="20" height="20" fill="#d4553a" opacity="0.15"/>
+  <!-- Title -->
+  <text x="600" y="300" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="68" font-weight="bold" fill="#1a3055" letter-spacing="8">UKIYO-E DIGITAL</text>
+  <text x="600" y="340" text-anchor="middle" font-family="serif" font-size="16" fill="#d4553a" letter-spacing="5" opacity="0.65">WOODBLOCK PRINTS REIMAGINED</text>
 </svg>
