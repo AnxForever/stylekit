@@ -142,6 +142,11 @@ import { fPatternLayout } from "./f-pattern-layout";
 import { zPatternLayout } from "./z-pattern-layout";
 import { holyGrailLayout } from "./holy-grail-layout";
 import { dashboardLayout } from "./dashboard-layout";
+// Orphaned styles - previously defined but not registered
+import { cyberpunkNeon } from "./cyberpunk-neon";
+import { synthwave } from "./synthwave";
+import { neoBrutalistSoft } from "./neo-brutalist-soft";
+import { neoBrutalistPlayful } from "./neo-brutalist-playful";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -195,6 +200,11 @@ export const styles: DesignStyle[] = [
   zPatternLayout,
   holyGrailLayout,
   dashboardLayout,
+  // Previously orphaned styles
+  cyberpunkNeon,
+  synthwave,
+  neoBrutalistSoft,
+  neoBrutalistPlayful,
 ];
 
 // 根据 slug 获取风格

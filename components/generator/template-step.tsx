@@ -3,7 +3,7 @@
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import type { TemplateType, OutputFormat } from "@/lib/generator/types";
-import { FileText, Briefcase, Code, FileCode } from "lucide-react";
+import { FileText, Briefcase, PenLine, LayoutDashboard, Code, FileCode } from "lucide-react";
 
 interface TemplateStepProps {
   selectedTemplate: TemplateType;
@@ -29,6 +29,18 @@ const templates: {
     labelKey: "generator.portfolio",
     descKey: "generator.portfolioDesc",
     icon: <Briefcase className="w-6 h-6" />,
+  },
+  {
+    type: "blog",
+    labelKey: "generator.blog",
+    descKey: "generator.blogDesc",
+    icon: <PenLine className="w-6 h-6" />,
+  },
+  {
+    type: "dashboard",
+    labelKey: "generator.dashboard",
+    descKey: "generator.dashboardDesc",
+    icon: <LayoutDashboard className="w-6 h-6" />,
   },
 ];
 
