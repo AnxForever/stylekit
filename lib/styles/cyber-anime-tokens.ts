@@ -89,10 +89,10 @@ export const cyberAnimeTokens: StyleTokens = {
       "^font-serif$",
     ],
     reasons: {
-      "rounded-full": "Cyber Anime uses sharp geometric shapes, not circles",
-      "bg-white": "Cyber Anime uses dark backgrounds only",
-      "shadow-sm": "Cyber Anime uses neon glow shadows, not soft elevation",
-      "font-serif": "Cyber Anime uses geometric sans-serif or monospace fonts only",
+      "rounded-full": "Cyber Anime uses sharp geometric shapes with angled mecha corners, not circles",
+      "bg-white": "Cyber Anime uses dark backgrounds only, light surfaces break the HUD illusion",
+      "shadow-sm": "Cyber Anime uses neon glow shadows only, not soft elevation shadows",
+      "font-serif": "Cyber Anime uses geometric sans-serif or monospace fonts for HUD readout feel",
     },
   },
 

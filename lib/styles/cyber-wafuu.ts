@@ -5,49 +5,53 @@ export const cyberWafuu: DesignStyle = {
   name: "赛博和风",
   nameEn: "Cyber Wafuu",
   description:
-    "传统和风纹样与未来科技的数字化融合，折纸几何、青海波数字化重构、电路纹路与金箔光泽交织的日式赛博美学。",
+    "青海波纹样与电路走线融合、鸟居门导航框架、麻叶纹网格、金继ぎ金色修复线、障子屏风格栅面板、传统纹样被科技'侵入'的日式赛博美学。",
   cover: "/styles/cyber-wafuu.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
   category: "expressive",
   colors: {
     primary: "#1e3a5f",
-    secondary: "#0a0a14",
+    secondary: "#080814",
     accent: ["#c41e3a", "#c9a227", "#38bdf8"],
   },
-  keywords: ["赛博和风", "数字和风", "折纸", "日式科技", "传统纹样", "未来"],
+  keywords: ["赛博和风", "数字和风", "青海波", "金继ぎ", "障子", "鸟居", "麻叶纹", "电路"],
 
-  philosophy: `Cyber Wafuu 将日本传统和风美学通过数字化手法重新诠释，创造出一种优雅而未来感的视觉语言。
+  philosophy: `Cyber Wafuu reimagines traditional Japanese visual culture through digital disruption, creating a sophisticated fusion where heritage patterns are "hacked" by technology.
 
-核心理念：
-- 纹样数字化：青海波、麻叶、七宝等传统纹样以电路化方式重构
-- 折纸几何：折纸的精确折叠线条转化为界面的结构分割
-- 金箔科技：传统金箔工艺以数字光效方式呈现
-- 朱与靛：传统朱红与现代靛蓝的配色对话
-- 留白与密度：和风的留白美学与数字信息密度的平衡`,
+Core principles:
+- Seigaiha digital waves: the classic wave pattern overlaid with circuit board traces
+- Torii gate navigation: sacred gate structure reborn as navigation frames
+- Asanoha grid: hemp leaf geometric grid as layout scaffolding
+- Kintsugi gold repair: golden crack lines as decorative borders and accents
+- Shoji screen panels: traditional sliding door grids as card frame systems
+- Cherry blossom + neon: organic sakura forms outlined in electric light
+- Pattern collision: traditional repeating patterns visibly intersecting with digital traces`,
 
   doList: [
-    "使用深色背景（靛蓝或近黑）",
-    "添加电蓝色作为科技感强调",
-    "使用清晰的几何线条分割",
-    "保持日式留白美学的间距",
-    "使用几何无衬线字体",
-    "加入朱红、金箔色作为传统元素点缀",
+    "Use dark indigo backgrounds (bg-[#080814])",
+    "Add seigaiha wave pattern backgrounds with CSS repeating-radial-gradient",
+    "Use shoji screen grid as card frame structure",
+    "Apply kintsugi gold crack line borders and accents",
+    "Use torii gate shape for navigation framing",
+    "Add circuit trace connecting lines between elements",
+    "Layer traditional patterns with digital overlay effects",
   ],
 
   dontList: [
-    "禁止使用柔和粉彩色调",
-    "禁止使用有机不规则形状",
-    "禁止使用西方衬线字体",
-    "禁止使用 rounded-full 圆角",
+    "No soft pastel colors",
+    "No organic irregular rounded shapes",
+    "No Western serif fonts",
+    "No rounded-full borders",
+    "No light backgrounds (bg-white, bg-gray-50)",
   ],
 
   components: {
     button: {
-      name: "按钮",
-      description: "赛博和风风格按钮",
+      name: "Button",
+      description: "Button with seigaiha pattern background and neon glow border",
       code: `<button className="
-  px-6 py-3
+  relative px-6 py-3
   bg-[#1e3a5f] text-[#e2e8f0]
   font-sans font-semibold tracking-wider
   border border-[#1e3a5f]/60
@@ -60,36 +64,42 @@ export const cyberWafuu: DesignStyle = {
 </button>`,
     },
     card: {
-      name: "卡片",
-      description: "赛博和风风格卡片",
+      name: "Card",
+      description: "Shoji grid frame card with kintsugi gold accent lines",
       code: `<div className="
-  p-8
-  bg-[#0a0a14]
+  relative p-8
+  bg-[#080814]
   border border-[#1e3a5f]/30
-  shadow-[0_0_15px_rgba(30,58,95,0.3)]
+  shadow-[0_0_15px_rgba(30,58,95,0.2)]
   hover:shadow-[0_0_20px_rgba(56,189,248,0.3)]
   hover:border-[#38bdf8]/40
   transition-all duration-300
 ">
-  <h3 className="text-2xl font-sans font-bold text-[#38bdf8] tracking-wider mb-3">
-    SEIGAIHA
-  </h3>
-  <p className="text-[#e2e8f0]/50 font-sans">
-    Traditional waves, digitally reborn
-  </p>
+  <div className="absolute top-0 left-1/3 w-px h-full bg-[#1e3a5f]/15" />
+  <div className="absolute top-0 left-2/3 w-px h-full bg-[#1e3a5f]/15" />
+  <div className="absolute top-1/2 left-0 w-full h-px bg-[#1e3a5f]/10" />
+  <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#c9a227]/30 to-transparent" />
+  <div className="relative z-10">
+    <h3 className="text-2xl font-sans font-bold text-[#38bdf8] tracking-wider mb-3">
+      SEIGAIHA
+    </h3>
+    <p className="text-[#e2e8f0]/45 font-sans">
+      Traditional waves, digitally reborn
+    </p>
+  </div>
 </div>`,
     },
     input: {
-      name: "输入框",
-      description: "赛博和风风格输入框",
+      name: "Input",
+      description: "Input with wave pattern underline and circuit trace focus glow",
       code: `<input
   type="text"
   placeholder="Input..."
   className="
     w-full px-4 py-3
-    bg-[#0a0a14]
+    bg-[#080814]
     border border-[#1e3a5f]/30
-    text-[#e2e8f0] placeholder-[#e2e8f0]/25
+    text-[#e2e8f0] placeholder-[#e2e8f0]/20
     font-sans
     focus:border-[#38bdf8]/60
     focus:shadow-[0_0_12px_rgba(56,189,248,0.3)]
@@ -99,37 +109,23 @@ export const cyberWafuu: DesignStyle = {
 />`,
     },
     hero: {
-      name: "Hero 区块",
-      description: "赛博和风风格 Hero",
+      name: "Hero",
+      description: "Full-screen hero with seigaiha wave background and torii gate frame",
       code: `<section className="
   min-h-screen
   flex items-center justify-center
-  bg-[#0a0a14]
+  bg-[#080814]
   relative overflow-hidden
 ">
+  <div className="absolute inset-0 opacity-[0.03]" style={{
+    backgroundImage: "radial-gradient(circle at 50% 100%, transparent 60%, rgba(56,189,248,0.4) 60%, rgba(56,189,248,0.4) 62%, transparent 62%), radial-gradient(circle at 0% 100%, transparent 60%, rgba(56,189,248,0.4) 60%, rgba(56,189,248,0.4) 62%, transparent 62%)",
+    backgroundSize: "60px 30px"
+  }} />
   <div className="relative z-10 text-center px-6">
     <h1 className="text-6xl md:text-8xl font-sans font-bold text-[#38bdf8] uppercase tracking-widest mb-2
       [text-shadow:0_0_25px_rgba(56,189,248,0.4)]">
-      CYBER
+      CYBER WAFUU
     </h1>
-    <h2 className="text-4xl md:text-6xl font-sans font-bold text-[#c41e3a] uppercase tracking-wider mb-6
-      [text-shadow:0_0_20px_rgba(196,30,58,0.4)]">
-      WAFUU
-    </h2>
-    <p className="text-xl text-[#e2e8f0]/40 font-sans mb-8">
-      Where tradition folds into the digital frontier
-    </p>
-    <button className="
-      px-10 py-4
-      bg-[#1e3a5f] text-[#e2e8f0]
-      font-sans font-semibold tracking-wider
-      border border-[#38bdf8]/40
-      shadow-[0_0_15px_rgba(56,189,248,0.3)]
-      hover:shadow-[0_0_30px_rgba(56,189,248,0.5)]
-      transition-all duration-300
-    ">
-      Unfold
-    </button>
   </div>
 </section>`,
     },
@@ -139,21 +135,60 @@ export const cyberWafuu: DesignStyle = {
 
 :root {
   --cw-indigo: #1e3a5f;
-  --cw-dark: #0a0a14;
+  --cw-dark: #080814;
   --cw-vermillion: #c41e3a;
   --cw-gold: #c9a227;
   --cw-blue: #38bdf8;
 }
 
-/* Digital seigaiha wave pattern */
+/* Seigaiha wave pattern (digital version) */
 .cw-seigaiha {
   background-image:
-    radial-gradient(circle at 50% 0%, transparent 70%, rgba(56, 189, 248, 0.04) 70%, rgba(56, 189, 248, 0.04) 72%, transparent 72%),
-    radial-gradient(circle at 0% 50%, transparent 70%, rgba(56, 189, 248, 0.04) 70%, rgba(56, 189, 248, 0.04) 72%, transparent 72%);
-  background-size: 40px 40px;
+    radial-gradient(circle at 50% 100%, transparent 60%, rgba(56, 189, 248, 0.04) 60%, rgba(56, 189, 248, 0.04) 62%, transparent 62%),
+    radial-gradient(circle at 0% 100%, transparent 60%, rgba(56, 189, 248, 0.04) 60%, rgba(56, 189, 248, 0.04) 62%, transparent 62%);
+  background-size: 60px 30px;
 }
 
-/* Circuit line decoration */
+/* Kintsugi gold crack line */
+.cw-kintsugi {
+  position: relative;
+}
+.cw-kintsugi::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--cw-gold) 15%,
+    transparent 30%,
+    var(--cw-gold) 50%,
+    transparent 65%,
+    var(--cw-gold) 80%,
+    transparent 100%
+  );
+  opacity: 0.3;
+  box-shadow: 0 0 6px rgba(201, 162, 39, 0.3);
+}
+
+/* Shoji screen grid */
+.cw-shoji-grid {
+  position: relative;
+}
+.cw-shoji-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(30, 58, 95, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 58, 95, 0.12) 1px, transparent 1px);
+  background-size: 33.33% 50%;
+  pointer-events: none;
+}
+
+/* Circuit trace decoration */
 .cw-circuit::after {
   content: "";
   position: absolute;
@@ -163,39 +198,35 @@ export const cyberWafuu: DesignStyle = {
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    var(--cw-blue) 20%,
-    transparent 40%,
-    var(--cw-blue) 60%,
-    transparent 80%,
+    var(--cw-blue) 15%,
+    transparent 35%,
+    var(--cw-blue) 55%,
+    transparent 75%,
     var(--cw-blue) 90%,
     transparent 100%
   );
-  opacity: 0.3;
+  opacity: 0.2;
+}
+
+/* Asanoha hemp leaf pattern overlay */
+.cw-asanoha {
+  background-image:
+    linear-gradient(30deg, rgba(30, 58, 95, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(30, 58, 95, 0.06) 87.5%),
+    linear-gradient(150deg, rgba(30, 58, 95, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(30, 58, 95, 0.06) 87.5%),
+    linear-gradient(30deg, rgba(30, 58, 95, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(30, 58, 95, 0.06) 87.5%),
+    linear-gradient(150deg, rgba(30, 58, 95, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(30, 58, 95, 0.06) 87.5%);
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px;
 }
 
 /* Gold foil shimmer */
 .cw-gold-foil {
   background: linear-gradient(
     135deg,
-    rgba(201, 162, 39, 0.1) 0%,
-    rgba(201, 162, 39, 0.05) 50%,
-    rgba(201, 162, 39, 0.15) 100%
+    rgba(201, 162, 39, 0.08) 0%,
+    rgba(201, 162, 39, 0.03) 50%,
+    rgba(201, 162, 39, 0.12) 100%
   );
-}
-
-/* Origami fold line */
-.cw-fold-line {
-  position: relative;
-}
-.cw-fold-line::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 100%;
-  background: linear-gradient(180deg, transparent, var(--cw-blue), transparent);
-  opacity: 0.15;
 }`,
 
   aiRules: `You are a Cyber Wafuu design style frontend development expert. All generated code must strictly follow these constraints:
@@ -207,44 +238,49 @@ export const cyberWafuu: DesignStyle = {
 - Western serif fonts
 - rounded-full borders
 - Light backgrounds (bg-white, bg-gray-50, etc.)
+- Standard drop shadows (use glow effects only)
 
 ## Must Follow
 
-- Dark backgrounds: bg-[#0a0a14] or bg-[#1e3a5f]
+- Dark indigo backgrounds: bg-[#080814] or bg-[#1e3a5f]
+- Seigaiha wave pattern as background texture (repeating-radial-gradient)
+- Shoji screen grid frame structure for cards
+- Kintsugi gold crack lines as border accents
+- Torii gate shapes for navigation frames
+- Circuit trace line connections between elements
 - Electric blue accent: #38bdf8 with glow effects
-- Clean geometric sans-serif fonts (font-sans)
-- Sharp edges with minimal border radius
-- Japanese-inspired spacing and breathing room
 - Vermillion #c41e3a and gold #c9a227 for traditional accents
 
 ## Color Palette
 
 Primary:
 - Indigo: #1e3a5f
-- Dark Background: #0a0a14
+- Dark Background: #080814
 - Vermillion: #c41e3a
 - Gold Foil: #c9a227
 - Electric Blue: #38bdf8
 
-## Special Elements
+## Unique Elements
 
-- Digital seigaiha wave patterns
-- Circuit line decorations
-- Gold foil shimmer effects
-- Origami fold line dividers`,
+- Seigaiha wave pattern (CSS repeating-radial-gradient)
+- Kintsugi gold crack line accents (gradient border decorations)
+- Shoji screen grid card frames (CSS grid overlays)
+- Torii gate navigation frames
+- Asanoha hemp leaf pattern background`,
 
   examplePrompts: [
     {
       title: "赛博和风着陆页",
       titleEn: "Cyber Wafuu Landing Page",
-      description: "传统和风纹样与数字科技融合的页面",
-      descriptionEn: "Traditional Japanese patterns fused with digital tech",
+      description: "青海波、金继ぎ与障子屏风的数字融合页面",
+      descriptionEn: "Seigaiha, kintsugi and shoji screen digital fusion page",
       prompt: `Use Cyber Wafuu style to create a dark Japanese-tech landing page:
-1. Background: dark with subtle seigaiha wave pattern
-2. Title: clean sans-serif with electric blue glow
-3. Cards: dark cards with indigo borders and blue hover glow
-4. Use vermillion and gold as traditional accent colors
-5. Clean geometric layout with generous Japanese-style spacing`,
+1. Background: dark indigo with seigaiha wave pattern overlay
+2. Navigation: torii gate shaped frame with vermillion accents
+3. Cards: shoji screen grid frames with kintsugi gold crack accents
+4. Circuit trace lines connecting card elements
+5. Cherry blossom with neon outlines as decorative accents
+6. Asanoha hemp leaf grid as section background`,
     },
   ],
 };

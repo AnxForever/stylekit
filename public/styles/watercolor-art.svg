@@ -1,56 +1,87 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Paper texture -->
-    <filter id="wcPaper" x="0" y="0" width="100%" height="100%">
-      <feTurbulence baseFrequency="0.3" numOctaves="4" seed="2" stitchTiles="stitch"/>
-      <feColorMatrix type="saturate" values="0"/>
-      <feBlend in="SourceGraphic" mode="multiply" result="paper"/>
+    <!-- Paper grain texture -->
+    <filter id="wcGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence baseFrequency="0.65" numOctaves="4" seed="7" stitchTiles="stitch" result="grain"/>
+      <feColorMatrix type="saturate" values="0" in="grain" result="mono"/>
+      <feBlend in="SourceGraphic" in2="mono" mode="multiply"/>
     </filter>
-    <!-- Watercolor blur -->
-    <filter id="wcBlur">
-      <feGaussianBlur stdDeviation="20"/>
+    <!-- Watercolor bleeding displacement -->
+    <filter id="wcBleed" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="3" seed="3" result="turbulence"/>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="18" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
-    <filter id="wcBlurSm">
-      <feGaussianBlur stdDeviation="12"/>
+    <!-- Soft watercolor blur -->
+    <filter id="wcSoft">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="wcMed">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="wcFine">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <!-- Pigment pooling edge filter -->
+    <filter id="wcPool" x="-10%" y="-10%" width="120%" height="120%">
+      <feMorphology operator="dilate" radius="2" in="SourceGraphic" result="dilated"/>
+      <feGaussianBlur stdDeviation="8" in="dilated" result="blurDilated"/>
+      <feComposite in="blurDilated" in2="SourceGraphic" operator="out" result="edge"/>
+      <feMerge>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="edge"/>
+      </feMerge>
     </filter>
   </defs>
 
-  <!-- Warm paper background -->
-  <rect width="1200" height="630" fill="#faf8f5"/>
+  <!-- Warm paper base -->
+  <rect width="1200" height="630" fill="#faf6f0"/>
 
-  <!-- Subtle paper grain -->
-  <rect width="1200" height="630" fill="#f5f0eb" opacity="0.3"/>
+  <!-- Paper grain texture layer -->
+  <rect width="1200" height="630" fill="#f3ede4" opacity="0.4" filter="url(#wcGrain)"/>
 
-  <!-- Large watercolor wash - blush pink -->
-  <ellipse cx="350" cy="280" rx="280" ry="220" fill="#d4a0a0" opacity="0.15" filter="url(#wcBlur)"/>
+  <!-- Large primary wash - rose -->
+  <ellipse cx="320" cy="250" rx="320" ry="240" fill="#d4a0a0" opacity="0.14" filter="url(#wcBleed)"/>
 
-  <!-- Watercolor wash - sky blue -->
-  <ellipse cx="800" cy="350" rx="250" ry="200" fill="#87ceeb" opacity="0.12" filter="url(#wcBlur)"/>
+  <!-- Secondary wash - cerulean blue -->
+  <ellipse cx="850" cy="300" rx="280" ry="210" fill="#7bb8d4" opacity="0.11" filter="url(#wcBleed)"/>
 
-  <!-- Watercolor wash - mint green -->
-  <ellipse cx="600" cy="480" rx="200" ry="150" fill="#98d8c8" opacity="0.1" filter="url(#wcBlur)"/>
+  <!-- Tertiary wash - sage green -->
+  <ellipse cx="580" cy="500" rx="260" ry="160" fill="#8cc5a8" opacity="0.09" filter="url(#wcBleed)"/>
 
-  <!-- Small watercolor spots -->
-  <circle cx="200" cy="120" r="60" fill="#c3b1e1" opacity="0.12" filter="url(#wcBlurSm)"/>
-  <circle cx="1000" cy="150" r="45" fill="#d4a0a0" opacity="0.15" filter="url(#wcBlurSm)"/>
-  <circle cx="900" cy="500" r="70" fill="#87ceeb" opacity="0.1" filter="url(#wcBlurSm)"/>
-  <circle cx="150" cy="450" r="50" fill="#98d8c8" opacity="0.12" filter="url(#wcBlurSm)"/>
+  <!-- Wet-on-wet bloom spots -->
+  <circle cx="180" cy="130" r="80" fill="#c3a0d4" opacity="0.10" filter="url(#wcSoft)"/>
+  <circle cx="1020" cy="120" r="55" fill="#d4a0a0" opacity="0.12" filter="url(#wcMed)"/>
+  <circle cx="950" cy="510" r="90" fill="#7bb8d4" opacity="0.08" filter="url(#wcSoft)"/>
+  <circle cx="130" cy="480" r="65" fill="#8cc5a8" opacity="0.10" filter="url(#wcMed)"/>
 
-  <!-- Bleed drip effects -->
-  <ellipse cx="450" cy="200" rx="30" ry="80" fill="#d4a0a0" opacity="0.08" filter="url(#wcBlurSm)" transform="rotate(15 450 200)"/>
-  <ellipse cx="750" cy="180" rx="25" ry="60" fill="#87ceeb" opacity="0.08" filter="url(#wcBlurSm)" transform="rotate(-10 750 180)"/>
+  <!-- Pigment pooling blooms (darker edges) -->
+  <ellipse cx="420" cy="180" rx="60" ry="40" fill="#c28585" opacity="0.12" filter="url(#wcPool)" transform="rotate(12 420 180)"/>
+  <ellipse cx="780" cy="160" rx="45" ry="35" fill="#5a9ab5" opacity="0.10" filter="url(#wcPool)" transform="rotate(-8 780 160)"/>
 
-  <!-- Title -->
-  <text x="600" y="260" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="600" fill="#d4a0a0" text-anchor="middle" opacity="0.9">Watercolor</text>
-  <text x="600" y="340" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="600" fill="#87ceeb" text-anchor="middle" opacity="0.7">Art</text>
+  <!-- Paint drip trails -->
+  <path d="M380 200 Q385 260, 375 340 Q370 380, 378 420" stroke="#d4a0a0" stroke-width="3" fill="none" opacity="0.06" filter="url(#wcFine)"/>
+  <path d="M820 180 Q825 240, 818 310 Q812 360, 820 400" stroke="#7bb8d4" stroke-width="2.5" fill="none" opacity="0.05" filter="url(#wcFine)"/>
+
+  <!-- Botanical watercolor accent - leaf shapes -->
+  <path d="M100 360 Q130 320, 160 340 Q130 360, 100 360Z" fill="#8cc5a8" opacity="0.15" filter="url(#wcFine)"/>
+  <path d="M110 370 Q140 330, 170 350 Q140 370, 110 370Z" fill="#6ba88c" opacity="0.10" filter="url(#wcFine)"/>
+  <path d="M1050 380 Q1080 350, 1110 370 Q1080 390, 1050 380Z" fill="#c3a0d4" opacity="0.12" filter="url(#wcFine)"/>
+  <path d="M1060 395 Q1090 365, 1120 385 Q1090 405, 1060 395Z" fill="#a080b8" opacity="0.08" filter="url(#wcFine)"/>
+
+  <!-- Title with watercolor transparency -->
+  <text x="600" y="255" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="600" fill="#c28585" text-anchor="middle" opacity="0.12" filter="url(#wcFine)">Watercolor</text>
+  <text x="600" y="255" font-family="Georgia, 'Palatino Linotype', serif" font-size="88" font-weight="600" fill="#d4a0a0" text-anchor="middle" opacity="0.85">Watercolor</text>
+
+  <text x="600" y="340" font-family="Georgia, 'Palatino Linotype', serif" font-size="72" font-weight="600" fill="#7bb8d4" text-anchor="middle" opacity="0.65">Art</text>
 
   <!-- Subtitle -->
-  <text x="600" y="400" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#4a3535" text-anchor="middle" opacity="0.4" letter-spacing="6">SOFT WASHES ON WARM PAPER</text>
+  <text x="600" y="400" font-family="Georgia, 'Palatino Linotype', serif" font-size="17" fill="#5a3e3e" text-anchor="middle" opacity="0.35" letter-spacing="8">BLEEDING PIGMENTS ON WARM PAPER</text>
 
-  <!-- Color swatches with soft edges -->
-  <circle cx="420" cy="490" r="30" fill="#d4a0a0" opacity="0.6"/>
-  <circle cx="500" cy="490" r="30" fill="#87ceeb" opacity="0.6"/>
-  <circle cx="580" cy="490" r="30" fill="#98d8c8" opacity="0.6"/>
-  <circle cx="660" cy="490" r="30" fill="#c3b1e1" opacity="0.6"/>
-  <circle cx="740" cy="490" r="30" fill="#faf8f5" opacity="0.6" stroke="#d4a0a0" stroke-width="1" stroke-opacity="0.3"/>
+  <!-- Watercolor paint swatches with bleeding edges -->
+  <circle cx="380" cy="505" r="34" fill="#d4a0a0" opacity="0.55" filter="url(#wcFine)"/>
+  <circle cx="468" cy="502" r="32" fill="#7bb8d4" opacity="0.55" filter="url(#wcFine)"/>
+  <circle cx="554" cy="507" r="33" fill="#8cc5a8" opacity="0.50" filter="url(#wcFine)"/>
+  <circle cx="640" cy="504" r="31" fill="#c3a0d4" opacity="0.50" filter="url(#wcFine)"/>
+  <circle cx="724" cy="506" r="34" fill="#e8c87a" opacity="0.45" filter="url(#wcFine)"/>
+  <circle cx="810" cy="503" r="32" fill="#faf6f0" opacity="0.6" stroke="#d4a0a0" stroke-width="1.5" stroke-opacity="0.25"/>
 </svg>

@@ -3,8 +3,8 @@ import type { StyleTokens } from "./tokens";
 
 export const shoujoMangaTokens: StyleTokens = {
   border: {
-    width: "border",
-    color: "border-[#ffb7c5]/30",
+    width: "border-2",
+    color: "border-[#ffb7c5]/20",
     radius: "rounded-2xl",
     style: "border-solid",
   },
@@ -33,9 +33,9 @@ export const shoujoMangaTokens: StyleTokens = {
     heading: "font-sans font-bold",
     body: "font-sans leading-relaxed",
     sizes: {
-      hero: "text-4xl md:text-6xl lg:text-7xl",
+      hero: "text-5xl md:text-7xl lg:text-8xl",
       h1: "text-3xl md:text-5xl",
-      h2: "text-2xl md:text-3xl",
+      h2: "text-2xl md:text-4xl",
       h3: "text-xl md:text-2xl",
       body: "text-sm md:text-base",
       small: "text-xs md:text-sm",
@@ -62,36 +62,40 @@ export const shoujoMangaTokens: StyleTokens = {
     text: {
       primary: "text-[#4a5568]",
       secondary: "text-[#ffb7c5]",
-      muted: "text-[#4a5568]/50",
+      muted: "text-[#4a5568]/40",
     },
     button: {
       primary: "bg-[#ffb7c5] text-white shadow-[0_4px_15px_#ffb7c560]",
       secondary: "bg-[#c4b5fd] text-white shadow-[0_4px_15px_#c4b5fd60]",
-      danger: "bg-[#fecdd3] text-[#4a5568]",
+      danger: "bg-[#fde68a] text-[#4a5568] shadow-[0_4px_15px_#fde68a60]",
     },
   },
 
   forbidden: {
     classes: [
       "rounded-none", "rounded-sm",
-      "border-2", "border-4",
+      "border-4", "border-8",
       "font-mono",
       "bg-black", "bg-[#0a0a0a]", "bg-gray-900", "bg-slate-900",
       "shadow-[3px_3px", "shadow-[4px_4px",
+      "border-l-2 border-[",
+      "uppercase tracking-widest",
     ],
     patterns: [
       "^rounded-(?:none|sm)$",
-      "^border-(?:2|4|8)$",
+      "^border-(?:4|8)$",
       "^font-mono$",
-      "^bg-(?:black|gray-900|slate-900)",
+      "^bg-(?:black|gray-900|slate-900|\\[#0a0a0a\\])$",
       "^shadow-\\[\\d+px_\\d+px_0px",
+      "^text-\\[#(?:00ffff|ff00ff)\\]$",
     ],
     reasons: {
-      "rounded-none": "Shoujo Manga uses soft, rounded corners (rounded-full, rounded-2xl)",
-      "border-2": "Shoujo Manga uses subtle thin borders, not thick ones",
-      "font-mono": "Shoujo Manga uses rounded sans-serif fonts, not monospace",
-      "bg-black": "Shoujo Manga uses light, pastel backgrounds only",
-      "shadow-[3px_3px": "Shoujo Manga uses soft diffused shadows, not hard offset ones",
+      "rounded-none": "Shoujo Manga uses soft rounded shapes (rounded-full, rounded-2xl, rounded-3xl)",
+      "border-4": "Shoujo Manga uses subtle borders (border or border-2), not heavy ones",
+      "font-mono": "Shoujo Manga uses rounded sans-serif fonts exclusively",
+      "bg-black": "Shoujo Manga uses light pastel backgrounds only (pearl white, sakura pink)",
+      "shadow-[3px_3px": "Shoujo Manga uses soft diffused shadows with color tinting, not hard offset ones",
+      "uppercase tracking-widest": "Used sparingly for ribbon banners only, never for main content",
     },
   },
 
@@ -105,13 +109,13 @@ export const shoujoMangaTokens: StyleTokens = {
     card: [
       "rounded-2xl",
       "bg-[#fff5f7]",
-      "border border-[#ffb7c5]/30",
+      "border-2 border-[#ffb7c5]/20",
       "shadow-[0_4px_20px_#ffb7c520]",
     ],
     input: [
       "rounded-full",
-      "border border-[#ffb7c5]/30",
-      "bg-white",
+      "border border-[#ffb7c5]/25",
+      "bg-[#fff5f7]",
       "font-sans",
       "focus:outline-none",
     ],
