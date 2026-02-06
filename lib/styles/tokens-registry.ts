@@ -56,6 +56,34 @@ import { minimalistFlatTokens } from "./minimalist-flat-tokens";
 import { neoBrutalistPlayfulTokens } from "./neo-brutalist-playful-tokens";
 import { neoBrutalistSoftTokens } from "./neo-brutalist-soft-tokens";
 import { retroVintageTokens } from "./retro-vintage-tokens";
+// New styles - Batch 4
+import { artNouveauTokens } from "./art-nouveau-tokens";
+import { surrealismTokens } from "./surrealism-tokens";
+import { ukiyoEDigitalTokens } from "./ukiyo-e-digital-tokens";
+import { gothicTokens } from "./gothic-tokens";
+import { outrunTokens } from "./outrun-tokens";
+import { darkAcademiaTokens } from "./dark-academia-tokens";
+import { cottagecoreTokens } from "./cottagecore-tokens";
+import { risographTokens } from "./risograph-tokens";
+import { mechaTokens } from "./mecha-tokens";
+import { gothicLolitaTokens } from "./gothic-lolita-tokens";
+import { cyberChineseTokens } from "./cyber-chinese-tokens";
+// New styles - Batch 5
+import { acidGraphicsTokens } from "./acid-graphics-tokens";
+import { handDrawnDoodleTokens } from "./hand-drawn-doodle-tokens";
+import { swissPosterTokens } from "./swiss-poster-tokens";
+import { watercolorArtTokens } from "./watercolor-art-tokens";
+import { impressionistOilTokens } from "./impressionist-oil-tokens";
+import { collageArtTokens } from "./collage-art-tokens";
+import { glitchArtTokens } from "./glitch-art-tokens";
+import { visualNovelTokens } from "./visual-novel-tokens";
+import { shoujoMangaTokens } from "./shoujo-manga-tokens";
+import { cyberAnimeTokens } from "./cyber-anime-tokens";
+import { pixelAnimeTokens } from "./pixel-anime-tokens";
+import { japaneseFreshTokens } from "./japanese-fresh-tokens";
+import { neonSamuraiTokens } from "./neon-samurai-tokens";
+import { magicCircleTokens } from "./magic-circle-tokens";
+import { cyberWafuuTokens } from "./cyber-wafuu-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -112,6 +140,34 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "z-pattern-layout": zPatternLayoutTokens,
   "holy-grail-layout": holyGrailLayoutTokens,
   "dashboard-layout": dashboardLayoutTokens,
+  // New styles - Batch 4
+  "art-nouveau": artNouveauTokens,
+  "surrealism": surrealismTokens,
+  "ukiyo-e-digital": ukiyoEDigitalTokens,
+  "gothic": gothicTokens,
+  "outrun": outrunTokens,
+  "dark-academia": darkAcademiaTokens,
+  "cottagecore": cottagecoreTokens,
+  "risograph": risographTokens,
+  "mecha": mechaTokens,
+  "gothic-lolita": gothicLolitaTokens,
+  "cyber-chinese": cyberChineseTokens,
+  // New styles - Batch 5
+  "acid-graphics": acidGraphicsTokens,
+  "hand-drawn-doodle": handDrawnDoodleTokens,
+  "swiss-poster": swissPosterTokens,
+  "watercolor-art": watercolorArtTokens,
+  "impressionist-oil": impressionistOilTokens,
+  "collage-art": collageArtTokens,
+  "glitch-art": glitchArtTokens,
+  "visual-novel": visualNovelTokens,
+  "shoujo-manga": shoujoMangaTokens,
+  "cyber-anime": cyberAnimeTokens,
+  "pixel-anime": pixelAnimeTokens,
+  "japanese-fresh": japaneseFreshTokens,
+  "neon-samurai": neonSamuraiTokens,
+  "magic-circle": magicCircleTokens,
+  "cyber-wafuu": cyberWafuuTokens,
 };
 
 // Get tokens for a style by slug

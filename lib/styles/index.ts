@@ -147,6 +147,34 @@ import { cyberpunkNeon } from "./cyberpunk-neon";
 import { synthwave } from "./synthwave";
 import { neoBrutalistSoft } from "./neo-brutalist-soft";
 import { neoBrutalistPlayful } from "./neo-brutalist-playful";
+// New styles - Batch 4
+import { artNouveau } from "./art-nouveau";
+import { surrealism } from "./surrealism";
+import { ukiyoEDigital } from "./ukiyo-e-digital";
+import { gothic } from "./gothic";
+import { outrun } from "./outrun";
+import { darkAcademia } from "./dark-academia";
+import { cottagecore } from "./cottagecore";
+import { risograph } from "./risograph";
+import { mecha } from "./mecha";
+import { gothicLolita } from "./gothic-lolita";
+import { cyberChinese } from "./cyber-chinese";
+// New styles - Batch 5
+import { acidGraphics } from "./acid-graphics";
+import { handDrawnDoodle } from "./hand-drawn-doodle";
+import { swissPoster } from "./swiss-poster";
+import { watercolorArt } from "./watercolor-art";
+import { impressionistOil } from "./impressionist-oil";
+import { collageArt } from "./collage-art";
+import { glitchArt } from "./glitch-art";
+import { visualNovel } from "./visual-novel";
+import { shoujoManga } from "./shoujo-manga";
+import { cyberAnime } from "./cyber-anime";
+import { pixelAnime } from "./pixel-anime";
+import { japaneseFresh } from "./japanese-fresh";
+import { neonSamurai } from "./neon-samurai";
+import { magicCircle } from "./magic-circle";
+import { cyberWafuu } from "./cyber-wafuu";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -205,6 +233,34 @@ export const styles: DesignStyle[] = [
   synthwave,
   neoBrutalistSoft,
   neoBrutalistPlayful,
+  // New styles - Batch 4
+  artNouveau,
+  surrealism,
+  ukiyoEDigital,
+  gothic,
+  outrun,
+  darkAcademia,
+  cottagecore,
+  risograph,
+  mecha,
+  gothicLolita,
+  cyberChinese,
+  // New styles - Batch 5
+  acidGraphics,
+  handDrawnDoodle,
+  swissPoster,
+  watercolorArt,
+  impressionistOil,
+  collageArt,
+  glitchArt,
+  visualNovel,
+  shoujoManga,
+  cyberAnime,
+  pixelAnime,
+  japaneseFresh,
+  neonSamurai,
+  magicCircle,
+  cyberWafuu,
 ];
 
 // 根据 slug 获取风格

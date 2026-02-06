@@ -1,0 +1,70 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Canvas texture -->
+    <filter id="impCanvas">
+      <feTurbulence baseFrequency="0.7" numOctaves="3" seed="5" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="multiply" result="canvas"/>
+    </filter>
+    <!-- Brushstroke blur -->
+    <filter id="impBrush">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="impBrushLg">
+      <feGaussianBlur stdDeviation="15"/>
+    </filter>
+  </defs>
+
+  <!-- Canvas cream background -->
+  <rect width="1200" height="630" fill="#f5f0e1"/>
+
+  <!-- Warm light glow -->
+  <ellipse cx="600" cy="300" rx="500" ry="300" fill="#e8a87c" opacity="0.06" filter="url(#impBrushLg)"/>
+
+  <!-- Impressionist brushstroke shapes -->
+  <rect x="80" y="100" width="200" height="40" rx="20" fill="#e8a87c" opacity="0.2" transform="rotate(-5 180 120)" filter="url(#impBrush)"/>
+  <rect x="120" y="160" width="160" height="35" rx="17" fill="#c0392b" opacity="0.15" transform="rotate(3 200 177)" filter="url(#impBrush)"/>
+
+  <rect x="900" y="80" width="180" height="38" rx="19" fill="#2c3e50" opacity="0.12" transform="rotate(-8 990 99)" filter="url(#impBrush)"/>
+  <rect x="920" y="140" width="150" height="32" rx="16" fill="#1abc9c" opacity="0.15" transform="rotate(5 995 156)" filter="url(#impBrush)"/>
+
+  <!-- Bottom brushstrokes -->
+  <rect x="100" y="480" width="250" height="45" rx="22" fill="#1abc9c" opacity="0.12" transform="rotate(4 225 502)" filter="url(#impBrush)"/>
+  <rect x="850" y="460" width="220" height="40" rx="20" fill="#c0392b" opacity="0.1" transform="rotate(-6 960 480)" filter="url(#impBrush)"/>
+
+  <!-- Pointillism dots -->
+  <g opacity="0.08">
+    <circle cx="300" cy="350" r="4" fill="#e8a87c"/>
+    <circle cx="315" cy="345" r="3" fill="#c0392b"/>
+    <circle cx="310" cy="360" r="3.5" fill="#1abc9c"/>
+    <circle cx="325" cy="355" r="3" fill="#e8a87c"/>
+    <circle cx="295" cy="340" r="3.5" fill="#2c3e50"/>
+
+    <circle cx="850" cy="320" r="4" fill="#c0392b"/>
+    <circle cx="865" cy="315" r="3" fill="#e8a87c"/>
+    <circle cx="860" cy="330" r="3.5" fill="#2c3e50"/>
+    <circle cx="875" cy="325" r="3" fill="#1abc9c"/>
+    <circle cx="845" cy="310" r="3.5" fill="#e8a87c"/>
+  </g>
+
+  <!-- Golden light rays -->
+  <line x1="600" y1="0" x2="300" y2="630" stroke="#e8a87c" stroke-width="1" opacity="0.06"/>
+  <line x1="650" y1="0" x2="350" y2="630" stroke="#e8a87c" stroke-width="1" opacity="0.05"/>
+  <line x1="700" y1="0" x2="400" y2="630" stroke="#e8a87c" stroke-width="1" opacity="0.04"/>
+
+  <!-- Title with painterly feel -->
+  <text x="604" y="274" font-family="Georgia, 'Times New Roman', serif" font-size="85" font-weight="700" fill="#c0392b" text-anchor="middle" opacity="0.15">Impression</text>
+  <text x="600" y="270" font-family="Georgia, 'Times New Roman', serif" font-size="85" font-weight="700" fill="#e8a87c" text-anchor="middle" opacity="0.9">Impression</text>
+
+  <text x="600" y="350" font-family="Georgia, 'Times New Roman', serif" font-size="60" font-weight="700" fill="#2c3e50" text-anchor="middle" opacity="0.8">Soleil Levant</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="410" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#2c3e50" text-anchor="middle" opacity="0.4" letter-spacing="6">BOLD STROKES OF LIGHT AND SHADOW</text>
+
+  <!-- Color palette swatches with paint dab effect -->
+  <ellipse cx="400" cy="500" rx="35" ry="28" fill="#e8a87c" opacity="0.8" transform="rotate(-5 400 500)"/>
+  <ellipse cx="490" cy="498" rx="33" ry="26" fill="#c0392b" opacity="0.8" transform="rotate(3 490 498)"/>
+  <ellipse cx="578" cy="502" rx="34" ry="27" fill="#2c3e50" opacity="0.8" transform="rotate(-2 578 502)"/>
+  <ellipse cx="668" cy="499" rx="32" ry="28" fill="#1abc9c" opacity="0.8" transform="rotate(4 668 499)"/>
+  <ellipse cx="755" cy="501" rx="35" ry="25" fill="#f5f0e1" opacity="0.8" stroke="#e8a87c" stroke-width="1" stroke-opacity="0.4" transform="rotate(-3 755 501)"/>
+</svg>

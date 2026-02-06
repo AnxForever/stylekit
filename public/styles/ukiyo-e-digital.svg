@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#f5f0e1"/>
+
+  <!-- Wave pattern at bottom -->
+  <path d="M0,500 Q75,460 150,500 T300,500 T450,500 T600,500 T750,500 T900,500 T1050,500 T1200,500 L1200,630 L0,630 Z" fill="#1a3055" opacity="0.08"/>
+  <path d="M0,520 Q75,480 150,520 T300,520 T450,520 T600,520 T750,520 T900,520 T1050,520 T1200,520 L1200,630 L0,630 Z" fill="#1a3055" opacity="0.05"/>
+
+  <!-- Mountain silhouette -->
+  <polygon points="0,630 200,400 350,500 500,350 650,480 800,380 1000,450 1200,350 1200,630" fill="#1a3055" opacity="0.06"/>
+
+  <!-- Sun circle -->
+  <circle cx="950" cy="150" r="80" fill="none" stroke="#d4553a" stroke-width="3" opacity="0.25"/>
+  <circle cx="950" cy="150" r="65" fill="#d4553a" opacity="0.08"/>
+  <line x1="950" y1="60" x2="950" y2="240" stroke="#d4553a" stroke-width="1" opacity="0.1"/>
+  <line x1="860" y1="150" x2="1040" y2="150" stroke="#d4553a" stroke-width="1" opacity="0.1"/>
+
+  <!-- Block-printed decorative borders -->
+  <rect x="80" y="80" width="1040" height="470" fill="none" stroke="#1a3055" stroke-width="3" opacity="0.15"/>
+  <rect x="90" y="90" width="1020" height="450" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.15"/>
+
+  <!-- Wave decorations -->
+  <path d="M100,400 Q175,350 250,400 T400,400" stroke="#1a3055" stroke-width="2" fill="none" opacity="0.12"/>
+  <path d="M100,420 Q175,370 250,420 T400,420" stroke="#2a5a8c" stroke-width="1.5" fill="none" opacity="0.1"/>
+
+  <!-- Stamp/seal decoration -->
+  <rect x="100" y="120" width="60" height="60" rx="2" fill="none" stroke="#d4553a" stroke-width="2" opacity="0.3"/>
+  <text x="130" y="160" font-family="serif" font-size="28" fill="#d4553a" text-anchor="middle" opacity="0.25">印</text>
+
+  <!-- Title area with shadow -->
+  <rect x="353" y="223" width="500" height="120" rx="2" fill="#1a3055" opacity="0.06"/>
+  <text x="600" y="285" font-family="sans-serif" font-size="72" fill="#1a3055" text-anchor="middle" font-weight="bold" letter-spacing="12">UKIYO-E</text>
+  <text x="600" y="335" font-family="sans-serif" font-size="22" fill="#d4553a" text-anchor="middle" letter-spacing="6" opacity="0.8">DIGITAL</text>
+  <text x="600" y="380" font-family="serif" font-size="18" fill="#1a3055" text-anchor="middle" opacity="0.5">Wave Patterns &amp; Flat Perspective</text>
+
+  <!-- Horizontal wave lines -->
+  <line x1="350" y1="260" x2="430" y2="260" stroke="#c9a227" stroke-width="2" opacity="0.4"/>
+  <line x1="770" y1="260" x2="850" y2="260" stroke="#c9a227" stroke-width="2" opacity="0.4"/>
+
+  <!-- Block pattern accents -->
+  <rect x="200" y="480" width="20" height="20" fill="#d4553a" opacity="0.15"/>
+  <rect x="230" y="480" width="20" height="20" fill="#1a3055" opacity="0.1"/>
+  <rect x="260" y="480" width="20" height="20" fill="#c9a227" opacity="0.12"/>
+
+  <rect x="900" y="480" width="20" height="20" fill="#c9a227" opacity="0.12"/>
+  <rect x="930" y="480" width="20" height="20" fill="#1a3055" opacity="0.1"/>
+  <rect x="960" y="480" width="20" height="20" fill="#d4553a" opacity="0.15"/>
+</svg>

@@ -1,0 +1,75 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Torn edge clip path -->
+    <clipPath id="colTorn1">
+      <polygon points="0,5 20,0 45,8 70,2 95,7 120,0 150,6 175,2 200,8 225,0 250,5 250,195 230,200 205,193 180,198 155,200 130,195 105,198 80,200 55,195 30,200 0,196"/>
+    </clipPath>
+    <clipPath id="colTorn2">
+      <polygon points="5,0 30,4 55,0 80,6 105,2 130,5 150,0 150,120 145,125 120,118 95,124 70,120 45,125 20,119 0,123 0,3"/>
+    </clipPath>
+  </defs>
+
+  <!-- Aged paper background -->
+  <rect width="1200" height="630" fill="#f5f0e8"/>
+
+  <!-- Background paper scraps -->
+  <rect x="50" y="40" width="280" height="200" fill="#e74c3c" opacity="0.1" transform="rotate(5 190 140)"/>
+  <rect x="870" y="30" width="260" height="180" fill="#3498db" opacity="0.1" transform="rotate(-4 1000 120)"/>
+  <rect x="60" y="400" width="240" height="160" fill="#f39c12" opacity="0.08" transform="rotate(3 180 480)"/>
+  <rect x="880" y="420" width="250" height="170" fill="#9b59b6" opacity="0.08" transform="rotate(-5 1005 505)"/>
+
+  <!-- Paper cutout layers -->
+  <rect x="200" y="150" width="300" height="180" fill="#e74c3c" opacity="0.15" transform="rotate(2 350 240)"/>
+  <rect x="208" y="158" width="300" height="180" fill="#f5f0e8" opacity="0.9" transform="rotate(2 358 248)" stroke="#2d2d2d" stroke-width="2"/>
+
+  <rect x="680" y="130" width="280" height="200" fill="#3498db" opacity="0.15" transform="rotate(-3 820 230)"/>
+  <rect x="688" y="138" width="280" height="200" fill="#f5f0e8" opacity="0.9" transform="rotate(-3 828 238)" stroke="#2d2d2d" stroke-width="2"/>
+
+  <!-- Tape strips -->
+  <rect x="330" y="135" width="80" height="24" fill="#f39c12" opacity="0.6" transform="rotate(5 370 147)" stroke="#2d2d2d" stroke-width="0.5" stroke-opacity="0.3"/>
+  <rect x="780" y="115" width="70" height="22" fill="#f39c12" opacity="0.5" transform="rotate(-8 815 126)" stroke="#2d2d2d" stroke-width="0.5" stroke-opacity="0.3"/>
+
+  <!-- Dashed cut lines -->
+  <line x1="100" y1="380" x2="500" y2="380" stroke="#2d2d2d" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.2"/>
+  <line x1="700" y1="400" x2="1100" y2="400" stroke="#2d2d2d" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.2"/>
+
+  <!-- Scissors icon -->
+  <g transform="translate(490, 372)" opacity="0.25">
+    <line x1="0" y1="0" x2="12" y2="8" stroke="#2d2d2d" stroke-width="2"/>
+    <line x1="0" y1="16" x2="12" y2="8" stroke="#2d2d2d" stroke-width="2"/>
+    <circle cx="0" cy="0" r="4" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
+    <circle cx="0" cy="16" r="4" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
+  </g>
+
+  <!-- Title - mixed fonts, collage style -->
+  <text x="500" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="90" font-weight="700" fill="#2d2d2d" text-anchor="middle" transform="rotate(-1 500 290)">COLLAGE</text>
+  <text x="720" y="360" font-family="Arial, Helvetica, sans-serif" font-size="80" font-weight="900" fill="#e74c3c" text-anchor="middle" transform="rotate(0.5 720 360)">ART</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="420" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#2d2d2d" text-anchor="middle" opacity="0.4" letter-spacing="6" text-transform="uppercase">CUT TEAR PASTE LAYER</text>
+
+  <!-- Color swatch cutouts -->
+  <g transform="rotate(-2 380 530)">
+    <rect x="350" y="490" width="55" height="55" fill="#2d2d2d" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+  <g transform="rotate(1 450 528)">
+    <rect x="420" y="490" width="55" height="55" fill="#e74c3c" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+  <g transform="rotate(-1.5 520 532)">
+    <rect x="490" y="490" width="55" height="55" fill="#3498db" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+  <g transform="rotate(2 590 529)">
+    <rect x="560" y="490" width="55" height="55" fill="#f39c12" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+  <g transform="rotate(-0.5 660 531)">
+    <rect x="630" y="490" width="55" height="55" fill="#9b59b6" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+  <g transform="rotate(1.5 730 530)">
+    <rect x="700" y="490" width="55" height="55" fill="#f5f0e8" opacity="0.9" stroke="#2d2d2d" stroke-width="2"/>
+  </g>
+
+  <!-- Shadow offset blocks -->
+  <rect x="354" y="494" width="55" height="55" fill="#2d2d2d" opacity="0.15" transform="rotate(-2 382 534)"/>
+  <rect x="424" y="494" width="55" height="55" fill="#2d2d2d" opacity="0.15" transform="rotate(1 454 532)"/>
+  <rect x="494" y="494" width="55" height="55" fill="#2d2d2d" opacity="0.15" transform="rotate(-1.5 524 536)"/>
+</svg>

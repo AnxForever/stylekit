@@ -1,0 +1,67 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Notebook lines -->
+    <pattern id="doodleLines" x="0" y="0" width="1200" height="32" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="31" x2="1200" y2="31" stroke="#2c2c2c" stroke-width="0.5" opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <!-- Paper background -->
+  <rect width="1200" height="630" fill="#fffef5"/>
+
+  <!-- Notebook lines -->
+  <rect width="1200" height="630" fill="url(#doodleLines)"/>
+
+  <!-- Doodle squiggly shapes -->
+  <path d="M150,150 Q170,130 190,150 Q210,170 230,150 Q250,130 270,150" stroke="#ff6b6b" stroke-width="3" fill="none" opacity="0.3" stroke-dasharray="5,3"/>
+  <path d="M900,100 Q920,80 940,100 Q960,120 980,100 Q1000,80 1020,100" stroke="#4ecdc4" stroke-width="3" fill="none" opacity="0.3" stroke-dasharray="5,3"/>
+
+  <!-- Dashed rectangle decorations -->
+  <rect x="100" y="400" width="80" height="80" rx="2" stroke="#4ecdc4" stroke-width="2" stroke-dasharray="8,4" fill="none" opacity="0.2" transform="rotate(-5 140 440)"/>
+  <rect x="1000" y="420" width="100" height="70" rx="2" stroke="#ffd93d" stroke-width="2" stroke-dasharray="8,4" fill="none" opacity="0.2" transform="rotate(3 1050 455)"/>
+  <rect x="950" y="150" width="70" height="90" rx="2" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="8,4" fill="none" opacity="0.2" transform="rotate(-3 985 195)"/>
+
+  <!-- Circle doodles -->
+  <circle cx="200" cy="250" r="30" stroke="#ffd93d" stroke-width="2" stroke-dasharray="6,4" fill="none" opacity="0.2"/>
+  <circle cx="1050" cy="300" r="25" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="6,4" fill="none" opacity="0.2"/>
+
+  <!-- Star doodle -->
+  <path d="M150,500 L158,480 L166,500 L145,488 L171,488 Z" stroke="#4ecdc4" stroke-width="2" fill="none" opacity="0.25" stroke-dasharray="4,2"/>
+
+  <!-- Title with slight rotation -->
+  <g transform="rotate(-2 600 260)">
+    <text x="600" y="260" font-family="'Segoe UI', system-ui, sans-serif" font-size="100" font-weight="900" fill="#2c2c2c" text-anchor="middle">Doodle</text>
+  </g>
+
+  <g transform="rotate(1 600 340)">
+    <text x="600" y="350" font-family="'Segoe UI', system-ui, sans-serif" font-size="80" font-weight="900" fill="#ff6b6b" text-anchor="middle">& Sketch</text>
+  </g>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="'Segoe UI', system-ui, sans-serif" font-size="20" fill="#2c2c2c" text-anchor="middle" opacity="0.4">hand-crafted interfaces with creative charm</text>
+
+  <!-- Marker color swatches with dashed borders -->
+  <g transform="translate(370, 450)">
+    <rect width="60" height="60" rx="2" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#2c2c2c"/>
+    <rect x="4" y="4" width="60" height="60" rx="2" fill="#ff6b6b" opacity="0.2"/>
+  </g>
+  <g transform="translate(450, 450)">
+    <rect width="60" height="60" rx="2" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#ff6b6b"/>
+    <rect x="4" y="4" width="60" height="60" rx="2" fill="#4ecdc4" opacity="0.2"/>
+  </g>
+  <g transform="translate(530, 450)">
+    <rect width="60" height="60" rx="2" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#4ecdc4"/>
+    <rect x="4" y="4" width="60" height="60" rx="2" fill="#ffd93d" opacity="0.2"/>
+  </g>
+  <g transform="translate(610, 450)">
+    <rect width="60" height="60" rx="2" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#ffd93d"/>
+    <rect x="4" y="4" width="60" height="60" rx="2" fill="#ff6b6b" opacity="0.2"/>
+  </g>
+  <g transform="translate(690, 450)">
+    <rect width="60" height="60" rx="2" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#fffef5"/>
+    <rect x="4" y="4" width="60" height="60" rx="2" fill="#4ecdc4" opacity="0.15"/>
+  </g>
+
+  <!-- Wavy underline decoration -->
+  <path d="M400,530 Q420,525 440,530 Q460,535 480,530 Q500,525 520,530 Q540,535 560,530 Q580,525 600,530 Q620,535 640,530 Q660,525 680,530 Q700,535 720,530 Q740,525 760,530 Q780,535 800,530" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.3"/>
+</svg>
