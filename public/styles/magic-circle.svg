@@ -20,10 +20,10 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <!-- Intense center glow -->
+    <!-- Intense center glow (boosted inner stop from 0.12 to 0.20) -->
     <radialGradient id="centerRadiance" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.12"/>
-      <stop offset="30%" stop-color="#fbbf24" stop-opacity="0.04"/>
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.20"/>
+      <stop offset="30%" stop-color="#fbbf24" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#0f0e2e" stop-opacity="0"/>
     </radialGradient>
   </defs>
@@ -34,44 +34,44 @@
   <!-- Center radiance glow -->
   <rect width="1200" height="630" fill="url(#centerRadiance)"/>
 
-  <!-- Outer ring 1 (largest) -->
-  <circle cx="600" cy="315" r="280" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.2" filter="url(#goldGlow)"/>
+  <!-- Outer ring 1 (largest) - boosted from 0.2 to 0.35 -->
+  <circle cx="600" cy="315" r="280" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.35" filter="url(#goldGlow)"/>
   <!-- Outer ring 1 double-line -->
-  <circle cx="600" cy="315" r="276" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.12"/>
+  <circle cx="600" cy="315" r="276" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.25"/>
 
-  <!-- Ring 2 - dashed runic -->
-  <circle cx="600" cy="315" r="245" fill="none" stroke="#fbbf24" stroke-width="0.8" opacity="0.18" stroke-dasharray="12 6 3 6"/>
+  <!-- Ring 2 - dashed runic - boosted from 0.18 to 0.30 -->
+  <circle cx="600" cy="315" r="245" fill="none" stroke="#fbbf24" stroke-width="0.8" opacity="0.30" stroke-dasharray="12 6 3 6"/>
 
-  <!-- Ring 3 - indigo -->
-  <circle cx="600" cy="315" r="210" fill="none" stroke="#818cf8" stroke-width="0.7" opacity="0.2" filter="url(#indigoGlow)"/>
+  <!-- Ring 3 - indigo - boosted from 0.2 to 0.35 -->
+  <circle cx="600" cy="315" r="210" fill="none" stroke="#818cf8" stroke-width="0.7" opacity="0.35" filter="url(#indigoGlow)"/>
 
-  <!-- Ring 4 - gold solid -->
-  <circle cx="600" cy="315" r="175" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.25" filter="url(#goldGlow)"/>
+  <!-- Ring 4 - gold solid - boosted from 0.25 to 0.40 -->
+  <circle cx="600" cy="315" r="175" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.40" filter="url(#goldGlow)"/>
 
-  <!-- Ring 5 - thin dashed -->
-  <circle cx="600" cy="315" r="140" fill="none" stroke="#e2e8f0" stroke-width="0.5" opacity="0.12" stroke-dasharray="4 8"/>
+  <!-- Ring 5 - thin dashed - boosted from 0.12 to 0.25 -->
+  <circle cx="600" cy="315" r="140" fill="none" stroke="#e2e8f0" stroke-width="0.5" opacity="0.25" stroke-dasharray="4 8"/>
 
-  <!-- Ring 6 - inner indigo -->
-  <circle cx="600" cy="315" r="105" fill="none" stroke="#818cf8" stroke-width="0.6" opacity="0.18"/>
+  <!-- Ring 6 - inner indigo - boosted from 0.18 to 0.30 -->
+  <circle cx="600" cy="315" r="105" fill="none" stroke="#818cf8" stroke-width="0.6" opacity="0.30"/>
 
-  <!-- Innermost ring - gold -->
-  <circle cx="600" cy="315" r="65" fill="none" stroke="#fbbf24" stroke-width="1.2" opacity="0.3" filter="url(#goldGlow)"/>
+  <!-- Innermost ring - gold - boosted from 0.3 to 0.45 -->
+  <circle cx="600" cy="315" r="65" fill="none" stroke="#fbbf24" stroke-width="1.2" opacity="0.45" filter="url(#goldGlow)"/>
 
-  <!-- Hexagram (two overlapping triangles) -->
-  <g opacity="0.22" filter="url(#goldGlow)">
+  <!-- Hexagram (two overlapping triangles) - boosted from 0.22 to 0.35 -->
+  <g opacity="0.35" filter="url(#goldGlow)">
     <!-- Triangle 1: pointing up -->
     <polygon points="600,140 770,395 430,395" fill="none" stroke="#fbbf24" stroke-width="1.2"/>
     <!-- Triangle 2: pointing down -->
     <polygon points="600,490 430,235 770,235" fill="none" stroke="#fbbf24" stroke-width="1.2"/>
   </g>
 
-  <!-- Pentagram inside inner ring -->
-  <g opacity="0.15">
+  <!-- Pentagram inside inner ring - boosted from 0.15 to 0.28 -->
+  <g opacity="0.28">
     <polygon points="600,250 635,340 590,370 610,370 565,340" fill="none" stroke="#818cf8" stroke-width="0.8"/>
   </g>
 
-  <!-- Flower of Life pattern (sacred geometry) in center -->
-  <g opacity="0.08" stroke="#fbbf24" stroke-width="0.5" fill="none">
+  <!-- Flower of Life pattern (sacred geometry) - boosted from 0.08 to 0.20 -->
+  <g opacity="0.20" stroke="#fbbf24" stroke-width="0.5" fill="none">
     <circle cx="600" cy="315" r="35"/>
     <circle cx="635" cy="315" r="35"/>
     <circle cx="565" cy="315" r="35"/>
@@ -81,82 +81,93 @@
     <circle cx="583" cy="345" r="35"/>
   </g>
 
-  <!-- Runic inscription marks along outer ring -->
+  <!-- Runic inscription marks along outer ring (boosted from 0.3-0.4 to 0.55-0.65) -->
   <!-- Top cardinal -->
   <g transform="translate(600, 35)" filter="url(#goldGlow)">
-    <line x1="-8" y1="0" x2="8" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="0" y1="-5" x2="0" y2="10" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="-4" y1="5" x2="4" y2="5" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="0" y1="-5" x2="0" y2="10" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="-4" y1="5" x2="4" y2="5" stroke="#fbbf24" stroke-width="0.8" opacity="0.55"/>
   </g>
   <!-- Right cardinal -->
   <g transform="translate(880, 315)" filter="url(#goldGlow)">
-    <line x1="0" y1="-8" x2="0" y2="8" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="-5" y1="0" x2="10" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="5" y1="-4" x2="5" y2="4" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
+    <line x1="0" y1="-8" x2="0" y2="8" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="-5" y1="0" x2="10" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="5" y1="-4" x2="5" y2="4" stroke="#fbbf24" stroke-width="0.8" opacity="0.55"/>
   </g>
   <!-- Bottom cardinal -->
   <g transform="translate(600, 595)" filter="url(#goldGlow)">
-    <line x1="-8" y1="0" x2="8" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="0" y1="-10" x2="0" y2="5" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="-4" y1="-5" x2="4" y2="-5" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="0" y1="-10" x2="0" y2="5" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="-4" y1="-5" x2="4" y2="-5" stroke="#fbbf24" stroke-width="0.8" opacity="0.55"/>
   </g>
   <!-- Left cardinal -->
   <g transform="translate(320, 315)" filter="url(#goldGlow)">
-    <line x1="0" y1="-8" x2="0" y2="8" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="-10" y1="0" x2="5" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.4"/>
-    <line x1="-5" y1="-4" x2="-5" y2="4" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
+    <line x1="0" y1="-8" x2="0" y2="8" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="-10" y1="0" x2="5" y2="0" stroke="#fbbf24" stroke-width="1.2" opacity="0.65"/>
+    <line x1="-5" y1="-4" x2="-5" y2="4" stroke="#fbbf24" stroke-width="0.8" opacity="0.55"/>
   </g>
 
-  <!-- Alchemical symbols at hexagram intersection points -->
+  <!-- Alchemical symbols at hexagram intersection points (boosted from 0.3 to 0.50) -->
   <!-- Top-right: Fire triangle -->
-  <g transform="translate(720, 180)" opacity="0.3">
+  <g transform="translate(720, 180)" opacity="0.50">
     <polygon points="0,-8 7,6 -7,6" fill="none" stroke="#fbbf24" stroke-width="0.8"/>
   </g>
   <!-- Top-left: Air triangle (inverted with bar) -->
-  <g transform="translate(480, 180)" opacity="0.3">
+  <g transform="translate(480, 180)" opacity="0.50">
     <polygon points="0,8 7,-6 -7,-6" fill="none" stroke="#818cf8" stroke-width="0.8"/>
     <line x1="-5" y1="0" x2="5" y2="0" stroke="#818cf8" stroke-width="0.6"/>
   </g>
   <!-- Bottom-right: Water triangle (inverted) -->
-  <g transform="translate(720, 450)" opacity="0.3">
+  <g transform="translate(720, 450)" opacity="0.50">
     <polygon points="0,8 7,-6 -7,-6" fill="none" stroke="#818cf8" stroke-width="0.8"/>
   </g>
   <!-- Bottom-left: Earth triangle (with bar) -->
-  <g transform="translate(480, 450)" opacity="0.3">
+  <g transform="translate(480, 450)" opacity="0.50">
     <polygon points="0,-8 7,6 -7,6" fill="none" stroke="#fbbf24" stroke-width="0.8"/>
     <line x1="-5" y1="0" x2="5" y2="0" stroke="#fbbf24" stroke-width="0.6"/>
   </g>
 
-  <!-- Cardinal point filled dots -->
-  <circle cx="600" cy="35" r="5" fill="#fbbf24" opacity="0.45" filter="url(#goldGlow)"/>
-  <circle cx="880" cy="315" r="5" fill="#fbbf24" opacity="0.45" filter="url(#goldGlow)"/>
-  <circle cx="600" cy="595" r="5" fill="#fbbf24" opacity="0.45" filter="url(#goldGlow)"/>
-  <circle cx="320" cy="315" r="5" fill="#fbbf24" opacity="0.45" filter="url(#goldGlow)"/>
+  <!-- Cardinal point filled dots (boosted from 0.45 to 0.65) -->
+  <circle cx="600" cy="35" r="5" fill="#fbbf24" opacity="0.65" filter="url(#goldGlow)"/>
+  <circle cx="880" cy="315" r="5" fill="#fbbf24" opacity="0.65" filter="url(#goldGlow)"/>
+  <circle cx="600" cy="595" r="5" fill="#fbbf24" opacity="0.65" filter="url(#goldGlow)"/>
+  <circle cx="320" cy="315" r="5" fill="#fbbf24" opacity="0.65" filter="url(#goldGlow)"/>
 
   <!-- Diagonal intersection dots (indigo) -->
-  <circle cx="798" cy="130" r="3.5" fill="#818cf8" opacity="0.3"/>
-  <circle cx="402" cy="130" r="3.5" fill="#818cf8" opacity="0.3"/>
-  <circle cx="798" cy="500" r="3.5" fill="#818cf8" opacity="0.3"/>
-  <circle cx="402" cy="500" r="3.5" fill="#818cf8" opacity="0.3"/>
+  <circle cx="798" cy="130" r="3.5" fill="#818cf8" opacity="0.45"/>
+  <circle cx="402" cy="130" r="3.5" fill="#818cf8" opacity="0.45"/>
+  <circle cx="798" cy="500" r="3.5" fill="#818cf8" opacity="0.45"/>
+  <circle cx="402" cy="500" r="3.5" fill="#818cf8" opacity="0.45"/>
 
-  <!-- Center golden glow dot -->
-  <circle cx="600" cy="315" r="8" fill="#fbbf24" opacity="0.5" filter="url(#goldGlow)"/>
-  <circle cx="600" cy="315" r="3" fill="#fbbf24" opacity="0.8"/>
+  <!-- Center golden glow dot (boosted from 0.5/0.8 to 0.65/0.95) -->
+  <circle cx="600" cy="315" r="8" fill="#fbbf24" opacity="0.65" filter="url(#goldGlow)"/>
+  <circle cx="600" cy="315" r="3" fill="#fbbf24" opacity="0.95"/>
 
-  <!-- Floating light particles -->
-  <circle cx="120" cy="80" r="1.5" fill="#fbbf24" opacity="0.3"/>
-  <circle cx="250" cy="120" r="1" fill="#e2e8f0" opacity="0.2"/>
-  <circle cx="1050" cy="90" r="1.5" fill="#818cf8" opacity="0.25"/>
-  <circle cx="1100" cy="180" r="1" fill="#fbbf24" opacity="0.2"/>
-  <circle cx="100" cy="500" r="1" fill="#818cf8" opacity="0.2"/>
-  <circle cx="1080" cy="520" r="1.5" fill="#fbbf24" opacity="0.25"/>
-  <circle cx="200" cy="550" r="1" fill="#e2e8f0" opacity="0.15"/>
-  <circle cx="950" cy="50" r="1" fill="#fbbf24" opacity="0.18"/>
+  <!-- Floating light particles (boosted from 0.15-0.3 to 0.30-0.45) -->
+  <circle cx="120" cy="80" r="1.5" fill="#fbbf24" opacity="0.45"/>
+  <circle cx="250" cy="120" r="1" fill="#e2e8f0" opacity="0.35"/>
+  <circle cx="1050" cy="90" r="1.5" fill="#818cf8" opacity="0.40"/>
+  <circle cx="1100" cy="180" r="1" fill="#fbbf24" opacity="0.35"/>
+  <circle cx="100" cy="500" r="1" fill="#818cf8" opacity="0.35"/>
+  <circle cx="1080" cy="520" r="1.5" fill="#fbbf24" opacity="0.40"/>
+  <circle cx="200" cy="550" r="1" fill="#e2e8f0" opacity="0.30"/>
+  <circle cx="950" cy="50" r="1" fill="#fbbf24" opacity="0.33"/>
 
   <!-- Title -->
   <text x="600" y="295" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="700" fill="#fbbf24" text-anchor="middle" filter="url(#goldGlow)">MAGIC</text>
   <text x="600" y="370" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="700" fill="#818cf8" text-anchor="middle" filter="url(#indigoGlow)">CIRCLE</text>
 
-  <!-- Subtitle -->
-  <text x="600" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#e2e8f0" text-anchor="middle" opacity="0.3" letter-spacing="8">SACRED GEOMETRY AWAKENS</text>
+  <!-- Subtitle (boosted from 0.3 to 0.50) -->
+  <text x="600" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#e2e8f0" text-anchor="middle" opacity="0.50" letter-spacing="8">SACRED GEOMETRY AWAKENS</text>
+
+  <!-- Color swatches at bottom -->
+  <rect x="420" y="565" width="50" height="44" fill="#fbbf24" opacity="0.85"/>
+  <rect x="420" y="565" width="50" height="44" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.45"/>
+  <rect x="484" y="565" width="50" height="44" fill="#818cf8" opacity="0.85"/>
+  <rect x="484" y="565" width="50" height="44" fill="none" stroke="#818cf8" stroke-width="1" opacity="0.45"/>
+  <rect x="548" y="565" width="50" height="44" fill="#e2e8f0" opacity="0.85"/>
+  <rect x="548" y="565" width="50" height="44" fill="none" stroke="#e2e8f0" stroke-width="1" opacity="0.45"/>
+  <rect x="612" y="565" width="50" height="44" fill="#4c1d95" opacity="0.85"/>
+  <rect x="612" y="565" width="50" height="44" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.45"/>
+  <rect x="676" y="565" width="50" height="44" fill="#0a0920" stroke="#fbbf24" stroke-width="1" opacity="0.85"/>
 </svg>

@@ -1,120 +1,103 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Displacement filter for wobbly edges -->
-    <filter id="doodleWobble" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="2" seed="3" result="turbulence"/>
-      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="4" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <!-- Pencil texture filter -->
-    <filter id="doodlePencil" x="-2%" y="-2%" width="104%" height="104%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise"/>
-      <feComposite in="SourceGraphic" in2="noise" operator="in"/>
-    </filter>
     <!-- Notebook blue lines -->
-    <pattern id="notebookLines" x="0" y="0" width="1200" height="32" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="31" x2="1200" y2="31" stroke="#a8c8e8" stroke-width="0.8" opacity="0.35"/>
-    </pattern>
-    <!-- Red margin line -->
-    <pattern id="marginLine" x="0" y="0" width="1200" height="630" patternUnits="userSpaceOnUse">
-      <line x1="120" y1="0" x2="120" y2="630" stroke="#ff6b6b" stroke-width="1" opacity="0.2"/>
-    </pattern>
-    <!-- Graph paper dots -->
-    <pattern id="paperDots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-      <circle cx="12" cy="12" r="0.5" fill="#2c2c2c" opacity="0.06"/>
+    <pattern id="nbLines" x="0" y="0" width="1200" height="32" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="31" x2="1200" y2="31" stroke="#a8c8e8" stroke-width="1" opacity="0.55"/>
     </pattern>
   </defs>
 
-  <!-- Paper background -->
+  <!-- Notebook paper background -->
   <rect width="1200" height="630" fill="#fffef5"/>
 
-  <!-- Subtle paper texture dots -->
-  <rect width="1200" height="630" fill="url(#paperDots)"/>
-
-  <!-- Notebook blue lines -->
-  <rect width="1200" height="630" fill="url(#notebookLines)"/>
+  <!-- Notebook blue lines - visible -->
+  <rect width="1200" height="630" fill="url(#nbLines)"/>
 
   <!-- Red margin line -->
-  <rect width="1200" height="630" fill="url(#marginLine)"/>
+  <line x1="120" y1="0" x2="120" y2="630" stroke="#ff6b6b" stroke-width="1.2" opacity="0.40"/>
 
-  <!-- Spiral binding holes -->
-  <g opacity="0.15">
-    <circle cx="60" cy="50" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="120" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="190" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="260" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="330" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="400" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="470" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
-    <circle cx="60" cy="540" r="8" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
+  <!-- Spiral binding holes on left - visible -->
+  <g opacity="0.45">
+    <circle cx="60" cy="50" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="120" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="190" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="260" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="330" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="400" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="470" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+    <circle cx="60" cy="540" r="9" stroke="#2c2c2c" stroke-width="2" fill="none"/>
   </g>
 
-  <!-- Wobbly decorative shapes -->
-  <rect x="850" y="80" width="120" height="90" rx="3" stroke="#4ecdc4" stroke-width="2.5" stroke-dasharray="8,5" fill="none" opacity="0.25" filter="url(#doodleWobble)" transform="rotate(-3 910 125)"/>
-  <rect x="180" y="420" width="100" height="80" rx="3" stroke="#ff6b6b" stroke-width="2.5" stroke-dasharray="8,5" fill="none" opacity="0.2" filter="url(#doodleWobble)" transform="rotate(4 230 460)"/>
+  <!-- Washi tape decoration in top-right corner -->
+  <g transform="rotate(-35 1060 55)" opacity="0.65">
+    <rect x="1020" y="38" width="80" height="30" fill="#ffd93d" rx="2"/>
+    <line x1="1028" y1="42" x2="1028" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+    <line x1="1040" y1="42" x2="1040" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+    <line x1="1052" y1="42" x2="1052" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+    <line x1="1064" y1="42" x2="1064" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+    <line x1="1076" y1="42" x2="1076" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+    <line x1="1088" y1="42" x2="1088" y2="64" stroke="#fff" stroke-width="1" opacity="0.35"/>
+  </g>
 
-  <!-- Doodle squiggles -->
-  <path d="M900,450 Q920,430 940,450 Q960,470 980,450 Q1000,430 1020,450 Q1040,470 1060,450" stroke="#ffd93d" stroke-width="2.5" fill="none" opacity="0.25" stroke-linecap="round"/>
-  <path d="M150,180 Q170,160 190,180 Q210,200 230,180" stroke="#4ecdc4" stroke-width="2" fill="none" opacity="0.2" stroke-linecap="round"/>
+  <!-- Bold crayon-style star (top-right area) -->
+  <path d="M980,180 L995,140 L1010,180 L970,155 L1020,155 Z" stroke="#ffd93d" stroke-width="3.5" fill="#ffd93d" fill-opacity="0.25" opacity="0.6" stroke-linejoin="round"/>
 
-  <!-- Hand-drawn stars -->
-  <path d="M1050,200 L1058,178 L1066,200 L1043,186 L1073,186 Z" stroke="#ffd93d" stroke-width="2" fill="none" opacity="0.3" stroke-linejoin="round"/>
-  <path d="M200,550 L206,535 L212,550 L196,542 L218,542 Z" stroke="#ff6b6b" stroke-width="1.5" fill="none" opacity="0.2" stroke-linejoin="round"/>
+  <!-- Bold crayon-style star (bottom-left) -->
+  <path d="M220,520 L232,490 L244,520 L210,505 L254,505 Z" stroke="#ff6b6b" stroke-width="3" fill="#ff6b6b" fill-opacity="0.2" opacity="0.55" stroke-linejoin="round"/>
+
+  <!-- Squiggly lines decoration (top) -->
+  <path d="M850,90 Q870,70 890,90 Q910,110 930,90 Q950,70 970,90 Q990,110 1010,90" stroke="#4ecdc4" stroke-width="3" fill="none" opacity="0.55" stroke-linecap="round"/>
+
+  <!-- Squiggly lines decoration (bottom) -->
+  <path d="M160,560 Q190,540 220,560 Q250,580 280,560 Q310,540 340,560 Q370,580 400,560" stroke="#4ecdc4" stroke-width="2.5" fill="none" opacity="0.45" stroke-linecap="round"/>
 
   <!-- Arrow doodle pointing to title -->
-  <path d="M350,170 C380,180 400,200 420,220" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.2" stroke-linecap="round"/>
-  <path d="M410,210 L420,220 L408,218" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M300,170 C340,190 370,210 400,240" stroke="#ff6b6b" stroke-width="2.5" fill="none" opacity="0.50" stroke-linecap="round"/>
+  <path d="M388,228 L400,240 L385,236" stroke="#ff6b6b" stroke-width="2.5" fill="none" opacity="0.50" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Title with hand-drawn feel and slight rotation -->
-  <g transform="rotate(-2.5 550 260)">
-    <text x="550" y="270" font-family="'Comic Sans MS', 'Segoe UI', system-ui, sans-serif" font-size="110" font-weight="900" fill="#2c2c2c" text-anchor="middle" filter="url(#doodleWobble)">Doodle</text>
+  <!-- Doodle rectangle (upper-right) -->
+  <rect x="870" y="200" width="130" height="90" rx="4" stroke="#4ecdc4" stroke-width="3" stroke-dasharray="10,6" fill="none" opacity="0.50" transform="rotate(-3 935 245)"/>
+
+  <!-- Doodle rectangle (lower-left) -->
+  <rect x="170" y="380" width="110" height="75" rx="4" stroke="#ff6b6b" stroke-width="3" stroke-dasharray="10,6" fill="none" opacity="0.45" transform="rotate(4 225 418)"/>
+
+  <!-- Title text - NO feTurbulence filter, hand-drawn feel via Comic Sans and rotation -->
+  <g transform="rotate(-2.5 520 275)">
+    <text x="520" y="290" font-family="'Comic Sans MS', 'Segoe UI', system-ui, sans-serif" font-size="115" font-weight="900" fill="#2c2c2c" text-anchor="middle">Doodle</text>
   </g>
 
-  <g transform="rotate(1.5 650 345)">
-    <text x="650" y="355" font-family="'Comic Sans MS', 'Segoe UI', system-ui, sans-serif" font-size="85" font-weight="900" fill="#ff6b6b" text-anchor="middle" filter="url(#doodleWobble)">& Sketch</text>
+  <g transform="rotate(1.5 650 365)">
+    <text x="650" y="375" font-family="'Comic Sans MS', 'Segoe UI', system-ui, sans-serif" font-size="88" font-weight="900" fill="#ff6b6b" text-anchor="middle">&amp; Sketch</text>
   </g>
 
   <!-- Subtitle with underline squiggle -->
-  <text x="600" y="410" font-family="'Segoe UI', system-ui, sans-serif" font-size="18" fill="#2c2c2c" text-anchor="middle" opacity="0.4">hand-crafted interfaces with creative charm</text>
-  <path d="M380,418 Q400,413 420,418 Q440,423 460,418 Q480,413 500,418 Q520,423 540,418 Q560,413 580,418 Q600,423 620,418 Q640,413 660,418 Q680,423 700,418 Q720,413 740,418 Q760,423 780,418 Q800,413 820,418" stroke="#ff6b6b" stroke-width="1.5" fill="none" opacity="0.25" stroke-linecap="round"/>
+  <text x="580" y="425" font-family="'Segoe UI', system-ui, sans-serif" font-size="18" fill="#2c2c2c" text-anchor="middle" opacity="0.50">hand-crafted interfaces with creative charm</text>
+  <path d="M360,434 Q385,428 410,434 Q435,440 460,434 Q485,428 510,434 Q535,440 560,434 Q585,428 610,434 Q635,440 660,434 Q685,428 710,434 Q735,440 760,434 Q785,428 810,434" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.40" stroke-linecap="round"/>
 
-  <!-- Tape decoration on corner -->
-  <g transform="rotate(-35 160 60)" opacity="0.15">
-    <rect x="130" y="45" width="60" height="25" fill="#ffd93d" rx="1"/>
-    <line x1="135" y1="50" x2="185" y2="50" stroke="#2c2c2c" stroke-width="0.3" opacity="0.3"/>
-    <line x1="135" y1="55" x2="185" y2="55" stroke="#2c2c2c" stroke-width="0.3" opacity="0.3"/>
-    <line x1="135" y1="60" x2="185" y2="60" stroke="#2c2c2c" stroke-width="0.3" opacity="0.3"/>
+  <!-- Pin decoration (top area) -->
+  <g transform="translate(1080, 130)" opacity="0.60">
+    <circle cx="0" cy="0" r="7" fill="#ff6b6b"/>
+    <circle cx="0" cy="0" r="2.5" fill="#fffef5"/>
+    <line x1="0" y1="7" x2="2" y2="16" stroke="#2c2c2c" stroke-width="1.2"/>
   </g>
 
-  <!-- Pin decoration -->
-  <g transform="translate(1070, 100)" opacity="0.25">
-    <circle cx="0" cy="0" r="6" fill="#ff6b6b"/>
-    <circle cx="0" cy="0" r="2" fill="#fffef5"/>
-    <line x1="0" y1="6" x2="2" y2="14" stroke="#2c2c2c" stroke-width="1"/>
+  <!-- Coffee stain ring - visible -->
+  <circle cx="1020" cy="490" r="38" stroke="#c4a882" stroke-width="2.5" fill="none" opacity="0.18"/>
+  <circle cx="1020" cy="490" r="35" stroke="#c4a882" stroke-width="1" fill="none" opacity="0.12"/>
+
+  <!-- Marker swatches with dashed borders - NO feTurbulence filter -->
+  <g transform="translate(330, 475)">
+    <rect width="65" height="55" rx="4" stroke="#2c2c2c" stroke-width="2.5" stroke-dasharray="8,4" fill="#2c2c2c"/>
   </g>
-
-  <!-- Marker swatches with wobbly borders -->
-  <g filter="url(#doodleWobble)">
-    <g transform="translate(350, 460)">
-      <rect width="65" height="55" rx="3" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#2c2c2c"/>
-    </g>
-    <g transform="translate(435, 460)">
-      <rect width="65" height="55" rx="3" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#ff6b6b"/>
-    </g>
-    <g transform="translate(520, 460)">
-      <rect width="65" height="55" rx="3" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#4ecdc4"/>
-    </g>
-    <g transform="translate(605, 460)">
-      <rect width="65" height="55" rx="3" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#ffd93d"/>
-    </g>
-    <g transform="translate(690, 460)">
-      <rect width="65" height="55" rx="3" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="6,3" fill="#fffef5"/>
-    </g>
+  <g transform="translate(415, 475)">
+    <rect width="65" height="55" rx="4" stroke="#2c2c2c" stroke-width="2.5" stroke-dasharray="8,4" fill="#ff6b6b"/>
   </g>
-
-  <!-- Coffee stain ring -->
-  <circle cx="1000" cy="500" r="35" stroke="#c4a882" stroke-width="1.5" fill="none" opacity="0.06"/>
-  <circle cx="1000" cy="500" r="33" stroke="#c4a882" stroke-width="0.5" fill="none" opacity="0.04"/>
-
-  <!-- Bottom scribble decoration -->
-  <path d="M140,580 Q180,570 220,580 Q260,590 300,580 Q340,570 380,580" stroke="#4ecdc4" stroke-width="1.5" fill="none" opacity="0.15" stroke-linecap="round"/>
+  <g transform="translate(500, 475)">
+    <rect width="65" height="55" rx="4" stroke="#2c2c2c" stroke-width="2.5" stroke-dasharray="8,4" fill="#4ecdc4"/>
+  </g>
+  <g transform="translate(585, 475)">
+    <rect width="65" height="55" rx="4" stroke="#2c2c2c" stroke-width="2.5" stroke-dasharray="8,4" fill="#ffd93d"/>
+  </g>
+  <g transform="translate(670, 475)">
+    <rect width="65" height="55" rx="4" stroke="#2c2c2c" stroke-width="2.5" stroke-dasharray="8,4" fill="#fffef5"/>
+  </g>
 </svg>

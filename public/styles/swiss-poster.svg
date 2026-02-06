@@ -1,17 +1,6 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Structural grid lines -->
-    <pattern id="spStructuralGrid" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="0" y2="100" stroke="#000000" stroke-width="0.5" opacity="0.06"/>
-      <line x1="0" y1="0" x2="100" y2="0" stroke="#000000" stroke-width="0.5" opacity="0.06"/>
-    </pattern>
-  </defs>
-
   <!-- White background -->
   <rect width="1200" height="630" fill="#ffffff"/>
-
-  <!-- Structural grid -->
-  <rect width="1200" height="630" fill="url(#spStructuralGrid)"/>
 
   <!-- Asymmetric red color block - right column -->
   <rect x="900" y="0" width="300" height="630" fill="#ff0000"/>
@@ -34,12 +23,12 @@
   <!-- Vertical text on red block -->
   <text x="960" y="580" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="6" transform="rotate(-90 960 580)">BOLD TYPOGRAPHY / GRID ALIGNMENT / NO DECORATION</text>
 
-  <!-- Number as design element -->
-  <text x="920" y="200" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="180" font-weight="900" fill="#ffffff" opacity="0.15">24</text>
+  <!-- Number as design element - boosted from 0.15 to 0.25 -->
+  <text x="920" y="200" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="180" font-weight="900" fill="#ffffff" opacity="0.25">24</text>
 
-  <!-- Horizontal structural lines -->
-  <line x1="100" y1="500" x2="850" y2="500" stroke="#000000" stroke-width="1.5" opacity="0.1"/>
-  <line x1="100" y1="440" x2="500" y2="440" stroke="#000000" stroke-width="1" opacity="0.08"/>
+  <!-- Horizontal structural lines - boosted from 0.08-0.10 to 0.20 -->
+  <line x1="100" y1="500" x2="850" y2="500" stroke="#000000" stroke-width="1.5" opacity="0.20"/>
+  <line x1="100" y1="440" x2="500" y2="440" stroke="#000000" stroke-width="1" opacity="0.20"/>
 
   <!-- Color swatches - aligned to grid -->
   <rect x="100" y="530" width="60" height="50" fill="#000000"/>
@@ -50,16 +39,6 @@
   <text x="100" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">BLACK</text>
   <text x="170" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">WHITE</text>
   <text x="240" y="600" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="9" font-weight="700" fill="#000000" opacity="0.4" letter-spacing="1">RED</text>
-
-  <!-- Visible grid column markers -->
-  <line x1="100" y1="0" x2="100" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="200" y1="0" x2="200" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="300" y1="0" x2="300" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="400" y1="0" x2="400" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="500" y1="0" x2="500" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="600" y1="0" x2="600" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="700" y1="0" x2="700" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
-  <line x1="800" y1="0" x2="800" y2="630" stroke="#000000" stroke-width="0.5" opacity="0.05"/>
 
   <!-- Small circle as typographic ornament -->
   <circle cx="850" cy="290" r="4" fill="#000000"/>
