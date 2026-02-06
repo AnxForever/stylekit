@@ -7,9 +7,10 @@ export const japaneseFreshRecipes: StyleRecipes = {
   recipes: {
     button: {
       id: "button",
-      name: "Button",
-      nameZh: "按钮",
-      description: "Soft, light-weight button with gentle colors and delicate styling",
+      name: "Whisper Button",
+      nameZh: "低语按钮",
+      description:
+        "Hairline border button with generous padding, barely-visible hover state, and slow meditative transition. Embodies Ma restraint -- the button exists through whitespace, not weight",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -17,8 +18,9 @@ export const japaneseFreshRecipes: StyleRecipes = {
           "font-light",
           "tracking-wide",
           "rounded-lg",
-          "border border-[#b8d4e3]/50",
-          "transition-all duration-300 ease-in-out",
+          "bg-transparent",
+          "border border-[#d4d4cf]/40",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -28,9 +30,24 @@ export const japaneseFreshRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-1.5 text-xs" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-5 py-2 md:px-6 md:py-2.5 text-xs md:text-sm" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-7 py-3 md:px-8 md:py-3.5 text-sm md:text-base" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "px-6 py-2 text-xs",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "px-8 py-2.5 md:px-10 md:py-3 text-xs md:text-sm",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "px-10 py-3 md:px-12 md:py-3.5 text-sm md:text-base",
+            },
           ],
           default: "md",
         },
@@ -49,8 +66,8 @@ export const japaneseFreshRecipes: StyleRecipes = {
           label: "Primary",
           labelZh: "主要",
           classes: [
-            "bg-[#64b5f6] text-white",
-            "shadow-sm",
+            "bg-[#64b5f6]/90 text-white",
+            "border-[#64b5f6]/30",
           ],
         },
         secondary: {
@@ -58,48 +75,69 @@ export const japaneseFreshRecipes: StyleRecipes = {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-white text-[#5a8fa8]",
-            "border-[#b8d4e3]",
-            "shadow-sm",
+            "bg-transparent text-[#7a8a9e]",
+            "border-[#d4d4cf]/40",
           ],
         },
-        outline: {
-          id: "outline",
-          label: "Outline",
-          labelZh: "轮廓",
+        mint: {
+          id: "mint",
+          label: "Mint",
+          labelZh: "薄荷",
           classes: [
-            "bg-transparent text-[#64b5f6]",
-            "border-[#64b5f6]/40",
+            "bg-transparent text-[#98d8c8]",
+            "border-[#98d8c8]/30",
+          ],
+        },
+        whisper: {
+          id: "whisper",
+          label: "Whisper",
+          labelZh: "低语",
+          classes: [
+            "bg-transparent text-[#b0b8c4]",
+            "border-[#d4d4cf]/20",
           ],
         },
       },
       slots: [
-        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Click", type: "text" },
+        {
+          id: "icon",
+          label: "Icon",
+          labelZh: "图标",
+          required: false,
+          type: "icon",
+        },
+        {
+          id: "label",
+          label: "Label",
+          labelZh: "文字",
+          required: true,
+          default: "Explore",
+          type: "text",
+        },
       ],
       states: {
         hover: [
-          "hover:shadow-md",
-          "hover:brightness-105",
+          "hover:border-[#64b5f6]/40",
+          "hover:text-[#64b5f6]",
         ],
-        active: ["active:scale-[0.98]"],
-        disabled: ["opacity-40 cursor-not-allowed"],
+        active: ["active:scale-[0.99]"],
+        disabled: ["opacity-30 cursor-not-allowed"],
       },
     },
 
     card: {
       id: "card",
-      name: "Card",
-      nameZh: "卡片",
-      description: "Light, airy card with soft shadows and gentle borders",
+      name: "Breath Card",
+      nameZh: "呼吸卡片",
+      description:
+        "Card with 0.5px warm gray hairline border, massive inner whitespace (p-10+), no shadows, and optional botanical SVG accent. Elements float in whitespace by their own presence",
       skeleton: {
         element: "div",
         baseClasses: [
           "bg-white",
           "rounded-xl",
-          "border border-[#e8e8e4]",
-          "shadow-sm",
-          "transition-all duration-300 ease-in-out",
+          "border border-[#d4d4cf]/30",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -109,9 +147,24 @@ export const japaneseFreshRecipes: StyleRecipes = {
           labelZh: "内边距",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "p-4 md:p-5" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-7" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-9" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "p-6 md:p-8",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "p-8 md:p-10",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "p-10 md:p-12",
+            },
           ],
           default: "md",
         },
@@ -121,7 +174,7 @@ export const japaneseFreshRecipes: StyleRecipes = {
           labelZh: "可交互",
           type: "boolean",
           default: true,
-          trueClasses: "hover:-translate-y-0.5 cursor-pointer",
+          trueClasses: "hover:-translate-y-px cursor-pointer",
         },
       ],
       variants: {
@@ -136,8 +189,7 @@ export const japaneseFreshRecipes: StyleRecipes = {
           label: "Mint",
           labelZh: "薄荷",
           classes: [
-            "border-[#98d8c8]/40",
-            "bg-[#98d8c8]/5",
+            "border-[#98d8c8]/25",
           ],
         },
         pink: {
@@ -145,40 +197,62 @@ export const japaneseFreshRecipes: StyleRecipes = {
           label: "Pink",
           labelZh: "粉色",
           classes: [
-            "border-[#ffb7c5]/40",
-            "bg-[#ffb7c5]/5",
+            "border-[#ffb7c5]/25",
+          ],
+        },
+        sky: {
+          id: "sky",
+          label: "Sky",
+          labelZh: "天蓝",
+          classes: [
+            "border-[#64b5f6]/20",
           ],
         },
       },
       slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Gentle and simple", type: "children" },
+        {
+          id: "title",
+          label: "Title",
+          labelZh: "标题",
+          required: false,
+          default: "Card Title",
+          type: "text",
+        },
+        {
+          id: "children",
+          label: "Content",
+          labelZh: "内容",
+          required: true,
+          default: "Gentle and simple, like morning light through paper screens",
+          type: "children",
+        },
       ],
       states: {
         hover: [
-          "hover:shadow-md",
-          "hover:border-[#b8d4e3]/60",
+          "hover:border-[#d4d4cf]/50",
         ],
       },
     },
 
     input: {
       id: "input",
-      name: "Input",
-      nameZh: "输入框",
-      description: "Clean, minimal input with soft focus and light colors",
+      name: "Bottom-line Input",
+      nameZh: "底线输入框",
+      description:
+        "Input with bottom border only, floating label style, transparent background, and ultra-subtle focus state. No surrounding frame -- the underline alone defines the field",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
-          "rounded-lg",
-          "border border-[#e8e8e4]",
-          "bg-white",
+          "pb-2 pt-0",
+          "bg-transparent",
+          "border-0 border-b border-[#d4d4cf]",
+          "rounded-none",
           "text-[#4a5568]",
-          "placeholder:text-[#a0aec0]/60",
+          "placeholder:text-[#b0b8c4]/60",
           "font-sans font-light",
           "focus:outline-none",
-          "transition-all duration-300 ease-in-out",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -188,9 +262,24 @@ export const japaneseFreshRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-1.5 text-xs" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2 md:px-4 md:py-2.5 text-xs md:text-sm" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-5 py-3 md:px-5 md:py-3.5 text-sm md:text-base" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "text-xs pb-1.5",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "text-xs md:text-sm pb-2",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "text-sm md:text-base pb-2.5",
+            },
           ],
           default: "md",
         },
@@ -207,19 +296,33 @@ export const japaneseFreshRecipes: StyleRecipes = {
           label: "Mint",
           labelZh: "薄荷",
           classes: [
-            "border-[#98d8c8]/50",
+            "border-b-[#98d8c8]/60",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "border-b-[#ffb7c5]/60",
           ],
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Please enter...", type: "text" },
+        {
+          id: "placeholder",
+          label: "Placeholder",
+          labelZh: "占位符",
+          required: false,
+          default: " ",
+          type: "text",
+        },
       ],
       states: {
         focus: [
-          "focus:border-[#64b5f6]",
-          "focus:shadow-[0_0_0_3px_rgba(100,181,246,0.1)]",
+          "focus:border-b-[#64b5f6]",
         ],
-        disabled: ["opacity-40 cursor-not-allowed"],
+        disabled: ["opacity-30 cursor-not-allowed"],
       },
     },
   },

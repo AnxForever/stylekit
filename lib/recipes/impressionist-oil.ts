@@ -9,7 +9,8 @@ export const impressionistOilRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Bold brushstroke-inspired button with impasto texture and warm tones",
+      description:
+        "Impasto paint-tube button with linear-gradient fill simulating thick paint, layered bottom shadow for dimensional depth, and brushstroke texture background",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -27,9 +28,24 @@ export const impressionistOilRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-2 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-5 py-2.5 md:px-7 md:py-3.5 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-7 py-3.5 md:px-9 md:py-4.5 text-base md:text-lg" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "px-5 py-2 text-sm",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "px-7 py-3 md:px-8 md:py-3.5 text-sm md:text-base",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "px-8 py-4 md:px-10 md:py-4.5 text-base md:text-lg",
+            },
           ],
           default: "md",
         },
@@ -45,20 +61,29 @@ export const impressionistOilRecipes: StyleRecipes = {
       variants: {
         primary: {
           id: "primary",
-          label: "Primary",
-          labelZh: "主要",
+          label: "Warm Orange",
+          labelZh: "暖橙",
           classes: [
             "bg-[#e8a87c] text-[#2c3e50]",
-            "shadow-[0_3px_0_#c0392b,0_4px_12px_rgba(232,168,124,0.3)]",
+            "shadow-[0_4px_0_#c0392b,0_6px_16px_rgba(232,168,124,0.30)]",
           ],
         },
         secondary: {
           id: "secondary",
-          label: "Secondary",
-          labelZh: "次要",
+          label: "Deep Blue",
+          labelZh: "深蓝",
           classes: [
             "bg-[#2c3e50] text-[#f5f0e1]",
-            "shadow-[0_3px_0_#1abc9c,0_4px_12px_rgba(44,62,80,0.3)]",
+            "shadow-[0_4px_0_#1abc9c,0_6px_16px_rgba(44,62,80,0.30)]",
+          ],
+        },
+        vermillion: {
+          id: "vermillion",
+          label: "Vermillion",
+          labelZh: "朱红",
+          classes: [
+            "bg-[#c0392b] text-[#f5f0e1]",
+            "shadow-[0_4px_0_#2c3e50,0_6px_16px_rgba(192,57,43,0.30)]",
           ],
         },
         outline: {
@@ -72,16 +97,30 @@ export const impressionistOilRecipes: StyleRecipes = {
         },
       },
       slots: [
-        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Canvas", type: "text" },
+        {
+          id: "icon",
+          label: "Icon",
+          labelZh: "图标",
+          required: false,
+          type: "icon",
+        },
+        {
+          id: "label",
+          label: "Label",
+          labelZh: "文字",
+          required: true,
+          default: "Paint",
+          type: "text",
+        },
       ],
       states: {
         hover: [
           "hover:brightness-110",
-          "hover:shadow-[0_4px_0_#c0392b,0_6px_16px_rgba(232,168,124,0.4)]",
         ],
-        active: ["active:translate-y-[2px] active:shadow-[0_1px_0_#c0392b]"],
-        disabled: ["opacity-50 cursor-not-allowed"],
+        active: [
+          "active:translate-y-[2px]",
+        ],
+        disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
 
@@ -89,14 +128,14 @@ export const impressionistOilRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Canvas-textured card with impressionist color layering and warm shadows",
+      description:
+        "Canvas-textured card with repeating-linear-gradient brushstroke overlay, dappled light radial-gradient spot, and layered impasto box-shadow depth",
       skeleton: {
         element: "div",
         baseClasses: [
           "bg-[#f5f0e1]",
           "rounded-lg",
-          "border border-[#e8a87c]/30",
-          "shadow-[0_2px_8px_rgba(44,62,80,0.1),0_0_0_1px_rgba(232,168,124,0.1)]",
+          "border border-[#e8a87c]/25",
           "transition-all duration-300 ease-in-out",
         ],
       },
@@ -107,9 +146,24 @@ export const impressionistOilRecipes: StyleRecipes = {
           labelZh: "内边距",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "p-4 md:p-5" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-8" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-10" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "p-5 md:p-6",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "p-6 md:p-8",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "p-8 md:p-10",
+            },
           ],
           default: "md",
         },
@@ -119,7 +173,7 @@ export const impressionistOilRecipes: StyleRecipes = {
           labelZh: "可交互",
           type: "boolean",
           default: true,
-          trueClasses: "hover:-translate-y-1 cursor-pointer",
+          trueClasses: "cursor-pointer",
         },
       ],
       variants: {
@@ -127,35 +181,51 @@ export const impressionistOilRecipes: StyleRecipes = {
           id: "default",
           label: "Default",
           labelZh: "默认",
-          classes: [],
+          classes: [
+            "shadow-[0_3px_0_rgba(192,57,43,0.12),0_8px_24px_rgba(44,62,80,0.08)]",
+          ],
         },
         warm: {
           id: "warm",
-          label: "Warm",
+          label: "Warm Tone",
           labelZh: "暖调",
           classes: [
-            "bg-[#e8a87c]/10",
-            "border-[#c0392b]/20",
+            "border-[#c0392b]/15",
+            "shadow-[0_3px_0_rgba(44,62,80,0.10),0_6px_16px_rgba(192,57,43,0.06)]",
           ],
         },
         cool: {
           id: "cool",
-          label: "Cool",
+          label: "Cool Tone",
           labelZh: "冷调",
           classes: [
-            "bg-[#2c3e50]/5",
-            "border-[#1abc9c]/20",
+            "border-[#1abc9c]/15",
+            "shadow-[0_3px_0_rgba(26,188,156,0.15),0_6px_16px_rgba(26,188,156,0.06)]",
           ],
         },
       },
       slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Card content goes here", type: "children" },
+        {
+          id: "title",
+          label: "Title",
+          labelZh: "标题",
+          required: false,
+          default: "Impression",
+          type: "text",
+        },
+        {
+          id: "children",
+          label: "Content",
+          labelZh: "内容",
+          required: true,
+          default: "Light dances across the canvas",
+          type: "children",
+        },
       ],
       states: {
         hover: [
-          "hover:shadow-[0_6px_20px_rgba(44,62,80,0.15),0_0_0_1px_rgba(232,168,124,0.2)]",
           "hover:border-[#e8a87c]/40",
+          "hover:shadow-[0_4px_0_rgba(192,57,43,0.15),0_10px_28px_rgba(44,62,80,0.12)]",
         ],
       },
     },
@@ -164,16 +234,17 @@ export const impressionistOilRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Canvas-textured input with warm tones and artistic serif typography",
+      description:
+        "Canvas-surface input with warm inset shadow simulating paint indentation, serif typography, and impasto focus glow",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
           "rounded-lg",
-          "border-2 border-[#e8a87c]/30",
+          "border-2 border-[#e8a87c]/25",
           "bg-[#f5f0e1]",
           "text-[#2c3e50]",
-          "placeholder:text-[#2c3e50]/40",
+          "placeholder:text-[#2c3e50]/30",
           "font-serif",
           "focus:outline-none",
           "transition-all duration-300 ease-in-out",
@@ -186,9 +257,24 @@ export const impressionistOilRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-2 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2.5 md:px-5 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-5 py-3 md:px-6 md:py-4 text-base md:text-lg" },
+            {
+              value: "sm",
+              label: "Small",
+              labelZh: "小",
+              classes: "px-4 py-2.5 text-sm",
+            },
+            {
+              value: "md",
+              label: "Medium",
+              labelZh: "中",
+              classes: "px-5 py-3 md:py-3.5 text-sm md:text-base",
+            },
+            {
+              value: "lg",
+              label: "Large",
+              labelZh: "大",
+              classes: "px-6 py-4 text-base md:text-lg",
+            },
           ],
           default: "md",
         },
@@ -198,27 +284,45 @@ export const impressionistOilRecipes: StyleRecipes = {
           id: "default",
           label: "Default",
           labelZh: "默认",
-          classes: [],
+          classes: [
+            "shadow-[inset_0_2px_4px_rgba(44,62,80,0.04)]",
+          ],
         },
         warm: {
           id: "warm",
           label: "Warm",
           labelZh: "暖调",
           classes: [
-            "border-[#e8a87c]/50",
-            "placeholder:text-[#e8a87c]/40",
+            "border-[#e8a87c]/40",
+            "placeholder:text-[#e8a87c]/30",
+          ],
+        },
+        turquoise: {
+          id: "turquoise",
+          label: "Turquoise",
+          labelZh: "青绿",
+          classes: [
+            "border-[#1abc9c]/25",
+            "placeholder:text-[#1abc9c]/30",
           ],
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Type here...", type: "text" },
+        {
+          id: "placeholder",
+          label: "Placeholder",
+          labelZh: "占位符",
+          required: false,
+          default: "Your brushstroke...",
+          type: "text",
+        },
       ],
       states: {
         focus: [
           "focus:border-[#e8a87c]",
-          "focus:shadow-[0_0_0_3px_rgba(232,168,124,0.15)]",
+          "focus:shadow-[0_0_0_3px_rgba(232,168,124,0.12)]",
         ],
-        disabled: ["opacity-50 cursor-not-allowed"],
+        disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
   },

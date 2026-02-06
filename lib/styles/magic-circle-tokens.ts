@@ -25,13 +25,14 @@ export const magicCircleTokens: StyleTokens = {
 
   interaction: {
     hoverTranslate: "hover:-translate-y-1",
-    transition: "transition-all duration-400 ease-in-out",
+    transition: "transition-all duration-500 ease-in-out",
     active: "active:scale-95",
   },
 
   typography: {
-    heading: "font-serif font-bold",
+    heading: "font-serif font-bold tracking-wide",
     body: "font-sans",
+    mono: "font-mono",
     sizes: {
       hero: "text-4xl md:text-6xl lg:text-8xl",
       h1: "text-3xl md:text-5xl",
@@ -43,7 +44,7 @@ export const magicCircleTokens: StyleTokens = {
   },
 
   spacing: {
-    section: "py-12 md:py-20 lg:py-28",
+    section: "py-14 md:py-24 lg:py-32",
     container: "px-4 md:px-8 lg:px-12",
     card: "p-5 md:p-8",
     gap: {
@@ -55,18 +56,18 @@ export const magicCircleTokens: StyleTokens = {
 
   colors: {
     background: {
-      primary: "bg-[#0f0e2e]",
+      primary: "bg-[#0a0920]",
       secondary: "bg-[#1e1b4b]",
       accent: ["bg-[#fbbf24]", "bg-[#818cf8]", "bg-[#e2e8f0]"],
     },
     text: {
       primary: "text-[#e2e8f0]",
       secondary: "text-[#fbbf24]",
-      muted: "text-[#e2e8f0]/50",
+      muted: "text-[#e2e8f0]/40",
     },
     button: {
       primary: "bg-[#1e1b4b] text-[#fbbf24] shadow-[0_0_20px_rgba(251,191,36,0.2)]",
-      secondary: "bg-[#0f0e2e] text-[#e2e8f0] border-[#818cf8]/30 shadow-[0_0_15px_rgba(129,140,248,0.2)]",
+      secondary: "bg-[#0a0920] text-[#e2e8f0] border-[#818cf8]/30 shadow-[0_0_15px_rgba(129,140,248,0.2)]",
     },
   },
 
@@ -75,7 +76,6 @@ export const magicCircleTokens: StyleTokens = {
       "rounded-full", "rounded-2xl", "rounded-xl", "rounded-lg",
       "bg-white", "bg-gray-50",
       "border-4", "border-8",
-      "font-mono",
       "shadow-md", "shadow-lg", "shadow-xl",
       "bg-[#00ff00]", "bg-[#ff00ff]",
     ],
@@ -87,10 +87,9 @@ export const magicCircleTokens: StyleTokens = {
     ],
     reasons: {
       "rounded-full": "Magic Circle uses rounded-sm only for refined elegance",
-      "bg-white": "Magic Circle requires deep dark backgrounds",
+      "bg-white": "Magic Circle requires deep dark backgrounds for mystical atmosphere",
       "border-4": "Magic Circle uses thin elegant borders only",
-      "shadow-md": "Use glow-style shadows instead of soft drop shadows",
-      "font-mono": "Magic Circle uses serif headings and sans body, not monospace",
+      "shadow-md": "Use radiant glow-style shadows instead of soft drop shadows",
     },
   },
 
@@ -99,16 +98,16 @@ export const magicCircleTokens: StyleTokens = {
       "font-serif font-semibold tracking-wide",
       "border border-[#fbbf24]/30",
       "rounded-sm",
-      "transition-all duration-400 ease-in-out",
+      "transition-all duration-500 ease-in-out",
     ],
     card: [
-      "bg-[#0f0e2e]",
+      "bg-[#0a0920]",
       "border border-[#fbbf24]/15",
       "rounded-sm",
-      "transition-all duration-400 ease-in-out",
+      "transition-all duration-500 ease-in-out",
     ],
     input: [
-      "bg-[#0f0e2e]",
+      "bg-[#0a0920]",
       "border border-[#fbbf24]/15",
       "rounded-sm",
       "text-[#e2e8f0]",

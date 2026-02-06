@@ -14,7 +14,7 @@ export const visualNovelTokens: StyleTokens = {
     md: "shadow-md",
     lg: "shadow-lg",
     none: "shadow-none",
-    hover: "hover:shadow-md",
+    hover: "hover:shadow-lg",
     focus: "focus:shadow-[0_0_12px_#6366f120]",
     colored: {
       indigo: "shadow-[0_0_15px_#6366f115]",
@@ -24,7 +24,7 @@ export const visualNovelTokens: StyleTokens = {
   },
 
   interaction: {
-    hoverScale: "hover:scale-[1.02]",
+    hoverTranslate: "hover:-translate-y-1",
     hoverOpacity: "hover:opacity-90",
     transition: "transition-all duration-300 ease-in-out",
     active: "active:scale-[0.98]",
@@ -67,8 +67,8 @@ export const visualNovelTokens: StyleTokens = {
       muted: "text-[#4a5568]/50",
     },
     button: {
-      primary: "bg-[#6366f1] text-white shadow-sm",
-      secondary: "bg-white/80 text-[#4a5568] backdrop-blur-sm",
+      primary: "bg-[#6366f1] text-white shadow-sm hover:bg-[#6366f1]/90 hover:shadow-[0_0_15px_#6366f130]",
+      secondary: "bg-white/50 text-[#4a5568] backdrop-blur-sm border border-[#6366f1]/25",
       danger: "bg-[#ec4899] text-white",
     },
   },
@@ -76,22 +76,27 @@ export const visualNovelTokens: StyleTokens = {
   forbidden: {
     classes: [
       "border-4", "border-8",
-      "rounded-none", "rounded-sm",
+      "rounded-none",
       "font-mono",
-      "shadow-[0_0_20px", "shadow-[0_0_30px",
+      "shadow-[3px_0_", "shadow-[0_0_30px",
       "bg-[#0a0a0a]", "bg-black",
+      "text-[#00ffff]", "text-[#ff00ff]",
+      "uppercase tracking-widest",
     ],
     patterns: [
       "^border-(?:4|8)$",
-      "^rounded-(?:none|sm)$",
-      "^shadow-\\[0_0_(?:20|30)px",
+      "^rounded-none$",
+      "^font-mono$",
+      "^shadow-\\[\\d+px_0_#",
       "^bg-(?:black|\\[#0a0a0a\\])$",
+      "^text-\\[#(?:00ffff|ff00ff)\\]$",
     ],
     reasons: {
-      "border-4": "Visual Novel uses subtle, thin borders only",
-      "rounded-none": "Visual Novel uses rounded-lg for a soft UI feel",
-      "font-mono": "Visual Novel uses sans-serif for UI and serif for narrative, not monospace",
-      "bg-black": "Visual Novel uses light or semi-transparent backgrounds",
+      "border-4": "Visual Novel uses subtle, thin borders for its elegant aesthetic",
+      "rounded-none": "Visual Novel uses rounded-lg for soft UI panels, never sharp edges",
+      "font-mono": "Visual Novel uses serif for narrative text and sans-serif for UI, not monospace",
+      "bg-black": "Visual Novel uses light or semi-transparent dark backgrounds, never pure black",
+      "uppercase tracking-widest": "Visual Novel uses natural case text, not terminal-style uppercase",
     },
   },
 
@@ -103,15 +108,14 @@ export const visualNovelTokens: StyleTokens = {
     ],
     card: [
       "rounded-lg",
-      "bg-white/70",
-      "border border-[#4a5568]/10",
       "backdrop-blur-md",
+      "border",
     ],
     input: [
       "rounded-lg",
-      "border border-[#4a5568]/20",
-      "bg-white/70",
+      "border",
       "font-sans",
+      "backdrop-blur-sm",
       "focus:outline-none",
     ],
   },

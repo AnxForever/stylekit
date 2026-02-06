@@ -38,13 +38,13 @@ export const swissPosterTokens: StyleTokens = {
   },
 
   spacing: {
-    section: "py-12 md:py-20 lg:py-28",
-    container: "px-4 md:px-8 lg:px-16",
+    section: "py-0",
+    container: "px-0",
     card: "p-6 md:p-8",
     gap: {
-      sm: "gap-3 md:gap-4",
-      md: "gap-4 md:gap-6",
-      lg: "gap-6 md:gap-10",
+      sm: "gap-0",
+      md: "gap-0",
+      lg: "gap-0",
     },
   },
 
@@ -57,7 +57,7 @@ export const swissPosterTokens: StyleTokens = {
     text: {
       primary: "text-[#000000]",
       secondary: "text-[#000000]/70",
-      muted: "text-[#000000]/40",
+      muted: "text-[#000000]/30",
     },
     button: {
       primary: "bg-[#000000] text-[#ffffff]",
@@ -71,31 +71,37 @@ export const swissPosterTokens: StyleTokens = {
       "rounded-md", "rounded-lg", "rounded-xl", "rounded-2xl", "rounded-full",
       "bg-gradient-to-r", "bg-gradient-to-b", "bg-gradient-to-br",
       "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl",
-      "backdrop-blur",
+      "backdrop-blur", "backdrop-blur-sm",
       "font-serif",
       "font-mono",
+      "border-dashed",
+      "gap-4", "gap-6", "gap-8",
     ],
     patterns: [
       "^rounded-(?:md|lg|xl|2xl|full)$",
       "^bg-gradient-",
-      "^shadow-(?:sm|md|lg|xl)$",
+      "^shadow-(?:sm|md|lg|xl|2xl)$",
       "^backdrop-blur",
       "^font-serif$",
+      "^font-mono$",
     ],
     reasons: {
-      "rounded-lg": "Swiss Poster uses sharp edges only (rounded-none or rounded-sm)",
-      "bg-gradient-to-r": "Swiss Poster uses flat solid color blocks, no gradients",
-      "shadow-md": "Swiss Poster does not use shadows, relies on borders and color blocks",
-      "backdrop-blur": "Swiss Poster is clean and opaque, no blur effects",
-      "font-serif": "Swiss Poster uses sans-serif only (Helvetica tradition)",
+      "rounded-lg": "Swiss Poster uses sharp edges only (rounded-none) - geometric precision",
+      "bg-gradient-to-r": "Swiss Poster uses flat solid color blocks only, no gradients",
+      "shadow-md": "Swiss Poster does not use shadows at all - relies on borders and color blocks for hierarchy",
+      "backdrop-blur": "Swiss Poster is clean and opaque, no blur or glass effects",
+      "font-serif": "Swiss Poster uses sans-serif only (Helvetica/Akzidenz-Grotesk tradition)",
+      "font-mono": "Swiss Poster uses sans-serif only - monospace breaks the typographic tradition",
+      "border-dashed": "Swiss Poster uses solid borders only - dashed lines break the clean grid aesthetic",
+      "gap-4": "Swiss Poster uses gap-0 - elements butt against each other with borders as separators",
     },
   },
 
   required: {
     button: [
       "rounded-none",
-      "font-sans font-black uppercase",
-      "border-2",
+      "font-sans font-black uppercase tracking-widest",
+      "border-2 border-[#000000]",
       "transition-all duration-100 ease-out",
     ],
     card: [
@@ -105,7 +111,7 @@ export const swissPosterTokens: StyleTokens = {
     ],
     input: [
       "rounded-none",
-      "border-b-2 border-[#000000]",
+      "border-0 border-b-2 border-[#000000]",
       "bg-transparent",
       "font-sans font-bold",
       "focus:outline-none",

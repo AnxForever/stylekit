@@ -9,10 +9,11 @@ export const neonSamuraiRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Neon-lit samurai button with sharp edges and glowing accents",
+      description: "Sharp-edged button with katana slash corner marks and dual-color neon glow",
       skeleton: {
         element: "button",
         baseClasses: [
+          "relative",
           "font-sans",
           "font-bold",
           "uppercase",
@@ -42,6 +43,14 @@ export const neonSamuraiRecipes: StyleRecipes = {
           default: false,
           trueClasses: "w-full",
         },
+        {
+          id: "slashCorners",
+          label: "Slash Corner Marks",
+          labelZh: "斜切角标",
+          type: "boolean",
+          default: true,
+          trueClasses: "before:content-[''] before:absolute before:top-0 before:right-0 before:w-3 before:h-3 before:border-t before:border-r before:border-[#a020f0] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-3 after:h-3 after:border-b after:border-l after:border-[#a020f0]",
+        },
       ],
       variants: {
         primary: {
@@ -58,7 +67,7 @@ export const neonSamuraiRecipes: StyleRecipes = {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-[#0a0a0a] text-[#dc2626]",
+            "bg-[#080818] text-[#dc2626]",
             "border-[#dc2626]",
             "shadow-[0_0_10px_rgba(220,38,38,0.3)]",
           ],
@@ -73,6 +82,16 @@ export const neonSamuraiRecipes: StyleRecipes = {
             "shadow-[0_0_15px_rgba(160,32,240,0.5)]",
           ],
         },
+        dualGlow: {
+          id: "dualGlow",
+          label: "Dual Glow",
+          labelZh: "双色辉光",
+          classes: [
+            "bg-[#080818] text-[#a020f0]",
+            "border-[#a020f0]/50",
+            "shadow-[0_0_15px_rgba(56,189,248,0.4)]",
+          ],
+        },
       },
       slots: [
         { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
@@ -80,7 +99,7 @@ export const neonSamuraiRecipes: StyleRecipes = {
       ],
       states: {
         hover: [
-          "hover:shadow-[0_0_25px_rgba(220,38,38,0.7)]",
+          "hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]",
           "hover:border-[#dc2626]",
         ],
         active: ["active:scale-95 active:shadow-[0_0_8px_rgba(220,38,38,0.4)]"],
@@ -92,11 +111,12 @@ export const neonSamuraiRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Dark card with neon border glow and sharp geometry",
+      description: "Armor-plate styled card with angular clip-path and neon edge glow",
       skeleton: {
         element: "div",
         baseClasses: [
-          "bg-[#0a0a0a]",
+          "relative",
+          "bg-[#080818]",
           "border border-[#dc2626]/30",
           "transition-all duration-300 ease-in-out",
         ],
@@ -121,6 +141,14 @@ export const neonSamuraiRecipes: StyleRecipes = {
           type: "boolean",
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
+        },
+        {
+          id: "armorClip",
+          label: "Armor Plate Clip",
+          labelZh: "甲板裁切",
+          type: "boolean",
+          default: false,
+          trueClasses: "[clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]",
         },
       ],
       variants: {
@@ -147,6 +175,15 @@ export const neonSamuraiRecipes: StyleRecipes = {
             "shadow-[0_0_15px_rgba(160,32,240,0.3)]",
           ],
         },
+        dualGlow: {
+          id: "dualGlow",
+          label: "Dual Glow",
+          labelZh: "双色辉光",
+          classes: [
+            "border-[#a020f0]/30",
+            "shadow-[0_0_15px_rgba(56,189,248,0.25)]",
+          ],
+        },
       },
       slots: [
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
@@ -164,15 +201,15 @@ export const neonSamuraiRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Dark input field with neon glow focus state",
+      description: "Brush-stroke underline input with dual-color neon glow focus",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
-          "border border-[#dc2626]/20",
-          "bg-[#0a0a0a]",
+          "border-b-2 border-[#dc2626]/30",
+          "bg-transparent",
           "text-white",
-          "placeholder:text-white/30",
+          "placeholder:text-white/25",
           "font-sans",
           "focus:outline-none",
           "transition-all duration-300 ease-in-out",
@@ -207,14 +244,22 @@ export const neonSamuraiRecipes: StyleRecipes = {
             "border-[#dc2626]/40",
           ],
         },
+        purple: {
+          id: "purple",
+          label: "Purple",
+          labelZh: "紫色",
+          classes: [
+            "border-[#a020f0]/30",
+          ],
+        },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Enter text...", type: "text" },
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Enter command...", type: "text" },
       ],
       states: {
         focus: [
           "focus:border-[#dc2626]",
-          "focus:shadow-[0_0_15px_rgba(220,38,38,0.4)]",
+          "focus:shadow-[0_2px_15px_rgba(56,189,248,0.4)]",
         ],
         disabled: ["opacity-40 cursor-not-allowed"],
       },

@@ -9,7 +9,7 @@ export const swissPosterRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Bold typographic button with sharp edges and color block aesthetic",
+      description: "Bold typographic button with sharp edges, no shadows, and edge-to-edge gap-0 placement",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -28,9 +28,9 @@ export const swissPosterRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-2 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-5 py-2.5 md:px-8 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-8 py-3 md:px-10 md:py-4 text-base md:text-lg" },
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-2 text-[10px]" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-5 py-2.5 md:px-8 md:py-3 text-sm" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-8 py-3 md:px-10 md:py-4 text-base" },
           ],
           default: "md",
         },
@@ -46,8 +46,8 @@ export const swissPosterRecipes: StyleRecipes = {
       variants: {
         primary: {
           id: "primary",
-          label: "Primary",
-          labelZh: "主要",
+          label: "Black",
+          labelZh: "黑色",
           classes: [
             "bg-[#000000] text-[#ffffff]",
             "border-2 border-[#000000]",
@@ -60,6 +60,24 @@ export const swissPosterRecipes: StyleRecipes = {
           classes: [
             "bg-[#ff0000] text-[#ffffff]",
             "border-2 border-[#ff0000]",
+          ],
+        },
+        blue: {
+          id: "blue",
+          label: "Blue",
+          labelZh: "蓝色",
+          classes: [
+            "bg-[#0057b8] text-[#ffffff]",
+            "border-2 border-[#0057b8]",
+          ],
+        },
+        yellow: {
+          id: "yellow",
+          label: "Yellow",
+          labelZh: "黄色",
+          classes: [
+            "bg-[#ffcc00] text-[#000000]",
+            "border-2 border-[#ffcc00]",
           ],
         },
         outline: {
@@ -90,7 +108,7 @@ export const swissPosterRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Grid-aligned card with bold borders and typographic hierarchy",
+      description: "Grid-aligned card with bold borders, no shadows, and color block hover states",
       skeleton: {
         element: "div",
         baseClasses: [
@@ -119,7 +137,7 @@ export const swissPosterRecipes: StyleRecipes = {
           labelZh: "可交互",
           type: "boolean",
           default: true,
-          trueClasses: "hover:-translate-y-1 cursor-pointer",
+          trueClasses: "cursor-pointer",
         },
       ],
       variants: {
@@ -129,10 +147,19 @@ export const swissPosterRecipes: StyleRecipes = {
           labelZh: "默认",
           classes: [],
         },
+        black: {
+          id: "black",
+          label: "Black Block",
+          labelZh: "黑色色块",
+          classes: [
+            "bg-[#000000] text-[#ffffff]",
+            "border-[#000000]",
+          ],
+        },
         red: {
           id: "red",
           label: "Red Block",
-          labelZh: "红色",
+          labelZh: "红色色块",
           classes: [
             "bg-[#ff0000] text-[#ffffff]",
             "border-[#ff0000]",
@@ -141,7 +168,7 @@ export const swissPosterRecipes: StyleRecipes = {
         blue: {
           id: "blue",
           label: "Blue Block",
-          labelZh: "蓝色",
+          labelZh: "蓝色色块",
           classes: [
             "bg-[#0057b8] text-[#ffffff]",
             "border-[#0057b8]",
@@ -150,10 +177,11 @@ export const swissPosterRecipes: StyleRecipes = {
       },
       slots: [
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "HELVETICA", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Grid-aligned content", type: "children" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Grid-aligned typographic content", type: "children" },
       ],
       states: {
         hover: [
+          "hover:bg-[#ff0000] hover:text-[#ffffff]",
           "hover:border-[#ff0000]",
         ],
       },
@@ -163,7 +191,7 @@ export const swissPosterRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Clean input with bold border-bottom and sans-serif typography",
+      description: "Bottom-border-only input with bold sans-serif and transparent background",
       skeleton: {
         element: "input",
         baseClasses: [
@@ -172,7 +200,7 @@ export const swissPosterRecipes: StyleRecipes = {
           "border-0 border-b-2 border-[#000000]",
           "bg-transparent",
           "text-[#000000]",
-          "placeholder:text-[#000000]/30",
+          "placeholder:text-[#000000]/20",
           "font-sans font-bold",
           "focus:outline-none",
           "transition-all duration-100 ease-out",
@@ -185,9 +213,9 @@ export const swissPosterRecipes: StyleRecipes = {
           labelZh: "尺寸",
           type: "select",
           options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-1 py-1.5 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-1 py-2 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-1 py-3 md:py-4 text-base md:text-lg" },
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-0 py-1.5 text-sm" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-0 py-2 md:py-3 text-sm md:text-lg" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-0 py-3 md:py-4 text-lg md:text-xl" },
           ],
           default: "md",
         },
@@ -201,11 +229,11 @@ export const swissPosterRecipes: StyleRecipes = {
         },
         red: {
           id: "red",
-          label: "Red",
+          label: "Red Accent",
           labelZh: "红色",
           classes: [
             "border-[#ff0000]",
-            "placeholder:text-[#ff0000]/30",
+            "placeholder:text-[#ff0000]/20",
           ],
         },
       },

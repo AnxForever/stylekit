@@ -9,7 +9,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "High-saturation fluorescent button with distorted feel and hard shadows",
+      description: "Fluorescent button with hard offset shadow and terminal-style mono type",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -46,8 +46,8 @@ export const acidGraphicsRecipes: StyleRecipes = {
       variants: {
         primary: {
           id: "primary",
-          label: "Primary",
-          labelZh: "主要",
+          label: "Neon Green",
+          labelZh: "荧光绿",
           classes: [
             "bg-[#39ff14] text-[#0a0a0a]",
             "border-2 border-[#39ff14]",
@@ -56,18 +56,28 @@ export const acidGraphicsRecipes: StyleRecipes = {
         },
         secondary: {
           id: "secondary",
-          label: "Secondary",
-          labelZh: "次要",
+          label: "Electric Purple",
+          labelZh: "电紫",
           classes: [
             "bg-[#a020f0] text-[#39ff14]",
             "border-2 border-[#a020f0]",
             "shadow-[4px_4px_0px_#e6ff00]",
           ],
         },
+        pink: {
+          id: "pink",
+          label: "Cyber Pink",
+          labelZh: "赛博粉",
+          classes: [
+            "bg-[#ff6ec7] text-[#0a0a0a]",
+            "border-2 border-[#ff6ec7]",
+            "shadow-[4px_4px_0px_#39ff14]",
+          ],
+        },
         outline: {
           id: "outline",
-          label: "Outline",
-          labelZh: "轮廓",
+          label: "Wireframe",
+          labelZh: "线框",
           classes: [
             "bg-transparent text-[#39ff14]",
             "border-2 border-[#39ff14]",
@@ -94,7 +104,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Dark card with fluorescent borders, hard offset shadows, and distorted aesthetic",
+      description: "Dark card with fluorescent border, hard offset shadow, and scanline-ready surface",
       skeleton: {
         element: "div",
         baseClasses: [
@@ -126,6 +136,14 @@ export const acidGraphicsRecipes: StyleRecipes = {
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
         },
+        {
+          id: "skewed",
+          label: "Skewed",
+          labelZh: "倾斜",
+          type: "boolean",
+          default: false,
+          trueClasses: "skew-y-[-1deg]",
+        },
       ],
       variants: {
         default: {
@@ -136,7 +154,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         },
         purple: {
           id: "purple",
-          label: "Purple",
+          label: "Purple Glow",
           labelZh: "紫色",
           classes: [
             "border-[#a020f0]",
@@ -145,11 +163,20 @@ export const acidGraphicsRecipes: StyleRecipes = {
         },
         pink: {
           id: "pink",
-          label: "Pink",
+          label: "Pink Glow",
           labelZh: "粉色",
           classes: [
             "border-[#ff6ec7]",
             "shadow-[5px_5px_0px_#e6ff00]",
+          ],
+        },
+        yellow: {
+          id: "yellow",
+          label: "Acid Yellow",
+          labelZh: "酸黄",
+          classes: [
+            "border-[#e6ff00]",
+            "shadow-[5px_5px_0px_#ff6ec7]",
           ],
         },
       },
@@ -169,7 +196,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Dark input with fluorescent accents and mono typography",
+      description: "Terminal-style input with fluorescent text cursor and dark field",
       skeleton: {
         element: "input",
         baseClasses: [
@@ -178,7 +205,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
           "border-2 border-[#39ff14]/60",
           "bg-[#0a0a0a]",
           "text-[#39ff14]",
-          "placeholder:text-[#39ff14]/30",
+          "placeholder:text-[#39ff14]/25",
           "font-mono",
           "focus:outline-none",
           "transition-all duration-150 ease-out",
@@ -212,17 +239,28 @@ export const acidGraphicsRecipes: StyleRecipes = {
           classes: [
             "border-[#a020f0]/60",
             "text-[#a020f0]",
-            "placeholder:text-[#a020f0]/30",
+            "placeholder:text-[#a020f0]/25",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "border-[#ff6ec7]/60",
+            "text-[#ff6ec7]",
+            "placeholder:text-[#ff6ec7]/25",
           ],
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "ENTER_DATA...", type: "text" },
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "ENTER_DATA>_", type: "text" },
       ],
       states: {
         focus: [
           "focus:border-[#39ff14]",
           "focus:shadow-[3px_3px_0px_#a020f0]",
+          "focus:bg-[#0a0a0a]",
         ],
         disabled: ["opacity-40 cursor-not-allowed"],
       },

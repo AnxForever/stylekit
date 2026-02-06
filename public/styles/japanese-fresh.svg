@@ -1,65 +1,91 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Rice white background -->
+  <defs>
+    <!-- Linen texture pattern -->
+    <pattern id="jfLinen" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#fafaf8"/>
+      <rect x="0" y="0" width="1" height="1" fill="#e8e8e4" opacity="0.15"/>
+      <rect x="3" y="3" width="1" height="1" fill="#e8e8e4" opacity="0.1"/>
+    </pattern>
+    <!-- Paper grain noise -->
+    <filter id="jfGrain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
+      <feBlend in="SourceGraphic" in2="gray" mode="multiply" result="blended"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.03"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+
+  <!-- Off-white background with linen texture -->
   <rect width="1200" height="630" fill="#fafaf8"/>
+  <rect width="1200" height="630" fill="url(#jfLinen)"/>
 
-  <!-- Soft decorative circles -->
-  <circle cx="200" cy="200" r="120" fill="#64b5f6" opacity="0.05"/>
-  <circle cx="250" cy="180" r="80" fill="#98d8c8" opacity="0.05"/>
+  <!-- Subtle watercolor spots -->
+  <circle cx="180" cy="120" r="60" fill="#98d8c8" opacity="0.04"/>
+  <circle cx="200" cy="140" r="40" fill="#98d8c8" opacity="0.03"/>
+  <circle cx="1020" cy="500" r="50" fill="#ffb7c5" opacity="0.04"/>
+  <circle cx="1000" cy="480" r="35" fill="#ffb7c5" opacity="0.03"/>
+  <circle cx="100" cy="500" r="45" fill="#64b5f6" opacity="0.03"/>
 
-  <circle cx="1000" cy="150" r="100" fill="#ffb7c5" opacity="0.05"/>
-  <circle cx="1050" cy="180" r="70" fill="#b8d4e3" opacity="0.05"/>
+  <!-- Thin asymmetric frame - intentionally off-center (wabi-sabi) -->
+  <line x1="80" y1="50" x2="400" y2="50" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <line x1="80" y1="50" x2="80" y2="200" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
+  <line x1="800" y1="580" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.4"/>
+  <line x1="1120" y1="430" x2="1120" y2="580" stroke="#d4d4cf" stroke-width="0.5" opacity="0.4"/>
 
-  <circle cx="150" cy="480" r="90" fill="#98d8c8" opacity="0.04"/>
-  <circle cx="1050" cy="500" r="110" fill="#64b5f6" opacity="0.04"/>
+  <!-- Delicate botanical line drawing - single branch with leaves -->
+  <g stroke="#a0aec0" stroke-width="0.7" fill="none" opacity="0.25">
+    <!-- Main stem -->
+    <path d="M180 520 C180 480, 190 420, 200 380 C210 340, 200 300, 210 260 C215 240, 220 220, 218 200"/>
+    <!-- Leaf 1 -->
+    <path d="M200 380 C220 370, 240 350, 250 340 C240 360, 220 375, 200 380"/>
+    <!-- Leaf 2 -->
+    <path d="M205 340 C185 325, 170 310, 160 295 C175 310, 190 328, 205 340"/>
+    <!-- Leaf 3 -->
+    <path d="M210 300 C230 285, 248 268, 255 255 C245 272, 228 290, 210 300"/>
+    <!-- Leaf 4 (smaller) -->
+    <path d="M212 260 C198 248, 188 235, 182 225 C192 238, 202 252, 212 260"/>
+    <!-- Small bud -->
+    <circle cx="218" cy="198" r="4"/>
+  </g>
 
-  <!-- Delicate line decorations -->
-  <line x1="100" y1="140" x2="300" y2="140" stroke="#b8d4e3" stroke-width="0.5" opacity="0.4"/>
-  <line x1="900" y1="500" x2="1100" y2="500" stroke="#98d8c8" stroke-width="0.5" opacity="0.4"/>
+  <!-- Second botanical accent - right side, very minimal -->
+  <g stroke="#b8d4e3" stroke-width="0.5" fill="none" opacity="0.15">
+    <path d="M1050 150 C1040 180, 1035 210, 1038 240"/>
+    <path d="M1038 200 C1055 195, 1068 185, 1075 178"/>
+    <path d="M1038 220 C1022 215, 1010 208, 1005 200"/>
+  </g>
 
-  <!-- Gentle curved shapes -->
-  <ellipse cx="350" cy="400" rx="150" ry="100" fill="#ffb7c5" opacity="0.03"/>
-  <ellipse cx="850" cy="250" rx="130" ry="90" fill="#b8d4e3" opacity="0.03"/>
+  <!-- Huge whitespace is intentional - Ma (space) -->
 
-  <!-- Small dot accents -->
-  <circle cx="120" cy="300" r="3" fill="#64b5f6" opacity="0.2"/>
-  <circle cx="140" cy="310" r="2" fill="#98d8c8" opacity="0.2"/>
-  <circle cx="130" cy="320" r="2.5" fill="#ffb7c5" opacity="0.2"/>
+  <!-- Title - light weight, generous spacing -->
+  <text x="600" y="275" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="68" font-weight="200" fill="#4a5568" text-anchor="middle" letter-spacing="4">Japanese Fresh</text>
 
-  <circle cx="1060" cy="350" r="3" fill="#98d8c8" opacity="0.2"/>
-  <circle cx="1080" cy="340" r="2" fill="#64b5f6" opacity="0.2"/>
-  <circle cx="1070" cy="360" r="2.5" fill="#b8d4e3" opacity="0.2"/>
-
-  <!-- Soft card shapes -->
-  <rect x="100" y="180" width="220" height="140" rx="16" fill="white" stroke="#e8e8e4" stroke-width="1" opacity="0.6"/>
-  <rect x="880" y="340" width="200" height="120" rx="16" fill="white" stroke="#e8e8e4" stroke-width="1" opacity="0.6"/>
-
-  <!-- Title -->
-  <text x="600" y="270" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="72" font-weight="300" fill="#4a5568" text-anchor="middle">Japanese Fresh</text>
+  <!-- Hairline divider -->
+  <line x1="480" y1="305" x2="720" y2="305" stroke="#d4d4cf" stroke-width="0.5" opacity="0.5"/>
 
   <!-- Japanese subtitle -->
-  <text x="600" y="320" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="24" font-weight="300" fill="#a0aec0" text-anchor="middle" letter-spacing="6">light, soft, pure</text>
+  <text x="600" y="340" font-family="'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="12">ma / wabi-sabi / breath</text>
 
-  <!-- Thin divider line -->
-  <line x1="450" y1="350" x2="750" y2="350" stroke="#e8e8e4" stroke-width="1" opacity="0.6"/>
+  <!-- Very subtle warm-neutral dot accents -->
+  <circle cx="470" cy="305" r="2" fill="#98d8c8" opacity="0.3"/>
+  <circle cx="730" cy="305" r="2" fill="#ffb7c5" opacity="0.3"/>
 
-  <!-- Subtitle -->
-  <text x="600" y="385" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="16" fill="#a0aec0" text-anchor="middle" letter-spacing="4" font-weight="300">CLEAN HEALING DESIGN</text>
+  <!-- Color swatches - rounded, soft, with extreme spacing -->
+  <rect x="350" y="410" width="48" height="48" rx="10" fill="#64b5f6" opacity="0.7"/>
+  <rect x="430" y="410" width="48" height="48" rx="10" fill="#98d8c8" opacity="0.7"/>
+  <rect x="510" y="410" width="48" height="48" rx="10" fill="#ffb7c5" opacity="0.7"/>
+  <rect x="590" y="410" width="48" height="48" rx="10" fill="#b8d4e3" opacity="0.7"/>
+  <rect x="670" y="410" width="48" height="48" rx="10" fill="#d4d4cf" opacity="0.5"/>
+  <rect x="750" y="410" width="48" height="48" rx="10" fill="#fafaf8" stroke="#e8e8e4" stroke-width="0.5" opacity="0.8"/>
 
-  <!-- Color swatches (rounded) -->
-  <rect x="390" y="430" width="56" height="56" rx="12" fill="#64b5f6" opacity="0.8"/>
-  <rect x="462" y="430" width="56" height="56" rx="12" fill="#98d8c8" opacity="0.8"/>
-  <rect x="534" y="430" width="56" height="56" rx="12" fill="#ffb7c5" opacity="0.8"/>
-  <rect x="606" y="430" width="56" height="56" rx="12" fill="#b8d4e3" opacity="0.8"/>
-  <rect x="678" y="430" width="56" height="56" rx="12" fill="#fafaf8" stroke="#e8e8e4" stroke-width="1" opacity="0.8"/>
+  <!-- Hairline borders on swatches -->
+  <rect x="350" y="410" width="48" height="48" rx="10" fill="none" stroke="#64b5f6" stroke-width="0.3" opacity="0.3"/>
+  <rect x="430" y="410" width="48" height="48" rx="10" fill="none" stroke="#98d8c8" stroke-width="0.3" opacity="0.3"/>
+  <rect x="510" y="410" width="48" height="48" rx="10" fill="none" stroke="#ffb7c5" stroke-width="0.3" opacity="0.3"/>
+  <rect x="590" y="410" width="48" height="48" rx="10" fill="none" stroke="#b8d4e3" stroke-width="0.3" opacity="0.3"/>
 
-  <!-- Soft shadow hints on swatches -->
-  <rect x="390" y="430" width="56" height="56" rx="12" fill="none" stroke="#64b5f6" stroke-width="0.5" opacity="0.3"/>
-  <rect x="462" y="430" width="56" height="56" rx="12" fill="none" stroke="#98d8c8" stroke-width="0.5" opacity="0.3"/>
-  <rect x="534" y="430" width="56" height="56" rx="12" fill="none" stroke="#ffb7c5" stroke-width="0.5" opacity="0.3"/>
-  <rect x="606" y="430" width="56" height="56" rx="12" fill="none" stroke="#b8d4e3" stroke-width="0.5" opacity="0.3"/>
-
-  <!-- Delicate leaf/petal shapes -->
-  <path d="M180 520 Q200 490 220 520 Q200 510 180 520Z" fill="#98d8c8" opacity="0.1"/>
-  <path d="M1000 130 Q1020 100 1040 130 Q1020 120 1000 130Z" fill="#ffb7c5" opacity="0.1"/>
-  <path d="M600 560 Q620 530 640 560 Q620 550 600 560Z" fill="#64b5f6" opacity="0.08"/>
+  <!-- Minimal label beneath -->
+  <text x="600" y="500" font-family="'Inter', 'Hiragino Sans', sans-serif" font-size="12" font-weight="200" fill="#a0aec0" text-anchor="middle" letter-spacing="6" opacity="0.5">HAIRLINE BORDERS / BOTANICAL / WHITESPACE</text>
 </svg>

@@ -1,18 +1,29 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Neon glow filter -->
-    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <!-- Neon red glow - stroke is red, glow is red -->
+    <filter id="neonRedGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-      <feFlood flood-color="#dc2626" flood-opacity="0.6" result="color"/>
+      <feFlood flood-color="#dc2626" flood-opacity="0.7" result="color"/>
       <feComposite in="color" in2="blur" operator="in" result="glow"/>
       <feMerge>
         <feMergeNode in="glow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="purpleGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-      <feFlood flood-color="#a020f0" flood-opacity="0.5" result="color"/>
+    <!-- Dual-color glow: purple stroke, blue glow -->
+    <filter id="dualGlowPurple" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feFlood flood-color="#38bdf8" flood-opacity="0.5" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Gold glow for tsuba -->
+    <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#fbbf24" flood-opacity="0.5" result="color"/>
       <feComposite in="color" in2="blur" operator="in" result="glow"/>
       <feMerge>
         <feMergeNode in="glow"/>
@@ -23,77 +34,100 @@
     <pattern id="scanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
       <rect width="4" height="2" fill="rgba(0,0,0,0.15)"/>
     </pattern>
+    <!-- Smoke wisps gradient -->
+    <linearGradient id="smokeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dc2626" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#dc2626" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0"/>
+    </linearGradient>
   </defs>
 
-  <!-- Dark background -->
-  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <!-- Dark navy background -->
+  <rect width="1200" height="630" fill="#080818"/>
 
   <!-- Scan line overlay -->
-  <rect width="1200" height="630" fill="url(#scanlines)" opacity="0.3"/>
+  <rect width="1200" height="630" fill="url(#scanlines)" opacity="0.25"/>
 
-  <!-- Background glow effects -->
-  <ellipse cx="600" cy="315" rx="400" ry="250" fill="#dc2626" opacity="0.04"/>
-  <ellipse cx="400" cy="400" rx="200" ry="150" fill="#a020f0" opacity="0.03"/>
-  <ellipse cx="850" cy="200" rx="180" ry="130" fill="#38bdf8" opacity="0.03"/>
+  <!-- Smoke wisps background -->
+  <ellipse cx="300" cy="400" rx="350" ry="80" fill="url(#smokeGrad)" opacity="0.5"/>
+  <ellipse cx="900" cy="200" rx="300" ry="60" fill="url(#smokeGrad)" opacity="0.4"/>
 
-  <!-- Katana silhouette -->
-  <g transform="translate(120, 180) rotate(-25, 200, 150)">
-    <!-- Blade -->
-    <path d="M 50 280 L 380 30 L 390 35 L 60 285 Z" fill="#dc2626" opacity="0.8" filter="url(#neonGlow)"/>
-    <!-- Guard (tsuba) -->
-    <ellipse cx="55" cy="282" rx="20" ry="8" fill="#fbbf24" opacity="0.7"/>
-    <!-- Handle -->
-    <rect x="30" y="280" width="50" height="12" rx="2" fill="#dc2626" opacity="0.5"/>
-    <!-- Handle wrap pattern -->
-    <line x1="38" y1="280" x2="42" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
-    <line x1="48" y1="280" x2="52" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
-    <line x1="58" y1="280" x2="62" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
-    <line x1="68" y1="280" x2="72" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+  <!-- Armor-plate geometric divisions -->
+  <line x1="0" y1="100" x2="400" y2="100" stroke="#dc2626" stroke-width="0.5" opacity="0.15"/>
+  <line x1="400" y1="100" x2="450" y2="150" stroke="#dc2626" stroke-width="0.5" opacity="0.15"/>
+  <line x1="450" y1="150" x2="450" y2="630" stroke="#dc2626" stroke-width="0.5" opacity="0.1"/>
+  <line x1="750" y1="0" x2="750" y2="480" stroke="#a020f0" stroke-width="0.5" opacity="0.1"/>
+  <line x1="750" y1="480" x2="800" y2="530" stroke="#a020f0" stroke-width="0.5" opacity="0.1"/>
+  <line x1="800" y1="530" x2="1200" y2="530" stroke="#a020f0" stroke-width="0.5" opacity="0.15"/>
+
+  <!-- Torii gate frame - neon red outline -->
+  <g transform="translate(80, 80)" filter="url(#neonRedGlow)">
+    <!-- Left pillar -->
+    <rect x="0" y="50" width="10" height="420" fill="none" stroke="#dc2626" stroke-width="2" opacity="0.6"/>
+    <!-- Right pillar -->
+    <rect x="220" y="50" width="10" height="420" fill="none" stroke="#dc2626" stroke-width="2" opacity="0.6"/>
+    <!-- Top beam (kasagi) - curved -->
+    <path d="M -15 40 L 245 40 L 240 55 L -10 55 Z" fill="none" stroke="#dc2626" stroke-width="2" opacity="0.7"/>
+    <!-- Nuki (horizontal bar) -->
+    <rect x="5" y="85" width="220" height="6" fill="none" stroke="#dc2626" stroke-width="1.5" opacity="0.5"/>
   </g>
 
-  <!-- Torii gate -->
-  <g transform="translate(780, 150)" filter="url(#neonGlow)">
-    <!-- Pillars -->
-    <rect x="0" y="60" width="12" height="280" fill="#dc2626" opacity="0.7"/>
-    <rect x="250" y="60" width="12" height="280" fill="#dc2626" opacity="0.7"/>
-    <!-- Top beam -->
-    <path d="M -20 50 L 282 50 L 275 65 L -13 65 Z" fill="#dc2626" opacity="0.8"/>
-    <!-- Cross beam -->
-    <rect x="0" y="90" width="262" height="8" fill="#dc2626" opacity="0.6"/>
+  <!-- Katana slash diagonal strokes - tapered with glow -->
+  <!-- Main slash: red stroke with red glow -->
+  <path d="M 950 50 L 500 350 L 505 355 L 955 55 Z" fill="#dc2626" opacity="0.7" filter="url(#neonRedGlow)"/>
+  <!-- Secondary slash: purple stroke with blue glow (dual-color) -->
+  <path d="M 1050 120 L 650 380 L 653 384 L 1053 124 Z" fill="#a020f0" opacity="0.6" filter="url(#dualGlowPurple)"/>
+  <!-- Tertiary thin slash -->
+  <path d="M 880 30 L 550 280 L 551 282 L 881 32 Z" fill="#38bdf8" opacity="0.3"/>
+
+  <!-- Ink splatter accents -->
+  <circle cx="520" cy="340" r="8" fill="#dc2626" opacity="0.25"/>
+  <circle cx="510" cy="348" r="4" fill="#dc2626" opacity="0.2"/>
+  <circle cx="530" cy="345" r="3" fill="#dc2626" opacity="0.15"/>
+  <circle cx="660" cy="375" r="6" fill="#a020f0" opacity="0.2"/>
+  <circle cx="668" cy="380" r="3" fill="#a020f0" opacity="0.15"/>
+
+  <!-- Calligraphy kanji "武" (Martial) with neon glow -->
+  <g transform="translate(850, 380)" filter="url(#neonRedGlow)">
+    <!-- Simplified brush stroke kanji -->
+    <path d="M 0 0 L 80 0" stroke="#dc2626" stroke-width="4" stroke-linecap="square" opacity="0.8"/>
+    <path d="M 40 0 L 40 90" stroke="#dc2626" stroke-width="3" stroke-linecap="square" opacity="0.7"/>
+    <path d="M 10 30 L 70 30" stroke="#dc2626" stroke-width="3" stroke-linecap="square" opacity="0.7"/>
+    <path d="M 15 30 L 5 70" stroke="#dc2626" stroke-width="2.5" stroke-linecap="square" opacity="0.6"/>
+    <path d="M 65 30 L 75 70" stroke="#dc2626" stroke-width="2.5" stroke-linecap="square" opacity="0.6"/>
+    <path d="M 10 60 L 35 90" stroke="#dc2626" stroke-width="2" stroke-linecap="square" opacity="0.5"/>
+    <path d="M 70 60 L 45 90" stroke="#dc2626" stroke-width="2" stroke-linecap="square" opacity="0.5"/>
   </g>
 
-  <!-- Neon accent lines -->
-  <line x1="0" y1="500" x2="500" y2="500" stroke="#dc2626" stroke-width="1" opacity="0.3"/>
-  <line x1="0" y1="502" x2="500" y2="502" stroke="#dc2626" stroke-width="1" opacity="0.15"/>
-  <line x1="700" y1="130" x2="1200" y2="130" stroke="#a020f0" stroke-width="1" opacity="0.2"/>
+  <!-- Cherry blossom + neon petals -->
+  <g transform="translate(150, 450)" opacity="0.5">
+    <circle cx="0" cy="-12" r="5" fill="#dc2626" opacity="0.4"/>
+    <circle cx="11" cy="-4" r="5" fill="#dc2626" opacity="0.35"/>
+    <circle cx="7" cy="10" r="5" fill="#dc2626" opacity="0.3"/>
+    <circle cx="-7" cy="10" r="5" fill="#dc2626" opacity="0.3"/>
+    <circle cx="-11" cy="-4" r="5" fill="#dc2626" opacity="0.35"/>
+    <circle cx="0" cy="0" r="3" fill="#fbbf24" opacity="0.5" filter="url(#goldGlow)"/>
+  </g>
+  <g transform="translate(1080, 150)" opacity="0.4">
+    <circle cx="0" cy="-8" r="3.5" fill="#a020f0" opacity="0.4"/>
+    <circle cx="8" cy="-3" r="3.5" fill="#a020f0" opacity="0.35"/>
+    <circle cx="5" cy="7" r="3.5" fill="#a020f0" opacity="0.3"/>
+    <circle cx="-5" cy="7" r="3.5" fill="#a020f0" opacity="0.3"/>
+    <circle cx="-8" cy="-3" r="3.5" fill="#a020f0" opacity="0.35"/>
+    <circle cx="0" cy="0" r="2" fill="#fbbf24" opacity="0.5"/>
+  </g>
 
   <!-- Title text -->
-  <text x="600" y="280" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="80" font-weight="900" fill="#dc2626" text-anchor="middle" filter="url(#neonGlow)">NEON</text>
-  <text x="600" y="360" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="80" font-weight="900" fill="#a020f0" text-anchor="middle" filter="url(#purpleGlow)">SAMURAI</text>
+  <text x="600" y="260" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="90" font-weight="900" fill="#dc2626" text-anchor="middle" letter-spacing="12" filter="url(#neonRedGlow)">NEON</text>
+  <!-- "SAMURAI" with purple stroke and blue glow (dual-color) -->
+  <text x="600" y="360" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="90" font-weight="900" fill="#a020f0" text-anchor="middle" letter-spacing="12" filter="url(#dualGlowPurple)">SAMURAI</text>
 
-  <!-- Subtitle -->
-  <text x="600" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#e2e8f0" text-anchor="middle" opacity="0.4" letter-spacing="8">TRADITION MEETS NEON</text>
+  <!-- Subtitle with brush-stroke underline -->
+  <text x="600" y="415" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#e2e8f0" text-anchor="middle" opacity="0.35" letter-spacing="10">BUSHIDO MEETS NEON</text>
+  <!-- Brush stroke underline -->
+  <path d="M 440 425 Q 600 430 760 425" fill="none" stroke="#dc2626" stroke-width="1.5" opacity="0.3"/>
 
-  <!-- Decorative neon dots -->
-  <circle cx="100" cy="80" r="3" fill="#dc2626" opacity="0.6"/>
-  <circle cx="1100" cy="80" r="3" fill="#a020f0" opacity="0.6"/>
-  <circle cx="100" cy="550" r="3" fill="#38bdf8" opacity="0.6"/>
-  <circle cx="1100" cy="550" r="3" fill="#fbbf24" opacity="0.6"/>
-
-  <!-- Corner accent lines -->
-  <line x1="30" y1="30" x2="100" y2="30" stroke="#dc2626" stroke-width="2" opacity="0.4"/>
-  <line x1="30" y1="30" x2="30" y2="100" stroke="#dc2626" stroke-width="2" opacity="0.4"/>
-  <line x1="1170" y1="30" x2="1100" y2="30" stroke="#a020f0" stroke-width="2" opacity="0.4"/>
-  <line x1="1170" y1="30" x2="1170" y2="100" stroke="#a020f0" stroke-width="2" opacity="0.4"/>
-  <line x1="30" y1="600" x2="100" y2="600" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
-  <line x1="30" y1="600" x2="30" y2="530" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
-  <line x1="1170" y1="600" x2="1100" y2="600" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
-  <line x1="1170" y1="600" x2="1170" y2="530" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
-
-  <!-- Color swatches -->
-  <rect x="390" y="480" width="50" height="50" fill="#dc2626" opacity="0.8"/>
-  <rect x="460" y="480" width="50" height="50" fill="#a020f0" opacity="0.8"/>
-  <rect x="530" y="480" width="50" height="50" fill="#38bdf8" opacity="0.8"/>
-  <rect x="600" y="480" width="50" height="50" fill="#fbbf24" opacity="0.8"/>
-  <rect x="670" y="480" width="50" height="50" fill="#0a0a0a" stroke="#dc2626" stroke-width="1" opacity="0.8"/>
+  <!-- Smoke wisps in foreground -->
+  <path d="M 0 560 Q 200 540 400 560 Q 500 570 600 555 Q 800 530 1000 555 Q 1100 565 1200 550" fill="none" stroke="#dc2626" stroke-width="0.5" opacity="0.12"/>
+  <path d="M 0 580 Q 300 570 500 580 Q 700 590 900 575 Q 1050 565 1200 580" fill="none" stroke="#a020f0" stroke-width="0.5" opacity="0.08"/>
 </svg>

@@ -9,7 +9,7 @@ export const shoujoMangaRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Soft rounded button with pink tones and sparkle hover effect",
+      description: "Soft pill-shaped button with pink tones, colored glow shadow, and scale hover",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -28,7 +28,7 @@ export const shoujoMangaRecipes: StyleRecipes = {
           options: [
             { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-1.5 text-sm" },
             { value: "md", label: "Medium", labelZh: "中", classes: "px-5 py-2 md:px-7 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-7 py-3 md:px-9 md:py-4 text-base md:text-lg" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-7 py-3 md:px-10 md:py-4 text-base md:text-lg" },
           ],
           default: "md",
         },
@@ -44,8 +44,8 @@ export const shoujoMangaRecipes: StyleRecipes = {
       variants: {
         primary: {
           id: "primary",
-          label: "Primary",
-          labelZh: "主要",
+          label: "Sakura",
+          labelZh: "樱花",
           classes: [
             "bg-[#ffb7c5] text-white",
             "shadow-[0_4px_15px_#ffb7c560]",
@@ -53,11 +53,29 @@ export const shoujoMangaRecipes: StyleRecipes = {
         },
         secondary: {
           id: "secondary",
-          label: "Secondary",
-          labelZh: "次要",
+          label: "Lavender",
+          labelZh: "薰衣草",
           classes: [
             "bg-[#c4b5fd] text-white",
             "shadow-[0_4px_15px_#c4b5fd60]",
+          ],
+        },
+        gold: {
+          id: "gold",
+          label: "Gold",
+          labelZh: "金色",
+          classes: [
+            "bg-[#fde68a] text-[#4a5568]",
+            "shadow-[0_4px_15px_#fde68a60]",
+          ],
+        },
+        rose: {
+          id: "rose",
+          label: "Rose",
+          labelZh: "玫瑰",
+          classes: [
+            "bg-[#fecdd3] text-[#4a5568]",
+            "shadow-[0_2px_10px_#fecdd320]",
           ],
         },
         outline: {
@@ -66,7 +84,7 @@ export const shoujoMangaRecipes: StyleRecipes = {
           labelZh: "轮廓",
           classes: [
             "bg-transparent text-[#ffb7c5]",
-            "border-2 border-[#ffb7c5]",
+            "border-2 border-[#ffb7c5]/40",
           ],
         },
       },
@@ -88,15 +106,16 @@ export const shoujoMangaRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Soft rounded card with pink border accents and gentle shadow",
+      description: "Soft manga panel card with screentone background, flower corner icons, and pink-tinted shadow",
       skeleton: {
         element: "div",
         baseClasses: [
           "bg-[#fff5f7]",
           "rounded-2xl",
-          "border border-[#ffb7c5]/30",
+          "border-2 border-[#ffb7c5]/20",
           "shadow-[0_4px_20px_#ffb7c520]",
           "transition-all duration-300 ease-in-out",
+          "relative overflow-hidden",
         ],
       },
       parameters: [
@@ -120,6 +139,14 @@ export const shoujoMangaRecipes: StyleRecipes = {
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
         },
+        {
+          id: "screentone",
+          label: "Screentone BG",
+          labelZh: "网点背景",
+          type: "boolean",
+          default: false,
+          trueClasses: "",
+        },
       ],
       variants: {
         default: {
@@ -133,7 +160,7 @@ export const shoujoMangaRecipes: StyleRecipes = {
           label: "Lavender",
           labelZh: "薰衣草",
           classes: [
-            "border-[#c4b5fd]/40",
+            "border-[#c4b5fd]/25",
             "shadow-[0_4px_20px_#c4b5fd20]",
           ],
         },
@@ -142,8 +169,18 @@ export const shoujoMangaRecipes: StyleRecipes = {
           label: "Gold",
           labelZh: "金色",
           classes: [
-            "border-[#fde68a]/50",
+            "border-[#fde68a]/35",
             "shadow-[0_4px_20px_#fde68a30]",
+          ],
+        },
+        panel: {
+          id: "panel",
+          label: "Manga Panel",
+          labelZh: "漫画面板",
+          classes: [
+            "bg-white/80",
+            "border-2 border-[#ffb7c5]/15",
+            "rounded-3xl",
           ],
         },
       },
@@ -154,7 +191,7 @@ export const shoujoMangaRecipes: StyleRecipes = {
       states: {
         hover: [
           "hover:shadow-[0_8px_30px_#ffb7c540]",
-          "hover:border-[#ffb7c5]/50",
+          "hover:border-[#ffb7c5]/35",
         ],
       },
     },
@@ -163,16 +200,16 @@ export const shoujoMangaRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Soft rounded input with pink focus ring and gentle styling",
+      description: "Soft pill-shaped input with pink focus glow on pearl background",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
           "rounded-full",
-          "border border-[#ffb7c5]/30",
-          "bg-white",
+          "border border-[#ffb7c5]/25",
+          "bg-[#fff5f7]",
           "text-[#4a5568]",
-          "placeholder:text-[#ffb7c5]/50",
+          "placeholder:text-[#ffb7c5]/40",
           "font-sans",
           "focus:outline-none",
           "transition-all duration-300 ease-in-out",
@@ -204,8 +241,17 @@ export const shoujoMangaRecipes: StyleRecipes = {
           label: "Lavender",
           labelZh: "薰衣草",
           classes: [
-            "border-[#c4b5fd]/40",
-            "placeholder:text-[#c4b5fd]/50",
+            "border-[#c4b5fd]/25",
+            "placeholder:text-[#c4b5fd]/40",
+          ],
+        },
+        white: {
+          id: "white",
+          label: "White",
+          labelZh: "白色",
+          classes: [
+            "bg-white",
+            "border-[#ffb7c5]/30",
           ],
         },
       },

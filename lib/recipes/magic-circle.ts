@@ -9,7 +9,7 @@ export const magicCircleRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Mystical button with elegant glow and arcane styling",
+      description: "Hexagon-bordered button with golden glow radiation hover effect",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -17,7 +17,8 @@ export const magicCircleRecipes: StyleRecipes = {
           "font-semibold",
           "tracking-wide",
           "border border-[#fbbf24]/30",
-          "transition-all duration-400 ease-in-out",
+          "rounded-sm",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -57,7 +58,7 @@ export const magicCircleRecipes: StyleRecipes = {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-[#0f0e2e] text-[#e2e8f0]",
+            "bg-[#0a0920] text-[#e2e8f0]",
             "border-[#818cf8]/30",
             "shadow-[0_0_15px_rgba(129,140,248,0.2)]",
           ],
@@ -67,9 +68,20 @@ export const magicCircleRecipes: StyleRecipes = {
           label: "Gold",
           labelZh: "金色",
           classes: [
-            "bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] text-[#0f0e2e]",
+            "bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] text-[#0a0920]",
             "border-[#fbbf24]/60",
             "shadow-[0_0_20px_rgba(251,191,36,0.3)]",
+          ],
+        },
+        runic: {
+          id: "runic",
+          label: "Runic",
+          labelZh: "符文",
+          classes: [
+            "bg-[#0a0920] text-[#fbbf24]",
+            "border-[#fbbf24]/20",
+            "shadow-[0_0_15px_rgba(251,191,36,0.15)]",
+            "font-mono tracking-widest",
           ],
         },
       },
@@ -79,7 +91,7 @@ export const magicCircleRecipes: StyleRecipes = {
       ],
       states: {
         hover: [
-          "hover:shadow-[0_0_30px_rgba(251,191,36,0.4)]",
+          "hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]",
           "hover:border-[#fbbf24]/60",
         ],
         active: ["active:scale-95"],
@@ -91,14 +103,15 @@ export const magicCircleRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Arcane card with subtle glow borders and mystical feel",
+      description: "Arcane card with concentric ring border decorations and runic edge marks",
       skeleton: {
         element: "div",
         baseClasses: [
-          "bg-[#0f0e2e]",
+          "relative",
+          "bg-[#0a0920]",
           "border border-[#fbbf24]/15",
           "rounded-sm",
-          "transition-all duration-400 ease-in-out",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -121,6 +134,14 @@ export const magicCircleRecipes: StyleRecipes = {
           type: "boolean",
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
+        },
+        {
+          id: "centerGlow",
+          label: "Center Glow",
+          labelZh: "中心辉光",
+          type: "boolean",
+          default: false,
+          trueClasses: "bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.06)_0%,transparent_70%)]",
         },
       ],
       variants: {
@@ -147,6 +168,15 @@ export const magicCircleRecipes: StyleRecipes = {
             "shadow-[0_0_20px_rgba(129,140,248,0.15)]",
           ],
         },
+        sacred: {
+          id: "sacred",
+          label: "Sacred Geometry",
+          labelZh: "神圣几何",
+          classes: [
+            "shadow-[0_0_25px_rgba(251,191,36,0.2)]",
+            "border-[#fbbf24]/25",
+          ],
+        },
       },
       slots: [
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
@@ -154,7 +184,7 @@ export const magicCircleRecipes: StyleRecipes = {
       ],
       states: {
         hover: [
-          "hover:shadow-[0_0_30px_rgba(251,191,36,0.25)]",
+          "hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]",
           "hover:border-[#fbbf24]/30",
         ],
       },
@@ -164,19 +194,19 @@ export const magicCircleRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Mystical input with golden glow focus",
+      description: "Geometric frame input with golden glow focus and runic aesthetics",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
           "rounded-sm",
           "border border-[#fbbf24]/15",
-          "bg-[#0f0e2e]",
+          "bg-[#0a0920]",
           "text-[#e2e8f0]",
-          "placeholder:text-[#e2e8f0]/30",
+          "placeholder:text-[#e2e8f0]/25",
           "font-sans",
           "focus:outline-none",
-          "transition-all duration-400 ease-in-out",
+          "transition-all duration-500 ease-in-out",
         ],
       },
       parameters: [
@@ -208,6 +238,14 @@ export const magicCircleRecipes: StyleRecipes = {
             "border-[#fbbf24]/25",
           ],
         },
+        indigo: {
+          id: "indigo",
+          label: "Indigo",
+          labelZh: "靛蓝",
+          classes: [
+            "border-[#818cf8]/20",
+          ],
+        },
       },
       slots: [
         { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Enter rune...", type: "text" },
@@ -215,7 +253,7 @@ export const magicCircleRecipes: StyleRecipes = {
       states: {
         focus: [
           "focus:border-[#fbbf24]/50",
-          "focus:shadow-[0_0_15px_rgba(251,191,36,0.2)]",
+          "focus:shadow-[0_0_20px_rgba(251,191,36,0.25)]",
         ],
         disabled: ["opacity-40 cursor-not-allowed"],
       },

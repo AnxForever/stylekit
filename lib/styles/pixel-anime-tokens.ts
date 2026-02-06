@@ -88,10 +88,10 @@ export const pixelAnimeTokens: StyleTokens = {
       "^font-serif$",
     ],
     reasons: {
-      "rounded-lg": "Pixel Anime uses sharp corners only for pixel aesthetic",
-      "bg-gradient-to-r": "Pixel Anime uses flat solid colors, no smooth gradients",
-      "shadow-md": "Pixel Anime uses hard offset shadows only",
-      "backdrop-blur": "Pixel Anime avoids blur effects for crisp pixel look",
+      "rounded-lg": "Pixel Anime uses sharp corners only -- pixels cannot be round",
+      "bg-gradient-to-r": "Pixel Anime uses flat solid colors, no smooth gradients allowed",
+      "shadow-md": "Pixel Anime uses hard offset pixel shadows only, never soft shadows",
+      "backdrop-blur": "Pixel Anime avoids all blur effects to maintain crisp pixel aesthetic",
     },
   },
 

@@ -9,7 +9,7 @@ export const cyberWafuuRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Digitalized Japanese aesthetic button with clean geometry",
+      description: "Seigaiha-patterned button with circuit trace glow and shoji-grid geometry",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -57,7 +57,7 @@ export const cyberWafuuRecipes: StyleRecipes = {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-[#0a0a14] text-[#38bdf8]",
+            "bg-[#080814] text-[#38bdf8]",
             "border-[#38bdf8]/40",
             "shadow-[0_0_10px_rgba(56,189,248,0.2)]",
           ],
@@ -70,6 +70,16 @@ export const cyberWafuuRecipes: StyleRecipes = {
             "bg-[#c41e3a] text-white",
             "border-[#c41e3a]/60",
             "shadow-[0_0_12px_rgba(196,30,58,0.4)]",
+          ],
+        },
+        kintsugi: {
+          id: "kintsugi",
+          label: "Kintsugi Gold",
+          labelZh: "金继",
+          classes: [
+            "bg-[#080814] text-[#c9a227]",
+            "border-[#c9a227]/40",
+            "shadow-[0_0_10px_rgba(201,162,39,0.25)]",
           ],
         },
       },
@@ -91,11 +101,12 @@ export const cyberWafuuRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Japanese-tech fusion card with circuit-line borders",
+      description: "Shoji screen grid frame card with kintsugi gold crack accents and circuit overlays",
       skeleton: {
         element: "div",
         baseClasses: [
-          "bg-[#0a0a14]",
+          "relative",
+          "bg-[#080814]",
           "border border-[#1e3a5f]/30",
           "transition-all duration-300 ease-in-out",
         ],
@@ -120,6 +131,14 @@ export const cyberWafuuRecipes: StyleRecipes = {
           type: "boolean",
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
+        },
+        {
+          id: "shojiGrid",
+          label: "Shoji Grid Overlay",
+          labelZh: "障子格栅",
+          type: "boolean",
+          default: false,
+          trueClasses: "before:content-[''] before:absolute before:inset-0 before:bg-[linear-gradient(to_right,rgba(30,58,95,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(30,58,95,0.1)_1px,transparent_1px)] before:bg-[size:33.33%_50%] before:pointer-events-none",
         },
       ],
       variants: {
@@ -146,6 +165,15 @@ export const cyberWafuuRecipes: StyleRecipes = {
             "shadow-[0_0_15px_rgba(196,30,58,0.2)]",
           ],
         },
+        kintsugi: {
+          id: "kintsugi",
+          label: "Kintsugi Gold",
+          labelZh: "金继",
+          classes: [
+            "border-[#c9a227]/20",
+            "shadow-[0_0_12px_rgba(201,162,39,0.15)]",
+          ],
+        },
       },
       slots: [
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
@@ -163,15 +191,15 @@ export const cyberWafuuRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Minimalist dark input with electric blue focus glow",
+      description: "Wave-pattern underline input with circuit trace focus glow",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
           "border border-[#1e3a5f]/30",
-          "bg-[#0a0a14]",
+          "bg-[#080814]",
           "text-[#e2e8f0]",
-          "placeholder:text-[#e2e8f0]/25",
+          "placeholder:text-[#e2e8f0]/20",
           "font-sans",
           "focus:outline-none",
           "transition-all duration-300 ease-in-out",
@@ -204,6 +232,14 @@ export const cyberWafuuRecipes: StyleRecipes = {
           labelZh: "电蓝",
           classes: [
             "border-[#38bdf8]/30",
+          ],
+        },
+        vermillion: {
+          id: "vermillion",
+          label: "Vermillion",
+          labelZh: "朱红",
+          classes: [
+            "border-[#c41e3a]/20",
           ],
         },
       },

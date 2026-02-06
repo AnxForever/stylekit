@@ -5,132 +5,129 @@ export const neonSamurai: DesignStyle = {
   name: "霓虹武士风",
   nameEn: "Neon Samurai",
   description:
-    "日本传统武士美学与霓虹赛博朋克的碰撞融合，刀锋般锐利的线条、汉字书法与霓虹光效交织，浮世绘遇见霓虹灯的未来都市武道。",
+    "日本传统武士美学与霓虹赛博朋克的碰撞融合，刀锋斜切线条、�的鸟居门框架、书法笔触与双色霓虹光效交织，浮世绘遇见霓虹灯的未来都市武道。",
   cover: "/styles/neon-samurai.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
   category: "expressive",
   colors: {
     primary: "#dc2626",
-    secondary: "#0a0a0a",
+    secondary: "#080818",
     accent: ["#a020f0", "#38bdf8", "#fbbf24"],
   },
-  keywords: ["霓虹武士", "赛博武士", "日本", "霓虹", "传统融合", "动作"],
+  keywords: ["霓虹武士", "赛博武士", "日本", "霓虹", "传统融合", "动作", "刀锋", "鸟居"],
 
-  philosophy: `Neon Samurai 将日本传统武士道美学与赛博朋克霓虹灯光相融合，创造出一种充满张力的视觉风格。
+  philosophy: `Neon Samurai fuses Japanese bushido aesthetics with cyberpunk neon luminance, forging a style of relentless tension and kinetic energy.
 
-核心理念：
-- 锐利几何：刀锋般的直线条与锐角，拒绝柔和曲线
-- 霓虹光效：暗色底面上的发光轮廓与阴影
-- 传统融合：将�的汉字、�的浮世绘元素以数字化方式呈现
-- 高对比度：深邃黑暗背景与鲜艳霓虹色彩的强烈反差
-- 动态张力：每个元素都蕴含着蓄势待发的力量感`,
+Core principles:
+- Katana slash geometry: diagonal tapered strokes cut across layouts as decorative dividers
+- Torii gate framing: section containers shaped like sacred gate structures
+- Dual-color glow: stroke color differs from its glow halo (purple stroke, blue glow)
+- Armor-plate panels: angular card shapes inspired by samurai yoroi plate segments
+- Ink splatter accents: burst particles on hover and interaction states
+- Calligraphy brush strokes: neon-lit brush-stroke underlines and dividers
+- Smoke/mist overlays: atmospheric depth through translucent background wisps`,
 
   doList: [
-    "使用深色/纯黑背景",
-    "添加霓虹发光效果（box-shadow glow）",
-    "使用锐利的几何线条和尖角",
-    "保持高对比度配色",
-    "使用粗体无衬线字体",
-    "加入红、紫、蓝霓虹色作为强调色",
+    "Use dark navy backgrounds (bg-[#080818])",
+    "Add katana diagonal slash-stroke decorations",
+    "Use torii gate shapes as section frames",
+    "Apply dual-color glow (stroke != glow color)",
+    "Use armor-plate angular card shapes",
+    "Add ink splatter burst accents on hover",
+    "Use calligraphy brush-stroke dividers with neon glow",
   ],
 
   dontList: [
-    "禁止使用柔和粉彩色调",
-    "禁止使用 rounded-full 圆角",
-    "禁止使用有机/不规则形状",
-    "禁止使用衬线字体",
-    "禁止使用浅色背景",
+    "No soft pastel colors or light backgrounds",
+    "No rounded-full or large border radius",
+    "No organic/irregular rounded shapes",
+    "No serif fonts",
+    "No standard drop shadows (use neon glow only)",
   ],
 
   components: {
     button: {
-      name: "按钮",
-      description: "霓虹武士风格按钮",
+      name: "Button",
+      description: "Sharp-edged button with slash-mark corner cuts and dual-color neon glow",
       code: `<button className="
-  px-6 py-3
+  relative px-6 py-3
   bg-[#dc2626] text-white
   font-sans font-bold uppercase tracking-widest
   border border-[#dc2626]/60
   shadow-[0_0_15px_rgba(220,38,38,0.5)]
-  hover:shadow-[0_0_25px_rgba(220,38,38,0.7)]
+  hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]
   hover:border-[#dc2626]
   transition-all duration-300
+  before:content-[''] before:absolute before:top-0 before:right-0
+  before:w-3 before:h-3 before:border-t before:border-r before:border-[#a020f0]
+  after:content-[''] after:absolute after:bottom-0 after:left-0
+  after:w-3 after:h-3 after:border-b after:border-l after:border-[#a020f0]
 ">
   Strike
 </button>`,
     },
     card: {
-      name: "卡片",
-      description: "霓虹武士风格卡片",
+      name: "Card",
+      description: "Armor-plate styled card with angular borders and neon edge glow",
       code: `<div className="
-  p-8
-  bg-[#0a0a0a]
+  relative p-8
+  bg-[#080818]
   border border-[#dc2626]/30
-  shadow-[0_0_15px_rgba(220,38,38,0.3)]
+  shadow-[0_0_15px_rgba(220,38,38,0.2)]
   hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
   hover:border-[#dc2626]/60
   transition-all duration-300
+  [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]
 ">
   <h3 className="text-2xl font-sans font-bold text-[#dc2626] uppercase tracking-wider mb-3">
     BUSHIDO
   </h3>
-  <p className="text-white/60 font-sans">
+  <p className="text-white/50 font-sans">
     The way of the warrior, illuminated by neon
   </p>
 </div>`,
     },
     input: {
-      name: "输入框",
-      description: "霓虹武士风格输入框",
+      name: "Input",
+      description: "Brush-stroke underline input with neon glow focus",
       code: `<input
   type="text"
   placeholder="Enter command..."
   className="
     w-full px-4 py-3
-    bg-[#0a0a0a]
-    border border-[#dc2626]/20
-    text-white placeholder-white/30
+    bg-transparent
+    border-b-2 border-[#dc2626]/30
+    text-white placeholder-white/25
     font-sans
     focus:border-[#dc2626]
-    focus:shadow-[0_0_15px_rgba(220,38,38,0.4)]
+    focus:shadow-[0_2px_15px_rgba(220,38,38,0.4)]
     focus:outline-none
     transition-all duration-300
   "
 />`,
     },
     hero: {
-      name: "Hero 区块",
-      description: "霓虹武士风格 Hero",
+      name: "Hero",
+      description: "Full-screen hero with torii gate frame, diagonal slashes, and smoke overlay",
       code: `<section className="
   min-h-screen
   flex items-center justify-center
-  bg-[#0a0a0a]
+  bg-[#080818]
   relative overflow-hidden
 ">
+  <div className="absolute inset-0 opacity-[0.03]" style={{
+    backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(220,38,38,0.3) 2px, rgba(220,38,38,0.3) 4px)"
+  }} />
   <div className="relative z-10 text-center px-6">
     <h1 className="text-6xl md:text-8xl font-sans font-bold text-[#dc2626] uppercase tracking-widest mb-2
       [text-shadow:0_0_30px_rgba(220,38,38,0.6)]">
       NEON
     </h1>
     <h2 className="text-4xl md:text-6xl font-sans font-bold text-[#a020f0] uppercase tracking-widest mb-6
-      [text-shadow:0_0_20px_rgba(160,32,240,0.5)]">
+      [text-shadow:0_0_20px_rgba(56,189,248,0.5)]">
       SAMURAI
     </h2>
-    <p className="text-xl text-white/50 font-sans mb-8">
-      Where tradition meets the electric frontier
-    </p>
-    <button className="
-      px-10 py-4
-      bg-[#dc2626] text-white
-      font-sans font-bold uppercase tracking-widest
-      border border-[#dc2626]
-      shadow-[0_0_20px_rgba(220,38,38,0.5)]
-      hover:shadow-[0_0_35px_rgba(220,38,38,0.7)]
-      transition-all duration-300
-    ">
-      Enter the Dojo
-    </button>
   </div>
 </section>`,
     },
@@ -140,34 +137,66 @@ export const neonSamurai: DesignStyle = {
 
 :root {
   --ns-red: #dc2626;
-  --ns-black: #0a0a0a;
+  --ns-dark: #080818;
   --ns-purple: #a020f0;
   --ns-blue: #38bdf8;
   --ns-gold: #fbbf24;
 }
 
-/* Neon text glow */
-.ns-text-glow {
-  text-shadow: 0 0 20px var(--ns-red), 0 0 40px rgba(220, 38, 38, 0.3);
+/* Dual-color neon text glow (red text, blue glow) */
+.ns-dual-glow {
+  text-shadow: 0 0 20px var(--ns-blue), 0 0 40px rgba(56, 189, 248, 0.3);
+  color: var(--ns-red);
 }
 
-.ns-text-glow-purple {
-  text-shadow: 0 0 20px var(--ns-purple), 0 0 40px rgba(160, 32, 240, 0.3);
-}
-
-/* Katana slash line */
-.ns-slash {
+/* Katana slash diagonal line */
+.ns-slash-line {
   position: relative;
 }
-.ns-slash::after {
+.ns-slash-line::after {
   content: "";
   position: absolute;
-  bottom: -2px;
+  top: 50%;
+  left: -10%;
+  right: -10%;
+  height: 2px;
+  background: linear-gradient(135deg, transparent 10%, var(--ns-red) 30%, var(--ns-red) 70%, transparent 90%);
+  box-shadow: 0 0 12px var(--ns-blue);
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+/* Torii gate frame */
+.ns-torii-frame {
+  border-top: 3px solid var(--ns-red);
+  border-left: 2px solid var(--ns-red);
+  border-right: 2px solid var(--ns-red);
+  box-shadow: 0 -4px 15px rgba(220, 38, 38, 0.3);
+  position: relative;
+}
+.ns-torii-frame::before {
+  content: "";
+  position: absolute;
+  top: 8px;
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--ns-red), transparent);
-  box-shadow: 0 0 10px var(--ns-red);
+  background: var(--ns-red);
+  opacity: 0.5;
+}
+
+/* Armor-plate clip path */
+.ns-armor-clip {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+/* Smoke overlay */
+.ns-smoke::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(220, 38, 38, 0.04) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 /* Scan line overlay */
@@ -179,8 +208,8 @@ export const neonSamurai: DesignStyle = {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.1) 2px,
-    rgba(0, 0, 0, 0.1) 4px
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
   );
   pointer-events: none;
 }`,
@@ -194,44 +223,49 @@ export const neonSamurai: DesignStyle = {
 - Organic/irregular shapes
 - Serif fonts
 - Light mode backgrounds (bg-white, bg-gray-50, etc.)
+- Standard drop shadows (shadow-md, shadow-lg)
 
 ## Must Follow
 
-- Dark backgrounds: bg-[#0a0a0a] or bg-black
+- Dark navy backgrounds: bg-[#080818] or similar near-black
 - Neon red primary: #dc2626 with glow effects
-- Neon glow shadows: shadow-[0_0_15px_rgba(220,38,38,0.5)]
-- Bold geometric sans-serif fonts
-- Sharp edges, no rounded corners beyond rounded-sm
-- High contrast between dark bg and neon elements
+- Dual-color glow: stroke color differs from glow (e.g., purple text with blue glow halo)
+- Katana slash diagonal lines as decorative elements
+- Torii gate shapes for section framing
+- Armor-plate angular clip-paths on cards
+- Brush-stroke style underlines (not solid box borders for inputs)
+- Ink splatter burst accents on hover
 
 ## Color Palette
 
 Primary:
 - Neon Red: #dc2626
-- Black: #0a0a0a
+- Dark Navy: #080818
 - Electric Purple: #a020f0
 - Neon Blue: #38bdf8
 - Gold: #fbbf24
 
-## Special Elements
+## Unique Elements
 
-- Neon glow borders and shadows
-- Katana slash decorative lines
-- Scan line overlays
-- Sharp angular geometry`,
+- Katana diagonal slash stroke decorations (tapered SVG paths)
+- Torii gate shaped frames (double-beam top border)
+- Dual-color glow effect (stroke color != glow color)
+- Armor-plate angular card clip-paths
+- Calligraphy brush-stroke neon dividers`,
 
   examplePrompts: [
     {
       title: "霓虹武士着陆页",
       titleEn: "Neon Samurai Landing Page",
-      description: "武士道与赛博朋克融合的页面",
-      descriptionEn: "Bushido meets cyberpunk landing page",
+      description: "刀锋斜切与双色霓虹光效融合的武士主题页面",
+      descriptionEn: "Katana-slash and dual-glow neon bushido page",
       prompt: `Use Neon Samurai style to create a dark, high-contrast landing page:
-1. Background: pure black with neon glow accents
-2. Title: bold sans-serif with neon red text-shadow glow
-3. Cards: dark cards with neon border glow on hover
-4. Use red, purple, blue neon colors as accents
-5. Sharp geometric lines, no soft curves`,
+1. Background: dark navy with smoke wisps and scan line overlay
+2. Hero: torii gate frame with dual-color neon title glow
+3. Diagonal katana slash decorations between sections
+4. Cards: armor-plate angular clip-path with neon edge glow
+5. Inputs: brush-stroke underline style with glow focus
+6. Purple stroke with blue glow halo (dual-color effect)`,
     },
   ],
 };

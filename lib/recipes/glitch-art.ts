@@ -9,7 +9,7 @@ export const glitchArtRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Glitch-style button with RGB separation and scan line effects",
+      description: "Glitch-style button with RGB channel split shadow and scan line texture",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -17,9 +17,9 @@ export const glitchArtRecipes: StyleRecipes = {
           "font-bold",
           "uppercase",
           "tracking-widest",
-          "rounded-sm",
+          "rounded-none",
           "border border-[#00ffff]/30",
-          "transition-all duration-150 ease-in-out",
+          "transition-all duration-100 ease-in-out",
           "relative overflow-hidden",
         ],
       },
@@ -32,7 +32,7 @@ export const glitchArtRecipes: StyleRecipes = {
           options: [
             { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-1.5 text-sm" },
             { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2 md:px-6 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-6 py-3 md:px-8 md:py-4 text-base md:text-lg" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-6 py-3 md:px-10 md:py-4 text-base md:text-lg" },
           ],
           default: "md",
         },
@@ -52,7 +52,7 @@ export const glitchArtRecipes: StyleRecipes = {
           labelZh: "主要",
           classes: [
             "bg-[#00ffff] text-[#0a0a0a]",
-            "shadow-[2px_0_#ff00ff,-2px_0_#ffff00]",
+            "shadow-[3px_0_#ff00ff,-3px_0_#ffff00]",
           ],
         },
         secondary: {
@@ -61,8 +61,18 @@ export const glitchArtRecipes: StyleRecipes = {
           labelZh: "次要",
           classes: [
             "bg-[#0a0a0a] text-[#00ffff]",
-            "border-[#00ffff]",
-            "shadow-[2px_0_#ff00ff,-2px_0_#ffff00]",
+            "border-[#00ffff]/50",
+            "shadow-[3px_0_#ff00ff,-3px_0_#ffff00]",
+          ],
+        },
+        magenta: {
+          id: "magenta",
+          label: "Magenta",
+          labelZh: "品红",
+          classes: [
+            "bg-[#ff00ff] text-white",
+            "border-[#ff00ff]/30",
+            "shadow-[3px_0_#00ffff,-3px_0_#ffff00]",
           ],
         },
         outline: {
@@ -70,20 +80,19 @@ export const glitchArtRecipes: StyleRecipes = {
           label: "Outline",
           labelZh: "轮廓",
           classes: [
-            "bg-transparent text-[#00ffff]",
-            "border border-[#00ffff]",
-            "shadow-[1px_0_#ff00ff,-1px_0_#ffff00]",
+            "bg-transparent text-[#ffff00]",
+            "border border-[#ffff00]/50",
+            "shadow-[2px_0_#ff00ff,-2px_0_#00ffff]",
           ],
         },
       },
       slots: [
         { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "EXECUTE", type: "text" },
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "EXECUTE_", type: "text" },
       ],
       states: {
         hover: [
-          "hover:shadow-[4px_0_#ff00ff,-4px_0_#ffff00]",
-          "hover:text-shadow-[0_0_8px_#00ffff]",
+          "hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00]",
         ],
         active: ["active:translate-x-[1px] active:translate-y-[1px]"],
         disabled: ["opacity-40 cursor-not-allowed"],
@@ -94,14 +103,14 @@ export const glitchArtRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Glitch-style card with scan lines and RGB displacement border",
+      description: "Corrupted data panel with displacement band border and scan line texture",
       skeleton: {
         element: "div",
         baseClasses: [
           "bg-[#0a0a0a]",
-          "rounded-sm",
-          "border border-[#00ffff]/20",
-          "transition-all duration-150 ease-in-out",
+          "rounded-none",
+          "border-l-2 border-[#00ffff]/40",
+          "transition-all duration-100 ease-in-out",
           "relative overflow-hidden",
         ],
       },
@@ -124,7 +133,7 @@ export const glitchArtRecipes: StyleRecipes = {
           labelZh: "可交互",
           type: "boolean",
           default: true,
-          trueClasses: "hover:-translate-y-1 cursor-pointer",
+          trueClasses: "cursor-pointer",
         },
       ],
       variants: {
@@ -139,8 +148,7 @@ export const glitchArtRecipes: StyleRecipes = {
           label: "Cyan",
           labelZh: "青色",
           classes: [
-            "border-[#00ffff]/40",
-            "shadow-[0_0_15px_#00ffff20]",
+            "border-l-[#00ffff]/40",
           ],
         },
         magenta: {
@@ -148,19 +156,25 @@ export const glitchArtRecipes: StyleRecipes = {
           label: "Magenta",
           labelZh: "品红",
           classes: [
-            "border-[#ff00ff]/40",
-            "shadow-[0_0_15px_#ff00ff20]",
+            "border-l-[#ff00ff]/40",
+          ],
+        },
+        yellow: {
+          id: "yellow",
+          label: "Yellow",
+          labelZh: "黄色",
+          classes: [
+            "border-l-[#ffff00]/40",
           ],
         },
       },
       slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: false, default: "DATA_BLOCK", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Signal corrupted...", type: "children" },
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "SIGNAL", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Data stream intercepted...", type: "children" },
       ],
       states: {
         hover: [
-          "hover:border-[#00ffff]/50",
-          "hover:shadow-[0_0_20px_#00ffff30,2px_0_#ff00ff20,-2px_0_#ffff0020]",
+          "hover:bg-[#00ffff]/[0.02]",
         ],
       },
     },
@@ -169,19 +183,19 @@ export const glitchArtRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Glitch-style input with mono font and neon focus glow",
+      description: "Terminal-style input with RGB split focus glow and scan line texture",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
-          "rounded-sm",
+          "rounded-none",
           "border border-[#00ffff]/30",
           "bg-[#0a0a0a]",
           "text-[#00ffff]",
-          "placeholder:text-[#00ffff]/30",
+          "placeholder:text-[#00ffff]/20",
           "font-mono",
           "focus:outline-none",
-          "transition-all duration-150 ease-in-out",
+          "transition-all duration-100 ease-in-out",
         ],
       },
       parameters: [
@@ -212,17 +226,17 @@ export const glitchArtRecipes: StyleRecipes = {
           classes: [
             "border-[#ff00ff]/30",
             "text-[#ff00ff]",
-            "placeholder:text-[#ff00ff]/30",
+            "placeholder:text-[#ff00ff]/20",
           ],
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "INPUT_DATA...", type: "text" },
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "ENTER_DATA...", type: "text" },
       ],
       states: {
         focus: [
           "focus:border-[#00ffff]",
-          "focus:shadow-[0_0_10px_#00ffff40,2px_0_#ff00ff20,-2px_0_#ffff0020]",
+          "focus:shadow-[0_0_10px_#00ffff30,3px_0_#ff00ff20,-3px_0_#ffff0020]",
         ],
         disabled: ["opacity-40 cursor-not-allowed"],
       },
