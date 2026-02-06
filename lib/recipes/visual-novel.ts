@@ -9,14 +9,13 @@ export const visualNovelRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Visual novel choice button with soft borders and hover highlight",
+      description: "Visual novel choice button with frosted glass effect and subtle hover glow",
       skeleton: {
         element: "button",
         baseClasses: [
           "font-sans",
           "font-medium",
           "rounded-lg",
-          "border border-[#4a5568]/20",
           "transition-all duration-300 ease-in-out",
         ],
       },
@@ -50,6 +49,7 @@ export const visualNovelRecipes: StyleRecipes = {
           classes: [
             "bg-[#6366f1] text-white",
             "shadow-sm",
+            "border border-[#6366f1]/20",
           ],
         },
         secondary: {
@@ -57,8 +57,8 @@ export const visualNovelRecipes: StyleRecipes = {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-white/80 text-[#4a5568]",
-            "border-[#4a5568]/20",
+            "bg-white/[0.06] text-white/70",
+            "border border-white/10",
             "backdrop-blur-sm",
           ],
         },
@@ -67,10 +67,20 @@ export const visualNovelRecipes: StyleRecipes = {
           label: "Choice",
           labelZh: "选项",
           classes: [
-            "bg-white/60 text-[#4a5568]",
-            "border-[#6366f1]/30",
+            "bg-white/50 text-[#4a5568]",
+            "border border-[#6366f1]/25",
             "backdrop-blur-sm",
             "text-left",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "bg-[#ec4899] text-white",
+            "shadow-sm",
+            "border border-[#ec4899]/20",
           ],
         },
       },
@@ -81,8 +91,8 @@ export const visualNovelRecipes: StyleRecipes = {
       states: {
         hover: [
           "hover:bg-[#6366f1]/10",
-          "hover:border-[#6366f1]/50",
-          "hover:shadow-md",
+          "hover:border-[#6366f1]/40",
+          "hover:shadow-[0_0_15px_#6366f115]",
         ],
         active: ["active:scale-[0.98]"],
         disabled: ["opacity-50 cursor-not-allowed"],
@@ -93,16 +103,15 @@ export const visualNovelRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Semi-transparent dialog panel with frosted glass effect",
+      description: "Semi-transparent dialog panel with frosted glass and optional character nameplate",
       skeleton: {
         element: "div",
         baseClasses: [
-          "bg-white/70",
           "rounded-lg",
-          "border border-[#4a5568]/10",
           "backdrop-blur-md",
           "shadow-sm",
           "transition-all duration-300 ease-in-out",
+          "relative",
         ],
       },
       parameters: [
@@ -126,21 +135,32 @@ export const visualNovelRecipes: StyleRecipes = {
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
         },
+        {
+          id: "ornateCorners",
+          label: "Ornate Corners",
+          labelZh: "装饰边角",
+          type: "boolean",
+          default: false,
+          trueClasses: "",
+        },
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
+        light: {
+          id: "light",
+          label: "Light",
+          labelZh: "亮色",
+          classes: [
+            "bg-white/70",
+            "border border-[#4a5568]/10",
+          ],
         },
         dialog: {
           id: "dialog",
           label: "Dialog",
           labelZh: "对话",
           classes: [
-            "bg-[#1a202c]/80 text-white",
-            "border-[#6366f1]/20",
+            "bg-[#1a202c]/85",
+            "border border-[#6366f1]/20",
           ],
         },
         narrator: {
@@ -148,19 +168,29 @@ export const visualNovelRecipes: StyleRecipes = {
           label: "Narrator",
           labelZh: "旁白",
           classes: [
-            "bg-white/90",
-            "border-[#ec4899]/20",
-            "italic",
+            "bg-white/50",
+            "border border-[#4a5568]/10",
+          ],
+        },
+        scene: {
+          id: "scene",
+          label: "Scene Card",
+          labelZh: "场景卡",
+          classes: [
+            "bg-white/70",
+            "border border-[#6366f1]/15",
+            "overflow-hidden",
           ],
         },
       },
       slots: [
+        { id: "nameplate", label: "Nameplate", labelZh: "铭牌", required: false, default: "Sakura", type: "text" },
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "Chapter 1", type: "text" },
         { id: "children", label: "Content", labelZh: "内容", required: true, default: "The story continues...", type: "children" },
       ],
       states: {
         hover: [
-          "hover:shadow-md",
+          "hover:shadow-lg",
           "hover:border-[#6366f1]/30",
         ],
       },
@@ -170,16 +200,12 @@ export const visualNovelRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Clean input with soft focus glow for character name entry",
+      description: "Clean input with soft focus glow, designed for character name entry and save screen forms",
       skeleton: {
         element: "input",
         baseClasses: [
           "w-full",
           "rounded-lg",
-          "border border-[#4a5568]/20",
-          "bg-white/70",
-          "text-[#4a5568]",
-          "placeholder:text-[#4a5568]/40",
           "font-sans",
           "backdrop-blur-sm",
           "focus:outline-none",
@@ -201,20 +227,37 @@ export const visualNovelRecipes: StyleRecipes = {
         },
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
+        light: {
+          id: "light",
+          label: "Light",
+          labelZh: "亮色",
+          classes: [
+            "bg-white/70",
+            "border border-[#4a5568]/20",
+            "text-[#4a5568]",
+            "placeholder:text-[#4a5568]/40",
+          ],
         },
         dark: {
           id: "dark",
           label: "Dark",
           labelZh: "暗色",
           classes: [
-            "bg-[#1a202c]/60 text-white",
-            "border-[#6366f1]/20",
-            "placeholder:text-white/30",
+            "bg-white/[0.06]",
+            "border border-[#6366f1]/20",
+            "text-white",
+            "placeholder:text-white/25",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "bg-white/[0.06]",
+            "border border-[#ec4899]/20",
+            "text-white",
+            "placeholder:text-white/25",
           ],
         },
       },

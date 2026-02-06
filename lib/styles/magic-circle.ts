@@ -5,136 +5,125 @@ export const magicCircle: DesignStyle = {
   name: "魔法阵风",
   nameEn: "Magic Circle",
   description:
-    "几何魔法阵、神秘符文与光粒子效果的奇幻视觉风格，精密的同心圆纹样、金色辉光与深邃海军蓝底色营造神秘魔法氛围。",
+    "同心圆环嵌套体系、六芒星几何核心、符文铭文沿圆路径排列、生命之花神圣几何、金色辉光辐射与炼金术符号交织的奇幻视觉风格。",
   cover: "/styles/magic-circle.svg",
   styleType: "visual",
   tags: ["expressive", "modern"],
   category: "expressive",
   colors: {
     primary: "#1e1b4b",
-    secondary: "#0f0e2e",
+    secondary: "#0a0920",
     accent: ["#fbbf24", "#e2e8f0", "#818cf8"],
   },
-  keywords: ["魔法阵", "符文", "神秘", "奇幻", "光效", "几何", "魔法"],
+  keywords: ["魔法阵", "符文", "神秘", "奇幻", "光效", "几何", "魔法", "同心圆", "六芒星"],
 
-  philosophy: `Magic Circle 汲取幻想与神秘学中几何魔法阵的灵感，将精密的几何图案与微妙的光效结合。
+  philosophy: `Magic Circle draws from the arcane tradition of geometric summoning circles, weaving precision geometry with radiant light effects.
 
-核心理念：
-- 几何精密：同心圆、正多边形、对称图案构成的精确结构
-- 金色辉光：金色作为主要强调色，象征魔力与神秘
-- 深邃背景：深海军蓝和暗紫色营造神秘深邃的空间感
-- 光粒子效果：微妙的发光效果暗示魔力的流动
-- 优雅克制：用精致的细线条和淡雅光效取代粗犷的表现`,
+Core principles:
+- Concentric ring system: multiple nested circles of varying thickness, dash patterns, and colors
+- Hexagram/pentagram central figures: overlapping triangles as primary structural motifs
+- Runic inscription borders: text-like marks arranged along circular paths
+- Sacred geometry patterns: Flower of Life, Metatron's Cube as background textures
+- Rotating ring animation: slow counter-rotating rings suggesting arcane machinery
+- Golden center radiation: warm glow emanating from the center of compositions
+- Alchemical symbols: fire, water, air, earth triangles at intersection points`,
 
   doList: [
-    "使用深色海军蓝/暗紫背景",
-    "添加金色辉光效果作为强调",
-    "使用精细的边框线条",
-    "采用几何对称构图",
-    "使用优雅衬线字体作为标题",
-    "保持整体色调的神秘与克制",
+    "Use deep dark navy backgrounds (bg-[#0a0920])",
+    "Add concentric ring decorations around focal elements",
+    "Use hexagonal or circular card layouts",
+    "Apply runic inscription marks along borders",
+    "Add golden glow radiation from center of elements",
+    "Use sacred geometry patterns as subtle backgrounds",
+    "Place alchemical symbols at geometric intersection points",
   ],
 
   dontList: [
-    "禁止使用明亮霓虹色",
-    "禁止使用粗犷的野兽派风格",
-    "禁止使用像素风格元素",
-    "禁止使用厚重边框",
-    "禁止使用非正式/手写字体",
+    "No bright neon colors (use warm gold and cool indigo only)",
+    "No brutalist style elements",
+    "No pixel art aesthetics",
+    "No heavy/thick borders",
+    "No informal/handwritten fonts",
   ],
 
   components: {
     button: {
-      name: "按钮",
-      description: "魔法阵风格按钮",
+      name: "Button",
+      description: "Hexagon-bordered button with golden glow hover radiation",
       code: `<button className="
-  px-6 py-3
+  relative px-6 py-3
   bg-[#1e1b4b] text-[#fbbf24]
   font-serif font-semibold tracking-wide
   border border-[#fbbf24]/30
   rounded-sm
   shadow-[0_0_20px_rgba(251,191,36,0.2)]
-  hover:shadow-[0_0_30px_rgba(251,191,36,0.4)]
+  hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]
   hover:border-[#fbbf24]/60
-  transition-all duration-400
+  transition-all duration-500
 ">
   Invoke
 </button>`,
     },
     card: {
-      name: "卡片",
-      description: "魔法阵风格卡片",
+      name: "Card",
+      description: "Card with concentric ring border decorations and runic edge marks",
       code: `<div className="
-  p-8
-  bg-[#0f0e2e]
+  relative p-8
+  bg-[#0a0920]
   border border-[#fbbf24]/15
   rounded-sm
-  shadow-[0_0_20px_rgba(251,191,36,0.15)]
-  hover:shadow-[0_0_30px_rgba(251,191,36,0.25)]
+  shadow-[0_0_20px_rgba(251,191,36,0.12)]
+  hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]
   hover:border-[#fbbf24]/30
-  transition-all duration-400
+  transition-all duration-500
 ">
   <h3 className="text-2xl font-serif font-bold text-[#fbbf24] mb-3">
     Arcanum
   </h3>
-  <p className="text-[#e2e8f0]/60 font-sans">
+  <p className="text-[#e2e8f0]/50 font-sans">
     Ancient geometries reveal hidden truths
   </p>
 </div>`,
     },
     input: {
-      name: "输入框",
-      description: "魔法阵风格输入框",
+      name: "Input",
+      description: "Input with geometric frame and golden glow focus",
       code: `<input
   type="text"
   placeholder="Enter rune..."
   className="
     w-full px-4 py-3
-    bg-[#0f0e2e]
+    bg-[#0a0920]
     border border-[#fbbf24]/15
     rounded-sm
-    text-[#e2e8f0] placeholder-[#e2e8f0]/30
+    text-[#e2e8f0] placeholder-[#e2e8f0]/25
     font-sans
     focus:border-[#fbbf24]/50
-    focus:shadow-[0_0_15px_rgba(251,191,36,0.2)]
+    focus:shadow-[0_0_20px_rgba(251,191,36,0.25)]
     focus:outline-none
-    transition-all duration-400
+    transition-all duration-500
   "
 />`,
     },
     hero: {
-      name: "Hero 区块",
-      description: "魔法阵风格 Hero",
+      name: "Hero",
+      description: "Hero with concentric ring decorations and hexagram layout",
       code: `<section className="
   min-h-screen
   flex items-center justify-center
-  bg-[#0f0e2e]
+  bg-[#0a0920]
   relative overflow-hidden
 ">
+  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <div className="w-[500px] h-[500px] border border-[#fbbf24]/8 rounded-full animate-spin" style={{ animationDuration: "40s" }} />
+    <div className="absolute w-[400px] h-[400px] border border-dashed border-[#818cf8]/6 rounded-full animate-spin" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
+    <div className="absolute w-[300px] h-[300px] border border-[#fbbf24]/10 rounded-full" />
+  </div>
   <div className="relative z-10 text-center px-6">
     <h1 className="text-6xl md:text-8xl font-serif font-bold text-[#fbbf24] mb-2
-      [text-shadow:0_0_30px_rgba(251,191,36,0.4)]">
-      ARCANE
+      [text-shadow:0_0_40px_rgba(251,191,36,0.4)]">
+      ARCANE CIRCLE
     </h1>
-    <h2 className="text-3xl md:text-5xl font-serif text-[#818cf8] mb-6
-      [text-shadow:0_0_20px_rgba(129,140,248,0.3)]">
-      CIRCLE
-    </h2>
-    <p className="text-xl text-[#e2e8f0]/50 font-sans mb-8">
-      Where geometry reveals the secrets of magic
-    </p>
-    <button className="
-      px-10 py-4
-      bg-[#1e1b4b] text-[#fbbf24]
-      font-serif font-semibold tracking-wide
-      border border-[#fbbf24]/40
-      rounded-sm
-      shadow-[0_0_25px_rgba(251,191,36,0.3)]
-      hover:shadow-[0_0_40px_rgba(251,191,36,0.5)]
-      transition-all duration-400
-    ">
-      Begin Ritual
-    </button>
   </div>
 </section>`,
     },
@@ -144,7 +133,7 @@ export const magicCircle: DesignStyle = {
 
 :root {
   --mc-navy: #1e1b4b;
-  --mc-dark: #0f0e2e;
+  --mc-dark: #0a0920;
   --mc-gold: #fbbf24;
   --mc-silver: #e2e8f0;
   --mc-indigo: #818cf8;
@@ -152,28 +141,28 @@ export const magicCircle: DesignStyle = {
 
 /* Golden glow text */
 .mc-gold-glow {
-  text-shadow: 0 0 20px var(--mc-gold), 0 0 40px rgba(251, 191, 36, 0.2);
+  text-shadow: 0 0 25px var(--mc-gold), 0 0 50px rgba(251, 191, 36, 0.2);
 }
 
-/* Rune circle decoration */
-.mc-rune-circle {
+/* Concentric ring decoration */
+.mc-rings {
   position: relative;
 }
-.mc-rune-circle::before {
+.mc-rings::before {
   content: "";
   position: absolute;
   inset: -20px;
-  border: 1px solid rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.08);
   border-radius: 50%;
-  animation: mc-rotate 20s linear infinite;
+  animation: mc-rotate 30s linear infinite;
 }
-.mc-rune-circle::after {
+.mc-rings::after {
   content: "";
   position: absolute;
   inset: -40px;
-  border: 1px dashed rgba(129, 140, 248, 0.08);
+  border: 1px dashed rgba(129, 140, 248, 0.06);
   border-radius: 50%;
-  animation: mc-rotate 30s linear infinite reverse;
+  animation: mc-rotate 45s linear infinite reverse;
 }
 
 @keyframes mc-rotate {
@@ -181,11 +170,37 @@ export const magicCircle: DesignStyle = {
   to { transform: rotate(360deg); }
 }
 
-/* Light particle shimmer */
-.mc-shimmer {
-  background-image: radial-gradient(
+/* Runic inscription border */
+.mc-rune-border {
+  position: relative;
+}
+.mc-rune-border::after {
+  content: "--- ... --- . -- --- ...";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: rgba(251, 191, 36, 0.15);
+  pointer-events: none;
+}
+
+/* Sacred geometry shimmer */
+.mc-sacred-bg {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 25% 25%, rgba(129, 140, 248, 0.02) 0%, transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(129, 140, 248, 0.02) 0%, transparent 40%);
+}
+
+/* Center glow radiation */
+.mc-center-glow {
+  background: radial-gradient(
     circle at 50% 50%,
-    rgba(251, 191, 36, 0.05) 0%,
+    rgba(251, 191, 36, 0.08) 0%,
+    rgba(251, 191, 36, 0.02) 40%,
     transparent 70%
   );
 }`,
@@ -194,7 +209,7 @@ export const magicCircle: DesignStyle = {
 
 ## Absolutely Forbidden
 
-- Bright neon colors
+- Bright neon colors (use warm gold and cool indigo only)
 - Brutalist style elements
 - Pixel art aesthetics
 - Heavy/thick borders
@@ -203,41 +218,45 @@ export const magicCircle: DesignStyle = {
 
 ## Must Follow
 
-- Deep navy/dark backgrounds: bg-[#0f0e2e] or bg-[#1e1b4b]
-- Gold accent glow: #fbbf24 with subtle shadow effects
+- Deep dark backgrounds: bg-[#0a0920] or bg-[#1e1b4b]
+- Concentric ring decorations (nested circles with varying styles)
+- Gold accent glow: #fbbf24 with radiant shadow effects
+- Hexagram/sacred geometry structural motifs
+- Runic inscription marks along borders
 - Elegant serif fonts for headings (font-serif)
-- Thin elegant borders with low opacity: border border-[#fbbf24]/15
-- Subtle glow shadows: shadow-[0_0_20px_rgba(251,191,36,0.2)]
-- Rounded-sm only for border radius
+- Thin elegant borders with low opacity
+- Golden center radiation glow effects
 
 ## Color Palette
 
 Primary:
 - Deep Navy: #1e1b4b
-- Dark Background: #0f0e2e
+- Dark Background: #0a0920
 - Gold Glow: #fbbf24
 - Silver White: #e2e8f0
 - Mystic Indigo: #818cf8
 
-## Special Elements
+## Unique Elements
 
-- Concentric circle decorations
-- Subtle rotating rune patterns
-- Golden glow particle effects
-- Geometric symmetrical layouts`,
+- Concentric circle/ring decorative system (multiple nested rings)
+- Runic inscription borders (dot-dash marks along edges)
+- Hexagram/sacred geometry card layout
+- Alchemical symbols at geometric intersection points
+- Rotating ring animation suggesting arcane machinery`,
 
   examplePrompts: [
     {
       title: "魔法阵主题页面",
       titleEn: "Magic Circle Theme Page",
-      description: "神秘几何与金色辉光的奇幻页面",
-      descriptionEn: "Mystical geometry with golden glow fantasy page",
+      description: "同心圆环、六芒星与金色辉光的神秘几何页面",
+      descriptionEn: "Concentric rings, hexagram and golden glow mystical page",
       prompt: `Use Magic Circle style to create a mystical dark-themed page:
-1. Background: deep navy with subtle radial gold shimmer
-2. Title: elegant serif with golden text-shadow glow
-3. Cards: dark cards with thin gold borders and subtle glow
-4. Use gold, silver, indigo as accent colors
-5. Geometric symmetric layout with circle decorations`,
+1. Background: deep navy with sacred geometry shimmer pattern
+2. Hero: concentric rotating rings around golden-glow title
+3. Cards: arranged in hexagonal grid with runic inscription borders
+4. Buttons: hexagon-bordered with golden glow hover radiation
+5. Alchemical symbols at geometric intersection points
+6. Slow-rotating ring animation suggesting ancient mechanisms`,
     },
   ],
 };

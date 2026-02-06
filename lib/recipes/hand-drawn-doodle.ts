@@ -9,7 +9,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
       id: "button",
       name: "Button",
       nameZh: "按钮",
-      description: "Hand-drawn style button with dashed borders and casual feel",
+      description: "Hand-drawn button with dashed border, marker-color shadow, and slight tilt on hover",
       skeleton: {
         element: "button",
         baseClasses: [
@@ -46,8 +46,8 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
       variants: {
         primary: {
           id: "primary",
-          label: "Primary",
-          labelZh: "主要",
+          label: "Ink",
+          labelZh: "墨色",
           classes: [
             "bg-[#2c2c2c] text-[#fffef5]",
             "border-[#2c2c2c]",
@@ -56,18 +56,28 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         },
         secondary: {
           id: "secondary",
-          label: "Secondary",
-          labelZh: "次要",
+          label: "Red Marker",
+          labelZh: "红色标记",
           classes: [
             "bg-[#ff6b6b] text-[#fffef5]",
             "border-[#2c2c2c]",
             "shadow-[3px_3px_0px_#4ecdc4]",
           ],
         },
+        teal: {
+          id: "teal",
+          label: "Teal Marker",
+          labelZh: "蓝绿标记",
+          classes: [
+            "bg-[#4ecdc4] text-[#fffef5]",
+            "border-[#2c2c2c]",
+            "shadow-[3px_3px_0px_#ffd93d]",
+          ],
+        },
         outline: {
           id: "outline",
-          label: "Outline",
-          labelZh: "轮廓",
+          label: "Sketch",
+          labelZh: "素描",
           classes: [
             "bg-transparent text-[#2c2c2c]",
             "border-[#2c2c2c]",
@@ -94,7 +104,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Doodle-style card with dashed borders and hand-drawn shadows",
+      description: "Notebook-paper card with dashed border, marker shadow, and pushpin/tape decorations",
       skeleton: {
         element: "div",
         baseClasses: [
@@ -126,6 +136,14 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
           default: true,
           trueClasses: "hover:-translate-y-1 cursor-pointer",
         },
+        {
+          id: "tilted",
+          label: "Tilted",
+          labelZh: "倾斜",
+          type: "boolean",
+          default: false,
+          trueClasses: "rotate-[1deg]",
+        },
       ],
       variants: {
         default: {
@@ -137,7 +155,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         red: {
           id: "red",
           label: "Red Marker",
-          labelZh: "红色",
+          labelZh: "红色标记",
           classes: [
             "shadow-[4px_4px_0px_#ff6b6b]",
           ],
@@ -145,15 +163,23 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         yellow: {
           id: "yellow",
           label: "Yellow Marker",
-          labelZh: "黄色",
+          labelZh: "黄色标记",
           classes: [
             "shadow-[4px_4px_0px_#ffd93d]",
+          ],
+        },
+        teal: {
+          id: "teal",
+          label: "Teal Marker",
+          labelZh: "蓝绿标记",
+          classes: [
+            "shadow-[4px_4px_0px_#4ecdc4]",
           ],
         },
       },
       slots: [
         { id: "title", label: "Title", labelZh: "标题", required: false, default: "Sketch Note", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Doodle content here", type: "children" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Scribbled with love and creativity", type: "children" },
       ],
       states: {
         hover: [
@@ -167,7 +193,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
       id: "input",
       name: "Input",
       nameZh: "输入框",
-      description: "Doodle-style input with dashed border and paper background",
+      description: "Notebook-style input with dashed border on paper background",
       skeleton: {
         element: "input",
         baseClasses: [
@@ -176,7 +202,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
           "border-2 border-dashed border-[#2c2c2c]",
           "bg-[#fffef5]",
           "text-[#2c2c2c]",
-          "placeholder:text-[#2c2c2c]/35",
+          "placeholder:text-[#2c2c2c]/30",
           "font-sans",
           "focus:outline-none",
           "transition-all duration-200 ease-in-out",
@@ -209,7 +235,16 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
           labelZh: "蓝绿",
           classes: [
             "border-[#4ecdc4]",
-            "placeholder:text-[#4ecdc4]/35",
+            "placeholder:text-[#4ecdc4]/30",
+          ],
+        },
+        red: {
+          id: "red",
+          label: "Red",
+          labelZh: "红色",
+          classes: [
+            "border-[#ff6b6b]",
+            "placeholder:text-[#ff6b6b]/30",
           ],
         },
       },
@@ -220,6 +255,7 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         focus: [
           "focus:border-[#ff6b6b]",
           "focus:shadow-[2px_2px_0px_#ffd93d]",
+          "focus:rotate-[-0.3deg]",
         ],
         disabled: ["opacity-50 cursor-not-allowed"],
       },

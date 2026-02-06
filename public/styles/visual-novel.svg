@@ -1,59 +1,90 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="vnBg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e0e7ff"/>
-      <stop offset="100%" stop-color="#f7fafc"/>
+    <linearGradient id="vnSkyBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a6fa5"/>
+      <stop offset="40%" stop-color="#7b9cc7"/>
+      <stop offset="70%" stop-color="#c4a882"/>
+      <stop offset="100%" stop-color="#e8c19a"/>
     </linearGradient>
-    <!-- Soft blur filter -->
-    <filter id="vnBlur">
+    <linearGradient id="vnDialogGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1f35" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0f1220" stop-opacity="0.95"/>
+    </linearGradient>
+    <filter id="vnSoftBlur">
       <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="vnGlow">
+      <feGaussianBlur stdDeviation="2"/>
     </filter>
   </defs>
 
-  <!-- Gradient background -->
-  <rect width="1200" height="630" fill="url(#vnBg)"/>
+  <!-- Sunset sky gradient background -->
+  <rect width="1200" height="630" fill="url(#vnSkyBg)"/>
 
-  <!-- Soft decorative blurs -->
-  <circle cx="200" cy="150" r="120" fill="#6366f1" opacity="0.06" filter="url(#vnBlur)"/>
-  <circle cx="1000" cy="100" r="100" fill="#ec4899" opacity="0.05" filter="url(#vnBlur)"/>
-  <circle cx="900" cy="500" r="80" fill="#10b981" opacity="0.04" filter="url(#vnBlur)"/>
+  <!-- Atmospheric light orbs -->
+  <circle cx="900" cy="350" r="200" fill="#e8c19a" opacity="0.15" filter="url(#vnSoftBlur)"/>
+  <circle cx="300" cy="200" r="120" fill="#7b9cc7" opacity="0.1" filter="url(#vnSoftBlur)"/>
 
-  <!-- Character silhouette area (subtle) -->
-  <ellipse cx="300" cy="450" rx="120" ry="200" fill="#4a5568" opacity="0.04"/>
+  <!-- Distant treeline silhouette -->
+  <path d="M0 420 Q80 380, 150 400 Q200 370, 280 390 Q340 360, 420 385 Q500 355, 580 380 Q650 350, 720 375 Q800 345, 880 370 Q950 350, 1020 365 Q1080 340, 1120 360 Q1160 345, 1200 355 L1200 630 L0 630Z" fill="#2d3748" opacity="0.3"/>
 
-  <!-- Dialog box at bottom -->
-  <rect x="100" y="380" width="1000" height="180" rx="12" fill="#1a202c" opacity="0.75"/>
-  <rect x="100" y="380" width="1000" height="180" rx="12" stroke="#6366f1" stroke-width="1" opacity="0.2" fill="none"/>
+  <!-- Character silhouette (left position) -->
+  <ellipse cx="280" cy="400" rx="80" ry="180" fill="#2d3748" opacity="0.12"/>
 
-  <!-- Character name label -->
-  <text x="140" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#6366f1" opacity="0.9">Sakura</text>
+  <!-- Character silhouette (right position, slightly smaller) -->
+  <ellipse cx="900" cy="410" rx="70" ry="160" fill="#2d3748" opacity="0.08"/>
 
-  <!-- Dialog text -->
-  <text x="140" y="460" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ffffff" opacity="0.85">&quot;The cherry blossoms are beautiful this time of year...&quot;</text>
-  <text x="140" y="495" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ffffff" opacity="0.85">&quot;I always feel a little nostalgic when spring arrives.&quot;</text>
+  <!-- ADV-style dialogue panel at bottom -->
+  <rect x="60" y="400" width="1080" height="190" rx="8" fill="url(#vnDialogGrad)"/>
+  <rect x="60" y="400" width="1080" height="190" rx="8" stroke="#6366f1" stroke-width="1" stroke-opacity="0.25" fill="none"/>
 
-  <!-- Choice buttons -->
-  <rect x="150" y="530" width="380" height="45" rx="8" fill="#ffffff" opacity="0.12" stroke="#6366f1" stroke-width="1" stroke-opacity="0.3"/>
-  <text x="200" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#ffffff" opacity="0.7">They remind me of our first meeting.</text>
+  <!-- Ornate corner decorations on dialogue panel -->
+  <!-- Top-left corner -->
+  <path d="M70 405 L70 415 L80 415" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
+  <path d="M72 407 L72 413 L78 413" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.3" fill="none"/>
+  <!-- Top-right corner -->
+  <path d="M1130 405 L1130 415 L1120 415" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
+  <path d="M1128 407 L1128 413 L1122 413" stroke="#ec4899" stroke-width="0.8" stroke-opacity="0.3" fill="none"/>
+  <!-- Bottom-left corner -->
+  <path d="M70 585 L70 575 L80 575" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
+  <!-- Bottom-right corner -->
+  <path d="M1130 585 L1130 575 L1120 575" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
 
-  <rect x="560" y="530" width="380" height="45" rx="8" fill="#ffffff" opacity="0.12" stroke="#ec4899" stroke-width="1" stroke-opacity="0.3"/>
-  <text x="610" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#ffffff" opacity="0.7">Let&apos;s make new memories together.</text>
+  <!-- Character nameplate -->
+  <rect x="90" y="390" width="120" height="28" rx="4" fill="#6366f1" opacity="0.9"/>
+  <text x="150" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Sakura</text>
 
-  <!-- Title -->
-  <text x="600" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="400" fill="#4a5568" text-anchor="middle" opacity="0.9">Visual Novel</text>
+  <!-- Dialog text lines -->
+  <text x="110" y="450" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#ffffff" opacity="0.9">&quot;The cherry blossoms are beautiful this time of year...&quot;</text>
+  <text x="110" y="480" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#ffffff" opacity="0.75">&quot;I always feel a little nostalgic when spring arrives.&quot;</text>
+
+  <!-- Text advance indicator (blinking triangle) -->
+  <polygon points="1105,575 1115,570 1115,580" fill="#6366f1" opacity="0.6"/>
+
+  <!-- Choice buttons (centered, glass panels) -->
+  <rect x="200" y="520" width="360" height="48" rx="6" fill="#ffffff" opacity="0.08" stroke="#6366f1" stroke-width="1" stroke-opacity="0.35"/>
+  <text x="380" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" opacity="0.75">They remind me of our first meeting.</text>
+
+  <rect x="600" y="520" width="360" height="48" rx="6" fill="#ffffff" opacity="0.08" stroke="#ec4899" stroke-width="1" stroke-opacity="0.35"/>
+  <text x="780" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" opacity="0.75">Let&apos;s make new memories together.</text>
+
+  <!-- Title in sky area -->
+  <text x="600" y="160" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#ffffff" text-anchor="middle" opacity="0.9">Visual Novel</text>
+  <text x="601" y="161" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="400" fill="#6366f1" text-anchor="middle" opacity="0.15">Visual Novel</text>
 
   <!-- Subtitle -->
-  <text x="600" y="230" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6366f1" text-anchor="middle" opacity="0.5" letter-spacing="4">INTERACTIVE STORYTELLING</text>
+  <text x="600" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" opacity="0.45" letter-spacing="6">INTERACTIVE STORYTELLING</text>
 
-  <!-- Decorative dots -->
-  <circle cx="420" cy="300" r="3" fill="#6366f1" opacity="0.3"/>
-  <circle cx="600" cy="290" r="4" fill="#ec4899" opacity="0.25"/>
-  <circle cx="780" cy="305" r="3" fill="#10b981" opacity="0.3"/>
+  <!-- Decorative diamond separators -->
+  <rect x="445" y="230" width="8" height="8" fill="#6366f1" opacity="0.4" transform="rotate(45 449 234)"/>
+  <rect x="597" y="230" width="8" height="8" fill="#ec4899" opacity="0.3" transform="rotate(45 601 234)"/>
+  <rect x="749" y="230" width="8" height="8" fill="#10b981" opacity="0.35" transform="rotate(45 753 234)"/>
 
   <!-- Color swatches -->
-  <rect x="440" y="270" width="40" height="40" rx="6" fill="#4a5568" opacity="0.7"/>
-  <rect x="495" y="270" width="40" height="40" rx="6" fill="#6366f1" opacity="0.7"/>
-  <rect x="550" y="270" width="40" height="40" rx="6" fill="#ec4899" opacity="0.7"/>
-  <rect x="605" y="270" width="40" height="40" rx="6" fill="#10b981" opacity="0.7"/>
-  <rect x="660" y="270" width="40" height="40" rx="6" fill="#f7fafc" opacity="0.7" stroke="#4a5568" stroke-width="1" stroke-opacity="0.15"/>
+  <rect x="420" y="280" width="44" height="44" rx="6" fill="#1a202c" opacity="0.8"/>
+  <rect x="478" y="280" width="44" height="44" rx="6" fill="#6366f1" opacity="0.8"/>
+  <rect x="536" y="280" width="44" height="44" rx="6" fill="#ec4899" opacity="0.8"/>
+  <rect x="594" y="280" width="44" height="44" rx="6" fill="#10b981" opacity="0.8"/>
+  <rect x="652" y="280" width="44" height="44" rx="6" fill="#e0e7ff" opacity="0.8"/>
+  <rect x="710" y="280" width="44" height="44" rx="6" fill="#f7fafc" opacity="0.8" stroke="#4a5568" stroke-width="1" stroke-opacity="0.15"/>
 </svg>
