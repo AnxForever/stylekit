@@ -1,0 +1,92 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shoujoBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff5f7"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="shoujoGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffb7c5" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.1"/>
+    </linearGradient>
+    <!-- Soft blur -->
+    <filter id="shoujoBlur">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+    <filter id="shoujoGlowFilter">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- Soft gradient background -->
+  <rect width="1200" height="630" fill="url(#shoujoBg)"/>
+
+  <!-- Soft glow areas -->
+  <circle cx="300" cy="300" r="200" fill="#ffb7c5" opacity="0.08" filter="url(#shoujoBlur)"/>
+  <circle cx="900" cy="200" r="150" fill="#c4b5fd" opacity="0.06" filter="url(#shoujoBlur)"/>
+  <circle cx="600" cy="500" r="180" fill="#fecdd3" opacity="0.05" filter="url(#shoujoBlur)"/>
+
+  <!-- Cherry blossom petals (scattered) -->
+  <!-- Petal shape: teardrop/oval rotated -->
+  <ellipse cx="150" cy="120" rx="10" ry="6" fill="#ffb7c5" opacity="0.35" transform="rotate(30 150 120)"/>
+  <ellipse cx="200" cy="200" rx="8" ry="5" fill="#ffb7c5" opacity="0.25" transform="rotate(-20 200 200)"/>
+  <ellipse cx="350" cy="80" rx="12" ry="7" fill="#fecdd3" opacity="0.3" transform="rotate(45 350 80)"/>
+  <ellipse cx="900" cy="100" rx="9" ry="5" fill="#ffb7c5" opacity="0.3" transform="rotate(60 900 100)"/>
+  <ellipse cx="1050" cy="180" rx="11" ry="6" fill="#fecdd3" opacity="0.25" transform="rotate(-15 1050 180)"/>
+  <ellipse cx="80" cy="400" rx="10" ry="6" fill="#ffb7c5" opacity="0.2" transform="rotate(75 80 400)"/>
+  <ellipse cx="1100" cy="450" rx="8" ry="5" fill="#c4b5fd" opacity="0.2" transform="rotate(40 1100 450)"/>
+  <ellipse cx="250" cy="520" rx="9" ry="5" fill="#ffb7c5" opacity="0.25" transform="rotate(-30 250 520)"/>
+  <ellipse cx="950" cy="520" rx="12" ry="7" fill="#fecdd3" opacity="0.2" transform="rotate(20 950 520)"/>
+
+  <!-- Sparkle stars -->
+  <!-- Star 1 -->
+  <g transform="translate(180, 160)" opacity="0.5">
+    <line x1="0" y1="-6" x2="0" y2="6" stroke="#fde68a" stroke-width="1.5"/>
+    <line x1="-6" y1="0" x2="6" y2="0" stroke="#fde68a" stroke-width="1.5"/>
+    <line x1="-4" y1="-4" x2="4" y2="4" stroke="#fde68a" stroke-width="1"/>
+    <line x1="4" y1="-4" x2="-4" y2="4" stroke="#fde68a" stroke-width="1"/>
+    <circle cx="0" cy="0" r="2" fill="#fde68a" filter="url(#shoujoGlowFilter)"/>
+  </g>
+  <!-- Star 2 -->
+  <g transform="translate(1020, 130)" opacity="0.4">
+    <line x1="0" y1="-5" x2="0" y2="5" stroke="#fde68a" stroke-width="1.5"/>
+    <line x1="-5" y1="0" x2="5" y2="0" stroke="#fde68a" stroke-width="1.5"/>
+    <line x1="-3" y1="-3" x2="3" y2="3" stroke="#fde68a" stroke-width="1"/>
+    <line x1="3" y1="-3" x2="-3" y2="3" stroke="#fde68a" stroke-width="1"/>
+    <circle cx="0" cy="0" r="2" fill="#fde68a" filter="url(#shoujoGlowFilter)"/>
+  </g>
+  <!-- Star 3 -->
+  <g transform="translate(750, 180)" opacity="0.35">
+    <line x1="0" y1="-4" x2="0" y2="4" stroke="#fde68a" stroke-width="1"/>
+    <line x1="-4" y1="0" x2="4" y2="0" stroke="#fde68a" stroke-width="1"/>
+    <circle cx="0" cy="0" r="1.5" fill="#fde68a" filter="url(#shoujoGlowFilter)"/>
+  </g>
+  <!-- Star 4 -->
+  <g transform="translate(450, 450)" opacity="0.3">
+    <line x1="0" y1="-5" x2="0" y2="5" stroke="#fde68a" stroke-width="1.5"/>
+    <line x1="-5" y1="0" x2="5" y2="0" stroke="#fde68a" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="2" fill="#fde68a" filter="url(#shoujoGlowFilter)"/>
+  </g>
+
+  <!-- Small heart shapes -->
+  <path d="M100 350 C100 345, 105 340, 110 345 C115 340, 120 345, 120 350 C120 358, 110 365, 110 365 C110 365, 100 358, 100 350Z" fill="#ffb7c5" opacity="0.25"/>
+  <path d="M1070 380 C1070 375, 1075 370, 1080 375 C1085 370, 1090 375, 1090 380 C1090 388, 1080 395, 1080 395 C1080 395, 1070 388, 1070 380Z" fill="#c4b5fd" opacity="0.2"/>
+
+  <!-- Title -->
+  <text x="600" y="260" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="90" font-weight="700" fill="#ffb7c5" text-anchor="middle">Shoujo</text>
+  <text x="600" y="350" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="70" font-weight="700" fill="#c4b5fd" text-anchor="middle">Manga</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle" opacity="0.4" letter-spacing="6">ROMANTIC DREAM AESTHETIC</text>
+
+  <!-- Color swatches -->
+  <circle cx="430" cy="480" r="25" fill="#ffb7c5" opacity="0.8"/>
+  <circle cx="500" cy="480" r="25" fill="#fff5f7" opacity="0.8" stroke="#ffb7c5" stroke-width="1" stroke-opacity="0.3"/>
+  <circle cx="570" cy="480" r="25" fill="#c4b5fd" opacity="0.8"/>
+  <circle cx="640" cy="480" r="25" fill="#fde68a" opacity="0.8"/>
+  <circle cx="710" cy="480" r="25" fill="#fecdd3" opacity="0.8"/>
+
+  <!-- Soft glow under swatches -->
+  <circle cx="430" cy="480" r="20" fill="#ffb7c5" opacity="0.15" filter="url(#shoujoBlur)"/>
+  <circle cx="570" cy="480" r="20" fill="#c4b5fd" opacity="0.1" filter="url(#shoujoBlur)"/>
+  <circle cx="640" cy="480" r="20" fill="#fde68a" opacity="0.1" filter="url(#shoujoBlur)"/>
+</svg>

@@ -1,0 +1,99 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neon glow filter -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#dc2626" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="purpleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#a020f0" flood-opacity="0.5" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Scan lines -->
+    <pattern id="scanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="rgba(0,0,0,0.15)"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Scan line overlay -->
+  <rect width="1200" height="630" fill="url(#scanlines)" opacity="0.3"/>
+
+  <!-- Background glow effects -->
+  <ellipse cx="600" cy="315" rx="400" ry="250" fill="#dc2626" opacity="0.04"/>
+  <ellipse cx="400" cy="400" rx="200" ry="150" fill="#a020f0" opacity="0.03"/>
+  <ellipse cx="850" cy="200" rx="180" ry="130" fill="#38bdf8" opacity="0.03"/>
+
+  <!-- Katana silhouette -->
+  <g transform="translate(120, 180) rotate(-25, 200, 150)">
+    <!-- Blade -->
+    <path d="M 50 280 L 380 30 L 390 35 L 60 285 Z" fill="#dc2626" opacity="0.8" filter="url(#neonGlow)"/>
+    <!-- Guard (tsuba) -->
+    <ellipse cx="55" cy="282" rx="20" ry="8" fill="#fbbf24" opacity="0.7"/>
+    <!-- Handle -->
+    <rect x="30" y="280" width="50" height="12" rx="2" fill="#dc2626" opacity="0.5"/>
+    <!-- Handle wrap pattern -->
+    <line x1="38" y1="280" x2="42" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+    <line x1="48" y1="280" x2="52" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+    <line x1="58" y1="280" x2="62" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+    <line x1="68" y1="280" x2="72" y2="292" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+  </g>
+
+  <!-- Torii gate -->
+  <g transform="translate(780, 150)" filter="url(#neonGlow)">
+    <!-- Pillars -->
+    <rect x="0" y="60" width="12" height="280" fill="#dc2626" opacity="0.7"/>
+    <rect x="250" y="60" width="12" height="280" fill="#dc2626" opacity="0.7"/>
+    <!-- Top beam -->
+    <path d="M -20 50 L 282 50 L 275 65 L -13 65 Z" fill="#dc2626" opacity="0.8"/>
+    <!-- Cross beam -->
+    <rect x="0" y="90" width="262" height="8" fill="#dc2626" opacity="0.6"/>
+  </g>
+
+  <!-- Neon accent lines -->
+  <line x1="0" y1="500" x2="500" y2="500" stroke="#dc2626" stroke-width="1" opacity="0.3"/>
+  <line x1="0" y1="502" x2="500" y2="502" stroke="#dc2626" stroke-width="1" opacity="0.15"/>
+  <line x1="700" y1="130" x2="1200" y2="130" stroke="#a020f0" stroke-width="1" opacity="0.2"/>
+
+  <!-- Title text -->
+  <text x="600" y="280" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="80" font-weight="900" fill="#dc2626" text-anchor="middle" filter="url(#neonGlow)">NEON</text>
+  <text x="600" y="360" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="80" font-weight="900" fill="#a020f0" text-anchor="middle" filter="url(#purpleGlow)">SAMURAI</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#e2e8f0" text-anchor="middle" opacity="0.4" letter-spacing="8">TRADITION MEETS NEON</text>
+
+  <!-- Decorative neon dots -->
+  <circle cx="100" cy="80" r="3" fill="#dc2626" opacity="0.6"/>
+  <circle cx="1100" cy="80" r="3" fill="#a020f0" opacity="0.6"/>
+  <circle cx="100" cy="550" r="3" fill="#38bdf8" opacity="0.6"/>
+  <circle cx="1100" cy="550" r="3" fill="#fbbf24" opacity="0.6"/>
+
+  <!-- Corner accent lines -->
+  <line x1="30" y1="30" x2="100" y2="30" stroke="#dc2626" stroke-width="2" opacity="0.4"/>
+  <line x1="30" y1="30" x2="30" y2="100" stroke="#dc2626" stroke-width="2" opacity="0.4"/>
+  <line x1="1170" y1="30" x2="1100" y2="30" stroke="#a020f0" stroke-width="2" opacity="0.4"/>
+  <line x1="1170" y1="30" x2="1170" y2="100" stroke="#a020f0" stroke-width="2" opacity="0.4"/>
+  <line x1="30" y1="600" x2="100" y2="600" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
+  <line x1="30" y1="600" x2="30" y2="530" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
+  <line x1="1170" y1="600" x2="1100" y2="600" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+  <line x1="1170" y1="600" x2="1170" y2="530" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+
+  <!-- Color swatches -->
+  <rect x="390" y="480" width="50" height="50" fill="#dc2626" opacity="0.8"/>
+  <rect x="460" y="480" width="50" height="50" fill="#a020f0" opacity="0.8"/>
+  <rect x="530" y="480" width="50" height="50" fill="#38bdf8" opacity="0.8"/>
+  <rect x="600" y="480" width="50" height="50" fill="#fbbf24" opacity="0.8"/>
+  <rect x="670" y="480" width="50" height="50" fill="#0a0a0a" stroke="#dc2626" stroke-width="1" opacity="0.8"/>
+</svg>

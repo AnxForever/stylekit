@@ -1,0 +1,84 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Grid pattern -->
+    <pattern id="cyberGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="40" stroke="#7c3aed" stroke-width="0.5" opacity="0.08"/>
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#7c3aed" stroke-width="0.5" opacity="0.08"/>
+    </pattern>
+    <!-- Scan lines -->
+    <pattern id="cyberScan" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#000" opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0f0f1a"/>
+
+  <!-- Grid overlay -->
+  <rect width="1200" height="630" fill="url(#cyberGrid)"/>
+  <rect width="1200" height="630" fill="url(#cyberScan)"/>
+
+  <!-- Glow orbs -->
+  <circle cx="300" cy="315" r="200" fill="#7c3aed" opacity="0.06"/>
+  <circle cx="900" cy="315" r="180" fill="#06d6a0" opacity="0.04"/>
+  <circle cx="600" cy="200" r="150" fill="#ff006e" opacity="0.03"/>
+
+  <!-- Neon border panels -->
+  <rect x="80" y="120" width="320" height="200" rx="0" fill="#0f0f1a" stroke="#7c3aed" stroke-width="1" opacity="0.6"/>
+  <rect x="80" y="120" width="320" height="200" rx="0" fill="#7c3aed" opacity="0.03"/>
+
+  <rect x="800" y="320" width="300" height="180" rx="0" fill="#0f0f1a" stroke="#06d6a0" stroke-width="1" opacity="0.5"/>
+  <rect x="800" y="320" width="300" height="180" rx="0" fill="#06d6a0" opacity="0.03"/>
+
+  <!-- Horizontal neon lines -->
+  <line x1="100" y1="400" x2="380" y2="400" stroke="#ff006e" stroke-width="1" opacity="0.4"/>
+  <line x1="100" y1="410" x2="300" y2="410" stroke="#ff006e" stroke-width="1" opacity="0.2"/>
+
+  <line x1="820" y1="280" x2="1080" y2="280" stroke="#38bdf8" stroke-width="1" opacity="0.3"/>
+  <line x1="820" y1="290" x2="950" y2="290" stroke="#38bdf8" stroke-width="1" opacity="0.15"/>
+
+  <!-- Corner brackets (sci-fi UI) -->
+  <g stroke="#06d6a0" stroke-width="1.5" opacity="0.5">
+    <!-- Top-left bracket -->
+    <line x1="40" y1="40" x2="80" y2="40"/>
+    <line x1="40" y1="40" x2="40" y2="80"/>
+    <!-- Top-right bracket -->
+    <line x1="1120" y1="40" x2="1160" y2="40"/>
+    <line x1="1160" y1="40" x2="1160" y2="80"/>
+    <!-- Bottom-left bracket -->
+    <line x1="40" y1="550" x2="40" y2="590"/>
+    <line x1="40" y1="590" x2="80" y2="590"/>
+    <!-- Bottom-right bracket -->
+    <line x1="1160" y1="550" x2="1160" y2="590"/>
+    <line x1="1120" y1="590" x2="1160" y2="590"/>
+  </g>
+
+  <!-- Small data dots -->
+  <circle cx="100" cy="180" r="3" fill="#06d6a0" opacity="0.6"/>
+  <circle cx="115" cy="180" r="3" fill="#06d6a0" opacity="0.4"/>
+  <circle cx="130" cy="180" r="3" fill="#7c3aed" opacity="0.6"/>
+  <circle cx="145" cy="180" r="3" fill="#ff006e" opacity="0.5"/>
+
+  <!-- Title with glow -->
+  <text x="600" y="280" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="90" font-weight="700" fill="#7c3aed" text-anchor="middle" letter-spacing="8">CYBER</text>
+  <text x="600" y="280" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="90" font-weight="700" fill="#7c3aed" text-anchor="middle" letter-spacing="8" opacity="0.3" filter="url(#blur)">CYBER</text>
+
+  <text x="600" y="370" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="90" font-weight="700" fill="#06d6a0" text-anchor="middle" letter-spacing="8">ANIME</text>
+  <text x="600" y="370" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="90" font-weight="700" fill="#06d6a0" text-anchor="middle" letter-spacing="8" opacity="0.3" filter="url(#blur)">ANIME</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="420" font-family="'Inter', 'Helvetica Neue', sans-serif" font-size="18" fill="#e0e0ff" text-anchor="middle" opacity="0.4" letter-spacing="8">SCI-FI UI AESTHETICS</text>
+
+  <!-- Color swatches -->
+  <rect x="420" y="470" width="50" height="50" fill="#7c3aed" opacity="0.8"/>
+  <rect x="490" y="470" width="50" height="50" fill="#06d6a0" opacity="0.8"/>
+  <rect x="560" y="470" width="50" height="50" fill="#ff006e" opacity="0.8"/>
+  <rect x="630" y="470" width="50" height="50" fill="#38bdf8" opacity="0.8"/>
+  <rect x="700" y="470" width="50" height="50" fill="#0f0f1a" stroke="#7c3aed" stroke-width="1" opacity="0.8"/>
+
+  <!-- Glow on swatches -->
+  <rect x="420" y="470" width="50" height="50" fill="none" stroke="#7c3aed" stroke-width="1" opacity="0.4"/>
+  <rect x="490" y="470" width="50" height="50" fill="none" stroke="#06d6a0" stroke-width="1" opacity="0.4"/>
+  <rect x="560" y="470" width="50" height="50" fill="none" stroke="#ff006e" stroke-width="1" opacity="0.4"/>
+  <rect x="630" y="470" width="50" height="50" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>
+</svg>

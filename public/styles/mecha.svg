@@ -1,0 +1,87 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Grid pattern -->
+    <pattern id="mechaGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="40" stroke="#4a5c3a" stroke-width="0.5" opacity="0.2"/>
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#4a5c3a" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+    <!-- Warning stripe pattern -->
+    <pattern id="mechaWarning" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="10" height="20" fill="#fbbf24"/>
+      <rect x="10" width="10" height="20" fill="#1a2744"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1a2744"/>
+
+  <!-- Tech grid -->
+  <rect width="1200" height="630" fill="url(#mechaGrid)"/>
+
+  <!-- Warning stripe top -->
+  <rect x="0" y="0" width="1200" height="8" fill="url(#mechaWarning)" opacity="0.8"/>
+  <!-- Warning stripe bottom -->
+  <rect x="0" y="622" width="1200" height="8" fill="url(#mechaWarning)" opacity="0.8"/>
+
+  <!-- Large armor panel - left -->
+  <rect x="60" y="80" width="350" height="460" fill="none" stroke="#4a5c3a" stroke-width="2"/>
+  <rect x="64" y="84" width="342" height="452" fill="none" stroke="#4a5c3a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Panel corners -->
+  <rect x="60" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
+  <rect x="60" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
+  <rect x="390" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
+  <rect x="406" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
+
+  <!-- Panel unit label -->
+  <rect x="75" y="95" width="8" height="8" fill="#fbbf24"/>
+  <text x="92" y="103" font-family="ui-monospace, 'Courier New', monospace" font-size="11" fill="#4a5c3a" letter-spacing="3">UNIT-01 // MAIN FRAME</text>
+
+  <!-- Armor sections inside left panel -->
+  <rect x="80" y="130" width="310" height="80" fill="#4a5c3a" opacity="0.15" stroke="#4a5c3a" stroke-width="1"/>
+  <rect x="80" y="220" width="150" height="120" fill="#4a5c3a" opacity="0.1" stroke="#4a5c3a" stroke-width="1"/>
+  <rect x="240" y="220" width="150" height="120" fill="#ef4444" opacity="0.08" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
+  <rect x="80" y="350" width="310" height="60" fill="#fbbf24" opacity="0.08" stroke="#fbbf24" stroke-width="1" opacity="0.3"/>
+
+  <!-- Warning icon in red panel -->
+  <polygon points="315,260 300,290 330,290" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.6"/>
+  <line x1="315" y1="270" x2="315" y2="282" stroke="#ef4444" stroke-width="2" opacity="0.6"/>
+  <circle cx="315" cy="286" r="1.5" fill="#ef4444" opacity="0.6"/>
+
+  <!-- Large armor panel - right -->
+  <rect x="790" y="80" width="350" height="460" fill="none" stroke="#4a5c3a" stroke-width="2"/>
+  <rect x="794" y="84" width="342" height="452" fill="none" stroke="#4a5c3a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Panel corners -->
+  <rect x="790" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
+  <rect x="790" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
+  <rect x="1120" y="80" width="20" height="4" fill="#fbbf24" opacity="0.6"/>
+  <rect x="1136" y="80" width="4" height="20" fill="#fbbf24" opacity="0.6"/>
+
+  <!-- Panel unit label -->
+  <rect x="805" y="95" width="8" height="8" fill="#ef4444"/>
+  <text x="822" y="103" font-family="ui-monospace, 'Courier New', monospace" font-size="11" fill="#ef4444" letter-spacing="3">UNIT-02 // SUB FRAME</text>
+
+  <!-- Status bars in right panel -->
+  <rect x="810" y="130" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
+  <rect x="810" y="130" width="250" height="12" fill="#fbbf24" opacity="0.4"/>
+  <rect x="810" y="155" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
+  <rect x="810" y="155" width="200" height="12" fill="#4a5c3a" opacity="0.4"/>
+  <rect x="810" y="180" width="310" height="12" fill="#4a5c3a" opacity="0.2"/>
+  <rect x="810" y="180" width="280" height="12" fill="#ef4444" opacity="0.3"/>
+
+  <!-- Hexagonal shape in right panel -->
+  <polygon points="965,320 1005,290 1045,320 1045,370 1005,400 965,370" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+  <polygon points="975,330 1005,308 1035,330 1035,360 1005,382 975,360" fill="none" stroke="#4a5c3a" stroke-width="1" opacity="0.3"/>
+
+  <!-- Center title area -->
+  <text x="600" y="250" font-family="ui-monospace, 'Courier New', monospace" font-size="12" fill="#4a5c3a" text-anchor="middle" letter-spacing="8" opacity="0.6">// SYSTEM ONLINE</text>
+  <text x="600" y="320" font-family="ui-monospace, 'Courier New', monospace" font-size="100" font-weight="700" fill="#fbbf24" text-anchor="middle">MECHA</text>
+  <text x="600" y="370" font-family="ui-monospace, 'Courier New', monospace" font-size="18" fill="#4a5c3a" text-anchor="middle" letter-spacing="10">ARMOR CLASS // OPERATIONAL</text>
+
+  <!-- Decorative lines -->
+  <line x1="440" y1="400" x2="540" y2="400" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+  <line x1="660" y1="400" x2="760" y2="400" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+  <rect x="590" y="394" width="20" height="12" fill="#ef4444" opacity="0.5"/>
+
+  <!-- Status text at bottom center -->
+  <text x="600" y="480" font-family="ui-monospace, 'Courier New', monospace" font-size="10" fill="#4a5c3a" text-anchor="middle" letter-spacing="4" opacity="0.5">THREAT LEVEL: NOMINAL | ARMOR: 98.7% | POWER: FULL</text>
+</svg>
