@@ -76,6 +76,13 @@ import { japaneseFreshRecipes } from "./japanese-fresh";
 import { neonSamuraiRecipes } from "./neon-samurai";
 import { magicCircleRecipes } from "./magic-circle";
 import { cyberWafuuRecipes } from "./cyber-wafuu";
+// New styles - Batch 6
+import { steampunkRecipes } from "./steampunk";
+import { popArtRecipes } from "./pop-art";
+import { solarpunkRecipes } from "./solarpunk";
+import { jrpgRecipes } from "./jrpg";
+import { asymmetricGridRecipes } from "./asymmetric-grid";
+import { parallaxSectionsRecipes } from "./parallax-sections";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -154,6 +161,13 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "neon-samurai": neonSamuraiRecipes,
   "magic-circle": magicCircleRecipes,
   "cyber-wafuu": cyberWafuuRecipes,
+  // New styles - Batch 6
+  "steampunk": steampunkRecipes,
+  "pop-art": popArtRecipes,
+  "solarpunk": solarpunkRecipes,
+  "jrpg": jrpgRecipes,
+  "asymmetric-grid": asymmetricGridRecipes,
+  "parallax-sections": parallaxSectionsRecipes,
 };
 
 /**
