@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Flower2, Leaf, Palette, Gem } from "lucide-react";
@@ -37,7 +37,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#2d5016] hover:text-[#c9a227] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-serif tracking-wide">Back to Docs</span>
+            <span className="font-serif tracking-wide">Back</span>
           </Link>
           <span className="font-serif text-xl text-[#2d5016] tracking-wide">
             Art Nouveau
@@ -54,7 +54,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="Art Nouveau"
-        description="The harmony of nature and art - 自然与艺术的有机统一"
+        description="The harmony of nature and art - 鑷劧涓庤壓鏈殑鏈夋満缁熶竴"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-serif text-[#2d5016] mb-6"
         descriptionClassName="text-xl text-[#2d5016]/70 font-serif italic max-w-2xl mx-auto mb-10"
@@ -71,8 +71,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="自然的馈赠"
+        title="閰嶈壊绯荤粺"
+        subtitle="鑷劧鐨勯璧?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"
@@ -89,8 +89,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="有机曲线设计"
+        title="鎸夐挳"
+        subtitle="鏈夋満鏇茬嚎璁捐"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"
@@ -118,8 +118,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="自然与装饰的融合"
+        title="鍗＄墖"
+        subtitle="鑷劧涓庤楗扮殑铻嶅悎"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"
@@ -159,8 +159,8 @@ export default function ShowcaseContent() {
 
       {/* Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="优雅的交互元素"
+        title="琛ㄥ崟"
+        subtitle="浼橀泤鐨勪氦浜掑厓绱?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"
@@ -203,7 +203,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-[#c9a227]/30">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#2d5016]/50 text-sm font-serif">
-            Art Nouveau Showcase · Part of{" "}
+            Art Nouveau Showcase 路 Part of{" "}
             <Link href="/" className="text-[#2d5016] hover:text-[#c9a227] transition-colors">
               StyleKit
             </Link>
@@ -213,3 +213,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -86,7 +86,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#ff6b6b] hover:text-[#ff6b6b]/70 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-sans font-bold text-sm">Back to Docs</span>
+            <span className="font-sans font-bold text-sm">Back</span>
           </Link>
           <span className="font-sans font-black text-lg text-[#2c2c2c] rotate-[-1.5deg] inline-block">
             Doodle Book
@@ -452,3 +452,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

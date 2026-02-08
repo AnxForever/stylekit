@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -67,7 +67,7 @@ export default function ShowcaseContent() {
               className="flex items-center gap-2 text-[#00ffff]/70 hover:text-[#00ffff] transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">Back to Docs</span>
+              <span className="font-medium">Back</span>
             </Link>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-[#00ffff] rounded-full animate-pulse shadow-[0_0_10px_#00ffff]" />
@@ -84,10 +84,10 @@ export default function ShowcaseContent() {
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          {/* 视觉风格标注 */}
+          {/* 瑙嗚椋庢牸鏍囨敞 */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-4 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
             <Palette className="w-4 h-4" />
-            <span>视觉风格: Cyberpunk Neon</span>
+            <span>瑙嗚椋庢牸: Cyberpunk Neon</span>
           </div>
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00ffff]/10 rounded text-[#00ffff] text-sm font-medium mb-8 ml-2 border border-[#00ffff]/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
             <Cpu className="w-4 h-4" />
@@ -309,3 +309,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

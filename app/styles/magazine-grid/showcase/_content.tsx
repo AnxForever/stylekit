@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -108,7 +108,7 @@ export default function ShowcaseContent() {
               className="flex items-center gap-2 text-gray-500 hover:text-[#0a0a0a] transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium hidden sm:inline">Back to Docs</span>
+              <span className="font-medium hidden sm:inline">Back</span>
             </Link>
             <div className="text-center">
               <span className="font-serif text-2xl font-bold text-[#0a0a0a] italic tracking-tight">The Review</span>
@@ -149,10 +149,10 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <section className="py-12 px-6 bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto text-center">
-          {/* 视觉风格标注 */}
+          {/* 瑙嗚椋庢牸鏍囨敞 */}
           <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-4">
             <Palette className="w-4 h-4" />
-            <span className="uppercase tracking-widest text-xs">视觉风格: Editorial</span>
+            <span className="uppercase tracking-widest text-xs">瑙嗚椋庢牸: Editorial</span>
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 text-sm mb-8 ml-2">
             <Newspaper className="w-4 h-4" />
@@ -397,3 +397,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Feather, Droplets, Wind } from "lucide-react";
@@ -36,7 +36,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#64b5f6] hover:text-[#64b5f6]/70 transition-all duration-500"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="font-light tracking-wide text-sm">Back to Docs</span>
+            <span className="font-light tracking-wide text-sm">Back</span>
           </Link>
           <span className="font-extralight text-lg text-[#4a5568] tracking-wide">
             Japanese Fresh
@@ -314,3 +314,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

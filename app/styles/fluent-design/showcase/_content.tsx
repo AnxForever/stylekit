@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-semibold text-xl text-white">
             Fluent Design
@@ -243,3 +243,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

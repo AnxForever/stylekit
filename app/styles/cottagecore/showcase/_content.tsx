@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -31,7 +31,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#5a8f5a] hover:text-[#5a8f5a]/80 transition-colors"
           >
             <Leaf className="w-5 h-5" />
-            <span className="font-serif">Back to Docs</span>
+            <span className="font-serif">Back</span>
           </Link>
           <span className="font-serif text-xl text-[#8b7355] tracking-wide">
             Cottagecore
@@ -563,3 +563,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

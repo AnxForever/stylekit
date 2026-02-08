@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Diamond, Crown, Gem } from "lucide-react";
@@ -41,7 +41,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-yellow-500 hover:text-yellow-400 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-serif tracking-wider">Back to Docs</span>
+            <span className="font-serif tracking-wider">Back</span>
           </Link>
           <span className="font-serif text-xl text-yellow-500 tracking-[0.2em]">
             ART DECO
@@ -58,7 +58,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="ART DECO"
-        description="The Golden Age of Design - 1920年代奢华与现代的完美融合"
+        description="The Golden Age of Design - 1920骞翠唬濂㈠崕涓庣幇浠ｇ殑瀹岀編铻嶅悎"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-5xl md:text-7xl font-serif text-yellow-500 mb-6 tracking-[0.2em]"
         descriptionClassName="text-xl text-gray-400 max-w-2xl mx-auto mb-10 tracking-wider"
@@ -76,8 +76,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="金色与深色的奢华组合"
+        title="閰嶈壊绯荤粺"
+        subtitle="閲戣壊涓庢繁鑹茬殑濂㈠崕缁勫悎"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -94,8 +94,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="金色光芒与优雅边框"
+        title="鎸夐挳"
+        subtitle="閲戣壊鍏夎姃涓庝紭闆呰竟妗?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -129,8 +129,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="几何边框与对称美学"
+        title="鍗＄墖"
+        subtitle="鍑犱綍杈规涓庡绉扮編瀛?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -188,8 +188,8 @@ export default function ShowcaseContent() {
 
       {/* Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="优雅的输入组件"
+        title="琛ㄥ崟"
+        subtitle="浼橀泤鐨勮緭鍏ョ粍浠?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -233,7 +233,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-yellow-600/30">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm font-serif tracking-wider">
-            Art Deco Showcase · Part of{" "}
+            Art Deco Showcase 路 Part of{" "}
             <Link href="/" className="text-yellow-500 hover:text-yellow-400 transition-colors">
               StyleKit
             </Link>
@@ -243,3 +243,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

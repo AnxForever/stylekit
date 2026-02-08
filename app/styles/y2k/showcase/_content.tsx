@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Sparkles, Star, Heart } from "lucide-react";
@@ -33,7 +33,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
             Y2K
@@ -50,7 +50,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="Y2K AESTHETIC"
-        description="The future is bright and shiny - 千禧年的未来主义美学"
+        description="The future is bright and shiny - 鍗冪Η骞寸殑鏈潵涓讳箟缇庡"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6"
         descriptionClassName="text-xl text-gray-500 max-w-2xl mx-auto mb-10"
@@ -67,8 +67,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="彩虹渐变与金属光泽"
+        title="閰嶈壊绯荤粺"
+        subtitle="褰╄櫣娓愬彉涓庨噾灞炲厜娉?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -85,15 +85,15 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="金属光泽与彩虹渐变"
+        title="鎸夐挳"
+        subtitle="閲戝睘鍏夋辰涓庡僵铏规笎鍙?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
           <div className="p-8 bg-gradient-to-br from-white/60 to-pink-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">样式</p>
+            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">鏍峰紡</p>
             <div className="flex flex-wrap gap-4">
               <button className="px-6 py-3 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 rounded-full text-white font-bold shadow-[0_4px_15px_rgba(255,105,180,0.4)] hover:scale-105 transition-all">
                 Rainbow
@@ -114,8 +114,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="透明气泡感"
+        title="鍗＄墖"
+        subtitle="閫忔槑姘旀场鎰?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -157,7 +157,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 bg-gradient-to-b from-transparent to-white/50">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
-            Y2K Showcase · Part of{" "}
+            Y2K Showcase 路 Part of{" "}
             <Link href="/" className="text-pink-500 hover:text-pink-600 transition-colors">
               StyleKit
             </Link>
@@ -167,3 +167,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
