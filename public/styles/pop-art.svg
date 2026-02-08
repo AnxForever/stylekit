@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="popDots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="2.2" fill="#000000" opacity="0.22"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#ff0066"/>
+  <rect width="1200" height="630" fill="url(#popDots)"/>
+
+  <!-- Diagonal color blocks -->
+  <polygon points="0,630 420,630 0,260" fill="#00ccff" opacity="0.85"/>
+  <polygon points="1200,0 780,0 1200,370" fill="#ffff00" opacity="0.85"/>
+
+  <!-- Burst panel -->
+  <g transform="translate(600 315)">
+    <polygon points="0,-170 34,-78 140,-110 78,-34 170,0 78,34 140,110 34,78 0,170 -34,78 -140,110 -78,34 -170,0 -78,-34 -140,-110 -34,-78" fill="#ffffff" stroke="#000000" stroke-width="10"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="320" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="78" font-weight="900" fill="#000000" letter-spacing="2">POP ART</text>
+  <text x="600" y="370" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18" font-weight="800" fill="#000000" letter-spacing="6">LOUD. BOLD. DOTS.</text>
+
+  <!-- Ink outline accents -->
+  <rect x="180" y="120" width="170" height="120" fill="none" stroke="#000000" stroke-width="8" opacity="0.35"/>
+  <rect x="880" y="420" width="170" height="120" fill="none" stroke="#000000" stroke-width="8" opacity="0.35"/>
+</svg>
+

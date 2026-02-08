@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="px1" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="px2" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#f8fafc"/>
+
+  <!-- Layered sections -->
+  <rect x="250" y="150" width="700" height="150" rx="26" fill="url(#px1)" opacity="0.98"/>
+  <rect x="290" y="230" width="660" height="150" rx="26" fill="url(#px2)" opacity="0.98"/>
+  <rect x="330" y="310" width="620" height="150" rx="26" fill="#ffffff" stroke="#93c5fd" stroke-width="6" opacity="0.98"/>
+
+  <!-- Depth shadow accents -->
+  <rect x="250" y="150" width="700" height="150" rx="26" fill="none" stroke="#1e3a5f" stroke-opacity="0.08" stroke-width="20"/>
+
+  <!-- Title -->
+  <text x="600" y="120" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="74" font-weight="900" fill="#1e3a5f" letter-spacing="2">PARALLAX</text>
+  <text x="600" y="500" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="800" fill="#1e3a5f" letter-spacing="6">SECTION DEPTH</text>
+</svg>
+
