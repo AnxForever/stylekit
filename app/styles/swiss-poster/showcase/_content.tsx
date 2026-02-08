@@ -7,10 +7,8 @@ import {
   Type,
   Square,
   AlignLeft,
-  Minus,
 } from "lucide-react";
 import {
-  ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
 } from "@/components/showcase";

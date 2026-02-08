@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
 ## 第 4 步：常见坑点与验收标准
 
-### 🚨 避坑指南
+### 避坑指南
 1.  **垫图风格漂移**：AI 生成具有随机性。
     *   **对策**：每生成 50 张图，随机抽取 1 张与 `style_anchor.png` 计算色盘差异 (ΔE)。若 ΔE > 3，需微调 Prompt 权重。
 2.  **切图漏边**：
@@ -197,7 +197,7 @@ if __name__ == "__main__":
 4.  **版权风险**：
     *   **对策**：Prompt 中**严禁**出现特定艺术家姓名（如 "style of Ghibli"）。交付前使用 Google 图片反向搜索，确保相似度 < 80%。
 
-### ✅ 验收清单
+### 验收清单
 - [ ] 所有图标视觉重心居中，无明显偏离。
 - [ ] 背景完全透明，无残留噪点。
 - [ ] 文件名符合 `icon_module_name.png` 规范。
@@ -206,11 +206,11 @@ if __name__ == "__main__":
 
 ---
 
-## 📥 资源下载
+## 资源下载
 
 点击下方链接下载完整工程包（包含 Python 切图脚本、CSV 模板、风格配方表 Markdown 模板）：
 
-[👉 **Download Template Repository**](https://github.com/your-org/ai-icon-workflow-template)
+[Download Template Repository](https://github.com/your-org/ai-icon-workflow-template)
 
 ---
 *Created by StyleKit Team | Powered by Nano Banana Pro & Claude Code*

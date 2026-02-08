@@ -1,4 +1,9 @@
 import type { StyleCategory, StyleTag, StyleType } from "@/lib/styles/meta";
+import {
+  normalizeCssColorToHex,
+  resolveCssValue,
+  type CssVariableMap,
+} from "./css-color";
 
 export interface ExtractedStyleDraft {
   name?: string;
@@ -18,6 +23,13 @@ export interface ExtractedStyleDraft {
   buttonCode?: string;
   cardCode?: string;
   inputCode?: string;
+  headingFont?: string;
+  bodyFont?: string;
+  borderRadius?: string;
+  borderWidth?: string;
+  shadowSm?: string;
+  shadowMd?: string;
+  shadowLg?: string;
 }
 
 export interface ParseStyleExtractorResult {
@@ -27,8 +39,8 @@ export interface ParseStyleExtractorResult {
   error?: string;
 }
 
-const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
-const HEX_COLOR_GLOBAL = /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g;
+const HEX_COLOR_GLOBAL =
+  /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
 
 const DO_HEADING_KEYS = [
   "do",
@@ -76,12 +88,12 @@ export function parseStyleExtractorInput(input: string): ParseStyleExtractorResu
     };
   }
 
-  const jsonDraft = parseJsonDraft(trimmed);
-  if (jsonDraft && hasMeaningfulDraft(jsonDraft)) {
+  const jsonResult = parseJsonDraft(trimmed);
+  if (jsonResult && hasMeaningfulDraft(jsonResult.draft)) {
     return {
       ok: true,
       source: "json",
-      data: finalizeDraft(jsonDraft),
+      data: finalizeDraft(jsonResult.draft, { cssVariables: jsonResult.cssVariables }),
     };
   }
 
@@ -101,18 +113,27 @@ export function parseStyleExtractorInput(input: string): ParseStyleExtractorResu
   };
 }
 
-function parseJsonDraft(text: string): ExtractedStyleDraft | null {
+function parseJsonDraft(
+  text: string
+): { draft: ExtractedStyleDraft; cssVariables: CssVariableMap } | null {
   if (!(text.startsWith("{") || text.startsWith("["))) return null;
 
   try {
     const parsed = JSON.parse(text);
-    return draftFromObject(parsed);
+    const cssVariables = extractCssVariables(parsed);
+    return {
+      draft: draftFromObject(parsed, { cssVariables }),
+      cssVariables,
+    };
   } catch {
     return null;
   }
 }
 
-function draftFromObject(value: unknown): ExtractedStyleDraft {
+function draftFromObject(
+  value: unknown,
+  options?: { cssVariables?: CssVariableMap }
+): ExtractedStyleDraft {
   const obj = asRecord(Array.isArray(value) ? value[0] : value);
   if (!obj) return {};
 
@@ -173,32 +194,75 @@ function draftFromObject(value: unknown): ExtractedStyleDraft {
     ])
   );
 
-  const primaryColor = normalizeColor(
-    pickString(obj, [
-      "primaryColor",
-      "colors.primary",
-      "style.colors.primary",
-      "palette.primary",
-    ])
-  );
+  const paletteColors = extractPaletteColors(obj, [
+    "tokens.colors.palette",
+    "stylekit.normalized.tokens.colors.palette",
+    "stylekit.tokens.colors.palette",
+  ], options?.cssVariables);
 
-  const secondaryColor = normalizeColor(
-    pickString(obj, [
-      "secondaryColor",
-      "colors.secondary",
-      "style.colors.secondary",
-      "palette.secondary",
-    ])
-  );
+  const primaryColor =
+    normalizeColor(
+      pickString(obj, [
+        "primaryColor",
+        "colors.primary",
+        "style.colors.primary",
+        "palette.primary",
+        "tokens.colors.semantic.primary",
+        "tokens.colors.semantic.accent",
+        "stylekit.normalized.tokens.colors.semantic.primary",
+        "stylekit.normalized.tokens.colors.semantic.accent",
+        "stylekit.tokens.colors.semantic.primary",
+        "stylekit.tokens.colors.semantic.accent",
+      ])
+    , options?.cssVariables) ?? paletteColors[0];
 
-  const accentColors = normalizeColorArray(
+  const secondaryColor =
+    normalizeColor(
+      pickString(obj, [
+        "secondaryColor",
+        "colors.secondary",
+        "style.colors.secondary",
+        "palette.secondary",
+        "tokens.colors.semantic.secondary",
+        "tokens.colors.semantic.background",
+        "tokens.colors.semantic.surface",
+        "stylekit.normalized.tokens.colors.semantic.secondary",
+        "stylekit.normalized.tokens.colors.semantic.background",
+        "stylekit.normalized.tokens.colors.semantic.surface",
+        "stylekit.tokens.colors.semantic.secondary",
+        "stylekit.tokens.colors.semantic.background",
+        "stylekit.tokens.colors.semantic.surface",
+      ])
+    , options?.cssVariables) ?? paletteColors.find((color) => color !== primaryColor);
+
+  let accentColors = normalizeColorArray(
     pickArray(obj, [
       "accentColors",
       "colors.accent",
       "style.colors.accent",
       "palette.accent",
-    ])
+    ]),
+    options?.cssVariables
   );
+
+  if (accentColors.length === 0) {
+    const semanticAccent = normalizeColor(
+      pickString(obj, [
+        "tokens.colors.semantic.accent",
+        "stylekit.normalized.tokens.colors.semantic.accent",
+        "stylekit.tokens.colors.semantic.accent",
+      ])
+      ,
+      options?.cssVariables
+    );
+    if (semanticAccent) accentColors = [semanticAccent];
+  }
+
+  if (accentColors.length === 0) {
+    accentColors = paletteColors
+      .filter((color) => color !== primaryColor && color !== secondaryColor)
+      .slice(0, 5);
+  }
 
   const buttonCode = pickCode(obj, [
     "buttonCode",
@@ -219,6 +283,46 @@ function draftFromObject(value: unknown): ExtractedStyleDraft {
     "examples.input",
     "components.field.code",
   ]);
+
+  const headingFont = pickString(obj, [
+    "headingFont",
+    "typography.headingFont",
+    "typography.heading",
+    "style.typography.headingFont",
+    "style.typography.heading",
+    "tokens.typography.headingFont",
+    "tokens.typography.heading",
+  ]);
+
+  const bodyFont = pickString(obj, [
+    "bodyFont",
+    "typography.bodyFont",
+    "typography.body",
+    "style.typography.bodyFont",
+    "style.typography.body",
+    "tokens.typography.bodyFont",
+    "tokens.typography.body",
+  ]);
+
+  const borderRadius = pickString(obj, [
+    "borderRadius",
+    "borders.radius",
+    "style.borders.radius",
+    "tokens.borders.radius",
+    "tokens.border.radius",
+  ]);
+
+  const borderWidth = pickString(obj, [
+    "borderWidth",
+    "borders.width",
+    "style.borders.width",
+    "tokens.borders.width",
+    "tokens.border.width",
+  ]);
+
+  const shadowSm = pickString(obj, ["shadowSm", "shadows.sm", "shadows.small", "tokens.shadows.sm"]);
+  const shadowMd = pickString(obj, ["shadowMd", "shadows.md", "shadows.medium", "tokens.shadows.md"]);
+  const shadowLg = pickString(obj, ["shadowLg", "shadows.lg", "shadows.large", "tokens.shadows.lg"]);
 
   const styleTypeRaw = pickString(obj, [
     "styleType",
@@ -266,6 +370,13 @@ function draftFromObject(value: unknown): ExtractedStyleDraft {
     buttonCode,
     cardCode,
     inputCode,
+    headingFont,
+    bodyFont,
+    borderRadius,
+    borderWidth,
+    shadowSm,
+    shadowMd,
+    shadowLg,
   };
 }
 
@@ -481,8 +592,19 @@ function extractColors(markdown: string): {
 
 function extractLabeledColor(text: string, labels: string[]): string | undefined {
   for (const label of labels) {
-    const match = text.match(new RegExp(`${escapeRegExp(label)}[^\\n#]*(#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\\b)`, "i"));
-    if (match?.[1]) return match[1].toLowerCase();
+    const lineMatch = text.match(new RegExp(`${escapeRegExp(label)}\\s*[:：]\\s*([^\\n]+)`, "i"));
+    const token = findFirstColorToken(lineMatch?.[1]);
+    const normalized = normalizeCssColorToHex(token);
+    if (normalized) return normalized;
+
+    // Back-compat: label line with only hex present.
+    const hexMatch = text.match(
+      new RegExp(
+        `${escapeRegExp(label)}[^\\n#]*(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\\b)`,
+        "i"
+      )
+    );
+    if (hexMatch?.[1]) return hexMatch[1].toLowerCase();
   }
   return undefined;
 }
@@ -535,22 +657,33 @@ function extractComponentCode(markdown: string): {
   return { buttonCode, cardCode, inputCode };
 }
 
-function finalizeDraft(draft: ExtractedStyleDraft): ExtractedStyleDraft {
+function finalizeDraft(
+  draft: ExtractedStyleDraft,
+  options?: { cssVariables?: CssVariableMap }
+): ExtractedStyleDraft {
   const baseName = draft.nameEn ?? draft.name;
   const slug = draft.slug ? slugify(draft.slug) : slugify(baseName ?? "");
 
-  const colors = normalizeColorArray(draft.accentColors);
+  const cssVariables = options?.cssVariables;
+  const colors = normalizeColorArray(draft.accentColors, cssVariables);
 
   return {
     ...draft,
     slug: slug || undefined,
-    primaryColor: normalizeColor(draft.primaryColor),
-    secondaryColor: normalizeColor(draft.secondaryColor),
+    primaryColor: normalizeColor(draft.primaryColor, cssVariables),
+    secondaryColor: normalizeColor(draft.secondaryColor, cssVariables),
     accentColors: colors.length > 0 ? colors : undefined,
     keywords: normalizeStringArray(draft.keywords),
     doList: normalizeStringArray(draft.doList),
     dontList: normalizeStringArray(draft.dontList),
     tags: draft.tags && draft.tags.length > 0 ? dedupe(draft.tags) : undefined,
+    headingFont: resolveOptionalString(resolveCssValue(draft.headingFont, cssVariables)),
+    bodyFont: resolveOptionalString(resolveCssValue(draft.bodyFont, cssVariables)),
+    borderRadius: resolveOptionalString(resolveCssValue(draft.borderRadius, cssVariables)),
+    borderWidth: resolveOptionalString(resolveCssValue(draft.borderWidth, cssVariables)),
+    shadowSm: resolveOptionalString(resolveCssValue(draft.shadowSm, cssVariables)),
+    shadowMd: resolveOptionalString(resolveCssValue(draft.shadowMd, cssVariables)),
+    shadowLg: resolveOptionalString(resolveCssValue(draft.shadowLg, cssVariables)),
   };
 }
 
@@ -727,20 +860,92 @@ function normalizeStringArray(value: unknown): string[] {
   );
 }
 
-function normalizeColor(value: string | undefined): string | undefined {
-  if (!value) return undefined;
-  const normalized = value.trim().toLowerCase();
-  return HEX_COLOR_PATTERN.test(normalized) ? normalized : undefined;
+function normalizeColor(value: string | undefined, variables?: CssVariableMap): string | undefined {
+  return normalizeCssColorToHex(value, variables);
 }
 
-function normalizeColorArray(value: unknown): string[] {
+function extractPaletteColors(
+  obj: Record<string, unknown>,
+  paths: string[],
+  variables?: CssVariableMap
+): string[] {
+  for (const path of paths) {
+    const raw = readPath(obj, path);
+    const palette = asRecord(raw);
+    if (!palette) continue;
+
+    const colors = Object.values(palette)
+      .map((value) => {
+        if (typeof value === "string") return normalizeColor(value, variables);
+        const record = asRecord(value);
+        if (record && typeof record.value === "string") return normalizeColor(record.value, variables);
+        return undefined;
+      })
+      .filter((value): value is string => Boolean(value));
+
+    if (colors.length > 0) return dedupe(colors).slice(0, 8);
+  }
+
+  return [];
+}
+
+function normalizeColorArray(value: unknown, variables?: CssVariableMap): string[] {
   if (!Array.isArray(value)) return [];
   return dedupe(
     value
       .filter((item): item is string => typeof item === "string")
-      .map((item) => normalizeColor(item))
+      .map((item) => normalizeColor(item, variables))
       .filter((item): item is string => Boolean(item))
   ).slice(0, 5);
+}
+
+function resolveOptionalString(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function findFirstColorToken(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+
+  if (normalizeCssColorToHex(trimmed)) return trimmed;
+
+  const match = trimmed.match(
+    /(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b|(?:rgb|rgba|hsl|hsla|oklch)\([^)]*\)|var\(--[^)]+\))/i
+  );
+
+  return match?.[1];
+}
+
+function extractCssVariables(value: unknown): CssVariableMap {
+  const obj = asRecord(Array.isArray(value) ? value[0] : value);
+  if (!obj) return {};
+
+  const candidates = [
+    readPath(obj, "cssVariables"),
+    readPath(obj, "stylekit.cssVariables"),
+    readPath(obj, "stylekit.normalized.cssVariables"),
+  ];
+
+  for (const candidate of candidates) {
+    const record = asRecord(candidate);
+    if (!record) continue;
+
+    const result: CssVariableMap = {};
+    for (const [key, raw] of Object.entries(record)) {
+      if (typeof raw !== "string") continue;
+      const name = key.trim();
+      const valueString = raw.trim();
+      if (!name || !valueString) continue;
+      result[name] = valueString;
+    }
+
+    if (Object.keys(result).length > 0) return result;
+  }
+
+  return {};
 }
 
 function slugify(value: string): string {

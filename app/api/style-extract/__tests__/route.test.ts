@@ -32,4 +32,30 @@ describe("POST /api/style-extract", () => {
     const body = (await response.json()) as { error?: string };
     expect(body.error).toContain("private network");
   });
+
+  it("rejects redirects to local/private targets", async () => {
+    const originalFetch = globalThis.fetch;
+
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      new Response(null, {
+        status: 302,
+        headers: {
+          location: "http://127.0.0.1:8080",
+        },
+      })
+    );
+
+    (globalThis as unknown as { fetch: typeof fetch }).fetch =
+      fetchMock as unknown as typeof fetch;
+
+    try {
+      const response = await POST(buildRequest({ url: "https://example.com" }));
+      expect(response.status).toBe(400);
+
+      const body = (await response.json()) as { error?: string };
+      expect(body.error).toContain("private network");
+    } finally {
+      (globalThis as unknown as { fetch: typeof fetch }).fetch = originalFetch;
+    }
+  });
 });

@@ -175,6 +175,13 @@ import { japaneseFresh } from "./japanese-fresh";
 import { neonSamurai } from "./neon-samurai";
 import { magicCircle } from "./magic-circle";
 import { cyberWafuu } from "./cyber-wafuu";
+// New styles - Batch 6
+import { steampunk } from "./steampunk";
+import { popArt } from "./pop-art";
+import { solarpunk } from "./solarpunk";
+import { jrpg } from "./jrpg";
+import { asymmetricGrid } from "./asymmetric-grid";
+import { parallaxSections } from "./parallax-sections";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -261,6 +268,13 @@ export const styles: DesignStyle[] = [
   neonSamurai,
   magicCircle,
   cyberWafuu,
+  // New styles - Batch 6
+  steampunk,
+  popArt,
+  solarpunk,
+  jrpg,
+  asymmetricGrid,
+  parallaxSections,
 ];
 
 // 根据 slug 获取风格

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Diamond, Heart, Star } from "lucide-react";
 import {
   NeuButton,
   NeuCard,
@@ -121,9 +122,15 @@ export default function ShowcaseContent() {
             <div>
               <p className="text-sm text-gray-500 mb-4">图标按钮 Icon Buttons</p>
               <div className="flex flex-wrap gap-4">
-                <NeuIconButton size="sm">♥</NeuIconButton>
-                <NeuIconButton>★</NeuIconButton>
-                <NeuIconButton size="lg">◆</NeuIconButton>
+                <NeuIconButton size="sm" aria-label="Like">
+                  <Heart className="h-4 w-4" aria-hidden="true" />
+                </NeuIconButton>
+                <NeuIconButton aria-label="Star">
+                  <Star className="h-4 w-4" aria-hidden="true" />
+                </NeuIconButton>
+                <NeuIconButton size="lg" aria-label="Gem">
+                  <Diamond className="h-5 w-5" aria-hidden="true" />
+                </NeuIconButton>
               </div>
             </div>
           </div>

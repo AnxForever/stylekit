@@ -73,7 +73,7 @@ export default function ShowcaseContent() {
       <section className="relative z-10 pt-20 pb-16 px-6 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="font-mono text-xs tracking-[0.4em] uppercase text-[#00d4ff]/80 mb-6">
-            // STYLE :: RETROWAVE
+            {"// STYLE :: RETROWAVE"}
           </p>
           <h1 className="text-6xl md:text-8xl font-extrabold uppercase tracking-tight mb-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#ff006e] via-[#ff6b35] to-[#a020f0] drop-shadow-[0_0_40px_rgba(255,0,110,0.6)]">

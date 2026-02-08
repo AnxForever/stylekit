@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowLeft, Feather, Droplets, Wind } from "lucide-react";
 import {
   ShowcaseHero,
-  ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
 } from "@/components/showcase";

@@ -68,7 +68,7 @@ export default function ShowcaseContent() {
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-mono font-bold uppercase tracking-widest text-xs">
-              //BACK
+              {"//BACK"}
             </span>
           </Link>
           <div className="flex items-center gap-3">

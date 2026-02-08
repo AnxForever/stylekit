@@ -5,7 +5,7 @@ export const neoBrutalistPlayful: DesignStyle = {
   name: "俏皮野兽派",
   nameEn: "Neo-Brutalist Playful",
   description:
-    "Neo-Brutalist 的活泼版本。保留核心特征，加入更多色彩、旋转倾斜元素、emoji 和有趣的微交互，适合年轻化品牌。",
+    "Neo-Brutalist 的活泼版本。保留核心特征，加入更多色彩、旋转倾斜元素、图标化装饰和有趣的微交互，适合年轻化品牌。",
   cover: "/styles/neo-brutalist-playful.svg",
   styleType: "visual",
   tags: ["expressive"],
@@ -15,14 +15,14 @@ export const neoBrutalistPlayful: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#95e1d3", "#f38181"],
   },
-  keywords: ["俏皮野兽派", "多彩", "倾斜元素", "emoji", "年轻化"],
+  keywords: ["俏皮野兽派", "多彩", "倾斜元素", "图标", "年轻化"],
 
   philosophy: `Neo-Brutalist Playful（俏皮野兽派）是原版 Neo-Brutalist 的活泼变体。在保持硬边缘、无圆角的结构基础上，通过以下方式增加趣味性：
 
 特色元素：
 - 元素轻微旋转 rotate-[-2deg] 或 rotate-[1deg]
 - 多彩色块组合
-- 适当使用 emoji 作为装饰
+- 适当使用图标作为装饰（Lucide React 等）
 - 更活泼的 hover 动画（scale、bounce）
 - 手写风格的装饰文字
 
@@ -34,7 +34,7 @@ export const neoBrutalistPlayful: DesignStyle = {
     "元素添加轻微旋转 rotate-[-2deg] rotate-[1deg]",
     "使用多种强调色，色彩丰富",
     "hover 可用 scale-105 放大效果",
-    "适当使用 emoji 装饰 ✨ 🎨 ⚡",
+    "适当使用图标装饰（Lucide React 等）",
     "阴影可使用彩色 shadow-[...rgba(255,107,107,1)]",
   ],
 
@@ -43,7 +43,7 @@ export const neoBrutalistPlayful: DesignStyle = {
     "禁止模糊阴影",
     "禁止渐变",
     "禁止旋转超过 3 度",
-    "禁止过度使用 emoji",
+    "禁止使用 emoji 或符号字符",
     "禁止使用柔和的灰色",
   ],
 
@@ -64,13 +64,13 @@ export const neoBrutalistPlayful: DesignStyle = {
   rotate-[-1deg]
   text-base md:text-lg
 ">
-  点我呀 ✨
+  点我呀
 </button>
 
 {/* 多彩按钮组 */}
 <div className="flex gap-4">
-  <button className="bg-[#4ecdc4] ...">Go! 🚀</button>
-  <button className="bg-[#ffe66d] text-black ...">Yeah! 🎉</button>
+  <button className="bg-[#4ecdc4] ...">Go!</button>
+  <button className="bg-[#ffe66d] text-black ...">Yeah!</button>
 </div>`,
     },
     card: {
@@ -86,7 +86,11 @@ export const neoBrutalistPlayful: DesignStyle = {
   p-6 md:p-8
   rotate-[1deg]
 ">
-  <span className="text-3xl mb-4 block">🎨</span>
+  <div className="mb-4 flex items-center gap-2">
+    <div className="h-4 w-4 bg-[#ff6b6b] border-2 border-black" />
+    <div className="h-4 w-4 bg-[#4ecdc4] border-2 border-black" />
+    <div className="h-4 w-4 bg-[#ffe66d] border-2 border-black" />
+  </div>
   <h3 className="font-black text-xl md:text-2xl mb-2">有趣的卡片</h3>
   <p className="font-mono text-sm md:text-base text-gray-700">
     带有轻微旋转和彩色阴影
@@ -99,7 +103,7 @@ export const neoBrutalistPlayful: DesignStyle = {
       code: `<div className="relative">
   <input
     type="text"
-    placeholder="输入点什么... 💭"
+    placeholder="输入点什么..."
     className="
       w-full
       px-4 py-3 md:px-6 md:py-4
@@ -112,7 +116,10 @@ export const neoBrutalistPlayful: DesignStyle = {
       placeholder:text-gray-600
     "
   />
-  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">✏️</span>
+  <span
+    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 bg-black rotate-45"
+    aria-hidden="true"
+  />
 </div>`,
     },
     nav: {
@@ -131,7 +138,7 @@ export const neoBrutalistPlayful: DesignStyle = {
       rotate-[-2deg]
       hover:scale-110 transition-transform
     ">
-      FUN ⚡
+      FUN
     </a>
     <div className="flex gap-3 md:gap-6">
       <a href="#" className="
@@ -140,7 +147,7 @@ export const neoBrutalistPlayful: DesignStyle = {
         hover:bg-[#ff6b6b] hover:text-white
         transition-colors
       ">
-        首页 🏠
+        首页
       </a>
       <a href="#" className="
         font-black text-sm md:text-base
@@ -148,7 +155,7 @@ export const neoBrutalistPlayful: DesignStyle = {
         hover:bg-[#4ecdc4]
         transition-colors
       ">
-        关于 ℹ️
+        关于
       </a>
     </div>
   </div>
@@ -167,8 +174,8 @@ export const neoBrutalistPlayful: DesignStyle = {
 ">
   <div className="max-w-4xl mx-auto relative">
     {/* 装饰元素 */}
-    <div className="absolute -top-10 -right-10 text-6xl rotate-12">🎨</div>
-    <div className="absolute bottom-0 -left-16 text-5xl -rotate-12">⚡</div>
+    <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#ffe66d] border-4 border-black rotate-12" />
+    <div className="absolute bottom-0 -left-16 w-20 h-20 bg-[#ff6b6b] border-4 border-black -rotate-12" />
 
     <h1 className="
       font-black
@@ -187,7 +194,7 @@ export const neoBrutalistPlayful: DesignStyle = {
       mb-8
       rotate-[1deg]
     ">
-      野兽派也可以很有趣 ✨
+      野兽派也可以很有趣
     </p>
     <div className="flex flex-wrap gap-4">
       <button className="
@@ -197,7 +204,7 @@ export const neoBrutalistPlayful: DesignStyle = {
         hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]
         transition-all rotate-[-1deg]
       ">
-        开始玩 🎮
+        开始玩
       </button>
       <button className="
         bg-[#ffe66d] font-black
@@ -206,7 +213,7 @@ export const neoBrutalistPlayful: DesignStyle = {
         hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]
         transition-all rotate-[1deg]
       ">
-        看看吧 👀
+        看看吧
       </button>
     </div>
   </div>
@@ -274,10 +281,10 @@ h1, h2, h3, h4, h5, h6 {
 - 薄荷：#95e1d3
 - 珊瑚：#f38181
 
-Emoji 使用：
-- 可在按钮文字后加 emoji
-- 可作为装饰元素
-- 不过度使用
+图标与装饰：
+- 禁止使用 emoji 字符
+- 可使用 Lucide React 线性图标作为点缀
+- 装饰元素优先用几何图形（方块、圆点、线条）
 
 交互效果：
 - hover:scale-105 放大

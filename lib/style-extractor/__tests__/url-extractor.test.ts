@@ -1,63 +1,71 @@
-import {
-  extractStyleDraftFromDocument,
-  extractStylesheetLinks,
-} from "@/lib/style-extractor/url-extractor";
+import { describe, it, expect } from "vitest";
+import { extractStyleDraftFromDocument } from "@/lib/style-extractor/url-extractor";
 
-describe("url style extractor", () => {
-  it("extracts stylesheet links with absolute resolution", () => {
+describe("url-extractor", () => {
+  it("infers colors, typography, borders, and shadows from CSS variables", () => {
     const html = `
+      <!doctype html>
       <html>
         <head>
-          <link rel="stylesheet" href="/assets/main.css" />
-          <link rel="preload" href="/fonts.woff2" />
-          <link rel="stylesheet" href="https://cdn.example.com/ui.css" />
-        </head>
-      </html>
-    `;
-
-    const links = extractStylesheetLinks(html, "https://demo.example.com/path");
-
-    expect(links).toEqual([
-      "https://demo.example.com/assets/main.css",
-      "https://cdn.example.com/ui.css",
-    ]);
-  });
-
-  it("builds a usable draft from html and css evidence", () => {
-    const html = `
-      <html>
-        <head>
-          <title>Aurora Dashboard</title>
-          <meta name="description" content="Modern analytics workspace with motion feedback." />
-          <style>
-            :root { --bg: #0f172a; --surface: #f8fafc; --accent: #22d3ee; }
-            .panel { display: grid; grid-template-columns: 1fr 1fr; }
-            .hero { animation: fade-in 300ms ease; }
-            @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-          </style>
+          <title>Example Site</title>
+          <meta name="description" content="Demo page" />
         </head>
         <body>
-          <h1>Analytics Workspace</h1>
+          <h1>Heading</h1>
+          <div class="card">Card</div>
         </body>
       </html>
     `;
 
+    const css = `
+      :root {
+        --primary: #112233;
+        --secondary: hsl(0 100% 50%);
+        --font-body: "Inter", system-ui, sans-serif;
+        --font-heading: "Playfair Display", serif;
+        --radius: 12px;
+        --border-w: 2px;
+        --shadow-md: 0 8px 20px rgba(0,0,0,0.12);
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--primary);
+        color: var(--primary);
+      }
+
+      h1 {
+        font-family: var(--font-heading);
+        color: var(--secondary);
+      }
+
+      .btn {
+        border-color: var(--primary);
+      }
+
+      .card {
+        border-radius: var(--radius);
+        border: var(--border-w) solid var(--primary);
+        box-shadow: var(--shadow-md);
+      }
+    `;
+
     const result = extractStyleDraftFromDocument({
-      url: "https://product.example.com",
+      url: "https://example.com",
       html,
-      cssChunks: [".card { border: 1px solid #0f172a; background: #f8fafc; }"],
+      cssChunks: [css],
     });
 
-    expect(result.draft.nameEn).toBe("Aurora Dashboard");
-    expect(result.draft.slug).toBe("aurora-dashboard");
-    expect(result.draft.styleType).toBe("animation");
-    expect(result.draft.primaryColor).toBe("#0f172a");
-    expect(result.draft.secondaryColor).toBe("#f8fafc");
-    expect(result.draft.accentColors).toContain("#22d3ee");
-    expect(result.draft.doList?.length).toBeGreaterThan(0);
-    expect(result.draft.buttonCode).toContain("<button");
-    expect(result.raw).toContain("## Do List");
-    expect(result.evidence.hasAnimation).toBe(true);
-    expect(result.evidence.hasGridLayout).toBe(true);
+    expect(result.draft.primaryColor).toBe("#112233");
+    expect(result.draft.secondaryColor).toBe("#ff0000");
+    expect(result.draft.bodyFont).toContain("Inter");
+    expect(result.draft.headingFont).toContain("Playfair");
+    expect(result.draft.borderRadius).toBe("12px");
+    expect(result.draft.borderWidth).toBe("2px");
+    expect(result.draft.shadowMd).toContain("rgba(");
+    expect(result.evidence.cssVariableCount).toBeGreaterThan(0);
+    expect(result.evidence.fontFamilyCount).toBeGreaterThan(0);
+    expect(result.evidence.boxShadowCount).toBeGreaterThan(0);
   });
 });
+

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft, Heart, Star, Flower2, Sparkles, BookOpen, PenTool } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

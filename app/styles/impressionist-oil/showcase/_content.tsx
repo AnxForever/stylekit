@@ -7,12 +7,9 @@ import {
   Paintbrush,
   Eye,
   Layers,
-  Palette,
   Frame,
-  Sparkles,
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
@@ -176,7 +173,7 @@ export default function ShowcaseContent() {
                 <h3 className="font-serif font-bold text-lg text-[#2c3e50] mb-2">Pointillism</h3>
                 <p className="font-serif text-sm text-[#2c3e50]/45 leading-relaxed">
                   Small distinct dots of color placed side by side, letting the
-                  viewer's eye blend them at distance.
+                  viewer&apos;s eye blend them at distance.
                 </p>
               </div>
             </div>

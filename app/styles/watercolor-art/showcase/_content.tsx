@@ -12,7 +12,6 @@ import {
   Wind,
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

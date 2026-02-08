@@ -84,6 +84,13 @@ import { japaneseFreshTokens } from "./japanese-fresh-tokens";
 import { neonSamuraiTokens } from "./neon-samurai-tokens";
 import { magicCircleTokens } from "./magic-circle-tokens";
 import { cyberWafuuTokens } from "./cyber-wafuu-tokens";
+// New styles - Batch 6
+import { steampunkTokens } from "./steampunk-tokens";
+import { popArtTokens } from "./pop-art-tokens";
+import { solarpunkTokens } from "./solarpunk-tokens";
+import { jrpgTokens } from "./jrpg-tokens";
+import { asymmetricGridTokens } from "./asymmetric-grid-tokens";
+import { parallaxSectionsTokens } from "./parallax-sections-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -168,6 +175,13 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "neon-samurai": neonSamuraiTokens,
   "magic-circle": magicCircleTokens,
   "cyber-wafuu": cyberWafuuTokens,
+  // New styles - Batch 6
+  "steampunk": steampunkTokens,
+  "pop-art": popArtTokens,
+  "solarpunk": solarpunkTokens,
+  "jrpg": jrpgTokens,
+  "asymmetric-grid": asymmetricGridTokens,
+  "parallax-sections": parallaxSectionsTokens,
 };
 
 // Get tokens for a style by slug

@@ -127,7 +127,9 @@ export const notionStyle: DesignStyle = {
       description: "Notion 风格页面标题区域",
       code: `<div className="max-w-3xl mx-auto px-6 py-12">
   <div className="mb-6">
-    <span className="text-6xl">📝</span>
+    <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 border border-gray-200">
+      <div className="h-8 w-8 rounded-lg bg-white border border-gray-300 shadow-sm" />
+    </div>
   </div>
   <h1 className="text-4xl font-bold text-gray-900 mb-4">
     Welcome to Notion Style

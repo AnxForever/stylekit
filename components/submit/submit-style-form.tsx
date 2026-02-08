@@ -15,6 +15,8 @@ import {
   type ExtractedStyleDraft,
 } from "@/lib/style-extractor/adapter";
 import { submitCopy } from "@/lib/i18n/submit-copy";
+import { stylesMeta } from "@/lib/styles/meta";
+import { generateStyleScaffoldFiles } from "@/lib/scaffold/style-scaffold";
 
 interface StyleFormData {
   name: string;
@@ -244,8 +246,12 @@ function validateFormData(data: StyleFormData, locale: Locale): Record<string, s
   }
 
   const slug = data.slug.trim();
-  if (slug && !SLUG_PATTERN.test(slug)) {
+  if (!slug) {
+    nextErrors.slug = text.slugRequired;
+  } else if (!SLUG_PATTERN.test(slug)) {
     nextErrors.slug = text.slug;
+  } else if (stylesMeta.some((style) => style.slug === slug)) {
+    nextErrors.slug = text.slugDuplicate;
   }
 
   if (!HEX_COLOR_PATTERN.test(data.primaryColor.trim())) {
@@ -285,6 +291,7 @@ export function SubmitStyleForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isDownloadingScaffold, setIsDownloadingScaffold] = useState(false);
   const [keywordInput, setKeywordInput] = useState("");
   const [extractUrl, setExtractUrl] = useState("");
   const [isExtractingUrl, setIsExtractingUrl] = useState(false);
@@ -764,7 +771,7 @@ export function SubmitStyleForm() {
       name: formData.name,
       nameEn: formData.nameEn,
       description: formData.description,
-      cover: `/styles/${formData.slug}.png`,
+      cover: `/styles/${formData.slug}.svg`,
       styleType: formData.styleType,
       tags: formData.tags,
       category: formData.category,
@@ -778,10 +785,24 @@ export function SubmitStyleForm() {
       doList: formData.doList.filter((item) => item.trim()),
       dontList: formData.dontList.filter((item) => item.trim()),
       components: {
-        button: { name: "Button", code: formData.buttonCode },
-        card: { name: "Card", code: formData.cardCode },
-        input: { name: "Input", code: formData.inputCode },
+        button: {
+          name: "Button",
+          description: "Button component in this style.",
+          code: formData.buttonCode,
+        },
+        card: {
+          name: "Card",
+          description: "Card component in this style.",
+          code: formData.cardCode,
+        },
+        input: {
+          name: "Input",
+          description: "Input component in this style.",
+          code: formData.inputCode,
+        },
       },
+      globalCss: "",
+      aiRules: "",
     };
     return JSON.stringify(output, null, 2);
   };
@@ -793,6 +814,29 @@ export function SubmitStyleForm() {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
+    }
+  };
+
+  const downloadScaffold = async () => {
+    const stepsOk = [1, 2, 3, 4].every((step) => validateStep(step));
+    if (!stepsOk) return;
+
+    const slug = formData.slug.trim();
+    setIsDownloadingScaffold(true);
+    try {
+      const files = generateStyleScaffoldFiles({
+        ...formData,
+        slug,
+        doList: formData.doList.filter((item) => item.trim()),
+        dontList: formData.dontList.filter((item) => item.trim()),
+      });
+
+      const { downloadZip } = await import("@/lib/generator/zip-builder");
+      await downloadZip(files, `${slug}-scaffold`);
+    } catch (error) {
+      console.error("Failed to download scaffold:", error);
+    } finally {
+      setIsDownloadingScaffold(false);
     }
   };
 
@@ -1614,18 +1658,29 @@ export function SubmitStyleForm() {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (validateStep(4)) {
-                      copyToClipboard();
-                    }
-                  }}
-                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-foreground text-background hover:bg-foreground/90 transition-colors flex-1 sm:flex-none"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? text.copied : text.copyJson}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={downloadScaffold}
+                    disabled={isDownloadingScaffold}
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex-1 sm:flex-none"
+                  >
+                    <Layers className="w-4 h-4" />
+                    {isDownloadingScaffold ? text.downloadScaffoldLoading : text.downloadScaffold}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (validateStep(4)) {
+                        copyToClipboard();
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 border border-border hover:border-foreground transition-colors flex-1 sm:flex-none"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copied ? text.copied : text.copyJson}
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -1664,8 +1719,16 @@ export function SubmitStyleForm() {
                 {text.close}
               </button>
               <button
+                onClick={downloadScaffold}
+                disabled={isDownloadingScaffold}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                <Layers className="w-4 h-4" />
+                {isDownloadingScaffold ? text.downloadScaffoldLoading : text.downloadScaffold}
+              </button>
+              <button
                 onClick={copyToClipboard}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-foreground text-background hover:bg-foreground/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-border hover:border-foreground transition-colors"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 {copied ? text.copied : text.copyJson}

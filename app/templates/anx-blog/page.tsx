@@ -106,7 +106,7 @@ function TapeLine() {
         <div className="flex min-w-[1400px] animate-[marquee_16s_linear_infinite] gap-8 px-4 font-black uppercase tracking-tight text-4xl">
           {Array.from({ length: 8 }).map((_, i) => (
             <span key={i} className="inline-flex items-center gap-6">
-              <span>★</span>
+              <Sparkles className="h-10 w-10 shrink-0" aria-hidden="true" />
               <span className="text-transparent [-webkit-text-stroke:2px_#000]">
                 Full Stack
               </span>
