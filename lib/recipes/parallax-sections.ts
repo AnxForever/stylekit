@@ -90,6 +90,18 @@ export const parallaxSectionsRecipes: StyleRecipes = {
       },
       parameters: [
         {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-6 md:p-8" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-8 md:p-12" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-10 md:p-16" },
+          ],
+          default: "md",
+        },
+        {
           id: "width",
           label: "Width",
           labelZh: "宽度",
@@ -124,13 +136,84 @@ export const parallaxSectionsRecipes: StyleRecipes = {
         },
       },
       slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: true, default: "Section Title", type: "text" },
-        { id: "content", label: "Content", labelZh: "内容", required: false, type: "text" },
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Section Title", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Card content goes here", type: "children" },
       ],
       states: {
         hover: ["hover:shadow-2xl"],
         active: [],
         disabled: ["opacity-50"],
+      },
+    },
+
+    input: {
+      id: "input",
+      name: "Input",
+      nameZh: "输入框",
+      description: "Glass input for immersive parallax sections",
+      skeleton: {
+        element: "input",
+        baseClasses: [
+          "w-full",
+          "bg-white/20",
+          "backdrop-blur-md",
+          "text-white",
+          "placeholder:text-white/60",
+          "rounded-full",
+          "border border-white/30",
+          "focus:outline-none",
+          "focus:border-white/60",
+          "transition-colors duration-300",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-4 py-3 text-sm" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-6 py-4 text-base" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-8 py-5 text-lg" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        glass: {
+          id: "glass",
+          label: "Glass",
+          labelZh: "玻璃",
+          classes: [],
+        },
+        solid: {
+          id: "solid",
+          label: "Solid",
+          labelZh: "实心",
+          classes: [
+            "bg-white text-[#1e3a5f] placeholder:text-slate-400",
+            "border-white/0",
+          ],
+        },
+        dark: {
+          id: "dark",
+          label: "Dark",
+          labelZh: "深色",
+          classes: [
+            "bg-[#1e3a5f]/80 text-white",
+            "border-white/10",
+          ],
+        },
+      },
+      slots: [
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Enter your email", type: "text" },
+      ],
+      states: {
+        focus: [
+          "focus:ring-2 focus:ring-white/20",
+        ],
+        disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
 
@@ -209,12 +292,25 @@ export const parallaxSectionsRecipes: StyleRecipes = {
         element: "nav",
         baseClasses: [
           "fixed top-0 left-0 right-0 z-50",
-          "px-8 py-4",
+          "px-8",
           "backdrop-blur-lg",
           "border-b border-white/10",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "density",
+          label: "Density",
+          labelZh: "密度",
+          type: "select",
+          options: [
+            { value: "compact", label: "Compact", labelZh: "紧凑", classes: "py-3" },
+            { value: "comfortable", label: "Comfortable", labelZh: "舒适", classes: "py-4" },
+            { value: "spacious", label: "Spacious", labelZh: "宽松", classes: "py-6" },
+          ],
+          default: "comfortable",
+        },
+      ],
       variants: {
         glass: {
           id: "glass",
