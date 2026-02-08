@@ -30,12 +30,12 @@ const colors: ColorItem[] = [
 
 // 璁捐瑙勫垯
 const designRules = [
-  { title: "缃戞牸鍒嗗睆", desc: "grid grid-cols-1 lg:grid-cols-2 瀹炵幇鍒嗗睆" },
-  { title: "绉诲姩绔爢鍙?, desc: "灏忓睆骞曚笅鑷姩鍙樹负涓婁笅鍫嗗彔" },
-  { title: "瀵规瘮鑹插僵", desc: "宸﹀彸闈㈡澘浣跨敤瀵规瘮鑹插寮鸿瑙夊紶鍔? },
-  { title: "瑙嗚骞宠　", desc: "淇濇寔涓や晶鍐呭鐨勮瑙夐噸閲忓钩琛? },
-  { title: "鍏ㄥ睆楂樺害", desc: "min-h-screen 纭繚鍗犳弧瑙嗗彛" },
-  { title: "鍐呭灞呬腑", desc: "flex items-center justify-center 鍐呭灞呬腑" },
+  { title: "Split layout", desc: "Use grid grid-cols-1 lg:grid-cols-2 for the two panels." },
+  { title: "Mobile stacking", desc: "Stack panels vertically on small screens." },
+  { title: "Contrast panels", desc: "Use contrasting colors to emphasize the split." },
+  { title: "Visual balance", desc: "Keep weight balanced across both sides." },
+  { title: "Full height", desc: "Use min-h-screen to fill the viewport." },
+  { title: "Centered content", desc: "Use flex utilities to center content." },
 ];
 
 export default function ShowcaseContent() {
@@ -288,4 +288,5 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
 
