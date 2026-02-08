@@ -68,7 +68,7 @@ export default function ShowcaseContent() {
       {/* Color Palette */}
       <ShowcaseSection
         title="閰嶈壊绯荤粺"
-        subtitle="褰╄櫣娓愬彉涓庨噾灞炲厜娉?
+        subtitle="褰╄櫣娓愬彉涓庨噾灞炲厜娉?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -86,7 +86,7 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="鎸夐挳"
-        subtitle="閲戝睘鍏夋辰涓庡僵铏规笎鍙?
+        subtitle="閲戝睘鍏夋辰涓庡僵铏规笎鍙?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -115,7 +115,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="閫忔槑姘旀场鎰?
+        subtitle="閫忔槑姘旀场鎰?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"

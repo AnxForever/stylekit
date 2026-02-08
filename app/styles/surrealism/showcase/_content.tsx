@@ -68,7 +68,7 @@ export default function ShowcaseContent() {
       {/* Color Palette */}
       <ShowcaseSection
         title="閰嶈壊绯荤粺"
-        subtitle="姊﹀鐨勮壊璋?
+        subtitle="姊﹀鐨勮壊璋?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -86,7 +86,7 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="鎸夐挳"
-        subtitle="姊﹀鐨勫叆鍙?
+        subtitle="姊﹀鐨勫叆鍙?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -115,7 +115,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="鎰忚瘑鐨勭鐗?
+        subtitle="鎰忚瘑鐨勭鐗?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"

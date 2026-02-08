@@ -60,7 +60,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="SYNTHWAVE"
-        description="Ride into the sunset - 80骞翠唬澶嶅彜鏈潵涓讳箟鐨勯湏铏规ⅵ澧?
+        description="Ride into the sunset - 80骞翠唬澶嶅彜鏈潵涓讳箟鐨勯湏铏规ⅵ澧?"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-pink-400 to-purple-600 mb-6"
         descriptionClassName="text-xl text-pink-200/80 max-w-2xl mx-auto mb-10"
@@ -125,7 +125,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="澶嶅彜鏈潵鎰?
+        subtitle="澶嶅彜鏈潵鎰?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
