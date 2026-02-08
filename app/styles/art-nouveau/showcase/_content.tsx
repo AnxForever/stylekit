@@ -72,7 +72,7 @@ export default function ShowcaseContent() {
       {/* Color Palette */}
       <ShowcaseSection
         title="閰嶈壊绯荤粺"
-        subtitle="鑷劧鐨勯璧?
+        subtitle="鑷劧鐨勯璧?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"
@@ -160,7 +160,7 @@ export default function ShowcaseContent() {
       {/* Form */}
       <ShowcaseSection
         title="琛ㄥ崟"
-        subtitle="浼橀泤鐨勪氦浜掑厓绱?
+        subtitle="浼橀泤鐨勪氦浜掑厓绱?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-[#2d5016] mb-4 text-center"
         subtitleClassName="text-[#2d5016]/60 font-serif italic mb-10 text-center"

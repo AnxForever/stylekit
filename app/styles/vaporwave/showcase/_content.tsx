@@ -117,7 +117,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="澶嶅彜鏈潵鎰?
+        subtitle="澶嶅彜鏈潵鎰?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"

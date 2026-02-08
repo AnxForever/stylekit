@@ -133,7 +133,7 @@ export default function ShowcaseContent() {
               <FileText className="w-6 h-6 text-[#2eaadc]" />
             </div>
             <h3 className="text-lg font-semibold text-[#37352f] mb-2">鏂囨。</h3>
-            <p className="text-gray-600 text-sm">杞绘澗鍒涘缓鍜岀粍缁囩瑪璁?/p>
+            <p className="text-gray-600 text-sm">Create and organize notes with ease.</p>
           </div>
 
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -141,7 +141,7 @@ export default function ShowcaseContent() {
               <CheckSquare className="w-6 h-6 text-[#0f7b6c]" />
             </div>
             <h3 className="text-lg font-semibold text-[#37352f] mb-2">浠诲姟</h3>
-            <p className="text-gray-600 text-sm">绠＄悊寰呭姙浜嬮」鍜岄」鐩?/p>
+            <p className="text-gray-600 text-sm">Manage tasks and projects efficiently.</p>
           </div>
 
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -149,7 +149,7 @@ export default function ShowcaseContent() {
               <Users className="w-6 h-6 text-purple-600" />
             </div>
             <h3 className="text-lg font-semibold text-[#37352f] mb-2">鍗忎綔</h3>
-            <p className="text-gray-600 text-sm">涓庡洟闃熶竴璧峰伐浣?/p>
+            <p className="text-gray-600 text-sm">Collaborate with your team in one place.</p>
           </div>
         </div>
       </ShowcaseSection>
@@ -157,7 +157,7 @@ export default function ShowcaseContent() {
       {/* Form Elements */}
       <ShowcaseSection
         title="琛ㄥ崟鍏冪礌"
-        subtitle="绠€娲佺殑杈撳叆妗嗕笌鑱氱劍鐘舵€?
+        subtitle="绠€娲佺殑杈撳叆妗嗕笌鑱氱劍鐘舵€?"
         className="py-16 px-6 bg-[#f7f6f3]"
         titleClassName="text-3xl font-semibold text-[#37352f] mb-4 text-center"
         subtitleClassName="text-gray-500 mb-10 text-center"
@@ -170,7 +170,7 @@ export default function ShowcaseContent() {
                 <label className="block text-sm text-gray-700 mb-2">椤甸潰鏍囬</label>
                 <input
                   type="text"
-                  placeholder="鏃犳爣棰?
+                  placeholder="鏃犳爣棰?"
                   className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-[#37352f] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2eaadc] focus:border-transparent transition-all"
                 />
               </div>

@@ -95,7 +95,7 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="鎸夐挳"
-        subtitle="閲戣壊鍏夎姃涓庝紭闆呰竟妗?
+        subtitle="閲戣壊鍏夎姃涓庝紭闆呰竟妗?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -130,7 +130,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="鍑犱綍杈规涓庡绉扮編瀛?
+        subtitle="鍑犱綍杈规涓庡绉扮編瀛?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
@@ -189,7 +189,7 @@ export default function ShowcaseContent() {
       {/* Form */}
       <ShowcaseSection
         title="琛ㄥ崟"
-        subtitle="浼橀泤鐨勮緭鍏ョ粍浠?
+        subtitle="浼橀泤鐨勮緭鍏ョ粍浠?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-wider"
         subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"

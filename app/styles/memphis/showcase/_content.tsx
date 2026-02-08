@@ -88,7 +88,7 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="鎸夐挳"
-        subtitle="纭竟闃村奖涓庢挒鑹?
+        subtitle="纭竟闃村奖涓庢挒鑹?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"
@@ -118,7 +118,7 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="鍗＄墖"
-        subtitle="鍑犱綍瑁呴グ涓庣‖杈归鏍?
+        subtitle="鍑犱綍瑁呴グ涓庣‖杈归鏍?"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"

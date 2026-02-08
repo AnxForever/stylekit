@@ -45,12 +45,12 @@ const colors: ColorItem[] = [
 
 // 璁捐瑙勫垯
 const designRules = [
-  { title: "涓嶈鍒欑綉鏍?, desc: "col-span 鍜?row-span 鍒涢€犲ぇ灏忎笉涓€鐨勫崱鐗? },
-  { title: "澶у渾瑙?, desc: "rounded-2xl 鎴?rounded-3xl 钀ラ€犲弸濂芥劅" },
-  { title: "鏌斿拰鑹插僵", desc: "浣跨敤 bg-*-50 鎴?bg-*-100 鐨勬祬鑹茶儗鏅? },
-  { title: "娓愬彉寮鸿皟", desc: "閲嶈鍗＄墖浣跨敤娓愬彉鑳屾櫙绐佸嚭灞傛" },
-  { title: "寰闃村奖", desc: "shadow-sm 閰嶅悎 hover:shadow-md 杩囨浮" },
-  { title: "缁熶竴闂磋窛", desc: "gap-4 淇濇寔缃戞牸椤逛箣闂寸殑涓€鑷存€? },
+  { title: "Irregular grid", desc: "Use col-span and row-span to vary card sizes." },
+  { title: "Soft corners", desc: "Prefer rounded-2xl or rounded-3xl for a friendly feel." },
+  { title: "Gentle colors", desc: "Use light backgrounds like bg-*-50 or bg-*-100." },
+  { title: "Gradient emphasis", desc: "Highlight key cards with subtle gradients." },
+  { title: "Soft shadows", desc: "Combine shadow-sm with hover:shadow-md for lift." },
+  { title: "Consistent gaps", desc: "Keep grid spacing uniform with gap-4." },
 ];
 
 export default function ShowcaseContent() {
@@ -459,4 +459,5 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
 
