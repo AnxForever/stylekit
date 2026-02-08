@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft, Zap, Monitor, Cpu, Terminal, Radio, Binary, Wifi } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

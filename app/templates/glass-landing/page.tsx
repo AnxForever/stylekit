@@ -112,7 +112,7 @@ export default function GlassLandingTemplate() {
       <footer className="py-8 px-6 border-t border-white/10">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-white/50 text-sm">
-            © 2025 GlassUI. All rights reserved. · Part of{" "}
+            Copyright 2025 GlassUI. All rights reserved. · Part of{" "}
             <Link href="/templates" className="text-white hover:underline">
               StyleKit Templates
             </Link>

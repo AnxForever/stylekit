@@ -148,7 +148,7 @@ export default function EditorialBlogTemplate() {
       <footer className="py-8 px-6 border-t border-zinc-200">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-zinc-400">
-            © 2025 The Editorial · Part of{" "}
+            Copyright 2025 The Editorial · Part of{" "}
             <Link href="/templates" className="text-zinc-600 hover:underline">
               StyleKit Templates
             </Link>
