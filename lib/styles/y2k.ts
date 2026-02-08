@@ -56,7 +56,7 @@ export const y2k: DesignStyle = {
   hover:scale-105
   transition-all duration-300
 ">
-  Click Me ✨
+  Click Me
 </button>`,
     },
     card: {
@@ -117,8 +117,12 @@ export const y2k: DesignStyle = {
   <div className="absolute bottom-32 right-32 w-48 h-48 rounded-full bg-gradient-to-br from-cyan-200/50 to-transparent blur-xl" />
 
   <div className="relative z-10 text-center px-6">
-    <div className="inline-block mb-6">
-      <span className="text-6xl">✨</span>
+    <div className="inline-flex items-center justify-center mb-6">
+      <div className="h-16 w-16 rounded-full bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 p-[2px] shadow-[0_10px_40px_rgba(255,105,180,0.35)]">
+        <div className="h-full w-full rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center">
+          <div className="h-6 w-6 rotate-45 rounded-sm bg-gradient-to-r from-pink-400 to-cyan-400 opacity-90" />
+        </div>
+      </div>
     </div>
     <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6">
       Y2K AESTHETIC
@@ -136,7 +140,7 @@ export const y2k: DesignStyle = {
       hover:scale-105
       transition-all
     ">
-      Enter the Future ✨
+      Enter the Future
     </button>
   </div>
 </section>`,
@@ -210,7 +214,7 @@ export const y2k: DesignStyle = {
 
 ## 装饰元素
 
-- 星星 ✨
+- 星星/闪光装饰
 - 气泡球体
 - 彩虹渐变
 - 透明塑料质感`,

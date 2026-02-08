@@ -95,6 +95,76 @@ Accent: #22d3ee
     expect(result.data?.inputCode).toContain("input");
   });
 
+  it("parses style-extractor-dev export schema (tokens.colors.semantic)", () => {
+    const input = JSON.stringify({
+      $schema: "https://stylekit.dev/schema/style-collection-v1.json",
+      version: "1.0.0",
+      meta: {
+        id: "example-com",
+        name: "Example Site",
+        description: "Style extracted from example.com",
+        source: {
+          url: "https://example.com",
+          domain: "example.com",
+          extractedAt: "2026-02-07T00:00:00.000Z",
+        },
+        tags: ["responsive", "grid-layout"],
+        thumbnail: null,
+      },
+      tokens: {
+        colors: {
+          semantic: {
+            primary: "#123456cc",
+            secondary: "#abcdef",
+            accent: "rgb(255 0 102 / 0.9)",
+          },
+          palette: {
+            "color-0": "#123456cc",
+            "color-1": "#abcdef",
+            "color-2": "#ff0066",
+          },
+        },
+      },
+      structure: {},
+      components: {},
+      code: {},
+      evidence: {},
+    });
+
+    const result = parseStyleExtractorInput(input);
+
+    expect(result.ok).toBe(true);
+    expect(result.source).toBe("json");
+    expect(result.data?.name).toBe("Example Site");
+    expect(result.data?.slug).toBe("example-site");
+    expect(result.data?.description).toBe("Style extracted from example.com");
+    // Alpha channel is dropped for <input type="color"> compatibility.
+    expect(result.data?.primaryColor).toBe("#123456");
+    expect(result.data?.secondaryColor).toBe("#abcdef");
+    expect(result.data?.accentColors).toEqual(["#ff0066"]);
+  });
+
+  it("normalizes hsl/oklch and resolves cssVariables var() references", () => {
+    const input = JSON.stringify({
+      name: "Vars Site",
+      cssVariables: {
+        "--primary": "hsl(0 100% 50%)",
+        "--secondary": "oklch(100% 0 0)",
+      },
+      primaryColor: "var(--primary)",
+      secondaryColor: "var(--secondary)",
+      accentColors: ["oklch(0% 0 0)"],
+    });
+
+    const result = parseStyleExtractorInput(input);
+
+    expect(result.ok).toBe(true);
+    expect(result.source).toBe("json");
+    expect(result.data?.primaryColor).toBe("#ff0000");
+    expect(result.data?.secondaryColor).toBe("#ffffff");
+    expect(result.data?.accentColors).toEqual(["#000000"]);
+  });
+
   it("returns error for empty input", () => {
     const result = parseStyleExtractorInput("   ");
 

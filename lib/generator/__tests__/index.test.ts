@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { getTemplates } from "@/lib/generator";
-import type { TemplateDefinition } from "@/lib/generator";
 
 describe("getTemplates", () => {
   const templates = getTemplates();

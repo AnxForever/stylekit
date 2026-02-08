@@ -67,7 +67,7 @@ export interface GeneratorConfig {
 export interface GeneratedFile {
   name: string;
   content: string;
-  type: "html" | "css" | "js" | "md" | "json";
+  type: "html" | "css" | "js" | "md" | "json" | "ts" | "svg";
 }
 
 // Generation result

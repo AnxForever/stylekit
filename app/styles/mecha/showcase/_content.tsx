@@ -54,7 +54,7 @@ export default function ShowcaseContent() {
       <section className="relative z-10 pt-20 pb-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-xs text-[#4a5c3a] uppercase tracking-[0.3em] mb-6">
-            // SYSTEM INITIALIZED -- ALL UNITS STANDBY
+            {"// SYSTEM INITIALIZED -- ALL UNITS STANDBY"}
           </div>
           <h1 className="text-6xl md:text-8xl font-bold text-[#fbbf24] uppercase tracking-widest mb-4">
             MECHA
@@ -568,7 +568,7 @@ export default function ShowcaseContent() {
           </h2>
           <div className="border-2 border-[#4a5c3a] p-6 rounded-none shadow-[4px_4px_0px_rgba(251,191,36,0.2)]">
             <p className="text-xs text-[#ef4444] font-bold uppercase tracking-widest mb-4">
-              // CLASSIFIED - LEVEL 3
+              {"// CLASSIFIED - LEVEL 3"}
             </p>
             <blockquote className="border-l-4 border-[#fbbf24] pl-6">
               <p className="text-base md:text-lg text-[#c8d6c3] leading-relaxed mb-4">

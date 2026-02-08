@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, BookOpen, MessageSquare, Heart, ChevronRight, Users, Bookmark, Maximize2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Heart, ChevronRight, Users, Bookmark } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

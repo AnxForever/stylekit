@@ -270,7 +270,7 @@ export default function ShowcaseContent() {
           >
             {/* Mixed font label */}
             <p className="text-sm font-mono font-bold text-[#e74c3c] uppercase tracking-wider mb-6">
-              // button variants
+              {"// button variants"}
             </p>
             <div className="flex flex-wrap gap-4">
               <button
@@ -334,7 +334,7 @@ export default function ShowcaseContent() {
                 Zine Signup
               </h3>
               <p className="text-xs font-mono text-[#2d2d2d]/40 mt-1">
-                // join the collective
+                {"// join the collective"}
               </p>
             </div>
 

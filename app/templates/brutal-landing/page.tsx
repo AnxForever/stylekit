@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Zap, Palette, Shield, Tag } from "lucide-react";
+import { Menu, Palette, Shield, Tag, Zap } from "lucide-react";
 import {
   BrutalButton,
   BrutalCard,
@@ -36,7 +36,12 @@ export default function BrutalLandingTemplate() {
               开始使用
             </BrutalButton>
           </div>
-          <button className="md:hidden font-black text-2xl">☰</button>
+          <button
+            className="md:hidden p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+            aria-label="Open menu"
+          >
+            <Menu className="w-6 h-6" aria-hidden="true" />
+          </button>
         </div>
       </nav>
 
@@ -257,7 +262,7 @@ export default function BrutalLandingTemplate() {
           </div>
           <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-zinc-400">
-              © 2025 BRUTAL. All rights reserved.
+              Copyright 2025 BRUTAL. All rights reserved.
             </p>
             <div className="flex gap-4">
               <a href="#" className="text-zinc-400 hover:text-white">Twitter</a>
