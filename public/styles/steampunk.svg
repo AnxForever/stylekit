@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#2d1810"/>
+
+  <!-- Decorative gear rings -->
+  <circle cx="160" cy="140" r="78" fill="none" stroke="#b87333" stroke-width="10" opacity="0.28"/>
+  <circle cx="160" cy="140" r="52" fill="none" stroke="#cd853f" stroke-width="6" opacity="0.22"/>
+  <circle cx="1040" cy="500" r="96" fill="none" stroke="#cd853f" stroke-width="12" opacity="0.22"/>
+  <circle cx="1040" cy="500" r="64" fill="none" stroke="#b87333" stroke-width="8" opacity="0.18"/>
+
+  <!-- Bolts -->
+  <circle cx="260" cy="90" r="6" fill="#cd853f" opacity="0.55"/>
+  <circle cx="960" cy="110" r="6" fill="#cd853f" opacity="0.55"/>
+  <circle cx="930" cy="540" r="6" fill="#cd853f" opacity="0.55"/>
+  <circle cx="270" cy="540" r="6" fill="#cd853f" opacity="0.55"/>
+
+  <!-- Center panel -->
+  <rect x="280" y="160" width="640" height="310" fill="#f4e4bc" stroke="#b87333" stroke-width="12"/>
+  <rect x="312" y="192" width="576" height="246" fill="#f4e4bc" stroke="#2d1810" stroke-width="4" opacity="0.65"/>
+
+  <!-- UI lines -->
+  <rect x="350" y="232" width="260" height="16" fill="#2d1810" opacity="0.85"/>
+  <rect x="350" y="268" width="440" height="10" fill="#2d1810" opacity="0.22"/>
+  <rect x="350" y="292" width="410" height="10" fill="#2d1810" opacity="0.18"/>
+  <rect x="350" y="338" width="170" height="36" fill="#cd853f" stroke="#2d1810" stroke-width="4"/>
+
+  <!-- Title -->
+  <text x="600" y="355" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="68" font-weight="900" fill="#2d1810" letter-spacing="2">STEAMPUNK</text>
+  <text x="600" y="408" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#8b4513" letter-spacing="6">BRASS MECHANICA</text>
+</svg>
+

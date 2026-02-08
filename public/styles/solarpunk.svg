@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="solarBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="55%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#solarBg)"/>
+
+  <!-- Sun and glow -->
+  <circle cx="980" cy="150" r="110" fill="url(#sunGlow)"/>
+  <circle cx="980" cy="150" r="50" fill="#fbbf24"/>
+
+  <!-- Organic leaf shapes -->
+  <path d="M140 470c70-120 210-170 330-150-40 140-160 240-330 150z" fill="#22c55e" opacity="0.25"/>
+  <path d="M210 520c60-90 170-130 260-120-30 110-120 190-260 120z" fill="#0ea5e9" opacity="0.18"/>
+
+  <!-- Center card -->
+  <rect x="310" y="190" width="580" height="260" rx="36" fill="#ffffff" stroke="#22c55e" stroke-width="6" opacity="0.92"/>
+  <rect x="350" y="230" width="240" height="14" rx="7" fill="#2d6a4f" opacity="0.75"/>
+  <rect x="350" y="262" width="420" height="10" rx="5" fill="#2d6a4f" opacity="0.18"/>
+  <rect x="350" y="286" width="390" height="10" rx="5" fill="#2d6a4f" opacity="0.14"/>
+  <rect x="350" y="336" width="180" height="44" rx="22" fill="#22c55e"/>
+
+  <!-- Title -->
+  <text x="600" y="350" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="72" font-weight="900" fill="#2d6a4f" letter-spacing="2">SOLARPUNK</text>
+  <text x="600" y="402" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="800" fill="#2d6a4f" letter-spacing="6">BRIGHT ECO FUTURE</text>
+</svg>
+

@@ -88,13 +88,24 @@ export const asymmetricGridRecipes: StyleRecipes = {
         element: "div",
         baseClasses: [
           "relative",
-          "p-8",
           "bg-white",
           "border-2 border-[#0f0f0f]",
           "transition-transform duration-300",
         ],
       },
       parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-6 md:p-8" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-8 md:p-10" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-10 md:p-12" },
+          ],
+          default: "md",
+        },
         {
           id: "rotation",
           label: "Rotation",
@@ -144,13 +155,74 @@ export const asymmetricGridRecipes: StyleRecipes = {
       },
       slots: [
         { id: "eyebrow", label: "Eyebrow", labelZh: "眉标", required: false, type: "text" },
-        { id: "title", label: "Title", labelZh: "标题", required: true, default: "Card Title", type: "text" },
-        { id: "content", label: "Content", labelZh: "内容", required: false, type: "text" },
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Card content goes here", type: "children" },
       ],
       states: {
         hover: ["hover:rotate-0"],
         active: [],
         disabled: ["opacity-50"],
+      },
+    },
+
+    input: {
+      id: "input",
+      name: "Input",
+      nameZh: "输入框",
+      description: "Sharp-edged input with offset focus styling",
+      skeleton: {
+        element: "input",
+        baseClasses: [
+          "w-full",
+          "bg-transparent",
+          "border-2 border-[#0f0f0f]",
+          "text-[#0f0f0f]",
+          "placeholder:text-gray-400",
+          "focus:outline-none",
+          "focus:border-[#ff3366]",
+          "transition-colors duration-200",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-3 text-sm" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-4 text-base" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-6 py-5 text-lg" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+        inverted: {
+          id: "inverted",
+          label: "Inverted",
+          labelZh: "反色",
+          classes: [
+            "bg-[#0f0f0f] text-white border-white",
+            "placeholder:text-white/40",
+            "focus:border-[#00d4ff]",
+          ],
+        },
+      },
+      slots: [
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "your@email.com", type: "text" },
+      ],
+      states: {
+        focus: [
+          "focus:shadow-[4px_4px_0px_#00d4ff]",
+        ],
+        disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
 
@@ -218,11 +290,24 @@ export const asymmetricGridRecipes: StyleRecipes = {
         element: "nav",
         baseClasses: [
           "flex items-center justify-between",
-          "px-8 py-6",
+          "px-8",
           "border-b-2 border-[#0f0f0f]",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "density",
+          label: "Density",
+          labelZh: "密度",
+          type: "select",
+          options: [
+            { value: "compact", label: "Compact", labelZh: "紧凑", classes: "py-4" },
+            { value: "comfortable", label: "Comfortable", labelZh: "舒适", classes: "py-6" },
+            { value: "spacious", label: "Spacious", labelZh: "宽松", classes: "py-8" },
+          ],
+          default: "comfortable",
+        },
+      ],
       variants: {
         default: {
           id: "default",
