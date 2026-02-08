@@ -75,7 +75,7 @@ export const gothicRecipes: StyleRecipes = {
       },
       slots: [
         { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Click Me", type: "text" },
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Enter", type: "text" },
       ],
       states: {
         hover: [
@@ -221,6 +221,225 @@ export const gothicRecipes: StyleRecipes = {
         ],
         disabled: ["opacity-50 cursor-not-allowed"],
       },
+    },
+
+    stonePanel: {
+      id: "stonePanel",
+      name: "Stone Panel",
+      nameZh: "石材面板",
+      description: "Medieval stone-textured panel with carved edge effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a]",
+          "border-4 border-[#3a3a3a]",
+          "shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
+          "p-6",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+        dark: {
+          id: "dark",
+          label: "Dark",
+          labelZh: "深色",
+          classes: ["from-[#1a1a1a] to-[#0a0a0a]"],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    shieldBadge: {
+      id: "shieldBadge",
+      name: "Shield Badge",
+      nameZh: "盾牌徽章",
+      description: "Heraldic shield-shaped badge for status or labels",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "px-4 py-2",
+          "bg-[#2d1b4e]",
+          "text-[#c9a227]",
+          "font-serif uppercase tracking-wider text-sm",
+          "clip-path-shield",
+        ],
+      },
+      parameters: [],
+      variants: {
+        purple: {
+          id: "purple",
+          label: "Purple",
+          labelZh: "紫色",
+          classes: ["bg-[#2d1b4e]"],
+        },
+        blood: {
+          id: "blood",
+          label: "Blood",
+          labelZh: "血色",
+          classes: ["bg-[#8b1a1a]"],
+        },
+        gold: {
+          id: "gold",
+          label: "Gold",
+          labelZh: "金色",
+          classes: ["bg-[#c9a227] text-[#0a0a0a]"],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Knight", type: "text" },
+      ],
+      states: {},
+    },
+
+    waxSeal: {
+      id: "waxSeal",
+      name: "Wax Seal",
+      nameZh: "火漆印章",
+      description: "Circular wax seal decoration with embossed effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "w-16 h-16",
+          "rounded-full",
+          "bg-[#8b1a1a]",
+          "shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),inset_0_-2px_4px_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.5)]",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-12 h-12" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-16 h-16" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-20 h-20" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
+      ],
+      states: {},
+    },
+
+    traceryDivider: {
+      id: "traceryDivider",
+      name: "Tracery Divider",
+      nameZh: "花窗分隔线",
+      description: "Gothic tracery-inspired decorative divider",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "w-full h-8",
+          "flex items-center justify-center",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    illuminatedInitial: {
+      id: "illuminatedInitial",
+      name: "Illuminated Initial",
+      nameZh: "装饰首字母",
+      description: "Medieval illuminated manuscript style decorative initial letter",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-block",
+          "text-6xl font-serif font-bold",
+          "text-[#c9a227]",
+          "float-left mr-2",
+          "leading-none",
+        ],
+      },
+      parameters: [],
+      variants: {
+        gold: {
+          id: "gold",
+          label: "Gold",
+          labelZh: "金色",
+          classes: ["text-[#c9a227] drop-shadow-[0_2px_4px_rgba(201,162,39,0.5)]"],
+        },
+        blood: {
+          id: "blood",
+          label: "Blood",
+          labelZh: "血色",
+          classes: ["text-[#8b1a1a] drop-shadow-[0_2px_4px_rgba(139,26,26,0.5)]"],
+        },
+      },
+      slots: [
+        { id: "letter", label: "Letter", labelZh: "字母", required: true, default: "T", type: "text" },
+      ],
+      states: {},
+    },
+
+    parchmentCard: {
+      id: "parchmentCard",
+      name: "Parchment Card",
+      nameZh: "羊皮纸卡片",
+      description: "Card styled to look like aged parchment with burnt edges",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-gradient-to-br from-[#f5f0e1] to-[#e5d9c3]",
+          "p-6",
+          "shadow-lg",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+        aged: {
+          id: "aged",
+          label: "Aged",
+          labelZh: "陈旧",
+          classes: ["from-[#e5d9c3] to-[#d4c4a8]"],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
     },
   },
 };
