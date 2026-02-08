@@ -75,7 +75,7 @@ export const darkAcademiaRecipes: StyleRecipes = {
       },
       slots: [
         { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Click Me", type: "text" },
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Read More", type: "text" },
       ],
       states: {
         hover: [
@@ -213,7 +213,7 @@ export const darkAcademiaRecipes: StyleRecipes = {
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Type here...", type: "text" },
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Search the archives...", type: "text" },
       ],
       states: {
         focus: [
@@ -222,6 +222,258 @@ export const darkAcademiaRecipes: StyleRecipes = {
         ],
         disabled: ["opacity-50 cursor-not-allowed"],
       },
+    },
+
+    leatherPanel: {
+      id: "leatherPanel",
+      name: "Leather Panel",
+      nameZh: "皮革面板",
+      description: "Panel styled to look like aged leather binding",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-gradient-to-b from-[#5c4033] to-[#3d2b1f]",
+          "border-2 border-[#8b7355]/50",
+          "rounded",
+          "p-6",
+          "shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2)]",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+        green: {
+          id: "green",
+          label: "Green",
+          labelZh: "绿色",
+          classes: ["from-[#3d5c4a] to-[#2d4a3e]"],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    waxSealBadge: {
+      id: "waxSealBadge",
+      name: "Wax Seal Badge",
+      nameZh: "火漆封印徽章",
+      description: "Circular badge styled as a wax seal",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "w-14 h-14",
+          "rounded-full",
+          "bg-[#8b1a1a]",
+          "text-[#f5f0e1]",
+          "font-serif font-bold",
+          "shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),inset_0_-2px_4px_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.3)]",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-10 h-10 text-xs" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-14 h-14 text-sm" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-18 h-18 text-base" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
+      ],
+      states: {},
+    },
+
+    bookSpineTab: {
+      id: "bookSpineTab",
+      name: "Book Spine Tab",
+      nameZh: "书脊标签",
+      description: "Tab styled like a book spine label",
+      skeleton: {
+        element: "button",
+        baseClasses: [
+          "px-4 py-3",
+          "font-serif tracking-wide",
+          "bg-[#3d2b1f]",
+          "text-[#c9a227]",
+          "border-l-4",
+          "transition-all duration-200",
+        ],
+      },
+      parameters: [],
+      variants: {
+        brown: {
+          id: "brown",
+          label: "Brown",
+          labelZh: "棕色",
+          classes: ["bg-[#3d2b1f] border-[#c9a227]"],
+        },
+        green: {
+          id: "green",
+          label: "Green",
+          labelZh: "绿色",
+          classes: ["bg-[#2d4a3e] border-[#8b7355]"],
+        },
+        burgundy: {
+          id: "burgundy",
+          label: "Burgundy",
+          labelZh: "酒红",
+          classes: ["bg-[#5c2a2a] border-[#c9a227]"],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Chapter I", type: "text" },
+      ],
+      states: {
+        active: ["[&.active]:bg-[#5c4033]"],
+        hover: ["hover:bg-[#5c4033]"],
+      },
+    },
+
+    fleuronDivider: {
+      id: "fleuronDivider",
+      name: "Fleuron Divider",
+      nameZh: "花饰分隔线",
+      description: "Decorative divider with fleuron (typographic ornament)",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "w-full h-6",
+          "flex items-center justify-center",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    readingProgress: {
+      id: "readingProgress",
+      name: "Reading Progress",
+      nameZh: "阅读进度",
+      description: "Progress bar styled like a page marker bookmark",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "h-2",
+          "bg-[#3d2b1f]/20",
+          "rounded-full",
+          "overflow-hidden",
+        ],
+      },
+      parameters: [
+        {
+          id: "value",
+          label: "Value",
+          labelZh: "数值",
+          type: "select",
+          options: [
+            { value: "25", label: "25%", labelZh: "25%", classes: "" },
+            { value: "50", label: "50%", labelZh: "50%", classes: "" },
+            { value: "75", label: "75%", labelZh: "75%", classes: "" },
+            { value: "100", label: "100%", labelZh: "100%", classes: "" },
+          ],
+          default: "75",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    manuscriptCard: {
+      id: "manuscriptCard",
+      name: "Manuscript Card",
+      nameZh: "手稿卡片",
+      description: "Card with lined paper effect like a manuscript page",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#f5f0e1]",
+          "p-6",
+          "border border-[#8b7355]/30",
+          "shadow-sm",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    candleGlow: {
+      id: "candleGlow",
+      name: "Candle Glow",
+      nameZh: "烛光效果",
+      description: "Decorative candle with animated glow effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "w-6",
+          "flex flex-col items-center",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
     },
   },
 };
