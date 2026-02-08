@@ -549,7 +549,7 @@ export default function ShowcaseContent() {
               </ul>
             </div>
             <div>
-              <h3 className="font-black text-xl md:text-2xl mb-4 text-brutal-pink">⛔ 禁止</h3>
+              <h3 className="font-black text-xl md:text-2xl mb-4 text-brutal-pink">DONT - 禁止</h3>
               <ul className="font-mono text-sm md:text-base space-y-2 text-gray-300">
                 <li>• 圆角 rounded-lg/md/xl</li>
                 <li>• 模糊阴影 shadow-lg/xl</li>

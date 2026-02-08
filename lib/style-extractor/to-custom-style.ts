@@ -35,6 +35,9 @@ export function applyExtractedDraftToCustomStyle(
   const muted =
     mixHex(background, foreground, 0.72) ?? pickForegroundColor(background, base.colors.muted);
 
+  const inferredShadows = inferShadows(primary, draft, evidence, base.shadows);
+  const shadows = applyShadowsFromDraft(draft, inferredShadows);
+
   return {
     ...base,
     colors: {
@@ -46,11 +49,34 @@ export function applyExtractedDraftToCustomStyle(
       foreground,
       muted,
     },
+    typography: {
+      ...base.typography,
+      headingFont: draft.headingFont?.trim() || base.typography.headingFont,
+      bodyFont: draft.bodyFont?.trim() || base.typography.bodyFont,
+    },
     borders: {
       ...base.borders,
-      radius: inferRadius(draft, evidence, base.borders.radius),
+      radius: draft.borderRadius?.trim() || inferRadius(draft, evidence, base.borders.radius),
+      width: draft.borderWidth?.trim() || base.borders.width,
     },
-    shadows: inferShadows(primary, draft, evidence, base.shadows),
+    shadows,
+  };
+}
+
+function applyShadowsFromDraft(
+  draft: ExtractedStyleDraft,
+  inferred: CustomStyleDefinition["shadows"]
+): CustomStyleDefinition["shadows"] {
+  const sm = draft.shadowSm?.trim();
+  const md = draft.shadowMd?.trim();
+  const lg = draft.shadowLg?.trim();
+
+  if (!sm && !md && !lg) return inferred;
+
+  return {
+    sm: sm || inferred.sm,
+    md: md || inferred.md,
+    lg: lg || inferred.lg,
   };
 }
 

@@ -15,6 +15,8 @@ export function TypographySection({
   fontOptions,
 }: TypographySectionProps) {
   const { t } = useI18n();
+  const headingInOptions = fontOptions.some((font) => font.value === typography.headingFont);
+  const bodyInOptions = fontOptions.some((font) => font.value === typography.bodyFont);
 
   return (
     <div>
@@ -33,6 +35,9 @@ export function TypographySection({
             onChange={(e) => onChange({ headingFont: e.target.value })}
             className="w-full px-3 py-2 border border-border bg-transparent text-sm focus:outline-none focus:border-foreground"
           >
+            {!headingInOptions && (
+              <option value={typography.headingFont}>{typography.headingFont}</option>
+            )}
             {fontOptions.map((font) => (
               <option key={font.value} value={font.value}>
                 {font.label}
@@ -51,6 +56,9 @@ export function TypographySection({
             onChange={(e) => onChange({ bodyFont: e.target.value })}
             className="w-full px-3 py-2 border border-border bg-transparent text-sm focus:outline-none focus:border-foreground"
           >
+            {!bodyInOptions && (
+              <option value={typography.bodyFont}>{typography.bodyFont}</option>
+            )}
             {fontOptions.map((font) => (
               <option key={font.value} value={font.value}>
                 {font.label}

@@ -106,7 +106,11 @@ export const styleComponents: Record<
       <div className="w-full h-full bg-[#4ecdc4] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px] rotate-[-1deg]">
           <div className="bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,107,107,1)] p-4 rotate-[2deg]">
-            <span className="text-2xl mb-2 block">🎨</span>
+            <div className="mb-2 flex items-center gap-2">
+              <div className="h-6 w-6 bg-[#ff6b6b] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rotate-3" />
+              <div className="h-6 w-6 bg-[#ffe66d] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -rotate-3" />
+              <div className="h-6 w-6 bg-[#4ecdc4] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rotate-6" />
+            </div>
             <div className="font-black text-base mb-2">PLAYFUL!</div>
             <p className="text-xs mb-3 text-gray-600">有趣的设计</p>
             <button className="bg-[#ffe66d] text-black text-xs font-black px-4 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] rotate-[-1deg]">
@@ -2439,6 +2443,252 @@ export const styleComponents: Record<
           <div className="font-bold text-base text-[#c9a227] mb-2">Cyber Wafuu</div>
           <p className="text-xs text-[#38bdf8] mb-3">Neo-Japanese</p>
           <button className="bg-[#c41e3a] text-white text-xs px-4 py-2 border border-[#c9a227]">Enter</button>
+        </div>
+      </div>
+    ),
+  },
+  steampunk: {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-b from-[#cd853f] to-[#8b4513] text-[#1c0f0a] font-semibold tracking-wide border-2 border-[#2d1810] shadow-[0_3px_0px_rgba(45,24,16,0.9),inset_0_1px_0px_rgba(255,255,255,0.35)] hover:translate-y-[1px] hover:shadow-[0_2px_0px_rgba(45,24,16,0.9),inset_0_1px_0px_rgba(255,255,255,0.35)] transition-all">
+        Engage
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f4e4bc] border-2 border-[#2d1810] shadow-[6px_6px_0px_rgba(45,24,16,0.45)]">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs font-semibold tracking-[0.2em] text-[#2d1810]">STEAMPUNK</div>
+          <div className="h-6 w-6 border-2 border-[#b87333] bg-[#2d1810] grid place-items-center">
+            <div className="h-2 w-2 bg-[#b87333]" />
+          </div>
+        </div>
+        <p className="text-sm text-[#2d1810]/85">Brass, leather, precision</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type..."
+        className="w-full px-4 py-3 bg-[#f4e4bc] border-2 border-[#2d1810] text-[#2d1810] placeholder-[#2d1810]/40 focus:outline-none focus:shadow-[4px_4px_0px_rgba(45,24,16,0.45)] transition-shadow"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#2d1810] flex items-center justify-center p-4">
+        <div className="w-full max-w-[220px] bg-[#f4e4bc] border-4 border-[#b87333] shadow-[7px_7px_0px_rgba(0,0,0,0.35)] p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs font-semibold tracking-[0.22em] text-[#2d1810]">STEAMPUNK</div>
+            <div className="h-7 w-7 border-2 border-[#b87333] bg-[#2d1810] relative">
+              <div className="absolute inset-[5px] border border-[#b87333]" />
+              <div className="absolute left-1/2 top-[2px] -translate-x-1/2 w-[2px] h-[calc(100%-4px)] bg-[#b87333]" />
+              <div className="absolute top-1/2 left-[2px] -translate-y-1/2 h-[2px] w-[calc(100%-4px)] bg-[#b87333]" />
+            </div>
+          </div>
+          <p className="text-xs text-[#2d1810]/80 mb-3">Mechanica UI</p>
+          <button className="w-full px-3 py-2 bg-gradient-to-b from-[#cd853f] to-[#8b4513] text-[#1c0f0a] text-xs font-semibold border-2 border-[#2d1810] shadow-[0_2px_0px_rgba(45,24,16,0.9)]">
+            Start
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  "pop-art": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#ffff00] text-black font-black uppercase tracking-wide border-4 border-black shadow-[6px_6px_0px_0px_#00ccff] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all">
+        Pow
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white border-4 border-black shadow-[8px_8px_0px_0px_#ff0066]">
+        <div className="inline-flex items-center gap-2 mb-3">
+          <div className="h-3 w-3 bg-[#ff0066] border-2 border-black" />
+          <div className="h-3 w-3 bg-[#00ccff] border-2 border-black" />
+          <div className="h-3 w-3 bg-[#ffff00] border-2 border-black" />
+        </div>
+        <h3 className="font-black text-xl">Pop Art Card</h3>
+        <p className="text-sm text-black/70">Bold dots, loud colors</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type..."
+        className="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-black/40 focus:outline-none focus:shadow-[5px_5px_0px_0px_#ff0066] transition-shadow"
+      />
+    ),
+    coverPreview: () => (
+      <div
+        className="w-full h-full flex items-center justify-center p-4"
+        style={{
+          backgroundColor: "#ff0066",
+          backgroundImage: "radial-gradient(rgba(0,0,0,0.35) 1px, transparent 1px)",
+          backgroundSize: "10px 10px",
+        }}
+      >
+        <div className="w-full max-w-[220px] bg-white border-4 border-black shadow-[8px_8px_0px_0px_#ffff00] p-4">
+          <div className="text-xs font-black tracking-[0.24em] mb-2">POP ART</div>
+          <div className="h-2 w-full bg-[#00ccff] border-2 border-black mb-3" />
+          <button className="w-full px-3 py-2 bg-[#ffff00] border-4 border-black font-black text-xs shadow-[4px_4px_0px_0px_#00ccff]">
+            Action
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  solarpunk: {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-r from-[#22c55e] to-[#0ea5e9] text-white font-semibold rounded-full shadow-[0_10px_30px_rgba(34,197,94,0.25)] hover:shadow-[0_14px_40px_rgba(14,165,233,0.25)] transition-shadow">
+        Explore
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f0fdf4] border border-[#22c55e]/30 rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-4 w-4 rounded-full bg-[#fbbf24]" />
+          <div className="h-2 w-10 rounded-full bg-[#22c55e]" />
+          <div className="h-2 w-6 rounded-full bg-[#0ea5e9]" />
+        </div>
+        <h3 className="font-semibold text-lg text-[#2d6a4f]">Solarpunk Card</h3>
+        <p className="text-sm text-[#2d6a4f]/70">Bright, breathable, green</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type..."
+        className="w-full px-4 py-3 bg-white rounded-2xl border border-[#22c55e]/30 focus:outline-none focus:ring-4 focus:ring-[#22c55e]/15"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-[#f0fdf4] via-white to-[#e0f2fe] flex items-center justify-center p-4">
+        <div className="w-full max-w-[220px] bg-white rounded-2xl border border-[#22c55e]/25 shadow-[0_18px_45px_rgba(0,0,0,0.10)] p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs font-semibold tracking-[0.2em] text-[#2d6a4f]">SOLARPUNK</div>
+            <div className="h-8 w-8 rounded-full bg-[#fbbf24] shadow-[0_0_0_6px_rgba(251,191,36,0.25)]" />
+          </div>
+          <p className="text-xs text-[#2d6a4f]/70 mb-3">Clean tech, nature</p>
+          <button className="w-full px-3 py-2 bg-gradient-to-r from-[#22c55e] to-[#0ea5e9] text-white text-xs font-semibold rounded-full">
+            Start
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  jrpg: {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1a1a2e] text-[#fbbf24] font-semibold tracking-wide border border-[#fbbf24]/70 shadow-[0_0_0_2px_rgba(251,191,36,0.15)] hover:bg-[#111126] transition-colors">
+        Confirm
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#1a1a2e] border border-[#8b5cf6]/60 shadow-[0_0_0_2px_rgba(251,191,36,0.12)]">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs font-semibold tracking-[0.22em] text-[#eef2ff]">STATUS</div>
+          <div className="text-xs text-[#fbbf24]">LV 12</div>
+        </div>
+        <div className="h-2 w-full bg-white/10 border border-white/15 mb-2">
+          <div className="h-full w-3/4 bg-[#ef4444]" />
+        </div>
+        <p className="text-xs text-[#eef2ff]/75">HP 75 / 100</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Command..."
+        className="w-full px-4 py-3 bg-[#111126] border border-[#8b5cf6]/60 text-[#eef2ff] placeholder-[#eef2ff]/40 focus:outline-none focus:border-[#fbbf24]/80 transition-colors"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0b0b16] flex items-center justify-center p-4">
+        <div className="w-full max-w-[220px] bg-[#1a1a2e] border border-[#8b5cf6]/70 shadow-[0_0_0_2px_rgba(251,191,36,0.15)] p-4">
+          <div className="text-xs font-semibold tracking-[0.22em] text-[#eef2ff] mb-2">JRPG UI</div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-2 flex-1 bg-white/10 border border-white/15">
+              <div className="h-full w-2/3 bg-[#ef4444]" />
+            </div>
+            <div className="h-2 flex-1 bg-white/10 border border-white/15">
+              <div className="h-full w-1/2 bg-[#22c55e]" />
+            </div>
+          </div>
+          <button className="w-full px-3 py-2 bg-[#111126] text-[#fbbf24] text-xs font-semibold border border-[#fbbf24]/70">
+            Start Quest
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  "asymmetric-grid": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#0f0f0f] text-white font-semibold tracking-wide border border-[#ff3366] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+        Click
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-white border-2 border-black shadow-[7px_7px_0px_0px_rgba(0,0,0,1)]">
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="col-span-2 h-4 bg-[#ffcc00]" />
+          <div className="h-4 bg-[#00d4ff]" />
+          <div className="h-8 bg-[#ff3366]" />
+          <div className="col-span-2 h-8 bg-[#0f0f0f]" />
+        </div>
+        <p className="text-sm text-black/70">Tension, overlap, rhythm</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type..."
+        className="w-full px-4 py-3 bg-white border-2 border-black focus:outline-none focus:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-shadow"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex items-center justify-center p-4">
+        <div className="w-full max-w-[240px]">
+          <div className="grid grid-cols-6 gap-2">
+            <div className="col-span-4 h-10 bg-[#0f0f0f]" />
+            <div className="col-span-2 h-10 bg-[#ffcc00]" />
+            <div className="col-span-2 h-16 bg-[#ff3366]" />
+            <div className="col-span-4 h-16 bg-[#00d4ff]" />
+            <div className="col-span-3 h-10 bg-[#ffffff] border-2 border-black" />
+            <div className="col-span-3 h-10 bg-[#ffffff] border-2 border-black" />
+          </div>
+          <div className="mt-3 flex items-center justify-between">
+            <div className="text-[10px] font-semibold tracking-[0.22em] text-black">ASYMMETRIC</div>
+            <div className="h-2 w-10 bg-[#ff3366]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "parallax-sections": {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-r from-[#3b82f6] to-[#0ea5e9] text-white font-semibold rounded-lg shadow-[0_12px_35px_rgba(59,130,246,0.25)] hover:shadow-[0_16px_45px_rgba(14,165,233,0.25)] transition-shadow">
+        Scroll
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#f8fafc] border border-[#93c5fd] rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.10)]">
+        <div className="h-2 w-16 bg-[#3b82f6] rounded-full mb-3" />
+        <h3 className="font-semibold text-lg text-[#1e3a5f]">Parallax Card</h3>
+        <p className="text-sm text-[#1e3a5f]/70">Depth by motion</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type..."
+        className="w-full px-4 py-3 bg-white border border-[#93c5fd] rounded-lg focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/15"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center p-4">
+        <div className="w-full max-w-[240px] relative">
+          <div className="h-14 bg-gradient-to-r from-[#1e3a5f] to-[#3b82f6] rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.10)]" />
+          <div className="absolute left-3 top-8 right-3 h-14 bg-gradient-to-r from-[#93c5fd] to-[#0ea5e9] rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.10)]" />
+          <div className="absolute left-6 top-[68px] right-6 h-14 bg-white border border-[#93c5fd] rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.10)]" />
+          <div className="mt-[132px] flex items-center justify-between">
+            <div className="text-[10px] font-semibold tracking-[0.22em] text-[#1e3a5f]">PARALLAX</div>
+            <div className="h-2 w-10 bg-[#3b82f6] rounded-full" />
+          </div>
         </div>
       </div>
     ),

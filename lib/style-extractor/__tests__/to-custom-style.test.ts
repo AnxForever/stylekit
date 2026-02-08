@@ -42,6 +42,31 @@ describe("applyExtractedDraftToCustomStyle", () => {
     expect(next.shadows.lg).not.toBe(base.shadows.lg);
   });
 
+  it("applies typography, border width, and explicit shadows when provided", () => {
+    const base = structuredClone(defaultStyleDefinition);
+
+    const next = applyExtractedDraftToCustomStyle(
+      {
+        headingFont: "\"Playfair Display\", serif",
+        bodyFont: "\"Inter\", system-ui, sans-serif",
+        borderRadius: "12px",
+        borderWidth: "2px",
+        shadowSm: "0 1px 2px rgba(0,0,0,0.10)",
+        shadowMd: "0 8px 20px rgba(0,0,0,0.12)",
+        shadowLg: "0 18px 40px rgba(0,0,0,0.16)",
+      },
+      base
+    );
+
+    expect(next.typography.headingFont).toBe("\"Playfair Display\", serif");
+    expect(next.typography.bodyFont).toBe("\"Inter\", system-ui, sans-serif");
+    expect(next.borders.radius).toBe("12px");
+    expect(next.borders.width).toBe("2px");
+    expect(next.shadows.sm).toBe("0 1px 2px rgba(0,0,0,0.10)");
+    expect(next.shadows.md).toBe("0 8px 20px rgba(0,0,0,0.12)");
+    expect(next.shadows.lg).toBe("0 18px 40px rgba(0,0,0,0.16)");
+  });
+
   it("keeps existing values when extracted draft is sparse", () => {
     const base = structuredClone(defaultStyleDefinition);
 
