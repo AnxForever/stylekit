@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -206,11 +206,11 @@ export default function ShowcaseContent() {
           <div className="flex items-center justify-between">
             <div className="lg:hidden w-10" />
             <div className="hidden lg:block">
-              {/* 视觉风格标注 */}
+              {/* 瑙嗚椋庢牸鏍囨敞 */}
               <div className="flex items-center gap-2 mb-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded">
                   <Palette className="w-3 h-3" />
-                  视觉风格: Corporate Clean
+                  瑙嗚椋庢牸: Corporate Clean
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded">
                   Sidebar Fixed Layout
@@ -229,7 +229,7 @@ export default function ShowcaseContent() {
                 className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span className="text-sm font-medium hidden sm:inline">Back to Docs</span>
+                <span className="text-sm font-medium hidden sm:inline">Back</span>
               </Link>
             </div>
           </div>
@@ -360,3 +360,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

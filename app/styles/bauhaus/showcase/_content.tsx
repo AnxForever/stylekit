@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Circle, Square, Triangle } from "lucide-react";
@@ -33,7 +33,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-black hover:text-red-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold uppercase tracking-wider">Back to Docs</span>
+            <span className="font-bold uppercase tracking-wider">Back</span>
           </Link>
           <span className="font-black text-xl text-black uppercase tracking-wider">
             BAUHAUS
@@ -50,7 +50,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="BAU HAUS"
-        description="Form follows function - 德国包豪斯学派的功能主义设计理念"
+        description="Form follows function - 寰峰浗鍖呰豹鏂娲剧殑鍔熻兘涓讳箟璁捐鐞嗗康"
         className="relative z-10 pt-20 pb-16 px-6"
         titleClassName="text-7xl md:text-9xl font-black text-black uppercase leading-none mb-8 text-left max-w-2xl mx-auto"
         descriptionClassName="text-xl text-gray-700 max-w-md mb-10 text-left mx-auto"
@@ -247,7 +247,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t-4 border-black">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-600 text-sm font-bold uppercase tracking-wider">
-            Bauhaus Showcase · Part of{" "}
+            Bauhaus Showcase 路 Part of{" "}
             <Link href="/" className="text-black hover:text-red-600 transition-colors">
               StyleKit
             </Link>
@@ -257,3 +257,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

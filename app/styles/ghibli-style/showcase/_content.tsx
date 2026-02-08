@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Cloud, Leaf, Sun, Wind } from "lucide-react";
@@ -33,7 +33,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#5a4a3a] hover:text-[#7cb9a8] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-semibold text-xl text-[#5a4a3a]">
             Ghibli Style
@@ -204,3 +204,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

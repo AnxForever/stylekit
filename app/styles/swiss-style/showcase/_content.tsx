@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -28,7 +28,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-black hover:text-red-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm uppercase tracking-[0.15em]">Back to Docs</span>
+            <span className="text-sm uppercase tracking-[0.15em]">Back</span>
           </Link>
           <span className="font-bold text-xl uppercase tracking-[0.2em]">
             Swiss
@@ -225,3 +225,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

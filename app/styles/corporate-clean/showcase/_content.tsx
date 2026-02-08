@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Corporate Clean 配色
+// Corporate Clean 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Primary", hex: "#2563eb", bg: "bg-blue-600" },
   { name: "Background", hex: "#f8fafc", bg: "bg-slate-50" },
@@ -32,7 +32,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to Docs</span>
+            <span className="font-semibold">Back</span>
           </Link>
           <span className="font-bold text-xl text-gray-900">Corporate Clean</span>
           <Link
@@ -339,3 +339,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

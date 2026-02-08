@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Zap, Shield, Code } from "lucide-react";
@@ -9,7 +9,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Stripe 配色
+// Stripe 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Stripe Purple", hex: "#635bff", bg: "bg-[#635bff]" },
   { name: "Dark Blue", hex: "#0a2540", bg: "bg-[#0a2540]" },
@@ -29,7 +29,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#0a2540] hover:text-[#635bff] transition-colors font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-bold text-xl text-[#635bff]">stripe</span>
           <Link
@@ -278,7 +278,7 @@ const paymentIntent = await stripe.paymentIntents.create({
       <footer className="py-8 px-6 border-t border-gray-200">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-600 text-sm">
-            Stripe Style Showcase · Part of{" "}
+            Stripe Style Showcase 路 Part of{" "}
             <Link href="/" className="text-[#635bff] hover:underline">
               StyleKit
             </Link>
@@ -288,3 +288,4 @@ const paymentIntent = await stripe.paymentIntents.create({
     </div>
   );
 }
+

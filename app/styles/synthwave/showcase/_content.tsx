@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Sun, Mountain, Zap, Car } from "lucide-react";
@@ -43,7 +43,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-pink-400 hover:text-pink-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold uppercase tracking-wider">Back to Docs</span>
+            <span className="font-bold uppercase tracking-wider">Back</span>
           </Link>
           <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 uppercase tracking-wider">
             SYNTHWAVE
@@ -60,7 +60,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="SYNTHWAVE"
-        description="Ride into the sunset - 80年代复古未来主义的霓虹梦境"
+        description="Ride into the sunset - 80骞翠唬澶嶅彜鏈潵涓讳箟鐨勯湏铏规ⅵ澧?
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-pink-400 to-purple-600 mb-6"
         descriptionClassName="text-xl text-pink-200/80 max-w-2xl mx-auto mb-10"
@@ -77,8 +77,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="霓虹灯光"
+        title="閰嶈壊绯荤粺"
+        subtitle="闇撹櫣鐏厜"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -95,8 +95,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="霓虹发光效果"
+        title="鎸夐挳"
+        subtitle="闇撹櫣鍙戝厜鏁堟灉"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -124,8 +124,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="复古未来感"
+        title="鍗＄墖"
+        subtitle="澶嶅彜鏈潵鎰?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -165,8 +165,8 @@ export default function ShowcaseContent() {
 
       {/* Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="霓虹边框输入"
+        title="琛ㄥ崟"
+        subtitle="闇撹櫣杈规杈撳叆"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -209,7 +209,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-pink-500/30">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-pink-400/60 text-sm">
-            Synthwave Showcase · Part of{" "}
+            Synthwave Showcase 路 Part of{" "}
             <Link href="/" className="text-pink-400 hover:text-pink-300 transition-colors">
               StyleKit
             </Link>
@@ -219,3 +219,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -27,9 +27,9 @@ export default function ShowcaseContent() {
       {/* Navigation */}
       <nav className="border-b-2 border-[#2d1810] bg-[#2d1810]/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/docs" className="flex items-center gap-2 text-[#b87333] hover:text-[#cd853f] transition-colors">
+          <Link href="/styles/steampunk" className="flex items-center gap-2 text-[#b87333] hover:text-[#cd853f] transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span className="font-serif">Back to Docs</span>
+            <span className="font-serif">Back</span>
           </Link>
           <span className="font-serif text-xl text-[#f4e4bc] tracking-wide">STEAMPUNK</span>
           <Link href="/styles" className="text-[#b87333] hover:text-[#cd853f] transition-colors font-serif">

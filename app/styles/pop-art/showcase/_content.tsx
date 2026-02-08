@@ -27,7 +27,7 @@ export default function ShowcaseContent() {
       {/* Navigation */}
       <nav className="border-b-4 border-black bg-[#00ccff] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/docs" className="flex items-center gap-2 text-black font-bold hover:text-[#ff0066] transition-colors">
+          <Link href="/styles/pop-art" className="flex items-center gap-2 text-black font-bold hover:text-[#ff0066] transition-colors">
             <ArrowLeft className="w-5 h-5" />
             <span className="uppercase tracking-wider">Back</span>
           </Link>

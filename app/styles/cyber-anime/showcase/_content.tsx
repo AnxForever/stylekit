@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Cpu, Shield, Zap, Terminal, Radio, Radar } from "lucide-react";
@@ -48,7 +48,7 @@ export default function ShowcaseContent() {
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-bold uppercase tracking-widest text-sm">
-              Back to Docs
+              Back
             </span>
           </Link>
           <div className="flex items-center gap-3">
@@ -416,3 +416,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -40,7 +40,7 @@ export default function ShowcaseContent() {
       {/* Subtle radial gold glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.06)_0%,transparent_70%)] pointer-events-none" />
 
-      {/* ── 1. Navigation ── */}
+      {/* 鈹€鈹€ 1. Navigation 鈹€鈹€ */}
       <nav className="relative z-10 border-b-2 border-[#c9a227]/20 bg-[#0a0a0a]/95">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
@@ -48,7 +48,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#c9a227]/60 hover:text-[#c9a227] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-serif text-sm uppercase tracking-[0.2em]">Back to Docs</span>
+            <span className="font-serif text-sm uppercase tracking-[0.2em]">Back</span>
           </Link>
           <span className="font-serif text-xl text-[#c9a227] uppercase tracking-[0.3em]">
             Gothic
@@ -62,7 +62,7 @@ export default function ShowcaseContent() {
         </div>
       </nav>
 
-      {/* ── 2. Hero ── */}
+      {/* 鈹€鈹€ 2. Hero 鈹€鈹€ */}
       <section className="relative z-10 pt-24 pb-20 px-6 text-center">
         <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-6">
           In Tenebris Lux
@@ -84,14 +84,14 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── Tracery Divider ── */}
+      {/* 鈹€鈹€ Tracery Divider 鈹€鈹€ */}
       <div className="flex items-center justify-center gap-3 py-4">
         <span className="block w-16 h-px bg-[#c9a227]/30" />
         <Cross className="w-4 h-4 text-[#c9a227]/40" />
         <span className="block w-16 h-px bg-[#c9a227]/30" />
       </div>
 
-      {/* ── 3. Color Palette ── */}
+      {/* 鈹€鈹€ 3. Color Palette 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Tenebrae et Aurum</p>
@@ -116,7 +116,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── Tracery Divider ── */}
+      {/* 鈹€鈹€ Tracery Divider 鈹€鈹€ */}
       <div className="flex items-center justify-center gap-2 py-4">
         <span className="block w-8 h-px bg-[#c9a227]/20" />
         <span className="block w-2 h-2 rotate-45 border border-[#c9a227]/30" />
@@ -125,7 +125,7 @@ export default function ShowcaseContent() {
         <span className="block w-8 h-px bg-[#c9a227]/20" />
       </div>
 
-      {/* ── 4. Typography ── */}
+      {/* 鈹€鈹€ 4. Typography 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Scriptorium</p>
@@ -148,7 +148,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 5. Buttons ── */}
+      {/* 鈹€鈹€ 5. Buttons 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Cathedral Controls</p>
@@ -173,7 +173,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 6. Cards ── */}
+      {/* 鈹€鈹€ 6. Cards 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Sanctum Panels</p>
@@ -204,7 +204,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 7. Form ── */}
+      {/* 鈹€鈹€ 7. Form 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-md mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Inscribed Scrolls</p>
@@ -249,14 +249,14 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── Tracery Divider ── */}
+      {/* 鈹€鈹€ Tracery Divider 鈹€鈹€ */}
       <div className="flex items-center justify-center gap-3 py-4">
         <span className="block w-16 h-px bg-[#c9a227]/30" />
         <Cross className="w-4 h-4 text-[#c9a227]/40" />
         <span className="block w-16 h-px bg-[#c9a227]/30" />
       </div>
 
-      {/* ── 8. Tabs ── */}
+      {/* 鈹€鈹€ 8. Tabs 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Chamber Navigation</p>
@@ -285,7 +285,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 9. Heraldic Badges ── */}
+      {/* 鈹€鈹€ 9. Heraldic Badges 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Marks of Rank</p>
@@ -325,7 +325,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 10. Progress Bars ── */}
+      {/* 鈹€鈹€ 10. Progress Bars 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Stone Channels</p>
@@ -362,7 +362,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 11. Alerts ── */}
+      {/* 鈹€鈹€ 11. Alerts 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Proclamations</p>
@@ -400,7 +400,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 12. Dropdown ── */}
+      {/* 鈹€鈹€ 12. Dropdown 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-xs mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Archway Selection</p>
@@ -430,7 +430,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── Tracery Divider ── */}
+      {/* 鈹€鈹€ Tracery Divider 鈹€鈹€ */}
       <div className="flex items-center justify-center gap-2 py-4">
         <span className="block w-8 h-px bg-[#c9a227]/20" />
         <span className="block w-2 h-2 rotate-45 border border-[#c9a227]/30" />
@@ -439,7 +439,7 @@ export default function ShowcaseContent() {
         <span className="block w-8 h-px bg-[#c9a227]/20" />
       </div>
 
-      {/* ── 13. Table ── */}
+      {/* 鈹€鈹€ 13. Table 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Codex Registrum</p>
@@ -479,7 +479,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 14. Blockquote ── */}
+      {/* 鈹€鈹€ 14. Blockquote 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-3xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Inscription</p>
@@ -500,7 +500,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 15. Gothic Tracery Dividers showcase ── */}
+      {/* 鈹€鈹€ 15. Gothic Tracery Dividers showcase 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Ornamental Patterns</p>
@@ -532,7 +532,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 16. Rules Summary ── */}
+      {/* 鈹€鈹€ 16. Rules Summary 鈹€鈹€ */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#c9a227]/40 mb-3 text-center">Edicts of the Order</p>
@@ -562,7 +562,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── 17. Footer ── */}
+      {/* 鈹€鈹€ 17. Footer 鈹€鈹€ */}
       <footer className="relative z-10 py-8 px-6 border-t-2 border-[#c9a227]/20">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="font-serif text-sm text-[#c9a227]/40 tracking-wider">
@@ -579,3 +579,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

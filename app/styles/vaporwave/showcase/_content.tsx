@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -35,7 +35,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-pink-400 hover:text-pink-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">
             VAPORWAVE
@@ -52,7 +52,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="VAPORWAVE"
-        description="アエステティック・ドリーム - 80年代复古未来主义美学"
+        description="銈偍銈广儐銉嗐偅銉冦偗銉汇儔銉兗銉?- 80骞翠唬澶嶅彜鏈潵涓讳箟缇庡"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6"
         descriptionClassName="text-xl text-pink-300/80 max-w-2xl mx-auto mb-10"
@@ -69,8 +69,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="霓虹色彩"
+        title="閰嶈壊绯荤粺"
+        subtitle="闇撹櫣鑹插僵"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -87,15 +87,15 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="霓虹发光效果"
+        title="鎸夐挳"
+        subtitle="闇撹櫣鍙戝厜鏁堟灉"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto">
           <div className="p-8 bg-purple-900/50 backdrop-blur-sm border border-pink-500/30 shadow-[0_0_30px_rgba(255,113,206,0.2)]">
-            <p className="text-sm font-bold text-pink-400 uppercase tracking-wide mb-6">样式</p>
+            <p className="text-sm font-bold text-pink-400 uppercase tracking-wide mb-6">鏍峰紡</p>
             <div className="flex flex-wrap gap-4">
               <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(255,113,206,0.5)] hover:shadow-[0_0_25px_rgba(255,113,206,0.7)] transition-all">
                 Primary
@@ -116,8 +116,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="复古未来感"
+        title="鍗＄墖"
+        subtitle="澶嶅彜鏈潵鎰?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
         subtitleClassName="text-pink-300/60 mb-10 text-center"
@@ -193,7 +193,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-pink-500/30">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-pink-400/60 text-sm">
-            Vaporwave Showcase · Part of{" "}
+            Vaporwave Showcase 路 Part of{" "}
             <Link href="/" className="text-pink-400 hover:text-pink-300 transition-colors">
               StyleKit
             </Link>
@@ -203,3 +203,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

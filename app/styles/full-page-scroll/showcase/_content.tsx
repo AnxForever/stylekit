@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -61,7 +61,7 @@ export default function ShowcaseContent() {
               className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">Back to Docs</span>
+              <span className="font-medium">Back</span>
             </Link>
             <span className="font-bold text-xl text-white">Full Page Scroll</span>
             <Link
@@ -75,10 +75,10 @@ export default function ShowcaseContent() {
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          {/* 视觉风格标注 */}
+          {/* 瑙嗚椋庢牸鏍囨敞 */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-medium mb-4 border border-white/20">
             <Palette className="w-4 h-4" />
-            <span>视觉风格: Modern Gradient</span>
+            <span>瑙嗚椋庢牸: Modern Gradient</span>
           </div>
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-medium mb-8 ml-2 border border-white/20">
             <Sparkles className="w-4 h-4" />
@@ -302,3 +302,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

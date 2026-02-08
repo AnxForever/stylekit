@@ -27,7 +27,7 @@ export default function ShowcaseContent() {
       {/* Navigation */}
       <nav className="border-b-2 border-[#0f0f0f] bg-white sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/docs" className="flex items-center gap-2 text-[#0f0f0f] hover:text-[#ff3366] transition-colors uppercase tracking-widest text-sm font-bold">
+          <Link href="/styles/asymmetric-grid" className="flex items-center gap-2 text-[#0f0f0f] hover:text-[#ff3366] transition-colors uppercase tracking-widest text-sm font-bold">
             <ArrowLeft className="w-4 h-4" />
             Back
           </Link>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Smartphone, Laptop, Watch, Headphones } from "lucide-react";
@@ -9,7 +9,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Apple 配色
+// Apple 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Black", hex: "#000000", bg: "bg-black" },
   { name: "Apple Gray", hex: "#f5f5f7", bg: "bg-[#f5f5f7]" },
@@ -29,7 +29,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-black hover:text-gray-500 transition-colors text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-semibold text-lg text-black">Apple Style</span>
           <Link
@@ -293,7 +293,7 @@ export default function ShowcaseContent() {
       <footer className="py-12 px-6 bg-[#f5f5f7]">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
-            Apple Style Showcase · Part of{" "}
+            Apple Style Showcase 路 Part of{" "}
             <Link href="/" className="text-[#0071e3] hover:underline">
               StyleKit
             </Link>
@@ -303,3 +303,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Flame, Hexagon, Zap, Shield } from "lucide-react";
@@ -25,7 +25,7 @@ export default function ShowcaseContent() {
 
       {/* Seal stamp decoration */}
       <div className="fixed top-20 right-20 w-20 h-20 border-2 border-[#d4553a]/40 rotate-12 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[#d4553a]/40 text-2xl font-bold">印</span>
+        <span className="text-[#d4553a]/40 text-2xl font-bold">鍗?/span>
       </div>
 
       {/* Lantern glow top-left */}
@@ -40,7 +40,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#c9a227] hover:text-[#c9a227]/80 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold tracking-wider">Back to Docs</span>
+            <span className="font-bold tracking-wider">Back</span>
           </Link>
           <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#d4553a] to-[#c9a227] tracking-wider">
             CYBER CHINESE
@@ -57,7 +57,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="CYBER CHINESE"
-        description="Where tradition meets tomorrow - 古今碰撞的赛博东方幻想"
+        description="Where tradition meets tomorrow - 鍙や粖纰版挒鐨勮禌鍗氫笢鏂瑰够鎯?
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#d4553a] to-[#c9a227] mb-6"
         descriptionClassName="text-xl text-[#00d4ff]/70 max-w-2xl mx-auto mb-10"
@@ -74,8 +74,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="东方霓虹光谱"
+        title="閰嶈壊绯荤粺"
+        subtitle="涓滄柟闇撹櫣鍏夎氨"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-[#c9a227] mb-4 text-center"
         subtitleClassName="text-[#00d4ff]/50 mb-10 text-center"
@@ -92,8 +92,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="赛博东方交互"
+        title="鎸夐挳"
+        subtitle="璧涘崥涓滄柟浜や簰"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-[#c9a227] mb-4 text-center"
         subtitleClassName="text-[#00d4ff]/50 mb-10 text-center"
@@ -121,8 +121,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="赛博东方容器"
+        title="鍗＄墖"
+        subtitle="璧涘崥涓滄柟瀹瑰櫒"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-[#c9a227] mb-4 text-center"
         subtitleClassName="text-[#00d4ff]/50 mb-10 text-center"
@@ -162,8 +162,8 @@ export default function ShowcaseContent() {
 
       {/* Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="赛博东方输入"
+        title="琛ㄥ崟"
+        subtitle="璧涘崥涓滄柟杈撳叆"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-bold text-[#c9a227] mb-4 text-center"
         subtitleClassName="text-[#00d4ff]/50 mb-10 text-center"
@@ -206,7 +206,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-[#d4553a]/20">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#c9a227]/40 text-sm">
-            Cyber Chinese Showcase · Part of{" "}
+            Cyber Chinese Showcase 路 Part of{" "}
             <Link href="/" className="text-[#c9a227]/60 hover:text-[#c9a227] transition-colors">
               StyleKit
             </Link>
@@ -216,3 +216,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

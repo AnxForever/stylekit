@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Split Screen 配色
+// Split Screen 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Dark", hex: "#0f0f0f", bg: "bg-[#0f0f0f]" },
   { name: "Light", hex: "#ffffff", bg: "bg-white", border: true },
@@ -28,14 +28,14 @@ const colors: ColorItem[] = [
   { name: "Blue", hex: "#1e90ff", bg: "bg-[#1e90ff]" },
 ];
 
-// 设计规则
+// 璁捐瑙勫垯
 const designRules = [
-  { title: "网格分屏", desc: "grid grid-cols-1 lg:grid-cols-2 实现分屏" },
-  { title: "移动端堆叠", desc: "小屏幕下自动变为上下堆叠" },
-  { title: "对比色彩", desc: "左右面板使用对比色增强视觉张力" },
-  { title: "视觉平衡", desc: "保持两侧内容的视觉重量平衡" },
-  { title: "全屏高度", desc: "min-h-screen 确保占满视口" },
-  { title: "内容居中", desc: "flex items-center justify-center 内容居中" },
+  { title: "缃戞牸鍒嗗睆", desc: "grid grid-cols-1 lg:grid-cols-2 瀹炵幇鍒嗗睆" },
+  { title: "绉诲姩绔爢鍙?, desc: "灏忓睆骞曚笅鑷姩鍙樹负涓婁笅鍫嗗彔" },
+  { title: "瀵规瘮鑹插僵", desc: "宸﹀彸闈㈡澘浣跨敤瀵规瘮鑹插寮鸿瑙夊紶鍔? },
+  { title: "瑙嗚骞宠　", desc: "淇濇寔涓や晶鍐呭鐨勮瑙夐噸閲忓钩琛? },
+  { title: "鍏ㄥ睆楂樺害", desc: "min-h-screen 纭繚鍗犳弧瑙嗗彛" },
+  { title: "鍐呭灞呬腑", desc: "flex items-center justify-center 鍐呭灞呬腑" },
 ];
 
 export default function ShowcaseContent() {
@@ -51,7 +51,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to Docs</span>
+            <span className="font-semibold">Back</span>
           </Link>
           <Link
             href="/styles"
@@ -68,10 +68,10 @@ export default function ShowcaseContent() {
         <div className="relative min-h-[50vh] lg:min-h-screen bg-zinc-900 flex items-center justify-center p-8 lg:p-16">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
           <div className="relative z-10 max-w-lg">
-            {/* 视觉风格标注 */}
+            {/* 瑙嗚椋庢牸鏍囨敞 */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white/70 text-xs mb-4">
               <Palette className="w-3.5 h-3.5" />
-              <span>视觉风格: Modern Gradient</span>
+              <span>瑙嗚椋庢牸: Modern Gradient</span>
             </div>
             <span className="inline-block px-3 py-1 bg-white/10 text-white/80 rounded-full text-sm mb-6">
               Split Screen Layout
@@ -288,3 +288,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -35,7 +35,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#3d2b1f]/60 hover:text-[#3d2b1f] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="font-serif tracking-wide text-sm">Back to Docs</span>
+            <span className="font-serif tracking-wide text-sm">Back</span>
           </Link>
           <span className="font-serif text-xl text-[#3d2b1f] tracking-[0.15em]">
             Dark Academia
@@ -586,3 +586,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
