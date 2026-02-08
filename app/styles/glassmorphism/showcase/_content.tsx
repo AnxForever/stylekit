@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Glassmorphism 配色
+// Glassmorphism 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Purple", hex: "#9333ea", bg: "bg-purple-600" },
   { name: "Pink", hex: "#ec4899", bg: "bg-pink-500" },
@@ -19,7 +19,7 @@ const colors: ColorItem[] = [
   { name: "Border", hex: "rgba(255,255,255,0.2)", bg: "bg-white/20" },
 ];
 
-// 设计规则
+// 璁捐瑙勫垯
 const designRules = [
   { title: "Backdrop Blur", desc: "Use backdrop-blur-xl for frosted glass effect" },
   { title: "Semi-transparent", desc: "bg-white/10 to bg-white/20 opacity" },
@@ -43,7 +43,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to Docs</span>
+            <span className="font-semibold">Back</span>
           </Link>
           <span className="font-bold text-xl text-white">Glassmorphism</span>
           <Link
@@ -373,7 +373,7 @@ export default function ShowcaseContent() {
       <footer className="py-8 px-6 border-t border-white/10">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-white/60 text-sm">
-            Glassmorphism Showcase · Part of{" "}
+            Glassmorphism Showcase 路 Part of{" "}
             <Link href="/" className="text-white hover:underline">
               StyleKit
             </Link>
@@ -383,3 +383,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

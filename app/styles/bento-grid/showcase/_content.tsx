@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -34,7 +34,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Bento Grid 配色
+// Bento Grid 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Primary", hex: "#3b82f6", bg: "bg-blue-500" },
   { name: "Secondary", hex: "#8b5cf6", bg: "bg-purple-500" },
@@ -43,14 +43,14 @@ const colors: ColorItem[] = [
   { name: "Text", hex: "#18181b", bg: "bg-zinc-900" },
 ];
 
-// 设计规则
+// 璁捐瑙勫垯
 const designRules = [
-  { title: "不规则网格", desc: "col-span 和 row-span 创造大小不一的卡片" },
-  { title: "大圆角", desc: "rounded-2xl 或 rounded-3xl 营造友好感" },
-  { title: "柔和色彩", desc: "使用 bg-*-50 或 bg-*-100 的浅色背景" },
-  { title: "渐变强调", desc: "重要卡片使用渐变背景突出层次" },
-  { title: "微妙阴影", desc: "shadow-sm 配合 hover:shadow-md 过渡" },
-  { title: "统一间距", desc: "gap-4 保持网格项之间的一致性" },
+  { title: "涓嶈鍒欑綉鏍?, desc: "col-span 鍜?row-span 鍒涢€犲ぇ灏忎笉涓€鐨勫崱鐗? },
+  { title: "澶у渾瑙?, desc: "rounded-2xl 鎴?rounded-3xl 钀ラ€犲弸濂芥劅" },
+  { title: "鏌斿拰鑹插僵", desc: "浣跨敤 bg-*-50 鎴?bg-*-100 鐨勬祬鑹茶儗鏅? },
+  { title: "娓愬彉寮鸿皟", desc: "閲嶈鍗＄墖浣跨敤娓愬彉鑳屾櫙绐佸嚭灞傛" },
+  { title: "寰闃村奖", desc: "shadow-sm 閰嶅悎 hover:shadow-md 杩囨浮" },
+  { title: "缁熶竴闂磋窛", desc: "gap-4 淇濇寔缃戞牸椤逛箣闂寸殑涓€鑷存€? },
 ];
 
 export default function ShowcaseContent() {
@@ -66,7 +66,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-zinc-600 hover:text-zinc-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to Docs</span>
+            <span className="font-semibold">Back</span>
           </Link>
           <span className="font-bold text-xl text-zinc-900">Bento Grid</span>
           <Link
@@ -449,7 +449,7 @@ export default function ShowcaseContent() {
       <footer className="py-8 px-6 border-t border-zinc-200 bg-white">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-zinc-500 text-sm">
-            Bento Grid Showcase · Part of{" "}
+            Bento Grid Showcase 路 Part of{" "}
             <Link href="/" className="text-zinc-900 hover:underline">
               StyleKit
             </Link>
@@ -459,3 +459,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

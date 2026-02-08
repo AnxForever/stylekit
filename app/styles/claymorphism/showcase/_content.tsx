@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Claymorphism 配色
+// Claymorphism 閰嶈壊
 const colors: ColorItem[] = [
   { name: "Pink", hex: "#f8b4d9", bg: "bg-[#f8b4d9]" },
   { name: "Cream", hex: "#fef3c7", bg: "bg-[#fef3c7]" },
@@ -32,7 +32,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-pink-700 hover:text-pink-900 transition-colors font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-bold text-xl text-pink-700">Claymorphism</span>
           <Link
@@ -47,25 +47,25 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="Claymorphism"
-        description="柔软的粘土质感，超大圆角配合内外阴影，营造可爱的 3D 立体效果"
+        description="鏌旇蒋鐨勭矘鍦熻川鎰燂紝瓒呭ぇ鍦嗚閰嶅悎鍐呭闃村奖锛岃惀閫犲彲鐖辩殑 3D 绔嬩綋鏁堟灉"
         className="pt-20 pb-16 px-6 text-center"
         titleClassName="text-5xl md:text-7xl font-bold text-pink-600 mb-6"
         descriptionClassName="text-xl text-pink-500 max-w-2xl mx-auto mb-10"
       >
         <div className="flex flex-wrap justify-center gap-4">
           <button className="px-8 py-4 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-            开始使用
+            寮€濮嬩娇鐢?
           </button>
           <button className="px-8 py-4 bg-gradient-to-b from-amber-200 to-amber-300 rounded-full text-amber-800 font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-            查看文档
+            鏌ョ湅鏂囨。
           </button>
         </div>
       </ShowcaseHero>
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="柔和的糖果色系"
+        title="閰嶈壊绯荤粺"
+        subtitle="鏌斿拰鐨勭硸鏋滆壊绯?
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
@@ -82,40 +82,40 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="带有按压效果的粘土按钮"
+        title="鎸夐挳"
+        subtitle="甯︽湁鎸夊帇鏁堟灉鐨勭矘鍦熸寜閽?
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="p-8 bg-gradient-to-br from-white to-pink-50 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">颜色</p>
+            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">棰滆壊</p>
             <div className="flex flex-wrap gap-4">
               <button className="px-6 py-3 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                粉色
+                绮夎壊
               </button>
               <button className="px-6 py-3 bg-gradient-to-b from-green-200 to-green-300 rounded-full text-green-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                薄荷
+                钖勮嵎
               </button>
               <button className="px-6 py-3 bg-gradient-to-b from-purple-200 to-purple-300 rounded-full text-purple-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                淡紫
+                娣＄传
               </button>
               <button className="px-6 py-3 bg-gradient-to-b from-yellow-200 to-yellow-300 rounded-full text-yellow-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                柠檬
+                鏌犳
               </button>
             </div>
 
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6 mt-10">尺寸</p>
+            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6 mt-10">灏哄</p>
             <div className="flex flex-wrap items-center gap-4">
               <button className="px-4 py-2 text-sm bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)] hover:translate-y-0.5 active:translate-y-1 transition-all duration-200">
-                小
+                灏?
               </button>
               <button className="px-6 py-3 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                中
+                涓?
               </button>
               <button className="px-8 py-4 text-lg bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                大
+                澶?
               </button>
             </div>
           </div>
@@ -124,8 +124,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="柔软的 3D 粘土卡片"
+        title="鍗＄墖"
+        subtitle="鏌旇蒋鐨?3D 绮樺湡鍗＄墖"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
@@ -135,32 +135,32 @@ export default function ShowcaseContent() {
             <div className="w-16 h-16 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-amber-800 mb-2">创意设计</h3>
-            <p className="text-amber-700">适合儿童应用和创意项目</p>
+            <h3 className="text-xl font-bold text-amber-800 mb-2">鍒涙剰璁捐</h3>
+            <p className="text-amber-700">閫傚悎鍎跨搴旂敤鍜屽垱鎰忛」鐩?/p>
           </div>
 
           <div className="p-6 bg-gradient-to-br from-green-100 to-green-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
             <div className="w-16 h-16 bg-gradient-to-b from-green-300 to-green-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
               <Heart className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">友好界面</h3>
-            <p className="text-green-700">温暖亲切的用户体验</p>
+            <h3 className="text-xl font-bold text-green-800 mb-2">鍙嬪ソ鐣岄潰</h3>
+            <p className="text-green-700">娓╂殩浜插垏鐨勭敤鎴蜂綋楠?/p>
           </div>
 
           <div className="p-6 bg-gradient-to-br from-purple-100 to-purple-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
             <div className="w-16 h-16 bg-gradient-to-b from-purple-300 to-purple-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
               <Star className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-purple-800 mb-2">趣味互动</h3>
-            <p className="text-purple-700">带来愉悦的交互体验</p>
+            <h3 className="text-xl font-bold text-purple-800 mb-2">瓒ｅ懗浜掑姩</h3>
+            <p className="text-purple-700">甯︽潵鎰夋偊鐨勪氦浜掍綋楠?/p>
           </div>
         </div>
       </ShowcaseSection>
 
       {/* Form Elements */}
       <ShowcaseSection
-        title="表单元素"
-        subtitle="内凹效果的粘土输入框"
+        title="琛ㄥ崟鍏冪礌"
+        subtitle="鍐呭嚬鏁堟灉鐨勭矘鍦熻緭鍏ユ"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
@@ -226,7 +226,7 @@ export default function ShowcaseContent() {
       <footer className="py-8 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-pink-500 text-sm">
-            Claymorphism Showcase · Part of{" "}
+            Claymorphism Showcase 路 Part of{" "}
             <Link href="/" className="text-pink-600 hover:underline font-medium">
               StyleKit
             </Link>
@@ -236,3 +236,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

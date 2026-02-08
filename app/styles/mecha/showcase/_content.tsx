@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#4a5c3a] hover:text-[#fbbf24] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold uppercase tracking-widest text-sm">BACK TO DOCS</span>
+            <span className="font-bold uppercase tracking-widest text-sm">Back</span>
           </Link>
           <span className="font-bold text-xl text-[#fbbf24] uppercase tracking-[0.3em]">
             MECHA
@@ -637,3 +637,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
