@@ -25,7 +25,7 @@ export default function ShowcaseContent() {
 
       {/* Seal stamp decoration */}
       <div className="fixed top-20 right-20 w-20 h-20 border-2 border-[#d4553a]/40 rotate-12 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[#d4553a]/40 text-2xl font-bold">鍗?/span>
+        <span className="text-[#d4553a]/40 text-2xl font-bold">印</span>
       </div>
 
       {/* Lantern glow top-left */}
@@ -57,7 +57,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="CYBER CHINESE"
-        description="Where tradition meets tomorrow - 鍙や粖纰版挒鐨勮禌鍗氫笢鏂瑰够鎯?
+        description="Where tradition meets tomorrow - 鍙や粖纰版挒鐨勮禌鍗氫笢鏂瑰够鎯?"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#d4553a] to-[#c9a227] mb-6"
         descriptionClassName="text-xl text-[#00d4ff]/70 max-w-2xl mx-auto mb-10"

@@ -65,7 +65,7 @@ export default function ShowcaseContent() {
       {/* Color Palette */}
       <ShowcaseSection
         title="閰嶈壊绯荤粺"
-        subtitle="鏌斿拰鐨勭硸鏋滆壊绯?
+        subtitle="鏌斿拰鐨勭硸鏋滆壊绯?"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
@@ -83,7 +83,7 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="鎸夐挳"
-        subtitle="甯︽湁鎸夊帇鏁堟灉鐨勭矘鍦熸寜閽?
+        subtitle="甯︽湁鎸夊帇鏁堟灉鐨勭矘鍦熸寜閽?"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
         subtitleClassName="text-pink-500 mb-10 text-center"
@@ -136,7 +136,7 @@ export default function ShowcaseContent() {
               <Sparkles className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-amber-800 mb-2">鍒涙剰璁捐</h3>
-            <p className="text-amber-700">閫傚悎鍎跨搴旂敤鍜屽垱鎰忛」鐩?/p>
+            <p className="text-amber-700">Great for playful apps and creative projects.</p>
           </div>
 
           <div className="p-6 bg-gradient-to-br from-green-100 to-green-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
@@ -144,7 +144,7 @@ export default function ShowcaseContent() {
               <Heart className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-green-800 mb-2">鍙嬪ソ鐣岄潰</h3>
-            <p className="text-green-700">娓╂殩浜插垏鐨勭敤鎴蜂綋楠?/p>
+            <p className="text-green-700">Warm, friendly user experiences.</p>
           </div>
 
           <div className="p-6 bg-gradient-to-br from-purple-100 to-purple-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
@@ -152,7 +152,7 @@ export default function ShowcaseContent() {
               <Star className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-purple-800 mb-2">瓒ｅ懗浜掑姩</h3>
-            <p className="text-purple-700">甯︽潵鎰夋偊鐨勪氦浜掍綋楠?/p>
+            <p className="text-purple-700">Delightful interactions with soft depth.</p>
           </div>
         </div>
       </ShowcaseSection>
