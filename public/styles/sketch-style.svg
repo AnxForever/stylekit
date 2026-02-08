@@ -1,47 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
-  <!-- Paper background -->
-  <rect width="400" height="300" fill="#f5f0e8"/>
-  <pattern id="paper-texture" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
-    <path d="M5 0h1L0 6V5zM6 5v1H5z" fill="#2c2c2c" fill-opacity="0.03"/>
-  </pattern>
-  <rect width="400" height="300" fill="url(#paper-texture)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <!-- Paper texture -->
+    <pattern id="paper" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.3" fill="#c4b5a0" opacity="0.15"/>
+    </pattern>
+    <!-- Sketch filter for wobbly lines -->
+    <filter id="sketch">
+      <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+    </filter>
+  </defs>
 
-  <!-- Main sketch card (slightly rotated) -->
-  <g transform="translate(200, 130) rotate(-1)">
-    <rect x="-120" y="-70" width="240" height="140" fill="#ffffff" stroke="#2c2c2c" stroke-width="2" stroke-dasharray="8,4"/>
-    <!-- Small decorative circle -->
-    <circle cx="100" cy="-50" r="6" fill="none" stroke="#2c2c2c" stroke-width="1.5"/>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#faf8f5"/>
+  <rect width="1200" height="630" fill="url(#paper)"/>
+
+  <!-- Left side: Hero content -->
+  <g transform="translate(80, 120)">
+    <!-- Small label -->
+    <text font-family="Georgia, serif" font-size="16" fill="#1a1a1a" opacity="0.5" font-style="italic">Welcome to Acme</text>
+
+    <!-- Main headline -->
+    <text y="50" font-family="system-ui, sans-serif" font-size="42" font-weight="700" fill="#1a1a1a">Build something</text>
+    <text y="100" font-family="Brush Script MT, cursive" font-size="48" fill="#1a1a1a" font-style="italic">amazing</text>
+
+    <!-- Description -->
+    <text y="150" font-family="system-ui, sans-serif" font-size="16" fill="#1a1a1a" opacity="0.6">powerful tools designed to streamline workflows,</text>
+    <text y="175" font-family="system-ui, sans-serif" font-size="16" fill="#1a1a1a" opacity="0.6">boost productivity, and drive results.</text>
+
+    <!-- Hand-drawn button -->
+    <g transform="translate(0, 210)">
+      <rect x="0" y="0" width="160" height="48" fill="white" stroke="#1a1a1a" stroke-width="2" rx="4" filter="url(#sketch)"/>
+      <text x="80" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#1a1a1a">Start free trial</text>
+    </g>
+
+    <!-- Hand-drawn arrow -->
+    <g transform="translate(175, 220)">
+      <path d="M0 20 Q20 10 40 18 Q55 22 65 28" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M58 22 L68 30 L62 38" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+    </g>
+
+    <!-- Avatar stack -->
+    <g transform="translate(0, 290)">
+      <circle cx="20" cy="20" r="18" fill="#e0d5c7" stroke="white" stroke-width="2"/>
+      <circle cx="45" cy="20" r="18" fill="#d4c4b0" stroke="white" stroke-width="2"/>
+      <circle cx="70" cy="20" r="18" fill="#c8b89c" stroke="white" stroke-width="2"/>
+      <circle cx="95" cy="20" r="18" fill="#bcac88" stroke="white" stroke-width="2"/>
+      <text x="125" y="25" font-family="system-ui, sans-serif" font-size="14" fill="#1a1a1a" opacity="0.7">Join 50,000+ teams</text>
+    </g>
   </g>
 
-  <!-- Title -->
-  <text x="200" y="90" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-style="italic" fill="#2c2c2c">Sketch</text>
+  <!-- Right side: Product mockup -->
+  <g transform="translate(620, 80)">
+    <!-- Red accent dot -->
+    <circle cx="520" cy="200" r="60" fill="#ff4444"/>
 
-  <!-- Underline (wavy hand-drawn style) -->
-  <path d="M140 100 Q160 105 180 100 Q200 95 220 100 Q240 105 260 100" fill="none" stroke="#2c2c2c" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <!-- Sketch mockup frame -->
+    <g transform="rotate(1)">
+      <rect x="0" y="0" width="420" height="280" fill="#f0ebe3"/>
+      <!-- Corner fold -->
+      <path d="M380 0 L420 0 L420 40 Z" fill="#faf8f5"/>
+      <path d="M380 0 L420 40 L380 40 Z" fill="#e0d8cc"/>
 
-  <!-- Description -->
-  <text x="200" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#666666">Hand-drawn pencil feel</text>
+      <!-- Inner content area -->
+      <rect x="20" y="20" width="380" height="240" fill="white" stroke="#1a1a1a" stroke-width="1" opacity="0.1" rx="4"/>
 
-  <!-- Sketch button -->
-  <g transform="translate(200, 170)">
-    <rect x="-50" y="-15" width="100" height="30" fill="#2c2c2c" rx="2"/>
-    <text x="0" y="5" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#f5f0e8">Draw</text>
+      <!-- Placeholder content -->
+      <text x="210" y="145" text-anchor="middle" font-family="Brush Script MT, cursive" font-size="24" fill="#1a1a1a" opacity="0.25" font-style="italic">Product Screenshot Sketch</text>
+
+      <!-- Dashed border -->
+      <rect x="2" y="2" width="416" height="276" fill="none" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="6 4" rx="2"/>
+    </g>
   </g>
 
-  <!-- Decorative sketch elements -->
-  <g stroke="#2c2c2c" stroke-width="1.5" fill="none" opacity="0.4">
-    <!-- Top left doodle -->
-    <circle cx="60" cy="50" r="15" stroke-dasharray="4,4"/>
-    <line x1="60" y1="35" x2="60" y2="25"/>
+  <!-- Stats section at bottom -->
+  <g transform="translate(0, 450)">
+    <rect width="1200" height="180" fill="white" opacity="0.5"/>
 
-    <!-- Bottom right doodle -->
-    <rect x="320" y="220" width="30" height="30" transform="rotate(-5, 335, 235)" stroke-dasharray="4,4"/>
+    <!-- Stat circles with hand-written numbers -->
+    <g transform="translate(150, 90)">
+      <ellipse cx="0" cy="0" rx="55" ry="55" fill="none" stroke="#1a1a1a" stroke-width="1.5" filter="url(#sketch)"/>
+      <text y="8" text-anchor="middle" font-family="Brush Script MT, cursive" font-size="32" fill="#1a1a1a" font-weight="700">500k+</text>
+      <text y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#1a1a1a" opacity="0.6">Active Users</text>
+    </g>
 
-    <!-- Arrow doodle -->
-    <path d="M70 240 Q90 220 110 230" stroke-dasharray="6,3"/>
-    <polygon points="110,230 105,222 115,225" fill="#2c2c2c"/>
+    <g transform="translate(400, 90)">
+      <ellipse cx="0" cy="0" rx="55" ry="55" fill="none" stroke="#1a1a1a" stroke-width="1.5" filter="url(#sketch)"/>
+      <text y="8" text-anchor="middle" font-family="Brush Script MT, cursive" font-size="32" fill="#1a1a1a" font-weight="700">99.99%</text>
+      <text y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#1a1a1a" opacity="0.6">Uptime SLA</text>
+    </g>
+
+    <g transform="translate(650, 90)">
+      <ellipse cx="0" cy="0" rx="55" ry="55" fill="none" stroke="#1a1a1a" stroke-width="1.5" filter="url(#sketch)"/>
+      <text y="8" text-anchor="middle" font-family="Brush Script MT, cursive" font-size="32" fill="#1a1a1a" font-weight="700">24/7</text>
+      <text y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#1a1a1a" opacity="0.6">Support Access</text>
+    </g>
+
+    <g transform="translate(900, 90)">
+      <ellipse cx="0" cy="0" rx="55" ry="55" fill="none" stroke="#1a1a1a" stroke-width="1.5" filter="url(#sketch)"/>
+      <text y="8" text-anchor="middle" font-family="Brush Script MT, cursive" font-size="32" fill="#1a1a1a" font-weight="700">$10M+</text>
+      <text y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#1a1a1a" opacity="0.6">Customer Savings</text>
+    </g>
   </g>
 
-  <!-- Footer text -->
-  <text x="200" y="270" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-style="italic" fill="#888888">Paper texture & pencil strokes</text>
+  <!-- Title watermark -->
+  <text x="1100" y="50" text-anchor="end" font-family="system-ui, sans-serif" font-size="14" fill="#1a1a1a" opacity="0.3" font-weight="600">SKETCH STYLE</text>
 </svg>

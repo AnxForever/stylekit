@@ -1,247 +1,295 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Pencil, Eraser, BookOpen, Lightbulb, Coffee, Heart } from "lucide-react";
-import {
-  ShowcaseHero,
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
+import { ArrowLeft, Users, Clock, Shield, TrendingUp } from "lucide-react";
 
-const colors: ColorItem[] = [
-  { name: "Pencil Gray", hex: "#2c2c2c", bg: "bg-[#2c2c2c]" },
-  { name: "Paper Cream", hex: "#f5f0e8", bg: "bg-[#f5f0e8]" },
-  { name: "Sketch Red", hex: "#e74c3c", bg: "bg-[#e74c3c]" },
-  { name: "Note Blue", hex: "#3498db", bg: "bg-[#3498db]" },
-  { name: "Warm Brown", hex: "#8b7355", bg: "bg-[#8b7355]" },
-];
+// Hand-drawn border component using SVG filter
+function SketchBorder({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative ${className}`}>
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+        <defs>
+          <filter id="sketch-filter">
+            <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        <rect
+          x="1" y="1"
+          width="calc(100% - 2px)" height="calc(100% - 2px)"
+          fill="none"
+          stroke="#1a1a1a"
+          strokeWidth="2"
+          rx="4"
+          style={{ filter: "url(#sketch-filter)" }}
+        />
+      </svg>
+      {children}
+    </div>
+  );
+}
+
+// Organic hand-drawn circle for stats
+function SketchCircle({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <filter id="circle-sketch">
+            <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+          </filter>
+        </defs>
+        <ellipse
+          cx="50" cy="50" rx="48" ry="48"
+          fill="none"
+          stroke="#1a1a1a"
+          strokeWidth="1.5"
+          style={{ filter: "url(#circle-sketch)" }}
+        />
+      </svg>
+      {children}
+    </div>
+  );
+}
+
+// Hand-drawn arrow
+function SketchArrow() {
+  return (
+    <svg width="60" height="40" viewBox="0 0 60 40" className="text-[#1a1a1a]">
+      <defs>
+        <filter id="arrow-sketch">
+          <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" />
+          <feDisplacementMap in="SourceGraphic" scale="1.5" />
+        </filter>
+      </defs>
+      <path
+        d="M5 20 Q20 10 35 18 Q45 22 50 25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+        style={{ filter: "url(#arrow-sketch)" }}
+      />
+      <path
+        d="M45 20 L52 26 L48 32"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        style={{ filter: "url(#arrow-sketch)" }}
+      />
+    </svg>
+  );
+}
 
 export default function ShowcaseContent() {
-  const [notes, setNotes] = useState("");
+  const stats = [
+    { value: "500k+", label: "Active Users", icon: Users },
+    { value: "99.99%", label: "Uptime SLA", icon: Shield },
+    { value: "24/7", label: "Support Access", icon: Clock },
+    { value: "$10M+", label: "Customer Savings", icon: TrendingUp },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#f5f0e8]">
-      {/* Paper texture overlay */}
-      <div className="fixed inset-0 pointer-events-none opacity-30" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-      }} />
-
+    <div className="min-h-screen bg-[#faf8f5]">
       {/* Navigation */}
-      <nav className="px-6 py-4 bg-[#f5f0e8] border-b-2 border-dashed border-[#2c2c2c]/30 relative z-10">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <nav className="px-6 py-4 relative z-10">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link
             href="/styles/sketch-style"
-            className="flex items-center gap-2 text-[#2c2c2c]/70 hover:text-[#2c2c2c] transition-colors italic"
+            className="flex items-center gap-2 text-[#1a1a1a]/70 hover:text-[#1a1a1a] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>back</span>
+            <span className="font-medium">Back</span>
           </Link>
-          <span className="font-serif text-2xl text-[#2c2c2c] italic">Sketch Style</span>
+          <span className="text-xl font-semibold text-[#1a1a1a]">Sketch Style</span>
           <Link
             href="/styles"
-            className="px-4 py-2 bg-transparent border-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] font-serif italic text-sm hover:bg-[#2c2c2c]/5 transition-colors transform -rotate-1"
+            className="px-4 py-2 text-[#1a1a1a] font-medium hover:bg-[#1a1a1a]/5 rounded transition-colors"
           >
-            all styles
+            All Styles
           </Link>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <ShowcaseHero
-        title="Sketch Style"
-        description="Hand-drawn aesthetic with pencil textures, organic lines, paper backgrounds, and a warm, personal feel."
-        className="pt-20 pb-16 px-6 text-center relative z-10"
-        titleClassName="text-5xl md:text-7xl font-serif italic text-[#2c2c2c] mb-6"
-        descriptionClassName="text-lg text-[#2c2c2c]/70 max-w-2xl mx-auto mb-10 font-serif italic"
-      >
-        <div className="flex flex-wrap justify-center gap-4">
-          <button className="px-8 py-4 bg-[#2c2c2c] border-2 border-dashed border-[#2c2c2c] text-[#f5f0e8] font-serif italic text-lg hover:bg-[#2c2c2c]/90 transition-colors transform -rotate-1">
-            Start Drawing
-          </button>
-          <button className="px-8 py-4 bg-transparent border-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] font-serif italic text-lg hover:bg-[#2c2c2c]/5 transition-colors transform rotate-1">
-            View Gallery
-          </button>
-        </div>
-      </ShowcaseHero>
+      {/* Hero Section - SaaS Landing Page Layout */}
+      <section className="px-6 py-16 md:py-24 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Copy */}
+            <div>
+              <p className="text-[#1a1a1a]/60 mb-4" style={{ fontFamily: "'Caveat', cursive" }}>
+                Welcome to Acme
+              </p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a1a1a] mb-6 leading-tight">
+                Build something{" "}
+                <span style={{ fontFamily: "'Caveat', cursive" }} className="text-[#1a1a1a]">
+                  amazing
+                </span>
+              </h1>
+              <p className="text-lg text-[#1a1a1a]/70 mb-8 leading-relaxed">
+                powerful tools designed to streamline workflows,
+                boost productivity, and drive results.
+              </p>
 
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color Palette"
-        subtitle="Muted, warm tones inspired by sketchbooks"
-        className="py-16 px-6 bg-white/50 border-y-2 border-dashed border-[#2c2c2c]/20 relative z-10"
-        titleClassName="text-3xl font-serif italic text-[#2c2c2c] mb-4 text-center"
-        subtitleClassName="text-[#2c2c2c]/60 mb-10 text-center font-serif italic"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-none overflow-hidden border-2 border-dashed border-[#2c2c2c]/30 transform -rotate-1 hover:rotate-0 transition-transform"
-            labelClassName="font-serif italic text-sm text-[#2c2c2c]"
-            hexClassName="text-xs text-[#2c2c2c]/60 font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Buttons */}
-      <ShowcaseSection
-        title="Buttons"
-        subtitle="Sketchy, hand-drawn button styles"
-        className="py-16 px-6 relative z-10"
-        titleClassName="text-3xl font-serif italic text-[#2c2c2c] mb-4 text-center"
-        subtitleClassName="text-[#2c2c2c]/60 mb-10 text-center font-serif italic"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-white/70 border-2 border-dashed border-[#2c2c2c]/30 transform -rotate-[0.5deg]">
-            <p className="text-sm font-serif italic text-[#2c2c2c]/70 mb-6">variants:</p>
-            <div className="flex flex-wrap gap-4 mb-8">
-              <button className="px-6 py-3 bg-[#2c2c2c] border-2 border-dashed border-[#2c2c2c] text-[#f5f0e8] font-serif italic hover:bg-[#2c2c2c]/90 transition-colors transform -rotate-1 hover:rotate-0">
-                primary
-              </button>
-              <button className="px-6 py-3 bg-transparent border-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] font-serif italic hover:bg-[#2c2c2c]/5 transition-colors transform rotate-1 hover:rotate-0">
-                secondary
-              </button>
-              <button className="px-6 py-3 bg-[#e74c3c]/10 border-2 border-dashed border-[#e74c3c] text-[#e74c3c] font-serif italic hover:bg-[#e74c3c]/20 transition-colors transform -rotate-1 hover:rotate-0">
-                accent
-              </button>
-              <button className="px-6 py-3 text-[#2c2c2c]/60 font-serif italic underline decoration-dashed underline-offset-4 hover:text-[#2c2c2c] transition-colors">
-                link style
-              </button>
-            </div>
-
-            <p className="text-sm font-serif italic text-[#2c2c2c]/70 mb-6">with icons:</p>
-            <div className="flex flex-wrap gap-4">
-              <button className="flex items-center gap-2 px-6 py-3 bg-[#2c2c2c] border-2 border-dashed border-[#2c2c2c] text-[#f5f0e8] font-serif italic transform -rotate-1 hover:rotate-0 transition-transform">
-                <Pencil className="w-4 h-4" /> draw
-              </button>
-              <button className="flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] font-serif italic transform rotate-1 hover:rotate-0 transition-transform">
-                <Eraser className="w-4 h-4" /> erase
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection
-        title="Cards"
-        subtitle="Notebook-style content blocks"
-        className="py-16 px-6 bg-white/50 border-y-2 border-dashed border-[#2c2c2c]/20 relative z-10"
-        titleClassName="text-3xl font-serif italic text-[#2c2c2c] mb-4 text-center"
-        subtitleClassName="text-[#2c2c2c]/60 mb-10 text-center font-serif italic"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          <div className="p-6 bg-[#f5f0e8] border-2 border-dashed border-[#2c2c2c]/30 transform -rotate-1 hover:rotate-0 transition-transform">
-            <div className="w-12 h-12 bg-[#e74c3c]/10 border-2 border-dashed border-[#e74c3c]/50 rounded-full flex items-center justify-center mb-4">
-              <BookOpen className="w-6 h-6 text-[#e74c3c]" />
-            </div>
-            <h3 className="text-xl font-serif italic text-[#2c2c2c] mb-2">Chapter One</h3>
-            <p className="text-[#2c2c2c]/60 font-serif italic text-sm">Begin your creative journey here...</p>
-          </div>
-
-          <div className="p-6 bg-[#f5f0e8] border-2 border-dashed border-[#2c2c2c]/30 transform rotate-1 hover:rotate-0 transition-transform">
-            <div className="w-12 h-12 bg-[#3498db]/10 border-2 border-dashed border-[#3498db]/50 rounded-full flex items-center justify-center mb-4">
-              <Lightbulb className="w-6 h-6 text-[#3498db]" />
-            </div>
-            <h3 className="text-xl font-serif italic text-[#2c2c2c] mb-2">Ideas</h3>
-            <p className="text-[#2c2c2c]/60 font-serif italic text-sm">Capture your inspiration...</p>
-          </div>
-
-          <div className="p-6 bg-[#f5f0e8] border-2 border-dashed border-[#2c2c2c]/30 transform -rotate-1 hover:rotate-0 transition-transform">
-            <div className="w-12 h-12 bg-[#8b7355]/10 border-2 border-dashed border-[#8b7355]/50 rounded-full flex items-center justify-center mb-4">
-              <Coffee className="w-6 h-6 text-[#8b7355]" />
-            </div>
-            <h3 className="text-xl font-serif italic text-[#2c2c2c] mb-2">Notes</h3>
-            <p className="text-[#2c2c2c]/60 font-serif italic text-sm">Quick thoughts and reminders...</p>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Notepad Demo */}
-      <ShowcaseSection
-        title="Notepad"
-        subtitle="Interactive sketch pad"
-        className="py-16 px-6 relative z-10"
-        titleClassName="text-3xl font-serif italic text-[#2c2c2c] mb-4 text-center"
-        subtitleClassName="text-[#2c2c2c]/60 mb-10 text-center font-serif italic"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="bg-[#f5f0e8] border-2 border-dashed border-[#2c2c2c]/30 p-1 transform -rotate-1">
-            {/* Spiral binding effect */}
-            <div className="flex justify-center gap-4 mb-2">
-              {[...Array(7)].map((_, i) => (
-                <div key={i} className="w-3 h-3 rounded-full border-2 border-[#2c2c2c]/30" />
-              ))}
-            </div>
-            <div className="p-6 bg-white/80" style={{
-              backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, #e0d8cc 28px)',
-              backgroundSize: '100% 28px'
-            }}>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Write your thoughts here..."
-                className="w-full h-48 bg-transparent font-serif italic text-[#2c2c2c] placeholder-[#2c2c2c]/40 resize-none focus:outline-none leading-7"
-              />
-            </div>
-            <div className="p-4 flex justify-between items-center">
-              <span className="text-sm font-serif italic text-[#2c2c2c]/50">{notes.length} characters</span>
-              <button className="px-4 py-2 bg-[#2c2c2c] text-[#f5f0e8] font-serif italic text-sm border-2 border-dashed border-[#2c2c2c] hover:bg-[#2c2c2c]/90 transition-colors">
-                save note
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Form Elements */}
-      <ShowcaseSection
-        title="Forms"
-        subtitle="Hand-drawn input fields"
-        className="py-16 px-6 bg-white/50 border-y-2 border-dashed border-[#2c2c2c]/20 relative z-10"
-        titleClassName="text-3xl font-serif italic text-[#2c2c2c] mb-4 text-center"
-        subtitleClassName="text-[#2c2c2c]/60 mb-10 text-center font-serif italic"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-[#f5f0e8] border-2 border-dashed border-[#2c2c2c]/30 transform rotate-[0.5deg]">
-            <h3 className="text-2xl font-serif italic text-[#2c2c2c] mb-6 text-center">Guest Book</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-serif italic text-[#2c2c2c]/70 mb-1">name:</label>
-                <input
-                  type="text"
-                  placeholder="your name..."
-                  className="w-full px-4 py-3 bg-white/80 border-2 border-dashed border-[#2c2c2c]/30 font-serif italic text-[#2c2c2c] placeholder-[#2c2c2c]/40 focus:outline-none focus:border-[#2c2c2c]/60 transition-colors"
-                />
+              {/* CTA with hand-drawn border */}
+              <div className="flex items-center gap-4 mb-8">
+                <SketchBorder className="inline-block">
+                  <button className="px-6 py-3 text-[#1a1a1a] font-semibold bg-white hover:bg-[#faf8f5] transition-colors">
+                    Start free trial
+                  </button>
+                </SketchBorder>
+                <SketchArrow />
               </div>
-              <div>
-                <label className="block text-sm font-serif italic text-[#2c2c2c]/70 mb-1">message:</label>
-                <textarea
-                  placeholder="leave a message..."
-                  rows={3}
-                  className="w-full px-4 py-3 bg-white/80 border-2 border-dashed border-[#2c2c2c]/30 font-serif italic text-[#2c2c2c] placeholder-[#2c2c2c]/40 focus:outline-none focus:border-[#2c2c2c]/60 transition-colors resize-none"
-                />
+
+              {/* Social Proof */}
+              <div className="flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-[#e0d5c7] to-[#c4b5a0]"
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-[#1a1a1a]/70">
+                  Join <span className="font-semibold">50,000+</span> teams already using Acme
+                </p>
               </div>
-              <button className="w-full py-3 bg-[#2c2c2c] border-2 border-dashed border-[#2c2c2c] text-[#f5f0e8] font-serif italic hover:bg-[#2c2c2c]/90 transition-colors flex items-center justify-center gap-2">
-                <Heart className="w-4 h-4" /> sign the book
-              </button>
+            </div>
+
+            {/* Right: Product Screenshot Mockup */}
+            <div className="relative">
+              {/* Red accent dot */}
+              <div className="absolute -right-4 top-1/2 w-20 h-20 md:w-28 md:h-28 rounded-full bg-[#ff4444]" />
+
+              {/* Sketch-style mockup frame */}
+              <div className="relative bg-[#f0ebe3] p-4 transform rotate-1">
+                {/* Corner fold effect */}
+                <div className="absolute top-0 right-0 w-12 h-12">
+                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[48px] border-l-transparent border-t-[48px] border-t-[#faf8f5]" />
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-[#e0d8cc] transform origin-top-right" style={{ clipPath: "polygon(100% 0, 0 0, 100% 100%)" }} />
+                </div>
+
+                <div className="bg-white border border-[#1a1a1a]/10 rounded p-6 min-h-[200px] flex items-center justify-center">
+                  <p className="text-[#1a1a1a]/30 text-lg" style={{ fontFamily: "'Caveat', cursive" }}>
+                    Product Screenshot Sketch
+                  </p>
+                </div>
+
+                {/* Dashed border around mockup */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                  <rect
+                    x="2" y="2"
+                    width="calc(100% - 4px)" height="calc(100% - 4px)"
+                    fill="none"
+                    stroke="#1a1a1a"
+                    strokeWidth="1"
+                    strokeDasharray="6 4"
+                    rx="2"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
+
+      {/* Stats Section - Hand-drawn circles */}
+      <section className="px-6 py-16 md:py-24 bg-white/50 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <SketchCircle className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-4">
+                  <div className="text-center">
+                    <span
+                      className="text-3xl md:text-4xl font-bold text-[#1a1a1a] block"
+                      style={{ fontFamily: "'Caveat', cursive" }}
+                    >
+                      {stat.value}
+                    </span>
+                  </div>
+                </SketchCircle>
+                <p className="text-sm text-[#1a1a1a]/70">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="px-6 py-16 md:py-24 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <h2
+            className="text-3xl md:text-4xl font-bold text-[#1a1a1a] text-center mb-4"
+            style={{ fontFamily: "'Caveat', cursive" }}
+          >
+            Why teams love us
+          </h2>
+          <p className="text-[#1a1a1a]/60 text-center mb-12 max-w-2xl mx-auto">
+            Simple, intuitive tools that just work
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { title: "Easy Setup", desc: "Get started in minutes, not days" },
+              { title: "Powerful API", desc: "Build anything with our robust API" },
+              { title: "24/7 Support", desc: "We are here when you need us" },
+            ].map((feature) => (
+              <SketchBorder key={feature.title} className="bg-white p-6">
+                <h3
+                  className="text-xl font-semibold text-[#1a1a1a] mb-2"
+                  style={{ fontFamily: "'Caveat', cursive" }}
+                >
+                  {feature.title}
+                </h3>
+                <p className="text-[#1a1a1a]/60 text-sm">{feature.desc}</p>
+              </SketchBorder>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-6 py-16 md:py-24 relative z-10">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-6">
+            Ready to get started?
+          </h2>
+          <p className="text-[#1a1a1a]/60 mb-8">
+            Join thousands of teams building with Acme
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <SketchBorder>
+              <button className="px-8 py-4 bg-[#1a1a1a] text-white font-semibold hover:bg-[#1a1a1a]/90 transition-colors">
+                Start free trial
+              </button>
+            </SketchBorder>
+            <button className="px-8 py-4 text-[#1a1a1a] font-medium hover:bg-[#1a1a1a]/5 transition-colors underline underline-offset-4 decoration-dashed">
+              Schedule a demo
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t-2 border-dashed border-[#2c2c2c]/20 relative z-10">
+      <footer className="py-8 px-6 border-t border-[#1a1a1a]/10 relative z-10">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-[#2c2c2c]/50 text-sm font-serif italic">
+          <p className="text-[#1a1a1a]/50 text-sm">
             Sketch Style Showcase · Part of{" "}
-            <Link href="/" className="text-[#2c2c2c] hover:underline decoration-dashed underline-offset-4">
+            <Link href="/" className="text-[#1a1a1a] hover:underline underline-offset-4">
               StyleKit
             </Link>
           </p>
         </div>
       </footer>
+
+      {/* Google Fonts for hand-written style */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+      `}</style>
     </div>
   );
 }
