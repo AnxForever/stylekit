@@ -224,5 +224,264 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
+
+    woodblockPanel: {
+      id: "woodblockPanel",
+      name: "Woodblock Panel",
+      nameZh: "木版画面板",
+      description: "Panel with woodblock print aesthetic and strong border outlines",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#f5f0e1]",
+          "border-3 border-[#1a3055]",
+          "p-6",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+        indigo: {
+          id: "indigo",
+          label: "Indigo",
+          labelZh: "靛蓝",
+          classes: ["bg-[#1a3055] text-[#f5f0e1]"],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    hankoSeal: {
+      id: "hankoSeal",
+      name: "Hanko Seal",
+      nameZh: "印章",
+      description: "Traditional Japanese hanko (name seal) style badge",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "w-12 h-12",
+          "bg-[#d4553a]",
+          "border-2 border-[#8b1a1a]",
+          "rounded-sm",
+          "text-[#f5f0e1]",
+          "font-bold text-lg",
+          "transform rotate-[-5deg]",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-8 h-8 text-sm" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-12 h-12 text-lg" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-16 h-16 text-xl" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "character", label: "Character", labelZh: "文字", required: true, default: "印", type: "text" },
+      ],
+      states: {},
+    },
+
+    waveDivider: {
+      id: "waveDivider",
+      name: "Wave Divider",
+      nameZh: "波浪分隔线",
+      description: "Decorative divider inspired by ukiyo-e wave patterns",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "w-full h-8",
+          "overflow-hidden",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    inkProgress: {
+      id: "inkProgress",
+      name: "Ink Progress",
+      nameZh: "墨迹进度条",
+      description: "Progress bar with brush stroke ink effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "h-4",
+          "bg-[#f5f0e1]",
+          "border-2 border-[#1a3055]",
+        ],
+      },
+      parameters: [
+        {
+          id: "value",
+          label: "Value",
+          labelZh: "数值",
+          type: "select",
+          options: [
+            { value: "25", label: "25%", labelZh: "25%", classes: "" },
+            { value: "50", label: "50%", labelZh: "50%", classes: "" },
+            { value: "75", label: "75%", labelZh: "75%", classes: "" },
+            { value: "100", label: "100%", labelZh: "100%", classes: "" },
+          ],
+          default: "75",
+        },
+      ],
+      variants: {
+        indigo: {
+          id: "indigo",
+          label: "Indigo",
+          labelZh: "靛蓝",
+          classes: ["[&>.fill]:bg-[#1a3055]"],
+        },
+        vermilion: {
+          id: "vermilion",
+          label: "Vermilion",
+          labelZh: "朱红",
+          classes: ["[&>.fill]:bg-[#d4553a]"],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    seasonalTab: {
+      id: "seasonalTab",
+      name: "Seasonal Tab",
+      nameZh: "季节标签",
+      description: "Tab component with seasonal color themes",
+      skeleton: {
+        element: "button",
+        baseClasses: [
+          "px-4 py-2",
+          "font-bold tracking-wider",
+          "border-b-3",
+          "transition-all duration-200",
+        ],
+      },
+      parameters: [],
+      variants: {
+        spring: {
+          id: "spring",
+          label: "Spring",
+          labelZh: "春",
+          classes: ["text-[#e8a0b0] border-[#e8a0b0]"],
+        },
+        summer: {
+          id: "summer",
+          label: "Summer",
+          labelZh: "夏",
+          classes: ["text-[#4a7c59] border-[#4a7c59]"],
+        },
+        autumn: {
+          id: "autumn",
+          label: "Autumn",
+          labelZh: "秋",
+          classes: ["text-[#d4553a] border-[#d4553a]"],
+        },
+        winter: {
+          id: "winter",
+          label: "Winter",
+          labelZh: "冬",
+          classes: ["text-[#1a3055] border-[#1a3055]"],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Tab", type: "text" },
+      ],
+      states: {
+        active: ["[&.active]:bg-[#1a3055]/10"],
+      },
+    },
+
+    brushHeading: {
+      id: "brushHeading",
+      name: "Brush Heading",
+      nameZh: "毛笔标题",
+      description: "Heading with brush stroke underline decoration",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "inline-block",
+          "font-bold text-2xl",
+          "text-[#1a3055]",
+          "pb-2",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "text", label: "Text", labelZh: "文字", required: true, default: "Heading", type: "text" },
+      ],
+      states: {},
+    },
+
+    layeredMountain: {
+      id: "layeredMountain",
+      name: "Layered Mountain",
+      nameZh: "层叠山峦",
+      description: "Decorative background element with layered mountain silhouettes",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "w-full h-32",
+          "overflow-hidden",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
   },
 };

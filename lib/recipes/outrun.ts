@@ -75,7 +75,7 @@ export const outrunRecipes: StyleRecipes = {
       },
       slots: [
         { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Click Me", type: "text" },
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "LAUNCH", type: "text" },
       ],
       states: {
         hover: [
@@ -213,7 +213,7 @@ export const outrunRecipes: StyleRecipes = {
         },
       },
       slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Type here...", type: "text" },
+        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Enter destination...", type: "text" },
       ],
       states: {
         focus: [
@@ -222,6 +222,248 @@ export const outrunRecipes: StyleRecipes = {
         ],
         disabled: ["opacity-50 cursor-not-allowed"],
       },
+    },
+
+    neonGlowPanel: {
+      id: "neonGlowPanel",
+      name: "Neon Glow Panel",
+      nameZh: "霓虹发光面板",
+      description: "Dark panel with animated neon border glow effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#0a0a0a]/90",
+          "rounded-lg",
+          "border",
+          "p-6",
+        ],
+      },
+      parameters: [
+        {
+          id: "glowIntensity",
+          label: "Glow Intensity",
+          labelZh: "发光强度",
+          type: "select",
+          options: [
+            { value: "low", label: "Low", labelZh: "低", classes: "shadow-[0_0_16px_currentColor]" },
+            { value: "medium", label: "Medium", labelZh: "中", classes: "shadow-[0_0_24px_currentColor]" },
+            { value: "high", label: "High", labelZh: "高", classes: "shadow-[0_0_32px_currentColor]" },
+          ],
+          default: "medium",
+        },
+      ],
+      variants: {
+        magenta: {
+          id: "magenta",
+          label: "Magenta",
+          labelZh: "品红",
+          classes: ["border-[#ff006e] text-[#ff006e]"],
+        },
+        cyan: {
+          id: "cyan",
+          label: "Cyan",
+          labelZh: "青色",
+          classes: ["border-[#00d4ff] text-[#00d4ff]"],
+        },
+        purple: {
+          id: "purple",
+          label: "Purple",
+          labelZh: "紫色",
+          classes: ["border-[#a020f0] text-[#a020f0]"],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    chromeText: {
+      id: "chromeText",
+      name: "Chrome Text",
+      nameZh: "铬合金文字",
+      description: "Metallic chrome gradient text with reflective shine effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "font-bold uppercase tracking-widest",
+          "bg-gradient-to-b from-white via-[#c0c0c0] to-[#808080]",
+          "bg-clip-text text-transparent",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "text-xl" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "text-3xl" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "text-5xl" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [
+        { id: "text", label: "Text", labelZh: "文字", required: true, default: "CHROME", type: "text" },
+      ],
+      states: {},
+    },
+
+    sunsetProgress: {
+      id: "sunsetProgress",
+      name: "Sunset Progress",
+      nameZh: "日落进度条",
+      description: "Progress bar with sunset gradient colors and neon glow",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "h-3",
+          "bg-[#0a0a0a]",
+          "rounded-full",
+          "border border-[#a020f0]/30",
+          "overflow-hidden",
+        ],
+      },
+      parameters: [
+        {
+          id: "value",
+          label: "Value",
+          labelZh: "数值",
+          type: "select",
+          options: [
+            { value: "25", label: "25%", labelZh: "25%", classes: "" },
+            { value: "50", label: "50%", labelZh: "50%", classes: "" },
+            { value: "75", label: "75%", labelZh: "75%", classes: "" },
+            { value: "100", label: "100%", labelZh: "100%", classes: "" },
+          ],
+          default: "75",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
+    },
+
+    neonToggle: {
+      id: "neonToggle",
+      name: "Neon Toggle",
+      nameZh: "霓虹开关",
+      description: "Toggle switch with neon glow effect when active",
+      skeleton: {
+        element: "button",
+        baseClasses: [
+          "relative",
+          "w-14 h-7",
+          "bg-[#0a0a0a]",
+          "border border-[#a020f0]/50",
+          "rounded-full",
+          "transition-all duration-300",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {
+        active: [
+          "[&.active]:border-[#00d4ff]",
+          "[&.active]:shadow-[0_0_16px_rgba(0,212,255,0.6)]",
+        ],
+      },
+    },
+
+    vhsBadge: {
+      id: "vhsBadge",
+      name: "VHS Badge",
+      nameZh: "VHS徽章",
+      description: "Retro VHS-style badge with tracking lines effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center gap-1",
+          "px-3 py-1",
+          "bg-[#0a0a0a]",
+          "border border-[#ff006e]/50",
+          "font-mono text-xs uppercase",
+          "text-[#ff006e]",
+        ],
+      },
+      parameters: [],
+      variants: {
+        rec: {
+          id: "rec",
+          label: "REC",
+          labelZh: "录制",
+          classes: ["text-[#ef4444] border-[#ef4444]/50"],
+        },
+        play: {
+          id: "play",
+          label: "PLAY",
+          labelZh: "播放",
+          classes: ["text-[#22c55e] border-[#22c55e]/50"],
+        },
+        pause: {
+          id: "pause",
+          label: "PAUSE",
+          labelZh: "暂停",
+          classes: ["text-[#fbbf24] border-[#fbbf24]/50"],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "PLAY", type: "text" },
+      ],
+      states: {},
+    },
+
+    gridDivider: {
+      id: "gridDivider",
+      name: "Grid Divider",
+      nameZh: "网格分隔线",
+      description: "Horizontal divider with perspective grid pattern",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "h-24",
+          "overflow-hidden",
+        ],
+      },
+      parameters: [],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [],
+        },
+      },
+      slots: [],
+      states: {},
     },
   },
 };
