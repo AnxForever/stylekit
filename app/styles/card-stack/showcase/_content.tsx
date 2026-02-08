@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -98,7 +98,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back to Docs</span>
+            <span className="font-medium">Back</span>
           </Link>
           <span className="font-bold text-xl text-white">Card Stack</span>
           <Link
@@ -113,10 +113,10 @@ export default function ShowcaseContent() {
       {/* Hero */}
       <section className="relative py-20 px-6 text-center">
         <div className="max-w-3xl mx-auto">
-          {/* 视觉风格标注 */}
+          {/* 瑙嗚椋庢牸鏍囨敞 */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-sm font-medium mb-4 border border-white/20">
             <Palette className="w-4 h-4" />
-            <span>视觉风格: Glassmorphism</span>
+            <span>瑙嗚椋庢牸: Glassmorphism</span>
           </div>
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-sm font-medium mb-8 ml-2 border border-white/20">
             <Layers className="w-4 h-4" />
@@ -381,3 +381,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Swords, Heart, Star, Gamepad2, ChevronRight } from "lucide-react";
@@ -41,7 +41,7 @@ export default function ShowcaseContent() {
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-mono font-bold uppercase tracking-wider text-sm">
-              Back to Docs
+              Back
             </span>
           </Link>
           <span className="font-mono font-bold text-xl text-[#4a90d9] uppercase tracking-wider">
@@ -353,3 +353,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Zap, Circle, Square } from "lucide-react";
@@ -34,7 +34,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-black font-bold hover:text-red-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-black text-2xl text-black uppercase tracking-wider">
             MEMPHIS
@@ -51,7 +51,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="MEMPHIS"
-        description="Design should be fun! - 80年代意大利设计运动的大胆美学"
+        description="Design should be fun! - 80骞翠唬鎰忓ぇ鍒╄璁¤繍鍔ㄧ殑澶ц儐缇庡"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-black text-black uppercase mb-6"
         descriptionClassName="text-xl text-black/70 max-w-2xl mx-auto mb-10 font-bold"
@@ -69,8 +69,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="鲜艳撞色组合"
+        title="閰嶈壊绯荤粺"
+        subtitle="椴滆壋鎾炶壊缁勫悎"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"
@@ -87,8 +87,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="硬边阴影与撞色"
+        title="鎸夐挳"
+        subtitle="纭竟闃村奖涓庢挒鑹?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"
@@ -117,8 +117,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="几何装饰与硬边风格"
+        title="鍗＄墖"
+        subtitle="鍑犱綍瑁呴グ涓庣‖杈归鏍?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"
@@ -164,8 +164,8 @@ export default function ShowcaseContent() {
 
       {/* Interactive Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="输入组件"
+        title="琛ㄥ崟"
+        subtitle="杈撳叆缁勪欢"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-black text-black uppercase mb-4 text-center"
         subtitleClassName="text-black/60 mb-10 text-center font-bold"
@@ -204,7 +204,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 bg-yellow-400 border-t-4 border-black">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-black font-bold text-sm">
-            Memphis Showcase · Part of{" "}
+            Memphis Showcase 路 Part of{" "}
             <Link href="/" className="underline hover:text-red-600 transition-colors">
               StyleKit
             </Link>
@@ -214,3 +214,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Printer, Circle, Layers, Palette } from "lucide-react";
@@ -34,7 +34,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#2563eb] hover:text-[#2563eb]/80 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-mono font-bold uppercase tracking-wider">Back to Docs</span>
+            <span className="font-mono font-bold uppercase tracking-wider">Back</span>
           </Link>
           <span className="font-mono font-bold text-xl text-[#ff6b9d] uppercase tracking-wider">
             RISOGRAPH
@@ -208,7 +208,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t-2 border-[#1a1a1a]">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#1a1a1a]/50 text-sm font-mono uppercase tracking-wider">
-            Risograph Showcase · Part of{" "}
+            Risograph Showcase 路 Part of{" "}
             <Link href="/" className="text-[#2563eb] hover:text-[#2563eb]/80 transition-colors">
               StyleKit
             </Link>
@@ -218,3 +218,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

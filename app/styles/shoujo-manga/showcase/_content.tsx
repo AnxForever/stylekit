@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Heart, Star, Flower2, Sparkles, BookOpen, PenTool } from "lucide-react";
@@ -54,7 +54,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#ffb7c5] hover:text-[#ffb7c5]/80 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-sans font-medium text-sm">Back to Docs</span>
+            <span className="font-sans font-medium text-sm">Back</span>
           </Link>
           <span className="font-sans font-bold text-xl text-[#ffb7c5]">
             Shoujo Manga
@@ -384,3 +384,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

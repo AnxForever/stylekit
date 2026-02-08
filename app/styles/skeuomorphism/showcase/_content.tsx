@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Settings, Volume2, Power, ChevronUp, ChevronDown } from "lucide-react";
@@ -28,7 +28,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-stone-700 hover:text-stone-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <span>Back</span>
           </Link>
           <span className="font-bold text-xl text-stone-800" style={{textShadow: '0 1px 0 rgba(255,255,255,0.8)'}}>
             SKEUOMORPHISM
@@ -208,3 +208,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+

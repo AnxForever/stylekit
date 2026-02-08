@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowLeft, Eye, Moon, Clock, Sparkles } from "lucide-react";
@@ -33,7 +33,7 @@ export default function ShowcaseContent() {
             className="flex items-center gap-2 text-[#d4a574] hover:text-[#c38d94] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-serif italic tracking-wide">Back to Docs</span>
+            <span className="font-serif italic tracking-wide">Back</span>
           </Link>
           <span className="font-serif italic text-xl text-[#f0ece4]">
             Surrealism
@@ -50,7 +50,7 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <ShowcaseHero
         title="Surrealism"
-        description="Beyond the threshold of consciousness - 潜意识的门扉之外"
+        description="Beyond the threshold of consciousness - 娼滄剰璇嗙殑闂ㄦ墘涔嬪"
         className="relative z-10 pt-20 pb-16 px-6 text-center"
         titleClassName="text-6xl md:text-8xl font-serif italic text-[#f0ece4] mb-6"
         descriptionClassName="text-xl text-[#d4a574] font-serif italic max-w-2xl mx-auto mb-10"
@@ -67,8 +67,8 @@ export default function ShowcaseContent() {
 
       {/* Color Palette */}
       <ShowcaseSection
-        title="配色系统"
-        subtitle="梦境的色谱"
+        title="閰嶈壊绯荤粺"
+        subtitle="姊﹀鐨勮壊璋?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -85,8 +85,8 @@ export default function ShowcaseContent() {
 
       {/* Buttons */}
       <ShowcaseSection
-        title="按钮"
-        subtitle="梦境的入口"
+        title="鎸夐挳"
+        subtitle="姊﹀鐨勫叆鍙?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -114,8 +114,8 @@ export default function ShowcaseContent() {
 
       {/* Cards */}
       <ShowcaseSection
-        title="卡片"
-        subtitle="意识的碎片"
+        title="鍗＄墖"
+        subtitle="鎰忚瘑鐨勭鐗?
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -155,8 +155,8 @@ export default function ShowcaseContent() {
 
       {/* Form */}
       <ShowcaseSection
-        title="表单"
-        subtitle="梦境通道"
+        title="琛ㄥ崟"
+        subtitle="姊﹀閫氶亾"
         className="relative z-10 py-16 px-6"
         titleClassName="text-3xl font-serif italic text-[#f0ece4] mb-4 text-center"
         subtitleClassName="text-[#d4a574]/60 font-serif italic mb-10 text-center"
@@ -199,7 +199,7 @@ export default function ShowcaseContent() {
       <footer className="relative z-10 py-8 px-6 border-t border-[#d4a574]/20">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#d4a574]/50 text-sm font-serif italic">
-            Surrealism Showcase · Part of{" "}
+            Surrealism Showcase 路 Part of{" "}
             <Link href="/" className="text-[#d4a574] hover:text-[#c38d94] transition-colors">
               StyleKit
             </Link>
@@ -209,3 +209,4 @@ export default function ShowcaseContent() {
     </div>
   );
 }
+
