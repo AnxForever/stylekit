@@ -32,13 +32,13 @@ export const liquidGlassTokens: StyleTokens = {
   },
 
   typography: {
-    heading: "font-semibold text-white",
+    heading: "font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent",
     body: "text-white/80",
     mono: "font-mono text-white/90",
     sizes: {
-      hero: "text-4xl md:text-6xl",
-      h1: "text-3xl md:text-5xl",
-      h2: "text-2xl md:text-3xl",
+      hero: "text-5xl md:text-7xl lg:text-8xl",
+      h1: "text-4xl md:text-5xl",
+      h2: "text-3xl md:text-4xl",
       h3: "text-xl md:text-2xl",
       body: "text-sm md:text-base",
       small: "text-xs",
@@ -63,8 +63,8 @@ export const liquidGlassTokens: StyleTokens = {
       secondary: "bg-white/15 backdrop-blur-[40px] backdrop-saturate-[1.8]",
       accent: [
         "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]",
-        "bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e]",
-        "bg-gradient-to-b from-black/40 via-transparent to-black/60",
+        "bg-gradient-to-r from-[#ff2d92] to-[#a855f7]",
+        "bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77]",
       ],
     },
     text: {
@@ -73,8 +73,8 @@ export const liquidGlassTokens: StyleTokens = {
       muted: "text-white/50",
     },
     button: {
-      primary: "bg-white/10 text-white backdrop-blur-[40px] backdrop-saturate-[1.8]",
-      secondary: "bg-white/5 text-white backdrop-blur-[40px] backdrop-saturate-[1.8]",
+      primary: "bg-gradient-to-r from-[#ff2d92] to-[#a855f7] text-white font-bold",
+      secondary: "bg-white/10 text-white backdrop-blur-[40px] backdrop-saturate-[1.8]",
     },
   },
 

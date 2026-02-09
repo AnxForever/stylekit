@@ -20,11 +20,17 @@ export const liquidGlass: DesignStyle = {
   philosophy: `Liquid Glass（流动玻璃）是 Apple WWDC 2025 发布的革命性设计语言，超越传统毛玻璃效果，通过光线折射、彩虹边缘和流体动画创造出真正有机、流动的视觉体验。
 
 核心理念：
+- 霓虹描边文字：标题使用 text-stroke 配合青色发光描边，产生霓虹效果
+- 渐变填充文字：紫色到品红的渐变填充，配合 3D 阴影产生立体感
 - 彩虹折射边缘：边缘呈现棱镜效果，红橙黄绿青蓝紫的光谱渐变
 - 流体形变：圆角随交互产生液态变形动画
 - 多层深度：3+ 层玻璃堆叠产生丰富的空间层次
-- 动态模糊：边缘清晰，中心模糊的渐变效果
 - 高饱和度：backdrop-saturate-180 让背景色彩更加鲜艳
+
+字体特征：
+- Hero 标题：粗体无衬线 + 渐变填充 + 青色描边 + 发光阴影
+- 副标题：白色或青色渐变，带发光效果
+- 正文：高对比度白色，保证可读性
 
 与 Glassmorphism 的区别：
 | 特性 | Glassmorphism | Liquid Glass |
@@ -33,26 +39,26 @@ export const liquidGlass: DesignStyle = {
 | 模糊 | blur-2xl | blur-3xl + saturate-180 |
 | 动画 | 简单过渡 | 液态形变 morph |
 | 深度 | 单层 | 多层堆叠 |
-| 高光 | ring-inset | 顶部渐变条 + 彩虹光晕 |`,
+| 文字 | 普通白色 | 渐变 + 描边 + 发光 |`,
 
   doList: [
+    "使用渐变填充文字 bg-gradient-to-r bg-clip-text text-transparent",
+    "添加霓虹描边效果 -webkit-text-stroke: 1-2px #4ecdc4",
+    "使用文字发光阴影 text-shadow: 0 0 20px rgba(78, 205, 196, 0.5)",
     "使用超高模糊值 backdrop-blur-[40px] 或 backdrop-blur-3xl",
     "添加饱和度增强 backdrop-saturate-[1.8] 或 backdrop-saturate-200",
     "使用彩虹渐变边框模拟光线折射效果",
-    "添加顶部高光渐变条 [background-image:linear-gradient(...)]",
     "使用超大圆角 rounded-3xl 或 rounded-[24px]",
     "使用流体动画 transition-all duration-500 ease-out",
-    "多层玻璃堆叠时使用不同透明度和偏移",
-    "添加脉冲发光动画 animate-pulse 或自定义 glow",
   ],
 
   dontList: [
+    "禁止使用普通白色标题（应使用渐变 + 描边）",
+    "禁止省略文字发光效果（缺少霓虹感）",
     "禁止使用低模糊值 backdrop-blur-sm（太弱）",
     "禁止省略饱和度增强（颜色会显得暗淡）",
     "禁止使用直角或小圆角（rounded-none, rounded-sm）",
-    "禁止使用单一颜色边框（应使用渐变）",
     "禁止使用快速过渡（duration-100, duration-150）",
-    "禁止使用纯白背景作为底层（应使用深色渐变）",
   ],
 
   components: {

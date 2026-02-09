@@ -21,6 +21,7 @@ import {
   FileText,
   MessageSquare,
   Layers,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function ShowcaseContent() {
@@ -34,12 +35,21 @@ export default function ShowcaseContent() {
       <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-16 md:h-20">
-            <Link href="/styles/warm-dashboard/showcase" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#4a9d9a] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/styles/warm-dashboard"
+                className="flex items-center gap-2 text-[#4a9d9a] hover:text-[#3d8482] transition-colors font-medium"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="hidden md:inline">Back</span>
+              </Link>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-[#4a9d9a] rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">W</span>
+                </div>
+                <span className="font-semibold text-gray-800">Warm Dashboard</span>
               </div>
-              <span className="font-semibold text-gray-800">Warm Dashboard</span>
-            </Link>
+            </div>
             <nav className="flex items-center gap-4 md:gap-8">
               <Link
                 href="/styles/warm-dashboard"
@@ -51,7 +61,7 @@ export default function ShowcaseContent() {
                 href="/styles"
                 className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
               >
-                Back
+                All Styles
               </Link>
               <button className="w-10 h-10 bg-[#faf8f5] rounded-xl flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
                 <Bell className="w-5 h-5" />

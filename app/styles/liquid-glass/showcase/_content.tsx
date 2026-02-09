@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Palette, Zap, Smartphone, Layers, Sparkles, Bell, ChevronDown, Check, X, Volume2, Wifi, Bluetooth, Moon } from "lucide-react";
+import { ArrowLeft, Zap, Layers, Sparkles, Bell, Check, X, Volume2, Wifi, Bluetooth, Moon, Star, Rocket, Shield, Users } from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,
@@ -10,24 +10,24 @@ import {
   type ColorItem,
 } from "@/components/showcase";
 
-// Liquid Glass colors
+// Liquid Glass colors - Neon gradient palette
 const colors: ColorItem[] = [
-  { name: "Red", hex: "#ff6b6b", bg: "bg-[#ff6b6b]" },
-  { name: "Orange", hex: "#ffd93d", bg: "bg-[#ffd93d]" },
-  { name: "Green", hex: "#6bcb77", bg: "bg-[#6bcb77]" },
-  { name: "Cyan", hex: "#4ecdc4", bg: "bg-[#4ecdc4]" },
-  { name: "Purple", hex: "#a855f7", bg: "bg-[#a855f7]" },
+  { name: "Neon Pink", hex: "#ff2d92", bg: "bg-[#ff2d92]" },
+  { name: "Neon Purple", hex: "#a855f7", bg: "bg-[#a855f7]" },
+  { name: "Neon Cyan", hex: "#4ecdc4", bg: "bg-[#4ecdc4]" },
+  { name: "Neon Yellow", hex: "#ffd93d", bg: "bg-[#ffd93d]" },
+  { name: "Neon Orange", hex: "#ff6b35", bg: "bg-[#ff6b35]" },
   { name: "Glass", hex: "rgba(255,255,255,0.1)", bg: "bg-white/10" },
 ];
 
 // Design rules
 const designRules = [
-  { title: "Rainbow Border", desc: "Use gradient border via ::before pseudo-element" },
+  { title: "Neon Stroke Text", desc: "Use text-stroke with cyan glow for headlines" },
+  { title: "Gradient Text Fill", desc: "Purple to pink gradient for hero typography" },
+  { title: "3D Text Shadow", desc: "Multiple shadow layers for depth effect" },
+  { title: "Rainbow Border", desc: "Gradient border via ::before pseudo-element" },
   { title: "High Blur", desc: "backdrop-blur-[40px] for strong glass effect" },
-  { title: "High Saturation", desc: "backdrop-saturate-[1.8] for vibrant colors" },
   { title: "Fluid Animation", desc: "duration-500 ease-out for liquid motion" },
-  { title: "Large Corners", desc: "rounded-[24px] or larger for organic feel" },
-  { title: "Top Highlight", desc: "Gradient from white/20 to transparent" },
 ];
 
 export default function ShowcaseContent() {
@@ -65,27 +65,112 @@ export default function ShowcaseContent() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         {/* Background glow effects */}
-        <div className="absolute top-20 left-1/4 w-64 h-64 bg-[#ff6b6b]/10 rounded-full blur-[100px]" />
-        <div className="absolute top-40 right-1/4 w-80 h-80 bg-[#a855f7]/15 rounded-full blur-[120px]" />
-        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-[#4ecdc4]/10 rounded-full blur-[100px]" />
+        <div className="absolute top-20 left-1/4 w-64 h-64 bg-[#ff2d92]/15 rounded-full blur-[100px]" />
+        <div className="absolute top-40 right-1/4 w-80 h-80 bg-[#a855f7]/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-[#4ecdc4]/15 rounded-full blur-[100px]" />
 
-        <div className="max-w-4xl mx-auto text-center relative">
-          <ShowcaseHero
-            title="Liquid Glass"
-            description="Apple WWDC 2025 design language featuring rainbow edge refraction, fluid morphing animations, and multi-layer glass stacking for organic, flowing visual experiences."
-            className="text-center"
-            titleClassName="text-5xl md:text-7xl font-bold text-white mb-6"
-            descriptionClassName="text-xl text-white/80 max-w-2xl mx-auto mb-10"
-          >
-            <div className="flex flex-wrap justify-center gap-4">
-              <button className="relative px-8 py-4 bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-full text-white font-semibold hover:bg-white/15 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-500 before:absolute before:inset-0 before:rounded-full before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7] after:absolute after:inset-[1px] after:rounded-full after:-z-10 after:bg-gradient-to-b after:from-white/20 after:to-transparent">
-                Get Started
-              </button>
-              <button className="px-8 py-4 border border-white/30 rounded-full text-white font-semibold hover:bg-white/10 transition-all duration-300">
-                Learn More
-              </button>
+        {/* Decorative elements */}
+        <Star className="absolute top-24 left-20 w-8 h-8 text-yellow-400 fill-yellow-400" />
+        <Rocket className="absolute top-32 right-32 w-10 h-10 text-pink-400" />
+        <Sparkles className="absolute bottom-40 right-20 w-6 h-6 text-purple-400" />
+
+        {/* Top neon line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#ff2d92] to-transparent" />
+
+        <div className="max-w-5xl mx-auto relative">
+          {/* Badge */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-yellow-400/60 rounded-full text-yellow-400 text-sm">
+              <Star className="w-4 h-4 fill-yellow-400" />
+              <span>Join 50,000+ teams using ACME</span>
+              <Star className="w-4 h-4 fill-yellow-400" />
             </div>
-          </ShowcaseHero>
+          </div>
+
+          {/* Hero Title with Neon Effect */}
+          <div className="text-center mb-8">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight">
+              {/* Neon stroke text effect */}
+              <span
+                className="block bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent"
+                style={{
+                  WebkitTextStroke: '2px #4ecdc4',
+                  textShadow: '0 0 30px rgba(78, 205, 196, 0.5), 0 0 60px rgba(168, 85, 247, 0.3), 4px 4px 0 rgba(0,0,0,0.3)',
+                  filter: 'drop-shadow(0 0 10px rgba(78, 205, 196, 0.4))',
+                }}
+              >
+                Transform Your
+              </span>
+              <span
+                className="block bg-gradient-to-r from-[#4ecdc4] via-white to-[#4ecdc4] bg-clip-text text-transparent mt-2"
+                style={{
+                  textShadow: '0 0 20px rgba(78, 205, 196, 0.6), 0 4px 0 rgba(0,0,0,0.2)',
+                }}
+              >
+                Team Workflow
+              </span>
+            </h1>
+          </div>
+
+          {/* Description in glass panel */}
+          <div className="max-w-2xl mx-auto mb-10">
+            <div className="relative p-6 bg-white/5 backdrop-blur-[40px] rounded-[20px] border border-white/10">
+              <p className="text-lg text-white/80 text-center">
+                ACME platform integrates your team with powerful tools, streamlining workflows, boosting productivity, and driving results.
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-16">
+            <button className="relative px-8 py-4 bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-bold hover:shadow-[0_0_40px_rgba(255,45,146,0.5)] transition-all duration-500 flex items-center gap-2">
+              Start Free Trial
+              <Sparkles className="w-5 h-5" />
+            </button>
+            <button className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-semibold hover:bg-white/15 transition-all duration-500 flex items-center gap-2">
+              <span>Watch Demo</span>
+              <span className="ml-1">→</span>
+            </button>
+          </div>
+
+          {/* Feature Cards Grid */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Card 1 - Purple to Pink */}
+            <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 transition-all duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] to-[#ff2d92]" />
+              <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#a855f7]/90 to-[#ff2d92]/90" />
+              <div className="relative flex flex-col items-center text-center">
+                <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
+                  <Zap className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-1">Fast</h3>
+              </div>
+            </div>
+
+            {/* Card 2 - Green to Cyan */}
+            <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 transition-all duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#4ecdc4] to-[#6bcb77]" />
+              <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#4ecdc4]/90 to-[#6bcb77]/90" />
+              <div className="relative flex flex-col items-center text-center">
+                <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
+                  <Shield className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-1">Secure</h3>
+              </div>
+            </div>
+
+            {/* Card 3 - Pink to Orange */}
+            <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 transition-all duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#ff2d92] to-[#ff6b35]" />
+              <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#ff2d92]/90 to-[#ff6b35]/90" />
+              <div className="relative flex flex-col items-center text-center">
+                <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
+                  <Users className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-1">Team</h3>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -110,18 +195,66 @@ export default function ShowcaseContent() {
       {/* Typography */}
       <ShowcaseSection
         title="Typography"
-        subtitle="Clean text on glass surfaces with proper contrast"
+        subtitle="Neon stroke text with gradient fills and 3D effects"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-white mb-4 text-center"
         subtitleClassName="text-white/70 mb-10 text-center"
       >
-        <div className="max-w-4xl mx-auto">
-          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff6b6b]/50 before:via-[#4ecdc4]/50 before:to-[#a855f7]/50">
-            <h1 className="text-4xl font-bold text-white mb-4">Heading 1</h1>
-            <h2 className="text-3xl font-semibold text-white mb-4">Heading 2</h2>
-            <h3 className="text-2xl font-medium text-white mb-4">Heading 3</h3>
-            <p className="text-white/80 mb-4">Body text with comfortable contrast for readability on glass surfaces. The subtle transparency allows background elements to show through while maintaining legibility.</p>
-            <p className="text-white/50 text-sm">Caption text - muted for secondary information</p>
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Neon Stroke Style */}
+          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff2d92]/50 before:via-[#4ecdc4]/50 before:to-[#a855f7]/50">
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Neon Stroke Headlines</p>
+            <h1
+              className="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent mb-4"
+              style={{
+                WebkitTextStroke: '1px #4ecdc4',
+                textShadow: '0 0 20px rgba(78, 205, 196, 0.4)',
+                filter: 'drop-shadow(0 0 8px rgba(78, 205, 196, 0.3))',
+              }}
+            >
+              Gradient Hero Title
+            </h1>
+            <h2
+              className="text-3xl font-bold text-white mb-4"
+              style={{
+                textShadow: '0 0 15px rgba(78, 205, 196, 0.5), 2px 2px 0 rgba(0,0,0,0.2)',
+              }}
+            >
+              Subtitle with Glow
+            </h2>
+            <h3
+              className="text-2xl font-semibold bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77] bg-clip-text text-transparent mb-4"
+            >
+              Cyan Gradient Text
+            </h3>
+          </div>
+
+          {/* Body Text Styles */}
+          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-white/10 before:to-transparent">
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Body & Caption</p>
+            <p className="text-white/90 mb-4 text-lg">Primary body text - high contrast for readability on dark backgrounds with glass elements.</p>
+            <p className="text-white/70 mb-4">Secondary text - slightly muted for supporting information and descriptions.</p>
+            <p className="text-white/50 text-sm">Caption text - subtle muted color for metadata and timestamps.</p>
+          </div>
+
+          {/* Text on Glass Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="relative p-6 rounded-[20px] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] to-[#ff2d92]" />
+              <div className="absolute inset-[2px] rounded-[18px] bg-gradient-to-br from-[#a855f7]/95 to-[#ff2d92]/95" />
+              <div className="relative">
+                <h4 className="text-xl font-bold text-white mb-2">Card Title</h4>
+                <p className="text-white/80 text-sm">Text on gradient cards maintains high contrast</p>
+              </div>
+            </div>
+            <div className="relative p-6 rounded-[20px] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#4ecdc4] to-[#6bcb77]" />
+              <div className="absolute inset-[2px] rounded-[18px] bg-gradient-to-br from-[#4ecdc4]/95 to-[#6bcb77]/95" />
+              <div className="relative">
+                <h4 className="text-xl font-bold text-white mb-2">Card Title</h4>
+                <p className="text-white/80 text-sm">White text works best on vibrant gradients</p>
+              </div>
+            </div>
           </div>
         </div>
       </ShowcaseSection>
@@ -129,49 +262,54 @@ export default function ShowcaseContent() {
       {/* Buttons */}
       <ShowcaseSection
         title="Buttons"
-        subtitle="Glass buttons with rainbow border gradients and glow effects"
+        subtitle="Gradient buttons with glow effects and hover states"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-white mb-4 text-center"
         subtitleClassName="text-white/70 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[28px] before:absolute before:inset-0 before:rounded-[28px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff6b6b]/30 before:via-transparent before:to-[#a855f7]/30">
-            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Variants</p>
+          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[28px] before:absolute before:inset-0 before:rounded-[28px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff2d92]/30 before:via-transparent before:to-[#a855f7]/30">
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Primary Variants</p>
             <div className="flex flex-wrap gap-4">
-              <button className="relative px-6 py-3 bg-white/10 backdrop-blur-md rounded-[16px] text-white font-semibold hover:bg-white/15 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-500 before:absolute before:inset-0 before:rounded-[16px] before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]">
+              <button className="px-6 py-3 bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-bold hover:shadow-[0_0_30px_rgba(255,45,146,0.5)] transition-all duration-500 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
                 Primary
               </button>
-              <button className="px-6 py-3 bg-white/5 backdrop-blur-md border border-white/20 rounded-[16px] text-white font-semibold hover:bg-white/10 transition-all duration-500">
+              <button className="px-6 py-3 bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77] rounded-full text-white font-bold hover:shadow-[0_0_30px_rgba(78,205,196,0.5)] transition-all duration-500">
+                Success
+              </button>
+              <button className="px-6 py-3 bg-gradient-to-r from-[#ff6b35] to-[#ffd93d] rounded-full text-white font-bold hover:shadow-[0_0_30px_rgba(255,107,53,0.5)] transition-all duration-500">
+                Warning
+              </button>
+              <button className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-semibold hover:bg-white/15 transition-all duration-500">
                 Secondary
-              </button>
-              <button className="relative px-6 py-3 bg-[#007AFF]/20 backdrop-blur-md rounded-[16px] text-white font-semibold hover:bg-[#007AFF]/30 hover:shadow-[0_0_20px_rgba(0,122,255,0.3)] transition-all duration-500 before:absolute before:inset-0 before:rounded-[16px] before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#007AFF] before:to-[#5AC8FA]">
-                Accent
-              </button>
-              <button className="px-6 py-3 text-white/80 hover:text-white transition-all duration-300">
-                Ghost
               </button>
             </div>
 
             <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6 mt-10">Sizes</p>
             <div className="flex flex-wrap items-center gap-4">
-              <button className="relative px-4 py-2 text-sm bg-white/10 backdrop-blur-md rounded-[12px] text-white font-medium hover:bg-white/15 transition-all duration-500 before:absolute before:inset-0 before:rounded-[12px] before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]">
+              <button className="px-4 py-2 text-sm bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-semibold hover:shadow-[0_0_20px_rgba(255,45,146,0.4)] transition-all duration-500">
                 Small
               </button>
-              <button className="relative px-6 py-3 bg-white/10 backdrop-blur-md rounded-[16px] text-white font-semibold hover:bg-white/15 transition-all duration-500 before:absolute before:inset-0 before:rounded-[16px] before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]">
+              <button className="px-6 py-3 bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-bold hover:shadow-[0_0_25px_rgba(255,45,146,0.5)] transition-all duration-500">
                 Medium
               </button>
-              <button className="relative px-8 py-4 text-lg bg-white/10 backdrop-blur-md rounded-[20px] text-white font-semibold hover:bg-white/15 transition-all duration-500 before:absolute before:inset-0 before:rounded-[20px] before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]">
+              <button className="px-8 py-4 text-lg bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-bold hover:shadow-[0_0_35px_rgba(255,45,146,0.6)] transition-all duration-500">
                 Large
               </button>
             </div>
 
-            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6 mt-10">Pill Buttons</p>
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6 mt-10">With Border Glow</p>
             <div className="flex flex-wrap gap-4">
-              <button className="relative px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white font-semibold hover:bg-white/15 hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all duration-500 before:absolute before:inset-0 before:rounded-full before:p-[1px] before:-z-10 before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]">
-                Pill Primary
+              <button className="relative px-6 py-3 rounded-full text-white font-bold transition-all duration-500 overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#ff2d92] to-[#a855f7] group-hover:shadow-[0_0_30px_rgba(255,45,146,0.5)]" />
+                <div className="absolute inset-[2px] rounded-full bg-[#1a1a2e]" />
+                <span className="relative bg-gradient-to-r from-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent">Outline</span>
               </button>
-              <button className="px-8 py-3 border border-white/30 rounded-full text-white font-semibold hover:bg-white/10 transition-all duration-500">
-                Pill Outline
+              <button className="relative px-6 py-3 rounded-full text-white font-bold transition-all duration-500 overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77] group-hover:shadow-[0_0_30px_rgba(78,205,196,0.5)]" />
+                <div className="absolute inset-[2px] rounded-full bg-[#1a1a2e]" />
+                <span className="relative bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77] bg-clip-text text-transparent">Outline</span>
               </button>
             </div>
           </div>
@@ -181,34 +319,66 @@ export default function ShowcaseContent() {
       {/* Cards */}
       <ShowcaseSection
         title="Cards"
-        subtitle="Multi-layer glass cards with rainbow edge refraction"
+        subtitle="Gradient cards with neon borders and hover effects"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-white mb-4 text-center"
         subtitleClassName="text-white/70 mb-10 text-center"
       >
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          <div className="relative p-6 bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] shadow-xl hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] transition-all duration-500 before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7] after:absolute after:inset-[1px] after:rounded-[23px] after:-z-10 after:bg-gradient-to-b after:from-white/15 after:to-transparent [box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]">
-            <div className="w-12 h-12 bg-white/15 rounded-[12px] flex items-center justify-center mb-4">
-              <Layers className="w-6 h-6 text-white" />
+          {/* Card 1 - Purple to Pink with neon border */}
+          <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] to-[#ff2d92]" />
+            <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#a855f7]/90 to-[#ff2d92]/90" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-white/20 rounded-[12px] flex items-center justify-center mb-4">
+                <Layers className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Multi-Layer</h3>
+              <p className="text-white/80 text-sm">Stacked glass panels create depth and dimension</p>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Multi-Layer</h3>
-            <p className="text-white/70">Stacked glass panels create depth and dimension in the interface</p>
           </div>
 
-          <div className="relative p-6 bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] shadow-xl hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(78,205,196,0.2)] transition-all duration-500 before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#4ecdc4] before:via-[#6bcb77] before:to-[#ffd93d] after:absolute after:inset-[1px] after:rounded-[23px] after:-z-10 after:bg-gradient-to-b after:from-white/15 after:to-transparent [box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]">
-            <div className="w-12 h-12 bg-white/15 rounded-[12px] flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6 text-white" />
+          {/* Card 2 - Cyan to Green with neon border */}
+          <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(78,205,196,0.4)] transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#4ecdc4] to-[#6bcb77]" />
+            <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#4ecdc4]/90 to-[#6bcb77]/90" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-white/20 rounded-[12px] flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Refraction</h3>
+              <p className="text-white/80 text-sm">Rainbow edges simulate light through glass</p>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Refraction</h3>
-            <p className="text-white/70">Rainbow prismatic edges simulate light bending through glass</p>
           </div>
 
-          <div className="relative p-6 bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] shadow-xl hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,107,107,0.2)] transition-all duration-500 before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#a855f7] before:via-[#ff6b6b] before:to-[#ffd93d] after:absolute after:inset-[1px] after:rounded-[23px] after:-z-10 after:bg-gradient-to-b after:from-white/15 after:to-transparent [box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]">
-            <div className="w-12 h-12 bg-white/15 rounded-[12px] flex items-center justify-center mb-4">
-              <Zap className="w-6 h-6 text-white" />
+          {/* Card 3 - Pink to Orange with neon border */}
+          <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(255,107,53,0.4)] transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#ff2d92] to-[#ff6b35]" />
+            <div className="absolute inset-[3px] rounded-[21px] bg-gradient-to-br from-[#ff2d92]/90 to-[#ff6b35]/90" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-white/20 rounded-[12px] flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Fluid Motion</h3>
+              <p className="text-white/80 text-sm">Smooth transitions create liquid movement</p>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Fluid Motion</h3>
-            <p className="text-white/70">Smooth 500ms transitions create liquid-like movement</p>
+          </div>
+        </div>
+
+        {/* Large feature card */}
+        <div className="max-w-4xl mx-auto mt-8">
+          <div className="relative p-8 rounded-[28px] overflow-hidden hover:shadow-[0_0_50px_rgba(255,45,146,0.3)] transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#ff2d92] via-[#a855f7] to-[#4ecdc4]" />
+            <div className="absolute inset-[3px] rounded-[25px] bg-gradient-to-r from-[#ff2d92]/95 via-[#a855f7]/95 to-[#4ecdc4]/95" />
+            <div className="relative flex items-center gap-6">
+              <div className="w-16 h-16 bg-white/20 rounded-[16px] flex items-center justify-center flex-shrink-0">
+                <Rocket className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Featured Card</h3>
+                <p className="text-white/80">Large cards with multi-color gradients for hero sections and featured content.</p>
+              </div>
+            </div>
           </div>
         </div>
       </ShowcaseSection>
