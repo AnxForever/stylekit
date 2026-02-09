@@ -33,6 +33,7 @@ export interface StyleTokens {
   // Typography tokens
   typography: {
     heading: string;      // Heading font style
+    subtitle?: string;    // Subtitle style (optional)
     body: string;         // Body text font style
     mono?: string;        // Monospace style
     sizes: {
@@ -43,6 +44,9 @@ export interface StyleTokens {
       body: string;
       small: string;
     };
+    // Custom style-specific typography effects (inline styles)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    neonStroke?: Record<string, any>;
   };
 
   // Spacing tokens

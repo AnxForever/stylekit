@@ -27,10 +27,28 @@ export const liquidGlass: DesignStyle = {
 - 多层深度：3+ 层玻璃堆叠产生丰富的空间层次
 - 高饱和度：backdrop-saturate-180 让背景色彩更加鲜艳
 
-字体特征：
-- Hero 标题：粗体无衬线 + 渐变填充 + 青色描边 + 发光阴影
-- 副标题：白色或青色渐变，带发光效果
-- 正文：高对比度白色，保证可读性
+## 字体设计核心（最重要的视觉元素）
+
+### Hero 标题（主标题）
+紫色渐变填充 + 粗青色描边(3px) + 3D偏移阴影：
+- background: linear-gradient(to right, #a855f7, #ff2d92, #a855f7)
+- -webkit-text-stroke: 3px #4ecdc4
+- text-shadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)
+- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
+
+### 副标题（青色发光）
+白色/青色文字 + 发光效果（无描边）：
+- color: white 或 gradient cyan
+- text-shadow: 0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)
+
+### h1/h2 标题
+较细描边(2px) + 发光 + 轻微3D：
+- -webkit-text-stroke: 2px #4ecdc4
+- text-shadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)
+
+### 正文
+高对比度白色，保证可读性：
+- color: text-white/80 到 text-white/90
 
 与 Glassmorphism 的区别：
 | 特性 | Glassmorphism | Liquid Glass |
@@ -39,12 +57,15 @@ export const liquidGlass: DesignStyle = {
 | 模糊 | blur-2xl | blur-3xl + saturate-180 |
 | 动画 | 简单过渡 | 液态形变 morph |
 | 深度 | 单层 | 多层堆叠 |
-| 文字 | 普通白色 | 渐变 + 描边 + 发光 |`,
+| 文字 | 普通白色 | 渐变+粗描边+3D阴影 |
+| 描边 | 无 | 3px青色霓虹描边 |
+| 阴影 | 普通投影 | 3D偏移+发光组合 |`,
 
   doList: [
-    "使用渐变填充文字 bg-gradient-to-r bg-clip-text text-transparent",
-    "添加霓虹描边效果 -webkit-text-stroke: 1-2px #4ecdc4",
-    "使用文字发光阴影 text-shadow: 0 0 20px rgba(78, 205, 196, 0.5)",
+    "Hero标题使用粗描边 -webkit-text-stroke: 3px #4ecdc4",
+    "Hero标题使用3D偏移阴影 text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
+    "Hero标题使用渐变填充 bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7]",
+    "副标题使用青色发光 text-shadow: 0 0 20px rgba(78, 205, 196, 0.8)",
     "使用超高模糊值 backdrop-blur-[40px] 或 backdrop-blur-3xl",
     "添加饱和度增强 backdrop-saturate-[1.8] 或 backdrop-saturate-200",
     "使用彩虹渐变边框模拟光线折射效果",
@@ -53,7 +74,9 @@ export const liquidGlass: DesignStyle = {
   ],
 
   dontList: [
-    "禁止使用普通白色标题（应使用渐变 + 描边）",
+    "禁止使用普通白色标题（必须使用渐变+粗描边+3D阴影）",
+    "禁止省略3D偏移阴影（4px 4px是必须的）",
+    "禁止使用细描边（Hero必须3px，h1/h2至少2px）",
     "禁止省略文字发光效果（缺少霓虹感）",
     "禁止使用低模糊值 backdrop-blur-sm（太弱）",
     "禁止省略饱和度增强（颜色会显得暗淡）",
@@ -307,8 +330,52 @@ export const liquidGlass: DesignStyle = {
 
   aiRules: `你是一个 Apple Liquid Glass（流动玻璃）设计风格的前端开发专家。这是 Apple WWDC 2025 发布的全新设计语言。生成的所有代码必须严格遵守以下约束：
 
+## 字体设计（最重要！）
+
+### Hero 标题 - 必须使用以下样式：
+\`\`\`jsx
+<h1
+  className="font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
+  style={{
+    WebkitTextStroke: '3px #4ecdc4',
+    WebkitTextFillColor: 'transparent',
+    textShadow: '4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6), 0 0 50px rgba(168,85,247,0.4)',
+    filter: 'drop-shadow(0 0 15px rgba(78,205,196,0.4))',
+  }}
+>
+  标题文字
+</h1>
+\`\`\`
+
+### 副标题 - 青色发光白色文字：
+\`\`\`jsx
+<h2
+  className="font-bold text-white"
+  style={{
+    textShadow: '0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)',
+  }}
+>
+  副标题
+</h2>
+\`\`\`
+
+### h2/h3 标题 - 较细描边(2px)：
+\`\`\`jsx
+<h2
+  style={{
+    WebkitTextStroke: '2px #4ecdc4',
+    textShadow: '3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)',
+  }}
+>
+  标题
+</h2>
+\`\`\`
+
 ## 绝对禁止
 
+- 使用普通白色标题（必须有描边+3D阴影+发光）
+- 使用细描边（Hero必须3px，h2至少2px）
+- 省略3D偏移阴影（4px 4px是必须的）
 - 使用低模糊值 backdrop-blur-sm, backdrop-blur（太弱）
 - 省略饱和度增强 backdrop-saturate
 - 使用直角或小圆角 rounded-none, rounded-sm, rounded
@@ -319,6 +386,8 @@ export const liquidGlass: DesignStyle = {
 
 ## 必须遵守
 
+- Hero标题：3px青色描边 + 紫色渐变填充 + 3D阴影(4px 4px) + 发光
+- 副标题：白色 + 青色发光阴影
 - 超高模糊值 backdrop-blur-[40px], backdrop-blur-3xl
 - 高饱和度增强 backdrop-saturate-[1.8], backdrop-saturate-200
 - 彩虹渐变边框 from-[#ff6b6b] via-[#4ecdc4] to-[#a855f7]
@@ -361,14 +430,16 @@ export const liquidGlass: DesignStyle = {
 ## 自检
 
 每次生成代码后检查：
-1. 有深色渐变背景容器
-2. 有 backdrop-blur-[40px] 或 backdrop-blur-3xl
-3. 有 backdrop-saturate-[1.8] 或更高
-4. 有彩虹渐变边框
-5. 有顶部高光条
-6. 使用 rounded-[24px] 或更大圆角
-7. 过渡时间 >= 500ms
-8. 文字可读性良好`,
+1. Hero标题有3px青色描边和3D偏移阴影
+2. 副标题有青色发光效果
+3. 有深色渐变背景容器
+4. 有 backdrop-blur-[40px] 或 backdrop-blur-3xl
+5. 有 backdrop-saturate-[1.8] 或更高
+6. 有彩虹渐变边框
+7. 有顶部高光条
+8. 使用 rounded-[24px] 或更大圆角
+9. 过渡时间 >= 500ms
+10. 文字可读性良好`,
 
   examplePrompts: [
     {
