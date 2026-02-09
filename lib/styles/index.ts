@@ -182,6 +182,9 @@ import { solarpunk } from "./solarpunk";
 import { jrpg } from "./jrpg";
 import { asymmetricGrid } from "./asymmetric-grid";
 import { parallaxSections } from "./parallax-sections";
+// New styles - Batch 7
+import { warmDashboard } from "./warm-dashboard";
+import { neonGradient } from "./neon-gradient";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -275,6 +278,9 @@ export const styles: DesignStyle[] = [
   jrpg,
   asymmetricGrid,
   parallaxSections,
+  // New styles - Batch 7
+  warmDashboard,
+  neonGradient,
 ];
 
 // 根据 slug 获取风格
