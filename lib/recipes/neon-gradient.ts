@@ -303,7 +303,20 @@ export const neonGradientRecipes: StyleRecipes = {
           "text-sm font-medium",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-1 text-xs" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2 text-sm" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-5 py-2.5 text-base" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         yellow: {
           id: "yellow",
@@ -418,7 +431,20 @@ export const neonGradientRecipes: StyleRecipes = {
           "absolute",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-4 h-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-6 h-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-8 h-8" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         star: {
           id: "star",
