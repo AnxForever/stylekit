@@ -1204,6 +1204,39 @@ export const stylesMeta: StyleMeta[] = [
     colors: { primary: "#1e3a5f", secondary: "#f8fafc", accent: ["#3b82f6", "#93c5fd", "#0ea5e9"] },
     keywords: ["视差", "滚动", "深度", "层次", "沉浸", "固定背景", "全屏"],
   },
+  // New styles - Batch 7
+  {
+    slug: "warm-dashboard",
+    name: "暖色仪表盘",
+    nameEn: "Warm Dashboard",
+    description: "温暖柔和的仪表盘设计风格，采用珊瑚/赤陶色背景、奶油白卡片、柔和阴影，营造舒适专业的数据展示体验。",
+    cover: "/styles/warm-dashboard.svg",
+    styleType: "visual",
+    tags: ["modern", "minimal"],
+    category: "modern",
+    colors: {
+      primary: "#d4a088",
+      secondary: "#faf8f5",
+      accent: ["#4a9d9a", "#e8b86d", "#c17767", "#6b8e8e"],
+    },
+    keywords: ["暖色", "仪表盘", "珊瑚色", "赤陶", "奶油白", "数据可视化", "舒适"],
+  },
+  {
+    slug: "neon-gradient",
+    name: "霓虹渐变",
+    nameEn: "Neon Gradient",
+    description: "深色背景上的鲜艳渐变卡片，配合粗彩色边框和霓虹发光效果，适合科技产品、SaaS 着陆页、年轻化品牌。",
+    cover: "/styles/neon-gradient.svg",
+    styleType: "visual",
+    tags: ["expressive"],
+    category: "expressive",
+    colors: {
+      primary: "#a855f7",
+      secondary: "#0f0a1e",
+      accent: ["#f472b6", "#22d3ee", "#a3e635", "#fbbf24", "#fb7185"],
+    },
+    keywords: ["霓虹", "渐变", "深色", "发光", "科技", "SaaS", "年轻化"],
+  },
 ];
 
 /**
