@@ -32,7 +32,10 @@ export const liquidGlassTokens: StyleTokens = {
   },
 
   typography: {
+    // Neon stroke hero text (purple gradient + cyan stroke + 3D shadow)
     heading: "font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent",
+    // Cyan glow subtitle text
+    subtitle: "font-bold text-white",
     body: "text-white/80",
     mono: "font-mono text-white/90",
     sizes: {
@@ -42,6 +45,25 @@ export const liquidGlassTokens: StyleTokens = {
       h3: "text-xl md:text-2xl",
       body: "text-sm md:text-base",
       small: "text-xs",
+    },
+    // Core neon stroke styles (apply via inline style)
+    neonStroke: {
+      // Purple gradient hero text with thick cyan stroke
+      hero: {
+        WebkitTextStroke: "3px #4ecdc4",
+        textShadow: "4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)",
+        filter: "drop-shadow(0 0 15px rgba(78,205,196,0.4))",
+      },
+      // Cyan glow subtitle (no stroke, just glow)
+      subtitle: {
+        textShadow: "0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)",
+      },
+      // Smaller headlines with thinner stroke
+      heading: {
+        WebkitTextStroke: "2px #4ecdc4",
+        textShadow: "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)",
+        filter: "drop-shadow(0 0 10px rgba(78,205,196,0.3))",
+      },
     },
   },
 

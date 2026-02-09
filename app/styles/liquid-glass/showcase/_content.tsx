@@ -22,12 +22,12 @@ const colors: ColorItem[] = [
 
 // Design rules
 const designRules = [
-  { title: "Neon Stroke Text", desc: "Use text-stroke with cyan glow for headlines" },
-  { title: "Gradient Text Fill", desc: "Purple to pink gradient for hero typography" },
-  { title: "3D Text Shadow", desc: "Multiple shadow layers for depth effect" },
-  { title: "Rainbow Border", desc: "Gradient border via ::before pseudo-element" },
-  { title: "High Blur", desc: "backdrop-blur-[40px] for strong glass effect" },
-  { title: "Fluid Animation", desc: "duration-500 ease-out for liquid motion" },
+  { title: "Hero 3px 描边", desc: "text-stroke: 3px #4ecdc4 + 紫色渐变填充" },
+  { title: "3D 偏移阴影", desc: "4px 4px 0 rgba(0,0,0,0.5) 产生立体感" },
+  { title: "青色发光", desc: "0 0 25px rgba(78,205,196,0.6) 霓虹效果" },
+  { title: "彩虹边框", desc: "::before 伪元素实现渐变边框" },
+  { title: "超高模糊", desc: "backdrop-blur-[40px] 强力玻璃效果" },
+  { title: "流体动画", desc: "duration-500 ease-out 液态运动" },
 ];
 
 export default function ShowcaseContent() {
@@ -78,36 +78,38 @@ export default function ShowcaseContent() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#ff2d92] to-transparent" />
 
         <div className="max-w-5xl mx-auto relative">
-          {/* Badge */}
+          {/* Badge - 黄色虚线边框徽章 */}
           <div className="flex justify-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-yellow-400/60 rounded-full text-yellow-400 text-sm">
               <Star className="w-4 h-4 fill-yellow-400" />
-              <span>Join 50,000+ teams using ACME</span>
+              <span>加入已经在使用 ACME 的 50,000+ 团队</span>
               <Star className="w-4 h-4 fill-yellow-400" />
             </div>
           </div>
 
-          {/* Hero Title with Neon Effect */}
+          {/* Hero Title with Neon Effect - 参考图片风格 */}
           <div className="text-center mb-8">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight">
-              {/* Neon stroke text effect */}
+              {/* 第一行：紫色渐变 + 粗青色描边 + 3D阴影 */}
               <span
-                className="block bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent"
+                className="block bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
                 style={{
-                  WebkitTextStroke: '2px #4ecdc4',
-                  textShadow: '0 0 30px rgba(78, 205, 196, 0.5), 0 0 60px rgba(168, 85, 247, 0.3), 4px 4px 0 rgba(0,0,0,0.3)',
-                  filter: 'drop-shadow(0 0 10px rgba(78, 205, 196, 0.4))',
+                  WebkitTextStroke: '3px #4ecdc4',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '4px 4px 0 rgba(0,0,0,0.5), 0 0 30px rgba(78, 205, 196, 0.6), 0 0 60px rgba(168, 85, 247, 0.4)',
+                  filter: 'drop-shadow(0 0 15px rgba(78, 205, 196, 0.5))',
                 }}
               >
-                Transform Your
+                改变你的方式
               </span>
+              {/* 第二行：青色发光文字 */}
               <span
-                className="block bg-gradient-to-r from-[#4ecdc4] via-white to-[#4ecdc4] bg-clip-text text-transparent mt-2"
+                className="block text-white mt-4"
                 style={{
-                  textShadow: '0 0 20px rgba(78, 205, 196, 0.6), 0 4px 0 rgba(0,0,0,0.2)',
+                  textShadow: '0 0 25px rgba(78, 205, 196, 0.9), 0 0 50px rgba(78, 205, 196, 0.5), 3px 3px 0 rgba(0,0,0,0.4)',
                 }}
               >
-                Team Workflow
+                团队著作
               </span>
             </h1>
           </div>
@@ -116,7 +118,7 @@ export default function ShowcaseContent() {
           <div className="max-w-2xl mx-auto mb-10">
             <div className="relative p-6 bg-white/5 backdrop-blur-[40px] rounded-[20px] border border-white/10">
               <p className="text-lg text-white/80 text-center">
-                ACME platform integrates your team with powerful tools, streamlining workflows, boosting productivity, and driving results.
+                Acme 平台通过强大的工具将您的团队整合在一起，旨在简化工作流程、提升生产力并推动成果。
               </p>
             </div>
           </div>
@@ -124,16 +126,16 @@ export default function ShowcaseContent() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-16">
             <button className="relative px-8 py-4 bg-gradient-to-r from-[#ff2d92] to-[#a855f7] rounded-full text-white font-bold hover:shadow-[0_0_40px_rgba(255,45,146,0.5)] transition-all duration-500 flex items-center gap-2">
-              Start Free Trial
+              开始免费试用
               <Sparkles className="w-5 h-5" />
             </button>
             <button className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-semibold hover:bg-white/15 transition-all duration-500 flex items-center gap-2">
-              <span>Watch Demo</span>
-              <span className="ml-1">→</span>
+              <span className="mr-1">→</span>
+              <span>观看演示</span>
             </button>
           </div>
 
-          {/* Feature Cards Grid */}
+          {/* Feature Cards Grid - 参考图片的实色渐变卡片 */}
           <div className="grid md:grid-cols-3 gap-6">
             {/* Card 1 - Purple to Pink */}
             <div className="relative p-6 rounded-[24px] overflow-hidden group hover:-translate-y-2 transition-all duration-500">
@@ -143,7 +145,7 @@ export default function ShowcaseContent() {
                 <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
                   <Zap className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">Fast</h3>
+                <h3 className="text-xl font-bold text-white mb-1">快点</h3>
               </div>
             </div>
 
@@ -155,7 +157,7 @@ export default function ShowcaseContent() {
                 <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
                   <Shield className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">Secure</h3>
+                <h3 className="text-xl font-bold text-white mb-1">安全</h3>
               </div>
             </div>
 
@@ -167,7 +169,7 @@ export default function ShowcaseContent() {
                 <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center mb-4">
                   <Users className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">Team</h3>
+                <h3 className="text-xl font-bold text-white mb-1">团队</h3>
               </div>
             </div>
           </div>
@@ -192,67 +194,95 @@ export default function ShowcaseContent() {
         </div>
       </ShowcaseSection>
 
-      {/* Typography */}
+      {/* Typography - 霓虹描边字体展示 */}
       <ShowcaseSection
-        title="Typography"
-        subtitle="Neon stroke text with gradient fills and 3D effects"
+        title="霓虹字体"
+        subtitle="紫色渐变 + 青色粗描边 + 3D阴影 = Liquid Glass 标志性文字效果"
         className="py-16 px-6"
         titleClassName="text-3xl font-bold text-white mb-4 text-center"
         subtitleClassName="text-white/70 mb-10 text-center"
       >
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Neon Stroke Style */}
+          {/* Hero Style - 最重要的霓虹效果 */}
           <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-[#ff2d92]/50 before:via-[#4ecdc4]/50 before:to-[#a855f7]/50">
-            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Neon Stroke Headlines</p>
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Hero 标题样式（3px 描边 + 3D 阴影）</p>
             <h1
-              className="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent mb-4"
+              className="text-4xl md:text-6xl font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-6"
               style={{
-                WebkitTextStroke: '1px #4ecdc4',
-                textShadow: '0 0 20px rgba(78, 205, 196, 0.4)',
+                WebkitTextStroke: '3px #4ecdc4',
+                WebkitTextFillColor: 'transparent',
+                textShadow: '4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78, 205, 196, 0.6), 0 0 50px rgba(168, 85, 247, 0.4)',
+                filter: 'drop-shadow(0 0 12px rgba(78, 205, 196, 0.4))',
+              }}
+            >
+              改变你的方式
+            </h1>
+            <h2
+              className="text-3xl md:text-4xl font-bold text-white mb-4"
+              style={{
+                textShadow: '0 0 25px rgba(78, 205, 196, 0.9), 0 0 50px rgba(78, 205, 196, 0.5), 3px 3px 0 rgba(0,0,0,0.4)',
+              }}
+            >
+              团队著作
+            </h2>
+            <p className="text-white/60 text-sm mt-4">
+              关键CSS: -webkit-text-stroke: 3px #4ecdc4; text-shadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6);
+            </p>
+          </div>
+
+          {/* Heading Styles */}
+          <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-white/10 before:to-transparent">
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">标题层级（2px 描边）</p>
+            <h2
+              className="text-3xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
+              style={{
+                WebkitTextStroke: '2px #4ecdc4',
+                WebkitTextFillColor: 'transparent',
+                textShadow: '3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78, 205, 196, 0.5)',
                 filter: 'drop-shadow(0 0 8px rgba(78, 205, 196, 0.3))',
               }}
             >
-              Gradient Hero Title
-            </h1>
-            <h2
-              className="text-3xl font-bold text-white mb-4"
-              style={{
-                textShadow: '0 0 15px rgba(78, 205, 196, 0.5), 2px 2px 0 rgba(0,0,0,0.2)',
-              }}
-            >
-              Subtitle with Glow
+              H2 渐变标题
             </h2>
             <h3
               className="text-2xl font-semibold bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77] bg-clip-text text-transparent mb-4"
             >
-              Cyan Gradient Text
+              H3 青色渐变
             </h3>
+            <h4
+              className="text-xl font-medium text-white mb-4"
+              style={{
+                textShadow: '0 0 15px rgba(78, 205, 196, 0.5), 2px 2px 0 rgba(0,0,0,0.2)',
+              }}
+            >
+              H4 发光白色
+            </h4>
           </div>
 
-          {/* Body Text Styles */}
+          {/* Body Text */}
           <div className="relative p-8 bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px] before:absolute before:inset-0 before:rounded-[24px] before:p-[1px] before:-z-10 before:bg-gradient-to-br before:from-white/10 before:to-transparent">
-            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">Body & Caption</p>
-            <p className="text-white/90 mb-4 text-lg">Primary body text - high contrast for readability on dark backgrounds with glass elements.</p>
-            <p className="text-white/70 mb-4">Secondary text - slightly muted for supporting information and descriptions.</p>
-            <p className="text-white/50 text-sm">Caption text - subtle muted color for metadata and timestamps.</p>
+            <p className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-6">正文与说明</p>
+            <p className="text-white/90 mb-4 text-lg">主要正文 - 高对比度白色，确保在深色玻璃背景上的可读性。</p>
+            <p className="text-white/70 mb-4">次要文字 - 稍微淡化，用于支持性信息和描述。</p>
+            <p className="text-white/50 text-sm">说明文字 - 更淡的颜色用于元数据和时间戳。</p>
           </div>
 
-          {/* Text on Glass Cards */}
+          {/* Text on Gradient Cards */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="relative p-6 rounded-[20px] overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] to-[#ff2d92]" />
               <div className="absolute inset-[2px] rounded-[18px] bg-gradient-to-br from-[#a855f7]/95 to-[#ff2d92]/95" />
               <div className="relative">
-                <h4 className="text-xl font-bold text-white mb-2">Card Title</h4>
-                <p className="text-white/80 text-sm">Text on gradient cards maintains high contrast</p>
+                <h4 className="text-xl font-bold text-white mb-2">卡片标题</h4>
+                <p className="text-white/80 text-sm">渐变卡片上的文字保持高对比度</p>
               </div>
             </div>
             <div className="relative p-6 rounded-[20px] overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[#4ecdc4] to-[#6bcb77]" />
               <div className="absolute inset-[2px] rounded-[18px] bg-gradient-to-br from-[#4ecdc4]/95 to-[#6bcb77]/95" />
               <div className="relative">
-                <h4 className="text-xl font-bold text-white mb-2">Card Title</h4>
-                <p className="text-white/80 text-sm">White text works best on vibrant gradients</p>
+                <h4 className="text-xl font-bold text-white mb-2">卡片标题</h4>
+                <p className="text-white/80 text-sm">鲜艳渐变上白色文字效果最佳</p>
               </div>
             </div>
           </div>
