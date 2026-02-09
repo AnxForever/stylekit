@@ -86,6 +86,8 @@ import { parallaxSectionsRecipes } from "./parallax-sections";
 // New styles - Batch 7
 import { warmDashboardRecipes } from "./warm-dashboard";
 import { neonGradientRecipes } from "./neon-gradient";
+// New styles - Batch 8
+import { liquidGlassRecipes } from "./liquid-glass";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -174,6 +176,8 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   // New styles - Batch 7
   "warm-dashboard": warmDashboardRecipes,
   "neon-gradient": neonGradientRecipes,
+  // New styles - Batch 8
+  "liquid-glass": liquidGlassRecipes,
 };
 
 /**
