@@ -83,6 +83,9 @@ import { solarpunkRecipes } from "./solarpunk";
 import { jrpgRecipes } from "./jrpg";
 import { asymmetricGridRecipes } from "./asymmetric-grid";
 import { parallaxSectionsRecipes } from "./parallax-sections";
+// New styles - Batch 7
+import { warmDashboardRecipes } from "./warm-dashboard";
+import { neonGradientRecipes } from "./neon-gradient";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -168,6 +171,9 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "jrpg": jrpgRecipes,
   "asymmetric-grid": asymmetricGridRecipes,
   "parallax-sections": parallaxSectionsRecipes,
+  // New styles - Batch 7
+  "warm-dashboard": warmDashboardRecipes,
+  "neon-gradient": neonGradientRecipes,
 };
 
 /**
