@@ -1,0 +1,117 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="warmShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+    <filter id="warmShadowSm" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Warm terracotta background -->
+  <rect width="1200" height="630" fill="#d4a088"/>
+
+  <!-- Top-left: Stat card -->
+  <g filter="url(#warmShadow)">
+    <rect x="60" y="60" width="240" height="160" rx="20" fill="#faf8f5"/>
+    <!-- Label -->
+    <rect x="84" y="88" width="60" height="8" rx="4" fill="#9ca3af"/>
+    <!-- Value -->
+    <text x="84" y="130" font-family="system-ui, sans-serif" font-size="36" font-weight="700" fill="#1f2937">27.6m</text>
+    <!-- Change indicator -->
+    <rect x="84" y="150" width="50" height="20" rx="10" fill="#4a9d9a" opacity="0.15"/>
+    <text x="92" y="165" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#4a9d9a">+12%</text>
+    <!-- Status dot -->
+    <circle cx="268" cy="88" r="6" fill="#4a9d9a"/>
+  </g>
+
+  <!-- Top-right: Sidebar preview -->
+  <g filter="url(#warmShadow)">
+    <rect x="880" y="50" width="260" height="230" rx="20" fill="white" fill-opacity="0.9"/>
+    <!-- Logo -->
+    <rect x="910" y="80" width="32" height="32" rx="8" fill="#4a9d9a"/>
+    <text x="951" y="102" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#374151">Crowz</text>
+    <!-- Avatar -->
+    <circle cx="1010" cy="160" r="28" fill="#d4a088"/>
+    <text x="1010" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="white">RG</text>
+    <!-- Nav items -->
+    <rect x="910" y="210" width="200" height="32" rx="10" fill="#faf8f5"/>
+    <circle x="922" y="226" r="4" fill="#c17767"/>
+    <rect x="938" y="220" width="80" height="8" rx="4" fill="#374151"/>
+    <rect x="910" y="250" width="200" height="8" rx="4" fill="#9ca3af" opacity="0.4"/>
+  </g>
+
+  <!-- Bottom-left: Channel stats card -->
+  <g filter="url(#warmShadow)">
+    <rect x="60" y="380" width="280" height="180" rx="24" fill="linear-gradient(135deg, #e8f4f4 0%, #f0f7f7 100%)"/>
+    <rect x="60" y="380" width="280" height="180" rx="24" fill="#e8f4f4"/>
+    <!-- Heading -->
+    <rect x="88" y="410" width="100" height="10" rx="5" fill="#374151"/>
+    <rect x="88" y="430" width="160" height="6" rx="3" fill="#9ca3af" opacity="0.6"/>
+    <!-- Channel items -->
+    <rect x="88" y="460" width="36" height="36" rx="8" fill="#ea4c89"/>
+    <rect x="136" y="468" width="50" height="8" rx="4" fill="#6b7280"/>
+    <text x="136" y="492" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#4a9d9a">+2%</text>
+    <rect x="200" y="460" width="36" height="36" rx="8" fill="#0057ff"/>
+    <rect x="248" y="468" width="50" height="8" rx="4" fill="#6b7280"/>
+    <text x="248" y="492" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#c17767">-7%</text>
+    <!-- Button -->
+    <rect x="88" y="520" width="80" height="28" rx="10" fill="#4a9d9a"/>
+    <text x="128" y="539" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="white">Full Stats</text>
+  </g>
+
+  <!-- Bottom-right: Chart card -->
+  <g filter="url(#warmShadow)">
+    <rect x="850" y="340" width="290" height="220" rx="28" fill="#faf8f5"/>
+    <!-- Heading -->
+    <rect x="882" y="372" width="80" height="10" rx="5" fill="#374151"/>
+    <!-- Bar chart -->
+    <rect x="882" y="500" width="36" height="40" rx="6" fill="#e8b86d" opacity="0.3"/>
+    <rect x="930" y="480" width="36" height="60" rx="6" fill="#e8b86d" opacity="0.3"/>
+    <rect x="978" y="450" width="36" height="90" rx="6" fill="#e8b86d"/>
+    <rect x="1026" y="470" width="36" height="70" rx="6" fill="#e8b86d" opacity="0.3"/>
+    <rect x="1074" y="490" width="36" height="50" rx="6" fill="#e8b86d" opacity="0.3"/>
+    <!-- Chart line -->
+    <path d="M900 480 L948 460 L996 430 L1044 445 L1092 465" stroke="#4a9d9a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="996" cy="430" r="5" fill="#4a9d9a"/>
+  </g>
+
+  <!-- Center title card -->
+  <g filter="url(#warmShadow)">
+    <rect x="360" y="220" width="480" height="190" rx="32" fill="#faf8f5"/>
+    <!-- Title -->
+    <text x="600" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="48" font-weight="700" fill="#374151">Warm Dashboard</text>
+    <!-- Subtitle -->
+    <text x="600" y="345" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#9ca3af">Cozy Data Visualization</text>
+    <!-- Accent dots -->
+    <circle cx="520" cy="375" r="8" fill="#4a9d9a"/>
+    <circle cx="560" cy="375" r="8" fill="#e8b86d"/>
+    <circle cx="600" cy="375" r="8" fill="#c17767"/>
+    <circle cx="640" cy="375" r="8" fill="#6b8e8e"/>
+    <circle cx="680" cy="375" r="8" fill="#d4a088"/>
+  </g>
+
+  <!-- Decorative elements -->
+  <!-- Small floating stat -->
+  <g filter="url(#warmShadowSm)">
+    <rect x="340" y="100" width="100" height="60" rx="14" fill="#faf8f5"/>
+    <rect x="358" y="118" width="40" height="6" rx="3" fill="#9ca3af"/>
+    <text x="358" y="146" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#374151">219k</text>
+  </g>
+
+  <!-- Another small stat -->
+  <g filter="url(#warmShadowSm)">
+    <rect x="700" y="460" width="110" height="70" rx="16" fill="#faf8f5"/>
+    <rect x="720" y="480" width="50" height="6" rx="3" fill="#9ca3af"/>
+    <text x="720" y="512" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#374151">4.2%</text>
+    <circle cx="790" cy="480" r="4" fill="#4a9d9a"/>
+  </g>
+
+  <!-- Progress bar preview -->
+  <g filter="url(#warmShadowSm)">
+    <rect x="420" y="470" width="160" height="50" rx="12" fill="#faf8f5"/>
+    <rect x="438" y="488" width="124" height="8" rx="4" fill="#e5e7eb"/>
+    <rect x="438" y="488" width="90" height="8" rx="4" fill="#4a9d9a"/>
+    <rect x="438" y="502" width="60" height="6" rx="3" fill="#9ca3af" opacity="0.5"/>
+  </g>
+</svg>

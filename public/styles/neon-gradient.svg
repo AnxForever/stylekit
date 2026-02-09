@@ -1,0 +1,174 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="purplePink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="cyanGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+    <linearGradient id="pinkRose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="yellowOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="glowPurple" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feFlood flood-color="#a855f7" flood-opacity="0.5"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feFlood flood-color="#22d3ee" flood-opacity="0.5"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feFlood flood-color="#ec4899" flood-opacity="0.5"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowYellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feFlood flood-color="#fbbf24" flood-opacity="0.4"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0f0a1e"/>
+
+  <!-- Radial gradient overlay -->
+  <ellipse cx="600" cy="0" rx="600" ry="400" fill="url(#purplePink)" opacity="0.1"/>
+
+  <!-- Top-left: Purple-pink gradient card -->
+  <g filter="url(#glowPurple)">
+    <rect x="60" y="60" width="220" height="150" rx="20" fill="url(#purplePink)"/>
+    <rect x="60" y="60" width="220" height="150" rx="20" stroke="#fbbf24" stroke-width="4" fill="none"/>
+    <!-- Icon placeholder -->
+    <rect x="88" y="90" width="44" height="44" rx="12" fill="white" fill-opacity="0.2"/>
+    <path d="M110 105 L110 125 M100 115 L120 115" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <!-- Text lines -->
+    <rect x="88" y="150" width="80" height="12" rx="6" fill="white"/>
+    <rect x="88" y="172" width="120" height="8" rx="4" fill="white" fill-opacity="0.6"/>
+  </g>
+
+  <!-- Top-right: Cyan-green gradient card -->
+  <g filter="url(#glowCyan)">
+    <rect x="920" y="50" width="220" height="150" rx="20" fill="url(#cyanGreen)"/>
+    <rect x="920" y="50" width="220" height="150" rx="20" stroke="#ec4899" stroke-width="4" fill="none"/>
+    <!-- Icon placeholder -->
+    <rect x="948" y="80" width="44" height="44" rx="12" fill="white" fill-opacity="0.2"/>
+    <path d="M970 95 L970 115 L985 105 Z" fill="white"/>
+    <!-- Text lines -->
+    <rect x="948" y="140" width="70" height="12" rx="6" fill="white"/>
+    <rect x="948" y="162" width="100" height="8" rx="4" fill="white" fill-opacity="0.6"/>
+  </g>
+
+  <!-- Bottom-left: Pink-rose gradient card -->
+  <g filter="url(#glowPink)">
+    <rect x="70" y="400" width="240" height="170" rx="24" fill="url(#pinkRose)"/>
+    <rect x="70" y="400" width="240" height="170" rx="24" stroke="#22d3ee" stroke-width="4" fill="none"/>
+    <!-- Icon -->
+    <rect x="100" y="432" width="48" height="48" rx="14" fill="white" fill-opacity="0.2"/>
+    <circle cx="124" cy="456" r="12" stroke="white" stroke-width="3" fill="none"/>
+    <path d="M124 448 L124 456 L130 456" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <!-- Content -->
+    <rect x="100" y="496" width="100" height="14" rx="7" fill="white"/>
+    <rect x="100" y="520" width="150" height="8" rx="4" fill="white" fill-opacity="0.6"/>
+    <!-- Badge -->
+    <rect x="220" y="432" width="60" height="24" rx="12" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4 2" fill="none"/>
+    <text x="250" y="449" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#fbbf24">PRO</text>
+  </g>
+
+  <!-- Bottom-right: Yellow-orange gradient card -->
+  <g filter="url(#glowYellow)">
+    <rect x="880" y="390" width="260" height="180" rx="24" fill="url(#yellowOrange)"/>
+    <rect x="880" y="390" width="260" height="180" rx="24" stroke="#a855f7" stroke-width="4" fill="none"/>
+    <!-- Icon -->
+    <rect x="912" y="422" width="50" height="50" rx="14" fill="white" fill-opacity="0.3"/>
+    <path d="M937 437 L937 457 L952 447 Z" fill="white"/>
+    <!-- Content -->
+    <rect x="912" y="488" width="90" height="14" rx="7" fill="white"/>
+    <rect x="912" y="512" width="140" height="8" rx="4" fill="white" fill-opacity="0.7"/>
+    <!-- Progress bar -->
+    <rect x="912" y="536" width="200" height="10" rx="5" fill="white" fill-opacity="0.3"/>
+    <rect x="912" y="536" width="140" height="10" rx="5" fill="white"/>
+  </g>
+
+  <!-- Center title area -->
+  <rect x="340" y="230" width="520" height="170" rx="28" fill="white" fill-opacity="0.05" stroke="url(#purplePink)" stroke-width="2"/>
+
+  <!-- Title text -->
+  <text x="600" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="52" font-weight="800" fill="url(#titleGradient)">Neon Gradient</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="345" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="white" fill-opacity="0.5">Bold Gradients &amp; Glowing Effects</text>
+
+  <!-- Decorative dots -->
+  <circle cx="500" cy="375" r="6" fill="#a855f7"/>
+  <circle cx="540" cy="375" r="6" fill="#ec4899"/>
+  <circle cx="580" cy="375" r="6" fill="#22d3ee"/>
+  <circle cx="620" cy="375" r="6" fill="#a3e635"/>
+  <circle cx="660" cy="375" r="6" fill="#fbbf24"/>
+  <circle cx="700" cy="375" r="6" fill="#f97316"/>
+
+  <!-- Floating decorative cards -->
+  <!-- Small rotated card top -->
+  <g transform="rotate(-8, 450, 130)">
+    <rect x="380" y="100" width="140" height="60" rx="14" fill="url(#cyanGreen)" filter="url(#glowCyan)"/>
+    <rect x="380" y="100" width="140" height="60" rx="14" stroke="#ec4899" stroke-width="3" fill="none"/>
+  </g>
+
+  <!-- Small rotated card bottom -->
+  <g transform="rotate(6, 750, 500)">
+    <rect x="680" y="470" width="140" height="60" rx="14" fill="url(#purplePink)" filter="url(#glowPurple)"/>
+    <rect x="680" y="470" width="140" height="60" rx="14" stroke="#22d3ee" stroke-width="3" fill="none"/>
+  </g>
+
+  <!-- Star decorators -->
+  <g fill="#fbbf24" opacity="0.8">
+    <polygon points="340,90 344,102 356,102 346,110 350,122 340,114 330,122 334,110 324,102 336,102"/>
+    <polygon points="820,530 823,538 832,538 825,544 828,552 820,546 812,552 815,544 808,538 817,538" transform="scale(0.8) translate(150, 100)"/>
+  </g>
+
+  <!-- Input field preview -->
+  <g filter="url(#glowPurple)">
+    <rect x="400" y="460" width="200" height="44" rx="12" fill="white" fill-opacity="0.05" stroke="#a855f7" stroke-width="2"/>
+    <rect x="420" y="476" width="100" height="8" rx="4" fill="white" fill-opacity="0.3"/>
+    <rect x="550" y="468" width="40" height="28" rx="8" fill="url(#cyanGreen)"/>
+  </g>
+
+  <!-- Button preview -->
+  <rect x="480" y="530" width="120" height="40" rx="12" fill="url(#purplePink)" filter="url(#glowPurple)"/>
+  <rect x="480" y="530" width="120" height="40" rx="12" stroke="#22d3ee" stroke-width="2" fill="none"/>
+  <text x="540" y="556" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white">Get Started</text>
+
+  <!-- Sparkle icons -->
+  <path d="M180 280 L185 295 L200 300 L185 305 L180 320 L175 305 L160 300 L175 295 Z" fill="#ec4899" opacity="0.6"/>
+  <path d="M1040 280 L1043 290 L1053 293 L1043 296 L1040 306 L1037 296 L1027 293 L1037 290 Z" fill="#22d3ee" opacity="0.6"/>
+</svg>
