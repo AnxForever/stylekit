@@ -185,6 +185,8 @@ import { parallaxSections } from "./parallax-sections";
 // New styles - Batch 7
 import { warmDashboard } from "./warm-dashboard";
 import { neonGradient } from "./neon-gradient";
+// New styles - Batch 8
+import { liquidGlass } from "./liquid-glass";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -281,6 +283,8 @@ export const styles: DesignStyle[] = [
   // New styles - Batch 7
   warmDashboard,
   neonGradient,
+  // New styles - Batch 8
+  liquidGlass,
 ];
 
 // 根据 slug 获取风格

@@ -222,7 +222,20 @@ export const warmDashboardRecipes: StyleRecipes = {
           "flex flex-col",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "width",
+          label: "Width",
+          labelZh: "宽度",
+          type: "select",
+          options: [
+            { value: "sm", label: "Narrow", labelZh: "窄", classes: "w-48" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-60" },
+            { value: "lg", label: "Wide", labelZh: "宽", classes: "w-72" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -252,7 +265,20 @@ export const warmDashboardRecipes: StyleRecipes = {
           "shadow-xl shadow-black/8",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-8" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -288,7 +314,20 @@ export const warmDashboardRecipes: StyleRecipes = {
           "transition-colors duration-200",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-2 text-sm" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-3 text-base" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-5 py-4 text-lg" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -332,7 +371,20 @@ export const warmDashboardRecipes: StyleRecipes = {
           "shadow-lg shadow-black/5",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
       variants: {
         default: {
           id: "default",

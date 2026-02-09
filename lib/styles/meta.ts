@@ -1237,6 +1237,23 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["霓虹", "渐变", "深色", "发光", "科技", "SaaS", "年轻化"],
   },
+  // New styles - Batch 8
+  {
+    slug: "liquid-glass",
+    name: "Apple 流动玻璃",
+    nameEn: "Apple Liquid Glass",
+    description: "Apple WWDC 2025 发布的全新设计语言，通过 SVG 折射滤镜、彩虹边缘光晕、流体形变动画和多层玻璃堆叠，创造出超越传统毛玻璃的有机流动视觉体验。",
+    cover: "/styles/liquid-glass.svg",
+    styleType: "visual",
+    tags: ["modern", "brand-inspired"],
+    category: "modern",
+    colors: {
+      primary: "rgba(255, 255, 255, 0.1)",
+      secondary: "rgba(255, 255, 255, 0.15)",
+      accent: ["#ff6b6b", "#4ecdc4", "#a855f7", "#007AFF", "#FF2D55"],
+    },
+    keywords: ["Apple", "Liquid Glass", "流动玻璃", "彩虹边缘", "折射", "多层堆叠", "WWDC 2025"],
+  },
 ];
 
 /**
