@@ -239,7 +239,17 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           "p-6",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -319,7 +329,17 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           "overflow-hidden",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -328,7 +348,7 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -375,7 +395,7 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           classes: ["[&>.fill]:bg-[#d4553a]"],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -393,7 +413,17 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           "transition-all duration-200",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         spring: {
           id: "spring",
@@ -443,7 +473,17 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           "pb-2",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -471,7 +511,17 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           "overflow-hidden",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -480,7 +530,7 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
   },

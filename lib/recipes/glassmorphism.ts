@@ -377,7 +377,17 @@ export const glassmorphismRecipes: StyleRecipes = {
           "transition-all duration-300 ease-out",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -386,7 +396,7 @@ export const glassmorphismRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {
         active: [
           "[&.active]:bg-[#34C759]/40",
@@ -460,7 +470,17 @@ export const glassmorphismRecipes: StyleRecipes = {
           "ring-1 ring-inset ring-white/20",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -475,7 +495,7 @@ export const glassmorphismRecipes: StyleRecipes = {
           classes: ["[&>.fill]:bg-[#007AFF]/60"],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -496,7 +516,17 @@ export const glassmorphismRecipes: StyleRecipes = {
           "ring-1 ring-inset ring-white/15",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -530,7 +560,17 @@ export const glassmorphismRecipes: StyleRecipes = {
           "transition-all duration-300 ease-out",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",

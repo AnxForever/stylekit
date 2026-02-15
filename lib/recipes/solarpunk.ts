@@ -222,5 +222,221 @@ export const solarpunkRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
+
+    leafPanel: {
+      id: "leafPanel",
+      name: "Leaf Panel",
+      nameZh: "叶片面板",
+      description: "Panel with organic leaf-shaped border and nature-inspired styling",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-white/80",
+          "backdrop-blur-sm",
+          "border border-green-300",
+          "rounded-[60%_40%_70%_30%/40%_60%_30%_70%]",
+          "bg-[linear-gradient(135deg,rgba(34,197,94,0.05)_0%,transparent_50%,rgba(34,197,94,0.03)_100%)]",
+          "transition-all duration-300",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-lg shadow-green-100/50",
+          ],
+        },
+        lush: {
+          id: "lush",
+          label: "Lush",
+          labelZh: "茂盛",
+          classes: [
+            "bg-gradient-to-br from-green-50 to-emerald-50",
+            "border-emerald-400",
+            "shadow-lg shadow-emerald-100/50",
+            "rounded-[70%_30%_60%_40%/30%_70%_40%_60%]",
+          ],
+        },
+        minimal: {
+          id: "minimal",
+          label: "Minimal",
+          labelZh: "简约",
+          classes: [
+            "bg-white/60",
+            "border-green-200",
+            "shadow-sm",
+            "rounded-[50%_50%_50%_50%/60%_60%_40%_40%]",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Panel Title", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Panel content goes here", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-xl hover:shadow-green-200/40",
+          "hover:border-green-400",
+        ],
+      },
+    },
+
+    solarProgress: {
+      id: "solarProgress",
+      name: "Solar Progress",
+      nameZh: "太阳能进度条",
+      description: "Progress bar with solar energy aesthetic and warm gradients",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "w-full",
+          "h-4",
+          "rounded-sm",
+          "bg-gray-200/60",
+          "overflow-hidden",
+          "border border-green-300/30",
+          "[&>div]:rounded-sm",
+          "transition-all duration-500",
+        ],
+      },
+      parameters: [
+        {
+          id: "value",
+          label: "Value",
+          labelZh: "进度值",
+          type: "select",
+          options: [
+            { value: "25", label: "25%", labelZh: "25%", classes: "[&>div]:w-1/4" },
+            { value: "50", label: "50%", labelZh: "50%", classes: "[&>div]:w-1/2" },
+            { value: "75", label: "75%", labelZh: "75%", classes: "[&>div]:w-3/4" },
+            { value: "100", label: "100%", labelZh: "100%", classes: "[&>div]:w-full" },
+          ],
+          default: "50",
+        },
+      ],
+      variants: {
+        solar: {
+          id: "solar",
+          label: "Solar",
+          labelZh: "太阳能",
+          classes: [
+            "[&>div]:bg-[repeating-linear-gradient(90deg,#f59e0b_0px,#f59e0b_18px,#1a1a1a_18px,#1a1a1a_20px)]",
+            "shadow-inner shadow-amber-100",
+          ],
+        },
+        wind: {
+          id: "wind",
+          label: "Wind",
+          labelZh: "风能",
+          classes: [
+            "[&>div]:bg-[repeating-linear-gradient(90deg,#38bdf8_0px,#38bdf8_18px,#1a1a1a_18px,#1a1a1a_20px)]",
+            "shadow-inner shadow-sky-100",
+          ],
+        },
+        water: {
+          id: "water",
+          label: "Water",
+          labelZh: "水能",
+          classes: [
+            "[&>div]:bg-[repeating-linear-gradient(90deg,#22c55e_0px,#22c55e_18px,#1a1a1a_18px,#1a1a1a_20px)]",
+            "shadow-inner shadow-green-100",
+          ],
+        },
+      },
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      states: {},
+    },
+
+    ecoAlert: {
+      id: "ecoAlert",
+      name: "Eco Alert",
+      nameZh: "生态提示",
+      description: "Alert component with eco-friendly nature aesthetic",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-white/80",
+          "backdrop-blur-sm",
+          "border-l-0",
+          "rounded-r-2xl",
+          "pl-5",
+          "p-4 md:p-5",
+          "before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-green-500 before:via-emerald-400 before:to-sky-400 before:rounded-full",
+          "transition-all duration-300",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        info: {
+          id: "info",
+          label: "Info",
+          labelZh: "信息",
+          classes: [
+            "border-sky-400",
+            "bg-sky-50/80",
+            "text-sky-800",
+            "before:from-sky-400 before:via-sky-500 before:to-blue-400",
+          ],
+        },
+        growth: {
+          id: "growth",
+          label: "Growth",
+          labelZh: "成长",
+          classes: [
+            "border-green-500",
+            "bg-green-50/80",
+            "text-green-800",
+            "before:from-green-500 before:via-emerald-400 before:to-green-600",
+          ],
+        },
+        warning: {
+          id: "warning",
+          label: "Warning",
+          labelZh: "警告",
+          classes: [
+            "border-amber-400",
+            "bg-amber-50/80",
+            "text-amber-800",
+            "before:from-amber-400 before:via-yellow-500 before:to-orange-400",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Alert Title", type: "text" },
+        { id: "message", label: "Message", labelZh: "消息", required: true, default: "Alert message goes here", type: "text" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-md hover:shadow-green-100/30",
+        ],
+      },
+    },
   },
 };

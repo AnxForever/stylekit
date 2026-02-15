@@ -365,5 +365,330 @@ export const cyberAnimeRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
+
+    hudStatusBar: {
+      id: "hudStatusBar",
+      name: "HUD Status Bar",
+      nameZh: "HUD状态栏",
+      description: "Horizontal status bar with segmented indicators and neon glow",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "flex items-center gap-2",
+          "bg-[#0f0f1a]/90",
+          "border border-[#7c3aed]/30",
+          "px-4 py-2",
+          "font-mono",
+          "text-xs",
+          "uppercase",
+          "tracking-wider",
+        ],
+      },
+      parameters: [
+        {
+          id: "segments",
+          label: "Segments",
+          labelZh: "分段数",
+          type: "select",
+          options: [
+            { value: "3", label: "3 Segments", labelZh: "3段", classes: "" },
+            { value: "5", label: "5 Segments", labelZh: "5段", classes: "" },
+            { value: "7", label: "7 Segments", labelZh: "7段", classes: "" },
+          ],
+          default: "5",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "text-[#7c3aed]",
+            "shadow-[0_0_10px_rgba(124,58,237,0.2)]",
+          ],
+        },
+        alert: {
+          id: "alert",
+          label: "Alert",
+          labelZh: "警报",
+          classes: [
+            "text-[#ff006e]",
+            "border-[#ff006e]/40",
+            "shadow-[0_0_10px_rgba(255,0,110,0.2)]",
+          ],
+        },
+        success: {
+          id: "success",
+          label: "Success",
+          labelZh: "成功",
+          classes: [
+            "text-[#06d6a0]",
+            "border-[#06d6a0]/40",
+            "shadow-[0_0_10px_rgba(6,214,160,0.2)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "标签", required: true, default: "SYS_STATUS", type: "text" },
+        { id: "value", label: "Value", labelZh: "数值", required: false, default: "NOMINAL", type: "text" },
+      ],
+      states: {},
+    },
+
+    hologramPanel: {
+      id: "hologramPanel",
+      name: "Hologram Panel",
+      nameZh: "全息面板",
+      description: "Translucent panel with holographic shimmer border effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#0f0f1a]/60",
+          "backdrop-blur-md",
+          "border border-[#7c3aed]/20",
+          "overflow-hidden",
+          "bg-[repeating-linear-gradient(0deg,transparent_0px,transparent_2px,rgba(124,58,237,0.03)_2px,rgba(124,58,237,0.03)_4px)]",
+          "transition-all duration-300 ease-out",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[0_0_20px_rgba(124,58,237,0.15)]",
+          ],
+        },
+        cyan: {
+          id: "cyan",
+          label: "Cyan",
+          labelZh: "青色",
+          classes: [
+            "border-[#06d6a0]/30",
+            "shadow-[0_0_20px_rgba(6,214,160,0.15)]",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "border-[#ff006e]/25",
+            "shadow-[0_0_20px_rgba(255,0,110,0.15)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "HOLO_PANEL", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[0_0_30px_rgba(124,58,237,0.3)]",
+          "hover:border-[#7c3aed]/40",
+        ],
+      },
+    },
+
+    cockpitNav: {
+      id: "cockpitNav",
+      name: "Cockpit Nav",
+      nameZh: "驾驶舱导航",
+      description: "Navigation bar styled like mecha cockpit controls",
+      skeleton: {
+        element: "nav",
+        baseClasses: [
+          "flex items-center gap-1",
+          "bg-[#0f0f1a]/95",
+          "border-b border-[#7c3aed]/30",
+          "px-4 py-2",
+          "font-mono",
+          "text-xs",
+          "uppercase",
+          "tracking-widest",
+          "text-[#e0e0ff]/70",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[0_2px_15px_rgba(124,58,237,0.15)]",
+          ],
+        },
+        compact: {
+          id: "compact",
+          label: "Compact",
+          labelZh: "紧凑",
+          classes: [
+            "py-1 gap-0.5 text-[10px]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    dataStream: {
+      id: "dataStream",
+      name: "Data Stream",
+      nameZh: "数据流",
+      description: "Vertical data stream display with monospace scrolling text feel",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#0f0f1a]",
+          "border-l-2 border-[#7c3aed]/40",
+          "p-4",
+          "font-mono",
+          "text-xs",
+          "leading-relaxed",
+          "overflow-hidden",
+          "bg-[linear-gradient(180deg,rgba(124,58,237,0.08)_0%,transparent_15%,transparent_85%,rgba(124,58,237,0.08)_100%)]",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: ["text-[#7c3aed]/80"],
+        },
+        cyan: {
+          id: "cyan",
+          label: "Cyan",
+          labelZh: "青色",
+          classes: [
+            "text-[#06d6a0]/80",
+            "border-l-[#06d6a0]/40",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "text-[#ff006e]/80",
+            "border-l-[#ff006e]/40",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
+      ],
+      states: {},
+    },
+
+    missionBriefing: {
+      id: "missionBriefing",
+      name: "Mission Briefing",
+      nameZh: "任务简报",
+      description: "Alert/notification panel with military briefing aesthetic",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "relative",
+          "bg-[#0f0f1a]/90",
+          "border border-[#7c3aed]/30",
+          "p-4",
+          "font-mono",
+          "text-sm",
+          "[clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))]",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        info: {
+          id: "info",
+          label: "Info",
+          labelZh: "信息",
+          classes: [
+            "border-[#38bdf8]/40",
+            "text-[#38bdf8]",
+            "shadow-[0_0_10px_rgba(56,189,248,0.1)]",
+          ],
+        },
+        warning: {
+          id: "warning",
+          label: "Warning",
+          labelZh: "警告",
+          classes: [
+            "border-[#fbbf24]/40",
+            "text-[#fbbf24]",
+            "shadow-[0_0_10px_rgba(251,191,36,0.1)]",
+          ],
+        },
+        critical: {
+          id: "critical",
+          label: "Critical",
+          labelZh: "紧急",
+          classes: [
+            "border-[#ff006e]/50",
+            "text-[#ff006e]",
+            "shadow-[0_0_15px_rgba(255,0,110,0.2)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: true, default: "MISSION_BRIEF", type: "text" },
+        { id: "message", label: "Message", labelZh: "消息", required: true, default: "Incoming transmission...", type: "text" },
+      ],
+      states: {},
+    },
   },
 };

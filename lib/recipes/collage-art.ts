@@ -405,5 +405,359 @@ export const collageArtRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
+
+    tornPaperCard: {
+      id: "tornPaperCard",
+      name: "Torn Paper Card",
+      nameZh: "撕纸卡片",
+      description: "Card with torn/ripped paper edge effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#f5f0e8]",
+          "rounded-none",
+          "border-2 border-[#2d2d2d]",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-4 md:p-5" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-8" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-10" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[5px_5px_0px_#2d2d2d]",
+            "rotate-[0.3deg]",
+          ],
+        },
+        vintage: {
+          id: "vintage",
+          label: "Vintage",
+          labelZh: "复古",
+          classes: [
+            "bg-[#f5f0e8]/90",
+            "border-[#2d2d2d]/60",
+            "shadow-[4px_4px_0px_#9b59b6]",
+            "rotate-[-0.5deg]",
+          ],
+        },
+        colorful: {
+          id: "colorful",
+          label: "Colorful",
+          labelZh: "彩色",
+          classes: [
+            "border-[#e74c3c]",
+            "shadow-[5px_5px_0px_#3498db]",
+            "rotate-[0.7deg]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Torn paper content", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:rotate-0",
+          "hover:-translate-y-1",
+          "hover:shadow-[7px_7px_0px_#2d2d2d]",
+        ],
+      },
+    },
+
+    layeredStack: {
+      id: "layeredStack",
+      name: "Layered Stack",
+      nameZh: "层叠堆栈",
+      description: "Stacked layers with slight offset for depth",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#f5f0e8]",
+          "rounded-none",
+          "border-2 border-[#2d2d2d]",
+          "p-5 md:p-8",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[4px_4px_0px_#2d2d2d,8px_8px_0px_#e74c3c,12px_12px_0px_#2d2d2d]",
+          ],
+        },
+        scattered: {
+          id: "scattered",
+          label: "Scattered",
+          labelZh: "散落",
+          classes: [
+            "rotate-[1deg]",
+            "shadow-[5px_3px_0px_#3498db,10px_7px_0px_#f39c12,15px_10px_0px_#2d2d2d]",
+          ],
+        },
+        neat: {
+          id: "neat",
+          label: "Neat",
+          labelZh: "整齐",
+          classes: [
+            "shadow-[3px_3px_0px_#2d2d2d,6px_6px_0px_#2d2d2d,9px_9px_0px_#2d2d2d]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Stacked layers", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:-translate-y-1",
+          "hover:shadow-[6px_6px_0px_#2d2d2d,10px_10px_0px_#e74c3c,14px_14px_0px_#2d2d2d]",
+        ],
+      },
+    },
+
+    cutoutBadge: {
+      id: "cutoutBadge",
+      name: "Cutout Badge",
+      nameZh: "剪切徽章",
+      description: "Badge styled like a magazine cutout",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "font-bold uppercase tracking-wider",
+          "border-2 border-[#2d2d2d]",
+          "rounded-none",
+          "transition-all duration-200 ease-in-out",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "px-2 py-0.5 text-xs" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "px-3 py-1 text-sm" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "px-4 py-1.5 text-base" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        red: {
+          id: "red",
+          label: "Red",
+          labelZh: "红色",
+          classes: [
+            "bg-[#e74c3c] text-white",
+            "shadow-[3px_3px_0px_#2d2d2d]",
+            "rotate-[-1deg]",
+          ],
+        },
+        blue: {
+          id: "blue",
+          label: "Blue",
+          labelZh: "蓝色",
+          classes: [
+            "bg-[#3498db] text-white",
+            "shadow-[3px_3px_0px_#2d2d2d]",
+            "rotate-[0.5deg]",
+          ],
+        },
+        yellow: {
+          id: "yellow",
+          label: "Yellow",
+          labelZh: "黄色",
+          classes: [
+            "bg-[#f39c12] text-[#2d2d2d]",
+            "shadow-[3px_3px_0px_#9b59b6]",
+            "rotate-[-0.5deg]",
+          ],
+        },
+        mixed: {
+          id: "mixed",
+          label: "Mixed",
+          labelZh: "混合",
+          classes: [
+            "bg-[#f5f0e8] text-[#2d2d2d]",
+            "border-dashed",
+            "shadow-[3px_3px_0px_#e74c3c]",
+            "rotate-[1deg]",
+          ],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "NEW", type: "text" },
+      ],
+      states: {
+        hover: [
+          "hover:rotate-0",
+          "hover:scale-105",
+        ],
+      },
+    },
+
+    maskingTapeDivider: {
+      id: "maskingTapeDivider",
+      name: "Masking Tape Divider",
+      nameZh: "纸胶带分割线",
+      description: "Divider styled like masking/washi tape",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "w-full",
+          "h-6 md:h-8",
+          "my-4",
+          "transition-all duration-200 ease-in-out",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "bg-[#f39c12]/60",
+            "rotate-[-0.5deg]",
+            "shadow-[0_1px_3px_rgba(0,0,0,0.1)]",
+          ],
+        },
+        colorful: {
+          id: "colorful",
+          label: "Colorful",
+          labelZh: "彩色",
+          classes: [
+            "bg-gradient-to-r from-[#e74c3c]/50 via-[#f39c12]/50 to-[#3498db]/50",
+            "rotate-[0.3deg]",
+            "shadow-[0_1px_3px_rgba(0,0,0,0.1)]",
+          ],
+        },
+        vintage: {
+          id: "vintage",
+          label: "Vintage",
+          labelZh: "复古",
+          classes: [
+            "bg-[#2d2d2d]/20",
+            "rotate-[-0.3deg]",
+            "border-y border-dashed border-[#2d2d2d]/30",
+          ],
+        },
+      },
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      states: {},
+    },
+
+    scrapbookFrame: {
+      id: "scrapbookFrame",
+      name: "Scrapbook Frame",
+      nameZh: "剪贴簿相框",
+      description: "Photo frame with scrapbook decoration",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-white",
+          "border-2 border-[#2d2d2d]",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "p-3 md:p-4",
+            "shadow-[5px_5px_0px_#2d2d2d]",
+            "rotate-[0.5deg]",
+          ],
+        },
+        polaroid: {
+          id: "polaroid",
+          label: "Polaroid",
+          labelZh: "拍立得",
+          classes: [
+            "p-3 pb-12 md:p-4 md:pb-16",
+            "shadow-[4px_4px_0px_#2d2d2d]",
+            "rotate-[-1deg]",
+          ],
+        },
+        vintage: {
+          id: "vintage",
+          label: "Vintage",
+          labelZh: "复古",
+          classes: [
+            "p-4 md:p-5",
+            "border-[#2d2d2d]/60",
+            "bg-[#f5f0e8]",
+            "shadow-[4px_4px_0px_#9b59b6]",
+            "rotate-[1deg]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Photo here", type: "children" },
+        { id: "caption", label: "Caption", labelZh: "标题", required: false, default: "Summer 2024", type: "text" },
+      ],
+      states: {
+        hover: [
+          "hover:rotate-0",
+          "hover:-translate-y-1",
+          "hover:shadow-[7px_7px_0px_#2d2d2d]",
+        ],
+      },
+    },
   },
 };
