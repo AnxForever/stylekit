@@ -238,7 +238,17 @@ export const gothicRecipes: StyleRecipes = {
           "p-6",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -275,7 +285,17 @@ export const gothicRecipes: StyleRecipes = {
           "clip-path-shield",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         purple: {
           id: "purple",
@@ -358,7 +378,17 @@ export const gothicRecipes: StyleRecipes = {
           "flex items-center justify-center",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -367,7 +397,7 @@ export const gothicRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -386,7 +416,17 @@ export const gothicRecipes: StyleRecipes = {
           "leading-none",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         gold: {
           id: "gold",
@@ -421,7 +461,17 @@ export const gothicRecipes: StyleRecipes = {
           "shadow-lg",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",

@@ -240,7 +240,17 @@ export const darkAcademiaRecipes: StyleRecipes = {
           "shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2)]",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -322,7 +332,17 @@ export const darkAcademiaRecipes: StyleRecipes = {
           "transition-all duration-200",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         brown: {
           id: "brown",
@@ -365,7 +385,17 @@ export const darkAcademiaRecipes: StyleRecipes = {
           "flex items-center justify-center",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -374,7 +404,7 @@ export const darkAcademiaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -416,7 +446,7 @@ export const darkAcademiaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -435,7 +465,17 @@ export const darkAcademiaRecipes: StyleRecipes = {
           "shadow-sm",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -463,7 +503,17 @@ export const darkAcademiaRecipes: StyleRecipes = {
           "flex flex-col items-center",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -472,7 +522,7 @@ export const darkAcademiaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
   },
