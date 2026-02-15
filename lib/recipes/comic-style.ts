@@ -218,5 +218,213 @@ export const comicStyleRecipes: StyleRecipes = {
         disabled: ["opacity-60 cursor-not-allowed bg-gray-200"],
       },
     },
+
+    speechBubble: {
+      id: "speechBubble",
+      name: "Speech Bubble",
+      nameZh: "对话气泡",
+      description: "Comic speech bubble container with thick borders and tail",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#fffef0]",
+          "border-4 border-[#1a1a1a]",
+          "rounded-2xl",
+          "p-4 md:p-6",
+          "relative",
+          "font-bold",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        speech: {
+          id: "speech",
+          label: "Speech",
+          labelZh: "对话",
+          classes: [
+            "rounded-2xl",
+            "shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]",
+          ],
+        },
+        thought: {
+          id: "thought",
+          label: "Thought",
+          labelZh: "思考",
+          classes: [
+            "rounded-[50%]",
+            "shadow-[4px_4px_0px_0px_rgba(26,26,26,0.5)]",
+          ],
+        },
+        shout: {
+          id: "shout",
+          label: "Shout",
+          labelZh: "喊叫",
+          classes: [
+            "rounded-none",
+            "bg-[#facc15]",
+            "shadow-[6px_6px_0px_0px_rgba(239,68,68,1)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Hello!", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]",
+          "hover:translate-x-[2px] hover:translate-y-[2px]",
+        ],
+      },
+    },
+
+    actionPanel: {
+      id: "actionPanel",
+      name: "Action Panel",
+      nameZh: "动作面板",
+      description: "Panel with comic action lines background effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#fffef0]",
+          "border-4 border-[#1a1a1a]",
+          "rounded-lg",
+          "relative",
+          "overflow-hidden",
+          "bg-[repeating-conic-gradient(#fffef0_0deg,#fffef0_5deg,rgba(26,26,26,0.03)_5deg,rgba(26,26,26,0.03)_10deg)]",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] md:shadow-[6px_6px_0px_0px_rgba(26,26,26,1)]",
+          ],
+        },
+        intense: {
+          id: "intense",
+          label: "Intense",
+          labelZh: "强烈",
+          classes: [
+            "bg-[#ef4444]/10",
+            "shadow-[6px_6px_0px_0px_rgba(239,68,68,1)]",
+          ],
+        },
+        subtle: {
+          id: "subtle",
+          label: "Subtle",
+          labelZh: "柔和",
+          classes: [
+            "border-2 border-[#1a1a1a]",
+            "shadow-[3px_3px_0px_0px_rgba(26,26,26,0.5)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Action content", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]",
+          "hover:translate-x-[2px] hover:translate-y-[2px]",
+        ],
+      },
+    },
+
+    halftoneOverlay: {
+      id: "halftoneOverlay",
+      name: "Halftone Overlay",
+      nameZh: "半调叠加",
+      description: "Container with halftone dot pattern overlay effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#fffef0]",
+          "border-4 border-[#1a1a1a]",
+          "rounded-lg",
+          "p-4 md:p-6",
+          "relative",
+          "overflow-hidden",
+          "bg-[radial-gradient(circle_1.5px,rgba(26,26,26,0.12)_0%,transparent_100%)]",
+          "bg-[size:8px_8px]",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]",
+          ],
+        },
+        dense: {
+          id: "dense",
+          label: "Dense",
+          labelZh: "密集",
+          classes: [
+            "bg-[#1a1a1a]/5",
+            "shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]",
+          ],
+        },
+        sparse: {
+          id: "sparse",
+          label: "Sparse",
+          labelZh: "稀疏",
+          classes: [
+            "bg-[#1a1a1a]/[0.02]",
+            "shadow-[3px_3px_0px_0px_rgba(26,26,26,0.6)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Halftone content", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]",
+          "hover:translate-x-[2px] hover:translate-y-[2px]",
+        ],
+      },
+    },
   },
 };

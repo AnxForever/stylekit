@@ -227,5 +227,227 @@ export const popArtRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
+
+    halftoneCard: {
+      id: "halftoneCard",
+      name: "Halftone Card",
+      nameZh: "半色调卡片",
+      description: "Card with halftone dot pattern background and bold pop-art borders",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-white",
+          "border-4 border-black",
+          "rounded-lg",
+          "bg-[radial-gradient(circle,#00000020_2px,transparent_2px)]",
+          "bg-[size:12px_12px]",
+          "shadow-[8px_8px_0_#000]",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[8px_8px_0_#000]",
+          ],
+        },
+        red: {
+          id: "red",
+          label: "Red",
+          labelZh: "红色",
+          classes: [
+            "bg-[#ff3b3b]",
+            "bg-[radial-gradient(circle,#00000030_2px,transparent_2px)]",
+            "bg-[size:12px_12px]",
+            "text-white",
+            "shadow-[8px_8px_0_#000]",
+          ],
+        },
+        blue: {
+          id: "blue",
+          label: "Blue",
+          labelZh: "蓝色",
+          classes: [
+            "bg-[#00bfff]",
+            "bg-[radial-gradient(circle,#00000030_2px,transparent_2px)]",
+            "bg-[size:12px_12px]",
+            "text-white",
+            "shadow-[8px_8px_0_#000]",
+          ],
+        },
+        yellow: {
+          id: "yellow",
+          label: "Yellow",
+          labelZh: "黄色",
+          classes: [
+            "bg-[#ffdd00]",
+            "bg-[radial-gradient(circle,#00000030_2px,transparent_2px)]",
+            "bg-[size:12px_12px]",
+            "text-black",
+            "shadow-[8px_8px_0_#000]",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Card content goes here", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[8px_8px_0_#000]",
+          "hover:-translate-x-0.5 hover:-translate-y-0.5",
+        ],
+      },
+    },
+
+    boldCaption: {
+      id: "boldCaption",
+      name: "Bold Caption",
+      nameZh: "粗体标题",
+      description: "Large bold caption text container with pop-art styling",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "font-black",
+          "uppercase",
+          "tracking-tight",
+          "[--webkit-text-stroke:2px_#000]",
+          "text-2xl md:text-4xl",
+          "leading-tight",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "text-black",
+            "[text-shadow:3px_3px_0_rgba(0,0,0,0.2)]",
+          ],
+        },
+        outline: {
+          id: "outline",
+          label: "Outline",
+          labelZh: "轮廓",
+          classes: [
+            "text-transparent",
+            "[-webkit-text-stroke:3px_#000]",
+            "[text-shadow:3px_3px_0_#ffdd00,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000,1px_1px_0_#000]",
+          ],
+        },
+        shadow: {
+          id: "shadow",
+          label: "Shadow",
+          labelZh: "阴影",
+          classes: [
+            "text-[#ff69b4]",
+            "[text-shadow:4px_4px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000]",
+          ],
+        },
+      },
+      slots: [
+        { id: "text", label: "Text", labelZh: "文字", required: true, default: "WOW!", type: "text" },
+      ],
+      states: {},
+    },
+
+    wowBadge: {
+      id: "wowBadge",
+      name: "Wow Badge",
+      nameZh: "爆炸徽章",
+      description: "Comic-style explosion badge with starburst shape",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "font-black",
+          "uppercase",
+          "[clip-path:polygon(50%_0%,61%_18%,79%_2%,74%_22%,97%_18%,83%_35%,100%_50%,83%_65%,97%_82%,74%_78%,79%_98%,61%_82%,50%_100%,39%_82%,21%_98%,26%_78%,3%_82%,17%_65%,0%_50%,17%_35%,3%_18%,26%_22%,21%_2%,39%_18%)]",
+          "transition-all duration-150",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-16 h-16 text-xs" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-24 h-24 text-base" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-32 h-32 text-xl" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        wow: {
+          id: "wow",
+          label: "WOW",
+          labelZh: "哇",
+          classes: [
+            "bg-[#ffdd00] text-black",
+            "[filter:drop-shadow(4px_4px_0_#000)]",
+          ],
+        },
+        pow: {
+          id: "pow",
+          label: "POW",
+          labelZh: "砰",
+          classes: [
+            "bg-[#ff3b3b] text-white",
+            "[filter:drop-shadow(4px_4px_0_#000)]",
+          ],
+        },
+        bam: {
+          id: "bam",
+          label: "BAM",
+          labelZh: "嘭",
+          classes: [
+            "bg-[#ff69b4] text-white",
+            "[filter:drop-shadow(4px_4px_0_#000)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "WOW!", type: "text" },
+      ],
+      states: {
+        hover: [
+          "hover:[filter:drop-shadow(6px_6px_0_#000)]",
+          "hover:scale-110",
+        ],
+      },
+    },
   },
 };

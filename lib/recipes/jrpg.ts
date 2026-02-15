@@ -230,5 +230,221 @@ export const jrpgRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-slate-950"],
       },
     },
+
+    statusWindow: {
+      id: "statusWindow",
+      name: "Status Window",
+      nameZh: "状态窗口",
+      description: "RPG status window with ornate double-border and gradient background",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-gradient-to-b from-slate-800 to-slate-900",
+          "border-2 border-blue-600",
+          "rounded-md",
+          "ring-2 ring-blue-400/30",
+          "ring-offset-2 ring-offset-slate-900",
+          "transition-all duration-200",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "text-[#f0f9ff]",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_12px_rgba(0,0,0,0.5)]",
+          ],
+        },
+        dark: {
+          id: "dark",
+          label: "Dark",
+          labelZh: "深色",
+          classes: [
+            "bg-gradient-to-b from-[#0f172a] to-[#020617]",
+            "border-blue-800",
+            "text-blue-100",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_4px_12px_rgba(0,0,0,0.6)]",
+          ],
+        },
+        golden: {
+          id: "golden",
+          label: "Golden",
+          labelZh: "金色",
+          classes: [
+            "border-[#fbbf24]/60",
+            "ring-[#fbbf24]/20",
+            "text-[#fbbf24]",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_12px_rgba(0,0,0,0.5)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Status", type: "text" },
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "HP: 999/999", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_6px_16px_rgba(0,0,0,0.5)]",
+          "hover:border-blue-500",
+        ],
+      },
+    },
+
+    menuList: {
+      id: "menuList",
+      name: "Menu List",
+      nameZh: "菜单列表",
+      description: "RPG-style menu list container with beveled border",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-gradient-to-b from-slate-800 to-slate-900",
+          "border-2 border-blue-700",
+          "rounded-md",
+          "text-[#f0f9ff]",
+          "divide-y divide-blue-700/40",
+          "transition-all duration-200",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "p-2 md:p-3",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_12px_rgba(0,0,0,0.5)]",
+          ],
+        },
+        compact: {
+          id: "compact",
+          label: "Compact",
+          labelZh: "紧凑",
+          classes: [
+            "p-1 md:p-2",
+            "text-sm",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_2px_8px_rgba(0,0,0,0.4)]",
+          ],
+        },
+        wide: {
+          id: "wide",
+          label: "Wide",
+          labelZh: "宽",
+          classes: [
+            "p-3 md:p-5",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_6px_16px_rgba(0,0,0,0.5)]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Menu items", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:border-blue-600",
+        ],
+      },
+    },
+
+    goldFrame: {
+      id: "goldFrame",
+      name: "Gold Frame",
+      nameZh: "金色边框",
+      description: "Ornate golden frame for important content with metallic gradient border",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-gradient-to-b from-slate-800 to-slate-900",
+          "rounded-md",
+          "relative",
+          "transition-all duration-200",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-4" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-4 md:p-6" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-8" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        gold: {
+          id: "gold",
+          label: "Gold",
+          labelZh: "金色",
+          classes: [
+            "border-2 border-[#fbbf24]",
+            "ring-1 ring-[#fbbf24]/30",
+            "shadow-[inset_0_1px_0_rgba(251,191,36,0.1),0_4px_12px_rgba(251,191,36,0.2)]",
+            "text-[#fbbf24]",
+          ],
+        },
+        silver: {
+          id: "silver",
+          label: "Silver",
+          labelZh: "银色",
+          classes: [
+            "border-2 border-slate-400",
+            "ring-1 ring-slate-300/30",
+            "shadow-[inset_0_1px_0_rgba(148,163,184,0.1),0_4px_12px_rgba(148,163,184,0.2)]",
+            "text-slate-300",
+          ],
+        },
+        bronze: {
+          id: "bronze",
+          label: "Bronze",
+          labelZh: "铜色",
+          classes: [
+            "border-2 border-[#cd7f32]",
+            "ring-1 ring-[#cd7f32]/30",
+            "shadow-[inset_0_1px_0_rgba(205,127,50,0.1),0_4px_12px_rgba(205,127,50,0.2)]",
+            "text-[#cd7f32]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Important content", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[inset_0_1px_0_rgba(251,191,36,0.2),0_6px_20px_rgba(251,191,36,0.3)]",
+        ],
+      },
+    },
   },
 };

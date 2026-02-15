@@ -254,6 +254,46 @@ export default async function StyleDetailPage({
           </section>
         )}
 
+        {/* Compatible Layouts (for visual styles only) */}
+        {style.styleType === "visual" && (() => {
+          const compatibleLayouts = styles.filter(
+            (s) => s.styleType === "layout" && s.compatibleWith?.includes(style.slug)
+          );
+          if (compatibleLayouts.length === 0) return null;
+          return (
+            <section className="border-b border-border">
+              <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+                <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                  兼容的布局模式
+                </p>
+                <h2 className="text-2xl md:text-3xl mb-4">推荐布局</h2>
+                <p className="text-muted mb-8 max-w-2xl">
+                  以下布局模式与 {style.name} 风格搭配效果良好。
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {compatibleLayouts.map((layoutStyle) => (
+                    <Link
+                      key={layoutStyle.slug}
+                      href={`/styles/${layoutStyle.slug}`}
+                      className="group block border border-border hover:border-foreground transition-colors"
+                    >
+                      <div className="aspect-square overflow-hidden">
+                        <StyleCoverPreview styleSlug={layoutStyle.slug} />
+                      </div>
+                      <div className="p-3">
+                        <p className="text-sm font-medium group-hover:text-accent transition-colors">
+                          {layoutStyle.name}
+                        </p>
+                        <p className="text-xs text-muted">{layoutStyle.nameEn}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
         {/* Style Pack Export */}
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">

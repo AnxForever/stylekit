@@ -260,5 +260,360 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
+
+    stickyNote: {
+      id: "stickyNote",
+      name: "Sticky Note",
+      nameZh: "便利贴",
+      description: "Sticky note card with slight rotation and shadow",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "rounded-sm",
+          "font-sans",
+          "shadow-[3px_3px_8px_rgba(0,0,0,0.15)]",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "rotation",
+          label: "Rotation",
+          labelZh: "旋转",
+          type: "select",
+          options: [
+            { value: "none", label: "None", labelZh: "无", classes: "" },
+            { value: "slight", label: "Slight", labelZh: "微旋", classes: "rotate-[1.5deg]" },
+            { value: "more", label: "More", labelZh: "更多", classes: "rotate-[3deg]" },
+          ],
+          default: "slight",
+        },
+      ],
+      variants: {
+        yellow: {
+          id: "yellow",
+          label: "Yellow",
+          labelZh: "黄色",
+          classes: [
+            "bg-[#ffd93d] text-[#2c2c2c]",
+            "p-4 md:p-6",
+          ],
+        },
+        pink: {
+          id: "pink",
+          label: "Pink",
+          labelZh: "粉色",
+          classes: [
+            "bg-[#ff6b6b]/80 text-[#fffef5]",
+            "p-4 md:p-6",
+          ],
+        },
+        blue: {
+          id: "blue",
+          label: "Blue",
+          labelZh: "蓝色",
+          classes: [
+            "bg-[#4ecdc4]/80 text-[#fffef5]",
+            "p-4 md:p-6",
+          ],
+        },
+        green: {
+          id: "green",
+          label: "Green",
+          labelZh: "绿色",
+          classes: [
+            "bg-[#a8e6cf] text-[#2c2c2c]",
+            "p-4 md:p-6",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Remember this!", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:rotate-0",
+          "hover:shadow-[4px_4px_12px_rgba(0,0,0,0.2)]",
+          "hover:-translate-y-1",
+        ],
+      },
+    },
+
+    doodleBorder: {
+      id: "doodleBorder",
+      name: "Doodle Border",
+      nameZh: "涂鸦边框",
+      description: "Container with hand-drawn wavy border effect",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#fffef5]",
+          "rounded-sm",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "padding",
+          label: "Padding",
+          labelZh: "内边距",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-5" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-8" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-10" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "border-2 border-dashed border-[#2c2c2c]",
+            "shadow-[3px_3px_0px_#4ecdc4]",
+          ],
+        },
+        thick: {
+          id: "thick",
+          label: "Thick",
+          labelZh: "粗线",
+          classes: [
+            "border-4 border-dashed border-[#2c2c2c]",
+            "shadow-[4px_4px_0px_#ff6b6b]",
+          ],
+        },
+        dotted: {
+          id: "dotted",
+          label: "Dotted",
+          labelZh: "点线",
+          classes: [
+            "border-2 border-dotted border-[#2c2c2c]",
+            "shadow-[3px_3px_0px_#ffd93d]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Inside the doodle border", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[5px_5px_0px_#4ecdc4]",
+          "hover:rotate-[0.3deg]",
+        ],
+      },
+    },
+
+    pencilDivider: {
+      id: "pencilDivider",
+      name: "Pencil Divider",
+      nameZh: "铅笔分割线",
+      description: "Horizontal divider with pencil-drawn line aesthetic",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "w-full",
+          "my-4",
+          "transition-all duration-200 ease-in-out",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "h-0.5",
+            "bg-[#2c2c2c]/60",
+            "rotate-[-0.3deg]",
+          ],
+        },
+        wavy: {
+          id: "wavy",
+          label: "Wavy",
+          labelZh: "波浪",
+          classes: [
+            "border-b-2 border-dashed border-[#2c2c2c]/50",
+            "rotate-[0.2deg]",
+          ],
+        },
+        dashed: {
+          id: "dashed",
+          label: "Dashed",
+          labelZh: "虚线",
+          classes: [
+            "border-b-2 border-dotted border-[#ff6b6b]/60",
+            "rotate-[-0.5deg]",
+          ],
+        },
+      },
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      states: {},
+    },
+
+    sketchBadge: {
+      id: "sketchBadge",
+      name: "Sketch Badge",
+      nameZh: "素描徽章",
+      description: "Badge with hand-drawn circle border",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "inline-flex items-center justify-center",
+          "rounded-full",
+          "border-2 border-dashed",
+          "font-sans font-bold",
+          "transition-all duration-200 ease-in-out",
+        ],
+      },
+      parameters: [
+        {
+          id: "size",
+          label: "Size",
+          labelZh: "尺寸",
+          type: "select",
+          options: [
+            { value: "sm", label: "Small", labelZh: "小", classes: "w-8 h-8 text-xs" },
+            { value: "md", label: "Medium", labelZh: "中", classes: "w-10 h-10 text-sm" },
+            { value: "lg", label: "Large", labelZh: "大", classes: "w-14 h-14 text-base" },
+          ],
+          default: "md",
+        },
+      ],
+      variants: {
+        red: {
+          id: "red",
+          label: "Red",
+          labelZh: "红色",
+          classes: [
+            "bg-[#ff6b6b] text-[#fffef5]",
+            "border-[#2c2c2c]",
+            "shadow-[2px_2px_0px_#2c2c2c]",
+          ],
+        },
+        blue: {
+          id: "blue",
+          label: "Blue",
+          labelZh: "蓝色",
+          classes: [
+            "bg-[#4ecdc4] text-[#fffef5]",
+            "border-[#2c2c2c]",
+            "shadow-[2px_2px_0px_#2c2c2c]",
+          ],
+        },
+        green: {
+          id: "green",
+          label: "Green",
+          labelZh: "绿色",
+          classes: [
+            "bg-[#a8e6cf] text-[#2c2c2c]",
+            "border-[#2c2c2c]",
+            "shadow-[2px_2px_0px_#2c2c2c]",
+          ],
+        },
+        orange: {
+          id: "orange",
+          label: "Orange",
+          labelZh: "橙色",
+          classes: [
+            "bg-[#ffd93d] text-[#2c2c2c]",
+            "border-[#2c2c2c]",
+            "shadow-[2px_2px_0px_#2c2c2c]",
+          ],
+        },
+      },
+      slots: [
+        { id: "label", label: "Label", labelZh: "文字", required: true, default: "!", type: "text" },
+      ],
+      states: {
+        hover: [
+          "hover:rotate-[-3deg]",
+          "hover:scale-110",
+        ],
+      },
+    },
+
+    notebookList: {
+      id: "notebookList",
+      name: "Notebook List",
+      nameZh: "笔记本列表",
+      description: "List container styled like notebook paper with lines",
+      skeleton: {
+        element: "div",
+        baseClasses: [
+          "bg-[#fffef5]",
+          "rounded-sm",
+          "border-2 border-dashed border-[#2c2c2c]",
+          "p-5 md:p-8",
+          "font-sans",
+          "transition-all duration-200 ease-in-out",
+          "relative",
+        ],
+      },
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
+      variants: {
+        default: {
+          id: "default",
+          label: "Default",
+          labelZh: "默认",
+          classes: [
+            "shadow-[3px_3px_0px_#4ecdc4]",
+            "border-l-[6px] border-l-[#ff6b6b]",
+          ],
+        },
+        grid: {
+          id: "grid",
+          label: "Grid",
+          labelZh: "网格",
+          classes: [
+            "shadow-[3px_3px_0px_#ffd93d]",
+            "border-l-[6px] border-l-[#4ecdc4]",
+          ],
+        },
+        dotted: {
+          id: "dotted",
+          label: "Dotted",
+          labelZh: "点线",
+          classes: [
+            "shadow-[3px_3px_0px_#ff6b6b]",
+            "border-dotted",
+            "border-l-[6px] border-l-[#ffd93d]",
+          ],
+        },
+      },
+      slots: [
+        { id: "children", label: "Content", labelZh: "内容", required: true, default: "List items here...", type: "children" },
+      ],
+      states: {
+        hover: [
+          "hover:shadow-[5px_5px_0px_#4ecdc4]",
+        ],
+      },
+    },
   },
 };

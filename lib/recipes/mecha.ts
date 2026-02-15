@@ -235,7 +235,7 @@ export const mechaRecipes: StyleRecipes = {
         element: "div",
         baseClasses: [
           "h-2",
-          "bg-repeating-linear-gradient",
+          "bg-[repeating-linear-gradient(45deg,#fbbf24_0px,#fbbf24_10px,#1a2744_10px,#1a2744_20px)]",
         ],
       },
       parameters: [
@@ -261,7 +261,7 @@ export const mechaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
 
@@ -277,6 +277,8 @@ export const mechaRecipes: StyleRecipes = {
           "bg-[#1a2744]",
           "border-2 border-[#4a5c3a]",
           "p-4",
+          "[clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]",
+          "overflow-hidden",
         ],
       },
       parameters: [
@@ -334,6 +336,7 @@ export const mechaRecipes: StyleRecipes = {
           "h-6",
           "bg-[#1a2744]",
           "border border-[#4a5c3a]",
+          "bg-[repeating-linear-gradient(90deg,transparent_0px,transparent_18px,#1a2744_18px,#1a2744_20px)]",
         ],
       },
       parameters: [
@@ -388,12 +391,23 @@ export const mechaRecipes: StyleRecipes = {
           "relative",
           "w-16 h-8",
           "bg-[#1a2744]",
-          "border-2 border-[#4a5c3a]",
+          "border-4 border-[#4a5c3a]",
           "rounded-none",
           "transition-all duration-200",
+          "shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -402,7 +416,7 @@ export const mechaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {
         active: [
           "[&.active]:border-[#22c55e]",
@@ -423,9 +437,20 @@ export const mechaRecipes: StyleRecipes = {
           "px-3 py-1",
           "font-mono text-xs uppercase tracking-widest",
           "border-2",
+          "[clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         solid: {
           id: "solid",
@@ -465,7 +490,17 @@ export const mechaRecipes: StyleRecipes = {
           "font-mono text-sm",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         online: {
           id: "online",
@@ -504,7 +539,17 @@ export const mechaRecipes: StyleRecipes = {
           "grid grid-cols-2 gap-2",
         ],
       },
-      parameters: [],
+      parameters: [
+        {
+          id: "visible",
+          label: "Visible",
+          labelZh: "可见",
+          type: "boolean",
+          default: true,
+          trueClasses: "opacity-100",
+          falseClasses: "opacity-0",
+        },
+      ],
       variants: {
         default: {
           id: "default",
@@ -513,7 +558,7 @@ export const mechaRecipes: StyleRecipes = {
           classes: [],
         },
       },
-      slots: [],
+      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
   },
