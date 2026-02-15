@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Zap, Layers, Sparkles, Bell, Check, X, Volume2, Wifi, Bluetooth, Moon, Star, Rocket, Shield, Users } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

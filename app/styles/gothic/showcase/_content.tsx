@@ -10,8 +10,6 @@ import {
   BookOpen,
   ChevronDown,
   Check,
-  X,
-  Info,
   Crown,
   Skull,
   Castle,
@@ -677,7 +675,7 @@ export default function ShowcaseContent() {
           </h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full flex items-center justify-between px-5 py-4 border-2 border-[#c9a227]/30 bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] font-serif text-sm text-[#c9a227]/70 hover:border-[#c9a227]/60 transition-all"
             >
               <span className="uppercase tracking-[0.15em] flex items-center gap-2">

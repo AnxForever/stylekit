@@ -10,9 +10,6 @@ import {
   ChevronDown,
   Check,
   X,
-  AlertTriangle,
-  Info,
-  Cloud,
   Snowflake,
   Leaf,
   Zap,
@@ -845,7 +842,7 @@ export default function ShowcaseContent() {
               <span className="text-[#f5f0e1] text-xs font-bold">灯</span>
             </div>
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-5 py-4 border-4 border-[#1a3055] bg-[#f5f0e1] text-sm font-bold flex items-center justify-between hover:border-[#d4553a] transition-colors shadow-[4px_4px_0px_#1a3055]"
             >
               <span className="truncate">{selectedPrint}</span>
