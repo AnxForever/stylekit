@@ -9,10 +9,8 @@ import {
   Heart,
   ChevronDown,
   Check,
-  X,
   ArrowLeft,
   Star,
-  Info,
   AlertTriangle,
   Ban,
   Sparkles,
@@ -274,12 +272,14 @@ function LaceDivider({ variant = "scallop" }: { variant?: "scallop" | "rose" | "
 function OrnateDropdown({
   isOpen,
   onToggle,
+  onSelect,
   selectedValue,
   options,
   placeholder,
 }: {
   isOpen: boolean;
   onToggle: () => void;
+  onSelect: (value: string) => void;
   selectedValue?: string;
   options: string[];
   placeholder: string;
@@ -317,7 +317,7 @@ function OrnateDropdown({
               <button
                 key={item}
                 className="w-full px-5 py-3 text-left text-sm font-serif text-[#e5e5e5]/60 hover:text-[#e5e5e5] hover:bg-[#4a1a4a]/20 transition-all border-b border-[#4a1a4a]/20 last:border-b-0 flex items-center gap-3"
-                onClick={onToggle}
+                onClick={() => onSelect(item)}
               >
                 <span className="text-[#8b1a2a]/40">{idx + 1}.</span>
                 {item}
@@ -941,7 +941,11 @@ export default function ShowcaseContent() {
           </h2>
           <OrnateDropdown
             isOpen={isDropdownOpen}
-            onToggle={() => setIsDropdownOpen(!isDropdownOpen)}
+            onToggle={() => setIsDropdownOpen((prev) => !prev)}
+            onSelect={(value) => {
+              setSelectedMotif(value);
+              setIsDropdownOpen(false);
+            }}
             selectedValue={selectedMotif}
             placeholder="Choose a Motif"
             options={[
