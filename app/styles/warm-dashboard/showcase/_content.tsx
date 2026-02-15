@@ -9,7 +9,6 @@ import {
   AlertTriangle,
   Info,
   Bell,
-  Settings,
   Search,
   TrendingUp,
   TrendingDown,
@@ -384,7 +383,7 @@ export default function ShowcaseContent() {
           <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center">Dropdown</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-left flex items-center justify-between hover:border-[#4a9d9a] transition-colors"
             >
               <span className="text-gray-700">Select timeframe</span>

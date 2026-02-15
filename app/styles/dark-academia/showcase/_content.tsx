@@ -838,7 +838,7 @@ export default function ShowcaseContent() {
           <LeatherPanel variant="light">
             <div className="relative">
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
                 className="w-full flex items-center justify-between px-5 py-4 border-2 border-[#8b7355]/40 bg-[#f5f0e1]/80 font-serif text-sm text-[#3d2b1f] hover:border-[#8b7355] transition-all"
               >
                 <span className={selectedChapter ? "" : "italic text-[#8b7355]/60"}>
@@ -859,7 +859,7 @@ export default function ShowcaseContent() {
                     "IV. Mortality and Memory",
                     "V. The Examined Life",
                     "VI. Amor Fati",
-                  ].map((chapter, i) => (
+                  ].map((chapter) => (
                     <button
                       key={chapter}
                       className="w-full px-5 py-3 text-left font-serif text-sm text-[#3d2b1f]/70 hover:text-[#3d2b1f] hover:bg-[#8b7355]/15 transition-all border-b border-[#8b7355]/15 last:border-b-0 flex items-center gap-3"

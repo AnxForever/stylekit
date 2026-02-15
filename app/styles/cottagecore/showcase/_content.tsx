@@ -19,7 +19,6 @@ import {
   Scissors,
   Cookie,
   Droplets,
-  Wind,
   CloudSun,
 } from "lucide-react";
 
@@ -796,7 +795,7 @@ export default function ShowcaseContent() {
           </p>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-5 py-4 bg-[#faf6f0] border-2 border-[#d4a0a0]/40 rounded-2xl font-serif text-sm text-[#8b7355] flex items-center justify-between hover:border-[#5a8f5a]/50 transition-all shadow-sm"
             >
               <span className="flex items-center gap-2">

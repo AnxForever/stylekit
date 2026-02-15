@@ -20,7 +20,6 @@ import {
   Volume2,
   Disc,
   FastForward,
-  Rewind,
   Moon,
   Star,
   Sparkles,
@@ -1068,7 +1067,7 @@ export default function ShowcaseContent() {
               {/* Screen bezel */}
               <div className="bg-[#0a0a0a] rounded-lg p-1 border border-[#ff006e]/30 shadow-[inset_0_0_20px_rgba(255,0,110,0.1)]">
                 <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
                   className="w-full flex items-center justify-between px-5 py-4 bg-[#050505] rounded-md text-[#ff006e] font-mono text-sm hover:shadow-[inset_0_0_30px_rgba(255,0,110,0.2)] transition-all"
                 >
                   <span className="flex items-center gap-3">
