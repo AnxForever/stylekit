@@ -368,7 +368,7 @@ export default function ShowcaseContent() {
           </h2>
           <div className="relative rotate-[-1deg]">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full flex items-center justify-between px-6 py-4 bg-white border-4 border-black font-black shadow-[6px_6px_0px_0px_black] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
             >
               <span>Pick something fun!</span>

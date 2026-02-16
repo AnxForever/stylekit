@@ -1,9 +1,13 @@
-import ShowcaseContent from "./_content";
+import dynamic from "next/dynamic";
 
 export const metadata = {
   title: "Hero Fullscreen Showcase - StyleKit",
   description: "Live demonstration of Fullscreen Hero layout style with immersive full-viewport visuals.",
 };
+
+const ShowcaseContent = dynamic(() => import("./_content"), {
+  loading: () => <div className="min-h-screen" />,
+});
 
 export default function HeroFullscreenShowcasePage() {
   return <ShowcaseContent />;

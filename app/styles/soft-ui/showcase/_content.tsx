@@ -438,7 +438,7 @@ export default function ShowcaseContent() {
           <p className="text-slate-600 mb-10">Floating dropdowns with soft shadows.</p>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full flex items-center justify-between px-5 py-3.5 bg-white rounded-2xl font-semibold text-slate-700 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:-translate-y-0.5 transition-all"
             >
               <span>Select option</span>

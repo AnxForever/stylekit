@@ -439,7 +439,7 @@ export default function ShowcaseContent() {
           </div>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full flex items-center justify-between px-5 py-3 bg-[#f5e6d3] border-2 border-[#8b4513] font-serif text-[#8b4513] uppercase tracking-widest text-sm hover:bg-[#8b4513] hover:text-[#f5e6d3] transition-colors"
             >
               <span>Select Era</span>
