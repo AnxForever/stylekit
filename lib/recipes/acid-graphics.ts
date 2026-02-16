@@ -1,14 +1,29 @@
 // Acid Graphics Component Recipes
 import type { StyleRecipes } from "./types";
+import {
+  sizeParam,
+  fullWidthParam,
+  paddingParam,
+  interactiveParam,
+  visibleParam,
+  buttonSlots,
+  cardSlots,
+  inputSlots,
+  childrenSlot,
+  labelSlot,
+  defaultVariant,
+  variant,
+  createStyleRecipes,
+} from "./factory";
 
-export const acidGraphicsRecipes: StyleRecipes = {
-  styleSlug: "acid-graphics",
-  styleName: "Acid Graphics",
-  recipes: {
+export const acidGraphicsRecipes: StyleRecipes = createStyleRecipes(
+  "acid-graphics",
+  "Acid Graphics",
+  {
     button: {
       id: "button",
       name: "Button",
-      nameZh: "按钮",
+      nameZh: "\u6309\u94ae",
       description: "Fluorescent button with hard offset shadow and terminal-style mono type",
       skeleton: {
         element: "button",
@@ -22,32 +37,18 @@ export const acidGraphicsRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-1.5 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2 md:px-6 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-6 py-3 md:px-8 md:py-4 text-base md:text-lg" },
-          ],
-          default: "md",
-        },
-        {
-          id: "fullWidth",
-          label: "Full Width",
-          labelZh: "全宽",
-          type: "boolean",
-          default: false,
-          trueClasses: "w-full",
-        },
+        sizeParam({
+          sm: "px-3 py-1.5 text-sm",
+          md: "px-4 py-2 md:px-6 md:py-3 text-sm md:text-base",
+          lg: "px-6 py-3 md:px-8 md:py-4 text-base md:text-lg",
+        }),
+        fullWidthParam,
       ],
       variants: {
         primary: {
           id: "primary",
           label: "Neon Green",
-          labelZh: "荧光绿",
+          labelZh: "\u8367\u5149\u7eff",
           classes: [
             "bg-[#39ff14] text-[#0a0a0a]",
             "border-2 border-[#39ff14]",
@@ -57,7 +58,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         secondary: {
           id: "secondary",
           label: "Electric Purple",
-          labelZh: "电紫",
+          labelZh: "\u7535\u7d2b",
           classes: [
             "bg-[#a020f0] text-[#39ff14]",
             "border-2 border-[#a020f0]",
@@ -67,7 +68,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         pink: {
           id: "pink",
           label: "Cyber Pink",
-          labelZh: "赛博粉",
+          labelZh: "\u8d5b\u535a\u7c89",
           classes: [
             "bg-[#ff6ec7] text-[#0a0a0a]",
             "border-2 border-[#ff6ec7]",
@@ -77,7 +78,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         outline: {
           id: "outline",
           label: "Wireframe",
-          labelZh: "线框",
+          labelZh: "\u7ebf\u6846",
           classes: [
             "bg-transparent text-[#39ff14]",
             "border-2 border-[#39ff14]",
@@ -85,10 +86,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
           ],
         },
       },
-      slots: [
-        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "ACTIVATE", type: "text" },
-      ],
+      slots: buttonSlots("ACTIVATE"),
       states: {
         hover: [
           "hover:translate-x-[2px] hover:translate-y-[2px]",
@@ -103,7 +101,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
     card: {
       id: "card",
       name: "Card",
-      nameZh: "卡片",
+      nameZh: "\u5361\u7247",
       description: "Dark card with fluorescent border, hard offset shadow, and scanline-ready surface",
       skeleton: {
         element: "div",
@@ -116,74 +114,39 @@ export const acidGraphicsRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "padding",
-          label: "Padding",
-          labelZh: "内边距",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-5" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-8" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-10" },
-          ],
-          default: "md",
-        },
-        {
-          id: "interactive",
-          label: "Interactive",
-          labelZh: "可交互",
-          type: "boolean",
-          default: true,
-          trueClasses: "hover:-translate-y-1 cursor-pointer",
-        },
+        paddingParam({ sm: "p-3 md:p-5", md: "p-5 md:p-8", lg: "p-6 md:p-10" }),
+        interactiveParam("hover:-translate-y-1 cursor-pointer"),
         {
           id: "skewed",
           label: "Skewed",
-          labelZh: "倾斜",
+          labelZh: "\u503e\u659c",
           type: "boolean",
           default: false,
           trueClasses: "skew-y-[-1deg]",
         },
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
         purple: {
           id: "purple",
           label: "Purple Glow",
-          labelZh: "紫色",
-          classes: [
-            "border-[#a020f0]",
-            "shadow-[5px_5px_0px_#39ff14]",
-          ],
+          labelZh: "\u7d2b\u8272",
+          classes: ["border-[#a020f0]", "shadow-[5px_5px_0px_#39ff14]"],
         },
         pink: {
           id: "pink",
           label: "Pink Glow",
-          labelZh: "粉色",
-          classes: [
-            "border-[#ff6ec7]",
-            "shadow-[5px_5px_0px_#e6ff00]",
-          ],
+          labelZh: "\u7c89\u8272",
+          classes: ["border-[#ff6ec7]", "shadow-[5px_5px_0px_#e6ff00]"],
         },
         yellow: {
           id: "yellow",
           label: "Acid Yellow",
-          labelZh: "酸黄",
-          classes: [
-            "border-[#e6ff00]",
-            "shadow-[5px_5px_0px_#ff6ec7]",
-          ],
+          labelZh: "\u9178\u9ec4",
+          classes: ["border-[#e6ff00]", "shadow-[5px_5px_0px_#ff6ec7]"],
         },
       },
-      slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: false, default: "ACID_ZONE", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Distorted reality interface", type: "children" },
-      ],
+      slots: cardSlots("ACID_ZONE", "Distorted reality interface"),
       states: {
         hover: [
           "hover:shadow-[8px_8px_0px_#a020f0]",
@@ -195,7 +158,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
     input: {
       id: "input",
       name: "Input",
-      nameZh: "输入框",
+      nameZh: "\u8f93\u5165\u6846",
       description: "Terminal-style input with fluorescent text cursor and dark field",
       skeleton: {
         element: "input",
@@ -212,50 +175,28 @@ export const acidGraphicsRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-2 py-1.5 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-3 py-2 md:px-4 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-4 py-3 md:px-5 md:py-4 text-base md:text-lg" },
-          ],
-          default: "md",
-        },
+        sizeParam({
+          sm: "px-2 py-1.5 text-sm",
+          md: "px-3 py-2 md:px-4 md:py-3 text-sm md:text-base",
+          lg: "px-4 py-3 md:px-5 md:py-4 text-base md:text-lg",
+        }),
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
         purple: {
           id: "purple",
           label: "Purple",
-          labelZh: "紫色",
-          classes: [
-            "border-[#a020f0]/60",
-            "text-[#a020f0]",
-            "placeholder:text-[#a020f0]/25",
-          ],
+          labelZh: "\u7d2b\u8272",
+          classes: ["border-[#a020f0]/60", "text-[#a020f0]", "placeholder:text-[#a020f0]/25"],
         },
         pink: {
           id: "pink",
           label: "Pink",
-          labelZh: "粉色",
-          classes: [
-            "border-[#ff6ec7]/60",
-            "text-[#ff6ec7]",
-            "placeholder:text-[#ff6ec7]/25",
-          ],
+          labelZh: "\u7c89\u8272",
+          classes: ["border-[#ff6ec7]/60", "text-[#ff6ec7]", "placeholder:text-[#ff6ec7]/25"],
         },
       },
-      slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "ENTER_DATA>_", type: "text" },
-      ],
+      slots: inputSlots("ENTER_DATA>_"),
       states: {
         focus: [
           "focus:border-[#39ff14]",
@@ -265,11 +206,10 @@ export const acidGraphicsRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-
     warpedBanner: {
       id: "warpedBanner",
       name: "Warped Banner",
-      nameZh: "扭曲横幅",
+      nameZh: "\u626d\u66f2\u6a2a\u5e45",
       description: "Full-width banner with skewed transform and fluorescent gradient background",
       skeleton: {
         element: "div",
@@ -286,52 +226,32 @@ export const acidGraphicsRecipes: StyleRecipes = {
           "[text-shadow:2px_0_#ff0000,-2px_0_#00ffff]",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
         purple: {
           id: "purple",
           label: "Purple",
-          labelZh: "紫色",
-          classes: [
-            "from-[#a020f0] via-[#ff6ec7] to-[#e6ff00]",
-          ],
+          labelZh: "\u7d2b\u8272",
+          classes: ["from-[#a020f0] via-[#ff6ec7] to-[#e6ff00]"],
         },
         pink: {
           id: "pink",
           label: "Pink",
-          labelZh: "粉色",
-          classes: [
-            "from-[#ff6ec7] via-[#e6ff00] to-[#39ff14]",
-          ],
+          labelZh: "\u7c89\u8272",
+          classes: ["from-[#ff6ec7] via-[#e6ff00] to-[#39ff14]"],
         },
       },
       slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: true, default: "ACID_ZONE", type: "text" },
-        { id: "subtitle", label: "Subtitle", labelZh: "副标题", required: false, default: "ENTER THE VOID", type: "text" },
+        { id: "title", label: "Title", labelZh: "\u6807\u9898", required: true, default: "ACID_ZONE", type: "text" },
+        { id: "subtitle", label: "Subtitle", labelZh: "\u526f\u6807\u9898", required: false, default: "ENTER THE VOID", type: "text" },
       ],
       states: {},
     },
-
     scanlineOverlay: {
       id: "scanlineOverlay",
       name: "Scanline Overlay",
-      nameZh: "扫描线覆盖层",
+      nameZh: "\u626b\u63cf\u7ebf\u8986\u76d6\u5c42",
       description: "Decorative overlay panel with CSS scanline effect for retro CRT feel",
       skeleton: {
         element: "div",
@@ -345,51 +265,30 @@ export const acidGraphicsRecipes: StyleRecipes = {
           "bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.03)_2px,rgba(57,255,20,0.03)_4px)]",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
         dense: {
           id: "dense",
           label: "Dense",
-          labelZh: "密集",
-          classes: [
-            "bg-[repeating-linear-gradient(0deg,transparent,transparent_1px,rgba(57,255,20,0.05)_1px,rgba(57,255,20,0.05)_2px)]",
-          ],
+          labelZh: "\u5bc6\u96c6",
+          classes: ["bg-[repeating-linear-gradient(0deg,transparent,transparent_1px,rgba(57,255,20,0.05)_1px,rgba(57,255,20,0.05)_2px)]"],
         },
         subtle: {
           id: "subtle",
           label: "Subtle",
-          labelZh: "微妙",
-          classes: [
-            "bg-[repeating-linear-gradient(0deg,transparent,transparent_4px,rgba(57,255,20,0.02)_4px,rgba(57,255,20,0.02)_8px)]",
-          ],
+          labelZh: "\u5fae\u5999",
+          classes: ["bg-[repeating-linear-gradient(0deg,transparent,transparent_4px,rgba(57,255,20,0.02)_4px,rgba(57,255,20,0.02)_8px)]"],
         },
       },
-      slots: [
-        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
-      ],
+      slots: childrenSlot(),
       states: {},
     },
 
     glitchBadge: {
       id: "glitchBadge",
       name: "Glitch Badge",
-      nameZh: "故障徽章",
+      nameZh: "\u6545\u969c\u5fbd\u7ae0",
       description: "Small inline badge with offset shadow and monospace text",
       skeleton: {
         element: "div",
@@ -404,24 +303,17 @@ export const acidGraphicsRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-2 py-0.5 text-[10px]" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-3 py-1 text-xs" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-4 py-1.5 text-sm" },
-          ],
-          default: "md",
-        },
+        sizeParam({
+          sm: "px-2 py-0.5 text-[10px]",
+          md: "px-3 py-1 text-xs",
+          lg: "px-4 py-1.5 text-sm",
+        }),
       ],
       variants: {
         green: {
           id: "green",
           label: "Green",
-          labelZh: "绿色",
+          labelZh: "\u7eff\u8272",
           classes: [
             "text-[#39ff14]",
             "border border-[#39ff14]",
@@ -432,7 +324,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         purple: {
           id: "purple",
           label: "Purple",
-          labelZh: "紫色",
+          labelZh: "\u7d2b\u8272",
           classes: [
             "text-[#a020f0]",
             "border border-[#a020f0]",
@@ -443,7 +335,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         pink: {
           id: "pink",
           label: "Pink",
-          labelZh: "粉色",
+          labelZh: "\u7c89\u8272",
           classes: [
             "text-[#ff6ec7]",
             "border border-[#ff6ec7]",
@@ -454,7 +346,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         yellow: {
           id: "yellow",
           label: "Yellow",
-          labelZh: "黄色",
+          labelZh: "\u9ec4\u8272",
           classes: [
             "text-[#e6ff00]",
             "border border-[#e6ff00]",
@@ -463,16 +355,13 @@ export const acidGraphicsRecipes: StyleRecipes = {
           ],
         },
       },
-      slots: [
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "ACID", type: "text" },
-      ],
+      slots: labelSlot("ACID"),
       states: {},
     },
-
     acidProgress: {
       id: "acidProgress",
       name: "Acid Progress",
-      nameZh: "酸性进度条",
+      nameZh: "\u9178\u6027\u8fdb\u5ea6\u6761",
       description: "Progress bar with fluorescent fill and hard edges",
       skeleton: {
         element: "div",
@@ -490,7 +379,7 @@ export const acidGraphicsRecipes: StyleRecipes = {
         {
           id: "value",
           label: "Value",
-          labelZh: "数值",
+          labelZh: "\u6570\u503c",
           type: "select",
           options: [
             { value: "25", label: "25%", labelZh: "25%", classes: "" },
@@ -505,30 +394,30 @@ export const acidGraphicsRecipes: StyleRecipes = {
         green: {
           id: "green",
           label: "Green",
-          labelZh: "绿色",
+          labelZh: "\u7eff\u8272",
           classes: ["[&>.fill]:bg-[repeating-linear-gradient(90deg,#39ff14_0px,#39ff14_4px,#0a0a0a_4px,#0a0a0a_6px)]"],
         },
         purple: {
           id: "purple",
           label: "Purple",
-          labelZh: "紫色",
+          labelZh: "\u7d2b\u8272",
           classes: ["[&>.fill]:bg-[repeating-linear-gradient(90deg,#a020f0_0px,#a020f0_4px,#0a0a0a_4px,#0a0a0a_6px)]"],
         },
         pink: {
           id: "pink",
           label: "Pink",
-          labelZh: "粉色",
+          labelZh: "\u7c89\u8272",
           classes: ["[&>.fill]:bg-[repeating-linear-gradient(90deg,#ff6ec7_0px,#ff6ec7_4px,#0a0a0a_4px,#0a0a0a_6px)]"],
         },
       },
-      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      slots: childrenSlot(false),
       states: {},
     },
 
     distortionDivider: {
       id: "distortionDivider",
       name: "Distortion Divider",
-      nameZh: "扭曲分隔线",
+      nameZh: "\u626d\u66f2\u5206\u9694\u7ebf",
       description: "Horizontal divider with zigzag distortion pattern",
       skeleton: {
         element: "div",
@@ -541,41 +430,21 @@ export const acidGraphicsRecipes: StyleRecipes = {
           "shadow-[2px_0_#ff0000,-2px_0_#00ffff]",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
-        thick: {
-          id: "thick",
-          label: "Thick",
-          labelZh: "粗",
-          classes: ["bg-[length:100%_4px]"],
-        },
+        default: defaultVariant,
+        thick: { id: "thick", label: "Thick", labelZh: "\u7c97", classes: ["bg-[length:100%_4px]"] },
         dotted: {
           id: "dotted",
           label: "Dotted",
-          labelZh: "点状",
+          labelZh: "\u70b9\u72b6",
           classes: [
             "bg-[repeating-linear-gradient(90deg,#39ff14_0px,#39ff14_4px,transparent_4px,transparent_8px,#ff6ec7_8px,#ff6ec7_12px,transparent_12px,transparent_16px)]",
           ],
         },
       },
-      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      slots: childrenSlot(false),
       states: {},
     },
   },
-};
+);
