@@ -719,6 +719,9 @@ const en = {
     "blend.export.css": "CSS Variables",
     "blend.export.json": "JSON Tokens",
     "blend.export.tailwind": "Tailwind Config",
+    "blend.modePick": "Dimension Pick",
+    "blend.modeInterpolate": "Interpolate",
+    "blend.interpolateTitle": "Weighted Interpolation",
 
     // Version control
     "version.tooltip": "Style version",
@@ -1423,6 +1426,9 @@ const zh: { [K in keyof typeof en]: string } = {
   "blend.export.css": "CSS 变量",
   "blend.export.json": "JSON Token",
   "blend.export.tailwind": "Tailwind 配置",
+  "blend.modePick": "维度拣选",
+  "blend.modeInterpolate": "加权插值",
+  "blend.interpolateTitle": "加权插值混搭",
 
   // Version control
   "version.tooltip": "风格版本",

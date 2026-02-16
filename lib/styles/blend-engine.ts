@@ -1,11 +1,20 @@
 // Style Blending Engine
-// Picks token dimensions from different styles to create hybrid token sets
+// Supports two modes:
+// 1. Dimension-picking: select which style provides each token category
+// 2. Weighted interpolation: blend two styles with per-dimension weights (0-100%)
 
 import type { StyleTokens } from "./tokens";
 import { getStyleTokens } from "./tokens-registry";
 import { styles } from "./index";
+import {
+  interpolateColorClass,
+  extractHexFromClass,
+  interpolateHexColors,
+} from "./color-interpolation";
 
-/** Which style to source each dimension from */
+// ============ TYPES ============
+
+/** Dimension-picking config (legacy mode) */
 export interface BlendConfig {
   colors: string;
   typography: string;
@@ -13,6 +22,23 @@ export interface BlendConfig {
   shadows: string;
   borders: string;
   interaction: string;
+}
+
+/** Weighted interpolation config between two styles */
+export interface WeightedBlendConfig {
+  styleA: string;
+  styleB: string;
+  weights: BlendWeights;
+}
+
+/** Per-dimension weights: 0 = fully styleB, 100 = fully styleA */
+export interface BlendWeights {
+  colors: number;
+  typography: number;
+  spacing: number;
+  shadows: number;
+  borders: number;
+  interaction: number;
 }
 
 export type BlendDimension = keyof BlendConfig;
@@ -30,6 +56,8 @@ const DIMENSIONS: { key: BlendDimension; labelEn: string; labelZh: string }[] = 
 export function getBlendDimensions(): typeof DIMENSIONS {
   return DIMENSIONS;
 }
+
+// ============ DIMENSION-PICKING (existing mode) ============
 
 /**
  * Creates a blended token set by picking each dimension from the specified source style.
@@ -58,6 +86,266 @@ export function blendTokens(config: BlendConfig): StyleTokens | null {
   };
 }
 
+// ============ WEIGHTED INTERPOLATION (new mode) ============
+
+/** Default weights: 50/50 split */
+export function defaultWeights(): BlendWeights {
+  return {
+    colors: 50,
+    typography: 50,
+    spacing: 50,
+    shadows: 50,
+    borders: 50,
+    interaction: 50,
+  };
+}
+
+/**
+ * Interpolate a string value between two sources.
+ * For color classes: HSL interpolation.
+ * For other strings: pick from the dominant source.
+ */
+function interpolateString(
+  valueA: string,
+  valueB: string,
+  weightA: number, // 0..1
+  prefix?: string
+): string {
+  // Try color interpolation if both contain hex values
+  const hexA = extractHexFromClass(valueA);
+  const hexB = extractHexFromClass(valueB);
+
+  if (hexA && hexB && prefix) {
+    return interpolateColorClass(valueA, valueB, weightA, prefix);
+  }
+
+  // For non-color strings, pick from the dominant source
+  return weightA >= 0.5 ? valueA : valueB;
+}
+
+/** Interpolate string arrays (accent colors, etc.) */
+function interpolateStringArray(
+  arrA: string[],
+  arrB: string[],
+  weightA: number
+): string[] {
+  if (weightA >= 0.7) return arrA;
+  if (weightA <= 0.3) return arrB;
+
+  // Mix: take weighted proportion from each
+  const countA = Math.max(1, Math.round(arrA.length * weightA));
+  const countB = Math.max(1, Math.round(arrB.length * (1 - weightA)));
+  return [...arrA.slice(0, countA), ...arrB.slice(0, countB)];
+}
+
+/** Interpolate colored shadow maps */
+function interpolateColoredShadows(
+  mapA: Record<string, string> | undefined,
+  mapB: Record<string, string> | undefined,
+  weightA: number
+): Record<string, string> | undefined {
+  if (!mapA && !mapB) return undefined;
+  if (!mapA) return mapB;
+  if (!mapB) return mapA;
+
+  const result: Record<string, string> = {};
+  const allKeys = new Set([...Object.keys(mapA), ...Object.keys(mapB)]);
+
+  for (const key of allKeys) {
+    const a = mapA[key];
+    const b = mapB[key];
+    if (a && b) {
+      // Both have this key - try to interpolate hex within the shadow value
+      const hexA = extractHexFromClass(a);
+      const hexB = extractHexFromClass(b);
+      if (hexA && hexB) {
+        const blended = interpolateHexColors([
+          { hex: hexA, weight: weightA },
+          { hex: hexB, weight: 1 - weightA },
+        ]);
+        result[key] = a.replace(/#[0-9a-fA-F]{3,6}/, blended);
+      } else {
+        result[key] = weightA >= 0.5 ? a : b;
+      }
+    } else {
+      result[key] = (a ?? b)!;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Creates a blended token set by mathematically interpolating between two styles.
+ *
+ * - Colors: HSL-space interpolation of hex values
+ * - Strings without hex: threshold-based picking (dominant source wins)
+ * - Arrays: proportional mixing based on weight
+ */
+export function blendTokensWeighted(config: WeightedBlendConfig): StyleTokens | null {
+  const tokensA = getStyleTokens(config.styleA);
+  const tokensB = getStyleTokens(config.styleB);
+
+  if (!tokensA || !tokensB) return null;
+
+  const w = config.weights;
+
+  // Normalize weights from 0-100 to 0-1
+  const wColors = w.colors / 100;
+  const wTypo = w.typography / 100;
+  const wSpace = w.spacing / 100;
+  const wShadow = w.shadows / 100;
+  const wBorder = w.borders / 100;
+  const wInteract = w.interaction / 100;
+
+  return {
+    colors: {
+      background: {
+        primary: interpolateString(
+          tokensA.colors.background.primary,
+          tokensB.colors.background.primary,
+          wColors,
+          "bg"
+        ),
+        secondary: interpolateString(
+          tokensA.colors.background.secondary,
+          tokensB.colors.background.secondary,
+          wColors,
+          "bg"
+        ),
+        accent: interpolateStringArray(
+          tokensA.colors.background.accent,
+          tokensB.colors.background.accent,
+          wColors
+        ),
+      },
+      text: {
+        primary: interpolateString(
+          tokensA.colors.text.primary,
+          tokensB.colors.text.primary,
+          wColors,
+          "text"
+        ),
+        secondary: interpolateString(
+          tokensA.colors.text.secondary,
+          tokensB.colors.text.secondary,
+          wColors,
+          "text"
+        ),
+        muted: interpolateString(
+          tokensA.colors.text.muted,
+          tokensB.colors.text.muted,
+          wColors,
+          "text"
+        ),
+      },
+      button: {
+        primary: interpolateString(
+          tokensA.colors.button.primary,
+          tokensB.colors.button.primary,
+          wColors
+        ),
+        secondary: interpolateString(
+          tokensA.colors.button.secondary,
+          tokensB.colors.button.secondary,
+          wColors
+        ),
+      },
+    },
+
+    typography: {
+      heading: interpolateString(tokensA.typography.heading, tokensB.typography.heading, wTypo),
+      body: interpolateString(tokensA.typography.body, tokensB.typography.body, wTypo),
+      mono: interpolateString(
+        tokensA.typography.mono ?? "font-mono",
+        tokensB.typography.mono ?? "font-mono",
+        wTypo
+      ),
+      sizes: {
+        hero: interpolateString(tokensA.typography.sizes.hero, tokensB.typography.sizes.hero, wTypo),
+        h1: interpolateString(tokensA.typography.sizes.h1, tokensB.typography.sizes.h1, wTypo),
+        h2: interpolateString(tokensA.typography.sizes.h2, tokensB.typography.sizes.h2, wTypo),
+        h3: interpolateString(tokensA.typography.sizes.h3, tokensB.typography.sizes.h3, wTypo),
+        body: interpolateString(tokensA.typography.sizes.body, tokensB.typography.sizes.body, wTypo),
+        small: interpolateString(tokensA.typography.sizes.small, tokensB.typography.sizes.small, wTypo),
+      },
+    },
+
+    spacing: {
+      section: interpolateString(tokensA.spacing.section, tokensB.spacing.section, wSpace),
+      container: interpolateString(tokensA.spacing.container, tokensB.spacing.container, wSpace),
+      card: interpolateString(tokensA.spacing.card, tokensB.spacing.card, wSpace),
+      gap: {
+        sm: interpolateString(tokensA.spacing.gap.sm, tokensB.spacing.gap.sm, wSpace),
+        md: interpolateString(tokensA.spacing.gap.md, tokensB.spacing.gap.md, wSpace),
+        lg: interpolateString(tokensA.spacing.gap.lg, tokensB.spacing.gap.lg, wSpace),
+      },
+    },
+
+    border: {
+      width: interpolateString(tokensA.border.width, tokensB.border.width, wBorder),
+      color: interpolateString(tokensA.border.color, tokensB.border.color, wBorder),
+      radius: interpolateString(tokensA.border.radius, tokensB.border.radius, wBorder),
+      style: interpolateString(
+        tokensA.border.style ?? "border-solid",
+        tokensB.border.style ?? "border-solid",
+        wBorder
+      ),
+    },
+
+    shadow: {
+      sm: interpolateString(tokensA.shadow.sm, tokensB.shadow.sm, wShadow),
+      md: interpolateString(tokensA.shadow.md, tokensB.shadow.md, wShadow),
+      lg: interpolateString(tokensA.shadow.lg, tokensB.shadow.lg, wShadow),
+      none: interpolateString(tokensA.shadow.none, tokensB.shadow.none, wShadow),
+      hover: interpolateString(tokensA.shadow.hover, tokensB.shadow.hover, wShadow),
+      focus: interpolateString(tokensA.shadow.focus, tokensB.shadow.focus, wShadow),
+      colored: interpolateColoredShadows(
+        tokensA.shadow.colored,
+        tokensB.shadow.colored,
+        wShadow
+      ),
+    },
+
+    interaction: {
+      transition: interpolateString(
+        tokensA.interaction.transition,
+        tokensB.interaction.transition,
+        wInteract
+      ),
+      hoverScale: interpolateString(
+        tokensA.interaction.hoverScale ?? "",
+        tokensB.interaction.hoverScale ?? "",
+        wInteract
+      ),
+      hoverTranslate: interpolateString(
+        tokensA.interaction.hoverTranslate ?? "",
+        tokensB.interaction.hoverTranslate ?? "",
+        wInteract
+      ),
+      active: interpolateString(
+        tokensA.interaction.active ?? "",
+        tokensB.interaction.active ?? "",
+        wInteract
+      ),
+    },
+
+    // Rules: merge from both (union of forbidden, intersection of required)
+    forbidden: {
+      classes: [...new Set([...tokensA.forbidden.classes, ...tokensB.forbidden.classes])],
+      patterns: [...new Set([...tokensA.forbidden.patterns, ...tokensB.forbidden.patterns])],
+      reasons: { ...tokensB.forbidden.reasons, ...tokensA.forbidden.reasons },
+    },
+    required: {
+      button: wColors >= 0.5 ? tokensA.required.button : tokensB.required.button,
+      card: wColors >= 0.5 ? tokensA.required.card : tokensB.required.card,
+      input: wColors >= 0.5 ? tokensA.required.input : tokensB.required.input,
+    },
+  };
+}
+
+// ============ COMPATIBILITY ============
+
 /**
  * Returns visual styles that are marked compatible with the given style,
  * or all visual styles if no compatibility info exists.
@@ -67,11 +355,12 @@ export function getCompatibleStyles(baseSlug: string): string[] {
   if (style?.compatibleWith && style.compatibleWith.length > 0) {
     return style.compatibleWith;
   }
-  // Return all visual styles as potential candidates
   return styles
     .filter((s) => s.styleType === "visual")
     .map((s) => s.slug);
 }
+
+// ============ EXPORT ============
 
 /** Export blended tokens in different formats */
 export function exportBlendedTokens(
@@ -96,7 +385,6 @@ export function exportBlendedTokens(
 function tokensToCssVariables(tokens: StyleTokens): string {
   const lines: string[] = [":root {"];
 
-  // Colors
   lines.push("  /* Colors */");
   lines.push(`  --bg-primary: ${tokens.colors.background.primary};`);
   lines.push(`  --bg-secondary: ${tokens.colors.background.secondary};`);
@@ -106,7 +394,6 @@ function tokensToCssVariables(tokens: StyleTokens): string {
   lines.push(`  --btn-primary: ${tokens.colors.button.primary};`);
   lines.push(`  --btn-secondary: ${tokens.colors.button.secondary};`);
 
-  // Typography
   lines.push("");
   lines.push("  /* Typography */");
   lines.push(`  --font-heading: ${tokens.typography.heading};`);
@@ -118,28 +405,24 @@ function tokensToCssVariables(tokens: StyleTokens): string {
   lines.push(`  --size-body: ${tokens.typography.sizes.body};`);
   lines.push(`  --size-small: ${tokens.typography.sizes.small};`);
 
-  // Borders
   lines.push("");
   lines.push("  /* Borders */");
   lines.push(`  --border-width: ${tokens.border.width};`);
   lines.push(`  --border-color: ${tokens.border.color};`);
   lines.push(`  --border-radius: ${tokens.border.radius};`);
 
-  // Shadows
   lines.push("");
   lines.push("  /* Shadows */");
   lines.push(`  --shadow-sm: ${tokens.shadow.sm};`);
   lines.push(`  --shadow-md: ${tokens.shadow.md};`);
   lines.push(`  --shadow-lg: ${tokens.shadow.lg};`);
 
-  // Spacing
   lines.push("");
   lines.push("  /* Spacing */");
   lines.push(`  --spacing-section: ${tokens.spacing.section};`);
   lines.push(`  --spacing-container: ${tokens.spacing.container};`);
   lines.push(`  --spacing-card: ${tokens.spacing.card};`);
 
-  // Interaction
   lines.push("");
   lines.push("  /* Interaction */");
   lines.push(`  --transition: ${tokens.interaction.transition};`);
