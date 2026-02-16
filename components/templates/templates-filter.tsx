@@ -8,6 +8,7 @@ const typeLabels: Record<string, string> = {
   landing: "着陆页",
   dashboard: "仪表盘",
   blog: "博客",
+  portfolio: "作品集",
 };
 
 function FilterButtons() {
