@@ -3,13 +3,14 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { TemplatesFilter, typeLabels } from "@/components/templates/templates-filter";
+import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
 
 interface Template {
   id: string;
   name: string;
   description: string;
   styleSlug: string;
-  type: "landing" | "dashboard" | "blog";
+  type: "landing" | "dashboard" | "blog" | "portfolio";
   href: string;
 }
 
@@ -49,6 +50,51 @@ const templates: Template[] = [
     styleSlug: "neo-brutalist",
     type: "blog",
     href: "/templates/anx-blog",
+  },
+  {
+    id: "warm-dashboard",
+    name: "Warm Dashboard",
+    description:
+      "Warm-toned analytics dashboard with sidebar navigation, stat cards, charts, and data tables.",
+    styleSlug: "warm-dashboard",
+    type: "dashboard",
+    href: "/templates/warm-dashboard",
+  },
+  {
+    id: "minimalist-portfolio",
+    name: "Minimalist Portfolio",
+    description:
+      "Clean, flat portfolio with bold typography, project list, skills section, and contact form.",
+    styleSlug: "minimalist-flat",
+    type: "portfolio",
+    href: "/templates/minimalist-portfolio",
+  },
+  {
+    id: "magazine-landing",
+    name: "Magazine Landing",
+    description:
+      "Editorial magazine layout with featured articles, category navigation, and newsletter signup.",
+    styleSlug: "magazine-grid",
+    type: "landing",
+    href: "/templates/magazine-landing",
+  },
+  {
+    id: "neumorphism-landing",
+    name: "Neumorphism Landing",
+    description:
+      "Soft neumorphic SaaS landing page with raised elements, pricing cards, and testimonials.",
+    styleSlug: "neumorphism",
+    type: "landing",
+    href: "/templates/neumorphism-landing",
+  },
+  {
+    id: "brutalist-playful-blog",
+    name: "Brutalist Playful Blog",
+    description:
+      "Colorful neo-brutalist blog with thick borders, hard shadows, category filters, and playful layouts.",
+    styleSlug: "neo-brutalist-playful",
+    type: "blog",
+    href: "/templates/brutalist-playful-blog",
   },
 ];
 
@@ -96,16 +142,17 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
                   >
                     <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                       {style && (
-                        <div className="absolute inset-0 flex">
-                          <div className="flex-1" style={{ backgroundColor: style.colors.primary }} />
-                          <div className="flex-1" style={{ backgroundColor: style.colors.secondary }} />
-                          {style.colors.accent.slice(0, 2).map((color, i) => (
-                            <div key={i} className="flex-1" style={{ backgroundColor: color }} />
-                          ))}
-                        </div>
+                        <TemplateCoverPreview
+                          templateId={template.id}
+                          colors={{
+                            primary: style.colors.primary,
+                            secondary: style.colors.secondary,
+                            accent: style.colors.accent,
+                          }}
+                        />
                       )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/35">
-                        <span className="text-white font-serif text-xl italic">{template.name}</span>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-4 py-3">
+                        <span className="text-white text-sm font-medium">{template.name}</span>
                       </div>
                     </div>
 
