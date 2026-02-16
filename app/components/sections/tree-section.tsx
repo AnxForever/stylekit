@@ -3,6 +3,7 @@
 import { Tree } from "@/components/ui/tree";
 import type { TreeNode } from "@/components/ui/tree";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -34,10 +35,12 @@ const treeData: TreeNode[] = [
 ];
 
 export function TreeSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       title="Tree"
-      description="树形结构组件"
+      description={t("components.tree.description")}
       noBorder
     >
       <div className="max-w-xs border border-border rounded-lg p-4">

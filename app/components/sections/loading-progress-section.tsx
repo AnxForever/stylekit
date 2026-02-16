@@ -4,6 +4,7 @@ import { Loading } from "@/components/ui/loading";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -13,17 +14,19 @@ interface Props {
 }
 
 export function LoadingProgressSection({ expandedProps, toggleProps, progress, setProgress }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       title="Loading & Progress"
-      description="加载和进度指示器"
+      description={t("components.loading.description")}
     >
       <div className="flex flex-wrap gap-8 items-center mb-8">
         <Loading size="sm" />
         <Loading size="md" />
         <Loading size="lg" />
         <Loading size="xl" color="accent" />
-        <Loading label="加载中..." />
+        <Loading label={t("components.loading.label")} />
       </div>
       <div className="max-w-md space-y-4">
         <Progress value={progress} />

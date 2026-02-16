@@ -14,6 +14,7 @@ import {
   ZoomOut,
   Maximize2,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 type DeviceType = "desktop" | "laptop" | "tablet" | "mobile" | "mobile-sm";
 
@@ -50,6 +51,7 @@ function sanitizePreviewUrl(url: string | null): string {
 }
 
 export default function PreviewPage() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const url = sanitizePreviewUrl(searchParams.get("url"));
   const [activeDevice, setActiveDevice] = useState<DeviceType>("desktop");
@@ -107,10 +109,10 @@ export default function PreviewPage() {
             className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">返回</span>
+            <span className="hidden sm:inline">{t("preview.toolbar.back")}</span>
           </Link>
           <div className="h-4 w-px bg-border" />
-          <span className="text-sm font-medium">响应式预览</span>
+          <span className="text-sm font-medium">{t("preview.toolbar.title")}</span>
         </div>
 
         {/* Center: Device Buttons */}
@@ -140,13 +142,13 @@ export default function PreviewPage() {
           {/* Rotate button (only for non-desktop) */}
           {activeDevice !== "desktop" && activeDevice !== "laptop" && (
             <button
-              onClick={() => setIsRotated(!isRotated)}
+              onClick={() => setIsRotated((prev) => !prev)}
               className={`p-1.5 rounded-md transition-colors ${
                 isRotated
                   ? "bg-foreground text-background"
                   : "text-muted hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800"
               }`}
-              title={isRotated ? "竖屏" : "横屏"}
+              title={isRotated ? t("preview.toolbar.portrait") : t("preview.toolbar.landscape")}
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -158,7 +160,7 @@ export default function PreviewPage() {
               onClick={handleZoomOut}
               disabled={zoom === zoomLevels[0]}
               className="p-1.5 text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-              title="缩小"
+              title={t("preview.toolbar.zoomOut")}
             >
               <ZoomOut className="w-4 h-4" />
             </button>
@@ -169,7 +171,7 @@ export default function PreviewPage() {
               onClick={handleZoomIn}
               disabled={zoom === zoomLevels[zoomLevels.length - 1]}
               className="p-1.5 text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-              title="放大"
+              title={t("preview.toolbar.zoomIn")}
             >
               <ZoomIn className="w-4 h-4" />
             </button>
@@ -179,7 +181,7 @@ export default function PreviewPage() {
           <button
             onClick={handleFitToScreen}
             className="p-1.5 text-muted hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
-            title="重置"
+            title={t("preview.toolbar.reset")}
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -197,7 +199,7 @@ export default function PreviewPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 p-1.5 text-muted hover:text-foreground transition-colors"
-            title="新窗口打开"
+            title={t("preview.toolbar.newWindow")}
           >
             <ExternalLink className="w-4 h-4" />
           </a>
@@ -226,7 +228,7 @@ export default function PreviewPage() {
             <button
               onClick={handleRefresh}
               className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
-              title="刷新"
+              title={t("preview.toolbar.refresh")}
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -253,8 +255,8 @@ export default function PreviewPage() {
         <span>{currentDevice.label}</span>
         <span>|</span>
         <span>{dimensions.width} x {dimensions.height}</span>
-        {isRotated && <span className="text-blue-500">(横屏)</span>}
-        {zoom !== 100 && <span className="text-orange-500">({zoom}% 缩放)</span>}
+        {isRotated && <span className="text-blue-500">({t("preview.statusBar.landscape")})</span>}
+        {zoom !== 100 && <span className="text-orange-500">({zoom}% {t("preview.statusBar.zoom")})</span>}
       </div>
     </div>
   );
