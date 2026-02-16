@@ -344,6 +344,77 @@ export function blendTokensWeighted(config: WeightedBlendConfig): StyleTokens | 
   };
 }
 
+// ============ PRESETS ============
+
+export interface BlendPreset {
+  id: string;
+  name: string;
+  nameZh: string;
+  description: string;
+  mode: "pick" | "interpolate";
+  config?: BlendConfig;
+  styleA?: string;
+  styleB?: string;
+  weights?: Partial<BlendWeights>;
+}
+
+const BLEND_PRESETS: BlendPreset[] = [
+  {
+    id: "brutal-glass",
+    name: "Brutal Glass",
+    nameZh: "粗犷玻璃",
+    description: "Neo-brutalist borders with glassmorphism colors",
+    mode: "pick",
+    config: {
+      colors: "glassmorphism",
+      typography: "neo-brutalist",
+      spacing: "neo-brutalist",
+      shadows: "glassmorphism",
+      borders: "neo-brutalist",
+      interaction: "glassmorphism",
+    },
+  },
+  {
+    id: "warm-minimal",
+    name: "Warm Minimal",
+    nameZh: "温暖极简",
+    description: "Minimalist layout with warm editorial typography",
+    mode: "pick",
+    config: {
+      colors: "warm-minimalist",
+      typography: "editorial",
+      spacing: "minimalist",
+      shadows: "minimalist",
+      borders: "minimalist",
+      interaction: "warm-minimalist",
+    },
+  },
+  {
+    id: "cyber-retro",
+    name: "Cyber Retro",
+    nameZh: "赛博复古",
+    description: "Cyberpunk colors blended with retro typography",
+    mode: "interpolate",
+    styleA: "cyberpunk",
+    styleB: "retro-pop",
+    weights: { colors: 70, typography: 30, shadows: 60 },
+  },
+  {
+    id: "soft-corporate",
+    name: "Soft Corporate",
+    nameZh: "柔和商务",
+    description: "Corporate structure with soft rounded aesthetics",
+    mode: "interpolate",
+    styleA: "corporate-clean",
+    styleB: "soft-ui",
+    weights: { colors: 40, borders: 30, shadows: 25 },
+  },
+];
+
+export function getBlendPresets(): BlendPreset[] {
+  return BLEND_PRESETS;
+}
+
 // ============ COMPATIBILITY ============
 
 /**
@@ -380,6 +451,28 @@ export function exportBlendedTokens(
   }
 
   return "";
+}
+
+/** Export blended tokens as a full StyleKit style definition */
+export function exportAsStyleDefinition(
+  tokens: StyleTokens,
+  name: string = "Custom Blend"
+): string {
+  return JSON.stringify(
+    {
+      name,
+      slug: name.toLowerCase().replace(/\s+/g, "-"),
+      styleType: "visual",
+      tokens,
+      meta: {
+        generated: true,
+        source: "stylekit-blend",
+        timestamp: new Date().toISOString(),
+      },
+    },
+    null,
+    2
+  );
 }
 
 function tokensToCssVariables(tokens: StyleTokens): string {
