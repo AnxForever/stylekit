@@ -1,12 +1,11 @@
 // Minimalist Flat Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const minimalistFlatTokens: StyleTokens = {
+export const minimalistFlatTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-black",
     radius: "rounded-none",
-    style: "border-solid",
   },
 
   shadow: {
@@ -16,7 +15,6 @@ export const minimalistFlatTokens: StyleTokens = {
     none: "shadow-none",
     hover: "shadow-none",
     focus: "shadow-none",
-    colored: {},
   },
 
   interaction: {
@@ -27,15 +25,11 @@ export const minimalistFlatTokens: StyleTokens = {
 
   typography: {
     heading: "font-bold tracking-tight",
-    body: "font-sans",
-    mono: "font-mono",
     sizes: {
       hero: "text-4xl md:text-6xl lg:text-8xl",
       h1: "text-3xl md:text-5xl",
       h2: "text-2xl md:text-3xl",
       h3: "text-lg md:text-xl",
-      body: "text-sm md:text-base",
-      small: "text-xs md:text-sm",
     },
   },
 
@@ -113,4 +107,4 @@ export const minimalistFlatTokens: StyleTokens = {
       "transition-colors duration-200",
     ],
   },
-};
+});
