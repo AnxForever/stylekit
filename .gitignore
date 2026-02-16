@@ -64,3 +64,8 @@ image.jpg
 # Temporary
 .tmp/
 
+# Workspace build outputs and generated reports
+packages/**/node_modules/
+packages/**/dist/
+.spec-workflow/
+scripts/output/
