@@ -1,7 +1,7 @@
 // Asymmetric Grid Layout Tokens - Broken symmetry, visual tension, overlapping elements
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const asymmetricGridTokens: StyleTokens = {
+export const asymmetricGridTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#0f0f0f]",
@@ -92,4 +92,4 @@ export const asymmetricGridTokens: StyleTokens = {
       "shadow-sm": "Asymmetric Grid uses offset shadows, not soft shadows",
     },
   },
-};
+});

@@ -1,7 +1,7 @@
 // Synthwave Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const synthwaveTokens: StyleTokens = {
+export const synthwaveTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#ff00ff]/50",
@@ -119,4 +119,4 @@ export const synthwaveTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // F-Pattern Layout Style Tokens - Scan-optimized, left-aligned, professional blue
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const fPatternLayoutTokens: StyleTokens = {
+export const fPatternLayoutTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -103,4 +103,4 @@ export const fPatternLayoutTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

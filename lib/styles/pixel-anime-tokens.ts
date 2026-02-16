@@ -1,7 +1,7 @@
 // Pixel Anime Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const pixelAnimeTokens: StyleTokens = {
+export const pixelAnimeTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#1a1040]",
@@ -114,4 +114,4 @@ export const pixelAnimeTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

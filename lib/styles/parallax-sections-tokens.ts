@@ -1,7 +1,7 @@
 // Parallax Sections Layout Tokens - Fixed backgrounds, depth, scroll-driven immersion
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const parallaxSectionsTokens: StyleTokens = {
+export const parallaxSectionsTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-white/20",
@@ -85,4 +85,4 @@ export const parallaxSectionsTokens: StyleTokens = {
       "bg-scroll": "Parallax Sections requires fixed backgrounds for depth effect",
     },
   },
-};
+});

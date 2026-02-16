@@ -1,7 +1,7 @@
 // Card Stack Style Tokens - Layered depth effects with stacking feel
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const cardStackTokens: StyleTokens = {
+export const cardStackTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-zinc-200",
@@ -103,4 +103,4 @@ export const cardStackTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // Full Page Scroll Style Tokens - Immersive full-viewport section layout
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const fullPageScrollTokens: StyleTokens = {
+export const fullPageScrollTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-white/20",
@@ -100,4 +100,4 @@ export const fullPageScrollTokens: StyleTokens = {
       "transition-colors",
     ],
   },
-};
+});

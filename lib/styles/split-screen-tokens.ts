@@ -1,7 +1,7 @@
 // Split Screen Style Tokens - High contrast dual-panel layout
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const splitScreenTokens: StyleTokens = {
+export const splitScreenTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-zinc-300",
@@ -96,4 +96,4 @@ export const splitScreenTokens: StyleTokens = {
       "transition-colors",
     ],
   },
-};
+});

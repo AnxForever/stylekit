@@ -1,7 +1,7 @@
 // Gothic Lolita Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const gothicLolitaTokens: StyleTokens = {
+export const gothicLolitaTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#4a1a4a]/50",
@@ -117,4 +117,4 @@ export const gothicLolitaTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

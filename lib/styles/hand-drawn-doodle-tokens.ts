@@ -1,7 +1,7 @@
 // Hand-Drawn Doodle Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const handDrawnDoodleTokens: StyleTokens = {
+export const handDrawnDoodleTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#2c2c2c]",
@@ -120,4 +120,4 @@ export const handDrawnDoodleTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

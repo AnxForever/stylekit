@@ -1,7 +1,7 @@
 // Natural Organic Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const naturalOrganicTokens: StyleTokens = {
+export const naturalOrganicTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-stone-200",
@@ -119,4 +119,4 @@ export const naturalOrganicTokens: StyleTokens = {
       "transition-all duration-300",
     ],
   },
-};
+});

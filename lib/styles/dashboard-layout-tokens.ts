@@ -1,7 +1,7 @@
 // Dashboard Layout Style Tokens - Data-focused, dark sidebar, compact functional utility
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const dashboardLayoutTokens: StyleTokens = {
+export const dashboardLayoutTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -109,4 +109,4 @@ export const dashboardLayoutTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

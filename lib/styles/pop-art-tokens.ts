@@ -1,7 +1,7 @@
 // Pop Art Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const popArtTokens: StyleTokens = {
+export const popArtTokens = createStyleTokens({
   border: {
     width: "border-4",
     color: "border-black",
@@ -127,4 +127,4 @@ export const popArtTokens: StyleTokens = {
       "focus:shadow-[4px_4px_0_#ff69b4]",
     ],
   },
-};
+});

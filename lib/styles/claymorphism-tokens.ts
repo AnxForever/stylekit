@@ -1,7 +1,7 @@
 // Claymorphism Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const claymorphismTokens: StyleTokens = {
+export const claymorphismTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-transparent",
@@ -117,4 +117,4 @@ export const claymorphismTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

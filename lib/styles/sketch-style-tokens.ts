@@ -1,7 +1,7 @@
 // Sketch Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const sketchStyleTokens: StyleTokens = {
+export const sketchStyleTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#2c2c2c]",
@@ -116,4 +116,4 @@ export const sketchStyleTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

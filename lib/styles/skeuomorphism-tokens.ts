@@ -1,7 +1,7 @@
 // Skeuomorphism Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const skeuomorphismTokens: StyleTokens = {
+export const skeuomorphismTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#a89880]",
@@ -117,4 +117,4 @@ export const skeuomorphismTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

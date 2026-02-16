@@ -1,7 +1,7 @@
 // Cyber Chinese Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const cyberChineseTokens: StyleTokens = {
+export const cyberChineseTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#d4553a]/40",
@@ -118,4 +118,4 @@ export const cyberChineseTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

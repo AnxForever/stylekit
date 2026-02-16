@@ -1,7 +1,7 @@
 // Swiss Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const swissStyleTokens: StyleTokens = {
+export const swissStyleTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-black",
@@ -109,4 +109,4 @@ export const swissStyleTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

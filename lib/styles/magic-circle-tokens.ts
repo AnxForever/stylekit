@@ -1,7 +1,7 @@
 // Magic Circle Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const magicCircleTokens: StyleTokens = {
+export const magicCircleTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#fbbf24]/15",
@@ -115,4 +115,4 @@ export const magicCircleTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

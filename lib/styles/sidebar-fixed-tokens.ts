@@ -1,7 +1,7 @@
 // Sidebar Fixed Style Tokens - Dashboard with dark sidebar, compact and functional
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const sidebarFixedTokens: StyleTokens = {
+export const sidebarFixedTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-zinc-200",
@@ -105,4 +105,4 @@ export const sidebarFixedTokens: StyleTokens = {
       "focus:outline-none focus:ring-2 focus:ring-blue-500/30",
     ],
   },
-};
+});

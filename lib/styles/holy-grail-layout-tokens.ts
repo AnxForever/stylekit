@@ -1,7 +1,7 @@
 // Holy Grail Layout Style Tokens - Classic web, balanced, professional, standard spacing
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const holyGrailLayoutTokens: StyleTokens = {
+export const holyGrailLayoutTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -107,4 +107,4 @@ export const holyGrailLayoutTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

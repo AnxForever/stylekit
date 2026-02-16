@@ -1,7 +1,7 @@
 // Apple Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const appleStyleTokens: StyleTokens = {
+export const appleStyleTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-gray-200",
@@ -108,4 +108,4 @@ export const appleStyleTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});
