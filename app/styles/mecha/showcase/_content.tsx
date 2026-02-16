@@ -934,7 +934,7 @@ export default function ShowcaseContent() {
           <MilitaryPanel>
             <div className="relative">
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
                 className="w-full flex items-center justify-between px-4 py-4 border-2 border-[#4a5c3a] bg-[#1a2744] text-sm text-[#fbbf24] font-bold uppercase tracking-widest hover:border-[#fbbf24] transition-all rounded-none"
               >
                 <div className="flex items-center gap-3">

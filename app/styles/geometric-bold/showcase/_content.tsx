@@ -412,7 +412,7 @@ export default function ShowcaseContent() {
           </h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-4 bg-white text-black border-4 border-black font-bold uppercase tracking-widest text-sm flex items-center justify-between hover:bg-yellow-400 transition-colors"
             >
               <span>Select</span>

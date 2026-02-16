@@ -369,7 +369,7 @@ export default function ShowcaseContent() {
           <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12 text-center">Dropdown</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-left flex items-center justify-between hover:border-purple-400 transition-colors"
             >
               <span className="text-white/70">Select theme</span>

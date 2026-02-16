@@ -78,7 +78,7 @@ export default function ShowcaseContent() {
             <header className="px-4 py-3 bg-white border-b border-[#e2e8f0] flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  onClick={() => setSidebarOpen((prev) => !prev)}
                   className="p-2 hover:bg-[#f1f5f9] rounded-lg transition-colors"
                 >
                   <Menu className="w-5 h-5 text-[#64748b]" />

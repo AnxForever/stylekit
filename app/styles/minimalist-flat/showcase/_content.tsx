@@ -409,7 +409,7 @@ export default function ShowcaseContent() {
           <p className="text-white/80 mb-10 text-center">Select with inverted states.</p>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-3 bg-white text-black border-2 border-black font-bold flex items-center justify-between hover:bg-black hover:text-white transition-colors"
             >
               <span>Select option</span>

@@ -196,7 +196,7 @@ export default function ShowcaseContent() {
           <h2 className="font-serif text-3xl text-[#2d1810] mb-8 text-center">Mechanism Selector</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-3 bg-[#f4e4bc] border-2 border-[#2d1810] rounded font-serif text-left flex items-center justify-between shadow-[4px_4px_0px_#2d1810]"
             >
               <span className="text-[#2d1810]">Select Mechanism</span>
