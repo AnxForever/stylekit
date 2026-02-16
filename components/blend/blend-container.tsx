@@ -14,11 +14,13 @@ import {
   type BlendConfig,
   type BlendDimension,
   type BlendWeights,
+  type BlendPreset,
 } from "@/lib/styles/blend-engine";
 import { DimensionPicker } from "./dimension-picker";
 import { WeightSliders } from "./weight-slider";
 import { BlendPreview } from "./blend-preview";
 import { BlendExport } from "./blend-export";
+import { BlendPresets } from "./blend-presets";
 
 type BlendMode = "pick" | "interpolate";
 
@@ -150,6 +152,24 @@ export function BlendContainer() {
       });
     },
     [styleA, styleB, syncInterpUrl]
+  );
+
+  const applyPreset = useCallback(
+    (preset: BlendPreset) => {
+      if (preset.mode === "pick" && preset.config) {
+        setConfig(preset.config);
+        syncPickUrl(preset.config);
+        if (mode !== "pick") switchMode("pick");
+      } else if (preset.mode === "interpolate" && preset.styleA && preset.styleB) {
+        const w = { ...defaultWeights(), ...preset.weights };
+        setStyleA(preset.styleA);
+        setStyleB(preset.styleB);
+        setWeights(w);
+        syncInterpUrl(preset.styleA, preset.styleB, w);
+        if (mode !== "interpolate") switchMode("interpolate");
+      }
+    },
+    [mode, syncPickUrl, syncInterpUrl]
   );
 
   const switchMode = useCallback(
@@ -296,6 +316,9 @@ export function BlendContainer() {
               </div>
             </>
           )}
+
+          {/* Presets */}
+          <BlendPresets onSelect={applyPreset} />
 
           {/* Export */}
           {blendedTokens && <BlendExport tokens={blendedTokens} />}
