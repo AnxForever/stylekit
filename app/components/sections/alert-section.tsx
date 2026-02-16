@@ -2,6 +2,7 @@
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -9,31 +10,33 @@ interface Props {
 }
 
 export function AlertSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       title="Alert"
-      description="警告提示组件"
+      description={t("components.alert.description")}
     >
       <div className="grid gap-4 max-w-xl">
         <Alert>
-          <AlertTitle>默认提示</AlertTitle>
-          <AlertDescription>这是一条默认的提示信息。</AlertDescription>
+          <AlertTitle>{t("components.alert.default")}</AlertTitle>
+          <AlertDescription>{t("components.alert.defaultMsg")}</AlertDescription>
         </Alert>
         <Alert variant="info">
-          <AlertTitle>信息</AlertTitle>
-          <AlertDescription>这是一条信息提示。</AlertDescription>
+          <AlertTitle>{t("components.alert.info")}</AlertTitle>
+          <AlertDescription>{t("components.alert.infoMsg")}</AlertDescription>
         </Alert>
         <Alert variant="success">
-          <AlertTitle>成功</AlertTitle>
-          <AlertDescription>操作已成功完成。</AlertDescription>
+          <AlertTitle>{t("components.alert.success")}</AlertTitle>
+          <AlertDescription>{t("components.alert.successMsg")}</AlertDescription>
         </Alert>
         <Alert variant="warning">
-          <AlertTitle>警告</AlertTitle>
-          <AlertDescription>请注意潜在的问题。</AlertDescription>
+          <AlertTitle>{t("components.alert.warning")}</AlertTitle>
+          <AlertDescription>{t("components.alert.warningMsg")}</AlertDescription>
         </Alert>
         <Alert variant="error">
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>操作失败，请重试。</AlertDescription>
+          <AlertTitle>{t("components.alert.error")}</AlertTitle>
+          <AlertDescription>{t("components.alert.errorMsg")}</AlertDescription>
         </Alert>
       </div>
       <PropsToggle component="Alert" expanded={!!expandedProps.Alert} onToggle={toggleProps} />

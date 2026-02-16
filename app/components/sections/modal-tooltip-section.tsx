@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -24,42 +25,44 @@ interface Props {
 }
 
 export function ModalTooltipSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       id="dialog"
       title="Modal & Tooltip"
-      description="弹窗和提示组件"
+      description={t("components.modal.description")}
     >
       <div className="flex flex-wrap gap-4">
         <Modal>
           <ModalTrigger asChild>
-            <Button>打开 Modal</Button>
+            <Button>{t("components.modal.openModal")}</Button>
           </ModalTrigger>
           <ModalContent>
             <ModalHeader>
-              <ModalTitle>Modal 标题</ModalTitle>
+              <ModalTitle>{t("components.modal.title")}</ModalTitle>
               <ModalDescription>
-                这是一个基于 Radix Dialog 构建的 Modal 组件，支持焦点管理和无障碍访问。
+                {t("components.modal.bodyDesc")}
               </ModalDescription>
             </ModalHeader>
             <div className="py-4">
-              <p className="text-sm text-muted">Modal 内容区域，可以放置任何内容。</p>
+              <p className="text-sm text-muted">{t("components.modal.content")}</p>
             </div>
             <ModalFooter>
               <ModalClose asChild>
-                <Button variant="outline">取消</Button>
+                <Button variant="outline">{t("components.modal.cancel")}</Button>
               </ModalClose>
-              <Button>确认</Button>
+              <Button>{t("components.modal.confirm")}</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline">悬停查看 Tooltip</Button>
+            <Button variant="outline">{t("components.modal.hoverTooltip")}</Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>这是一个 Tooltip 提示</p>
+            <p>{t("components.modal.tooltipText")}</p>
           </TooltipContent>
         </Tooltip>
       </div>

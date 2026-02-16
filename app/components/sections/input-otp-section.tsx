@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { InputOTP } from "@/components/ui/input-otp";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function InputOTPSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
   const [value3, setValue3] = useState("");
@@ -18,34 +20,30 @@ export function InputOTPSection({ expandedProps, toggleProps }: Props) {
     <ComponentSection
       id="input-otp"
       title="Input OTP"
-      description="验证码输入组件，支持数字和字母数字模式"
+      description={t("components.inputOtp.description")}
     >
       <div className="space-y-6 max-w-md">
-        {/* 基础用法 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">6 位数字验证码</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.sixDigit")}</p>
           <InputOTP
             length={6}
             value={value1}
             onChange={setValue1}
-            onComplete={(v) => console.log("Complete:", v)}
           />
           {value1 && (
             <p className="text-xs text-muted-foreground mt-2">
-              当前输入: {value1}
+              {t("components.inputOtp.currentInput")}: {value1}
             </p>
           )}
         </div>
 
-        {/* 4 位验证码 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">4 位验证码</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.fourDigit")}</p>
           <InputOTP length={4} value={value2} onChange={setValue2} />
         </div>
 
-        {/* 字母数字模式 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">字母数字混合</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.alphanumeric")}</p>
           <InputOTP
             length={6}
             type="alphanumeric"
@@ -54,21 +52,18 @@ export function InputOTPSection({ expandedProps, toggleProps }: Props) {
           />
         </div>
 
-        {/* 遮罩模式 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">密码遮罩</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.mask")}</p>
           <InputOTP length={4} mask />
         </div>
 
-        {/* 错误状态 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">错误状态</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.error")}</p>
           <InputOTP length={4} error />
         </div>
 
-        {/* 禁用状态 */}
         <div>
-          <p className="text-sm text-muted-foreground mb-2">禁用状态</p>
+          <p className="text-sm text-muted-foreground mb-2">{t("components.inputOtp.disabled")}</p>
           <InputOTP length={4} disabled value="1234" />
         </div>
       </div>

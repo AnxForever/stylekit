@@ -2,6 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -9,38 +10,40 @@ interface Props {
 }
 
 export function CardSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       id="card"
       title="Card"
-      description="卡片组件，用于内容分组"
+      description={t("components.card.description")}
     >
       <div className="grid md:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Default Card</CardTitle>
-            <CardDescription>带边框的默认卡片样式</CardDescription>
+            <CardDescription>{t("components.card.defaultDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted">卡片内容区域</p>
+            <p className="text-sm text-muted">{t("components.card.content")}</p>
           </CardContent>
         </Card>
         <Card variant="elevated">
           <CardHeader>
             <CardTitle>Elevated Card</CardTitle>
-            <CardDescription>带阴影的悬浮卡片</CardDescription>
+            <CardDescription>{t("components.card.elevatedDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted">卡片内容区域</p>
+            <p className="text-sm text-muted">{t("components.card.content")}</p>
           </CardContent>
         </Card>
         <Card variant="ghost">
           <CardHeader>
             <CardTitle>Ghost Card</CardTitle>
-            <CardDescription>无边框的透明卡片</CardDescription>
+            <CardDescription>{t("components.card.ghostDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted">卡片内容区域</p>
+            <p className="text-sm text-muted">{t("components.card.content")}</p>
           </CardContent>
         </Card>
       </div>

@@ -10,6 +10,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -17,10 +18,12 @@ interface Props {
 }
 
 export function PaginationSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       title="Pagination"
-      description="分页组件"
+      description={t("components.pagination.description")}
     >
       <Pagination>
         <PaginationContent>

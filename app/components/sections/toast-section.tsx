@@ -10,6 +10,7 @@ import {
   ToastClose,
 } from "@/components/ui/toast";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -19,21 +20,23 @@ interface Props {
 }
 
 export function ToastSection({ expandedProps, toggleProps, showToast, setShowToast }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       id="toast"
       title="Toast"
-      description="消息提示组件"
+      description={t("components.toast.description")}
     >
       <ToastProvider>
         <Button onClick={() => setShowToast(true)}>
-          显示 Toast
+          {t("components.toast.show")}
         </Button>
         <Toast open={showToast} onOpenChange={setShowToast} variant="success">
           <div className="flex-1">
-            <ToastTitle>操作成功</ToastTitle>
+            <ToastTitle>{t("components.toast.successTitle")}</ToastTitle>
             <ToastDescription>
-              您的更改已保存
+              {t("components.toast.successMsg")}
             </ToastDescription>
           </div>
           <ToastClose />

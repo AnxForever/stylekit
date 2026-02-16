@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -9,11 +10,13 @@ interface Props {
 }
 
 export function ButtonSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       id="button"
       title="Button"
-      description="按钮组件，支持多种变体和尺寸"
+      description={t("components.button.description")}
     >
       <div className="flex flex-wrap gap-4 items-center">
         <Button variant="primary">Primary</Button>
