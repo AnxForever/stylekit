@@ -216,7 +216,7 @@ export function StylesContent({
             <span className="text-muted">{t("styles.tags")}:</span>
             <div className="relative">
               <button
-                onClick={() => setTagDropdownOpen(!tagDropdownOpen)}
+                onClick={() => setTagDropdownOpen((prev) => !prev)}
                 className="inline-flex items-center gap-2 px-3 py-1.5 border border-border hover:border-foreground transition-colors"
               >
                 {activeTags.length === 0 ? (
