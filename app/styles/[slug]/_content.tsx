@@ -11,14 +11,23 @@ import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
+import { ScoreBadge } from "@/components/accessibility/score-badge";
+import { ScoreDetail } from "@/components/accessibility/score-detail";
+import { IdeExportButtons } from "@/components/export/ide-export-buttons";
+import { VersionBadge } from "@/components/styles/version-badge";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
+import type { AccessibilityScore } from "@/lib/accessibility";
+import type { StyleVersion } from "@/lib/versioning";
 
 interface Props {
   style: DesignStyle;
   compatibleStyles: DesignStyle[];
   compatibleLayouts: DesignStyle[];
   enhancedRules: string | null;
+  accessibilityScore: AccessibilityScore | null;
+  version?: string;
+  changelog?: StyleVersion[];
 }
 
 export function StyleDetailContent({
@@ -26,6 +35,9 @@ export function StyleDetailContent({
   compatibleStyles,
   compatibleLayouts,
   enhancedRules,
+  accessibilityScore,
+  version,
+  changelog,
 }: Props) {
   const { t } = useI18n();
 
@@ -50,7 +62,15 @@ export function StyleDetailContent({
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                 {style.name}
               </h1>
-              <p className="text-xl text-muted mb-6">{style.nameEn}</p>
+              <div className="flex items-center gap-3 mb-6">
+                <p className="text-xl text-muted">{style.nameEn}</p>
+                {version && (
+                  <VersionBadge version={version} changelog={changelog} />
+                )}
+                {accessibilityScore && (
+                  <ScoreBadge score={accessibilityScore} />
+                )}
+              </div>
               <p className="text-lg text-muted leading-relaxed mb-6">
                 {style.description}
               </p>
@@ -256,6 +276,36 @@ export function StyleDetailContent({
           </div>
         </section>
       )}
+
+      {/* Accessibility Score */}
+      {accessibilityScore && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("a11y.section")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">{t("a11y.title")}</h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("a11y.description")}
+            </p>
+            <ScoreDetail score={accessibilityScore} />
+          </div>
+        </section>
+      )}
+
+      {/* IDE Config Export */}
+      <section className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            {t("ideExport.section")}
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-4">{t("ideExport.title")}</h2>
+          <p className="text-muted mb-8 max-w-2xl">
+            {t("ideExport.description")}
+          </p>
+          <IdeExportButtons slug={style.slug} />
+        </div>
+      </section>
 
       {/* Style Pack Export */}
       <section className="border-b border-border">

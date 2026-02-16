@@ -1,4 +1,5 @@
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
+import { trackStyleUsage } from "@/lib/analytics";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -6,6 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  trackStyleUsage(slug, "api");
   const tokens = getStyleTokens(slug);
 
   if (!tokens) {

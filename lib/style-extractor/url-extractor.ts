@@ -1,4 +1,9 @@
-import type { ExtractedStyleDraft } from "./adapter";
+import type {
+  ExtractedStyleDraft,
+  ExtractedTypographyScale,
+  ExtractedSpacingScale,
+  ExtractedAnimationInfo,
+} from "./adapter";
 import {
   extractCssVariablesFromText,
   normalizeCssColorToHex,
@@ -17,9 +22,14 @@ export interface UrlExtractionEvidence {
   colorCount: number;
   cssVariableCount: number;
   fontFamilyCount: number;
+  fontSizeCount: number;
+  fontWeightCount: number;
   borderRadiusCount: number;
   borderWidthCount: number;
   boxShadowCount: number;
+  spacingValueCount: number;
+  transitionCount: number;
+  keyframeCount: number;
   hasAnimation: boolean;
   hasGridLayout: boolean;
   hasGlassEffect: boolean;
@@ -96,8 +106,11 @@ export function extractStyleDraftFromDocument({
   const accentColors = colors.slice(2, 6);
 
   const typography = inferTypographyFromCss(cssText, cssVariables);
+  const typographyScale = inferTypographyScaleFromCss(cssText, cssVariables);
   const borders = inferBordersFromCss(cssText, cssVariables);
   const shadows = inferShadowsFromCss(cssText, cssVariables);
+  const spacingScale = inferSpacingFromCss(cssText, cssVariables);
+  const animationInfo = inferAnimationsFromCss(cssText);
 
   const hasAnimation = /@keyframes|animation\s*:|transition\s*:|framer-motion|gsap|lottie/i.test(
     combined
@@ -182,6 +195,9 @@ export function extractStyleDraftFromDocument({
     shadowSm: shadows.shadowSm,
     shadowMd: shadows.shadowMd,
     shadowLg: shadows.shadowLg,
+    typographyScale: isNonEmptyScale(typographyScale) ? typographyScale : undefined,
+    spacingScale: isNonEmptyScale(spacingScale) ? spacingScale : undefined,
+    animationInfo: isNonEmptyScale(animationInfo) ? animationInfo : undefined,
   };
 
   const evidence: UrlExtractionEvidence = {
@@ -189,9 +205,14 @@ export function extractStyleDraftFromDocument({
     colorCount: colors.length,
     cssVariableCount: Object.keys(cssVariables).length,
     fontFamilyCount: typography.fontFamilyCount,
+    fontSizeCount: typographyScale.fontSizeCount,
+    fontWeightCount: typographyScale.fontWeightCount,
     borderRadiusCount: borders.borderRadiusCount,
     borderWidthCount: borders.borderWidthCount,
     boxShadowCount: shadows.boxShadowCount,
+    spacingValueCount: spacingScale.valueCount,
+    transitionCount: animationInfo.transitionCount,
+    keyframeCount: animationInfo.keyframeCount,
     hasAnimation,
     hasGridLayout,
     hasGlassEffect,
@@ -437,6 +458,219 @@ function inferShadowsFromCss(
     shadowMd: md || undefined,
     shadowLg: lg || undefined,
     boxShadowCount,
+  };
+}
+
+function inferTypographyScaleFromCss(
+  cssText: string,
+  cssVariables: CssVariableMap
+): ExtractedTypographyScale & { fontSizeCount: number; fontWeightCount: number } {
+  const blocks = extractCssRuleBlocks(cssText);
+  const sizeCounts = new Map<string, number>();
+  const weightCounts = new Map<string, number>();
+  const lineHeightCounts = new Map<string, number>();
+  const letterSpacingCounts = new Map<string, number>();
+  let fontSizeCount = 0;
+  let fontWeightCount = 0;
+
+  for (const block of blocks) {
+    for (const value of extractDeclarationValues(block.bodyText, "font-size")) {
+      const expanded = expandCssVars(value, cssVariables);
+      const token = firstLengthToken(expanded);
+      if (!token || token === "0") continue;
+      fontSizeCount += 1;
+      incrementCount(sizeCounts, token);
+    }
+
+    for (const value of extractDeclarationValues(block.bodyText, "font-weight")) {
+      const expanded = expandCssVars(value, cssVariables);
+      const normalized = stripImportant(expanded).trim().toLowerCase();
+      if (!normalized) continue;
+      fontWeightCount += 1;
+      incrementCount(weightCounts, normalized);
+    }
+
+    for (const value of extractDeclarationValues(block.bodyText, "line-height")) {
+      const expanded = expandCssVars(value, cssVariables);
+      const normalized = stripImportant(expanded).trim().toLowerCase();
+      if (!normalized || normalized === "normal") continue;
+      incrementCount(lineHeightCounts, normalized);
+    }
+
+    for (const value of extractDeclarationValues(block.bodyText, "letter-spacing")) {
+      const expanded = expandCssVars(value, cssVariables);
+      const normalized = stripImportant(expanded).trim().toLowerCase();
+      if (!normalized || normalized === "normal") continue;
+      incrementCount(letterSpacingCounts, normalized);
+    }
+  }
+
+  const allSizes = topKeys(sizeCounts, 12);
+  const pxSizes = allSizes.map((s) => toPxApprox(s)).filter((v) => v > 0);
+  pxSizes.sort((a, b) => a - b);
+
+  const headingSizes = allSizes.filter((s) => toPxApprox(s) >= 20);
+  const bodySizes = allSizes.filter((s) => {
+    const px = toPxApprox(s);
+    return px >= 13 && px < 20;
+  });
+  const smallSizes = allSizes.filter((s) => toPxApprox(s) > 0 && toPxApprox(s) < 13);
+
+  return {
+    headingSizes: headingSizes.length > 0 ? headingSizes.slice(0, 4) : undefined,
+    bodySizes: bodySizes.length > 0 ? bodySizes.slice(0, 4) : undefined,
+    smallSizes: smallSizes.length > 0 ? smallSizes.slice(0, 3) : undefined,
+    fontWeights: topKeys(weightCounts, 6),
+    lineHeights: topKeys(lineHeightCounts, 4),
+    letterSpacings: topKeys(letterSpacingCounts, 4),
+    fontSizeCount,
+    fontWeightCount,
+  };
+}
+
+function inferSpacingFromCss(
+  cssText: string,
+  cssVariables: CssVariableMap
+): ExtractedSpacingScale & { valueCount: number } {
+  const blocks = extractCssRuleBlocks(cssText);
+  const spacingCounts = new Map<string, number>();
+  let valueCount = 0;
+
+  const spacingProperties = [
+    "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
+    "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
+    "gap", "row-gap", "column-gap",
+  ];
+
+  for (const block of blocks) {
+    for (const prop of spacingProperties) {
+      for (const value of extractDeclarationValues(block.bodyText, prop)) {
+        const expanded = expandCssVars(value, cssVariables);
+        const tokens = stripImportant(expanded).trim().split(/\s+/);
+        for (const token of tokens) {
+          const normalized = token.toLowerCase();
+          if (!normalized || normalized === "auto" || normalized === "0") continue;
+          const px = toPxApprox(normalized);
+          if (px <= 0) continue;
+          valueCount += 1;
+          incrementCount(spacingCounts, normalized);
+        }
+      }
+    }
+  }
+
+  const allValues = topKeys(spacingCounts, 20);
+  const sorted = allValues
+    .map((v) => ({ value: v, px: toPxApprox(v) }))
+    .filter((v) => v.px > 0)
+    .sort((a, b) => a.px - b.px);
+
+  if (sorted.length === 0) {
+    return { valueCount, commonValues: [] };
+  }
+
+  // Categorize into a 5-step scale based on distribution
+  const xs = sorted.find((v) => v.px <= 4)?.value;
+  const sm = sorted.find((v) => v.px > 4 && v.px <= 10)?.value;
+  const md = sorted.find((v) => v.px > 10 && v.px <= 20)?.value;
+  const lg = sorted.find((v) => v.px > 20 && v.px <= 40)?.value;
+  const xl = sorted.find((v) => v.px > 40)?.value;
+
+  return {
+    xs,
+    sm,
+    md,
+    lg,
+    xl,
+    commonValues: sorted.slice(0, 8).map((v) => v.value),
+    valueCount,
+  };
+}
+
+function inferAnimationsFromCss(
+  cssText: string
+): ExtractedAnimationInfo & { transitionCount: number; keyframeCount: number } {
+  const blocks = extractCssRuleBlocks(cssText);
+  const durationCounts = new Map<string, number>();
+  const propertyCounts = new Map<string, number>();
+  const easingCounts = new Map<string, number>();
+  let transitionCount = 0;
+
+  const EASING_KEYWORDS = new Set([
+    "ease", "ease-in", "ease-out", "ease-in-out", "linear", "step-start", "step-end",
+  ]);
+  const CUBIC_BEZIER_RE = /cubic-bezier\([^)]+\)/gi;
+  const DURATION_RE = /(\d*\.?\d+)(ms|s)\b/gi;
+
+  for (const block of blocks) {
+    for (const value of extractDeclarationValues(block.bodyText, "transition")) {
+      const normalized = stripImportant(value).trim();
+      if (!normalized || normalized.toLowerCase() === "none") continue;
+      transitionCount += 1;
+
+      // Extract property names (first token of each comma-separated segment)
+      const segments = splitTopLevel(normalized, ",");
+      for (const seg of segments) {
+        const tokens = seg.trim().split(/\s+/);
+        const prop = tokens[0]?.toLowerCase();
+        if (prop && prop !== "all" && !EASING_KEYWORDS.has(prop)) {
+          incrementCount(propertyCounts, prop);
+        }
+      }
+
+      // Extract durations
+      for (const match of normalized.matchAll(DURATION_RE)) {
+        incrementCount(durationCounts, match[0].toLowerCase());
+      }
+
+      // Extract easing
+      for (const match of normalized.matchAll(CUBIC_BEZIER_RE)) {
+        incrementCount(easingCounts, match[0].toLowerCase());
+      }
+      for (const kw of EASING_KEYWORDS) {
+        if (normalized.toLowerCase().includes(kw)) {
+          incrementCount(easingCounts, kw);
+        }
+      }
+    }
+
+    for (const value of extractDeclarationValues(block.bodyText, "transition-duration")) {
+      const normalized = stripImportant(value).trim();
+      if (!normalized) continue;
+      for (const match of normalized.matchAll(DURATION_RE)) {
+        incrementCount(durationCounts, match[0].toLowerCase());
+      }
+    }
+
+    for (const value of extractDeclarationValues(block.bodyText, "transition-timing-function")) {
+      const normalized = stripImportant(value).trim();
+      if (!normalized) continue;
+      for (const match of normalized.matchAll(CUBIC_BEZIER_RE)) {
+        incrementCount(easingCounts, match[0].toLowerCase());
+      }
+      for (const kw of EASING_KEYWORDS) {
+        if (normalized.toLowerCase().includes(kw)) {
+          incrementCount(easingCounts, kw);
+        }
+      }
+    }
+  }
+
+  // Extract @keyframes names
+  const keyframeNames: string[] = [];
+  const keyframeRe = /@keyframes\s+([a-zA-Z0-9_-]+)/g;
+  for (const match of cssText.matchAll(keyframeRe)) {
+    if (match[1]) keyframeNames.push(match[1]);
+  }
+  const uniqueKeyframes = dedupe(keyframeNames);
+
+  return {
+    transitionDurations: topKeys(durationCounts, 4),
+    transitionProperties: topKeys(propertyCounts, 6),
+    easingFunctions: topKeys(easingCounts, 3),
+    keyframeNames: uniqueKeyframes.length > 0 ? uniqueKeyframes.slice(0, 8) : undefined,
+    transitionCount,
+    keyframeCount: uniqueKeyframes.length,
   };
 }
 
@@ -899,6 +1133,15 @@ function buildMarkdownDraft(
     lines.push("## Typography");
     if (draft.headingFont) lines.push(`Heading Font: ${draft.headingFont}`);
     if (draft.bodyFont) lines.push(`Body Font: ${draft.bodyFont}`);
+    if (draft.typographyScale?.fontWeights && draft.typographyScale.fontWeights.length > 0) {
+      lines.push(`Weights: ${draft.typographyScale.fontWeights.join(", ")}`);
+    }
+    if (draft.typographyScale?.lineHeights && draft.typographyScale.lineHeights.length > 0) {
+      lines.push(`Line Heights: ${draft.typographyScale.lineHeights.join(", ")}`);
+    }
+    if (draft.typographyScale?.letterSpacings && draft.typographyScale.letterSpacings.length > 0) {
+      lines.push(`Letter Spacings: ${draft.typographyScale.letterSpacings.join(", ")}`);
+    }
     lines.push("");
   }
 
@@ -917,6 +1160,40 @@ function buildMarkdownDraft(
     lines.push("");
   }
 
+  if (draft.spacingScale) {
+    const s = draft.spacingScale;
+    if (s.xs || s.sm || s.md || s.lg || s.xl) {
+      lines.push("## Spacing");
+      if (s.xs) lines.push(`XS: ${s.xs}`);
+      if (s.sm) lines.push(`SM: ${s.sm}`);
+      if (s.md) lines.push(`MD: ${s.md}`);
+      if (s.lg) lines.push(`LG: ${s.lg}`);
+      if (s.xl) lines.push(`XL: ${s.xl}`);
+      lines.push("");
+    }
+  }
+
+  if (draft.animationInfo) {
+    const a = draft.animationInfo;
+    const hasContent =
+      (a.transitionDurations && a.transitionDurations.length > 0) ||
+      (a.easingFunctions && a.easingFunctions.length > 0) ||
+      (a.keyframeNames && a.keyframeNames.length > 0);
+    if (hasContent) {
+      lines.push("## Animation");
+      if (a.transitionDurations && a.transitionDurations.length > 0) {
+        lines.push(`Durations: ${a.transitionDurations.join(", ")}`);
+      }
+      if (a.easingFunctions && a.easingFunctions.length > 0) {
+        lines.push(`Easing: ${a.easingFunctions.join(", ")}`);
+      }
+      if (a.keyframeNames && a.keyframeNames.length > 0) {
+        lines.push(`Keyframes: ${a.keyframeNames.join(", ")}`);
+      }
+      lines.push("");
+    }
+  }
+
   lines.push("## Do List");
   for (const rule of draft.doList ?? []) lines.push(`- ${rule}`);
   lines.push("");
@@ -930,9 +1207,14 @@ function buildMarkdownDraft(
   lines.push(`- Colors captured: ${evidence.colorCount}`);
   lines.push(`- CSS variables captured: ${evidence.cssVariableCount}`);
   lines.push(`- font-family samples: ${evidence.fontFamilyCount}`);
+  lines.push(`- font-size samples: ${evidence.fontSizeCount}`);
+  lines.push(`- font-weight samples: ${evidence.fontWeightCount}`);
   lines.push(`- border-radius samples: ${evidence.borderRadiusCount}`);
   lines.push(`- border-width samples: ${evidence.borderWidthCount}`);
   lines.push(`- box-shadow samples: ${evidence.boxShadowCount}`);
+  lines.push(`- spacing values: ${evidence.spacingValueCount}`);
+  lines.push(`- transition samples: ${evidence.transitionCount}`);
+  lines.push(`- @keyframes detected: ${evidence.keyframeCount}`);
   lines.push(`- Animation detected: ${evidence.hasAnimation ? "yes" : "no"}`);
   lines.push(`- Grid/flex structure detected: ${evidence.hasGridLayout ? "yes" : "no"}`);
   lines.push("");
@@ -1048,4 +1330,42 @@ function splitTopLevel(input: string, separator: string): string[] {
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function topKeys(map: Map<string, number>, max: number): string[] {
+  if (map.size === 0) return [];
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map((entry) => entry[0])
+    .slice(0, max);
+}
+
+function toPxApprox(value: string): number {
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return 0;
+
+  const match = normalized.match(/^(-?\d*\.?\d+)(px|rem|em|pt|vh|vw|%)?$/);
+  if (!match?.[1]) return 0;
+
+  const num = Number(match[1]);
+  if (!Number.isFinite(num)) return 0;
+
+  const unit = match[2] ?? "px";
+  switch (unit) {
+    case "px": return num;
+    case "rem": return num * 16;
+    case "em": return num * 16;
+    case "pt": return num * (4 / 3);
+    default: return 0;
+  }
+}
+
+function isNonEmptyScale(obj: object): boolean {
+  return Object.values(obj).some((value) => {
+    if (value === undefined || value === null) return false;
+    if (typeof value === "number") return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === "string") return value.length > 0;
+    return true;
+  });
 }

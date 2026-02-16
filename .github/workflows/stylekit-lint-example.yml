@@ -1,0 +1,23 @@
+name: StyleKit Lint
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.tsx'
+      - 'src/**/*.jsx'
+      - 'components/**/*.tsx'
+      - 'components/**/*.jsx'
+
+jobs:
+  stylekit-lint:
+    name: Check Style Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run StyleKit Lint
+        uses: ./.github/actions/stylekit-lint
+        with:
+          style: neo-brutalist
+          files: 'src/**/*.tsx'
+          fail-on-error: 'true'

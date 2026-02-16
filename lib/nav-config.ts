@@ -32,7 +32,13 @@ export const toolsDropdown: NavDropdown = {
   labelKey: "nav.tools",
   items: [
     { href: "/create-style", labelKey: "nav.createStyle" },
+    { href: "/playground", labelKey: "nav.playground" },
+    { href: "/compare", labelKey: "nav.compare" },
+    { href: "/blend", labelKey: "nav.blend" },
+    { href: "/generate-style", labelKey: "nav.aiGenerator" },
     { href: "/developers", labelKey: "nav.developers" },
+    { href: "/analyze", labelKey: "nav.analyze" },
+    { href: "/migrate", labelKey: "nav.migrate" },
   ],
 };
 

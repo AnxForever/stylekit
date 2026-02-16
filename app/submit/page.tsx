@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { SubmitStyleForm } from "@/components/submit/submit-style-form";
+import { SubmissionWizard } from "@/components/submit/submission-wizard";
 
 export const metadata = {
   title: "提交风格 - StyleKit",
@@ -12,7 +12,7 @@ export default function SubmitPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <SubmitStyleForm />
+        <SubmissionWizard />
       </main>
       <Footer />
     </div>

@@ -3,6 +3,7 @@
 
 import type { DesignStyle } from "../styles";
 import type { StyleTokens } from "../styles/tokens";
+import { getCurrentVersion } from "../versioning";
 import JSZip from "jszip";
 import { exportStyleTokens } from "./figma-tokens";
 import { generateTailwindPresetJS } from "./tailwind-preset";
@@ -18,11 +19,35 @@ export interface StylePackFile {
   icon: string;
 }
 
+export interface StylePackOptions {
+  version?: string;
+}
+
 export function generateStylePack(
   style: DesignStyle,
-  tokens?: StyleTokens
+  tokens?: StyleTokens,
+  options?: StylePackOptions
 ): StylePackFile[] {
+  const version = options?.version ?? getCurrentVersion(style.slug);
   const files: StylePackFile[] = [
+    {
+      name: "Metadata",
+      filename: `${style.slug}-meta.json`,
+      description: "Style metadata including version information",
+      descriptionEn: "Style metadata including version information",
+      content: JSON.stringify(
+        {
+          slug: style.slug,
+          name: style.nameEn,
+          version,
+          generatedAt: new Date().toISOString(),
+        },
+        null,
+        2
+      ),
+      mimeType: "application/json",
+      icon: "info",
+    },
     {
       name: "Design Tokens",
       filename: `${style.slug}-tokens.json`,
