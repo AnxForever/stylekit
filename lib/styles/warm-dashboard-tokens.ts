@@ -1,12 +1,11 @@
 // Warm Dashboard Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const warmDashboardTokens: StyleTokens = {
+export const warmDashboardTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200/50",
     radius: "rounded-2xl",
-    style: "border-solid",
   },
 
   shadow: {
@@ -38,7 +37,6 @@ export const warmDashboardTokens: StyleTokens = {
       h1: "text-2xl md:text-3xl",
       h2: "text-xl md:text-2xl",
       h3: "text-lg md:text-xl",
-      body: "text-sm md:text-base",
       small: "text-xs",
     },
   },
@@ -49,8 +47,6 @@ export const warmDashboardTokens: StyleTokens = {
     card: "p-5 md:p-6 lg:p-8",
     gap: {
       sm: "gap-3",
-      md: "gap-4 md:gap-6",
-      lg: "gap-6 md:gap-8",
     },
   },
 
@@ -78,17 +74,11 @@ export const warmDashboardTokens: StyleTokens = {
 
   forbidden: {
     classes: [
-      // No cold colors for background
       "bg-blue-500", "bg-blue-600", "bg-purple-500", "bg-purple-600",
-      // No pure black text
       "text-black",
-      // No sharp corners
       "rounded-none", "rounded-sm",
-      // No hard shadows
       "shadow-[0px_0px_0px",
-      // No thick borders
       "border-2", "border-4",
-      // No high saturation neon colors
       "bg-[#00ffff]", "bg-[#ff00ff]", "text-[#00ffff]",
     ],
     patterns: [
@@ -135,4 +125,4 @@ export const warmDashboardTokens: StyleTokens = {
       "transition-all duration-200",
     ],
   },
-};
+});
