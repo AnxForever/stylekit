@@ -1,10 +1,7 @@
 // Corporate Clean Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const corporateCleanRecipes: StyleRecipes = {
-  styleSlug: "corporate-clean",
-  styleName: "Corporate Clean",
-  recipes: {
+export const corporateCleanRecipes = createStyleRecipes("corporate-clean", "Corporate Clean", {
     button: {
       id: "button",
       name: "Button",
@@ -212,5 +209,4 @@ export const corporateCleanRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-50"],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Comic Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const comicStyleRecipes: StyleRecipes = {
-  styleSlug: "comic-style",
-  styleName: "Comic Style",
-  recipes: {
+export const comicStyleRecipes = createStyleRecipes("comic-style", "Comic Style", {
     button: {
       id: "button",
       name: "Button",
@@ -426,5 +423,4 @@ export const comicStyleRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

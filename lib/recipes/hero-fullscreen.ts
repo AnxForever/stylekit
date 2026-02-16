@@ -1,10 +1,7 @@
 // Hero Fullscreen Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const heroFullscreenRecipes: StyleRecipes = {
-  styleSlug: "hero-fullscreen",
-  styleName: "Hero Fullscreen",
-  recipes: {
+export const heroFullscreenRecipes = createStyleRecipes("hero-fullscreen", "Hero Fullscreen", {
     button: {
       id: "button",
       name: "Button",
@@ -217,5 +214,4 @@ export const heroFullscreenRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

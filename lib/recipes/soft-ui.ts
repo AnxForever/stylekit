@@ -1,10 +1,7 @@
 // Soft UI Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const softUIRecipes: StyleRecipes = {
-  styleSlug: "soft-ui",
-  styleName: "Soft UI",
-  recipes: {
+export const softUIRecipes = createStyleRecipes("soft-ui", "Soft UI", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const softUIRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

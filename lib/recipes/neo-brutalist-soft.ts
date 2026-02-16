@@ -1,10 +1,7 @@
 // Neo Brutalist Soft Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neoBrutalistSoftRecipes: StyleRecipes = {
-  styleSlug: "neo-brutalist-soft",
-  styleName: "Neo Brutalist Soft",
-  recipes: {
+export const neoBrutalistSoftRecipes = createStyleRecipes("neo-brutalist-soft", "Neo Brutalist Soft", {
     button: {
       id: "button",
       name: "Button",
@@ -215,5 +212,4 @@ export const neoBrutalistSoftRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

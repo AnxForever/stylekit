@@ -1,10 +1,7 @@
 // Natural Organic Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const naturalOrganicRecipes: StyleRecipes = {
-  styleSlug: "natural-organic",
-  styleName: "Natural Organic",
-  recipes: {
+export const naturalOrganicRecipes = createStyleRecipes("natural-organic", "Natural Organic", {
     button: {
       id: "button",
       name: "Button",
@@ -208,5 +205,4 @@ export const naturalOrganicRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-stone-50"],
       },
     },
-  },
-};
+});

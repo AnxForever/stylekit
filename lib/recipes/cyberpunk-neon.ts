@@ -1,10 +1,7 @@
 // Cyberpunk Neon Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cyberpunkNeonRecipes: StyleRecipes = {
-  styleSlug: "cyberpunk-neon",
-  styleName: "Cyberpunk Neon",
-  recipes: {
+export const cyberpunkNeonRecipes = createStyleRecipes("cyberpunk-neon", "Cyberpunk Neon", {
     button: {
       id: "button",
       name: "Button",
@@ -227,5 +224,4 @@ export const cyberpunkNeonRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-900"],
       },
     },
-  },
-};
+});

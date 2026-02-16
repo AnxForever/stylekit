@@ -1,10 +1,7 @@
 // Neon Gradient Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neonGradientRecipes: StyleRecipes = {
-  styleSlug: "neon-gradient",
-  styleName: "Neon Gradient",
-  recipes: {
+export const neonGradientRecipes = createStyleRecipes("neon-gradient", "Neon Gradient", {
     button: {
       id: "button",
       name: "Button",
@@ -478,5 +475,4 @@ export const neonGradientRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

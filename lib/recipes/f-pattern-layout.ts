@@ -1,10 +1,7 @@
 // F-Pattern Layout Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const fPatternLayoutRecipes: StyleRecipes = {
-  styleSlug: "f-pattern-layout",
-  styleName: "F-Pattern Layout",
-  recipes: {
+export const fPatternLayoutRecipes = createStyleRecipes("f-pattern-layout", "F-Pattern Layout", {
     button: {
       id: "button",
       name: "Button",
@@ -212,5 +209,4 @@ export const fPatternLayoutRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

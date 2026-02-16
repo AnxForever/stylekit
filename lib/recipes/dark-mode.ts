@@ -1,10 +1,7 @@
 // Dark Mode Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const darkModeRecipes: StyleRecipes = {
-  styleSlug: "dark-mode",
-  styleName: "Dark Mode",
-  recipes: {
+export const darkModeRecipes = createStyleRecipes("dark-mode", "Dark Mode", {
     button: {
       id: "button",
       name: "Button",
@@ -215,5 +212,4 @@ export const darkModeRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed bg-gray-900"],
       },
     },
-  },
-};
+});

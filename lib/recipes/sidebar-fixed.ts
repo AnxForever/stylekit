@@ -1,10 +1,7 @@
 // Sidebar Fixed Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const sidebarFixedRecipes: StyleRecipes = {
-  styleSlug: "sidebar-fixed",
-  styleName: "Sidebar Fixed",
-  recipes: {
+export const sidebarFixedRecipes = createStyleRecipes("sidebar-fixed", "Sidebar Fixed", {
     button: {
       id: "button",
       name: "Button",
@@ -209,5 +206,4 @@ export const sidebarFixedRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-zinc-50"],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Split Screen Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const splitScreenRecipes: StyleRecipes = {
-  styleSlug: "split-screen",
-  styleName: "Split Screen",
-  recipes: {
+export const splitScreenRecipes = createStyleRecipes("split-screen", "Split Screen", {
     button: {
       id: "button",
       name: "Button",
@@ -206,5 +203,4 @@ export const splitScreenRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

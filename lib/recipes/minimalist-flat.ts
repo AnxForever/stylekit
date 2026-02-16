@@ -1,5 +1,4 @@
 // Minimalist Flat Component Recipes
-import type { StyleRecipes } from "./types";
 import {
   sizeParam,
   fullWidthParam,
@@ -13,7 +12,7 @@ import {
   createStyleRecipes,
 } from "./factory";
 
-export const minimalistFlatRecipes: StyleRecipes = createStyleRecipes(
+export const minimalistFlatRecipes = createStyleRecipes(
   "minimalist-flat",
   "Minimalist Flat",
   {

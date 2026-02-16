@@ -1,10 +1,7 @@
 // Dashboard Layout Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const dashboardLayoutRecipes: StyleRecipes = {
-  styleSlug: "dashboard-layout",
-  styleName: "Dashboard Layout",
-  recipes: {
+export const dashboardLayoutRecipes = createStyleRecipes("dashboard-layout", "Dashboard Layout", {
     button: {
       id: "button",
       name: "Button",
@@ -211,5 +208,4 @@ export const dashboardLayoutRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

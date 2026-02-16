@@ -1,10 +1,7 @@
 // Magic Circle Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const magicCircleRecipes: StyleRecipes = {
-  styleSlug: "magic-circle",
-  styleName: "Magic Circle",
-  recipes: {
+export const magicCircleRecipes = createStyleRecipes("magic-circle", "Magic Circle", {
     button: {
       id: "button",
       name: "Button",
@@ -606,5 +603,4 @@ export const magicCircleRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

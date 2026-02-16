@@ -1,10 +1,7 @@
 // Skeuomorphism Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const skeuomorphismRecipes: StyleRecipes = {
-  styleSlug: "skeuomorphism",
-  styleName: "Skeuomorphism",
-  recipes: {
+export const skeuomorphismRecipes = createStyleRecipes("skeuomorphism", "Skeuomorphism", {
     button: {
       id: "button",
       name: "Button",
@@ -220,5 +217,4 @@ export const skeuomorphismRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-[#e8dfd1]"],
       },
     },
-  },
-};
+});

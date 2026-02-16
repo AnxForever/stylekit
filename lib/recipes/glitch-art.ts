@@ -1,10 +1,7 @@
 // Glitch Art Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const glitchArtRecipes: StyleRecipes = {
-  styleSlug: "glitch-art",
-  styleName: "Glitch Art",
-  recipes: {
+export const glitchArtRecipes = createStyleRecipes("glitch-art", "Glitch Art", {
     button: {
       id: "button",
       name: "Button",
@@ -532,5 +529,4 @@ export const glitchArtRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Outrun Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const outrunRecipes: StyleRecipes = {
-  styleSlug: "outrun",
-  styleName: "Outrun",
-  recipes: {
+export const outrunRecipes = createStyleRecipes("outrun", "Outrun", {
     button: {
       id: "button",
       name: "Button",
@@ -495,5 +492,4 @@ export const outrunRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

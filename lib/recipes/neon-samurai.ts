@@ -1,10 +1,7 @@
 // Neon Samurai Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neonSamuraiRecipes: StyleRecipes = {
-  styleSlug: "neon-samurai",
-  styleName: "Neon Samurai",
-  recipes: {
+export const neonSamuraiRecipes = createStyleRecipes("neon-samurai", "Neon Samurai", {
     button: {
       id: "button",
       name: "Button",
@@ -631,5 +628,4 @@ export const neonSamuraiRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Impressionist Oil Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const impressionistOilRecipes: StyleRecipes = {
-  styleSlug: "impressionist-oil",
-  styleName: "Impressionist Oil",
-  recipes: {
+export const impressionistOilRecipes = createStyleRecipes("impressionist-oil", "Impressionist Oil", {
     button: {
       id: "button",
       name: "Button",
@@ -665,5 +662,4 @@ export const impressionistOilRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

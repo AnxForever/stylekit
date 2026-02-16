@@ -1,10 +1,7 @@
 // Watercolor Art Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const watercolorArtRecipes: StyleRecipes = {
-  styleSlug: "watercolor-art",
-  styleName: "Watercolor Art",
-  recipes: {
+export const watercolorArtRecipes = createStyleRecipes("watercolor-art", "Watercolor Art", {
     button: {
       id: "button",
       name: "Button",
@@ -520,5 +517,4 @@ export const watercolorArtRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

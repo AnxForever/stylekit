@@ -1,10 +1,7 @@
 // Cyber Wafuu Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cyberWafuuRecipes: StyleRecipes = {
-  styleSlug: "cyber-wafuu",
-  styleName: "Cyber Wafuu",
-  recipes: {
+export const cyberWafuuRecipes = createStyleRecipes("cyber-wafuu", "Cyber Wafuu", {
     button: {
       id: "button",
       name: "Button",
@@ -641,5 +638,4 @@ export const cyberWafuuRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

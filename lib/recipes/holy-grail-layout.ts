@@ -1,10 +1,7 @@
 // Holy Grail Layout Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const holyGrailLayoutRecipes: StyleRecipes = {
-  styleSlug: "holy-grail-layout",
-  styleName: "Holy Grail Layout",
-  recipes: {
+export const holyGrailLayoutRecipes = createStyleRecipes("holy-grail-layout", "Holy Grail Layout", {
     button: {
       id: "button",
       name: "Button",
@@ -209,5 +206,4 @@ export const holyGrailLayoutRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

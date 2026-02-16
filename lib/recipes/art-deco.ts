@@ -1,10 +1,7 @@
 // Art Deco Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const artDecoRecipes: StyleRecipes = {
-  styleSlug: "art-deco",
-  styleName: "Art Deco",
-  recipes: {
+export const artDecoRecipes = createStyleRecipes("art-deco", "Art Deco", {
     button: {
       id: "button",
       name: "Button",
@@ -422,5 +419,4 @@ export const artDecoRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

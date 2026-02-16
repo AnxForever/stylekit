@@ -1,10 +1,7 @@
 // Notion Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const notionStyleRecipes: StyleRecipes = {
-  styleSlug: "notion-style",
-  styleName: "Notion Style",
-  recipes: {
+export const notionStyleRecipes = createStyleRecipes("notion-style", "Notion Style", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const notionStyleRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

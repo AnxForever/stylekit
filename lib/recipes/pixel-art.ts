@@ -1,10 +1,7 @@
 // Pixel Art Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const pixelArtRecipes: StyleRecipes = {
-  styleSlug: "pixel-art",
-  styleName: "Pixel Art",
-  recipes: {
+export const pixelArtRecipes = createStyleRecipes("pixel-art", "Pixel Art", {
     button: {
       id: "button",
       name: "Button",
@@ -221,5 +218,4 @@ export const pixelArtRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-200"],
       },
     },
-  },
-};
+});

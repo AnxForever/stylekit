@@ -1,10 +1,7 @@
 // Cyber Anime Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cyberAnimeRecipes: StyleRecipes = {
-  styleSlug: "cyber-anime",
-  styleName: "Cyber Anime",
-  recipes: {
+export const cyberAnimeRecipes = createStyleRecipes("cyber-anime", "Cyber Anime", {
     button: {
       id: "button",
       name: "Holographic Button",
@@ -690,5 +687,4 @@ export const cyberAnimeRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Geometric Bold Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const geometricBoldRecipes: StyleRecipes = {
-  styleSlug: "geometric-bold",
-  styleName: "Geometric Bold",
-  recipes: {
+export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geometric Bold", {
     button: {
       id: "button",
       name: "Button",
@@ -219,5 +216,4 @@ export const geometricBoldRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Liquid Glass Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const liquidGlassRecipes: StyleRecipes = {
-  styleSlug: "liquid-glass",
-  styleName: "Apple Liquid Glass",
-  recipes: {
+export const liquidGlassRecipes = createStyleRecipes("liquid-glass", "Apple Liquid Glass", {
     button: {
       id: "button",
       name: "Button",
@@ -566,5 +563,4 @@ export const liquidGlassRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});
