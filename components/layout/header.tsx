@@ -79,7 +79,7 @@ export function Header() {
             {/* Tools Dropdown */}
             <div className="relative" ref={toolsRef}>
               <button
-                onClick={() => setIsToolsOpen(!isToolsOpen)}
+                onClick={() => setIsToolsOpen((prev) => !prev)}
                 className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
                   isToolsOpen ? "text-foreground" : "text-muted hover:text-foreground"
                 }`}
@@ -147,7 +147,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => setIsMenuOpen((prev) => !prev)}
             className="md:hidden p-2 -mr-2"
             aria-label="Toggle menu"
           >

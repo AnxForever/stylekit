@@ -148,7 +148,7 @@ When generating UI components, always:
         {/* Style Dropdown */}
         <div className="relative flex-1 min-w-0">
           <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
             className="w-full flex items-center justify-between px-3 py-2 border border-border bg-background hover:border-foreground/50 transition-colors text-sm"
           >
             <span className="truncate">

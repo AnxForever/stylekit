@@ -25,7 +25,7 @@ export const BrutalAccordionItem: React.FC<BrutalAccordionItemProps> = ({
     <div className="border-2 md:border-4 border-black">
       <button
         id={headerId}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls={contentId}
         className="w-full flex items-center justify-between p-4 md:p-6 bg-white hover:bg-brutal-green transition-colors"
