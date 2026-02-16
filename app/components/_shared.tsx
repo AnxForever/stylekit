@@ -2,6 +2,7 @@
 
 import { PropsTable, componentProps } from "@/components/docs/props-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 // Shared PropsToggle component
 export function PropsToggle({
@@ -13,13 +14,14 @@ export function PropsToggle({
   expanded: boolean;
   onToggle: (component: string) => void;
 }) {
+  const { t } = useI18n();
   return (
     <button
       onClick={() => onToggle(component)}
       className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors mt-4"
     >
       {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-      {expanded ? "收起 Props" : "查看 Props"}
+      {expanded ? t("shared.collapseProps") : t("shared.viewProps")}
     </button>
   );
 }

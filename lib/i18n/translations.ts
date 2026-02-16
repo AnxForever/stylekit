@@ -507,6 +507,58 @@ const en = {
     "developers.api.endpoints.knowledgeRecommend": "Get design recommendation.",
     "developers.api.endpoints.knowledgeStacks": "List stack guidelines.",
     "developers.api.endpoints.knowledgeDomains": "List knowledge domains.",
+
+    // Error page
+    "error.title": "Something went wrong",
+    "error.description": "Sorry, an error occurred while loading the page. Please try refreshing or come back later.",
+    "error.retry": "Retry",
+
+    // Shared components
+    "shared.collapseProps": "Collapse Props",
+    "shared.viewProps": "View Props",
+
+    // Guide page
+    "guide.badge": "Guide",
+    "guide.heading": "Generate Frontend in 3 Steps",
+    "guide.subheading": "From style selection to code download, StyleKit now focuses on a direct 3-step flow.",
+    "guide.step1.title": "Choose or Import Style",
+    "guide.step1.desc": "Choose a built-in style from the library, or import one in Create Style from style-extractor output or a URL.",
+    "guide.step1.cta": "Open Create/Import",
+    "guide.step2.title": "Choose Template and Format",
+    "guide.step2.desc": "In Generator, pick a template (Landing/Portfolio) and output format (HTML or React + Tailwind).",
+    "guide.step2.cta": "Open Generator",
+    "guide.step3.title": "Edit Content and Download",
+    "guide.step3.desc": "Edit content with live preview in the same step, then download the ZIP package.",
+    "guide.step3.cta": "Start Generating",
+    "guide.apiTitle": "Need API / MCP Integration?",
+    "guide.apiDesc": "Open the developers page for API, CLI, and MCP integration details.",
+    "guide.apiCta": "Open Developers",
+
+    // Style detail page
+    "styleDetail.notFound": "Style Not Found — StyleKit",
+    "styleDetail.backToCatalog": "Back to Catalog",
+    "styleDetail.catalog": "Style Catalog",
+    "styleDetail.viewShowcase": "View Full Showcase",
+    "styleDetail.colorPalette": "Color Palette",
+    "styleDetail.philosophy": "Design Philosophy",
+    "styleDetail.dos": "Do's",
+    "styleDetail.donts": "Don'ts",
+    "styleDetail.componentTemplates": "Component Templates",
+    "styleDetail.componentPreview": "Component Preview",
+    "styleDetail.globalStyles": "Global Styles",
+    "styleDetail.quickStart": "Quick Start",
+    "styleDetail.examplePrompts": "Example Prompts",
+    "styleDetail.examplePromptsDesc": "Copy these verified prompts to quickly start generating {name} style interfaces with AI.",
+    "styleDetail.compatibleVisual": "Compatible Visual Styles",
+    "styleDetail.tryPairing": "Try Pairing",
+    "styleDetail.compatibleVisualDesc": "{name} is a layout pattern that can be combined with the following visual styles.",
+    "styleDetail.compatibleLayout": "Compatible Layout Modes",
+    "styleDetail.recommendedLayouts": "Recommended Layouts",
+    "styleDetail.compatibleLayoutDesc": "The following layout modes pair well with {name} style.",
+    "styleDetail.exportStylePack": "Export Style Pack",
+    "styleDetail.exportStylePackDesc": "Get the complete machine-readable style assets including Design Tokens, Tailwind presets, CSS variables, and shadcn/ui themes.",
+    "styleDetail.export": "Export",
+    "styleDetail.aiRulesDesc": "Export and add the following rules to your AI coding assistant to generate code following the {name} style.",
 } as const;
 
 const zh: { [K in keyof typeof en]: string } = {
@@ -942,6 +994,58 @@ const zh: { [K in keyof typeof en]: string } = {
   "components.resizable.simpleDivider": "简洁分隔线",
   "components.resizable.panelA": "面板 A",
   "components.resizable.panelB": "面板 B",
+
+  // Error page
+  "error.title": "出错了",
+  "error.description": "抱歉，页面加载时发生了错误。请尝试刷新页面或稍后再试。",
+  "error.retry": "重试",
+
+  // Shared components
+  "shared.collapseProps": "收起 Props",
+  "shared.viewProps": "查看 Props",
+
+  // Guide page
+  "guide.badge": "使用指南",
+  "guide.heading": "3 步完成前端生成",
+  "guide.subheading": "从风格选择到代码下载，StyleKit 现在聚焦为更直接的三步流程。",
+  "guide.step1.title": "选择或导入风格",
+  "guide.step1.desc": "在风格库中选择预设风格，或在创建风格页粘贴 style-extractor 输出 / 输入 URL 导入风格。",
+  "guide.step1.cta": "前往创建/导入",
+  "guide.step2.title": "选择模板与格式",
+  "guide.step2.desc": "进入生成器选择页面模板（Landing/Portfolio）和输出格式（HTML 或 React + Tailwind）。",
+  "guide.step2.cta": "打开生成器",
+  "guide.step3.title": "编辑内容并下载",
+  "guide.step3.desc": "在同一步里编辑内容并实时预览，确认后直接下载 ZIP 代码包。",
+  "guide.step3.cta": "开始生成代码",
+  "guide.apiTitle": "需要 API / MCP 集成？",
+  "guide.apiDesc": "查看开发者页面，获取 API、CLI、MCP 的接入方式。",
+  "guide.apiCta": "查看开发者文档",
+
+  // Style detail page
+  "styleDetail.notFound": "风格未找到 — StyleKit",
+  "styleDetail.backToCatalog": "返回目录",
+  "styleDetail.catalog": "风格目录",
+  "styleDetail.viewShowcase": "查看完整 Showcase →",
+  "styleDetail.colorPalette": "配色方案",
+  "styleDetail.philosophy": "设计哲学",
+  "styleDetail.dos": "必须做 / Do's",
+  "styleDetail.donts": "禁止做 / Don'ts",
+  "styleDetail.componentTemplates": "组件模板",
+  "styleDetail.componentPreview": "组件预览",
+  "styleDetail.globalStyles": "全局样式",
+  "styleDetail.quickStart": "快速开始",
+  "styleDetail.examplePrompts": "示例 Prompts",
+  "styleDetail.examplePromptsDesc": "复制这些经过验证的 Prompt，快速开始用 AI 生成 {name} 风格的界面。",
+  "styleDetail.compatibleVisual": "兼容的视觉风格",
+  "styleDetail.tryPairing": "试试搭配",
+  "styleDetail.compatibleVisualDesc": "{name} 是一种布局模式，可以与以下视觉风格搭配使用。",
+  "styleDetail.compatibleLayout": "兼容的布局模式",
+  "styleDetail.recommendedLayouts": "推荐布局",
+  "styleDetail.compatibleLayoutDesc": "以下布局模式与 {name} 风格搭配效果良好。",
+  "styleDetail.exportStylePack": "导出风格包",
+  "styleDetail.exportStylePackDesc": "获取完整的可机器读取风格资源，包括 Design Tokens、Tailwind 预设、CSS 变量和 shadcn/ui 主题。",
+  "styleDetail.export": "导出",
+  "styleDetail.aiRulesDesc": "将以下规则导出并添加到你的 AI 编码助手中，让它按照 {name} 风格生成代码。",
 } as const;
 
 export const translations = {
