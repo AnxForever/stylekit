@@ -34,21 +34,64 @@ Complete checklist for adding a new design style to StyleKit.
 ### 1.2 Style Tokens
 
 - [ ] `lib/styles/{slug}-tokens.ts` - AI-consumable Tailwind mappings
-  - `border`: radius, width, style
-  - `shadow`: default, hover variants
-  - `interaction`: hover, active, focus states
-  - `typography`: fonts, sizes, weights
-  - `spacing`: padding, margin, gap
-  - `colors`: all color tokens
-  - `forbidden`: classes to never use
-  - `required`: classes that must be used
+  - Use `createStyleTokens()` from `./token-defaults` (provides sensible defaults via deep-merge)
+  - Only override fields that differ from defaults
+  - Required override sections:
+    - `colors`: background, text, button (style-specific)
+    - `forbidden`: classes to never use
+    - `required`: classes that must be used
+  - Optional overrides (inherit defaults if omitted):
+    - `border`: radius, width, style
+    - `shadow`: default, hover variants
+    - `interaction`: hover, active, focus states
+    - `typography`: fonts, sizes, weights
+    - `spacing`: padding, margin, gap
+  - Example:
+    ```ts
+    import { createStyleTokens } from "./token-defaults";
+
+    export const myStyleTokens = createStyleTokens({
+      colors: { background: { primary: "bg-black" } },
+      border: { radius: "rounded-none" },
+      forbidden: { classes: ["rounded-lg"], patterns: [], reasons: {} },
+      required: { button: ["font-mono"], card: ["border-2"], input: ["bg-transparent"] },
+    });
+    ```
 
 ### 1.3 Recipe Definition
 
 - [ ] `lib/recipes/{slug}.ts` - Component recipes
+  - Use `createStyleRecipes()` and helpers from `./factory`
   - **MUST include**: button, card, input (minimum)
   - **Optional**: nav, badge, table, alert, hero, footer, etc.
-  - Each recipe: `name`, `description`, `className`, `html` (optional)
+  - Available helpers:
+    - `sizeParam({ sm, md, lg })` - Size select parameter
+    - `paddingParam({ sm, md, lg })` - Padding select parameter
+    - `fullWidthParam` - Full width boolean toggle
+    - `interactiveParam(classes, default?)` - Interactive boolean
+    - `visibleParam` - Visibility toggle
+    - `buttonSlots(label?)`, `cardSlots(title?, content?)`, `inputSlots(placeholder?)` - Common slot presets
+    - `childrenSlot()`, `labelSlot(default)`, `iconSlot()` - Single-slot presets
+    - `defaultVariant`, `variant(id, label, labelZh, classes)` - Variant builders
+  - Example:
+    ```ts
+    import { sizeParam, fullWidthParam, buttonSlots, variant, createStyleRecipes } from "./factory";
+
+    export const myStyleRecipes = createStyleRecipes("my-style", "My Style", {
+      button: {
+        id: "button", name: "Button", nameZh: "按钮",
+        description: "My style button",
+        skeleton: { element: "button", baseClasses: ["font-bold", "border-2"] },
+        parameters: [sizeParam({ sm: "px-3 py-1", md: "px-5 py-2", lg: "px-7 py-3" }), fullWidthParam],
+        variants: {
+          primary: variant("primary", "Primary", "主要", ["bg-black text-white"]),
+        },
+        slots: buttonSlots("Click"),
+        states: { hover: ["hover:opacity-80"] },
+      },
+      // ... card, input, etc.
+    });
+    ```
 
 ## Phase 2: Registration Files (MODIFY)
 
