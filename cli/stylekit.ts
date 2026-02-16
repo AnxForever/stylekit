@@ -15,11 +15,11 @@
  *   rules <style>                 Show lint rules for a style
  */
 
-import { readFileSync, existsSync } from "fs";
-import { resolve } from "path";
+import { readFileSync, existsSync, readdirSync, statSync } from "fs";
+import { resolve, relative, join } from "path";
 
 // Import from lib (relative paths for tsx execution)
-import { lintCode, getFixSuggestions } from "../lib/linter";
+import { lintCode, getFixSuggestions, type LintResult } from "../lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "../lib/styles/lint-rules";
 import { styles } from "../lib/styles";
 import { searchKnowledge, getDesignRecommendation, getSmartRecommendation, compareStyles } from "../lib/knowledge";
@@ -50,7 +50,7 @@ ${colorize("Usage:", "cyan")}
   npx stylekit <command> [options]
 
 ${colorize("Commands:", "cyan")}
-  ${colorize("lint", "green")} <file> --style <style>   Check if code follows style guidelines
+  ${colorize("lint", "green")} --style <s> --files <glob>  Check if code follows style guidelines
   ${colorize("recommend", "green")} <query>             Get design recommendations for a product type
   ${colorize("smart", "green")} <query> [options]       Smart recommendation with scoring and context
   ${colorize("compare", "green")} <s1> <s2> <query>     Compare two styles for a product type
@@ -66,8 +66,16 @@ ${colorize("Smart Command Options:", "cyan")}
   --a11y               Prioritize accessibility
   --perf               Prioritize performance
 
+${colorize("Lint Options:", "cyan")}
+  --style <style>      Style slug to lint against (required)
+  --files <glob>       Glob pattern for files to check (required)
+  --format <fmt>       Output format: text (default), json, github
+  --fix                Show fix suggestions for violations
+
 ${colorize("Examples:", "cyan")}
-  stylekit lint ./src/Button.tsx --style neo-brutalist
+  stylekit lint --style neo-brutalist --files "src/**/*.tsx"
+  stylekit lint --style neo-brutalist --files "src/**/*.tsx" --format github
+  stylekit lint --style glassmorphism --files "components/**/*.tsx" --fix
   stylekit recommend "SaaS dashboard"
   stylekit smart "e-commerce store" --audience consumer --mood playful
   stylekit compare neo-brutalist glassmorphism "creative portfolio"
@@ -142,6 +150,200 @@ function cmdRules(styleSlug: string): void {
   console.log(`  Contrast: WCAG ${rules.colors.contrastMinimum}`);
 
   console.log();
+}
+
+// ---- Glob utility for file matching ----
+
+function matchGlob(pattern: string, filePath: string): boolean {
+  const regexStr = pattern
+    .replace(/\./g, "\\.")
+    .replace(/\*\*/g, "{{GLOBSTAR}}")
+    .replace(/\*/g, "[^/]*")
+    .replace(/\{\{GLOBSTAR\}\}/g, ".*");
+  return new RegExp(`^${regexStr}$`).test(filePath);
+}
+
+function findFilesMatchingGlob(baseDir: string, pattern: string): string[] {
+  const results: string[] = [];
+
+  function walk(dir: string): void {
+    let entries: string[];
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      if (entry === "node_modules" || entry === ".next" || entry === ".git" || entry === "dist") continue;
+      const fullPath = join(dir, entry);
+      let stat;
+      try {
+        stat = statSync(fullPath);
+      } catch {
+        continue;
+      }
+      if (stat.isDirectory()) {
+        walk(fullPath);
+      } else if (stat.isFile()) {
+        const rel = relative(baseDir, fullPath);
+        if (matchGlob(pattern, rel)) {
+          results.push(fullPath);
+        }
+      }
+    }
+  }
+
+  walk(baseDir);
+  return results.sort();
+}
+
+// ---- Format types ----
+
+type OutputFormat = "text" | "json" | "github";
+
+interface FileLintResult {
+  file: string;
+  relativePath: string;
+  result: LintResult;
+  fixes: string[];
+}
+
+// ---- Output formatters ----
+
+function formatTextOutput(results: FileLintResult[], showFix: boolean): string {
+  const lines: string[] = [];
+  let totalErrors = 0;
+  let totalWarnings = 0;
+  let totalFiles = results.length;
+  let failedFiles = 0;
+
+  for (const r of results) {
+    totalErrors += r.result.stats.errorCount;
+    totalWarnings += r.result.stats.warningCount;
+    if (!r.result.valid) failedFiles++;
+
+    if (r.result.violations.length === 0) continue;
+
+    lines.push(colorize(`\n  ${r.relativePath}`, "bold"));
+    for (const v of r.result.violations) {
+      const icon = v.severity === "error" ? colorize("[x]", "red") : colorize("[!]", "yellow");
+      const location = v.line ? `:${v.line}` : "";
+      lines.push(`    ${icon} ${v.class}${location}: ${v.reason}`);
+    }
+
+    if (showFix && r.fixes.length > 0) {
+      lines.push(colorize("    Fixes:", "green"));
+      for (const fix of r.fixes) {
+        lines.push(`      - ${fix}`);
+      }
+    }
+  }
+
+  const summary = [
+    "",
+    colorize("Summary:", "bold"),
+    `  Files checked: ${totalFiles}`,
+    `  Files with issues: ${failedFiles}`,
+    `  Errors: ${totalErrors}`,
+    `  Warnings: ${totalWarnings}`,
+    "",
+  ];
+
+  if (totalErrors === 0) {
+    summary.push(colorize("  PASS - No style violations found", "green"));
+  } else {
+    summary.push(colorize(`  FAIL - ${totalErrors} error(s) found`, "red"));
+  }
+
+  return [...lines, ...summary].join("\n");
+}
+
+function formatJsonOutput(results: FileLintResult[], styleSlug: string): string {
+  const output = {
+    style: styleSlug,
+    totalFiles: results.length,
+    totalErrors: results.reduce((sum, r) => sum + r.result.stats.errorCount, 0),
+    totalWarnings: results.reduce((sum, r) => sum + r.result.stats.warningCount, 0),
+    files: results.map((r) => ({
+      file: r.relativePath,
+      valid: r.result.valid,
+      errors: r.result.stats.errorCount,
+      warnings: r.result.stats.warningCount,
+      violations: r.result.violations.map((v) => ({
+        class: v.class,
+        severity: v.severity,
+        reason: v.reason,
+        line: v.line || null,
+      })),
+      fixes: r.fixes,
+    })),
+  };
+  return JSON.stringify(output, null, 2);
+}
+
+function formatGithubOutput(results: FileLintResult[]): string {
+  const lines: string[] = [];
+
+  for (const r of results) {
+    for (const v of r.result.violations) {
+      const level = v.severity === "error" ? "error" : "warning";
+      const line = v.line || 1;
+      lines.push(`::${level} file=${r.relativePath},line=${line}::${v.class}: ${v.reason}`);
+    }
+  }
+
+  // Summary annotation
+  const totalErrors = results.reduce((sum, r) => sum + r.result.stats.errorCount, 0);
+  const totalWarnings = results.reduce((sum, r) => sum + r.result.stats.warningCount, 0);
+  if (totalErrors > 0 || totalWarnings > 0) {
+    lines.push(`::notice::StyleKit Lint: ${totalErrors} error(s), ${totalWarnings} warning(s) across ${results.length} file(s)`);
+  }
+
+  return lines.join("\n");
+}
+
+// ---- Enhanced lint command (multi-file with glob) ----
+
+function cmdLintMulti(styleSlug: string, filesGlob: string, format: OutputFormat, showFix: boolean): void {
+  const baseDir = process.cwd();
+  const files = findFilesMatchingGlob(baseDir, filesGlob);
+
+  if (files.length === 0) {
+    console.error(colorize(`Error: No files matched pattern "${filesGlob}"`, "red"));
+    process.exit(1);
+  }
+
+  const results: FileLintResult[] = [];
+
+  for (const file of files) {
+    const code = readFileSync(file, "utf-8");
+    const result = lintCode(styleSlug, code);
+    const fixes = showFix ? getFixSuggestions(result) : [];
+    results.push({
+      file,
+      relativePath: relative(baseDir, file),
+      result,
+      fixes,
+    });
+  }
+
+  switch (format) {
+    case "json":
+      console.log(formatJsonOutput(results, styleSlug));
+      break;
+    case "github":
+      console.log(formatGithubOutput(results));
+      break;
+    case "text":
+    default:
+      console.log(formatTextOutput(results, showFix));
+      break;
+  }
+
+  const hasErrors = results.some((r) => !r.result.valid);
+  if (hasErrors) {
+    process.exit(1);
+  }
 }
 
 function cmdLint(filePath: string, styleSlug: string): void {
@@ -371,19 +573,32 @@ function main(): void {
     }
 
     case "lint": {
-      const file = args[1];
       const styleIndex = args.indexOf("--style");
       const style = styleIndex !== -1 ? args[styleIndex + 1] : null;
-
-      if (!file) {
-        console.error(colorize("Error: Please specify a file to lint", "red"));
-        console.log("Usage: stylekit lint <file> --style <style>");
-        process.exit(1);
-      }
+      const filesIndex = args.indexOf("--files");
+      const filesGlob = filesIndex !== -1 ? args[filesIndex + 1] : null;
+      const formatIndex = args.indexOf("--format");
+      const format = (formatIndex !== -1 ? args[formatIndex + 1] : "text") as OutputFormat;
+      const showFix = args.includes("--fix");
 
       if (!style) {
         console.error(colorize("Error: Please specify a style with --style", "red"));
-        console.log("Usage: stylekit lint <file> --style <style>");
+        console.log('Usage: stylekit lint --style <style> --files "src/**/*.tsx"');
+        process.exit(1);
+      }
+
+      // New multi-file mode: --files flag present
+      if (filesGlob) {
+        cmdLintMulti(style, filesGlob, format, showFix);
+        break;
+      }
+
+      // Legacy single-file mode: stylekit lint <file> --style <style>
+      const file = args[1];
+      if (!file || file.startsWith("--")) {
+        console.error(colorize("Error: Please specify --files glob or a file path", "red"));
+        console.log('Usage: stylekit lint --style <style> --files "src/**/*.tsx"');
+        console.log("       stylekit lint <file> --style <style>");
         process.exit(1);
       }
 

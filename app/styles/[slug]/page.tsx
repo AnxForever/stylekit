@@ -5,6 +5,8 @@ import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scrol
 import { getStyleBySlug, styles } from "@/lib/styles";
 import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
+import { scoreStyle } from "@/lib/accessibility";
+import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -64,6 +66,13 @@ export default async function StyleDetailPage({
       })
     : null;
 
+  // Pre-compute accessibility score
+  const accessibilityScore = scoreStyle(slug);
+
+  // Pre-compute version info
+  const version = getCurrentVersion(slug);
+  const changelog = getChangelog(slug);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -75,6 +84,9 @@ export default async function StyleDetailPage({
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}
+            accessibilityScore={accessibilityScore}
+            version={version}
+            changelog={changelog}
           />
         </main>
       </DisableAutoScroll>

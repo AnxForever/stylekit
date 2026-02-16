@@ -1,6 +1,9 @@
 import { getStyleBySlug } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
+import { scoreStyle } from "@/lib/accessibility";
+import { getCurrentVersion, getChangelog } from "@/lib/versioning";
+import { trackStyleUsage } from "@/lib/analytics";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -8,6 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  trackStyleUsage(slug, "api");
   const style = getStyleBySlug(slug);
 
   if (!style) {
@@ -41,5 +45,8 @@ export async function GET(
       recipes: recipes.recipes,
     } : null,
     compatibleWith: style.compatibleWith,
+    accessibility: scoreStyle(slug),
+    version: getCurrentVersion(slug),
+    changelog: getChangelog(slug),
   });
 }
