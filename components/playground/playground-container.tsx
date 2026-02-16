@@ -9,13 +9,16 @@ import { styleTokensRegistry } from "@/lib/styles/tokens-registry";
 import { getAllArchetypes } from "@/lib/archetypes";
 import type { StyleTokens } from "@/lib/styles/tokens";
 
+import { getTemplateCode } from "@/lib/playground/template-code";
 import { PlaygroundEditor } from "./playground-editor";
+import { PlaygroundLintPanel } from "./playground-lint-panel";
 import { PlaygroundPreview } from "./playground-preview";
 import { PlaygroundToolbar } from "./playground-toolbar";
 import { StyleSwitcher } from "./style-switcher";
 import { TemplateSelector } from "./template-selector";
 
 type DeviceSize = "desktop" | "tablet" | "mobile";
+type EditorTab = "code" | "lint";
 
 const deviceWidths: Record<DeviceSize, number | undefined> = {
   desktop: undefined,
@@ -168,6 +171,7 @@ export function PlaygroundContainer() {
   const [deviceSize, setDeviceSize] = useState<DeviceSize>("desktop");
   const [editorVisible, setEditorVisible] = useState(true);
   const [templatesVisible, setTemplatesVisible] = useState(false);
+  const [editorTab, setEditorTab] = useState<EditorTab>("code");
 
   // Get style metadata for switcher
   const stylesForSwitcher = useMemo(
@@ -216,7 +220,10 @@ export function PlaygroundContainer() {
   const handleTemplateChange = useCallback(
     (id: string) => {
       setTemplateId(id);
-      // For now, just keep the current code (template code generation would be complex)
+      const templateCode = getTemplateCode(id);
+      if (templateCode) {
+        setCode(templateCode);
+      }
       setTemplatesVisible(false);
     },
     []
@@ -286,20 +293,45 @@ export function PlaygroundContainer() {
         {editorVisible && (
           <div className="w-[40%] min-w-[300px] border-r border-border flex flex-col">
             <div className="px-3 py-1.5 border-b border-border bg-zinc-50 dark:bg-zinc-900 flex items-center justify-between">
-              <span className="text-xs text-muted uppercase tracking-wider">
-                HTML
-              </span>
-              <span className="text-[10px] text-muted">
-                {t("playground.liveEditing")}
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setEditorTab("code")}
+                  className={`text-xs uppercase tracking-wider px-1 pb-0.5 transition-colors ${
+                    editorTab === "code"
+                      ? "text-foreground border-b border-foreground font-medium"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  HTML
+                </button>
+                <button
+                  onClick={() => setEditorTab("lint")}
+                  className={`text-xs uppercase tracking-wider px-1 pb-0.5 transition-colors ${
+                    editorTab === "lint"
+                      ? "text-foreground border-b border-foreground font-medium"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  Lint
+                </button>
+              </div>
+              {editorTab === "code" && (
+                <span className="text-[10px] text-muted">
+                  {t("playground.liveEditing")}
+                </span>
+              )}
             </div>
             <div className="flex-1 overflow-hidden">
-              <PlaygroundEditor
-                value={code}
-                onChange={handleCodeChange}
-                language="html"
-                darkMode={darkMode}
-              />
+              {editorTab === "code" ? (
+                <PlaygroundEditor
+                  value={code}
+                  onChange={handleCodeChange}
+                  language="html"
+                  darkMode={darkMode}
+                />
+              ) : (
+                <PlaygroundLintPanel code={code} styleSlug={styleSlug} />
+              )}
             </div>
           </div>
         )}

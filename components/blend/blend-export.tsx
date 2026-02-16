@@ -4,13 +4,13 @@ import { useState, useCallback } from "react";
 import { Copy, Check, Download, FileJson, FileCode, Settings } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleTokens } from "@/lib/styles/tokens";
-import { exportBlendedTokens } from "@/lib/styles/blend-engine";
+import { exportBlendedTokens, exportAsStyleDefinition } from "@/lib/styles/blend-engine";
 
 interface BlendExportProps {
   tokens: StyleTokens;
 }
 
-type ExportFormat = "css" | "json" | "tailwind";
+type ExportFormat = "css" | "json" | "tailwind" | "style";
 
 export function BlendExport({ tokens }: BlendExportProps) {
   const { t } = useI18n();
@@ -18,7 +18,9 @@ export function BlendExport({ tokens }: BlendExportProps) {
 
   const handleCopy = useCallback(
     async (format: ExportFormat) => {
-      const content = exportBlendedTokens(tokens, format);
+      const content = format === "style"
+        ? exportAsStyleDefinition(tokens)
+        : exportBlendedTokens(tokens, format);
       try {
         await navigator.clipboard.writeText(content);
         setCopiedFormat(format);
@@ -32,8 +34,10 @@ export function BlendExport({ tokens }: BlendExportProps) {
 
   const handleDownload = useCallback(
     (format: ExportFormat) => {
-      const content = exportBlendedTokens(tokens, format);
-      const ext = format === "json" ? "json" : format === "tailwind" ? "js" : "css";
+      const content = format === "style"
+        ? exportAsStyleDefinition(tokens)
+        : exportBlendedTokens(tokens, format);
+      const ext = format === "style" ? "json" : format === "json" ? "json" : format === "tailwind" ? "js" : "css";
       const filename = `blend-tokens.${ext}`;
       const blob = new Blob([content], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
@@ -50,6 +54,7 @@ export function BlendExport({ tokens }: BlendExportProps) {
     { key: "css", icon: FileCode, labelKey: "blend.export.css" },
     { key: "json", icon: FileJson, labelKey: "blend.export.json" },
     { key: "tailwind", icon: Settings, labelKey: "blend.export.tailwind" },
+    { key: "style", icon: FileJson, labelKey: "blend.export.style" },
   ];
 
   return (

@@ -10,6 +10,7 @@ import { diffTokens, type TokenDiffResult } from "@/lib/styles/token-diff";
 import { StyleSelector } from "./style-selector";
 import { TokenDiffTable } from "./token-diff-table";
 import { VisualCompare } from "./visual-compare";
+import { ComponentCompare } from "./component-compare";
 
 const MAX_STYLES = 3;
 
@@ -195,6 +196,18 @@ export function CompareContainer() {
             />
           </div>
         </div>
+      )}
+
+      {/* Component compare */}
+      {stylesWithTokens.length >= 2 && (
+        <ComponentCompare
+          styleA={stylesWithTokens[0].slug}
+          styleB={stylesWithTokens[1].slug}
+          styleC={stylesWithTokens[2]?.slug}
+          styleAName={locale === "zh" ? stylesWithTokens[0].name : stylesWithTokens[0].nameEn}
+          styleBName={locale === "zh" ? stylesWithTokens[1].name : stylesWithTokens[1].nameEn}
+          styleCName={stylesWithTokens[2] ? (locale === "zh" ? stylesWithTokens[2].name : stylesWithTokens[2].nameEn) : undefined}
+        />
       )}
 
       {/* Visual compare */}
