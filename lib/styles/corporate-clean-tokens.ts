@@ -1,7 +1,7 @@
 // Corporate Clean Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const corporateCleanTokens: StyleTokens = {
+export const corporateCleanTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -107,4 +107,4 @@ export const corporateCleanTokens: StyleTokens = {
       "focus:border-blue-500",
     ],
   },
-};
+});

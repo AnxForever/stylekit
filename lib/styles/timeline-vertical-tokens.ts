@@ -1,7 +1,7 @@
 // Timeline Vertical Style Tokens - Sequential connected elements with indigo accents
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const timelineVerticalTokens: StyleTokens = {
+export const timelineVerticalTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-zinc-100",
@@ -104,4 +104,4 @@ export const timelineVerticalTokens: StyleTokens = {
       "focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500",
     ],
   },
-};
+});

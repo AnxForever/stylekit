@@ -1,7 +1,7 @@
 // Vaporwave Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const vaporwaveTokens: StyleTokens = {
+export const vaporwaveTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#ff71ce]/50",
@@ -118,4 +118,4 @@ export const vaporwaveTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

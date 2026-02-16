@@ -1,7 +1,7 @@
 // Liquid Glass Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const glassmorphismTokens: StyleTokens = {
+export const glassmorphismTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-white/30",
@@ -143,4 +143,4 @@ export const glassmorphismTokens: StyleTokens = {
       "transition-all duration-300 ease-out",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // Steampunk Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const steampunkTokens: StyleTokens = {
+export const steampunkTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#b87333]/40",
@@ -126,4 +126,4 @@ export const steampunkTokens: StyleTokens = {
       "focus:shadow-[0_0_12px_rgba(181,166,66,0.25)]",
     ],
   },
-};
+});

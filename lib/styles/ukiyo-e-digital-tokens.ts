@@ -1,7 +1,7 @@
 // Ukiyo-e Digital Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const ukiyoEDigitalTokens: StyleTokens = {
+export const ukiyoEDigitalTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#1a3055]",
@@ -116,4 +116,4 @@ export const ukiyoEDigitalTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

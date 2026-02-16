@@ -1,7 +1,7 @@
 // Neon Samurai Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const neonSamuraiTokens: StyleTokens = {
+export const neonSamuraiTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#dc2626]/30",
@@ -116,4 +116,4 @@ export const neonSamuraiTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

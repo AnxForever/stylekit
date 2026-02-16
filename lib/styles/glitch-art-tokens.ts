@@ -1,7 +1,7 @@
 // Glitch Art Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const glitchArtTokens: StyleTokens = {
+export const glitchArtTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#00ffff]/20",
@@ -120,4 +120,4 @@ export const glitchArtTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // Masonry Flow Style Tokens - Pinterest-style layout with clean modern aesthetics
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const masonryFlowTokens: StyleTokens = {
+export const masonryFlowTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-zinc-200",
@@ -102,4 +102,4 @@ export const masonryFlowTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

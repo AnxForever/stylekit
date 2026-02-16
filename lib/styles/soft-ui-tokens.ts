@@ -1,7 +1,7 @@
 // Soft UI Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const softUITokens: StyleTokens = {
+export const softUITokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-transparent",
@@ -124,4 +124,4 @@ export const softUITokens: StyleTokens = {
       "transition-all duration-200",
     ],
   },
-};
+});

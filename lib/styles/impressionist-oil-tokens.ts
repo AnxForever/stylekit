@@ -1,7 +1,7 @@
 // Impressionist Oil Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const impressionistOilTokens: StyleTokens = {
+export const impressionistOilTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#e8a87c]/25",
@@ -135,4 +135,4 @@ export const impressionistOilTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

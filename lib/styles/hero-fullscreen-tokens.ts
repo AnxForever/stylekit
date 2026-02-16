@@ -1,7 +1,7 @@
 // Hero Fullscreen Style Tokens - Dramatic large type, overlay effects, bold contrast
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const heroFullscreenTokens: StyleTokens = {
+export const heroFullscreenTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-white",
@@ -102,4 +102,4 @@ export const heroFullscreenTokens: StyleTokens = {
       "focus:outline-none focus:ring-2 focus:ring-white/50",
     ],
   },
-};
+});

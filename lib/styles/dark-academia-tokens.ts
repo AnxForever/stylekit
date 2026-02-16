@@ -1,7 +1,7 @@
 // Dark Academia Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const darkAcademiaTokens: StyleTokens = {
+export const darkAcademiaTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#8b7355]/30",
@@ -111,4 +111,4 @@ export const darkAcademiaTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

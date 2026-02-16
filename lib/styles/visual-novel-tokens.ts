@@ -1,7 +1,7 @@
 // Visual Novel Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const visualNovelTokens: StyleTokens = {
+export const visualNovelTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#4a5568]/10",
@@ -119,4 +119,4 @@ export const visualNovelTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

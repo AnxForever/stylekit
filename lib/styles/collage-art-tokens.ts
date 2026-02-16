@@ -1,7 +1,7 @@
 // Collage Art Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const collageArtTokens: StyleTokens = {
+export const collageArtTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#2d2d2d]",
@@ -137,4 +137,4 @@ export const collageArtTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

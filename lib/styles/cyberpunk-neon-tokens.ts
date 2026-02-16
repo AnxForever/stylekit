@@ -1,7 +1,7 @@
 // Cyberpunk Neon Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const cyberpunkNeonTokens: StyleTokens = {
+export const cyberpunkNeonTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-cyan-400/30",
@@ -120,4 +120,4 @@ export const cyberpunkNeonTokens: StyleTokens = {
       "focus:shadow-[0_0_15px_rgba(0,255,255,0.3)]",
     ],
   },
-};
+});

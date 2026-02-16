@@ -1,7 +1,7 @@
 // Neumorphism Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const neumorphismTokens: StyleTokens = {
+export const neumorphismTokens = createStyleTokens({
   border: {
     width: "border-0",
     color: "border-transparent",
@@ -127,4 +127,4 @@ export const neumorphismTokens: StyleTokens = {
       "transition-shadow duration-200",
     ],
   },
-};
+});

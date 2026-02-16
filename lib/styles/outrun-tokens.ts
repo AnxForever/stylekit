@@ -1,7 +1,7 @@
 // Outrun Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const outrunTokens: StyleTokens = {
+export const outrunTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#ff006e]/50",
@@ -119,4 +119,4 @@ export const outrunTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

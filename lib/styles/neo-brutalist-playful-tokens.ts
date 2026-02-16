@@ -1,7 +1,7 @@
 // Neo-Brutalist Playful Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const neoBrutalistPlayfulTokens: StyleTokens = {
+export const neoBrutalistPlayfulTokens = createStyleTokens({
   border: {
     width: "border-4",
     color: "border-black",
@@ -125,4 +125,4 @@ export const neoBrutalistPlayfulTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // Y2K Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const y2kTokens: StyleTokens = {
+export const y2kTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#c0c0c0]",
@@ -121,4 +121,4 @@ export const y2kTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

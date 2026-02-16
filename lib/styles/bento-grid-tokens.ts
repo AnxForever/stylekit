@@ -1,7 +1,7 @@
 // Bento Grid Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const bentoGridTokens: StyleTokens = {
+export const bentoGridTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-zinc-100 dark:border-zinc-800",
@@ -107,4 +107,4 @@ export const bentoGridTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

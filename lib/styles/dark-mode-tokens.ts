@@ -1,7 +1,7 @@
 // Dark Mode Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const darkModeTokens: StyleTokens = {
+export const darkModeTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-slate-700",
@@ -110,4 +110,4 @@ export const darkModeTokens: StyleTokens = {
       "focus:ring-1 focus:ring-blue-500",
     ],
   },
-};
+});
