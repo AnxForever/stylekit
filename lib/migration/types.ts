@@ -1,7 +1,7 @@
 import type { StyleTokens } from "@/lib/styles/tokens";
 
 export interface MigrationSource {
-  type: "material-ui" | "ant-design" | "chakra-ui";
+  type: "material-ui" | "ant-design" | "chakra-ui" | "style-extractor";
   themeConfig: string; // JSON string of the source theme
 }
 

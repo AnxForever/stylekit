@@ -14,9 +14,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!["material-ui", "ant-design", "chakra-ui"].includes(type)) {
+    if (!["material-ui", "ant-design", "chakra-ui", "style-extractor"].includes(type)) {
       return NextResponse.json(
-        { error: "Invalid type. Must be one of: material-ui, ant-design, chakra-ui" },
+        { error: "Invalid type. Must be one of: material-ui, ant-design, chakra-ui, style-extractor" },
         { status: 400 }
       );
     }
