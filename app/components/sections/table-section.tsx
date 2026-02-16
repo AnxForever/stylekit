@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -17,43 +18,45 @@ interface Props {
 }
 
 export function TableSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       title="Table"
-      description="数据表格组件"
+      description={t("components.table.description")}
     >
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>名称</TableHead>
-            <TableHead>类型</TableHead>
-            <TableHead>状态</TableHead>
-            <TableHead className="text-right">操作</TableHead>
+            <TableHead>{t("components.table.name")}</TableHead>
+            <TableHead>{t("components.table.type")}</TableHead>
+            <TableHead>{t("components.table.status")}</TableHead>
+            <TableHead className="text-right">{t("components.table.action")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
             <TableCell>Neo-Brutalist</TableCell>
-            <TableCell>设计风格</TableCell>
-            <TableCell>已发布</TableCell>
+            <TableCell>{t("components.table.designStyle")}</TableCell>
+            <TableCell>{t("components.table.published")}</TableCell>
             <TableCell className="text-right">
-              <Button variant="ghost" size="sm">编辑</Button>
+              <Button variant="ghost" size="sm">{t("components.table.edit")}</Button>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Glassmorphism</TableCell>
-            <TableCell>设计风格</TableCell>
-            <TableCell>已发布</TableCell>
+            <TableCell>{t("components.table.designStyle")}</TableCell>
+            <TableCell>{t("components.table.published")}</TableCell>
             <TableCell className="text-right">
-              <Button variant="ghost" size="sm">编辑</Button>
+              <Button variant="ghost" size="sm">{t("components.table.edit")}</Button>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Bento Grid</TableCell>
-            <TableCell>布局风格</TableCell>
-            <TableCell>已发布</TableCell>
+            <TableCell>{t("components.table.layoutStyle")}</TableCell>
+            <TableCell>{t("components.table.published")}</TableCell>
             <TableCell className="text-right">
-              <Button variant="ghost" size="sm">编辑</Button>
+              <Button variant="ghost" size="sm">{t("components.table.edit")}</Button>
             </TableCell>
           </TableRow>
         </TableBody>

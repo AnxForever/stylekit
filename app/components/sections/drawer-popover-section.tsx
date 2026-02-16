@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ComponentSection, PropsToggle, PropsPanel } from "../_shared";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   expandedProps: Record<string, boolean>;
@@ -24,30 +25,32 @@ interface Props {
 }
 
 export function DrawerPopoverSection({ expandedProps, toggleProps }: Props) {
+  const { t } = useI18n();
+
   return (
     <ComponentSection
       id="drawer"
       title="Drawer & Popover"
-      description="抽屉和弹出层组件"
+      description={t("components.drawer.description")}
     >
       <div className="flex flex-wrap gap-4">
         <Drawer>
           <DrawerTrigger asChild>
-            <Button>打开 Drawer</Button>
+            <Button>{t("components.drawer.openDrawer")}</Button>
           </DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
-              <DrawerTitle>Drawer 标题</DrawerTitle>
+              <DrawerTitle>{t("components.drawer.title")}</DrawerTitle>
               <DrawerDescription>
-                这是一个从右侧滑出的抽屉组件
+                {t("components.drawer.bodyDesc")}
               </DrawerDescription>
             </DrawerHeader>
             <div className="p-4">
-              <p className="text-muted">抽屉内容区域</p>
+              <p className="text-muted">{t("components.drawer.content")}</p>
             </div>
             <DrawerFooter>
               <DrawerClose asChild>
-                <Button variant="outline">关闭</Button>
+                <Button variant="outline">{t("components.drawer.close")}</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>
@@ -55,13 +58,13 @@ export function DrawerPopoverSection({ expandedProps, toggleProps }: Props) {
 
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline">打开 Popover</Button>
+            <Button variant="outline">{t("components.drawer.openPopover")}</Button>
           </PopoverTrigger>
           <PopoverContent>
             <div className="space-y-2">
-              <h4 className="font-medium">Popover 标题</h4>
+              <h4 className="font-medium">{t("components.drawer.popoverTitle")}</h4>
               <p className="text-sm text-muted">
-                这是一个弹出层组件，可以展示额外信息。
+                {t("components.drawer.popoverDesc")}
               </p>
             </div>
           </PopoverContent>
