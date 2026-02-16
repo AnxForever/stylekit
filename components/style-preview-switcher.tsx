@@ -33,7 +33,7 @@ export function StylePreviewSwitcher() {
         {/* Style Selector */}
         <div className="relative">
           <button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpen((prev) => !prev)}
             className="flex items-center gap-2 px-4 py-2 border border-border bg-background hover:border-foreground/50 transition-colors text-sm min-w-[180px]"
           >
             <span>
