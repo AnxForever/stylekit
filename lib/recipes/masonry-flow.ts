@@ -1,10 +1,7 @@
 // Masonry Flow Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const masonryFlowRecipes: StyleRecipes = {
-  styleSlug: "masonry-flow",
-  styleName: "Masonry Flow",
-  recipes: {
+export const masonryFlowRecipes = createStyleRecipes("masonry-flow", "Masonry Flow", {
     button: {
       id: "button",
       name: "Button",
@@ -210,5 +207,4 @@ export const masonryFlowRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Apple Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const appleStyleRecipes: StyleRecipes = {
-  styleSlug: "apple-style",
-  styleName: "Apple Style",
-  recipes: {
+export const appleStyleRecipes = createStyleRecipes("apple-style", "Apple Style", {
     button: {
       id: "button",
       name: "Button",
@@ -371,5 +368,4 @@ export const appleStyleRecipes: StyleRecipes = {
         { id: "children", label: "Links", labelZh: "链接", required: false, type: "children" },
       ],
     },
-  },
-};
+});

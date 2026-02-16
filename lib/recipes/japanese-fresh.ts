@@ -1,10 +1,7 @@
 // Japanese Fresh Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const japaneseFreshRecipes: StyleRecipes = {
-  styleSlug: "japanese-fresh",
-  styleName: "Japanese Fresh",
-  recipes: {
+export const japaneseFreshRecipes = createStyleRecipes("japanese-fresh", "Japanese Fresh", {
     button: {
       id: "button",
       name: "Whisper Button",
@@ -325,5 +322,4 @@ export const japaneseFreshRecipes: StyleRecipes = {
         disabled: ["opacity-30 cursor-not-allowed"],
       },
     },
-  },
-};
+});

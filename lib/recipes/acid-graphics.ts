@@ -1,5 +1,4 @@
 // Acid Graphics Component Recipes
-import type { StyleRecipes } from "./types";
 import {
   sizeParam,
   fullWidthParam,
@@ -16,7 +15,7 @@ import {
   createStyleRecipes,
 } from "./factory";
 
-export const acidGraphicsRecipes: StyleRecipes = createStyleRecipes(
+export const acidGraphicsRecipes = createStyleRecipes(
   "acid-graphics",
   "Acid Graphics",
   {

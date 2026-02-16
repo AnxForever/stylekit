@@ -1,10 +1,7 @@
 // Vaporwave Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const vaporwaveRecipes: StyleRecipes = {
-  styleSlug: "vaporwave",
-  styleName: "Vaporwave",
-  recipes: {
+export const vaporwaveRecipes = createStyleRecipes("vaporwave", "Vaporwave", {
     button: {
       id: "button",
       name: "Button",
@@ -220,5 +217,4 @@ export const vaporwaveRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

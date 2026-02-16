@@ -1,10 +1,7 @@
 // Pop Art Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const popArtRecipes: StyleRecipes = {
-  styleSlug: "pop-art",
-  styleName: "Pop Art",
-  recipes: {
+export const popArtRecipes = createStyleRecipes("pop-art", "Pop Art", {
     button: {
       id: "button",
       name: "Button",
@@ -449,5 +446,4 @@ export const popArtRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

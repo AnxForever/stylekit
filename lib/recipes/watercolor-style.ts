@@ -1,10 +1,7 @@
 // Watercolor Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const watercolorStyleRecipes: StyleRecipes = {
-  styleSlug: "watercolor-style",
-  styleName: "Watercolor Style",
-  recipes: {
+export const watercolorStyleRecipes = createStyleRecipes("watercolor-style", "Watercolor Style", {
     button: {
       id: "button",
       name: "Button",
@@ -217,5 +214,4 @@ export const watercolorStyleRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

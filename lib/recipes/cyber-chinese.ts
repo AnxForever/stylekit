@@ -1,10 +1,7 @@
 // Cyber Chinese Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cyberChineseRecipes: StyleRecipes = {
-  styleSlug: "cyber-chinese",
-  styleName: "Cyber Chinese",
-  recipes: {
+export const cyberChineseRecipes = createStyleRecipes("cyber-chinese", "Cyber Chinese", {
     button: {
       id: "button",
       name: "Button",
@@ -631,5 +628,4 @@ export const cyberChineseRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

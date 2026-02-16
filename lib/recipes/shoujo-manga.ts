@@ -1,10 +1,7 @@
 // Shoujo Manga Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const shoujoMangaRecipes: StyleRecipes = {
-  styleSlug: "shoujo-manga",
-  styleName: "Shoujo Manga",
-  recipes: {
+export const shoujoMangaRecipes = createStyleRecipes("shoujo-manga", "Shoujo Manga", {
     button: {
       id: "button",
       name: "Button",
@@ -612,5 +609,4 @@ export const shoujoMangaRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

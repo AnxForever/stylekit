@@ -1,10 +1,7 @@
 // Gothic Lolita Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const gothicLolitaRecipes: StyleRecipes = {
-  styleSlug: "gothic-lolita",
-  styleName: "Gothic Lolita",
-  recipes: {
+export const gothicLolitaRecipes = createStyleRecipes("gothic-lolita", "Gothic Lolita", {
     button: {
       id: "button",
       name: "Button",
@@ -492,5 +489,4 @@ export const gothicLolitaRecipes: StyleRecipes = {
         hover: ["hover:border-[#8b1a2a]"],
       },
     },
-  },
-};
+});

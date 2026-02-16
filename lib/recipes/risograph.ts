@@ -1,10 +1,7 @@
 // Risograph Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const risographRecipes: StyleRecipes = {
-  styleSlug: "risograph",
-  styleName: "Risograph",
-  recipes: {
+export const risographRecipes = createStyleRecipes("risograph", "Risograph", {
     button: {
       id: "button",
       name: "Button",
@@ -416,5 +413,4 @@ export const risographRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

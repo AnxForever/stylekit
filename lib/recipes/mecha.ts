@@ -1,10 +1,7 @@
 // Mecha Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const mechaRecipes: StyleRecipes = {
-  styleSlug: "mecha",
-  styleName: "Mecha",
-  recipes: {
+export const mechaRecipes = createStyleRecipes("mecha", "Mecha", {
     button: {
       id: "button",
       name: "Button",
@@ -561,5 +558,4 @@ export const mechaRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

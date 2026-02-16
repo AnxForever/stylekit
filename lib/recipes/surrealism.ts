@@ -1,10 +1,7 @@
 // Surrealism Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const surrealismRecipes: StyleRecipes = {
-  styleSlug: "surrealism",
-  styleName: "Surrealism",
-  recipes: {
+export const surrealismRecipes = createStyleRecipes("surrealism", "Surrealism", {
     button: {
       id: "button",
       name: "Button",
@@ -440,5 +437,4 @@ export const surrealismRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

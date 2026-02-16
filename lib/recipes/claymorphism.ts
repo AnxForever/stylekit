@@ -1,10 +1,7 @@
 // Claymorphism Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const claymorphismRecipes: StyleRecipes = {
-  styleSlug: "claymorphism",
-  styleName: "Claymorphism",
-  recipes: {
+export const claymorphismRecipes = createStyleRecipes("claymorphism", "Claymorphism", {
     button: {
       id: "button",
       name: "Button",
@@ -395,5 +392,4 @@ export const claymorphismRecipes: StyleRecipes = {
         { id: "children", label: "Links", labelZh: "链接", required: false, type: "children" },
       ],
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Material Design Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const materialDesignRecipes: StyleRecipes = {
-  styleSlug: "material-design",
-  styleName: "Material Design",
-  recipes: {
+export const materialDesignRecipes = createStyleRecipes("material-design", "Material Design", {
     button: {
       id: "button",
       name: "Button",
@@ -207,5 +204,4 @@ export const materialDesignRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed bg-gray-50"],
       },
     },
-  },
-};
+});

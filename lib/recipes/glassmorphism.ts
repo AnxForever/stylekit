@@ -1,10 +1,7 @@
 // Liquid Glass Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const glassmorphismRecipes: StyleRecipes = {
-  styleSlug: "glassmorphism",
-  styleName: "Liquid Glass",
-  recipes: {
+export const glassmorphismRecipes = createStyleRecipes("glassmorphism", "Liquid Glass", {
     button: {
       id: "button",
       name: "Button",
@@ -602,5 +599,4 @@ export const glassmorphismRecipes: StyleRecipes = {
         active: ["active:scale-[0.95]"],
       },
     },
-  },
-};
+});

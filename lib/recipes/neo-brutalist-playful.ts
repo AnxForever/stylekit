@@ -1,10 +1,7 @@
 // Neo Brutalist Playful Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neoBrutalistPlayfulRecipes: StyleRecipes = {
-  styleSlug: "neo-brutalist-playful",
-  styleName: "Neo Brutalist Playful",
-  recipes: {
+export const neoBrutalistPlayfulRecipes = createStyleRecipes("neo-brutalist-playful", "Neo Brutalist Playful", {
     button: {
       id: "button",
       name: "Button",
@@ -223,5 +220,4 @@ export const neoBrutalistPlayfulRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-200"],
       },
     },
-  },
-};
+});

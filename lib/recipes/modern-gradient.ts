@@ -1,10 +1,7 @@
 // Modern Gradient Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const modernGradientRecipes: StyleRecipes = {
-  styleSlug: "modern-gradient",
-  styleName: "Modern Gradient",
-  recipes: {
+export const modernGradientRecipes = createStyleRecipes("modern-gradient", "Modern Gradient", {
     button: {
       id: "button",
       name: "Button",
@@ -214,5 +211,4 @@ export const modernGradientRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

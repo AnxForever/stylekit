@@ -1,10 +1,7 @@
 // Solarpunk Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const solarpunkRecipes: StyleRecipes = {
-  styleSlug: "solarpunk",
-  styleName: "Solarpunk",
-  recipes: {
+export const solarpunkRecipes = createStyleRecipes("solarpunk", "Solarpunk", {
     button: {
       id: "button",
       name: "Button",
@@ -438,5 +435,4 @@ export const solarpunkRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Pixel Anime Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const pixelAnimeRecipes: StyleRecipes = {
-  styleSlug: "pixel-anime",
-  styleName: "Pixel Anime",
-  recipes: {
+export const pixelAnimeRecipes = createStyleRecipes("pixel-anime", "Pixel Anime", {
     button: {
       id: "button",
       name: "RPG Menu Button",
@@ -681,5 +678,4 @@ export const pixelAnimeRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Memphis Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const memphisRecipes: StyleRecipes = {
-  styleSlug: "memphis",
-  styleName: "Memphis",
-  recipes: {
+export const memphisRecipes = createStyleRecipes("memphis", "Memphis", {
     button: {
       id: "button",
       name: "Button",
@@ -420,5 +417,4 @@ export const memphisRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

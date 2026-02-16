@@ -1,10 +1,7 @@
 // Card Stack Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cardStackRecipes: StyleRecipes = {
-  styleSlug: "card-stack",
-  styleName: "Card Stack",
-  recipes: {
+export const cardStackRecipes = createStyleRecipes("card-stack", "Card Stack", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const cardStackRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

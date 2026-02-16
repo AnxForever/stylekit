@@ -1,10 +1,7 @@
 // Swiss Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const swissStyleRecipes: StyleRecipes = {
-  styleSlug: "swiss-style",
-  styleName: "Swiss Style",
-  recipes: {
+export const swissStyleRecipes = createStyleRecipes("swiss-style", "Swiss Style", {
     button: {
       id: "button",
       name: "Button",
@@ -211,5 +208,4 @@ export const swissStyleRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Retro Vintage Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const retroVintageRecipes: StyleRecipes = {
-  styleSlug: "retro-vintage",
-  styleName: "Retro Vintage",
-  recipes: {
+export const retroVintageRecipes = createStyleRecipes("retro-vintage", "Retro Vintage", {
     button: {
       id: "button",
       name: "Button",
@@ -211,5 +208,4 @@ export const retroVintageRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

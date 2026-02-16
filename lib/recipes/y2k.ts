@@ -1,10 +1,7 @@
 // Y2K Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const y2kRecipes: StyleRecipes = {
-  styleSlug: "y2k",
-  styleName: "Y2K",
-  recipes: {
+export const y2kRecipes = createStyleRecipes("y2k", "Y2K", {
     button: {
       id: "button",
       name: "Button",
@@ -421,5 +418,4 @@ export const y2kRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Z-Pattern Layout Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const zPatternLayoutRecipes: StyleRecipes = {
-  styleSlug: "z-pattern-layout",
-  styleName: "Z-Pattern Layout",
-  recipes: {
+export const zPatternLayoutRecipes = createStyleRecipes("z-pattern-layout", "Z-Pattern Layout", {
     button: {
       id: "button",
       name: "Button",
@@ -215,5 +212,4 @@ export const zPatternLayoutRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

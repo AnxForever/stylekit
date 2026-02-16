@@ -1,10 +1,7 @@
 // Full Page Scroll Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const fullPageScrollRecipes: StyleRecipes = {
-  styleSlug: "full-page-scroll",
-  styleName: "Full Page Scroll",
-  recipes: {
+export const fullPageScrollRecipes = createStyleRecipes("full-page-scroll", "Full Page Scroll", {
     button: {
       id: "button",
       name: "Button",
@@ -209,5 +206,4 @@ export const fullPageScrollRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

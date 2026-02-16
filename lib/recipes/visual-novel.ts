@@ -1,10 +1,7 @@
 // Visual Novel Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const visualNovelRecipes: StyleRecipes = {
-  styleSlug: "visual-novel",
-  styleName: "Visual Novel",
-  recipes: {
+export const visualNovelRecipes = createStyleRecipes("visual-novel", "Visual Novel", {
     button: {
       id: "button",
       name: "Button",
@@ -618,5 +615,4 @@ export const visualNovelRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

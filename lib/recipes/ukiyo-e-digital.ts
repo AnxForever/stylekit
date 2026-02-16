@@ -1,10 +1,7 @@
 // Ukiyo-e Digital Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const ukiyoEDigitalRecipes: StyleRecipes = {
-  styleSlug: "ukiyo-e-digital",
-  styleName: "Ukiyo-e Digital",
-  recipes: {
+export const ukiyoEDigitalRecipes = createStyleRecipes("ukiyo-e-digital", "Ukiyo-e Digital", {
     button: {
       id: "button",
       name: "Button",
@@ -533,5 +530,4 @@ export const ukiyoEDigitalRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});
