@@ -1,10 +1,7 @@
 // Asymmetric Grid Layout Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const asymmetricGridRecipes: StyleRecipes = {
-  styleSlug: "asymmetric-grid",
-  styleName: "Asymmetric Grid",
-  recipes: {
+export const asymmetricGridRecipes = createStyleRecipes("asymmetric-grid", "Asymmetric Grid", {
     button: {
       id: "button",
       name: "Button",
@@ -332,5 +329,4 @@ export const asymmetricGridRecipes: StyleRecipes = {
         disabled: [],
       },
     },
-  },
-};
+});

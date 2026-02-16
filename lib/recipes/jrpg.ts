@@ -1,10 +1,7 @@
 // JRPG Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const jrpgRecipes: StyleRecipes = {
-  styleSlug: "jrpg",
-  styleName: "JRPG",
-  recipes: {
+export const jrpgRecipes = createStyleRecipes("jrpg", "JRPG", {
     button: {
       id: "button",
       name: "Button",
@@ -446,5 +443,4 @@ export const jrpgRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

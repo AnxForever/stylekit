@@ -1,10 +1,7 @@
 // Synthwave Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const synthwaveRecipes: StyleRecipes = {
-  styleSlug: "synthwave",
-  styleName: "Synthwave",
-  recipes: {
+export const synthwaveRecipes = createStyleRecipes("synthwave", "Synthwave", {
     button: {
       id: "button",
       name: "Button",
@@ -223,5 +220,4 @@ export const synthwaveRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

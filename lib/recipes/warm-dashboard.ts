@@ -1,10 +1,7 @@
 // Warm Dashboard Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const warmDashboardRecipes: StyleRecipes = {
-  styleSlug: "warm-dashboard",
-  styleName: "Warm Dashboard",
-  recipes: {
+export const warmDashboardRecipes = createStyleRecipes("warm-dashboard", "Warm Dashboard", {
     button: {
       id: "button",
       name: "Button",
@@ -399,5 +396,4 @@ export const warmDashboardRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

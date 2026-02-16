@@ -1,10 +1,7 @@
 // Cottagecore Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const cottagecoreRecipes: StyleRecipes = {
-  styleSlug: "cottagecore",
-  styleName: "Cottagecore",
-  recipes: {
+export const cottagecoreRecipes = createStyleRecipes("cottagecore", "Cottagecore", {
     button: {
       id: "button",
       name: "Button",
@@ -737,5 +734,4 @@ export const cottagecoreRecipes: StyleRecipes = {
       ],
       states: {},
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Collage Art Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const collageArtRecipes: StyleRecipes = {
-  styleSlug: "collage-art",
-  styleName: "Collage Art",
-  recipes: {
+export const collageArtRecipes = createStyleRecipes("collage-art", "Collage Art", {
     button: {
       id: "button",
       name: "Button",
@@ -759,5 +756,4 @@ export const collageArtRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Neumorphism Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neumorphismRecipes: StyleRecipes = {
-  styleSlug: "neumorphism",
-  styleName: "Neumorphism",
-  recipes: {
+export const neumorphismRecipes = createStyleRecipes("neumorphism", "Neumorphism", {
     button: {
       id: "button",
       name: "Button",
@@ -377,5 +374,4 @@ export const neumorphismRecipes: StyleRecipes = {
         { id: "children", label: "Links", labelZh: "链接", required: false, type: "children" },
       ],
     },
-  },
-};
+});

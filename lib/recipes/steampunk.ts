@@ -1,10 +1,7 @@
 // Steampunk Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const steampunkRecipes: StyleRecipes = {
-  styleSlug: "steampunk",
-  styleName: "Steampunk",
-  recipes: {
+export const steampunkRecipes = createStyleRecipes("steampunk", "Steampunk", {
     button: {
       id: "button",
       name: "Button",
@@ -442,5 +439,4 @@ export const steampunkRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

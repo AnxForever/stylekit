@@ -1,10 +1,7 @@
 // Parallax Sections Layout Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const parallaxSectionsRecipes: StyleRecipes = {
-  styleSlug: "parallax-sections",
-  styleName: "Parallax Sections",
-  recipes: {
+export const parallaxSectionsRecipes = createStyleRecipes("parallax-sections", "Parallax Sections", {
     button: {
       id: "button",
       name: "Button",
@@ -390,5 +387,4 @@ export const parallaxSectionsRecipes: StyleRecipes = {
         disabled: [],
       },
     },
-  },
-};
+});

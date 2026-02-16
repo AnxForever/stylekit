@@ -1,10 +1,7 @@
 // Swiss Poster Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const swissPosterRecipes: StyleRecipes = {
-  styleSlug: "swiss-poster",
-  styleName: "Swiss Poster",
-  recipes: {
+export const swissPosterRecipes = createStyleRecipes("swiss-poster", "Swiss Poster", {
     button: {
       id: "button",
       name: "Button",
@@ -247,5 +244,4 @@ export const swissPosterRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

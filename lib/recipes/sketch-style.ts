@@ -1,10 +1,7 @@
 // Sketch Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const sketchStyleRecipes: StyleRecipes = {
-  styleSlug: "sketch-style",
-  styleName: "Sketch Style",
-  recipes: {
+export const sketchStyleRecipes = createStyleRecipes("sketch-style", "Sketch Style", {
     button: {
       id: "button",
       name: "Button",
@@ -215,5 +212,4 @@ export const sketchStyleRecipes: StyleRecipes = {
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
-  },
-};
+});

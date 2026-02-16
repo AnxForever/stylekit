@@ -1,10 +1,7 @@
 // Hand-Drawn Doodle Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const handDrawnDoodleRecipes: StyleRecipes = {
-  styleSlug: "hand-drawn-doodle",
-  styleName: "Hand-Drawn Doodle",
-  recipes: {
+export const handDrawnDoodleRecipes = createStyleRecipes("hand-drawn-doodle", "Hand-Drawn Doodle", {
     button: {
       id: "button",
       name: "Button",
@@ -615,5 +612,4 @@ export const handDrawnDoodleRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

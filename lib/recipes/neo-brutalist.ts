@@ -1,10 +1,7 @@
 // Neo-Brutalist Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const neoBrutalistRecipes: StyleRecipes = {
-  styleSlug: "neo-brutalist",
-  styleName: "Neo-Brutalist",
-  recipes: {
+export const neoBrutalistRecipes = createStyleRecipes("neo-brutalist", "Neo-Brutalist", {
     button: {
       id: "button",
       name: "Button",
@@ -371,5 +368,4 @@ export const neoBrutalistRecipes: StyleRecipes = {
         { id: "children", label: "Links", labelZh: "链接", required: false, type: "children" },
       ],
     },
-  },
-};
+});

@@ -1,10 +1,7 @@
 // Fluent Design Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const fluentDesignRecipes: StyleRecipes = {
-  styleSlug: "fluent-design",
-  styleName: "Fluent Design",
-  recipes: {
+export const fluentDesignRecipes = createStyleRecipes("fluent-design", "Fluent Design", {
     button: {
       id: "button",
       name: "Button",
@@ -214,5 +211,4 @@ export const fluentDesignRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-[#f3f2f1]"],
       },
     },
-  },
-};
+});

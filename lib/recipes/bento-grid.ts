@@ -1,10 +1,7 @@
 // Bento Grid Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const bentoGridRecipes: StyleRecipes = {
-  styleSlug: "bento-grid",
-  styleName: "Bento Grid",
-  recipes: {
+export const bentoGridRecipes = createStyleRecipes("bento-grid", "Bento Grid", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const bentoGridRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-zinc-100"],
       },
     },
-  },
-};
+});

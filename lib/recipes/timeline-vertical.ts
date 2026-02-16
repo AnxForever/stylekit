@@ -1,10 +1,7 @@
 // Timeline Vertical Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const timelineVerticalRecipes: StyleRecipes = {
-  styleSlug: "timeline-vertical",
-  styleName: "Timeline Vertical",
-  recipes: {
+export const timelineVerticalRecipes = createStyleRecipes("timeline-vertical", "Timeline Vertical", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const timelineVerticalRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-zinc-50"],
       },
     },
-  },
-};
+});

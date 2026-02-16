@@ -1,10 +1,7 @@
 // Dark Academia Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const darkAcademiaRecipes: StyleRecipes = {
-  styleSlug: "dark-academia",
-  styleName: "Dark Academia",
-  recipes: {
+export const darkAcademiaRecipes = createStyleRecipes("dark-academia", "Dark Academia", {
     button: {
       id: "button",
       name: "Button",
@@ -525,5 +522,4 @@ export const darkAcademiaRecipes: StyleRecipes = {
       slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
       states: {},
     },
-  },
-};
+});

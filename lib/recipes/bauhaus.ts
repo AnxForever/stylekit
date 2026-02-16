@@ -1,10 +1,7 @@
 // Bauhaus Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const bauhausRecipes: StyleRecipes = {
-  styleSlug: "bauhaus",
-  styleName: "Bauhaus",
-  recipes: {
+export const bauhausRecipes = createStyleRecipes("bauhaus", "Bauhaus", {
     button: {
       id: "button",
       name: "Button",
@@ -407,5 +404,4 @@ export const bauhausRecipes: StyleRecipes = {
         hover: ["hover:opacity-80"],
       },
     },
-  },
-};
+});

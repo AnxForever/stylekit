@@ -1,5 +1,4 @@
 // Gothic Component Recipes
-import type { StyleRecipes } from "./types";
 import {
   sizeParam,
   fullWidthParam,
@@ -17,7 +16,7 @@ import {
   createStyleRecipes,
 } from "./factory";
 
-export const gothicRecipes: StyleRecipes = createStyleRecipes(
+export const gothicRecipes = createStyleRecipes(
   "gothic",
   "Gothic",
   {

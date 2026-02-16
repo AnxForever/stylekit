@@ -1,10 +1,7 @@
 // Ghibli Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const ghibliStyleRecipes: StyleRecipes = {
-  styleSlug: "ghibli-style",
-  styleName: "Ghibli Style",
-  recipes: {
+export const ghibliStyleRecipes = createStyleRecipes("ghibli-style", "Ghibli Style", {
     button: {
       id: "button",
       name: "Button",
@@ -423,5 +420,4 @@ export const ghibliStyleRecipes: StyleRecipes = {
         ],
       },
     },
-  },
-};
+});

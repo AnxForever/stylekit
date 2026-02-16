@@ -1,10 +1,7 @@
 // Art Nouveau Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const artNouveauRecipes: StyleRecipes = {
-  styleSlug: "art-nouveau",
-  styleName: "Art Nouveau",
-  recipes: {
+export const artNouveauRecipes = createStyleRecipes("art-nouveau", "Art Nouveau", {
     button: {
       id: "button",
       name: "Button",
@@ -221,5 +218,4 @@ export const artNouveauRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});

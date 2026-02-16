@@ -1,10 +1,7 @@
 // Stripe Style Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const stripeStyleRecipes: StyleRecipes = {
-  styleSlug: "stripe-style",
-  styleName: "Stripe Style",
-  recipes: {
+export const stripeStyleRecipes = createStyleRecipes("stripe-style", "Stripe Style", {
     button: {
       id: "button",
       name: "Button",
@@ -216,5 +213,4 @@ export const stripeStyleRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
       },
     },
-  },
-};
+});

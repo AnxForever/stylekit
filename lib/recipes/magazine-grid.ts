@@ -1,10 +1,7 @@
 // Magazine Grid Component Recipes
-import type { StyleRecipes } from "./types";
+import { createStyleRecipes } from "./factory";
 
-export const magazineGridRecipes: StyleRecipes = {
-  styleSlug: "magazine-grid",
-  styleName: "Magazine Grid",
-  recipes: {
+export const magazineGridRecipes = createStyleRecipes("magazine-grid", "Magazine Grid", {
     button: {
       id: "button",
       name: "Button",
@@ -213,5 +210,4 @@ export const magazineGridRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-  },
-};
+});
