@@ -5,6 +5,31 @@ import {
   type CssVariableMap,
 } from "./css-color";
 
+export interface ExtractedTypographyScale {
+  headingSizes?: string[];
+  bodySizes?: string[];
+  smallSizes?: string[];
+  fontWeights?: string[];
+  lineHeights?: string[];
+  letterSpacings?: string[];
+}
+
+export interface ExtractedSpacingScale {
+  xs?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+  commonValues?: string[];
+}
+
+export interface ExtractedAnimationInfo {
+  transitionDurations?: string[];
+  transitionProperties?: string[];
+  easingFunctions?: string[];
+  keyframeNames?: string[];
+}
+
 export interface ExtractedStyleDraft {
   name?: string;
   nameEn?: string;
@@ -30,6 +55,9 @@ export interface ExtractedStyleDraft {
   shadowSm?: string;
   shadowMd?: string;
   shadowLg?: string;
+  typographyScale?: ExtractedTypographyScale;
+  spacingScale?: ExtractedSpacingScale;
+  animationInfo?: ExtractedAnimationInfo;
 }
 
 export interface ParseStyleExtractorResult {

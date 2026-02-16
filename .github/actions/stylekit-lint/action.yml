@@ -1,0 +1,42 @@
+name: 'StyleKit Style Lint'
+description: 'Check code against StyleKit design style guidelines'
+
+inputs:
+  style:
+    description: 'Style slug to lint against (e.g., neo-brutalist, glassmorphism)'
+    required: true
+  files:
+    description: 'Glob pattern for files to check (e.g., src/**/*.tsx)'
+    required: true
+    default: 'src/**/*.tsx'
+  fail-on-error:
+    description: 'Fail the action if lint errors are found'
+    required: false
+    default: 'true'
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '20'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install StyleKit
+      shell: bash
+      run: npm install @stylekit/core
+
+    - name: Run StyleKit Lint
+      shell: bash
+      run: |
+        set +e
+        npx stylekit lint --style ${{ inputs.style }} --files "${{ inputs.files }}" --format github
+        LINT_EXIT=$?
+        if [ "${{ inputs.fail-on-error }}" = "true" ] && [ $LINT_EXIT -ne 0 ]; then
+          echo "::error::StyleKit lint found style violations"
+          exit 1
+        fi

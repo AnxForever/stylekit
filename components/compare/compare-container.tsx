@@ -1,0 +1,229 @@
+"use client";
+
+import { useState, useCallback, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Plus, ArrowLeftRight, BarChart3 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
+import { getAllStylesMeta } from "@/lib/styles/meta";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
+import { diffTokens, type TokenDiffResult } from "@/lib/styles/token-diff";
+import { StyleSelector } from "./style-selector";
+import { TokenDiffTable } from "./token-diff-table";
+import { VisualCompare } from "./visual-compare";
+
+const MAX_STYLES = 3;
+
+export function CompareContainer() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { locale, t } = useI18n();
+  const allStyles = getAllStylesMeta();
+
+  // Read initial slugs from URL
+  const [slugs, setSlugs] = useState<(string | null)[]>(() => {
+    const a = searchParams.get("a");
+    const b = searchParams.get("b");
+    const c = searchParams.get("c");
+    return [a, b, c ?? null];
+  });
+
+  // Sync state to URL
+  const syncUrl = useCallback(
+    (newSlugs: (string | null)[]) => {
+      const params = new URLSearchParams();
+      if (newSlugs[0]) params.set("a", newSlugs[0]);
+      if (newSlugs[1]) params.set("b", newSlugs[1]);
+      if (newSlugs[2]) params.set("c", newSlugs[2]);
+      const qs = params.toString();
+      router.replace(qs ? `/compare?${qs}` : "/compare", { scroll: false });
+    },
+    [router]
+  );
+
+  const updateSlug = useCallback(
+    (index: number, value: string | null) => {
+      setSlugs((prev) => {
+        const next = [...prev];
+        next[index] = value;
+        syncUrl(next);
+        return next;
+      });
+    },
+    [syncUrl]
+  );
+
+  // How many selectors to show (2 or 3)
+  const [showThird, setShowThird] = useState(() => !!searchParams.get("c"));
+
+  const addThird = () => {
+    setShowThird(true);
+  };
+
+  const removeThird = () => {
+    setShowThird(false);
+    updateSlug(2, null);
+  };
+
+  // Compute selected style names
+  const selectedSlugs = slugs.filter((s): s is string => !!s);
+  const excludeFor = (index: number) =>
+    slugs.filter((s, i): s is string => !!s && i !== index);
+
+  // Get tokens for selected styles
+  const stylesWithTokens = useMemo(
+    () =>
+      selectedSlugs
+        .map((slug) => {
+          const meta = allStyles.find((s) => s.slug === slug);
+          const tokens = getStyleTokens(slug);
+          if (!meta || !tokens) return null;
+          return { slug, name: meta.name, nameEn: meta.nameEn, tokens };
+        })
+        .filter(
+          (s): s is NonNullable<typeof s> => s !== null
+        ),
+    [selectedSlugs, allStyles]
+  );
+
+  // Compute diff between first two selected styles
+  const diffResult: TokenDiffResult | null = useMemo(() => {
+    if (stylesWithTokens.length < 2) return null;
+    return diffTokens(stylesWithTokens[0].tokens, stylesWithTokens[1].tokens);
+  }, [stylesWithTokens]);
+
+  const nameA =
+    stylesWithTokens[0]
+      ? locale === "zh"
+        ? stylesWithTokens[0].name
+        : stylesWithTokens[0].nameEn
+      : "";
+  const nameB =
+    stylesWithTokens[1]
+      ? locale === "zh"
+        ? stylesWithTokens[1].name
+        : stylesWithTokens[1].nameEn
+      : "";
+
+  return (
+    <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12 space-y-8">
+      {/* Selectors row */}
+      <div className="space-y-4">
+        <div
+          className={`grid gap-4 ${showThird ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}
+        >
+          <StyleSelector
+            value={slugs[0]}
+            onChange={(v) => updateSlug(0, v)}
+            label={t("compare.styleA")}
+            excludeSlugs={excludeFor(0)}
+          />
+
+          <StyleSelector
+            value={slugs[1]}
+            onChange={(v) => updateSlug(1, v)}
+            label={t("compare.styleB")}
+            excludeSlugs={excludeFor(1)}
+          />
+
+          {showThird && (
+            <StyleSelector
+              value={slugs[2]}
+              onChange={(v) => updateSlug(2, v)}
+              label={t("compare.styleC")}
+              excludeSlugs={excludeFor(2)}
+            />
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          {!showThird && (
+            <button
+              type="button"
+              onClick={addThird}
+              className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              {t("compare.addThird")}
+            </button>
+          )}
+          {showThird && (
+            <button
+              type="button"
+              onClick={removeThird}
+              className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors"
+            >
+              {t("compare.removeThird")}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Empty state */}
+      {stylesWithTokens.length < 2 && (
+        <div className="text-center py-16 space-y-4">
+          <ArrowLeftRight className="w-12 h-12 text-muted/30 mx-auto" />
+          <p className="text-muted text-sm">{t("compare.selectTwo")}</p>
+        </div>
+      )}
+
+      {/* Summary scores */}
+      {diffResult && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-muted" />
+            <h3 className="text-lg font-semibold">
+              {t("compare.diffSummary")}
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <SummaryCard
+              label={t("compare.totalProps")}
+              value={String(diffResult.summary.totalProperties)}
+            />
+            <SummaryCard
+              label={t("compare.differentProps")}
+              value={String(diffResult.summary.differentProperties)}
+            />
+            <SummaryCard
+              label={t("compare.overallDiff")}
+              value={`${Math.round(diffResult.summary.overallScore * 100)}%`}
+            />
+            <SummaryCard
+              label={t("compare.colorDiff")}
+              value={`${Math.round(diffResult.summary.categoryScores.colors * 100)}%`}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Visual compare */}
+      {stylesWithTokens.length >= 2 && (
+        <VisualCompare styles={stylesWithTokens} />
+      )}
+
+      {/* Diff table */}
+      {diffResult && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">
+            {t("compare.tokenDiff")}
+          </h3>
+          <TokenDiffTable
+            entries={diffResult.entries}
+            nameA={nameA}
+            nameB={nameB}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SummaryCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border border-border rounded-lg p-4 text-center">
+      <div className="text-2xl font-bold tabular-nums">{value}</div>
+      <div className="text-xs text-muted mt-1">{label}</div>
+    </div>
+  );
+}

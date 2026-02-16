@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { StyleCard } from "@/components/home/style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
+import { TrendingStyles } from "@/components/home/trending-styles";
 import type { StyleMeta } from "@/lib/styles/meta";
 
 interface HomeContentProps {
@@ -110,6 +111,8 @@ export function HomeContent({ styles }: HomeContentProps) {
           </div>
         </div>
       </section>
+
+      <TrendingStyles styles={styles} />
 
       <section>
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">

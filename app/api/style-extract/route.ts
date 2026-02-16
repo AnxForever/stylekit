@@ -67,8 +67,11 @@ export async function POST(request: Request) {
       ok: true,
       url: parsedUrl.toString(),
       extractedAt: new Date().toISOString(),
+      /** Extracted style draft with colors, typography, spacing, borders, shadows, and animation info */
       draft: extracted.draft,
+      /** Markdown-formatted summary of the extraction */
       raw: extracted.raw,
+      /** Quantitative evidence of what was found in the CSS */
       evidence: {
         ...extracted.evidence,
         stylesheetRequested: stylesheetLinks.length,
