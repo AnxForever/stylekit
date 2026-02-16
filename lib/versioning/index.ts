@@ -4,6 +4,7 @@ export type {
   StyleVersion,
   StyleVersionHistory,
   StyleVersionRegistry,
+  ChangeCategory,
 } from "./types";
 
 export {
@@ -11,4 +12,7 @@ export {
   getCurrentVersion,
   getChangelog,
   getAllVersions,
+  getVersionSnapshot,
+  refreshVersions,
+  computeStyleHash,
 } from "./registry";
