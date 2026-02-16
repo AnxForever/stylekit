@@ -1,14 +1,30 @@
 // Gothic Component Recipes
 import type { StyleRecipes } from "./types";
+import {
+  sizeParam,
+  fullWidthParam,
+  paddingParam,
+  interactiveParam,
+  visibleParam,
+  buttonSlots,
+  cardSlots,
+  inputSlots,
+  childrenSlot,
+  labelSlot,
+  iconSlot,
+  defaultVariant,
+  variant,
+  createStyleRecipes,
+} from "./factory";
 
-export const gothicRecipes: StyleRecipes = {
-  styleSlug: "gothic",
-  styleName: "Gothic",
-  recipes: {
+export const gothicRecipes: StyleRecipes = createStyleRecipes(
+  "gothic",
+  "Gothic",
+  {
     button: {
       id: "button",
       name: "Button",
-      nameZh: "按钮",
+      nameZh: "\u6309\u94ae",
       description: "Gothic button with ornate borders, deep purple tones and cathedral-inspired aesthetic",
       skeleton: {
         element: "button",
@@ -21,32 +37,18 @@ export const gothicRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-3 py-1.5 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-4 py-2 md:px-6 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-6 py-3 md:px-8 md:py-4 text-base md:text-lg" },
-          ],
-          default: "md",
-        },
-        {
-          id: "fullWidth",
-          label: "Full Width",
-          labelZh: "全宽",
-          type: "boolean",
-          default: false,
-          trueClasses: "w-full",
-        },
+        sizeParam({
+          sm: "px-3 py-1.5 text-sm",
+          md: "px-4 py-2 md:px-6 md:py-3 text-sm md:text-base",
+          lg: "px-6 py-3 md:px-8 md:py-4 text-base md:text-lg",
+        }),
+        fullWidthParam,
       ],
       variants: {
         primary: {
           id: "primary",
           label: "Primary",
-          labelZh: "主要",
+          labelZh: "\u4e3b\u8981",
           classes: [
             "bg-[#2d1b4e] text-[#c9a227]",
             "border-[#c9a227]/60",
@@ -56,7 +58,7 @@ export const gothicRecipes: StyleRecipes = {
         secondary: {
           id: "secondary",
           label: "Secondary",
-          labelZh: "次要",
+          labelZh: "\u6b21\u8981",
           classes: [
             "bg-[#0a0a0a] text-[#8b1a1a]",
             "border-[#8b1a1a]/60",
@@ -66,17 +68,14 @@ export const gothicRecipes: StyleRecipes = {
         outline: {
           id: "outline",
           label: "Outline",
-          labelZh: "轮廓",
+          labelZh: "\u8f6e\u5ed3",
           classes: [
             "bg-transparent text-[#c9a227]",
             "border-[#c9a227]/50",
           ],
         },
       },
-      slots: [
-        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Enter", type: "text" },
-      ],
+      slots: buttonSlots("Enter"),
       states: {
         hover: [
           "hover:shadow-[0_6px_24px_rgba(201,162,39,0.4)]",
@@ -90,7 +89,7 @@ export const gothicRecipes: StyleRecipes = {
     card: {
       id: "card",
       name: "Card",
-      nameZh: "卡片",
+      nameZh: "\u5361\u7247",
       description: "Dark gothic card with ornate borders and cathedral-window aesthetic",
       skeleton: {
         element: "div",
@@ -102,57 +101,15 @@ export const gothicRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "padding",
-          label: "Padding",
-          labelZh: "内边距",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "p-3 md:p-5" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "p-5 md:p-8" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "p-6 md:p-10" },
-          ],
-          default: "md",
-        },
-        {
-          id: "interactive",
-          label: "Interactive",
-          labelZh: "可交互",
-          type: "boolean",
-          default: true,
-          trueClasses: "hover:-translate-y-1 cursor-pointer",
-        },
+        paddingParam({ sm: "p-3 md:p-5", md: "p-5 md:p-8", lg: "p-6 md:p-10" }),
+        interactiveParam("hover:-translate-y-1 cursor-pointer"),
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
-        blood: {
-          id: "blood",
-          label: "Blood",
-          labelZh: "血色",
-          classes: [
-            "border-[#8b1a1a]/50",
-            "shadow-[0_4px_20px_rgba(139,26,26,0.3)]",
-          ],
-        },
-        gold: {
-          id: "gold",
-          label: "Gold",
-          labelZh: "金色",
-          classes: [
-            "border-[#c9a227]/60",
-            "shadow-[0_4px_20px_rgba(201,162,39,0.3)]",
-          ],
-        },
+        default: defaultVariant,
+        blood: variant("blood", "Blood", "\u8840\u8272", ["border-[#8b1a1a]/50", "shadow-[0_4px_20px_rgba(139,26,26,0.3)]"]),
+        gold: variant("gold", "Gold", "\u91d1\u8272", ["border-[#c9a227]/60", "shadow-[0_4px_20px_rgba(201,162,39,0.3)]"]),
       },
-      slots: [
-        { id: "title", label: "Title", labelZh: "标题", required: false, default: "Card Title", type: "text" },
-        { id: "children", label: "Content", labelZh: "内容", required: true, default: "Card content goes here", type: "children" },
-      ],
+      slots: cardSlots(),
       states: {
         hover: [
           "hover:shadow-[0_8px_30px_rgba(201,162,39,0.3)]",
@@ -164,7 +121,7 @@ export const gothicRecipes: StyleRecipes = {
     input: {
       id: "input",
       name: "Input",
-      nameZh: "输入框",
+      nameZh: "\u8f93\u5165\u6846",
       description: "Gothic-styled input with ornate border and dark surface",
       skeleton: {
         element: "input",
@@ -180,40 +137,17 @@ export const gothicRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "px-2 py-1.5 text-sm" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "px-3 py-2 md:px-4 md:py-3 text-sm md:text-base" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "px-4 py-3 md:px-5 md:py-4 text-base md:text-lg" },
-          ],
-          default: "md",
-        },
+        sizeParam({
+          sm: "px-2 py-1.5 text-sm",
+          md: "px-3 py-2 md:px-4 md:py-3 text-sm md:text-base",
+          lg: "px-4 py-3 md:px-5 md:py-4 text-base md:text-lg",
+        }),
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
-        blood: {
-          id: "blood",
-          label: "Blood",
-          labelZh: "血色",
-          classes: [
-            "border-[#8b1a1a]/50",
-            "text-[#8b1a1a]",
-            "placeholder:text-[#8b1a1a]/30",
-          ],
-        },
+        default: defaultVariant,
+        blood: variant("blood", "Blood", "\u8840\u8272", ["border-[#8b1a1a]/50", "text-[#8b1a1a]", "placeholder:text-[#8b1a1a]/30"]),
       },
-      slots: [
-        { id: "placeholder", label: "Placeholder", labelZh: "占位符", required: false, default: "Type here...", type: "text" },
-      ],
+      slots: inputSlots(),
       states: {
         focus: [
           "focus:border-[#c9a227]",
@@ -222,11 +156,10 @@ export const gothicRecipes: StyleRecipes = {
         disabled: ["opacity-50 cursor-not-allowed"],
       },
     },
-
     stonePanel: {
       id: "stonePanel",
       name: "Stone Panel",
-      nameZh: "石材面板",
+      nameZh: "\u77f3\u6750\u9762\u677f",
       description: "Medieval stone-textured panel with carved edge effect",
       skeleton: {
         element: "div",
@@ -238,41 +171,19 @@ export const gothicRecipes: StyleRecipes = {
           "p-6",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
-        dark: {
-          id: "dark",
-          label: "Dark",
-          labelZh: "深色",
-          classes: ["from-[#1a1a1a] to-[#0a0a0a]"],
-        },
+        default: defaultVariant,
+        dark: variant("dark", "Dark", "\u6df1\u8272", ["from-[#1a1a1a] to-[#0a0a0a]"]),
       },
-      slots: [
-        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
-      ],
+      slots: childrenSlot(),
       states: {},
     },
 
     shieldBadge: {
       id: "shieldBadge",
       name: "Shield Badge",
-      nameZh: "盾牌徽章",
+      nameZh: "\u76fe\u724c\u5fbd\u7ae0",
       description: "Heraldic shield-shaped badge for status or labels",
       skeleton: {
         element: "div",
@@ -285,47 +196,19 @@ export const gothicRecipes: StyleRecipes = {
           "clip-path-shield",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        purple: {
-          id: "purple",
-          label: "Purple",
-          labelZh: "紫色",
-          classes: ["bg-[#2d1b4e]"],
-        },
-        blood: {
-          id: "blood",
-          label: "Blood",
-          labelZh: "血色",
-          classes: ["bg-[#8b1a1a]"],
-        },
-        gold: {
-          id: "gold",
-          label: "Gold",
-          labelZh: "金色",
-          classes: ["bg-[#c9a227] text-[#0a0a0a]"],
-        },
+        purple: variant("purple", "Purple", "\u7d2b\u8272", ["bg-[#2d1b4e]"]),
+        blood: variant("blood", "Blood", "\u8840\u8272", ["bg-[#8b1a1a]"]),
+        gold: variant("gold", "Gold", "\u91d1\u8272", ["bg-[#c9a227] text-[#0a0a0a]"]),
       },
-      slots: [
-        { id: "label", label: "Label", labelZh: "文字", required: true, default: "Knight", type: "text" },
-      ],
+      slots: labelSlot("Knight"),
       states: {},
     },
-
     waxSeal: {
       id: "waxSeal",
       name: "Wax Seal",
-      nameZh: "火漆印章",
+      nameZh: "\u706b\u6f06\u5370\u7ae0",
       description: "Circular wax seal decoration with embossed effect",
       skeleton: {
         element: "div",
@@ -338,37 +221,19 @@ export const gothicRecipes: StyleRecipes = {
         ],
       },
       parameters: [
-        {
-          id: "size",
-          label: "Size",
-          labelZh: "尺寸",
-          type: "select",
-          options: [
-            { value: "sm", label: "Small", labelZh: "小", classes: "w-12 h-12" },
-            { value: "md", label: "Medium", labelZh: "中", classes: "w-16 h-16" },
-            { value: "lg", label: "Large", labelZh: "大", classes: "w-20 h-20" },
-          ],
-          default: "md",
-        },
+        sizeParam({ sm: "w-12 h-12", md: "w-16 h-16", lg: "w-20 h-20" }),
       ],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
       },
-      slots: [
-        { id: "icon", label: "Icon", labelZh: "图标", required: false, type: "icon" },
-      ],
+      slots: iconSlot(),
       states: {},
     },
 
     traceryDivider: {
       id: "traceryDivider",
       name: "Tracery Divider",
-      nameZh: "花窗分隔线",
+      nameZh: "\u82b1\u7a97\u5206\u9694\u7ebf",
       description: "Gothic tracery-inspired decorative divider",
       skeleton: {
         element: "div",
@@ -378,33 +243,18 @@ export const gothicRecipes: StyleRecipes = {
           "flex items-center justify-center",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
+        default: defaultVariant,
       },
-      slots: [{ id: "children", label: "Content", labelZh: "内容", required: false, type: "children" }],
+      slots: childrenSlot(false),
       states: {},
     },
 
     illuminatedInitial: {
       id: "illuminatedInitial",
       name: "Illuminated Initial",
-      nameZh: "装饰首字母",
+      nameZh: "\u88c5\u9970\u9996\u5b57\u6bcd",
       description: "Medieval illuminated manuscript style decorative initial letter",
       skeleton: {
         element: "div",
@@ -416,41 +266,18 @@ export const gothicRecipes: StyleRecipes = {
           "leading-none",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        gold: {
-          id: "gold",
-          label: "Gold",
-          labelZh: "金色",
-          classes: ["text-[#c9a227] drop-shadow-[0_2px_4px_rgba(201,162,39,0.5)]"],
-        },
-        blood: {
-          id: "blood",
-          label: "Blood",
-          labelZh: "血色",
-          classes: ["text-[#8b1a1a] drop-shadow-[0_2px_4px_rgba(139,26,26,0.5)]"],
-        },
+        gold: variant("gold", "Gold", "\u91d1\u8272", ["text-[#c9a227] drop-shadow-[0_2px_4px_rgba(201,162,39,0.5)]"]),
+        blood: variant("blood", "Blood", "\u8840\u8272", ["text-[#8b1a1a] drop-shadow-[0_2px_4px_rgba(139,26,26,0.5)]"]),
       },
-      slots: [
-        { id: "letter", label: "Letter", labelZh: "字母", required: true, default: "T", type: "text" },
-      ],
+      slots: [{ id: "letter", label: "Letter", labelZh: "\u5b57\u6bcd", required: true, default: "T", type: "text" }],
       states: {},
     },
-
     parchmentCard: {
       id: "parchmentCard",
       name: "Parchment Card",
-      nameZh: "羊皮纸卡片",
+      nameZh: "\u7f8a\u76ae\u7eb8\u5361\u7247",
       description: "Card styled to look like aged parchment with burnt edges",
       skeleton: {
         element: "div",
@@ -461,35 +288,13 @@ export const gothicRecipes: StyleRecipes = {
           "shadow-lg",
         ],
       },
-      parameters: [
-        {
-          id: "visible",
-          label: "Visible",
-          labelZh: "可见",
-          type: "boolean",
-          default: true,
-          trueClasses: "opacity-100",
-          falseClasses: "opacity-0",
-        },
-      ],
+      parameters: [visibleParam],
       variants: {
-        default: {
-          id: "default",
-          label: "Default",
-          labelZh: "默认",
-          classes: [],
-        },
-        aged: {
-          id: "aged",
-          label: "Aged",
-          labelZh: "陈旧",
-          classes: ["from-[#e5d9c3] to-[#d4c4a8]"],
-        },
+        default: defaultVariant,
+        aged: variant("aged", "Aged", "\u9648\u65e7", ["from-[#e5d9c3] to-[#d4c4a8]"]),
       },
-      slots: [
-        { id: "children", label: "Content", labelZh: "内容", required: true, type: "children" },
-      ],
+      slots: childrenSlot(),
       states: {},
     },
   },
-};
+);
