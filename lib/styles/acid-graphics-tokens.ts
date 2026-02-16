@@ -1,12 +1,11 @@
 // Acid Graphics Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const acidGraphicsTokens: StyleTokens = {
+export const acidGraphicsTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#39ff14]",
     radius: "rounded-none",
-    style: "border-solid",
   },
 
   shadow: {
@@ -34,27 +33,14 @@ export const acidGraphicsTokens: StyleTokens = {
   typography: {
     heading: "font-mono font-black uppercase tracking-widest",
     body: "font-mono",
-    mono: "font-mono",
     sizes: {
       hero: "text-5xl md:text-7xl lg:text-9xl",
       h1: "text-4xl md:text-6xl",
       h2: "text-3xl md:text-5xl",
-      h3: "text-xl md:text-2xl",
-      body: "text-sm md:text-base",
-      small: "text-xs md:text-sm",
     },
   },
 
-  spacing: {
-    section: "py-12 md:py-20 lg:py-28",
-    container: "px-4 md:px-8 lg:px-12",
-    card: "p-5 md:p-8",
-    gap: {
-      sm: "gap-3 md:gap-4",
-      md: "gap-4 md:gap-6",
-      lg: "gap-6 md:gap-10",
-    },
-  },
+  // spacing: uses defaults (py-12 md:py-20 lg:py-28, etc.)
 
   colors: {
     background: {
@@ -125,4 +111,4 @@ export const acidGraphicsTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

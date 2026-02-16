@@ -1,12 +1,11 @@
 // Gothic Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const gothicTokens: StyleTokens = {
+export const gothicTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#c9a227]/40",
     radius: "rounded-none",
-    style: "border-solid",
   },
 
   shadow: {
@@ -26,33 +25,14 @@ export const gothicTokens: StyleTokens = {
   interaction: {
     hoverScale: "hover:scale-[1.02]",
     transition: "transition-all duration-300 ease-in-out",
-    active: "active:scale-95",
   },
 
   typography: {
     heading: "font-serif tracking-wider uppercase",
     body: "font-serif",
-    mono: "font-mono",
-    sizes: {
-      hero: "text-4xl md:text-6xl lg:text-8xl",
-      h1: "text-3xl md:text-5xl",
-      h2: "text-2xl md:text-4xl",
-      h3: "text-xl md:text-2xl",
-      body: "text-sm md:text-base",
-      small: "text-xs md:text-sm",
-    },
   },
 
-  spacing: {
-    section: "py-12 md:py-20 lg:py-28",
-    container: "px-4 md:px-8 lg:px-12",
-    card: "p-5 md:p-8",
-    gap: {
-      sm: "gap-3 md:gap-4",
-      md: "gap-4 md:gap-6",
-      lg: "gap-6 md:gap-10",
-    },
-  },
+  // spacing: uses defaults (py-12 md:py-20 lg:py-28, etc.)
 
   colors: {
     background: {
@@ -78,7 +58,7 @@ export const gothicTokens: StyleTokens = {
       "bg-white", "bg-gray-50", "bg-gray-100",
       "text-pink-", "text-green-", "text-blue-",
       "bg-pink-", "bg-green-", "bg-blue-",
-      "shadow-[0_0_", // no neon glow shadows
+      "shadow-[0_0_",
     ],
     patterns: [
       "^rounded-(?:full|xl|2xl|3xl)$",
@@ -113,4 +93,4 @@ export const gothicTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});
