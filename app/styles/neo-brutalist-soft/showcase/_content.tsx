@@ -356,7 +356,7 @@ export default function ShowcaseContent() {
           <h2 className="font-bold text-2xl md:text-4xl mb-8 md:mb-12">下拉 Dropdown</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full flex items-center justify-between px-5 py-3 bg-gray-50 border-2 border-gray-800 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
             >
               <span>Select option</span>

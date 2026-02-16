@@ -287,7 +287,7 @@ export default function ShowcaseContent() {
           <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12 text-center">下拉菜单</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-3 border border-[#e5e5e5] text-sm flex items-center justify-between hover:border-[#0a0a0a] transition-colors"
             >
               <span>选择分类</span>

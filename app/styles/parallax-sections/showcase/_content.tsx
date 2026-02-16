@@ -223,7 +223,7 @@ export default function ShowcaseContent() {
           <h2 className="text-3xl font-bold text-[#1e3a5f] mb-8 text-center">Select Section</h2>
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
               className="w-full px-4 py-3 bg-white rounded-xl border border-[#1e3a5f]/20 text-left flex items-center justify-between hover:border-[#3b82f6] transition-colors shadow-lg"
             >
               <span className="text-[#1e3a5f]">Choose a section</span>
