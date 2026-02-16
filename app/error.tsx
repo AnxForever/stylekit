@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function Error({
   error,
@@ -9,6 +10,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useI18n();
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -21,15 +24,15 @@ export default function Error({
             Oops!
           </span>
         </div>
-        <h1 className="text-2xl md:text-3xl mb-4">出错了</h1>
+        <h1 className="text-2xl md:text-3xl mb-4">{t("error.title")}</h1>
         <p className="text-muted mb-8">
-          抱歉，页面加载时发生了错误。请尝试刷新页面或稍后再试。
+          {t("error.description")}
         </p>
         <button
           onClick={() => reset()}
           className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
         >
-          重试
+          {t("error.retry")}
         </button>
       </div>
     </div>
