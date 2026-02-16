@@ -1,7 +1,7 @@
 // Pixel Art Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const pixelArtTokens: StyleTokens = {
+export const pixelArtTokens = createStyleTokens({
   border: {
     width: "border-4",
     color: "border-[#1a1c2c]",
@@ -126,4 +126,4 @@ export const pixelArtTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

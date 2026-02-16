@@ -1,7 +1,7 @@
 // Watercolor Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const watercolorStyleTokens: StyleTokens = {
+export const watercolorStyleTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#4a6fa5]/20",
@@ -119,4 +119,4 @@ export const watercolorStyleTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

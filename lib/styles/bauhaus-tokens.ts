@@ -1,7 +1,7 @@
 // Bauhaus Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const bauhausTokens: StyleTokens = {
+export const bauhausTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-black",
@@ -110,4 +110,4 @@ export const bauhausTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

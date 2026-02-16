@@ -1,7 +1,7 @@
 // Art Nouveau Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const artNouveauTokens: StyleTokens = {
+export const artNouveauTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#c9a227]/60",
@@ -118,4 +118,4 @@ export const artNouveauTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // Stripe Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const stripeStyleTokens: StyleTokens = {
+export const stripeStyleTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -112,4 +112,4 @@ export const stripeStyleTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

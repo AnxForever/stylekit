@@ -1,7 +1,7 @@
 // Neo-Brutalist Soft Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const neoBrutalistSoftTokens: StyleTokens = {
+export const neoBrutalistSoftTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-gray-800",
@@ -125,4 +125,4 @@ export const neoBrutalistSoftTokens: StyleTokens = {
       "transition-shadow",
     ],
   },
-};
+});

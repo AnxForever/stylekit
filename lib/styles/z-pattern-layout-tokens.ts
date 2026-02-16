@@ -1,7 +1,7 @@
 // Z-Pattern Layout Style Tokens - Diagonal flow, CTA-focused, gradient accents
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const zPatternLayoutTokens: StyleTokens = {
+export const zPatternLayoutTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-gray-200",
@@ -101,4 +101,4 @@ export const zPatternLayoutTokens: StyleTokens = {
       "transition-all",
     ],
   },
-};
+});

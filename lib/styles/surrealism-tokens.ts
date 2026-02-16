@@ -1,7 +1,7 @@
 // Surrealism Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const surrealismTokens: StyleTokens = {
+export const surrealismTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#d4a574]/30",
@@ -117,4 +117,4 @@ export const surrealismTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

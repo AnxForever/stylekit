@@ -1,7 +1,7 @@
 // Cyber Anime Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const cyberAnimeTokens: StyleTokens = {
+export const cyberAnimeTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#7c3aed]/30",
@@ -116,4 +116,4 @@ export const cyberAnimeTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

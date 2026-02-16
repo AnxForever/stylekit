@@ -1,7 +1,7 @@
 // Retro Vintage Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const retroVintageTokens: StyleTokens = {
+export const retroVintageTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-[#8b4513]",
@@ -119,4 +119,4 @@ export const retroVintageTokens: StyleTokens = {
       "transition-colors duration-200",
     ],
   },
-};
+});

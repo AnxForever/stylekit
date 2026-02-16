@@ -1,7 +1,7 @@
 // Magazine Grid Style Tokens - Editorial with serif headings, thin borders, elegant
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const magazineGridTokens: StyleTokens = {
+export const magazineGridTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-zinc-200",
@@ -101,4 +101,4 @@ export const magazineGridTokens: StyleTokens = {
       "focus:ring-2 focus:ring-red-500/30",
     ],
   },
-};
+});

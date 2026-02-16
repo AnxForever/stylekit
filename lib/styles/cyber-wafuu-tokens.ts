@@ -1,7 +1,7 @@
 // Cyber Wafuu Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const cyberWafuuTokens: StyleTokens = {
+export const cyberWafuuTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#1e3a5f]/30",
@@ -113,4 +113,4 @@ export const cyberWafuuTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});

@@ -1,7 +1,7 @@
 // JRPG Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const jrpgTokens: StyleTokens = {
+export const jrpgTokens = createStyleTokens({
   border: {
     width: "border-2",
     color: "border-blue-700",
@@ -125,4 +125,4 @@ export const jrpgTokens: StyleTokens = {
       "shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]",
     ],
   },
-};
+});

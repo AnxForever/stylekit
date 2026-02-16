@@ -1,7 +1,7 @@
 // Solarpunk Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const solarpunkTokens: StyleTokens = {
+export const solarpunkTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-green-200",
@@ -118,4 +118,4 @@ export const solarpunkTokens: StyleTokens = {
       "focus:shadow-lg focus:shadow-green-200/40",
     ],
   },
-};
+});

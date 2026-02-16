@@ -1,7 +1,7 @@
 // Modern Gradient Style Tokens
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const modernGradientTokens: StyleTokens = {
+export const modernGradientTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-white/20",
@@ -123,4 +123,4 @@ export const modernGradientTokens: StyleTokens = {
       "focus:ring-2 focus:ring-violet-500/20",
     ],
   },
-};
+});

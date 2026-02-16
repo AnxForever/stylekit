@@ -1,7 +1,7 @@
 // Material Design Style Tokens - Precise class mappings for AI
-import type { StyleTokens } from "./tokens";
+import { createStyleTokens } from "./token-defaults";
 
-export const materialDesignTokens: StyleTokens = {
+export const materialDesignTokens = createStyleTokens({
   border: {
     width: "border",
     color: "border-[#e0e0e0]",
@@ -115,4 +115,4 @@ export const materialDesignTokens: StyleTokens = {
       "focus:outline-none",
     ],
   },
-};
+});
