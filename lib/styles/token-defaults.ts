@@ -13,7 +13,7 @@ type DeepPartial<T> = {
 };
 
 // Deep merge: overrides win, arrays are replaced (not merged)
-function deepMerge<T extends Record<string, unknown>>(
+function deepMerge<T extends object>(
   base: T,
   overrides: DeepPartial<T>
 ): T {
