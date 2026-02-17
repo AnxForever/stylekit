@@ -1,0 +1,40 @@
+name: StyleKit Lint
+description: Lint code against StyleKit design style guidelines
+
+inputs:
+  style:
+    description: 'Style slug to lint against (e.g., neo-brutalist, glassmorphism)'
+    required: true
+  files:
+    description: 'Glob pattern for files to check'
+    required: false
+    default: 'src/**/*.tsx'
+  fail-on:
+    description: 'Fail threshold: error, warning, or none'
+    required: false
+    default: 'error'
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '20'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
+    - name: Run StyleKit Lint
+      shell: bash
+      run: node ${{ github.action_path }}/index.js
+      env:
+        INPUT_STYLE: ${{ inputs.style }}
+        INPUT_FILES: ${{ inputs.files }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}

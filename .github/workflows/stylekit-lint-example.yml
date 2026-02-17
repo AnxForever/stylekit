@@ -16,8 +16,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run StyleKit Lint
-        uses: ./.github/actions/stylekit-lint
+        uses: ./.github/actions/lint
         with:
           style: neo-brutalist
           files: 'src/**/*.tsx'
-          fail-on-error: 'true'
+          fail-on: 'error'
