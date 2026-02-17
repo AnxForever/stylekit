@@ -16,6 +16,9 @@ export function generateStaticParams() {
   }));
 }
 
+// ISR: revalidate every 24 hours
+export const revalidate = 86400;
+
 // 动态 metadata
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
