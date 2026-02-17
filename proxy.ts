@@ -9,18 +9,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-
-/**
- * Admin user IDs whitelist.
- * Set via ADMIN_USER_IDS env var (comma-separated Supabase user UUIDs).
- */
-function getAdminIds(): string[] {
-  const raw = process.env.ADMIN_USER_IDS ?? "";
-  return raw
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
-}
+import { isAdminUserId } from "@/lib/auth/admin-policy";
 
 export async function proxy(request: NextRequest) {
   // Block /api-test in production
@@ -36,6 +25,15 @@ export async function proxy(request: NextRequest) {
 
   // If Supabase is not configured, skip auth entirely
   if (!url || !key) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      request.nextUrl.pathname.startsWith("/admin")
+    ) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/";
+      return NextResponse.redirect(redirectUrl);
+    }
+
     return NextResponse.next();
   }
 
@@ -78,8 +76,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
       }
 
-      const adminIds = getAdminIds();
-      if (adminIds.length > 0 && !adminIds.includes(user.id)) {
+      if (!isAdminUserId(user.id)) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = "/";
         return NextResponse.redirect(redirectUrl);

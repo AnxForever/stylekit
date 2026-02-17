@@ -85,7 +85,7 @@ export function useUser(): AuthState {
   }, []);
 
   const signInWithLinuxDo = useCallback(() => {
-    window.location.href = "/api/auth/linuxdo";
+    window.location.href = "/api/auth/linuxdo?next=/login";
   }, []);
 
   const signOut = useCallback(async () => {
