@@ -21,11 +21,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: dorny/paths-filter@v3
         id: extractor_changes
         with:
           filters: |
             style_extractor:
+              - "style-extractor-dev"
               - "style-extractor-dev/**"
               - "__tests__/style-extractor-registry.test.ts"
               - "scripts/check-style-extractor.cjs"
