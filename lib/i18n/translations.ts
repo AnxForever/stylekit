@@ -313,6 +313,12 @@ const en = {
     "theme.switchToLight": "Switch to light mode",
     "theme.switchToDark": "Switch to dark mode",
 
+    // Auth
+    "auth.signIn": "Sign in",
+    "auth.signInWithGitHub": "Sign in with GitHub",
+    "auth.signOut": "Sign out",
+    "auth.account": "Account",
+
     // Preview tabs
     "preview.tab.button": "Button",
     "preview.tab.card": "Card",
@@ -1061,6 +1067,12 @@ const zh: { [K in keyof typeof en]: string } = {
   "common.noResults": "未找到结果",
   "theme.switchToLight": "切换到浅色模式",
   "theme.switchToDark": "切换到深色模式",
+
+  // Auth
+  "auth.signIn": "登录",
+  "auth.signInWithGitHub": "使用 GitHub 登录",
+  "auth.signOut": "退出登录",
+  "auth.account": "账户",
 
   // Search and preview
   "search.placeholder": "搜索风格、组件、页面...",
