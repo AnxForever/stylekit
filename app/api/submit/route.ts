@@ -8,6 +8,7 @@ import {
   isSupabaseConfigured,
   createSubmissionSupabase,
 } from "@/lib/submit/reviewer-supabase";
+import { getServerUser } from "@/lib/auth/supabase-server";
 import {
   checkRateLimit,
   createRateLimitHeaders,
@@ -57,12 +58,19 @@ export async function POST(request: Request) {
     // Use Supabase when configured, otherwise fall back to file system
     if (isSupabaseConfigured()) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
+      const user = await getServerUser();
+      const userId = user?.id ?? null;
+      const authorName = user
+        ? (user.user_metadata?.user_name ?? user.user_metadata?.full_name ?? null)
+        : null;
       const result = await createSubmissionSupabase(
         data.slug,
         data as unknown as Record<string, unknown>,
         tokens as unknown as Record<string, unknown>,
         designStyle as unknown as Record<string, unknown>,
-        ip
+        ip,
+        userId,
+        authorName
       );
       return NextResponse.json({
         success: true,
