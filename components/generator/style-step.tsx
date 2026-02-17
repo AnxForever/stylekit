@@ -23,6 +23,12 @@ export function StyleStep({
   onSelect,
 }: StyleStepProps) {
   const { t } = useI18n();
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, slug: string) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect(slug, false);
+    }
+  };
 
   return (
     <div>
@@ -135,15 +141,23 @@ export function StyleStep({
         )}
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      <div
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+        role="radiogroup"
+        aria-label={t("generator.selectStyle")}
+      >
         {styles.map((style) => {
           const isSelected = style.slug === selectedSlug && !selectedCustomId;
 
           return (
-            <button
+            <div
               key={style.slug}
+              role="radio"
+              aria-checked={isSelected}
+              tabIndex={0}
               onClick={() => onSelect(style.slug, false)}
-              className={`group text-left border transition-all ${
+              onKeyDown={(event) => handleCardKeyDown(event, style.slug)}
+              className={`group text-left border transition-all cursor-pointer ${
                 isSelected
                   ? "border-foreground ring-2 ring-foreground ring-offset-2"
                   : "border-border hover:border-foreground"
@@ -184,7 +198,7 @@ export function StyleStep({
                 </p>
                 <p className="text-xs text-muted">{style.nameEn}</p>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

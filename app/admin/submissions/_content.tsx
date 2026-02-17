@@ -29,7 +29,6 @@ export function SubmissionsReview() {
   const [note, setNote] = useState("");
 
   const fetchSubmissions = useCallback(async () => {
-    setLoading(true);
     const params = filter !== "all" ? `?status=${filter}` : "";
     const res = await fetch(`/api/submit/list${params}`);
     const data = await res.json();
@@ -38,8 +37,21 @@ export function SubmissionsReview() {
   }, [filter]);
 
   useEffect(() => {
-    fetchSubmissions();
-  }, [fetchSubmissions]);
+    let cancelled = false;
+    const params = filter !== "all" ? `?status=${filter}` : "";
+    fetch(`/api/submit/list${params}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled) {
+          setSubmissions(data.submissions ?? []);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [filter]);
 
   async function handleReview(id: string, action: "approve" | "reject") {
     const res = await fetch(`/api/submit/${id}/review`, {

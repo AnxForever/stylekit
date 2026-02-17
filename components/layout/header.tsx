@@ -11,6 +11,7 @@ import { ChevronDown } from "lucide-react";
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [expandedMobileToolsGroup, setExpandedMobileToolsGroup] = useState<number | null>(0);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { t } = useI18n();
@@ -237,21 +238,49 @@ export function Header() {
                 {toolsDropdown.groups ? (
                   toolsDropdown.groups.map((group, gi) => (
                     <div key={gi} className={gi > 0 ? "mt-3" : ""}>
-                      {group.groupLabelKey && (
-                        <p className="text-[10px] uppercase tracking-widest text-muted/60 mb-1 mt-2">
-                          {t(group.groupLabelKey)}
-                        </p>
+                      {group.groupLabelKey ? (
+                        <>
+                          <button
+                            onClick={() =>
+                              setExpandedMobileToolsGroup((prev) => (prev === gi ? null : gi))
+                            }
+                            className="w-full flex items-center justify-between py-2 text-[10px] uppercase tracking-widest text-muted/70 hover:text-foreground transition-colors"
+                            aria-expanded={expandedMobileToolsGroup === gi}
+                          >
+                            <span>{t(group.groupLabelKey)}</span>
+                            <ChevronDown
+                              className={`w-3.5 h-3.5 transition-transform ${
+                                expandedMobileToolsGroup === gi ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                          {expandedMobileToolsGroup === gi && (
+                            <div className="mt-1">
+                              {group.items.map((item) => (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  className={`block py-2 ${linkClass}`}
+                                  onClick={() => setIsMenuOpen(false)}
+                                >
+                                  {t(item.labelKey)}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        group.items.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`block py-2 ${linkClass}`}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {t(item.labelKey)}
+                          </Link>
+                        ))
                       )}
-                      {group.items.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`block py-2 ${linkClass}`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {t(item.labelKey)}
-                        </Link>
-                      ))}
                     </div>
                   ))
                 ) : (
