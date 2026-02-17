@@ -163,6 +163,7 @@ npm run test     # Run tests
 ## Contributing
 
 Contributions are welcome! Please read our contributing guidelines before submitting a PR.
+For protected-branch CI setup, see `docs/CI_REQUIRED_CHECKS.md`.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)

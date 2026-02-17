@@ -7,8 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "check:style-extractor": "node scripts/check-style-extractor.cjs",
     "test": "npx --no-install vitest run",
     "test:run": "npx --no-install vitest run",
+    "test:style-extractor": "npx --no-install vitest run __tests__/style-extractor-registry.test.ts",
+    "test:style-extractor:ci": "npm run check:style-extractor && npm run test:style-extractor",
     "cli": "npx --no-install tsx cli/stylekit.ts",
     "mcp": "npx --no-install tsx mcp/server.ts"
   },

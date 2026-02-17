@@ -1,0 +1,46 @@
+name: Style Extractor CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: style-extractor-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  style-extractor:
+    name: Style Extractor Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: extractor_changes
+        with:
+          filters: |
+            style_extractor:
+              - "style-extractor-dev/**"
+              - "__tests__/style-extractor-registry.test.ts"
+              - "scripts/check-style-extractor.cjs"
+              - "package.json"
+              - "package-lock.json"
+              - "vitest.config.ts"
+              - ".github/workflows/style-extractor-ci.yml"
+      - uses: actions/setup-node@v4
+        if: steps.extractor_changes.outputs.style_extractor == 'true'
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+        if: steps.extractor_changes.outputs.style_extractor == 'true'
+      - run: npm run test:style-extractor:ci
+        if: steps.extractor_changes.outputs.style_extractor == 'true'
+      - run: echo "No style-extractor changes detected. Skipping heavy checks."
+        if: steps.extractor_changes.outputs.style_extractor != 'true'
