@@ -54,8 +54,10 @@ PHASE-5A-SUMMARY.md
 .trae/
 .cursor/
 .windsurf/
-skills/ui-ux-pro-max/
-skills/stylekit-design-system/
+skills/
+
+# Screenshots
+stylekit-*.png
 
 # Local images
 image.png
