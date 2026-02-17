@@ -2,16 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { MessageSquare, Send } from "lucide-react";
-
-function getSessionId(): string {
-  if (typeof window === "undefined") return "";
-  let id = localStorage.getItem("stylekit-session-id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("stylekit-session-id", id);
-  }
-  return id;
-}
+import { getSessionId } from "@/lib/session";
 
 interface Comment {
   id: string;

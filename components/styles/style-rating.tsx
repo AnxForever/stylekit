@@ -2,16 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Star } from "lucide-react";
-
-function getSessionId(): string {
-  if (typeof window === "undefined") return "";
-  let id = localStorage.getItem("stylekit-session-id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("stylekit-session-id", id);
-  }
-  return id;
-}
+import { getSessionId } from "@/lib/session";
 
 interface StyleRatingProps {
   slug: string;
@@ -91,7 +82,7 @@ export function StyleRating({ slug }: StyleRatingProps) {
       </div>
       {total > 0 && (
         <span className="text-sm text-muted">
-          {average} ({total})
+          {average.toFixed(1)} ({total})
         </span>
       )}
     </div>
