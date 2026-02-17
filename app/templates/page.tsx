@@ -305,21 +305,57 @@ export default function TemplatesPage() {
     event: React.KeyboardEvent<HTMLAnchorElement>,
     index: number
   ) => {
+    const total = filteredTemplates.length;
+    if (total <= 1) return;
+
     const columns = getTemplateGridColumns();
-    const maxIndex = filteredTemplates.length - 1;
+    const maxIndex = total - 1;
+    const column = index % columns;
     let nextIndex = index;
 
-    if (event.key === "ArrowRight") nextIndex = index + 1;
-    if (event.key === "ArrowLeft") nextIndex = index - 1;
-    if (event.key === "ArrowDown") nextIndex = index + columns;
-    if (event.key === "ArrowUp") nextIndex = index - columns;
-    if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = maxIndex;
-
-    if (nextIndex < 0 || nextIndex > maxIndex || nextIndex === index) return;
+    switch (event.key) {
+      case "ArrowRight":
+        nextIndex = (index + 1) % total;
+        break;
+      case "ArrowLeft":
+        nextIndex = (index - 1 + total) % total;
+        break;
+      case "ArrowDown": {
+        const downIndex = index + columns;
+        nextIndex = downIndex <= maxIndex ? downIndex : Math.min(column, maxIndex);
+        break;
+      }
+      case "ArrowUp": {
+        if (index - columns >= 0) {
+          nextIndex = index - columns;
+        } else {
+          nextIndex = maxIndex - ((maxIndex - column) % columns);
+        }
+        break;
+      }
+      case "PageDown": {
+        const lastRowStart = maxIndex - (maxIndex % columns);
+        const candidate = lastRowStart + column;
+        nextIndex = candidate <= maxIndex ? candidate : maxIndex;
+        break;
+      }
+      case "PageUp":
+        nextIndex = Math.min(column, maxIndex);
+        break;
+      case "Home":
+        nextIndex = 0;
+        break;
+      case "End":
+        nextIndex = maxIndex;
+        break;
+      default:
+        return;
+    }
 
     event.preventDefault();
-    templateCardRefs.current[nextIndex]?.focus();
+    if (nextIndex !== index) {
+      templateCardRefs.current[nextIndex]?.focus();
+    }
   };
 
   return (
@@ -419,6 +455,9 @@ export default function TemplatesPage() {
                   {t("templates.activeFiltersLabel")}: {activeFilterSummary}
                 </p>
               )}
+              <p className="text-xs text-muted">
+                {t("templates.keyboardHint")}
+              </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
@@ -439,7 +478,7 @@ export default function TemplatesPage() {
                     }}
                     onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
                     aria-label={`${templateName} - ${t("templates.openTemplate")}`}
-                    className="group block border border-border hover:border-foreground transition-colors"
+                    className="group block border border-border hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors"
                   >
                     <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                       {style && (
@@ -484,10 +523,23 @@ export default function TemplatesPage() {
             </div>
 
             {filteredTemplates.length === 0 && (
-              <div className="text-center py-16 text-muted">
-                {trimmedSearchQuery.length > 0
-                  ? t("templates.emptySearch")
-                  : t("templates.empty")}
+              <div className="py-16">
+                <div className="max-w-xl mx-auto border border-dashed border-border px-6 py-10 text-center space-y-4">
+                  <p className="text-sm text-muted">
+                    {trimmedSearchQuery.length > 0
+                      ? t("templates.emptySearch")
+                      : t("templates.empty")}
+                  </p>
+                  {hasActiveControls && (
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      className="px-4 py-2 text-xs border border-border hover:border-foreground transition-colors"
+                    >
+                      {t("templates.resetFilters")}
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
