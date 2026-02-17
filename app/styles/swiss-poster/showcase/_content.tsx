@@ -203,7 +203,7 @@ export default function ShowcaseContent() {
               {activeTab === 0 && (
                 <div>
                   <h4 className="text-4xl font-black mb-4 tracking-tighter">FORM FOLLOWS FUNCTION</h4>
-                  <p className="text-lg text-gray-700">Every element serves a purpose. No decoration for decoration's sake.</p>
+                  <p className="text-lg text-gray-700">Every element serves a purpose. No decoration for decoration&apos;s sake.</p>
                 </div>
               )}
               {activeTab === 1 && (

@@ -13,11 +13,16 @@ interface HomeContentProps {
 
 export function HomeContent({ styles }: HomeContentProps) {
   const { t } = useI18n();
-  const featuredStyles = styles.slice(0, 8);
+  const featuredStyles = styles
+    .filter((style, index, all) => {
+      if (!style.slug) return false;
+      return all.findIndex((candidate) => candidate.slug === style.slug) === index;
+    })
+    .slice(0, 8);
 
   const workflows = [
     {
-      id: "Path A",
+      badge: t("home.pathA.badge"),
       title: t("home.pathA.title"),
       description: t("home.pathA.desc"),
       steps: [t("home.pathA.step1"), t("home.pathA.step2"), t("home.pathA.step3")],
@@ -27,7 +32,7 @@ export function HomeContent({ styles }: HomeContentProps) {
       ],
     },
     {
-      id: "Path B",
+      badge: t("home.pathB.badge"),
       title: t("home.pathB.title"),
       description: t("home.pathB.desc"),
       steps: [t("home.pathB.step1"), t("home.pathB.step2"), t("home.pathB.step3")],
@@ -88,23 +93,23 @@ export function HomeContent({ styles }: HomeContentProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {workflows.map((workflow) => (
-              <div key={workflow.id} className="p-6 border border-border space-y-4">
-                <p className="text-xs tracking-widest uppercase text-muted">{workflow.id}</p>
+            {workflows.map((workflow, workflowIndex) => (
+              <div key={`${workflowIndex}-${workflow.title}`} className="p-6 border border-border space-y-4">
+                <p className="text-xs tracking-widest uppercase text-muted">{workflow.badge}</p>
                 <h3 className="text-lg">{workflow.title}</h3>
                 <p className="text-sm text-muted leading-relaxed">{workflow.description}</p>
                 <ul className="space-y-2 text-sm text-muted">
-                  {workflow.steps.map((step) => (
-                    <li key={step} className="flex gap-2">
+                  {workflow.steps.map((step, stepIndex) => (
+                    <li key={`${workflowIndex}-${stepIndex}`} className="flex gap-2">
                       <span className="text-foreground">-</span>
                       <span>{step}</span>
                     </li>
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {workflow.links.map((link) => (
+                  {workflow.links.map((link, linkIndex) => (
                     <Link
-                      key={link.href}
+                      key={`${workflowIndex}-${link.href}-${linkIndex}`}
                       href={link.href}
                       className="inline-flex items-center justify-center px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
                     >

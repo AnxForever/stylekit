@@ -366,7 +366,7 @@ export default function ShowcaseContent() {
             </div>
             <div>
               <p className="font-black text-black uppercase">INFO!</p>
-              <p className="text-black/70 font-medium">Here's some useful information for you.</p>
+              <p className="text-black/70 font-medium">Here&apos;s some useful information for you.</p>
             </div>
           </div>
         </div>

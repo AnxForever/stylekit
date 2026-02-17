@@ -57,10 +57,10 @@ export default function ShowcaseContent() {
               key={i}
               className="absolute animate-float"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 2}s`
+                left: `${(i * 37 + 13) % 100}%`,
+                top: `${(i * 53 + 7) % 100}%`,
+                animationDelay: `${(i * 0.15) % 3}s`,
+                animationDuration: `${3 + (i * 0.1) % 2}s`
               }}
             >
               {i % 3 === 0 ? <Heart className="w-4 h-4 text-pink-400" fill="currentColor" /> :
