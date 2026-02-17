@@ -72,10 +72,10 @@ export default function ShowcaseContent() {
         <Palmtree className="w-32 h-32 text-pink-400" />
       </div>
       <div className="fixed top-40 right-20 opacity-15 pointer-events-none">
-        <div className="text-6xl">🗿</div>
+        <div className="text-6xl">MOAI</div>
       </div>
       <div className="fixed bottom-40 left-20 opacity-15 pointer-events-none">
-        <div className="text-5xl">🐬</div>
+        <div className="text-5xl">DOLPHIN</div>
       </div>
 
       {/* VHS Scanline effect */}

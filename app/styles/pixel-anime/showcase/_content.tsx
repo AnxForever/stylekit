@@ -226,7 +226,7 @@ export default function ShowcaseContent() {
       </ShowcaseSection>
 
       <footer className="border-t-4 border-white py-10 px-6 text-center bg-black">
-        <p className="text-gray-500 text-xs">PIXEL ANIME © 2026 - PRESS START TO CONTINUE</p>
+        <p className="text-gray-500 text-xs">PIXEL ANIME (c) 2026 - PRESS START TO CONTINUE</p>
       </footer>
     </div>
   );

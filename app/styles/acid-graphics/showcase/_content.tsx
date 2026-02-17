@@ -426,7 +426,7 @@ export default function ShowcaseContent() {
       {/* Footer */}
       <footer className="border-t border-[#00ff41]/30 py-12 px-6 text-center bg-black">
         <p className="text-gray-400">
-          Acid Graphics Style © 2026 - <span className="text-[#00ff41]">Maximum Energy</span>
+          Acid Graphics Style (c) 2026 - <span className="text-[#00ff41]">Maximum Energy</span>
         </p>
       </footer>
     </div>

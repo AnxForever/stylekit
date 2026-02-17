@@ -453,7 +453,7 @@ export default function ShowcaseContent() {
       {/* Footer */}
       <footer className="border-t-4 border-[#2c2c2c] py-12 px-6 text-center bg-white" style={{ borderStyle: 'dashed' }}>
         <p className="text-gray-600" style={{ fontFamily: '"Comic Sans MS", cursive' }}>
-          Hand-Drawn Doodle Style © 2026 - Made with <Heart className="w-4 h-4 inline text-[#ff6b9d]" /> and sketchy lines
+          Hand-Drawn Doodle Style (c) 2026 - Made with <Heart className="w-4 h-4 inline text-[#ff6b9d]" /> and sketchy lines
         </p>
       </footer>
     </div>

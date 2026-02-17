@@ -468,7 +468,7 @@ export default function ShowcaseContent() {
       {/* Footer */}
       <footer className="border-t-2 border-cyan-500 py-12 px-6 text-center bg-black">
         <p className="text-gray-500 font-mono text-sm">
-          GLITCH.ART © 2026 - SYSTEM.CORRUPTED.SUCCESSFULLY
+          GLITCH.ART (c) 2026 - SYSTEM.CORRUPTED.SUCCESSFULLY
         </p>
       </footer>
     </div>

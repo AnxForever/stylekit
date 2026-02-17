@@ -405,7 +405,7 @@ export default function ShowcaseContent() {
 
         <footer className="border-t-2 border-[#ff0055] py-12 px-6 text-center bg-black/90 backdrop-blur-md relative" style={{ boxShadow: '0 -10px 50px rgba(255,0,85,0.3)' }}>
           <p className="text-gray-500 text-sm tracking-wider">
-            霓虹武士 NEON SAMURAI © 2026 - 名誉と電気の道 HONOR AND ELECTRIC WAY
+            霓虹武士 NEON SAMURAI (c) 2026 - 名誉と電気の道 HONOR AND ELECTRIC WAY
           </p>
         </footer>
       </div>

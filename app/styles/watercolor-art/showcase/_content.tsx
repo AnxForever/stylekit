@@ -202,7 +202,7 @@ export default function ShowcaseContent() {
       </ShowcaseSection>
 
       <footer className="border-t border-gray-200 py-12 px-6 text-center bg-white/80">
-        <p className="text-gray-500 font-serif">Watercolor Art Style © 2026 - Painted with care</p>
+        <p className="text-gray-500 font-serif">Watercolor Art Style (c) 2026 - Painted with care</p>
       </footer>
     </div>
   );
