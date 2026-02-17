@@ -1,4 +1,17 @@
-// @stylekit/core - Main entry point
+/**
+ * @module @stylekit/core
+ *
+ * Main entry point for the StyleKit core library.
+ * Re-exports all sub-modules: styles, recipes, linter, knowledge,
+ * accessibility, and quality.
+ *
+ * For tree-shaking, prefer importing from specific sub-modules:
+ * ```ts
+ * import { getStyleBySlug } from '@stylekit/core/styles'
+ * import { lintCode } from '@stylekit/core/linter'
+ * ```
+ */
+
 // Barrel export from all sub-modules
 
 export * from './styles'
