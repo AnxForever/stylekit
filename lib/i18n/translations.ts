@@ -120,8 +120,15 @@ const en = {
     "templates.typeBlog": "Blog",
     "templates.typePortfolio": "Portfolio",
     "templates.results": "templates",
+    "templates.sort": "Sort",
+    "templates.sortRecommended": "Recommended",
+    "templates.sortNameAsc": "Name (A-Z)",
+    "templates.sortNameDesc": "Name (Z-A)",
+    "templates.resetFilters": "Reset",
     "templates.openTemplate": "Open Template",
     "templates.empty": "No templates in this category yet.",
+    "templates.searchPlaceholder": "Search templates by name, style, or keyword",
+    "templates.clearSearch": "Clear Search",
 
     // About page
     "about.subtitle": "About",
@@ -866,8 +873,15 @@ const zh: { [K in keyof typeof en]: string } = {
   "templates.typeBlog": "博客",
   "templates.typePortfolio": "作品集",
   "templates.results": "个模板",
+  "templates.sort": "排序",
+  "templates.sortRecommended": "推荐",
+  "templates.sortNameAsc": "名称 A-Z",
+  "templates.sortNameDesc": "名称 Z-A",
+  "templates.resetFilters": "重置",
   "templates.openTemplate": "查看模板",
   "templates.empty": "该分类下暂时没有模板。",
+  "templates.searchPlaceholder": "按名称、风格或关键词搜索模板",
+  "templates.clearSearch": "清空搜索",
 
   // Styles page
   "styles.subtitle": "设计风格集合",
