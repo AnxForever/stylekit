@@ -9,8 +9,6 @@ test.describe("Homepage", () => {
     const hero = page.locator("main").first();
     await expect(hero).toBeVisible();
 
-    // Style cards should be rendered
-    const cards = page.locator('[data-testid="style-card"]');
     // Fallback: if no test IDs, look for links to style detail pages
     const styleLinks = page.locator('a[href^="/styles/"]');
     const count = await styleLinks.count();
@@ -41,8 +39,9 @@ test.describe("Style detail page", () => {
     await page.goto("/styles/neo-brutalist");
     await expect(page).toHaveTitle(/Neo-Brutalist/i);
 
-    // Style name should be visible
-    await expect(page.getByText("Neo-Brutalist")).toBeVisible();
+    // Hero heading and English style name should be visible
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText("Neo-Brutalist", { exact: true })).toBeVisible();
   });
 
   test("tabs are interactive", async ({ page }) => {
@@ -58,14 +57,25 @@ test.describe("Style detail page", () => {
 
   test("has JSON-LD structured data", async ({ page }) => {
     await page.goto("/styles/neo-brutalist");
-    const jsonLd = page.locator('script[type="application/ld+json"]');
-    const count = await jsonLd.count();
-    expect(count).toBeGreaterThan(0);
+    const jsonLdContents = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
+    expect(jsonLdContents.length).toBeGreaterThan(0);
 
-    const content = await jsonLd.first().textContent();
-    expect(content).toBeTruthy();
-    const parsed = JSON.parse(content!);
-    expect(parsed["@type"]).toBe("SoftwareApplication");
+    const schemas = jsonLdContents.flatMap((content) => {
+      try {
+        const parsed = JSON.parse(content);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        return [];
+      }
+    });
+
+    expect(schemas.length).toBeGreaterThan(0);
+    const schemaTypes = schemas
+      .map((schema) => schema?.["@type"])
+      .filter(Boolean);
+    expect(schemaTypes).toContain("SoftwareApplication");
   });
 });
 
@@ -85,12 +95,19 @@ test.describe("Navigation", () => {
   test("header links work", async ({ page }) => {
     await page.goto("/");
 
-    // Click on a navigation link
-    const stylesLink = page.locator('a[href="/styles"]').first();
-    if ((await stylesLink.count()) > 0) {
-      await stylesLink.click();
-      await page.waitForURL("**/styles**");
+    // On mobile, open menu first so nav links become visible
+    const visibleStylesLink = page.locator('a[href="/styles"]:visible').first();
+    if ((await visibleStylesLink.count()) === 0) {
+      const menuButton = page.getByRole("button", { name: /toggle menu/i }).first();
+      if ((await menuButton.count()) > 0 && (await menuButton.isVisible())) {
+        await menuButton.click();
+      }
     }
+
+    const stylesLink = page.locator('a[href="/styles"]:visible').first();
+    await expect(stylesLink).toBeVisible();
+    await stylesLink.click();
+    await page.waitForURL("**/styles**");
   });
 });
 
