@@ -185,11 +185,12 @@ export default function ShowcaseContent() {
             <p className="text-sm font-light text-[#4a6fa5]/70 mb-4">Select a color</p>
             <div className="flex justify-center gap-3">
               {colors.map((color, index) => {
-                const swatch = color.hex ?? color.value ?? activeColor;
+                const swatch = color.hex ?? color.value ?? "transparent";
                 return (
                   <button
                     key={`${color.name}-${index}`}
                     onClick={() => setActiveColor(swatch)}
+                    aria-label={`Select ${color.name}`}
                     className={`w-10 h-10 rounded-full shadow-md transition-all hover:scale-110 ${activeColor === swatch ? 'ring-2 ring-offset-2 ring-[#4a6fa5]' : ''}`}
                     style={{ background: swatch }}
                   />
