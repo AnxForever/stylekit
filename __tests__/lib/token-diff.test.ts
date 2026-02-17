@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { diffTokens, type TokenDiffResult } from "@/lib/styles/token-diff";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 

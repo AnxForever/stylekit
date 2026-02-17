@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { draftToTokens, draftToRecipeSkeleton } from "@/lib/style-extractor/draft-to-tokens";
 import type { ExtractedStyleDraft } from "@/lib/style-extractor/adapter";
 import type { StyleTokens } from "@/lib/styles/tokens";
