@@ -35,6 +35,7 @@ jobs:
               - "package.json"
               - "package-lock.json"
               - "vitest.config.ts"
+              - ".gitmodules"
               - ".github/workflows/style-extractor-ci.yml"
       - uses: actions/setup-node@v4
         if: steps.extractor_changes.outputs.style_extractor == 'true'
