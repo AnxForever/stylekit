@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { StyleTokens } from "@/lib/styles/tokens";
 
 interface StackBlitzProject {
@@ -7,6 +6,65 @@ interface StackBlitzProject {
   template: "node";
   files: Record<string, string>;
   dependencies: Record<string, string>;
+}
+
+interface StackBlitzSDK {
+  openProject: (
+    project: {
+      title: string;
+      description: string;
+      template: string;
+      files: Record<string, string>;
+    },
+    opts?: { openFile?: string },
+  ) => void;
+}
+
+type StackBlitzWindow = Window & { StackBlitzSDK?: StackBlitzSDK };
+
+const STACKBLITZ_SDK_URL = "https://unpkg.com/@stackblitz/sdk@1.11.0/bundles/sdk.umd.js";
+
+async function loadStackBlitzSdk(): Promise<StackBlitzSDK> {
+  const win = window as StackBlitzWindow;
+  if (win.StackBlitzSDK) return win.StackBlitzSDK;
+
+  const existing = document.querySelector<HTMLScriptElement>('script[data-stackblitz-sdk="true"]');
+  if (existing) {
+    if (existing.dataset.loaded === "true") {
+      if (win.StackBlitzSDK) return win.StackBlitzSDK;
+      throw new Error("StackBlitz SDK script is loaded, but global API was not found.");
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("Failed to load StackBlitz SDK.")), {
+        once: true,
+      });
+    });
+    if (win.StackBlitzSDK) return win.StackBlitzSDK;
+    throw new Error("StackBlitz SDK loaded, but global API was not found.");
+  }
+
+  const script = document.createElement("script");
+  script.src = STACKBLITZ_SDK_URL;
+  script.async = true;
+  script.defer = true;
+  script.dataset.stackblitzSdk = "true";
+
+  await new Promise<void>((resolve, reject) => {
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve();
+    };
+    script.onerror = () => reject(new Error("Failed to load StackBlitz SDK."));
+    document.body.appendChild(script);
+  });
+
+  if (!win.StackBlitzSDK) {
+    throw new Error("StackBlitz SDK loaded, but global API was not found.");
+  }
+
+  return win.StackBlitzSDK;
 }
 
 function buildCSS(tokens: StyleTokens | null): string {
@@ -130,11 +188,7 @@ export async function openInStackBlitz(
   tokens: StyleTokens | null,
 ): Promise<void> {
   const project = buildProject(code, styleSlug, tokens);
-
-  // Dynamic import - @stackblitz/sdk must be installed separately
-  const sdk = (await import("@stackblitz/sdk" as any)).default as {
-    openProject: (project: { title: string; description: string; template: string; files: Record<string, string> }, opts?: { openFile?: string }) => void;
-  };
+  const sdk = await loadStackBlitzSdk();
   sdk.openProject(
     {
       title: project.title,
