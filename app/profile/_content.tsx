@@ -82,6 +82,7 @@ export function ProfileContent() {
             alt={userName}
             width={96}
             height={96}
+            unoptimized
             className="w-24 h-24 rounded-full border-2 border-border"
           />
         ) : (

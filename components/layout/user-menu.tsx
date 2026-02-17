@@ -68,6 +68,7 @@ export function UserMenu() {
             alt=""
             width={28}
             height={28}
+            unoptimized
             className="w-7 h-7 rounded-full border border-border"
           />
         ) : (
@@ -144,6 +145,7 @@ export function MobileUserMenu() {
             alt=""
             width={24}
             height={24}
+            unoptimized
             className="w-6 h-6 rounded-full border border-border"
           />
         ) : (
