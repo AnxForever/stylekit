@@ -39,19 +39,19 @@ export function PlaygroundPreview({
   tokenCss,
   deviceWidth,
 }: PlaygroundPreviewProps) {
-  const [loading, setLoading] = useState(false);
   const [debouncedCode, setDebouncedCode] = useState(code);
   const [debouncedTokenCss, setDebouncedTokenCss] = useState(tokenCss);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Derive loading from whether inputs differ from debounced values
+  const loading = code !== debouncedCode || tokenCss !== debouncedTokenCss;
+
   // Debounce code + tokenCss updates
   useEffect(() => {
-    setLoading(true);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setDebouncedCode(code);
       setDebouncedTokenCss(tokenCss);
-      setLoading(false);
     }, 300);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);

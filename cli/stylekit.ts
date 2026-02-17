@@ -15,15 +15,22 @@
  *   rules <style>                 Show lint rules for a style
  */
 
-import { readFileSync, existsSync, readdirSync, statSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "fs";
 import { resolve, relative, join } from "path";
 
 // Import from lib (relative paths for tsx execution)
 import { lintCode, getFixSuggestions, type LintResult } from "../lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "../lib/styles/lint-rules";
-import { styles } from "../lib/styles";
+import { styles, getStyleBySlug } from "../lib/styles";
 import { searchKnowledge, getDesignRecommendation, getSmartRecommendation, compareStyles } from "../lib/knowledge";
 import type { RecommendationContext } from "../lib/knowledge";
+import { generateIdeConfig, type IdeConfigFormat } from "../lib/export/ide-configs";
+import { generateTailwindPresetJS } from "../lib/export/tailwind-preset";
+import { generateShadcnThemeCSS } from "../lib/export/shadcn-theme";
+import { generateSkillPack } from "../lib/export/skill-pack";
+import { getCurrentVersion, getChangelog, computeStyleHash } from "../lib/versioning/registry";
+import { scoreStyle } from "../lib/accessibility/scorer";
+import { getStyleTokens } from "../lib/styles/tokens-registry";
 
 // ---- Colors for terminal output ----
 const colors = {
@@ -56,6 +63,9 @@ ${colorize("Commands:", "cyan")}
   ${colorize("compare", "green")} <s1> <s2> <query>     Compare two styles for a product type
   ${colorize("styles", "green")}                        List all available design styles
   ${colorize("rules", "green")} <style>                 Show lint rules for a specific style
+  ${colorize("export", "green")} <style> --format <fmt>  Export style to various formats
+  ${colorize("version", "green")} <style>                Show version info and changelog
+  ${colorize("accessibility", "green")} <style>          Run accessibility scoring (alias: a11y)
   ${colorize("search", "green")} <query>                Search the knowledge base
   ${colorize("help", "green")}                          Show this help message
 
@@ -72,6 +82,10 @@ ${colorize("Lint Options:", "cyan")}
   --format <fmt>       Output format: text (default), json, github
   --fix                Show fix suggestions for violations
 
+${colorize("Export Formats:", "cyan")}
+  cursorrules, claude-rules, windsurf-rules, tailwind-preset, shadcn-theme, skill-pack
+  --output <file>      Write to file instead of stdout
+
 ${colorize("Examples:", "cyan")}
   stylekit lint --style neo-brutalist --files "src/**/*.tsx"
   stylekit lint --style neo-brutalist --files "src/**/*.tsx" --format github
@@ -81,6 +95,10 @@ ${colorize("Examples:", "cyan")}
   stylekit compare neo-brutalist glassmorphism "creative portfolio"
   stylekit rules glassmorphism
   stylekit search "dark color palette"
+  stylekit export neo-brutalist --format cursorrules
+  stylekit export glassmorphism --format tailwind-preset --output preset.js
+  stylekit version neo-brutalist
+  stylekit a11y glassmorphism
 
 ${colorize("Available Styles:", "cyan")}
   ${getStylesWithLintRules().join(", ")}
@@ -214,7 +232,7 @@ function formatTextOutput(results: FileLintResult[], showFix: boolean): string {
   const lines: string[] = [];
   let totalErrors = 0;
   let totalWarnings = 0;
-  let totalFiles = results.length;
+  const totalFiles = results.length;
   let failedFiles = 0;
 
   for (const r of results) {
@@ -544,6 +562,143 @@ function cmdCompare(style1: string, style2: string, query: string): void {
   console.log();
 }
 
+// ---- Export command ----
+
+type ExportFormat = "cursorrules" | "claude-rules" | "windsurf-rules" | "tailwind-preset" | "shadcn-theme" | "skill-pack";
+
+const EXPORT_FORMATS: ExportFormat[] = [
+  "cursorrules", "claude-rules", "windsurf-rules", "tailwind-preset", "shadcn-theme", "skill-pack",
+];
+
+function cmdExport(styleSlug: string, format: ExportFormat, outputFile?: string): void {
+  const style = getStyleBySlug(styleSlug);
+  if (!style) {
+    console.error(colorize(`Error: Unknown style "${styleSlug}"`, "red"));
+    console.log(`\nAvailable styles: ${styles.map(s => s.slug).join(", ")}`);
+    process.exit(1);
+  }
+
+  let output: string | null = null;
+
+  switch (format) {
+    case "cursorrules":
+    case "claude-rules":
+    case "windsurf-rules":
+      output = generateIdeConfig(styleSlug, format as IdeConfigFormat);
+      break;
+    case "tailwind-preset": {
+      const tokens = getStyleTokens(styleSlug);
+      output = generateTailwindPresetJS(style, tokens);
+      break;
+    }
+    case "shadcn-theme":
+      output = generateShadcnThemeCSS(style);
+      break;
+    case "skill-pack": {
+      const tokens = getStyleTokens(styleSlug);
+      output = generateSkillPack({ style, tokens });
+      break;
+    }
+  }
+
+  if (!output) {
+    console.error(colorize(`Error: Failed to generate ${format} for "${styleSlug}"`, "red"));
+    process.exit(1);
+  }
+
+  if (outputFile) {
+    const filePath = resolve(process.cwd(), outputFile);
+    writeFileSync(filePath, output, "utf-8");
+    console.log(colorize(`Exported ${format} for ${styleSlug} to ${outputFile}`, "green"));
+  } else {
+    console.log(output);
+  }
+}
+
+// ---- Version command ----
+
+function cmdVersion(styleSlug: string): void {
+  const style = getStyleBySlug(styleSlug);
+  if (!style) {
+    console.error(colorize(`Error: Unknown style "${styleSlug}"`, "red"));
+    console.log(`\nAvailable styles: ${styles.map(s => s.slug).join(", ")}`);
+    process.exit(1);
+  }
+
+  const version = getCurrentVersion(styleSlug);
+  const hash = computeStyleHash(styleSlug);
+  const changelog = getChangelog(styleSlug);
+
+  console.log(colorize(`\nVersion Info: ${styleSlug}\n`, "bold"));
+  console.log(`  Version: ${colorize(version, "cyan")}`);
+  console.log(`  Content Hash: ${colorize(hash, "dim")}`);
+
+  if (changelog.length > 0) {
+    console.log(colorize("\nChangelog:", "cyan"));
+    for (const entry of changelog.slice(0, 10)) {
+      console.log(`  ${colorize(entry.version, "green")} ${colors.dim}(${entry.date})${colors.reset}`);
+      for (const change of entry.changes) {
+        console.log(`    - ${change}`);
+      }
+    }
+    if (changelog.length > 10) {
+      console.log(`  ${colors.dim}... and ${changelog.length - 10} more entries${colors.reset}`);
+    }
+  } else {
+    console.log(`\n  ${colors.dim}No changelog entries found${colors.reset}`);
+  }
+
+  console.log();
+}
+
+// ---- Accessibility command ----
+
+function cmdAccessibility(styleSlug: string): void {
+  const style = getStyleBySlug(styleSlug);
+  if (!style) {
+    console.error(colorize(`Error: Unknown style "${styleSlug}"`, "red"));
+    console.log(`\nAvailable styles: ${styles.map(s => s.slug).join(", ")}`);
+    process.exit(1);
+  }
+
+  const score = scoreStyle(styleSlug);
+  if (!score) {
+    console.error(colorize(`Error: Could not score accessibility for "${styleSlug}"`, "red"));
+    process.exit(1);
+  }
+
+  const gradeColor = score.grade === "A" ? "green" : score.grade === "B" ? "cyan" : score.grade === "C" ? "yellow" : "red";
+
+  console.log(colorize(`\nAccessibility Report: ${styleSlug}\n`, "bold"));
+  console.log(`  Overall Score: ${colorize(String(score.overall), gradeColor)} / 100`);
+  console.log(`  Grade: ${colorize(score.grade, gradeColor)}`);
+
+  console.log(colorize("\nContrast:", "cyan"));
+  console.log(`  Score: ${score.contrast.score} / 100`);
+  console.log(`  Avg Ratio: ${score.contrast.ratio.toFixed(2)}:1`);
+  console.log(`  WCAG AA: ${score.contrast.meetsAA ? colorize("PASS", "green") : colorize("FAIL", "red")}`);
+  console.log(`  WCAG AAA: ${score.contrast.meetsAAA ? colorize("PASS", "green") : colorize("FAIL", "red")}`);
+
+  if (score.contrast.pairs.length > 0) {
+    console.log(colorize("\n  Color Pairs:", "dim"));
+    for (const pair of score.contrast.pairs.slice(0, 5)) {
+      const status = pair.aa ? colorize("AA", "green") : colorize("FAIL", "red");
+      console.log(`    ${pair.context}: ${pair.ratio.toFixed(2)}:1 [${status}]`);
+    }
+    if (score.contrast.pairs.length > 5) {
+      console.log(`    ${colors.dim}... and ${score.contrast.pairs.length - 5} more pairs${colors.reset}`);
+    }
+  }
+
+  console.log(colorize("\nReadability:", "cyan"));
+  console.log(`  Score: ${score.readability.score} / 100`);
+  console.log(`  Font Size: ${score.readability.fontSize}`);
+  console.log(`  Font Weight: ${score.readability.fontWeight}`);
+  console.log(`  Line Height: ${score.readability.lineHeight}`);
+
+  console.log();
+}
+
 // ---- Main ----
 
 function main(): void {
@@ -685,6 +840,52 @@ function main(): void {
       }
 
       cmdCompare(style1, style2, query);
+      break;
+    }
+
+    case "export": {
+      const styleSlug = args[1];
+      const formatIndex = args.indexOf("--format");
+      const format = formatIndex !== -1 ? args[formatIndex + 1] : null;
+      const outputIndex = args.indexOf("--output");
+      const outputFile = outputIndex !== -1 ? args[outputIndex + 1] : undefined;
+
+      if (!styleSlug || styleSlug.startsWith("--")) {
+        console.error(colorize("Error: Please specify a style", "red"));
+        console.log('Usage: stylekit export <style> --format <format> [--output <file>]');
+        process.exit(1);
+      }
+
+      if (!format || !EXPORT_FORMATS.includes(format as ExportFormat)) {
+        console.error(colorize(`Error: Please specify a valid format with --format`, "red"));
+        console.log(`Available formats: ${EXPORT_FORMATS.join(", ")}`);
+        process.exit(1);
+      }
+
+      cmdExport(styleSlug, format as ExportFormat, outputFile);
+      break;
+    }
+
+    case "version": {
+      const styleSlug = args[1];
+      if (!styleSlug) {
+        console.error(colorize("Error: Please specify a style", "red"));
+        console.log("Usage: stylekit version <style>");
+        process.exit(1);
+      }
+      cmdVersion(styleSlug);
+      break;
+    }
+
+    case "accessibility":
+    case "a11y": {
+      const styleSlug = args[1];
+      if (!styleSlug) {
+        console.error(colorize("Error: Please specify a style", "red"));
+        console.log("Usage: stylekit accessibility <style>");
+        process.exit(1);
+      }
+      cmdAccessibility(styleSlug);
       break;
     }
 
