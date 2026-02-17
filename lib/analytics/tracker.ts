@@ -3,7 +3,7 @@
  *
  * In-memory anonymous counter for tracking style usage across API, MCP, and page views.
  * Privacy-first: no PII collected, only aggregate counts.
- * Persists to data/analytics.json with debounced writes; loads on first access.
+ * Persists to .data/analytics.json with debounced writes; loads on first access.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
@@ -34,7 +34,7 @@ interface Counter {
 }
 
 // ── Persistence ──────────────────────────────────────────────
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), ".data");
 const ANALYTICS_FILE = path.join(DATA_DIR, "analytics.json");
 const FLUSH_DELAY_MS = 5_000; // debounce: flush at most every 5s
 

@@ -70,15 +70,13 @@ image.jpg
 .tmp/
 
 # Runtime data (analytics, submissions)
-/data/analytics.json
-/data/submissions/approved/
-/data/submissions/rejected/
+/.data/
 
 # Workspace build outputs and generated reports
 packages/**/node_modules/
 packages/**/dist/
 .spec-workflow/
-scripts/output/
+tools/scripts/output/
 
 # Competitor analysis data
 uiprompt-*.json
