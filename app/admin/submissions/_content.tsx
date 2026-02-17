@@ -9,6 +9,7 @@ interface Submission {
   status: "pending" | "approved" | "rejected";
   reviewedAt?: string;
   reviewNote?: string;
+  authorName?: string;
   formData: {
     name?: string;
     nameEn?: string;
@@ -165,6 +166,9 @@ export function SubmissionsReview() {
               <span>
                 Submitted: {new Date(sub.submittedAt).toLocaleDateString()}
               </span>
+              {sub.authorName && (
+                <span>by <strong>@{sub.authorName}</strong></span>
+              )}
               {sub.formData.primaryColor && (
                 <span className="flex items-center gap-1">
                   <span
