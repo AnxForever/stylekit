@@ -112,16 +112,22 @@ interface ShowcaseHeroProps {
   badge?: string;
   /** Main title */
   title: string;
+  /** Optional subtitle */
+  subtitle?: string;
   /** Subtitle/description */
-  description: string;
+  description?: string;
   /** Container CSS classes */
   className?: string;
   /** Badge CSS classes */
   badgeClassName?: string;
   /** Title CSS classes */
   titleClassName?: string;
+  /** Subtitle CSS classes */
+  subtitleClassName?: string;
   /** Description CSS classes */
   descriptionClassName?: string;
+  /** Inline styles for section */
+  style?: React.CSSProperties;
   /** Optional CTA buttons */
   children?: React.ReactNode;
 }
@@ -132,15 +138,18 @@ interface ShowcaseHeroProps {
 export function ShowcaseHero({
   badge,
   title,
+  subtitle,
   description,
   className,
   badgeClassName,
   titleClassName,
+  subtitleClassName,
   descriptionClassName,
+  style,
   children,
 }: ShowcaseHeroProps) {
   return (
-    <section className={cn("py-20 px-6", className)}>
+    <section className={cn("py-20 px-6", className)} style={style}>
       <div className="max-w-4xl mx-auto text-center">
         {badge && (
           <div className={cn("inline-block mb-6 px-4 py-2 rounded-full", badgeClassName)}>
@@ -150,9 +159,12 @@ export function ShowcaseHero({
         <h1 className={cn("text-5xl md:text-7xl font-bold mb-6", titleClassName)}>
           {title}
         </h1>
-        <p className={cn("text-xl max-w-2xl mx-auto mb-10", descriptionClassName)}>
-          {description}
-        </p>
+        {subtitle && <p className={cn("text-lg mb-6", subtitleClassName)}>{subtitle}</p>}
+        {description && (
+          <p className={cn("text-xl max-w-2xl mx-auto mb-10", descriptionClassName)}>
+            {description}
+          </p>
+        )}
         {children}
       </div>
     </section>
@@ -164,13 +176,17 @@ export function ShowcaseHero({
 // ============================
 export interface ColorItem {
   name: string;
-  hex: string;
-  bg: string;
-  border?: boolean;
+  hex?: any;
+  bg?: any;
+  value?: any;
+  description?: any;
+  border?: any;
+  [key: string]: any;
 }
 
 interface ColorPaletteGridProps {
   colors: ColorItem[];
+  className?: string;
   cardClassName?: string;
   colorBlockClassName?: string;
   labelClassName?: string;
@@ -182,19 +198,23 @@ interface ColorPaletteGridProps {
  */
 export function ColorPaletteGrid({
   colors,
+  className,
   cardClassName = "rounded-xl overflow-hidden border border-gray-200",
   colorBlockClassName = "h-20 md:h-24",
   labelClassName = "text-sm font-semibold",
   hexClassName = "text-xs opacity-60 font-mono",
 }: ColorPaletteGridProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+    <div className={cn("grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6", className)}>
       {colors.map((color) => (
         <div key={color.name} className={cardClassName}>
-          <div className={cn(colorBlockClassName, color.bg, color.border && "border-b")} />
+          <div
+            className={cn(colorBlockClassName, color.bg, color.border && "border-b")}
+            style={color.bg ? undefined : { backgroundColor: color.hex ?? color.value ?? "transparent" }}
+          />
           <div className="p-3 md:p-4">
             <p className={labelClassName}>{color.name}</p>
-            <p className={hexClassName}>{color.hex}</p>
+            <p className={hexClassName}>{color.hex ?? color.value ?? ""}</p>
           </div>
         </div>
       ))}
@@ -267,6 +287,7 @@ interface ShowcaseSectionProps {
   subtitle?: string;
   titleClassName?: string;
   subtitleClassName?: string;
+  style?: React.CSSProperties;
 }
 
 /**
@@ -279,9 +300,10 @@ export function ShowcaseSection({
   subtitle,
   titleClassName = "text-2xl md:text-4xl font-bold mb-4",
   subtitleClassName = "mb-10 opacity-70",
+  style,
 }: ShowcaseSectionProps) {
   return (
-    <section className={className}>
+    <section className={className} style={style}>
       <div className="max-w-6xl mx-auto">
         {title && <h2 className={titleClassName}>{title}</h2>}
         {subtitle && <p className={subtitleClassName}>{subtitle}</p>}
