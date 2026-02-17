@@ -1,193 +1,294 @@
+<div align="center">
+
+<img src="public/og-image.svg" alt="StyleKit Banner" width="100%" />
+
 # StyleKit
 
-<p align="center">
-  <strong>AI-Friendly Design System with 16+ Visual Styles</strong>
-</p>
+**The AI-Friendly Design System — 90+ Styles, 20+ Templates, One Toolkit**
 
-<p align="center">
-  <a href="#features">Features</a> |
-  <a href="#quick-start">Quick Start</a> |
-  <a href="#styles">Styles</a> |
-  <a href="#api">API</a> |
-  <a href="#contributing">Contributing</a>
-</p>
+[![Live Site](https://img.shields.io/badge/Live-stylekit.top-black?style=for-the-badge&logo=vercel)](https://www.stylekit.top)
 
-<p align="center">
-  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" />
-  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react" />
-  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss" />
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript" />
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-green" />
-</p>
+<br />
+
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![Tailwind CSS 4](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
+[![TypeScript 5](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3FCF8E?logo=supabase)](https://supabase.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+[Features](#features) &bull; [Quick Start](#quick-start) &bull; [Styles](#styles) &bull; [Templates](#templates) &bull; [API](#api) &bull; [AI Integration](#ai-integration) &bull; [Contributing](#contributing)
+
+</div>
 
 ---
 
-StyleKit is a design system toolkit that helps AI generate consistent, high-quality UI code. It provides clear style specifications, design tokens, component recipes, and prompt templates that guide AI to output beautiful, style-consistent frontend code.
+StyleKit is a comprehensive design system toolkit that helps both humans and AI generate consistent, high-quality UI code. It provides structured style specifications, design tokens, component recipes, prompt templates, and export tools — everything needed to go from "I want a glassmorphism SaaS dashboard" to production-ready frontend code.
 
 ## Features
 
-- **16+ Visual Styles** - Neo-Brutalist, Glassmorphism, Neumorphism, Editorial, Cyberpunk, and more
-- **25+ UI Components** - Built on Radix UI with full accessibility support
-- **Design Tokens** - Export CSS variables, Tailwind presets, and Figma tokens
-- **AI Prompt Builder** - Generate v0-style prompts with the three-element framework
-- **Smart Recommender** - Context-aware design suggestions based on audience and brand
-- **Style Linter** - Validate code against specific design styles
-- **Gradient Library** - 24 curated gradients across 8 categories
-- **Skills.sh Integration** - Use as an AI coding skill
-- **llms.txt Support** - AI-discoverable documentation
+### Core Design System
+
+- **90+ Visual Styles** — From Neo-Brutalist to Glassmorphism, Cyberpunk Neon to Wabi-Sabi, covering modern, retro, artistic, and layout patterns
+- **20+ Page Templates** — Production-ready layouts: SaaS landing, admin panel, e-commerce, portfolio, blog, auth pages, and more
+- **25+ UI Components** — Built on Radix UI with full accessibility support, including brutalist and neumorphism variant libraries
+- **Design Tokens** — Export as CSS variables, Tailwind presets, Figma tokens, shadcn themes, or IDE config files
+
+### AI-Powered Tools
+
+- **Prompt Builder** — Generate structured AI prompts using the three-element framework (Surface, Context, Constraints)
+- **Smart Recommender** — Context-aware design suggestions based on audience, device, mood, and brand
+- **Style Linter** — Validate code against specific design style rules via CLI, API, or CI/CD
+- **Style Analyzer** — Match existing code to the closest StyleKit style
+- **Style Blender** — Mix multiple styles with adjustable weights
+
+### Creative Tools
+
+- **Code Playground** — Live editor with CodeMirror, instant preview, and built-in linting
+- **Style Creator** — Build custom styles with color, typography, and border controls
+- **Style Comparison** — Side-by-side visual and token diff between any two styles
+- **Design System Generator** — Generate complete design systems from style selections
+
+### Platform
+
+- **GitHub OAuth** — User authentication via Supabase
+- **Ratings & Comments** — Community feedback on styles
+- **Style Submissions** — Submit and review community styles
+- **Favorites** — Save and sync favorite styles
+- **Bilingual (EN/ZH)** — Full internationalization support
+- **PWA** — Installable with offline support via service worker
+- **Dark / Light Mode** — Theme switching via next-themes
 
 ## Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/AnxForever/stylekit.git
 cd stylekit
 
-# Install dependencies
-npm install
+# Install dependencies (project uses pnpm)
+pnpm install
 
 # Start development server
-npm run dev
+pnpm dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+### Optional: Supabase Setup
+
+To enable auth, ratings, and comments, create a `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
 ## Styles
 
-| Style | Best For | Key Feature |
-|-------|----------|-------------|
-| Neo-Brutalist | Creative, Portfolio | Bold borders, hard shadows |
-| Glassmorphism | Modern SaaS, Landing | Frosted glass, blur effects |
-| Neumorphism | Soft UI, Forms | Embossed/debossed depth |
-| Editorial | Blog, Magazine | Typography-first, elegant |
-| Cyberpunk Neon | Gaming, Tech | Neon glow, dark theme |
-| Modern Gradient | Startup, Marketing | Vibrant color gradients |
-| Bento Grid | Dashboards, Portfolios | Grid-based layouts |
-| Corporate Clean | Business, Enterprise | Professional, minimal |
+90+ styles organized across multiple categories:
 
-[View all 16 styles](https://www.stylekit.top/styles)
+| Category | Examples |
+|----------|---------|
+| **Modern / Tech** | Glassmorphism, Neumorphism, Bento Grid, Liquid Glass, Fluent Design |
+| **Brutalist** | Neo-Brutalist, Neo-Brutalist Playful, Neo-Brutalist Soft |
+| **Brand-Inspired** | Apple Style, Notion Style, Stripe Style |
+| **Retro / Vintage** | Art Deco, Vaporwave, VHS Aesthetic, Y2K, Outrun |
+| **Artistic** | Watercolor, Impressionist Oil, Pop Art, Risograph, Surrealism |
+| **Japanese / Anime** | Ghibli Style, Cyber Anime, Shoujo Manga, Visual Novel, Ukiyo-e |
+| **Cyberpunk** | Cyberpunk Neon, Neon Samurai, Sci-Fi HUD, Mecha |
+| **Layout Patterns** | Magazine Grid, Masonry Flow, Split Screen, Parallax Sections |
+| **Nature / Cozy** | Cottagecore, Scandinavian, Wabi-Sabi, Natural Organic |
+
+[Browse all styles](https://www.stylekit.top/styles)
+
+## Templates
+
+20 production-ready page templates:
+
+| Template | Style |
+|----------|-------|
+| SaaS Landing | Modern Gradient |
+| Admin Panel | Corporate Clean |
+| E-commerce Product | Glassmorphism |
+| Portfolio Gallery | Bento Grid |
+| Editorial Blog | Editorial |
+| Auth Pages | Neumorphism |
+| Dashboard Charts | Dark Mode |
+| Docs Site | Notion Style |
+| Pricing Page | Stripe Style |
+| Magazine Landing | Swiss Poster |
+
+[Browse all templates](https://www.stylekit.top/templates)
 
 ## API
 
-StyleKit provides REST APIs for programmatic access:
+RESTful API for programmatic access to the entire design system:
 
-```bash
-# List all styles
-GET /api/styles
+```http
+# Styles
+GET    /api/styles                    # List all styles
+GET    /api/styles/{slug}             # Full style pack
+GET    /api/styles/{slug}/tokens      # Design tokens
+GET    /api/styles/{slug}/recipes     # Component recipes
+POST   /api/styles/{slug}/rate        # Rate a style
+GET    /api/styles/{slug}/comments    # Style comments
 
-# Get style pack with tokens
-GET /api/styles/{slug}
+# AI / Knowledge
+GET    /api/knowledge/search?q=...    # Search design knowledge
+GET    /api/knowledge/smart           # Smart recommendations
+GET    /api/knowledge/domains         # Knowledge domains
+GET    /api/knowledge/stacks          # Tech stack guidelines
 
-# Get design tokens only
-GET /api/styles/{slug}/tokens
+# Tools
+POST   /api/lint                      # Lint code against style
+POST   /api/accessibility             # Accessibility scoring
+POST   /api/analyze-style             # Analyze existing style
+POST   /api/match-style               # Match to closest style
+POST   /api/generate/design-system    # Generate design system
 
-# Get component recipes
-GET /api/styles/{slug}/recipes
-
-# Search design knowledge
-GET /api/knowledge/search?q=button
-
-# Smart design recommendations
-POST /api/knowledge/smart
-
-# Lint code against style
-POST /api/lint
+# Export
+GET    /api/styles/{slug}/claude-rules    # Export as Claude rules
+GET    /api/styles/{slug}/cursorrules     # Export as .cursorrules
+GET    /api/styles/{slug}/skill-pack      # Export as skill pack
+GET    /api/styles/{slug}/md              # Export as Markdown
 ```
 
-## Using with AI
+[Full API docs](https://www.stylekit.top/developers/api)
 
-### Skills.sh
+## AI Integration
+
+### MCP Server
+
+StyleKit ships with a [Model Context Protocol](https://modelcontextprotocol.io) server for direct AI assistant integration:
+
+```json
+{
+  "mcpServers": {
+    "stylekit": {
+      "command": "npx",
+      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
+    }
+  }
+}
+```
+
+9 tools available: `search_knowledge`, `smart_recommend`, `get_style`, `list_styles`, `lint_code`, `get_stack_guidelines`, `compose_styles`, `generate_context_file`, `analyze_project_style`
+
+### CLI
 
 ```bash
-npx skills add AnxForever/stylekit
+pnpm run cli -- lint src/app.tsx --style glassmorphism
+pnpm run cli -- recommend --audience developers --mood professional
+pnpm run cli -- export neo-brutalist --format tailwind-preset
+pnpm run cli -- accessibility cyberpunk-neon
+pnpm run cli -- compare glassmorphism neumorphism
 ```
 
 ### llms.txt
 
-StyleKit provides AI-friendly documentation at `/llms.txt` and `/llms-full.txt` endpoints.
+AI-discoverable documentation at [`/llms.txt`](https://www.stylekit.top/llms.txt) and `/llms-full.txt`.
 
-### Prompt Builder
+### IDE Export Formats
 
-Use the [Prompt Builder](https://www.stylekit.top/prompt-builder) to generate AI prompts with:
-
-- **Product Surface** - What components and features
-- **Context of Use** - Who uses it and when
-- **Constraints & Taste** - Style preferences and requirements
-
-### Developer Portal
-
-Visit `/developers` to access comprehensive integration guides, including:
-
-- **Linter Integration** - How to use the Style Linter in your CI/CD
-- **Smart Recommender** - Using the recommendation engine API
-- **Figma Integration** - Syncing tokens with Figma
+Export any style as: `.cursorrules`, `claude-rules`, `windsurf-rules`, `tailwind-preset`, `shadcn-theme`, `figma-tokens`, `skill-pack`
 
 ## Tech Stack
 
-- **Next.js 16** + Turbopack
-- **React 19**
-- **Tailwind CSS 4**
-- **Radix UI** - Accessible primitives
-- **TypeScript 5** - Strict mode
-- **Lucide React** - Icons
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 + Turbopack |
+| UI | React 19, Radix UI, Lucide Icons |
+| Styling | Tailwind CSS 4, CVA |
+| Auth & DB | Supabase (OAuth, PostgreSQL) |
+| Editor | CodeMirror 6 |
+| Validation | Zod 4 |
+| Data Fetching | SWR 2 |
+| Analytics | Vercel Analytics |
+| Testing | Vitest + Playwright |
+| AI Protocol | MCP SDK |
 
 ## Project Structure
 
 ```
-app/
-  ├── page.tsx              # Home
-  ├── components/           # Component showcase
-  ├── prompt-builder/       # AI prompt generator
-  ├── styles/               # Style gallery & details
-  └── api/                  # REST APIs
-components/
-  ├── ui/                   # UI component library
-  └── layout/               # Layout components
-lib/
-  ├── styles/               # Style definitions & tokens
-  ├── gradients/            # Gradient library
-  └── prompt-builder/       # Prompt generation logic
-tools/
-  ├── cli/                  # CLI entry point
-  ├── mcp/                  # MCP server
-  └── scripts/              # Build & dev scripts
-tests/
-  ├── unit/                 # Unit tests (Vitest)
-  └── e2e/                  # E2E tests (Playwright)
+app/                    # Next.js App Router
+  ├── styles/           #   90+ style pages + showcases
+  ├── templates/        #   20 page templates
+  ├── api/              #   REST API endpoints
+  ├── admin/            #   Admin dashboard
+  ├── developers/       #   Developer portal
+  ├── playground/       #   Live code editor
+  ├── compare/          #   Style comparison
+  ├── blend/            #   Style blender
+  └── ...               #   Other pages
+components/             # React components
+  ├── ui/               #   25+ base components + variants
+  ├── styles/           #   Style-specific components
+  └── layout/           #   Layout components
+lib/                    # Framework-agnostic logic
+  ├── styles/           #   Style definitions & tokens
+  ├── knowledge/        #   Design knowledge base
+  ├── auth/             #   Supabase auth
+  ├── export/           #   Export formatters
+  └── ...               #   Other modules
+tools/                  # Developer tooling
+  ├── cli/              #   CLI entry point
+  ├── mcp/              #   MCP server
+  └── scripts/          #   Build & dev scripts
+tests/                  # Test suites
+  ├── unit/             #   Vitest unit tests
+  └── e2e/              #   Playwright E2E tests
+docs/                   # Documentation
+public/                 # Static assets
 ```
 
 ## Commands
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Production build
-npm run lint     # Code linting
-npm run test     # Run tests
+pnpm dev                # Development server
+pnpm build              # Production build
+pnpm start              # Serve production build
+pnpm lint               # ESLint
+pnpm test               # Unit tests (Vitest)
+pnpm e2e                # E2E tests (Playwright)
+pnpm run cli            # CLI tool
+pnpm run mcp            # MCP server
+pnpm run security:secrets   # Secret leak scan
 ```
 
 ## Contributing
 
-Contributions are welcome.
+Contributions are welcome! Please read the following before opening a PR:
 
-Please read these docs before opening a PR:
+1. [`docs/AGENTS.md`](docs/AGENTS.md) — AI contribution contract and repository guidelines
+2. [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — Contribution guide
+3. [`docs/STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) — Required for new styles
 
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/STYLE_ADDITION_CHECKLIST.md` (required for new styles)
-- `docs/CI_REQUIRED_CHECKS.md`
+```bash
+# Fork & clone
+git checkout -b feat/your-feature
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+# Make changes, then validate
+pnpm lint
+pnpm test
+pnpm build
+
+# Commit with conventional format
+git commit -m "feat: add your feature"
+git push origin feat/your-feature
+# Open PR on GitHub
+```
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-<p align="center">
-  Made with care by the StyleKit Team
-</p>
+<div align="center">
+
+**[stylekit.top](https://www.stylekit.top)**
+
+Built by [AnxForever](https://github.com/AnxForever)
+
+</div>
