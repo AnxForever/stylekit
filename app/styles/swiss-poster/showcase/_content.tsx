@@ -1,365 +1,392 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Grid3X3,
-  Type,
-  Square,
-  AlignLeft,
+import { 
+  ArrowLeft, Square, Circle, ChevronDown, ChevronUp,
+  Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Zap
 } from "lucide-react";
 import {
+  ShowcaseHero,
+  ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
 } from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Black", hex: "#000000", bg: "bg-[#000000]" },
-  { name: "White", hex: "#ffffff", bg: "bg-[#ffffff]" },
-  { name: "Red", hex: "#ff0000", bg: "bg-[#ff0000]" },
-];
-
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(68);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Black", value: "#000000", description: "Primary" },
+    { name: "White", value: "#ffffff", description: "Background" },
+    { name: "Accent Red", value: "#ff0000", description: "Highlight" },
+    { name: "Electric Blue", value: "#0066ff", description: "Secondary" },
+    { name: "Neon Yellow", value: "#ffff00", description: "Accent" },
+  ];
+
+  const tabs = ["Form", "Grid", "Type"];
+
+  const accordionItems = [
+    { title: "WHAT IS SWISS POSTER?", content: "A bold, experimental design style inspired by Swiss graphic design and music festival posters, featuring massive typography, strict grid systems, and limited color palettes for maximum impact." },
+    { title: "CORE PRINCIPLES", content: "Experimental typography, asymmetric grid layouts, high contrast color blocking, geometric shapes as decorative elements, and hierarchy through scale rather than decoration." },
+    { title: "BEST APPLICATIONS", content: "Perfect for music festivals, cultural events, art exhibitions, design studios, and any brand wanting to make a bold, memorable statement with experimental visual language." },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#ffffff] relative overflow-hidden">
-      {/* Visible structural grid lines */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: "calc(100% / 12) 100px",
-        }}
-      />
+    <div className="min-h-screen bg-white text-black">
+      {/* Header */}
+      <header className="border-b-4 border-black bg-white sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-black hover:text-[#ff0000] transition-colors group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-black text-xl uppercase tracking-tighter">BACK</span>
+          </Link>
+          <div className="flex gap-2">
+            <div className="w-6 h-6 bg-[#ff0000]"></div>
+            <div className="w-6 h-6 bg-black"></div>
+          </div>
+        </div>
+      </header>
 
-      {/* Navigation - flush left, tight */}
-      <nav className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-8 md:col-span-6 px-6 py-4 flex items-center gap-4">
-            <Link
-              href="/styles/swiss-poster"
-              className="flex items-center gap-2 text-[#000000] hover:text-[#ff0000] transition-colors duration-100"
+      {/* Hero */}
+      <ShowcaseHero
+        title="SWISS POSTER"
+        subtitle="EXPERIMENTAL TYPOGRAPHY"
+        description="Bold type. Strict grids. Maximum impact through minimal color and massive scale."
+        className="relative py-32 px-6 overflow-hidden bg-white"
+        titleClassName="text-[12rem] md:text-[18rem] font-black leading-[0.85] mb-8 tracking-tighter"
+        subtitleClassName="text-2xl font-black tracking-[0.5em] uppercase mb-6"
+        descriptionClassName="text-xl max-w-2xl leading-tight"
+      >
+        <div className="absolute top-20 right-10 w-64 h-64 bg-[#ff0000] -rotate-12 opacity-20"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full border-8 border-[#0066ff] opacity-30"></div>
+      </ShowcaseHero>
+
+      {/* Stats */}
+      <ShowcaseSection
+        title="METRICS"
+        subtitle="By the numbers"
+        className="py-20 px-6 bg-black text-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-white/60 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
+          {[
+            { icon: Users, label: "VISITORS", value: "24.8K", bg: "#ff0000" },
+            { icon: TrendingUp, label: "GROWTH", value: "+156%", bg: "#0066ff" },
+            { icon: Eye, label: "VIEWS", value: "892K", bg: "#ffff00" },
+            { icon: Zap, label: "IMPACT", value: "MAX", bg: "#000000" },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="p-8 flex flex-col items-center justify-center border-4 border-white"
+              style={{ backgroundColor: stat.bg }}
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="font-sans font-black uppercase tracking-widest text-[10px]">
-                BACK
-              </span>
-            </Link>
-          </div>
-          <div className="col-span-4 md:col-span-6 px-6 py-4 flex items-center justify-end">
-            <Link
-              href="/styles"
-              className="px-4 py-2 border-2 border-[#000000] text-[#000000] font-sans font-black uppercase tracking-widest rounded-none hover:bg-[#000000] hover:text-[#ffffff] transition-all duration-100 text-[10px]"
-            >
-              ALL STYLES
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero - Asymmetric grid layout with extreme type scale */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          {/* Main content - spans 8 cols, flush left */}
-          <div className="col-span-12 md:col-span-8 px-6 md:px-12 pt-8 pb-12 border-r-0 md:border-r-2 border-[#000000]">
-            {/* Extreme type scale: 120px heading */}
-            <h1 className="text-[80px] md:text-[120px] lg:text-[160px] font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter">
-              SWISS
-            </h1>
-            <h2 className="text-[50px] md:text-[80px] lg:text-[100px] font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter -mt-2">
-              POSTER
-            </h2>
-
-            {/* Small body text - extreme contrast: 12px vs 120px */}
-            <div className="mt-8 max-w-md">
-              <p className="text-xs font-sans text-[#000000]/50 leading-relaxed uppercase tracking-wider">
-                Bold typography. Mathematical grid system. Asymmetric
-                composition. Extreme type scale contrast. No decoration.
-                International Typographic Style.
-              </p>
+              <stat.icon className={`w-12 h-12 mb-4 ${stat.bg === '#ffff00' ? 'text-black' : 'text-white'}`} />
+              <p className={`text-5xl font-black mb-2 ${stat.bg === '#ffff00' ? 'text-black' : 'text-white'}`}>{stat.value}</p>
+              <p className={`text-xs font-bold uppercase tracking-wider ${stat.bg === '#ffff00' ? 'text-black/60' : 'text-white/60'}`}>{stat.label}</p>
             </div>
+          ))}
+        </div>
+      </ShowcaseSection>
 
-            {/* Buttons - square, no shadows */}
-            <div className="flex gap-0 mt-10">
-              <button className="px-8 py-4 bg-[#000000] text-[#ffffff] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#000000] hover:bg-[#ff0000] hover:border-[#ff0000] transition-all duration-100 text-sm">
-                EXPLORE
-              </button>
-              <button className="px-8 py-4 bg-transparent text-[#000000] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#000000] border-l-0 hover:bg-[#000000] hover:text-[#ffffff] transition-all duration-100 text-sm">
-                LEARN
-              </button>
+      {/* Color Palette */}
+      <ShowcaseSection
+        title="PALETTE"
+        subtitle="Limited colors"
+        className="py-20 px-6"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-gray-500 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <ColorPaletteGrid colors={colors} className="max-w-5xl mx-auto" />
+      </ShowcaseSection>
+
+      {/* Typography */}
+      <ShowcaseSection
+        title="TYPE"
+        subtitle="Massive scale"
+        className="py-20 px-6 bg-[#ff0000] text-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-white/60 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="border-8 border-white p-12 bg-black">
+            <h1 className="text-9xl font-black leading-[0.9] tracking-tighter">BOLD</h1>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <div className="bg-black p-8">
+              <h2 className="text-5xl font-black text-white tracking-tighter">GRID</h2>
             </div>
-          </div>
-
-          {/* Right column - red color block with vertical text */}
-          <div className="hidden md:flex col-span-4 bg-[#ff0000] items-center justify-center min-h-[400px] relative">
-            <span className="font-sans font-black text-[#ffffff] text-sm uppercase tracking-[0.5em] [writing-mode:vertical-lr] rotate-180">
-              INTERNATIONAL STYLE
-            </span>
-            {/* Large faded number */}
-            <span className="absolute bottom-4 right-4 font-sans font-black text-[#ffffff]/10 text-[120px] leading-none">
-              24
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Color System - 3 colors only, grid aligned */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              COLOR
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              THREE COLORS ONLY
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-9 px-6 md:px-12 py-8">
-            <ColorPaletteGrid
-              colors={colors}
-              cardClassName="border-2 border-[#000000] bg-[#ffffff] rounded-none"
-              labelClassName="font-sans font-black text-sm text-[#000000] uppercase tracking-wider"
-              hexClassName="text-xs text-[#000000]/40 font-sans font-bold"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Typography Scale - unique element showing extreme contrast */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              TYPE
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              SCALE CONTRAST
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-9 px-6 md:px-12 py-8">
-            <div className="space-y-4">
-              <div className="flex items-baseline gap-4 border-b border-[#000000]/10 pb-4">
-                <span className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase w-16">
-                  160px
-                </span>
-                <span className="text-[60px] md:text-[80px] font-sans font-black text-[#000000] uppercase leading-none tracking-tighter truncate">
-                  Aa
-                </span>
-              </div>
-              <div className="flex items-baseline gap-4 border-b border-[#000000]/10 pb-4">
-                <span className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase w-16">
-                  48px
-                </span>
-                <span className="text-5xl font-sans font-black text-[#000000] uppercase leading-none tracking-tighter">
-                  Headline
-                </span>
-              </div>
-              <div className="flex items-baseline gap-4 border-b border-[#000000]/10 pb-4">
-                <span className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase w-16">
-                  24px
-                </span>
-                <span className="text-2xl font-sans font-black text-[#000000] uppercase leading-none">
-                  Subheading
-                </span>
-              </div>
-              <div className="flex items-baseline gap-4 border-b border-[#000000]/10 pb-4">
-                <span className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase w-16">
-                  14px
-                </span>
-                <span className="text-sm font-sans text-[#000000]/70">
-                  Body text for reading content at comfortable size
-                </span>
-              </div>
-              <div className="flex items-baseline gap-4">
-                <span className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase w-16">
-                  10px
-                </span>
-                <span className="text-[10px] font-sans font-bold text-[#000000]/40 uppercase tracking-widest">
-                  CAPTION / LABEL / METADATA
-                </span>
-              </div>
+            <div className="bg-[#0066ff] p-8">
+              <h2 className="text-5xl font-black text-white tracking-tighter">SYSTEM</h2>
             </div>
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Cards - Grid-aligned, border-based, no shadows */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              CARDS
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              GRID MODULES
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-9">
-            <div className="grid md:grid-cols-3 gap-0">
-              <div className="p-8 border-b-2 md:border-b-0 md:border-r-2 border-[#000000] hover:bg-[#ff0000] hover:text-[#ffffff] group transition-all duration-100">
-                <Grid3X3 className="w-8 h-8 text-[#000000] group-hover:text-[#ffffff] mb-6 transition-colors duration-100" />
-                <h3 className="text-2xl font-sans font-black text-[#000000] group-hover:text-[#ffffff] uppercase tracking-tighter mb-3 transition-colors duration-100">
-                  GRID
-                </h3>
-                <p className="text-sm text-[#000000]/50 group-hover:text-[#ffffff]/70 font-sans transition-colors duration-100">
-                  Mathematical precision in every layout decision
-                </p>
-              </div>
-
-              <div className="p-8 bg-[#000000] border-b-2 md:border-b-0 md:border-r-2 border-[#000000]">
-                <Type className="w-8 h-8 text-[#ffffff] mb-6" />
-                <h3 className="text-2xl font-sans font-black text-[#ffffff] uppercase tracking-tighter mb-3">
-                  TYPE
-                </h3>
-                <p className="text-sm text-[#ffffff]/50 font-sans">
-                  Typography as the primary visual element
-                </p>
-              </div>
-
-              <div className="p-8 hover:bg-[#000000] group transition-all duration-100">
-                <Square className="w-8 h-8 text-[#000000] group-hover:text-[#ffffff] mb-6 transition-colors duration-100" />
-                <h3 className="text-2xl font-sans font-black text-[#000000] group-hover:text-[#ffffff] uppercase tracking-tighter mb-3 transition-colors duration-100">
-                  BLOCK
-                </h3>
-                <p className="text-sm text-[#000000]/50 group-hover:text-[#ffffff]/70 font-sans transition-colors duration-100">
-                  Color blocks for structural emphasis
-                </p>
-              </div>
-            </div>
-          </div>
+      {/* Buttons */}
+      <ShowcaseSection
+        title="ACTIONS"
+        subtitle="Interactive"
+        className="py-20 px-6 bg-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-gray-500 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-5xl mx-auto flex flex-wrap gap-4 justify-center">
+          <button className="px-12 py-6 bg-black text-white font-black text-xl uppercase tracking-tighter hover:bg-[#ff0000] transition-colors">
+            PRIMARY
+          </button>
+          <button className="px-12 py-6 bg-[#ff0000] text-white font-black text-xl uppercase tracking-tighter hover:bg-black transition-colors">
+            ALERT
+          </button>
+          <button className="px-12 py-6 border-4 border-black text-black font-black text-xl uppercase tracking-tighter hover:bg-black hover:text-white transition-colors">
+            OUTLINE
+          </button>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Buttons - Inline with grid structure */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              BTNS
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              INTERACTION
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-9 px-6 md:px-12 py-8">
-            <div className="flex flex-wrap gap-0">
-              <button className="px-8 py-3 bg-[#000000] text-[#ffffff] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#000000] hover:bg-[#ff0000] hover:border-[#ff0000] transition-all duration-100 text-sm">
-                BLACK
-              </button>
-              <button className="px-8 py-3 bg-[#ff0000] text-[#ffffff] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#ff0000] border-l-0 hover:bg-[#000000] hover:border-[#000000] transition-all duration-100 text-sm">
-                RED
-              </button>
-              <button className="px-8 py-3 bg-transparent text-[#000000] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#000000] border-l-0 hover:bg-[#000000] hover:text-[#ffffff] transition-all duration-100 text-sm">
-                OUTLINE
-              </button>
+      {/* Cards */}
+      <ShowcaseSection
+        title="BLOCKS"
+        subtitle="Content grid"
+        className="py-20 px-6 bg-black text-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-white/60 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-1">
+          {[
+            { title: "01", subtitle: "FORM", desc: "Typography at massive scale", bg: "#ff0000" },
+            { title: "02", subtitle: "GRID", desc: "Strict alignment systems", bg: "#0066ff" },
+            { title: "03", subtitle: "COLOR", desc: "Limited bold palette", bg: "#ffff00" },
+          ].map((card, i) => (
+            <div key={i} className="p-8 border-4 border-white" style={{ backgroundColor: card.bg }}>
+              <p className={`text-8xl font-black mb-4 ${card.bg === '#ffff00' ? 'text-black' : 'text-white'}`}>{card.title}</p>
+              <h3 className={`text-3xl font-black mb-3 tracking-tighter ${card.bg === '#ffff00' ? 'text-black' : 'text-white'}`}>{card.subtitle}</h3>
+              <p className={card.bg === '#ffff00' ? 'text-black/70' : 'text-white/70'}>{card.desc}</p>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Form - Bottom-border inputs, minimal */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              FORM
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              INPUT FIELDS
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-6 px-6 md:px-12 py-8">
-            <div className="space-y-8">
-              <div>
-                <label className="block text-[10px] font-sans font-black text-[#000000] uppercase tracking-widest mb-3">
-                  NAME
-                </label>
-                <input
-                  type="text"
-                  placeholder="YOUR NAME"
-                  className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-[#000000] rounded-none text-[#000000] placeholder-[#000000]/20 font-sans font-bold text-lg focus:border-[#ff0000] focus:outline-none transition-all duration-100"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-sans font-black text-[#000000] uppercase tracking-widest mb-3">
-                  EMAIL
-                </label>
-                <input
-                  type="email"
-                  placeholder="YOUR EMAIL"
-                  className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-[#000000] rounded-none text-[#000000] placeholder-[#000000]/20 font-sans font-bold text-lg focus:border-[#ff0000] focus:outline-none transition-all duration-100"
-                />
-              </div>
-              <button className="px-10 py-3 bg-[#000000] text-[#ffffff] font-sans font-black uppercase tracking-widest rounded-none border-2 border-[#000000] hover:bg-[#ff0000] hover:border-[#ff0000] transition-all duration-100 text-sm">
-                SUBMIT
-              </button>
-            </div>
-          </div>
-          {/* Empty right column for asymmetry */}
-          <div className="hidden md:block col-span-3 md:border-l-2 border-[#000000]">
-            <div className="h-full flex items-center justify-center">
-              <AlignLeft className="w-8 h-8 text-[#000000]/10" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Grid demonstration - visible 12-col grid */}
-      <section className="relative z-10 border-b-2 border-[#000000]">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 md:col-span-3 px-6 md:px-12 py-8 md:border-r-2 border-[#000000]">
-            <h2 className="text-3xl md:text-4xl font-sans font-black text-[#000000] uppercase tracking-tighter leading-none">
-              GRID
-            </h2>
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest mt-2">
-              12-COLUMN SYSTEM
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-9 px-6 md:px-0 py-8">
-            <div className="grid grid-cols-9 gap-0">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-16 border-r border-[#000000]/10 flex items-end justify-center pb-1"
+      {/* Tabs */}
+      <ShowcaseSection
+        title="TABS"
+        subtitle="Navigation"
+        className="py-20 px-6"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-gray-500 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="border-4 border-black">
+            <div className="flex border-b-4 border-black">
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTab(index)}
+                  className={`flex-1 px-8 py-6 font-black text-xl uppercase tracking-tighter transition-colors ${
+                    activeTab === index
+                      ? "bg-black text-white"
+                      : "text-black hover:bg-gray-100"
+                  }`}
                 >
-                  <span className="text-[8px] font-sans font-bold text-[#000000]/20">
-                    {i + 4}
-                  </span>
-                </div>
+                  {tab}
+                </button>
               ))}
             </div>
-            <div className="grid grid-cols-9 gap-0 mt-2">
-              <div className="col-span-3 h-8 bg-[#000000]" />
-              <div className="col-span-2 h-8 bg-[#ff0000]" />
-              <div className="col-span-4 h-8 bg-[#000000]/5 border border-[#000000]/10" />
-            </div>
-            <div className="grid grid-cols-9 gap-0 mt-1">
-              <div className="col-span-5 h-8 bg-[#000000]/5 border border-[#000000]/10" />
-              <div className="col-span-4 h-8 bg-[#000000]" />
+            <div className="p-12 min-h-[200px] bg-white">
+              {activeTab === 0 && (
+                <div>
+                  <h4 className="text-4xl font-black mb-4 tracking-tighter">FORM FOLLOWS FUNCTION</h4>
+                  <p className="text-lg text-gray-700">Every element serves a purpose. No decoration for decoration's sake.</p>
+                </div>
+              )}
+              {activeTab === 1 && (
+                <div>
+                  <h4 className="text-4xl font-black mb-4 tracking-tighter">GRID STRUCTURE</h4>
+                  <p className="text-lg text-gray-700">Mathematical precision creates visual harmony and perfect alignment.</p>
+                </div>
+              )}
+              {activeTab === 2 && (
+                <div>
+                  <h4 className="text-4xl font-black mb-4 tracking-tighter">TYPOGRAPHIC HIERARCHY</h4>
+                  <p className="text-lg text-gray-700">Scale and weight create hierarchy without decorative elements.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Footer - minimal, grid-aligned */}
-      <footer className="relative z-10 py-6 px-6">
-        <div className="grid grid-cols-12">
-          <div className="col-span-6 md:col-span-3">
-            <p className="text-[10px] font-sans font-bold text-[#000000]/30 uppercase tracking-widest">
-              Swiss Poster
-            </p>
-          </div>
-          <div className="col-span-6 md:col-span-3 md:col-start-10 text-right">
-            <Link
-              href="/"
-              className="text-[10px] font-sans font-bold text-[#ff0000]/50 hover:text-[#ff0000] uppercase tracking-widest transition-colors duration-100"
-            >
-              StyleKit
-            </Link>
+      {/* Accordion */}
+      <ShowcaseSection
+        title="FAQ"
+        subtitle="Expandable"
+        className="py-20 px-6 bg-[#0066ff] text-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-white/60 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-4xl mx-auto space-y-1">
+          {accordionItems.map((item, index) => (
+            <div key={index} className="bg-white text-black border-4 border-black">
+              <button
+                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-gray-100 transition-colors"
+              >
+                <span className="font-black text-xl uppercase tracking-tighter">{item.title}</span>
+                {openAccordion === index ? (
+                  <ChevronUp className="w-8 h-8" />
+                ) : (
+                  <ChevronDown className="w-8 h-8" />
+                )}
+              </button>
+              {openAccordion === index && (
+                <div className="px-8 pb-8">
+                  <p className="text-lg leading-relaxed">{item.content}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Alerts */}
+      <ShowcaseSection
+        title="ALERTS"
+        subtitle="System messages"
+        className="py-20 px-6"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-gray-500 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-4xl mx-auto space-y-1">
+          {[
+            { icon: Check, label: "SUCCESS", desc: "Operation completed", bg: "#000000" },
+            { icon: AlertTriangle, label: "WARNING", desc: "Review required", bg: "#ffff00", text: "black" },
+            { icon: X, label: "ERROR", desc: "Action failed", bg: "#ff0000" },
+            { icon: Info, label: "INFO", desc: "New information", bg: "#0066ff" },
+          ].map((alert, i) => (
+            <div key={i} className="flex items-center gap-6 p-6 border-4 border-black" style={{ backgroundColor: alert.bg }}>
+              <alert.icon className={`w-12 h-12 ${alert.text === 'black' ? 'text-black' : 'text-white'}`} />
+              <div>
+                <p className={`font-black text-2xl uppercase tracking-tighter ${alert.text === 'black' ? 'text-black' : 'text-white'}`}>{alert.label}</p>
+                <p className={`text-lg ${alert.text === 'black' ? 'text-black/70' : 'text-white/70'}`}>{alert.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Toggle */}
+      <ShowcaseSection
+        title="TOGGLES"
+        subtitle="Controls"
+        className="py-20 px-6 bg-black text-white"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-white/60 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="border-4 border-white p-12 space-y-8">
+            {[
+              { label: "GRID SYSTEM", desc: "Enable layout grid", color: "#ff0000" },
+              { label: "HIGH CONTRAST", desc: "Maximum readability", color: "#0066ff" },
+              { label: "BOLD TYPE", desc: "Heavy weight fonts", color: "#ffff00" },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center justify-between py-6 border-b-2 border-white/20 last:border-b-0">
+                <div>
+                  <p className="font-black text-2xl uppercase tracking-tighter">{item.label}</p>
+                  <p className="text-white/60 mt-1">{item.desc}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const newStates = [...toggleStates];
+                    newStates[index] = !newStates[index];
+                    setToggleStates(newStates);
+                  }}
+                  className="relative w-20 h-10 border-4 border-white transition-all"
+                  style={{ backgroundColor: toggleStates[index] ? item.color : '#333' }}
+                >
+                  <span
+                    className="absolute top-0 w-8 h-8 bg-white transition-all"
+                    style={{ left: toggleStates[index] ? 'calc(100% - 32px)' : '0' }}
+                  />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
+      </ShowcaseSection>
+
+      {/* Progress */}
+      <ShowcaseSection
+        title="PROGRESS"
+        subtitle="Loading states"
+        className="py-20 px-6"
+        titleClassName="text-7xl font-black mb-4 text-center tracking-tighter"
+        subtitleClassName="text-gray-500 mb-16 text-center uppercase tracking-[0.3em]"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="border-4 border-black p-12 space-y-12">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="font-black text-3xl uppercase tracking-tighter">LOADING</p>
+                <p className="text-2xl font-black">{progress}%</p>
+              </div>
+              <div className="h-8 bg-gray-200 border-4 border-black">
+                <div
+                  className="h-full bg-black transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <p className="font-black text-3xl uppercase tracking-tighter mb-4">STAGES</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[100, 100, progress, 0].map((val, i) => (
+                  <div key={i}>
+                    <div className="h-6 bg-gray-200 border-2 border-black">
+                      <div
+                        className="h-full transition-all"
+                        style={{ 
+                          width: `${val}%`,
+                          backgroundColor: val === 100 ? '#000000' : val > 0 ? '#ff0000' : 'transparent'
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm font-bold mt-2 text-center">{i + 1}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-4 pt-8 border-t-4 border-black">
+              <button
+                onClick={() => setProgress(Math.max(0, progress - 10))}
+                className="px-8 py-4 border-4 border-black text-black font-black uppercase hover:bg-black hover:text-white transition-colors"
+              >
+                LESS
+              </button>
+              <button
+                onClick={() => setProgress(Math.min(100, progress + 10))}
+                className="px-8 py-4 bg-black text-white font-black uppercase border-4 border-black hover:bg-[#ff0000] transition-colors"
+              >
+                MORE
+              </button>
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Footer */}
+      <footer className="border-t-4 border-black py-16 px-6 text-center">
+        <p className="text-xl font-black uppercase tracking-tighter">
+          SWISS POSTER STYLE © 2026
+        </p>
       </footer>
     </div>
   );

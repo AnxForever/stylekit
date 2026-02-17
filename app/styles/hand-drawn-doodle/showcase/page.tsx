@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Hand-Drawn Doodle Showcase - StyleKit",
-  description: "Live demonstration of Hand-Drawn Doodle style with sketchy borders, marker colors, and hand-crafted charm.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function HandDrawnDoodleShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Hand-Drawn Doodle Style Showcase",
+  description: "Playful hand-drawn illustrations and sketchy doodles showcase",
+};

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Home, Settings, User, Bell, Search, Menu } from "lucide-react";
+import { 
+  ArrowLeft, Home, Settings, User, Bell, Search, Menu,
+  ChevronDown, ChevronUp, Check, X, AlertTriangle, Info,
+  Users, TrendingUp, Eye, MessageCircle, Folder, Mail, Calendar
+} from "lucide-react";
 import {
   ShowcaseHero,
   ShowcaseSection,
@@ -20,11 +24,28 @@ const colors: ColorItem[] = [
 
 export default function ShowcaseContent() {
   const [activeNav, setActiveNav] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(72);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
   const navItems = [
     { icon: Home, label: "Home" },
     { icon: Search, label: "Search" },
     { icon: Bell, label: "Notifications" },
     { icon: Settings, label: "Settings" },
+  ];
+
+  const tabs = [
+    { label: "Files", icon: Folder },
+    { label: "Mail", icon: Mail },
+    { label: "Calendar", icon: Calendar },
+  ];
+
+  const accordionItems = [
+    { title: "What is Fluent Design?", content: "Fluent Design System is Microsoft's design language that emphasizes light, depth, motion, material, and scale to create intuitive and harmonious experiences across platforms." },
+    { title: "Acrylic Material", content: "Acrylic is a translucent material that creates a sense of depth through blur and tint effects, allowing background content to show through." },
+    { title: "Reveal Highlight", content: "Reveal is a lighting effect that highlights interactive elements when users move their cursor near them, creating a sense of connection." },
   ];
 
   return (
@@ -88,6 +109,35 @@ export default function ShowcaseContent() {
             labelClassName="font-semibold text-sm text-gray-900"
             hexClassName="text-xs text-gray-500 font-mono"
           />
+        </div>
+      </ShowcaseSection>
+
+      {/* Stats */}
+      <ShowcaseSection
+        title="Statistics"
+        subtitle="Data at a glance"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { icon: Users, label: "Active Users", value: "12,847" },
+            { icon: TrendingUp, label: "Growth", value: "+24%" },
+            { icon: Eye, label: "Page Views", value: "3.2M" },
+            { icon: MessageCircle, label: "Messages", value: "8,421" },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="p-5 bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_16px_32px_rgba(0,0,0,0.12)] transition-all duration-300"
+            >
+              <div className="w-10 h-10 bg-[#0078d4] rounded-lg flex items-center justify-center mb-3">
+                <stat.icon className="w-5 h-5 text-white" />
+              </div>
+              <p className="text-2xl font-semibold text-gray-900 mb-1">{stat.value}</p>
+              <p className="text-sm text-gray-500">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </ShowcaseSection>
 
@@ -181,6 +231,238 @@ export default function ShowcaseContent() {
                 </span>
               </button>
             ))}
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Tabs */}
+      <ShowcaseSection
+        title="Tabs"
+        subtitle="Pivot control"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]">
+            {/* Tab Headers */}
+            <div className="flex border-b border-gray-200">
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTab(index)}
+                  className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all duration-100 border-b-2 -mb-px ${
+                    activeTab === index
+                      ? "text-[#0078d4] border-[#0078d4]"
+                      : "text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50"
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            {/* Tab Content */}
+            <div className="p-6 min-h-[120px]">
+              {activeTab === 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Recent Files</h4>
+                  <p className="text-gray-600 text-sm">You have 24 files in your OneDrive. 3 files were modified today.</p>
+                </div>
+              )}
+              {activeTab === 1 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Inbox</h4>
+                  <p className="text-gray-600 text-sm">You have 12 unread messages. 5 marked as important.</p>
+                </div>
+              )}
+              {activeTab === 2 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Upcoming Events</h4>
+                  <p className="text-gray-600 text-sm">You have 3 meetings scheduled for today.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Accordion */}
+      <ShowcaseSection
+        title="Accordion"
+        subtitle="Expandable sections"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] overflow-hidden">
+            {accordionItems.map((item, index) => (
+              <div key={index} className={index !== accordionItems.length - 1 ? "border-b border-gray-200" : ""}>
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                  className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors duration-100"
+                >
+                  <span className="font-medium text-gray-900">{item.title}</span>
+                  <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${openAccordion === index ? "rotate-180" : ""}`} />
+                </button>
+                {openAccordion === index && (
+                  <div className="px-6 pb-4">
+                    <p className="text-gray-600 text-sm leading-relaxed">{item.content}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Alerts */}
+      <ShowcaseSection
+        title="Alerts"
+        subtitle="Message bar"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-3xl mx-auto space-y-3">
+          {/* Success */}
+          <div className="flex items-center gap-3 p-4 bg-[#dff6dd] rounded-sm border-l-4 border-[#107c10]">
+            <Check className="w-5 h-5 text-[#107c10]" />
+            <div>
+              <p className="font-medium text-[#107c10]">Success</p>
+              <p className="text-sm text-[#107c10]/80">Your changes have been saved successfully.</p>
+            </div>
+          </div>
+
+          {/* Warning */}
+          <div className="flex items-center gap-3 p-4 bg-[#fff4ce] rounded-sm border-l-4 border-[#ffb900]">
+            <AlertTriangle className="w-5 h-5 text-[#8a6d00]" />
+            <div>
+              <p className="font-medium text-[#8a6d00]">Warning</p>
+              <p className="text-sm text-[#8a6d00]/80">Your session will expire in 5 minutes.</p>
+            </div>
+          </div>
+
+          {/* Error */}
+          <div className="flex items-center gap-3 p-4 bg-[#fde7e9] rounded-sm border-l-4 border-[#e81123]">
+            <X className="w-5 h-5 text-[#a80000]" />
+            <div>
+              <p className="font-medium text-[#a80000]">Error</p>
+              <p className="text-sm text-[#a80000]/80">Failed to save. Please try again.</p>
+            </div>
+          </div>
+
+          {/* Info */}
+          <div className="flex items-center gap-3 p-4 bg-[#cce4f6] rounded-sm border-l-4 border-[#0078d4]">
+            <Info className="w-5 h-5 text-[#004578]" />
+            <div>
+              <p className="font-medium text-[#004578]">Information</p>
+              <p className="text-sm text-[#004578]/80">A new version is available.</p>
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Toggle */}
+      <ShowcaseSection
+        title="Toggle"
+        subtitle="Switch control"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-6 bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]">
+            {[
+              { label: "Dark mode", desc: "Use dark theme throughout the system" },
+              { label: "Notifications", desc: "Receive push notifications" },
+              { label: "Auto-update", desc: "Keep apps updated automatically" },
+            ].map((item, index) => (
+              <div key={index} className={`flex items-center justify-between py-3 ${index !== 2 ? "border-b border-gray-200" : ""}`}>
+                <div>
+                  <p className="font-medium text-gray-900">{item.label}</p>
+                  <p className="text-sm text-gray-500">{item.desc}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const newStates = [...toggleStates];
+                    newStates[index] = !newStates[index];
+                    setToggleStates(newStates);
+                  }}
+                  className={`relative w-11 h-5 rounded-full transition-colors duration-100 ${
+                    toggleStates[index] ? "bg-[#0078d4]" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-100 ${
+                      toggleStates[index] ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Progress */}
+      <ShowcaseSection
+        title="Progress"
+        subtitle="Progress indicator"
+        className="relative z-10 py-16 px-6"
+        titleClassName="text-3xl font-semibold text-white mb-4 text-center"
+        subtitleClassName="text-white/60 mb-10 text-center"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-6 bg-white/70 backdrop-blur-xl rounded-lg border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] space-y-6">
+            {/* Determinate Progress */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-medium text-gray-900">Downloading updates...</p>
+                <p className="text-sm text-gray-500">{progress}%</p>
+              </div>
+              <div className="h-1 bg-gray-200 rounded-full">
+                <div
+                  className="h-full bg-[#0078d4] rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Segmented Progress */}
+            <div>
+              <p className="font-medium text-gray-900 mb-2">Installation Steps</p>
+              <div className="grid grid-cols-4 gap-1">
+                {[100, 100, progress, 0].map((value, index) => (
+                  <div key={index}>
+                    <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${value === 100 ? "bg-[#107c10]" : value > 0 ? "bg-[#0078d4]" : ""}`}
+                        style={{ width: `${value}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Step {index + 1}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={() => setProgress(Math.max(0, progress - 10))}
+                className="px-4 py-2 bg-white text-gray-900 font-medium rounded-sm border border-gray-300 hover:bg-gray-100 transition-colors duration-100"
+              >
+                Decrease
+              </button>
+              <button
+                onClick={() => setProgress(Math.min(100, progress + 10))}
+                className="px-4 py-2 bg-[#0078d4] text-white font-medium rounded-sm hover:bg-[#106ebe] transition-colors duration-100"
+              >
+                Increase
+              </button>
+            </div>
           </div>
         </div>
       </ShowcaseSection>

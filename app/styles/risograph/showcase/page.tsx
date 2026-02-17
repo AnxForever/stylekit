@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Risograph Showcase - StyleKit",
-  description: "Live demonstration of Risograph print aesthetic with overprint offsets, halftone dots, and limited color palette.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function RisographShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Risograph Print Style Showcase",
+  description: "Dual-color overprint, halftone dots and grainy print textures",
+};

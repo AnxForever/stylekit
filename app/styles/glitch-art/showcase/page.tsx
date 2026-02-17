@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Glitch Art Showcase - StyleKit",
-  description: "Live demonstration of Glitch Art digital corruption aesthetic with RGB separation, scan lines, and pixel displacement.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function GlitchArtShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Glitch Art Style Showcase",
+  description: "Digital corruption and RGB distortion effects showcase",
+};

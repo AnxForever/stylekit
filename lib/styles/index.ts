@@ -187,6 +187,10 @@ import { warmDashboard } from "./warm-dashboard";
 import { neonGradient } from "./neon-gradient";
 // New styles - Batch 8
 import { liquidGlass } from "./liquid-glass";
+// New styles - from style-optimization
+import { scandinavian } from "./scandinavian";
+import { celShading } from "./cel-shading";
+import { wabiSabi } from "./wabi-sabi";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -285,6 +289,10 @@ export const styles: DesignStyle[] = [
   neonGradient,
   // New styles - Batch 8
   liquidGlass,
+  // New styles - from style-optimization
+  scandinavian,
+  celShading,
+  wabiSabi,
 ];
 
 // 根据 slug 获取风格
