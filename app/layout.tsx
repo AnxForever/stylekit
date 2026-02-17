@@ -4,6 +4,7 @@ import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { RegisterSW } from "@/components/pwa/register-sw";
+import { serializeJsonLd } from "@/lib/security/json-ld";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
@@ -101,7 +102,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: serializeJsonLd({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "StyleKit",
