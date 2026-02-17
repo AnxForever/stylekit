@@ -18,6 +18,7 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   signInWithGitHub: () => Promise<void>;
+  signInWithLinuxDo: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -83,6 +84,10 @@ export function useUser(): AuthState {
     });
   }, []);
 
+  const signInWithLinuxDo = useCallback(() => {
+    window.location.href = "/api/auth/linuxdo";
+  }, []);
+
   const signOut = useCallback(async () => {
     const client = getAuthClient();
     if (!client) return;
@@ -91,5 +96,5 @@ export function useUser(): AuthState {
     setUser(null);
   }, []);
 
-  return { user, loading, signInWithGitHub, signOut };
+  return { user, loading, signInWithGitHub, signInWithLinuxDo, signOut };
 }
