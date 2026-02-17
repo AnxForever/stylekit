@@ -1,0 +1,125 @@
+/**
+ * Linux DO OAuth callback handler.
+ *
+ * Receives the authorization code from Linux DO, exchanges it for
+ * user info, then creates or updates a Supabase user and signs them in.
+ */
+
+import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { NextResponse, type NextRequest } from "next/server";
+import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
+
+export async function GET(request: NextRequest) {
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get("code");
+  const next = searchParams.get("next") ?? "/";
+
+  if (!code) {
+    return NextResponse.redirect(`${origin}${next}`);
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey || !serviceRoleKey) {
+    return NextResponse.redirect(`${origin}${next}`);
+  }
+
+  try {
+    // 1. Exchange code for access token
+    const redirectUri = `${origin}/api/auth/linuxdo/callback?next=${encodeURIComponent(next)}`;
+    const tokenData = await exchangeCodeForToken(code, redirectUri);
+
+    // 2. Get Linux DO user info
+    const ldUser = await getLinuxDoUser(tokenData.access_token);
+
+    // 3. Create or update Supabase user via admin API.
+    //    Try create first; if the email already exists, update instead.
+    const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Deterministic email for LinuxDo users
+    const email = `linuxdo_${ldUser.id}@connect.linux.do`;
+
+    const userMetadata = {
+      user_name: ldUser.username,
+      full_name: ldUser.name || ldUser.username,
+      avatar_url: ldUser.avatar_url,
+      provider: "linuxdo",
+      linuxdo_id: ldUser.id,
+      linuxdo_trust_level: ldUser.trust_level,
+    };
+
+    const { error: createError } =
+      await adminClient.auth.admin.createUser({
+        email,
+        email_confirm: true,
+        user_metadata: userMetadata,
+      });
+
+    if (createError) {
+      // User likely already exists — find and update metadata
+      const { data: listData } = await adminClient.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+      });
+
+      const existing = listData?.users?.find((u) => u.email === email);
+      if (existing) {
+        await adminClient.auth.admin.updateUserById(existing.id, {
+          user_metadata: userMetadata,
+        });
+      } else {
+        throw new Error(createError.message);
+      }
+    }
+
+    // 4. Generate a magic link to sign in as this user
+    const { data: linkData, error: linkError } =
+      await adminClient.auth.admin.generateLink({
+        type: "magiclink",
+        email,
+      });
+
+    if (linkError || !linkData.properties?.hashed_token) {
+      throw new Error(
+        linkError?.message ?? "Failed to generate sign-in link",
+      );
+    }
+
+    // 5. Use the hashed token to verify OTP and set session cookies
+    const cookieStore = await cookies();
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          for (const { name, value, options } of cookiesToSet) {
+            cookieStore.set(name, value, options);
+          }
+        },
+      },
+    });
+
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      type: "magiclink",
+      token_hash: linkData.properties.hashed_token,
+    });
+
+    if (verifyError) {
+      throw new Error(`OTP verification failed: ${verifyError.message}`);
+    }
+
+    return NextResponse.redirect(`${origin}${next}`);
+  } catch {
+    // Redirect with error indicator (avoid exposing details in URL)
+    return NextResponse.redirect(
+      `${origin}${next}${next.includes("?") ? "&" : "?"}auth_error=linuxdo`,
+    );
+  }
+}
