@@ -88,6 +88,12 @@ ADMIN_USER_IDS=uuid-1,uuid-2
 
 # Optional token for server-to-server admin API calls
 ADMIN_API_TOKEN=replace-with-a-long-random-secret
+
+# Optional local audit retention window (days, default 90)
+ADMIN_AUDIT_RETENTION_DAYS=90
+
+# Optional CSV export cap for admin audit download (rows, default 5000)
+ADMIN_AUDIT_EXPORT_MAX_ROWS=5000
 ```
 
 ## Styles
@@ -166,6 +172,15 @@ GET    /api/submit/list                   # Review queue
 GET    /api/submit/{id}                   # Submission detail
 POST   /api/submit/{id}/review            # Approve/reject submission
 ```
+
+Audit query params:
+- `limit` (1-100), `offset` (>=0)
+- `action` (`submission.approve` / `submission.reject`)
+- `days` (e.g. `1`, `7`, `30`)
+- `search` (slug / actor / target / ID keyword)
+- `format=csv` (export filtered logs)
+  - CSV cells are formula-safe escaped
+  - Export row count is capped by `ADMIN_AUDIT_EXPORT_MAX_ROWS`
 
 For server-to-server admin calls, pass:
 
