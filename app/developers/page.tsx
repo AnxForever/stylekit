@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import {
+  ArrowRight,
   Check,
   Code2,
   Copy,
@@ -17,6 +18,7 @@ import {
   Terminal,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 
 type Tab = "cli" | "mcp" | "api";
 
@@ -242,6 +244,19 @@ export default function DevelopersPage() {
                 </div>
               ))}
             </div>
+            <Link
+              href="/developers/api"
+              className="mt-6 flex items-center justify-between rounded-lg border border-border p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+            >
+              <div className="flex items-center gap-3">
+                <Code2 className="h-5 w-5 text-muted" />
+                <div>
+                  <p className="font-medium">{t("developers.api.title")}</p>
+                  <p className="text-sm text-muted">Full REST API reference with 36+ endpoints, examples, and interactive testing</p>
+                </div>
+              </div>
+              <ArrowRight className="h-5 w-5 text-muted" />
+            </Link>
           </div>
         </section>
 
