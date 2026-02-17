@@ -6,7 +6,7 @@ import { styles } from "@/lib/styles";
 
 export const metadata: Metadata = {
   title: "模板生成器 - StyleKit",
-  description: "三步完成：选择风格、选择模板、编辑内容并下载代码。",
+  description: "3 步完成：选风格、选模板、编辑内容并下载代码。",
 };
 
 export default function GeneratePage() {
