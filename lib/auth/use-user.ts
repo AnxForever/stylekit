@@ -36,9 +36,9 @@ export function useUser(): AuthState {
     const client = getAuthClient();
     if (!client) return;
 
-    // Get initial session
-    client.auth.getUser().then(({ data: { user: u } }) => {
-      setUser(u);
+    // Fast path: read session from local storage/cookies (no network call)
+    client.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
