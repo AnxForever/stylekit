@@ -1,11 +1,22 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const RATING_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATING_RATE_LIMIT_MAX_REQUESTS = 80;
 
 const rateSchema = z.object({
   rating: z.number().int().min(1).max(5),
-  sessionId: z.string().min(1),
+  sessionId: z.string().min(1).max(128),
 });
+
+const slugSchema = z.string().regex(SLUG_RE);
 
 export async function POST(
   request: Request,
@@ -13,6 +24,27 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
+    const slugParsed = slugSchema.safeParse(slug);
+    if (!slugParsed.success) {
+      return NextResponse.json(
+        { success: false, error: "Invalid style slug" },
+        { status: 400 }
+      );
+    }
+
+    const rateLimit = checkRateLimit({
+      namespace: "api:style-ratings",
+      key: getRequestClientKey(request),
+      limit: RATING_RATE_LIMIT_MAX_REQUESTS,
+      windowMs: RATING_RATE_LIMIT_WINDOW_MS,
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, error: "Too many rating requests. Please try again later." },
+        { status: 429, headers: createRateLimitHeaders(rateLimit) }
+      );
+    }
+
     const body = await request.json();
     const parsed = rateSchema.safeParse(body);
 
@@ -44,7 +76,7 @@ export async function POST(
       .from("style_ratings")
       .upsert(
         {
-          style_slug: slug,
+          style_slug: slugParsed.data,
           rating: parsed.data.rating,
           session_id: parsed.data.sessionId,
           ip_address: ip,
@@ -63,7 +95,7 @@ export async function POST(
     const { data: summary } = await sb
       .from("style_rating_summary")
       .select("*")
-      .eq("style_slug", slug)
+      .eq("style_slug", slugParsed.data)
       .single();
 
     return NextResponse.json({
@@ -84,6 +116,13 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const slugParsed = slugSchema.safeParse(slug);
+  if (!slugParsed.success) {
+    return NextResponse.json(
+      { averageRating: 0, totalRatings: 0, error: "Invalid style slug" },
+      { status: 400 }
+    );
+  }
 
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ averageRating: 0, totalRatings: 0 });
@@ -99,7 +138,7 @@ export async function GET(
   const { data } = await sb
     .from("style_rating_summary")
     .select("*")
-    .eq("style_slug", slug)
+    .eq("style_slug", slugParsed.data)
     .single();
 
   return NextResponse.json({
