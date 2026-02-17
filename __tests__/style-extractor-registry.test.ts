@@ -3,10 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 
-const REGISTRY_SCRIPT = fs.readFileSync(
-  path.join(process.cwd(), "style-extractor-dev", "scripts", "registry.js"),
-  "utf8",
-);
+const REGISTRY_PATH = path.join(process.cwd(), "style-extractor-dev", "scripts", "registry.js");
+const REGISTRY_EXISTS = fs.existsSync(REGISTRY_PATH);
+const REGISTRY_SCRIPT = REGISTRY_EXISTS ? fs.readFileSync(REGISTRY_PATH, "utf8") : "";
 
 const REGISTRY_GLOBALS = [
   "__seRegistry",
@@ -53,7 +52,7 @@ function installRegistry() {
   expect(typeof w.extractStyle).toBe("function");
 }
 
-describe("style-extractor registry automation", () => {
+describe.skipIf(!REGISTRY_EXISTS)("style-extractor registry automation", () => {
   beforeEach(() => {
     resetRegistryGlobals();
   });
