@@ -1,33 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Layers } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-
-interface Combination {
-  pair: string[];
-  count: number;
-}
+import { usePopularCombos } from "@/lib/swr";
 
 export function PopularCombos() {
   const { t } = useI18n();
-  const [combos, setCombos] = useState<Combination[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = usePopularCombos();
+  const combos = data?.combinations?.slice(0, 5) ?? [];
 
-  useEffect(() => {
-    fetch("/api/analytics?combinations=true")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.combinations && data.combinations.length > 0) {
-          setCombos(data.combinations.slice(0, 5));
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  if (loading || combos.length === 0) {
+  if (isLoading || combos.length === 0) {
     return null;
   }
 
