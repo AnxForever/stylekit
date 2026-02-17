@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { importExtractorTheme } from "@/lib/migration/extractor-importer";
 import { findClosestStyles } from "@/lib/styles/style-diff";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/match-style
@@ -12,6 +13,14 @@ import { findClosestStyles } from "@/lib/styles/style-diff";
  * Returns: { matches: StyleDiffResult[], importResult: MigrationResult }
  */
 export async function POST(request: NextRequest) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { tokens } = body;

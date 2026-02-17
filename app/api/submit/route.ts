@@ -14,12 +14,24 @@ import {
   createRateLimitHeaders,
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 15;
 
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: originCheck.error,
+      },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   const rateLimit = checkRateLimit({
     namespace: "api:submit",
     key: getRequestClientKey(request),

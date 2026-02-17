@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -10,6 +11,14 @@ const mergeSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { success: false, error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   const user = await getServerUser();
   if (!user) {
     return NextResponse.json(

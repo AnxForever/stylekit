@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { lintCode, getFixSuggestions } from "@/lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "@/lib/styles/lint-rules";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/lint
@@ -10,6 +11,14 @@ import { getStyleLintRules, getStylesWithLintRules } from "@/lib/styles/lint-rul
  * Returns: LintResult with issues and fix suggestions
  */
 export async function POST(request: NextRequest) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { code, style } = body;
