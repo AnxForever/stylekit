@@ -38,13 +38,7 @@ export function TrendingStyles({ styles }: TrendingStylesProps) {
       });
   }, []);
 
-  if (loading) {
-    return null;
-  }
-
-  const styleMap = new Map(styles.map((s) => [s.slug, s]));
-
-  // Stable fallback selection — pick evenly spaced styles instead of random shuffle
+  // Stable fallback selection — pick evenly spaced styles
   const fallbackStyles = useMemo(() => {
     if (!useFallback || styles.length === 0) return [];
     const count = Math.min(8, styles.length);
@@ -55,6 +49,12 @@ export function TrendingStyles({ styles }: TrendingStylesProps) {
     }
     return result;
   }, [useFallback, styles]);
+
+  if (loading) {
+    return null;
+  }
+
+  const styleMap = new Map(styles.map((s) => [s.slug, s]));
 
   // Fallback: show a curated selection when analytics data is unavailable
   if (useFallback && fallbackStyles.length > 0) {
