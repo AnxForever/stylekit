@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CodeBlock } from "./code-block";
 import type { ComponentTemplate } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
+import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
@@ -28,6 +29,12 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
     return labelMap[key] || components[key].name;
   };
 
+  const previewHtml = useMemo(() => {
+    if (!activeComponent) return "";
+    return sanitizePreviewHtml(
+      activeComponent.preview || generatePreviewHTML(activeComponent.code)
+    );
+  }, [activeComponent]);
   if (!activeComponent) return null;
 
   return (
@@ -61,7 +68,7 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
       <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
         <div
           dangerouslySetInnerHTML={{
-            __html: activeComponent.preview || generatePreviewHTML(activeComponent.code),
+            __html: previewHtml,
           }}
         />
       </div>
