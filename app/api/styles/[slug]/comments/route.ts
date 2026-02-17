@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
+import { getServerUser } from "@/lib/auth/supabase-server";
 import {
   checkRateLimit,
   createRateLimitHeaders,
@@ -14,7 +15,7 @@ const COMMENTS_RATE_LIMIT_MAX_REQUESTS = 40;
 const commentSchema = z.object({
   content: z.string().min(1).max(280),
   authorName: z.string().min(1).max(50).default("Anonymous"),
-  sessionId: z.string().min(1).max(128),
+  sessionId: z.string().min(1).max(128).optional(),
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
@@ -72,14 +73,39 @@ export async function POST(
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
-    // Rate limit: max 5 comments per session per style per day
+    // Detect authenticated user
+    const user = await getServerUser();
+    const userId = user?.id ?? null;
+    const userMeta = user?.user_metadata;
+    const authorName = userId
+      ? (userMeta?.user_name ?? userMeta?.full_name ?? "User")
+      : parsed.data.authorName;
+    const avatarUrl = userId ? (userMeta?.avatar_url ?? null) : null;
+    const sessionId = userId ? null : (parsed.data.sessionId ?? null);
+
+    // Anonymous comments require sessionId
+    if (!userId && !sessionId) {
+      return NextResponse.json(
+        { success: false, error: "sessionId is required for anonymous comments" },
+        { status: 400 }
+      );
+    }
+
+    // Rate limit: max 5 comments per identity per style per day
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await sb
+    let countQuery = sb
       .from("style_comments")
       .select("*", { count: "exact", head: true })
       .eq("style_slug", slugParsed.data)
-      .eq("session_id", parsed.data.sessionId)
       .gte("created_at", oneDayAgo);
+
+    if (userId) {
+      countQuery = countQuery.eq("user_id", userId);
+    } else {
+      countQuery = countQuery.eq("session_id", sessionId!);
+    }
+
+    const { count } = await countQuery;
 
     if ((count ?? 0) >= 5) {
       return NextResponse.json(
@@ -93,11 +119,13 @@ export async function POST(
       .insert({
         style_slug: slugParsed.data,
         content: parsed.data.content,
-        author_name: parsed.data.authorName,
-        session_id: parsed.data.sessionId,
+        author_name: authorName,
+        session_id: sessionId,
+        user_id: userId,
+        avatar_url: avatarUrl,
         ip_address: ip,
       })
-      .select("id, content, author_name, created_at")
+      .select("id, content, author_name, avatar_url, user_id, created_at")
       .single();
 
     if (error) {
@@ -134,8 +162,12 @@ export async function GET(
   }
 
   const { searchParams } = new URL(request.url);
-  const limit = Math.min(parseInt(searchParams.get("limit") ?? "20", 10), 50);
-  const offset = parseInt(searchParams.get("offset") ?? "0", 10);
+  const limitParam = Number.parseInt(searchParams.get("limit") ?? "20", 10);
+  const offsetParam = Number.parseInt(searchParams.get("offset") ?? "0", 10);
+  const limit = Number.isFinite(limitParam)
+    ? Math.min(Math.max(limitParam, 1), 50)
+    : 20;
+  const offset = Number.isFinite(offsetParam) ? Math.max(offsetParam, 0) : 0;
 
   const { createClient } = await import("@supabase/supabase-js");
   const sb = createClient(
@@ -146,7 +178,7 @@ export async function GET(
 
   const { data, count } = await sb
     .from("style_comments")
-    .select("id, content, author_name, created_at", { count: "exact" })
+    .select("id, content, author_name, avatar_url, user_id, created_at", { count: "exact" })
     .eq("style_slug", slugParsed.data)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);

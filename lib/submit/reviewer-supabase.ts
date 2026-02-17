@@ -67,7 +67,9 @@ export async function createSubmissionSupabase(
   formData: Record<string, unknown>,
   tokens: Record<string, unknown>,
   designStyle: Record<string, unknown>,
-  ipAddress?: string | null
+  ipAddress?: string | null,
+  userId?: string | null,
+  authorName?: string | null
 ): Promise<{ id: string; slug: string }> {
   const sb = getSupabaseAdmin();
   if (!sb) throw new Error("Supabase not configured");
@@ -79,6 +81,8 @@ export async function createSubmissionSupabase(
       form_data: { ...formData, tokens, designStyle },
       status: "pending",
       ip_address: ipAddress,
+      user_id: userId ?? null,
+      author_name: authorName ?? null,
     })
     .select("id, slug")
     .single();
@@ -140,6 +144,8 @@ interface DbRow {
   review_note: string | null;
   submitted_at: string;
   reviewed_at: string | null;
+  user_id: string | null;
+  author_name: string | null;
 }
 
 function toSubmissionRecord(row: DbRow): SubmissionRecord {
@@ -151,6 +157,8 @@ function toSubmissionRecord(row: DbRow): SubmissionRecord {
     status: row.status as SubmissionRecord["status"],
     reviewedAt: row.reviewed_at ?? undefined,
     reviewNote: row.review_note ?? undefined,
+    userId: row.user_id ?? undefined,
+    authorName: row.author_name ?? undefined,
     formData,
     tokens: (formData.tokens as Record<string, unknown>) ?? {},
     designStyle: (formData.designStyle as Record<string, unknown>) ?? {},

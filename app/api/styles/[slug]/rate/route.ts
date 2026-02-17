@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
+import { getServerUser } from "@/lib/auth/supabase-server";
 import {
   checkRateLimit,
   createRateLimitHeaders,
@@ -13,7 +14,6 @@ const RATING_RATE_LIMIT_MAX_REQUESTS = 80;
 
 const rateSchema = z.object({
   rating: z.number().int().min(1).max(5),
-  sessionId: z.string().min(1).max(128),
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
@@ -29,6 +29,15 @@ export async function POST(
       return NextResponse.json(
         { success: false, error: "Invalid style slug" },
         { status: 400 }
+      );
+    }
+
+    // Ratings require authentication
+    const user = await getServerUser();
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Sign in to rate styles" },
+        { status: 401 }
       );
     }
 
@@ -50,7 +59,7 @@ export async function POST(
 
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, error: "Invalid rating. Must be 1-5 with sessionId." },
+        { success: false, error: "Invalid rating. Must be 1-5." },
         { status: 400 }
       );
     }
@@ -71,24 +80,45 @@ export async function POST(
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
-    // Upsert: one rating per session per style
-    const { error } = await sb
+    // Check if user already rated this style
+    const { data: existing } = await sb
       .from("style_ratings")
-      .upsert(
-        {
+      .select("id")
+      .eq("style_slug", slugParsed.data)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (existing) {
+      // Update existing rating
+      const { error } = await sb
+        .from("style_ratings")
+        .update({ rating: parsed.data.rating, ip_address: ip })
+        .eq("id", existing.id);
+
+      if (error) {
+        return NextResponse.json(
+          { success: false, error: "Failed to update rating" },
+          { status: 500 }
+        );
+      }
+    } else {
+      // Insert new rating
+      const { error } = await sb
+        .from("style_ratings")
+        .insert({
           style_slug: slugParsed.data,
           rating: parsed.data.rating,
-          session_id: parsed.data.sessionId,
+          session_id: null,
+          user_id: user.id,
           ip_address: ip,
-        },
-        { onConflict: "style_slug,session_id" }
-      );
+        });
 
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: "Failed to save rating" },
-        { status: 500 }
-      );
+      if (error) {
+        return NextResponse.json(
+          { success: false, error: "Failed to save rating" },
+          { status: 500 }
+        );
+      }
     }
 
     // Return updated average

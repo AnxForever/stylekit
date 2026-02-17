@@ -21,6 +21,8 @@ export interface SubmissionRecord {
   status: "pending" | "approved" | "rejected";
   reviewedAt?: string;
   reviewNote?: string;
+  userId?: string;
+  authorName?: string;
   formData: Record<string, unknown>;
   tokens: Record<string, unknown>;
   designStyle: Record<string, unknown>;
