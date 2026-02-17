@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useTransition, useMemo, useCallback, useRef, useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
@@ -10,13 +10,14 @@ import { Heart, Layers, Paintbrush, Loader2, ChevronDown, X } from "lucide-react
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
 
 type TypeFilter = StyleType | "all";
+type SortOption = "recommended" | "name-asc" | "name-desc";
 
 interface StylesContentProps {
   allStyles: StyleMeta[];
-  // 初始值从 URL 参数解析
   initialType: TypeFilter;
   initialTags: StyleTag[];
   initialShowFavorites: boolean;
+  initialSort: SortOption;
 }
 
 export function StylesContent({
@@ -24,16 +25,17 @@ export function StylesContent({
   initialType,
   initialTags,
   initialShowFavorites,
+  initialSort,
 }: StylesContentProps) {
   const { t } = useI18n();
   const { favorites } = useFavorites();
   const router = useRouter();
   const pathname = usePathname();
 
-  // 客户端状态（即时响应）
   const [activeType, setActiveType] = useState<TypeFilter>(initialType);
   const [activeTags, setActiveTags] = useState<StyleTag[]>(initialTags);
   const [showFavorites, setShowFavorites] = useState(initialShowFavorites);
+  const [sortBy, setSortBy] = useState<SortOption>(initialSort);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
@@ -69,25 +71,24 @@ export function StylesContent({
     }
   }, []);
 
-  // URL 同步（不阻塞 UI）
   const syncToUrl = useCallback(
-    (type: TypeFilter, tags: StyleTag[], fav: boolean) => {
+    (type: TypeFilter, tags: StyleTag[], fav: boolean, sort: SortOption) => {
       const sp = new URLSearchParams();
       if (type && type !== "all") sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
       if (fav) sp.set("fav", "1");
+      if (sort !== "recommended") sp.set("sort", sort);
 
       const qs = sp.toString();
       const newUrl = qs ? `${pathname}?${qs}` : pathname;
 
-      // 使用 replace 避免产生历史记录
       router.replace(newUrl, { scroll: false });
     },
     [pathname, router]
   );
 
   // Type filter 配置
-  const typeFilters: { key: TypeFilter; label: string; icon?: React.ReactNode }[] = [
+  const typeFilters: { key: TypeFilter; label: string; icon?: ReactNode }[] = [
     { key: "all", label: t("styles.typeAll") },
     { key: "visual", label: t("styles.typeVisual"), icon: <Paintbrush className="w-3.5 h-3.5" /> },
     { key: "layout", label: t("styles.typeLayout"), icon: <Layers className="w-3.5 h-3.5" /> },
@@ -114,11 +115,10 @@ export function StylesContent({
     "brand-inspired": t("styles.tagBrandInspired"),
   };
 
-  // 过滤处理（使用 useTransition 保持响应性）
   const handleTypeChange = (type: TypeFilter) => {
     startTransition(() => {
       setActiveType(type);
-      syncToUrl(type, activeTags, showFavorites);
+      syncToUrl(type, activeTags, showFavorites, sortBy);
     });
   };
 
@@ -128,14 +128,14 @@ export function StylesContent({
         ? activeTags.filter((t) => t !== tag)
         : [...activeTags, tag];
       setActiveTags(newTags);
-      syncToUrl(activeType, newTags, showFavorites);
+      syncToUrl(activeType, newTags, showFavorites, sortBy);
     });
   };
 
   const handleClearTags = () => {
     startTransition(() => {
       setActiveTags([]);
-      syncToUrl(activeType, [], showFavorites);
+      syncToUrl(activeType, [], showFavorites, sortBy);
     });
   };
 
@@ -143,21 +143,59 @@ export function StylesContent({
     startTransition(() => {
       const newFav = !showFavorites;
       setShowFavorites(newFav);
-      syncToUrl(activeType, activeTags, newFav);
+      syncToUrl(activeType, activeTags, newFav, sortBy);
     });
   };
 
-  // 过滤逻辑
+  const handleSortChange = (sort: SortOption) => {
+    startTransition(() => {
+      setSortBy(sort);
+      syncToUrl(activeType, activeTags, showFavorites, sort);
+    });
+  };
+
+  const handleResetFilters = () => {
+    startTransition(() => {
+      setActiveType("all");
+      setActiveTags([]);
+      setShowFavorites(false);
+      setSortBy("recommended");
+      syncToUrl("all", [], false, "recommended");
+    });
+  };
+
+  const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
+
   const filteredStyles = useMemo(() => {
-    return allStyles
-      .filter((s) => !showFavorites || favorites.includes(s.slug))
+    const base = allStyles
+      .filter((s) => !showFavorites || favoriteSet.has(s.slug))
       .filter((s) => activeType === "all" || s.styleType === activeType)
       .filter(
         (s) =>
           activeTags.length === 0 ||
           activeTags.some((tag) => s.tags?.includes(tag))
       );
-  }, [allStyles, showFavorites, favorites, activeType, activeTags]);
+
+    if (sortBy === "recommended") return base;
+
+    const sorted = [...base].sort((left, right) => {
+      const leftName = (left.nameEn || left.name).toLowerCase();
+      const rightName = (right.nameEn || right.name).toLowerCase();
+      return leftName.localeCompare(rightName);
+    });
+
+    if (sortBy === "name-desc") {
+      sorted.reverse();
+    }
+
+    return sorted;
+  }, [allStyles, showFavorites, favoriteSet, activeType, activeTags, sortBy]);
+
+  const hasActiveFilters =
+    activeType !== "all" ||
+    activeTags.length > 0 ||
+    showFavorites ||
+    sortBy !== "recommended";
 
   return (
     <>
@@ -200,6 +238,7 @@ export function StylesContent({
             {/* Favorites toggle */}
             <button
               onClick={handleToggleFavorites}
+              aria-label={t("styles.favorites")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 transition-colors ml-auto ${
                 showFavorites
                   ? "bg-foreground text-background"
@@ -207,6 +246,7 @@ export function StylesContent({
               }`}
             >
               <Heart className={`w-3.5 h-3.5 ${showFavorites ? "fill-current" : ""}`} />
+              <span>{t("styles.favorites")}</span>
               <span>({favorites.length})</span>
             </button>
           </div>
@@ -270,6 +310,35 @@ export function StylesContent({
                 </button>
               </div>
             )}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
+            <p className="text-sm text-muted">
+              {filteredStyles.length} {t("styles.results")}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <label htmlFor="styles-sort" className="text-sm text-muted">
+                {t("styles.sort")}:
+              </label>
+              <select
+                id="styles-sort"
+                value={sortBy}
+                onChange={(event) => handleSortChange(event.target.value as SortOption)}
+                className="h-9 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
+              >
+                <option value="recommended">{t("styles.sortRecommended")}</option>
+                <option value="name-asc">{t("styles.sortNameAsc")}</option>
+                <option value="name-desc">{t("styles.sortNameDesc")}</option>
+              </select>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
+                >
+                  {t("styles.resetFilters")}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Styles List with loading indicator */}
