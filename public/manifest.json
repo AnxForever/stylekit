@@ -1,17 +1,20 @@
 {
   "name": "StyleKit - AI-Friendly Design System",
   "short_name": "StyleKit",
-  "description": "16+ visual styles with design tokens, component recipes, and AI prompts",
+  "description": "85+ visual styles with design tokens, component recipes, and AI prompts for consistent UI generation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "orientation": "any",
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
-  "categories": ["design", "development", "utilities"]
+  "categories": ["design", "development", "utilities"],
+  "prefer_related_applications": false
 }
