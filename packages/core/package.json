@@ -1,6 +1,6 @@
 {
   "name": "@stylekit/core",
-  "version": "0.1.0",
+  "version": "1.0.0-beta.1",
   "description": "StyleKit core library - design style tokens, recipes, linter, and knowledge base",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -44,8 +44,10 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit"
