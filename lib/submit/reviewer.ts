@@ -5,7 +5,7 @@
  * community-submitted styles stored in data/submissions/.
  */
 
-import { readdir, readFile, writeFile, rename, mkdir } from "fs/promises";
+import { readdir, readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 

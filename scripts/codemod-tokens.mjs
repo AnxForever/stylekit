@@ -1,6 +1,5 @@
 // Codemod: Convert *-tokens.ts files to use createStyleTokens()
 import { readFileSync, writeFileSync } from "fs";
-import { globSync } from "fs";
 import { readdirSync } from "fs";
 import { join } from "path";
 

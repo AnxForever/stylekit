@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Heart, Star, Sun, Cloud, Music, Camera, Sparkles, Gift } from "lucide-react";
+import { ArrowLeft, Heart, Star, Sun, Music, Camera, Sparkles, Gift } from "lucide-react";
 
 function PastelCard({
   children,

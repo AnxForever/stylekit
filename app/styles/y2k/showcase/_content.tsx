@@ -8,7 +8,6 @@ import {
   Users, TrendingUp, Eye, MessageCircle
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

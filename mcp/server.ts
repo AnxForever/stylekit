@@ -58,10 +58,9 @@ type RecommendationContext = Record<string, unknown>;
 const { getStyleBySlug, styles } = require("./lib/styles");
 const { getStyleTokens } = require("./lib/styles/tokens-registry");
 const { getStyleRecipes } = require("./lib/recipes");
-const { trackStyleUsage, trackStyleCombination } = require("./lib/analytics");
+const { trackStyleUsage } = require("./lib/analytics");
 const { getArchetype } = require("./lib/archetypes");
 const { lintCode, getFixSuggestions, formatLintResult } = require("./lib/linter");
-const { getStyleLintRules } = require("./lib/styles/lint-rules");
 const { scoreStyle } = require("./lib/accessibility");
 const { getCurrentVersion, getChangelog } = require("./lib/versioning");
 

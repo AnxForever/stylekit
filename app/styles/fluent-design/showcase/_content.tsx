@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { 
   ArrowLeft, Home, Settings, User, Bell, Search, Menu,
-  ChevronDown, ChevronUp, Check, X, AlertTriangle, Info,
+  ChevronDown, Check, X, AlertTriangle, Info,
   Users, TrendingUp, Eye, MessageCircle, Folder, Mail, Calendar
 } from "lucide-react";
 import {

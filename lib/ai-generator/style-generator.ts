@@ -198,15 +198,6 @@ function interpolateColors(
   return hslToHex(hSum, sSum, lSum);
 }
 
-function interpolateNumbers(
-  values: { value: number; weight: number }[]
-): number {
-  if (values.length === 0) return 0;
-  const totalWeight = values.reduce((sum, v) => sum + v.weight, 0);
-  if (totalWeight === 0) return values[0].value;
-  return values.reduce((sum, v) => sum + (v.value * v.weight) / totalWeight, 0);
-}
-
 // ============ TOKEN INTERPOLATION ============
 
 /** Pick a string value from the highest-weighted source */

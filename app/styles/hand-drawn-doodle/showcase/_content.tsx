@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { 
-  ArrowLeft, Smile, Heart, Star, Coffee, ChevronDown, ChevronUp,
+  ArrowLeft, Smile, Heart, Star, ChevronDown, ChevronUp,
   Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Pen
 } from "lucide-react";
 import {

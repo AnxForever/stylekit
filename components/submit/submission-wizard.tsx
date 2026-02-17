@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Check, ChevronRight, ChevronLeft, Save, RotateCcw,
-  X, AlertCircle, FileText, Palette, Type, Layers,
+  X, FileText, Palette, Type, Layers,
   Code, Eye, Send
 } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import type { Locale } from "@/lib/i18n/translations";
-import { formatLocaleDateTime, pickLocale } from "@/lib/i18n/locale-copy";
+import { pickLocale } from "@/lib/i18n/locale-copy";
 import { parseStyleExtractorInput, type ExtractedStyleDraft } from "@/lib/style-extractor/adapter";
 import { submitCopy } from "@/lib/i18n/submit-copy";
 import { stylesMeta } from "@/lib/styles/meta";

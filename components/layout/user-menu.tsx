@@ -9,6 +9,7 @@
  */
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
 import { LogIn, LogOut, User } from "lucide-react";
@@ -62,10 +63,11 @@ export function UserMenu() {
         aria-expanded={open}
       >
         {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={avatarUrl}
             alt=""
+            width={28}
+            height={28}
             className="w-7 h-7 rounded-full border border-border"
           />
         ) : (
@@ -129,10 +131,11 @@ export function MobileUserMenu() {
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={avatarUrl}
             alt=""
+            width={24}
+            height={24}
             className="w-6 h-6 rounded-full border border-border"
           />
         ) : (
