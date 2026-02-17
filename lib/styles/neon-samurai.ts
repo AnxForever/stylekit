@@ -5,7 +5,7 @@ export const neonSamurai: DesignStyle = {
   name: "霓虹武士风",
   nameEn: "Neon Samurai",
   description:
-    "日本传统武士美学与霓虹赛博朋克的碰撞融合，刀锋斜切线条、�的鸟居门框架、书法笔触与双色霓虹光效交织，浮世绘遇见霓虹灯的未来都市武道。",
+    "日本传统武士美学与霓虹赛博朋克的碰撞融合，刀锋斜切线条、朱红的鸟居门框架、书法笔触与双色霓虹光效交织，浮世绘遇见霓虹灯的未来都市武道。",
   cover: "/styles/neon-samurai.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
