@@ -321,8 +321,13 @@ const en = {
     // Auth
     "auth.signIn": "Sign in",
     "auth.signInWithGitHub": "Sign in with GitHub",
+    "auth.signInWithLinuxDo": "Sign in with Linux DO",
     "auth.signOut": "Sign out",
     "auth.account": "Account",
+    "auth.loginTitle": "Sign in to StyleKit",
+    "auth.loginSubtitle": "Choose a method to sign in",
+    "auth.alreadySignedIn": "You are already signed in.",
+    "auth.goHome": "Go to Home",
 
     // Profile
     "profile.title": "Profile",
@@ -860,6 +865,34 @@ const en = {
     "aiGen.exportJSON": "Copy JSON",
     "aiGen.exportTailwind": "Copy Tailwind Config",
     "aiGen.download": "Download JSON",
+
+    // Pipeline
+    "pipeline.title": "Style Pipeline",
+    "pipeline.description": "Extract styles from any website and transform them into reusable design systems.",
+    "pipeline.sourceUrl": "Source URL",
+    "pipeline.sourceUrlPlaceholder": "https://example.com",
+    "pipeline.framework": "Framework",
+    "pipeline.targetStyle": "Target Style (optional)",
+    "pipeline.targetStylePlaceholder": "e.g., glassmorphism",
+    "pipeline.start": "Start Pipeline",
+    "pipeline.running": "Processing...",
+    "pipeline.completed": "Pipeline Complete",
+    "pipeline.failed": "Pipeline Failed",
+    "pipeline.retry": "Retry from Failed Stage",
+    "pipeline.startNew": "Start New",
+    "pipeline.download": "Download Package",
+    "pipeline.matchedStyle": "Matched Style",
+    "pipeline.confidence": "Confidence",
+    "pipeline.coverage": "Migration Coverage",
+    "pipeline.generatedName": "Generated Style",
+    "pipeline.duration": "Duration",
+    "pipeline.stage.extract": "Extract",
+    "pipeline.stage.analyze": "Analyze",
+    "pipeline.stage.match": "Match",
+    "pipeline.stage.migrate": "Migrate",
+    "pipeline.stage.generate": "Generate",
+    "pipeline.stage.export": "Export",
+    "nav.pipeline": "Pipeline",
 } as const;
 
 const zh: { [K in keyof typeof en]: string } = {
@@ -1101,8 +1134,13 @@ const zh: { [K in keyof typeof en]: string } = {
   // Auth
   "auth.signIn": "登录",
   "auth.signInWithGitHub": "使用 GitHub 登录",
+  "auth.signInWithLinuxDo": "使用 Linux DO 登录",
   "auth.signOut": "退出登录",
   "auth.account": "账户",
+  "auth.loginTitle": "登录 StyleKit",
+  "auth.loginSubtitle": "选择一种方式登录",
+  "auth.alreadySignedIn": "你已经登录了。",
+  "auth.goHome": "返回首页",
 
   // Profile
   "profile.title": "个人主页",
@@ -1666,6 +1704,34 @@ const zh: { [K in keyof typeof en]: string } = {
   "aiGen.exportJSON": "复制 JSON",
   "aiGen.exportTailwind": "复制 Tailwind 配置",
   "aiGen.download": "下载 JSON",
+
+  // Pipeline
+  "pipeline.title": "风格流水线",
+  "pipeline.description": "从任意网站提取风格，转化为可复用的设计系统。",
+  "pipeline.sourceUrl": "源网址",
+  "pipeline.sourceUrlPlaceholder": "https://example.com",
+  "pipeline.framework": "框架",
+  "pipeline.targetStyle": "目标风格（可选）",
+  "pipeline.targetStylePlaceholder": "例如 glassmorphism",
+  "pipeline.start": "启动流水线",
+  "pipeline.running": "处理中...",
+  "pipeline.completed": "流水线完成",
+  "pipeline.failed": "流水线失败",
+  "pipeline.retry": "从失败阶段重试",
+  "pipeline.startNew": "重新开始",
+  "pipeline.download": "下载包",
+  "pipeline.matchedStyle": "匹配风格",
+  "pipeline.confidence": "置信度",
+  "pipeline.coverage": "迁移覆盖率",
+  "pipeline.generatedName": "生成风格",
+  "pipeline.duration": "耗时",
+  "pipeline.stage.extract": "提取",
+  "pipeline.stage.analyze": "分析",
+  "pipeline.stage.match": "匹配",
+  "pipeline.stage.migrate": "迁移",
+  "pipeline.stage.generate": "生成",
+  "pipeline.stage.export": "导出",
+  "nav.pipeline": "流水线",
 } as const;
 
 export const translations = {

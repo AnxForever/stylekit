@@ -45,6 +45,7 @@ export const toolsDropdown: NavDropdown = {
     { href: "/developers", labelKey: "nav.developers" },
     { href: "/analyze", labelKey: "nav.analyze" },
     { href: "/migrate", labelKey: "nav.migrate" },
+    { href: "/pipeline", labelKey: "nav.pipeline" },
   ],
   groups: [
     {
@@ -62,6 +63,7 @@ export const toolsDropdown: NavDropdown = {
         { href: "/generate-style", labelKey: "nav.aiGenerator" },
         { href: "/analyze", labelKey: "nav.analyze" },
         { href: "/migrate", labelKey: "nav.migrate" },
+        { href: "/pipeline", labelKey: "nav.pipeline" },
         { href: "/developers", labelKey: "nav.developers" },
       ],
     },
