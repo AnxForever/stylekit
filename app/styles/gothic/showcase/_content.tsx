@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info, Shield, Skull, Cross, Crown, Flame, Sword } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info, Shield, Crown, Flame, Sword } from "lucide-react";
 import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 const colors: ColorItem[] = [

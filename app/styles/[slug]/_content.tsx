@@ -45,13 +45,23 @@ export function StyleDetailContent({
   const { t } = useI18n();
 
   useEffect(() => {
-    fetch("/api/analytics", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: style.slug, source: "page" }),
-    }).catch(() => {
-      // Analytics failure is non-blocking
-    });
+    const sendAnalytics = () => {
+      fetch("/api/analytics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: style.slug, source: "page" }),
+      }).catch(() => {
+        // Analytics failure is non-blocking
+      });
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(sendAnalytics);
+      return () => window.cancelIdleCallback(id);
+    } else {
+      const id = setTimeout(sendAnalytics, 1);
+      return () => clearTimeout(id);
+    }
   }, [style.slug]);
 
   return (

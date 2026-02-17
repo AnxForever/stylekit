@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   generateTailwindPreset,
   generateTailwindPresetJS,
-  type TailwindPreset,
 } from "@/lib/export/tailwind-preset";
 import { getStyleBySlug } from "@/lib/styles";
 

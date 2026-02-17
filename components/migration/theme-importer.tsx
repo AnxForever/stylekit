@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRightLeft, Upload, FileCode, Loader2 } from "lucide-react";
+import { Upload, FileCode, Loader2 } from "lucide-react";
 import { muiExample, antExample, chakraExample } from "@/lib/migration/examples";
 import type { MigrationResult } from "@/lib/migration/types";
 import { MigrationResultView } from "@/components/migration/migration-result";

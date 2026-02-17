@@ -5,10 +5,9 @@ import Link from "next/link";
 import { 
   ArrowLeft, Diamond, Crown, Gem, ChevronDown, ChevronUp,
   Check, X, AlertTriangle, Info, Building2, Sparkles, Award,
-  Users, TrendingUp, Eye, Heart
+  Users, TrendingUp, Eye
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

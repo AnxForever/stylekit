@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import { useI18n } from "@/lib/i18n/context";
 import { stylesMeta } from "@/lib/styles/meta";
 import { styleTokensRegistry } from "@/lib/styles/tokens-registry";
@@ -10,12 +11,36 @@ import { getAllArchetypes } from "@/lib/archetypes";
 import type { StyleTokens } from "@/lib/styles/tokens";
 
 import { getTemplateCode } from "@/lib/playground/template-code";
-import { PlaygroundEditor } from "./playground-editor";
-import { PlaygroundLintPanel } from "./playground-lint-panel";
 import { PlaygroundPreview } from "./playground-preview";
 import { PlaygroundToolbar } from "./playground-toolbar";
 import { StyleSwitcher } from "./style-switcher";
 import { TemplateSelector } from "./template-selector";
+
+const PlaygroundEditor = dynamic(
+  () =>
+    import("./playground-editor").then((mod) => mod.PlaygroundEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-xs text-muted">Loading editor...</p>
+      </div>
+    ),
+  }
+);
+
+const PlaygroundLintPanel = dynamic(
+  () =>
+    import("./playground-lint-panel").then((mod) => mod.PlaygroundLintPanel),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-xs text-muted">Loading linter...</p>
+      </div>
+    ),
+  }
+);
 
 type DeviceSize = "desktop" | "tablet" | "mobile";
 type EditorTab = "code" | "lint";

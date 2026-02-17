@@ -11,7 +11,6 @@ import {
   childrenSlot,
   labelSlot,
   defaultVariant,
-  variant,
   createStyleRecipes,
 } from "./factory";
 

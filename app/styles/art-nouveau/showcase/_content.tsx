@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info,
-  Flower2, Leaf, Heart, Star, Feather, Sparkles
+  Flower2, Leaf, Heart, Star, Feather
 } from "lucide-react";
 import {
   ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem,

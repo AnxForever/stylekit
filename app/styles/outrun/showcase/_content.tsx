@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info, Zap, Sun, Music, Car, Palmtree, Radio } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info, Zap, Sun, Music, Car } from "lucide-react";
 import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 const colors: ColorItem[] = [
