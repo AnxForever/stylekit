@@ -45,10 +45,21 @@ export async function GET(request: NextRequest) {
     // Deterministic email for LinuxDo users
     const email = `linuxdo_${ldUser.id}@connect.linux.do`;
 
+    // Linux DO (Discourse) returns avatar_url as a template with {size}
+    // placeholder (e.g. "/user_avatar/linux.do/username/{size}/12345_2.png").
+    // Replace the placeholder and normalize to an absolute URL.
+    let avatarUrl = ldUser.avatar_url ?? "";
+    if (avatarUrl.includes("{size}")) {
+      avatarUrl = avatarUrl.replace("{size}", "288");
+    }
+    if (avatarUrl && !avatarUrl.startsWith("http")) {
+      avatarUrl = `https://linux.do${avatarUrl}`;
+    }
+
     const userMetadata = {
       user_name: ldUser.username,
       full_name: ldUser.name || ldUser.username,
-      avatar_url: ldUser.avatar_url,
+      avatar_url: avatarUrl,
       provider: "linuxdo",
       linuxdo_id: ldUser.id,
       linuxdo_trust_level: ldUser.trust_level,
