@@ -257,7 +257,7 @@ export default function ShowcaseContent() {
       </ShowcaseSection>
 
       <footer className="border-t-4 border-pink-200 py-12 px-6 text-center bg-white/80">
-        <p className="text-gray-500">* Shoujo Manga Style (c) 2026 - Made with love and magic <3</p>
+        <p className="text-gray-500">* Shoujo Manga Style (c) 2026 - Made with love and magic heart</p>
       </footer>
 
       <style jsx>{`
