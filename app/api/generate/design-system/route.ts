@@ -5,6 +5,7 @@ import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
 import { mapStyleToSlug, isDarkStyle, resolveColorScheme } from "@/lib/styles/style-mapping";
 import type { StackId } from "@/lib/knowledge";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/generate/design-system
@@ -24,6 +25,14 @@ import type { StackId } from "@/lib/knowledge";
  * Returns a complete design system package.
  */
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const {

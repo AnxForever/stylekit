@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeProjectStyle } from "@/lib/analyzer";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/analyze-style
@@ -10,6 +11,14 @@ import { analyzeProjectStyle } from "@/lib/analyzer";
  * Returns: AnalysisResult
  */
 export async function POST(request: NextRequest) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 },
+    );
+  }
+
   try {
     const body = await request.json();
     const { code, packageJson, tailwindConfig } = body;

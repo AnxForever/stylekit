@@ -7,6 +7,7 @@ import {
   createRateLimitHeaders,
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const RATING_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
@@ -29,6 +30,14 @@ export async function POST(
       return NextResponse.json(
         { success: false, error: "Invalid style slug" },
         { status: 400 }
+      );
+    }
+
+    const originCheck = verifyTrustedOrigin(request);
+    if (!originCheck.ok) {
+      return NextResponse.json(
+        { success: false, error: originCheck.error },
+        { status: originCheck.status ?? 403 }
       );
     }
 

@@ -6,6 +6,7 @@ import {
   trackStyleCombination,
 } from "@/lib/analytics";
 import { NextResponse } from "next/server";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,6 +30,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { success: false, error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { slug, source, slugB } = body as {
