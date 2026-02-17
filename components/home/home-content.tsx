@@ -21,14 +21,20 @@ export function HomeContent({ styles }: HomeContentProps) {
       title: t("home.pathA.title"),
       description: t("home.pathA.desc"),
       steps: [t("home.pathA.step1"), t("home.pathA.step2"), t("home.pathA.step3")],
-      links: ["/create-style", "/generate"],
+      links: [
+        { href: "/create-style", label: t("home.pathA.link1") },
+        { href: "/generate", label: t("home.pathA.link2") },
+      ],
     },
     {
       id: "Path B",
       title: t("home.pathB.title"),
       description: t("home.pathB.desc"),
       steps: [t("home.pathB.step1"), t("home.pathB.step2"), t("home.pathB.step3")],
-      links: ["/styles", "/generate"],
+      links: [
+        { href: "/styles", label: t("home.pathB.link1") },
+        { href: "/generate", label: t("home.pathB.link2") },
+      ],
     },
   ] as const;
 
@@ -47,7 +53,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                 <span className="italic">{t("home.title.line3")}</span>
               </h1>
               <p className="text-lg text-muted leading-relaxed max-w-md mb-8">{t("home.description")}</p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <Link
                   href="/create-style"
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
@@ -96,13 +102,13 @@ export function HomeContent({ styles }: HomeContentProps) {
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {workflow.links.map((href) => (
+                  {workflow.links.map((link) => (
                     <Link
-                      key={href}
-                      href={href}
+                      key={link.href}
+                      href={link.href}
                       className="inline-flex items-center justify-center px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
                     >
-                      {href}
+                      {link.label}
                     </Link>
                   ))}
                 </div>
@@ -121,8 +127,9 @@ export function HomeContent({ styles }: HomeContentProps) {
               <p className="text-xs tracking-widest uppercase text-muted mb-2">{t("home.styleCollection")}</p>
               <h2 className="text-2xl md:text-3xl">{t("home.styleCatalog")}</h2>
             </div>
-            <Link href="/styles" className="text-sm text-muted hover:text-foreground transition-colors">
-              {t("home.viewAll")} -&gt;
+            <Link href="/styles" className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1">
+              {t("home.viewAll")}
+              <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
 

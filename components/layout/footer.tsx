@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 
+const currentYear = new Date().getFullYear();
+
 export function Footer() {
   const { t } = useI18n();
 
@@ -66,7 +68,7 @@ export function Footer() {
         <hr className="my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
-          <p>{t("footer.openSource")}</p>
+          <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
           <p>{t("footer.builtWith")}</p>
         </div>
       </div>
