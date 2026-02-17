@@ -182,7 +182,6 @@ export interface ColorItem {
   description?: string;
   border?: boolean | string;
   textColor?: string;
-  [key: string]: unknown;
 }
 
 interface ColorPaletteGridProps {
