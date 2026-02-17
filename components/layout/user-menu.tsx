@@ -10,13 +10,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
-import { LogIn, LogOut, User } from "lucide-react";
+import { LogIn, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserMenu() {
-  const { user, loading, signInWithGitHub, signOut } = useUser();
+  const { user, loading, signInWithGitHub, signInWithLinuxDo, signOut } = useUser();
   const [open, setOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { t } = useI18n();
 
@@ -24,6 +26,7 @@ export function UserMenu() {
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setOpen(false);
+        setLoginOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -72,7 +75,7 @@ export function UserMenu() {
           />
         ) : (
           <div className="w-7 h-7 rounded-full border border-border flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
-            <User className="w-4 h-4" />
+            <UserIcon className="w-4 h-4" />
           </div>
         )}
       </button>
@@ -85,6 +88,14 @@ export function UserMenu() {
               <p className="text-xs text-muted truncate">{user.email}</p>
             )}
           </div>
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center gap-2"
+          >
+            <UserIcon className="w-4 h-4" />
+            {t("profile.title")}
+          </Link>
           <button
             onClick={() => {
               setOpen(false);
@@ -140,18 +151,27 @@ export function MobileUserMenu() {
           />
         ) : (
           <div className="w-6 h-6 rounded-full border border-border flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
-            <User className="w-3 h-3" />
+            <UserIcon className="w-3 h-3" />
           </div>
         )}
         <span className="text-sm">{displayName}</span>
       </div>
-      <button
-        onClick={signOut}
-        className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
-      >
-        <LogOut className="w-3.5 h-3.5" />
-        {t("auth.signOut")}
-      </button>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/profile"
+          className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
+        >
+          <UserIcon className="w-3.5 h-3.5" />
+          {t("profile.title")}
+        </Link>
+        <button
+          onClick={signOut}
+          className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          {t("auth.signOut")}
+        </button>
+      </div>
     </div>
   );
 }
