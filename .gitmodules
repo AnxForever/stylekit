@@ -1,0 +1,4 @@
+[submodule "style-extractor-dev"]
+	path = style-extractor-dev
+	url = https://github.com/AnxForever/style-extractor.git
+	branch = main
