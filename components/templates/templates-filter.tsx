@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, Suspense } from "react";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -27,6 +27,7 @@ function typeTranslationKey(type: TemplateTypeFilter) {
 
 function FilterButtons() {
   const { t } = useI18n();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
@@ -34,21 +35,26 @@ function FilterButtons() {
   const setActiveType = useCallback(
     (type: TemplateTypeFilter) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (type === "all") {
+      const nextType = type === activeType ? "all" : type;
+      if (nextType === "all") {
         params.delete("type");
       } else {
-        params.set("type", type);
+        params.set("type", nextType);
       }
       const query = params.toString();
-      router.replace(query ? `/templates?${query}` : "/templates", { scroll: false });
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
     },
-    [searchParams, router]
+    [activeType, pathname, searchParams, router]
   );
 
   return (
     <div className="mb-8 space-y-3">
       <p className="text-sm text-muted">{t("templates.type")}:</p>
-      <div className="flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label={t("templates.typeFilterAriaLabel")}
+        className="flex flex-wrap gap-2"
+      >
         {filterTypeOrder.map((type) => (
           <button
             key={type}
@@ -65,6 +71,9 @@ function FilterButtons() {
           </button>
         ))}
       </div>
+      {activeType !== "all" && (
+        <p className="text-xs text-muted">{t("templates.filterHint")}</p>
+      )}
     </div>
   );
 }
