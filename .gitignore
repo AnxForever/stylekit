@@ -64,6 +64,11 @@ image.jpg
 # Temporary
 .tmp/
 
+# Runtime data (analytics, submissions)
+/data/analytics.json
+/data/submissions/approved/
+/data/submissions/rejected/
+
 # Workspace build outputs and generated reports
 packages/**/node_modules/
 packages/**/dist/

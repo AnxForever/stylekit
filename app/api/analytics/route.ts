@@ -1,4 +1,10 @@
-import { getUsageStats, getTopStyles, getPopularCombinations } from "@/lib/analytics";
+import {
+  getUsageStats,
+  getTopStyles,
+  getPopularCombinations,
+  trackStyleUsage,
+  trackStyleCombination,
+} from "@/lib/analytics";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -20,4 +26,42 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(getUsageStats());
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { slug, source, slugB } = body as {
+      slug?: string;
+      source?: string;
+      slugB?: string;
+    };
+
+    if (!slug || typeof slug !== "string") {
+      return NextResponse.json(
+        { success: false, error: "Missing slug" },
+        { status: 400 }
+      );
+    }
+
+    if (source === "page" || source === "api" || source === "mcp") {
+      trackStyleUsage(slug, source);
+    } else {
+      return NextResponse.json(
+        { success: false, error: "Invalid source" },
+        { status: 400 }
+      );
+    }
+
+    if (slugB && typeof slugB === "string") {
+      trackStyleCombination(slug, slugB);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
 }
