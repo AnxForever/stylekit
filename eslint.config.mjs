@@ -20,7 +20,7 @@ const eslintConfig = defineConfig([
     // Dev extraction tool is not part of the Next.js app runtime.
     "style-extractor-dev/**",
     // Utility scripts (node/cjs) are outside the app lint scope.
-    "scripts/**/*.cjs",
+    "tools/scripts/**/*.cjs",
     // Published package build artifacts.
     "packages/core/dist/**",
     // GitHub Actions scripts (CJS).
