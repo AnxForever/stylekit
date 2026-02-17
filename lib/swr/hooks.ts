@@ -31,6 +31,8 @@ interface Comment {
   id: string;
   content: string;
   author_name: string;
+  avatar_url: string | null;
+  user_id: string | null;
   created_at: string;
 }
 
@@ -67,6 +69,46 @@ interface AdminAuditEvent {
 interface AdminAuditData {
   events: AdminAuditEvent[];
   total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+  nextOffset: number | null;
+}
+
+interface ProfileComment {
+  id: string;
+  style_slug: string;
+  content: string;
+  created_at: string;
+}
+
+interface ProfileCommentsData {
+  success: boolean;
+  comments: ProfileComment[];
+}
+
+interface ProfileSubmission {
+  id: string;
+  slug: string;
+  status: "pending" | "approved" | "rejected";
+  submitted_at: string;
+}
+
+interface ProfileSubmissionsData {
+  success: boolean;
+  submissions: ProfileSubmission[];
+}
+
+interface ProfileRating {
+  id: string;
+  style_slug: string;
+  rating: number;
+  created_at: string;
+}
+
+interface ProfileRatingsData {
+  success: boolean;
+  ratings: ProfileRating[];
 }
 
 // ---------- Hooks ----------
@@ -93,8 +135,41 @@ export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
   return useSWR<DashboardData>(`/api/analytics/dashboard?range=${range}`);
 }
 
-export function useAdminAuditEvents(limit = 20) {
-  return useSWR<AdminAuditData>(`/api/admin/audit?limit=${limit}`);
+interface AdminAuditQuery {
+  limit?: number;
+  offset?: number;
+  action?: "submission.approve" | "submission.reject" | "all";
+  days?: number | "all";
+  search?: string;
+}
+
+export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 20));
+  params.set("offset", String(query.offset ?? 0));
+  if (query.action && query.action !== "all") {
+    params.set("action", query.action);
+  }
+  if (typeof query.days === "number" && Number.isFinite(query.days) && query.days > 0) {
+    params.set("days", String(Math.floor(query.days)));
+  }
+  if (typeof query.search === "string" && query.search.trim().length > 0) {
+    params.set("search", query.search.trim());
+  }
+
+  return useSWR<AdminAuditData>(`/api/admin/audit?${params.toString()}`);
+}
+
+export function useProfileComments(userId: string | undefined) {
+  return useSWR<ProfileCommentsData>(userId ? "/api/profile/comments" : null);
+}
+
+export function useProfileSubmissions(userId: string | undefined) {
+  return useSWR<ProfileSubmissionsData>(userId ? "/api/profile/submissions" : null);
+}
+
+export function useProfileRatings(userId: string | undefined) {
+  return useSWR<ProfileRatingsData>(userId ? "/api/profile/ratings" : null);
 }
 
 // Re-export types
@@ -110,4 +185,11 @@ export type {
   AdminAuditActor,
   AdminAuditEvent,
   AdminAuditData,
+  AdminAuditQuery,
+  ProfileComment,
+  ProfileCommentsData,
+  ProfileSubmission,
+  ProfileSubmissionsData,
+  ProfileRating,
+  ProfileRatingsData,
 };

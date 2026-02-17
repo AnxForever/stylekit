@@ -7,6 +7,9 @@ export {
   useStyleComments,
   useAnalyticsDashboard,
   useAdminAuditEvents,
+  useProfileComments,
+  useProfileSubmissions,
+  useProfileRatings,
 } from "./hooks";
 export type {
   TopStyle,
@@ -20,4 +23,11 @@ export type {
   AdminAuditActor,
   AdminAuditEvent,
   AdminAuditData,
+  AdminAuditQuery,
+  ProfileComment,
+  ProfileCommentsData,
+  ProfileSubmission,
+  ProfileSubmissionsData,
+  ProfileRating,
+  ProfileRatingsData,
 } from "./hooks";
