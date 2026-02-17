@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Download, ExternalLink } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, Send, AlertCircle } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
 
@@ -60,6 +60,34 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
   const [copied, setCopied] = useState(false);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{
+    success: boolean;
+    id?: string;
+    error?: string;
+  } | null>(null);
+
+  const submitToCommunity = async () => {
+    setIsSubmitting(true);
+    setSubmitResult(null);
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setSubmitResult({ success: false, error: json.error ?? `HTTP ${res.status}` });
+        return;
+      }
+      setSubmitResult({ success: true, id: json.id });
+    } catch (err) {
+      setSubmitResult({ success: false, error: (err as Error).message });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const scaffoldInput: StyleScaffoldInput = {
     name: formData.name,
@@ -208,6 +236,42 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
             <p className="text-xs text-muted">Full JSON definition</p>
           </div>
         </button>
+      </div>
+
+      {/* Submit to Community */}
+      <div className="border-2 border-dashed border-border p-6">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Send className="w-6 h-6" />
+          <div>
+            <p className="font-medium mb-1">Submit to Community</p>
+            <p className="text-sm text-muted">Save your style for review and inclusion in the gallery.</p>
+          </div>
+          <button
+            type="button"
+            onClick={submitToCommunity}
+            disabled={isSubmitting || !formData.slug.trim() || submitResult?.success === true}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Send className="w-4 h-4" />
+            {isSubmitting ? "Submitting..." : submitResult?.success ? "Submitted" : "Submit Style"}
+          </button>
+          {submitResult?.success && (
+            <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
+              <div className="flex items-center gap-2 justify-center">
+                <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <span>Submission saved. ID: <code className="font-mono text-xs">{submitResult.id}</code></span>
+              </div>
+            </div>
+          )}
+          {submitResult && !submitResult.success && (
+            <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
+              <div className="flex items-center gap-2 justify-center">
+                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                <span>Submission failed: {submitResult.error}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Generated Files */}

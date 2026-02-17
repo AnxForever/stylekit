@@ -20,11 +20,14 @@
  *
  * Resources:
  * - style://{slug} for each registered style
+ * - stylekit://styles - full catalog of all styles
+ * - stylekit://knowledge/{topic} - knowledge domain resources
  *
  * Prompts:
  * - generate-with-style
  * - style-review
  * - style-migration
+ * - recommend-style
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -458,6 +461,76 @@ for (const style of styles) {
   );
 }
 
+// -- stylekit://styles - full catalog of all available styles --
+server.resource(
+  "all-styles",
+  "stylekit://styles",
+  {
+    title: "All StyleKit Styles",
+    description: "Complete catalog of all available design styles with slug, name, description, styleType, and keywords.",
+    mimeType: "application/json",
+  },
+  async (uri) => {
+    const catalog = styles.map(
+      (s: { slug: string; nameEn: string; description: string; styleType: string; keywords: string[] }) => ({
+        slug: s.slug,
+        name: s.nameEn,
+        description: s.description,
+        styleType: s.styleType,
+        keywords: s.keywords,
+      })
+    );
+    return {
+      contents: [
+        {
+          uri: uri.href,
+          mimeType: "application/json",
+          text: JSON.stringify(catalog, null, 2),
+        },
+      ],
+    };
+  }
+);
+
+// -- stylekit://knowledge/{topic} - knowledge domain resources --
+const knowledgeDomains: Record<string, string> = {
+  product: "Product type recommendations (SaaS, E-commerce, etc.)",
+  color: "Color palettes by product type",
+  typography: "Font pairing recommendations",
+  landing: "Landing page conversion patterns",
+  chart: "Chart and visualization recommendations",
+  icon: "Icon recommendations (Lucide React)",
+  ux: "Cross-cutting UX best practices",
+  web: "Web interface guidelines",
+  react: "React performance guidelines",
+  reasoning: "Product type design decision rules",
+  stack: "Stack-specific coding guidelines",
+};
+
+for (const [topic, description] of Object.entries(knowledgeDomains)) {
+  server.resource(
+    `knowledge-${topic}`,
+    `stylekit://knowledge/${topic}`,
+    {
+      title: `Knowledge: ${topic}`,
+      description,
+      mimeType: "application/json",
+    },
+    async (uri) => {
+      const result = searchKnowledge("*", topic as SearchDomain, 50);
+      return {
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "application/json",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+}
+
 // ============================================================================
 // Prompts - preset prompt templates
 // ============================================================================
@@ -605,6 +678,73 @@ Instructions:
 3. Ensure the result follows all target style Do/Don't rules
 4. Maintain the same functionality and structure
 5. Add comments for significant visual changes`,
+          },
+        },
+      ],
+    };
+  }
+);
+
+// -- recommend-style --
+server.prompt(
+  "recommend-style",
+  "Recommend StyleKit design styles based on a project description. Returns top 3 styles with reasoning.",
+  {
+    projectDescription: z
+      .string()
+      .describe("Description of the project (e.g. 'A fintech dashboard for enterprise users')"),
+    targetAudience: z
+      .enum(["consumer", "enterprise", "developer", "creative"])
+      .optional()
+      .describe("Primary target audience"),
+    primaryDevice: z
+      .enum(["desktop", "mobile", "tablet", "all"])
+      .optional()
+      .describe("Primary device for the product"),
+  },
+  async ({ projectDescription, targetAudience, primaryDevice }) => {
+    const allStyles = styles.map(
+      (s: { slug: string; nameEn: string; description: string; styleType: string; keywords: string[] }) => ({
+        slug: s.slug,
+        name: s.nameEn,
+        description: s.description,
+        styleType: s.styleType,
+        keywords: s.keywords,
+      })
+    );
+
+    const contextParts: string[] = [];
+    if (targetAudience) {
+      contextParts.push(`Target audience: ${targetAudience}`);
+    }
+    if (primaryDevice) {
+      contextParts.push(`Primary device: ${primaryDevice}`);
+    }
+    const contextStr = contextParts.length > 0 ? `\n${contextParts.join("\n")}` : "";
+
+    return {
+      messages: [
+        {
+          role: "user" as const,
+          content: {
+            type: "text" as const,
+            text: `Analyze the following project description and recommend the top 3 most suitable design styles from the StyleKit catalog.
+
+Project description: ${projectDescription}${contextStr}
+
+Available styles:
+${JSON.stringify(allStyles, null, 2)}
+
+Instructions:
+1. Analyze the project's domain, audience, and goals
+2. Match against each style's description, keywords, and styleType
+3. Return exactly 3 recommendations, ranked by suitability
+4. For each recommendation provide:
+   - Style slug and name
+   - Suitability score (1-10)
+   - Reasoning: why this style fits the project
+   - Considerations: any caveats or adjustments needed
+5. After the 3 recommendations, provide a brief summary of which style you recommend most and why`,
           },
         },
       ],

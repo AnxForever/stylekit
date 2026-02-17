@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Copy,
   Check,
@@ -12,8 +12,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   LayoutTemplate,
+  ExternalLink,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
+import { openInStackBlitz } from "@/lib/export/stackblitz";
+import { openInCodeSandbox } from "@/lib/export/codesandbox";
 
 type DeviceSize = "desktop" | "tablet" | "mobile";
 
@@ -45,6 +49,32 @@ export function PlaygroundToolbar({
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setExportOpen(false);
+      }
+    }
+    if (exportOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [exportOpen]);
+
+  const handleExportStackBlitz = async () => {
+    setExportOpen(false);
+    const tokens = getStyleTokens(styleSlug) ?? null;
+    await openInStackBlitz(code, styleSlug, tokens);
+  };
+
+  const handleExportCodeSandbox = async () => {
+    setExportOpen(false);
+    const tokens = getStyleTokens(styleSlug) ?? null;
+    await openInCodeSandbox(code, styleSlug, tokens);
+  };
 
   const handleCopy = async () => {
     try {
@@ -132,6 +162,34 @@ export function PlaygroundToolbar({
         <button onClick={handleShare} className={btnClass} title={t("playground.share")}>
           {shared ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
         </button>
+
+        <div className="relative" ref={exportRef}>
+          <button
+            onClick={() => setExportOpen((prev) => !prev)}
+            className={btnClass}
+            title="Open in IDE"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </button>
+          {exportOpen && (
+            <div className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-md border border-border bg-background shadow-md py-1">
+              <button
+                onClick={handleExportStackBlitz}
+                className="flex items-center gap-2 w-full px-3 py-1.5 text-sm text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Open in StackBlitz
+              </button>
+              <button
+                onClick={handleExportCodeSandbox}
+                className="flex items-center gap-2 w-full px-3 py-1.5 text-sm text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Open in CodeSandbox
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="h-4 w-px bg-border mx-1" />
 

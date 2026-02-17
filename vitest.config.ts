@@ -16,6 +16,17 @@ export default defineConfig({
     // Use single thread to avoid worker spawn issues
     pool: "threads",
     maxConcurrency: 1,
+    coverage: {
+      provider: "v8",
+      include: [
+        "lib/styles/tokens-registry.ts",
+        "lib/styles/blend-engine.ts",
+        "lib/styles/token-diff.ts",
+        "lib/linter/index.ts",
+        "lib/accessibility/scorer.ts",
+        "lib/style-extractor/draft-to-tokens.ts",
+      ],
+    },
   },
   resolve: {
     alias: {

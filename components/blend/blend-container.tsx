@@ -154,6 +154,17 @@ export function BlendContainer() {
     [styleA, styleB, syncInterpUrl]
   );
 
+  const switchMode = useCallback(
+    (newMode: BlendMode) => {
+      if (newMode === "pick") {
+        syncPickUrl(config);
+      } else {
+        syncInterpUrl(styleA, styleB, weights);
+      }
+    },
+    [config, styleA, styleB, weights, syncPickUrl, syncInterpUrl]
+  );
+
   const applyPreset = useCallback(
     (preset: BlendPreset) => {
       if (preset.mode === "pick" && preset.config) {
@@ -169,18 +180,7 @@ export function BlendContainer() {
         if (mode !== "interpolate") switchMode("interpolate");
       }
     },
-    [mode, syncPickUrl, syncInterpUrl]
-  );
-
-  const switchMode = useCallback(
-    (newMode: BlendMode) => {
-      if (newMode === "pick") {
-        syncPickUrl(config);
-      } else {
-        syncInterpUrl(styleA, styleB, weights);
-      }
-    },
-    [config, styleA, styleB, weights, syncPickUrl, syncInterpUrl]
+    [mode, switchMode, syncPickUrl, syncInterpUrl]
   );
 
   // Compute blended tokens based on current mode

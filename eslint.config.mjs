@@ -21,6 +21,10 @@ const eslintConfig = defineConfig([
     "style-extractor-dev/**",
     // Utility scripts (node/cjs) are outside the app lint scope.
     "scripts/**/*.cjs",
+    // Published package build artifacts.
+    "packages/core/dist/**",
+    // GitHub Actions scripts (CJS).
+    ".github/**",
   ]),
 ]);
 

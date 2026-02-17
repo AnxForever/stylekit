@@ -2835,6 +2835,63 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "scandinavian": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0eb] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-[#c9a88c]/20" />
+        <div className="relative w-full max-w-[200px]">
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-[#3d3d3d]/10">
+            <div className="w-full h-2 bg-[#5a7a6b] rounded mb-3" />
+            <div className="font-light text-sm text-[#3d3d3d] mb-2">Scandinavian</div>
+            <p className="text-xs text-[#3d3d3d]/50 mb-3">Warm Minimalism</p>
+            <div className="flex gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#5a7a6b]" />
+              <div className="w-6 h-6 rounded-full bg-[#7ba0b8]" />
+              <div className="w-6 h-6 rounded-full bg-[#c9a88c]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "cel-shading": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fafaf5] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="relative w-full max-w-[200px]">
+          <div className="bg-white border-[3px] border-[#1a1a2e] rounded-none p-4 shadow-[4px_4px_0px_0px_#1a1a2e]">
+            <div className="font-black text-sm text-[#1a1a2e] mb-2 tracking-wide">CEL SHADING</div>
+            <p className="text-xs text-[#1a1a2e]/60 mb-3">Bold & Flat</p>
+            <div className="flex gap-2">
+              <div className="flex-1 h-6 bg-[#e63946] border-2 border-[#1a1a2e]" />
+              <div className="flex-1 h-6 bg-[#4ea8de] border-2 border-[#1a1a2e]" />
+              <div className="flex-1 h-6 bg-[#2ecc71] border-2 border-[#1a1a2e]" />
+              <div className="flex-1 h-6 bg-[#f1c40f] border-2 border-[#1a1a2e]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "wabi-sabi": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f2ede4] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-6 left-6 w-16 h-[1px] bg-[#3a3a3a]/20" />
+        <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full border border-[#8b6f4e]/20" />
+        <div className="relative w-full max-w-[200px]">
+          <div className="bg-[#f2ede4] border border-[#3a3a3a]/15 p-4">
+            <div className="font-light text-sm text-[#3a3a3a] mb-2 tracking-widest">WABI-SABI</div>
+            <div className="w-12 h-[1px] bg-[#8b6f4e]/40 mb-3" />
+            <p className="text-xs text-[#3a3a3a]/40 mb-3 font-light">Imperfect Beauty</p>
+            <div className="flex gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#8a9a7b]/60" />
+              <div className="w-6 h-6 rounded-full bg-[#b5a78c]/60" />
+              <div className="w-6 h-6 rounded-full bg-[#8b6f4e]/60" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件
