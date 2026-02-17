@@ -42,7 +42,7 @@ export function buildAuthorizationUrl(redirectUri: string): string {
     client_id: clientId,
     redirect_uri: redirectUri,
     response_type: "code",
-    scope: "user",
+    scope: "openid profile email",
   });
   return `${AUTHORIZE_URL}?${params.toString()}`;
 }
