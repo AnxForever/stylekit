@@ -211,11 +211,24 @@ html {
   to { opacity: 1; }
 }
 
+@keyframes home-segment-pulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+@keyframes home-quick-jump-pop {
+  0% { transform: translateY(-4px) scale(0.995); opacity: 0.78; }
+  70% { transform: translateY(0) scale(1.002); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
 @theme inline {
   --animate-home-reveal-up-strong: home-reveal-up-strong 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-up: home-reveal-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-up-subtle: home-reveal-up-subtle 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-soft: home-reveal-soft 360ms ease-out both;
+  --animate-home-segment-pulse: home-segment-pulse 1.8s ease-in-out infinite;
+  --animate-home-quick-jump-pop: home-quick-jump-pop 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (max-width: 767px) {

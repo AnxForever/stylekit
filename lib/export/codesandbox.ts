@@ -107,11 +107,24 @@ function buildFiles(
   };
 }
 
+function encodeBase64Utf8(value: string): string {
+  const bytes = new TextEncoder().encode(value);
+  const chunkSize = 0x8000;
+  let binary = "";
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return btoa(binary);
+}
+
 // Compress files into CodeSandbox parameters using form POST approach
 function compressFiles(files: Record<string, CSBFile>): string {
   const payload = JSON.stringify({ files });
-  // Base64 encode for the form submission
-  return btoa(unescape(encodeURIComponent(payload)));
+  // Base64 encode for the form submission with UTF-8 safety
+  return encodeBase64Utf8(payload);
 }
 
 export async function openInCodeSandbox(

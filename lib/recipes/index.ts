@@ -88,6 +88,8 @@ import { warmDashboardRecipes } from "./warm-dashboard";
 import { neonGradientRecipes } from "./neon-gradient";
 // New styles - Batch 8
 import { liquidGlassRecipes } from "./liquid-glass";
+// New styles - Batch 9
+import { particleRecipes } from "./particle";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -178,6 +180,8 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "neon-gradient": neonGradientRecipes,
   // New styles - Batch 8
   "liquid-glass": liquidGlassRecipes,
+  // New styles - Batch 9
+  particle: particleRecipes,
 };
 
 /**

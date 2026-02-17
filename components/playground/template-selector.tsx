@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   FileText,
   ShoppingCart,
-  Image,
+  Image as ImageIcon,
   FormInput,
   Lock,
 } from "lucide-react";
@@ -29,7 +29,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   dashboard: <LayoutDashboard className="w-5 h-5" />,
   blog: <FileText className="w-5 h-5" />,
   ecommerce: <ShoppingCart className="w-5 h-5" />,
-  portfolio: <Image className="w-5 h-5" />,
+  portfolio: <ImageIcon className="w-5 h-5" />,
   form: <FormInput className="w-5 h-5" />,
   auth: <Lock className="w-5 h-5" />,
 };

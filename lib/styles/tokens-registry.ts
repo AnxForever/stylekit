@@ -91,6 +91,7 @@ import { solarpunkTokens } from "./solarpunk-tokens";
 import { jrpgTokens } from "./jrpg-tokens";
 import { asymmetricGridTokens } from "./asymmetric-grid-tokens";
 import { parallaxSectionsTokens } from "./parallax-sections-tokens";
+import { particleTokens } from "./particle-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -182,6 +183,8 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "jrpg": jrpgTokens,
   "asymmetric-grid": asymmetricGridTokens,
   "parallax-sections": parallaxSectionsTokens,
+  // Particle System
+  "particle": particleTokens,
 };
 
 // Get tokens for a style by slug
