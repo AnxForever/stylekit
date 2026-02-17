@@ -1,21 +1,39 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { getAdminApiToken, isAdminUserId } from "@/lib/auth/admin-policy";
+
+export interface AdminActor {
+  type: "user" | "token" | "dev-bypass";
+  id: string;
+}
 
 export interface AdminAccessResult {
   allowed: boolean;
   status?: number;
   error?: string;
+  actor?: AdminActor;
+}
+
+interface CheckAdminApiAccessOptions {
+  nodeEnv?: string;
 }
 
 export async function checkAdminApiAccess(
-  request: Request
+  request: Request,
+  options: CheckAdminApiAccessOptions = {}
 ): Promise<AdminAccessResult> {
+  const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? "development";
   const configuredToken = getAdminApiToken();
   const requestToken = getRequestAdminToken(request);
 
   if (configuredToken && requestToken && tokensMatch(configuredToken, requestToken)) {
-    return { allowed: true };
+    return {
+      allowed: true,
+      actor: {
+        type: "token",
+        id: fingerprintToken(requestToken),
+      },
+    };
   }
 
   const hasAuthCookie = hasSupabaseAuthCookie(request);
@@ -28,8 +46,14 @@ export async function checkAdminApiAccess(
       };
     }
 
-    if (process.env.NODE_ENV !== "production") {
-      return { allowed: true };
+    if (nodeEnv !== "production") {
+      return {
+        allowed: true,
+        actor: {
+          type: "dev-bypass",
+          id: "dev-bypass",
+        },
+      };
     }
 
     return {
@@ -41,8 +65,14 @@ export async function checkAdminApiAccess(
 
   const user = await getServerUser();
   if (user) {
-    if (isAdminUserId(user.id)) {
-      return { allowed: true };
+    if (isAdminUserId(user.id, nodeEnv)) {
+      return {
+        allowed: true,
+        actor: {
+          type: "user",
+          id: user.id,
+        },
+      };
     }
 
     return {
@@ -60,8 +90,14 @@ export async function checkAdminApiAccess(
     };
   }
 
-  if (process.env.NODE_ENV !== "production") {
-    return { allowed: true };
+  if (nodeEnv !== "production") {
+    return {
+      allowed: true,
+      actor: {
+        type: "dev-bypass",
+        id: "dev-bypass",
+      },
+    };
   }
 
   return {
@@ -93,6 +129,11 @@ function tokensMatch(expected: string, actual: string): boolean {
   }
 
   return timingSafeEqual(expectedBuffer, actualBuffer);
+}
+
+function fingerprintToken(token: string): string {
+  const hash = createHash("sha256").update(token).digest("hex");
+  return `token:${hash.slice(0, 16)}`;
 }
 
 function hasSupabaseAuthCookie(request: Request): boolean {

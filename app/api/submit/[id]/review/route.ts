@@ -8,6 +8,7 @@ import {
 } from "@/lib/submit/reviewer-supabase";
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 
 const reviewSchema = z.object({
   action: z.enum(["approve", "reject"]),
@@ -59,6 +60,18 @@ export async function POST(
           { status: 404 }
         );
       }
+
+      await recordAdminAuditEvent(request, {
+        action: "submission.approve",
+        targetType: "submission",
+        targetId: id,
+        actor: access.actor,
+        metadata: {
+          slug: result.slug,
+          noteProvided: typeof note === "string" && note.length > 0,
+        },
+      });
+
       return NextResponse.json({ success: true, submission: result });
     }
 
@@ -73,6 +86,18 @@ export async function POST(
           { status: 404 }
         );
       }
+
+      await recordAdminAuditEvent(request, {
+        action: "submission.reject",
+        targetType: "submission",
+        targetId: id,
+        actor: access.actor,
+        metadata: {
+          slug: result.slug,
+          noteProvided: typeof note === "string" && note.length > 0,
+        },
+      });
+
       return NextResponse.json({ success: true, submission: result });
     }
 
