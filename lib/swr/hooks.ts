@@ -47,6 +47,28 @@ interface DashboardData {
   recentActivity: { date: string; count: number }[];
 }
 
+interface AdminAuditActor {
+  type: "user" | "token" | "dev-bypass";
+  id: string;
+}
+
+interface AdminAuditEvent {
+  id: string;
+  action: string;
+  targetType: string;
+  targetId?: string;
+  actor: AdminAuditActor;
+  ipAddress: string | null;
+  userAgent: string | null;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+
+interface AdminAuditData {
+  events: AdminAuditEvent[];
+  total: number;
+}
+
 // ---------- Hooks ----------
 
 export function useTrendingStyles(count = 8) {
@@ -71,6 +93,10 @@ export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
   return useSWR<DashboardData>(`/api/analytics/dashboard?range=${range}`);
 }
 
+export function useAdminAuditEvents(limit = 20) {
+  return useSWR<AdminAuditData>(`/api/admin/audit?limit=${limit}`);
+}
+
 // Re-export types
 export type {
   TopStyle,
@@ -81,4 +107,7 @@ export type {
   Comment,
   CommentsData,
   DashboardData,
+  AdminAuditActor,
+  AdminAuditEvent,
+  AdminAuditData,
 };
