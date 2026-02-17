@@ -385,7 +385,7 @@ export default function ShowcaseContent() {
       {/* Footer */}
       <footer className="border-t-4 border-black py-16 px-6 text-center">
         <p className="text-xl font-black uppercase tracking-tighter">
-          SWISS POSTER STYLE © 2026
+          SWISS POSTER STYLE (c) 2026
         </p>
       </footer>
     </div>
