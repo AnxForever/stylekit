@@ -13,7 +13,9 @@
     "test:style-extractor": "npx --no-install vitest run __tests__/style-extractor-registry.test.ts",
     "test:style-extractor:ci": "npm run check:style-extractor && npm run test:style-extractor",
     "cli": "npx --no-install tsx cli/stylekit.ts",
-    "mcp": "npx --no-install tsx mcp/server.ts"
+    "mcp": "npx --no-install tsx mcp/server.ts",
+    "e2e": "npx playwright test",
+    "e2e:ui": "npx playwright test --ui"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",
@@ -37,6 +39,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-toast": "^1.2.15",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@supabase/supabase-js": "^2.95.3",
     "@vercel/analytics": "^1.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -67,6 +70,7 @@
     "tailwindcss": "^4",
     "tsx": "^4.19.0",
     "typescript": "^5",
+    "@playwright/test": "^1.58.2",
     "vitest": "^4.0.18"
   }
 }

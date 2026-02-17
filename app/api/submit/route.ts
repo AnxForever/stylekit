@@ -4,6 +4,10 @@ import { existsSync } from "fs";
 import path from "path";
 import { wizardFormSchema } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
+import {
+  isSupabaseConfigured,
+  createSubmissionSupabase,
+} from "@/lib/submit/reviewer-supabase";
 
 const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 
@@ -24,11 +28,29 @@ export async function POST(request: Request) {
     }
 
     const data = parsed.data;
-    const timestamp = Date.now();
-    const id = `${timestamp}-${data.slug}`;
-
     const tokens = convertToStyleTokens(data);
     const designStyle = convertToDesignStyle(data);
+
+    // Use Supabase when configured, otherwise fall back to file system
+    if (isSupabaseConfigured()) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
+      const result = await createSubmissionSupabase(
+        data.slug,
+        data as unknown as Record<string, unknown>,
+        tokens as unknown as Record<string, unknown>,
+        designStyle as unknown as Record<string, unknown>,
+        ip
+      );
+      return NextResponse.json({
+        success: true,
+        id: result.id,
+        slug: result.slug,
+      });
+    }
+
+    // File-based fallback
+    const timestamp = Date.now();
+    const id = `${timestamp}-${data.slug}`;
 
     const submission = {
       id,
