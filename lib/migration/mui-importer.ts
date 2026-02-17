@@ -4,7 +4,6 @@ import {
   safeJsonParse,
   pxToRadiusClass,
   fontSizeToTextClass,
-  pxToTextClass,
   colorToBgClass,
   colorToTextClass,
   shadowToClass,

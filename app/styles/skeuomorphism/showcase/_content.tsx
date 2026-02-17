@@ -8,7 +8,6 @@ import {
   Folder, Music, Image as ImageIcon
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

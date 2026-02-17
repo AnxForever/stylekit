@@ -27,7 +27,6 @@ const colors: ColorItem[] = [
 
 export default function ShowcaseContent() {
   const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(72);
   const [openAccordion, setOpenAccordion] = useState<number | null>(0);
   const [toggleStates, setToggleStates] = useState([true, false, true]);
   const [pressure, setPressure] = useState(72);

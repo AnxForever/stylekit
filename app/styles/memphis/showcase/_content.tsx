@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { 
-  ArrowLeft, Zap, Circle, Square, Triangle, Star, Heart,
+  ArrowLeft, Zap, Circle, Square, Star,
   ChevronDown, ChevronUp, Check, X, AlertTriangle, Info,
   Users, TrendingUp, Eye, Sparkles
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

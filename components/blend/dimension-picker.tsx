@@ -36,12 +36,6 @@ export function DimensionPicker({ dimension, value, onChange }: DimensionPickerP
   }, [locale]);
 
   const selectedStyle = allStyles.find((s) => s.slug === value);
-  const displayName = selectedStyle
-    ? locale === "zh"
-      ? selectedStyle.name
-      : selectedStyle.nameEn
-    : t("blend.selectStyle");
-
   const dimensionLabel = t(`blend.dimensions.${dimension}` as Parameters<typeof t>[0]);
 
   return (

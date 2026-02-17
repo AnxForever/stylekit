@@ -8,7 +8,6 @@ import {
   AlertTriangle, Info, Palmtree, Sunset, ShoppingBag, Star, Eye
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,

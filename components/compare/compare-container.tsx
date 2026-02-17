@@ -12,8 +12,6 @@ import { TokenDiffTable } from "./token-diff-table";
 import { VisualCompare } from "./visual-compare";
 import { ComponentCompare } from "./component-compare";
 
-const MAX_STYLES = 3;
-
 export function CompareContainer() {
   const searchParams = useSearchParams();
   const router = useRouter();

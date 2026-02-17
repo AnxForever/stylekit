@@ -4,7 +4,7 @@
 // Compares against stored hashes to detect changes and auto-bump versions.
 // Stored snapshots live in version-snapshots.json (generated, gitignored).
 
-import type { StyleVersionRegistry, StyleVersionHistory, ChangeCategory } from "./types";
+import type { StyleVersionRegistry, ChangeCategory } from "./types";
 import type { StyleTokens } from "../styles/tokens";
 import { styles } from "../styles";
 import { getStyleTokens } from "../styles/tokens-registry";

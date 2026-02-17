@@ -4,10 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { 
   ArrowLeft, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info,
-  Users, TrendingUp, Eye, Star, Grid3X3
+  Users, TrendingUp, Eye, Star
 } from "lucide-react";
 import {
-  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
