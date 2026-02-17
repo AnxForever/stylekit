@@ -1,13 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
-import { Github, LogIn } from "lucide-react";
+import { Github, LogIn, X } from "lucide-react";
 
 export function LoginContent() {
   const { user, loading, signInWithGitHub, signInWithLinuxDo } = useUser();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
+  const authError = searchParams.get("auth_error");
+  const [dismissed, setDismissed] = useState(false);
 
   if (loading) {
     return (
@@ -36,6 +41,12 @@ export function LoginContent() {
     );
   }
 
+  const errorMessage = authError === "linuxdo"
+    ? t("auth.errorLinuxDo")
+    : authError
+      ? t("auth.errorGeneric")
+      : null;
+
   return (
     <div className="max-w-md mx-auto px-6 py-24">
       <div className="text-center mb-10">
@@ -46,6 +57,19 @@ export function LoginContent() {
           {t("auth.loginSubtitle")}
         </p>
       </div>
+
+      {errorMessage && !dismissed && (
+        <div className="mb-6 flex items-center gap-3 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
+          <span className="flex-1">{errorMessage}</span>
+          <button
+            onClick={() => setDismissed(true)}
+            className="shrink-0 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
+            aria-label="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <div className="space-y-3">
         <button

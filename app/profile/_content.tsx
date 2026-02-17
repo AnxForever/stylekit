@@ -9,13 +9,14 @@ import {
   User,
   Calendar,
   Shield,
+  LogIn,
 } from "lucide-react";
 import { useUser } from "@/lib/auth/use-user";
 import { useFavorites } from "@/lib/favorites/context";
 import { useI18n } from "@/lib/i18n/context";
 
 export function ProfileContent() {
-  const { user, loading, signInWithGitHub } = useUser();
+  const { user, loading } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
 
@@ -49,13 +50,13 @@ export function ProfileContent() {
           <p className="text-muted-foreground mb-6">
             {t("profile.signInPrompt")}
           </p>
-          <button
-            onClick={signInWithGitHub}
+          <Link
+            href="/login"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background font-medium hover:opacity-90 transition-opacity"
           >
-            <Github className="w-5 h-5" />
-            {t("auth.signInWithGitHub")}
-          </button>
+            <LogIn className="w-5 h-5" />
+            {t("auth.signIn")}
+          </Link>
         </div>
       </div>
     );
@@ -71,6 +72,22 @@ export function ProfileContent() {
         { year: "numeric", month: "long", day: "numeric" }
       )
     : "";
+
+  const provider =
+    user.user_metadata?.provider ||
+    user.app_metadata?.provider ||
+    "github";
+  const isLinuxDo = provider === "linuxdo";
+
+  const profileUrl = isLinuxDo
+    ? `https://linux.do/u/${userName}`
+    : `https://github.com/${userName}`;
+  const profileLabel = isLinuxDo
+    ? t("profile.linuxdoProfile")
+    : t("profile.githubProfile");
+  const providerLabel = isLinuxDo
+    ? t("profile.providerLinuxDo")
+    : t("profile.providerGitHub");
 
   return (
     <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
@@ -109,13 +126,17 @@ export function ProfileContent() {
           )}
           {userName && (
             <a
-              href={`https://github.com/${userName}`}
+              href={profileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2"
             >
-              <Github className="w-4 h-4" />
-              {t("profile.githubProfile")}
+              {isLinuxDo ? (
+                <LogIn className="w-4 h-4" />
+              ) : (
+                <Github className="w-4 h-4" />
+              )}
+              {profileLabel}
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
@@ -165,8 +186,12 @@ export function ProfileContent() {
               {t("profile.provider")}
             </span>
             <span className="text-sm font-medium text-foreground flex items-center gap-1.5">
-              <Github className="w-4 h-4" />
-              GitHub
+              {isLinuxDo ? (
+                <LogIn className="w-4 h-4" />
+              ) : (
+                <Github className="w-4 h-4" />
+              )}
+              {providerLabel}
             </span>
           </div>
           <div className="flex justify-between px-4 py-3">

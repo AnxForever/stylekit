@@ -82,6 +82,12 @@ To enable auth, ratings, and comments, create a `.env.local`:
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Recommended for production admin access control
+ADMIN_USER_IDS=uuid-1,uuid-2
+
+# Optional token for server-to-server admin API calls
+ADMIN_API_TOKEN=replace-with-a-long-random-secret
 ```
 
 ## Styles
@@ -152,6 +158,20 @@ GET    /api/styles/{slug}/claude-rules    # Export as Claude rules
 GET    /api/styles/{slug}/cursorrules     # Export as .cursorrules
 GET    /api/styles/{slug}/skill-pack      # Export as skill pack
 GET    /api/styles/{slug}/md              # Export as Markdown
+
+# Admin (requires admin session or ADMIN_API_TOKEN)
+GET    /api/analytics/dashboard           # Admin analytics dataset
+GET    /api/submit/list                   # Review queue
+GET    /api/submit/{id}                   # Submission detail
+POST   /api/submit/{id}/review            # Approve/reject submission
+```
+
+For server-to-server admin calls, pass:
+
+```http
+Authorization: Bearer <ADMIN_API_TOKEN>
+# or
+x-admin-token: <ADMIN_API_TOKEN>
 ```
 
 [Full API docs](https://www.stylekit.top/developers/api)
