@@ -1,387 +1,274 @@
-﻿"use client";
+"use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Heart, Star, Flower2, Sparkles, BookOpen, PenTool } from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
-
-const colors: ColorItem[] = [
-  { name: "Sakura Pink", hex: "#ffb7c5", bg: "bg-[#ffb7c5]" },
-  { name: "Pearl White", hex: "#fff5f7", bg: "bg-[#fff5f7]" },
-  { name: "Lavender", hex: "#c4b5fd", bg: "bg-[#c4b5fd]" },
-  { name: "Gold Sparkle", hex: "#fde68a", bg: "bg-[#fde68a]" },
-  { name: "Rose", hex: "#fecdd3", bg: "bg-[#fecdd3]" },
-];
+import { ArrowLeft, Heart, Sparkles, Star, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Crown } from "lucide-react";
+import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(70);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Princess Pink", value: "#ffb3d9", description: "Primary" },
+    { name: "Dreamy Purple", value: "#c8a2e0", description: "Secondary" },
+    { name: "Gold Sparkle", value: "#ffd700", description: "Accent" },
+    { name: "Rose Blush", value: "#ffb6c1", description: "Highlight" },
+    { name: "Soft White", value: "#fff5f8", description: "Background" },
+  ];
+
+  const tabs = ["Love", "Magic", "Dreams"];
+  const accordionItems = [
+    { title: "What is Shoujo Manga Style?", content: "A romantic anime aesthetic inspired by Japanese shoujo manga, featuring sparkling stars, flowing flower petals, soft pastel colors, and dreamy atmospheres that capture the essence of youthful romance and magical girl stories." },
+    { title: "Visual Elements", content: "Signature elements include sparkle effects, floating flower petals, soft gradients, decorative frames, ribbon accents, and shimmering highlights that create a magical, romantic atmosphere." },
+    { title: "Perfect For", content: "Ideal for otome games, dating sims, magical girl apps, kawaii brands, anime fan sites, and any project targeting a feminine anime aesthetic with romantic and dreamy vibes." },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff5f7] to-white relative overflow-hidden">
-      {/* Screentone dot pattern overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-40"
-        style={{
-          backgroundImage: "radial-gradient(circle, #ffb7c5 0.8px, transparent 0.8px)",
-          backgroundSize: "12px 12px",
-        }}
-      />
-
-      {/* Floating petal decorations */}
-      <div className="fixed top-16 right-16 w-6 h-6 bg-[#ffb7c5]/30 rounded-[50%_0_50%_50%] rotate-45 pointer-events-none" />
-      <div className="fixed top-40 right-32 w-4 h-4 bg-[#fecdd3]/25 rounded-[50%_0_50%_50%] rotate-12 pointer-events-none" />
-      <div className="fixed top-60 left-10 w-5 h-5 bg-[#c4b5fd]/25 rounded-[50%_0_50%_50%] -rotate-30 pointer-events-none" />
-      <div className="fixed bottom-24 left-16 w-5 h-5 bg-[#ffb7c5]/25 rounded-[50%_0_50%_50%] rotate-60 pointer-events-none" />
-      <div className="fixed bottom-44 right-8 w-4 h-4 bg-[#fecdd3]/30 rounded-[50%_0_50%_50%] rotate-90 pointer-events-none" />
-
-      {/* Sparkle star decorations */}
-      <div className="fixed top-28 left-24 pointer-events-none">
-        <div className="w-3 h-3 bg-[#fde68a] rounded-full shadow-[0_0_8px_#fde68a]" />
-      </div>
-      <div className="fixed top-52 right-40 pointer-events-none">
-        <div className="w-2 h-2 bg-[#fde68a] rounded-full shadow-[0_0_6px_#fde68a]" />
-      </div>
-      <div className="fixed bottom-60 right-20 pointer-events-none">
-        <div className="w-2.5 h-2.5 bg-[#fde68a] rounded-full shadow-[0_0_8px_#fde68a]" />
-      </div>
-
-      {/* Navigation with scalloped bottom */}
-      <nav className="relative z-10 px-6 py-4 bg-white/70 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/shoujo-manga"
-            className="flex items-center gap-2 text-[#ffb7c5] hover:text-[#ffb7c5]/80 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-sans font-medium text-sm">Back</span>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 text-gray-800">
+      <header className="border-b border-pink-200 bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-lg shadow-pink-100">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-pink-600 hover:text-purple-500 transition-colors group">
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-semibold">Back to Gallery</span>
           </Link>
-          <span className="font-sans font-bold text-xl text-[#ffb7c5]">
-            Shoujo Manga
-          </span>
-          <Link
-            href="/styles"
-            className="px-4 py-2 border border-[#ffb7c5]/30 text-[#ffb7c5] font-sans font-medium text-sm rounded-full shadow-[0_2px_10px_#ffb7c520] hover:shadow-[0_4px_15px_#ffb7c540] hover:scale-105 transition-all duration-300"
-          >
-            All Styles
-          </Link>
-        </div>
-        {/* Scalloped border bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-3 overflow-hidden">
-          <div
-            className="w-full h-6"
-            style={{
-              backgroundImage: "radial-gradient(circle at 50% 0%, transparent 8px, #ffb7c5 8px, #ffb7c5 9px, transparent 9px)",
-              backgroundSize: "20px 12px",
-              backgroundPosition: "0 0",
-              opacity: 0.2,
-            }}
-          />
-        </div>
-      </nav>
-
-      {/* Hero - Manga panel frame with flower corners */}
-      <section className="relative z-10 pt-16 pb-20 px-6">
-        <div className="max-w-4xl mx-auto relative">
-          {/* Flower corner decorations */}
-          <div className="absolute -top-4 -left-4 w-12 h-12 flex items-center justify-center">
-            <Flower2 className="w-8 h-8 text-[#ffb7c5]/40" />
-          </div>
-          <div className="absolute -top-4 -right-4 w-12 h-12 flex items-center justify-center">
-            <Flower2 className="w-8 h-8 text-[#c4b5fd]/40" />
-          </div>
-          <div className="absolute -bottom-4 -left-4 w-12 h-12 flex items-center justify-center">
-            <Flower2 className="w-6 h-6 text-[#fecdd3]/40" />
-          </div>
-          <div className="absolute -bottom-4 -right-4 w-12 h-12 flex items-center justify-center">
-            <Flower2 className="w-6 h-6 text-[#ffb7c5]/40" />
-          </div>
-
-          {/* Main hero panel with screentone bg */}
-          <div className="relative border-2 border-[#ffb7c5]/20 rounded-3xl overflow-hidden bg-white/80 p-12 text-center">
-            {/* Inner screentone */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage: "radial-gradient(circle, #ffb7c5 0.6px, transparent 0.6px)",
-                backgroundSize: "10px 10px",
-                opacity: 0.08,
-              }}
-            />
-
-            <div className="relative z-10">
-              <h1 className="text-6xl md:text-8xl font-sans font-bold text-[#ffb7c5] mb-2">
-                Shoujo
-              </h1>
-              <h2 className="text-4xl md:text-6xl font-sans font-bold text-[#c4b5fd] mb-6">
-                Manga
-              </h2>
-              <p className="text-[#4a5568]/40 font-sans text-sm tracking-[0.3em] uppercase mb-10">
-                Romantic Dream Aesthetic
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4">
-                <button className="px-10 py-4 bg-[#ffb7c5] text-white font-sans font-medium rounded-full shadow-[0_4px_20px_#ffb7c560] hover:scale-105 hover:shadow-[0_6px_25px_#ffb7c580] transition-all duration-300">
-                  Begin Story
-                </button>
-                <button className="px-10 py-4 bg-white text-[#ffb7c5] font-sans font-medium rounded-full border-2 border-[#ffb7c5]/30 hover:bg-[#ffb7c5] hover:text-white hover:border-[#ffb7c5] transition-all duration-300">
-                  Gallery
-                </button>
-              </div>
-            </div>
+          <div className="flex gap-2">
+            <Heart className="w-5 h-5 text-pink-400 animate-pulse" fill="currentColor" />
+            <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
+            <Star className="w-5 h-5 text-yellow-400 animate-pulse" style={{ animationDelay: '0.6s' }} fill="currentColor" />
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Ribbon banner divider */}
-      <div className="relative z-10 flex justify-center py-4">
-        <div className="relative">
-          <div className="px-10 py-2 bg-[#ffb7c5]/15 rounded-sm relative">
-            {/* Ribbon tails */}
-            <div className="absolute -left-3 top-0 bottom-0 w-3 bg-[#ffb7c5]/10 clip-path-[polygon(100%_0,100%_100%,0_50%)]" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)" }} />
-            <div className="absolute -right-3 top-0 bottom-0 w-3 bg-[#ffb7c5]/10" style={{ clipPath: "polygon(0 0, 0 100%, 100% 50%)" }} />
-            <span className="text-[#ffb7c5] font-sans font-medium text-sm tracking-widest uppercase">Color Palette</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Color Palette - circular swatches */}
-      <ShowcaseSection
-        title=""
-        subtitle="Romantic Tones"
-        className="relative z-10 py-8 px-6"
-        titleClassName="hidden"
-        subtitleClassName="text-[#c4b5fd] font-sans text-sm mb-8 text-center"
+      <ShowcaseHero
+        title="✨ Shoujo Manga ✨"
+        subtitle="Dreamy Romantic Aesthetic"
+        description="Sparkles, petals, and endless romance - a magical anime aesthetic filled with youthful dreams and beautiful moments."
+        className="relative py-32 px-6 overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-pink-100"
+        titleClassName="text-6xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
+        subtitleClassName="text-2xl text-purple-500 mb-8"
+        descriptionClassName="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto"
       >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border border-[#ffb7c5]/20 bg-[#fff5f7] rounded-2xl shadow-[0_2px_10px_#ffb7c520]"
-            labelClassName="font-sans font-medium text-sm text-[#4a5568]"
-            hexClassName="text-xs text-[#ffb7c5] font-sans"
-          />
+        <div className="absolute inset-0 opacity-30">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${3 + Math.random() * 2}s`
+              }}
+            >
+              {i % 3 === 0 ? <Heart className="w-4 h-4 text-pink-400" fill="currentColor" /> :
+               i % 3 === 1 ? <Star className="w-4 h-4 text-yellow-400" fill="currentColor" /> :
+               <Sparkles className="w-4 h-4 text-purple-400" />}
+            </div>
+          ))}
+        </div>
+      </ShowcaseHero>
+
+      <ShowcaseSection title="Statistics" subtitle="Our lovely community" className="py-20 px-6">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Users, label: "Fans", value: "12.8K", gradient: "from-pink-400 to-pink-600" },
+            { icon: TrendingUp, label: "Growth", value: "+95%", gradient: "from-purple-400 to-purple-600" },
+            { icon: Eye, label: "Views", value: "1.2M", gradient: "from-yellow-400 to-yellow-600" },
+            { icon: Crown, label: "Premium", value: "3.4K", gradient: "from-pink-400 to-purple-600" },
+          ].map((stat, i) => (
+            <div key={i} className="p-6 bg-white rounded-3xl shadow-xl hover:scale-105 transition-all relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className={`w-14 h-14 bg-gradient-to-br ${stat.gradient} rounded-full flex items-center justify-center mb-4 relative z-10 shadow-lg`}>
+                <stat.icon className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-1 relative z-10">{stat.value}</p>
+              <p className="text-sm text-gray-500 relative z-10">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </ShowcaseSection>
 
-      {/* Manga Panel Grid - asymmetric layout like manga pages */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Ribbon title */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <div className="px-10 py-2 bg-[#c4b5fd]/15 rounded-sm relative">
-                <div className="absolute -left-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)", background: "rgba(196,181,253,0.1)" }} />
-                <div className="absolute -right-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(0 0, 0 100%, 100% 50%)", background: "rgba(196,181,253,0.1)" }} />
-                <span className="text-[#c4b5fd] font-sans font-medium text-sm tracking-widest uppercase">Manga Panels</span>
+      <ShowcaseSection title="Color Palette" subtitle="Pastel dreams" className="py-20 px-6 bg-white/50">
+        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Typography" subtitle="Romantic fonts" className="py-20 px-6">
+        <div className="max-w-4xl mx-auto space-y-8 text-center">
+          {[
+            { text: "✨ Magical Title ✨", size: "text-6xl", gradient: "from-pink-500 via-purple-500 to-pink-500" },
+            { text: "Romantic Heading", size: "text-4xl", gradient: "from-purple-400 to-pink-400" },
+            { text: "Dreamy body text for beautiful stories", size: "text-xl", gradient: "from-gray-600 to-gray-700" },
+          ].map((item, i) => (
+            <div key={i} className="p-8 bg-white rounded-3xl shadow-lg">
+              <p className={`${item.size} font-bold text-transparent bg-clip-text bg-gradient-to-r ${item.gradient}`}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Buttons" subtitle="Lovely interactions" className="py-20 px-6 bg-white/50">
+        <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
+          {[
+            { label: "♥ Like", gradient: "from-pink-400 to-pink-600" },
+            { label: "✨ Magic", gradient: "from-purple-400 to-purple-600" },
+            { label: "⭐ Favorite", gradient: "from-yellow-400 to-yellow-600" },
+            { label: "👑 Premium", gradient: "from-pink-400 to-purple-600" },
+          ].map((btn, i) => (
+            <button key={i} className={`px-8 py-4 bg-gradient-to-r ${btn.gradient} text-white font-bold rounded-full shadow-xl hover:scale-110 hover:shadow-2xl transition-all`}>
+              {btn.label}
+            </button>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Cards" subtitle="Story panels" className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+          {[
+            { title: "First Love", desc: "Heart-fluttering moments", gradient: "from-pink-100 to-pink-200", icon: Heart },
+            { title: "Magic Power", desc: "Transformation sequence", gradient: "from-purple-100 to-purple-200", icon: Sparkles },
+            { title: "True Ending", desc: "Happily ever after", gradient: "from-yellow-100 to-yellow-200", icon: Star },
+          ].map((card, i) => (
+            <div key={i} className={`p-8 bg-gradient-to-br ${card.gradient} rounded-3xl shadow-xl hover:scale-105 hover:rotate-1 transition-all border-4 border-white relative overflow-hidden group`}>
+              <div className="absolute top-4 right-4">
+                <card.icon className="w-12 h-12 text-white/30 group-hover:scale-125 group-hover:rotate-12 transition-all" fill="currentColor" />
               </div>
+              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 mb-3">{card.title}</h3>
+              <p className="text-gray-600">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Tabs" subtitle="Story chapters" className="py-20 px-6 bg-white/50">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-pink-100">
+            <div className="flex p-2 bg-gradient-to-r from-pink-50 to-purple-50">
+              {tabs.map((tab, i) => (
+                <button key={i} onClick={() => setActiveTab(i)} className={`flex-1 px-6 py-4 rounded-2xl font-bold transition-all ${activeTab === i ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-xl scale-105' : 'text-gray-500 hover:bg-white'}`}>
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="p-10 min-h-[180px]">
+              {activeTab === 0 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4">♥ Love Story</h4><p className="text-gray-600">Sweet romance and heart-fluttering moments between characters</p></div>}
+              {activeTab === 1 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">✨ Magical Powers</h4><p className="text-gray-600">Transformation sequences and special abilities</p></div>}
+              {activeTab === 2 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-pink-500 mb-4">⭐ Dreams Come True</h4><p className="text-gray-600">Wishes fulfilled and happy endings achieved</p></div>}
             </div>
           </div>
+        </div>
+      </ShowcaseSection>
 
-          {/* Asymmetric manga panel grid */}
-          <div className="grid grid-cols-12 gap-3">
-            {/* Large panel left */}
-            <div className="col-span-12 md:col-span-7 row-span-2 bg-[#fff5f7] border-2 border-[#ffb7c5]/20 rounded-2xl p-8 relative overflow-hidden min-h-[280px] flex flex-col justify-end">
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: "radial-gradient(circle, #ffb7c5 0.5px, transparent 0.5px)",
-                  backgroundSize: "8px 8px",
-                  opacity: 0.06,
-                }}
-              />
-              <div className="absolute top-4 right-4">
-                <Sparkles className="w-6 h-6 text-[#fde68a]/50" />
-              </div>
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-[#ffb7c5]/20 rounded-full flex items-center justify-center mb-4">
-                  <Heart className="w-7 h-7 text-[#ffb7c5]" />
-                </div>
-                <h3 className="text-2xl font-sans font-bold text-[#ffb7c5] mb-2">
-                  Romance Arc
-                </h3>
-                <p className="text-[#4a5568]/50 font-sans text-sm leading-relaxed max-w-md">
-                  A love story told through cherry blossom seasons, where every glance holds a thousand words unspoken.
-                </p>
-              </div>
+      <ShowcaseSection title="Accordion" subtitle="Story details" className="py-20 px-6">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {accordionItems.map((item, i) => (
+            <div key={i} className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-pink-100">
+              <button onClick={() => setOpenAccordion(openAccordion === i ? null : i)} className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-pink-50 transition-colors">
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">{item.title}</span>
+                {openAccordion === i ? <ChevronUp className="w-6 h-6 text-pink-400" /> : <ChevronDown className="w-6 h-6 text-pink-400" />}
+              </button>
+              {openAccordion === i && <div className="px-6 pb-6 bg-gradient-to-br from-pink-50 to-purple-50"><p className="text-gray-600 leading-relaxed">{item.content}</p></div>}
             </div>
+          ))}
+        </div>
+      </ShowcaseSection>
 
-            {/* Top-right small panel */}
-            <div className="col-span-6 md:col-span-5 bg-[#fff5f7] border-2 border-[#c4b5fd]/20 rounded-2xl p-6 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <Star className="w-5 h-5 text-[#fde68a]/50" />
-              </div>
-              <div className="w-10 h-10 bg-[#c4b5fd]/20 rounded-full flex items-center justify-center mb-3">
-                <Star className="w-5 h-5 text-[#c4b5fd]" />
-              </div>
-              <h3 className="text-lg font-sans font-bold text-[#c4b5fd] mb-1">Sparkle Effect</h3>
-              <p className="text-[#4a5568]/40 font-sans text-xs leading-relaxed">Every moment shines with possibility</p>
-            </div>
-
-            {/* Bottom-right small panel */}
-            <div className="col-span-6 md:col-span-5 bg-[#fff5f7] border-2 border-[#fde68a]/30 rounded-2xl p-6 relative overflow-hidden">
-              <div className="w-10 h-10 bg-[#fde68a]/20 rounded-full flex items-center justify-center mb-3">
-                <Flower2 className="w-5 h-5 text-[#fde68a]" />
-              </div>
-              <h3 className="text-lg font-sans font-bold text-[#fde68a] mb-1">Bloom</h3>
-              <p className="text-[#4a5568]/40 font-sans text-xs leading-relaxed">Petals dance in the spring breeze</p>
-            </div>
-
-            {/* Bottom wide panel */}
-            <div className="col-span-12 bg-gradient-to-r from-[#ffb7c5]/10 via-[#c4b5fd]/10 to-[#fecdd3]/10 border-2 border-[#fecdd3]/20 rounded-2xl p-6 flex items-center gap-6">
-              <div className="w-10 h-10 bg-[#fecdd3]/20 rounded-full flex items-center justify-center shrink-0">
-                <BookOpen className="w-5 h-5 text-[#fecdd3]" />
+      <ShowcaseSection title="Alerts" subtitle="Sweet notifications" className="py-20 px-6 bg-white/50">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            { icon: Check, label: "Success", desc: "Your wish has been granted! ✨", gradient: "from-green-400 to-green-600" },
+            { icon: AlertTriangle, label: "Notice", desc: "Something needs your attention! 💫", gradient: "from-yellow-400 to-yellow-600" },
+            { icon: X, label: "Error", desc: "Oops! Magic spell failed! 💔", gradient: "from-red-400 to-red-600" },
+            { icon: Info, label: "Info", desc: "New message from your destiny! 💕", gradient: "from-blue-400 to-blue-600" },
+          ].map((alert, i) => (
+            <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-xl hover:scale-105 transition-all border-2 border-pink-100">
+              <div className={`w-12 h-12 bg-gradient-to-br ${alert.gradient} rounded-full flex items-center justify-center shadow-lg`}>
+                <alert.icon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-sans font-bold text-[#fecdd3] mb-1">The Story Continues...</h3>
-                <p className="text-[#4a5568]/40 font-sans text-xs leading-relaxed">Each chapter reveals new feelings, new connections, new possibilities waiting to unfold.</p>
+                <p className={`font-bold text-transparent bg-clip-text bg-gradient-to-r ${alert.gradient}`}>{alert.label}</p>
+                <p className="text-gray-600 text-sm">{alert.desc}</p>
               </div>
             </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Toggle" subtitle="Magical switches" className="py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-100 space-y-6">
+            {[
+              { label: "Sparkle Effects", desc: "Show magical sparkles", gradient: "from-pink-400 to-pink-600" },
+              { label: "Petal Animation", desc: "Floating flower petals", gradient: "from-purple-400 to-purple-600" },
+              { label: "Heart Reactions", desc: "Lovely heart effects", gradient: "from-red-400 to-pink-600" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center justify-between py-4 border-b-2 border-pink-100 last:border-b-0">
+                <div>
+                  <p className="font-bold text-gray-800">{item.label}</p>
+                  <p className="text-sm text-gray-500">{item.desc}</p>
+                </div>
+                <button
+                  onClick={() => { const newStates = [...toggleStates]; newStates[i] = !newStates[i]; setToggleStates(newStates); }}
+                  className={`relative w-16 h-9 rounded-full transition-all shadow-lg ${toggleStates[i] ? `bg-gradient-to-r ${item.gradient}` : 'bg-gray-200'}`}
+                >
+                  <span className={`absolute top-1 w-7 h-7 bg-white rounded-full shadow-md transition-all flex items-center justify-center ${toggleStates[i] ? 'left-8' : 'left-1'}`}>
+                    {toggleStates[i] && <Heart className="w-4 h-4 text-pink-500" fill="currentColor" />}
+                  </span>
+                </button>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Buttons showcase */}
-      <ShowcaseSection
-        title=""
-        subtitle=""
-        className="relative z-10 py-8 px-6"
-        titleClassName="hidden"
-        subtitleClassName="hidden"
-      >
-        <div className="max-w-4xl mx-auto">
-          {/* Ribbon title */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <div className="px-10 py-2 bg-[#ffb7c5]/15 rounded-sm relative">
-                <div className="absolute -left-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)", background: "rgba(255,183,197,0.1)" }} />
-                <div className="absolute -right-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(0 0, 0 100%, 100% 50%)", background: "rgba(255,183,197,0.1)" }} />
-                <span className="text-[#ffb7c5] font-sans font-medium text-sm tracking-widest uppercase">Buttons</span>
+      <ShowcaseSection title="Progress" subtitle="Loading magic" className="py-20 px-6 bg-white/50">
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-100 space-y-8">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-bold text-gray-800">Magical Power Charging ✨</p>
+                <p className="text-sm text-pink-500 font-bold">{progress}%</p>
+              </div>
+              <div className="h-4 bg-pink-100 rounded-full overflow-hidden shadow-inner">
+                <div className="h-full bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 transition-all duration-500 rounded-full shadow-lg" style={{ width: `${progress}%` }} />
               </div>
             </div>
-          </div>
-
-          <div className="p-8 bg-white/80 border-2 border-[#ffb7c5]/15 rounded-3xl">
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button className="px-7 py-3 bg-[#ffb7c5] text-white font-sans font-medium rounded-full shadow-[0_4px_15px_#ffb7c560] hover:scale-105 hover:shadow-[0_6px_20px_#ffb7c580] transition-all duration-300">
-                Sakura
-              </button>
-              <button className="px-7 py-3 bg-[#c4b5fd] text-white font-sans font-medium rounded-full shadow-[0_4px_15px_#c4b5fd60] hover:scale-105 hover:shadow-[0_6px_20px_#c4b5fd80] transition-all duration-300">
-                Lavender
-              </button>
-              <button className="px-7 py-3 bg-transparent text-[#ffb7c5] border-2 border-[#ffb7c5]/40 font-sans font-medium rounded-full hover:bg-[#ffb7c5] hover:text-white hover:border-[#ffb7c5] transition-all duration-300">
-                Outline
-              </button>
-              <button className="px-7 py-3 bg-[#fde68a] text-[#4a5568] font-sans font-medium rounded-full shadow-[0_4px_15px_#fde68a60] hover:scale-105 hover:shadow-[0_6px_20px_#fde68a80] transition-all duration-300">
-                Gold
-              </button>
-              <button className="px-7 py-3 bg-[#fecdd3] text-[#4a5568] font-sans font-medium rounded-full shadow-[0_2px_10px_#fecdd320] hover:scale-105 transition-all duration-300">
-                Rose
-              </button>
+            <div>
+              <p className="font-bold text-gray-800 mb-3">Story Progress</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[100, 100, progress, 0].map((val, i) => (
+                  <div key={i}>
+                    <div className="h-3 bg-pink-100 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full transition-all ${val === 100 ? 'bg-gradient-to-r from-green-400 to-green-600' : val > 0 ? 'bg-gradient-to-r from-pink-400 to-purple-400' : ''}`} style={{ width: `${val}%` }} />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1 text-center">Ch.{i + 1}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-4 pt-4 border-t-2 border-pink-100">
+              <button onClick={() => setProgress(Math.max(0, progress - 10))} className="px-6 py-3 border-2 border-pink-300 text-pink-600 rounded-full hover:bg-pink-50 transition-all font-bold">Decrease</button>
+              <button onClick={() => setProgress(Math.min(100, progress + 10))} className="px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-full hover:shadow-xl transition-all font-bold">Increase</button>
             </div>
           </div>
         </div>
       </ShowcaseSection>
 
-      {/* Love Letter form with lace border */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-md mx-auto">
-          {/* Ribbon title */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <div className="px-10 py-2 bg-[#fecdd3]/15 rounded-sm relative">
-                <div className="absolute -left-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)", background: "rgba(254,205,211,0.1)" }} />
-                <div className="absolute -right-3 top-0 bottom-0 w-3" style={{ clipPath: "polygon(0 0, 0 100%, 100% 50%)", background: "rgba(254,205,211,0.1)" }} />
-                <span className="text-[#fecdd3] font-sans font-medium text-sm tracking-widest uppercase">Love Letter</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Form card with lace top border */}
-          <div className="relative">
-            {/* Lace scallop top border */}
-            <div className="absolute -top-2 left-4 right-4 h-4 overflow-hidden">
-              <div
-                className="w-full h-8"
-                style={{
-                  backgroundImage: "radial-gradient(circle at 50% 100%, white 6px, transparent 6px), radial-gradient(circle at 50% 100%, #ffb7c5 7px, transparent 7px)",
-                  backgroundSize: "16px 8px",
-                  backgroundPosition: "0 0",
-                  opacity: 0.3,
-                }}
-              />
-            </div>
-
-            <div className="bg-white/90 border-2 border-[#ffb7c5]/20 rounded-3xl p-8 pt-10 relative overflow-hidden">
-              {/* Flower corners on the form */}
-              <div className="absolute top-3 left-3">
-                <Flower2 className="w-4 h-4 text-[#ffb7c5]/25" />
-              </div>
-              <div className="absolute top-3 right-3">
-                <Flower2 className="w-4 h-4 text-[#c4b5fd]/25" />
-              </div>
-
-              <div className="text-center mb-6">
-                <div className="w-14 h-14 mx-auto bg-[#ffb7c5]/15 rounded-full flex items-center justify-center mb-3">
-                  <PenTool className="w-7 h-7 text-[#ffb7c5]" />
-                </div>
-                <h3 className="text-xl font-sans font-bold text-[#ffb7c5]">My Diary</h3>
-                <p className="text-[#4a5568]/30 font-sans text-xs mt-1">Write your heart</p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-sans text-[#ffb7c5] mb-2">Name</label>
-                  <input
-                    type="text"
-                    placeholder="Your name..."
-                    className="w-full px-5 py-3 bg-[#fff5f7] border border-[#ffb7c5]/25 rounded-full text-[#4a5568] placeholder-[#ffb7c5]/40 font-sans focus:border-[#ffb7c5] focus:shadow-[0_0_12px_#ffb7c540] focus:outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-sans text-[#c4b5fd] mb-2">Message</label>
-                  <input
-                    type="text"
-                    placeholder="Your feelings..."
-                    className="w-full px-5 py-3 bg-[#fff5f7] border border-[#c4b5fd]/25 rounded-full text-[#4a5568] placeholder-[#c4b5fd]/40 font-sans focus:border-[#c4b5fd] focus:shadow-[0_0_12px_#c4b5fd40] focus:outline-none transition-all"
-                  />
-                </div>
-                <button className="w-full px-7 py-3 bg-[#ffb7c5] text-white font-sans font-medium rounded-full shadow-[0_4px_15px_#ffb7c560] hover:scale-105 hover:shadow-[0_6px_20px_#ffb7c580] transition-all duration-300">
-                  Send with Love
-                </button>
-              </div>
-            </div>
-
-            {/* Lace scallop bottom border */}
-            <div className="absolute -bottom-2 left-4 right-4 h-4 overflow-hidden rotate-180">
-              <div
-                className="w-full h-8"
-                style={{
-                  backgroundImage: "radial-gradient(circle at 50% 100%, white 6px, transparent 6px), radial-gradient(circle at 50% 100%, #ffb7c5 7px, transparent 7px)",
-                  backgroundSize: "16px 8px",
-                  backgroundPosition: "0 0",
-                  opacity: 0.3,
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer with heart accent */}
-      <footer className="relative z-10 py-8 px-6 border-t border-[#ffb7c5]/15">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <p className="text-[#4a5568]/30 text-sm font-sans">
-            Shoujo Manga Showcase
-          </p>
-          <div className="flex items-center gap-2">
-            <Heart className="w-3 h-3 text-[#ffb7c5]/40" />
-            <Link href="/" className="text-[#ffb7c5]/50 hover:text-[#ffb7c5]/80 transition-colors font-sans text-sm">
-              StyleKit
-            </Link>
-          </div>
-        </div>
+      <footer className="border-t-4 border-pink-200 py-12 px-6 text-center bg-white/80">
+        <p className="text-gray-500">✨ Shoujo Manga Style © 2026 - Made with love and magic ♥</p>
       </footer>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
-

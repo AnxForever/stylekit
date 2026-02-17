@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Outrun Showcase - StyleKit",
-  description: "Live demonstration of Outrun aesthetic with neon glow, sunset gradients, grid floors, and retro-futuristic vibes.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function OutrunShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Outrun Retro-Future Style Showcase",
+  description: "80s sunset gradients, chrome typography and grid horizons",
+};

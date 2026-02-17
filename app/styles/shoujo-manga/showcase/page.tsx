@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Shoujo Manga Showcase - StyleKit",
-  description: "Live demonstration of Shoujo Manga romantic aesthetic with cherry blossom petals, sparkles, and soft pink tones.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function ShoujoMangaShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Shoujo Manga Style Showcase",
+  description: "Dreamy anime aesthetic with sparkles and flowers showcase",
+};

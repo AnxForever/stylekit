@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Cyber Chinese Showcase - StyleKit",
-  description: "Live demonstration of Cyber Chinese aesthetic with neon-infused traditional Chinese elements, vermilion and gold palette, and cyberpunk fusion.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function CyberChineseShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Cyber Chinese Style Showcase",
+  description: "Traditional Chinese culture fused with cyberpunk neon aesthetics",
+};

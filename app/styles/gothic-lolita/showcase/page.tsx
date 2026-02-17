@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Gothic Lolita Showcase - StyleKit",
-  description: "Live demonstration of Gothic Lolita aesthetic with Victorian lace, dark elegance, ornate borders, and romantic dark palette.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function GothicLolitaShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Gothic Lolita Style Showcase",
+  description: "Victorian lace, dark ribbons and elegant porcelain doll aesthetics",
+};

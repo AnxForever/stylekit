@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Pixel Anime Showcase - StyleKit",
-  description: "Live demonstration of Pixel Anime style with 8-bit pixel art, retro game UI elements, and anime character aesthetics.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function PixelAnimeShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Pixel Anime Style Showcase",
+  description: "8-bit retro anime game aesthetic showcase",
+};

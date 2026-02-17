@@ -1,421 +1,433 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Zap,
-  Triangle,
-  Hexagon,
-  Eye,
-  Scan,
-  Radio,
-  Orbit,
-  Grid3X3,
+import { 
+  ArrowLeft, Zap, Heart, Star, Sparkles, ChevronDown, ChevronUp,
+  Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Music
 } from "lucide-react";
 import {
+  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
 } from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Fluorescent Green", hex: "#39ff14", bg: "bg-[#39ff14]" },
-  { name: "Acid Yellow", hex: "#e6ff00", bg: "bg-[#e6ff00]" },
-  { name: "Electric Purple", hex: "#a020f0", bg: "bg-[#a020f0]" },
-  { name: "Cyber Pink", hex: "#ff6ec7", bg: "bg-[#ff6ec7]" },
-  { name: "Void Black", hex: "#0a0a0a", bg: "bg-[#0a0a0a]" },
-];
-
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(75);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Acid Green", value: "#00ff41", description: "Primary neon" },
+    { name: "Electric Pink", value: "#ff006e", description: "Accent bright" },
+    { name: "Cyber Yellow", value: "#ffea00", description: "Warning neon" },
+    { name: "Toxic Purple", value: "#b900ff", description: "Secondary" },
+    { name: "Deep Black", value: "#0a0a0a", description: "Background" },
+  ];
+
+  const tabs = ["Rave", "Psyche", "Trip"];
+
+  const accordionItems = [
+    { title: "What is Acid Graphics?", content: "Acid Graphics is a bold, psychedelic design style inspired by 90s rave culture, featuring neon colors, distorted typography, and trippy visual effects that create an intense, energetic atmosphere." },
+    { title: "Core Elements", content: "High saturation fluorescent colors, warped and melted text, liquid flowing shapes, RGB chromatic aberration, and hallucinogenic patterns that push visual boundaries." },
+    { title: "Best Use Cases", content: "Perfect for music festivals, electronic music brands, youth culture products, experimental art projects, and any brand wanting to make a bold, unforgettable statement." },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative overflow-hidden">
-      {/* Op-Art Checkerboard background pattern */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `repeating-conic-gradient(#39ff14 0% 25%, transparent 0% 50%)`,
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* 3D Wireframe perspective grid */}
-      <div className="fixed bottom-0 left-0 right-0 h-[40vh] pointer-events-none overflow-hidden opacity-[0.06]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `linear-gradient(#39ff14 1px, transparent 1px), linear-gradient(90deg, #39ff14 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-            transform: "perspective(500px) rotateX(60deg)",
-            transformOrigin: "bottom center",
-          }}
-        />
-      </div>
-
-      {/* Scanline overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-[1]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57, 255, 20, 0.02) 2px, rgba(57, 255, 20, 0.02) 4px)`,
-        }}
-      />
-
-      {/* Navigation - angular, asymmetric */}
-      <nav className="relative z-10 px-6 py-4 border-b border-[#39ff14]/20">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/acid-graphics"
-            className="flex items-center gap-2 text-[#39ff14] hover:text-[#e6ff00] transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-mono font-bold uppercase tracking-widest text-xs">
-              {"//BACK"}
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-[#39ff14] animate-pulse" />
-            <span className="font-mono font-black text-sm text-[#39ff14] uppercase tracking-[0.3em]">
-              ACID_GFX_v2.0
-            </span>
-            <div className="w-2 h-2 bg-[#a020f0] animate-pulse" />
-          </div>
-          <Link
-            href="/styles"
-            className="px-4 py-2 border border-[#39ff14]/40 text-[#39ff14] font-mono font-bold uppercase tracking-widest rounded-none text-xs hover:bg-[#39ff14] hover:text-[#0a0a0a] transition-all duration-150"
-          >
-            [ALL]
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero - Chaotic overlapping layout */}
-      <section className="relative z-10 pt-16 pb-24 px-6">
-        <div className="max-w-7xl mx-auto relative">
-          {/* Chrome layered title */}
-          <div className="relative mb-4">
-            <h1 className="text-[8rem] md:text-[14rem] font-mono font-black text-[#a020f0] uppercase leading-none tracking-tighter absolute top-2 left-2 opacity-30 select-none">
-              ACID
-            </h1>
-            <h1 className="text-[8rem] md:text-[14rem] font-mono font-black text-[#ff6ec7] uppercase leading-none tracking-tighter absolute top-[-2px] left-[-2px] opacity-30 select-none">
-              ACID
-            </h1>
-            <h1 className="text-[8rem] md:text-[14rem] font-mono font-black text-[#e6ff00] uppercase leading-none tracking-tighter absolute top-1 left-[-1px] opacity-25 select-none">
-              ACID
-            </h1>
-            <h1 className="text-[8rem] md:text-[14rem] font-mono font-black text-[#39ff14] uppercase leading-none tracking-tighter relative">
-              ACID
-            </h1>
-          </div>
-
-          {/* Skewed subtitle block */}
-          <div className="transform -skew-x-6 bg-[#a020f0]/10 border-l-4 border-[#a020f0] px-8 py-4 mb-8 max-w-xl">
-            <p className="transform skew-x-6 font-mono text-[#39ff14]/50 uppercase tracking-[0.5em] text-sm">
-              Distort // Warp // Dissolve
-            </p>
-          </div>
-
-          {/* CTA buttons - overlapping, at angles */}
-          <div className="flex flex-wrap gap-4 items-start">
-            <button className="px-10 py-4 bg-[#39ff14] text-[#0a0a0a] font-mono font-black uppercase tracking-widest rounded-none border-2 border-[#39ff14] shadow-[6px_6px_0px_#a020f0] hover:shadow-[2px_2px_0px_#a020f0] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-100">
-              ACTIVATE
-            </button>
-            <button className="px-10 py-4 bg-transparent text-[#ff6ec7] font-mono font-bold uppercase tracking-widest rounded-none border-2 border-[#ff6ec7] shadow-[6px_6px_0px_#e6ff00] hover:shadow-[2px_2px_0px_#e6ff00] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-100 transform -rotate-1">
-              DISSOLVE
-            </button>
-          </div>
-
-          {/* Floating skewed info card overlapping hero */}
-          <div className="hidden md:block absolute top-12 right-0 w-64 transform rotate-3 bg-[#0a0a0a] border-2 border-[#e6ff00] p-5 shadow-[8px_8px_0px_#ff6ec7]">
-            <div className="flex items-center gap-2 mb-2">
-              <Radio className="w-4 h-4 text-[#e6ff00]" />
-              <span className="font-mono text-xs text-[#e6ff00] uppercase tracking-widest">
-                FREQ_LOG
-              </span>
-            </div>
-            <p className="font-mono text-[#39ff14]/40 text-xs leading-relaxed">
-              Chrome gradients / Iridescent surfaces / Op-Art patterns / Warped
-              typography / Psychedelic distortion
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Op-Art Checkerboard Pattern Divider */}
-      <div className="relative z-10 h-16 overflow-hidden">
-        <div className="flex h-full">
-          {Array.from({ length: 24 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 h-full"
-              style={{
-                background:
-                  i % 2 === 0
-                    ? `repeating-conic-gradient(#39ff14 0% 25%, transparent 0% 50%)`
-                    : `repeating-conic-gradient(#a020f0 0% 25%, transparent 0% 50%)`,
-                backgroundSize: "8px 8px",
-                opacity: 0.15 - i * 0.004,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Color Palette - Skewed layout */}
-      <ShowcaseSection
-        title="FLUORESCENT_PALETTE"
-        subtitle="HIGH_SAT_SPECTRUM"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-mono font-black text-[#39ff14] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#a020f0]/40 font-mono uppercase tracking-widest mb-10 text-center text-sm"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border-2 border-[#39ff14]/40 bg-[#0a0a0a] rounded-none shadow-[4px_4px_0px_#a020f0] hover:shadow-[6px_6px_0px_#ff6ec7] transition-all duration-150"
-            labelClassName="font-mono font-bold text-sm text-[#39ff14] uppercase"
-            hexClassName="text-xs text-[#a020f0] font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards - Overlapping skewed grid, NOT standard 3-col */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-mono font-black text-[#e6ff00] uppercase tracking-widest mb-4">
-            DATA_BLOCKS
-          </h2>
-          <p className="text-[#39ff14]/30 font-mono uppercase tracking-widest mb-12 text-sm">
-            SKEWED_INTERFACE_MODULES
-          </p>
-
-          {/* Overlapping card grid with varying angles */}
-          <div className="relative grid md:grid-cols-2 gap-0 md:gap-0">
-            {/* Card 1 - skewed left */}
-            <div className="p-8 bg-[#0a0a0a] border-2 border-[#39ff14] rounded-none shadow-[8px_8px_0px_#a020f0] transform -rotate-1 hover:rotate-0 hover:shadow-[12px_12px_0px_#a020f0] transition-all duration-150 relative z-10 mb-6 md:mb-0 md:-mr-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 border-2 border-[#39ff14] flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-[#39ff14]" />
-                </div>
-                <div className="flex-1 h-px bg-[#39ff14]/20" />
-                <span className="font-mono text-[10px] text-[#39ff14]/30 uppercase">
-                  MOD_01
-                </span>
-              </div>
-              <h3 className="text-2xl font-mono font-black text-[#e6ff00] uppercase mb-2">
-                WARP_FIELD
-              </h3>
-              <p className="text-[#39ff14]/40 font-mono text-sm">
-                Distort reality through liquid chrome forms and iridescent
-                surface tension
-              </p>
-            </div>
-
-            {/* Card 2 - skewed right */}
-            <div className="p-8 bg-[#0a0a0a] border-2 border-[#a020f0] rounded-none shadow-[8px_8px_0px_#39ff14] transform rotate-1 hover:rotate-0 hover:shadow-[12px_12px_0px_#39ff14] transition-all duration-150 relative z-20 md:-ml-4 mb-6 md:mb-0">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 border-2 border-[#a020f0] flex items-center justify-center">
-                  <Orbit className="w-5 h-5 text-[#a020f0]" />
-                </div>
-                <div className="flex-1 h-px bg-[#a020f0]/20" />
-                <span className="font-mono text-[10px] text-[#a020f0]/30 uppercase">
-                  MOD_02
-                </span>
-              </div>
-              <h3 className="text-2xl font-mono font-black text-[#ff6ec7] uppercase mb-2">
-                DISSOLVE_MATRIX
-              </h3>
-              <p className="text-[#a020f0]/40 font-mono text-sm">
-                Melt boundaries between dimensions with psychedelic frequency
-                modulation
-              </p>
-            </div>
-
-            {/* Card 3 - large, spans full width, different angle */}
-            <div className="md:col-span-2 p-8 bg-[#0a0a0a] border-2 border-[#ff6ec7] rounded-none shadow-[8px_8px_0px_#e6ff00] transform -rotate-[0.5deg] hover:rotate-0 hover:shadow-[12px_12px_0px_#e6ff00] transition-all duration-150 relative z-30 mt-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 border-2 border-[#ff6ec7] flex items-center justify-center">
-                  <Scan className="w-5 h-5 text-[#ff6ec7]" />
-                </div>
-                <div className="flex-1 h-px bg-[#ff6ec7]/20" />
-                <span className="font-mono text-[10px] text-[#ff6ec7]/30 uppercase">
-                  MOD_03
-                </span>
-              </div>
-              <div className="md:flex md:items-start md:justify-between md:gap-12">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-mono font-black text-[#39ff14] uppercase mb-2">
-                    FLUX_ENGINE
-                  </h3>
-                  <p className="text-[#ff6ec7]/40 font-mono text-sm max-w-lg">
-                    Channel the psychedelic frequency through Op-Art interference
-                    patterns and chrome reflections across void space
-                  </p>
-                </div>
-                <div className="mt-4 md:mt-0 flex items-center gap-2">
-                  <div className="w-3 h-3 bg-[#39ff14]" />
-                  <div className="w-3 h-3 bg-[#a020f0]" />
-                  <div className="w-3 h-3 bg-[#ff6ec7]" />
-                  <div className="w-3 h-3 bg-[#e6ff00]" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Op-Art pattern divider */}
-      <div className="relative z-10 py-4 overflow-hidden">
-        <div className="flex justify-center gap-[2px]">
-          {Array.from({ length: 40 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-3 h-12"
-              style={{
-                backgroundColor:
-                  i % 4 === 0
-                    ? "#39ff14"
-                    : i % 4 === 1
-                      ? "#a020f0"
-                      : i % 4 === 2
-                        ? "#ff6ec7"
-                        : "#e6ff00",
-                opacity: 0.1 + Math.sin(i * 0.3) * 0.05,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Buttons Section */}
-      <ShowcaseSection
-        title="CONTROLS"
-        subtitle="NEON_GLOW_BORDERS"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-mono font-black text-[#39ff14] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#39ff14]/30 font-mono uppercase tracking-widest mb-10 text-center text-sm"
-      >
-        <div className="max-w-5xl mx-auto">
-          <div className="p-8 bg-[#0a0a0a] border-2 border-[#39ff14]/30 rounded-none">
-            <div className="flex items-center gap-3 mb-8">
-              <Grid3X3 className="w-4 h-4 text-[#a020f0]" />
-              <span className="font-mono text-xs text-[#a020f0] uppercase tracking-widest">
-                VARIANT_MATRIX
-              </span>
-              <div className="flex-1 h-px bg-[#a020f0]/10" />
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-3 bg-[#39ff14] text-[#0a0a0a] font-mono font-bold uppercase tracking-widest rounded-none border-2 border-[#39ff14] shadow-[4px_4px_0px_#a020f0] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#a020f0] transition-all duration-100">
-                PRIMARY
-              </button>
-              <button className="px-8 py-3 bg-[#a020f0] text-[#39ff14] font-mono font-bold uppercase tracking-widest rounded-none border-2 border-[#a020f0] shadow-[4px_4px_0px_#e6ff00] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#e6ff00] transition-all duration-100">
-                SECONDARY
-              </button>
-              <button className="px-8 py-3 bg-transparent text-[#39ff14] font-mono font-bold uppercase tracking-widest rounded-none border-2 border-[#39ff14] shadow-[4px_4px_0px_#ff6ec7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#ff6ec7] hover:bg-[#39ff14]/5 transition-all duration-100">
-                OUTLINE
-              </button>
-              <button className="px-8 py-3 bg-[#ff6ec7] text-[#0a0a0a] font-mono font-bold uppercase tracking-widest rounded-none border-2 border-[#ff6ec7] shadow-[4px_4px_0px_#39ff14] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#39ff14] transition-all duration-100">
-                CYBER
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* 3D Wireframe Grid Section */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-mono font-black text-[#a020f0] uppercase tracking-widest mb-4">
-            WIREFRAME_GRID
-          </h2>
-          <p className="text-[#39ff14]/30 font-mono uppercase tracking-widest mb-12 text-sm">
-            3D_PERSPECTIVE_SPACE
-          </p>
-          <div
-            className="relative h-48 md:h-64 border-2 border-[#39ff14]/20 rounded-none overflow-hidden"
-            style={{
-              backgroundImage: `linear-gradient(#39ff14 1px, transparent 1px), linear-gradient(90deg, #39ff14 1px, transparent 1px)`,
-              backgroundSize: "40px 40px",
-              transform: "perspective(800px) rotateX(45deg)",
-              transformOrigin: "bottom center",
-              opacity: 0.15,
-            }}
-          />
-          <div className="mt-6 flex items-center gap-4">
-            <Hexagon className="w-5 h-5 text-[#e6ff00]" />
-            <p className="font-mono text-[#e6ff00]/40 text-xs uppercase tracking-widest">
-              Infinite perspective grid -- vanishing point convergence
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Form - Terminal aesthetic */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-lg mx-auto">
-          <div className="bg-[#0a0a0a] border-2 border-[#39ff14] rounded-none shadow-[8px_8px_0px_#a020f0]">
-            {/* Terminal title bar */}
-            <div className="flex items-center justify-between px-6 py-3 border-b border-[#39ff14]/20">
-              <div className="flex gap-2">
-                <div className="w-2 h-2 bg-[#ff6ec7]" />
-                <div className="w-2 h-2 bg-[#e6ff00]" />
-                <div className="w-2 h-2 bg-[#39ff14]" />
-              </div>
-              <span className="font-mono text-[10px] text-[#39ff14]/30 uppercase tracking-widest">
-                ACCESS_TERMINAL
-              </span>
-              <Eye className="w-4 h-4 text-[#a020f0]/40" />
-            </div>
-
-            <div className="p-8">
-              <div className="flex items-center gap-3 mb-8">
-                <Triangle className="w-5 h-5 text-[#a020f0]" />
-                <h3 className="text-xl font-mono font-black text-[#39ff14] uppercase tracking-widest">
-                  ACCESS_PORT
-                </h3>
-              </div>
-
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-xs font-mono font-bold text-[#a020f0] uppercase tracking-widest mb-2">
-                    HANDLE
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="ENTER_HANDLE..."
-                    className="w-full px-4 py-3 bg-[#0a0a0a] border-2 border-[#39ff14]/40 rounded-none text-[#39ff14] placeholder-[#39ff14]/20 font-mono focus:border-[#39ff14] focus:shadow-[0_0_10px_rgba(57,255,20,0.15)] focus:outline-none transition-all duration-150"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-mono font-bold text-[#ff6ec7] uppercase tracking-widest mb-2">
-                    SIGNAL
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="ENTER_SIGNAL..."
-                    className="w-full px-4 py-3 bg-[#0a0a0a] border-2 border-[#a020f0]/40 rounded-none text-[#a020f0] placeholder-[#a020f0]/20 font-mono focus:border-[#a020f0] focus:shadow-[0_0_10px_rgba(160,32,240,0.15)] focus:outline-none transition-all duration-150"
-                  />
-                </div>
-                <button className="w-full px-6 py-3 bg-[#39ff14] text-[#0a0a0a] font-mono font-black uppercase tracking-widest rounded-none border-2 border-[#39ff14] shadow-[4px_4px_0px_#a020f0] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#a020f0] transition-all duration-100">
-                  TRANSMIT
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 py-8 px-6 border-t border-[#39ff14]/15">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <p className="text-[#39ff14]/20 text-xs font-mono uppercase tracking-widest">
-            ACID_GFX // SHOWCASE
-          </p>
+    <div className="min-h-screen bg-black text-white">
+      {/* Header */}
+      <header className="border-b border-[#00ff41]/30 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/"
-            className="text-[#a020f0]/40 hover:text-[#a020f0] text-xs font-mono uppercase tracking-widest transition-colors"
+            className="flex items-center gap-2 text-[#00ff41] hover:text-[#ff006e] transition-colors group"
           >
-            StyleKit
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-black text-lg" style={{ fontFamily: 'Impact, sans-serif' }}>BACK TO STYLES</span>
           </Link>
+          <div className="flex gap-1">
+            <div className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-[#ff006e] animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 rounded-full bg-[#ffea00] animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+          </div>
         </div>
+      </header>
+
+      {/* Hero */}
+      <ShowcaseHero
+        title="ACID GRAPHICS"
+        subtitle="PSYCHEDELIC NEON STYLE"
+        description="High saturation fluorescent colors meet distorted typography in this trippy, rave-inspired aesthetic that breaks all the rules."
+        className="relative py-32 px-6 overflow-hidden bg-gradient-to-br from-black via-purple-950 to-black"
+        titleClassName="text-7xl md:text-9xl font-black mb-6 bg-gradient-to-r from-[#00ff41] via-[#ff006e] to-[#ffea00] text-transparent bg-clip-text animate-pulse"
+        subtitleClassName="text-2xl font-black tracking-[0.3em] text-[#b900ff] mb-8"
+        descriptionClassName="text-lg text-gray-300 leading-relaxed"
+      >
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-[#00ff41] rounded-full blur-[120px] animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-64 h-64 bg-[#ff006e] rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-[#b900ff] rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
+      </ShowcaseHero>
+
+      {/* Stats */}
+      <ShowcaseSection
+        title="ENERGY LEVELS"
+        subtitle="Maximum intensity metrics"
+        className="py-16 px-6 relative overflow-hidden"
+        titleClassName="text-5xl font-black text-[#00ff41] mb-4 text-center"
+        subtitleClassName="text-[#ff006e] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+          {[
+            { icon: Users, label: "Ravers", value: "999K", color: "#00ff41" },
+            { icon: TrendingUp, label: "Vibes", value: "+420%", color: "#ff006e" },
+            { icon: Eye, label: "Trips", value: "∞", color: "#ffea00" },
+            { icon: Music, label: "BPM", value: "174", color: "#b900ff" },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="p-6 bg-black/80 border-4 rounded-3xl hover:scale-105 transition-transform"
+              style={{ borderColor: stat.color, boxShadow: `0 0 30px ${stat.color}80` }}
+            >
+              <div 
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
+                style={{ backgroundColor: stat.color, boxShadow: `0 0 20px ${stat.color}` }}
+              >
+                <stat.icon className="w-7 h-7 text-black" />
+              </div>
+              <p className="text-4xl font-black mb-2" style={{ color: stat.color }}>{stat.value}</p>
+              <p className="text-sm text-gray-400 uppercase tracking-wider">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-1/4 w-2 h-full bg-gradient-to-b from-[#00ff41] to-transparent"></div>
+          <div className="absolute top-0 right-1/4 w-2 h-full bg-gradient-to-b from-[#ff006e] to-transparent"></div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Color Palette */}
+      <ShowcaseSection
+        title="TOXIC COLORS"
+        subtitle="Neon palette"
+        className="py-16 px-6 bg-gradient-to-b from-black to-purple-950"
+        titleClassName="text-5xl font-black text-[#ffea00] mb-4 text-center"
+        subtitleClassName="text-[#00ff41] mb-12 text-center uppercase tracking-widest"
+      >
+        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
+      </ShowcaseSection>
+
+      {/* Typography */}
+      <ShowcaseSection
+        title="WARPED TEXT"
+        subtitle="Distorted type system"
+        className="py-16 px-6"
+        titleClassName="text-5xl font-black text-[#b900ff] mb-4 text-center"
+        subtitleClassName="text-[#ffea00] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-4xl mx-auto space-y-8 text-center">
+          <div className="p-8 bg-black/60 border-2 border-[#00ff41] rounded-2xl" style={{ boxShadow: '0 0 40px #00ff4140' }}>
+            <h1 className="text-8xl font-black text-[#00ff41] mb-2" style={{ fontFamily: 'Impact, sans-serif', transform: 'scaleY(1.2)' }}>ACID</h1>
+            <p className="text-sm text-gray-400 uppercase tracking-[0.3em]">Display / Impact</p>
+          </div>
+          <div className="p-8 bg-black/60 border-2 border-[#ff006e] rounded-2xl" style={{ boxShadow: '0 0 40px #ff006e40' }}>
+            <h2 className="text-5xl font-black text-[#ff006e] mb-2" style={{ fontFamily: 'Impact, sans-serif', letterSpacing: '0.1em' }}>PSYCHEDELIC</h2>
+            <p className="text-sm text-gray-400 uppercase tracking-[0.3em]">Heading / Bold</p>
+          </div>
+          <div className="p-8 bg-black/60 border-2 border-[#ffea00] rounded-2xl" style={{ boxShadow: '0 0 40px #ffea0040' }}>
+            <p className="text-xl font-bold text-[#ffea00] mb-2">This is body text with maximum energy and neon glow effects</p>
+            <p className="text-sm text-gray-400 uppercase tracking-[0.3em]">Body / Regular</p>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Buttons */}
+      <ShowcaseSection
+        title="ACTION BUTTONS"
+        subtitle="Interactive elements"
+        className="py-16 px-6 bg-gradient-to-b from-purple-950 to-black"
+        titleClassName="text-5xl font-black text-[#00ff41] mb-4 text-center"
+        subtitleClassName="text-[#ff006e] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
+          <button className="px-8 py-4 bg-[#00ff41] text-black font-black text-lg rounded-full hover:scale-110 transition-transform" style={{ boxShadow: '0 0 30px #00ff41' }}>
+            PRIMARY
+          </button>
+          <button className="px-8 py-4 bg-[#ff006e] text-white font-black text-lg rounded-full hover:scale-110 transition-transform" style={{ boxShadow: '0 0 30px #ff006e' }}>
+            SECONDARY
+          </button>
+          <button className="px-8 py-4 bg-transparent border-4 border-[#ffea00] text-[#ffea00] font-black text-lg rounded-full hover:bg-[#ffea00] hover:text-black transition-all" style={{ boxShadow: '0 0 20px #ffea0080' }}>
+            OUTLINED
+          </button>
+          <button className="px-8 py-4 bg-gradient-to-r from-[#00ff41] via-[#ff006e] to-[#b900ff] text-white font-black text-lg rounded-full hover:scale-110 transition-transform animate-pulse">
+            GRADIENT
+          </button>
+        </div>
+      </ShowcaseSection>
+
+      {/* Cards */}
+      <ShowcaseSection
+        title="TRIPPY CARDS"
+        subtitle="Content blocks"
+        className="py-16 px-6"
+        titleClassName="text-5xl font-black text-[#ffea00] mb-4 text-center"
+        subtitleClassName="text-[#b900ff] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+          {[
+            { title: "NEON", desc: "Maximum saturation fluorescent colors", color: "#00ff41" },
+            { title: "DISTORT", desc: "Warped and melted typography effects", color: "#ff006e" },
+            { title: "PSYCHE", desc: "Hallucinogenic patterns and visuals", color: "#ffea00" },
+          ].map((card, i) => (
+            <div
+              key={i}
+              className="p-8 bg-black/80 border-4 rounded-3xl hover:scale-105 transition-transform"
+              style={{ borderColor: card.color, boxShadow: `0 0 40px ${card.color}60` }}
+            >
+              <h3 className="text-3xl font-black mb-4" style={{ color: card.color, fontFamily: 'Impact, sans-serif' }}>{card.title}</h3>
+              <p className="text-gray-300 leading-relaxed">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Tabs */}
+      <ShowcaseSection
+        title="TAB NAVIGATION"
+        subtitle="Content switching"
+        className="py-16 px-6 bg-gradient-to-b from-black to-purple-950"
+        titleClassName="text-5xl font-black text-[#ff006e] mb-4 text-center"
+        subtitleClassName="text-[#00ff41] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-black/80 border-4 border-[#b900ff] rounded-3xl overflow-hidden" style={{ boxShadow: '0 0 50px #b900ff60' }}>
+            <div className="flex border-b-4 border-[#b900ff]">
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTab(index)}
+                  className={`flex-1 px-6 py-4 font-black text-lg transition-all ${
+                    activeTab === index
+                      ? "bg-[#b900ff] text-white"
+                      : "text-[#b900ff] hover:bg-[#b900ff]/20"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="p-8 min-h-[150px]">
+              {activeTab === 0 && (
+                <div>
+                  <h4 className="text-2xl font-black text-[#00ff41] mb-3">Rave Culture</h4>
+                  <p className="text-gray-300">Born from 90s underground rave scenes, acid graphics capture the energy and psychedelic experience of electronic music culture.</p>
+                </div>
+              )}
+              {activeTab === 1 && (
+                <div>
+                  <h4 className="text-2xl font-black text-[#ff006e] mb-3">Psychedelic Art</h4>
+                  <p className="text-gray-300">Inspired by hallucinogenic visual experiences with distorted perspectives and intense color combinations.</p>
+                </div>
+              )}
+              {activeTab === 2 && (
+                <div>
+                  <h4 className="text-2xl font-black text-[#ffea00] mb-3">Visual Trip</h4>
+                  <p className="text-gray-300">Creates an immersive, mind-bending journey through bold typography and neon-soaked compositions.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Accordion */}
+      <ShowcaseSection
+        title="INFO DROPS"
+        subtitle="Expandable content"
+        className="py-16 px-6"
+        titleClassName="text-5xl font-black text-[#00ff41] mb-4 text-center"
+        subtitleClassName="text-[#ffea00] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {accordionItems.map((item, index) => (
+            <div
+              key={index}
+              className="bg-black/80 border-4 rounded-2xl overflow-hidden"
+              style={{ 
+                borderColor: index === 0 ? '#00ff41' : index === 1 ? '#ff006e' : '#ffea00',
+                boxShadow: `0 0 30px ${index === 0 ? '#00ff41' : index === 1 ? '#ff006e' : '#ffea00'}40`
+              }}
+            >
+              <button
+                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+              >
+                <span className="font-black text-lg" style={{ color: index === 0 ? '#00ff41' : index === 1 ? '#ff006e' : '#ffea00' }}>
+                  {item.title}
+                </span>
+                {openAccordion === index ? (
+                  <ChevronUp className="w-6 h-6" style={{ color: index === 0 ? '#00ff41' : index === 1 ? '#ff006e' : '#ffea00' }} />
+                ) : (
+                  <ChevronDown className="w-6 h-6" style={{ color: index === 0 ? '#00ff41' : index === 1 ? '#ff006e' : '#ffea00' }} />
+                )}
+              </button>
+              {openAccordion === index && (
+                <div className="px-6 pb-6">
+                  <p className="text-gray-300 leading-relaxed">{item.content}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Alerts */}
+      <ShowcaseSection
+        title="NOTIFICATIONS"
+        subtitle="System messages"
+        className="py-16 px-6 bg-gradient-to-b from-purple-950 to-black"
+        titleClassName="text-5xl font-black text-[#b900ff] mb-4 text-center"
+        subtitleClassName="text-[#ff006e] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            { icon: Check, label: "Success Vibe", desc: "You're on fire!", color: "#00ff41" },
+            { icon: AlertTriangle, label: "Warning Trip", desc: "Careful with that energy!", color: "#ffea00" },
+            { icon: X, label: "Error State", desc: "Something broke the flow.", color: "#ff006e" },
+            { icon: Info, label: "Info Blast", desc: "New wave incoming!", color: "#b900ff" },
+          ].map((alert, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 p-5 bg-black/80 border-4 rounded-2xl"
+              style={{ borderColor: alert.color, boxShadow: `0 0 30px ${alert.color}60` }}
+            >
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: alert.color }}>
+                <alert.icon className="w-6 h-6 text-black" />
+              </div>
+              <div>
+                <p className="font-black text-lg" style={{ color: alert.color }}>{alert.label}</p>
+                <p className="text-gray-300 text-sm">{alert.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Toggle */}
+      <ShowcaseSection
+        title="POWER SWITCHES"
+        subtitle="Toggle controls"
+        className="py-16 px-6"
+        titleClassName="text-5xl font-black text-[#ffea00] mb-4 text-center"
+        subtitleClassName="text-[#00ff41] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-black/80 border-4 border-[#ff006e] rounded-3xl space-y-6" style={{ boxShadow: '0 0 50px #ff006e60' }}>
+            {[
+              { label: "Neon Mode", desc: "Maximum fluorescence", color: "#00ff41" },
+              { label: "Distortion FX", desc: "Warp typography", color: "#ff006e" },
+              { label: "Psyche Filter", desc: "Trippy visuals", color: "#ffea00" },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center justify-between py-3 border-b-2 border-gray-800 last:border-b-0">
+                <div>
+                  <p className="font-black text-lg" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-sm text-gray-400">{item.desc}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const newStates = [...toggleStates];
+                    newStates[index] = !newStates[index];
+                    setToggleStates(newStates);
+                  }}
+                  className={`relative w-16 h-8 rounded-full transition-all`}
+                  style={{ 
+                    backgroundColor: toggleStates[index] ? item.color : '#333',
+                    boxShadow: toggleStates[index] ? `0 0 20px ${item.color}` : 'none'
+                  }}
+                >
+                  <span
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all ${
+                      toggleStates[index] ? "right-1" : "left-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Progress */}
+      <ShowcaseSection
+        title="ENERGY BARS"
+        subtitle="Progress indicators"
+        className="py-16 px-6 bg-gradient-to-b from-black to-purple-950"
+        titleClassName="text-5xl font-black text-[#ff006e] mb-4 text-center"
+        subtitleClassName="text-[#b900ff] mb-12 text-center uppercase tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-black/80 border-4 border-[#00ff41] rounded-3xl space-y-8" style={{ boxShadow: '0 0 50px #00ff4160' }}>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-black text-lg text-[#00ff41]">Vibe Level</p>
+                <p className="text-sm font-bold text-[#00ff41]">{progress}%</p>
+              </div>
+              <div className="h-4 bg-gray-900 rounded-full overflow-hidden border-2 border-[#00ff41]">
+                <div
+                  className="h-full bg-gradient-to-r from-[#00ff41] via-[#ff006e] to-[#b900ff] transition-all duration-500"
+                  style={{ width: `${progress}%`, boxShadow: '0 0 20px #00ff41' }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <p className="font-black text-lg text-[#ff006e] mb-3">Stage Progress</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[100, 100, progress, 0].map((val, i) => (
+                  <div key={i}>
+                    <div className="h-3 bg-gray-900 rounded-full overflow-hidden border-2" style={{ borderColor: i === 2 ? '#ff006e' : '#333' }}>
+                      <div
+                        className="h-full transition-all"
+                        style={{ 
+                          width: `${val}%`,
+                          backgroundColor: val === 100 ? '#00ff41' : val > 0 ? '#ff006e' : 'transparent',
+                          boxShadow: val > 0 ? `0 0 10px ${val === 100 ? '#00ff41' : '#ff006e'}` : 'none'
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1 text-center">S{i + 1}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-4 pt-4 border-t-2 border-gray-800">
+              <button
+                onClick={() => setProgress(Math.max(0, progress - 10))}
+                className="px-6 py-3 bg-gray-900 border-2 border-[#ffea00] text-[#ffea00] font-black rounded-full hover:bg-[#ffea00] hover:text-black transition-all"
+              >
+                DECREASE
+              </button>
+              <button
+                onClick={() => setProgress(Math.min(100, progress + 10))}
+                className="px-6 py-3 bg-[#ffea00] text-black font-black rounded-full hover:scale-105 transition-transform"
+                style={{ boxShadow: '0 0 20px #ffea00' }}
+              >
+                INCREASE
+              </button>
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Footer */}
+      <footer className="border-t border-[#00ff41]/30 py-12 px-6 text-center bg-black">
+        <p className="text-gray-400">
+          Acid Graphics Style © 2026 - <span className="text-[#00ff41]">Maximum Energy</span>
+        </p>
       </footer>
     </div>
   );
