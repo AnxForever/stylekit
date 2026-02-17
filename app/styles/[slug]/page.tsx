@@ -7,6 +7,7 @@ import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
+import { serializeJsonLd } from "@/lib/security/json-ld";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -130,7 +131,7 @@ export default async function StyleDetailPage({
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Header />
 
