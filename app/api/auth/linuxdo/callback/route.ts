@@ -10,6 +10,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
+import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -65,12 +66,14 @@ export async function GET(request: NextRequest) {
       linuxdo_trust_level: ldUser.trust_level,
     };
 
-    const { error: createError } =
+    const { data: createData, error: createError } =
       await adminClient.auth.admin.createUser({
         email,
         email_confirm: true,
         user_metadata: userMetadata,
       });
+
+    let supabaseUserId = createData?.user?.id;
 
     if (createError) {
       // User likely already exists — find and update metadata
@@ -81,12 +84,21 @@ export async function GET(request: NextRequest) {
 
       const existing = listData?.users?.find((u) => u.email === email);
       if (existing) {
+        supabaseUserId = existing.id;
         await adminClient.auth.admin.updateUserById(existing.id, {
           user_metadata: userMetadata,
         });
       } else {
         throw new Error(createError.message);
       }
+    }
+
+    // Assign a stable sequential ID (1, 2, 3…) and persist to metadata
+    if (supabaseUserId) {
+      const seqId = await getOrAssignSeqId(supabaseUserId);
+      await adminClient.auth.admin.updateUserById(supabaseUserId, {
+        user_metadata: { seq_id: seqId },
+      });
     }
 
     // 4. Generate a magic link to sign in as this user

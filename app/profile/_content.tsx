@@ -199,7 +199,7 @@ export function ProfileContent() {
               {t("profile.userId")}
             </span>
             <span className="text-sm font-mono text-foreground">
-              {user.id.slice(0, 8)}
+              #{user.user_metadata?.seq_id ?? user.id.slice(0, 8)}
             </span>
           </div>
           <div className="flex justify-between px-4 py-3">
