@@ -36,10 +36,24 @@ export function useUser(): AuthState {
     const client = getAuthClient();
     if (!client) return;
 
-    // Fast path: read session from local storage/cookies (no network call)
+    // Try fast path first (local cookies), then verify with server if needed
     client.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
+      if (session?.user) {
+        // Session exists locally — show user immediately, then verify in background
+        setUser(session.user);
+        setLoading(false);
+        client.auth.getUser().then(({ data: { user: verified } }) => {
+          if (verified) {
+            setUser(verified);
+          } else {
+            // Server says session is invalid — clear it
+            setUser(null);
+          }
+        });
+      } else {
+        // No local session — user is not logged in
+        setLoading(false);
+      }
     });
 
     // Subscribe to auth changes
