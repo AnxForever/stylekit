@@ -1,7 +1,7 @@
 {
   "name": "@stylekit/core",
   "version": "1.0.0-beta.1",
-  "description": "StyleKit core library - design style tokens, recipes, linter, and knowledge base",
+  "description": "StyleKit core library - design style tokens, recipes, linter, and knowledge base for 88+ UI styles",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -48,6 +48,9 @@
     "README.md"
   ],
   "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit"
@@ -55,11 +58,28 @@
   "keywords": [
     "design-system",
     "style-tokens",
-    "ai",
+    "css",
     "tailwind",
-    "react"
+    "react",
+    "ui-styles",
+    "linter",
+    "accessibility",
+    "wcag",
+    "design-tokens",
+    "recipes",
+    "ai"
   ],
   "license": "MIT",
+  "author": "AnxForever",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/AnxForever/stylekit/issues"
+  },
+  "homepage": "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"

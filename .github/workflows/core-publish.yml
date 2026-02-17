@@ -3,7 +3,11 @@ name: Publish @stylekit/core
 on:
   push:
     tags:
-      - 'core-v*'
+      - "core-v*"
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -16,10 +20,19 @@ jobs:
           node-version: 20
           cache: npm
           registry-url: https://registry.npmjs.org
+
       - run: npm ci
+
       - name: Build core package
         run: cd packages/core && npm run build
-      - name: Publish (dry-run)
+
+      - name: Typecheck
+        run: cd packages/core && npm run typecheck
+
+      - name: Verify package (dry-run)
         run: cd packages/core && npm publish --dry-run
+
+      - name: Publish to npm
+        run: cd packages/core && npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
