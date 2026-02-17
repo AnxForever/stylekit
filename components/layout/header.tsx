@@ -89,17 +89,40 @@ export function Header() {
               </button>
 
               {isToolsOpen && (
-                <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background border border-border shadow-lg z-50">
-                  {toolsDropdown.items.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                      onClick={() => setIsToolsOpen(false)}
-                    >
-                      {t(item.labelKey)}
-                    </Link>
-                  ))}
+                <div className="absolute top-full left-0 mt-2 py-2 min-w-[180px] bg-background border border-border shadow-lg z-50">
+                  {toolsDropdown.groups ? (
+                    toolsDropdown.groups.map((group, gi) => (
+                      <div key={gi}>
+                        {gi > 0 && <hr className="my-1.5 border-border" />}
+                        {group.groupLabelKey && (
+                          <p className="px-4 pt-1.5 pb-1 text-[10px] uppercase tracking-widest text-muted">
+                            {t(group.groupLabelKey)}
+                          </p>
+                        )}
+                        {group.items.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                            onClick={() => setIsToolsOpen(false)}
+                          >
+                            {t(item.labelKey)}
+                          </Link>
+                        ))}
+                      </div>
+                    ))
+                  ) : (
+                    toolsDropdown.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                        onClick={() => setIsToolsOpen(false)}
+                      >
+                        {t(item.labelKey)}
+                      </Link>
+                    ))
+                  )}
                 </div>
               )}
             </div>
@@ -172,6 +195,28 @@ export function Header() {
         {isMenuOpen && (
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
+              {/* Mobile Search */}
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setTimeout(() => {
+                    const event = new KeyboardEvent("keydown", {
+                      key: "k",
+                      metaKey: true,
+                      bubbles: true,
+                    });
+                    document.dispatchEvent(event);
+                  }, 100);
+                }}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <span>{t("nav.search")}</span>
+              </button>
+
               {/* Main Nav */}
               {mainNav.map((item) => (
                 <Link
@@ -189,16 +234,38 @@ export function Header() {
                 <p className="text-xs uppercase tracking-widest text-muted mb-2">
                   {t(toolsDropdown.labelKey)}
                 </p>
-                {toolsDropdown.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`block py-2 ${linkClass}`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {t(item.labelKey)}
-                  </Link>
-                ))}
+                {toolsDropdown.groups ? (
+                  toolsDropdown.groups.map((group, gi) => (
+                    <div key={gi} className={gi > 0 ? "mt-3" : ""}>
+                      {group.groupLabelKey && (
+                        <p className="text-[10px] uppercase tracking-widest text-muted/60 mb-1 mt-2">
+                          {t(group.groupLabelKey)}
+                        </p>
+                      )}
+                      {group.items.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`block py-2 ${linkClass}`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {t(item.labelKey)}
+                        </Link>
+                      ))}
+                    </div>
+                  ))
+                ) : (
+                  toolsDropdown.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`block py-2 ${linkClass}`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t(item.labelKey)}
+                    </Link>
+                  ))
+                )}
               </div>
 
               {/* Secondary Nav */}

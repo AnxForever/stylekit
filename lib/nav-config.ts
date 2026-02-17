@@ -9,9 +9,15 @@ export interface NavItem {
   external?: boolean;
 }
 
+export interface NavDropdownGroup {
+  groupLabelKey?: TranslationKey;
+  items: NavItem[];
+}
+
 export interface NavDropdown {
   labelKey: TranslationKey;
   items: NavItem[];
+  groups?: NavDropdownGroup[];
 }
 
 export interface ExternalNavItem {
@@ -39,6 +45,26 @@ export const toolsDropdown: NavDropdown = {
     { href: "/developers", labelKey: "nav.developers" },
     { href: "/analyze", labelKey: "nav.analyze" },
     { href: "/migrate", labelKey: "nav.migrate" },
+  ],
+  groups: [
+    {
+      groupLabelKey: "nav.toolsCreate",
+      items: [
+        { href: "/create-style", labelKey: "nav.createStyle" },
+        { href: "/playground", labelKey: "nav.playground" },
+        { href: "/compare", labelKey: "nav.compare" },
+        { href: "/blend", labelKey: "nav.blend" },
+      ],
+    },
+    {
+      groupLabelKey: "nav.toolsDev",
+      items: [
+        { href: "/generate-style", labelKey: "nav.aiGenerator" },
+        { href: "/analyze", labelKey: "nav.analyze" },
+        { href: "/migrate", labelKey: "nav.migrate" },
+        { href: "/developers", labelKey: "nav.developers" },
+      ],
+    },
   ],
 };
 

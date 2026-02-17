@@ -163,14 +163,14 @@ export function StylesContent({
     <>
       {/* Page Header */}
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
+          <p className="text-xs tracking-widest uppercase text-muted mb-3">
             {t("styles.subtitle")}
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl mb-3">
             {t("styles.title")}
           </h1>
-          <p className="text-lg text-muted max-w-2xl">
+          <p className="text-base text-muted max-w-2xl">
             {t("styles.description")}
           </p>
         </div>
