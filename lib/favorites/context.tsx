@@ -7,7 +7,9 @@ import {
   useEffect,
   ReactNode,
   useCallback,
+  useRef,
 } from "react";
+import { useUser } from "@/lib/auth/use-user";
 
 interface FavoritesContextType {
   favorites: string[];
@@ -15,59 +17,135 @@ interface FavoritesContextType {
   removeFavorite: (slug: string) => void;
   toggleFavorite: (slug: string) => void;
   isFavorite: (slug: string) => boolean;
+  syncing: boolean;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 const STORAGE_KEY = "stylekit-favorites";
+const MERGED_KEY = "stylekit-favorites-merged";
 
-export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  /* eslint-disable react-hooks/set-state-in-effect */
-  // Required pattern for SSR hydration with localStorage
-  useEffect(() => {
-    setMounted(true);
+function readLocalFavorites(): string[] {
+  try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch {
+    // Invalid JSON, ignore
+  }
+  return [];
+}
+
+export function FavoritesProvider({ children }: { children: ReactNode }) {
+  const { user } = useUser();
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [mounted, setMounted] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const mergedRef = useRef(false);
+
+  // Authenticated mode: load favorites from server
+  useEffect(() => {
+    if (!user || !mounted) return;
+
+    let cancelled = false;
+    setSyncing(true);
+
+    async function loadServerFavorites() {
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setFavorites(parsed);
+        // One-time merge: push localStorage favorites to server on first login
+        if (!mergedRef.current && !localStorage.getItem(MERGED_KEY)) {
+          mergedRef.current = true;
+          const localSlugs = readLocalFavorites();
+          if (localSlugs.length > 0) {
+            await fetch("/api/favorites/merge", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ slugs: localSlugs }),
+            });
+            localStorage.setItem(MERGED_KEY, "1");
+          }
+        }
+
+        const res = await fetch("/api/favorites");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled && data.success && Array.isArray(data.favorites)) {
+          setFavorites(data.favorites);
         }
       } catch {
-        // Invalid JSON, ignore
+        // Network error, keep current state
+      } finally {
+        if (!cancelled) setSyncing(false);
       }
     }
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
+    void loadServerFavorites();
+    return () => { cancelled = true; };
+  }, [user, mounted]);
+
+  // Anonymous mode: load from localStorage on mount
   useEffect(() => {
-    if (mounted) {
+    setMounted(true);
+    if (!user) {
+      setFavorites(readLocalFavorites());
+    }
+  }, [user]);
+
+  // Anonymous mode: persist to localStorage
+  useEffect(() => {
+    if (mounted && !user) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
     }
-  }, [favorites, mounted]);
+  }, [favorites, mounted, user]);
 
   const addFavorite = useCallback((slug: string) => {
     setFavorites((prev) => {
       if (prev.includes(slug)) return prev;
       return [...prev, slug];
     });
-  }, []);
+
+    if (user) {
+      fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug }),
+      }).catch(() => {});
+    }
+  }, [user]);
 
   const removeFavorite = useCallback((slug: string) => {
     setFavorites((prev) => prev.filter((s) => s !== slug));
-  }, []);
+
+    if (user) {
+      fetch(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
+        method: "DELETE",
+      }).catch(() => {});
+    }
+  }, [user]);
 
   const toggleFavorite = useCallback((slug: string) => {
     setFavorites((prev) => {
-      if (prev.includes(slug)) {
+      const removing = prev.includes(slug);
+      if (removing) {
+        if (user) {
+          fetch(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
+            method: "DELETE",
+          }).catch(() => {});
+        }
         return prev.filter((s) => s !== slug);
+      }
+      if (user) {
+        fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug }),
+        }).catch(() => {});
       }
       return [...prev, slug];
     });
-  }, []);
+  }, [user]);
 
   const isFavorite = useCallback(
     (slug: string) => favorites.includes(slug),
@@ -76,7 +154,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   return (
     <FavoritesContext.Provider
-      value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite }}
+      value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, syncing }}
     >
       {children}
     </FavoritesContext.Provider>
