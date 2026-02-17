@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { TrendingUp, ArrowRight } from "lucide-react";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { useI18n } from "@/lib/i18n/context";
+import { useTrendingStyles } from "@/lib/swr";
 import type { StyleMeta } from "@/lib/styles/meta";
 
 interface TrendingStylesProps {
@@ -12,44 +13,16 @@ interface TrendingStylesProps {
   sectionId?: string;
 }
 
-interface TopStyle {
-  slug: string;
-  total: number;
-}
-
 export function TrendingStyles({ styles, sectionId = "home-trending" }: TrendingStylesProps) {
   const { t } = useI18n();
-  const [topStyles, setTopStyles] = useState<TopStyle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [useFallback, setUseFallback] = useState(false);
+  const { data, isLoading } = useTrendingStyles(8);
+  const topStyles = data?.top ?? [];
+  const useFallback = !isLoading && (!data?.top || data.top.length === 0);
   const sectionLinkClassName = "text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1";
   const cardClassName = "group block border border-border motion-safe:transition-all motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5";
   const gridClassName = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/analytics?top=8", { signal: controller.signal })
-      .then((res) => res.json())
-      .then((data) => {
-        if (controller.signal.aborted) return;
-        if (data.top && data.top.length > 0) {
-          setTopStyles(data.top);
-        } else {
-          setUseFallback(true);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        if (controller.signal.aborted) return;
-        setUseFallback(true);
-        setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, []);
 
   // Stable fallback selection: pick evenly spaced styles.
   const fallbackStyles = useMemo(() => {
@@ -64,7 +37,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
   }, [useFallback, styles]);
   const styleMap = useMemo(() => new Map(styles.map((style) => [style.slug, style])), [styles]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section id={sectionId} className="border-b border-border scroll-mt-24" aria-busy="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">

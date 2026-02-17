@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BarChart3,
   TrendingUp,
@@ -8,52 +8,24 @@ import {
   Download,
   RefreshCw,
 } from "lucide-react";
-
-interface DashboardData {
-  totalEvents: number;
-  totalStyles: number;
-  topStyles: { slug: string; count: number }[];
-  eventsByType: { type: string; count: number }[];
-  recentActivity: { date: string; count: number }[];
-}
+import { useAnalyticsDashboard } from "@/lib/swr";
 
 type TimeRange = "7d" | "30d" | "all";
 
 export function AnalyticsDashboard() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<TimeRange>("7d");
-  const [error, setError] = useState("");
+  const { data, error, isLoading, mutate } = useAnalyticsDashboard(timeRange);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/analytics/dashboard?range=${timeRange}`);
-      if (!res.ok) throw new Error("Failed to fetch analytics");
-      const result = await res.json();
-      setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load data");
-    } finally {
-      setLoading(false);
-    }
-  }, [timeRange]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  if (loading) {
+  if (isLoading) {
     return <p className="text-muted">Loading analytics...</p>;
   }
 
   if (error) {
     return (
       <div className="p-6 border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">{error}</p>
+        <p className="text-red-600 dark:text-red-400">{error.message}</p>
         <button
-          onClick={fetchData}
+          onClick={() => mutate()}
           className="mt-3 px-4 py-2 text-sm bg-foreground text-background rounded-md"
         >
           Retry
@@ -84,7 +56,7 @@ export function AnalyticsDashboard() {
           ))}
         </div>
         <button
-          onClick={fetchData}
+          onClick={() => mutate()}
           className="p-2 text-muted hover:text-foreground transition-colors"
           aria-label="Refresh data"
         >

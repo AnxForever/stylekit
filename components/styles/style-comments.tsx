@@ -1,42 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { MessageSquare, Send } from "lucide-react";
 import { getSessionId } from "@/lib/session";
-
-interface Comment {
-  id: string;
-  content: string;
-  author_name: string;
-  created_at: string;
-}
+import { useStyleComments, type Comment } from "@/lib/swr";
 
 interface StyleCommentsProps {
   slug: string;
 }
 
 export function StyleComments({ slug }: StyleCommentsProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [total, setTotal] = useState(0);
+  const { data, mutate } = useStyleComments(slug);
   const [content, setContent] = useState("");
   const [authorName, setAuthorName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchComments = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/styles/${slug}/comments?limit=10`);
-      const data = await res.json();
-      setComments(data.comments ?? []);
-      setTotal(data.total ?? 0);
-    } catch {
-      // silently fail
-    }
-  }, [slug]);
-
-  useEffect(() => {
-    fetchComments();
-  }, [fetchComments]);
+  const comments = data?.comments ?? [];
+  const total = data?.total ?? 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,23 +25,29 @@ export function StyleComments({ slug }: StyleCommentsProps) {
     setSubmitting(true);
     setError("");
 
+    const trimmedContent = content.trim();
+    const trimmedAuthor = authorName.trim() || "Anonymous";
+
     try {
       const res = await fetch(`/api/styles/${slug}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          content: content.trim(),
-          authorName: authorName.trim() || "Anonymous",
+          content: trimmedContent,
+          authorName: trimmedAuthor,
           sessionId: getSessionId(),
         }),
       });
-      const data = await res.json();
-      if (data.success) {
+      const responseData = await res.json();
+      if (responseData.success) {
         setContent("");
-        setComments((prev) => [data.comment, ...prev]);
-        setTotal((prev) => prev + 1);
+        const optimisticData = {
+          comments: [responseData.comment as Comment, ...comments],
+          total: total + 1,
+        };
+        await mutate(optimisticData, { revalidate: true });
       } else {
-        setError(data.error || "Failed to post comment");
+        setError(responseData.error || "Failed to post comment");
       }
     } catch {
       setError("Network error");
