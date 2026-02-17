@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/lib/i18n/context";
 import { FavoritesProvider } from "@/lib/favorites/context";
 import { PageTransition } from "@/components/page-transition";
+import { SWRProvider } from "@/lib/swr/provider";
 
 interface ClientProvidersProps {
   children: React.ReactNode;
@@ -23,11 +24,13 @@ export function ClientProviders({ children }: ClientProvidersProps) {
       disableTransitionOnChange
     >
       <I18nProvider>
-        <FavoritesProvider>
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </FavoritesProvider>
+        <SWRProvider>
+          <FavoritesProvider>
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </FavoritesProvider>
+        </SWRProvider>
       </I18nProvider>
     </ThemeProvider>
   );

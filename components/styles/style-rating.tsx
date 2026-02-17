@@ -1,53 +1,46 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Star } from "lucide-react";
 import { getSessionId } from "@/lib/session";
+import { useStyleRating } from "@/lib/swr";
 
 interface StyleRatingProps {
   slug: string;
 }
 
 export function StyleRating({ slug }: StyleRatingProps) {
-  const [average, setAverage] = useState(0);
-  const [total, setTotal] = useState(0);
+  const { data, mutate } = useStyleRating(slug);
   const [userRating, setUserRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchRating = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/styles/${slug}/rate`);
-      const data = await res.json();
-      setAverage(data.averageRating ?? 0);
-      setTotal(data.totalRatings ?? 0);
-    } catch {
-      // silently fail
-    }
-  }, [slug]);
-
-  useEffect(() => {
-    fetchRating();
-  }, [fetchRating]);
+  const average = data?.averageRating ?? 0;
+  const total = data?.totalRatings ?? 0;
 
   async function handleRate(rating: number) {
     if (submitting) return;
     setSubmitting(true);
     setUserRating(rating);
 
+    const optimisticData = {
+      averageRating: total > 0
+        ? (average * total + rating) / (total + 1)
+        : rating,
+      totalRatings: total + 1,
+    };
+    mutate(optimisticData, { revalidate: false });
+
     try {
-      const res = await fetch(`/api/styles/${slug}/rate`, {
+      await fetch(`/api/styles/${slug}/rate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating, sessionId: getSessionId() }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setAverage(data.averageRating);
-        setTotal(data.totalRatings);
-      }
+      await mutate();
     } catch {
-      // silently fail
+      // silently fail – revalidate to restore server state
+      await mutate();
     } finally {
       setSubmitting(false);
     }
