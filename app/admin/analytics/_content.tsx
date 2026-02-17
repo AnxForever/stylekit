@@ -1,20 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   BarChart3,
   TrendingUp,
   Eye,
   Download,
   RefreshCw,
+  ShieldCheck,
+  Clock3,
 } from "lucide-react";
-import { useAnalyticsDashboard } from "@/lib/swr";
+import { useAdminAuditEvents, useAnalyticsDashboard } from "@/lib/swr";
 
 type TimeRange = "7d" | "30d" | "all";
 
 export function AnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState<TimeRange>("7d");
   const { data, error, isLoading, mutate } = useAnalyticsDashboard(timeRange);
+  const {
+    data: auditData,
+    error: auditError,
+    isLoading: auditLoading,
+    mutate: mutateAudit,
+  } = useAdminAuditEvents(30);
+
+  const maxDailyCount = useMemo(() => {
+    if (!data || data.recentActivity.length === 0) return 0;
+    return Math.max(...data.recentActivity.map((day) => day.count));
+  }, [data]);
 
   if (isLoading) {
     return <p className="text-muted">Loading analytics...</p>;
@@ -56,7 +69,9 @@ export function AnalyticsDashboard() {
           ))}
         </div>
         <button
-          onClick={() => mutate()}
+          onClick={() => {
+            void Promise.all([mutate(), mutateAudit()]);
+          }}
           className="p-2 text-muted hover:text-foreground transition-colors"
           aria-label="Refresh data"
         >
@@ -163,10 +178,7 @@ export function AnalyticsDashboard() {
           <h2 className="text-lg font-semibold mb-4">Daily Activity</h2>
           <div className="flex items-end gap-1 h-32">
             {data.recentActivity.map((day) => {
-              const maxCount = Math.max(
-                ...data.recentActivity.map((d) => d.count)
-              );
-              const height = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+              const height = maxDailyCount > 0 ? (day.count / maxDailyCount) * 100 : 0;
               return (
                 <div
                   key={day.date}
@@ -188,6 +200,84 @@ export function AnalyticsDashboard() {
           </div>
         </div>
       )}
+
+      <div className="border border-border rounded-lg p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Recent Admin Actions</h2>
+          <span className="text-xs text-muted">
+            {auditData?.total ?? 0} events
+          </span>
+        </div>
+
+        {auditLoading && <p className="text-sm text-muted">Loading audit logs...</p>}
+
+        {!auditLoading && auditError && (
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {auditError.message}
+          </p>
+        )}
+
+        {!auditLoading && !auditError && (auditData?.events.length ?? 0) === 0 && (
+          <p className="text-sm text-muted">No admin audit events yet.</p>
+        )}
+
+        {!auditLoading && !auditError && (auditData?.events.length ?? 0) > 0 && (
+          <div className="space-y-3">
+            {(auditData?.events ?? []).map((event) => {
+              const meta =
+                event.metadata && typeof event.metadata === "object"
+                  ? (event.metadata as Record<string, unknown>)
+                  : null;
+              const slug = typeof meta?.slug === "string" ? meta.slug : null;
+              const noteProvided =
+                typeof meta?.noteProvided === "boolean"
+                  ? (meta.noteProvided ? "with note" : "without note")
+                  : null;
+
+              return (
+                <div
+                  key={event.id}
+                  className="rounded-lg border border-border/60 bg-muted/5 px-4 py-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-muted" />
+                      {formatAuditAction(event.action)}
+                    </p>
+                    <p className="text-xs text-muted flex items-center gap-1">
+                      <Clock3 className="w-3.5 h-3.5" />
+                      {new Date(event.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+                    <span>Actor: {formatAuditActor(event.actor.type, event.actor.id)}</span>
+                    <span>
+                      Target: {event.targetType}{event.targetId ? ` (${event.targetId})` : ""}
+                    </span>
+                    {slug && <span>Slug: {slug}</span>}
+                    {noteProvided && <span>Review note: {noteProvided}</span>}
+                    {event.ipAddress && <span>IP: {event.ipAddress}</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
+}
+
+function formatAuditAction(action: string): string {
+  if (action === "submission.approve") return "Submission Approved";
+  if (action === "submission.reject") return "Submission Rejected";
+  return action;
+}
+
+function formatAuditActor(type: string, id: string): string {
+  if (type === "user") return `user:${id.slice(0, 8)}`;
+  if (type === "token") return id;
+  if (type === "dev-bypass") return "dev-bypass";
+  return `${type}:${id}`;
 }
