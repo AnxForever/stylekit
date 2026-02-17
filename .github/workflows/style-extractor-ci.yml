@@ -31,10 +31,10 @@ jobs:
               - "style-extractor-dev"
               - "style-extractor-dev/**"
               - "tests/unit/style-extractor-registry.test.ts"
-              - "scripts/check-style-extractor.cjs"
+              - "tools/scripts/check-style-extractor.cjs"
               - "package.json"
               - "pnpm-lock.yaml"
-              - "vitest.config.ts"
+              - "tests/vitest.config.ts"
               - ".gitmodules"
               - ".github/workflows/style-extractor-ci.yml"
       - uses: actions/setup-node@v4
