@@ -190,6 +190,43 @@ html {
   100% { transform: translateX(0); opacity: 1; }
 }
 
+/* Home page reveal animations */
+@keyframes home-reveal-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes home-reveal-up-strong {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes home-reveal-up-subtle {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes home-reveal-soft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@theme inline {
+  --animate-home-reveal-up-strong: home-reveal-up-strong 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-home-reveal-up: home-reveal-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-home-reveal-up-subtle: home-reveal-up-subtle 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-home-reveal-soft: home-reveal-soft 360ms ease-out both;
+}
+
+@media (max-width: 767px) {
+  .home-reveal-mobile-no-delay {
+    animation-delay: 0ms !important;
+    animation-name: home-reveal-soft !important;
+    animation-duration: 260ms !important;
+    transform: none !important;
+  }
+}
+
 /* Neo-Brutalist Text Stroke */
 .text-stroke {
   -webkit-text-stroke: 2px black;

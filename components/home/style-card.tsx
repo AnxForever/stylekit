@@ -20,6 +20,7 @@ export const StyleCard = React.memo(function StyleCard({
   variant = "default",
 }: StyleCardProps) {
   const isCompact = variant === "compact";
+  const cardClassName = "group block border border-border motion-safe:transition-all motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {
@@ -35,7 +36,7 @@ export const StyleCard = React.memo(function StyleCard({
     <Link
       href={`/styles/${style.slug}`}
       onClick={handleClick}
-      className="group block border border-border hover:border-foreground transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+      className={cardClassName}
     >
       {/* Cover preview */}
       <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
@@ -73,16 +74,16 @@ export const StyleCard = React.memo(function StyleCard({
       )}
 
       {/* Card content */}
-      <div className={isCompact ? "p-4 md:p-5" : "p-4 md:p-6"}>
+      <div className={isCompact ? "p-3 sm:p-4 md:p-5" : "p-4 md:p-6"}>
         <div className={`flex items-center gap-2 mb-2 ${isCompact ? "min-w-0" : ""}`}>
-          <h3 className={`group-hover:text-accent transition-colors truncate ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
+          <h3 className={`group-hover:text-accent group-focus-visible:text-accent transition-colors truncate leading-snug ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
             {style.name}
           </h3>
           <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
             {style.nameEn}
           </span>
         </div>
-        <p className="text-sm text-muted line-clamp-2">
+        <p className="text-sm text-muted leading-relaxed line-clamp-2">
           {style.description}
         </p>
         {/* Tags */}
