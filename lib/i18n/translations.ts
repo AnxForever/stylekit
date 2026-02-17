@@ -324,6 +324,20 @@ const en = {
     "auth.signOut": "Sign out",
     "auth.account": "Account",
 
+    // Profile
+    "profile.title": "Profile",
+    "profile.memberSince": "Member since",
+    "profile.favorites": "Favorites",
+    "profile.noFavorites": "No favorites yet. Browse styles to add some!",
+    "profile.githubProfile": "GitHub Profile",
+    "profile.accountInfo": "Account Info",
+    "profile.provider": "Provider",
+    "profile.userId": "User ID",
+    "profile.email": "Email",
+    "profile.notLoggedIn": "Not logged in",
+    "profile.signInPrompt": "Sign in with GitHub to view your profile.",
+    "profile.viewStyle": "View style",
+
     // Preview tabs
     "preview.tab.button": "Button",
     "preview.tab.card": "Card",
@@ -1089,6 +1103,20 @@ const zh: { [K in keyof typeof en]: string } = {
   "auth.signInWithGitHub": "使用 GitHub 登录",
   "auth.signOut": "退出登录",
   "auth.account": "账户",
+
+  // Profile
+  "profile.title": "个人主页",
+  "profile.memberSince": "注册时间",
+  "profile.favorites": "收藏",
+  "profile.noFavorites": "还没有收藏。去浏览风格添加一些吧！",
+  "profile.githubProfile": "GitHub 主页",
+  "profile.accountInfo": "账户信息",
+  "profile.provider": "登录方式",
+  "profile.userId": "用户 ID",
+  "profile.email": "邮箱",
+  "profile.notLoggedIn": "未登录",
+  "profile.signInPrompt": "使用 GitHub 登录以查看你的个人主页。",
+  "profile.viewStyle": "查看风格",
 
   // Search and preview
   "search.placeholder": "搜索风格、组件、页面...",
