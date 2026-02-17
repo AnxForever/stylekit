@@ -215,7 +215,7 @@ export default function ShowcaseContent() {
                 }}
               >
                 {card.title}
-              </p>
+              </h3>
               <p className="text-gray-400 font-mono text-sm">{card.desc}</p>
             </div>
           ))}
