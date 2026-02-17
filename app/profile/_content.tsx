@@ -10,15 +10,27 @@ import {
   Calendar,
   Shield,
   LogIn,
+  MessageSquare,
+  Star,
+  Send,
+  BarChart3,
 } from "lucide-react";
 import { useUser } from "@/lib/auth/use-user";
 import { useFavorites } from "@/lib/favorites/context";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  useProfileComments,
+  useProfileSubmissions,
+  useProfileRatings,
+} from "@/lib/swr";
 
 export function ProfileContent() {
   const { user, loading } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
+  const { data: commentsData } = useProfileComments(user?.id);
+  const { data: ratingsData } = useProfileRatings(user?.id);
+  const { data: submissionsData } = useProfileSubmissions(user?.id);
 
   if (loading) {
     return (
@@ -31,6 +43,11 @@ export function ProfileContent() {
               <div className="h-4 w-32 bg-muted/20 rounded" />
               <div className="h-4 w-56 bg-muted/20 rounded" />
             </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-20 bg-muted/20 rounded-lg" />
+            ))}
           </div>
           <div className="h-48 bg-muted/20 rounded" />
           <div className="h-32 bg-muted/20 rounded" />
@@ -89,6 +106,29 @@ export function ProfileContent() {
     ? t("profile.providerLinuxDo")
     : t("profile.providerGitHub");
 
+  const comments = commentsData?.comments ?? [];
+  const ratings = ratingsData?.ratings ?? [];
+  const submissions = submissionsData?.submissions ?? [];
+
+  const statusColors: Record<string, string> = {
+    pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+    approved: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+    rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+  };
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(
+      locale === "zh" ? "zh-CN" : "en-US",
+      { month: "short", day: "numeric", year: "numeric" }
+    );
+
+  const stats = [
+    { label: t("profile.statsFavorites"), value: favorites.length, icon: Heart },
+    { label: t("profile.statsComments"), value: comments.length, icon: MessageSquare },
+    { label: t("profile.statsRatings"), value: ratings.length, icon: Star },
+    { label: t("profile.statsSubmissions"), value: submissions.length, icon: Send },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
       {/* Header */}
@@ -143,6 +183,26 @@ export function ProfileContent() {
         </div>
       </div>
 
+      {/* Stats Overview */}
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
+          <BarChart3 className="w-5 h-5" />
+          {t("profile.stats")}
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-lg border border-border bg-background p-4 text-center"
+            >
+              <stat.icon className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
+              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Favorites */}
       <section className="mb-10">
         <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
@@ -169,6 +229,133 @@ export function ProfileContent() {
                   {t("profile.viewStyle")}
                 </p>
               </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* My Comments */}
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
+          <MessageSquare className="w-5 h-5" />
+          {t("profile.comments")} ({comments.length})
+        </h2>
+
+        {comments.length === 0 ? (
+          <p className="text-muted-foreground py-8 text-center">
+            {t("profile.noComments")}
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {comments.map((comment) => (
+              <div
+                key={comment.id}
+                className="rounded-lg border border-border bg-background p-4"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <Link
+                    href={`/styles/${comment.style_slug}`}
+                    className="text-sm font-medium text-foreground hover:underline"
+                  >
+                    {comment.style_slug}
+                  </Link>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDate(comment.created_at)}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {comment.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* My Ratings */}
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
+          <Star className="w-5 h-5" />
+          {t("profile.ratings")} ({ratings.length})
+        </h2>
+
+        {ratings.length === 0 ? (
+          <p className="text-muted-foreground py-8 text-center">
+            {t("profile.noRatings")}
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {ratings.map((r) => (
+              <div
+                key={r.id}
+                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
+              >
+                <Link
+                  href={`/styles/${r.style_slug}`}
+                  className="text-sm font-medium text-foreground hover:underline"
+                >
+                  {r.style_slug}
+                </Link>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3.5 h-3.5 ${
+                          i < r.rating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-muted-foreground/30"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDate(r.created_at)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* My Submissions */}
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
+          <Send className="w-5 h-5" />
+          {t("profile.submissions")} ({submissions.length})
+        </h2>
+
+        {submissions.length === 0 ? (
+          <p className="text-muted-foreground py-8 text-center">
+            {t("profile.noSubmissions")}
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {submissions.map((sub) => (
+              <div
+                key={sub.id}
+                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <Link
+                    href={`/styles/${sub.slug}`}
+                    className="text-sm font-medium text-foreground hover:underline"
+                  >
+                    {sub.slug}
+                  </Link>
+                  <span
+                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      statusColors[sub.status] ?? ""
+                    }`}
+                  >
+                    {t(`profile.submissionStatus.${sub.status}`)}
+                  </span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(sub.submitted_at)}
+                </span>
+              </div>
             ))}
           </div>
         )}

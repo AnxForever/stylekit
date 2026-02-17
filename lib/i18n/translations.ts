@@ -347,6 +347,21 @@ const en = {
     "profile.providerLinuxDo": "Linux DO",
     "profile.providerGitHub": "GitHub",
     "profile.viewStyle": "View style",
+    "profile.comments": "My Comments",
+    "profile.noComments": "No comments yet. Share your thoughts on styles!",
+    "profile.submissions": "My Submissions",
+    "profile.noSubmissions": "No submissions yet. Submit a style to see it here!",
+    "profile.submissionStatus.pending": "Pending",
+    "profile.submissionStatus.approved": "Approved",
+    "profile.submissionStatus.rejected": "Rejected",
+    "profile.commentOn": "on",
+    "profile.stats": "Overview",
+    "profile.statsComments": "Comments",
+    "profile.statsRatings": "Ratings",
+    "profile.statsSubmissions": "Submissions",
+    "profile.statsFavorites": "Favorites",
+    "profile.ratings": "My Ratings",
+    "profile.noRatings": "No ratings yet. Rate styles to see them here!",
 
     // Preview tabs
     "preview.tab.button": "Button",
@@ -822,6 +837,9 @@ const en = {
     "version.changes": "Changes",
     "version.initialRelease": "Initial release",
 
+    // Rating
+    "rating.signInToRate": "Sign in to rate",
+
     // Analytics
     "analytics.trending.label": "Trending",
     "analytics.trending.title": "Popular Styles",
@@ -1165,6 +1183,21 @@ const zh: { [K in keyof typeof en]: string } = {
   "profile.providerLinuxDo": "Linux DO",
   "profile.providerGitHub": "GitHub",
   "profile.viewStyle": "查看风格",
+  "profile.comments": "我的评论",
+  "profile.noComments": "还没有评论。去给风格分享你的想法吧！",
+  "profile.submissions": "我的投稿",
+  "profile.noSubmissions": "还没有投稿。提交一个风格试试吧！",
+  "profile.submissionStatus.pending": "审核中",
+  "profile.submissionStatus.approved": "已通过",
+  "profile.submissionStatus.rejected": "已拒绝",
+  "profile.commentOn": "评论于",
+  "profile.stats": "概览",
+  "profile.statsComments": "评论",
+  "profile.statsRatings": "评分",
+  "profile.statsSubmissions": "投稿",
+  "profile.statsFavorites": "收藏",
+  "profile.ratings": "我的评分",
+  "profile.noRatings": "还没有评分。去给风格打分吧！",
 
   // Search and preview
   "search.placeholder": "搜索风格、组件、页面...",
@@ -1666,8 +1699,10 @@ const zh: { [K in keyof typeof en]: string } = {
   "version.changes": "变更内容",
   "version.initialRelease": "初始发布",
 
+  // Rating
+  "rating.signInToRate": "登录后评分",
+
   // Analytics
-  "analytics.trending.label": "热门趋势",
   "analytics.trending.title": "热门风格",
   "analytics.combos.label": "风格组合",
   "analytics.combos.title": "热门组合",
