@@ -43,7 +43,7 @@ export default function ShowcaseContent() {
       </header>
 
       <ShowcaseHero
-        title="✨ Shoujo Manga ✨"
+        title="* Shoujo Manga *"
         subtitle="Dreamy Romantic Aesthetic"
         description="Sparkles, petals, and endless romance - a magical anime aesthetic filled with youthful dreams and beautiful moments."
         className="relative py-32 px-6 overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-pink-100"
@@ -98,7 +98,7 @@ export default function ShowcaseContent() {
       <ShowcaseSection title="Typography" subtitle="Romantic fonts" className="py-20 px-6">
         <div className="max-w-4xl mx-auto space-y-8 text-center">
           {[
-            { text: "✨ Magical Title ✨", size: "text-6xl", gradient: "from-pink-500 via-purple-500 to-pink-500" },
+            { text: "* Magical Title *", size: "text-6xl", gradient: "from-pink-500 via-purple-500 to-pink-500" },
             { text: "Romantic Heading", size: "text-4xl", gradient: "from-purple-400 to-pink-400" },
             { text: "Dreamy body text for beautiful stories", size: "text-xl", gradient: "from-gray-600 to-gray-700" },
           ].map((item, i) => (
@@ -112,10 +112,10 @@ export default function ShowcaseContent() {
       <ShowcaseSection title="Buttons" subtitle="Lovely interactions" className="py-20 px-6 bg-white/50">
         <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
           {[
-            { label: "♥ Like", gradient: "from-pink-400 to-pink-600" },
-            { label: "✨ Magic", gradient: "from-purple-400 to-purple-600" },
-            { label: "⭐ Favorite", gradient: "from-yellow-400 to-yellow-600" },
-            { label: "👑 Premium", gradient: "from-pink-400 to-purple-600" },
+            { label: "<3 Like", gradient: "from-pink-400 to-pink-600" },
+            { label: "* Magic", gradient: "from-purple-400 to-purple-600" },
+            { label: "* Favorite", gradient: "from-yellow-400 to-yellow-600" },
+            { label: "Premium", gradient: "from-pink-400 to-purple-600" },
           ].map((btn, i) => (
             <button key={i} className={`px-8 py-4 bg-gradient-to-r ${btn.gradient} text-white font-bold rounded-full shadow-xl hover:scale-110 hover:shadow-2xl transition-all`}>
               {btn.label}
@@ -153,9 +153,9 @@ export default function ShowcaseContent() {
               ))}
             </div>
             <div className="p-10 min-h-[180px]">
-              {activeTab === 0 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4">♥ Love Story</h4><p className="text-gray-600">Sweet romance and heart-fluttering moments between characters</p></div>}
-              {activeTab === 1 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">✨ Magical Powers</h4><p className="text-gray-600">Transformation sequences and special abilities</p></div>}
-              {activeTab === 2 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-pink-500 mb-4">⭐ Dreams Come True</h4><p className="text-gray-600">Wishes fulfilled and happy endings achieved</p></div>}
+              {activeTab === 0 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4">Heart Love Story</h4><p className="text-gray-600">Sweet romance and heart-fluttering moments between characters</p></div>}
+              {activeTab === 1 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">* Magical Powers</h4><p className="text-gray-600">Transformation sequences and special abilities</p></div>}
+              {activeTab === 2 && <div><h4 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-pink-500 mb-4">* Dreams Come True</h4><p className="text-gray-600">Wishes fulfilled and happy endings achieved</p></div>}
             </div>
           </div>
         </div>
@@ -178,10 +178,10 @@ export default function ShowcaseContent() {
       <ShowcaseSection title="Alerts" subtitle="Sweet notifications" className="py-20 px-6 bg-white/50">
         <div className="max-w-3xl mx-auto space-y-4">
           {[
-            { icon: Check, label: "Success", desc: "Your wish has been granted! ✨", gradient: "from-green-400 to-green-600" },
-            { icon: AlertTriangle, label: "Notice", desc: "Something needs your attention! 💫", gradient: "from-yellow-400 to-yellow-600" },
-            { icon: X, label: "Error", desc: "Oops! Magic spell failed! 💔", gradient: "from-red-400 to-red-600" },
-            { icon: Info, label: "Info", desc: "New message from your destiny! 💕", gradient: "from-blue-400 to-blue-600" },
+            { icon: Check, label: "Success", desc: "Your wish has been granted! *", gradient: "from-green-400 to-green-600" },
+            { icon: AlertTriangle, label: "Notice", desc: "Something needs your attention!", gradient: "from-yellow-400 to-yellow-600" },
+            { icon: X, label: "Error", desc: "Oops! Magic spell failed!", gradient: "from-red-400 to-red-600" },
+            { icon: Info, label: "Info", desc: "New message from your destiny!", gradient: "from-blue-400 to-blue-600" },
           ].map((alert, i) => (
             <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-xl hover:scale-105 transition-all border-2 border-pink-100">
               <div className={`w-12 h-12 bg-gradient-to-br ${alert.gradient} rounded-full flex items-center justify-center shadow-lg`}>
@@ -228,7 +228,7 @@ export default function ShowcaseContent() {
           <div className="p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-100 space-y-8">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="font-bold text-gray-800">Magical Power Charging ✨</p>
+                <p className="font-bold text-gray-800">Magical Power Charging *</p>
                 <p className="text-sm text-pink-500 font-bold">{progress}%</p>
               </div>
               <div className="h-4 bg-pink-100 rounded-full overflow-hidden shadow-inner">
@@ -257,7 +257,7 @@ export default function ShowcaseContent() {
       </ShowcaseSection>
 
       <footer className="border-t-4 border-pink-200 py-12 px-6 text-center bg-white/80">
-        <p className="text-gray-500">✨ Shoujo Manga Style © 2026 - Made with love and magic ♥</p>
+        <p className="text-gray-500">* Shoujo Manga Style (c) 2026 - Made with love and magic <3</p>
       </footer>
 
       <style jsx>{`
