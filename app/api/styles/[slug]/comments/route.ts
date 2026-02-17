@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const COMMENTS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const COMMENTS_RATE_LIMIT_MAX_REQUESTS = 40;
 
 const commentSchema = z.object({
   content: z.string().min(1).max(280),
   authorName: z.string().min(1).max(50).default("Anonymous"),
-  sessionId: z.string().min(1),
+  sessionId: z.string().min(1).max(128),
 });
+
+const slugSchema = z.string().regex(SLUG_RE);
 
 export async function POST(
   request: Request,
@@ -14,6 +25,27 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
+    const slugParsed = slugSchema.safeParse(slug);
+    if (!slugParsed.success) {
+      return NextResponse.json(
+        { success: false, error: "Invalid style slug" },
+        { status: 400 }
+      );
+    }
+
+    const rateLimit = checkRateLimit({
+      namespace: "api:style-comments",
+      key: getRequestClientKey(request),
+      limit: COMMENTS_RATE_LIMIT_MAX_REQUESTS,
+      windowMs: COMMENTS_RATE_LIMIT_WINDOW_MS,
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, error: "Too many comment requests. Please try again later." },
+        { status: 429, headers: createRateLimitHeaders(rateLimit) }
+      );
+    }
+
     const body = await request.json();
     const parsed = commentSchema.safeParse(body);
 
@@ -45,7 +77,7 @@ export async function POST(
     const { count } = await sb
       .from("style_comments")
       .select("*", { count: "exact", head: true })
-      .eq("style_slug", slug)
+      .eq("style_slug", slugParsed.data)
       .eq("session_id", parsed.data.sessionId)
       .gte("created_at", oneDayAgo);
 
@@ -59,7 +91,7 @@ export async function POST(
     const { data, error } = await sb
       .from("style_comments")
       .insert({
-        style_slug: slug,
+        style_slug: slugParsed.data,
         content: parsed.data.content,
         author_name: parsed.data.authorName,
         session_id: parsed.data.sessionId,
@@ -89,6 +121,13 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const slugParsed = slugSchema.safeParse(slug);
+  if (!slugParsed.success) {
+    return NextResponse.json(
+      { comments: [], total: 0, error: "Invalid style slug" },
+      { status: 400 }
+    );
+  }
 
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ comments: [], total: 0 });
@@ -108,7 +147,7 @@ export async function GET(
   const { data, count } = await sb
     .from("style_comments")
     .select("id, content, author_name, created_at", { count: "exact" })
-    .eq("style_slug", slug)
+    .eq("style_slug", slugParsed.data)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
