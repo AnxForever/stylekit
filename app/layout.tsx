@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
@@ -123,6 +124,7 @@ export default function RootLayout({
         <ClientProviders>
           <LazyCommandPalette />
           {children}
+          <ScrollToTop />
         </ClientProviders>
         <Analytics />
       </body>

@@ -35,7 +35,7 @@ export const StyleCard = React.memo(function StyleCard({
     <Link
       href={`/styles/${style.slug}`}
       onClick={handleClick}
-      className="group block border border-border hover:border-foreground transition-colors"
+      className="group block border border-border hover:border-foreground transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
     >
       {/* Cover preview */}
       <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
@@ -74,11 +74,11 @@ export const StyleCard = React.memo(function StyleCard({
 
       {/* Card content */}
       <div className={isCompact ? "p-4 md:p-5" : "p-4 md:p-6"}>
-        <div className="flex items-center gap-2 mb-2">
-          <h3 className={`group-hover:text-accent transition-colors ${isCompact ? "text-lg" : "text-lg md:text-xl"}`}>
+        <div className={`flex items-center gap-2 mb-2 ${isCompact ? "min-w-0" : ""}`}>
+          <h3 className={`group-hover:text-accent transition-colors truncate ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
             {style.name}
           </h3>
-          <span className="text-sm text-muted">
+          <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
             {style.nameEn}
           </span>
         </div>
