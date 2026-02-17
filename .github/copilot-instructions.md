@@ -2,10 +2,9 @@
 
 Read and follow these files before generating code:
 
-1. `AGENTS.md`
-2. `docs/AGENTS.md`
-3. `CONTRIBUTING.md`
-4. `docs/STYLE_ADDITION_CHECKLIST.md` (for new styles)
+1. `docs/AGENTS.md`
+2. `docs/CONTRIBUTING.md`
+3. `docs/STYLE_ADDITION_CHECKLIST.md` (for new styles)
 
 ## Required Coding Rules
 

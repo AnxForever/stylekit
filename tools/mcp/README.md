@@ -24,7 +24,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["tsx", "/path/to/stylekit/mcp/server.ts"]
+      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
     }
   }
 }
@@ -39,7 +39,7 @@ Add to Cursor settings:
   "mcp.servers": {
     "stylekit": {
       "command": "npx",
-      "args": ["tsx", "/path/to/stylekit/mcp/server.ts"]
+      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
     }
   }
 }
@@ -54,7 +54,7 @@ Add to `.claude/settings.json`:
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["tsx", "/path/to/stylekit/mcp/server.ts"]
+      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
     }
   }
 }
@@ -110,7 +110,7 @@ The AI will use `get_stack_guidelines` to retrieve stack-specific coding guideli
 Run the server locally:
 
 ```bash
-cd mcp
+cd tools/mcp
 npx tsx server.ts
 ```
 
