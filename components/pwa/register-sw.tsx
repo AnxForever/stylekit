@@ -8,10 +8,37 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+const INSTALL_REMINDER_KEY = "stylekit:pwa-install-reminder-until";
+const REMIND_LATER_MS = 1000 * 60 * 60 * 24 * 30;
+const ACCEPTED_MS = 1000 * 60 * 60 * 24 * 365;
+
+function readReminderUntil() {
+  try {
+    const value = window.localStorage.getItem(INSTALL_REMINDER_KEY);
+    if (!value) return 0;
+    const timestamp = Number.parseInt(value, 10);
+    if (Number.isNaN(timestamp)) return 0;
+    return timestamp;
+  } catch {
+    return 0;
+  }
+}
+
+function postponeReminder(durationMs: number) {
+  try {
+    window.localStorage.setItem(
+      INSTALL_REMINDER_KEY,
+      String(Date.now() + durationMs),
+    );
+  } catch {
+    // ignore persistence failures
+  }
+}
+
 export function RegisterSW() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Register service worker
@@ -21,48 +48,62 @@ export function RegisterSW() {
       });
     }
 
-    // Listen for install prompt
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    // Show a lightweight install reminder only when user is eligible.
+    const handler = (event: Event) => {
+      const reminderUntil = readReminderUntil();
+      if (reminderUntil > Date.now()) return;
+      event.preventDefault();
+      setDeferredPrompt(event as BeforeInstallPromptEvent);
+      setIsVisible(true);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  if (!deferredPrompt || dismissed) return null;
+  if (!deferredPrompt || !isVisible) return null;
 
   const handleInstall = async () => {
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setDeferredPrompt(null);
+    try {
+      await deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice.outcome === "accepted") {
+        postponeReminder(ACCEPTED_MS);
+        setDeferredPrompt(null);
+        setIsVisible(false);
+        return;
+      }
+      postponeReminder(REMIND_LATER_MS);
+    } catch {
+      postponeReminder(REMIND_LATER_MS);
     }
+    setIsVisible(false);
+  };
+
+  const handleDismiss = () => {
+    postponeReminder(REMIND_LATER_MS);
+    setIsVisible(false);
   };
 
   return (
-    <div className="fixed bottom-20 right-6 z-40 max-w-xs animate-in slide-in-from-bottom-4">
-      <div className="flex items-start gap-3 p-4 bg-background border border-border rounded-lg shadow-lg">
-        <Download className="w-5 h-5 text-muted shrink-0 mt-0.5" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium">Install StyleKit</p>
-          <p className="text-xs text-muted mt-1">
-            Quick access from your home screen, works offline.
-          </p>
-          <button
-            onClick={handleInstall}
-            className="mt-2 px-3 py-1.5 text-xs font-medium bg-foreground text-background rounded-md hover:opacity-90 transition-opacity"
-          >
-            Install
-          </button>
-        </div>
+    <div className="fixed bottom-6 right-6 z-40">
+      <div className="flex items-center gap-2 rounded-full border border-border bg-background/95 px-3 py-2 shadow-sm backdrop-blur">
+        <Download className="h-4 w-4 text-muted-foreground" />
+        <p className="text-xs text-foreground">可安装为桌面应用</p>
         <button
-          onClick={() => setDismissed(true)}
-          className="p-1 text-muted hover:text-foreground transition-colors"
-          aria-label="Dismiss"
+          type="button"
+          onClick={handleInstall}
+          className="rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium text-background hover:opacity-90"
         >
-          <X className="w-4 h-4" />
+          安装
+        </button>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          className="rounded-full p-1 text-muted-foreground hover:text-foreground"
+          aria-label="关闭安装提醒"
+        >
+          <X className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>
