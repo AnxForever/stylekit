@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Plus, ArrowLeftRight, BarChart3 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
@@ -11,12 +11,18 @@ import { StyleSelector } from "./style-selector";
 import { TokenDiffTable } from "./token-diff-table";
 import { VisualCompare } from "./visual-compare";
 import { ComponentCompare } from "./component-compare";
+import { TokenDiff } from "./token-diff";
+import {
+  RecentComparisons,
+  useRecentComparisons,
+} from "./recent-comparisons";
 
 export function CompareContainer() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { locale, t } = useI18n();
   const allStyles = getAllStylesMeta();
+  const { recent, addRecent, clearRecent } = useRecentComparisons();
 
   // Read initial slugs from URL
   const [slugs, setSlugs] = useState<(string | null)[]>(() => {
@@ -51,6 +57,14 @@ export function CompareContainer() {
     [syncUrl]
   );
 
+  // Save to recent when both slugs are selected
+  const selectedSlugs = slugs.filter((s): s is string => !!s);
+  useEffect(() => {
+    if (selectedSlugs.length >= 2) {
+      addRecent(selectedSlugs);
+    }
+  }, [selectedSlugs.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // How many selectors to show (2 or 3)
   const [showThird, setShowThird] = useState(() => !!searchParams.get("c"));
 
@@ -63,10 +77,25 @@ export function CompareContainer() {
     updateSlug(2, null);
   };
 
-  // Compute selected style names
-  const selectedSlugs = slugs.filter((s): s is string => !!s);
   const excludeFor = (index: number) =>
     slugs.filter((s, i): s is string => !!s && i !== index);
+
+  // Handle selecting a recent comparison
+  const handleSelectRecent = useCallback(
+    (recentSlugs: string[]) => {
+      const newSlugs: (string | null)[] = [
+        recentSlugs[0] ?? null,
+        recentSlugs[1] ?? null,
+        recentSlugs[2] ?? null,
+      ];
+      setSlugs(newSlugs);
+      syncUrl(newSlugs);
+      if (recentSlugs.length >= 3) {
+        setShowThird(true);
+      }
+    },
+    [syncUrl]
+  );
 
   // Get tokens for selected styles
   const stylesWithTokens = useMemo(
@@ -105,6 +134,13 @@ export function CompareContainer() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12 space-y-8">
+      {/* Recent comparisons */}
+      <RecentComparisons
+        recent={recent}
+        onSelect={handleSelectRecent}
+        onClear={clearRecent}
+      />
+
       {/* Selectors row */}
       <div className="space-y-4">
         <div
@@ -194,6 +230,22 @@ export function CompareContainer() {
             />
           </div>
         </div>
+      )}
+
+      {/* Diff mode - side-by-side with highlight toggle */}
+      {stylesWithTokens.length >= 2 && (
+        <TokenDiff
+          styleA={{
+            slug: stylesWithTokens[0].slug,
+            name: locale === "zh" ? stylesWithTokens[0].name : stylesWithTokens[0].nameEn,
+            tokens: stylesWithTokens[0].tokens,
+          }}
+          styleB={{
+            slug: stylesWithTokens[1].slug,
+            name: locale === "zh" ? stylesWithTokens[1].name : stylesWithTokens[1].nameEn,
+            tokens: stylesWithTokens[1].tokens,
+          }}
+        />
       )}
 
       {/* Component compare */}
