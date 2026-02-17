@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
 import { mainNav, secondaryNav, toolsDropdown, externalNav } from "@/lib/nav-config";
 import { ChevronDown } from "lucide-react";
 
@@ -167,6 +168,7 @@ export function Header() {
                 )}
               </button>
             )}
+            {mounted && <UserMenu />}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -345,6 +347,11 @@ export function Header() {
                   </button>
                 )}
               </div>
+              {mounted && (
+                <div className="pt-2 border-t border-border">
+                  <MobileUserMenu />
+                </div>
+              )}
             </div>
           </nav>
         )}
