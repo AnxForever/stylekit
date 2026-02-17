@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { approveSubmission, rejectSubmission } from "@/lib/submit/reviewer";
+import {
+  isSupabaseConfigured,
+  approveSubmissionSupabase,
+  rejectSubmissionSupabase,
+} from "@/lib/submit/reviewer-supabase";
 
 export async function POST(
   request: Request,
@@ -10,8 +15,13 @@ export async function POST(
     const body = await request.json();
     const { action, note } = body as { action?: string; note?: string };
 
+    const useSupabase = isSupabaseConfigured();
+
     if (action === "approve") {
-      const result = await approveSubmission(id, note);
+      const result = useSupabase
+        ? await approveSubmissionSupabase(id, note)
+        : await approveSubmission(id, note);
+
       if (!result) {
         return NextResponse.json(
           { success: false, error: "Submission not found" },
@@ -22,7 +32,10 @@ export async function POST(
     }
 
     if (action === "reject") {
-      const result = await rejectSubmission(id, note);
+      const result = useSupabase
+        ? await rejectSubmissionSupabase(id, note)
+        : await rejectSubmission(id, note);
+
       if (!result) {
         return NextResponse.json(
           { success: false, error: "Submission not found" },

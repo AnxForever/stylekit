@@ -2,22 +2,37 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, Suspense } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
-const typeLabels: Record<string, string> = {
-  all: "全部",
-  landing: "着陆页",
-  dashboard: "仪表盘",
-  blog: "博客",
-  portfolio: "作品集",
-};
+type TemplateTypeFilter = "all" | "landing" | "dashboard" | "blog" | "portfolio";
+
+const filterTypeOrder: TemplateTypeFilter[] = ["all", "landing", "dashboard", "blog", "portfolio"];
+
+function typeTranslationKey(type: TemplateTypeFilter) {
+  switch (type) {
+    case "all":
+      return "templates.typeAll";
+    case "landing":
+      return "templates.typeLanding";
+    case "dashboard":
+      return "templates.typeDashboard";
+    case "blog":
+      return "templates.typeBlog";
+    case "portfolio":
+      return "templates.typePortfolio";
+    default:
+      return "templates.typeAll";
+  }
+}
 
 function FilterButtons() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const activeType = searchParams.get("type") || "all";
+  const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
 
   const setActiveType = useCallback(
-    (type: string) => {
+    (type: TemplateTypeFilter) => {
       const params = new URLSearchParams(searchParams.toString());
       if (type === "all") {
         params.delete("type");
@@ -31,39 +46,44 @@ function FilterButtons() {
   );
 
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <span className="text-sm text-muted">类型：</span>
-      {Object.entries(typeLabels).map(([key, label]) => (
-        <button
-          key={key}
-          onClick={() => setActiveType(key)}
-          className={`px-3 py-1.5 text-sm transition-colors ${
-            activeType === key
-              ? "bg-foreground text-background"
-              : "border border-border hover:border-foreground"
-          }`}
-        >
-          {label}
-        </button>
-      ))}
+    <div className="mb-8 space-y-3">
+      <p className="text-sm text-muted">{t("templates.type")}:</p>
+      <div className="flex flex-wrap gap-2">
+        {filterTypeOrder.map((type) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => setActiveType(type)}
+            aria-pressed={activeType === type}
+            className={`px-3 py-1.5 text-sm transition-colors ${
+              activeType === type
+                ? "bg-foreground text-background"
+                : "border border-border hover:border-foreground"
+            }`}
+          >
+            {t(typeTranslationKey(type))}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
 
 export function TemplatesFilter() {
+  const { t } = useI18n();
+
   return (
     <Suspense
       fallback={
-        <div className="flex items-center gap-3 mb-8">
-          <span className="text-sm text-muted">类型：</span>
-          {Object.entries(typeLabels).map(([key, label]) => (
-            <span
-              key={key}
-              className="px-3 py-1.5 text-sm border border-border"
-            >
-              {label}
-            </span>
-          ))}
+        <div className="mb-8 space-y-3">
+          <p className="text-sm text-muted">{t("templates.type")}:</p>
+          <div className="flex flex-wrap gap-2">
+            {filterTypeOrder.map((type) => (
+              <span key={type} className="px-3 py-1.5 text-sm border border-border">
+                {t(typeTranslationKey(type))}
+              </span>
+            ))}
+          </div>
         </div>
       }
     >
@@ -71,5 +91,3 @@ export function TemplatesFilter() {
     </Suspense>
   );
 }
-
-export { typeLabels };

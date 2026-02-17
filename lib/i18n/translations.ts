@@ -118,6 +118,10 @@ const en = {
     "templates.typeLanding": "Landing",
     "templates.typeDashboard": "Dashboard",
     "templates.typeBlog": "Blog",
+    "templates.typePortfolio": "Portfolio",
+    "templates.results": "templates",
+    "templates.openTemplate": "Open Template",
+    "templates.empty": "No templates in this category yet.",
 
     // About page
     "about.subtitle": "About",
@@ -850,6 +854,20 @@ const zh: { [K in keyof typeof en]: string } = {
   "home.ctaPathA": "我有参考站点",
   "home.ctaPathB": "我想从预设开始",
   "home.ctaGenerate": "打开生成器",
+
+  // Templates page
+  "templates.subtitle": "页面模板",
+  "templates.title": "模板",
+  "templates.description": "为各类风格准备的完整页面模板，可直接复制使用或作为设计参考。",
+  "templates.type": "类型",
+  "templates.typeAll": "全部",
+  "templates.typeLanding": "落地页",
+  "templates.typeDashboard": "仪表盘",
+  "templates.typeBlog": "博客",
+  "templates.typePortfolio": "作品集",
+  "templates.results": "个模板",
+  "templates.openTemplate": "查看模板",
+  "templates.empty": "该分类下暂时没有模板。",
 
   // Styles page
   "styles.subtitle": "设计风格集合",
