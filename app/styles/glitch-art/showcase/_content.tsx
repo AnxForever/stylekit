@@ -232,14 +232,18 @@ export default function ShowcaseContent() {
       >
         <div className="max-w-3xl mx-auto">
           <div className="bg-black border-2 border-cyan-500">
-            <div className="flex border-b-2 border-cyan-500">
+            <div className="flex border-b-2 border-cyan-500" role="tablist" aria-label="Glitch effect channels">
               {tabs.map((tab, i) => (
                 <button
                   key={i}
+                  role="tab"
+                  aria-selected={activeTab === i}
+                  aria-controls={`tabpanel-${i}`}
+                  id={`tab-${i}`}
                   onClick={() => setActiveTab(i)}
                   className={`flex-1 px-6 py-4 font-black font-mono transition-all border-r-2 last:border-r-0 ${
-                    activeTab === i 
-                      ? 'bg-cyan-500 text-black' 
+                    activeTab === i
+                      ? 'bg-cyan-500 text-black'
                       : 'bg-black text-cyan-400 hover:bg-cyan-500/20'
                   }`}
                   style={{ borderColor: '#00ffff' }}
@@ -250,19 +254,19 @@ export default function ShowcaseContent() {
             </div>
             <div className="p-8 min-h-[180px]">
               {activeTab === 0 && (
-                <div>
+                <div role="tabpanel" id="tabpanel-0" aria-labelledby="tab-0">
                   <h4 className="text-3xl font-black text-cyan-400 mb-4 font-mono">RGB_SPLIT</h4>
                   <p className="text-gray-400 font-mono">Red, green, blue color channel separation creates chromatic aberration effects</p>
                 </div>
               )}
               {activeTab === 1 && (
-                <div>
+                <div role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1">
                   <h4 className="text-3xl font-black text-magenta-500 mb-4 font-mono">NOISE_GEN</h4>
                   <p className="text-gray-400 font-mono">Digital noise and grain patterns simulate signal interference</p>
                 </div>
               )}
               {activeTab === 2 && (
-                <div>
+                <div role="tabpanel" id="tabpanel-2" aria-labelledby="tab-2">
                   <h4 className="text-3xl font-black text-yellow-400 mb-4 font-mono">SCAN_LINES</h4>
                   <p className="text-gray-400 font-mono">Horizontal scan line artifacts from CRT displays</p>
                 </div>
@@ -284,6 +288,8 @@ export default function ShowcaseContent() {
           {accordionItems.map((item, i) => (
             <div key={i} className="bg-black border-2 border-cyan-500/50 border-b-0 last:border-b-2">
               <button
+                aria-expanded={openAccordion === i}
+                aria-controls={`accordion-panel-${i}`}
                 onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
                 className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-cyan-500/10 transition-colors"
               >
@@ -295,7 +301,7 @@ export default function ShowcaseContent() {
                 )}
               </button>
               {openAccordion === i && (
-                <div className="px-6 pb-6 border-t-2 border-cyan-500/30">
+                <div id={`accordion-panel-${i}`} role="region" aria-labelledby={`accordion-btn-${i}`} className="px-6 pb-6 border-t-2 border-cyan-500/30">
                   <p className="text-gray-400 leading-relaxed font-mono text-sm mt-4">{item.content}</p>
                 </div>
               )}
@@ -408,10 +414,10 @@ export default function ShowcaseContent() {
                 <p className="font-black font-mono text-cyan-400">CORRUPTION.EXE</p>
                 <p className="text-sm font-mono text-magenta-500">{progress}%</p>
               </div>
-              <div className="h-4 bg-gray-900 border-2 border-cyan-500">
+              <div className="h-4 bg-gray-900 border-2 border-cyan-500" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Corruption progress">
                 <div
                   className="h-full bg-gradient-to-r from-cyan-500 to-magenta-500 transition-all duration-500"
-                  style={{ 
+                  style={{
                     width: `${progress}%`,
                     boxShadow: '0 0 10px rgba(0,255,255,0.8)'
                   }}
