@@ -176,12 +176,13 @@ export function ShowcaseHero({
 // ============================
 export interface ColorItem {
   name: string;
-  hex?: any;
-  bg?: any;
-  value?: any;
-  description?: any;
-  border?: any;
-  [key: string]: any;
+  hex?: string;
+  bg?: string;
+  value?: string;
+  description?: string;
+  border?: boolean | string;
+  textColor?: string;
+  [key: string]: unknown;
 }
 
 interface ColorPaletteGridProps {
