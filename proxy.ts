@@ -58,28 +58,38 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Only call getUser() (network roundtrip to Supabase) for admin routes.
-  // For all other routes, just refresh the session from cookies (local, fast).
-  if (request.nextUrl.pathname.startsWith("/admin")) {
+  // Check if user has an auth cookie — skip network call for anonymous visitors
+  const hasAuthCookie = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
+
+  if (hasAuthCookie) {
+    // getUser() validates & refreshes the session server-side, keeping cookies alive.
+    // Only called when an auth cookie exists, so anonymous visitors pay zero cost.
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/";
-      return NextResponse.redirect(redirectUrl);
-    }
+    // Protect /admin routes
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      if (!user) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/";
+        return NextResponse.redirect(redirectUrl);
+      }
 
-    const adminIds = getAdminIds();
-    if (adminIds.length > 0 && !adminIds.includes(user.id)) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/";
-      return NextResponse.redirect(redirectUrl);
+      const adminIds = getAdminIds();
+      if (adminIds.length > 0 && !adminIds.includes(user.id)) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/";
+        return NextResponse.redirect(redirectUrl);
+      }
     }
-  } else {
-    // Lightweight session refresh — reads/writes cookies only, no network call
-    await supabase.auth.getSession();
+  } else if (request.nextUrl.pathname.startsWith("/admin")) {
+    // No auth cookie + admin route = redirect immediately
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/";
+    return NextResponse.redirect(redirectUrl);
   }
 
   return supabaseResponse;
