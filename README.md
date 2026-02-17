@@ -162,8 +162,14 @@ npm run test     # Run tests
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting a PR.
-For protected-branch CI setup, see `docs/CI_REQUIRED_CHECKS.md`.
+Contributions are welcome.
+
+Please read these docs before opening a PR:
+
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `docs/STYLE_ADDITION_CHECKLIST.md` (required for new styles)
+- `docs/CI_REQUIRED_CHECKS.md`
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
