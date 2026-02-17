@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Surrealism Showcase - StyleKit",
-  description: "Live demonstration of Surrealism design style with dreamlike scenes, melting forms, and Dali-inspired visual aesthetics.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function SurrealismShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Surrealism Style Showcase",
+  description: "Dreamlike scenes, impossible spaces and subconscious beauty",
+};

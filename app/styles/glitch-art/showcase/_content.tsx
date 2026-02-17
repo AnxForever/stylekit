@@ -1,350 +1,475 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Zap, Monitor, Cpu, Terminal, Radio, Binary, Wifi } from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
-
-const colors: ColorItem[] = [
-  { name: "Cyan", hex: "#00ffff", bg: "bg-[#00ffff]" },
-  { name: "Magenta", hex: "#ff00ff", bg: "bg-[#ff00ff]" },
-  { name: "Yellow", hex: "#ffff00", bg: "bg-[#ffff00]" },
-  { name: "Black", hex: "#0a0a0a", bg: "bg-[#0a0a0a]" },
-  { name: "White", hex: "#ffffff", bg: "bg-white" },
-];
+import { ArrowLeft, Zap, Radio, Cpu, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Activity } from "lucide-react";
+import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(78);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Cyan Glitch", value: "#00ffff", description: "Primary" },
+    { name: "Magenta Error", value: "#ff00ff", description: "Secondary" },
+    { name: "Yellow Corrupt", value: "#ffff00", description: "Accent" },
+    { name: "Green Data", value: "#00ff00", description: "Highlight" },
+    { name: "Deep Black", value: "#000000", description: "Background" },
+  ];
+
+  const tabs = ["RGB", "Noise", "Scan"];
+
+  const accordionItems = [
+    { title: "What is Glitch Art?", content: "A digital art aesthetic that embraces the beauty of technological failures and errors. It features intentional distortions, RGB color separation, pixel displacement, and digital corruption effects that create striking visual experiences." },
+    { title: "Key Effects", content: "RGB color channel splitting, scan line artifacts, pixel sorting, data moshing, chromatic aberration, digital noise, signal interference, and fragmented visuals that mimic digital corruption and glitches." },
+    { title: "When to Use", content: "Perfect for tech brands, electronic music, experimental art, cyberpunk aesthetics, digital media platforms, and any project wanting to convey a raw, digital, or futuristic edge with intentional imperfection." },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative overflow-hidden">
-      {/* Global scan line overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-50 opacity-30"
+    <div className="min-h-screen bg-black text-white">
+      {/* Header with glitch effect */}
+      <header className="border-b border-cyan-500/30 bg-black/95 backdrop-blur-sm sticky top-0 z-50 shadow-[0_0_20px_rgba(0,255,255,0.3)]">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link 
+            href="/" 
+            className="flex items-center gap-2 text-cyan-400 hover:text-magenta-500 transition-colors group relative"
+            style={{ textShadow: '2px 0 #ff00ff, -2px 0 #00ffff' }}
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-mono text-lg font-bold">BACK</span>
+          </Link>
+          <div className="flex gap-3">
+            <Zap className="w-5 h-5 text-yellow-400 animate-pulse" />
+            <Radio className="w-5 h-5 text-magenta-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
+          </div>
+        </div>
+      </header>
+
+      {/* Hero with glitch animation */}
+      <ShowcaseHero
+        title="GLITCH ART"
+        subtitle="DIGITAL CORRUPTION AESTHETIC"
+        description="Embrace the beauty of technological failure with RGB splits, pixel distortions, and signal interference effects."
+        className="relative py-32 px-6 overflow-hidden bg-black"
+        titleClassName="text-7xl md:text-8xl font-black mb-6 text-cyan-400 tracking-wider"
+        subtitleClassName="text-xl text-magenta-500 mb-8 font-mono tracking-widest"
+        descriptionClassName="text-lg text-gray-400 leading-relaxed max-w-2xl mx-auto font-mono"
         style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px)",
+          textShadow: '3px 0 #ff00ff, -3px 0 #00ffff'
         }}
-      />
-
-      {/* VHS tracking error lines */}
-      <div className="fixed top-[15%] left-0 right-0 h-[2px] bg-[#ffffff]/[0.04] pointer-events-none z-40" />
-      <div className="fixed top-[15%] left-0 right-0 h-[1px] mt-[2px] bg-[#00ffff]/[0.08] pointer-events-none z-40" />
-      <div className="fixed top-[65%] left-0 right-0 h-[3px] bg-[#ffffff]/[0.03] pointer-events-none z-40" />
-      <div className="fixed top-[65%] left-0 right-0 h-[1px] mt-[3px] bg-[#ff00ff]/[0.06] pointer-events-none z-40" />
-
-      {/* Floating data corruption blocks */}
-      <div className="fixed top-24 right-8 w-36 h-2 bg-[#ff00ff]/15 pointer-events-none" />
-      <div className="fixed top-[26px] right-14 w-28 h-2 bg-[#00ffff]/15 pointer-events-none" style={{ top: "calc(6rem + 4px)" }} />
-      <div className="fixed bottom-40 left-6 w-44 h-1 bg-[#ffff00]/10 pointer-events-none" />
-      <div className="fixed bottom-36 left-10 w-32 h-1 bg-[#ff00ff]/10 pointer-events-none" />
-      <div className="fixed top-[45%] left-4 w-20 h-8 bg-[#00ffff]/[0.04] pointer-events-none" />
-      <div className="fixed top-[45%] left-6 w-20 h-8 bg-[#ff00ff]/[0.03] pointer-events-none" />
-
-      {/* Navigation - terminal status bar style */}
-      <nav className="relative z-10 px-6 py-3 border-b border-[#00ffff]/20 bg-[#0a0a0a]">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/glitch-art"
-            className="flex items-center gap-2 text-[#00ffff] hover:text-[#00ffff]/80 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-mono font-bold uppercase tracking-widest text-sm">../styles</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-[#00ffff] rounded-none animate-pulse" />
-            <span className="font-mono font-bold text-sm text-[#00ffff]/60 uppercase tracking-[0.3em]">
-              SIGNAL_ACTIVE
-            </span>
-          </div>
-          <Link
-            href="/styles"
-            className="px-4 py-2 border border-[#00ffff]/30 text-[#00ffff] font-mono font-bold uppercase tracking-widest text-sm rounded-none shadow-[2px_0_#ff00ff,-2px_0_#ffff00] hover:shadow-[4px_0_#ff00ff,-4px_0_#ffff00] transition-all"
-          >
-            [ALL_STYLES]
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero - Full-screen RGB split terminal */}
-      <section className="relative z-10 min-h-[80vh] flex flex-col items-center justify-center px-6">
-        {/* RGB channel split title */}
-        <div className="relative mb-6">
-          <span className="block text-6xl md:text-9xl font-mono font-black text-[#ffff00] uppercase absolute top-[-3px] left-[-5px] opacity-30 select-none" aria-hidden="true">
-            GLITCH
-          </span>
-          <span className="block text-6xl md:text-9xl font-mono font-black text-[#ff00ff] uppercase absolute top-[3px] left-[5px] opacity-50 select-none" aria-hidden="true">
-            GLITCH
-          </span>
-          <h1 className="block text-6xl md:text-9xl font-mono font-black text-[#00ffff] uppercase relative">
-            GLITCH
-          </h1>
-        </div>
-
-        {/* Horizontal displacement bar across subtitle */}
-        <div className="relative mb-4">
-          <div className="absolute -left-20 top-1/2 w-[calc(100%+40px)] h-[3px] bg-[#ff00ff]/20 -translate-y-1/2 pointer-events-none" />
-          <div className="relative">
-            <span className="text-4xl md:text-6xl font-mono font-black text-[#ff00ff] uppercase absolute top-[2px] left-[4px] opacity-50 select-none" aria-hidden="true">
-              ART
-            </span>
-            <span className="text-4xl md:text-6xl font-mono font-black text-[#ffff00] uppercase absolute top-[-2px] left-[-4px] opacity-30 select-none" aria-hidden="true">
-              ART
-            </span>
-            <span className="text-4xl md:text-6xl font-mono font-black text-[#00ffff] uppercase relative">
-              ART
-            </span>
-          </div>
-        </div>
-
-        <p className="text-sm text-[#ffffff]/20 font-mono uppercase tracking-[0.5em] mb-12">
-          ERROR_404: Reality not found
-        </p>
-
-        {/* CTA buttons */}
-        <div className="flex flex-wrap justify-center gap-4">
-          <button className="px-10 py-4 bg-[#00ffff] text-[#0a0a0a] font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#ff00ff,-3px_0_#ffff00] hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00] transition-all duration-100">
-            EXECUTE_
-          </button>
-          <button className="px-10 py-4 bg-[#0a0a0a] text-[#00ffff] border border-[#00ffff]/50 font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#ff00ff,-3px_0_#ffff00] hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00] transition-all duration-100">
-            CORRUPT_
-          </button>
-        </div>
-      </section>
-
-      {/* Data corruption console - unique layout with side-by-side terminal panels */}
-      <ShowcaseSection
-        title="DATA_STREAM"
-        subtitle="INTERCEPTED_SIGNALS"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-mono font-bold text-[#00ffff] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#ffffff]/15 font-mono uppercase tracking-[0.4em] mb-10 text-center"
       >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-1">
-          {/* Left panel - signal monitor */}
-          <div className="bg-[#0a0a0a] border border-[#00ffff]/20 rounded-none p-6 relative overflow-hidden">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#00ffff]/10">
-              <Radio className="w-4 h-4 text-[#00ffff]" />
-              <span className="font-mono text-xs text-[#00ffff]/60 uppercase tracking-widest">SIGNAL_MONITOR</span>
-              <div className="ml-auto w-2 h-2 bg-[#00ffff] animate-pulse" />
-            </div>
-            {/* Simulated signal bars */}
-            <div className="space-y-2 mb-6">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-[#ff00ff]/60 w-8">R:</span>
-                <div className="flex-1 h-3 bg-[#111] overflow-hidden">
-                  <div className="h-full bg-[#ff00ff]/60 w-[72%]" />
-                </div>
-                <span className="font-mono text-xs text-[#ff00ff]/40">0x72</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-[#00ffff]/60 w-8">G:</span>
-                <div className="flex-1 h-3 bg-[#111] overflow-hidden">
-                  <div className="h-full bg-[#00ffff]/60 w-[91%]" />
-                </div>
-                <span className="font-mono text-xs text-[#00ffff]/40">0x91</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-[#ffff00]/60 w-8">B:</span>
-                <div className="flex-1 h-3 bg-[#111] overflow-hidden">
-                  <div className="h-full bg-[#ffff00]/60 w-[45%]" />
-                </div>
-                <span className="font-mono text-xs text-[#ffff00]/40">0x45</span>
-              </div>
-            </div>
-            <div className="text-xs font-mono text-[#ffffff]/10 leading-relaxed">
-              <p>&#62; channel_split --offset 4px</p>
-              <p>&#62; scan_overlay --freq 2px</p>
-              <p className="text-[#ff00ff]/30">&#62; ERR: buffer overflow at 0xFFAE</p>
-              <p className="text-[#00ffff]/20">&#62; reconnecting...</p>
-            </div>
-          </div>
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-0 w-full h-px bg-cyan-500 animate-pulse" />
+          <div className="absolute top-1/4 left-0 w-full h-px bg-magenta-500 animate-pulse" style={{ animationDelay: '0.3s' }} />
+          <div className="absolute top-1/2 left-0 w-full h-px bg-yellow-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute top-3/4 left-0 w-full h-px bg-green-500 animate-pulse" style={{ animationDelay: '0.9s' }} />
+        </div>
+        <div className="absolute top-10 right-10 w-96 h-96 bg-cyan-500/20 blur-[100px]"></div>
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-magenta-500/20 blur-[100px]"></div>
+      </ShowcaseHero>
 
-          {/* Right panel - data blocks */}
-          <div className="bg-[#0a0a0a] border border-[#ff00ff]/20 rounded-none p-6 relative overflow-hidden">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#ff00ff]/10">
-              <Binary className="w-4 h-4 text-[#ff00ff]" />
-              <span className="font-mono text-xs text-[#ff00ff]/60 uppercase tracking-widest">DATA_BLOCKS</span>
-              <span className="ml-auto font-mono text-xs text-[#ffff00]/30">3 corrupted</span>
+      {/* Stats */}
+      <ShowcaseSection 
+        title="SYS//METRICS" 
+        subtitle="Data corrupted successfully"
+        className="py-20 px-6 relative"
+        titleClassName="text-5xl font-black text-cyan-400 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-magenta-500 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Users, label: "USERS", value: "9.4K", color: "cyan" },
+            { icon: TrendingUp, label: "ERRORS", value: "+89%", color: "magenta" },
+            { icon: Eye, label: "VIEWS", value: "666K", color: "yellow" },
+            { icon: Activity, label: "SIGNAL", value: "78%", color: "green" },
+          ].map((stat, i) => (
+            <div 
+              key={i} 
+              className="p-6 bg-gradient-to-br from-gray-900 to-black border-2 hover:scale-105 transition-all relative overflow-hidden group"
+              style={{ 
+                borderColor: stat.color === 'cyan' ? '#00ffff' : stat.color === 'magenta' ? '#ff00ff' : stat.color === 'yellow' ? '#ffff00' : '#00ff00',
+                boxShadow: `0 0 20px ${stat.color === 'cyan' ? 'rgba(0,255,255,0.3)' : stat.color === 'magenta' ? 'rgba(255,0,255,0.3)' : stat.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(0,255,0,0.3)'}`
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              <stat.icon 
+                className="w-8 h-8 mb-4" 
+                style={{ color: stat.color === 'cyan' ? '#00ffff' : stat.color === 'magenta' ? '#ff00ff' : stat.color === 'yellow' ? '#ffff00' : '#00ff00' }}
+              />
+              <p className="text-4xl font-black mb-2 font-mono" style={{ 
+                color: stat.color === 'cyan' ? '#00ffff' : stat.color === 'magenta' ? '#ff00ff' : stat.color === 'yellow' ? '#ffff00' : '#00ff00',
+                textShadow: `2px 2px 4px ${stat.color === 'cyan' ? '#ff00ff' : '#00ffff'}`
+              }}>
+                {stat.value}
+              </p>
+              <p className="text-xs text-gray-500 font-mono tracking-wider">{stat.label}</p>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { color: "#00ffff", label: "0x00FF", status: "OK" },
-                { color: "#ff00ff", label: "0xFF00", status: "CORRUPT" },
-                { color: "#ffff00", label: "0xFFFF", status: "OK" },
-                { color: "#ff00ff", label: "0xAE03", status: "LOST" },
-                { color: "#00ffff", label: "0x7B21", status: "OK" },
-                { color: "#ffff00", label: "0xD4CC", status: "CORRUPT" },
-              ].map((block) => (
-                <div
-                  key={block.label}
-                  className="p-3 border rounded-none text-center"
-                  style={{ borderColor: `${block.color}30` }}
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Color Palette */}
+      <ShowcaseSection 
+        title="COLOR//CHANNELS" 
+        subtitle="RGB separation active"
+        className="py-20 px-6 bg-gradient-to-b from-black to-gray-900"
+        titleClassName="text-5xl font-black text-magenta-500 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-cyan-400 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
+      </ShowcaseSection>
+
+      {/* Typography */}
+      <ShowcaseSection 
+        title="FONT//SYSTEM" 
+        subtitle="Monospace protocol"
+        className="py-20 px-6"
+        titleClassName="text-5xl font-black text-yellow-400 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-green-500 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-4xl mx-auto space-y-8">
+          {[
+            { text: "GLITCH", size: "text-8xl", color: "#00ffff", shadow: "#ff00ff" },
+            { text: "CORRUPTED HEADING", size: "text-5xl", color: "#ff00ff", shadow: "#00ffff" },
+            { text: "SYSTEM.ERROR: Text rendering failed", size: "text-xl", color: "#ffff00", shadow: "#00ff00" },
+          ].map((item, i) => (
+            <div key={i} className="p-8 bg-gray-900 border border-cyan-500/30 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <p 
+                className={`${item.size} font-black font-mono text-center tracking-wider`}
+                style={{ 
+                  color: item.color,
+                  textShadow: `3px 3px 0 ${item.shadow}, -2px -2px 0 ${item.shadow}`
+                }}
+              >
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Buttons */}
+      <ShowcaseSection 
+        title="BTN//INTERFACE" 
+        subtitle="Click to corrupt"
+        className="py-20 px-6 bg-gradient-to-b from-gray-900 to-black"
+        titleClassName="text-5xl font-black text-green-500 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-yellow-400 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
+          {[
+            { label: "PRIMARY", color: "#00ffff", shadow: "#ff00ff" },
+            { label: "SECONDARY", color: "#ff00ff", shadow: "#00ffff" },
+            { label: "WARNING", color: "#ffff00", shadow: "#ff0000" },
+            { label: "SUCCESS", color: "#00ff00", shadow: "#0000ff" },
+          ].map((btn, i) => (
+            <button 
+              key={i}
+              className="px-8 py-4 font-black font-mono text-black relative overflow-hidden group border-2 transition-all hover:scale-105"
+              style={{ 
+                backgroundColor: btn.color,
+                borderColor: btn.shadow,
+                boxShadow: `4px 4px 0 ${btn.shadow}, 0 0 20px ${btn.color}80`
+              }}
+            >
+              <span className="relative z-10">{btn.label}</span>
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ backgroundColor: btn.shadow }}
+              />
+            </button>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Cards */}
+      <ShowcaseSection 
+        title="DATA//BLOCKS" 
+        subtitle="Memory fragments"
+        className="py-20 px-6"
+        titleClassName="text-5xl font-black text-cyan-400 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-magenta-500 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+          {[
+            { title: "DISTORTION", desc: "Pixel displacement active", color: "cyan", shadow: "magenta" },
+            { title: "CORRUPTION", desc: "Data integrity compromised", color: "magenta", shadow: "yellow" },
+            { title: "INTERFERENCE", desc: "Signal loss detected", color: "yellow", shadow: "cyan" },
+          ].map((card, i) => (
+            <div 
+              key={i} 
+              className="p-8 bg-gray-900 border-2 relative overflow-hidden group hover:scale-105 transition-all"
+              style={{ 
+                borderColor: card.color === 'cyan' ? '#00ffff' : card.color === 'magenta' ? '#ff00ff' : '#ffff00',
+                boxShadow: `0 0 30px ${card.color === 'cyan' ? 'rgba(0,255,255,0.3)' : card.color === 'magenta' ? 'rgba(255,0,255,0.3)' : 'rgba(255,255,0,0.3)'}`
+              }}
+            >
+              <h3 
+                className="text-3xl font-black mb-4 font-mono"
+                style={{ 
+                  color: card.color === 'cyan' ? '#00ffff' : card.color === 'magenta' ? '#ff00ff' : '#ffff00',
+                  textShadow: `2px 2px 0 ${card.shadow === 'magenta' ? '#ff00ff' : card.shadow === 'yellow' ? '#ffff00' : '#00ffff'}`
+                }}
+              >
+                {card.title}
+              </h3>
+              <p className="text-gray-400 font-mono text-sm">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Tabs */}
+      <ShowcaseSection 
+        title="TAB//CONTROL" 
+        subtitle="Channel selector"
+        className="py-20 px-6 bg-gradient-to-b from-black to-gray-900"
+        titleClassName="text-5xl font-black text-magenta-500 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-green-500 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-black border-2 border-cyan-500">
+            <div className="flex border-b-2 border-cyan-500" role="tablist" aria-label="Glitch effect channels">
+              {tabs.map((tab, i) => (
+                <button
+                  key={i}
+                  role="tab"
+                  aria-selected={activeTab === i}
+                  aria-controls={`tabpanel-${i}`}
+                  id={`tab-${i}`}
+                  onClick={() => setActiveTab(i)}
+                  className={`flex-1 px-6 py-4 font-black font-mono transition-all border-r-2 last:border-r-0 ${
+                    activeTab === i
+                      ? 'bg-cyan-500 text-black'
+                      : 'bg-black text-cyan-400 hover:bg-cyan-500/20'
+                  }`}
+                  style={{ borderColor: '#00ffff' }}
                 >
-                  <p className="font-mono text-xs" style={{ color: block.color }}>{block.label}</p>
-                  <p className="font-mono text-[10px] mt-1" style={{ color: block.status === "OK" ? "#00ffff50" : "#ff00ff50" }}>
-                    [{block.status}]
-                  </p>
-                </div>
+                  {tab}
+                </button>
               ))}
             </div>
+            <div className="p-8 min-h-[180px]">
+              {activeTab === 0 && (
+                <div role="tabpanel" id="tabpanel-0" aria-labelledby="tab-0">
+                  <h4 className="text-3xl font-black text-cyan-400 mb-4 font-mono">RGB_SPLIT</h4>
+                  <p className="text-gray-400 font-mono">Red, green, blue color channel separation creates chromatic aberration effects</p>
+                </div>
+              )}
+              {activeTab === 1 && (
+                <div role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1">
+                  <h4 className="text-3xl font-black text-magenta-500 mb-4 font-mono">NOISE_GEN</h4>
+                  <p className="text-gray-400 font-mono">Digital noise and grain patterns simulate signal interference</p>
+                </div>
+              )}
+              {activeTab === 2 && (
+                <div role="tabpanel" id="tabpanel-2" aria-labelledby="tab-2">
+                  <h4 className="text-3xl font-black text-yellow-400 mb-4 font-mono">SCAN_LINES</h4>
+                  <p className="text-gray-400 font-mono">Horizontal scan line artifacts from CRT displays</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </ShowcaseSection>
 
-      {/* RGB Channels palette - inline with hex readout */}
-      <ShowcaseSection
-        title="RGB_CHANNELS"
-        subtitle="PRIMARY_SIGNALS"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-mono font-bold text-[#00ffff] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#ffffff]/15 font-mono uppercase tracking-[0.4em] mb-10 text-center"
+      {/* Accordion */}
+      <ShowcaseSection 
+        title="INFO//EXPAND" 
+        subtitle="Data structure"
+        className="py-20 px-6"
+        titleClassName="text-5xl font-black text-yellow-400 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-cyan-400 mb-12 text-center font-mono text-sm tracking-widest"
       >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border border-[#00ffff]/20 bg-[#0a0a0a] rounded-none"
-            labelClassName="font-mono font-bold text-sm text-[#ffffff]/70 uppercase"
-            hexClassName="text-xs text-[#00ffff] font-mono"
-          />
+        <div className="max-w-3xl mx-auto space-y-0">
+          {accordionItems.map((item, i) => (
+            <div key={i} className="bg-black border-2 border-cyan-500/50 border-b-0 last:border-b-2">
+              <button
+                aria-expanded={openAccordion === i}
+                aria-controls={`accordion-panel-${i}`}
+                onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-cyan-500/10 transition-colors"
+              >
+                <span className="font-black text-cyan-400 font-mono">{item.title}</span>
+                {openAccordion === i ? (
+                  <ChevronUp className="w-6 h-6 text-magenta-500" />
+                ) : (
+                  <ChevronDown className="w-6 h-6 text-magenta-500" />
+                )}
+              </button>
+              {openAccordion === i && (
+                <div id={`accordion-panel-${i}`} role="region" aria-labelledby={`accordion-btn-${i}`} className="px-6 pb-6 border-t-2 border-cyan-500/30">
+                  <p className="text-gray-400 leading-relaxed font-mono text-sm mt-4">{item.content}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </ShowcaseSection>
 
-      {/* Component Matrix - displacement band-separated sections */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Full-width displacement band separator */}
-          <div className="relative mb-16 h-8">
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-[#00ffff]/15" />
-            <div className="absolute inset-x-0 top-[4px] h-[2px] bg-[#ff00ff]/10 translate-x-2" />
-            <div className="absolute inset-x-0 top-[7px] h-[1px] bg-[#ffff00]/08" style={{ transform: "translateX(-3px)" }} />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0a0a0a] px-6">
-              <span className="font-mono text-sm text-[#00ffff]/40 uppercase tracking-[0.5em]">COMPONENTS</span>
-            </div>
-          </div>
-
-          {/* Buttons row */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <Zap className="w-5 h-5 text-[#00ffff]" />
-              <span className="font-mono font-bold text-sm text-[#00ffff] uppercase tracking-widest">BUTTONS // RGB_DISPLACEMENT</span>
-            </div>
-            <div className="p-6 bg-[#0a0a0a] border border-[#00ffff]/15 rounded-none relative">
-              {/* Scan line texture on card */}
-              <div className="absolute inset-0 pointer-events-none opacity-40" style={{
-                backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,255,0.02) 3px, rgba(0,255,255,0.02) 4px)",
-              }} />
-              <div className="relative flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-[#00ffff] text-[#0a0a0a] font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#ff00ff,-3px_0_#ffff00] hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00] transition-all duration-100">
-                  Cyan
-                </button>
-                <button className="px-6 py-3 bg-[#0a0a0a] text-[#00ffff] border border-[#00ffff] font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#ff00ff,-3px_0_#ffff00] hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00] transition-all duration-100">
-                  Outline
-                </button>
-                <button className="px-6 py-3 bg-[#ff00ff] text-white font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#00ffff,-3px_0_#ffff00] hover:shadow-[6px_0_#00ffff,-6px_0_#ffff00] transition-all duration-100">
-                  Magenta
-                </button>
-                <button className="px-6 py-3 bg-transparent text-[#ffff00] border border-[#ffff00]/50 font-mono font-bold uppercase tracking-widest rounded-none shadow-[2px_0_#ff00ff,-2px_0_#00ffff] hover:shadow-[4px_0_#ff00ff,-4px_0_#00ffff] transition-all duration-100">
-                  Yellow
-                </button>
-                <button className="px-6 py-3 bg-[#0a0a0a] text-[#00ffff]/40 border border-[#00ffff]/15 font-mono font-bold uppercase tracking-widest rounded-none cursor-not-allowed opacity-40">
-                  Disabled
-                </button>
+      {/* Alerts */}
+      <ShowcaseSection 
+        title="ALERT//SYSTEM" 
+        subtitle="Status messages"
+        className="py-20 px-6 bg-gradient-to-b from-gray-900 to-black"
+        titleClassName="text-5xl font-black text-green-500 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-yellow-400 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            { icon: Check, label: "SUCCESS", desc: "Operation completed", color: "#00ff00", bg: "rgba(0,255,0,0.1)" },
+            { icon: AlertTriangle, label: "WARNING", desc: "System instability detected", color: "#ffff00", bg: "rgba(255,255,0,0.1)" },
+            { icon: X, label: "ERROR", desc: "Critical failure occurred", color: "#ff0000", bg: "rgba(255,0,0,0.1)" },
+            { icon: Info, label: "INFO", desc: "Data transmission active", color: "#00ffff", bg: "rgba(0,255,255,0.1)" },
+          ].map((alert, i) => (
+            <div 
+              key={i} 
+              className="flex items-center gap-4 p-5 border-2 border-l-8"
+              style={{ 
+                backgroundColor: alert.bg,
+                borderColor: alert.color,
+                boxShadow: `0 0 20px ${alert.color}40`
+              }}
+            >
+              <alert.icon className="w-6 h-6" style={{ color: alert.color }} />
+              <div>
+                <p className="font-black font-mono text-sm tracking-wider" style={{ color: alert.color }}>
+                  {alert.label}
+                </p>
+                <p className="text-gray-400 text-sm font-mono">{alert.desc}</p>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </ShowcaseSection>
 
-          {/* Cards - corrupted data panels with displacement borders */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <Monitor className="w-5 h-5 text-[#ff00ff]" />
-              <span className="font-mono font-bold text-sm text-[#ff00ff] uppercase tracking-widest">CARDS // CORRUPTED_PANELS</span>
-            </div>
-            <div className="grid md:grid-cols-3 gap-1">
-              <div className="p-6 bg-[#0a0a0a] border-l-2 border-[#00ffff]/40 relative group hover:bg-[#00ffff]/[0.02] transition-colors duration-100">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-[#00ffff]/20" />
-                <div className="absolute top-[2px] left-[3px] w-full h-[1px] bg-[#ff00ff]/10" />
-                <Zap className="w-8 h-8 text-[#00ffff] mb-4" />
-                <h3 className="text-lg font-mono font-bold text-[#00ffff] uppercase mb-2">SIGNAL</h3>
-                <p className="text-[#ffffff]/25 font-mono text-sm">Data stream intercepted and decoded from corrupted channel</p>
-                <div className="mt-4 pt-3 border-t border-[#00ffff]/10">
-                  <span className="font-mono text-xs text-[#00ffff]/30">SECTOR_0x7A // ACTIVE</span>
+      {/* Toggle */}
+      <ShowcaseSection 
+        title="TOGGLE//SWITCH" 
+        subtitle="Binary controls"
+        className="py-20 px-6"
+        titleClassName="text-5xl font-black text-magenta-500 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-cyan-400 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-gray-900 border-2 border-cyan-500 space-y-6">
+            {[
+              { label: "RGB_SPLIT", desc: "Color channel separation", color: "#00ffff" },
+              { label: "SCAN_LINES", desc: "CRT effect overlay", color: "#ff00ff" },
+              { label: "DISTORTION", desc: "Pixel displacement", color: "#ffff00" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center justify-between py-4 border-b-2 border-cyan-500/30 last:border-b-0">
+                <div>
+                  <p className="font-black font-mono" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-sm text-gray-500 font-mono">{item.desc}</p>
                 </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={toggleStates[i]}
+                  aria-label={`${item.label} toggle`}
+                  onClick={() => {
+                    setToggleStates((prev) => {
+                      const next = [...prev];
+                      next[i] = !next[i];
+                      return next;
+                    });
+                  }}
+                  className="relative w-16 h-8 border-2 transition-all"
+                  style={{ 
+                    backgroundColor: toggleStates[i] ? item.color : '#000',
+                    borderColor: item.color,
+                    boxShadow: toggleStates[i] ? `0 0 10px ${item.color}` : 'none'
+                  }}
+                >
+                  <span
+                    className="absolute top-0.5 w-6 h-6 bg-black border-2 transition-all"
+                    style={{ 
+                      left: toggleStates[i] ? 'calc(100% - 28px)' : '2px',
+                      borderColor: item.color
+                    }}
+                  />
+                </button>
               </div>
-
-              <div className="p-6 bg-[#0a0a0a] border-l-2 border-[#ff00ff]/40 relative group hover:bg-[#ff00ff]/[0.02] transition-colors duration-100">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-[#ff00ff]/20" />
-                <div className="absolute top-[2px] left-[-2px] w-full h-[1px] bg-[#ffff00]/10" />
-                <Cpu className="w-8 h-8 text-[#ff00ff] mb-4" />
-                <h3 className="text-lg font-mono font-bold text-[#ff00ff] uppercase mb-2">PROCESS</h3>
-                <p className="text-[#ffffff]/25 font-mono text-sm">CRT phosphor burn-in detected. Buffer overflow in memory</p>
-                <div className="mt-4 pt-3 border-t border-[#ff00ff]/10">
-                  <span className="font-mono text-xs text-[#ff00ff]/30">SECTOR_0xBE // CORRUPTED</span>
-                </div>
-              </div>
-
-              <div className="p-6 bg-[#0a0a0a] border-l-2 border-[#ffff00]/40 relative group hover:bg-[#ffff00]/[0.02] transition-colors duration-100">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-[#ffff00]/20" />
-                <div className="absolute top-[2px] left-[5px] w-full h-[1px] bg-[#00ffff]/10" />
-                <Wifi className="w-8 h-8 text-[#ffff00] mb-4" />
-                <h3 className="text-lg font-mono font-bold text-[#ffff00] uppercase mb-2">TRANSMIT</h3>
-                <p className="text-[#ffffff]/25 font-mono text-sm">Broadcast signal degraded. Packet loss at network boundary</p>
-                <div className="mt-4 pt-3 border-t border-[#ffff00]/10">
-                  <span className="font-mono text-xs text-[#ffff00]/30">SECTOR_0xD4 // DEGRADED</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
+      </ShowcaseSection>
 
-          {/* Input terminal */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Terminal className="w-5 h-5 text-[#ffff00]" />
-              <span className="font-mono font-bold text-sm text-[#ffff00] uppercase tracking-widest">INPUT // DATA_ENTRY_TERMINAL</span>
+      {/* Progress */}
+      <ShowcaseSection 
+        title="LOAD//BAR" 
+        subtitle="Processing status"
+        className="py-20 px-6 bg-gradient-to-b from-black to-gray-900"
+        titleClassName="text-5xl font-black text-cyan-400 mb-3 text-center font-mono tracking-wider"
+        subtitleClassName="text-magenta-500 mb-12 text-center font-mono text-sm tracking-widest"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-black border-2 border-cyan-500 space-y-8">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-black font-mono text-cyan-400">CORRUPTION.EXE</p>
+                <p className="text-sm font-mono text-magenta-500">{progress}%</p>
+              </div>
+              <div className="h-4 bg-gray-900 border-2 border-cyan-500" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Corruption progress">
+                <div
+                  className="h-full bg-gradient-to-r from-cyan-500 to-magenta-500 transition-all duration-500"
+                  style={{
+                    width: `${progress}%`,
+                    boxShadow: '0 0 10px rgba(0,255,255,0.8)'
+                  }}
+                />
+              </div>
             </div>
-            <div className="max-w-lg">
-              <div className="p-6 bg-[#0a0a0a] border border-[#00ffff]/15 rounded-none relative">
-                <div className="absolute inset-0 pointer-events-none opacity-30" style={{
-                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,255,0.02) 3px, rgba(0,255,255,0.02) 4px)",
-                }} />
-                <div className="relative space-y-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[#ff00ff] uppercase tracking-widest mb-2">USER_ID</label>
-                    <input
-                      type="text"
-                      placeholder="ENTER_ID..."
-                      className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#00ffff]/30 rounded-none text-[#00ffff] placeholder-[#00ffff]/20 font-mono focus:border-[#00ffff] focus:shadow-[0_0_10px_#00ffff30,3px_0_#ff00ff20,-3px_0_#ffff0020] focus:outline-none transition-all"
-                    />
+
+            <div>
+              <p className="font-black font-mono text-yellow-400 mb-3">SEGMENTS</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[100, 100, progress, 0].map((val, i) => (
+                  <div key={i}>
+                    <div className="h-3 bg-gray-900 border border-cyan-500">
+                      <div
+                        className="h-full transition-all"
+                        style={{
+                          width: `${val}%`,
+                          backgroundColor: val === 100 ? '#00ff00' : val > 0 ? '#ffff00' : 'transparent',
+                          boxShadow: val > 0 ? `0 0 5px ${val === 100 ? '#00ff00' : '#ffff00'}` : 'none'
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 font-mono mt-1 text-center">[{i + 1}]</p>
                   </div>
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[#ffff00] uppercase tracking-widest mb-2">PASSKEY</label>
-                    <input
-                      type="password"
-                      placeholder="ENTER_KEY..."
-                      className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#00ffff]/30 rounded-none text-[#00ffff] placeholder-[#00ffff]/20 font-mono focus:border-[#ff00ff] focus:shadow-[0_0_10px_#ff00ff30,3px_0_#00ffff20,-3px_0_#ffff0020] focus:outline-none transition-all"
-                    />
-                  </div>
-                  <button className="w-full px-6 py-3 bg-[#00ffff] text-[#0a0a0a] font-mono font-bold uppercase tracking-widest rounded-none shadow-[3px_0_#ff00ff,-3px_0_#ffff00] hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00] transition-all duration-100">
-                    AUTHENTICATE_
-                  </button>
-                </div>
+                ))}
               </div>
+            </div>
+
+            <div className="flex gap-4 pt-4 border-t-2 border-cyan-500/30">
+              <button
+                onClick={() => setProgress(Math.max(0, progress - 10))}
+                className="px-6 py-3 bg-black border-2 border-cyan-500 text-cyan-400 font-black font-mono hover:bg-cyan-500 hover:text-black transition-all"
+              >
+                [-10%]
+              </button>
+              <button
+                onClick={() => setProgress(Math.min(100, progress + 10))}
+                className="px-6 py-3 bg-cyan-500 text-black font-black font-mono hover:bg-magenta-500 transition-all"
+                style={{ boxShadow: '0 0 20px rgba(0,255,255,0.5)' }}
+              >
+                [+10%]
+              </button>
             </div>
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Footer - data stream */}
-      <footer className="relative z-10 py-6 px-6 border-t border-[#00ffff]/10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <p className="text-[#ffffff]/15 text-xs font-mono uppercase tracking-widest">
-            GLITCH_ART // SHOWCASE v1.0
-          </p>
-          <Link href="/" className="text-[#00ffff]/30 hover:text-[#00ffff]/60 transition-colors font-mono text-xs uppercase tracking-widest">
-            StyleKit
-          </Link>
-        </div>
+      {/* Footer */}
+      <footer className="border-t-2 border-cyan-500 py-12 px-6 text-center bg-black">
+        <p className="text-gray-500 font-mono text-sm">
+          GLITCH.ART © 2026 - SYSTEM.CORRUPTED.SUCCESSFULLY
+        </p>
       </footer>
     </div>
   );

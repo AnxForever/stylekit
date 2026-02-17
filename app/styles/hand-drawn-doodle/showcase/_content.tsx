@@ -1,455 +1,461 @@
-﻿"use client";
+"use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Pencil,
-  Heart,
-  Star,
-  Lightbulb,
-  BookOpen,
-  PenTool,
-  Eraser,
-  Palette,
+import { 
+  ArrowLeft, Smile, Heart, Star, Coffee, ChevronDown, ChevronUp,
+  Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Pen
 } from "lucide-react";
 import {
+  ShowcaseHero,
   ShowcaseSection,
   ColorPaletteGrid,
   type ColorItem,
 } from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Ink Black", hex: "#2c2c2c", bg: "bg-[#2c2c2c]" },
-  { name: "Red Marker", hex: "#ff6b6b", bg: "bg-[#ff6b6b]" },
-  { name: "Teal Marker", hex: "#4ecdc4", bg: "bg-[#4ecdc4]" },
-  { name: "Yellow Marker", hex: "#ffd93d", bg: "bg-[#ffd93d]" },
-  { name: "Paper", hex: "#fffef5", bg: "bg-[#fffef5]" },
-];
-
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(60);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Ink Black", value: "#2c2c2c", description: "Primary" },
+    { name: "Paper White", value: "#fffef9", description: "Background" },
+    { name: "Marker Blue", value: "#4a90e2", description: "Accent" },
+    { name: "Highlighter Yellow", value: "#ffd93d", description: "Highlight" },
+    { name: "Pencil Gray", value: "#a8a8a8", description: "Secondary" },
+  ];
+
+  const tabs = ["Sketch", "Draw", "Doodle"];
+
+  const accordionItems = [
+    { title: "What is Hand-Drawn Doodle?", content: "A playful, organic design style featuring hand-drawn illustrations, sketchy lines, and imperfect shapes that bring warmth and personality to digital interfaces." },
+    { title: "Core Elements", content: "Wobbly hand-drawn lines, irregular shapes, handwritten fonts, doodle decorations, and a paper-like texture that creates a friendly, approachable feel." },
+    { title: "Best Use Cases", content: "Perfect for educational apps, creative tools, personal blogs, children's products, and any brand wanting to feel human, approachable, and fun." },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#fffef5] relative overflow-hidden">
-      {/* Notebook lined paper background */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            repeating-linear-gradient(transparent, transparent 31px, rgba(168, 200, 232, 0.3) 31px, rgba(168, 200, 232, 0.3) 32px)
-          `,
-        }}
-      />
-
-      {/* Red margin line */}
-      <div className="fixed top-0 bottom-0 left-[80px] md:left-[120px] w-px bg-[#ff6b6b]/15 pointer-events-none" />
-
-      {/* Spiral binding holes */}
-      <div className="fixed top-0 bottom-0 left-4 md:left-10 flex flex-col gap-[60px] pt-8 pointer-events-none">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            className="w-5 h-5 rounded-full border-2 border-[#2c2c2c]/10"
-          />
-        ))}
-      </div>
-
-      {/* Floating doodle scribbles */}
-      <svg
-        className="fixed top-20 right-16 w-24 h-24 pointer-events-none opacity-10"
-        viewBox="0 0 100 100"
-      >
-        <path
-          d="M20,50 Q30,20 50,50 Q70,80 80,50"
-          stroke="#4ecdc4"
-          strokeWidth="3"
-          fill="none"
-          strokeLinecap="round"
-        />
-      </svg>
-      <svg
-        className="fixed bottom-32 right-24 w-16 h-16 pointer-events-none opacity-10"
-        viewBox="0 0 100 100"
-      >
-        <path
-          d="M50,15 L58,40 L85,40 L63,55 L71,80 L50,65 L29,80 L37,55 L15,40 L42,40 Z"
-          stroke="#ffd93d"
-          strokeWidth="3"
-          fill="none"
-          strokeLinejoin="round"
-        />
-      </svg>
-
-      {/* Navigation - casual, hand-drawn feel */}
-      <nav className="relative z-10 px-6 py-4 border-b-2 border-dashed border-[#2c2c2c]/15">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-[#fffef9] text-[#2c2c2c]">
+      {/* Header */}
+      <header className="border-b-4 border-[#2c2c2c] bg-white/80 backdrop-blur-sm sticky top-0 z-50" style={{ borderStyle: 'dashed' }}>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            href="/styles/hand-drawn-doodle"
-            className="flex items-center gap-2 text-[#ff6b6b] hover:text-[#ff6b6b]/70 transition-colors"
+            href="/"
+            className="flex items-center gap-2 text-[#2c2c2c] hover:text-[#4a90e2] transition-colors group"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-sans font-bold text-sm">Back</span>
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-bold text-lg" style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}>Back to Styles</span>
           </Link>
-          <span className="font-sans font-black text-lg text-[#2c2c2c] rotate-[-1.5deg] inline-block">
-            Doodle Book
-          </span>
-          <Link
-            href="/styles"
-            className="px-4 py-2 border-2 border-dashed border-[#2c2c2c] text-[#2c2c2c] font-sans font-semibold rounded-sm shadow-[2px_2px_0px_#4ecdc4] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#4ecdc4] hover:rotate-[-0.5deg] transition-all text-sm"
-          >
-            All Styles
-          </Link>
+          <div className="flex gap-2">
+            <Star className="w-5 h-5 text-[#ffd93d]" style={{ filter: 'drop-shadow(2px 2px 0px #2c2c2c)' }} />
+            <Heart className="w-5 h-5 text-[#ff6b9d]" style={{ filter: 'drop-shadow(2px 2px 0px #2c2c2c)' }} />
+            <Smile className="w-5 h-5 text-[#4a90e2]" style={{ filter: 'drop-shadow(2px 2px 0px #2c2c2c)' }} />
+          </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero - Sketchbook page with annotations */}
-      <section className="relative z-10 pt-16 pb-12 px-6">
-        <div className="max-w-5xl mx-auto relative">
-          {/* "Page 1" annotation */}
-          <div className="absolute top-0 right-4 font-sans text-[#2c2c2c]/20 text-sm rotate-[2deg]">
-            pg. 1
-          </div>
-
-          {/* Title with hand-drawn feel */}
-          <div className="mb-6 ml-4 md:ml-16">
-            <h1 className="text-6xl md:text-8xl font-sans font-black text-[#2c2c2c] rotate-[-1.5deg] inline-block mb-2">
-              Doodle
-            </h1>
-            <div className="ml-12 md:ml-24">
-              <span className="text-4xl md:text-6xl font-sans font-black text-[#ff6b6b] rotate-[1deg] inline-block">
-                & Sketch
-              </span>
-            </div>
-          </div>
-
-          {/* Wavy underline SVG */}
-          <svg
-            className="w-64 md:w-96 h-4 ml-4 md:ml-16 mb-6"
-            viewBox="0 0 400 16"
-          >
-            <path
-              d="M0,8 Q25,2 50,8 Q75,14 100,8 Q125,2 150,8 Q175,14 200,8 Q225,2 250,8 Q275,14 300,8 Q325,2 350,8 Q375,14 400,8"
-              stroke="#ff6b6b"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-              opacity="0.3"
-            />
-          </svg>
-
-          <p className="text-[#2c2c2c]/45 font-sans text-lg ml-4 md:ml-16 max-w-xl mb-10">
-            Hand-crafted interfaces with creative charm -- sketched with love
-            and a touch of whimsy
-          </p>
-
-          {/* CTA buttons with tape decoration */}
-          <div className="flex flex-wrap gap-4 ml-4 md:ml-16">
-            <div className="relative">
-              {/* Tape piece */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-[#ffd93d]/25 rotate-[-2deg] rounded-sm" />
-              <button className="px-10 py-4 bg-[#2c2c2c] text-[#fffef5] font-sans font-bold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[4px_4px_0px_#ff6b6b] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#ff6b6b] hover:rotate-[-0.5deg] transition-all duration-200">
-                Start Drawing
-              </button>
-            </div>
-            <button className="px-10 py-4 bg-[#ff6b6b] text-[#fffef5] font-sans font-bold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[4px_4px_0px_#4ecdc4] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#4ecdc4] hover:rotate-[0.5deg] transition-all duration-200">
-              Explore
-            </button>
-          </div>
-
-          {/* Arrow annotation pointing to button */}
-          <svg
-            className="hidden md:block w-20 h-12 ml-[280px] mt-2 opacity-15"
-            viewBox="0 0 80 48"
-          >
-            <path
-              d="M5,40 C20,35 40,25 65,10"
-              stroke="#ff6b6b"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M58,8 L65,10 L60,16"
-              stroke="#ff6b6b"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      </section>
-
-      {/* Squiggly line divider */}
-      <div className="relative z-10 py-2">
-        <svg className="w-full h-6" viewBox="0 0 1200 24" preserveAspectRatio="none">
-          <path
-            d="M0,12 Q50,4 100,12 Q150,20 200,12 Q250,4 300,12 Q350,20 400,12 Q450,4 500,12 Q550,20 600,12 Q650,4 700,12 Q750,20 800,12 Q850,4 900,12 Q950,20 1000,12 Q1050,4 1100,12 Q1150,20 1200,12"
-            stroke="#4ecdc4"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-            opacity="0.15"
-          />
+      {/* Hero */}
+      <ShowcaseHero
+        title="Hand-Drawn Doodle"
+        subtitle="Sketchy & Playful Style"
+        description="Bring warmth and personality to your designs with hand-drawn illustrations, wobbly lines, and playful doodles that make everything feel human and approachable."
+        className="relative py-24 px-6 overflow-hidden bg-[#fffef9]"
+        titleClassName="text-6xl md:text-8xl font-bold mb-6 text-[#2c2c2c]"
+        subtitleClassName="text-xl font-medium text-[#4a90e2] mb-8"
+        descriptionClassName="text-lg text-[#5a5a5a] leading-relaxed max-w-2xl mx-auto"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="absolute top-10 right-10 w-32 h-32 border-4 border-[#ffd93d] rounded-full" style={{ borderStyle: 'dashed', transform: 'rotate(15deg)' }}></div>
+        <div className="absolute bottom-10 left-10 w-24 h-24 border-4 border-[#4a90e2]" style={{ borderStyle: 'dashed', transform: 'rotate(-10deg)' }}></div>
+        <svg className="absolute top-1/2 left-10 w-16 h-16 text-[#ff6b9d]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3">
+          <path d="M50 20 L80 80 L20 80 Z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </div>
+      </ShowcaseHero>
 
-      {/* Color Palette */}
+      {/* Stats */}
       <ShowcaseSection
-        title="Marker Colors"
-        subtitle="our favorite pens and pencils"
-        className="relative z-10 py-12 px-6"
-        titleClassName="text-3xl font-sans font-black text-[#2c2c2c] mb-4 text-center rotate-[-0.5deg]"
-        subtitleClassName="text-[#2c2c2c]/35 font-sans mb-10 text-center italic"
+        title="Fun Numbers"
+        subtitle="Playful metrics"
+        className="py-16 px-6 bg-white"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
       >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border-2 border-dashed border-[#2c2c2c]/60 bg-[#fffef5] rounded-sm shadow-[3px_3px_0px_#4ecdc4] hover:shadow-[5px_5px_0px_#ff6b6b] hover:rotate-[0.5deg] transition-all duration-200"
-            labelClassName="font-sans font-bold text-sm text-[#2c2c2c]"
-            hexClassName="text-xs text-[#ff6b6b] font-sans"
-          />
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Users, label: "Doodlers", value: "12.5K", color: "#4a90e2" },
+            { icon: TrendingUp, label: "Sketches", value: "+89%", color: "#ff6b9d" },
+            { icon: Eye, label: "Views", value: "425K", color: "#ffd93d" },
+            { icon: Pen, label: "Strokes", value: "∞", color: "#9b59b6" },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="p-6 bg-white border-4 border-[#2c2c2c] hover:translate-y-[-4px] transition-transform"
+              style={{ 
+                borderRadius: '20px 5px 25px 10px',
+                boxShadow: '4px 4px 0px #2c2c2c'
+              }}
+            >
+              <div 
+                className="w-14 h-14 border-3 border-[#2c2c2c] flex items-center justify-center mb-4"
+                style={{ 
+                  backgroundColor: stat.color,
+                  borderRadius: '50% 40% 55% 45%',
+                  transform: 'rotate(-5deg)'
+                }}
+              >
+                <stat.icon className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-3xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</p>
+              <p className="text-sm text-gray-600">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </ShowcaseSection>
 
-      {/* Cards - Pinboard / corkboard style, NOT standard grid */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-sans font-black text-[#2c2c2c] mb-2 rotate-[-0.5deg]">
-            Sticky Notes
-          </h2>
-          <p className="text-[#2c2c2c]/35 font-sans mb-12 italic">
-            pinned to the board
-          </p>
+      {/* Color Palette */}
+      <ShowcaseSection
+        title="Color Markers"
+        subtitle="Our palette"
+        className="py-16 px-6"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
+      </ShowcaseSection>
 
-          {/* Pinboard layout - varied rotations and positions */}
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {/* Card 1 - with pushpin */}
-            <div className="relative p-6 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/60 rounded-sm shadow-[5px_5px_0px_#ff6b6b] rotate-[-2deg] hover:rotate-0 hover:shadow-[7px_7px_0px_#ff6b6b] hover:-translate-y-2 transition-all duration-200">
-              {/* Pushpin */}
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-                <div className="w-4 h-4 rounded-full bg-[#ff6b6b] border border-[#2c2c2c]/20 shadow-sm" />
-              </div>
-              <div className="mt-2">
-                <Pencil className="w-8 h-8 text-[#ff6b6b] mb-3 rotate-[-5deg]" />
-                <h3 className="text-xl font-sans font-bold text-[#2c2c2c] mb-2">
-                  Sketch
-                </h3>
-                <p className="text-[#2c2c2c]/45 font-sans text-sm">
-                  Draw your ideas with quick strokes and rough outlines
-                </p>
-              </div>
+      {/* Typography */}
+      <ShowcaseSection
+        title="Hand Lettering"
+        subtitle="Sketchy fonts"
+        className="py-16 px-6 bg-white"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-4xl mx-auto space-y-6 text-center">
+          <div className="p-8 bg-[#fffef9] border-4 border-[#2c2c2c]" style={{ borderRadius: '15px 5px 20px 10px', borderStyle: 'dashed' }}>
+            <h1 className="text-7xl font-bold text-[#2c2c2c] mb-2" style={{ fontFamily: '"Comic Sans MS", cursive', transform: 'rotate(-2deg)', display: 'inline-block' }}>Doodle</h1>
+            <p className="text-sm text-gray-500 mt-4">Display / Handwritten</p>
+          </div>
+          <div className="p-8 bg-[#fff9e6] border-4 border-[#ffd93d]" style={{ borderRadius: '10px 20px 5px 15px' }}>
+            <h2 className="text-4xl font-bold text-[#2c2c2c] mb-2" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Sketchy Heading</h2>
+            <p className="text-sm text-gray-500">Heading / Bold</p>
+          </div>
+          <div className="p-8 bg-[#e3f2fd] border-4 border-[#4a90e2]" style={{ borderRadius: '20px 10px 15px 25px', borderStyle: 'dotted' }}>
+            <p className="text-lg text-[#2c2c2c] mb-2" style={{ fontFamily: '"Comic Sans MS", cursive' }}>This is body text with a friendly hand-drawn feel :)</p>
+            <p className="text-sm text-gray-500">Body / Regular</p>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      {/* Buttons */}
+      <ShowcaseSection
+        title="Playful Buttons"
+        subtitle="Click me!"
+        className="py-16 px-6"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
+          <button className="px-6 py-3 bg-[#4a90e2] text-white font-bold border-3 border-[#2c2c2c] hover:translate-y-[-2px] transition-transform" style={{ borderRadius: '15px 5px 10px 20px', boxShadow: '3px 3px 0px #2c2c2c', fontFamily: '"Comic Sans MS", cursive' }}>
+            Primary
+          </button>
+          <button className="px-6 py-3 bg-[#ff6b9d] text-white font-bold border-3 border-[#2c2c2c] hover:translate-y-[-2px] transition-transform" style={{ borderRadius: '5px 15px 20px 10px', boxShadow: '3px 3px 0px #2c2c2c', fontFamily: '"Comic Sans MS", cursive' }}>
+            Secondary
+          </button>
+          <button className="px-6 py-3 bg-white text-[#2c2c2c] font-bold border-4 border-[#2c2c2c] hover:bg-[#ffd93d] transition-colors" style={{ borderRadius: '10px 20px 10px 20px', borderStyle: 'dashed', fontFamily: '"Comic Sans MS", cursive' }}>
+            Outlined
+          </button>
+          <button className="px-6 py-3 bg-[#ffd93d] text-[#2c2c2c] font-bold border-3 border-[#2c2c2c] hover:scale-105 transition-transform" style={{ borderRadius: '20px 5px 15px 10px', boxShadow: '4px 4px 0px #2c2c2c', fontFamily: '"Comic Sans MS", cursive' }}>
+            Highlight
+          </button>
+        </div>
+      </ShowcaseSection>
+
+      {/* Cards */}
+      <ShowcaseSection
+        title="Sketchy Cards"
+        subtitle="Content blocks"
+        className="py-16 px-6 bg-white"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+          {[
+            { title: "Creative", desc: "Express yourself with hand-drawn elements", color: "#4a90e2", rotation: "-2deg" },
+            { title: "Friendly", desc: "Warm and approachable design language", color: "#ff6b9d", rotation: "1deg" },
+            { title: "Playful", desc: "Fun doodles and sketchy decorations", color: "#ffd93d", rotation: "-1deg" },
+          ].map((card, i) => (
+            <div
+              key={i}
+              className="p-6 bg-white border-4 border-[#2c2c2c] hover:translate-y-[-4px] transition-transform"
+              style={{ 
+                borderRadius: '15px 5px 20px 10px',
+                boxShadow: '4px 4px 0px #2c2c2c',
+                transform: `rotate(${card.rotation})`
+              }}
+            >
+              <div className="w-12 h-12 mb-4 border-3 border-[#2c2c2c]" style={{ backgroundColor: card.color, borderRadius: '50% 40% 55% 45%' }}></div>
+              <h3 className="text-2xl font-bold mb-3 text-[#2c2c2c]" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{card.title}</h3>
+              <p className="text-gray-600" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{card.desc}</p>
             </div>
+          ))}
+        </div>
+      </ShowcaseSection>
 
-            {/* Card 2 - with tape */}
-            <div className="relative p-6 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/60 rounded-sm shadow-[5px_5px_0px_#4ecdc4] rotate-[1.5deg] hover:rotate-0 hover:shadow-[7px_7px_0px_#4ecdc4] hover:-translate-y-2 transition-all duration-200 md:mt-4">
-              {/* Tape strip */}
-              <div className="absolute -top-2 left-4 right-4 h-5 bg-[#ffd93d]/20 rotate-[0.5deg] rounded-sm" />
-              <div className="mt-2">
-                <Heart className="w-8 h-8 text-[#4ecdc4] mb-3 rotate-[3deg]" />
-                <h3 className="text-xl font-sans font-bold text-[#2c2c2c] mb-2">
-                  Create
-                </h3>
-                <p className="text-[#2c2c2c]/45 font-sans text-sm">
-                  Craft with warmth, personality, and a creative spark
-                </p>
-              </div>
+      {/* Tabs */}
+      <ShowcaseSection
+        title="Tab Sketches"
+        subtitle="Navigation"
+        className="py-16 px-6"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white border-4 border-[#2c2c2c] overflow-hidden" style={{ borderRadius: '20px 10px 15px 25px', boxShadow: '5px 5px 0px #2c2c2c' }}>
+            <div className="flex border-b-4 border-[#2c2c2c]" style={{ borderStyle: 'dashed' }}>
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTab(index)}
+                  className={`flex-1 px-6 py-4 font-bold transition-all ${
+                    activeTab === index
+                      ? "bg-[#ffd93d] text-[#2c2c2c]"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                  style={{ fontFamily: '"Comic Sans MS", cursive' }}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
-
-            {/* Card 3 - with paperclip */}
-            <div className="relative p-6 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/60 rounded-sm shadow-[5px_5px_0px_#ffd93d] rotate-[-1deg] hover:rotate-0 hover:shadow-[7px_7px_0px_#ffd93d] hover:-translate-y-2 transition-all duration-200">
-              {/* Paperclip SVG */}
-              <svg
-                className="absolute -top-4 right-4 w-6 h-10 opacity-25"
-                viewBox="0 0 24 40"
-              >
-                <path
-                  d="M8,2 L8,32 Q8,38 14,38 Q20,38 20,32 L20,10 Q20,4 14,4 Q10,4 10,10 L10,28"
-                  stroke="#2c2c2c"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <Star className="w-8 h-8 text-[#ffd93d] mb-3 rotate-[-3deg]" />
-              <h3 className="text-xl font-sans font-bold text-[#2c2c2c] mb-2">
-                Inspire
-              </h3>
-              <p className="text-[#2c2c2c]/45 font-sans text-sm">
-                Express ideas with playful charm and joyful energy
-              </p>
+            <div className="p-8 min-h-[140px]">
+              {activeTab === 0 && (
+                <div>
+                  <h4 className="text-2xl font-bold text-[#4a90e2] mb-3" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Sketch Mode</h4>
+                  <p className="text-gray-700" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Quick rough outlines and basic shapes to capture ideas rapidly.</p>
+                </div>
+              )}
+              {activeTab === 1 && (
+                <div>
+                  <h4 className="text-2xl font-bold text-[#ff6b9d] mb-3" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Draw Mode</h4>
+                  <p className="text-gray-700" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Detailed hand-drawn illustrations with personality and character.</p>
+                </div>
+              )}
+              {activeTab === 2 && (
+                <div>
+                  <h4 className="text-2xl font-bold text-[#9b59b6] mb-3" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Doodle Mode</h4>
+                  <p className="text-gray-700" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Playful decorative elements and fun embellishments everywhere!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Buttons - Sticker sheet aesthetic */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-sans font-black text-[#2c2c2c] mb-2 rotate-[0.5deg]">
-            Buttons
-          </h2>
-          <p className="text-[#2c2c2c]/35 font-sans mb-8 italic">
-            peel and stick
-          </p>
-
-          <div className="p-8 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/40 rounded-sm shadow-[4px_4px_0px_#ffd93d] rotate-[0.3deg]">
-            <div className="flex items-center gap-2 mb-6">
-              <PenTool className="w-4 h-4 text-[#4ecdc4]" />
-              <span className="font-sans text-sm text-[#4ecdc4] font-bold">
-                styles ~
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-3 bg-[#2c2c2c] text-[#fffef5] font-sans font-semibold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[3px_3px_0px_#ff6b6b] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#ff6b6b] hover:rotate-[-0.5deg] transition-all">
-                Ink
-              </button>
-              <button className="px-6 py-3 bg-[#ff6b6b] text-[#fffef5] font-sans font-semibold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[3px_3px_0px_#4ecdc4] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#4ecdc4] hover:rotate-[0.5deg] transition-all">
-                Red Marker
-              </button>
-              <button className="px-6 py-3 bg-transparent text-[#2c2c2c] font-sans font-semibold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[2px_2px_0px_#ffd93d] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#ffd93d] hover:rotate-[-0.5deg] transition-all">
-                Outline
-              </button>
-              <button className="px-6 py-3 bg-[#4ecdc4] text-[#fffef5] font-sans font-semibold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[3px_3px_0px_#ffd93d] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#ffd93d] hover:rotate-[0.5deg] transition-all">
-                Teal
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Toolkit Section - unique to hand-drawn doodle */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-sans font-black text-[#2c2c2c] mb-2 rotate-[-0.5deg]">
-            The Toolkit
-          </h2>
-          <p className="text-[#2c2c2c]/35 font-sans mb-8 italic">
-            what is in the pencil case
-          </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              {
-                icon: Pencil,
-                label: "Pencil",
-                color: "#2c2c2c",
-                shadow: "#ff6b6b",
-                rotation: "-1deg",
-              },
-              {
-                icon: PenTool,
-                label: "Marker",
-                color: "#ff6b6b",
-                shadow: "#4ecdc4",
-                rotation: "1.5deg",
-              },
-              {
-                icon: Eraser,
-                label: "Eraser",
-                color: "#4ecdc4",
-                shadow: "#ffd93d",
-                rotation: "-0.5deg",
-              },
-              {
-                icon: Palette,
-                label: "Colors",
-                color: "#ffd93d",
-                shadow: "#ff6b6b",
-                rotation: "1deg",
-              },
-            ].map((tool) => (
-              <div
-                key={tool.label}
-                className="p-4 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/40 rounded-sm text-center hover:-translate-y-1 transition-all duration-200"
-                style={{
-                  boxShadow: `3px 3px 0px ${tool.shadow}`,
-                  transform: `rotate(${tool.rotation})`,
-                }}
+      {/* Accordion */}
+      <ShowcaseSection
+        title="Folded Notes"
+        subtitle="Expandable info"
+        className="py-16 px-6 bg-white"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {accordionItems.map((item, index) => (
+            <div
+              key={index}
+              className="bg-[#fffef9] border-4 border-[#2c2c2c] overflow-hidden"
+              style={{ 
+                borderRadius: '15px 5px 20px 10px',
+                boxShadow: '3px 3px 0px #2c2c2c'
+              }}
+            >
+              <button
+                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-yellow-50 transition-colors"
               >
-                <tool.icon
-                  className="w-8 h-8 mx-auto mb-2"
-                  style={{ color: tool.color }}
-                />
-                <span className="font-sans font-bold text-sm text-[#2c2c2c]">
-                  {tool.label}
+                <span className="font-bold text-lg text-[#2c2c2c]" style={{ fontFamily: '"Comic Sans MS", cursive' }}>
+                  {item.title}
                 </span>
+                {openAccordion === index ? (
+                  <ChevronUp className="w-6 h-6 text-[#4a90e2]" />
+                ) : (
+                  <ChevronDown className="w-6 h-6 text-[#4a90e2]" />
+                )}
+              </button>
+              {openAccordion === index && (
+                <div className="px-6 pb-6">
+                  <p className="text-gray-700 leading-relaxed" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{item.content}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Alerts */}
+      <ShowcaseSection
+        title="Sticky Notes"
+        subtitle="Messages"
+        className="py-16 px-6"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            { icon: Check, label: "Success!", desc: "Great job! Everything worked perfectly.", color: "#4a90e2", bg: "#e3f2fd" },
+            { icon: AlertTriangle, label: "Heads up!", desc: "Just a friendly reminder about something.", color: "#ffa726", bg: "#fff3e0" },
+            { icon: X, label: "Oops!", desc: "Something went wrong, but no worries!", color: "#ef5350", bg: "#ffebee" },
+            { icon: Info, label: "Fun fact!", desc: "Here's something interesting to know.", color: "#9b59b6", bg: "#f3e5f5" },
+          ].map((alert, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-4 p-5 border-4 border-[#2c2c2c]"
+              style={{ 
+                backgroundColor: alert.bg,
+                borderRadius: '10px 20px 15px 5px',
+                boxShadow: '3px 3px 0px #2c2c2c',
+                transform: `rotate(${i % 2 === 0 ? '-1deg' : '1deg'})`
+              }}
+            >
+              <div className="w-10 h-10 border-2 border-[#2c2c2c] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: alert.color, borderRadius: '50% 40% 55% 45%' }}>
+                <alert.icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="font-bold text-lg mb-1" style={{ color: alert.color, fontFamily: '"Comic Sans MS", cursive' }}>{alert.label}</p>
+                <p className="text-gray-700 text-sm" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{alert.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      {/* Toggle */}
+      <ShowcaseSection
+        title="Flip Switches"
+        subtitle="Toggle controls"
+        className="py-16 px-6 bg-white"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-[#fffef9] border-4 border-[#2c2c2c] space-y-6" style={{ borderRadius: '20px 10px 15px 25px', boxShadow: '5px 5px 0px #2c2c2c' }}>
+            {[
+              { label: "Doodle Mode", desc: "Add sketchy decorations", color: "#4a90e2" },
+              { label: "Hand-Drawn", desc: "Use wobbly lines", color: "#ff6b9d" },
+              { label: "Paper Texture", desc: "Show background grain", color: "#ffd93d" },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center justify-between py-3 border-b-2 border-dashed border-gray-300 last:border-b-0">
+                <div>
+                  <p className="font-bold text-lg text-[#2c2c2c]" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{item.label}</p>
+                  <p className="text-sm text-gray-600" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{item.desc}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const newStates = [...toggleStates];
+                    newStates[index] = !newStates[index];
+                    setToggleStates(newStates);
+                  }}
+                  className={`relative w-16 h-8 border-3 border-[#2c2c2c] transition-all`}
+                  style={{ 
+                    backgroundColor: toggleStates[index] ? item.color : '#e0e0e0',
+                    borderRadius: '20px 5px 15px 10px'
+                  }}
+                >
+                  <span
+                    className={`absolute top-1 w-6 h-6 bg-white border-2 border-[#2c2c2c] transition-all`}
+                    style={{ 
+                      borderRadius: '50% 40% 55% 45%',
+                      left: toggleStates[index] ? 'calc(100% - 28px)' : '4px'
+                    }}
+                  />
+                </button>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Form - Guestbook in a notebook */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-md mx-auto">
-          <div className="relative p-8 bg-[#fffef5] border-2 border-dashed border-[#2c2c2c]/60 rounded-sm shadow-[5px_5px_0px_#ff6b6b]">
-            {/* Tape decoration on top */}
-            <div className="absolute -top-3 left-8 w-20 h-5 bg-[#ffd93d]/20 rotate-[-1deg] rounded-sm" />
-            <div className="absolute -top-3 right-8 w-16 h-5 bg-[#4ecdc4]/15 rotate-[2deg] rounded-sm" />
-
-            <div className="text-center mb-8 mt-2">
-              <BookOpen className="w-10 h-10 text-[#4ecdc4] mx-auto mb-3 rotate-[-2deg]" />
-              <h3 className="text-xl font-sans font-bold text-[#2c2c2c]">
-                Sign the Guestbook
-              </h3>
-              <p className="text-[#2c2c2c]/30 font-sans text-sm mt-1">
-                leave your mark here
-              </p>
+      {/* Progress */}
+      <ShowcaseSection
+        title="Progress Bars"
+        subtitle="Loading states"
+        className="py-16 px-6"
+        titleClassName="text-4xl font-bold text-[#2c2c2c] mb-4 text-center"
+        subtitleClassName="text-[#4a90e2] mb-12 text-center"
+        style={{ fontFamily: '"Comic Sans MS", "Segoe UI", cursive' }}
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="p-8 bg-white border-4 border-[#2c2c2c] space-y-8" style={{ borderRadius: '15px 5px 20px 10px', boxShadow: '5px 5px 0px #2c2c2c' }}>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-bold text-lg text-[#2c2c2c]" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Drawing Progress</p>
+                <p className="text-sm font-bold text-[#4a90e2]" style={{ fontFamily: '"Comic Sans MS", cursive' }}>{progress}%</p>
+              </div>
+              <div className="h-6 bg-gray-200 border-3 border-[#2c2c2c] overflow-hidden" style={{ borderRadius: '15px 5px 10px 20px' }}>
+                <div
+                  className="h-full bg-[#4a90e2] transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
 
-            <div className="space-y-5">
-              <div>
-                <label className="block text-xs font-sans font-bold text-[#ff6b6b] mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Write your name..."
-                  className="w-full px-4 py-3 bg-[#fffef5] border-0 border-b-2 border-dashed border-[#2c2c2c]/30 rounded-none text-[#2c2c2c] placeholder-[#2c2c2c]/25 font-sans focus:border-[#ff6b6b] focus:outline-none transition-all"
-                />
+            <div>
+              <p className="font-bold text-lg text-[#2c2c2c] mb-3" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Sketch Phases</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[100, 100, progress, 0].map((val, i) => (
+                  <div key={i}>
+                    <div className="h-4 bg-gray-200 border-2 border-[#2c2c2c] overflow-hidden" style={{ borderRadius: '10px 3px 8px 5px' }}>
+                      <div
+                        className="h-full transition-all"
+                        style={{ 
+                          width: `${val}%`,
+                          backgroundColor: val === 100 ? '#4a90e2' : val > 0 ? '#ffd93d' : 'transparent'
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1 text-center" style={{ fontFamily: '"Comic Sans MS", cursive' }}>Step {i + 1}</p>
+                  </div>
+                ))}
               </div>
-              <div>
-                <label className="block text-xs font-sans font-bold text-[#4ecdc4] mb-2">
-                  Message
-                </label>
-                <input
-                  type="text"
-                  placeholder="Say something nice..."
-                  className="w-full px-4 py-3 bg-[#fffef5] border-0 border-b-2 border-dashed border-[#2c2c2c]/30 rounded-none text-[#2c2c2c] placeholder-[#2c2c2c]/25 font-sans focus:border-[#4ecdc4] focus:outline-none transition-all"
-                />
-              </div>
-              <button className="w-full px-6 py-3 bg-[#2c2c2c] text-[#fffef5] font-sans font-bold rounded-sm border-2 border-dashed border-[#2c2c2c] shadow-[3px_3px_0px_#4ecdc4] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#4ecdc4] hover:rotate-[-0.5deg] transition-all">
-                Leave a note
+            </div>
+
+            <div className="flex gap-4 pt-4 border-t-2 border-dashed border-gray-300">
+              <button
+                onClick={() => setProgress(Math.max(0, progress - 10))}
+                className="px-6 py-3 bg-white border-3 border-[#2c2c2c] text-[#2c2c2c] font-bold hover:bg-gray-100 transition-colors"
+                style={{ borderRadius: '10px 5px 15px 8px', fontFamily: '"Comic Sans MS", cursive' }}
+              >
+                Less
+              </button>
+              <button
+                onClick={() => setProgress(Math.min(100, progress + 10))}
+                className="px-6 py-3 bg-[#4a90e2] text-white font-bold border-3 border-[#2c2c2c] hover:translate-y-[-2px] transition-transform"
+                style={{ borderRadius: '5px 15px 10px 20px', boxShadow: '3px 3px 0px #2c2c2c', fontFamily: '"Comic Sans MS", cursive' }}
+              >
+                More
               </button>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Idea lightbulb section - unique */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <Lightbulb className="w-12 h-12 text-[#ffd93d] mx-auto mb-4 rotate-[5deg]" />
-          <p className="font-sans text-[#2c2c2c]/40 text-lg italic">
-            &quot;Every great design starts as a doodle on a napkin.&quot;
-          </p>
-        </div>
-      </section>
+      </ShowcaseSection>
 
       {/* Footer */}
-      <footer className="relative z-10 py-8 px-6 border-t-2 border-dashed border-[#2c2c2c]/15">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <p className="text-[#2c2c2c]/30 text-sm font-sans">
-            Hand-Drawn Doodle Showcase
-          </p>
-          <Link
-            href="/"
-            className="text-[#ff6b6b]/50 hover:text-[#ff6b6b] text-sm font-sans transition-colors"
-          >
-            StyleKit
-          </Link>
-        </div>
+      <footer className="border-t-4 border-[#2c2c2c] py-12 px-6 text-center bg-white" style={{ borderStyle: 'dashed' }}>
+        <p className="text-gray-600" style={{ fontFamily: '"Comic Sans MS", cursive' }}>
+          Hand-Drawn Doodle Style © 2026 - Made with <Heart className="w-4 h-4 inline text-[#ff6b9d]" /> and sketchy lines
+        </p>
       </footer>
     </div>
   );
 }
-

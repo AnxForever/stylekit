@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Acid Graphics Showcase - StyleKit",
-  description: "Live demonstration of Acid Graphics style with fluorescent colors, distorted aesthetics, and psychedelic visuals on dark backgrounds.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function AcidGraphicsShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Acid Graphics Style Showcase",
+  description: "Psychedelic neon colors and distorted typography showcase",
+};

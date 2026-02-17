@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Mecha Showcase - StyleKit",
-  description: "Live demonstration of Mecha aesthetic with armored panels, warning systems, and military-industrial design.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function MechaShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Mecha Style Showcase",
+  description: "Giant robot aesthetics with tactical HUD, warning labels and mechanical blueprints",
+};

@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Neon Samurai Showcase - StyleKit",
-  description: "Live demonstration of Neon Samurai style with neon glow effects, sharp geometry, and Japanese-cyberpunk fusion aesthetics.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function NeonSamuraiShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Neon Samurai Style Showcase",
+  description: "Japanese tradition meets cyberpunk neon showcase",
+};

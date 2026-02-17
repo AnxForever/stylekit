@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Art Nouveau Showcase - StyleKit",
-  description: "Live demonstration of Art Nouveau design style with organic curves, flowing vines, and Mucha-inspired decorative aesthetics.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function ArtNouveauShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Art Nouveau Style Showcase",
+  description: "Organic curves, floral ornaments and elegant flowing lines",
+};

@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic";
+import ShowcaseContent from "./_content";
 
-export const metadata = {
-  title: "Watercolor Art Showcase - StyleKit",
-  description: "Live demonstration of Watercolor Art style with soft washes, transparent colors, paper texture, and elegant typography.",
-};
-
-const ShowcaseContent = dynamic(() => import("./_content"), {
-  loading: () => <div className="min-h-screen" />,
-});
-
-export default function WatercolorArtShowcasePage() {
+export default function Page() {
   return <ShowcaseContent />;
 }
+
+export const metadata = {
+  title: "Watercolor Art Style Showcase",
+  description: "Soft watercolor washes and artistic brush strokes showcase",
+};

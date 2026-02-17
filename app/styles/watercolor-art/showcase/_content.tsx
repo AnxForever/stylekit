@@ -1,309 +1,208 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Droplets,
-  Flower2,
-  Palette,
-  CloudRain,
-  Brush,
-  Leaf,
-  Wind,
-} from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
-
-const colors: ColorItem[] = [
-  { name: "Rose Wash", hex: "#d4a0a0", bg: "bg-[#d4a0a0]" },
-  { name: "Cerulean", hex: "#7bb8d4", bg: "bg-[#7bb8d4]" },
-  { name: "Sage Green", hex: "#8cc5a8", bg: "bg-[#8cc5a8]" },
-  { name: "Lavender Bloom", hex: "#c3a0d4", bg: "bg-[#c3a0d4]" },
-  { name: "Ochre Gold", hex: "#e8c87a", bg: "bg-[#e8c87a]" },
-  { name: "Warm Paper", hex: "#faf6f0", bg: "bg-[#faf6f0]" },
-];
+import { ArrowLeft, Droplet, Heart, Flower2, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Palette } from "lucide-react";
+import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 export default function ShowcaseContent() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(65);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+
+  const colors: ColorItem[] = [
+    { name: "Soft Pink", value: "#ffd1dc", description: "Primary" },
+    { name: "Sky Blue", value: "#87ceeb", description: "Secondary" },
+    { name: "Mint Green", value: "#98d8c8", description: "Accent" },
+    { name: "Lavender", value: "#e6e6fa", description: "Highlight" },
+    { name: "Cream", value: "#f7f4ea", description: "Background" },
+  ];
+
+  const tabs = ["Wash", "Blend", "Flow"];
+  const accordionItems = [
+    { title: "What is Watercolor Art?", content: "A soft, artistic design style inspired by watercolor paintings, featuring gentle color washes, transparent overlays, and organic brush strokes that create a dreamy, elegant aesthetic." },
+    { title: "Core Techniques", content: "Soft color gradients, transparency and layering, paper texture, flowing organic shapes, and delicate brush stroke details that mimic real watercolor techniques." },
+    { title: "Perfect For", content: "Ideal for feminine brands, wedding websites, art portfolios, lifestyle blogs, and any project wanting to convey elegance, creativity, and gentle sophistication." },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#faf6f0] relative overflow-hidden">
-      {/* Paper grain texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='0.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Watercolor wash background washes */}
-      <div className="fixed top-[-10%] left-[-5%] w-[600px] h-[500px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(212,160,160,0.10) 0%, transparent 70%)", filter: "blur(40px)" }} />
-      <div className="fixed top-[10%] right-[-5%] w-[500px] h-[450px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(123,184,212,0.08) 0%, transparent 70%)", filter: "blur(40px)" }} />
-      <div className="fixed bottom-[-5%] left-[20%] w-[550px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(140,197,168,0.07) 0%, transparent 70%)", filter: "blur(40px)" }} />
-      <div className="fixed bottom-[20%] right-[10%] w-[350px] h-[300px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(195,160,212,0.08) 0%, transparent 70%)", filter: "blur(35px)" }} />
-
-      {/* Floating botanical watercolor accents */}
-      <div className="fixed top-40 left-8 pointer-events-none opacity-[0.12]">
-        <Leaf className="w-16 h-16 text-[#8cc5a8] rotate-[-25deg]" />
-      </div>
-      <div className="fixed bottom-32 right-12 pointer-events-none opacity-[0.10]">
-        <Flower2 className="w-14 h-14 text-[#c3a0d4] rotate-[15deg]" />
-      </div>
-
-      {/* Organic flowing navigation */}
-      <nav className="relative z-10 px-6 py-5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/watercolor-art"
-            className="flex items-center gap-2 text-[#d4a0a0] hover:text-[#c28585] transition-colors duration-300"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-serif text-sm tracking-wider">Return</span>
+    <div className="min-h-screen bg-[#f7f4ea] text-gray-800">
+      <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-gray-800 hover:text-[#87ceeb] transition-colors group">
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-serif text-lg">Back to Styles</span>
           </Link>
-          <Link
-            href="/styles"
-            className="px-5 py-2 font-serif text-sm text-[#5a3e3e]/70 tracking-wider border border-[#d4a0a0]/20 rounded-2xl hover:bg-[#d4a0a0]/5 transition-all duration-300"
-          >
-            All Styles
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero: Full-width watercolor wash with centered text */}
-      <section className="relative z-10 pt-16 pb-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Watercolor wash behind title */}
-          <div className="relative inline-block mb-4">
-            <div className="absolute inset-0 -inset-x-16 -inset-y-8 rounded-[60%_40%_55%_45%/50%_60%_40%_50%]" style={{ background: "radial-gradient(ellipse at 40% 50%, rgba(212,160,160,0.12) 0%, transparent 70%)" }} />
-            <h1 className="relative font-serif text-6xl md:text-8xl font-semibold text-[#d4a0a0] tracking-tight leading-none">
-              Watercolor
-            </h1>
-          </div>
-          <div className="relative inline-block mb-8">
-            <div className="absolute inset-0 -inset-x-12 -inset-y-6 rounded-[45%_55%_50%_50%/55%_45%_55%_45%]" style={{ background: "radial-gradient(ellipse at 60% 50%, rgba(123,184,212,0.10) 0%, transparent 70%)" }} />
-            <span className="relative font-serif text-4xl md:text-6xl font-semibold text-[#7bb8d4]/70">
-              Art
-            </span>
-          </div>
-          <p className="text-[#5a3e3e]/40 font-serif text-lg max-w-xl mx-auto mb-12 leading-relaxed">
-            Pigments flow freely across warm paper, edges bleed and bloom,
-            and white space breathes with organic grace
-          </p>
-          <div className="flex flex-wrap justify-center gap-6">
-            <button className="px-10 py-4 font-serif font-medium tracking-wide rounded-2xl text-[#5a3e3e] transition-all duration-500" style={{ background: "radial-gradient(ellipse at 30% 40%, #d4a0a0 0%, #c89090 100%)", boxShadow: "0 4px 24px rgba(212,160,160,0.30), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
-              <span className="flex items-center gap-2">
-                <Droplets className="w-4 h-4" />
-                Explore Washes
-              </span>
-            </button>
-            <button className="px-10 py-4 font-serif font-medium tracking-wide rounded-2xl text-[#3a5a6a] transition-all duration-500" style={{ background: "radial-gradient(ellipse at 30% 40%, rgba(123,184,212,0.6) 0%, rgba(100,160,195,0.6) 100%)", boxShadow: "0 4px 24px rgba(123,184,212,0.25)" }}>
-              <span className="flex items-center gap-2">
-                <Palette className="w-4 h-4" />
-                View Gallery
-              </span>
-            </button>
+          <div className="flex gap-2">
+            <Droplet className="w-5 h-5 text-[#87ceeb] opacity-60" />
+            <Flower2 className="w-5 h-5 text-[#ffd1dc] opacity-60" />
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Watercolor wash divider */}
-      <div className="relative z-10 h-16 mx-12">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, transparent, rgba(212,160,160,0.08) 20%, rgba(123,184,212,0.06) 50%, rgba(140,197,168,0.06) 80%, transparent)", filter: "blur(8px)", borderRadius: "50%" }} />
-      </div>
-
-      {/* Palette Section - Horizontal organic flow */}
-      <ShowcaseSection
-        title="Pigment Palette"
-        subtitle="Transparent Layers"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-2xl font-serif font-semibold text-[#5a3e3e] tracking-wide mb-2 text-center"
-        subtitleClassName="text-[#5a3e3e]/30 font-serif text-sm tracking-[0.2em] mb-12 text-center"
+      <ShowcaseHero
+        title="Watercolor Art"
+        subtitle="Soft & Dreamy Aesthetic"
+        description="Gentle color washes and transparent overlays create an elegant, artistic atmosphere inspired by traditional watercolor paintings."
+        className="relative py-24 px-6 overflow-hidden bg-gradient-to-br from-[#ffd1dc]/20 via-[#87ceeb]/20 to-[#98d8c8]/20"
+        titleClassName="text-6xl md:text-7xl font-serif mb-6 text-gray-800"
+        subtitleClassName="text-xl text-[#87ceeb] mb-8 font-light"
+        descriptionClassName="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto"
       >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border border-[#d4a0a0]/15 bg-[#faf6f0] rounded-2xl shadow-[0_2px_16px_rgba(212,160,160,0.08)]"
-            labelClassName="font-serif font-medium text-sm text-[#5a3e3e]"
-            hexClassName="text-xs text-[#d4a0a0]/70 font-serif"
-          />
+        <div className="absolute top-10 right-10 w-64 h-64 bg-gradient-to-br from-[#ffd1dc]/30 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-gradient-to-br from-[#87ceeb]/30 to-transparent rounded-full blur-3xl"></div>
+      </ShowcaseHero>
+
+      <ShowcaseSection title="Gallery Stats" subtitle="Creative metrics" className="py-16 px-6 bg-white/50">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Users, label: "Artists", value: "8.2K", color: "#ffd1dc" },
+            { icon: TrendingUp, label: "Growth", value: "+63%", color: "#87ceeb" },
+            { icon: Eye, label: "Views", value: "324K", color: "#98d8c8" },
+            { icon: Palette, label: "Palettes", value: "156", color: "#e6e6fa" },
+          ].map((stat, i) => (
+            <div key={i} className="p-6 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow" style={{ boxShadow: `0 10px 30px ${stat.color}30` }}>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: `${stat.color}40` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+              </div>
+              <p className="text-3xl font-serif mb-1" style={{ color: stat.color }}>{stat.value}</p>
+              <p className="text-sm text-gray-500">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </ShowcaseSection>
 
-      {/* Watercolor Techniques - Staggered organic cards */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-serif font-semibold text-[#5a3e3e] tracking-wide mb-2 text-center">
-            Techniques
-          </h2>
-          <p className="text-[#5a3e3e]/30 font-serif text-sm tracking-[0.2em] mb-14 text-center">
-            Wet-on-Wet Methods
-          </p>
+      <ShowcaseSection title="Color Palette" subtitle="Soft washes" className="py-16 px-6">
+        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
+      </ShowcaseSection>
 
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            {/* Card 1: Wet Wash */}
-            <div className="relative group md:mt-8">
-              <div className="absolute -inset-3 rounded-[50%_50%_45%_55%/55%_50%_50%_45%] opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: "radial-gradient(ellipse at center, rgba(212,160,160,0.08) 0%, transparent 70%)" }} />
-              <div className="relative p-8 bg-[#faf6f0]/80 border border-[#d4a0a0]/15 rounded-3xl shadow-[0_2px_20px_rgba(212,160,160,0.10)] hover:shadow-[0_8px_32px_rgba(212,160,160,0.18)] transition-all duration-500">
-                <div className="w-12 h-12 mb-5 flex items-center justify-center rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 30%, rgba(212,160,160,0.25) 0%, rgba(212,160,160,0.10) 100%)" }}>
-                  <CloudRain className="w-6 h-6 text-[#d4a0a0]" />
-                </div>
-                <h3 className="font-serif font-semibold text-xl text-[#5a3e3e] mb-2">Wet-on-Wet</h3>
-                <p className="font-serif text-sm text-[#5a3e3e]/45 leading-relaxed">
-                  Applying wet pigment onto a wet surface, allowing colors to merge
-                  and bloom with unpredictable beauty.
-                </p>
-              </div>
+      <ShowcaseSection title="Typography" subtitle="Elegant fonts" className="py-16 px-6 bg-white/50">
+        <div className="max-w-4xl mx-auto space-y-6 text-center">
+          {[
+            { text: "Watercolor", size: "text-7xl", color: "#ffd1dc", desc: "Display / Serif" },
+            { text: "Artistic Heading", size: "text-4xl", color: "#87ceeb", desc: "Heading / Medium" },
+            { text: "Flowing body text with gentle elegance", size: "text-lg", color: "#666", desc: "Body / Regular" },
+          ].map((item, i) => (
+            <div key={i} className="p-8 bg-white rounded-2xl shadow-sm">
+              <p className={`${item.size} font-serif mb-2`} style={{ color: item.color }}>{item.text}</p>
+              <p className="text-sm text-gray-400">{item.desc}</p>
             </div>
-
-            {/* Card 2: Glazing */}
-            <div className="relative group">
-              <div className="absolute -inset-3 rounded-[45%_55%_50%_50%/50%_45%_55%_50%] opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: "radial-gradient(ellipse at center, rgba(123,184,212,0.08) 0%, transparent 70%)" }} />
-              <div className="relative p-8 bg-[#faf6f0]/80 border border-[#7bb8d4]/15 rounded-3xl shadow-[0_2px_20px_rgba(123,184,212,0.10)] hover:shadow-[0_8px_32px_rgba(123,184,212,0.18)] transition-all duration-500">
-                <div className="w-12 h-12 mb-5 flex items-center justify-center rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 30%, rgba(123,184,212,0.25) 0%, rgba(123,184,212,0.10) 100%)" }}>
-                  <Droplets className="w-6 h-6 text-[#7bb8d4]" />
-                </div>
-                <h3 className="font-serif font-semibold text-xl text-[#5a3e3e] mb-2">Glazing</h3>
-                <p className="font-serif text-sm text-[#5a3e3e]/45 leading-relaxed">
-                  Building transparent layers, each one adding depth and subtle
-                  color shifts that create luminous effects.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3: Bleeding Edge */}
-            <div className="relative group">
-              <div className="absolute -inset-3 rounded-[55%_45%_50%_50%/45%_55%_45%_55%] opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: "radial-gradient(ellipse at center, rgba(140,197,168,0.08) 0%, transparent 70%)" }} />
-              <div className="relative p-8 bg-[#faf6f0]/80 border border-[#8cc5a8]/15 rounded-3xl shadow-[0_2px_20px_rgba(140,197,168,0.10)] hover:shadow-[0_8px_32px_rgba(140,197,168,0.18)] transition-all duration-500">
-                <div className="w-12 h-12 mb-5 flex items-center justify-center rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 30%, rgba(140,197,168,0.25) 0%, rgba(140,197,168,0.10) 100%)" }}>
-                  <Wind className="w-6 h-6 text-[#8cc5a8]" />
-                </div>
-                <h3 className="font-serif font-semibold text-xl text-[#5a3e3e] mb-2">Bleeding Edges</h3>
-                <p className="font-serif text-sm text-[#5a3e3e]/45 leading-relaxed">
-                  Pigment seeps beyond boundaries, creating organic edges where
-                  color transitions into paper.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 4: Pigment Pooling */}
-            <div className="relative group md:mt-8">
-              <div className="absolute -inset-3 rounded-[50%_50%_55%_45%/50%_50%_45%_55%] opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: "radial-gradient(ellipse at center, rgba(195,160,212,0.08) 0%, transparent 70%)" }} />
-              <div className="relative p-8 bg-[#faf6f0]/80 border border-[#c3a0d4]/15 rounded-3xl shadow-[0_2px_20px_rgba(195,160,212,0.10)] hover:shadow-[0_8px_32px_rgba(195,160,212,0.18)] transition-all duration-500">
-                <div className="w-12 h-12 mb-5 flex items-center justify-center rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 30%, rgba(195,160,212,0.25) 0%, rgba(195,160,212,0.10) 100%)" }}>
-                  <Brush className="w-6 h-6 text-[#c3a0d4]" />
-                </div>
-                <h3 className="font-serif font-semibold text-xl text-[#5a3e3e] mb-2">Pigment Pooling</h3>
-                <p className="font-serif text-sm text-[#5a3e3e]/45 leading-relaxed">
-                  Color concentrates at the edges of each wash, creating darker
-                  rims that define organic shapes.
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Buttons - Inline in a "watercolor palette tray" */}
-      <section className="relative z-10 py-16 px-6">
+      <ShowcaseSection title="Buttons" subtitle="Soft interactions" className="py-16 px-6">
+        <div className="max-w-4xl mx-auto flex flex-wrap gap-4 justify-center">
+          {["Primary", "Secondary", "Outlined", "Soft"].map((label, i) => (
+            <button key={i} className={`px-8 py-3 rounded-full font-medium transition-all ${i === 0 ? 'bg-[#ffd1dc] text-white shadow-lg hover:shadow-xl' : i === 1 ? 'bg-[#87ceeb] text-white shadow-lg hover:shadow-xl' : i === 2 ? 'border-2 border-[#98d8c8] text-[#98d8c8] hover:bg-[#98d8c8] hover:text-white' : 'bg-[#e6e6fa] text-gray-700 hover:bg-[#d8cfe8]'}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Content Cards" subtitle="Artistic blocks" className="py-16 px-6 bg-white/50">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+          {[
+            { title: "Gentle", desc: "Soft color transitions", gradient: "from-[#ffd1dc]/20 to-[#ffd1dc]/5" },
+            { title: "Flowing", desc: "Organic shapes and forms", gradient: "from-[#87ceeb]/20 to-[#87ceeb]/5" },
+            { title: "Dreamy", desc: "Transparent overlays", gradient: "from-[#98d8c8]/20 to-[#98d8c8]/5" },
+          ].map((card, i) => (
+            <div key={i} className={`p-8 bg-gradient-to-br ${card.gradient} rounded-3xl border border-white/50 hover:scale-105 transition-transform`}>
+              <h3 className="text-2xl font-serif mb-3 text-gray-800">{card.title}</h3>
+              <p className="text-gray-600">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Tabs" subtitle="Soft navigation" className="py-16 px-6">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-serif font-semibold text-[#5a3e3e] tracking-wide mb-2 text-center">
-            Wash Controls
-          </h2>
-          <p className="text-[#5a3e3e]/30 font-serif text-sm tracking-[0.2em] mb-12 text-center">
-            Pigment-Fill Buttons
-          </p>
-
-          <div className="p-10 bg-[#faf6f0]/70 border border-[#d4a0a0]/12 rounded-3xl" style={{ boxShadow: "0 4px 32px rgba(212,160,160,0.08), inset 0 1px 0 rgba(255,255,255,0.5)" }}>
-            <div className="flex flex-wrap gap-5 justify-center">
-              <button className="px-8 py-3.5 font-serif font-medium tracking-wide text-[#5a3e3e] rounded-2xl transition-all duration-500 hover:scale-[1.02]" style={{ background: "radial-gradient(ellipse at 25% 35%, #d4a0a0 0%, #c89090 100%)", boxShadow: "0 3px 16px rgba(212,160,160,0.30), inset 0 1px 0 rgba(255,255,255,0.15)" }}>
-                Rose
-              </button>
-              <button className="px-8 py-3.5 font-serif font-medium tracking-wide text-[#2a4a5a] rounded-2xl transition-all duration-500 hover:scale-[1.02]" style={{ background: "radial-gradient(ellipse at 25% 35%, rgba(123,184,212,0.7) 0%, rgba(100,160,195,0.7) 100%)", boxShadow: "0 3px 16px rgba(123,184,212,0.25)" }}>
-                Cerulean
-              </button>
-              <button className="px-8 py-3.5 font-serif font-medium tracking-wide text-[#2a4a3a] rounded-2xl transition-all duration-500 hover:scale-[1.02]" style={{ background: "radial-gradient(ellipse at 25% 35%, rgba(140,197,168,0.7) 0%, rgba(110,175,145,0.7) 100%)", boxShadow: "0 3px 16px rgba(140,197,168,0.25)" }}>
-                Sage
-              </button>
-              <button className="px-8 py-3.5 font-serif font-medium tracking-wide text-[#d4a0a0] rounded-2xl transition-all duration-500 hover:scale-[1.02] border border-[#d4a0a0]/25 bg-transparent hover:bg-[#d4a0a0]/5">
-                Outline
-              </button>
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div className="flex p-2 bg-gray-50">
+              {tabs.map((tab, i) => (
+                <button key={i} onClick={() => setActiveTab(i)} className={`flex-1 px-6 py-3 rounded-2xl font-medium transition-all ${activeTab === i ? 'bg-[#87ceeb] text-white shadow-md' : 'text-gray-600 hover:bg-white'}`}>{tab}</button>
+              ))}
+            </div>
+            <div className="p-8 min-h-[150px]">
+              {activeTab === 0 && <div><h4 className="text-2xl font-serif text-[#ffd1dc] mb-3">Watercolor Wash</h4><p className="text-gray-600">Light, transparent layers of color</p></div>}
+              {activeTab === 1 && <div><h4 className="text-2xl font-serif text-[#87ceeb] mb-3">Color Blending</h4><p className="text-gray-600">Smooth transitions between hues</p></div>}
+              {activeTab === 2 && <div><h4 className="text-2xl font-serif text-[#98d8c8] mb-3">Flowing Forms</h4><p className="text-gray-600">Organic, natural shapes</p></div>}
             </div>
           </div>
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Form: Artist journal entry */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-lg mx-auto">
-          <div className="relative">
-            {/* Watercolor wash behind the form */}
-            <div className="absolute -inset-6 rounded-[50%_50%_45%_55%/55%_50%_50%_45%]" style={{ background: "radial-gradient(ellipse at 30% 40%, rgba(212,160,160,0.06) 0%, rgba(123,184,212,0.04) 50%, transparent 80%)", filter: "blur(12px)" }} />
-
-            <div className="relative p-10 bg-[#faf6f0]/80 border border-[#d4a0a0]/15 rounded-3xl" style={{ boxShadow: "0 4px 32px rgba(212,160,160,0.10), inset 0 1px 0 rgba(255,255,255,0.4)" }}>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 flex items-center justify-center rounded-xl" style={{ background: "radial-gradient(ellipse at 30% 30%, rgba(212,160,160,0.2) 0%, rgba(212,160,160,0.08) 100%)" }}>
-                  <Flower2 className="w-5 h-5 text-[#d4a0a0]" />
-                </div>
-                <h3 className="font-serif font-semibold text-xl text-[#5a3e3e]">
-                  Artist Journal
-                </h3>
-              </div>
-
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-xs font-serif text-[#d4a0a0] tracking-[0.15em] mb-2">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name..."
-                    className="w-full px-5 py-3.5 bg-[#faf6f0] border border-[#d4a0a0]/20 rounded-2xl text-[#5a3e3e] placeholder-[#d4a0a0]/35 font-serif focus:outline-none transition-all duration-500"
-                    style={{ boxShadow: "inset 0 1px 3px rgba(212,160,160,0.06)" }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-serif text-[#7bb8d4] tracking-[0.15em] mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Your email..."
-                    className="w-full px-5 py-3.5 bg-[#faf6f0] border border-[#7bb8d4]/20 rounded-2xl text-[#5a3e3e] placeholder-[#7bb8d4]/35 font-serif focus:outline-none transition-all duration-500"
-                    style={{ boxShadow: "inset 0 1px 3px rgba(123,184,212,0.06)" }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-serif text-[#8cc5a8] tracking-[0.15em] mb-2">
-                    Inspiration
-                  </label>
-                  <textarea
-                    placeholder="Describe your vision..."
-                    rows={3}
-                    className="w-full px-5 py-3.5 bg-[#faf6f0] border border-[#8cc5a8]/20 rounded-2xl text-[#5a3e3e] placeholder-[#8cc5a8]/35 font-serif focus:outline-none transition-all duration-500 resize-none"
-                    style={{ boxShadow: "inset 0 1px 3px rgba(140,197,168,0.06)" }}
-                  />
-                </div>
-                <button className="w-full py-4 font-serif font-medium tracking-wide text-[#5a3e3e] rounded-2xl transition-all duration-500 hover:scale-[1.01]" style={{ background: "radial-gradient(ellipse at 30% 40%, #d4a0a0 0%, #c89090 100%)", boxShadow: "0 4px 20px rgba(212,160,160,0.25), inset 0 1px 0 rgba(255,255,255,0.15)" }}>
-                  Begin Painting
-                </button>
-              </div>
+      <ShowcaseSection title="Accordion" subtitle="Expandable content" className="py-16 px-6 bg-white/50">
+        <div className="max-w-3xl mx-auto space-y-3">
+          {accordionItems.map((item, i) => (
+            <div key={i} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <button onClick={() => setOpenAccordion(openAccordion === i ? null : i)} className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors">
+                <span className="font-serif text-lg text-gray-800">{item.title}</span>
+                {openAccordion === i ? <ChevronUp className="w-5 h-5 text-[#87ceeb]" /> : <ChevronDown className="w-5 h-5 text-[#87ceeb]" />}
+              </button>
+              {openAccordion === i && <div className="px-6 pb-6"><p className="text-gray-600 leading-relaxed">{item.content}</p></div>}
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </ShowcaseSection>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-10 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="h-px mb-8 mx-auto max-w-xs" style={{ background: "linear-gradient(90deg, transparent, rgba(212,160,160,0.20), transparent)" }} />
-          <p className="text-[#5a3e3e]/30 text-sm font-serif tracking-wider">
-            Watercolor Art -- Part of{" "}
-            <Link href="/" className="text-[#d4a0a0]/60 hover:text-[#d4a0a0] transition-colors duration-300">
-              StyleKit
-            </Link>
-          </p>
+      <ShowcaseSection title="Alerts" subtitle="Gentle notifications" className="py-16 px-6">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            { icon: Check, label: "Success", desc: "Everything went beautifully", color: "#98d8c8", bg: "#98d8c820" },
+            { icon: AlertTriangle, label: "Notice", desc: "Something needs attention", color: "#ffd1dc", bg: "#ffd1dc20" },
+            { icon: X, label: "Error", desc: "Something didn't work", color: "#ef9a9a", bg: "#ef9a9a20" },
+            { icon: Info, label: "Info", desc: "Here's something to know", color: "#87ceeb", bg: "#87ceeb20" },
+          ].map((alert, i) => (
+            <div key={i} className="flex items-center gap-4 p-5 rounded-2xl" style={{ backgroundColor: alert.bg }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: alert.color }}>
+                <alert.icon className="w-5 h-5 text-white" />
+              </div>
+              <div><p className="font-semibold" style={{ color: alert.color }}>{alert.label}</p><p className="text-gray-600 text-sm">{alert.desc}</p></div>
+            </div>
+          ))}
         </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Toggle" subtitle="Soft switches" className="py-16 px-6 bg-white/50">
+        <div className="max-w-3xl mx-auto"><div className="p-8 bg-white rounded-3xl shadow-lg space-y-6">
+          {[
+            { label: "Watercolor Effects", desc: "Enable soft washes", color: "#ffd1dc" },
+            { label: "Transparency", desc: "Layer overlays", color: "#87ceeb" },
+            { label: "Brush Strokes", desc: "Show textures", color: "#98d8c8" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              <div><p className="font-semibold text-gray-800">{item.label}</p><p className="text-sm text-gray-500">{item.desc}</p></div>
+              <button onClick={() => { const newStates = [...toggleStates]; newStates[i] = !newStates[i]; setToggleStates(newStates); }} className="relative w-14 h-7 rounded-full transition-all" style={{ backgroundColor: toggleStates[i] ? item.color : '#e0e0e0' }}>
+                <span className="absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-all" style={{ left: toggleStates[i] ? 'calc(100% - 26px)' : '2px' }} />
+              </button>
+            </div>
+          ))}
+        </div></div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Progress" subtitle="Loading states" className="py-16 px-6">
+        <div className="max-w-3xl mx-auto"><div className="p-8 bg-white rounded-3xl shadow-lg space-y-8">
+          <div><div className="flex items-center justify-between mb-3"><p className="font-semibold text-gray-800">Painting Progress</p><p className="text-sm text-[#87ceeb]">{progress}%</p></div>
+            <div className="h-3 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-[#ffd1dc] to-[#87ceeb] transition-all duration-500" style={{ width: `${progress}%` }} /></div>
+          </div>
+          <div><p className="font-semibold text-gray-800 mb-3">Layers</p>
+            <div className="grid grid-cols-4 gap-2">{[100, 100, progress, 0].map((val, i) => (
+              <div key={i}><div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full transition-all" style={{ width: `${val}%`, backgroundColor: val === 100 ? '#98d8c8' : val > 0 ? '#ffd1dc' : 'transparent' }} /></div>
+                <p className="text-xs text-gray-500 mt-1 text-center">L{i + 1}</p></div>
+            ))}</div>
+          </div>
+          <div className="flex gap-4 pt-4 border-t border-gray-100">
+            <button onClick={() => setProgress(Math.max(0, progress - 10))} className="px-6 py-2 border-2 border-gray-200 text-gray-700 rounded-full hover:bg-gray-50 transition-colors">Decrease</button>
+            <button onClick={() => setProgress(Math.min(100, progress + 10))} className="px-6 py-2 bg-[#87ceeb] text-white rounded-full hover:bg-[#76beda] transition-colors">Increase</button>
+          </div>
+        </div></div>
+      </ShowcaseSection>
+
+      <footer className="border-t border-gray-200 py-12 px-6 text-center bg-white/80">
+        <p className="text-gray-500 font-serif">Watercolor Art Style © 2026 - Painted with care</p>
       </footer>
     </div>
   );
