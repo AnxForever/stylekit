@@ -2892,6 +2892,210 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "sci-fi-hud": {
+    button: () => (
+      <button className="px-6 py-3 bg-transparent text-[#06B6D4] font-mono border border-[#06B6D4]/60 shadow-[0_0_12px_rgba(6,182,212,0.3)] hover:bg-[#06B6D4]/10 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all uppercase tracking-widest text-sm">
+        ACTIVATE
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#020617]/90 border border-[#06B6D4]/30 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+        <h3 className="font-mono text-[#22D3EE] text-lg mb-2 uppercase tracking-wider">System Status</h3>
+        <p className="font-mono text-[#06B6D4]/70 text-sm">All systems operational</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Enter command..."
+        className="w-full px-4 py-3 bg-[#020617]/80 border border-[#06B6D4]/40 text-[#22D3EE] font-mono placeholder:text-[#06B6D4]/30 focus:outline-none focus:border-[#06B6D4] focus:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#020617] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px]">
+          <div className="bg-[#020617]/90 border border-[#06B6D4]/40 shadow-[0_0_15px_rgba(6,182,212,0.2)] p-4">
+            <div className="font-mono text-[#22D3EE] text-xs uppercase tracking-widest mb-3">SYS // HUD</div>
+            <div className="h-px bg-[#06B6D4]/30 mb-3" />
+            <p className="font-mono text-[#06B6D4]/60 text-xs mb-3">All systems nominal</p>
+            <button className="text-[#06B6D4] text-xs font-mono px-3 py-1.5 border border-[#06B6D4]/50 shadow-[0_0_8px_rgba(6,182,212,0.2)] uppercase tracking-wider">
+              ENGAGE
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "kawaii-minimal": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#F9A8D4] text-white font-medium rounded-full shadow-sm hover:bg-[#F472B6] transition-all text-sm">
+        Click me
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#FFF7ED] rounded-3xl border border-[#F9A8D4]/20 shadow-sm">
+        <h3 className="text-[#F472B6] text-lg mb-2 font-medium">Kawaii Card</h3>
+        <p className="text-[#D4A4A4] text-sm">Soft and gentle design</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Type something..."
+        className="w-full px-4 py-3 bg-white rounded-2xl border border-[#F9A8D4]/30 text-[#6B5B6B] placeholder:text-[#F9A8D4]/50 focus:outline-none focus:border-[#F9A8D4] focus:ring-2 focus:ring-[#F9A8D4]/20"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#FFF7ED] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px]">
+          <div className="bg-white rounded-3xl border border-[#F9A8D4]/20 shadow-sm p-4">
+            <div className="text-[#F472B6] text-sm font-medium mb-3">Kawaii</div>
+            <p className="text-[#D4A4A4] text-xs mb-3">Soft and sweet</p>
+            <button className="bg-[#F9A8D4] text-white text-xs font-medium px-4 py-2 rounded-full shadow-sm">
+              Explore
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "film-noir": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#1a1a1a] text-[#f5f5f0] font-serif border border-[#8b7355]/40 shadow-lg hover:bg-[#2a2a2a] transition-all tracking-wide text-sm">
+        Investigate
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] border border-[#8b7355]/20 shadow-2xl">
+        <h3 className="text-[#f5f5f0] text-lg mb-2 font-serif italic">Shadows & Light</h3>
+        <p className="text-[#8b7355] text-sm font-serif">A tale of contrast</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Search the archives..."
+        className="w-full px-4 py-3 bg-[#0a0a0a] border border-[#8b7355]/30 text-[#f5f5f0] font-serif placeholder:text-[#8b7355]/40 focus:outline-none focus:border-[#d4af37]"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px]">
+          <div className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] border border-[#8b7355]/30 shadow-2xl p-4">
+            <div className="text-[#f5f5f0] text-sm font-serif italic mb-3">Film Noir</div>
+            <div className="h-px bg-gradient-to-r from-transparent via-[#8b7355]/40 to-transparent mb-3" />
+            <p className="text-[#8b7355] text-xs font-serif mb-3">Shadows and mystery</p>
+            <button className="bg-[#1a1a1a] text-[#d4af37] text-xs font-serif px-3 py-1.5 border border-[#d4af37]/40 tracking-wide">
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "arcade-crt": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#050505] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#39ff14]/60 bg-black p-4 shadow-[0_0_20px_rgba(57,255,20,0.25)]">
+          <div className="text-[#39ff14] text-xs font-mono tracking-widest mb-2">ARCADE CRT</div>
+          <div className="h-px bg-[#39ff14]/40 mb-3" />
+          <div className="grid grid-cols-3 gap-1.5 mb-3">
+            <div className="h-6 bg-[#ff00ff]/25 border border-[#ff00ff]/60" />
+            <div className="h-6 bg-[#00ffff]/25 border border-[#00ffff]/60" />
+            <div className="h-6 bg-[#ffff00]/25 border border-[#ffff00]/60" />
+          </div>
+          <p className="text-[10px] text-[#39ff14]/70 font-mono">NEON // SCANLINES // RETRO</p>
+        </div>
+      </div>
+    ),
+  },
+  "frutiger-aero": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-br from-[#8bd9ff] via-[#d8f6ff] to-[#9cebb2] flex items-center justify-center p-4">
+        <div className="w-full max-w-[210px] bg-white/70 border border-white/80 rounded-2xl p-4 shadow-[0_14px_30px_rgba(59,130,246,0.2)] backdrop-blur">
+          <div className="text-[#0f4f7a] text-sm font-semibold mb-2">Frutiger Aero</div>
+          <p className="text-[#0f4f7a]/70 text-xs mb-3">Glossy, airy, optimistic</p>
+          <div className="flex gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#4cc9f0]" />
+            <div className="w-7 h-7 rounded-full bg-[#90e0ef]" />
+            <div className="w-7 h-7 rounded-full bg-[#80ed99]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "anti-design": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#ffef00] flex items-center justify-center p-4">
+        <div className="w-full max-w-[210px] border-4 border-black bg-white p-3 rotate-[-2deg] shadow-[6px_6px_0_0_#000]">
+          <div className="text-black text-base font-black uppercase tracking-tight leading-none mb-2">ANTI DESIGN</div>
+          <p className="text-[11px] text-black font-bold mb-3">RAW. LOUD. UNPOLISHED.</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="h-7 bg-[#ff3b30] border-2 border-black" />
+            <div className="h-7 bg-[#0057ff] border-2 border-black" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  holographic: {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#12022a] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.22),transparent_45%)]" />
+        <div className="w-full max-w-[210px] relative rounded-2xl p-4 border border-white/35 bg-gradient-to-br from-[#ff00f780] via-[#00d4ff80] to-[#ffee0080] backdrop-blur shadow-[0_0_24px_rgba(255,255,255,0.25)]">
+          <div className="text-white text-sm font-semibold mb-2">Holographic</div>
+          <p className="text-white/80 text-xs mb-3">Iridescent spectrum layers</p>
+          <div className="h-2 rounded-full bg-gradient-to-r from-[#ff00f7] via-[#00d4ff] to-[#ffee00]" />
+        </div>
+      </div>
+    ),
+  },
+  "generative-art": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0b0b12] flex items-center justify-center p-4">
+        <div className="w-full max-w-[210px] border border-[#7c3aed]/50 bg-[#131321] p-4">
+          <div className="text-[#a78bfa] text-xs font-mono tracking-widest mb-3">GENERATIVE ART</div>
+          <div className="grid grid-cols-4 gap-1.5 mb-3">
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <div key={i} className="h-5 bg-gradient-to-br from-[#7c3aed] to-[#22d3ee] opacity-80" style={{ transform: `scale(${0.85 + i * 0.02})` }} />
+            ))}
+          </div>
+          <p className="text-[10px] text-[#a78bfa]/70 font-mono">ALGORITHMIC PATTERNS</p>
+        </div>
+      </div>
+    ),
+  },
+  particle: {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute w-2 h-2 rounded-full bg-cyan-400/70 top-8 left-10 shadow-[0_0_12px_rgba(34,211,238,0.5)]" />
+        <div className="absolute w-2 h-2 rounded-full bg-cyan-300/60 bottom-10 right-12 shadow-[0_0_12px_rgba(34,211,238,0.45)]" />
+        <div className="absolute w-1.5 h-1.5 rounded-full bg-sky-300/70 top-16 right-16" />
+        <div className="absolute h-px w-16 bg-cyan-400/35 top-10 left-12 rotate-12" />
+        <div className="w-full max-w-[210px] border border-cyan-500/35 bg-[#0b1222]/90 p-4">
+          <div className="text-cyan-300 text-xs font-mono tracking-widest mb-2">PARTICLE FIELD</div>
+          <p className="text-cyan-100/65 text-xs mb-3">Connected nodes in dark space</p>
+          <div className="h-px bg-cyan-400/40" />
+        </div>
+      </div>
+    ),
+  },
+  "vhs-aesthetic": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#12011f] flex items-center justify-center p-4">
+        <div className="w-full max-w-[210px] border border-[#ff00ff]/55 bg-[#1a0a2e] p-4 shadow-[0_0_20px_rgba(255,0,255,0.25)]">
+          <div className="text-[#00ffff] text-xs font-mono tracking-widest mb-2">VHS AESTHETIC</div>
+          <div className="h-px bg-gradient-to-r from-[#ff00ff]/20 via-[#00ffff]/40 to-[#ff00ff]/20 mb-3" />
+          <div className="space-y-1.5 mb-3">
+            <div className="h-1 bg-[#ff00ff]/45" />
+            <div className="h-1 bg-[#00ffff]/35" />
+            <div className="h-1 bg-[#ffff00]/30" />
+          </div>
+          <p className="text-[10px] text-[#00ffff]/70 font-mono">TRACKING // NOISE // RETRO TAPE</p>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

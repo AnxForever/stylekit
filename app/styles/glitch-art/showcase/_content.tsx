@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Zap, Radio, Cpu, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Activity } from "lucide-react";
+import { ArrowLeft, Zap, Radio, ChevronDown, ChevronUp, Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Activity } from "lucide-react";
 import { ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem } from "@/components/showcase";
 
 export default function ShowcaseContent() {
@@ -288,6 +288,7 @@ export default function ShowcaseContent() {
           {accordionItems.map((item, i) => (
             <div key={i} className="bg-black border-2 border-cyan-500/50 border-b-0 last:border-b-2">
               <button
+                id={`accordion-btn-${i}`}
                 aria-expanded={openAccordion === i}
                 aria-controls={`accordion-panel-${i}`}
                 onClick={() => setOpenAccordion(openAccordion === i ? null : i)}

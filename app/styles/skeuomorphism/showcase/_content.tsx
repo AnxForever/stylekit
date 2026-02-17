@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
   ArrowLeft, Settings, Volume2, Power, ChevronUp, ChevronDown,
   Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, Star,
-  Folder, Music, Image
+  Folder, Music, Image as ImageIcon
 } from "lucide-react";
 import {
   ShowcaseHero,
@@ -35,7 +35,7 @@ export default function ShowcaseContent() {
   const tabs = [
     { label: "Documents", icon: Folder },
     { label: "Music", icon: Music },
-    { label: "Photos", icon: Image },
+    { label: "Photos", icon: ImageIcon },
   ];
 
   const accordionItems = [
@@ -219,7 +219,7 @@ export default function ShowcaseContent() {
           </div>
           <div className="group p-6 bg-gradient-to-b from-stone-100 to-stone-200 rounded-2xl border border-stone-300 shadow-[0_8px_16px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)] transition-shadow">
             <div className="w-12 h-12 bg-gradient-to-b from-stone-400 to-stone-600 rounded-lg flex items-center justify-center mb-4 shadow-[0_3px_6px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.3)] group-hover:scale-110 transition-transform">
-              <Image className="w-6 h-6 text-white" />
+              <ImageIcon className="w-6 h-6 text-white" />
             </div>
             <h3 className="text-xl font-bold text-stone-800 mb-2">Paper Card</h3>
             <p className="text-stone-600 mb-3">Soft, matte finish like quality stationery.</p>

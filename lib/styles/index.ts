@@ -191,6 +191,20 @@ import { liquidGlass } from "./liquid-glass";
 import { scandinavian } from "./scandinavian";
 import { celShading } from "./cel-shading";
 import { wabiSabi } from "./wabi-sabi";
+// New styles - Batch 9 (Competitive analysis)
+import { sciFiHud } from "./sci-fi-hud";
+import { kawaiiMinimal } from "./kawaii-minimal";
+import { filmNoir } from "./film-noir";
+// New styles - Batch 10
+import { arcadeCrt } from "./arcade-crt";
+import { frutigerAero } from "./frutiger-aero";
+// New styles - Anti-Design
+import { antiDesign } from "./anti-design";
+// New styles - Batch 11
+import { holographic } from "./holographic";
+import { generativeArt } from "./generative-art";
+import { particle } from "./particle";
+import { vhsAesthetic } from "./vhs-aesthetic";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -293,6 +307,20 @@ export const styles: DesignStyle[] = [
   scandinavian,
   celShading,
   wabiSabi,
+  // New styles - Batch 9 (Competitive analysis)
+  sciFiHud,
+  kawaiiMinimal,
+  filmNoir,
+  // New styles - Batch 10
+  arcadeCrt,
+  frutigerAero,
+  // New styles - Anti-Design
+  antiDesign,
+  // New styles - Batch 11
+  holographic,
+  generativeArt,
+  particle,
+  vhsAesthetic,
 ];
 
 // 根据 slug 获取风格
