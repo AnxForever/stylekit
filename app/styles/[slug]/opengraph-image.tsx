@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getStyleBySlug, styles } from "@/lib/styles";
 
-export const runtime = "edge";
 export const alt = "StyleKit style preview";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -41,9 +40,10 @@ export default async function OGImage({
     );
   }
 
-  const primary = style.colors?.primary || "#000000";
-  const secondary = style.colors?.secondary || "#ffffff";
+  const primary = style.colors?.primary || "#6366f1";
+  const secondary = style.colors?.secondary || "#a855f7";
   const accents = style.colors?.accent || [];
+  const allColors = [primary, secondary, ...accents.slice(0, 3)];
 
   return new ImageResponse(
     (
@@ -55,44 +55,26 @@ export default async function OGImage({
           height: "100%",
           backgroundColor: "#0a0a0a",
           padding: 60,
-          fontFamily: "system-ui, sans-serif",
         }}
       >
-        {/* Top bar with color swatches */}
+        {/* Color swatches row */}
         <div style={{ display: "flex", gap: 12, marginBottom: 40 }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 8,
-              backgroundColor: primary,
-              border: "2px solid rgba(255,255,255,0.2)",
-            }}
-          />
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 8,
-              backgroundColor: secondary,
-              border: "2px solid rgba(255,255,255,0.2)",
-            }}
-          />
-          {accents.slice(0, 3).map((color, i) => (
+          {allColors.map((color, i) => (
             <div
               key={i}
               style={{
+                display: "flex",
                 width: 48,
                 height: 48,
                 borderRadius: 8,
                 backgroundColor: color,
-                border: "2px solid rgba(255,255,255,0.2)",
+                border: "2px solid rgba(255,255,255,0.15)",
               }}
             />
           ))}
         </div>
 
-        {/* Style name */}
+        {/* Style name - English only to avoid CJK font issues */}
         <div
           style={{
             display: "flex",
@@ -103,35 +85,25 @@ export default async function OGImage({
         >
           <div
             style={{
+              display: "flex",
               fontSize: 72,
               fontWeight: 800,
               color: "#ffffff",
               lineHeight: 1.1,
-              marginBottom: 12,
+              marginBottom: 16,
             }}
           >
             {style.nameEn}
           </div>
           <div
             style={{
-              fontSize: 36,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.6)",
-              marginBottom: 24,
-            }}
-          >
-            {style.name}
-          </div>
-          <div
-            style={{
+              display: "flex",
               fontSize: 24,
-              color: "rgba(255,255,255,0.4)",
+              color: "rgba(255,255,255,0.5)",
               lineHeight: 1.4,
-              maxWidth: 800,
             }}
           >
-            {style.description.slice(0, 120)}
-            {style.description.length > 120 ? "..." : ""}
+            {`Design style with ${style.keywords?.slice(0, 4).join(", ") || "unique aesthetics"}`}
           </div>
         </div>
 
@@ -152,19 +124,20 @@ export default async function OGImage({
           >
             <div
               style={{
+                display: "flex",
                 width: 40,
                 height: 40,
                 borderRadius: 8,
                 background: `linear-gradient(135deg, ${primary}, ${secondary})`,
               }}
             />
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#ffffff" }}>
+            <div style={{ display: "flex", fontSize: 28, fontWeight: 700, color: "#ffffff" }}>
               StyleKit
-            </span>
+            </div>
           </div>
-          <span style={{ fontSize: 20, color: "rgba(255,255,255,0.3)" }}>
+          <div style={{ display: "flex", fontSize: 20, color: "rgba(255,255,255,0.3)" }}>
             stylekit.top
-          </span>
+          </div>
         </div>
       </div>
     ),
