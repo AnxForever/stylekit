@@ -11,7 +11,7 @@ import { TemplateCoverPreview } from "@/components/templates/template-cover-prev
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale, type LocaleCopy } from "@/lib/i18n/locale-copy";
 
-type TemplateType = "landing" | "dashboard" | "blog" | "portfolio";
+type TemplateType = "landing" | "dashboard" | "blog" | "portfolio" | "saas" | "ecommerce" | "admin" | "auth" | "docs";
 type TemplateTypeFilter = "all" | TemplateType;
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
 
@@ -124,6 +124,127 @@ const templates: Template[] = [
     type: "blog",
     href: "/templates/brutalist-playful-blog",
   },
+  {
+    id: "saas-landing",
+    name: { zh: "SaaS 产品落地页", en: "SaaS Landing Page" },
+    description: {
+      zh: "现代 SaaS 产品落地页，包含功能展示、定价方案、客户评价和 CTA 模块。",
+      en: "Modern SaaS landing page with feature grid, pricing plans, testimonials, and call-to-action sections.",
+    },
+    styleSlug: "stripe-style",
+    type: "saas",
+    href: "/templates/saas-landing",
+  },
+  {
+    id: "ecommerce-product",
+    name: { zh: "电商产品页", en: "E-Commerce Product Page" },
+    description: {
+      zh: "完整的电商单品展示页，包含图片画廊、颜色选择器、评价区和相关推荐。",
+      en: "Full e-commerce product page with image gallery, color picker, reviews, and related products.",
+    },
+    styleSlug: "apple-style",
+    type: "ecommerce",
+    href: "/templates/ecommerce-product",
+  },
+  {
+    id: "blog-sidebar",
+    name: { zh: "侧栏博客", en: "Blog with Sidebar" },
+    description: {
+      zh: "经典双栏博客布局，含文章列表、分类导航、标签云和订阅模块。",
+      en: "Classic two-column blog layout with article list, category navigation, tag cloud, and newsletter signup.",
+    },
+    styleSlug: "notion-style",
+    type: "blog",
+    href: "/templates/blog-sidebar",
+  },
+  {
+    id: "admin-panel",
+    name: { zh: "管理面板", en: "Admin Panel" },
+    description: {
+      zh: "后台管理面板，包含侧栏导航、用户管理表格、角色权限和搜索过滤。",
+      en: "Admin panel with sidebar navigation, user management table, role permissions, and search filters.",
+    },
+    styleSlug: "corporate-clean",
+    type: "admin",
+    href: "/templates/admin-panel",
+  },
+  {
+    id: "portfolio-gallery",
+    name: { zh: "作品集画廊", en: "Portfolio Gallery" },
+    description: {
+      zh: "暗色主题作品集画廊，支持网格/列表视图切换、分类过滤和灯箱预览。",
+      en: "Dark-themed portfolio gallery with grid/list toggle, category filtering, and lightbox preview.",
+    },
+    styleSlug: "dark-mode",
+    type: "portfolio",
+    href: "/templates/portfolio-gallery",
+  },
+  {
+    id: "auth-pages",
+    name: { zh: "认证页面集", en: "Auth Pages" },
+    description: {
+      zh: "完整认证流程页面，包含登录、注册、忘记密码，支持社交登录。",
+      en: "Complete auth flow with login, register, and forgot-password views, plus social login support.",
+    },
+    styleSlug: "soft-ui",
+    type: "auth",
+    href: "/templates/auth-pages",
+  },
+  {
+    id: "pricing-page",
+    name: { zh: "定价页", en: "Pricing Page" },
+    description: {
+      zh: "清晰的三档定价页，包含功能对比表、FAQ 和详细的套餐说明。",
+      en: "Clean three-tier pricing page with feature comparison table, FAQ section, and detailed plan breakdowns.",
+    },
+    styleSlug: "minimalist-flat",
+    type: "saas",
+    href: "/templates/pricing-page",
+  },
+  {
+    id: "dashboard-charts",
+    name: { zh: "图表仪表盘", en: "Dashboard with Charts" },
+    description: {
+      zh: "数据驱动的分析仪表盘，含收入趋势图、流量来源、订单表格和实时统计。",
+      en: "Data-driven analytics dashboard with revenue charts, traffic sources, order tables, and live stats.",
+    },
+    styleSlug: "material-design",
+    type: "dashboard",
+    href: "/templates/dashboard-charts",
+  },
+  {
+    id: "docs-site",
+    name: { zh: "文档站点", en: "Documentation Site" },
+    description: {
+      zh: "三栏文档站点，包含侧栏导航、内容区域、目录导航和代码块。",
+      en: "Three-column docs site with sidebar navigation, main content area, table of contents, and code blocks.",
+    },
+    styleSlug: "notion-style",
+    type: "docs",
+    href: "/templates/docs-site",
+  },
+  {
+    id: "settings-page",
+    name: { zh: "设置页面", en: "Settings Page" },
+    description: {
+      zh: "完整的账户设置页面，包含个人资料、通知偏好、主题切换、安全和账单模块。",
+      en: "Full account settings with profile, notifications, appearance, security, and billing tabs.",
+    },
+    styleSlug: "fluent-design",
+    type: "admin",
+    href: "/templates/settings-page",
+  },
+  {
+    id: "startup-landing",
+    name: { zh: "创业公司落地页", en: "Startup Landing Page" },
+    description: {
+      zh: "暗色系创业公司落地页，渐变装饰、功能网格、三步引导和邮件注册。",
+      en: "Dark startup landing page with gradient orbs, feature grid, three-step flow, and email waitlist.",
+    },
+    styleSlug: "modern-gradient",
+    type: "landing",
+    href: "/templates/startup-landing",
+  },
 ];
 
 const allStyles = getAllStylesMeta();
@@ -146,6 +267,16 @@ function templateTypeToTranslationKey(type: TemplateType) {
       return "templates.typeBlog";
     case "portfolio":
       return "templates.typePortfolio";
+    case "saas":
+      return "templates.typeSaas";
+    case "ecommerce":
+      return "templates.typeEcommerce";
+    case "admin":
+      return "templates.typeAdmin";
+    case "auth":
+      return "templates.typeAuth";
+    case "docs":
+      return "templates.typeDocs";
     default:
       return "templates.typeAll";
   }

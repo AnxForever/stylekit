@@ -4,9 +4,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, Suspense } from "react";
 import { useI18n } from "@/lib/i18n/context";
 
-type TemplateTypeFilter = "all" | "landing" | "dashboard" | "blog" | "portfolio";
+type TemplateTypeFilter = "all" | "landing" | "dashboard" | "blog" | "portfolio" | "saas" | "ecommerce" | "admin" | "auth" | "docs";
 
-const filterTypeOrder: TemplateTypeFilter[] = ["all", "landing", "dashboard", "blog", "portfolio"];
+const filterTypeOrder: TemplateTypeFilter[] = ["all", "landing", "dashboard", "blog", "portfolio", "saas", "ecommerce", "admin", "auth", "docs"];
 
 function typeTranslationKey(type: TemplateTypeFilter) {
   switch (type) {
@@ -20,6 +20,16 @@ function typeTranslationKey(type: TemplateTypeFilter) {
       return "templates.typeBlog";
     case "portfolio":
       return "templates.typePortfolio";
+    case "saas":
+      return "templates.typeSaas";
+    case "ecommerce":
+      return "templates.typeEcommerce";
+    case "admin":
+      return "templates.typeAdmin";
+    case "auth":
+      return "templates.typeAuth";
+    case "docs":
+      return "templates.typeDocs";
     default:
       return "templates.typeAll";
   }
