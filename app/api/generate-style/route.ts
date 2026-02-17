@@ -4,6 +4,7 @@ import {
   getAvailableStyleSlugs,
   getMoodKeywords,
 } from "@/lib/ai-generator";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/generate-style
@@ -12,6 +13,14 @@ import {
  * Body: { description: string, baseStyle?: string }
  */
 export async function POST(request: NextRequest) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { description, baseStyle } = body;

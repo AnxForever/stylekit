@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 import { importTheme } from "@/lib/migration";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const type = body?.type;

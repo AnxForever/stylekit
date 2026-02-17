@@ -94,6 +94,10 @@ ADMIN_AUDIT_RETENTION_DAYS=90
 
 # Optional CSV export cap for admin audit download (rows, default 5000)
 ADMIN_AUDIT_EXPORT_MAX_ROWS=5000
+
+# Optional extra trusted origins for state-changing API routes
+# (comma-separated, same-origin is already trusted by default)
+CSRF_TRUSTED_ORIGINS=https://admin.stylekit.top
 ```
 
 ## Styles
@@ -189,6 +193,8 @@ Authorization: Bearer <ADMIN_API_TOKEN>
 # or
 x-admin-token: <ADMIN_API_TOKEN>
 ```
+
+Security note: state-changing endpoints (`POST`/`PUT`/`PATCH`/`DELETE`) validate request `Origin` and reject untrusted cross-origin calls.
 
 [Full API docs](https://www.stylekit.top/developers/api)
 

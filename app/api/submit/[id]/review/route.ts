@@ -9,6 +9,7 @@ import {
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const reviewSchema = z.object({
   action: z.enum(["approve", "reject"]),
@@ -20,6 +21,14 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const originCheck = verifyTrustedOrigin(request);
+    if (!originCheck.ok) {
+      return NextResponse.json(
+        { success: false, error: originCheck.error },
+        { status: originCheck.status ?? 403 }
+      );
+    }
+
     const access = await checkAdminApiAccess(request);
     if (!access.allowed) {
       return NextResponse.json(

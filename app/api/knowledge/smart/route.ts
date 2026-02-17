@@ -5,6 +5,7 @@ import {
   suggestStyleByConstraints,
 } from "@/lib/knowledge";
 import type { RecommendationContext } from "@/lib/knowledge";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 /**
  * POST /api/knowledge/smart
@@ -16,6 +17,14 @@ import type { RecommendationContext } from "@/lib/knowledge";
  * }
  */
 export async function POST(request: NextRequest) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { productQuery, context = {} } = body;
