@@ -537,7 +537,7 @@ export const stylesMeta: StyleMeta[] = [
   },
   {
     slug: "bauhaus",
-    name: "���豪斯风格",
+    name: "包豪斯风格",
     nameEn: "Bauhaus",
     description: "德国包豪斯学派的设计理念，强调功能主义、几何形式和原色运用，形式追随功能。",
     cover: "/styles/bauhaus.svg",
