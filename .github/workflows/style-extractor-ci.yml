@@ -31,20 +31,24 @@ jobs:
               - "style-extractor-dev"
               - "style-extractor-dev/**"
               - "tests/unit/style-extractor-registry.test.ts"
-              - "scripts/check-style-extractor.cjs"
+              - "tools/scripts/check-style-extractor.cjs"
               - "package.json"
               - "pnpm-lock.yaml"
-              - "vitest.config.ts"
+              - "tests/vitest.config.ts"
               - ".gitmodules"
               - ".github/workflows/style-extractor-ci.yml"
+      - uses: pnpm/action-setup@v4
+        if: steps.extractor_changes.outputs.style_extractor == 'true'
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         if: steps.extractor_changes.outputs.style_extractor == 'true'
         with:
           node-version: 20
-          cache: npm
-      - run: npm ci
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
         if: steps.extractor_changes.outputs.style_extractor == 'true'
-      - run: npm run test:style-extractor:ci
+      - run: pnpm run test:style-extractor:ci
         if: steps.extractor_changes.outputs.style_extractor == 'true'
       - run: echo "No style-extractor changes detected. Skipping heavy checks."
         if: steps.extractor_changes.outputs.style_extractor != 'true'

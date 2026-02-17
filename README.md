@@ -65,7 +65,7 @@ Visit [http://localhost:3000](http://localhost:3000)
 | Bento Grid | Dashboards, Portfolios | Grid-based layouts |
 | Corporate Clean | Business, Enterprise | Professional, minimal |
 
-[View all 16 styles](https://stylekit.cc/styles)
+[View all 16 styles](https://www.stylekit.top/styles)
 
 ## API
 
@@ -108,7 +108,7 @@ StyleKit provides AI-friendly documentation at `/llms.txt` and `/llms-full.txt` 
 
 ### Prompt Builder
 
-Use the [Prompt Builder](https://stylekit.cc/prompt-builder) to generate AI prompts with:
+Use the [Prompt Builder](https://www.stylekit.top/prompt-builder) to generate AI prompts with:
 
 - **Product Surface** - What components and features
 - **Context of Use** - Who uses it and when
@@ -147,8 +147,13 @@ lib/
   ├── styles/               # Style definitions & tokens
   ├── gradients/            # Gradient library
   └── prompt-builder/       # Prompt generation logic
-skills/
-  └── stylekit/             # Skills.sh package
+tools/
+  ├── cli/                  # CLI entry point
+  ├── mcp/                  # MCP server
+  └── scripts/              # Build & dev scripts
+tests/
+  ├── unit/                 # Unit tests (Vitest)
+  └── e2e/                  # E2E tests (Playwright)
 ```
 
 ## Commands
@@ -162,8 +167,14 @@ npm run test     # Run tests
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting a PR.
-For protected-branch CI setup, see `docs/CI_REQUIRED_CHECKS.md`.
+Contributions are welcome.
+
+Please read these docs before opening a PR:
+
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `docs/STYLE_ADDITION_CHECKLIST.md` (required for new styles)
+- `docs/CI_REQUIRED_CHECKS.md`
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)

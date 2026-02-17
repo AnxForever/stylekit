@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Clock, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -35,11 +35,7 @@ function saveRecent(items: RecentComparison[]) {
 }
 
 export function useRecentComparisons() {
-  const [recent, setRecent] = useState<RecentComparison[]>([]);
-
-  useEffect(() => {
-    setRecent(loadRecent());
-  }, []);
+  const [recent, setRecent] = useState<RecentComparison[]>(() => loadRecent());
 
   const addRecent = useCallback((slugs: string[]) => {
     const filtered = slugs.filter(Boolean);

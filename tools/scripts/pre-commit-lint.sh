@@ -3,9 +3,9 @@
 # Validates staged .tsx/.jsx files against a StyleKit design style.
 #
 # Install:
-#   cp scripts/pre-commit-lint.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+#   cp tools/scripts/pre-commit-lint.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 #   OR
-#   bash scripts/setup-hooks.sh
+#   bash tools/scripts/setup-hooks.sh
 #
 # Configure style by setting STYLEKIT_STYLE env var (default: neo-brutalist):
 #   export STYLEKIT_STYLE=glassmorphism
@@ -38,7 +38,7 @@ for FILE in $STAGED_FILES; do
 
   # Use npx to run the CLI, or tsx if available locally
   if command -v npx &> /dev/null; then
-    OUTPUT=$(npx --no-install tsx cli/stylekit.ts lint "$TEMP_FILE" --style "$STYLE" 2>&1) || {
+    OUTPUT=$(npx --no-install tsx tools/cli/stylekit.ts lint "$TEMP_FILE" --style "$STYLE" 2>&1) || {
       echo "[StyleKit] FAIL: $FILE"
       echo "$OUTPUT" | sed 's/^/  /'
       echo ""

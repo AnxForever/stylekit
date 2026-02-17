@@ -6,8 +6,8 @@
  * a formatted markdown summary suitable for posting as a PR comment.
  *
  * Usage:
- *   npx tsx cli/stylekit.ts lint --style neo-brutalist --files "src/**\/*.tsx" --format json | npx tsx scripts/pr-lint-comment.ts
- *   npx tsx scripts/pr-lint-comment.ts --input lint-results.json
+ *   npx tsx tools/cli/stylekit.ts lint --style neo-brutalist --files "src/**\/*.tsx" --format json | npx tsx tools/scripts/pr-lint-comment.ts
+ *   npx tsx tools/scripts/pr-lint-comment.ts --input lint-results.json
  */
 
 import { readFileSync } from "fs";
