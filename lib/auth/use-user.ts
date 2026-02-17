@@ -47,6 +47,11 @@ export function useUser(): AuthState {
       data: { subscription },
     } = client.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+
+      // Clean up OAuth query params (?code=...) from the URL after sign-in
+      if (_event === "SIGNED_IN" && window.location.search.includes("code=")) {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
     });
 
     return () => subscription.unsubscribe();
