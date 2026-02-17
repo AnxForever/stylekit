@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
@@ -40,6 +41,16 @@ export function StyleDetailContent({
   changelog,
 }: Props) {
   const { t } = useI18n();
+
+  useEffect(() => {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: style.slug, source: "page" }),
+    }).catch(() => {
+      // Analytics failure is non-blocking
+    });
+  }, [style.slug]);
 
   return (
     <>
