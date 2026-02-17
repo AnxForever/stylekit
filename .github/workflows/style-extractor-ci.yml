@@ -30,10 +30,10 @@ jobs:
             style_extractor:
               - "style-extractor-dev"
               - "style-extractor-dev/**"
-              - "__tests__/style-extractor-registry.test.ts"
+              - "tests/unit/style-extractor-registry.test.ts"
               - "scripts/check-style-extractor.cjs"
               - "package.json"
-              - "package-lock.json"
+              - "pnpm-lock.yaml"
               - "vitest.config.ts"
               - ".gitmodules"
               - ".github/workflows/style-extractor-ci.yml"
