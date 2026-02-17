@@ -13,6 +13,7 @@
 - `npm run start` - serve the production build.
 - `npm run lint` - run ESLint (Next.js Core Web Vitals + TypeScript config).
 - `npm run test` - run the Vitest suite in `jsdom`.
+- `npm run security:secrets` - scan tracked files for accidental secret leaks.
 - `npm run cli` - execute the CLI entry point (`cli/stylekit.ts`).
 - `npm run mcp` - run the MCP server (`mcp/server.ts`).
 
@@ -34,6 +35,7 @@
 - Keep commits focused and in imperative style (example: `feat: add style page tokens`).
 - PRs should include a short summary, linked issue(s), and test/lint results.
 - Include screenshots or GIFs for UI changes and note any breaking behavior.
+- Use `.github/pull_request_template.md` and follow `CONTRIBUTING.md`.
 
 ## Security & Configuration Tips
 - Never commit secrets; use environment variables for runtime configuration.
