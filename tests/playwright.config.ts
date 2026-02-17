@@ -31,11 +31,9 @@ export default defineConfig({
       },
     },
   ],
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: "npm run dev",
-        url: BASE_URL,
-        reuseExistingServer: true,
-      },
+  webServer: {
+    command: process.env.CI ? "pnpm run start" : "pnpm run dev",
+    url: BASE_URL,
+    reuseExistingServer: !process.env.CI,
+  },
 });
