@@ -361,10 +361,16 @@ export default function ShowcaseContent() {
                   <p className="text-sm text-gray-500 font-mono">{item.desc}</p>
                 </div>
                 <button
+                  type="button"
+                  role="switch"
+                  aria-checked={toggleStates[i]}
+                  aria-label={`${item.label} toggle`}
                   onClick={() => {
-                    const newStates = [...toggleStates];
-                    newStates[i] = !newStates[i];
-                    setToggleStates(newStates);
+                    setToggleStates((prev) => {
+                      const next = [...prev];
+                      next[i] = !next[i];
+                      return next;
+                    });
                   }}
                   className="relative w-16 h-8 border-2 transition-all"
                   style={{ 
