@@ -58,13 +58,13 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Refresh the session (important for keeping cookies in sync)
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Protect /admin routes
+  // Only call getUser() (network roundtrip to Supabase) for admin routes.
+  // For all other routes, just refresh the session from cookies (local, fast).
   if (request.nextUrl.pathname.startsWith("/admin")) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/";
@@ -77,6 +77,9 @@ export async function proxy(request: NextRequest) {
       redirectUrl.pathname = "/";
       return NextResponse.redirect(redirectUrl);
     }
+  } else {
+    // Lightweight session refresh — reads/writes cookies only, no network call
+    await supabase.auth.getSession();
   }
 
   return supabaseResponse;
