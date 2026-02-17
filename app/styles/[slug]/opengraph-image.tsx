@@ -44,6 +44,13 @@ export default async function OGImage({
   const secondary = style.colors?.secondary || "#a855f7";
   const accents = style.colors?.accent || [];
   const allColors = [primary, secondary, ...accents.slice(0, 3)];
+  const asciiKeywords = style.keywords
+    ?.filter((keyword) => /^[\x20-\x7E]+$/.test(keyword))
+    .slice(0, 4) || [];
+  const subtitle =
+    asciiKeywords.length > 0
+      ? `Design style with ${asciiKeywords.join(", ")}`
+      : `${style.nameEn} design style in the StyleKit catalog`;
 
   return new ImageResponse(
     (
@@ -103,7 +110,7 @@ export default async function OGImage({
               lineHeight: 1.4,
             }}
           >
-            {`Design style with ${style.keywords?.slice(0, 4).join(", ") || "unique aesthetics"}`}
+            {subtitle}
           </div>
         </div>
 
