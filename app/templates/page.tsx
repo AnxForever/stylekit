@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -129,6 +129,13 @@ const templates: Template[] = [
 const allStyles = getAllStylesMeta();
 const styleMap = new Map(allStyles.map((style) => [style.slug, style]));
 
+function getTemplateGridColumns() {
+  if (typeof window === "undefined") return 1;
+  if (window.innerWidth >= 1024) return 3;
+  if (window.innerWidth >= 640) return 2;
+  return 1;
+}
+
 function templateTypeToTranslationKey(type: TemplateType) {
   switch (type) {
     case "landing":
@@ -149,8 +156,11 @@ export default function TemplatesPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const templateCardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const queryParam = searchParams.get("q") || "";
   const [searchQuery, setSearchQuery] = useState(queryParam);
+  const trimmedSearchQuery = searchQuery.trim();
   const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
   const sortParam = searchParams.get("sort");
   const validSorts: TemplateSort[] = ["recommended", "name-asc", "name-desc"];
@@ -161,17 +171,55 @@ export default function TemplatesPage() {
     activeType !== "all" ||
     activeSort !== "recommended" ||
     queryParam.trim().length > 0;
+  const activeFilterSummary = useMemo(() => {
+    const parts: string[] = [];
+    if (activeType !== "all") {
+      parts.push(`${t("templates.type")}: ${t(templateTypeToTranslationKey(activeType))}`);
+    }
+    if (activeSort !== "recommended") {
+      const sortLabel = activeSort === "name-asc"
+        ? t("templates.sortNameAsc")
+        : t("templates.sortNameDesc");
+      parts.push(`${t("templates.sort")}: ${sortLabel}`);
+    }
+    if (queryParam.trim().length > 0) {
+      parts.push(`${t("nav.search")}: ${queryParam}`);
+    }
+    return parts.join(" · ");
+  }, [activeType, activeSort, queryParam, t]);
 
   useEffect(() => {
     setSearchQuery(queryParam);
   }, [queryParam]);
 
   useEffect(() => {
+    const handleGlobalSearchShortcut = (event: KeyboardEvent) => {
+      if (event.key !== "/") return;
+
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      searchInputRef.current?.focus();
+    };
+
+    window.addEventListener("keydown", handleGlobalSearchShortcut);
+    return () => window.removeEventListener("keydown", handleGlobalSearchShortcut);
+  }, []);
+
+  useEffect(() => {
     if (searchQuery === queryParam) return;
 
     const timer = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
-      const normalizedQuery = searchQuery.trim();
+      const normalizedQuery = trimmedSearchQuery;
       if (normalizedQuery) {
         params.set("q", normalizedQuery);
       } else {
@@ -183,7 +231,7 @@ export default function TemplatesPage() {
     }, 250);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, queryParam, searchParams, router, pathname]);
+  }, [searchQuery, trimmedSearchQuery, queryParam, searchParams, router, pathname]);
 
   const handleSortChange = (sort: TemplateSort) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -209,7 +257,7 @@ export default function TemplatesPage() {
   };
 
   const filteredTemplates = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const normalizedQuery = trimmedSearchQuery.toLowerCase();
 
     const matchedTemplates = templates
       .filter((template) => activeType === "all" || template.type === activeType)
@@ -247,7 +295,32 @@ export default function TemplatesPage() {
     }
 
     return sortedTemplates;
-  }, [activeType, searchQuery, activeSort, locale]);
+  }, [activeType, trimmedSearchQuery, activeSort, locale]);
+
+  useEffect(() => {
+    templateCardRefs.current = templateCardRefs.current.slice(0, filteredTemplates.length);
+  }, [filteredTemplates.length]);
+
+  const handleTemplateCardKeyDown = (
+    event: React.KeyboardEvent<HTMLAnchorElement>,
+    index: number
+  ) => {
+    const columns = getTemplateGridColumns();
+    const maxIndex = filteredTemplates.length - 1;
+    let nextIndex = index;
+
+    if (event.key === "ArrowRight") nextIndex = index + 1;
+    if (event.key === "ArrowLeft") nextIndex = index - 1;
+    if (event.key === "ArrowDown") nextIndex = index + columns;
+    if (event.key === "ArrowUp") nextIndex = index - columns;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = maxIndex;
+
+    if (nextIndex < 0 || nextIndex > maxIndex || nextIndex === index) return;
+
+    event.preventDefault();
+    templateCardRefs.current[nextIndex]?.focus();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -277,24 +350,42 @@ export default function TemplatesPage() {
                 {t("nav.search")}
               </label>
               <input
+                ref={searchInputRef}
                 id="templates-search"
                 type="text"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setSearchQuery("");
+                  }
+                }}
+                aria-keyshortcuts="/"
+                aria-describedby="templates-results-count"
                 placeholder={t("templates.searchPlaceholder")}
                 className="w-full md:max-w-md h-10 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
               />
-              {searchQuery.trim().length > 0 && (
+              <p className="text-xs text-muted">
+                {t("templates.searchHint")}
+              </p>
+              {trimmedSearchQuery.length > 0 && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
+                  aria-label={t("templates.clearSearch")}
                   className="text-xs text-muted hover:text-foreground transition-colors"
                 >
                   {t("templates.clearSearch")}
                 </button>
               )}
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm text-muted">
+                <p
+                  id="templates-results-count"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="text-sm text-muted"
+                >
                   {filteredTemplates.length} {t("templates.results")}
                 </p>
                 <div className="flex items-center gap-2">
@@ -305,6 +396,7 @@ export default function TemplatesPage() {
                     id="templates-sort"
                     value={activeSort}
                     onChange={(event) => handleSortChange(event.target.value as TemplateSort)}
+                    aria-label={t("templates.sortAriaLabel")}
                     className="h-9 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
                   >
                     <option value="recommended">{t("templates.sortRecommended")}</option>
@@ -322,10 +414,15 @@ export default function TemplatesPage() {
                   )}
                 </div>
               </div>
+              {hasActiveControls && (
+                <p className="text-xs text-muted" role="status" aria-live="polite">
+                  {t("templates.activeFiltersLabel")}: {activeFilterSummary}
+                </p>
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-              {filteredTemplates.map((template) => {
+              {filteredTemplates.map((template, index) => {
                 const style = styleMap.get(template.styleSlug);
                 const templateName = pickLocale(locale, template.name);
                 const templateDescription = pickLocale(locale, template.description);
@@ -337,6 +434,11 @@ export default function TemplatesPage() {
                   <Link
                     key={template.id}
                     href={template.href}
+                    ref={(element) => {
+                      templateCardRefs.current[index] = element;
+                    }}
+                    onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
+                    aria-label={`${templateName} - ${t("templates.openTemplate")}`}
                     className="group block border border-border hover:border-foreground transition-colors"
                   >
                     <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
@@ -383,7 +485,9 @@ export default function TemplatesPage() {
 
             {filteredTemplates.length === 0 && (
               <div className="text-center py-16 text-muted">
-                {t("templates.empty")}
+                {trimmedSearchQuery.length > 0
+                  ? t("templates.emptySearch")
+                  : t("templates.empty")}
               </div>
             )}
           </div>

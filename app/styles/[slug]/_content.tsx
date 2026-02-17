@@ -16,6 +16,8 @@ import { ScoreBadge } from "@/components/accessibility/score-badge";
 import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { IdeExportButtons } from "@/components/export/ide-export-buttons";
 import { VersionBadge } from "@/components/styles/version-badge";
+import { StyleRating } from "@/components/styles/style-rating";
+import { StyleComments } from "@/components/styles/style-comments";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
@@ -348,6 +350,20 @@ export function StyleDetailContent({
             styleName={style.name}
             enhancedRules={enhancedRules}
           />
+        </div>
+      </section>
+
+      {/* Community */}
+      <section className="border-t border-border">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            Community
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-6">Ratings & Feedback</h2>
+          <div className="mb-8">
+            <StyleRating slug={style.slug} />
+          </div>
+          <StyleComments slug={style.slug} />
         </div>
       </section>
     </>
