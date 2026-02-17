@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "linux.do",
+      },
+      {
+        protocol: "https",
+        hostname: "*.linux.do",
+      },
     ],
   },
 

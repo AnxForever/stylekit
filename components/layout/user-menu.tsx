@@ -16,9 +16,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { LogIn, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserMenu() {
-  const { user, loading, signInWithGitHub, signInWithLinuxDo, signOut } = useUser();
+  const { user, loading, signOut } = useUser();
   const [open, setOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { t } = useI18n();
 
@@ -26,7 +25,6 @@ export function UserMenu() {
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setOpen(false);
-        setLoginOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -40,14 +38,13 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <button
-        onClick={signInWithGitHub}
+      <Link
+        href="/login"
         className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
-        aria-label={t("auth.signIn")}
       >
         <LogIn className="w-4 h-4" />
         <span className="hidden lg:inline">{t("auth.signIn")}</span>
-      </button>
+      </Link>
     );
   }
 
@@ -116,20 +113,20 @@ export function UserMenu() {
  * Simplified mobile user menu (inline, no dropdown).
  */
 export function MobileUserMenu() {
-  const { user, loading, signInWithGitHub, signOut } = useUser();
+  const { user, loading, signOut } = useUser();
   const { t } = useI18n();
 
   if (loading) return null;
 
   if (!user) {
     return (
-      <button
-        onClick={signInWithGitHub}
+      <Link
+        href="/login"
         className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors"
       >
         <LogIn className="w-4 h-4" />
-        {t("auth.signInWithGitHub")}
-      </button>
+        {t("auth.signIn")}
+      </Link>
     );
   }
 
