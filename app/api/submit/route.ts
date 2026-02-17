@@ -8,10 +8,33 @@ import {
   isSupabaseConfigured,
   createSubmissionSupabase,
 } from "@/lib/submit/reviewer-supabase";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 15;
 
 export async function POST(request: Request) {
+  const rateLimit = checkRateLimit({
+    namespace: "api:submit",
+    key: getRequestClientKey(request),
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Too many submissions from this client. Please try again later.",
+      },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) }
+    );
+  }
+
   try {
     const body = await request.json();
 

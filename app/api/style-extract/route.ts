@@ -6,6 +6,11 @@ import {
   extractStyleDraftFromDocument,
   extractStylesheetLinks,
 } from "@/lib/style-extractor/url-extractor";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 const MAX_HTML_CHARS = 1_500_000;
 const MAX_CSS_FILES = 4;
@@ -13,12 +18,27 @@ const MAX_CSS_CHARS = 350_000;
 const FETCH_TIMEOUT_MS = 12_000;
 const MAX_REDIRECTS = 5;
 const DNS_LOOKUP_TIMEOUT_MS = 1500;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 24;
 
 class BlockedUrlError extends Error {
   readonly name = "BlockedUrlError";
 }
 
 export async function POST(request: Request) {
+  const rateLimit = checkRateLimit({
+    namespace: "api:style-extract",
+    key: getRequestClientKey(request),
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many extraction requests. Please try again later." },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) }
+    );
+  }
+
   try {
     const body = await request.json();
     const targetUrl = typeof body?.url === "string" ? body.url.trim() : "";

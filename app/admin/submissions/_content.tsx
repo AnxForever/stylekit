@@ -24,46 +24,71 @@ type FilterStatus = "all" | "pending" | "approved" | "rejected";
 export function SubmissionsReview() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterStatus>("pending");
   const [reviewingId, setReviewingId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState("");
 
-  const fetchSubmissions = useCallback(async () => {
+  const fetchSubmissions = useCallback(async (signal?: AbortSignal) => {
+    setLoading(true);
+    setError(null);
     const params = filter !== "all" ? `?status=${filter}` : "";
-    const res = await fetch(`/api/submit/list${params}`);
-    const data = await res.json();
-    setSubmissions(data.submissions ?? []);
-    setLoading(false);
+
+    try {
+      const res = await fetch(`/api/submit/list${params}`, {
+        cache: "no-store",
+        signal,
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to load submissions.");
+      }
+
+      const data = await res.json();
+      if (signal?.aborted) return;
+      setSubmissions(data.submissions ?? []);
+    } catch (err) {
+      if (signal?.aborted) return;
+      setError(err instanceof Error ? err.message : "Failed to load submissions.");
+      setSubmissions([]);
+    } finally {
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
+    }
   }, [filter]);
 
   useEffect(() => {
-    let cancelled = false;
-    const params = filter !== "all" ? `?status=${filter}` : "";
-    fetch(`/api/submit/list${params}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled) {
-          setSubmissions(data.submissions ?? []);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, [filter]);
+    const controller = new AbortController();
+    void fetchSubmissions(controller.signal);
+    return () => controller.abort();
+  }, [fetchSubmissions]);
 
   async function handleReview(id: string, action: "approve" | "reject") {
-    const res = await fetch(`/api/submit/${id}/review`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, note: note || undefined }),
-    });
+    setSubmitting(true);
+    setError(null);
 
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/submit/${id}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, note: note || undefined }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to submit review.");
+      }
+
       setReviewingId(null);
       setNote("");
-      fetchSubmissions();
+      await fetchSubmissions();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to submit review.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -91,6 +116,12 @@ export function SubmissionsReview() {
           </button>
         ))}
       </div>
+
+      {error && (
+        <p className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+          {error}
+        </p>
+      )}
 
       {loading && <p className="text-muted">Loading submissions...</p>}
 
@@ -164,23 +195,26 @@ export function SubmissionsReview() {
                     />
                     <div className="flex gap-2">
                       <button
+                        disabled={submitting}
                         onClick={() => handleReview(sub.id, "approve")}
-                        className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+                        className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                       >
                         Approve
                       </button>
                       <button
+                        disabled={submitting}
                         onClick={() => handleReview(sub.id, "reject")}
-                        className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
+                        className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                       >
                         Reject
                       </button>
                       <button
+                        disabled={submitting}
                         onClick={() => {
                           setReviewingId(null);
                           setNote("");
                         }}
-                        className="px-4 py-2 bg-muted/20 text-foreground rounded-md text-sm font-medium hover:bg-muted/30 transition-colors"
+                        className="px-4 py-2 bg-muted/20 text-foreground rounded-md text-sm font-medium hover:bg-muted/30 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                       >
                         Cancel
                       </button>

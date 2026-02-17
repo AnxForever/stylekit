@@ -1,19 +1,50 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { approveSubmission, rejectSubmission } from "@/lib/submit/reviewer";
 import {
   isSupabaseConfigured,
   approveSubmissionSupabase,
   rejectSubmissionSupabase,
 } from "@/lib/submit/reviewer-supabase";
+import { isValidSubmissionId } from "@/lib/submit/reviewer";
+import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+
+const reviewSchema = z.object({
+  action: z.enum(["approve", "reject"]),
+  note: z.string().trim().max(500).optional(),
+});
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const access = await checkAdminApiAccess(request);
+    if (!access.allowed) {
+      return NextResponse.json(
+        { success: false, error: access.error },
+        { status: access.status ?? 403 }
+      );
+    }
+
     const { id } = await params;
-    const body = await request.json();
-    const { action, note } = body as { action?: string; note?: string };
+
+    if (!isValidSubmissionId(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid submission ID" },
+        { status: 400 }
+      );
+    }
+
+    const parsed = reviewSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
+    const { action, note } = parsed.data;
 
     const useSupabase = isSupabaseConfigured();
 

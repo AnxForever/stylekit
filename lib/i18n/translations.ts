@@ -328,6 +328,8 @@ const en = {
     "auth.loginSubtitle": "Choose a method to sign in",
     "auth.alreadySignedIn": "You are already signed in.",
     "auth.goHome": "Go to Home",
+    "auth.errorLinuxDo": "Linux DO sign-in failed. Please try again.",
+    "auth.errorGeneric": "Sign-in failed. Please try again.",
 
     // Profile
     "profile.title": "Profile",
@@ -340,7 +342,10 @@ const en = {
     "profile.userId": "User ID",
     "profile.email": "Email",
     "profile.notLoggedIn": "Not logged in",
-    "profile.signInPrompt": "Sign in with GitHub to view your profile.",
+    "profile.signInPrompt": "Sign in to view your profile.",
+    "profile.linuxdoProfile": "Linux DO Profile",
+    "profile.providerLinuxDo": "Linux DO",
+    "profile.providerGitHub": "GitHub",
     "profile.viewStyle": "View style",
 
     // Preview tabs
@@ -1141,6 +1146,8 @@ const zh: { [K in keyof typeof en]: string } = {
   "auth.loginSubtitle": "选择一种方式登录",
   "auth.alreadySignedIn": "你已经登录了。",
   "auth.goHome": "返回首页",
+  "auth.errorLinuxDo": "Linux DO 登录失败，请重试。",
+  "auth.errorGeneric": "登录失败，请重试。",
 
   // Profile
   "profile.title": "个人主页",
@@ -1153,7 +1160,10 @@ const zh: { [K in keyof typeof en]: string } = {
   "profile.userId": "用户 ID",
   "profile.email": "邮箱",
   "profile.notLoggedIn": "未登录",
-  "profile.signInPrompt": "使用 GitHub 登录以查看你的个人主页。",
+  "profile.signInPrompt": "登录以查看你的个人主页。",
+  "profile.linuxdoProfile": "Linux DO 主页",
+  "profile.providerLinuxDo": "Linux DO",
+  "profile.providerGitHub": "GitHub",
   "profile.viewStyle": "查看风格",
 
   // Search and preview
