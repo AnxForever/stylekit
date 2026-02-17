@@ -116,7 +116,13 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.redirect(`${origin}${next}`);
-  } catch {
+  } catch (err) {
+    // Log error for debugging (server-side only, not exposed to client)
+    const message = err instanceof Error ? err.message : String(err);
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line no-console
+      console.error("[LinuxDo OAuth] Callback error:", message);
+    }
     // Redirect with error indicator (avoid exposing details in URL)
     return NextResponse.redirect(
       `${origin}${next}${next.includes("?") ? "&" : "?"}auth_error=linuxdo`,
