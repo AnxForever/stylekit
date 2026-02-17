@@ -161,6 +161,7 @@ GET    /api/styles/{slug}/md              # Export as Markdown
 
 # Admin (requires admin session or ADMIN_API_TOKEN)
 GET    /api/analytics/dashboard           # Admin analytics dataset
+GET    /api/admin/audit                   # Admin action audit events
 GET    /api/submit/list                   # Review queue
 GET    /api/submit/{id}                   # Submission detail
 POST   /api/submit/{id}/review            # Approve/reject submission
