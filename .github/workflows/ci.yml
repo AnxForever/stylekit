@@ -84,7 +84,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm run build
-      - run: pnpm exec playwright test
+      - run: pnpm exec playwright test --config tests/playwright.config.ts
         env:
           BASE_URL: http://localhost:3000
       - uses: actions/upload-artifact@v4

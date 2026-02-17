@@ -11,7 +11,7 @@
     "check:style-extractor": "node tools/scripts/check-style-extractor.cjs",
     "test": "npx --no-install vitest run --config tests/vitest.config.ts",
     "test:run": "npx --no-install vitest run --config tests/vitest.config.ts",
-    "test:style-extractor": "npx --no-install vitest run --config tests/vitest.config.ts __tests__/style-extractor-registry.test.ts",
+    "test:style-extractor": "npx --no-install vitest run --config tests/vitest.config.ts tests/unit/style-extractor-registry.test.ts",
     "test:style-extractor:ci": "npm run check:style-extractor && npm run test:style-extractor",
     "cli": "npx --no-install tsx tools/cli/stylekit.ts",
     "mcp": "npx --no-install tsx tools/mcp/server.ts",
