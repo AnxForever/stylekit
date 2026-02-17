@@ -1,16 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
-import { TemplatesFilter, typeLabels } from "@/components/templates/templates-filter";
+import { TemplatesFilter } from "@/components/templates/templates-filter";
 import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
+import { useI18n } from "@/lib/i18n/context";
+
+type TemplateType = "landing" | "dashboard" | "blog" | "portfolio";
+type TemplateTypeFilter = "all" | TemplateType;
 
 interface Template {
   id: string;
   name: string;
   description: string;
   styleSlug: string;
-  type: "landing" | "dashboard" | "blog" | "portfolio";
+  type: TemplateType;
   href: string;
 }
 
@@ -98,19 +106,33 @@ const templates: Template[] = [
   },
 ];
 
-interface PageProps {
-  searchParams: Promise<{ type?: string }>;
+const allStyles = getAllStylesMeta();
+const styleMap = new Map(allStyles.map((style) => [style.slug, style]));
+
+function templateTypeToTranslationKey(type: TemplateType) {
+  switch (type) {
+    case "landing":
+      return "templates.typeLanding";
+    case "dashboard":
+      return "templates.typeDashboard";
+    case "blog":
+      return "templates.typeBlog";
+    case "portfolio":
+      return "templates.typePortfolio";
+    default:
+      return "templates.typeAll";
+  }
 }
 
-export default async function TemplatesPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const activeType = params.type || "all";
-  const styles = getAllStylesMeta();
+export default function TemplatesPage() {
+  const { t } = useI18n();
+  const searchParams = useSearchParams();
+  const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
 
-  const filteredTemplates =
-    activeType === "all" ? templates : templates.filter((t) => t.type === activeType);
-
-  const getStyle = (slug: string) => styles.find((s) => s.slug === slug);
+  const filteredTemplates = useMemo(
+    () => (activeType === "all" ? templates : templates.filter((template) => template.type === activeType)),
+    [activeType]
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -118,22 +140,30 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
 
       <main className="flex-1">
         <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">Page Templates</p>
-            <h1 className="text-4xl md:text-5xl mb-4">Template Gallery</h1>
-            <p className="text-lg text-muted max-w-2xl">
-              Production-ready pages designed for adaptation. Pick a visual direction, then fork and tailor.
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+            <p className="text-xs tracking-widest uppercase text-muted mb-3">
+              {t("templates.subtitle")}
+            </p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl mb-3">
+              {t("templates.title")}
+            </h1>
+            <p className="text-base md:text-lg text-muted max-w-3xl">
+              {t("templates.description")}
             </p>
           </div>
         </section>
 
-        <section className="py-12 md:py-16">
+        <section className="py-10 md:py-14">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <TemplatesFilter />
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p className="text-sm text-muted mb-5 md:mb-7">
+              {filteredTemplates.length} {t("templates.results")}
+            </p>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {filteredTemplates.map((template) => {
-                const style = getStyle(template.styleSlug);
+                const style = styleMap.get(template.styleSlug);
                 return (
                   <Link
                     key={template.id}
@@ -151,22 +181,31 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
                           }}
                         />
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-4 py-3">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
                         <span className="text-white text-sm font-medium">{template.name}</span>
                       </div>
                     </div>
 
-                    <div className="p-5">
-                      <h3 className="text-lg group-hover:text-accent transition-colors">{template.name}</h3>
-                      <p className="text-sm text-muted mt-2 mb-3">{template.description}</p>
-                      <div className="flex items-center gap-2">
+                    <div className="p-4 md:p-5">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
                         <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                          {typeLabels[template.type]}
+                          {t(templateTypeToTranslationKey(template.type))}
                         </span>
                         <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
                           {style?.nameEn || style?.name || "Style"}
                         </span>
                       </div>
+
+                      <h3 className="text-lg mb-2 group-hover:text-accent transition-colors">
+                        {template.name}
+                      </h3>
+                      <p className="text-sm text-muted leading-relaxed line-clamp-2">
+                        {template.description}
+                      </p>
+
+                      <p className="text-xs tracking-wide mt-4 group-hover:text-accent transition-colors">
+                        {t("templates.openTemplate")} &rarr;
+                      </p>
                     </div>
                   </Link>
                 );
@@ -174,7 +213,9 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
             </div>
 
             {filteredTemplates.length === 0 && (
-              <div className="text-center py-16 text-muted">No templates in this category yet.</div>
+              <div className="text-center py-16 text-muted">
+                {t("templates.empty")}
+              </div>
             )}
           </div>
         </section>
