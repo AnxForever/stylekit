@@ -64,7 +64,7 @@ describe("unicode policy", () => {
       "next.config.ts",
       "eslint.config.mjs",
       "vitest.config.ts",
-      "vitest.setup.ts",
+      "tests/vitest.setup.ts",
       "package.json",
       "tsconfig.json",
     ]
