@@ -81,3 +81,6 @@ scripts/output/
 
 # Competitor analysis data
 uiprompt-*.json
+
+# npm lock file (project uses pnpm)
+package-lock.json
