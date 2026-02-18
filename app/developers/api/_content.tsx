@@ -722,18 +722,45 @@ curl "https://stylekit.dev/api/lint?style=neo-brutalist"`,
       {
         method: "POST",
         path: "/api/generate-style",
-        description: "Generate a new style using AI based on a text prompt.",
+        description: "Generate a style from natural language, with optional base-style anchoring and negative constraints (e.g. 'less neon', 'not brutalist').",
         bodyParams: [
-          { name: "prompt", type: "string", required: true, description: "Description of the desired style" },
+          { name: "description", type: "string", required: true, description: "Natural language style description (max 500 chars)" },
+          { name: "baseStyle", type: "string", required: false, description: "Optional style slug to anchor the blend (e.g. 'apple-style')" },
         ],
+        responseExample: `{
+  "name": "Futuristic Fusion",
+  "description": "Generated from: Mecha, Outrun, Apple Style. Keywords: futuristic, clean. Avoided: neon, Neo-Brutalist.",
+  "tokens": { "...": "..." },
+  "sourceStyles": [
+    { "slug": "mecha", "weight": 0.44 },
+    { "slug": "outrun", "weight": 0.31 },
+    { "slug": "apple-style", "weight": 0.25 }
+  ],
+  "confidence": 82,
+  "reasoning": [
+    "Anchored to Apple Style.",
+    "Matched mood keywords: futuristic, clean.",
+    "Applied negative constraints: neon, Neo-Brutalist."
+  ],
+  "insights": {
+    "baseStyle": "apple-style",
+    "detectedStyles": ["apple-style"],
+    "avoidedStyles": ["neo-brutalist"],
+    "matchedKeywords": ["futuristic", "clean"],
+    "negativeKeywords": ["neon"]
+  }
+}`,
         fetchExample: `const res = await fetch("/api/generate-style", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ prompt: "A futuristic cyberpunk style with neon accents" })
+  body: JSON.stringify({
+    description: "Like Apple but more futuristic and less neon",
+    baseStyle: "apple-style"
+  })
 });`,
         curlExample: `curl -X POST https://stylekit.dev/api/generate-style \\
   -H "Content-Type: application/json" \\
-  -d '{"prompt":"A futuristic cyberpunk style with neon accents"}'`,
+  -d '{"description":"Like Apple but more futuristic and less neon","baseStyle":"apple-style"}'`,
       },
       {
         method: "POST",
@@ -819,12 +846,12 @@ const report = await res.json();`,
     id: "pipeline",
     title: "Pipeline",
     icon: Workflow,
-    description: "Run style extraction and transformation pipelines. Rate-limited.",
+    description: "Run extract -> analyze -> match -> migrate -> generate -> export pipelines. Rate-limited.",
     endpoints: [
       {
         method: "POST",
         path: "/api/pipeline/run",
-        description: "Start a new pipeline run. Extracts styles from a source URL and transforms them.",
+        description: "Start a new pipeline run and execute all six stages.",
         bodyParams: [
           { name: "sourceUrl", type: "string", required: true, description: "URL to extract styles from (must be http/https, max 2048 chars)" },
           { name: "target.framework", type: "string", required: true, description: "'html' or 'react'" },
@@ -834,13 +861,16 @@ const report = await res.json();`,
         ],
         responseExample: `{
   "run": {
-    "id": "run_abc123",
+    "id": "pl_abc123",
     "status": "completed",
     "stages": [
-      { "name": "extract", "status": "completed", "duration": 1200 },
-      { "name": "transform", "status": "completed", "duration": 800 }
-    ],
-    "output": { ... }
+      { "name": "extract", "status": "completed", "durationMs": 1200 },
+      { "name": "analyze", "status": "completed", "durationMs": 320 },
+      { "name": "match", "status": "completed", "durationMs": 110 },
+      { "name": "migrate", "status": "completed", "durationMs": 95 },
+      { "name": "generate", "status": "completed", "durationMs": 140 },
+      { "name": "export", "status": "completed", "durationMs": 80 }
+    ]
   }
 }`,
         fetchExample: `const res = await fetch("/api/pipeline/run", {
@@ -863,15 +893,15 @@ const report = await res.json();`,
         params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
         responseExample: `{
   "run": {
-    "id": "run_abc123",
+    "id": "pl_abc123",
     "status": "completed",
     "stages": [...],
-    "output": { ... }
+    "artifacts": { ... }
   }
 }`,
-        fetchExample: `const res = await fetch("/api/pipeline/run/run_abc123");
+        fetchExample: `const res = await fetch("/api/pipeline/run/pl_abc123");
 const { run } = await res.json();`,
-        curlExample: `curl https://stylekit.dev/api/pipeline/run/run_abc123`,
+        curlExample: `curl https://stylekit.dev/api/pipeline/run/pl_abc123`,
       },
       {
         method: "POST",
@@ -879,16 +909,24 @@ const { run } = await res.json();`,
         description: "Retry a failed pipeline run from a specific stage.",
         params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
         bodyParams: [
-          { name: "fromStage", type: "string", required: true, description: "Stage to retry from (e.g. 'extract', 'transform')" },
+          { name: "fromStage", type: "string", required: true, description: "Stage to retry from (extract|analyze|match|migrate|generate|export)" },
         ],
-        fetchExample: `const res = await fetch("/api/pipeline/run/run_abc123/retry", {
+        fetchExample: `const res = await fetch("/api/pipeline/run/pl_abc123/retry", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ fromStage: "transform" })
+  body: JSON.stringify({ fromStage: "analyze" })
 });`,
-        curlExample: `curl -X POST https://stylekit.dev/api/pipeline/run/run_abc123/retry \\
+        curlExample: `curl -X POST https://stylekit.dev/api/pipeline/run/pl_abc123/retry \\
   -H "Content-Type: application/json" \\
-  -d '{"fromStage":"transform"}'`,
+  -d '{"fromStage":"analyze"}'`,
+      },
+      {
+        method: "GET",
+        path: "/api/pipeline/run/[id]/download",
+        description: "Download exported pipeline artifacts as a zip archive.",
+        params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
+        fetchExample: `window.location.href = "/api/pipeline/run/pl_abc123/download";`,
+        curlExample: `curl -L https://stylekit.dev/api/pipeline/run/pl_abc123/download -o pipeline.zip`,
       },
     ],
   },

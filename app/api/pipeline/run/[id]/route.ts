@@ -5,23 +5,52 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const startedAt = Date.now();
+
+  const telemetryHeaders = (
+    status: number,
+    code?: string,
+    headers?: HeadersInit,
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    if (code) {
+      merged.set("x-stylekit-error-code", code);
+    }
+    return merged;
+  };
+
+  const respond = (
+    status: number,
+    payload: unknown,
+    code?: string,
+    headers?: HeadersInit,
+  ) =>
+    NextResponse.json(payload, {
+      status,
+      headers: telemetryHeaders(status, code, headers),
+    });
+
   try {
     const { id } = await params;
 
     const run = getPipelineRun(id);
 
     if (!run) {
-      return NextResponse.json(
+      return respond(
+        404,
         { error: "Pipeline run not found" },
-        { status: 404 },
+        "RUN_NOT_FOUND",
       );
     }
 
-    return NextResponse.json({ run });
+    return respond(200, { run });
   } catch (error) {
-    return NextResponse.json(
+    return respond(
+      500,
       { error: `Failed to retrieve pipeline run: ${(error as Error).message}` },
-      { status: 500 },
+      "PIPELINE_RUN_FETCH_FAILED",
     );
   }
 }

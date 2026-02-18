@@ -45,11 +45,39 @@ const pipelineRunSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const startedAt = Date.now();
+
+  const telemetryHeaders = (
+    status: number,
+    code?: string,
+    headers?: HeadersInit,
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    if (code) {
+      merged.set("x-stylekit-error-code", code);
+    }
+    return merged;
+  };
+
+  const respond = (
+    status: number,
+    payload: unknown,
+    code?: string,
+    headers?: HeadersInit,
+  ) =>
+    NextResponse.json(payload, {
+      status,
+      headers: telemetryHeaders(status, code, headers),
+    });
+
   const originCheck = verifyTrustedOrigin(req);
   if (!originCheck.ok) {
-    return NextResponse.json(
+    return respond(
+      originCheck.status ?? 403,
       { error: originCheck.error },
-      { status: originCheck.status ?? 403 }
+      "ORIGIN_NOT_ALLOWED",
     );
   }
 
@@ -60,9 +88,11 @@ export async function POST(req: Request) {
     windowMs: RATE_LIMIT_WINDOW_MS,
   });
   if (!rateLimit.allowed) {
-    return NextResponse.json(
+    return respond(
+      429,
       { error: "Too many pipeline runs. Please try again later." },
-      { status: 429, headers: createRateLimitHeaders(rateLimit) }
+      "RATE_LIMITED",
+      createRateLimitHeaders(rateLimit),
     );
   }
 
@@ -73,15 +103,18 @@ export async function POST(req: Request) {
       invalidJsonMessage: "Invalid pipeline request payload.",
     });
     if (!bodyResult.ok) {
-      return NextResponse.json({ error: bodyResult.error }, { status: bodyResult.status });
+      const code =
+        bodyResult.status === 413 ? "PAYLOAD_TOO_LARGE" : "INVALID_JSON";
+      return respond(bodyResult.status, { error: bodyResult.error }, code);
     }
 
     const parsed = pipelineRunSchema.safeParse(bodyResult.data);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return NextResponse.json(
+      return respond(
+        400,
         { error: issue?.message ?? "Invalid pipeline request payload" },
-        { status: 400 }
+        "INVALID_REQUEST",
       );
     }
 
@@ -96,11 +129,12 @@ export async function POST(req: Request) {
     const run = createPipelineRun(request);
     const finalRun = await executePipeline(run);
 
-    return NextResponse.json({ run: finalRun });
+    return respond(200, { run: finalRun });
   } catch (error) {
-    return NextResponse.json(
+    return respond(
+      500,
       { error: `Pipeline execution failed: ${(error as Error).message}` },
-      { status: 500 },
+      "PIPELINE_EXECUTION_FAILED",
     );
   }
 }

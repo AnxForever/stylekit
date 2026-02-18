@@ -7,13 +7,15 @@
  * Exposes StyleKit capabilities as tools, resources, and prompts
  * for AI assistants.
  *
- * Tools (9):
+ * Core tools (6):
  * - search_knowledge
  * - smart_recommend
  * - get_style
  * - list_styles
  * - lint_code
  * - get_stack_guidelines
+ *
+ * Experimental tools (disabled by default):
  * - compose_styles
  * - generate_context_file
  * - analyze_project_style
@@ -41,7 +43,7 @@ import path from "node:path";
 // (these fail under ESM resolution that the SDK forces)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const require = createRequire(path.resolve(__dirname, "../package.json"));
+const require = createRequire(path.resolve(__dirname, "../../package.json"));
 
 const knowledge = require("./lib/knowledge");
 const {
@@ -71,8 +73,11 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+const EXPERIMENTAL_TOOLS_ENABLED =
+  process.env.STYLEKIT_ENABLE_EXPERIMENTAL_TOOLS === "1";
+
 // ============================================================================
-// Tools - 6 existing + 3 new
+// Tools
 // ============================================================================
 
 // -- search_knowledge --
@@ -237,6 +242,13 @@ server.tool(
       .describe("Output format (default: json)"),
   },
   async ({ code, style, format }) => {
+    if (!getStyleBySlug(style)) {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ error: `Style not found: ${style}` }) }],
+        isError: true,
+      };
+    }
+
     const result = lintCode(style, code);
     const fixes = getFixSuggestions(result);
 
@@ -307,119 +319,125 @@ server.tool(
   }
 );
 
-// -- compose_styles (NEW) --
-server.tool(
-  "compose_styles",
-  "Compose a visual style with an optional layout archetype. Returns combined tokens, recipes, and rules.",
-  {
-    visualStyle: z.string().describe("Visual style slug (e.g. 'glassmorphism', 'neo-brutalist')"),
-    layoutStyle: z
-      .string()
-      .optional()
-      .describe("Layout archetype ID (e.g. 'landing-hero-centered', 'dashboard-sidebar')"),
-  },
-  async ({ visualStyle, layoutStyle }) => {
-    trackStyleUsage(visualStyle, "mcp");
-    const style = getStyleBySlug(visualStyle);
-    if (!style) {
-      return {
-        content: [
-          { type: "text", text: JSON.stringify({ error: `Style not found: ${visualStyle}` }) },
-        ],
-        isError: true,
-      };
-    }
-
-    const tokens = getStyleTokens(visualStyle);
-    const recipes = getStyleRecipes(visualStyle);
-
-    const composed: Record<string, unknown> = {
-      visualStyle: {
-        slug: style.slug,
-        name: style.nameEn,
-        doList: style.doList,
-        dontList: style.dontList,
-        aiRules: style.aiRules,
-        colors: style.colors,
-        globalCss: style.globalCss,
-      },
-      tokens,
-      recipes,
-    };
-
-    if (layoutStyle) {
-      const archetype = getArchetype(layoutStyle);
-      if (archetype) {
-        composed.layout = {
-          id: archetype.id,
-          name: archetype.name,
-          description: archetype.description,
-          sections: archetype.sections,
-          responsive: archetype.responsive,
+if (EXPERIMENTAL_TOOLS_ENABLED) {
+  // -- compose_styles (experimental) --
+  server.tool(
+    "compose_styles",
+    "Compose a visual style with an optional layout archetype. Returns combined tokens, recipes, and rules.",
+    {
+      visualStyle: z.string().describe("Visual style slug (e.g. 'glassmorphism', 'neo-brutalist')"),
+      layoutStyle: z
+        .string()
+        .optional()
+        .describe("Layout archetype ID (e.g. 'landing-hero-centered', 'dashboard-sidebar-left')"),
+    },
+    async ({ visualStyle, layoutStyle }) => {
+      trackStyleUsage(visualStyle, "mcp");
+      const style = getStyleBySlug(visualStyle);
+      if (!style) {
+        return {
+          content: [
+            { type: "text", text: JSON.stringify({ error: `Style not found: ${visualStyle}` }) },
+          ],
+          isError: true,
         };
-      } else {
-        composed.layoutError = `Archetype not found: ${layoutStyle}`;
       }
-    }
 
-    return {
-      content: [{ type: "text", text: JSON.stringify(composed, null, 2) }],
-    };
-  }
-);
+      const tokens = getStyleTokens(visualStyle);
+      const recipes = getStyleRecipes(visualStyle);
 
-// -- generate_context_file (NEW) --
-// Uses the shared ide-configs module for comprehensive output
-const { generateIdeConfig } = require("./lib/export/ide-configs");
+      const composed: Record<string, unknown> = {
+        visualStyle: {
+          slug: style.slug,
+          name: style.nameEn,
+          doList: style.doList,
+          dontList: style.dontList,
+          aiRules: style.aiRules,
+          colors: style.colors,
+          globalCss: style.globalCss,
+        },
+        tokens,
+        recipes,
+      };
 
-server.tool(
-  "generate_context_file",
-  "Generate an IDE context/rules file for a specific style. Supports .cursorrules, Claude rules, Windsurf rules, and generic formats.",
-  {
-    slug: z.string().describe("Style slug (e.g. 'neo-brutalist', 'glassmorphism')"),
-    format: z
-      .enum(["cursorrules", "claude-rules", "windsurf-rules", "generic"])
-      .describe("Output format: 'cursorrules', 'claude-rules', 'windsurf-rules', or 'generic'"),
-  },
-  async ({ slug, format }: { slug: string; format: string }) => {
-    const content = generateIdeConfig(slug, format);
-    if (!content) {
+      if (layoutStyle) {
+        const archetype = getArchetype(layoutStyle);
+        if (archetype) {
+          composed.layout = {
+            id: archetype.id,
+            name: archetype.name,
+            description: archetype.description,
+            sections: archetype.sections,
+            responsive: archetype.responsive,
+          };
+        } else {
+          composed.layoutError = `Archetype not found: ${layoutStyle}`;
+        }
+      }
+
       return {
-        content: [{ type: "text", text: JSON.stringify({ error: `Style not found: ${slug}` }) }],
-        isError: true,
+        content: [{ type: "text", text: JSON.stringify(composed, null, 2) }],
       };
     }
+  );
 
-    return {
-      content: [{ type: "text", text: content }],
-    };
-  }
-);
+  // -- generate_context_file (experimental) --
+  // Uses the shared ide-configs module for comprehensive output
+  const { generateIdeConfig } = require("./lib/export/ide-configs");
 
-// -- analyze_project_style (NEW - powered by lib/analyzer) --
-const { analyzeProjectStyle } = require("./lib/analyzer");
+  server.tool(
+    "generate_context_file",
+    "Generate an IDE context/rules file for a specific style. Supports .cursorrules, Claude rules, Windsurf rules, and generic formats.",
+    {
+      slug: z.string().describe("Style slug (e.g. 'neo-brutalist', 'glassmorphism')"),
+      format: z
+        .enum(["cursorrules", "claude-rules", "windsurf-rules", "generic"])
+        .describe("Output format: 'cursorrules', 'claude-rules', 'windsurf-rules', or 'generic'"),
+    },
+    async ({ slug, format }: { slug: string; format: string }) => {
+      const content = generateIdeConfig(slug, format);
+      if (!content) {
+        return {
+          content: [{ type: "text", text: JSON.stringify({ error: `Style not found: ${slug}` }) }],
+          isError: true,
+        };
+      }
 
-server.tool(
-  "analyze_project_style",
-  "Analyze sample component code to detect which StyleKit style it most closely matches. Returns top 5 matching styles with confidence scores, pattern detection, and explanations.",
-  {
-    code: z.string().describe("Sample component code (JSX/TSX with Tailwind classes)"),
-    packageJson: z
-      .string()
-      .optional()
-      .describe("Optional package.json content for additional context"),
-  },
-  async ({ code, packageJson }: { code: string; packageJson?: string }) => {
-    const result = analyzeProjectStyle({
-      code,
-      packageJson: packageJson || undefined,
-    });
+      return {
+        content: [{ type: "text", text: content }],
+      };
+    }
+  );
 
-    return {
-      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-    };
-  }
-);
+  // -- analyze_project_style (experimental) --
+  const { analyzeProjectStyle } = require("./lib/analyzer");
+
+  server.tool(
+    "analyze_project_style",
+    "Analyze sample component code to detect which StyleKit style it most closely matches. Returns top 5 matching styles with confidence scores, pattern detection, and explanations.",
+    {
+      code: z.string().describe("Sample component code (JSX/TSX with Tailwind classes)"),
+      packageJson: z
+        .string()
+        .optional()
+        .describe("Optional package.json content for additional context"),
+    },
+    async ({ code, packageJson }: { code: string; packageJson?: string }) => {
+      const result = analyzeProjectStyle({
+        code,
+        packageJson: packageJson || undefined,
+      });
+
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    }
+  );
+} else {
+  process.stderr.write(
+    "StyleKit MCP: experimental tools disabled (set STYLEKIT_ENABLE_EXPERIMENTAL_TOOLS=1 to enable).\n"
+  );
+}
 
 // ============================================================================
 // Resources - each style as a browsable resource

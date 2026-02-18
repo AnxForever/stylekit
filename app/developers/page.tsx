@@ -96,7 +96,7 @@ const claudeConfigSnippet = `{
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["tsx", "/path/to/stylekit/mcp/server.ts"]
+      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
     }
   }
 }`;
@@ -105,7 +105,7 @@ const cursorConfigSnippet = `{
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["tsx", "./mcp/server.ts"]
+      "args": ["tsx", "./tools/mcp/server.ts"]
     }
   }
 }`;
@@ -160,6 +160,9 @@ const mcpTools: ReadonlyArray<{ name: string; descKey: TranslationKey }> = [
   { name: "list_styles", descKey: "developers.mcp.tools.list_styles" },
   { name: "lint_code", descKey: "developers.mcp.tools.lint_code" },
   { name: "get_stack_guidelines", descKey: "developers.mcp.tools.get_stack_guidelines" },
+  { name: "compose_styles", descKey: "developers.mcp.tools.compose_styles" },
+  { name: "generate_context_file", descKey: "developers.mcp.tools.generate_context_file" },
+  { name: "analyze_project_style", descKey: "developers.mcp.tools.analyze_project_style" },
 ];
 
 const apiEndpoints: ReadonlyArray<{ method: "GET" | "POST"; path: string; descKey: TranslationKey }> = [
