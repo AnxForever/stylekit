@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#ffffff"/>
+  <!-- Top nav bar -->
+  <rect x="0" y="0" width="800" height="48" fill="#24292f"/>
+  <circle cx="30" cy="24" r="14" fill="#ffffff" opacity="0.15"/>
+  <rect x="60" y="16" width="60" height="16" rx="3" fill="#ffffff" opacity="0.1"/>
+  <rect x="130" y="16" width="50" height="16" rx="3" fill="#ffffff" opacity="0.1"/>
+  <rect x="190" y="16" width="55" height="16" rx="3" fill="#ffffff" opacity="0.1"/>
+  <!-- Code block area -->
+  <rect x="80" y="80" width="640" height="200" rx="6" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+  <!-- Line numbers -->
+  <text x="100" y="115" font-family="monospace" font-size="13" fill="#8b949e">1</text>
+  <text x="100" y="135" font-family="monospace" font-size="13" fill="#8b949e">2</text>
+  <text x="100" y="155" font-family="monospace" font-size="13" fill="#8b949e">3</text>
+  <text x="100" y="175" font-family="monospace" font-size="13" fill="#8b949e">4</text>
+  <text x="100" y="195" font-family="monospace" font-size="13" fill="#8b949e">5</text>
+  <text x="100" y="215" font-family="monospace" font-size="13" fill="#8b949e">6</text>
+  <text x="100" y="235" font-family="monospace" font-size="13" fill="#8b949e">7</text>
+  <text x="100" y="255" font-family="monospace" font-size="13" fill="#8b949e">8</text>
+  <!-- Code content -->
+  <text x="130" y="115" font-family="monospace" font-size="13" fill="#cf222e">import</text>
+  <text x="185" y="115" font-family="monospace" font-size="13" fill="#24292f">{ StyleKit }</text>
+  <text x="310" y="115" font-family="monospace" font-size="13" fill="#cf222e">from</text>
+  <text x="350" y="115" font-family="monospace" font-size="13" fill="#0a3069">"@stylekit/core"</text>
+  <text x="130" y="155" font-family="monospace" font-size="13" fill="#cf222e">const</text>
+  <text x="175" y="155" font-family="monospace" font-size="13" fill="#24292f">theme = StyleKit.</text>
+  <text x="330" y="155" font-family="monospace" font-size="13" fill="#8250df">create</text>
+  <text x="376" y="155" font-family="monospace" font-size="13" fill="#24292f">({</text>
+  <text x="145" y="175" font-family="monospace" font-size="13" fill="#0550ae">colors</text>
+  <text x="200" y="175" font-family="monospace" font-size="13" fill="#24292f">: {</text>
+  <text x="160" y="195" font-family="monospace" font-size="13" fill="#0550ae">primary</text>
+  <text x="225" y="195" font-family="monospace" font-size="13" fill="#24292f">:</text>
+  <text x="240" y="195" font-family="monospace" font-size="13" fill="#0a3069">"#0969da"</text>
+  <text x="160" y="215" font-family="monospace" font-size="13" fill="#0550ae">success</text>
+  <text x="225" y="215" font-family="monospace" font-size="13" fill="#24292f">:</text>
+  <text x="240" y="215" font-family="monospace" font-size="13" fill="#0a3069">"#1f883d"</text>
+  <text x="145" y="235" font-family="monospace" font-size="13" fill="#24292f">}</text>
+  <text x="130" y="255" font-family="monospace" font-size="13" fill="#24292f">})</text>
+  <!-- Green button -->
+  <rect x="80" y="310" width="120" height="36" rx="6" fill="#1f883d"/>
+  <text x="140" y="333" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Commit</text>
+  <!-- Blue link -->
+  <text x="230" y="333" font-family="Arial, sans-serif" font-size="14" fill="#0969da">Pull Request #42</text>
+  <!-- Style name -->
+  <text x="640" y="333" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#24292f">GitHub Style</text>
+</svg>

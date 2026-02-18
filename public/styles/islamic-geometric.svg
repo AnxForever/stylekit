@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#f5ecd7"/>
+  <defs>
+    <!-- 8-pointed star -->
+    <polygon id="star8" points="0,-40 11,-11 40,0 11,11 0,40 -11,11 -40,0 -11,-11" fill="none" stroke="#1a3a5c" stroke-width="1.5"/>
+    <!-- Interlocking pattern tile -->
+    <g id="tile">
+      <use href="#star8"/>
+      <rect x="-28" y="-28" width="56" height="56" fill="none" stroke="#1a3a5c" stroke-width="0.8" transform="rotate(45)"/>
+      <circle r="12" fill="none" stroke="#c9a74e" stroke-width="1"/>
+    </g>
+  </defs>
+  <!-- Tessellated grid -->
+  <g>
+    <use href="#tile" transform="translate(80,80)"/>
+    <use href="#tile" transform="translate(160,80)"/>
+    <use href="#tile" transform="translate(240,80)"/>
+    <use href="#tile" transform="translate(320,80)"/>
+    <use href="#tile" transform="translate(400,80)"/>
+    <use href="#tile" transform="translate(480,80)"/>
+    <use href="#tile" transform="translate(560,80)"/>
+    <use href="#tile" transform="translate(640,80)"/>
+    <use href="#tile" transform="translate(720,80)"/>
+    <use href="#tile" transform="translate(80,160)"/>
+    <use href="#tile" transform="translate(160,160)"/>
+    <use href="#tile" transform="translate(240,160)"/>
+    <use href="#tile" transform="translate(320,160)"/>
+    <use href="#tile" transform="translate(400,160)"/>
+    <use href="#tile" transform="translate(480,160)"/>
+    <use href="#tile" transform="translate(560,160)"/>
+    <use href="#tile" transform="translate(640,160)"/>
+    <use href="#tile" transform="translate(720,160)"/>
+    <use href="#tile" transform="translate(80,240)"/>
+    <use href="#tile" transform="translate(160,240)"/>
+    <use href="#tile" transform="translate(240,240)"/>
+    <use href="#tile" transform="translate(320,240)"/>
+    <use href="#tile" transform="translate(400,240)"/>
+    <use href="#tile" transform="translate(480,240)"/>
+    <use href="#tile" transform="translate(560,240)"/>
+    <use href="#tile" transform="translate(640,240)"/>
+    <use href="#tile" transform="translate(720,240)"/>
+    <use href="#tile" transform="translate(80,320)"/>
+    <use href="#tile" transform="translate(160,320)"/>
+    <use href="#tile" transform="translate(240,320)"/>
+    <use href="#tile" transform="translate(320,320)"/>
+    <use href="#tile" transform="translate(400,320)"/>
+    <use href="#tile" transform="translate(480,320)"/>
+    <use href="#tile" transform="translate(560,320)"/>
+    <use href="#tile" transform="translate(640,320)"/>
+    <use href="#tile" transform="translate(720,320)"/>
+  </g>
+  <!-- Central larger star accent -->
+  <polygon points="400,170 411,189 430,200 411,211 400,230 389,211 370,200 389,189" fill="#c9a74e" opacity="0.4"/>
+  <!-- Border frame -->
+  <rect x="15" y="15" width="770" height="370" fill="none" stroke="#1a3a5c" stroke-width="2"/>
+  <rect x="20" y="20" width="760" height="360" fill="none" stroke="#c9a74e" stroke-width="1"/>
+  <!-- Title -->
+  <text x="400" y="388" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#1a3a5c" letter-spacing="3">ISLAMIC GEOMETRIC</text>
+</svg>
