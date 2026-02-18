@@ -18,6 +18,22 @@ const PLACEHOLDER_PATTERNS: Array<{ pattern: RegExp; label: string }> = [
   { pattern: /Your Company/i, label: "generic company placeholder" },
   { pattern: /example\.com/i, label: "example domain placeholder" },
 ];
+const BLOCKING_PLACEHOLDER_PATTERNS: Array<{ pattern: RegExp; label: string }> = [
+  { pattern: /\{\{\s*[\w.-]+\s*\}\}/, label: "unresolved template token" },
+  { pattern: /\[insert\s+[^\]]+\]/i, label: "insert placeholder" },
+  { pattern: /\bTBD\b/i, label: "TBD marker" },
+  {
+    pattern: /\u5f85\u8865\u5145|\u5f85\u586b\u5199|\u8bf7\u586b\u5199|\u5728\u6b64\u8f93\u5165|\u66ff\u6362\u4e3a\u4f60\u7684/u,
+    label: "unfinished placeholder copy",
+  },
+];
+const IMAGE_WITHOUT_ALT_PATTERN = /<img\b(?![^>]*\balt=)[^>]*>/i;
+const VIEWPORT_META_PATTERN = /<meta[^>]+name=["']viewport["'][^>]*>/i;
+const HTML_LANG_PATTERN = /<html[^>]+lang=["'][^"']+["'][^>]*>/i;
+const HEADING_H1_PATTERN = /<h1[\s>]/i;
+const RESPONSIVE_MARKER_PATTERN = /(?:\b(?:sm|md|lg|xl|2xl):)|@media\s*\(/i;
+const MARKUP_FILE_PATTERN = /\.(?:html?|tsx|jsx)$/i;
+const RESPONSIVE_RELEVANT_FILE_PATTERN = /\.(?:html?|css|tsx|jsx)$/i;
 
 export interface GeneratorValidationIssue {
   code: string;
@@ -231,6 +247,7 @@ export function evaluateGeneratedFiles(
 
     if (!file.content.trim()) {
       errors.push(`Output file is empty: ${file.name}`);
+      continue;
     }
 
     for (const placeholder of PLACEHOLDER_PATTERNS) {
@@ -238,6 +255,43 @@ export function evaluateGeneratedFiles(
         warnings.push(`${file.name} still contains ${placeholder.label}.`);
       }
     }
+
+    for (const placeholder of BLOCKING_PLACEHOLDER_PATTERNS) {
+      if (placeholder.pattern.test(file.content)) {
+        errors.push(`${file.name} contains blocking placeholder: ${placeholder.label}.`);
+      }
+    }
+
+    if (isMarkupFile(file) && IMAGE_WITHOUT_ALT_PATTERN.test(file.content)) {
+      warnings.push(`${file.name} includes <img> tags without alt text.`);
+    }
+  }
+
+  const htmlEntry = getFileByName(files, "index.html");
+  if ((config.outputFormat === "html" || config.outputFormat === "react") && htmlEntry) {
+    if (!VIEWPORT_META_PATTERN.test(htmlEntry.content)) {
+      errors.push("index.html is missing a viewport meta tag for mobile rendering.");
+    }
+    if (!HTML_LANG_PATTERN.test(htmlEntry.content)) {
+      warnings.push("index.html is missing an explicit html lang attribute.");
+    }
+  }
+
+  const nextLayout = getFileByName(files, "app/layout.tsx");
+  if (config.outputFormat === "nextjs" && nextLayout && !HTML_LANG_PATTERN.test(nextLayout.content)) {
+    warnings.push("app/layout.tsx is missing an explicit html lang attribute.");
+  }
+
+  const allMarkupContent = collectMarkupContent(files);
+  if (allMarkupContent && !HEADING_H1_PATTERN.test(allMarkupContent)) {
+    warnings.push("Generated output does not include an <h1> heading.");
+  }
+
+  const hasResponsiveSignals = files
+    .filter((file) => RESPONSIVE_RELEVANT_FILE_PATTERN.test(file.name))
+    .some((file) => RESPONSIVE_MARKER_PATTERN.test(file.content));
+  if (!hasResponsiveSignals) {
+    warnings.push("No responsive breakpoints detected in output. Add mobile/tablet adaptations.");
   }
 
   const totalBytes = files.reduce(
@@ -251,6 +305,21 @@ export function evaluateGeneratedFiles(
   }
 
   return { errors, warnings };
+}
+
+function getFileByName(files: GeneratedFile[], fileName: string): GeneratedFile | undefined {
+  return files.find((file) => file.name === fileName);
+}
+
+function isMarkupFile(file: GeneratedFile): boolean {
+  return MARKUP_FILE_PATTERN.test(file.name);
+}
+
+function collectMarkupContent(files: GeneratedFile[]): string {
+  return files
+    .filter((file) => isMarkupFile(file))
+    .map((file) => file.content)
+    .join("\n");
 }
 
 function sanitizePlainText(
