@@ -1,0 +1,101 @@
+name: Style Submission (AI-First)
+description: Submit a new design style proposal generated with AI and validated against the StyleKit manifest schema.
+title: "[Style Submission] "
+labels:
+  - style-submission
+  - needs-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to StyleKit.
+
+        Before submitting:
+        1) Build your `manifest.json` using `schemas/style-submission-manifest.schema.json`
+        2) Prepare `cover.svg`
+        3) Include a short `self-check.md` report
+
+        Reference docs:
+        - `docs/research/ai-style-submission-research.md`
+        - `docs/submission/ai-submission-pack.md`
+
+  - type: dropdown
+    id: source_assistant
+    attributes:
+      label: AI Assistant Used
+      description: Which assistant generated this submission package?
+      options:
+        - Claude
+        - Cursor
+        - ChatGPT
+        - Manual
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: style_slug
+    attributes:
+      label: Proposed Style Slug
+      description: Use kebab-case (example: neo-brutalist-alt)
+      placeholder: neo-brutalist-alt
+    validations:
+      required: true
+
+  - type: textarea
+    id: manifest_json
+    attributes:
+      label: Manifest JSON
+      description: Paste the full manifest JSON that matches the schema.
+      render: json
+      placeholder: |
+        {
+          "schemaVersion": "1.0.0",
+          "generatedAt": "2026-02-18T12:00:00.000Z",
+          "source": {
+            "assistant": "claude",
+            "model": "model-name"
+          },
+          "formData": {}
+        }
+    validations:
+      required: true
+
+  - type: textarea
+    id: cover_svg
+    attributes:
+      label: Cover SVG
+      description: Paste the full SVG content for `public/styles/{slug}.svg`.
+      render: svg
+      placeholder: |
+        <svg width="1200" height="630" ...>
+        ...
+        </svg>
+    validations:
+      required: true
+
+  - type: textarea
+    id: self_check
+    attributes:
+      label: Self Check Report
+      description: Explain what was validated and what still needs human review.
+      render: markdown
+      placeholder: |
+        - schemaValid: true
+        - requiredFilesPrepared: manifest.json, cover.svg, self-check.md
+        - componentCoverage: buttonCode, cardCode, inputCode
+        - knownRisks: ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Final Confirmation
+      options:
+        - label: I confirmed the slug is not already in StyleKit.
+          required: true
+        - label: I confirmed the manifest follows `schemas/style-submission-manifest.schema.json`.
+          required: true
+        - label: I understand this issue is a proposal and still requires maintainer review.
+          required: true
