@@ -264,7 +264,16 @@ export default function TravelBookingTemplate() {
                   {destinations.map((dest, i) => (
                     <div
                       key={dest.name}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${dest.hotel} in ${dest.name}, $${dest.price} per night`}
                       onClick={() => setSelectedDest(i)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedDest(i);
+                        }
+                      }}
                       className={`flex flex-col sm:flex-row bg-white rounded-xl border overflow-hidden cursor-pointer transition-all ${
                         selectedDest === i ? "border-blue-400 shadow-md" : "border-gray-100 hover:shadow-md"
                       }`}

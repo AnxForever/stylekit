@@ -802,6 +802,8 @@ const en = {
     "compare.diffDetails": "Difference Details",
     "compare.recentTitle": "Recent Comparisons",
     "compare.clearRecent": "Clear",
+    "compare.searchPlaceholder": "Search...",
+    "compare.noStylesFound": "No styles found",
     "nav.compare": "Compare",
     "nav.blend": "Blend",
 
@@ -1670,6 +1672,8 @@ const zh: { [K in keyof typeof en]: string } = {
   "compare.diffDetails": "差异详情",
   "compare.recentTitle": "最近对比",
   "compare.clearRecent": "清除",
+  "compare.searchPlaceholder": "搜索...",
+  "compare.noStylesFound": "未找到风格",
   "nav.compare": "对比",
   "nav.blend": "混搭",
 
