@@ -18,6 +18,7 @@ import {
   useAdminGeneratorTelemetry,
   useAdminSystem,
   type AdminGeneratorEndpoint,
+  type AdminGeneratorFallbackReason,
   type AdminGeneratorOutcome,
 } from "@/lib/swr";
 
@@ -43,6 +44,7 @@ export function AdminSystemContent() {
   const [telemetryWindow, setTelemetryWindow] = useState<"60" | "1440" | "10080" | "all">("1440");
   const [telemetryEndpointFilter, setTelemetryEndpointFilter] = useState<"all" | AdminGeneratorEndpoint>("all");
   const [telemetryOutcomeFilter, setTelemetryOutcomeFilter] = useState<"all" | AdminGeneratorOutcome>("all");
+  const [telemetryFallbackReasonFilter, setTelemetryFallbackReasonFilter] = useState<"all" | AdminGeneratorFallbackReason>("all");
   const [telemetryCodeFilter, setTelemetryCodeFilter] = useState("");
   const [telemetryExporting, setTelemetryExporting] = useState(false);
   const [telemetryExportNotice, setTelemetryExportNotice] = useState<string | null>(null);
@@ -61,13 +63,19 @@ export function AdminSystemContent() {
       trendDays: 14,
       endpoint: telemetryEndpointFilter === "all" ? undefined : telemetryEndpointFilter,
       outcome: telemetryOutcomeFilter === "all" ? undefined : telemetryOutcomeFilter,
+      fallbackReason:
+        telemetryFallbackReasonFilter === "all"
+          ? undefined
+          : telemetryFallbackReasonFilter,
       code: deferredTelemetryCodeFilter.trim() || undefined,
+      groupBy: "fallback-reason" as const,
     };
   }, [
     telemetryWindow,
     telemetryOffset,
     telemetryEndpointFilter,
     telemetryOutcomeFilter,
+    telemetryFallbackReasonFilter,
     deferredTelemetryCodeFilter,
   ]);
 
@@ -91,6 +99,9 @@ export function AdminSystemContent() {
     if (telemetryOutcomeFilter !== "all") {
       params.set("outcome", telemetryOutcomeFilter);
     }
+    if (telemetryFallbackReasonFilter !== "all") {
+      params.set("fallbackReason", telemetryFallbackReasonFilter);
+    }
     const trimmedCode = telemetryCodeFilter.trim();
     if (trimmedCode) {
       params.set("code", trimmedCode);
@@ -100,6 +111,7 @@ export function AdminSystemContent() {
     telemetryWindow,
     telemetryEndpointFilter,
     telemetryOutcomeFilter,
+    telemetryFallbackReasonFilter,
     telemetryCodeFilter,
   ]);
 
@@ -117,6 +129,16 @@ export function AdminSystemContent() {
     if (!telemetry || telemetry.summary.daily.length === 0) return 0;
     return Math.max(...telemetry.summary.daily.map((point) => point.total));
   }, [telemetry]);
+  const maxFallbackDailyCount = useMemo(() => {
+    if (!telemetry || telemetry.summary.daily.length === 0) return 0;
+    return Math.max(...telemetry.summary.daily.map((point) => point.fallback.total));
+  }, [telemetry]);
+  const maxFallbackGroupCount = useMemo(() => {
+    if (!telemetry?.groups?.fallbackReason || telemetry.groups.fallbackReason.length === 0) {
+      return 0;
+    }
+    return Math.max(...telemetry.groups.fallbackReason.map((item) => item.count));
+  }, [telemetry?.groups]);
 
   const telemetryCurrentPage = useMemo(() => {
     const limit = telemetry?.limit ?? TELEMETRY_PAGE_SIZE;
@@ -378,7 +400,7 @@ export function AdminSystemContent() {
               </p>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Window
@@ -440,6 +462,28 @@ export function AdminSystemContent() {
 
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
+                  Fallback reason
+                </span>
+                <select
+                  value={telemetryFallbackReasonFilter}
+                  onChange={(event) => {
+                    setTelemetryFallbackReasonFilter(
+                      event.target.value as "all" | AdminGeneratorFallbackReason
+                    );
+                    setTelemetryOffset(0);
+                  }}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                >
+                  <option value="all">All reasons</option>
+                  <option value="network-error">network-error</option>
+                  <option value="invalid-payload">invalid-payload</option>
+                  <option value="unexpected-status">unexpected-status</option>
+                  <option value="not-modified-without-cache">not-modified-without-cache</option>
+                </select>
+              </label>
+
+              <label className="space-y-1">
+                <span className="text-[11px] tracking-wide uppercase text-muted">
                   Error code
                 </span>
                 <input
@@ -480,6 +524,112 @@ export function AdminSystemContent() {
                 </p>
               </div>
             </div>
+
+            <div className="border border-border rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold">Client Fallback Reports</h3>
+                <span className="text-xs text-muted tabular-nums">
+                  Total {telemetry.summary.fallbackReports.total.toLocaleString()}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="rounded-lg border border-border p-3">
+                  <p className="text-[11px] text-muted uppercase tracking-wide">Network</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums">
+                    {telemetry.summary.fallbackReports.network.toLocaleString()}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border p-3">
+                  <p className="text-[11px] text-muted uppercase tracking-wide">Invalid Payload</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums">
+                    {telemetry.summary.fallbackReports.invalidPayload.toLocaleString()}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border p-3">
+                  <p className="text-[11px] text-muted uppercase tracking-wide">Unexpected Status</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums">
+                    {telemetry.summary.fallbackReports.unexpectedStatus.toLocaleString()}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border p-3">
+                  <p className="text-[11px] text-muted uppercase tracking-wide">304 w/o Cache</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums">
+                    {telemetry.summary.fallbackReports.notModifiedWithoutCache.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="border border-border rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold">Fallback Daily Trend (UTC)</h3>
+                <span className="text-xs text-muted">
+                  Last {telemetry.summary.daily.length} days
+                </span>
+              </div>
+              {telemetry.summary.daily.length === 0 ? (
+                <p className="text-xs text-muted">No fallback trend data available.</p>
+              ) : (
+                <div className="space-y-2">
+                  {telemetry.summary.daily.map((point) => {
+                    const width = maxFallbackDailyCount === 0
+                      ? 0
+                      : (point.fallback.total / maxFallbackDailyCount) * 100;
+                    return (
+                      <div key={`fallback-${point.date}`} className="flex items-center gap-3">
+                        <span className="w-24 text-xs text-muted font-mono">
+                          {point.date}
+                        </span>
+                        <div className="flex-1 h-2 bg-muted/20 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-amber-500/70 rounded-full transition-all"
+                            style={{ width: `${width}%` }}
+                          />
+                        </div>
+                        <span className="w-24 text-right text-xs tabular-nums">
+                          {point.fallback.total} reports
+                        </span>
+                        <span className="w-56 text-right text-[11px] text-muted tabular-nums">
+                          n:{point.fallback.network} i:{point.fallback.invalidPayload} u:{point.fallback.unexpectedStatus} 304:{point.fallback.notModifiedWithoutCache}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {telemetry.groups?.fallbackReason && telemetry.groups.fallbackReason.length > 0 && (
+              <div className="border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold">Fallback Reason Ranking</h3>
+                  <span className="text-xs text-muted">Grouped view</span>
+                </div>
+                <div className="space-y-2">
+                  {telemetry.groups.fallbackReason.map((item) => {
+                    const width = maxFallbackGroupCount === 0
+                      ? 0
+                      : (item.count / maxFallbackGroupCount) * 100;
+                    return (
+                      <div key={item.reason} className="flex items-center gap-3">
+                        <span className="w-48 text-xs font-mono text-muted">
+                          {item.reason}
+                        </span>
+                        <div className="flex-1 h-2 bg-muted/20 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-cyan-500/70 rounded-full transition-all"
+                            style={{ width: `${width}%` }}
+                          />
+                        </div>
+                        <span className="w-16 text-right text-xs tabular-nums">
+                          {item.count}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div className="border border-border rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
