@@ -15,6 +15,7 @@ const EXAMPLE_PROMPTS = [
   "Like Apple but warmer and more playful",
   "Professional and clean with a modern edge",
   "Dark, futuristic, neon accents",
+  "Futuristic but less neon and not brutalist",
   "Soft, organic, natural feeling",
   "Bold brutalist with colorful accents",
   "Elegant luxury with art deco touches",

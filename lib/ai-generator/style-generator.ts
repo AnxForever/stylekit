@@ -13,12 +13,22 @@ export interface GenerationRequest {
   baseStyle?: string;
 }
 
+export interface GenerationInsights {
+  baseStyle: string | null;
+  detectedStyles: string[];
+  avoidedStyles: string[];
+  matchedKeywords: string[];
+  negativeKeywords: string[];
+}
+
 export interface GeneratedStyle {
   name: string;
   description: string;
   tokens: StyleTokens;
   sourceStyles: { slug: string; weight: number }[];
   confidence: number;
+  reasoning?: string[];
+  insights?: GenerationInsights;
 }
 
 // ============ KEYWORD MAPPINGS ============
@@ -99,6 +109,193 @@ const MODIFIER_KEYWORDS: Record<string, { dimension: string; direction: "more" |
   simpler: { dimension: "complexity", direction: "less" },
   complex: { dimension: "complexity", direction: "more" },
 };
+
+const NEGATION_WORDS = new Set([
+  "not",
+  "no",
+  "without",
+  "avoid",
+  "avoiding",
+  "exclude",
+  "excluding",
+  "except",
+  "minus",
+  "less",
+]);
+
+const NEGATION_SKIP_WORDS = new Set([
+  "any",
+  "a",
+  "an",
+  "the",
+  "too",
+  "very",
+  "really",
+  "much",
+  "of",
+  "kind",
+  "kinda",
+  "sort",
+  "just",
+]);
+
+const SEARCH_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "app",
+  "but",
+  "by",
+  "design",
+  "feel",
+  "for",
+  "from",
+  "in",
+  "interface",
+  "into",
+  "look",
+  "make",
+  "more",
+  "not",
+  "of",
+  "or",
+  "style",
+  "that",
+  "the",
+  "to",
+  "ui",
+  "ux",
+  "web",
+  "website",
+  "with",
+  "without",
+]);
+
+const MANUAL_STYLE_ALIASES: Record<string, string[]> = {
+  "neo-brutalist": ["neo brutal", "neo brutalism", "brutalism", "brutalist", "brutalist ui"],
+  glassmorphism: ["glass morphism", "glassmorphic", "frosted glass"],
+  "minimalist-flat": ["minimal flat", "flat minimal"],
+  "soft-ui": ["softui", "soft user interface"],
+  "dark-mode": ["dark mode", "dark ui"],
+  "art-deco": ["art deco"],
+  "art-nouveau": ["art nouveau"],
+  "dark-academia": ["dark academia"],
+  "neo-brutalist-soft": ["soft brutalist", "soft neo brutalist"],
+  "neo-brutalist-playful": ["playful brutalist", "playful neo brutalist"],
+  "cyberpunk-neon": ["cyberpunk", "cyber punk"],
+  "retro-vintage": ["retro vintage"],
+  "material-design": ["material ui", "material"],
+  "notion-style": ["notion"],
+  "apple-style": ["apple ui", "apple"],
+  "stripe-style": ["stripe ui", "stripe"],
+};
+
+const DEFAULT_FALLBACK_STYLES = [
+  "apple-style",
+  "minimalist-flat",
+  "corporate-clean",
+] as const;
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[_/]+/g, " ")
+    .replace(/[^a-z0-9\s-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractAsciiTerms(value: string): string[] {
+  const matches = normalizeText(value).match(/[a-z0-9]+/g) ?? [];
+  return matches.filter((term) => term.length >= 3 && !SEARCH_STOP_WORDS.has(term));
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const AVAILABLE_VISUAL_STYLES = styles.filter(
+  (style) => style.styleType === "visual" && getStyleTokens(style.slug) !== undefined
+);
+const AVAILABLE_STYLE_SLUGS = new Set(AVAILABLE_VISUAL_STYLES.map((style) => style.slug));
+
+function buildStyleAliasEntries(): { alias: string; slug: string; pattern: RegExp }[] {
+  const aliasToSlug = new Map<string, string>();
+
+  const register = (slug: string, alias: string) => {
+    if (!AVAILABLE_STYLE_SLUGS.has(slug)) return;
+    const normalized = normalizeText(alias);
+    if (!normalized) return;
+    if (!aliasToSlug.has(normalized)) {
+      aliasToSlug.set(normalized, slug);
+    }
+  };
+
+  for (const style of AVAILABLE_VISUAL_STYLES) {
+    register(style.slug, style.slug);
+    register(style.slug, style.slug.replace(/-/g, " "));
+    register(style.slug, style.nameEn);
+    register(style.slug, style.nameEn.replace(/-/g, " "));
+    register(style.slug, style.nameEn.replace(/\bstyle\b/gi, ""));
+  }
+
+  for (const [slug, aliases] of Object.entries(MANUAL_STYLE_ALIASES)) {
+    for (const alias of aliases) {
+      register(slug, alias);
+    }
+  }
+
+  return [...aliasToSlug.entries()]
+    .map(([alias, slug]) => ({
+      alias,
+      slug,
+      pattern: new RegExp(`\\b${escapeRegex(alias).replace(/\\ /g, "\\s+")}\\b`, "g"),
+    }))
+    .sort((a, b) => b.alias.length - a.alias.length);
+}
+
+const STYLE_ALIAS_ENTRIES = buildStyleAliasEntries();
+const STYLE_ALIAS_LOOKUP = new Map(STYLE_ALIAS_ENTRIES.map((entry) => [entry.alias, entry.slug]));
+
+const STYLE_TERM_INDEX = new Map<string, Set<string>>(
+  AVAILABLE_VISUAL_STYLES.map((style) => {
+    const terms = new Set<string>();
+    const sourceParts: string[] = [
+      style.slug,
+      style.slug.replace(/-/g, " "),
+      style.nameEn,
+      style.category,
+      style.description,
+      ...style.tags,
+      ...style.keywords,
+    ];
+
+    for (const part of sourceParts) {
+      for (const term of extractAsciiTerms(part)) {
+        terms.add(term);
+      }
+    }
+
+    return [style.slug, terms];
+  })
+);
+
+function resolveStyleSlug(value?: string | null): string | null {
+  if (!value) return null;
+  const normalized = normalizeText(value);
+  if (!normalized) return null;
+  if (AVAILABLE_STYLE_SLUGS.has(normalized)) return normalized;
+  const direct = STYLE_ALIAS_LOOKUP.get(normalized);
+  if (direct) return direct;
+
+  for (const entry of STYLE_ALIAS_ENTRIES) {
+    if (normalized.includes(entry.alias)) {
+      return entry.slug;
+    }
+  }
+
+  return null;
+}
 
 // ============ COLOR INTERPOLATION ============
 
@@ -330,79 +527,114 @@ function interpolateTokens(
 
 interface ParsedDescription {
   keywords: string[];
+  negativeKeywords: string[];
+  explicitMentions: string[];
+  explicitAvoids: string[];
+  queryTerms: string[];
   baseStyleSlug: string | null;
   modifiers: { dimension: string; direction: "more" | "less" }[];
 }
 
 function parseDescription(description: string): ParsedDescription {
-  const lower = description.toLowerCase();
-  const words = lower.split(/[\s,;.!?]+/).filter(Boolean);
+  const normalized = normalizeText(description);
+  const words = normalized.split(/\s+/).filter(Boolean);
 
-  // Detect "like X" patterns
+  const matchedKeywords = new Set<string>();
+  const negativeKeywords = new Set<string>();
+  const explicitMentions = new Set<string>();
+  const explicitAvoids = new Set<string>();
+
+  // Detect "like X" / "inspired by X" patterns
   let baseStyleSlug: string | null = null;
-  const likeMatch = lower.match(/like\s+(\w[\w\s-]*?)(?:\s+but|\s+with|\s+and|\s*$)/);
-  if (likeMatch) {
-    const target = likeMatch[1].trim();
-    // Try to find a matching style
-    const matchedStyle = styles.find(
-      (s) =>
-        s.slug === target ||
-        s.nameEn.toLowerCase() === target ||
-        s.name === target ||
-        s.slug.replace(/-/g, " ") === target
-    );
-    if (matchedStyle) {
-      baseStyleSlug = matchedStyle.slug;
+  const basePatterns = [
+    /(?:^|\b)(?:like|similar to|inspired by)\s+([a-z0-9][a-z0-9\s-]{1,60}?)(?:\s+but|\s+with|\s+and|\s+without|\s*$)/,
+    /(?:^|\b)in\s+the\s+([a-z0-9][a-z0-9\s-]{1,60}?)\s+style(?:\s+but|\s+with|\s+and|\s+without|\s*$)/,
+  ];
+
+  for (const pattern of basePatterns) {
+    const match = normalized.match(pattern);
+    if (!match) continue;
+    const resolved = resolveStyleSlug(match[1]?.trim());
+    if (resolved) {
+      baseStyleSlug = resolved;
+      break;
     }
   }
 
-  // Extract keywords that match our mood map
-  const matchedKeywords: string[] = [];
+  // Detect direct style mentions and explicit avoidance signals
+  for (const entry of STYLE_ALIAS_ENTRIES) {
+    entry.pattern.lastIndex = 0;
+    let match: RegExpExecArray | null = entry.pattern.exec(normalized);
+    while (match) {
+      const start = match.index;
+      const prefix = normalized.slice(Math.max(0, start - 36), start).trim();
+      if (/\b(?:not|no|without|avoid|avoiding|exclude|excluding|except|minus|less)\s*$/.test(prefix)) {
+        explicitAvoids.add(entry.slug);
+      } else {
+        explicitMentions.add(entry.slug);
+      }
+      match = entry.pattern.exec(normalized);
+    }
+  }
+
+  // Extract mood keywords and modifiers
   for (const word of words) {
     if (word in MOOD_KEYWORDS) {
-      matchedKeywords.push(word);
+      matchedKeywords.add(word);
+    }
+    if (word in MODIFIER_KEYWORDS) {
+      // handled below to preserve ordering
     }
   }
 
-  // Check multi-word keywords
-  for (const key of Object.keys(MOOD_KEYWORDS)) {
-    if (key.includes("-") || key.includes(" ")) {
-      if (lower.includes(key)) {
-        matchedKeywords.push(key);
+  for (let i = 0; i < words.length; i += 1) {
+    const word = words[i];
+
+    if (NEGATION_WORDS.has(word)) {
+      let cursor = i + 1;
+      while (cursor < words.length && NEGATION_SKIP_WORDS.has(words[cursor])) {
+        cursor += 1;
+      }
+      const candidate = words[cursor];
+      if (candidate && candidate in MOOD_KEYWORDS) {
+        negativeKeywords.add(candidate);
       }
     }
-  }
 
-  // Extract modifiers (warmer, bolder, etc.)
-  const modifiers: { dimension: string; direction: "more" | "less" }[] = [];
-  for (const word of words) {
     if (word in MODIFIER_KEYWORDS) {
-      modifiers.push(MODIFIER_KEYWORDS[word]);
+      // Keep raw order; duplicate modifiers are useful when users emphasize
     }
   }
 
-  // Handle "more X" / "less X" patterns
-  const moreMatch = lower.matchAll(/more\s+(\w+)/g);
-  for (const m of moreMatch) {
-    const trait = m[1];
-    if (trait in MOOD_KEYWORDS) {
-      matchedKeywords.push(trait);
+  for (const match of normalized.matchAll(/\b(more|less)\s+([a-z][a-z-]*)\b/g)) {
+    const direction = match[1];
+    const trait = match[2];
+    if (!(trait in MOOD_KEYWORDS)) continue;
+    if (direction === "more") {
+      matchedKeywords.add(trait);
+    } else {
+      negativeKeywords.add(trait);
     }
   }
 
-  const lessMatch = lower.matchAll(/less\s+(\w+)/g);
-  for (const m of lessMatch) {
-    // "less minimal" means less of the minimal styles
-    const trait = m[1];
-    if (trait in MOOD_KEYWORDS) {
-      // We don't add it as a keyword, but as a negative signal
-      // For now, we skip these styles in scoring
-    }
-    void trait;
+  const modifiers = words
+    .filter((word) => word in MODIFIER_KEYWORDS)
+    .map((word) => MODIFIER_KEYWORDS[word]);
+
+  for (const keyword of negativeKeywords) {
+    matchedKeywords.delete(keyword);
+  }
+
+  for (const slug of explicitAvoids) {
+    explicitMentions.delete(slug);
   }
 
   return {
-    keywords: [...new Set(matchedKeywords)],
+    keywords: [...matchedKeywords],
+    negativeKeywords: [...negativeKeywords],
+    explicitMentions: [...explicitMentions],
+    explicitAvoids: [...explicitAvoids],
+    queryTerms: extractAsciiTerms(description),
     baseStyleSlug,
     modifiers,
   };
@@ -410,48 +642,272 @@ function parseDescription(description: string): ParsedDescription {
 
 // ============ STYLE SCORING ============
 
-function scoreStyles(
-  parsed: ParsedDescription,
-  explicitBase?: string
-): { slug: string; weight: number }[] {
-  const scores: Record<string, number> = {};
+interface ScoringResult {
+  sourceStyles: { slug: string; weight: number }[];
+  rankedScores: { slug: string; score: number }[];
+  resolvedBaseStyle: string | null;
+  excludedStyles: string[];
+  baseSuppressed: boolean;
+}
 
-  // If explicit base style provided, give it heavy weight
-  const base = explicitBase || parsed.baseStyleSlug;
-  if (base) {
-    scores[base] = 50;
-  }
+function collectExcludedStyles(parsed: ParsedDescription): Set<string> {
+  const excluded = new Set<string>(parsed.explicitAvoids);
 
-  // Score based on keyword matches
-  for (const keyword of parsed.keywords) {
+  for (const keyword of parsed.negativeKeywords) {
     const matchedSlugs = MOOD_KEYWORDS[keyword] || [];
     for (const slug of matchedSlugs) {
-      scores[slug] = (scores[slug] || 0) + 10;
+      if (AVAILABLE_STYLE_SLUGS.has(slug)) {
+        excluded.add(slug);
+      }
     }
   }
 
-  // Filter to styles that actually have tokens
-  const scoredStyles = Object.entries(scores)
-    .filter(([slug]) => getStyleTokens(slug) !== undefined)
-    .sort(([, a], [, b]) => b - a);
+  return excluded;
+}
 
-  if (scoredStyles.length === 0) {
-    // Fallback: return top 3 popular styles with tokens
-    return [
-      { slug: "apple-style", weight: 0.4 },
-      { slug: "minimalist-flat", weight: 0.3 },
-      { slug: "corporate-clean", weight: 0.3 },
-    ];
+function buildFallbackSourceStyles(excludedStyles: Set<string>): {
+  sourceStyles: { slug: string; weight: number }[];
+  rankedScores: { slug: string; score: number }[];
+} {
+  const candidates = DEFAULT_FALLBACK_STYLES.filter(
+    (slug) => AVAILABLE_STYLE_SLUGS.has(slug) && !excludedStyles.has(slug)
+  );
+
+  if (candidates.length === 0) {
+    const single =
+      AVAILABLE_VISUAL_STYLES.find((style) => !excludedStyles.has(style.slug))?.slug ||
+      AVAILABLE_VISUAL_STYLES[0]?.slug;
+
+    if (!single) {
+      return { sourceStyles: [], rankedScores: [] };
+    }
+
+    return {
+      sourceStyles: [{ slug: single, weight: 1 }],
+      rankedScores: [{ slug: single, score: 1 }],
+    };
   }
 
-  // Normalize weights, take top 5
-  const top = scoredStyles.slice(0, 5);
-  const totalScore = top.reduce((sum, [, s]) => sum + s, 0);
+  const selected = candidates.slice(0, 3);
+  const baseWeights = [0.4, 0.3, 0.3];
+  const total = selected.reduce((sum, _, index) => sum + baseWeights[index], 0);
 
-  return top.map(([slug, score]) => ({
+  const sourceStyles = selected.map((slug, index) => ({
     slug,
-    weight: totalScore > 0 ? score / totalScore : 1 / top.length,
+    weight: total > 0 ? baseWeights[index] / total : 1 / selected.length,
   }));
+
+  return {
+    sourceStyles,
+    rankedScores: sourceStyles.map((item) => ({
+      slug: item.slug,
+      score: item.weight,
+    })),
+  };
+}
+
+function scoreStyles(
+  parsed: ParsedDescription,
+  explicitBase?: string
+): ScoringResult {
+  const scores = new Map<string, number>();
+  const queryTerms = new Set(parsed.queryTerms);
+  const excludedStyles = collectExcludedStyles(parsed);
+
+  const addScore = (slug: string, delta: number) => {
+    if (!AVAILABLE_STYLE_SLUGS.has(slug)) return;
+    scores.set(slug, (scores.get(slug) ?? 0) + delta);
+  };
+
+  // Explicit base style should dominate blending
+  let resolvedBaseStyle = resolveStyleSlug(explicitBase) ?? parsed.baseStyleSlug;
+  const baseSuppressed = !!(resolvedBaseStyle && excludedStyles.has(resolvedBaseStyle));
+  if (baseSuppressed) {
+    resolvedBaseStyle = null;
+  }
+
+  if (resolvedBaseStyle) {
+    addScore(resolvedBaseStyle, 50);
+  }
+
+  for (const slug of parsed.explicitMentions) {
+    addScore(slug, 24);
+  }
+
+  // Score based on mood keyword matches
+  for (const keyword of parsed.keywords) {
+    const matchedSlugs = MOOD_KEYWORDS[keyword] || [];
+    for (const slug of matchedSlugs) {
+      addScore(slug, 10);
+    }
+  }
+
+  // Metadata overlap fallback (slug/name/tags/keywords)
+  if (queryTerms.size > 0) {
+    for (const slug of AVAILABLE_STYLE_SLUGS) {
+      const terms = STYLE_TERM_INDEX.get(slug);
+      if (!terms || terms.size === 0) continue;
+      let overlap = 0;
+      for (const term of queryTerms) {
+        if (terms.has(term)) overlap += 1;
+      }
+      if (overlap > 0) {
+        addScore(slug, Math.min(14, overlap * 2.5));
+      }
+    }
+  }
+
+  // Negative constraints reduce score
+  for (const keyword of parsed.negativeKeywords) {
+    const matchedSlugs = MOOD_KEYWORDS[keyword] || [];
+    for (const slug of matchedSlugs) {
+      addScore(slug, -20);
+    }
+  }
+
+  for (const slug of parsed.explicitAvoids) {
+    addScore(slug, -32);
+  }
+
+  const rankedScores = [...scores.entries()]
+    .filter(([slug, score]) => AVAILABLE_STYLE_SLUGS.has(slug) && Number.isFinite(score))
+    .map(([slug, score]) => ({ slug, score }))
+    .sort((a, b) => b.score - a.score);
+
+  const positiveRanked = rankedScores.filter(
+    (item) => item.score > 0 && !excludedStyles.has(item.slug)
+  );
+  if (positiveRanked.length === 0) {
+    const fallback = buildFallbackSourceStyles(excludedStyles);
+    return {
+      sourceStyles: fallback.sourceStyles,
+      rankedScores: fallback.rankedScores,
+      resolvedBaseStyle,
+      excludedStyles: [...excludedStyles],
+      baseSuppressed,
+    };
+  }
+
+  // Normalize weights, keep strongest influences only
+  const top = positiveRanked.slice(0, 5);
+  const totalScore = top.reduce((sum, item) => sum + item.score, 0);
+
+  return {
+    sourceStyles: top.map(({ slug, score }) => ({
+      slug,
+      weight: totalScore > 0 ? score / totalScore : 1 / top.length,
+    })),
+    rankedScores,
+    resolvedBaseStyle,
+    excludedStyles: [...excludedStyles],
+    baseSuppressed,
+  };
+}
+
+function getStyleDisplayName(slug: string): string {
+  return styles.find((style) => style.slug === slug)?.nameEn ?? slug;
+}
+
+function calculateConfidence(
+  parsed: ParsedDescription,
+  scoring: ScoringResult
+): number {
+  const topWeight = scoring.sourceStyles[0]?.weight ?? 0;
+  const topScore = scoring.rankedScores[0]?.score ?? 0;
+  const secondScore = scoring.rankedScores[1]?.score ?? 0;
+  const separation = Math.max(0, topScore - secondScore);
+
+  const baseSignal = scoring.resolvedBaseStyle ? 24 : 0;
+  const keywordSignal = Math.min(parsed.keywords.length, 4) * 8;
+  const mentionSignal = Math.min(parsed.explicitMentions.length, 3) * 9;
+  const intentSignal = Math.min(parsed.queryTerms.length, 8) * 1.5;
+  const weightSignal = Math.round(topWeight * 18);
+  const separationSignal = Math.min(10, separation * 0.7);
+  const penalty = Math.min(
+    parsed.negativeKeywords.length * 3 + parsed.explicitAvoids.length * 4,
+    14
+  );
+  const contradictionPenalty = scoring.baseSuppressed ? 10 : 0;
+
+  const raw =
+    18 +
+    baseSignal +
+    keywordSignal +
+    mentionSignal +
+    intentSignal +
+    weightSignal +
+    separationSignal -
+    penalty -
+    contradictionPenalty;
+
+  return Math.max(12, Math.min(98, Math.round(raw)));
+}
+
+function buildReasoning(parsed: ParsedDescription, scoring: ScoringResult): string[] {
+  const hints: string[] = [];
+
+  if (scoring.resolvedBaseStyle) {
+    hints.push(`Anchored to ${getStyleDisplayName(scoring.resolvedBaseStyle)}.`);
+  } else if (scoring.baseSuppressed) {
+    hints.push("Ignored requested base style because it was explicitly excluded.");
+  }
+
+  if (parsed.explicitMentions.length > 0) {
+    const topMentions = parsed.explicitMentions.slice(0, 2).map(getStyleDisplayName);
+    hints.push(`Detected direct style references: ${topMentions.join(", ")}.`);
+  }
+
+  if (parsed.keywords.length > 0) {
+    hints.push(`Matched mood keywords: ${parsed.keywords.slice(0, 4).join(", ")}.`);
+  }
+
+  if (parsed.negativeKeywords.length > 0 || parsed.explicitAvoids.length > 0) {
+    const avoided = [
+      ...parsed.negativeKeywords,
+      ...parsed.explicitAvoids.slice(0, 3).map(getStyleDisplayName),
+    ];
+    hints.push(`Applied negative constraints: ${avoided.slice(0, 4).join(", ")}.`);
+  }
+
+  if (scoring.sourceStyles[0]) {
+    hints.push(
+      `Primary influence: ${getStyleDisplayName(scoring.sourceStyles[0].slug)} (${Math.round(
+        scoring.sourceStyles[0].weight * 100
+      )}%).`
+    );
+  }
+
+  return hints.slice(0, 4);
+}
+
+function buildDescription(parsed: ParsedDescription, scoring: ScoringResult): string {
+  const sourceNames = scoring.sourceStyles
+    .slice(0, 3)
+    .map((source) => getStyleDisplayName(source.slug))
+    .join(", ");
+
+  const keywordPart = parsed.keywords.length > 0 ? parsed.keywords.join(", ") : "general";
+  const avoidList = [
+    ...parsed.negativeKeywords,
+    ...scoring.excludedStyles.map(getStyleDisplayName),
+  ];
+  const uniqueAvoidList = [...new Set(avoidList)];
+
+  if (uniqueAvoidList.length > 0) {
+    return `Generated from: ${sourceNames}. Keywords: ${keywordPart}. Avoided: ${uniqueAvoidList.slice(0, 4).join(", ")}.`;
+  }
+
+  return `Generated from: ${sourceNames}. Keywords: ${keywordPart}.`;
+}
+
+function buildInsights(parsed: ParsedDescription, scoring: ScoringResult): GenerationInsights {
+  return {
+    baseStyle: scoring.resolvedBaseStyle,
+    detectedStyles: parsed.explicitMentions,
+    avoidedStyles: scoring.excludedStyles,
+    matchedKeywords: parsed.keywords,
+    negativeKeywords: parsed.negativeKeywords,
+  };
 }
 
 // ============ NAME GENERATION ============
@@ -492,7 +948,8 @@ export function generateStyleFromDescription(
   request: GenerationRequest
 ): GeneratedStyle {
   const parsed = parseDescription(request.description);
-  const sourceStyles = scoreStyles(parsed, request.baseStyle);
+  const scoring = scoreStyles(parsed, request.baseStyle);
+  const sourceStyles = scoring.sourceStyles;
 
   // Fetch tokens for each source style
   const sources: { tokens: StyleTokens; weight: number }[] = [];
@@ -504,8 +961,9 @@ export function generateStyleFromDescription(
   }
 
   if (sources.length === 0) {
-    // Ultimate fallback: use apple-style tokens
-    const fallback = getStyleTokens("apple-style");
+    // Ultimate fallback: use first available visual style tokens.
+    const fallbackSlug = sourceStyles[0]?.slug || AVAILABLE_VISUAL_STYLES[0]?.slug;
+    const fallback = fallbackSlug ? getStyleTokens(fallbackSlug) : undefined;
     if (fallback) {
       sources.push({ tokens: fallback, weight: 1 });
     } else {
@@ -516,30 +974,14 @@ export function generateStyleFromDescription(
   // Interpolate tokens
   const tokens = interpolateTokens(sources);
 
-  // Calculate confidence based on keyword match density
-  const totalKeywords = request.description
-    .toLowerCase()
-    .split(/[\s,;.!?]+/)
-    .filter(Boolean).length;
-  const matchedKeywords = parsed.keywords.length;
-  const keywordRatio = totalKeywords > 0 ? matchedKeywords / totalKeywords : 0;
-  const hasBase = !!(request.baseStyle || parsed.baseStyleSlug);
-  const confidence = Math.min(
-    Math.round((keywordRatio * 60 + (hasBase ? 30 : 0) + (sources.length > 1 ? 10 : 0)) * 100) / 100,
-    100
-  );
+  // Confidence is based on multiple NLP and scoring signals.
+  const confidence = calculateConfidence(parsed, scoring);
 
   // Generate name and description
   const name = generateName(parsed, sourceStyles);
-  const sourceNames = sourceStyles
-    .slice(0, 3)
-    .map((s) => {
-      const style = styles.find((st) => st.slug === s.slug);
-      return style?.nameEn || s.slug;
-    })
-    .join(", ");
-
-  const description = `Generated from: ${sourceNames}. Keywords: ${parsed.keywords.join(", ") || "general"}.`;
+  const description = buildDescription(parsed, scoring);
+  const reasoning = buildReasoning(parsed, scoring);
+  const insights = buildInsights(parsed, scoring);
 
   return {
     name,
@@ -547,14 +989,14 @@ export function generateStyleFromDescription(
     tokens,
     sourceStyles,
     confidence,
+    reasoning,
+    insights,
   };
 }
 
 /** Get all available style slugs that have tokens */
 export function getAvailableStyleSlugs(): string[] {
-  return styles
-    .filter((s) => s.styleType === "visual" && getStyleTokens(s.slug) !== undefined)
-    .map((s) => s.slug);
+  return AVAILABLE_VISUAL_STYLES.map((s) => s.slug);
 }
 
 /** Get all mood keywords for autocomplete/suggestions */
