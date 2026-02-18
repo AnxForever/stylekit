@@ -33,6 +33,22 @@ function createConfig(overrides: Partial<GeneratorConfig> = {}): GeneratorConfig
   };
 }
 
+function createSupportFiles() {
+  return [
+    { name: "README.md", content: "# Generated Site", type: "md" as const },
+    { name: "stylekit.config.json", content: "{}", type: "json" as const },
+    { name: "CONTENT_MAP.md", content: "# Content Map", type: "md" as const },
+    { name: "GENERATOR_BRIEF.md", content: "# Brief", type: "md" as const },
+  ];
+}
+
+function createHtmlOutput(indexHtml: string) {
+  return [
+    { name: "index.html", content: indexHtml, type: "html" as const },
+    ...createSupportFiles(),
+  ];
+}
+
 describe("generator quality pipeline", () => {
   it("sanitizes unsafe tokens from generator config", () => {
     const config = createConfig({
@@ -99,6 +115,82 @@ describe("generator quality pipeline", () => {
     expect(report.errors).toContain("Missing required output file: index.html");
     expect(report.warnings.some((warning) => warning.includes("TODO marker"))).toBe(
       true
+    );
+  });
+
+  it("blocks unresolved placeholder tokens in generated files", () => {
+    const config = createConfig({ outputFormat: "html" });
+    const report = evaluateGeneratedFiles(
+      config,
+      createHtmlOutput(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <h1>{{ hero_title }}</h1>
+</body>
+</html>`)
+    );
+
+    expect(
+      report.errors.some((error) =>
+        error.includes("contains blocking placeholder: unresolved template token")
+      )
+    ).toBe(true);
+  });
+
+  it("flags mobile and accessibility issues in html output", () => {
+    const config = createConfig({ outputFormat: "html" });
+    const report = evaluateGeneratedFiles(
+      config,
+      createHtmlOutput(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>Hello</h1>
+  <img src="/hero.png">
+</body>
+</html>`)
+    );
+
+    expect(report.errors).toContain(
+      "index.html is missing a viewport meta tag for mobile rendering."
+    );
+    expect(report.warnings).toContain(
+      "index.html includes <img> tags without alt text."
+    );
+  });
+
+  it("warns when responsive breakpoints are missing in react output", () => {
+    const config = createConfig({ outputFormat: "react" });
+    const report = evaluateGeneratedFiles(config, [
+      {
+        name: "index.html",
+        content: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>`,
+        type: "html",
+      },
+      { name: "package.json", content: "{}", type: "json" },
+      {
+        name: "src/App.tsx",
+        content: "export default function App() { return <main><h1>Demo</h1></main>; }",
+        type: "js",
+      },
+      ...createSupportFiles(),
+    ]);
+
+    expect(report.warnings).toContain(
+      "No responsive breakpoints detected in output. Add mobile/tablet adaptations."
     );
   });
 });
