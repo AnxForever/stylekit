@@ -214,6 +214,27 @@ import { terracotta } from "./terracotta";
 import { monochrome } from "./monochrome";
 // New styles - Ink Wash
 import { inkWash } from "./ink-wash";
+// New styles - Batch 13
+import { midCenturyModern } from "./mid-century-modern";
+import { constructivism } from "./constructivism";
+import { opArt } from "./op-art";
+import { islamicGeometric } from "./islamic-geometric";
+import { indianFestive } from "./indian-festive";
+import { africanTextile } from "./african-textile";
+import { koreanMinimal } from "./korean-minimal";
+import { pastelGoth } from "./pastel-goth";
+import { maximalism } from "./maximalism";
+import { medievalManuscript } from "./medieval-manuscript";
+import { graffitiStreet } from "./graffiti-street";
+import { marbleLuxury } from "./marble-luxury";
+import { victorianBotanical } from "./victorian-botanical";
+import { cubism } from "./cubism";
+import { tropicalParadise } from "./tropical-paradise";
+import { githubStyle } from "./github-style";
+import { witchcore } from "./witchcore";
+import { neonTokyo } from "./neon-tokyo";
+import { paperCraft } from "./paper-craft";
+import { blueprint } from "./blueprint";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -339,6 +360,27 @@ export const styles: DesignStyle[] = [
   monochrome,
   // New styles - Ink Wash
   inkWash,
+  // New styles - Batch 13
+  midCenturyModern,
+  constructivism,
+  opArt,
+  islamicGeometric,
+  indianFestive,
+  africanTextile,
+  koreanMinimal,
+  pastelGoth,
+  maximalism,
+  medievalManuscript,
+  graffitiStreet,
+  marbleLuxury,
+  victorianBotanical,
+  cubism,
+  tropicalParadise,
+  githubStyle,
+  witchcore,
+  neonTokyo,
+  paperCraft,
+  blueprint,
 ];
 
 // 根据 slug 获取风格

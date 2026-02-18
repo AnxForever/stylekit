@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#1a1225"/>
+  <!-- Dark purple overlay -->
+  <rect width="800" height="400" fill="#2d1b3d" opacity="0.5"/>
+  <!-- Crescent moon -->
+  <circle cx="200" cy="120" r="50" fill="#d4a5e3"/>
+  <circle cx="220" cy="110" r="42" fill="#1a1225"/>
+  <!-- Cross 1 -->
+  <g transform="translate(400,150)">
+    <rect x="-6" y="-40" width="12" height="80" rx="2" fill="#f5a5b8"/>
+    <rect x="-30" y="-6" width="60" height="12" rx="2" fill="#f5a5b8"/>
+  </g>
+  <!-- Cross 2 smaller -->
+  <g transform="translate(600,100)">
+    <rect x="-4" y="-25" width="8" height="50" rx="2" fill="#d4a5e3" opacity="0.6"/>
+    <rect x="-18" y="-4" width="36" height="8" rx="2" fill="#d4a5e3" opacity="0.6"/>
+  </g>
+  <!-- Stars -->
+  <polygon points="500,80 503,90 513,90 505,96 508,106 500,100 492,106 495,96 487,90 497,90" fill="#f5a5b8" opacity="0.7"/>
+  <polygon points="150,250 152,256 158,256 153,260 155,266 150,262 145,266 147,260 142,256 148,256" fill="#d4a5e3" opacity="0.5"/>
+  <polygon points="680,220 682,226 688,226 683,230 685,236 680,232 675,236 677,230 672,226 678,226" fill="#f5a5b8" opacity="0.5"/>
+  <!-- Drip shapes -->
+  <path d="M100,0 L100,80 Q100,100 110,100 Q120,100 120,80 L120,0" fill="#d4a5e3" opacity="0.3"/>
+  <path d="M300,0 L300,50 Q300,65 307,65 Q314,65 314,50 L314,0" fill="#f5a5b8" opacity="0.2"/>
+  <path d="M700,0 L700,65 Q700,80 708,80 Q716,80 716,65 L716,0" fill="#d4a5e3" opacity="0.25"/>
+  <!-- Bat silhouette -->
+  <path d="M550,280 Q530,260 520,270 Q510,250 530,265 L550,250 L570,265 Q590,250 580,270 Q570,260 550,280 Z" fill="#d4a5e3" opacity="0.4"/>
+  <!-- Heart -->
+  <path d="M350,290 Q350,270 370,270 Q390,270 390,290 L370,320 L350,290 Z" fill="#f5a5b8" opacity="0.35"/>
+  <!-- Horizontal line accents -->
+  <line x1="100" y1="340" x2="700" y2="340" stroke="#d4a5e3" stroke-width="0.5" opacity="0.3"/>
+  <!-- Title -->
+  <text x="400" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#f5a5b8" letter-spacing="3">Pastel Goth</text>
+</svg>

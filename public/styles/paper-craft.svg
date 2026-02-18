@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#fdf6ee"/>
+  <!-- Back layer shapes with shadow -->
+  <g transform="translate(2,3)" opacity="0.15">
+    <rect x="80" y="60" width="180" height="140" rx="4" fill="#333"/>
+    <circle cx="600" cy="150" r="80" fill="#333"/>
+    <polygon points="400,50 460,180 340,180" fill="#333"/>
+  </g>
+  <!-- Paper layer 1: teal rectangle -->
+  <rect x="80" y="60" width="180" height="140" rx="4" fill="#5cb8a5"/>
+  <!-- Paper layer 2: pink shape -->
+  <g transform="translate(2,3)" opacity="0.15">
+    <rect x="200" y="130" width="200" height="120" rx="4" fill="#333"/>
+  </g>
+  <rect x="200" y="130" width="200" height="120" rx="4" fill="#e85d75"/>
+  <!-- Paper layer 3: yellow circle -->
+  <g transform="translate(2,3)" opacity="0.15">
+    <circle cx="480" cy="110" r="65" fill="#333"/>
+  </g>
+  <circle cx="480" cy="110" r="65" fill="#f5c040"/>
+  <!-- Paper layer 4: teal triangle -->
+  <g transform="translate(2,3)" opacity="0.15">
+    <polygon points="400,50 460,180 340,180" fill="#333"/>
+  </g>
+  <polygon points="400,50 460,180 340,180" fill="#5cb8a5" opacity="0.8"/>
+  <!-- Paper layer 5: large pink circle -->
+  <g transform="translate(2,3)" opacity="0.15">
+    <circle cx="600" cy="150" r="80" fill="#333"/>
+  </g>
+  <circle cx="600" cy="150" r="80" fill="#e85d75" opacity="0.7"/>
+  <!-- Bottom strip layers -->
+  <g transform="translate(2,2)" opacity="0.12">
+    <rect x="60" y="280" width="300" height="60" rx="4" fill="#333"/>
+  </g>
+  <rect x="60" y="280" width="300" height="60" rx="4" fill="#f5c040" opacity="0.8"/>
+  <g transform="translate(2,2)" opacity="0.12">
+    <rect x="340" y="290" width="200" height="50" rx="4" fill="#333"/>
+  </g>
+  <rect x="340" y="290" width="200" height="50" rx="4" fill="#5cb8a5" opacity="0.7"/>
+  <g transform="translate(2,2)" opacity="0.12">
+    <rect x="520" y="275" width="220" height="65" rx="4" fill="#333"/>
+  </g>
+  <rect x="520" y="275" width="220" height="65" rx="4" fill="#e85d75" opacity="0.6"/>
+  <!-- Small decorative cutouts -->
+  <circle cx="150" cy="370" r="8" fill="#f5c040" opacity="0.5"/>
+  <rect x="450" y="365" width="15" height="15" rx="2" fill="#5cb8a5" opacity="0.5" transform="rotate(15 457 372)"/>
+  <polygon points="700,360 710,375 690,375" fill="#e85d75" opacity="0.5"/>
+  <!-- Style name -->
+  <text x="400" y="230" text-anchor="middle" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="42" font-weight="bold" fill="#e85d75">Paper Craft</text>
+</svg>
