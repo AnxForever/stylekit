@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Grid3X3, LayoutList, X } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const categories = ["All", "Branding", "Web Design", "Mobile", "Illustration", "3D"];
 
@@ -184,16 +185,7 @@ export default function PortfolioGalleryTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-40">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-violet-600 text-white text-sm font-medium rounded-lg shadow-lg hover:bg-violet-700 transition-colors"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

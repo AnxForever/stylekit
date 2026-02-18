@@ -10,6 +10,7 @@ import {
   BrutalTag,
   BrutalSection,
 } from "@/components/ui/brutal";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 export default function BrutalLandingTemplate() {
   const [email, setEmail] = useState("");
@@ -272,16 +273,7 @@ export default function BrutalLandingTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4">
-        <Link
-          href="/templates"
-          className="bg-black text-white px-4 py-2 font-black text-sm border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

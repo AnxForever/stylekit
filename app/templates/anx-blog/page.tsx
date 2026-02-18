@@ -3,6 +3,7 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowRight, Command, Sparkles } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 type NavItem = {
   label: string;
@@ -393,15 +394,7 @@ export default function AnxBlogTemplate() {
         </section>
       </main>
 
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="inline-flex items-center gap-2 border-2 border-black bg-black px-4 py-2 text-xs font-black tracking-[0.12em] text-white shadow-[3px_3px_0_#fff] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
-        >
-          <Sparkles className="h-4 w-4" />
-          BACK TO TEMPLATES
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

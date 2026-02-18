@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Sparkles, TrendingUp, Settings } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 export default function GlassLandingTemplate() {
   return (
@@ -121,14 +122,7 @@ export default function GlassLandingTemplate() {
       </footer>
 
       {/* Back Link */}
-      <div className="fixed bottom-4 right-4">
-        <Link
-          href="/templates"
-          className="px-4 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white text-sm hover:bg-white/30 transition-all"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

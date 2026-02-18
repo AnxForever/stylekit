@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Heart, MessageCircle, Sparkles } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const blogPosts = [
   {
@@ -262,16 +263,7 @@ export default function BrutalistPlayfulBlogTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="border-4 border-black bg-[#ff6b6b] px-4 py-2 text-xs font-black tracking-[0.12em] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
-        >
-          ← BACK TO TEMPLATES
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }
