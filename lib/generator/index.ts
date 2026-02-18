@@ -5,6 +5,7 @@
 export * from "./types";
 export * from "./zip-builder";
 export * from "./style-injector";
+export * from "./quality";
 export { landingTemplate } from "./templates/landing";
 export { portfolioTemplate } from "./templates/portfolio";
 export { blogTemplate } from "./templates/blog";

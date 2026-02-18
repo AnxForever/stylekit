@@ -14,6 +14,20 @@ const MAX_TREND_DAYS = 90;
 const MAX_EXPORT_ROWS = 1000;
 
 type GeneratorTelemetryFormat = "json" | "csv";
+type GeneratorFallbackReason =
+  | "network-error"
+  | "invalid-payload"
+  | "unexpected-status"
+  | "not-modified-without-cache";
+type GeneratorTelemetryGroupBy = "none" | "fallback-reason";
+
+interface DailyFallbackBreakdown {
+  total: number;
+  network: number;
+  invalidPayload: number;
+  unexpectedStatus: number;
+  notModifiedWithoutCache: number;
+}
 
 interface DailyTelemetryPoint {
   date: string;
@@ -22,6 +36,7 @@ interface DailyTelemetryPoint {
   error: number;
   avgDurationMs: number;
   p95DurationMs: number;
+  fallback: DailyFallbackBreakdown;
 }
 
 interface EndpointMetrics {
@@ -41,7 +56,21 @@ interface GeneratorTelemetrySummary {
   p95DurationMs: number;
   byEndpoint: Record<GeneratorApiEndpoint, EndpointMetrics>;
   topErrorCodes: Array<{ code: string; count: number }>;
+  fallbackReports: {
+    total: number;
+    network: number;
+    invalidPayload: number;
+    unexpectedStatus: number;
+    notModifiedWithoutCache: number;
+  };
   daily: DailyTelemetryPoint[];
+}
+
+interface GeneratorTelemetryGroups {
+  fallbackReason: Array<{
+    reason: GeneratorFallbackReason;
+    count: number;
+  }>;
 }
 
 export async function GET(request: Request) {
@@ -60,6 +89,8 @@ export async function GET(request: Request) {
   const endpoint = normalizeEndpoint(searchParams.get("endpoint"));
   const outcome = normalizeOutcome(searchParams.get("outcome"));
   const code = normalizeCode(searchParams.get("code"));
+  const fallbackReason = normalizeFallbackReason(searchParams.get("fallbackReason"));
+  const groupBy = normalizeGroupBy(searchParams.get("groupBy"));
   const format = normalizeFormat(searchParams.get("format"));
   const trendDays = normalizeTrendDays(searchParams.get("trendDays"));
 
@@ -81,6 +112,9 @@ export async function GET(request: Request) {
     if (code && event.code !== code) {
       return false;
     }
+    if (fallbackReason && !matchesFallbackReason(event.code, fallbackReason)) {
+      return false;
+    }
     return true;
   });
 
@@ -88,6 +122,7 @@ export async function GET(request: Request) {
   const pageEvents = filtered.slice(offset, offset + limit);
   const hasMore = offset + limit < total;
   const summary = summarizeEvents(filtered, trendDays, now);
+  const groups = buildGroups(filtered, groupBy);
 
   if (format === "csv") {
     const exportEvents = filtered.slice(0, MAX_EXPORT_ROWS);
@@ -111,6 +146,8 @@ export async function GET(request: Request) {
     offset,
     hasMore,
     nextOffset: hasMore ? offset + limit : null,
+    groupBy,
+    groups,
     summary,
   });
 }
@@ -142,6 +179,7 @@ function summarizeEvents(
     p95DurationMs: percentile(durations, 95),
     byEndpoint,
     topErrorCodes: topErrorCodes(events),
+    fallbackReports: summarizeFallbackReports(events),
     daily: buildDailyTrend(events, trendDays, nowMs),
   };
 }
@@ -174,6 +212,20 @@ function topErrorCodes(events: GeneratorApiEvent[]) {
     .map(([code, count]) => ({ code, count }));
 }
 
+function summarizeFallbackReports(events: GeneratorApiEvent[]) {
+  const breakdown = emptyFallbackBreakdown();
+  for (const event of events) {
+    const reason = getFallbackReasonFromCode(event.code);
+    if (!reason) continue;
+    breakdown.total += 1;
+    if (reason === "network-error") breakdown.network += 1;
+    else if (reason === "invalid-payload") breakdown.invalidPayload += 1;
+    else if (reason === "unexpected-status") breakdown.unexpectedStatus += 1;
+    else breakdown.notModifiedWithoutCache += 1;
+  }
+  return breakdown;
+}
+
 function buildDailyTrend(
   events: GeneratorApiEvent[],
   trendDays: number,
@@ -202,6 +254,7 @@ function buildDailyTrend(
     const success = eventsForDay.filter((event) => event.outcome === "success").length;
     const total = eventsForDay.length;
     const durations = eventsForDay.map((event) => event.durationMs);
+    const fallback = summarizeFallbackReports(eventsForDay);
 
     points.push({
       date: key,
@@ -210,10 +263,32 @@ function buildDailyTrend(
       error: total - success,
       avgDurationMs: average(durations),
       p95DurationMs: percentile(durations, 95),
+      fallback,
     });
   }
 
   return points;
+}
+
+function emptyFallbackBreakdown(): DailyFallbackBreakdown {
+  return {
+    total: 0,
+    network: 0,
+    invalidPayload: 0,
+    unexpectedStatus: 0,
+    notModifiedWithoutCache: 0,
+  };
+}
+
+function getFallbackReasonFromCode(code: string | undefined): GeneratorFallbackReason | null {
+  if (!code) return null;
+  if (code === "DISCOVERY_CLIENT_FALLBACK_NETWORK") return "network-error";
+  if (code === "DISCOVERY_CLIENT_FALLBACK_INVALID_PAYLOAD") return "invalid-payload";
+  if (code.startsWith("DISCOVERY_CLIENT_FALLBACK_UNEXPECTED_STATUS")) return "unexpected-status";
+  if (code === "DISCOVERY_CLIENT_FALLBACK_NOT_MODIFIED_WITHOUT_CACHE") {
+    return "not-modified-without-cache";
+  }
+  return null;
 }
 
 function toTelemetryCsv(events: GeneratorApiEvent[]): string {
@@ -296,6 +371,56 @@ function normalizeCode(raw: string | null): string | null {
   const value = raw?.trim();
   if (!value) return null;
   return value;
+}
+
+function normalizeFallbackReason(raw: string | null): GeneratorFallbackReason | null {
+  if (
+    raw === "network-error" ||
+    raw === "invalid-payload" ||
+    raw === "unexpected-status" ||
+    raw === "not-modified-without-cache"
+  ) {
+    return raw;
+  }
+  return null;
+}
+
+function normalizeGroupBy(raw: string | null): GeneratorTelemetryGroupBy {
+  return raw === "fallback-reason" ? "fallback-reason" : "none";
+}
+
+function matchesFallbackReason(
+  code: string | undefined,
+  fallbackReason: GeneratorFallbackReason
+): boolean {
+  return getFallbackReasonFromCode(code) === fallbackReason;
+}
+
+function buildGroups(
+  events: GeneratorApiEvent[],
+  groupBy: GeneratorTelemetryGroupBy
+): GeneratorTelemetryGroups | null {
+  if (groupBy !== "fallback-reason") return null;
+
+  const counter = new Map<GeneratorFallbackReason, number>([
+    ["network-error", 0],
+    ["invalid-payload", 0],
+    ["unexpected-status", 0],
+    ["not-modified-without-cache", 0],
+  ]);
+
+  for (const event of events) {
+    const reason = getFallbackReasonFromCode(event.code);
+    if (!reason) continue;
+    counter.set(reason, (counter.get(reason) ?? 0) + 1);
+  }
+
+  return {
+    fallbackReason: Array.from(counter.entries())
+      .map(([reason, count]) => ({ reason, count }))
+      .filter((entry) => entry.count > 0)
+      .sort((a, b) => b.count - a.count),
+  };
 }
 
 function normalizeFormat(raw: string | null): GeneratorTelemetryFormat {

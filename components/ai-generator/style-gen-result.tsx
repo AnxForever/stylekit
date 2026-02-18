@@ -122,17 +122,27 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
         <p className="text-xs font-medium uppercase tracking-wide text-muted">
           {t("aiGen.sourceStyles")}
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="space-y-2">
           {result.sourceStyles.map(({ slug, weight }) => {
+            const percentage = Math.round(weight * 100);
             return (
               <div
                 key={slug}
-                className="flex items-center gap-2 px-3 py-1.5 border border-border rounded-full text-xs"
+                className="rounded-lg border border-border bg-muted/5 px-3 py-2"
               >
-                <span className="font-medium">{getStyleLabel(slug)}</span>
-                <span className="text-muted">
-                  {Math.round(weight * 100)}%
-                </span>
+                <div className="mb-1.5 flex items-center justify-between gap-3 text-xs">
+                  <span className="font-medium">{getStyleLabel(slug)}</span>
+                  <span className="text-muted">
+                    {percentage}%
+                  </span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted/30">
+                  <div
+                    aria-label={`${getStyleLabel(slug)} influence ${percentage}%`}
+                    className="h-full bg-foreground/75 transition-[width] duration-500"
+                    style={{ width: `${Math.max(percentage, 4)}%` }}
+                  />
+                </div>
               </div>
             );
           })}
