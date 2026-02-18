@@ -31,28 +31,6 @@ export function HomeContent({ styles }: HomeContentProps) {
     })
     .slice(0, 8);
 
-  const workflows = [
-    {
-      badge: t("home.pathA.badge"),
-      title: t("home.pathA.title"),
-      description: t("home.pathA.desc"),
-      steps: [t("home.pathA.step1"), t("home.pathA.step2"), t("home.pathA.step3")],
-      links: [
-        { href: "/create-style", label: t("home.pathA.link1") },
-        { href: "/generate", label: t("home.pathA.link2") },
-      ],
-    },
-    {
-      badge: t("home.pathB.badge"),
-      title: t("home.pathB.title"),
-      description: t("home.pathB.desc"),
-      steps: [t("home.pathB.step1"), t("home.pathB.step2"), t("home.pathB.step3")],
-      links: [
-        { href: "/styles", label: t("home.pathB.link1") },
-        { href: "/generate", label: t("home.pathB.link2") },
-      ],
-    },
-  ] as const;
   const coreFeatures: Array<{
     title: string;
     description: string;
@@ -85,20 +63,17 @@ export function HomeContent({ styles }: HomeContentProps) {
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
   const quickLinkTargets = useMemo(
-    () => ["#home-core-features", "#home-flow", "#home-trending", "#home-style-catalog"],
+    () => ["#home-core-features", "#home-trending", "#home-style-catalog"],
     []
   );
   const heroStats = [
     { value: `${styles.length}+`, label: t("home.metricStyles") },
-    { value: String(workflows.length), label: t("home.metricPaths") },
-    { value: String(workflows.reduce((sum, workflow) => sum + workflow.steps.length, 0)), label: t("home.metricSteps") },
   ];
   const quickLinks = useMemo(
     () => [
       { href: quickLinkTargets[0], label: t("home.coreFeatures") },
-      { href: quickLinkTargets[1], label: t("home.flowLabel") },
-      { href: quickLinkTargets[2], label: t("analytics.trending.title") },
-      { href: quickLinkTargets[3], label: t("home.styleCatalog") },
+      { href: quickLinkTargets[1], label: t("analytics.trending.title") },
+      { href: quickLinkTargets[2], label: t("home.styleCatalog") },
     ],
     [quickLinkTargets, t]
   );
@@ -484,68 +459,6 @@ export function HomeContent({ styles }: HomeContentProps) {
                 </RevealOnScroll>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      <section id="home-flow" className="relative border-b border-border scroll-mt-24 bg-background">
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-foreground/[0.03] to-transparent dark:from-white/[0.04]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">
-          <RevealOnScroll variant="soft" className="mb-6 sm:mb-8 space-y-2">
-            <p className={sectionLabelClassName}>{t("home.flowLabel")}</p>
-            <h2 className={`${sectionTitleClassName} max-w-3xl`}>{t("home.flowTitle")}</h2>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-            {workflows.map((workflow, workflowIndex) => (
-              <RevealOnScroll
-                key={`${workflowIndex}-${workflow.title}`}
-                variant="upSubtle"
-                delayMs={90 + workflowIndex * 55}
-                disableDelayOnMobile
-              >
-                <article className="group relative overflow-hidden border border-border bg-background/70 p-4 sm:p-5 md:p-6 space-y-4 transition-colors hover:border-foreground focus-within:border-foreground focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-background motion-safe:hover:-translate-y-0.5">
-                  <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-foreground/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs tracking-widest uppercase text-muted">{workflow.badge}</p>
-                    <span className="inline-flex items-center justify-center min-w-7 h-7 px-2 text-[10px] tracking-widest border border-border text-muted">
-                      PATH {workflowIndex === 0 ? "A" : "B"}
-                    </span>
-                  </div>
-                  <h3 className="text-lg">{workflow.title}</h3>
-                  <p className="text-sm text-muted leading-relaxed">{workflow.description}</p>
-                  <ol className="space-y-2.5 text-sm text-muted">
-                    {workflow.steps.map((step, stepIndex) => {
-                      const isLastStep = stepIndex === workflow.steps.length - 1;
-
-                      return (
-                        <li key={`${workflowIndex}-${stepIndex}`} className="relative pl-8">
-                          {!isLastStep && (
-                            <span aria-hidden className="absolute left-[9px] top-5 h-[calc(100%-0.25rem)] w-px bg-border/80" />
-                          )}
-                          <span className="absolute left-0 top-0 w-5 h-5 inline-flex items-center justify-center text-[11px] border border-border text-foreground/80 bg-background">
-                            {stepIndex + 1}
-                          </span>
-                          <span className="leading-relaxed">{step}</span>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                  <div className="flex flex-wrap gap-2.5 pt-1">
-                    {workflow.links.map((link, linkIndex) => (
-                      <Link
-                        key={`${workflowIndex}-${link.href}-${linkIndex}`}
-                        href={link.href}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs border border-border hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors"
-                      >
-                        {link.label}
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    ))}
-                  </div>
-                </article>
-              </RevealOnScroll>
-            ))}
           </div>
         </div>
       </section>
