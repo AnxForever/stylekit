@@ -3,6 +3,7 @@
  */
 
 import type { GeneratorConfig, GeneratedFile, SectionConfig, StyleInput } from "../types";
+import { generateGeneratorSupportFiles } from "../export-artifacts";
 import {
   generateBaseCss,
   getStyleSpecificCss,
@@ -373,6 +374,10 @@ export function generateHtmlFiles(
       content: generateReadme(config, styleInput),
       type: "md",
     });
+
+    for (const supportFile of generateGeneratorSupportFiles(config, styleInput)) {
+      files.push(supportFile);
+    }
   }
 
   return files;
