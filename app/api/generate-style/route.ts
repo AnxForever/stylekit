@@ -39,10 +39,43 @@ function computeWeakEtag(input: string): string {
   return `W/"${input.length.toString(16)}-${hash.toString(16)}"`;
 }
 
+function normalizeEtagToken(value: string): string {
+  return value.trim().replace(/^W\//i, "");
+}
+
+function matchesIfNoneMatch(ifNoneMatch: string | null, etag: string): boolean {
+  if (!ifNoneMatch) return false;
+  if (ifNoneMatch.trim() === "*") return true;
+  const normalizedEtag = normalizeEtagToken(etag);
+  return ifNoneMatch
+    .split(",")
+    .map((token) => normalizeEtagToken(token))
+    .includes(normalizedEtag);
+}
+
+function computeCatalogVersion(availableStyles: string[], moodKeywords: string[]): string {
+  let hash = 2166136261;
+  const payload = JSON.stringify({
+    availableStyles: [...availableStyles].sort(),
+    moodKeywords: [...moodKeywords].sort(),
+  });
+
+  for (let i = 0; i < payload.length; i += 1) {
+    hash ^= payload.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
 function buildDiscoveryPayload() {
+  const availableStyles = getAvailableStyleSlugs();
+  const moodKeywords = getMoodKeywords();
+
   return {
-    availableStyles: getAvailableStyleSlugs(),
-    moodKeywords: getMoodKeywords(),
+    catalogVersion: computeCatalogVersion(availableStyles, moodKeywords),
+    availableStyles,
+    moodKeywords,
   };
 }
 
@@ -167,24 +200,77 @@ export async function POST(request: NextRequest) {
  * Get available base styles and mood keywords
  */
 export async function GET(request: NextRequest) {
-  const payload = buildDiscoveryPayload();
-  const etag = computeWeakEtag(JSON.stringify(payload));
-  const ifNoneMatch = request.headers.get("if-none-match");
+  const startedAt = Date.now();
+  const clientKey = getRequestClientKey(request);
+  const clientHash = hashGeneratorClientKey(clientKey);
 
-  if (ifNoneMatch === etag) {
-    return new NextResponse(null, {
-      status: 304,
-      headers: {
+  const telemetryHeaders = (
+    status: number,
+    catalogSource: "network" | "not-modified" | "error",
+    headers?: HeadersInit
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    merged.set("x-stylekit-catalog-source", catalogSource);
+    return merged;
+  };
+
+  try {
+    const payload = buildDiscoveryPayload();
+    const etag = computeWeakEtag(JSON.stringify(payload));
+    const ifNoneMatch = request.headers.get("if-none-match");
+
+    if (matchesIfNoneMatch(ifNoneMatch, etag)) {
+      recordGeneratorApiEvent({
+        endpoint: "generate-style",
+        outcome: "success",
+        status: 304,
+        code: "DISCOVERY_NOT_MODIFIED",
+        durationMs: Date.now() - startedAt,
+        clientHash,
+      });
+      return new NextResponse(null, {
+        status: 304,
+        headers: telemetryHeaders(304, "not-modified", {
+          ETag: etag,
+          "Cache-Control": DISCOVERY_CACHE_CONTROL,
+        }),
+      });
+    }
+
+    recordGeneratorApiEvent({
+      endpoint: "generate-style",
+      outcome: "success",
+      status: 200,
+      code: "DISCOVERY_REFRESH",
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+    return NextResponse.json(payload, {
+      headers: telemetryHeaders(200, "network", {
         ETag: etag,
         "Cache-Control": DISCOVERY_CACHE_CONTROL,
-      },
+      }),
     });
-  }
+  } catch (error) {
+    const status = 500;
+    const code = "DISCOVERY_FAILED";
 
-  return NextResponse.json(payload, {
-    headers: {
-      ETag: etag,
-      "Cache-Control": DISCOVERY_CACHE_CONTROL,
-    },
-  });
+    recordGeneratorApiEvent({
+      endpoint: "generate-style",
+      outcome: "error",
+      status,
+      code,
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+
+    return errorResponse(
+      status,
+      code,
+      `Failed to load style discovery metadata: ${(error as Error).message}`,
+      telemetryHeaders(status, "error")
+    );
+  }
 }
