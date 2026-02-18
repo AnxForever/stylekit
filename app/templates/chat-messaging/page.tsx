@@ -6,8 +6,6 @@ import {
   Check,
   CheckCheck,
   ChevronLeft,
-  Image,
-  Menu,
   Mic,
   MoreVertical,
   Paperclip,
@@ -17,7 +15,6 @@ import {
   Send,
   Smile,
   Video,
-  X,
 } from "lucide-react";
 
 interface Message {

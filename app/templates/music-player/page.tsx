@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ChevronLeft,
   Heart,
   Home,
   Library,
@@ -20,7 +19,6 @@ import {
   Shuffle,
   SkipBack,
   SkipForward,
-  Speaker,
   Volume2,
   X,
 } from "lucide-react";

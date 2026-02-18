@@ -65,7 +65,7 @@ export function UserMenu() {
         {avatarUrl ? (
           <Image
             src={avatarUrl}
-            alt=""
+            alt={displayName}
             width={28}
             height={28}
             unoptimized
@@ -142,7 +142,7 @@ export function MobileUserMenu() {
         {avatarUrl ? (
           <Image
             src={avatarUrl}
-            alt=""
+            alt={displayName}
             width={24}
             height={24}
             unoptimized

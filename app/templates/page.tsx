@@ -334,7 +334,7 @@ const templates: Template[] = [
     href: "/templates/travel-booking",
   },
   {
-    id: "fitness-dashboard",
+    id: "fitness-health",
     name: { zh: "健身仪表盘", en: "Fitness Dashboard" },
     description: {
       zh: "暗色健身数据面板，包含步数、卡路里、运动记录、营养追踪和成就徽章。",
@@ -342,10 +342,10 @@ const templates: Template[] = [
     },
     styleSlug: "neon-gradient",
     type: "dashboard",
-    href: "/templates/fitness-dashboard",
+    href: "/templates/fitness-health",
   },
   {
-    id: "learning-platform",
+    id: "learning-course",
     name: { zh: "在线学习平台", en: "Learning Platform" },
     description: {
       zh: "在线课程学习平台，包含课程进度、课程列表、成就统计和视频课程导航。",
@@ -353,7 +353,7 @@ const templates: Template[] = [
     },
     styleSlug: "notion-style",
     type: "education",
-    href: "/templates/learning-platform",
+    href: "/templates/learning-course",
   },
   {
     id: "real-estate",

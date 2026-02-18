@@ -1,6 +1,7 @@
 "use client";
 
 import type { AccessibilityScore } from "@/lib/accessibility";
+import { useI18n } from "@/lib/i18n/context";
 
 interface ScoreBadgeProps {
   score: AccessibilityScore;
@@ -15,20 +16,23 @@ const gradeColors: Record<AccessibilityScore["grade"], string> = {
   F: "bg-red-600 text-white",
 };
 
-const gradeLabels: Record<AccessibilityScore["grade"], string> = {
-  A: "Excellent",
-  B: "Good",
-  C: "Fair",
-  D: "Poor",
-  F: "Failing",
+const gradeI18nKeys: Record<AccessibilityScore["grade"], string> = {
+  A: "a11y.excellent",
+  B: "a11y.good",
+  C: "a11y.fair",
+  D: "a11y.poor",
+  F: "a11y.failing",
 };
 
 export function ScoreBadge({ score, compact = false }: ScoreBadgeProps) {
+  const { t } = useI18n();
+  const label = t(gradeI18nKeys[score.grade]);
+
   if (compact) {
     return (
       <span
         className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold ${gradeColors[score.grade]}`}
-        title={`Accessibility: ${score.overall}/100 (${gradeLabels[score.grade]})`}
+        title={`${t("a11y.section")}: ${score.overall}/100 (${label})`}
       >
         {score.grade}
       </span>
@@ -44,7 +48,7 @@ export function ScoreBadge({ score, compact = false }: ScoreBadgeProps) {
       </span>
       <div className="flex flex-col">
         <span className="text-xs font-medium">{score.overall}/100</span>
-        <span className="text-[10px] text-muted">{gradeLabels[score.grade]}</span>
+        <span className="text-[10px] text-muted">{label}</span>
       </div>
     </div>
   );

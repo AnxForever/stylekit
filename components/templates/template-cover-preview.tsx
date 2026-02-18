@@ -295,8 +295,8 @@ const TEMPLATE_LAYOUT_MAP: Record<string, string> = {
   "music-player": "dashboard",
   "recipe-cooking": "magazine",
   "travel-booking": "landing",
-  "fitness-dashboard": "dashboard",
-  "learning-platform": "dashboard",
+  "fitness-health": "dashboard",
+  "learning-course": "dashboard",
   "real-estate": "magazine",
 };
 
