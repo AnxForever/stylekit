@@ -5,6 +5,7 @@ const en = {
     "nav.styles": "Styles",
     "nav.components": "Components",
     "nav.templates": "Templates",
+    "nav.community": "Community",
     "nav.about": "About",
     "nav.guide": "Guide",
     "nav.developers": "Developers",
@@ -1079,6 +1080,7 @@ const zh: { [K in keyof typeof en]: string } = {
   // Navigation
   "nav.styles": "风格库",
   "nav.templates": "模板",
+  "nav.community": "社区",
   "nav.generator": "生成器",
   "nav.createStyle": "创建/导入风格",
   "nav.developers": "开发者",
