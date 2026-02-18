@@ -18,9 +18,10 @@ export function AnalyzeForm({
 }) {
   const [code, setCode] = useState("");
   const [packageJson, setPackageJson] = useState("");
+  const [tailwindConfig, setTailwindConfig] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPackageJson, setShowPackageJson] = useState(false);
+  const [showProjectContext, setShowProjectContext] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,6 +37,7 @@ export function AnalyzeForm({
         body: JSON.stringify({
           code,
           ...(packageJson.trim() ? { packageJson } : {}),
+          ...(tailwindConfig.trim() ? { tailwindConfig } : {}),
         }),
       });
 
@@ -74,28 +76,46 @@ export function AnalyzeForm({
 
       <button
         type="button"
-        onClick={() => setShowPackageJson(!showPackageJson)}
+        onClick={() => setShowProjectContext(!showProjectContext)}
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        {showPackageJson ? "- Hide" : "+ Show"} package.json input (optional)
+        {showProjectContext ? "- Hide" : "+ Show"} project context inputs (optional)
       </button>
 
-      {showPackageJson && (
-        <div>
-          <label
-            htmlFor="pkg-input"
-            className="block text-sm font-medium text-foreground mb-1"
-          >
-            package.json (optional)
-          </label>
-          <textarea
-            id="pkg-input"
-            value={packageJson}
-            onChange={(e) => setPackageJson(e.target.value)}
-            placeholder='{"dependencies": { ... }}'
-            rows={4}
-            className="w-full rounded-lg border border-border bg-card p-3 font-mono text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y"
-          />
+      {showProjectContext && (
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="pkg-input"
+              className="block text-sm font-medium text-foreground mb-1"
+            >
+              package.json (optional)
+            </label>
+            <textarea
+              id="pkg-input"
+              value={packageJson}
+              onChange={(e) => setPackageJson(e.target.value)}
+              placeholder='{"dependencies": { ... }}'
+              rows={4}
+              className="w-full rounded-lg border border-border bg-card p-3 font-mono text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="tailwind-input"
+              className="block text-sm font-medium text-foreground mb-1"
+            >
+              tailwind.config (optional)
+            </label>
+            <textarea
+              id="tailwind-input"
+              value={tailwindConfig}
+              onChange={(e) => setTailwindConfig(e.target.value)}
+              placeholder={`module.exports = {\n  theme: { extend: { colors: { brand: "#111827" } } }\n}`}
+              rows={4}
+              className="w-full rounded-lg border border-border bg-card p-3 font-mono text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y"
+            />
+          </div>
         </div>
       )}
 

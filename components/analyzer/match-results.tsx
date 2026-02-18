@@ -54,11 +54,12 @@ function MatchCard({ match, rank }: { match: StyleMatch; rank: number }) {
         {match.explanation}
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
         <Detail label="Class overlap" value={`${match.matchDetails.classOverlap}%`} />
         <Detail label="Required" value={`${match.matchDetails.requiredPresence}%`} />
         <Detail label="Forbidden" value={`${match.matchDetails.forbiddenViolations}`} />
         <Detail label="Pattern" value={`${match.matchDetails.patternScore}%`} />
+        <Detail label="Context" value={`${match.matchDetails.environmentScore}%`} />
       </div>
     </div>
   );
@@ -96,6 +97,14 @@ export function MatchResults({ result }: { result: AnalysisResult }) {
             Patterns:{" "}
             <strong className="text-foreground">
               {result.dominantPatterns.join(", ")}
+            </strong>
+          </span>
+        )}
+        {result.environmentHints && result.environmentHints.length > 0 && (
+          <span>
+            Context hints:{" "}
+            <strong className="text-foreground">
+              {result.environmentHints.join(", ")}
             </strong>
           </span>
         )}

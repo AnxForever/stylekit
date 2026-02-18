@@ -110,6 +110,60 @@ describe("analyzeProjectStyle", () => {
     expect(result).toHaveProperty("topMatches");
     expect(result).toHaveProperty("classesFound");
   });
+
+  it("uses package dependencies as environment hints", () => {
+    const result = analyzeProjectStyle({
+      code: MINIMAL_CODE,
+      packageJson: JSON.stringify({
+        dependencies: {
+          "@mui/material": "^6.0.0",
+        },
+      }),
+    });
+
+    expect(result.environmentHints).toContain("Material UI dependencies detected");
+    const hinted = result.topMatches.find((match) =>
+      ["material-design", "fluent-design", "corporate-clean"].includes(match.slug)
+    );
+    expect(hinted).toBeDefined();
+    expect(hinted?.matchDetails.environmentScore).toBeGreaterThan(60);
+  });
+
+  it("uses tailwind palette hints when provided", () => {
+    const result = analyzeProjectStyle({
+      code: MINIMAL_CODE,
+      tailwindConfig: `export default {
+  theme: {
+    extend: {
+      colors: {
+        canvas: "#06080f",
+        surface: "#111827",
+        panel: "#1f2937",
+        text: "#f8fafc"
+      }
+    }
+  }
+}`,
+    });
+
+    expect(result.environmentHints).toContain(
+      "Tailwind config indicates dark palette preference"
+    );
+    const hinted = result.topMatches.find((match) =>
+      ["dark-mode", "cyberpunk-neon", "sci-fi-hud"].includes(match.slug)
+    );
+    expect(hinted).toBeDefined();
+    expect(hinted?.matchDetails.environmentScore).toBeGreaterThan(55);
+  });
+
+  it("gracefully ignores invalid packageJson context", () => {
+    const result = analyzeProjectStyle({
+      code: MINIMAL_CODE,
+      packageJson: "{ invalid json",
+    });
+
+    expect(result.topMatches.length).toBeGreaterThan(0);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -176,6 +230,7 @@ describe("generateExplanation", () => {
         forbiddenViolations: 0,
         requiredPresence: 60,
         patternScore: 70,
+        environmentScore: 50,
       },
       ["thick borders", "monospace fonts"]
     );
@@ -191,6 +246,7 @@ describe("generateExplanation", () => {
         forbiddenViolations: 0,
         requiredPresence: 20,
         patternScore: 50,
+        environmentScore: 50,
       },
       []
     );
@@ -205,6 +261,7 @@ describe("generateExplanation", () => {
         forbiddenViolations: 5,
         requiredPresence: 10,
         patternScore: 50,
+        environmentScore: 50,
       },
       []
     );
@@ -219,6 +276,7 @@ describe("generateExplanation", () => {
         forbiddenViolations: 0,
         requiredPresence: 0,
         patternScore: 10,
+        environmentScore: 50,
       },
       []
     );
