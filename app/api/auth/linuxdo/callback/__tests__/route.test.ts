@@ -77,7 +77,7 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
   it("continues login when seq-id assignment fails", async () => {
     mockedExchangeCodeForToken.mockResolvedValue({
-      access_token: "linuxdo-token",
+      access_token: "example_linuxdo_access_token",
       token_type: "bearer",
       expires_in: 3600,
     });
@@ -130,7 +130,7 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
   it("merges existing metadata when LinuxDO account already exists", async () => {
     mockedExchangeCodeForToken.mockResolvedValue({
-      access_token: "linuxdo-token",
+      access_token: "example_linuxdo_access_token",
       token_type: "bearer",
       expires_in: 3600,
     });
