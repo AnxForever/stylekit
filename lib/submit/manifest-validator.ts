@@ -84,8 +84,6 @@ export function getManifestSummary(manifest: StyleSubmissionManifest): {
   };
 }
 
-// ── Detailed field-level validation ──────────────────────────────────
-
 export interface ManifestFieldStatus {
   field: string;
   ok: boolean;
@@ -99,122 +97,110 @@ export interface ManifestDetailedResult {
 }
 
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
-
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-  return value as Record<string, unknown>;
-}
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function validateManifestDetailed(input: unknown): ManifestDetailedResult {
+  const base = validateStyleSubmissionManifest(input);
   const fields: ManifestFieldStatus[] = [];
-  const root = asRecord(input);
 
-  if (!root) {
-    return {
-      ok: false,
-      fields: [{ field: "(root)", ok: false, detail: "Not a valid object" }],
-      issues: [{ path: "(root)", message: "Not a valid object", code: "invalid_type" }],
-    };
-  }
+  const root =
+    input && typeof input === "object" && !Array.isArray(input)
+      ? (input as Record<string, unknown>)
+      : ({} as Record<string, unknown>);
+
+  const formData =
+    root.formData && typeof root.formData === "object" && !Array.isArray(root.formData)
+      ? (root.formData as Record<string, unknown>)
+      : ({} as Record<string, unknown>);
 
   // schemaVersion
-  const sv = root.schemaVersion;
   fields.push({
     field: "schemaVersion",
-    ok: sv === "1.0.0",
-    detail: sv === "1.0.0" ? String(sv) : sv ? `Invalid: ${String(sv)}` : "missing",
+    ok: root.schemaVersion === "1.0.0",
+    detail: root.schemaVersion === "1.0.0" ? "1.0.0" : String(root.schemaVersion ?? "missing"),
   });
 
-  // formData checks
-  const fd = asRecord(root.formData) ?? root;
-
   // slug
-  const slug = typeof fd.slug === "string" ? fd.slug : "";
-  const slugRe = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const slug = typeof formData.slug === "string" ? formData.slug : "";
   fields.push({
     field: "slug",
-    ok: slugRe.test(slug),
-    detail: slugRe.test(slug) ? slug : slug ? `Invalid pattern: ${slug}` : "missing",
+    ok: SLUG_RE.test(slug),
+    detail: SLUG_RE.test(slug) ? slug : slug ? "invalid format" : "missing",
   });
 
   // colors
-  const colorFields = ["primaryColor", "secondaryColor", "background", "foreground", "muted"];
-  const accentColors = Array.isArray(fd.accentColors) ? fd.accentColors : [];
-  const allColors = colorFields
-    .map((f) => (typeof fd[f] === "string" ? fd[f] as string : ""))
-    .concat(accentColors.filter((c): c is string => typeof c === "string"));
-  const validColors = allColors.filter((c) => HEX_RE.test(c));
+  const colors = [
+    typeof formData.primaryColor === "string" ? formData.primaryColor : "",
+    typeof formData.secondaryColor === "string" ? formData.secondaryColor : "",
+    ...(Array.isArray(formData.accentColors)
+      ? formData.accentColors.filter((c): c is string => typeof c === "string")
+      : []),
+  ];
+  const validColors = colors.filter((c) => HEX_RE.test(c));
   fields.push({
     field: "colors",
-    ok: validColors.length > 0 && validColors.length === allColors.length,
-    detail:
-      validColors.length === allColors.length
-        ? `${validColors.length} valid hex values`
-        : `${validColors.length}/${allColors.length} valid`,
+    ok: validColors.length >= 2,
+    detail: `${validColors.length} valid hex values`,
   });
 
   // doList
-  const doList = Array.isArray(fd.doList) ? fd.doList : [];
-  const hasDoEntries = doList.some(
-    (item: unknown) => typeof item === "string" && item.trim().length > 0
-  );
+  const doList = Array.isArray(formData.doList) ? formData.doList : [];
+  const doFilled = doList.filter((d) => typeof d === "string" && d.trim()).length;
   fields.push({
     field: "doList",
-    ok: hasDoEntries,
-    detail: hasDoEntries ? `${doList.length} entries` : "empty -- at least 1 entry required",
+    ok: doFilled > 0,
+    detail: doFilled > 0 ? `${doFilled} entries` : "empty - at least 1 entry required",
   });
 
   // dontList
-  const dontList = Array.isArray(fd.dontList) ? fd.dontList : [];
-  const hasDontEntries = dontList.some(
-    (item: unknown) => typeof item === "string" && item.trim().length > 0
-  );
+  const dontList = Array.isArray(formData.dontList) ? formData.dontList : [];
+  const dontFilled = dontList.filter((d) => typeof d === "string" && d.trim()).length;
   fields.push({
     field: "dontList",
-    ok: hasDontEntries,
-    detail: hasDontEntries ? `${dontList.length} entries` : "empty -- at least 1 entry required",
-  });
-
-  // inputCode
-  const inputCode = typeof fd.inputCode === "string" ? fd.inputCode.trim() : "";
-  fields.push({
-    field: "inputCode",
-    ok: inputCode.length > 0,
-    detail: inputCode.length > 0 ? `${inputCode.length} chars` : "missing",
+    ok: true,
+    detail: dontFilled > 0 ? `${dontFilled} entries` : "empty (optional)",
   });
 
   // buttonCode
-  const buttonCode = typeof fd.buttonCode === "string" ? fd.buttonCode.trim() : "";
+  const buttonCode = typeof formData.buttonCode === "string" ? formData.buttonCode.trim() : "";
   fields.push({
     field: "buttonCode",
     ok: buttonCode.length > 0,
-    detail: buttonCode.length > 0 ? `${buttonCode.length} chars` : "missing",
+    detail: buttonCode.length > 0 ? "present" : "not provided",
   });
 
   // cardCode
-  const cardCode = typeof fd.cardCode === "string" ? fd.cardCode.trim() : "";
+  const cardCode = typeof formData.cardCode === "string" ? formData.cardCode.trim() : "";
   fields.push({
     field: "cardCode",
     ok: cardCode.length > 0,
-    detail: cardCode.length > 0 ? `${cardCode.length} chars` : "missing",
+    detail: cardCode.length > 0 ? "present" : "not provided",
+  });
+
+  // inputCode
+  const inputCode = typeof formData.inputCode === "string" ? formData.inputCode.trim() : "";
+  fields.push({
+    field: "inputCode",
+    ok: inputCode.length > 0,
+    detail: inputCode.length > 0 ? "present" : "not provided",
   });
 
   // coverSvg
-  const assets = asRecord(root.assets);
-  const coverSvg = assets && typeof assets.coverSvg === "string" ? assets.coverSvg.trim() : "";
-  const isSvg = coverSvg.includes("<svg");
+  const assets =
+    root.assets && typeof root.assets === "object" && !Array.isArray(root.assets)
+      ? (root.assets as Record<string, unknown>)
+      : ({} as Record<string, unknown>);
+  const coverSvg = typeof assets.coverSvg === "string" ? assets.coverSvg : "";
+  const hasSvg = coverSvg.includes("<svg");
   fields.push({
     field: "coverSvg",
-    ok: isSvg,
-    detail: isSvg ? "valid SVG detected" : coverSvg.length > 0 ? "not valid SVG" : "missing",
+    ok: hasSvg,
+    detail: hasSvg ? "valid SVG detected" : coverSvg ? "no SVG content" : "missing",
   });
 
-  // Full schema validation
-  const fullResult = validateStyleSubmissionManifest(input);
-
   return {
-    ok: fullResult.ok,
+    ok: base.ok,
     fields,
-    issues: fullResult.ok ? [] : fullResult.issues,
+    issues: base.ok ? [] : base.issues,
   };
 }
