@@ -167,16 +167,36 @@ describe("StyleGenForm", () => {
   });
 
   it("falls back to local catalog when discovery request fails", async () => {
-    fetchMock.mockRejectedValue(new Error("network failed"));
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url === "/api/generate-style") {
+        throw new Error("network failed");
+      }
+      return new Response(JSON.stringify({ ok: true }), { status: 202 });
+    });
 
     render(<StyleGenForm onGenerate={vi.fn()} />);
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     expect(
       screen.getByText("aiGen.catalogSource: aiGen.catalogSourceFallback")
     ).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Apple Style (Apple)" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Neo Brutalist (Neo)" })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/api/generate-style/report-fallback",
+      expect.objectContaining({
+        method: "POST",
+        keepalive: true,
+      })
+    );
+
+    const reportPayload = JSON.parse(
+      ((fetchMock.mock.calls[1]?.[1] as RequestInit).body as string) || "{}"
+    );
+    expect(reportPayload).toEqual({
+      reason: "network-error",
+    });
   });
 
   it("appends keyword chip once without duplicates", async () => {
@@ -207,6 +227,16 @@ describe("StyleGenForm", () => {
   it("submits trimmed description and selected base style", async () => {
     const generated = { name: "X", sourceStyles: [], confidence: 90, tokens: {} };
 
+    localStorage.setItem(
+      STYLE_CATALOG_CACHE_KEY,
+      JSON.stringify({
+        catalogVersion: "11111111",
+        availableStyles: ["apple-style", "neo-brutalist", "editorial"],
+        moodKeywords: ["clean"],
+      })
+    );
+    localStorage.setItem(STYLE_CATALOG_ETAG_KEY, 'W/"cached-etag"');
+
     fetchMock.mockImplementation(async (_url: string, init?: RequestInit) => {
       if (init?.method === "POST") {
         return new Response(JSON.stringify(generated), { status: 200 });
@@ -227,7 +257,10 @@ describe("StyleGenForm", () => {
 
     await waitFor(() => expect(onGenerate).toHaveBeenCalledTimes(1));
 
-    const postCall = fetchMock.mock.calls.find(([, init]) => (init as RequestInit)?.method === "POST");
+    const postCall = fetchMock.mock.calls.find(
+      ([url, init]) =>
+        url === "/api/generate-style" && (init as RequestInit)?.method === "POST"
+    );
     expect(postCall).toBeDefined();
 
     const payload = JSON.parse(((postCall?.[1] as RequestInit).body as string) || "{}");
