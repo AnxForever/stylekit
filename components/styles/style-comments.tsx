@@ -6,12 +6,14 @@ import Link from "next/link";
 import { MessageSquare, Send } from "lucide-react";
 import { useStyleComments, type Comment } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
+import { useI18n } from "@/lib/i18n/context";
 
 interface StyleCommentsProps {
   slug: string;
 }
 
 export function StyleComments({ slug }: StyleCommentsProps) {
+  const { t, locale } = useI18n();
   const { data, mutate } = useStyleComments(slug);
   const { user } = useUser();
   const [content, setContent] = useState("");
@@ -45,10 +47,10 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         };
         await mutate(optimisticData, { revalidate: true });
       } else {
-        setError(responseData.error || "Failed to post comment");
+        setError(responseData.error || t("styleComments.postFailed"));
       }
     } catch {
-      setError("Network error");
+      setError(t("styleComments.networkError"));
     } finally {
       setSubmitting(false);
     }
@@ -58,7 +60,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-sm text-muted">
         <MessageSquare className="w-4 h-4" />
-        <span>{total} comments</span>
+        <span>{total} {t("styleComments.countSuffix")}</span>
       </div>
 
       {user ? (
@@ -88,7 +90,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                 type="text"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Leave a comment (max 280 chars)"
+                placeholder={t("styleComments.placeholder")}
                 maxLength={280}
                 className="flex-1 px-3 py-2 text-sm border border-border rounded-md bg-background"
               />
@@ -108,10 +110,10 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         </form>
       ) : (
         <div className="rounded-md border border-border bg-background/50 px-4 py-3 text-sm text-muted">
-          Sign in to join the discussion.
+          {t("styleComments.signInPrompt")}
           {" "}
           <Link href="/login" className="underline hover:text-foreground">
-            Go to sign in
+            {t("styleComments.signInAction")}
           </Link>
         </div>
       )}
@@ -141,7 +143,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                   </span>
                 </div>
                 <span className="text-xs text-muted">
-                  {new Date(comment.created_at).toLocaleDateString()}
+                  {new Date(comment.created_at).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US")}
                 </span>
               </div>
               <p className="text-foreground/80">{comment.content}</p>

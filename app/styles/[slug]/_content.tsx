@@ -126,7 +126,7 @@ export function StyleDetailContent({
                     </span>
                   )}
                   <span className="text-sm text-muted">
-                    by
+                    {t("community.by")}
                     {" "}
                     <span className="text-foreground font-medium">
                       @{communityAttribution.author.handle}
@@ -254,7 +254,7 @@ export function StyleDetailContent({
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
             {t("styleDetail.globalStyles")}
           </p>
-          <h2 className="text-2xl md:text-3xl mb-8">Global CSS</h2>
+          <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
           <CodeBlock code={style.globalCss} language="css" />
         </div>
       </section>
@@ -381,7 +381,7 @@ export function StyleDetailContent({
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            Style Pack
+            {t("styleDetail.stylePackLabel")}
           </p>
           <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.exportStylePack")}</h2>
           <p className="text-muted mb-8 max-w-2xl">
@@ -397,7 +397,7 @@ export function StyleDetailContent({
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
             {t("styleDetail.export")}
           </p>
-          <h2 className="text-2xl md:text-3xl mb-4">AI Rules</h2>
+          <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.aiRulesTitle")}</h2>
           <p className="text-muted mb-8 max-w-2xl">
             {t("styleDetail.aiRulesDesc").replace("{name}", style.name)}
           </p>
@@ -414,9 +414,9 @@ export function StyleDetailContent({
       <section className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            Community
+            {t("community.label")}
           </p>
-          <h2 className="text-2xl md:text-3xl mb-6">Ratings & Feedback</h2>
+          <h2 className="text-2xl md:text-3xl mb-6">{t("styleDetail.ratingsFeedback")}</h2>
           <div className="mb-8">
             <StyleRating slug={style.slug} />
           </div>
