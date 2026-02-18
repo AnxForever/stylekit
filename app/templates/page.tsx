@@ -11,7 +11,7 @@ import { TemplateCoverPreview } from "@/components/templates/template-cover-prev
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale, type LocaleCopy } from "@/lib/i18n/locale-copy";
 
-type TemplateType = "landing" | "dashboard" | "blog" | "portfolio" | "saas" | "ecommerce" | "admin" | "auth" | "docs";
+type TemplateType = "landing" | "dashboard" | "blog" | "portfolio" | "saas" | "ecommerce" | "admin" | "auth" | "docs" | "social" | "messaging" | "media" | "lifestyle" | "education";
 type TemplateTypeFilter = "all" | TemplateType;
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
 
@@ -245,6 +245,127 @@ const templates: Template[] = [
     type: "landing",
     href: "/templates/startup-landing",
   },
+  {
+    id: "social-feed",
+    name: { zh: "社交媒体信息流", en: "Social Media Feed" },
+    description: {
+      zh: "社交媒体信息流页面，包含发帖、点赞、转发和侧栏推荐等模块。",
+      en: "Social media feed with post composition, likes, reposts, trending topics, and suggested follows.",
+    },
+    styleSlug: "bento-grid",
+    type: "social",
+    href: "/templates/social-feed",
+  },
+  {
+    id: "file-manager",
+    name: { zh: "文件管理器", en: "File Manager" },
+    description: {
+      zh: "云存储文件管理界面，支持网格/列表视图、文件搜索和存储空间展示。",
+      en: "Cloud storage file manager with grid/list views, file search, storage usage, and quick actions.",
+    },
+    styleSlug: "fluent-design",
+    type: "admin",
+    href: "/templates/file-manager",
+  },
+  {
+    id: "chat-messaging",
+    name: { zh: "即时通讯界面", en: "Chat Messaging" },
+    description: {
+      zh: "即时通讯聊天界面，包含会话列表、消息气泡、在线状态和实时输入。",
+      en: "Chat messaging interface with conversation list, message bubbles, online status, and real-time input.",
+    },
+    styleSlug: "soft-ui",
+    type: "messaging",
+    href: "/templates/chat-messaging",
+  },
+  {
+    id: "calendar-schedule",
+    name: { zh: "日历排程", en: "Calendar Schedule" },
+    description: {
+      zh: "日历排程页面，包含迷你日历、日视图事件列表、颜色分类和快速创建。",
+      en: "Calendar scheduling page with mini calendar, day view events, color-coded categories, and quick create.",
+    },
+    styleSlug: "material-design",
+    type: "dashboard",
+    href: "/templates/calendar-schedule",
+  },
+  {
+    id: "email-inbox",
+    name: { zh: "邮件收件箱", en: "Email Inbox" },
+    description: {
+      zh: "三栏式邮件客户端，包含文件夹导航、邮件列表、详情阅读和标签分类。",
+      en: "Three-pane email client with folder navigation, email list, detail view, labels, and search.",
+    },
+    styleSlug: "corporate-clean",
+    type: "admin",
+    href: "/templates/email-inbox",
+  },
+  {
+    id: "music-player",
+    name: { zh: "音乐播放器", en: "Music Player" },
+    description: {
+      zh: "暗色主题音乐播放器，包含播放队列、播放控制栏、音量调节和播放列表。",
+      en: "Dark-themed music player with queue, playback controls, volume slider, and playlist sidebar.",
+    },
+    styleSlug: "dark-mode",
+    type: "media",
+    href: "/templates/music-player",
+  },
+  {
+    id: "recipe-cooking",
+    name: { zh: "食谱烹饪", en: "Recipe Cooking" },
+    description: {
+      zh: "食谱页面，包含步骤勾选、食材份量调整、分类浏览和营养信息。",
+      en: "Recipe page with step tracking, ingredient scaling, category browsing, and nutritional info.",
+    },
+    styleSlug: "natural-organic",
+    type: "lifestyle",
+    href: "/templates/recipe-cooking",
+  },
+  {
+    id: "travel-booking",
+    name: { zh: "旅行预订", en: "Travel Booking" },
+    description: {
+      zh: "旅行预订页面，包含目的地搜索、标签筛选、价格展示和收藏功能。",
+      en: "Travel booking page with destination search, tag filters, pricing display, and favorites.",
+    },
+    styleSlug: "modern-gradient",
+    type: "lifestyle",
+    href: "/templates/travel-booking",
+  },
+  {
+    id: "fitness-dashboard",
+    name: { zh: "健身仪表盘", en: "Fitness Dashboard" },
+    description: {
+      zh: "暗色健身数据面板，包含步数、卡路里、运动记录、营养追踪和成就徽章。",
+      en: "Dark fitness dashboard with steps, calories, workout log, nutrition tracking, and achievement badges.",
+    },
+    styleSlug: "neon-gradient",
+    type: "dashboard",
+    href: "/templates/fitness-dashboard",
+  },
+  {
+    id: "learning-platform",
+    name: { zh: "在线学习平台", en: "Learning Platform" },
+    description: {
+      zh: "在线课程学习平台，包含课程进度、课程列表、成就统计和视频课程导航。",
+      en: "Online learning platform with course progress, lesson list, achievement stats, and course catalog.",
+    },
+    styleSlug: "notion-style",
+    type: "education",
+    href: "/templates/learning-platform",
+  },
+  {
+    id: "real-estate",
+    name: { zh: "房产列表", en: "Real Estate Listing" },
+    description: {
+      zh: "房产展示页面，支持网格/列表视图、价格筛选、户型参数和地图标注。",
+      en: "Real estate listing page with grid/list views, price filters, property details, and agent info.",
+    },
+    styleSlug: "apple-style",
+    type: "ecommerce",
+    href: "/templates/real-estate",
+  },
 ];
 
 const allStyles = getAllStylesMeta();
@@ -277,6 +398,16 @@ function templateTypeToTranslationKey(type: TemplateType) {
       return "templates.typeAuth";
     case "docs":
       return "templates.typeDocs";
+    case "social":
+      return "templates.typeSocial";
+    case "messaging":
+      return "templates.typeMessaging";
+    case "media":
+      return "templates.typeMedia";
+    case "lifestyle":
+      return "templates.typeLifestyle";
+    case "education":
+      return "templates.typeEducation";
     default:
       return "templates.typeAll";
   }
