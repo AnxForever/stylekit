@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Local scratch/output directories (should never be linted).
     ".tmp/**",
+    "tmp/**",
+    "coverage/**",
     ".trae/**",
     ".claude/**",
     "skills/**",
