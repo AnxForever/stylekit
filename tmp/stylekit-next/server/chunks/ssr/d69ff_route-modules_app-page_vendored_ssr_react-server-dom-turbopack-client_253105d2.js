@@ -1,0 +1,3 @@
+module.exports=[957079,(a,b,c)=>{let d=Error("Could not parse module '[project]/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_@playwright+test@1.58.2_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-server-dom-turbopack-client.js', file not found");throw d.code="MODULE_UNPARSABLE",d}];
+
+//# sourceMappingURL=d69ff_route-modules_app-page_vendored_ssr_react-server-dom-turbopack-client_253105d2.js.map
