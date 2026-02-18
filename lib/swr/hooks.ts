@@ -172,6 +172,284 @@ export function useProfileRatings(userId: string | undefined) {
   return useSWR<ProfileRatingsData>(userId ? "/api/profile/ratings" : null);
 }
 
+// ---------- Admin Comments ----------
+
+interface AdminComment {
+  id: string;
+  style_slug: string;
+  content: string;
+  author_name: string;
+  avatar_url: string | null;
+  user_id: string | null;
+  created_at: string;
+}
+
+interface AdminCommentsData {
+  comments: AdminComment[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+interface AdminCommentsQuery {
+  limit?: number;
+  offset?: number;
+  slug?: string;
+  search?: string;
+  from?: string;
+  to?: string;
+}
+
+export function useAdminComments(query: AdminCommentsQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 20));
+  params.set("offset", String(query.offset ?? 0));
+  if (query.slug) params.set("slug", query.slug);
+  if (query.search?.trim()) params.set("search", query.search.trim());
+  if (query.from) params.set("from", query.from);
+  if (query.to) params.set("to", query.to);
+
+  return useSWR<AdminCommentsData>(`/api/admin/comments?${params.toString()}`);
+}
+
+// ---------- Admin Users ----------
+
+interface AdminUser {
+  userId: string;
+  authorName: string;
+  avatarUrl: string | null;
+  commentCount: number;
+  ratingCount: number;
+  favoriteCount: number;
+  submissionCount: number;
+  lastActive: string;
+}
+
+interface AdminUsersData {
+  users: AdminUser[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+interface AdminUsersQuery {
+  limit?: number;
+  offset?: number;
+  search?: string;
+}
+
+export function useAdminUsers(query: AdminUsersQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 20));
+  params.set("offset", String(query.offset ?? 0));
+  if (query.search?.trim()) params.set("search", query.search.trim());
+
+  return useSWR<AdminUsersData>(`/api/admin/users?${params.toString()}`);
+}
+
+// ---------- Admin System ----------
+
+interface AdminSystemEnvironment {
+  nodeEnv: string;
+  supabaseConfigured: boolean;
+  adminTokenConfigured: boolean;
+  adminUserIdsConfigured: boolean;
+}
+
+interface AdminSystemTable {
+  name: string;
+  rowCount: number;
+}
+
+interface AdminSystemDatabase {
+  connected: boolean;
+  tables: AdminSystemTable[];
+}
+
+interface AdminSystemRuntime {
+  nodeVersion: string;
+  uptime: number;
+  memoryUsage: {
+    rss: number;
+    heapUsed: number;
+    heapTotal: number;
+  };
+}
+
+interface AdminSystemAudit {
+  fileEventCount: number;
+}
+
+interface AdminSystemData {
+  environment: AdminSystemEnvironment;
+  database: AdminSystemDatabase;
+  runtime: AdminSystemRuntime;
+  audit: AdminSystemAudit;
+}
+
+export function useAdminSystem() {
+  return useSWR<AdminSystemData>("/api/admin/system");
+}
+
+// ---------- Admin Generator Telemetry ----------
+
+type AdminGeneratorEndpoint = "generate-style" | "generate-design-system";
+type AdminGeneratorOutcome = "success" | "error";
+
+interface AdminGeneratorEvent {
+  endpoint: AdminGeneratorEndpoint;
+  outcome: AdminGeneratorOutcome;
+  status: number;
+  code?: string;
+  durationMs: number;
+  timestamp: string;
+  clientHash: string;
+}
+
+interface AdminGeneratorEndpointMetrics {
+  total: number;
+  success: number;
+  error: number;
+  avgDurationMs: number;
+  p95DurationMs: number;
+}
+
+interface AdminGeneratorSummary {
+  totalRequests: number;
+  successCount: number;
+  errorCount: number;
+  successRate: number;
+  avgDurationMs: number;
+  p95DurationMs: number;
+  byEndpoint: Record<AdminGeneratorEndpoint, AdminGeneratorEndpointMetrics>;
+  topErrorCodes: Array<{ code: string; count: number }>;
+}
+
+interface AdminGeneratorTelemetryData {
+  events: AdminGeneratorEvent[];
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+  nextOffset: number | null;
+  summary: AdminGeneratorSummary;
+}
+
+interface AdminGeneratorTelemetryQuery {
+  limit?: number;
+  offset?: number;
+  minutes?: number;
+  endpoint?: AdminGeneratorEndpoint;
+  outcome?: AdminGeneratorOutcome;
+  code?: string;
+}
+
+export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 20));
+  params.set("offset", String(query.offset ?? 0));
+  if (typeof query.minutes === "number" && Number.isFinite(query.minutes) && query.minutes > 0) {
+    params.set("minutes", String(Math.floor(query.minutes)));
+  }
+  if (query.endpoint) {
+    params.set("endpoint", query.endpoint);
+  }
+  if (query.outcome) {
+    params.set("outcome", query.outcome);
+  }
+  if (query.code?.trim()) {
+    params.set("code", query.code.trim());
+  }
+
+  return useSWR<AdminGeneratorTelemetryData>(`/api/admin/generator?${params.toString()}`);
+}
+
+// ---------- Admin Styles ----------
+
+interface AdminStyleStats {
+  views: number;
+  avgRating: number;
+  totalRatings: number;
+  totalComments: number;
+  totalFavorites: number;
+}
+
+interface AdminStyle {
+  slug: string;
+  name: string;
+  nameEn: string;
+  category: string;
+  tags: string[];
+  colors: { primary: string; secondary: string; accent: string[] };
+  stats: AdminStyleStats;
+}
+
+interface AdminStylesData {
+  styles: AdminStyle[];
+}
+
+interface AdminStylesQuery {
+  category?: string;
+  sort?: string;
+  order?: string;
+  search?: string;
+}
+
+export function useAdminStyles(query: AdminStylesQuery = {}) {
+  const params = new URLSearchParams();
+  if (query.category) params.set("category", query.category);
+  if (query.sort) params.set("sort", query.sort);
+  if (query.order) params.set("order", query.order);
+  if (query.search?.trim()) params.set("search", query.search.trim());
+
+  const qs = params.toString();
+  return useSWR<AdminStylesData>(`/api/admin/styles${qs ? `?${qs}` : ""}`);
+}
+
+// ---------- Admin Ratings ----------
+
+interface AdminRating {
+  id: string;
+  style_slug: string;
+  rating: number;
+  session_id: string | null;
+  user_id: string | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+interface AdminRatingDistribution {
+  rating: number;
+  count: number;
+}
+
+interface AdminRatingsData {
+  ratings: AdminRating[];
+  total: number;
+  limit: number;
+  offset: number;
+  distribution: AdminRatingDistribution[];
+}
+
+interface AdminRatingsQuery {
+  limit?: number;
+  offset?: number;
+  slug?: string;
+  rating?: number | null;
+  anomalies?: boolean;
+}
+
+export function useAdminRatings(query: AdminRatingsQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 20));
+  params.set("offset", String(query.offset ?? 0));
+  if (query.slug) params.set("slug", query.slug);
+  if (query.rating != null) params.set("rating", String(query.rating));
+  if (query.anomalies) params.set("anomalies", "true");
+
+  return useSWR<AdminRatingsData>(`/api/admin/ratings?${params.toString()}`);
+}
+
 // Re-export types
 export type {
   TopStyle,
@@ -192,4 +470,31 @@ export type {
   ProfileSubmissionsData,
   ProfileRating,
   ProfileRatingsData,
+  AdminComment,
+  AdminCommentsData,
+  AdminCommentsQuery,
+  AdminUser,
+  AdminUsersData,
+  AdminUsersQuery,
+  AdminSystemEnvironment,
+  AdminSystemTable,
+  AdminSystemDatabase,
+  AdminSystemRuntime,
+  AdminSystemAudit,
+  AdminSystemData,
+  AdminGeneratorEndpoint,
+  AdminGeneratorOutcome,
+  AdminGeneratorEvent,
+  AdminGeneratorEndpointMetrics,
+  AdminGeneratorSummary,
+  AdminGeneratorTelemetryData,
+  AdminGeneratorTelemetryQuery,
+  AdminStyleStats,
+  AdminStyle,
+  AdminStylesData,
+  AdminStylesQuery,
+  AdminRating,
+  AdminRatingDistribution,
+  AdminRatingsData,
+  AdminRatingsQuery,
 };
