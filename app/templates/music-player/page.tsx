@@ -277,7 +277,7 @@ export default function MusicPlayerTemplate() {
           </div>
         </div>
       </div>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }

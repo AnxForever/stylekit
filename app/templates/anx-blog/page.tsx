@@ -394,7 +394,7 @@ export default function AnxBlogTemplate() {
         </section>
       </main>
 
-      <TemplateBackButton />
+      <TemplateBackButton variant="brutal" />
     </div>
   );
 }

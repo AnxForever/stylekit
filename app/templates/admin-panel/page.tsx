@@ -319,7 +319,7 @@ export default function AdminPanelTemplate() {
           </div>
         </main>
       </div>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }
