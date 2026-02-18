@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Check, Cloud, Lock, Zap } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const features = [
   {
@@ -295,15 +296,7 @@ export default function NeumorphismLandingTemplate() {
         </div>
       </footer>
 
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className={`px-4 py-2.5 rounded-xl bg-[#e0e5ec] text-gray-700 text-sm font-semibold ${neuOut} ${neuHover} transition-all duration-200`}
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import {
   Bookmark,
   Heart,
   Home,
-  Image,
+  Image as ImageIcon,
   Menu,
   MessageCircle,
   MoreHorizontal,
@@ -21,6 +21,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 interface Post {
   id: number;
@@ -285,7 +286,7 @@ export default function SocialFeedTemplate() {
                 />
                 <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                   <div className="flex gap-1">
-                    {[Image, Smile].map((Icon, i) => (
+                    {[ImageIcon, Smile].map((Icon, i) => (
                       <button
                         key={i}
                         className="p-2 text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
@@ -336,7 +337,7 @@ export default function SocialFeedTemplate() {
                     </p>
                     {post.image && (
                       <div className="mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 h-48 flex items-center justify-center">
-                        <Image className="w-8 h-8 text-gray-300" />
+                        <ImageIcon className="w-8 h-8 text-gray-300" />
                       </div>
                     )}
                     <div className="flex items-center justify-between max-w-md text-gray-500">
@@ -498,16 +499,7 @@ export default function SocialFeedTemplate() {
       >
         <Plus className="w-6 h-6" />
       </button>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 left-4 z-50 hidden lg:block">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg shadow-lg hover:bg-gray-800 transition-colors"
-        >
-          &larr; Back to Templates
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

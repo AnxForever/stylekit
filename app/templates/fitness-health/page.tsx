@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Zap,
 } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const stats = [
   { label: "Steps", value: "8,432", target: "10,000", icon: Footprints, color: "text-blue-500", bg: "bg-blue-50", progress: 84 },
@@ -315,16 +316,7 @@ export default function FitnessHealthTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-white text-black text-sm font-medium rounded-lg shadow-lg hover:bg-gray-200 transition-colors"
-        >
-          Back to Templates
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

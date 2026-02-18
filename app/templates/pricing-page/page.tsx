@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Check, HelpCircle, X } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const plans = [
   {
@@ -253,16 +254,7 @@ export default function PricingPageTemplate() {
           </p>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg shadow-lg hover:bg-gray-800 transition-colors"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

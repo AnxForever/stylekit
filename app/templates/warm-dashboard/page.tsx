@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const sidebarItems = [
   { icon: Home, label: "概览", active: true },
@@ -257,16 +258,7 @@ export default function WarmDashboardTemplate() {
           </div>
         </main>
       </div>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-[#4a9d9a] text-white text-sm font-medium rounded-xl shadow-lg shadow-[#4a9d9a]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

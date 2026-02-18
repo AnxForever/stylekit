@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 export default function EditorialBlogTemplate() {
   return (
@@ -161,14 +162,7 @@ export default function EditorialBlogTemplate() {
       </footer>
 
       {/* Back Link */}
-      <div className="fixed bottom-4 right-4">
-        <Link
-          href="/templates"
-          className="px-4 py-2 bg-zinc-900 text-white text-sm tracking-wide hover:bg-zinc-800 transition-colors"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }
