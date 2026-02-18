@@ -14,6 +14,7 @@ Model Context Protocol server that exposes StyleKit's design knowledge base as t
 | `list_styles` | List all available design styles |
 | `lint_code` | Lint JSX/TSX class usage against a style's constraints |
 | `get_stack_guidelines` | Get coding guidelines for a specific tech stack |
+| `submit_style` | Validate and prepare a style submission from manifest JSON |
 
 ### Experimental tools (disabled by default)
 
@@ -110,6 +111,17 @@ What are the critical guidelines for Next.js development?
 ```
 
 The AI will use `get_stack_guidelines` to retrieve stack-specific coding guidelines.
+
+### Validate a Style Submission
+
+```
+Validate this manifest.json for a new style submission
+```
+
+The AI will use `submit_style` with `dryRun: true` to return a detailed validation report including:
+- Per-field validation status (schemaVersion, slug, colors, doList, etc.)
+- Schema compliance issues
+- Summary of the style being submitted
 
 ### Analyze Existing Code
 
