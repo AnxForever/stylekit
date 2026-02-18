@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#e8dcc8"/>
+  <!-- Fragmented geometric planes -->
+  <polygon points="100,50 250,30 280,150 130,180" fill="#5c4033" opacity="0.7"/>
+  <polygon points="250,30 380,80 350,200 280,150" fill="#3d5c6e" opacity="0.6"/>
+  <polygon points="130,180 280,150 260,300 100,280" fill="#5c4033" opacity="0.5"/>
+  <polygon points="280,150 350,200 320,320 260,300" fill="#3d5c6e" opacity="0.4"/>
+  <polygon points="380,80 520,40 540,170 350,200" fill="#5c4033" opacity="0.4"/>
+  <polygon points="520,40 680,60 660,200 540,170" fill="#3d5c6e" opacity="0.5"/>
+  <polygon points="350,200 540,170 510,340 320,320" fill="#e8dcc8" stroke="#5c4033" stroke-width="1.5" fill-opacity="0.5"/>
+  <polygon points="540,170 660,200 640,350 510,340" fill="#5c4033" opacity="0.3"/>
+  <polygon points="660,200 760,100 780,280 640,350" fill="#3d5c6e" opacity="0.5"/>
+  <!-- Overlapping angular lines -->
+  <line x1="100" y1="50" x2="280" y2="300" stroke="#5c4033" stroke-width="1" opacity="0.6"/>
+  <line x1="380" y1="80" x2="320" y2="320" stroke="#3d5c6e" stroke-width="1" opacity="0.5"/>
+  <line x1="520" y1="40" x2="640" y2="350" stroke="#5c4033" stroke-width="1" opacity="0.4"/>
+  <line x1="130" y1="180" x2="660" y2="200" stroke="#3d5c6e" stroke-width="0.8" opacity="0.3"/>
+  <!-- Abstract face fragment -->
+  <circle cx="300" cy="160" r="20" fill="none" stroke="#5c4033" stroke-width="2" opacity="0.6"/>
+  <circle cx="460" cy="150" r="15" fill="none" stroke="#3d5c6e" stroke-width="2" opacity="0.5"/>
+  <path d="M350 220 L400 200 L420 240" fill="none" stroke="#5c4033" stroke-width="2" opacity="0.6"/>
+  <!-- Style name -->
+  <text x="400" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#5c4033" transform="rotate(-5 400 210)">CUBISM</text>
+</svg>

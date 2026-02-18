@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="marble-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8f6f3"/>
+      <stop offset="50%" stop-color="#ece8e3"/>
+      <stop offset="100%" stop-color="#f8f6f3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#marble-bg)"/>
+  <!-- Marble veining -->
+  <path d="M0 80 Q100 60 200 100 Q350 150 400 90 Q500 20 600 80 Q700 130 800 70" fill="none" stroke="#d5cfc9" stroke-width="1.5" opacity="0.6"/>
+  <path d="M0 120 Q150 100 250 140 Q400 190 500 120 Q600 60 700 110 Q750 140 800 100" fill="none" stroke="#c8c0b6" stroke-width="1" opacity="0.5"/>
+  <path d="M0 200 Q80 170 200 210 Q300 250 450 180 Q550 130 650 200 Q720 240 800 190" fill="none" stroke="#d5cfc9" stroke-width="2" opacity="0.4"/>
+  <path d="M0 250 Q120 230 250 270 Q380 310 500 240 Q620 170 700 250 Q760 290 800 260" fill="none" stroke="#c8c0b6" stroke-width="1" opacity="0.5"/>
+  <path d="M0 320 Q100 300 220 340 Q350 380 480 310 Q580 260 680 320 Q740 350 800 330" fill="none" stroke="#d5cfc9" stroke-width="1.5" opacity="0.4"/>
+  <path d="M0 360 Q180 340 300 370 Q450 400 550 350 Q660 300 800 380" fill="none" stroke="#c8c0b6" stroke-width="1" opacity="0.3"/>
+  <!-- Gold accent lines -->
+  <line x1="100" y1="0" x2="100" y2="400" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
+  <line x1="700" y1="0" x2="700" y2="400" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
+  <!-- Gold frame corners -->
+  <path d="M60 50 L60 30 L80 30" fill="none" stroke="#c9a96e" stroke-width="2"/>
+  <path d="M740 50 L740 30 L720 30" fill="none" stroke="#c9a96e" stroke-width="2"/>
+  <path d="M60 350 L60 370 L80 370" fill="none" stroke="#c9a96e" stroke-width="2"/>
+  <path d="M740 350 L740 370 L720 370" fill="none" stroke="#c9a96e" stroke-width="2"/>
+  <!-- Gold diamond accent -->
+  <rect x="385" y="100" width="30" height="30" transform="rotate(45 400 115)" fill="none" stroke="#c9a96e" stroke-width="1.5"/>
+  <!-- Style name -->
+  <text x="400" y="210" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#1a1a1a" letter-spacing="12">MARBLE</text>
+  <text x="400" y="260" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#c9a96e" letter-spacing="16">LUXURY</text>
+</svg>

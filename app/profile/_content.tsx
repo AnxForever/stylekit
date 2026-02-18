@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Heart,
   ExternalLink,
@@ -14,6 +15,8 @@ import {
   Star,
   Send,
   BarChart3,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useUser } from "@/lib/auth/use-user";
 import { useFavorites } from "@/lib/favorites/context";
@@ -28,6 +31,7 @@ export function ProfileContent() {
   const { user, loading } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
+  const [showEmail, setShowEmail] = useState(false);
   const { data: commentsData } = useProfileComments(user?.id);
   const { data: ratingsData } = useProfileRatings(user?.id);
   const { data: submissionsData } = useProfileSubmissions(user?.id);
@@ -83,6 +87,15 @@ export function ProfileContent() {
   const fullName = user.user_metadata?.full_name ?? "";
   const avatarUrl = user.user_metadata?.avatar_url ?? "";
   const email = user.email ?? "";
+  const maskedEmail = (() => {
+    if (!email.includes("@")) return "";
+    const [local, domain] = email.split("@");
+    if (!local || !domain) return "";
+    if (local.length <= 2) {
+      return `${local[0] ?? "*"}***@${domain}`;
+    }
+    return `${local.slice(0, 2)}***@${domain}`;
+  })();
   const createdAt = user.created_at
     ? new Date(user.created_at).toLocaleDateString(
         locale === "zh" ? "zh-CN" : "en-US",
@@ -155,7 +168,7 @@ export function ProfileContent() {
           {fullName && fullName !== userName && (
             <p className="text-lg text-muted-foreground mt-1">{fullName}</p>
           )}
-          {email && (
+          {email && showEmail && (
             <p className="text-sm text-muted-foreground mt-1">{email}</p>
           )}
           {createdAt && (
@@ -393,7 +406,25 @@ export function ProfileContent() {
             <span className="text-sm text-muted-foreground">
               {t("profile.email")}
             </span>
-            <span className="text-sm text-foreground">{email}</span>
+            <span className="inline-flex items-center gap-2">
+              <span className="text-sm text-foreground">
+                {showEmail ? email : maskedEmail || t("profile.emailHidden")}
+              </span>
+              {email && (
+                <button
+                  type="button"
+                  onClick={() => setShowEmail((current) => !current)}
+                  className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
+                >
+                  {showEmail ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              )}
+            </span>
           </div>
         </div>
       </section>

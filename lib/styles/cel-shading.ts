@@ -6,7 +6,7 @@ export const celShading: DesignStyle = {
   nameEn: "Cel Shading",
   description:
     "模拟传统动画赛璐璐片的渲染风格，粗黑轮廓线、平面色块填充、无渐变阴影和鲜艳饱和色彩，充满卡通游戏的活力感。",
-  cover: "/styles/cel-shading.svg",
+  cover: "/styles/cel-shading.jpg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
   category: "expressive",

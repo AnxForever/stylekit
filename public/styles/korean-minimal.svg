@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#faf9f7"/>
+  <!-- Soft rounded shapes with lots of whitespace -->
+  <circle cx="300" cy="160" r="60" fill="#3d4a5c" opacity="0.08"/>
+  <circle cx="500" cy="180" r="90" fill="#d4a5a5" opacity="0.15"/>
+  <rect x="350" y="230" width="100" height="4" rx="2" fill="#3d4a5c" opacity="0.2"/>
+  <!-- Subtle pill shapes -->
+  <rect x="200" y="120" width="60" height="24" rx="12" fill="#d4a5a5" opacity="0.2"/>
+  <rect x="540" y="100" width="80" height="24" rx="12" fill="#3d4a5c" opacity="0.1"/>
+  <!-- Thin line -->
+  <line x1="250" y1="280" x2="550" y2="280" stroke="#3d4a5c" stroke-width="0.5" opacity="0.3"/>
+  <!-- Small circle accents -->
+  <circle cx="400" cy="310" r="4" fill="#d4a5a5" opacity="0.4"/>
+  <circle cx="380" cy="310" r="2" fill="#3d4a5c" opacity="0.2"/>
+  <circle cx="420" cy="310" r="2" fill="#3d4a5c" opacity="0.2"/>
+  <!-- Soft rounded rectangle -->
+  <rect x="330" y="140" width="140" height="80" rx="20" fill="none" stroke="#3d4a5c" stroke-width="1" opacity="0.15"/>
+  <!-- Title -->
+  <text x="400" y="370" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="15" fill="#3d4a5c" opacity="0.6" letter-spacing="4" font-weight="300">Korean Minimal</text>
+</svg>

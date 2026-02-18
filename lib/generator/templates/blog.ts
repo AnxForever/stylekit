@@ -233,6 +233,44 @@ export const blogTemplate: TemplateDefinition = {
   ],
 };
 
+interface BlogPostEntry {
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  readMinutes: number;
+}
+
+function splitCommaList(value: string, fallback: string[]): string[] {
+  const source = value.trim() ? value : fallback.join(", ");
+  return source
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
+function estimateReadMinutes(text: string): number {
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(2, Math.round(wordCount / 95));
+}
+
+function formatDisplayDate(value: string): string {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value || "2026-01-01";
+  }
+
+  return parsed.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function categoryVolumeForIndex(index: number): number {
+  return Math.max(6, 24 - index * 4);
+}
+
 /**
  * Generate HTML for blog hero section
  */
@@ -270,41 +308,65 @@ export function generateBlogHeroHtml(content: Record<string, string>): string {
  * Generate HTML for blog posts section
  */
 export function generateBlogPostsHtml(content: Record<string, string>): string {
-  const sectionTitle = content.sectionTitle || "最新文章";
+  const sectionTitle = content.sectionTitle || "Latest Posts";
 
-  const posts = [
+  const posts: BlogPostEntry[] = [
     {
-      title: content.post1Title || "开始使用 Next.js 构建现代 Web 应用",
-      excerpt: content.post1Excerpt || "Next.js 是一个强大的 React 框架...",
-      date: content.post1Date || "2024-01-15",
-      category: content.post1Category || "前端开发",
+      title: content.post1Title || "Getting Started with Next.js for Modern Web Apps",
+      excerpt: content.post1Excerpt || "Next.js gives teams a fast path to production with streaming, routing, and server rendering built in.",
+      date: content.post1Date || "2026-03-15",
+      category: content.post1Category || "Frontend",
+      readMinutes: estimateReadMinutes(content.post1Excerpt || ""),
     },
     {
-      title: content.post2Title || "TypeScript 高级类型技巧",
-      excerpt: content.post2Excerpt || "深入探索 TypeScript 的高级类型系统...",
-      date: content.post2Date || "2024-01-10",
+      title: content.post2Title || "TypeScript Patterns for Safer Product Code",
+      excerpt: content.post2Excerpt || "Explore conditional types, utility helpers, and practical patterns to keep larger codebases maintainable.",
+      date: content.post2Date || "2026-03-10",
       category: content.post2Category || "TypeScript",
+      readMinutes: estimateReadMinutes(content.post2Excerpt || ""),
     },
     {
-      title: content.post3Title || "CSS Grid 布局完全指南",
-      excerpt: content.post3Excerpt || "CSS Grid 是现代 CSS 布局中最强大的工具之一...",
-      date: content.post3Date || "2024-01-05",
+      title: content.post3Title || "CSS Grid Layouts That Scale",
+      excerpt: content.post3Excerpt || "A practical guide for building editorial and dashboard layouts that stay resilient on any viewport.",
+      date: content.post3Date || "2026-03-05",
       category: content.post3Category || "CSS",
+      readMinutes: estimateReadMinutes(content.post3Excerpt || ""),
     },
-  ];
+  ].filter((post) => post.title.trim().length > 0);
 
-  const postCards = posts
+  const featuredPost = posts[0];
+  const regularPosts = posts.slice(1);
+
+  const featuredPostHtml = featuredPost
+    ? `
+      <article class="blog-featured-post">
+        <div class="blog-featured-head">
+          <span class="blog-featured-label">Featured</span>
+          <span class="blog-featured-date">${formatDisplayDate(featuredPost.date)}</span>
+        </div>
+        <h3 class="blog-featured-title"><a href="#">${featuredPost.title}</a></h3>
+        <p class="blog-featured-excerpt">${featuredPost.excerpt}</p>
+        <div class="blog-featured-foot">
+          <span class="post-category">${featuredPost.category}</span>
+          <span class="post-read-time">${featuredPost.readMinutes} min read</span>
+        </div>
+      </article>
+    `
+    : "";
+
+  const postCards = regularPosts
     .map(
-      (p) => `
+      (post) => `
       <article class="post-card">
         <div class="post-meta">
-          <time class="post-date">${p.date}</time>
-          <span class="post-category">${p.category}</span>
+          <time class="post-date">${formatDisplayDate(post.date)}</time>
+          <span class="post-category">${post.category}</span>
+          <span class="post-read-time">${post.readMinutes} min read</span>
         </div>
-        <h3 class="post-title"><a href="#">${p.title}</a></h3>
-        <p class="post-excerpt">${p.excerpt}</p>
+        <h3 class="post-title"><a href="#">${post.title}</a></h3>
+        <p class="post-excerpt">${post.excerpt}</p>
         <a href="#" class="post-read-more">
-          阅读全文
+          Read article
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -317,31 +379,50 @@ export function generateBlogPostsHtml(content: Record<string, string>): string {
 
   return `
   <div class="blog-posts">
-    <h2 class="blog-section-title">${sectionTitle}</h2>
-    ${postCards}
+    <div class="blog-section-head">
+      <h2 class="blog-section-title">${sectionTitle}</h2>
+      <span class="blog-section-pill">${posts.length} posts</span>
+    </div>
+    ${featuredPostHtml}
+    <div class="blog-post-list">
+      ${postCards}
+    </div>
   </div>
 `;
 }
 
-/**
- * Generate HTML for blog sidebar section
- */
 export function generateBlogSidebarHtml(content: Record<string, string>): string {
-  const aboutTitle = content.aboutTitle || "关于";
-  const aboutText = content.aboutText || "这是一个关于技术、设计和创造力的博客。";
-  const categoriesStr = content.categories || "前端开发, 后端技术, 设计思维, 工具推荐";
-  const tagsStr = content.tags || "React, TypeScript, Next.js, CSS, Node.js, Design";
-
-  const categories = categoriesStr.split(",").map((c) => c.trim());
-  const tags = tagsStr.split(",").map((t) => t.trim());
+  const aboutTitle = content.aboutTitle || "About";
+  const aboutText = content.aboutText || "Thoughtful writing on product engineering, design systems, and execution habits.";
+  const categories = splitCommaList(content.categories || "", ["Frontend", "Backend", "Product", "Tooling"]);
+  const tags = splitCommaList(content.tags || "", ["React", "TypeScript", "Next.js", "CSS", "Node.js", "Design"]);
 
   const categoryItems = categories
-    .map((cat) => `<li class="sidebar-category-item"><a href="#">${cat}</a></li>`)
-    .join("\n            ");
+    .map(
+      (category, index) => `
+          <li class="sidebar-category-item">
+            <a href="#">${category}</a>
+            <span class="sidebar-category-count">${categoryVolumeForIndex(index)}</span>
+          </li>
+        `
+    )
+    .join("\n");
 
   const tagItems = tags
     .map((tag) => `<a href="#" class="sidebar-tag">${tag}</a>`)
     .join("\n            ");
+
+  const pulseItems = tags
+    .slice(0, 3)
+    .map(
+      (tag, index) => `
+        <li class="sidebar-pulse-item">
+          <span>${tag}</span>
+          <span class="sidebar-pulse-score">${92 - index * 7}%</span>
+        </li>
+      `
+    )
+    .join("\n");
 
   return `
   <aside class="blog-sidebar">
@@ -350,20 +431,32 @@ export function generateBlogSidebarHtml(content: Record<string, string>): string
       <p class="sidebar-about-text">${aboutText}</p>
     </div>
     <div class="sidebar-section">
-      <h3 class="sidebar-title">分类</h3>
+      <h3 class="sidebar-title">Categories</h3>
       <ul class="sidebar-categories">
-            ${categoryItems}
+        ${categoryItems}
       </ul>
     </div>
     <div class="sidebar-section">
-      <h3 class="sidebar-title">标签</h3>
+      <h3 class="sidebar-title">Tags</h3>
       <div class="sidebar-tags">
             ${tagItems}
       </div>
     </div>
+    <div class="sidebar-section sidebar-pulse">
+      <h3 class="sidebar-title">Topic pulse</h3>
+      <ul class="sidebar-pulse-list">
+        ${pulseItems}
+      </ul>
+    </div>
+    <div class="sidebar-section sidebar-newsletter">
+      <h3 class="sidebar-title">Weekly Brief</h3>
+      <p class="sidebar-about-text">A concise weekly breakdown of what changed and what matters next.</p>
+      <a href="#" class="sidebar-newsletter-link">Subscribe update</a>
+    </div>
   </aside>
 `;
 }
+
 
 /**
  * Generate HTML for blog footer section
@@ -371,7 +464,7 @@ export function generateBlogSidebarHtml(content: Record<string, string>): string
 export function generateBlogFooterHtml(content: Record<string, string>): string {
   const copyright = content.copyright || "2024 My Blog. All rights reserved.";
   const linksStr = content.links || "首页, 归档, 关于, RSS";
-  const links = linksStr.split(",").map((l) => l.trim());
+  const links = splitCommaList(linksStr, ["Home", "Archive", "About", "RSS"]);
 
   const linkElements = links
     .map((link) => `<a href="#" class="footer-link">${link}</a>`)
@@ -473,16 +566,100 @@ export function generateBlogCss(): string {
 }
 
 /* Blog Section Title */
+.blog-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .blog-section-title {
   font-size: var(--font-size-2xl);
-  margin-bottom: 2rem;
+  margin: 0;
   color: var(--color-foreground);
+}
+
+.blog-section-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-muted);
+  border-radius: var(--border-radius);
+  padding: 0.25rem 0.65rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.blog-featured-post {
+  border: var(--border-width) solid var(--color-muted);
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius);
+  padding: 1.25rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.blog-featured-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.blog-featured-label {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border-radius: var(--border-radius);
+  padding: 0.2rem 0.55rem;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.blog-featured-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.blog-featured-title {
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.35;
+  margin-bottom: 0.7rem;
+}
+
+.blog-featured-title a {
+  text-decoration: none;
+  color: var(--color-foreground);
+}
+
+.blog-featured-title a:hover {
+  color: var(--color-primary);
+}
+
+.blog-featured-excerpt {
+  color: var(--color-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.blog-featured-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.blog-post-list {
+  display: grid;
+  gap: 1.4rem;
 }
 
 /* Post Cards */
 .post-card {
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
+  padding-bottom: 1.4rem;
+  margin-bottom: 0;
   border-bottom: var(--border-width) solid var(--color-muted);
 }
 
@@ -495,7 +672,8 @@ export function generateBlogCss(): string {
 .post-meta {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.65rem;
   margin-bottom: 0.75rem;
 }
 
@@ -513,6 +691,11 @@ export function generateBlogCss(): string {
   background-color: var(--color-secondary);
   padding: 0.2rem 0.6rem;
   border-radius: var(--border-radius);
+}
+
+.post-read-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
 }
 
 .post-title {
@@ -583,6 +766,10 @@ export function generateBlogCss(): string {
 }
 
 .sidebar-category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--color-muted);
 }
@@ -599,6 +786,11 @@ export function generateBlogCss(): string {
 
 .sidebar-category-item a:hover {
   color: var(--color-primary);
+}
+
+.sidebar-category-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
 }
 
 /* Sidebar Tags */
@@ -622,6 +814,44 @@ export function generateBlogCss(): string {
 .sidebar-tag:hover {
   background-color: var(--color-primary);
   color: var(--color-background);
+}
+
+.sidebar-pulse-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sidebar-pulse-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-foreground);
+}
+
+.sidebar-pulse-score {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.sidebar-newsletter-link {
+  display: inline-flex;
+  margin-top: 0.9rem;
+  text-decoration: none;
+  color: var(--color-background);
+  background-color: var(--color-primary);
+  border-radius: var(--border-radius);
+  padding: 0.45rem 0.8rem;
+  font-size: var(--font-size-sm);
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-newsletter-link:hover {
+  opacity: 0.9;
 }
 
 /* Footer */
@@ -655,6 +885,17 @@ export function generateBlogCss(): string {
 
 .footer-copyright {
   font-size: var(--font-size-sm);
+}
+
+@media (max-width: 640px) {
+  .blog-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .blog-featured-post {
+    padding: 1rem;
+  }
 }
 
 @media (min-width: 768px) {

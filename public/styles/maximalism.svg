@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#1a0a2e"/>
+  <!-- Busy layered patterns -->
+  <!-- Large background shapes -->
+  <circle cx="150" cy="200" r="180" fill="#8338ec" opacity="0.2"/>
+  <circle cx="650" cy="150" r="200" fill="#3a86ff" opacity="0.15"/>
+  <circle cx="400" cy="350" r="160" fill="#d4145a" opacity="0.2"/>
+  <!-- Zigzag band -->
+  <path d="M0,100 L40,60 L80,100 L120,60 L160,100 L200,60 L240,100 L280,60 L320,100 L360,60 L400,100 L440,60 L480,100 L520,60 L560,100 L600,60 L640,100 L680,60 L720,100 L760,60 L800,100" fill="none" stroke="#ffbe0b" stroke-width="3"/>
+  <!-- Overlapping rectangles -->
+  <rect x="50" y="120" width="150" height="100" rx="5" fill="#d4145a" opacity="0.6" transform="rotate(-10,125,170)"/>
+  <rect x="120" y="100" width="120" height="80" rx="5" fill="#3a86ff" opacity="0.5" transform="rotate(5,180,140)"/>
+  <rect x="80" y="180" width="100" height="60" rx="5" fill="#ffbe0b" opacity="0.4" transform="rotate(-5,130,210)"/>
+  <!-- Circles cluster -->
+  <circle cx="500" cy="200" r="60" fill="none" stroke="#d4145a" stroke-width="4"/>
+  <circle cx="540" cy="180" r="40" fill="#8338ec" opacity="0.5"/>
+  <circle cx="480" cy="230" r="30" fill="#ffbe0b" opacity="0.4"/>
+  <circle cx="530" cy="240" r="25" fill="#3a86ff" opacity="0.5"/>
+  <!-- Triangles -->
+  <polygon points="350,150 420,280 280,280" fill="none" stroke="#ffbe0b" stroke-width="3"/>
+  <polygon points="370,180 410,250 330,250" fill="#d4145a" opacity="0.4"/>
+  <!-- Stars scattered -->
+  <polygon points="700,80 705,95 720,95 708,105 712,120 700,110 688,120 692,105 680,95 695,95" fill="#ffbe0b"/>
+  <polygon points="100,50 103,58 112,58 105,63 108,72 100,66 92,72 95,63 88,58 97,58" fill="#d4145a"/>
+  <polygon points="650,300 653,308 662,308 655,313 658,322 650,316 642,322 645,313 638,308 647,308" fill="#3a86ff"/>
+  <!-- Wavy line -->
+  <path d="M0,300 Q100,260 200,300 Q300,340 400,300 Q500,260 600,300 Q700,340 800,300" fill="none" stroke="#8338ec" stroke-width="2.5"/>
+  <!-- Dots -->
+  <circle cx="300" cy="100" r="5" fill="#ffbe0b"/>
+  <circle cx="320" cy="110" r="3" fill="#d4145a"/>
+  <circle cx="600" cy="350" r="4" fill="#8338ec"/>
+  <circle cx="200" cy="320" r="6" fill="#3a86ff"/>
+  <circle cx="750" cy="200" r="5" fill="#ffbe0b"/>
+  <!-- Diamond -->
+  <rect x="680" y="130" width="40" height="40" transform="rotate(45,700,150)" fill="none" stroke="#d4145a" stroke-width="2.5"/>
+  <!-- Spiral-like arcs -->
+  <path d="M420,50 Q480,50 480,100 Q480,140 440,140" fill="none" stroke="#ffbe0b" stroke-width="2" opacity="0.6"/>
+  <!-- Title -->
+  <text x="400" y="385" text-anchor="middle" font-family="'Impact', 'Arial Black', sans-serif" font-size="24" fill="#ffbe0b" font-weight="bold" letter-spacing="4">MAXIMALISM</text>
+</svg>

@@ -75,7 +75,7 @@ describe("styles comments route", () => {
     });
   });
 
-  it("POST requires sessionId for anonymous comments", async () => {
+  it("POST requires authentication", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetRequestClientKey.mockReturnValue("ip:1");
     mockedCheckRateLimit.mockReturnValue({
@@ -87,7 +87,7 @@ describe("styles comments route", () => {
     });
     mockedParseJsonBodyWithLimit.mockResolvedValue({
       ok: true,
-      data: { content: "Great style", authorName: "anon" },
+      data: { content: "Great style" },
     });
     mockedIsSupabaseConfigured.mockReturnValue(true);
     mockedGetServerUser.mockResolvedValue(null);
@@ -99,14 +99,14 @@ describe("styles comments route", () => {
       { params: params("neo-brutalist") },
     );
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
     await expect(response.json()).resolves.toEqual({
       success: false,
-      error: "sessionId is required for anonymous comments",
+      error: "Sign in to comment",
     });
   });
 
-  it("POST inserts comment when payload is valid", async () => {
+  it("POST inserts comment for authenticated users", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetRequestClientKey.mockReturnValue("ip:2");
     mockedCheckRateLimit.mockReturnValue({
@@ -119,26 +119,29 @@ describe("styles comments route", () => {
     mockedCreateRateLimitHeaders.mockReturnValue({ "x-ratelimit-remaining": "39" });
     mockedParseJsonBodyWithLimit.mockResolvedValue({
       ok: true,
-      data: { content: "Great style", authorName: "anon", sessionId: "session-1" },
+      data: { content: "Great style" },
     });
     mockedIsSupabaseConfigured.mockReturnValue(true);
-    mockedGetServerUser.mockResolvedValue(null);
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx", avatar_url: "https://img.example/avatar.png" },
+    } as never);
 
     const countQuery = {
-      eq: vi.fn().mockResolvedValue({ count: 0 }),
+      gte: vi.fn().mockResolvedValue({ count: 0 }),
     };
     const countSelect = {
       eq: vi.fn().mockReturnValue({
-        gte: vi.fn().mockReturnValue(countQuery),
+        eq: vi.fn().mockReturnValue(countQuery),
       }),
     };
     const insertSingle = vi.fn().mockResolvedValue({
       data: {
         id: "c1",
         content: "Great style",
-        author_name: "anon",
-        avatar_url: null,
-        user_id: null,
+        author_name: "anx",
+        avatar_url: "https://img.example/avatar.png",
+        user_id: "user-1",
         created_at: "2026-01-01",
       },
       error: null,
@@ -166,9 +169,9 @@ describe("styles comments route", () => {
       comment: {
         id: "c1",
         content: "Great style",
-        author_name: "anon",
-        avatar_url: null,
-        user_id: null,
+        author_name: "anx",
+        avatar_url: "https://img.example/avatar.png",
+        user_id: "user-1",
         created_at: "2026-01-01",
       },
     });
