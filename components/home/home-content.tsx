@@ -38,8 +38,8 @@ export function HomeContent({ styles }: HomeContentProps) {
       description: t("home.pathA.desc"),
       steps: [t("home.pathA.step1"), t("home.pathA.step2"), t("home.pathA.step3")],
       links: [
-        { href: "/create-style", label: t("home.pathA.link1") },
-        { href: "/generate", label: t("home.pathA.link2") },
+        { href: "/styles", label: t("home.pathA.link1") },
+        { href: "/templates", label: t("home.pathA.link2") },
       ],
     },
     {
@@ -49,7 +49,7 @@ export function HomeContent({ styles }: HomeContentProps) {
       steps: [t("home.pathB.step1"), t("home.pathB.step2"), t("home.pathB.step3")],
       links: [
         { href: "/styles", label: t("home.pathB.link1") },
-        { href: "/generate", label: t("home.pathB.link2") },
+        { href: "/compare", label: t("home.pathB.link2") },
       ],
     },
   ] as const;
@@ -62,19 +62,19 @@ export function HomeContent({ styles }: HomeContentProps) {
     {
       title: t("home.feature.docs.title"),
       description: t("home.feature.docs.desc"),
-      href: "/guide",
+      href: "/styles",
       icon: BookOpenText,
     },
     {
       title: t("home.feature.preview.title"),
       description: t("home.feature.preview.desc"),
-      href: "/components",
+      href: "/templates",
       icon: Component,
     },
     {
       title: t("home.feature.export.title"),
       description: t("home.feature.export.desc"),
-      href: "/generate",
+      href: "/compare",
       icon: Sparkles,
     },
   ];
@@ -281,22 +281,22 @@ export function HomeContent({ styles }: HomeContentProps) {
               <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
               <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
                 <Link
-                  href="/create-style"
-                  className={`${ctaPrimaryClassName} col-span-2`}
-                >
-                  {t("home.ctaPathA")}
-                </Link>
-                <Link
                   href="/styles"
-                  className={ctaSecondaryClassName}
+                  className={`${ctaPrimaryClassName} col-span-2`}
                 >
                   {t("home.ctaPathB")}
                 </Link>
                 <Link
-                  href="/generate"
+                  href="/templates"
                   className={ctaSecondaryClassName}
                 >
-                  {t("home.ctaGenerate")}
+                  {t("nav.templates")}
+                </Link>
+                <Link
+                  href="/compare"
+                  className={ctaSecondaryClassName}
+                >
+                  {t("nav.compare")}
                 </Link>
               </div>
 
