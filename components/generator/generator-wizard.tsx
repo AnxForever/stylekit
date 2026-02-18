@@ -6,6 +6,11 @@ import type { DesignStyle } from "@/lib/styles";
 import type { GeneratorConfig, SectionConfig, TemplateType, StyleInput, OutputFormat } from "@/lib/generator/types";
 import { getTemplateByType, landingTemplate } from "@/lib/generator";
 import { generateHtmlFiles, generatePreviewHtml } from "@/lib/generator/renderers/html-renderer";
+import {
+  evaluateGeneratedFiles,
+  sanitizeGeneratorConfig,
+  validateGeneratorConfig,
+} from "@/lib/generator/quality";
 import type { ZipBuildStage, ZipProgressUpdate } from "@/lib/generator/zip-builder";
 import { getStoredStyles } from "@/lib/style-creator/storage";
 import type { StoredCustomStyle } from "@/lib/style-creator/types";
@@ -40,6 +45,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const [isPreviewPending, setIsPreviewPending] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadNotice, setDownloadNotice] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<ZipProgressUpdate | null>(null);
   const [previewHtml, setPreviewHtml] = useState("");
   const [customStyles, setCustomStyles] = useState<StoredCustomStyle[]>([]);
@@ -130,6 +136,16 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     ]
   );
 
+  const sanitizedPreviewConfig = useMemo(
+    () => sanitizeGeneratorConfig(previewConfig, templateDef),
+    [previewConfig, templateDef]
+  );
+
+  const configValidation = useMemo(
+    () => validateGeneratorConfig(config, templateDef),
+    [config, templateDef]
+  );
+
   useEffect(() => {
     if (!styleInput) {
       setPreviewHtml("");
@@ -141,7 +157,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     setIsPreviewPending(true);
     const timeoutId = window.setTimeout(() => {
       try {
-        setPreviewHtml(generatePreviewHtml(previewConfig, styleInput));
+        setPreviewHtml(generatePreviewHtml(sanitizedPreviewConfig, styleInput));
         setPreviewError(null);
       } catch (error) {
         setPreviewHtml("");
@@ -155,11 +171,12 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [previewConfig, styleInput, t]);
+  }, [sanitizedPreviewConfig, styleInput, t]);
 
   // Handlers
   const handleSelectStyle = useCallback((slug: string, isCustom: boolean) => {
     setDownloadError(null);
+    setDownloadNotice(null);
     if (isCustom) {
       setSelectedCustomId(slug);
       setSelectedStyleSlug(null);
@@ -171,6 +188,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
   const handleSelectTemplate = useCallback((type: TemplateType) => {
     setDownloadError(null);
+    setDownloadNotice(null);
     setSelectedTemplate(type);
     const template = getTemplateByType(type);
     if (template) {
@@ -191,6 +209,8 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
   const handleUpdateSection = useCallback(
     (sectionId: string, updates: Partial<SectionConfig>) => {
+      setDownloadError(null);
+      setDownloadNotice(null);
       setSections((prev) =>
         prev.map((s) =>
           s.id === sectionId ? { ...s, ...updates } : s
@@ -202,6 +222,8 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
   const handleUpdateSectionContent = useCallback(
     (sectionId: string, fieldId: string, value: string) => {
+      setDownloadError(null);
+      setDownloadNotice(null);
       setSections((prev) =>
         prev.map((s) =>
           s.id === sectionId
@@ -213,21 +235,53 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     []
   );
 
+  const handleUpdateGlobalContent = useCallback((content: {
+    siteName: string;
+    siteDescription: string;
+  }) => {
+    setDownloadError(null);
+    setDownloadNotice(null);
+    setGlobalContent(content);
+  }, []);
+
   const handleDownload = useCallback(async () => {
-    if (!styleInput) return;
+    if (!styleInput || !templateDef) return;
 
     setDownloadError(null);
+    setDownloadNotice(null);
     setDownloadProgress({ stage: "prepare", progress: 0 });
     setIsDownloading(true);
     try {
+      const sanitizedConfig = sanitizeGeneratorConfig(config, templateDef);
+      const validation = validateGeneratorConfig(sanitizedConfig, templateDef);
+      if (validation.errors.length > 0) {
+        throw new Error(validation.errors[0].message);
+      }
+      if (validation.warnings.length > 0) {
+        setDownloadNotice(validation.warnings[0].message);
+      }
+
       const files = selectedFormat === "react"
-        ? (await import("@/lib/generator/renderers/react-renderer")).generateReactFiles(config, styleInput)
-        : generateHtmlFiles(config, styleInput);
+        ? (await import("@/lib/generator/renderers/react-renderer")).generateReactFiles(
+          sanitizedConfig,
+          styleInput
+        )
+        : generateHtmlFiles(sanitizedConfig, styleInput);
+
+      const quality = evaluateGeneratedFiles(sanitizedConfig, files);
+      if (quality.errors.length > 0) {
+        throw new Error(quality.errors[0]);
+      }
+      if (quality.warnings.length > 0) {
+        setDownloadNotice(quality.warnings[0]);
+      }
+
       const { downloadZip } = await import("@/lib/generator/zip-builder");
       const styleName = styleInput.type === "builtin"
         ? styleInput.style.slug
         : styleInput.style.id;
-      const folderName = `${globalContent.siteName.toLowerCase().replace(/\s+/g, "-")}-${styleName}`;
+      const folderBase = sanitizedConfig.globalContent.siteName || "stylekit-site";
+      const folderName = `${folderBase.toLowerCase().replace(/\s+/g, "-")}-${styleName}`;
       await downloadZip(files, folderName, {
         onProgress: (update) => {
           setDownloadProgress({
@@ -238,12 +292,17 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       });
     } catch (error) {
       console.error("Download failed:", error);
-      setDownloadError(t("generator.downloadFailed"));
+      const message = error instanceof Error ? error.message : "";
+      if (message) {
+        setDownloadError(message);
+      } else {
+        setDownloadError(t("generator.downloadFailed"));
+      }
     } finally {
       setIsDownloading(false);
       setDownloadProgress(null);
     }
-  }, [config, styleInput, globalContent.siteName, selectedFormat, t]);
+  }, [config, styleInput, templateDef, selectedFormat, t]);
 
   // Navigation
   const canProceed = useCallback(() => {
@@ -277,6 +336,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     t("generator.step2"),
     t("generator.step3"),
   ];
+  const blockingValidationMessage = configValidation.errors[0]?.message ?? null;
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
@@ -329,7 +389,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
               globalContent={globalContent}
               onUpdateSection={handleUpdateSection}
               onUpdateSectionContent={handleUpdateSectionContent}
-              onUpdateGlobalContent={setGlobalContent}
+              onUpdateGlobalContent={handleUpdateGlobalContent}
               previewHtml={previewHtml}
               isPreviewPending={isPreviewPending}
               previewError={previewError}
@@ -383,11 +443,11 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         ) : (
           <button
             onClick={handleDownload}
-            disabled={isDownloading || !styleInput}
+            disabled={isDownloading || !styleInput || !!blockingValidationMessage}
             className="px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors disabled:opacity-50"
           >
             {isDownloading
-              ? `${t("generator.downloading")}${downloadProgress ? ` ${downloadProgress.progress}% · ${getDownloadStageLabel(downloadProgress.stage, locale)}` : ""}`
+              ? `${t("generator.downloading")}${downloadProgress ? ` ${downloadProgress.progress}% - ${getDownloadStageLabel(downloadProgress.stage, locale)}` : ""}`
               : t("generator.download")}
           </button>
         )}
@@ -402,6 +462,14 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
             />
           </div>
         </div>
+      )}
+
+      {currentStep === TOTAL_STEPS && blockingValidationMessage && (
+        <p className="mt-3 text-sm text-amber-600">{blockingValidationMessage}</p>
+      )}
+
+      {downloadNotice && (
+        <p className="mt-3 text-sm text-amber-600">{downloadNotice}</p>
       )}
 
       {downloadError && (

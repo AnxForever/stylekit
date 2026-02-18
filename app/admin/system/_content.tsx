@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import {
   RefreshCw,
   CheckCircle,
@@ -10,9 +10,18 @@ import {
   Shield,
   Gauge,
   Download,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
-import { useAdminGeneratorTelemetry, useAdminSystem } from "@/lib/swr";
+import {
+  useAdminGeneratorTelemetry,
+  useAdminSystem,
+  type AdminGeneratorEndpoint,
+  type AdminGeneratorOutcome,
+} from "@/lib/swr";
+
+const TELEMETRY_PAGE_SIZE = 8;
 
 function formatUptime(seconds: number): string {
   const d = Math.floor(seconds / 86400);
@@ -30,9 +39,37 @@ function formatBytes(bytes: number): string {
 }
 
 export function AdminSystemContent() {
+  const [telemetryOffset, setTelemetryOffset] = useState(0);
+  const [telemetryWindow, setTelemetryWindow] = useState<"60" | "1440" | "10080" | "all">("1440");
+  const [telemetryEndpointFilter, setTelemetryEndpointFilter] = useState<"all" | AdminGeneratorEndpoint>("all");
+  const [telemetryOutcomeFilter, setTelemetryOutcomeFilter] = useState<"all" | AdminGeneratorOutcome>("all");
+  const [telemetryCodeFilter, setTelemetryCodeFilter] = useState("");
   const [telemetryExporting, setTelemetryExporting] = useState(false);
   const [telemetryExportNotice, setTelemetryExportNotice] = useState<string | null>(null);
   const [telemetryExportError, setTelemetryExportError] = useState<string | null>(null);
+  const deferredTelemetryCodeFilter = useDeferredValue(telemetryCodeFilter);
+
+  const telemetryQuery = useMemo(() => {
+    const minutes = telemetryWindow === "all"
+      ? undefined
+      : Number.parseInt(telemetryWindow, 10);
+
+    return {
+      limit: TELEMETRY_PAGE_SIZE,
+      offset: telemetryOffset,
+      minutes,
+      trendDays: 14,
+      endpoint: telemetryEndpointFilter === "all" ? undefined : telemetryEndpointFilter,
+      outcome: telemetryOutcomeFilter === "all" ? undefined : telemetryOutcomeFilter,
+      code: deferredTelemetryCodeFilter.trim() || undefined,
+    };
+  }, [
+    telemetryWindow,
+    telemetryOffset,
+    telemetryEndpointFilter,
+    telemetryOutcomeFilter,
+    deferredTelemetryCodeFilter,
+  ]);
 
   const { data, error, isLoading, mutate } = useAdminSystem();
   const {
@@ -40,14 +77,31 @@ export function AdminSystemContent() {
     error: telemetryError,
     isLoading: telemetryLoading,
     mutate: mutateTelemetry,
-  } = useAdminGeneratorTelemetry({ limit: 8, minutes: 24 * 60, trendDays: 14 });
+  } = useAdminGeneratorTelemetry(telemetryQuery);
 
   const telemetryExportHref = useMemo(() => {
     const params = new URLSearchParams();
     params.set("format", "csv");
-    params.set("minutes", String(24 * 60));
+    if (telemetryWindow !== "all") {
+      params.set("minutes", telemetryWindow);
+    }
+    if (telemetryEndpointFilter !== "all") {
+      params.set("endpoint", telemetryEndpointFilter);
+    }
+    if (telemetryOutcomeFilter !== "all") {
+      params.set("outcome", telemetryOutcomeFilter);
+    }
+    const trimmedCode = telemetryCodeFilter.trim();
+    if (trimmedCode) {
+      params.set("code", trimmedCode);
+    }
     return `/api/admin/generator?${params.toString()}`;
-  }, []);
+  }, [
+    telemetryWindow,
+    telemetryEndpointFilter,
+    telemetryOutcomeFilter,
+    telemetryCodeFilter,
+  ]);
 
   const uptimeDisplay = useMemo(() => {
     if (!data) return "";
@@ -63,6 +117,24 @@ export function AdminSystemContent() {
     if (!telemetry || telemetry.summary.daily.length === 0) return 0;
     return Math.max(...telemetry.summary.daily.map((point) => point.total));
   }, [telemetry]);
+
+  const telemetryCurrentPage = useMemo(() => {
+    const limit = telemetry?.limit ?? TELEMETRY_PAGE_SIZE;
+    const offset = telemetry?.offset ?? telemetryOffset;
+    return Math.floor(offset / limit) + 1;
+  }, [telemetry?.limit, telemetry?.offset, telemetryOffset]);
+
+  const telemetryTotalPages = useMemo(() => {
+    if (!telemetry) return 1;
+    return Math.max(1, Math.ceil(telemetry.total / telemetry.limit));
+  }, [telemetry]);
+
+  const telemetryWindowLabel = useMemo(() => {
+    if (telemetryWindow === "60") return "1h";
+    if (telemetryWindow === "10080") return "7d";
+    if (telemetryWindow === "all") return "All";
+    return "24h";
+  }, [telemetryWindow]);
 
   const handleExportTelemetryCsv = useCallback(async () => {
     setTelemetryExporting(true);
@@ -269,7 +341,7 @@ export function AdminSystemContent() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Gauge className="w-5 h-5 text-muted" />
-            Generator API Telemetry (24h)
+            Generator API Telemetry ({telemetryWindowLabel})
           </h2>
           <button
             onClick={() => {
@@ -305,6 +377,82 @@ export function AdminSystemContent() {
                 {telemetryExportError}
               </p>
             )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <label className="space-y-1">
+                <span className="text-[11px] tracking-wide uppercase text-muted">
+                  Window
+                </span>
+                <select
+                  value={telemetryWindow}
+                  onChange={(event) => {
+                    setTelemetryWindow(event.target.value as "60" | "1440" | "10080" | "all");
+                    setTelemetryOffset(0);
+                  }}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                >
+                  <option value="60">Last 1 hour</option>
+                  <option value="1440">Last 24 hours</option>
+                  <option value="10080">Last 7 days</option>
+                  <option value="all">All time</option>
+                </select>
+              </label>
+
+              <label className="space-y-1">
+                <span className="text-[11px] tracking-wide uppercase text-muted">
+                  Endpoint
+                </span>
+                <select
+                  value={telemetryEndpointFilter}
+                  onChange={(event) => {
+                    setTelemetryEndpointFilter(
+                      event.target.value as "all" | AdminGeneratorEndpoint
+                    );
+                    setTelemetryOffset(0);
+                  }}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                >
+                  <option value="all">All endpoints</option>
+                  <option value="generate-style">generate-style</option>
+                  <option value="generate-design-system">generate-design-system</option>
+                </select>
+              </label>
+
+              <label className="space-y-1">
+                <span className="text-[11px] tracking-wide uppercase text-muted">
+                  Outcome
+                </span>
+                <select
+                  value={telemetryOutcomeFilter}
+                  onChange={(event) => {
+                    setTelemetryOutcomeFilter(
+                      event.target.value as "all" | AdminGeneratorOutcome
+                    );
+                    setTelemetryOffset(0);
+                  }}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                >
+                  <option value="all">All outcomes</option>
+                  <option value="success">Success</option>
+                  <option value="error">Error</option>
+                </select>
+              </label>
+
+              <label className="space-y-1">
+                <span className="text-[11px] tracking-wide uppercase text-muted">
+                  Error code
+                </span>
+                <input
+                  value={telemetryCodeFilter}
+                  onChange={(event) => {
+                    setTelemetryCodeFilter(event.target.value);
+                    setTelemetryOffset(0);
+                  }}
+                  placeholder="e.g. RATE_LIMITED"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                />
+              </label>
+            </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-5 border border-border rounded-lg">
@@ -432,6 +580,40 @@ export function AdminSystemContent() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-muted">
+              <span>
+                Page {telemetryCurrentPage} / {telemetryTotalPages}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const previous = Math.max(
+                      0,
+                      (telemetry?.offset ?? 0) - (telemetry?.limit ?? TELEMETRY_PAGE_SIZE)
+                    );
+                    setTelemetryOffset(previous);
+                  }}
+                  disabled={(telemetry?.offset ?? 0) === 0}
+                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  Prev
+                </button>
+                <button
+                  onClick={() => {
+                    if (telemetry?.nextOffset != null) {
+                      setTelemetryOffset(telemetry.nextOffset);
+                    }
+                  }}
+                  disabled={!telemetry?.hasMore}
+                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Next
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         ) : null}

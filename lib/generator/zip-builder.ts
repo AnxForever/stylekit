@@ -48,6 +48,20 @@ export interface ZipBuildOptions {
 }
 
 let zipWorkerMessageId = 0;
+const ZIP_RETRY_ATTEMPTS = 3;
+const ZIP_RETRY_BACKOFF_MS = 250;
+const ZIP_FAILURE_THRESHOLD = 3;
+const ZIP_CIRCUIT_COOLDOWN_MS = 60_000;
+
+interface ZipCircuitState {
+  consecutiveFailures: number;
+  openUntilMs: number;
+}
+
+const zipCircuitState: ZipCircuitState = {
+  consecutiveFailures: 0,
+  openUntilMs: 0,
+};
 
 /**
  * Generate a ZIP file from generated files
@@ -92,6 +106,38 @@ export async function generateZip(
     progress: 100,
   });
   return blob;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+function getCircuitOpenError(waitMs: number): Error {
+  const waitSeconds = Math.ceil(waitMs / 1000);
+  return new Error(
+    `ZIP export is temporarily unavailable after repeated failures. Please retry in ${waitSeconds}s.`
+  );
+}
+
+function ensureZipCircuitClosed(): void {
+  const remaining = zipCircuitState.openUntilMs - Date.now();
+  if (remaining > 0) {
+    throw getCircuitOpenError(remaining);
+  }
+}
+
+function markZipSuccess(): void {
+  zipCircuitState.consecutiveFailures = 0;
+  zipCircuitState.openUntilMs = 0;
+}
+
+function markZipFailure(): void {
+  zipCircuitState.consecutiveFailures += 1;
+  if (zipCircuitState.consecutiveFailures >= ZIP_FAILURE_THRESHOLD) {
+    zipCircuitState.openUntilMs = Date.now() + ZIP_CIRCUIT_COOLDOWN_MS;
+  }
 }
 
 function createZipWorker(): Worker | null {
@@ -172,6 +218,19 @@ async function generateZipInWorker(
   });
 }
 
+async function generateZipWithFallback(
+  files: GeneratedFile[],
+  folderName: string,
+  options?: ZipBuildOptions
+): Promise<Blob> {
+  try {
+    return await generateZipInWorker(files, folderName, options);
+  } catch (error) {
+    console.warn("ZIP worker failed, falling back to main thread:", error);
+    return await generateZip(files, folderName, options);
+  }
+}
+
 /**
  * Trigger browser download of a Blob
  */
@@ -194,13 +253,37 @@ export async function downloadZip(
   folderName: string = "template",
   options?: ZipBuildOptions
 ): Promise<void> {
-  let blob: Blob;
-  try {
-    blob = await generateZipInWorker(files, folderName, options);
-  } catch (error) {
-    console.warn("ZIP worker failed, falling back to main thread:", error);
-    blob = await generateZip(files, folderName, options);
+  ensureZipCircuitClosed();
+
+  let lastError: unknown;
+  let blob: Blob | null = null;
+
+  for (let attempt = 1; attempt <= ZIP_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      blob = await generateZipWithFallback(files, folderName, options);
+      markZipSuccess();
+      break;
+    } catch (error) {
+      lastError = error;
+      markZipFailure();
+
+      if (zipCircuitState.openUntilMs > Date.now()) {
+        throw getCircuitOpenError(zipCircuitState.openUntilMs - Date.now());
+      }
+
+      if (attempt < ZIP_RETRY_ATTEMPTS) {
+        await sleep(ZIP_RETRY_BACKOFF_MS * attempt);
+      }
+    }
   }
+
+  if (!blob) {
+    if (lastError instanceof Error) {
+      throw lastError;
+    }
+    throw new Error("Failed to generate ZIP file after retries.");
+  }
+
   const filename = `${folderName}.zip`;
   downloadBlob(blob, filename);
 }
