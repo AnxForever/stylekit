@@ -17,7 +17,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3FCF8E?logo=supabase)](https://supabase.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-[Features](#features) &bull; [Quick Start](#quick-start) &bull; [Styles](#styles) &bull; [Templates](#templates) &bull; [API](#api) &bull; [AI Integration](#ai-integration) &bull; [Contributing](#contributing)
+[Features](#features) &bull; [Quick Start](#quick-start) &bull; [Styles](#styles) &bull; [Templates](#templates) &bull; [API](#api) &bull; [Generator Hardening](#generator-hardening-production) &bull; [AI Integration](#ai-integration) &bull; [Contributing](#contributing)
 
 </div>
 
@@ -161,6 +161,7 @@ POST   /api/lint                      # Lint code against style
 POST   /api/accessibility             # Accessibility scoring
 POST   /api/analyze-style             # Analyze existing style
 POST   /api/match-style               # Match to closest style
+GET    /api/generate-style            # Generator discovery metadata (ETag-supported)
 POST   /api/generate/design-system    # Generate design system
 
 # Export
@@ -172,6 +173,7 @@ GET    /api/styles/{slug}/md              # Export as Markdown
 # Admin (requires admin session or ADMIN_API_TOKEN)
 GET    /api/analytics/dashboard           # Admin analytics dataset
 GET    /api/admin/audit                   # Admin action audit events
+GET    /api/admin/generator               # Generator telemetry + trend + CSV export
 GET    /api/submit/list                   # Review queue
 GET    /api/submit/{id}                   # Submission detail
 POST   /api/submit/{id}/review            # Approve/reject submission
@@ -195,6 +197,14 @@ x-admin-token: <ADMIN_API_TOKEN>
 ```
 
 Security note: state-changing endpoints (`POST`/`PUT`/`PATCH`/`DELETE`) validate request `Origin` and reject untrusted cross-origin calls.
+
+## Generator Hardening (Production)
+
+- **Strict input validation** for generator APIs (`/api/generate-style`, `/api/generate/design-system`) with stable error codes.
+- **Telemetry headers** on generator responses: `x-stylekit-duration-ms`, `x-stylekit-status`, and `x-stylekit-error-code` (error only).
+- **Admin telemetry endpoint** at `/api/admin/generator` with filters (`minutes`, `endpoint`, `outcome`, `code`), daily trends (`trendDays`), pagination, and CSV export (`format=csv`).
+- **Client-side quality gates** in the generator flow: config sanitization, validation checks, output quality checks, and user-visible warnings before download.
+- **Resilient ZIP export** with worker fallback, retry with backoff, and a short-lived circuit breaker after repeated failures.
 
 [Full API docs](https://www.stylekit.top/developers/api)
 

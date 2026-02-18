@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -10,6 +10,22 @@ import type { GeneratedStyle } from "@/lib/ai-generator";
 interface StyleGenFormProps {
   onGenerate: (result: GeneratedStyle) => void;
 }
+
+interface StyleCatalogResponse {
+  catalogVersion: string;
+  availableStyles: string[];
+  moodKeywords: string[];
+}
+
+type CatalogSource = "network" | "cache" | "fallback";
+type CatalogFallbackReason =
+  | "network-error"
+  | "invalid-payload"
+  | "unexpected-status"
+  | "not-modified-without-cache";
+
+const STYLE_CATALOG_CACHE_KEY = "stylekit-ai-gen-catalog-v1";
+const STYLE_CATALOG_ETAG_KEY = "stylekit-ai-gen-catalog-etag-v1";
 
 const EXAMPLE_PROMPTS = [
   "Like Apple but warmer and more playful",
@@ -23,16 +39,172 @@ const EXAMPLE_PROMPTS = [
   "Retro vintage with warm colors",
 ];
 
+function isStyleCatalogResponse(value: unknown): value is StyleCatalogResponse {
+  if (!value || typeof value !== "object") return false;
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.catalogVersion === "string" &&
+    Array.isArray(obj.availableStyles) &&
+    obj.availableStyles.every((item) => typeof item === "string") &&
+    Array.isArray(obj.moodKeywords) &&
+    obj.moodKeywords.every((item) => typeof item === "string")
+  );
+}
+
+function readCachedCatalog(): { catalog: StyleCatalogResponse | null; etag: string | null } {
+  try {
+    const rawCatalog = localStorage.getItem(STYLE_CATALOG_CACHE_KEY);
+    const rawEtag = localStorage.getItem(STYLE_CATALOG_ETAG_KEY);
+    if (!rawCatalog) {
+      return { catalog: null, etag: rawEtag };
+    }
+    const parsed: unknown = JSON.parse(rawCatalog);
+    if (!isStyleCatalogResponse(parsed)) {
+      return { catalog: null, etag: rawEtag };
+    }
+    return { catalog: parsed, etag: rawEtag };
+  } catch {
+    return { catalog: null, etag: null };
+  }
+}
+
+function writeCachedCatalog(catalog: StyleCatalogResponse, etag: string | null): void {
+  try {
+    localStorage.setItem(STYLE_CATALOG_CACHE_KEY, JSON.stringify(catalog));
+    if (etag) {
+      localStorage.setItem(STYLE_CATALOG_ETAG_KEY, etag);
+    } else {
+      localStorage.removeItem(STYLE_CATALOG_ETAG_KEY);
+    }
+  } catch {
+    // Ignore storage quota/private mode errors.
+  }
+}
+
+function hasKeyword(description: string, keyword: string): boolean {
+  const normalizedDescription = description.toLowerCase();
+  const normalizedKeyword = keyword.toLowerCase();
+  return normalizedDescription.split(/[\s,;.!?]+/).includes(normalizedKeyword);
+}
+
 export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
   const { t } = useI18n();
   const [description, setDescription] = useState("");
   const [baseStyle, setBaseStyle] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [catalog, setCatalog] = useState<StyleCatalogResponse | null>(null);
+  const [catalogSource, setCatalogSource] = useState<CatalogSource | null>(null);
+  const reportedFallbacksRef = useRef<Set<string>>(new Set());
 
-  const visualStyles = getAllStylesMeta().filter(
-    (s) => s.styleType === "visual" && hasStyleTokens(s.slug)
+  const baseVisualStyles = useMemo(
+    () =>
+      getAllStylesMeta().filter(
+        (s) => s.styleType === "visual" && hasStyleTokens(s.slug)
+      ),
+    []
   );
+
+  const visualStyles = useMemo(() => {
+    if (!catalog || catalog.availableStyles.length === 0) {
+      return baseVisualStyles;
+    }
+    const allowedSlugs = new Set(catalog.availableStyles);
+    return baseVisualStyles.filter((style) => allowedSlugs.has(style.slug));
+  }, [baseVisualStyles, catalog]);
+
+  const moodKeywords = useMemo(
+    () => (catalog?.moodKeywords ?? []).slice(0, 16),
+    [catalog]
+  );
+  const catalogSourceText = useMemo(() => {
+    if (catalogSource === "network") return t("aiGen.catalogSourceNetwork");
+    if (catalogSource === "cache") return t("aiGen.catalogSourceCache");
+    if (catalogSource === "fallback") return t("aiGen.catalogSourceFallback");
+    return null;
+  }, [catalogSource, t]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const reportCatalogFallback = (
+      reason: CatalogFallbackReason,
+      httpStatus?: number
+    ) => {
+      const key = httpStatus ? `${reason}:${httpStatus}` : reason;
+      if (reportedFallbacksRef.current.has(key)) {
+        return;
+      }
+      reportedFallbacksRef.current.add(key);
+
+      const payload = {
+        reason,
+        ...(typeof httpStatus === "number" ? { httpStatus } : {}),
+      };
+
+      void fetch("/api/generate-style/report-fallback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch(() => {
+        // Ignore telemetry delivery failures.
+      });
+    };
+
+    const bootstrap = async () => {
+      const { catalog: cachedCatalog, etag } = readCachedCatalog();
+      const applyFallback = (
+        reason: CatalogFallbackReason,
+        httpStatus?: number
+      ) => {
+        if (cachedCatalog) return;
+        setCatalogSource("fallback");
+        reportCatalogFallback(reason, httpStatus);
+      };
+
+      if (!cancelled && cachedCatalog) {
+        setCatalog(cachedCatalog);
+        setCatalogSource("cache");
+      }
+
+      try {
+        const res = await fetch("/api/generate-style", {
+          method: "GET",
+          headers: etag ? { "If-None-Match": etag } : undefined,
+          cache: "no-store",
+        });
+
+        if (cancelled) return;
+        if (res.status === 304) {
+          applyFallback("not-modified-without-cache", 304);
+          return;
+        }
+        if (!res.ok) {
+          applyFallback("unexpected-status", res.status);
+          return;
+        }
+
+        const payload: unknown = await res.json();
+        if (!isStyleCatalogResponse(payload)) {
+          applyFallback("invalid-payload", res.status);
+          return;
+        }
+
+        setCatalog(payload);
+        setCatalogSource("network");
+        writeCachedCatalog(payload, res.headers.get("etag"));
+      } catch {
+        applyFallback("network-error");
+        // Keep using local fallback when discovery request fails.
+      }
+    };
+
+    void bootstrap();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +239,14 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
 
   function handleExampleClick(prompt: string) {
     setDescription(prompt);
+  }
+
+  function handleKeywordClick(keyword: string) {
+    setDescription((prev) => {
+      if (!prev.trim()) return keyword;
+      if (hasKeyword(prev, keyword)) return prev;
+      return `${prev.trim()}, ${keyword}`;
+    });
   }
 
   return (
@@ -112,6 +292,34 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
         </div>
       </div>
 
+      {/* Mood Keywords */}
+      {moodKeywords.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs text-muted uppercase tracking-wide">
+              {t("aiGen.keywordChips")}
+            </p>
+            {catalog?.catalogVersion && (
+              <span className="text-[11px] text-muted">
+                {t("aiGen.catalogVersion")}: {catalog.catalogVersion}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {moodKeywords.map((keyword) => (
+              <button
+                key={keyword}
+                type="button"
+                onClick={() => handleKeywordClick(keyword)}
+                className="text-xs px-3 py-1.5 border border-border rounded-full hover:bg-foreground/5 transition-colors"
+              >
+                {keyword}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Base Style Selector */}
       <div className="space-y-2">
         <label htmlFor="base-style" className="block text-sm font-medium">
@@ -133,6 +341,11 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
         <p className="text-xs text-muted">
           {t("aiGen.baseStyleHint")}
         </p>
+        {catalogSourceText && (
+          <p className="text-xs text-muted">
+            {t("aiGen.catalogSource")}: {catalogSourceText}
+          </p>
+        )}
       </div>
 
       {/* Error */}

@@ -82,7 +82,7 @@ export function TokenDiff({ styleA, styleB }: TokenDiffProps) {
         <button
           type="button"
           onClick={() => setShowDiff(!showDiff)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border transition-colors ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border transition-colors ${
             showDiff
               ? "bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-200"
               : "border-border text-muted hover:text-foreground"
@@ -113,7 +113,7 @@ export function TokenDiff({ styleA, styleB }: TokenDiffProps) {
 
       {/* Diff details panel */}
       {showDiff && categoryDiffs.size > 0 && (
-        <div className="border border-border rounded-lg overflow-hidden">
+        <div className="border border-border overflow-hidden">
           <div className="px-4 py-2.5 bg-muted/5 border-b border-border text-sm font-medium">
             {t("compare.diffDetails")}
           </div>

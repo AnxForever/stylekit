@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Plus, ArrowLeftRight, BarChart3 } from "lucide-react";
+import { Plus, ArrowLeftRight, BarChart3, Link2, Check } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
@@ -76,6 +76,24 @@ export function CompareContainer() {
     setShowThird(false);
     updateSlug(2, null);
   };
+
+  const swapAB = useCallback(() => {
+    setSlugs((prev) => {
+      const next = [prev[1], prev[0], prev[2]];
+      syncUrl(next);
+      return next;
+    });
+  }, [syncUrl]);
+
+  const [urlCopied, setUrlCopied] = useState(false);
+  const copyUrl = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setUrlCopied(true);
+      setTimeout(() => setUrlCopied(false), 2000);
+    }).catch(() => {
+      // clipboard write failed silently
+    });
+  }, []);
 
   const excludeFor = (index: number) =>
     slugs.filter((s, i): s is string => !!s && i !== index);
@@ -190,6 +208,30 @@ export function CompareContainer() {
               {t("compare.removeThird")}
             </button>
           )}
+          {slugs[0] && slugs[1] && (
+            <button
+              type="button"
+              onClick={swapAB}
+              className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              {t("compare.swapStyles")}
+            </button>
+          )}
+          {selectedSlugs.length >= 2 && (
+            <button
+              type="button"
+              onClick={copyUrl}
+              className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors ml-auto"
+            >
+              {urlCopied ? (
+                <Check className="w-3.5 h-3.5 text-green-600" />
+              ) : (
+                <Link2 className="w-3.5 h-3.5" />
+              )}
+              {urlCopied ? t("compare.urlCopied") : t("compare.copyUrl")}
+            </button>
+          )}
         </div>
       </div>
 
@@ -284,7 +326,7 @@ export function CompareContainer() {
 
 function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-border rounded-lg p-4 text-center">
+    <div className="border border-border p-4 text-center">
       <div className="text-2xl font-bold tabular-nums">{value}</div>
       <div className="text-xs text-muted mt-1">{label}</div>
     </div>

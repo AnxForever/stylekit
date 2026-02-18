@@ -722,7 +722,7 @@ curl "https://stylekit.dev/api/lint?style=neo-brutalist"`,
       {
         method: "POST",
         path: "/api/generate-style",
-        description: "Generate a style from natural language, with optional base-style anchoring and negative constraints (e.g. 'less neon', 'not brutalist').",
+        description: "Generate a style from natural language, with optional base-style anchoring and negative constraints (e.g. 'less neon', 'not brutalist'). Common error codes: ORIGIN_NOT_ALLOWED, RATE_LIMITED, INVALID_JSON, INVALID_REQUEST, GENERATION_FAILED. Response headers include x-stylekit-duration-ms, x-stylekit-status, and x-stylekit-error-code (on errors).",
         bodyParams: [
           { name: "description", type: "string", required: true, description: "Natural language style description (max 500 chars)" },
           { name: "baseStyle", type: "string", required: false, description: "Optional style slug to anchor the blend (e.g. 'apple-style')" },
@@ -761,6 +761,52 @@ curl "https://stylekit.dev/api/lint?style=neo-brutalist"`,
         curlExample: `curl -X POST https://stylekit.dev/api/generate-style \\
   -H "Content-Type: application/json" \\
   -d '{"description":"Like Apple but more futuristic and less neon","baseStyle":"apple-style"}'`,
+      },
+      {
+        method: "GET",
+        path: "/api/generate-style",
+        description: "Get style generator discovery metadata (available style slugs, mood keywords, and catalogVersion for cache invalidation). Supports ETag/If-None-Match, returns 304 when unchanged, and includes telemetry headers x-stylekit-duration-ms, x-stylekit-status, and x-stylekit-catalog-source.",
+        responseExample: `{
+  "catalogVersion": "4f1a2c8b",
+  "availableStyles": ["apple-style", "neo-brutalist", "..."],
+  "moodKeywords": ["clean", "dark", "futuristic", "..."]
+}`,
+        fetchExample: `const res = await fetch("/api/generate-style");
+const catalog = await res.json();
+console.log(catalog.catalogVersion);`,
+        curlExample: `curl -i https://stylekit.dev/api/generate-style`,
+        tryItUrl: "/api/generate-style",
+      },
+      {
+        method: "POST",
+        path: "/api/generate-style/report-fallback",
+        description: "Report client-side catalog fallback events for observability (used by web UI when discovery metadata cannot be used). Same-origin only. Error codes: ORIGIN_NOT_ALLOWED, RATE_LIMITED, INVALID_JSON, INVALID_REQUEST, FALLBACK_REPORT_FAILED.",
+        bodyParams: [
+          {
+            name: "reason",
+            type: "'network-error' | 'invalid-payload' | 'unexpected-status' | 'not-modified-without-cache'",
+            required: true,
+            description: "Fallback reason observed on client",
+          },
+          {
+            name: "httpStatus",
+            type: "number",
+            required: false,
+            description: "HTTP status observed by client when reason is unexpected-status",
+          },
+        ],
+        responseExample: `{
+  "ok": true,
+  "code": "DISCOVERY_CLIENT_FALLBACK_NETWORK"
+}`,
+        fetchExample: `await fetch("/api/generate-style/report-fallback", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ reason: "network-error" }),
+});`,
+        curlExample: `curl -X POST https://stylekit.dev/api/generate-style/report-fallback \\
+  -H "Content-Type: application/json" \\
+  -d '{"reason":"unexpected-status","httpStatus":503}'`,
       },
       {
         method: "POST",
@@ -961,6 +1007,78 @@ const { events } = await res.json();`,
         curlExample: `curl "https://stylekit.dev/api/admin/audit?limit=10&days=7"
 curl "https://stylekit.dev/api/admin/audit?format=csv" -o audit.csv`,
       },
+      {
+        method: "GET",
+        path: "/api/admin/generator",
+        description: "Query generator API telemetry, including daily trend summary and CSV export. Admin access required.",
+        auth: "admin",
+        queryParams: [
+          { name: "limit", type: "number", required: false, description: "Results per page (default: 20, max: 200)" },
+          { name: "offset", type: "number", required: false, description: "Pagination offset (default: 0)" },
+          { name: "minutes", type: "number", required: false, description: "Time window in minutes (max: 10080, omit for all time)" },
+          { name: "endpoint", type: "string", required: false, description: "Filter by endpoint (generate-style|generate-design-system)" },
+          { name: "outcome", type: "string", required: false, description: "Filter by outcome (success|error)" },
+          { name: "code", type: "string", required: false, description: "Filter by error code" },
+          { name: "fallbackReason", type: "string", required: false, description: "Filter by client fallback reason (network-error|invalid-payload|unexpected-status|not-modified-without-cache)" },
+          { name: "groupBy", type: "string", required: false, description: "Grouped aggregation mode (fallback-reason)" },
+          { name: "trendDays", type: "number", required: false, description: "Daily trend points in summary (default: 7, max: 90)" },
+          { name: "format", type: "string", required: false, description: "Set to 'csv' for CSV export" },
+        ],
+        responseExample: `{
+  "events": [
+    {
+      "endpoint": "generate-style",
+      "outcome": "success",
+      "status": 200,
+      "durationMs": 96.2,
+      "timestamp": "2026-02-18T10:00:00.000Z",
+      "clientHash": "a1b2c3d4e5f6g7h8"
+    }
+  ],
+  "summary": {
+    "totalRequests": 120,
+    "successRate": 97.5,
+    "fallbackReports": {
+      "total": 6,
+      "network": 2,
+      "invalidPayload": 1,
+      "unexpectedStatus": 2,
+      "notModifiedWithoutCache": 1
+    },
+    "daily": [
+      {
+        "date": "2026-02-17",
+        "total": 38,
+        "success": 37,
+        "error": 1,
+        "avgDurationMs": 110.3,
+        "p95DurationMs": 220.0,
+        "fallback": {
+          "total": 2,
+          "network": 1,
+          "invalidPayload": 0,
+          "unexpectedStatus": 1,
+          "notModifiedWithoutCache": 0
+        }
+      }
+    ]
+  },
+  "groupBy": "fallback-reason",
+  "groups": {
+    "fallbackReason": [
+      { "reason": "network-error", "count": 2 },
+      { "reason": "unexpected-status", "count": 1 }
+    ]
+  },
+  "hasMore": true,
+  "nextOffset": 20
+}`,
+        fetchExample: `const res = await fetch("/api/admin/generator?minutes=1440&trendDays=14&groupBy=fallback-reason&limit=20");
+const data = await res.json();
+console.log(data.groups?.fallbackReason);`,
+        curlExample: `curl "https://stylekit.dev/api/admin/generator?minutes=1440&limit=20"
+curl "https://stylekit.dev/api/admin/generator?format=csv&minutes=1440" -o generator-telemetry.csv`,
+      },
     ],
   },
   {
@@ -1033,7 +1151,7 @@ const archetype = await res.json();`,
       {
         method: "POST",
         path: "/api/generate/design-system",
-        description: "Generate a complete design system from product context and style preferences.",
+        description: "Generate a complete design system from product context and style preferences. Common error codes: ORIGIN_NOT_ALLOWED, RATE_LIMITED, INVALID_JSON, INVALID_REQUEST, STYLE_NOT_FOUND, GENERATION_FAILED. Response headers include x-stylekit-duration-ms, x-stylekit-status, and x-stylekit-error-code (on errors).",
         bodyParams: [
           { name: "productType", type: "string", required: true, description: "Product type (e.g. 'SaaS dashboard', 'e-commerce', 'blog')" },
           { name: "stylePreference", type: "string", required: false, description: "Style slug or 'auto' (default: 'auto')" },
