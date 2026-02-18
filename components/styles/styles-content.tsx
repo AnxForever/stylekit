@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition, useMemo, useCallback, useRef, useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
@@ -371,21 +370,6 @@ export function StylesContent({
         </div>
       </section>
 
-      {/* Submit CTA */}
-      <section className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16 text-center">
-          <h2 className="text-2xl md:text-3xl mb-4">
-            {t("styles.submitCta.title")}
-          </h2>
-          <p className="text-muted mb-6">{t("styles.submitCta.desc")}</p>
-          <Link
-            href="/submit"
-            className="inline-flex items-center justify-center px-6 py-3 border border-border hover:border-foreground transition-colors text-sm tracking-wide"
-          >
-            {t("styles.submitCta.button")}
-          </Link>
-        </div>
-      </section>
     </>
   );
 }
