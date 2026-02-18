@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { ArrowLeftRight } from "lucide-react";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
@@ -114,6 +115,13 @@ export function StyleDetailContent({
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
                 >
                   {t("styleDetail.viewShowcase")}
+                </Link>
+                <Link
+                  href={`/compare?a=${style.slug}`}
+                  className="inline-flex items-center gap-2 justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
+                >
+                  <ArrowLeftRight className="w-4 h-4" />
+                  {t("styleDetail.compareWith")}
                 </Link>
                 <TokensExportButton style={style} />
               </div>

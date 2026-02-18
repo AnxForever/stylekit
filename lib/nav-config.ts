@@ -32,10 +32,10 @@ export const mainNav: NavItem[] = [
   { href: "/templates", labelKey: "nav.templates" },
 ];
 
-// Tools dropdown menu (temporarily empty — re-enable when features are stable)
+// Tools dropdown menu
 export const toolsDropdown: NavDropdown = {
   labelKey: "nav.tools",
-  items: [],
+  items: [{ href: "/compare", labelKey: "nav.compare" }],
   groups: [],
 };
 
