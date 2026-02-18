@@ -295,6 +295,12 @@ export function useAdminSystem() {
 
 type AdminGeneratorEndpoint = "generate-style" | "generate-design-system";
 type AdminGeneratorOutcome = "success" | "error";
+type AdminGeneratorFallbackReason =
+  | "network-error"
+  | "invalid-payload"
+  | "unexpected-status"
+  | "not-modified-without-cache";
+type AdminGeneratorGroupBy = "none" | "fallback-reason";
 
 interface AdminGeneratorEvent {
   endpoint: AdminGeneratorEndpoint;
@@ -321,6 +327,20 @@ interface AdminGeneratorDailyPoint {
   error: number;
   avgDurationMs: number;
   p95DurationMs: number;
+  fallback: {
+    total: number;
+    network: number;
+    invalidPayload: number;
+    unexpectedStatus: number;
+    notModifiedWithoutCache: number;
+  };
+}
+
+interface AdminGeneratorGroups {
+  fallbackReason: Array<{
+    reason: AdminGeneratorFallbackReason;
+    count: number;
+  }>;
 }
 
 interface AdminGeneratorSummary {
@@ -332,6 +352,13 @@ interface AdminGeneratorSummary {
   p95DurationMs: number;
   byEndpoint: Record<AdminGeneratorEndpoint, AdminGeneratorEndpointMetrics>;
   topErrorCodes: Array<{ code: string; count: number }>;
+  fallbackReports: {
+    total: number;
+    network: number;
+    invalidPayload: number;
+    unexpectedStatus: number;
+    notModifiedWithoutCache: number;
+  };
   daily: AdminGeneratorDailyPoint[];
 }
 
@@ -342,6 +369,8 @@ interface AdminGeneratorTelemetryData {
   offset: number;
   hasMore: boolean;
   nextOffset: number | null;
+  groupBy: AdminGeneratorGroupBy;
+  groups: AdminGeneratorGroups | null;
   summary: AdminGeneratorSummary;
 }
 
@@ -353,6 +382,8 @@ interface AdminGeneratorTelemetryQuery {
   endpoint?: AdminGeneratorEndpoint;
   outcome?: AdminGeneratorOutcome;
   code?: string;
+  fallbackReason?: AdminGeneratorFallbackReason;
+  groupBy?: AdminGeneratorGroupBy;
 }
 
 export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery = {}) {
@@ -373,6 +404,12 @@ export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery =
   }
   if (query.code?.trim()) {
     params.set("code", query.code.trim());
+  }
+  if (query.fallbackReason) {
+    params.set("fallbackReason", query.fallbackReason);
+  }
+  if (query.groupBy && query.groupBy !== "none") {
+    params.set("groupBy", query.groupBy);
   }
 
   return useSWR<AdminGeneratorTelemetryData>(`/api/admin/generator?${params.toString()}`);
@@ -498,9 +535,12 @@ export type {
   AdminSystemData,
   AdminGeneratorEndpoint,
   AdminGeneratorOutcome,
+  AdminGeneratorFallbackReason,
+  AdminGeneratorGroupBy,
   AdminGeneratorEvent,
   AdminGeneratorEndpointMetrics,
   AdminGeneratorDailyPoint,
+  AdminGeneratorGroups,
   AdminGeneratorSummary,
   AdminGeneratorTelemetryData,
   AdminGeneratorTelemetryQuery,

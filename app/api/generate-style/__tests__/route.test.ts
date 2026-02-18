@@ -275,7 +275,12 @@ describe("POST /api/generate-style", () => {
 });
 
 describe("GET /api/generate-style", () => {
+  function mockDiscoveryClientKey(clientKey = "ip:style-generator-discovery") {
+    mockedGetRequestClientKey.mockReturnValue(clientKey);
+  }
+
   it("returns available styles and mood keywords with cache headers", async () => {
+    mockDiscoveryClientKey("ip:style-generator-discovery-hit");
     mockedGetAvailableStyleSlugs.mockReturnValue(["apple-style", "neo-brutalist"]);
     mockedGetMoodKeywords.mockReturnValue(["clean", "dark", "futuristic"]);
 
@@ -290,13 +295,28 @@ describe("GET /api/generate-style", () => {
       "public, max-age=300, stale-while-revalidate=3600"
     );
     expect(response.headers.get("etag")).toBeTruthy();
-    await expect(response.json()).resolves.toEqual({
+    expect(response.headers.get("x-stylekit-status")).toBe("200");
+    expect(response.headers.get("x-stylekit-catalog-source")).toBe("network");
+    expect(Number(response.headers.get("x-stylekit-duration-ms"))).toBeGreaterThanOrEqual(0);
+    const payload = await response.json();
+    expect(payload).toEqual({
+      catalogVersion: expect.any(String),
       availableStyles: ["apple-style", "neo-brutalist"],
       moodKeywords: ["clean", "dark", "futuristic"],
     });
+    expect(payload.catalogVersion).toHaveLength(8);
+    expect(mockedRecordGeneratorApiEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        endpoint: "generate-style",
+        outcome: "success",
+        status: 200,
+        code: "DISCOVERY_REFRESH",
+      })
+    );
   });
 
   it("returns 304 when if-none-match matches generated etag", async () => {
+    mockDiscoveryClientKey("ip:style-generator-discovery-304");
     mockedGetAvailableStyleSlugs.mockReturnValue(["apple-style"]);
     mockedGetMoodKeywords.mockReturnValue(["clean"]);
 
@@ -320,6 +340,84 @@ describe("GET /api/generate-style", () => {
     expect(second.headers.get("cache-control")).toBe(
       "public, max-age=300, stale-while-revalidate=3600"
     );
+    expect(second.headers.get("x-stylekit-status")).toBe("304");
+    expect(second.headers.get("x-stylekit-catalog-source")).toBe("not-modified");
     await expect(second.text()).resolves.toBe("");
+    expect(mockedRecordGeneratorApiEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        endpoint: "generate-style",
+        outcome: "success",
+        status: 304,
+        code: "DISCOVERY_NOT_MODIFIED",
+      })
+    );
+  });
+
+  it("returns 304 when if-none-match includes strong etag token", async () => {
+    mockDiscoveryClientKey("ip:style-generator-discovery-strong");
+    mockedGetAvailableStyleSlugs.mockReturnValue(["apple-style"]);
+    mockedGetMoodKeywords.mockReturnValue(["clean"]);
+
+    const first = await GET(
+      new Request("https://stylekit.top/api/generate-style", {
+        method: "GET",
+      }) as never
+    );
+    const etag = first.headers.get("etag");
+    expect(etag).toBeTruthy();
+
+    const strongTag = (etag ?? "").replace(/^W\//, "");
+    const second = await GET(
+      new Request("https://stylekit.top/api/generate-style", {
+        method: "GET",
+        headers: { "if-none-match": `"legacy", ${strongTag}` },
+      }) as never
+    );
+
+    expect(second.status).toBe(304);
+  });
+
+  it("returns 304 when if-none-match wildcard is used", async () => {
+    mockDiscoveryClientKey("ip:style-generator-discovery-wildcard");
+    mockedGetAvailableStyleSlugs.mockReturnValue(["apple-style"]);
+    mockedGetMoodKeywords.mockReturnValue(["clean"]);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/generate-style", {
+        method: "GET",
+        headers: { "if-none-match": "*" },
+      }) as never
+    );
+
+    expect(response.status).toBe(304);
+  });
+
+  it("returns DISCOVERY_FAILED when metadata generation throws", async () => {
+    mockDiscoveryClientKey("ip:style-generator-discovery-fail");
+    mockedGetAvailableStyleSlugs.mockImplementation(() => {
+      throw new Error("catalog exploded");
+    });
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/generate-style", {
+        method: "GET",
+      }) as never
+    );
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get("x-stylekit-status")).toBe("500");
+    expect(response.headers.get("x-stylekit-catalog-source")).toBe("error");
+    await expect(response.json()).resolves.toEqual({
+      code: "DISCOVERY_FAILED",
+      error: "Failed to load style discovery metadata: catalog exploded",
+    });
+    expect(mockedRecordGeneratorApiEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        endpoint: "generate-style",
+        outcome: "error",
+        status: 500,
+        code: "DISCOVERY_FAILED",
+      })
+    );
   });
 });

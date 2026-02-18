@@ -115,7 +115,7 @@ export function StyleSelector({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-border rounded-lg bg-background text-left text-sm hover:border-foreground/30 transition-colors"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-border bg-background text-left text-sm hover:border-foreground/30 transition-colors"
       >
         {selected ? (
           <span className="flex items-center gap-2 min-w-0">
@@ -153,7 +153,7 @@ export function StyleSelector({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-background border border-border rounded-lg shadow-lg max-h-72 overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-background border border-border shadow-lg max-h-72 overflow-hidden">
           <div className="p-2 border-b border-border">
             <div className="flex items-center gap-2 px-2 py-1.5 rounded bg-muted/10">
               <Search className="w-4 h-4 text-muted shrink-0" />
