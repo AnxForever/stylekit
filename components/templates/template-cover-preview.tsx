@@ -287,6 +287,17 @@ const TEMPLATE_LAYOUT_MAP: Record<string, string> = {
   "magazine-landing": "magazine",
   "neumorphism-landing": "neumorphism",
   "brutalist-playful-blog": "blog-brutal",
+  "social-feed": "blog",
+  "file-manager": "dashboard",
+  "chat-messaging": "blog",
+  "calendar-schedule": "dashboard",
+  "email-inbox": "dashboard",
+  "music-player": "dashboard",
+  "recipe-cooking": "magazine",
+  "travel-booking": "landing",
+  "fitness-dashboard": "dashboard",
+  "learning-platform": "dashboard",
+  "real-estate": "magazine",
 };
 
 export function TemplateCoverPreview({ templateId, colors }: CoverProps) {
