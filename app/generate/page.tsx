@@ -17,7 +17,7 @@ const GeneratorWizard = dynamic(
   {
     loading: () => (
       <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">加载中...</div>
       </div>
     ),
   }
