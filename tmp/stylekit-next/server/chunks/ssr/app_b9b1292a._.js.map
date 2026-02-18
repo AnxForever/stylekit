@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../../app/favicon.ico.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 256, height: 256 }\n"],"names":[],"mappings":"0GACe,CAAE,IADjB,AACiB,EADjB,CAAA,CAAA,QACiB,OAAG,CAAE,MAAO,IAAK,OAAQ,GAAI"}
