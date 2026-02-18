@@ -39,11 +39,25 @@ import {
   generateDashboardCss,
 } from "../templates/dashboard";
 
+const sectionLookupCache = new WeakMap<SectionConfig[], Map<string, SectionConfig>>();
+
+function getSectionLookup(sections: SectionConfig[]): Map<string, SectionConfig> {
+  let lookup = sectionLookupCache.get(sections);
+  if (!lookup) {
+    lookup = new Map();
+    for (const section of sections) {
+      lookup.set(section.id, section);
+    }
+    sectionLookupCache.set(sections, lookup);
+  }
+  return lookup;
+}
+
 /**
  * Get section content by ID
  */
 function getSectionContent(sections: SectionConfig[], sectionId: string): Record<string, string> {
-  const section = sections.find((s) => s.id === sectionId);
+  const section = getSectionLookup(sections).get(sectionId);
   return section?.content || {};
 }
 
@@ -51,7 +65,7 @@ function getSectionContent(sections: SectionConfig[], sectionId: string): Record
  * Check if section is enabled
  */
 function isSectionEnabled(sections: SectionConfig[], sectionId: string): boolean {
-  const section = sections.find((s) => s.id === sectionId);
+  const section = getSectionLookup(sections).get(sectionId);
   return section?.enabled ?? true;
 }
 
