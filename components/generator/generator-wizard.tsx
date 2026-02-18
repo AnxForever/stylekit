@@ -52,25 +52,45 @@ interface GeneratorWizardProps {
 const TOTAL_STEPS = 3;
 const PREVIEW_DEBOUNCE_MS = 180;
 
-const DEFAULT_GLOBAL_CONTENT_BY_TEMPLATE: Record<
-  TemplateType,
-  GeneratorConfig["globalContent"]
+const DEFAULT_GLOBAL_CONTENT_BY_LOCALE: Record<
+  "zh" | "en",
+  Record<TemplateType, GeneratorConfig["globalContent"]>
 > = {
-  landing: {
-    siteName: "My Website",
-    siteDescription: "Welcome to my website",
+  zh: {
+    landing: {
+      siteName: "我的网站",
+      siteDescription: "欢迎来到我的网站",
+    },
+    portfolio: {
+      siteName: "我的作品集",
+      siteDescription: "精选项目与实践经验",
+    },
+    blog: {
+      siteName: "我的博客",
+      siteDescription: "记录思考、教程与更新",
+    },
+    dashboard: {
+      siteName: "运营仪表盘",
+      siteDescription: "追踪核心指标与业务表现",
+    },
   },
-  portfolio: {
-    siteName: "My Portfolio",
-    siteDescription: "Selected projects and experience",
-  },
-  blog: {
-    siteName: "My Blog",
-    siteDescription: "Thoughts, tutorials, and updates",
-  },
-  dashboard: {
-    siteName: "Operations Dashboard",
-    siteDescription: "Track performance and critical metrics",
+  en: {
+    landing: {
+      siteName: "My Website",
+      siteDescription: "Welcome to my website",
+    },
+    portfolio: {
+      siteName: "My Portfolio",
+      siteDescription: "Selected projects and experience",
+    },
+    blog: {
+      siteName: "My Blog",
+      siteDescription: "Thoughts, tutorials, and updates",
+    },
+    dashboard: {
+      siteName: "Operations Dashboard",
+      siteDescription: "Track performance and critical metrics",
+    },
   },
 };
 
@@ -91,16 +111,17 @@ function buildSectionsFromTemplate(templateType: TemplateType): SectionConfig[] 
 }
 
 function getDefaultGlobalContent(
-  templateType: TemplateType
+  templateType: TemplateType,
+  locale: "zh" | "en"
 ): GeneratorConfig["globalContent"] {
-  return { ...DEFAULT_GLOBAL_CONTENT_BY_TEMPLATE[templateType] };
+  return { ...DEFAULT_GLOBAL_CONTENT_BY_LOCALE[locale][templateType] };
 }
 
 function getDownloadStageLabel(stage: ZipBuildStage, locale: "zh" | "en"): string {
   if (locale === "zh") {
-    if (stage === "prepare") return "Preparing files";
-    if (stage === "compress") return "Compressing files";
-    return "Finalizing";
+    if (stage === "prepare") return "准备文件";
+    if (stage === "compress") return "压缩文件";
+    return "完成打包";
   }
 
   if (stage === "prepare") return "Preparing";
@@ -120,6 +141,82 @@ function downloadTextFile(content: string, filename: string, mimeType: string): 
 
 export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const { t, locale } = useI18n();
+  const isZh = locale === "zh";
+
+  const uiText = useMemo(
+    () =>
+      isZh
+        ? {
+            recommendationSiteName: "站点名称建议至少 2 个词，便于用户快速理解定位。",
+            recommendationSiteDesc: "站点描述建议补充结果导向信息，提高表达完整度。",
+            recommendationFillMore: "导出前请补全更多区块字段，减少占位内容。",
+            recommendationShortField: "部分字段内容过短，建议补充更具体的信息。",
+            recommendationRepeated: "检测到区块内容重复，建议调整文案避免雷同。",
+            recommendationNextjs: "若导出 Next.js，请上线前检查路由分组和 metadata。",
+            recommendationLooksGood: "内容质量较好，建议再做一次通读后导出。",
+            readinessProduction: "可直接发布",
+            readinessRefine: "再优化后发布",
+            readinessDraft: "草稿阶段",
+            noticeScenarioSaved: "场景预设已保存。",
+            noticeScenarioDeleted: "场景预设已删除。",
+            noticeScenarioUpdated: "场景预设已更新。",
+            noticeScenarioExported: "场景预设已导出。",
+            errorScenarioSaveFailed: "场景预设保存失败。",
+            errorScenarioNotFound: "未找到对应场景预设。",
+            errorScenarioExportFailed: "场景预设导出失败。",
+            errorScenarioImportNone: "该文件中没有可导入的有效场景预设。",
+            errorScenarioImportFailed: "场景预设导入失败。",
+            noticeScenarioImported: (imported: number, skipped: number) =>
+              skipped > 0
+                ? `已导入 ${imported} 个预设，跳过 ${skipped} 个。`
+                : `已导入 ${imported} 个预设。`,
+            intelligenceTitle: "生成质量分析",
+            metricSections: "区块数",
+            metricFilledFields: "已填字段",
+            metricShortFields: "短字段",
+            metricRepeated: "重复片段",
+            sectionCompletion: "区块完成度",
+            recommendations: "优化建议",
+          }
+        : {
+            recommendationSiteName: "Give the site name at least two words to improve clarity.",
+            recommendationSiteDesc: "Expand the site description with outcome-focused copy.",
+            recommendationFillMore:
+              "Complete more section fields before exporting for production use.",
+            recommendationShortField:
+              "Some fields are too short; add more concrete details and context.",
+            recommendationRepeated:
+              "There are repeated snippets across sections; diversify wording.",
+            recommendationNextjs:
+              "For Next.js output, review generated route groups and metadata before shipping.",
+            recommendationLooksGood:
+              "Looks strong. Run one final copy pass and export.",
+            readinessProduction: "Production-ready",
+            readinessRefine: "Refine and launch",
+            readinessDraft: "Draft mode",
+            noticeScenarioSaved: "Saved scenario preset.",
+            noticeScenarioDeleted: "Preset deleted.",
+            noticeScenarioUpdated: "Preset updated.",
+            noticeScenarioExported: "Scenario presets exported.",
+            errorScenarioSaveFailed: "Failed to save scenario preset.",
+            errorScenarioNotFound: "Preset not found.",
+            errorScenarioExportFailed: "Failed to export scenario presets.",
+            errorScenarioImportNone: "No valid scenario presets found in this file.",
+            errorScenarioImportFailed: "Failed to import scenario presets.",
+            noticeScenarioImported: (imported: number, skipped: number) =>
+              skipped > 0
+                ? `Imported ${imported} presets. Skipped ${skipped}.`
+                : `Imported ${imported} presets.`,
+            intelligenceTitle: "Generation intelligence",
+            metricSections: "Sections",
+            metricFilledFields: "Filled fields",
+            metricShortFields: "Short fields",
+            metricRepeated: "Repeated snippets",
+            sectionCompletion: "Section completion",
+            recommendations: "Recommendations",
+          },
+    [isZh]
+  );
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -139,7 +236,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>("landing");
   const [selectedFormat, setSelectedFormat] = useState<OutputFormat>("html");
   const [globalContent, setGlobalContent] = useState<GeneratorConfig["globalContent"]>(() =>
-    getDefaultGlobalContent("landing")
+    getDefaultGlobalContent("landing", locale)
   );
   const [sections, setSections] = useState<SectionConfig[]>(() =>
     buildSectionsFromTemplate("landing")
@@ -284,32 +381,32 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
     const recommendations: string[] = [];
     if (siteNameWordCount < 2) {
-      recommendations.push("Give the site name at least two words to improve clarity.");
+      recommendations.push(uiText.recommendationSiteName);
     }
     if (siteDescriptionWordCount < 10) {
-      recommendations.push("Expand the site description with outcome-focused copy.");
+      recommendations.push(uiText.recommendationSiteDesc);
     }
     if (fillRatio < 0.75) {
-      recommendations.push("Complete more section fields before exporting for production use.");
+      recommendations.push(uiText.recommendationFillMore);
     }
     if (shortFieldCount > 0) {
-      recommendations.push("Some fields are too short; add more concrete details and context.");
+      recommendations.push(uiText.recommendationShortField);
     }
     if (repeatedSnippetCount > 0) {
-      recommendations.push("There are repeated snippets across sections; diversify wording.");
+      recommendations.push(uiText.recommendationRepeated);
     }
     if (selectedFormat === "nextjs") {
-      recommendations.push("For Next.js output, review generated route groups and metadata before shipping.");
+      recommendations.push(uiText.recommendationNextjs);
     }
     if (recommendations.length === 0) {
-      recommendations.push("Looks strong. Run one final copy pass and export.");
+      recommendations.push(uiText.recommendationLooksGood);
     }
 
     const readinessTier = readinessScore >= 85
-      ? "Production-ready"
+      ? uiText.readinessProduction
       : readinessScore >= 65
-        ? "Refine and launch"
-        : "Draft mode";
+        ? uiText.readinessRefine
+        : uiText.readinessDraft;
 
     return {
       enabledSectionCount: enabledSections.length,
@@ -326,7 +423,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       sectionProgress,
       recommendations,
     };
-  }, [sections, globalContent, selectedFormat]);
+  }, [sections, globalContent, selectedFormat, uiText]);
 
   useEffect(() => {
     if (!styleInput) {
@@ -379,10 +476,10 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       resetFeedback();
       setSelectedTemplate(templateType);
       setSections(buildSectionsFromTemplate(templateType));
-      setGlobalContent(getDefaultGlobalContent(templateType));
+      setGlobalContent(getDefaultGlobalContent(templateType, locale));
       setAppliedScenarioId(null);
     },
-    [resetFeedback]
+    [locale, resetFeedback]
   );
 
   const handleUpdateSection = useCallback(
@@ -438,9 +535,9 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const handleResetContent = useCallback(() => {
     resetFeedback();
     setSections(buildSectionsFromTemplate(selectedTemplate));
-    setGlobalContent(getDefaultGlobalContent(selectedTemplate));
+    setGlobalContent(getDefaultGlobalContent(selectedTemplate, locale));
     setAppliedScenarioId(null);
-  }, [resetFeedback, selectedTemplate]);
+  }, [locale, resetFeedback, selectedTemplate]);
 
   const handleSaveScenarioPack = useCallback(
     (name: string, description: string) => {
@@ -455,13 +552,13 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         });
         setCustomScenarioPacks((prev) => [savedPack, ...prev.filter((pack) => pack.id !== savedPack.id)]);
         setAppliedScenarioId(savedPack.id);
-        setDownloadNotice("Saved scenario preset.");
+        setDownloadNotice(uiText.noticeScenarioSaved);
       } catch (error) {
         console.error("Failed to save preset:", error);
-        setDownloadError("Failed to save scenario preset.");
+        setDownloadError(uiText.errorScenarioSaveFailed);
       }
     },
-    [globalContent, resetFeedback, sections, selectedTemplate]
+    [globalContent, resetFeedback, sections, selectedTemplate, uiText]
   );
 
   const handleDeleteScenarioPack = useCallback(
@@ -472,9 +569,9 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       if (appliedScenarioId === scenarioId) {
         setAppliedScenarioId(null);
       }
-      setDownloadNotice("Preset deleted.");
+      setDownloadNotice(uiText.noticeScenarioDeleted);
     },
-    [appliedScenarioId, resetFeedback]
+    [appliedScenarioId, resetFeedback, uiText]
   );
 
   const handleUpdateScenarioPack = useCallback(
@@ -482,16 +579,16 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       resetFeedback();
       const updated = updateStoredScenarioPack(scenarioId, { name, description });
       if (!updated) {
-        setDownloadError("Preset not found.");
+        setDownloadError(uiText.errorScenarioNotFound);
         return;
       }
 
       setCustomScenarioPacks((prev) =>
         prev.map((pack) => (pack.id === scenarioId ? updated : pack))
       );
-      setDownloadNotice("Preset updated.");
+      setDownloadNotice(uiText.noticeScenarioUpdated);
     },
-    [resetFeedback]
+    [resetFeedback, uiText]
   );
 
   const handleExportScenarioPacks = useCallback(() => {
@@ -504,12 +601,12 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         `stylekit-scenarios-${selectedTemplate}-${date}.json`,
         "application/json"
       );
-      setDownloadNotice("Scenario presets exported.");
+      setDownloadNotice(uiText.noticeScenarioExported);
     } catch (error) {
       console.error("Failed to export presets:", error);
-      setDownloadError("Failed to export scenario presets.");
+      setDownloadError(uiText.errorScenarioExportFailed);
     }
-  }, [resetFeedback, selectedTemplate]);
+  }, [resetFeedback, selectedTemplate, uiText]);
 
   const handleImportScenarioPacks = useCallback(
     (jsonContent: string) => {
@@ -524,20 +621,18 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         setAppliedScenarioId(null);
 
         if (result.imported === 0) {
-          setDownloadError("No valid scenario presets found in this file.");
+          setDownloadError(uiText.errorScenarioImportNone);
           return;
         }
 
-        const notice = result.skipped > 0
-          ? `Imported ${result.imported} presets. Skipped ${result.skipped}.`
-          : `Imported ${result.imported} presets.`;
+        const notice = uiText.noticeScenarioImported(result.imported, result.skipped);
         setDownloadNotice(notice);
       } catch (error) {
         console.error("Failed to import presets:", error);
-        setDownloadError("Failed to import scenario presets.");
+        setDownloadError(uiText.errorScenarioImportFailed);
       }
     },
-    [resetFeedback, selectedTemplate]
+    [resetFeedback, selectedTemplate, uiText]
   );
 
   const handleDownload = useCallback(async () => {

@@ -38,7 +38,7 @@ export function StyleStep({
   selectedCustomId,
   onSelect,
 }: StyleStepProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [builtinView, setBuiltinView] = useState<BuiltinStyleView>("featured");
   const [recentStyleSlugs, setRecentStyleSlugs] = useState<string[]>([]);
@@ -183,7 +183,7 @@ export function StyleStep({
                         className="text-xs font-medium"
                         style={{ color: style.definition.colors.foreground }}
                       >
-                        Custom
+                        {locale === "zh" ? "自定义" : "Custom"}
                       </p>
                     </div>
                     {isSelected && (
@@ -218,9 +218,11 @@ export function StyleStep({
 
                   <div className="p-3">
                     <p className="font-medium text-sm group-hover:text-accent transition-colors">
-                      {style.name}
+                      {locale === "zh" ? style.name : style.nameEn}
                     </p>
-                    <p className="text-xs text-muted">{style.nameEn}</p>
+                    <p className="text-xs text-muted">
+                      {locale === "zh" ? style.nameEn : style.name}
+                    </p>
                   </div>
                 </button>
               );
@@ -343,9 +345,11 @@ export function StyleStep({
 
                 <div className="p-3">
                   <p className="font-medium text-sm group-hover:text-accent transition-colors">
-                    {style.name}
+                    {locale === "zh" ? style.name : style.nameEn}
                   </p>
-                  <p className="text-xs text-muted">{style.nameEn}</p>
+                  <p className="text-xs text-muted">
+                    {locale === "zh" ? style.slug : style.name}
+                  </p>
                 </div>
               </div>
             );
