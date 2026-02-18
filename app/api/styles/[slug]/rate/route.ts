@@ -8,10 +8,12 @@ import {
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const RATING_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATING_RATE_LIMIT_MAX_REQUESTS = 80;
+const MAX_BODY_BYTES = 4 * 1024;
 
 const rateSchema = z.object({
   rating: z.number().int().min(1).max(5),
@@ -63,7 +65,19 @@ export async function POST(
       );
     }
 
-    const body = await request.json();
+    const bodyResult = await parseJsonBodyWithLimit(request, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Rating payload is too large.",
+      invalidJsonMessage: "Invalid request",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { success: false, error: bodyResult.error },
+        { status: bodyResult.status }
+      );
+    }
+
+    const body = bodyResult.data;
     const parsed = rateSchema.safeParse(body);
 
     if (!parsed.success) {

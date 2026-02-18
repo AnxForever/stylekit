@@ -8,10 +8,12 @@ import {
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COMMENTS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const COMMENTS_RATE_LIMIT_MAX_REQUESTS = 40;
+const MAX_BODY_BYTES = 8 * 1024;
 
 const commentSchema = z.object({
   content: z.string().min(1).max(280),
@@ -56,7 +58,19 @@ export async function POST(
       );
     }
 
-    const body = await request.json();
+    const bodyResult = await parseJsonBodyWithLimit(request, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Comment payload is too large.",
+      invalidJsonMessage: "Invalid request",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { success: false, error: bodyResult.error },
+        { status: bodyResult.status }
+      );
+    }
+
+    const body = bodyResult.data;
     const parsed = commentSchema.safeParse(body);
 
     if (!parsed.success) {
