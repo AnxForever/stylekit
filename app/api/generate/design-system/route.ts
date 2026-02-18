@@ -5,7 +5,38 @@ import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
 import { mapStyleToSlug, isDarkStyle, resolveColorScheme } from "@/lib/styles/style-mapping";
 import type { StackId } from "@/lib/knowledge";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import {
+  hashGeneratorClientKey,
+  recordGeneratorApiEvent,
+} from "@/lib/generator/api-events";
+import { z } from "zod";
+
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 40;
+const DESIGN_SYSTEM_SCHEMA = z.object({
+  productType: z.string().trim().min(1, "productType is required.").max(120, "productType is too long."),
+  stylePreference: z.string().trim().default("auto"),
+  stackId: z.string().trim().min(1).optional(),
+  colorScheme: z.enum(["light", "dark", "auto"]).default("auto"),
+  includeComponents: z
+    .array(z.string().trim().min(1))
+    .min(1, "includeComponents must contain at least one component.")
+    .max(20, "includeComponents exceeds maximum size.")
+    .default(["button", "card", "input"]),
+});
+
+function errorResponse(status: number, code: string, message: string, headers?: HeadersInit) {
+  return NextResponse.json(
+    { code, error: message },
+    headers ? { status, headers } : { status }
+  );
+}
 
 /**
  * POST /api/generate/design-system
@@ -25,30 +56,110 @@ import { verifyTrustedOrigin } from "@/lib/security/request-origin";
  * Returns a complete design system package.
  */
 export async function POST(request: Request) {
+  const startedAt = Date.now();
+  const clientKey = getRequestClientKey(request);
+  const clientHash = hashGeneratorClientKey(clientKey);
+
+  const attachTelemetryHeaders = (
+    status: number,
+    code?: string,
+    headers?: HeadersInit
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    if (code) {
+      merged.set("x-stylekit-error-code", code);
+    }
+    return merged;
+  };
+
+  const respondError = (
+    status: number,
+    code: string,
+    message: string,
+    headers?: HeadersInit
+  ) => {
+    recordGeneratorApiEvent({
+      endpoint: "generate-design-system",
+      outcome: "error",
+      status,
+      code,
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+    return errorResponse(
+      status,
+      code,
+      message,
+      attachTelemetryHeaders(status, code, headers)
+    );
+  };
+
+  const respondSuccess = (payload: unknown, headers?: HeadersInit) => {
+    const status = 200;
+    recordGeneratorApiEvent({
+      endpoint: "generate-design-system",
+      outcome: "success",
+      status,
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+
+    return NextResponse.json(payload, {
+      headers: attachTelemetryHeaders(status, undefined, headers),
+    });
+  };
+
   const originCheck = verifyTrustedOrigin(request);
   if (!originCheck.ok) {
-    return NextResponse.json(
-      { error: originCheck.error },
-      { status: originCheck.status ?? 403 }
+    return respondError(
+      originCheck.status ?? 403,
+      "ORIGIN_NOT_ALLOWED",
+      originCheck.error ?? "Cross-origin request denied."
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "api:generate-design-system",
+    key: clientKey,
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return respondError(
+      429,
+      "RATE_LIMITED",
+      "Too many design-system generation requests. Please try again later.",
+      createRateLimitHeaders(rateLimit)
     );
   }
 
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return respondError(400, "INVALID_JSON", "Invalid JSON request body.");
+    }
+
+    const parsed = DESIGN_SYSTEM_SCHEMA.safeParse(body);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      return respondError(
+        400,
+        "INVALID_REQUEST",
+        firstIssue?.message ?? "Invalid request body."
+      );
+    }
+
     const {
       productType,
       stylePreference = "auto",
       stackId,
       colorScheme = "auto",
       includeComponents = ["button", "card", "input"],
-    } = body;
-
-    if (!productType) {
-      return NextResponse.json(
-        { error: "Missing required field: productType" },
-        { status: 400 }
-      );
-    }
+    } = parsed.data;
 
     // 1. Get design recommendation from knowledge base
     const recommendation = getDesignRecommendation(productType, {
@@ -78,10 +189,7 @@ export async function POST(request: Request) {
     // 3. Get style details
     const style = getStyleBySlug(selectedStyle);
     if (!style) {
-      return NextResponse.json(
-        { error: `Style not found: ${selectedStyle}` },
-        { status: 404 }
-      );
+      return respondError(404, "STYLE_NOT_FOUND", `Style not found: ${selectedStyle}`);
     }
 
     // 4. Get tokens and recipes
@@ -159,15 +267,14 @@ export async function POST(request: Request) {
       quickStart: generateQuickStart(style, tokens, includeComponents),
     };
 
-    return NextResponse.json(designSystem, {
-      headers: {
-        "Cache-Control": "public, max-age=300, s-maxage=300",
-      },
+    return respondSuccess(designSystem, {
+      "Cache-Control": "public, max-age=300, s-maxage=300",
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: `Failed to generate design system: ${(error as Error).message}` },
-      { status: 500 }
+    return respondError(
+      500,
+      "GENERATION_FAILED",
+      `Failed to generate design system: ${(error as Error).message}`
     );
   }
 }

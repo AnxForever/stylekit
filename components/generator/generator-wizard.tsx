@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useDeferredValue } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
 import type { GeneratorConfig, SectionConfig, TemplateType, StyleInput, OutputFormat } from "@/lib/generator/types";
 import { getTemplateByType, landingTemplate } from "@/lib/generator";
 import { generateHtmlFiles, generatePreviewHtml } from "@/lib/generator/renderers/html-renderer";
-import { generateReactFiles } from "@/lib/generator/renderers/react-renderer";
-import { downloadZip } from "@/lib/generator/zip-builder";
+import type { ZipBuildStage, ZipProgressUpdate } from "@/lib/generator/zip-builder";
 import { getStoredStyles } from "@/lib/style-creator/storage";
 import type { StoredCustomStyle } from "@/lib/style-creator/types";
 import { StepIndicator } from "./step-indicator";
@@ -20,11 +19,29 @@ interface GeneratorWizardProps {
 }
 
 const TOTAL_STEPS = 3;
+const PREVIEW_DEBOUNCE_MS = 180;
+
+function getDownloadStageLabel(stage: ZipBuildStage, locale: "zh" | "en"): string {
+  if (locale === "zh") {
+    if (stage === "prepare") return "准备文件";
+    if (stage === "compress") return "压缩中";
+    return "收尾中";
+  }
+
+  if (stage === "prepare") return "Preparing";
+  if (stage === "compress") return "Compressing";
+  return "Finalizing";
+}
 
 export function GeneratorWizard({ styles }: GeneratorWizardProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [currentStep, setCurrentStep] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isPreviewPending, setIsPreviewPending] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<ZipProgressUpdate | null>(null);
+  const [previewHtml, setPreviewHtml] = useState("");
   const [customStyles, setCustomStyles] = useState<StoredCustomStyle[]>([]);
 
   // Load custom styles on mount
@@ -82,6 +99,9 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     [selectedTemplate]
   );
 
+  const deferredSections = useDeferredValue(sections);
+  const deferredGlobalContent = useDeferredValue(globalContent);
+
   const config: GeneratorConfig = useMemo(
     () => ({
       styleSlug: selectedStyleSlug || selectedCustomId || "",
@@ -93,13 +113,53 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     [selectedStyleSlug, selectedCustomId, selectedTemplate, selectedFormat, sections, globalContent]
   );
 
-  const previewHtml = useMemo(() => {
-    if (!styleInput) return "";
-    return generatePreviewHtml(config, styleInput);
-  }, [config, styleInput]);
+  const previewConfig: GeneratorConfig = useMemo(
+    () => ({
+      styleSlug: selectedStyleSlug || selectedCustomId || "",
+      templateType: selectedTemplate,
+      outputFormat: "html",
+      sections: deferredSections,
+      globalContent: deferredGlobalContent,
+    }),
+    [
+      selectedStyleSlug,
+      selectedCustomId,
+      selectedTemplate,
+      deferredSections,
+      deferredGlobalContent,
+    ]
+  );
+
+  useEffect(() => {
+    if (!styleInput) {
+      setPreviewHtml("");
+      setPreviewError(null);
+      setIsPreviewPending(false);
+      return;
+    }
+
+    setIsPreviewPending(true);
+    const timeoutId = window.setTimeout(() => {
+      try {
+        setPreviewHtml(generatePreviewHtml(previewConfig, styleInput));
+        setPreviewError(null);
+      } catch (error) {
+        setPreviewHtml("");
+        setPreviewError(t("generator.previewFailed"));
+        console.error("Failed to generate preview:", error);
+      } finally {
+        setIsPreviewPending(false);
+      }
+    }, PREVIEW_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [previewConfig, styleInput, t]);
 
   // Handlers
   const handleSelectStyle = useCallback((slug: string, isCustom: boolean) => {
+    setDownloadError(null);
     if (isCustom) {
       setSelectedCustomId(slug);
       setSelectedStyleSlug(null);
@@ -110,6 +170,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   }, []);
 
   const handleSelectTemplate = useCallback((type: TemplateType) => {
+    setDownloadError(null);
     setSelectedTemplate(type);
     const template = getTemplateByType(type);
     if (template) {
@@ -155,22 +216,34 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const handleDownload = useCallback(async () => {
     if (!styleInput) return;
 
+    setDownloadError(null);
+    setDownloadProgress({ stage: "prepare", progress: 0 });
     setIsDownloading(true);
     try {
       const files = selectedFormat === "react"
-        ? generateReactFiles(config, styleInput)
+        ? (await import("@/lib/generator/renderers/react-renderer")).generateReactFiles(config, styleInput)
         : generateHtmlFiles(config, styleInput);
+      const { downloadZip } = await import("@/lib/generator/zip-builder");
       const styleName = styleInput.type === "builtin"
         ? styleInput.style.slug
         : styleInput.style.id;
       const folderName = `${globalContent.siteName.toLowerCase().replace(/\s+/g, "-")}-${styleName}`;
-      await downloadZip(files, folderName);
+      await downloadZip(files, folderName, {
+        onProgress: (update) => {
+          setDownloadProgress({
+            stage: update.stage,
+            progress: Math.round(update.progress),
+          });
+        },
+      });
     } catch (error) {
       console.error("Download failed:", error);
+      setDownloadError(t("generator.downloadFailed"));
     } finally {
       setIsDownloading(false);
+      setDownloadProgress(null);
     }
-  }, [config, styleInput, globalContent.siteName, selectedFormat]);
+  }, [config, styleInput, globalContent.siteName, selectedFormat, t]);
 
   // Navigation
   const canProceed = useCallback(() => {
@@ -258,6 +331,8 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
               onUpdateSectionContent={handleUpdateSectionContent}
               onUpdateGlobalContent={setGlobalContent}
               previewHtml={previewHtml}
+              isPreviewPending={isPreviewPending}
+              previewError={previewError}
             />
 
             {styleInput && (
@@ -311,10 +386,27 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
             disabled={isDownloading || !styleInput}
             className="px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors disabled:opacity-50"
           >
-            {isDownloading ? t("generator.downloading") : t("generator.download")}
+            {isDownloading
+              ? `${t("generator.downloading")}${downloadProgress ? ` ${downloadProgress.progress}% · ${getDownloadStageLabel(downloadProgress.stage, locale)}` : ""}`
+              : t("generator.download")}
           </button>
         )}
       </div>
+
+      {isDownloading && downloadProgress && (
+        <div className="mt-3">
+          <div className="h-1.5 w-full bg-border/50 overflow-hidden">
+            <div
+              className="h-full bg-foreground transition-all duration-200"
+              style={{ width: `${Math.min(100, Math.max(0, downloadProgress.progress))}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {downloadError && (
+        <p className="mt-3 text-sm text-red-500">{downloadError}</p>
+      )}
     </div>
   );
 }

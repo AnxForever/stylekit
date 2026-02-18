@@ -13,6 +13,8 @@ interface ContentStepProps {
   onUpdateSectionContent: (sectionId: string, fieldId: string, value: string) => void;
   onUpdateGlobalContent: (content: { siteName: string; siteDescription: string }) => void;
   previewHtml: string;
+  isPreviewPending?: boolean;
+  previewError?: string | null;
 }
 
 export function ContentStep({
@@ -23,6 +25,8 @@ export function ContentStep({
   onUpdateSectionContent,
   onUpdateGlobalContent,
   previewHtml,
+  isPreviewPending = false,
+  previewError = null,
 }: ContentStepProps) {
   const { t } = useI18n();
   const [expandedSection, setExpandedSection] = useState<string | null>(
@@ -166,6 +170,12 @@ export function ContentStep({
           <p className="text-xs tracking-widest uppercase text-muted mb-3">
             {t("generator.preview")}
           </p>
+          {previewError && (
+            <p className="text-xs text-red-500 mb-3">{previewError}</p>
+          )}
+          {isPreviewPending && !previewError && (
+            <p className="text-xs text-muted mb-3">{t("generator.previewGenerating")}</p>
+          )}
           <div className="border border-border bg-white overflow-hidden" style={{ height: "600px" }}>
             <iframe
               ref={iframeRef}
