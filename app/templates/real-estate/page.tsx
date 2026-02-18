@@ -235,8 +235,17 @@ export default function RealEstateTemplate() {
           {properties.map((prop, i) => (
             <div
               key={prop.title}
+              role="button"
+              tabIndex={0}
+              aria-label={`${prop.title}, ${prop.address}, $${prop.price.toLocaleString()}`}
               className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
               onClick={() => setSelectedProperty(i)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelectedProperty(i);
+                }
+              }}
             >
               <div className={`aspect-[4/3] ${prop.gradient} flex items-center justify-center relative`}>
                 <Building2 className="w-12 h-12 text-white/20" />
