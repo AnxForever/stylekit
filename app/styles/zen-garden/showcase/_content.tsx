@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, Leaf, Wind, Mountain, Droplets,
+  ArrowLeft, Leaf, Wind, Mountain,
   ChevronDown, Check, X, AlertTriangle, Info,
   Users, TrendingUp, Eye, Heart,
   Circle, Waves, TreePine,

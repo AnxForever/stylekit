@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, BookOpen, Scroll, Feather, Shield,
+  ArrowLeft, Scroll, Feather, Shield,
   ChevronDown, Check, X, AlertTriangle, Info,
   Users, TrendingUp, Eye, Heart,
   Crown, Library, PenTool,
