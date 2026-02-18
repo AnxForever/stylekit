@@ -78,7 +78,8 @@ export function Header() {
               </Link>
             ))}
 
-            {/* Tools Dropdown */}
+            {/* Tools Dropdown (only when items exist) */}
+            {(toolsDropdown.groups?.length || toolsDropdown.items.length) > 0 && (
             <div className="relative" ref={toolsRef}>
               <button
                 onClick={() => setIsToolsOpen((prev) => !prev)}
@@ -128,6 +129,7 @@ export function Header() {
                 </div>
               )}
             </div>
+            )}
 
             {/* Secondary Nav Items */}
             {secondaryNav.map((item) => (
@@ -232,7 +234,8 @@ export function Header() {
                 </Link>
               ))}
 
-              {/* Tools Section */}
+              {/* Tools Section (only when items exist) */}
+              {(toolsDropdown.groups?.length || toolsDropdown.items.length) > 0 && (
               <div className="pt-2 border-t border-border">
                 <p className="text-xs uppercase tracking-widest text-muted mb-2">
                   {t(toolsDropdown.labelKey)}
@@ -298,8 +301,10 @@ export function Header() {
                   ))
                 )}
               </div>
+              )}
 
               {/* Secondary Nav */}
+              {secondaryNav.length > 0 && (
               <div className="pt-2 border-t border-border">
                 {secondaryNav.map((item) => (
                   <Link
@@ -312,6 +317,7 @@ export function Header() {
                   </Link>
                 ))}
               </div>
+              )}
 
               {/* External Links */}
               {externalNav.map((item) => (
