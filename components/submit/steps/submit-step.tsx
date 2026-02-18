@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Download, ExternalLink, Send, AlertCircle } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, Send, AlertCircle, Package } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
+import type { StyleSubmissionManifest } from "@/lib/submit/manifest-validator";
 
 interface SubmitStepProps {
   formData: {
@@ -65,6 +66,11 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
   const [copied, setCopied] = useState(false);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloadingBundle, setIsDownloadingBundle] = useState(false);
+  const [bundleResult, setBundleResult] = useState<{
+    success: boolean;
+    error?: string;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{
     success: boolean;
@@ -207,6 +213,135 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
     }
   };
 
+  const buildManifestPayload = (coverSvg: string): StyleSubmissionManifest => {
+    const name = formData.name.trim() || formData.nameEn.trim() || formData.slug.trim();
+    const nameEn = formData.nameEn.trim() || formData.name.trim() || formData.slug.trim();
+    const description =
+      formData.description.trim() ||
+      `${nameEn || name} style submission generated from StyleKit submit wizard.`;
+    const doList = formData.doList.filter((item) => item.trim());
+    const dontList = formData.dontList.filter((item) => item.trim());
+
+    const componentCoverage: Array<"buttonCode" | "cardCode" | "inputCode"> = [];
+    if (formData.buttonCode.trim()) {
+      componentCoverage.push("buttonCode");
+    }
+    if (formData.cardCode.trim()) {
+      componentCoverage.push("cardCode");
+    }
+    if (formData.inputCode.trim()) {
+      componentCoverage.push("inputCode");
+    }
+    if (componentCoverage.length === 0) {
+      componentCoverage.push("buttonCode");
+    }
+
+    return {
+      schemaVersion: "1.0.0",
+      generatedAt: new Date().toISOString(),
+      source: {
+        assistant: "manual",
+        model: "stylekit-submit-wizard",
+        notes: "Generated from submit wizard form data.",
+      },
+      formData: {
+        ...formData,
+        name,
+        nameEn,
+        description,
+        doList: doList.length > 0 ? doList : ["Keep style hierarchy clear and consistent."],
+        dontList:
+          dontList.length > 0 ? dontList : ["Avoid mixing conflicting visual languages."],
+      },
+      assets: {
+        coverSvg,
+      },
+      selfCheck: {
+        schemaValid: true,
+        requiredFilesPrepared: ["manifest.json", "cover.svg", "self-check.md"],
+        componentCoverage,
+        notes: "Auto-generated from submit wizard. Please validate before final submission.",
+      },
+    };
+  };
+
+  const parseBundleError = async (response: Response): Promise<string> => {
+    const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("application/json")) {
+      try {
+        const payload = (await response.json()) as {
+          error?: string;
+          issues?: Array<{ path?: string; message?: string }>;
+        };
+        if (payload.error) {
+          if (Array.isArray(payload.issues) && payload.issues.length > 0) {
+            const firstIssue = payload.issues[0];
+            if (firstIssue?.path && firstIssue?.message) {
+              return `${payload.error} (${firstIssue.path}: ${firstIssue.message})`;
+            }
+          }
+          return payload.error;
+        }
+      } catch {
+        // fall through
+      }
+    }
+    return `HTTP ${response.status}`;
+  };
+
+  const parseFilenameFromDisposition = (
+    contentDisposition: string | null,
+    fallback: string
+  ): string => {
+    if (!contentDisposition) return fallback;
+    const match = /filename="([^"]+)"/i.exec(contentDisposition);
+    if (!match?.[1]) return fallback;
+    return match[1];
+  };
+
+  const downloadSubmissionBundle = async () => {
+    if (!formData.slug.trim()) {
+      return;
+    }
+
+    setIsDownloadingBundle(true);
+    setBundleResult(null);
+    try {
+      const files = generateStyleScaffoldFiles(scaffoldInput);
+      const coverSvg = files.find((file) => file.name.endsWith(".svg"))?.content ?? "";
+      if (!coverSvg) {
+        throw new Error(t("submit.bundleNoCover"));
+      }
+
+      const manifest = buildManifestPayload(coverSvg);
+      const response = await fetch("/api/submit/bundle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ manifest }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await parseBundleError(response));
+      }
+
+      const blob = await response.blob();
+      const filename = parseFilenameFromDisposition(
+        response.headers.get("content-disposition"),
+        `${formData.slug.trim()}-submission-bundle.zip`
+      );
+      const { downloadBlob } = await import("@/lib/generator/zip-builder");
+      downloadBlob(blob, filename);
+      setBundleResult({ success: true });
+    } catch (error) {
+      setBundleResult({
+        success: false,
+        error: (error as Error).message,
+      });
+    } finally {
+      setIsDownloadingBundle(false);
+    }
+  };
+
   let scaffoldFiles: ReturnType<typeof generateStyleScaffoldFiles> = [];
   try {
     scaffoldFiles = generateStyleScaffoldFiles(scaffoldInput);
@@ -224,7 +359,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
           type="button"
           onClick={downloadScaffold}
@@ -249,7 +384,44 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
             <p className="text-xs text-muted">{t("submit.fullJsonDesc")}</p>
           </div>
         </button>
+
+        <button
+          type="button"
+          onClick={downloadSubmissionBundle}
+          disabled={isDownloadingBundle || !formData.slug.trim()}
+          className="flex items-center justify-center gap-3 p-6 border-2 border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <Package className="w-5 h-5" />
+          <div className="text-left">
+            <p className="font-medium">
+              {isDownloadingBundle
+                ? t("submit.downloadBundleLoading")
+                : t("submit.downloadBundle")}
+            </p>
+            <p className="text-xs text-muted">{t("submit.bundleDesc")}</p>
+          </div>
+        </button>
       </div>
+
+      {bundleResult?.success && (
+        <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
+          <div className="flex items-center gap-2 justify-center">
+            <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+            <span>{t("submit.bundleSuccess")}</span>
+          </div>
+        </div>
+      )}
+
+      {bundleResult && !bundleResult.success && (
+        <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
+          <div className="flex items-center gap-2 justify-center">
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <span>
+              {t("submit.bundleFailedPrefix")} {bundleResult.error}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Submit to Community */}
       <div className="border-2 border-dashed border-border p-6">
