@@ -66,6 +66,12 @@ describe("generateReactFiles", () => {
     sections = updateSectionContent(sections, "charts", {
       chartTitle: "ARR Mix by Segment",
       chartType: "pie",
+      chartSummary: "Segment mix and target attainment across growth motions.",
+      chartLabels: "Enterprise, Mid-market, SMB, Self-serve",
+      primarySeriesLabel: "Current ARR",
+      primarySeriesValues: "52, 28, 14, 6",
+      secondarySeriesLabel: "Target ARR",
+      secondarySeriesValues: "48, 30, 16, 6",
     });
     sections = updateSectionContent(sections, "table", {
       tableTitle: "Accounts in weekly review",
@@ -100,7 +106,10 @@ describe("generateReactFiles", () => {
     expect(kpiFile.content).toContain("Down 1.9%");
 
     expect(chartFile.content).toContain("ARR Mix by Segment");
+    expect(chartFile.content).toContain("Segment mix and target attainment across growth motions.");
     expect(chartFile.content).toContain("Segment share");
+    expect(chartFile.content).toContain("Current ARR");
+    expect(chartFile.content).toContain("Enterprise");
     expect(chartFile.content).toContain("conic-gradient(var(--style-primary)");
 
     expect(tableFile.content).toContain("Accounts in weekly review");

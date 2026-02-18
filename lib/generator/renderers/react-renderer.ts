@@ -43,6 +43,31 @@ function splitCommaList(value: string, fallback: string[]): string[] {
     .filter((item) => item.length > 0);
 }
 
+function splitNumberList(value: string, fallback: number[]): number[] {
+  const source = value.trim() ? value : fallback.join(", ");
+  const parsed = source
+    .split(",")
+    .map((item) => Number.parseFloat(item.trim()))
+    .filter((item) => Number.isFinite(item));
+
+  return parsed.length > 0 ? parsed : fallback;
+}
+
+function normalizeSeries(values: number[], targetLength: number): number[] {
+  if (targetLength <= 0) return [];
+
+  if (values.length === targetLength) {
+    return values.map((value) => Math.max(0, value));
+  }
+
+  const normalized = Array.from({ length: targetLength }, (_unused, index) => {
+    if (values.length === 0) return 0;
+    return values[index % values.length] ?? values[values.length - 1] ?? 0;
+  });
+
+  return normalized.map((value) => Math.max(0, value));
+}
+
 function estimateReadingTime(text: string): string {
   const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(2, Math.round(wordCount / 90));
@@ -1176,80 +1201,178 @@ ${kpiCards}
 function generateDashboardChartsComponent(content: Record<string, string>): string {
   const chartTitle = content.chartTitle || "Analytics Overview";
   const chartType = (content.chartType || "bar").toLowerCase();
+  const chartSummary = content.chartSummary || "Compare performance trends across key segments.";
+
+  const labels = splitCommaList(content.chartLabels || "", ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
+  const primarySeriesLabel = content.primarySeriesLabel || "Current";
+  const secondarySeriesLabel = content.secondarySeriesLabel || "Target";
+
+  const primarySeries = normalizeSeries(
+    splitNumberList(content.primarySeriesValues || "", [42, 54, 61, 58, 72, 81]),
+    labels.length
+  );
+  const secondarySeries = normalizeSeries(
+    splitNumberList(content.secondarySeriesValues || "", [38, 46, 52, 56, 62, 68]),
+    labels.length
+  );
+
   const chartTypeLabel = chartType === "line"
     ? "Trend analysis"
     : chartType === "pie"
       ? "Segment share"
       : "Monthly comparison";
 
+  const maxValue = Math.max(1, ...primarySeries, ...secondarySeries);
+  const horizontalStep = labels.length > 1 ? 304 / (labels.length - 1) : 0;
+
+  const primaryLinePoints = primarySeries
+    .map((value, index) => {
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `${Math.round(x)},${Math.round(y)}`;
+    })
+    .join(" ");
+
+  const secondaryLinePoints = secondarySeries
+    .map((value, index) => {
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `${Math.round(x)},${Math.round(y)}`;
+    })
+    .join(" ");
+
+  const highlightPoints = primarySeries
+    .map((value, index) => {
+      if (!(index === 0 || index === primarySeries.length - 1 || index % 2 === 1)) {
+        return "";
+      }
+
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `          <circle cx="${Math.round(x)}" cy="${Math.round(y)}" r="3.5" fill="currentColor" />`;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  const axisLabels = labels
+    .map((label) => `          <span>${label}</span>`)
+    .join("\n");
+
+  const barGroups = labels
+    .map((label, index) => {
+      const primaryHeight = Math.max(12, Math.round((primarySeries[index] / maxValue) * 100));
+      const secondaryHeight = Math.max(12, Math.round((secondarySeries[index] / maxValue) * 100));
+
+      return `          <div className="flex-1 min-w-[44px] text-center">
+            <div className="h-44 flex items-end justify-center gap-1.5">
+              <div className="w-3 rounded-t bg-primary/40" style={{ height: "${secondaryHeight}%" }} />
+              <div className="w-3 rounded-t bg-primary" style={{ height: "${primaryHeight}%" }} />
+            </div>
+            <p className="text-xs text-muted mt-2">${label}</p>
+          </div>`;
+    })
+    .join("\n");
+
+  const piePalette = ["var(--style-primary)", "var(--style-accent-1)", "var(--style-accent-2)", "var(--style-accent-3)"];
+  const pieEntries = labels
+    .map((label, index) => ({
+      label,
+      value: primarySeries[index] ?? 0,
+    }))
+    .filter((entry) => entry.value > 0)
+    .slice(0, 4);
+
+  if (pieEntries.length === 0) {
+    pieEntries.push({ label: "Segment", value: 1 });
+  }
+
+  const pieTotal = pieEntries.reduce((sum, entry) => sum + entry.value, 0);
+  let cursor = 0;
+  const pieSegments = pieEntries.map((entry, index) => {
+    const percent = (entry.value / pieTotal) * 100;
+    const start = cursor;
+    const end = cursor + percent;
+    cursor = end;
+
+    return {
+      ...entry,
+      percent,
+      start,
+      end,
+      color: piePalette[index % piePalette.length],
+    };
+  });
+
+  const pieGradient = pieSegments
+    .map((segment) => `${segment.color} ${segment.start.toFixed(2)}% ${segment.end.toFixed(2)}%`)
+    .join(", ");
+
+  const pieLegend = pieSegments
+    .map(
+      (segment) => `          <div className="flex items-center justify-between gap-8">
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "${segment.color}" }} />
+              ${segment.label}
+            </span>
+            <span className="font-semibold">${Math.round(segment.percent)}%</span>
+          </div>`
+    )
+    .join("\n");
+
+  const latestValue = primarySeries[primarySeries.length - 1] ?? 0;
+  const previousValue = primarySeries[primarySeries.length - 2] ?? latestValue;
+  const deltaPercent = previousValue === 0 ? 0 : ((latestValue - previousValue) / previousValue) * 100;
+  const deltaLabel = `${deltaPercent >= 0 ? "+" : ""}${deltaPercent.toFixed(1)}%`;
+  const averageValue = primarySeries.reduce((sum, value) => sum + value, 0) / Math.max(1, primarySeries.length);
+  const peakIndex = primarySeries.indexOf(Math.max(...primarySeries));
+  const peakLabel = labels[peakIndex] || labels[labels.length - 1] || "n/a";
+
   const chartBody = chartType === "line"
     ? `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80">
         <svg viewBox="0 0 320 160" className="w-full h-44 text-primary">
-          <line x1="8" y1="120" x2="312" y2="120" stroke="rgba(120,120,120,0.35)" strokeWidth="1" />
-          <line x1="8" y1="80" x2="312" y2="80" stroke="rgba(120,120,120,0.22)" strokeWidth="1" />
-          <line x1="8" y1="40" x2="312" y2="40" stroke="rgba(120,120,120,0.12)" strokeWidth="1" />
+          <line x1="8" y1="128" x2="312" y2="128" stroke="rgba(120,120,120,0.35)" strokeWidth="1" />
+          <line x1="8" y1="88" x2="312" y2="88" stroke="rgba(120,120,120,0.22)" strokeWidth="1" />
+          <line x1="8" y1="48" x2="312" y2="48" stroke="rgba(120,120,120,0.14)" strokeWidth="1" />
+          <polyline
+            fill="none"
+            stroke="rgba(120,120,120,0.6)"
+            strokeWidth="2"
+            points="${secondaryLinePoints}"
+          />
           <polyline
             fill="none"
             stroke="currentColor"
             strokeWidth="3"
-            points="8,118 62,98 116,106 170,74 224,82 278,52 312,58"
+            points="${primaryLinePoints}"
           />
-          <circle cx="62" cy="98" r="4" fill="currentColor" />
-          <circle cx="170" cy="74" r="4" fill="currentColor" />
-          <circle cx="278" cy="52" r="4" fill="currentColor" />
+${highlightPoints}
         </svg>
         <div className="mt-3 flex justify-between text-xs text-muted">
-          <span>Jan</span>
-          <span>Feb</span>
-          <span>Mar</span>
-          <span>Apr</span>
-          <span>May</span>
-          <span>Jun</span>
-          <span>Jul</span>
+${axisLabels}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-4 text-xs">
+          <span className="inline-flex items-center gap-2"><span className="inline-block w-2 h-2 rounded-full bg-primary" />${primarySeriesLabel}</span>
+          <span className="inline-flex items-center gap-2"><span className="inline-block w-2 h-2 rounded-full bg-muted" />${secondarySeriesLabel}</span>
         </div>
       </div>`
     : chartType === "pie"
       ? `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80 md:flex items-center gap-8">
-        <div className="mx-auto md:mx-0 w-36 h-36 rounded-full relative" style={{ background: "conic-gradient(var(--style-primary) 0 42%, var(--style-accent-1) 42% 68%, var(--style-accent-2) 68% 100%)" }}>
+        <div className="mx-auto md:mx-0 w-36 h-36 rounded-full relative" style={{ background: "conic-gradient(${pieGradient})" }}>
           <div className="absolute inset-[22%] rounded-full bg-background border border-muted/30" />
         </div>
         <div className="mt-5 md:mt-0 space-y-3 text-sm">
-          <div className="flex items-center justify-between gap-8">
-            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-primary)" }} />Enterprise</span>
-            <span className="font-semibold">42%</span>
-          </div>
-          <div className="flex items-center justify-between gap-8">
-            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-accent-1)" }} />Mid-market</span>
-            <span className="font-semibold">26%</span>
-          </div>
-          <div className="flex items-center justify-between gap-8">
-            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-accent-2)" }} />SMB</span>
-            <span className="font-semibold">32%</span>
-          </div>
+          <p className="text-xs uppercase tracking-wide text-muted">${primarySeriesLabel}</p>
+${pieLegend}
+          <p className="text-xs text-muted">Benchmark: ${secondarySeriesLabel}</p>
         </div>
       </div>`
       : `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80">
-        <div className="h-44 flex items-end gap-3">
-          <div className="flex-1 text-center">
-            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/30 h-[38%]" />
-            <p className="text-xs text-muted mt-2">Jan</p>
-          </div>
-          <div className="flex-1 text-center">
-            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/45 h-[58%]" />
-            <p className="text-xs text-muted mt-2">Feb</p>
-          </div>
-          <div className="flex-1 text-center">
-            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/60 h-[72%]" />
-            <p className="text-xs text-muted mt-2">Mar</p>
-          </div>
-          <div className="flex-1 text-center">
-            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/70 h-[65%]" />
-            <p className="text-xs text-muted mt-2">Apr</p>
-          </div>
-          <div className="flex-1 text-center">
-            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary h-[88%]" />
-            <p className="text-xs text-muted mt-2">May</p>
-          </div>
+        <div className="flex items-end gap-3">
+${barGroups}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-4 text-xs">
+          <span className="inline-flex items-center gap-2"><span className="inline-block w-2 h-2 rounded-full bg-primary" />${primarySeriesLabel}</span>
+          <span className="inline-flex items-center gap-2"><span className="inline-block w-2 h-2 rounded-full bg-primary/40" />${secondarySeriesLabel}</span>
         </div>
       </div>`;
 
@@ -1259,23 +1382,23 @@ function generateDashboardChartsComponent(content: Record<string, string>): stri
       <div className="flex items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold">${chartTitle}</h2>
-          <p className="text-sm text-muted">Compare performance trends across key segments.</p>
+          <p className="text-sm text-muted">${chartSummary}</p>
         </div>
         <span className="text-xs uppercase tracking-wide text-muted">${chartTypeLabel}</span>
       </div>
 ${chartBody}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="rounded-lg border border-muted/30 px-3 py-2">
-          <p className="text-xs uppercase tracking-wide text-muted">Pipeline</p>
-          <p className="text-sm font-semibold text-foreground mt-1">$3.8M</p>
+          <p className="text-xs uppercase tracking-wide text-muted">Latest</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${latestValue.toFixed(1)}</p>
         </div>
         <div className="rounded-lg border border-muted/30 px-3 py-2">
-          <p className="text-xs uppercase tracking-wide text-muted">Forecast</p>
-          <p className="text-sm font-semibold text-foreground mt-1">+12% QoQ</p>
+          <p className="text-xs uppercase tracking-wide text-muted">Period change</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${deltaLabel}</p>
         </div>
         <div className="rounded-lg border border-muted/30 px-3 py-2">
-          <p className="text-xs uppercase tracking-wide text-muted">Win Rate</p>
-          <p className="text-sm font-semibold text-foreground mt-1">34.6%</p>
+          <p className="text-xs uppercase tracking-wide text-muted">Peak month</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${peakLabel} / ${averageValue.toFixed(1)} avg</p>
         </div>
       </div>
     </section>
