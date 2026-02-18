@@ -416,6 +416,10 @@ export function ContentStep({
                   const isActive = appliedScenarioId === pack.id;
                   const isCustom = pack.source === "custom";
                   const isEditing = editingScenarioId === pack.id;
+                  const displayName = locale === "zh" ? pack.nameZh ?? pack.name : pack.name;
+                  const displayDescription = locale === "zh"
+                    ? pack.descriptionZh ?? pack.description
+                    : pack.description;
 
                   return (
                     <div
@@ -432,12 +436,12 @@ export function ContentStep({
                         className="w-full text-left"
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-medium">{pack.name}</p>
+                          <p className="text-sm font-medium">{displayName}</p>
                           <span className="text-[10px] uppercase tracking-wider text-muted">
                             {isCustom ? uiText.customTag : uiText.builtinTag}
                           </span>
                         </div>
-                        <p className="text-xs text-muted mt-1">{pack.description}</p>
+                        <p className="text-xs text-muted mt-1">{displayDescription}</p>
                       </button>
 
                       {isCustom && (

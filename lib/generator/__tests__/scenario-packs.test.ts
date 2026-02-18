@@ -52,4 +52,11 @@ describe("scenario packs", () => {
     expect(sidebar).toBeTruthy();
     expect(sidebar?.content.appName).toBe("Revenue Control");
   });
+
+  it("exposes localized copy for chinese scenario packs", () => {
+    const pack = getScenarioPackById("education-enrollment-landing-zh");
+    expect(pack).toBeTruthy();
+    expect(pack?.nameZh).toBeTruthy();
+    expect(pack?.descriptionZh).toBeTruthy();
+  });
 });
