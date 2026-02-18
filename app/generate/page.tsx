@@ -1,7 +1,7 @@
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { GeneratorWizard } from "@/components/generator/generator-wizard";
 import { styles } from "@/lib/styles";
 
 export const metadata: Metadata = {
@@ -9,8 +9,21 @@ export const metadata: Metadata = {
   description: "3 步完成：选风格、选模板、编辑内容并下载代码。",
 };
 
+const GeneratorWizard = dynamic(
+  () =>
+    import("@/components/generator/generator-wizard").then(
+      (mod) => mod.GeneratorWizard
+    ),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </div>
+    ),
+  }
+);
+
 export default function GeneratePage() {
-  // Keep generator focused on visual style systems.
   const visualStyles = styles.filter((s) => s.styleType === "visual");
 
   return (
