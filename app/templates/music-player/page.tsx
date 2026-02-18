@@ -22,6 +22,7 @@ import {
   Volume2,
   X,
 } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 interface Track {
   id: number;
@@ -277,16 +278,7 @@ export default function MusicPlayerTemplate() {
           </div>
         </div>
       </div>
-
-      {/* Back to Templates */}
-      <div className="fixed top-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-gray-800 text-white text-sm font-medium rounded-lg shadow-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          &larr; Back to Templates
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const categories = [
   { name: "All Recipes", count: 48 },
@@ -409,16 +410,7 @@ export default function RecipeCookingTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2.5 bg-black text-white text-sm font-medium rounded-lg shadow-lg hover:bg-gray-800 transition-colors"
-        >
-          Back to Templates
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }

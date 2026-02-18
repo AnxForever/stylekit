@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { TemplateBackButton } from "@/components/templates/template-back-button";
 
 const featuredArticles = [
   {
@@ -244,16 +245,7 @@ export default function MagazineLandingTemplate() {
           </div>
         </div>
       </footer>
-
-      {/* Back to Templates */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Link
-          href="/templates"
-          className="px-4 py-2 bg-[#e63946] text-white text-xs font-semibold uppercase tracking-wider rounded hover:bg-[#d62839] transition-colors"
-        >
-          ← 返回模板
-        </Link>
-      </div>
+      <TemplateBackButton />
     </div>
   );
 }
