@@ -21,7 +21,7 @@ function buildSections(templateType: TemplateType): SectionConfig[] {
 }
 
 describe("generateGeneratorSupportFiles", () => {
-  it("returns manifest json and content map markdown", () => {
+  it("returns manifest json and helper markdown artifacts", () => {
     const visualStyle = styles.find((style) => style.styleType === "visual");
     expect(visualStyle).toBeTruthy();
     if (!visualStyle) {
@@ -47,6 +47,7 @@ describe("generateGeneratorSupportFiles", () => {
     expect(files.map((file) => file.name)).toEqual([
       "stylekit.config.json",
       "CONTENT_MAP.md",
+      "GENERATOR_BRIEF.md",
     ]);
 
     const manifest = files.find((file) => file.name === "stylekit.config.json");
@@ -69,5 +70,9 @@ describe("generateGeneratorSupportFiles", () => {
 
     const contentMap = files.find((file) => file.name === "CONTENT_MAP.md");
     expect(contentMap?.content).toContain("## hero");
+
+    const brief = files.find((file) => file.name === "GENERATOR_BRIEF.md");
+    expect(brief?.content).toContain("## Snapshot");
+    expect(brief?.content).toContain("## Section Focus");
   });
 });
