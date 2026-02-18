@@ -161,7 +161,7 @@ const en = {
     "templates.copyCode": "Copy Code",
     "templates.copied": "Copied!",
     "templates.download": "Download",
-    "templates.openGenerator": "Open Generator",
+
     "templates.loadingSource": "Loading source code...",
     "templates.sourceNotFound": "Source code not available.",
 
@@ -1182,7 +1182,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "templates.copyCode": "复制代码",
   "templates.copied": "已复制!",
   "templates.download": "下载文件",
-  "templates.openGenerator": "打开生成器",
+
   "templates.loadingSource": "加载源码中...",
   "templates.sourceNotFound": "源码暂不可用。",
 
