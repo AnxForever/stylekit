@@ -25,13 +25,29 @@ export function CommandPalette() {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const { t } = useI18n();
 
-  // Component list hidden temporarily to keep only style library and templates entry points
-  const componentItems: SearchResult[] = React.useMemo(() => [], []);
+  // Component list for search (i18n aware)
+  const componentItems: SearchResult[] = React.useMemo(() => [
+    { id: "button", type: "component", title: "Button", description: t("search.comp.button"), href: "/components#button", keywords: ["button", "click", "cta"] },
+    { id: "card", type: "component", title: "Card", description: t("search.comp.card"), href: "/components#card", keywords: ["card", "container", "panel"] },
+    { id: "input", type: "component", title: "Input", description: t("search.comp.input"), href: "/components#input", keywords: ["input", "field", "form"] },
+    { id: "dialog", type: "component", title: "Dialog", description: t("search.comp.dialog"), href: "/components#dialog", keywords: ["dialog", "modal", "overlay"] },
+    { id: "tooltip", type: "component", title: "Tooltip", description: t("search.comp.tooltip"), href: "/components#tooltip", keywords: ["tooltip", "hint"] },
+    { id: "tabs", type: "component", title: "Tabs", description: t("search.comp.tabs"), href: "/components#tabs", keywords: ["tabs", "switch"] },
+    { id: "accordion", type: "component", title: "Accordion", description: t("search.comp.accordion"), href: "/components#accordion", keywords: ["accordion", "collapse"] },
+    { id: "drawer", type: "component", title: "Drawer", description: t("search.comp.drawer"), href: "/components#drawer", keywords: ["drawer", "sidebar", "panel"] },
+    { id: "popover", type: "component", title: "Popover", description: t("search.comp.popover"), href: "/components#popover", keywords: ["popover", "floating"] },
+    { id: "toast", type: "component", title: "Toast", description: t("search.comp.toast"), href: "/components#toast", keywords: ["toast", "notification"] },
+  ], [t]);
 
   // Page items for search (i18n aware)
   const pageItems: SearchResult[] = React.useMemo(() => [
+    { id: "home", type: "page", title: t("search.page.home"), description: t("search.page.homeDesc"), href: "/", keywords: ["home", "index"] },
     { id: "styles", type: "page", title: t("search.page.styles"), description: t("search.page.stylesDesc"), href: "/styles", keywords: ["styles", "catalog"] },
+    { id: "components", type: "page", title: t("search.page.components"), description: t("search.page.componentsDesc"), href: "/components", keywords: ["components", "ui"] },
     { id: "templates", type: "page", title: t("search.page.templates"), description: t("search.page.templatesDesc"), href: "/templates", keywords: ["templates", "pages"] },
+    { id: "generate", type: "page", title: t("nav.generator"), description: "Generate frontend with selected style and layout.", href: "/generate", keywords: ["generate", "builder", "frontend"] },
+    { id: "create-style", type: "page", title: t("nav.createStyle"), description: "Import style-extractor output or create custom style.", href: "/create-style", keywords: ["create", "import", "extractor", "style"] },
+    { id: "about", type: "page", title: t("search.page.about"), description: t("search.page.aboutDesc"), href: "/about", keywords: ["about", "project"] },
   ], [t]);
 
   // Get all styles and convert to search results

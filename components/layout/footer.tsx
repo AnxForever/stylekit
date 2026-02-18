@@ -39,6 +39,12 @@ export function Footer() {
                 {t("nav.templates")}
               </Link>
               <Link
+                href="/about"
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {t("nav.about")}
+              </Link>
+              <Link
                 href="/compare"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
@@ -61,6 +67,12 @@ export function Footer() {
               >
                 {t("footer.githubRepo")}
               </a>
+              <Link
+                href="/submit"
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {t("footer.submitStyle")}
+              </Link>
             </nav>
           </div>
         </div>
