@@ -11,6 +11,13 @@ import { vueGuidelines } from "./vue";
 import { astroGuidelines } from "./astro";
 import { shadcnGuidelines } from "./shadcn";
 import { htmlTailwindGuidelines } from "./html-tailwind";
+import { svelteGuidelines } from "./svelte";
+import { nuxtjsGuidelines } from "./nuxtjs";
+import { nuxtUiGuidelines } from "./nuxt-ui";
+import { flutterGuidelines } from "./flutter";
+import { reactNativeGuidelines } from "./react-native";
+import { swiftUIGuidelines } from "./swiftui";
+import { jetpackComposeGuidelines } from "./jetpack-compose";
 
 // Re-export types
 export type { StackGuideline, StackId, StackInfo };
@@ -43,21 +50,21 @@ export const stacks: Record<StackId, StackInfo> = {
     name: "Nuxt.js",
     description: "Vue.js framework with SSR and file-based routing",
     category: "web",
-    guidelines: [], // Will be populated dynamically
+    guidelines: nuxtjsGuidelines,
   },
   "nuxt-ui": {
     id: "nuxt-ui",
     name: "Nuxt UI",
     description: "UI library for Nuxt with Tailwind CSS",
     category: "web",
-    guidelines: [], // Will be populated dynamically
+    guidelines: nuxtUiGuidelines,
   },
   svelte: {
     id: "svelte",
     name: "Svelte",
     description: "Compile-time reactive framework",
     category: "web",
-    guidelines: [], // Will be populated dynamically
+    guidelines: svelteGuidelines,
   },
   astro: {
     id: "astro",
@@ -78,28 +85,28 @@ export const stacks: Record<StackId, StackInfo> = {
     name: "Flutter",
     description: "Cross-platform UI toolkit from Google",
     category: "cross-platform",
-    guidelines: [], // Will be populated dynamically
+    guidelines: flutterGuidelines,
   },
   "react-native": {
     id: "react-native",
     name: "React Native",
     description: "Build native mobile apps with React",
     category: "mobile",
-    guidelines: [], // Will be populated dynamically
+    guidelines: reactNativeGuidelines,
   },
   swiftui: {
     id: "swiftui",
     name: "SwiftUI",
     description: "Apple's declarative UI framework",
     category: "mobile",
-    guidelines: [], // Will be populated dynamically
+    guidelines: swiftUIGuidelines,
   },
   "jetpack-compose": {
     id: "jetpack-compose",
     name: "Jetpack Compose",
     description: "Android's modern UI toolkit",
     category: "mobile",
-    guidelines: [], // Will be populated dynamically
+    guidelines: jetpackComposeGuidelines,
   },
   "html-tailwind": {
     id: "html-tailwind",
@@ -109,34 +116,6 @@ export const stacks: Record<StackId, StackInfo> = {
     guidelines: htmlTailwindGuidelines,
   },
 };
-
-// Dynamically import and register additional stacks
-async function loadAdditionalStacks() {
-  try {
-    const [svelte, nuxtjs, nuxtUi, flutter, reactNative, swiftui, jetpackCompose] = await Promise.allSettled([
-      import("./svelte").then(m => m.svelteGuidelines),
-      import("./nuxtjs").then(m => m.nuxtjsGuidelines),
-      import("./nuxt-ui").then(m => m.nuxtUiGuidelines),
-      import("./flutter").then(m => m.flutterGuidelines),
-      import("./react-native").then(m => m.reactNativeGuidelines),
-      import("./swiftui").then(m => m.swiftUIGuidelines),
-      import("./jetpack-compose").then(m => m.jetpackComposeGuidelines),
-    ]);
-
-    if (svelte.status === "fulfilled") stacks.svelte.guidelines = svelte.value;
-    if (nuxtjs.status === "fulfilled") stacks.nuxtjs.guidelines = nuxtjs.value;
-    if (nuxtUi.status === "fulfilled") stacks["nuxt-ui"].guidelines = nuxtUi.value;
-    if (flutter.status === "fulfilled") stacks.flutter.guidelines = flutter.value;
-    if (reactNative.status === "fulfilled") stacks["react-native"].guidelines = reactNative.value;
-    if (swiftui.status === "fulfilled") stacks.swiftui.guidelines = swiftui.value;
-    if (jetpackCompose.status === "fulfilled") stacks["jetpack-compose"].guidelines = jetpackCompose.value;
-  } catch {
-    // Silently fail if modules not found
-  }
-}
-
-// Initialize on module load
-loadAdditionalStacks();
 
 // Pre-built BM25 index (lazy initialized)
 let stackSearchIndex: BM25<{ guideline: StackGuideline; stackId: StackId }> | null = null;

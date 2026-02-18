@@ -43,11 +43,12 @@ describe("linter", () => {
       expect(result.stats.totalClasses).toBeGreaterThan(0);
     });
 
-    it("returns valid=true with no violations for unknown styles", () => {
+    it("returns a config error for unknown styles", () => {
       const code = `<div class="rounded-lg shadow-lg">Test</div>`;
       const result = lintCode("nonexistent-style", code);
-      expect(result.valid).toBe(true);
-      expect(result.violations).toHaveLength(0);
+      expect(result.valid).toBe(false);
+      expect(result.stats.errorCount).toBe(1);
+      expect(result.violations[0]?.reason).toContain("No lint configuration available");
     });
 
     it("violation has reason text", () => {

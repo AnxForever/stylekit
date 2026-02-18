@@ -62,13 +62,14 @@ export function lintCode(styleSlug: string, code: string): LintResult {
   const extracted = extractClasses(code);
   const violations: Violation[] = [];
   const suggestions: Suggestion[] = [];
-  const seen = new Set<string>();
+  const seenTokenClasses = new Set<string>();
+  const seenRuleClasses = new Set<string>();
 
   // Check against tokens (if available)
   if (tokens) {
     for (const item of extracted) {
-      if (seen.has(item.class)) continue;
-      seen.add(item.class);
+      if (seenTokenClasses.has(item.class)) continue;
+      seenTokenClasses.add(item.class);
 
       const violation = checkClassAgainstTokens(tokens, item);
       if (violation) {
@@ -84,8 +85,8 @@ export function lintCode(styleSlug: string, code: string): LintResult {
   // Check against lint rules (if available)
   if (rules) {
     for (const item of extracted) {
-      if (seen.has(item.class)) continue;
-      seen.add(item.class);
+      if (seenRuleClasses.has(item.class)) continue;
+      seenRuleClasses.add(item.class);
 
       const result = isForbiddenClass(styleSlug, item.class);
       if (result.forbidden) {
@@ -123,12 +124,18 @@ export function lintCode(styleSlug: string, code: string): LintResult {
   // No rules available
   if (!tokens && !rules) {
     return {
-      valid: true,
+      valid: false,
       style: styleSlug,
-      violations: [],
+      violations: [
+        {
+          class: styleSlug,
+          reason: `No lint configuration available for style "${styleSlug}"`,
+          severity: "error",
+        },
+      ],
       suggestions: [],
       fixPrompt: "",
-      stats: { totalClasses: 0, errorCount: 0, warningCount: 0 },
+      stats: { totalClasses: extracted.length, errorCount: 1, warningCount: 0 },
     };
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   RefreshCw,
   CheckCircle,
@@ -9,6 +9,7 @@ import {
   Server,
   Shield,
   Gauge,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useAdminGeneratorTelemetry, useAdminSystem } from "@/lib/swr";
@@ -29,13 +30,24 @@ function formatBytes(bytes: number): string {
 }
 
 export function AdminSystemContent() {
+  const [telemetryExporting, setTelemetryExporting] = useState(false);
+  const [telemetryExportNotice, setTelemetryExportNotice] = useState<string | null>(null);
+  const [telemetryExportError, setTelemetryExportError] = useState<string | null>(null);
+
   const { data, error, isLoading, mutate } = useAdminSystem();
   const {
     data: telemetry,
     error: telemetryError,
     isLoading: telemetryLoading,
     mutate: mutateTelemetry,
-  } = useAdminGeneratorTelemetry({ limit: 8, minutes: 24 * 60 });
+  } = useAdminGeneratorTelemetry({ limit: 8, minutes: 24 * 60, trendDays: 14 });
+
+  const telemetryExportHref = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set("format", "csv");
+    params.set("minutes", String(24 * 60));
+    return `/api/admin/generator?${params.toString()}`;
+  }, []);
 
   const uptimeDisplay = useMemo(() => {
     if (!data) return "";
@@ -46,6 +58,57 @@ export function AdminSystemContent() {
     if (!data) return "";
     return formatBytes(data.runtime.memoryUsage.rss);
   }, [data]);
+
+  const maxTelemetryDailyCount = useMemo(() => {
+    if (!telemetry || telemetry.summary.daily.length === 0) return 0;
+    return Math.max(...telemetry.summary.daily.map((point) => point.total));
+  }, [telemetry]);
+
+  const handleExportTelemetryCsv = useCallback(async () => {
+    setTelemetryExporting(true);
+    setTelemetryExportNotice(null);
+    setTelemetryExportError(null);
+
+    try {
+      const response = await fetch(telemetryExportHref, { method: "GET" });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.error ?? "Failed to export telemetry CSV.");
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const fileName = getDownloadFilename(
+        response.headers.get("content-disposition"),
+        "generator-telemetry.csv"
+      );
+
+      const anchor = document.createElement("a");
+      anchor.href = downloadUrl;
+      anchor.download = fileName;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(downloadUrl);
+
+      if (response.headers.get("x-export-truncated") === "true") {
+        const limit = response.headers.get("x-export-limit");
+        setTelemetryExportNotice(
+          limit
+            ? `Export reached ${limit} rows. Refine filters for a complete export.`
+            : "Export was truncated by server limit. Refine filters for a complete export."
+        );
+      }
+    } catch (exportErr) {
+      setTelemetryExportError(
+        exportErr instanceof Error
+          ? exportErr.message
+          : "Failed to export telemetry CSV."
+      );
+    } finally {
+      setTelemetryExporting(false);
+    }
+  }, [telemetryExportHref]);
 
   if (isLoading) {
     return <p className="text-muted">Loading system information...</p>;
@@ -203,10 +266,22 @@ export function AdminSystemContent() {
 
       {/* Generator Telemetry Section */}
       <div>
-        <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-          <Gauge className="w-5 h-5 text-muted" />
-          Generator API Telemetry (24h)
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Gauge className="w-5 h-5 text-muted" />
+            Generator API Telemetry (24h)
+          </h2>
+          <button
+            onClick={() => {
+              void handleExportTelemetryCsv();
+            }}
+            disabled={telemetryExporting}
+            className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-muted hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-3.5 h-3.5" />
+            {telemetryExporting ? "Exporting..." : "Export CSV"}
+          </button>
+        </div>
 
         {telemetryLoading && !telemetry ? (
           <div className="p-6 border border-border rounded-lg">
@@ -220,6 +295,17 @@ export function AdminSystemContent() {
           </div>
         ) : telemetry ? (
           <div className="space-y-4">
+            {telemetryExportNotice && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                {telemetryExportNotice}
+              </p>
+            )}
+            {telemetryExportError && (
+              <p className="text-xs text-red-600 dark:text-red-400">
+                {telemetryExportError}
+              </p>
+            )}
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-5 border border-border rounded-lg">
                 <p className="text-xs text-muted">Total Requests</p>
@@ -245,6 +331,45 @@ export function AdminSystemContent() {
                   {telemetry.summary.p95DurationMs.toFixed(2)} ms
                 </p>
               </div>
+            </div>
+
+            <div className="border border-border rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold">Daily Trend (UTC)</h3>
+                <span className="text-xs text-muted">
+                  Last {telemetry.summary.daily.length} days
+                </span>
+              </div>
+              {telemetry.summary.daily.length === 0 ? (
+                <p className="text-xs text-muted">No trend data available.</p>
+              ) : (
+                <div className="space-y-2">
+                  {telemetry.summary.daily.map((point) => {
+                    const width = maxTelemetryDailyCount === 0
+                      ? 0
+                      : (point.total / maxTelemetryDailyCount) * 100;
+                    return (
+                      <div key={point.date} className="flex items-center gap-3">
+                        <span className="w-24 text-xs text-muted font-mono">
+                          {point.date}
+                        </span>
+                        <div className="flex-1 h-2 bg-muted/20 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-foreground/60 rounded-full transition-all"
+                            style={{ width: `${width}%` }}
+                          />
+                        </div>
+                        <span className="w-28 text-right text-xs tabular-nums">
+                          {point.total} req
+                        </span>
+                        <span className="w-28 text-right text-xs text-muted tabular-nums">
+                          {point.p95DurationMs.toFixed(2)} ms p95
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="border border-border rounded-lg overflow-hidden">
@@ -333,4 +458,15 @@ export function AdminSystemContent() {
       </div>
     </div>
   );
+}
+
+function getDownloadFilename(
+  contentDisposition: string | null,
+  fallback: string
+): string {
+  if (!contentDisposition) return fallback;
+  const match = /filename\*?=(?:UTF-8''|"?)([^";]+)/i.exec(contentDisposition);
+  if (!match?.[1]) return fallback;
+  const cleaned = decodeURIComponent(match[1].replace(/^"|"$/g, "").trim());
+  return cleaned || fallback;
 }
