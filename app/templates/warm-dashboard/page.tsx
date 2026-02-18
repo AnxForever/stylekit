@@ -257,7 +257,7 @@ export default function WarmDashboardTemplate() {
           </div>
         </main>
       </div>
-      <TemplateBackButton />
+      <TemplateBackButton variant="warm" />
     </div>
   );
 }

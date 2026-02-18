@@ -375,7 +375,7 @@ export default function SaasLandingTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }

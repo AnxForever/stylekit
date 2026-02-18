@@ -300,7 +300,7 @@ export default function FileManagerTemplate() {
           )}
         </div>
       </main>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }
