@@ -14,7 +14,6 @@ import {
   Plus,
   Repeat2,
   Search,
-  Send,
   Share,
   Smile,
   TrendingUp,

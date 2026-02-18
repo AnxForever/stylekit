@@ -5,10 +5,7 @@ import Link from "next/link";
 import {
   Archive,
   ArrowLeft,
-  ChevronDown,
-  Clock,
   Edit,
-  File,
   Forward,
   Inbox,
   Mail,
@@ -19,7 +16,6 @@ import {
   Search,
   Send,
   Star,
-  Tag,
   Trash2,
   X,
 } from "lucide-react";
