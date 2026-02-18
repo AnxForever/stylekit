@@ -157,6 +157,13 @@ const en = {
     "templates.searchHint": "Tip: press / to focus search, and Esc to clear.",
     "templates.clearSearch": "Clear Search",
     "templates.sortAriaLabel": "Template sort order",
+    "templates.viewSource": "View Source",
+    "templates.copyCode": "Copy Code",
+    "templates.copied": "Copied!",
+    "templates.download": "Download",
+    "templates.openGenerator": "Open Generator",
+    "templates.loadingSource": "Loading source code...",
+    "templates.sourceNotFound": "Source code not available.",
 
     // About page
     "about.subtitle": "About",
@@ -1171,6 +1178,13 @@ const zh: { [K in keyof typeof en]: string } = {
   "templates.searchHint": "提示：按 / 可快速聚焦搜索，按 Esc 可清空搜索。",
   "templates.clearSearch": "清空搜索",
   "templates.sortAriaLabel": "模板排序方式",
+  "templates.viewSource": "查看源码",
+  "templates.copyCode": "复制代码",
+  "templates.copied": "已复制!",
+  "templates.download": "下载文件",
+  "templates.openGenerator": "打开生成器",
+  "templates.loadingSource": "加载源码中...",
+  "templates.sourceNotFound": "源码暂不可用。",
 
   // Styles page
   "styles.subtitle": "设计风格集合",
