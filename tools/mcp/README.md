@@ -118,10 +118,7 @@ The AI will use `get_stack_guidelines` to retrieve stack-specific coding guideli
 Validate this manifest.json for a new style submission
 ```
 
-The AI will use `submit_style` with `dryRun: true` to return a detailed validation report including:
-- Per-field validation status (schemaVersion, slug, colors, doList, etc.)
-- Schema compliance issues
-- Summary of the style being submitted
+The AI will use `submit_style` to return a detailed validation report with per-field checks and issue descriptions.
 
 ### Analyze Existing Code
 

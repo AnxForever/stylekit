@@ -321,57 +321,54 @@ server.tool(
 );
 
 // -- submit_style --
-const { validateManifestDetailed, validateStyleSubmissionManifest } = require("../../lib/submit/manifest-validator");
-
 server.tool(
   "submit_style",
-  "Validate and prepare a style submission from manifest JSON. Use dryRun=true (default) to validate without submitting.",
+  "Validate and prepare a style submission from manifest JSON. Use dryRun=true (default) to only validate, or dryRun=false to validate and confirm submission readiness.",
   {
-    manifest: z
-      .string()
-      .describe("Full manifest JSON string following style-submission-manifest.schema.json"),
-    dryRun: z.boolean().optional().default(true).describe("If true, only validate without submitting"),
+    manifest: z.string().describe("Full manifest JSON string following style-submission-manifest.schema.json"),
+    dryRun: z.boolean().optional().default(true).describe("If true, only validate without submitting (default: true)"),
   },
-  async ({ manifest: manifestStr, dryRun }: { manifest: string; dryRun: boolean }) => {
-    let manifest: unknown;
+  async ({ manifest, dryRun }) => {
+    const { validateManifestDetailed, validateStyleSubmissionManifest } = require("../../lib/submit/manifest-validator");
+
+    let parsed: unknown;
     try {
-      manifest = JSON.parse(manifestStr);
+      parsed = JSON.parse(manifest);
     } catch {
       return {
-        content: [{ type: "text", text: JSON.stringify({ valid: false, error: "Invalid JSON" }) }],
+        content: [{ type: "text", text: JSON.stringify({ error: "Invalid JSON input" }) }],
         isError: true,
       };
     }
 
-    const detailed = validateManifestDetailed(manifest);
-    const full = validateStyleSubmissionManifest(manifest);
+    const detailed = validateManifestDetailed(parsed);
+    const full = validateStyleSubmissionManifest(parsed);
 
-    const formData = (manifest as Record<string, unknown>)?.formData as Record<string, unknown> | undefined;
+    const fieldChecks = detailed.fields.map((f: { field: string; ok: boolean; detail: string }) => ({
+      field: f.field,
+      status: f.ok ? "OK" : "!!",
+      detail: f.detail,
+    }));
+
     const report: Record<string, unknown> = {
-      valid: full.ok,
-      dryRun,
-      fieldChecks: detailed.fields,
+      valid: detailed.ok,
+      fieldChecks,
       issues: detailed.issues,
-      summary: full.ok
-        ? {
-            slug: formData?.slug,
-            name: formData?.name,
-            nameEn: formData?.nameEn,
-          }
-        : null,
     };
 
-    if (!dryRun && full.ok) {
-      report.summary = {
-        ...(report.summary as Record<string, unknown>),
-        status: "pending",
-        note: "Submission recorded. Awaiting maintainer review.",
-      };
+    if (detailed.ok && !dryRun) {
+      const { getManifestSummary } = require("../../lib/submit/manifest-validator");
+      report.summary = getManifestSummary(full.data);
+      report.status = "ready_for_submission";
+      report.message = "Manifest is valid and ready for submission. Create a GitHub issue to complete the process.";
+    } else if (detailed.ok && dryRun) {
+      report.message = "Manifest is valid. Set dryRun=false to confirm submission readiness.";
+    } else {
+      report.message = `Manifest has ${detailed.issues.length} validation issue(s). Fix them and try again.`;
     }
 
     return {
       content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
-      isError: !full.ok,
     };
   }
 );

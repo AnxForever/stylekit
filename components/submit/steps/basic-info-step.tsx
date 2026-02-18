@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, X, Bot, PenLine } from "lucide-react";
+import { AlertCircle, Bot, PenLine, X } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import type { SubmissionPath } from "../submission-wizard";
 import type { Locale } from "@/lib/i18n/translations";
@@ -25,11 +25,6 @@ interface BasicInfoStepProps {
   isAnimating: boolean;
   text: {
     hint: string;
-    extractorUrlLabel: string;
-    extractorUrlHint: string;
-    extractorUrlPlaceholder: string;
-    extractorUrlAction: string;
-    extractorUrlLoading: string;
     extractorTitle: string;
     extractorDescription: string;
     extractorPlaceholder: string;
@@ -60,6 +55,8 @@ interface BasicInfoStepProps {
     tagLabels: Record<StyleTag, string>;
   };
   locale: Locale;
+  submissionPath: SubmissionPath;
+  setSubmissionPath: (path: SubmissionPath) => void;
   manifestCopy: {
     title: string;
     description: string;
@@ -73,8 +70,6 @@ interface BasicInfoStepProps {
   setManifestMessage: (msg: { type: "success" | "error"; text: string } | null) => void;
   applyManifestInput: () => void;
   importManifestFile: (file: File) => Promise<void>;
-  submissionPath: SubmissionPath;
-  setSubmissionPath: (path: SubmissionPath) => void;
   handleNameEnChange: (value: string) => void;
   handleSlugChange: (value: string) => void;
   keywordInput: string;
@@ -96,6 +91,8 @@ export function BasicInfoStep({
   isAnimating,
   text,
   locale,
+  submissionPath,
+  setSubmissionPath,
   manifestCopy,
   manifestInput,
   setManifestInput,
@@ -103,8 +100,6 @@ export function BasicInfoStep({
   setManifestMessage,
   applyManifestInput,
   importManifestFile,
-  submissionPath,
-  setSubmissionPath,
   handleNameEnChange,
   handleSlugChange,
   keywordInput,
@@ -117,37 +112,39 @@ export function BasicInfoStep({
 
   return (
     <div className={`space-y-6 transition-opacity duration-150 ${isAnimating ? "opacity-0" : "opacity-100"}`}>
-      {/* Path Selection Cards */}
+      {/* Path Selection */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <button
           type="button"
           onClick={() => setSubmissionPath("ai-manifest")}
-          className={`relative p-5 border-2 text-left transition-all ${
+          className={`p-4 border-2 text-left transition-all ${
             submissionPath === "ai-manifest"
               ? "border-foreground bg-foreground/5"
               : "border-border hover:border-foreground/50"
           }`}
         >
-          {submissionPath === "ai-manifest" && (
-            <span className="absolute top-3 right-3 text-xs px-2 py-0.5 bg-foreground text-background">
+          <div className="flex items-center gap-2 mb-2">
+            <Bot className="w-5 h-5" />
+            <span className="font-medium text-sm">{copy.pathSelect.aiManifestLabel}</span>
+            <span className="ml-auto px-2 py-0.5 text-[10px] uppercase tracking-wider bg-foreground text-background">
               {copy.pathSelect.aiManifestRecommended}
             </span>
-          )}
-          <Bot className="w-6 h-6 mb-3" />
-          <p className="font-medium mb-1">{copy.pathSelect.aiManifestLabel}</p>
+          </div>
           <p className="text-xs text-muted">{copy.pathSelect.aiManifestDesc}</p>
         </button>
         <button
           type="button"
           onClick={() => setSubmissionPath("manual")}
-          className={`relative p-5 border-2 text-left transition-all ${
+          className={`p-4 border-2 text-left transition-all ${
             submissionPath === "manual"
               ? "border-foreground bg-foreground/5"
               : "border-border hover:border-foreground/50"
           }`}
         >
-          <PenLine className="w-6 h-6 mb-3" />
-          <p className="font-medium mb-1">{copy.pathSelect.manualLabel}</p>
+          <div className="flex items-center gap-2 mb-2">
+            <PenLine className="w-5 h-5" />
+            <span className="font-medium text-sm">{copy.pathSelect.manualLabel}</span>
+          </div>
           <p className="text-xs text-muted">{copy.pathSelect.manualDesc}</p>
         </button>
       </div>
@@ -202,16 +199,14 @@ export function BasicInfoStep({
             </div>
           </div>
 
-          <div className="p-4 border border-border bg-zinc-50 dark:bg-zinc-900">
-            <p className="text-sm text-muted">
-              <button
-                type="button"
-                onClick={() => setSubmissionPath("manual")}
-                className="underline hover:text-foreground transition-colors"
-              >
-                {copy.pathSelect.switchToManual}
-              </button>
-            </p>
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setSubmissionPath("manual")}
+              className="text-xs text-muted hover:text-foreground transition-colors underline underline-offset-4"
+            >
+              {copy.pathSelect.switchToManual}
+            </button>
           </div>
         </>
       )}
@@ -223,7 +218,6 @@ export function BasicInfoStep({
             <p className="text-sm text-muted">{text.hint}</p>
           </div>
 
-          {/* Manifest import (collapsed, still available in manual path) */}
           <div className="p-4 border border-border bg-background">
             <label className="block text-sm font-medium mb-2">{manifestCopy.title}</label>
             <p className="text-xs text-muted mb-3">{manifestCopy.description}</p>
@@ -269,7 +263,6 @@ export function BasicInfoStep({
             </div>
           </div>
 
-          {/* Manual form fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <label className="block text-sm mb-2">
@@ -425,6 +418,16 @@ export function BasicInfoStep({
                 </span>
               ))}
             </div>
+          </div>
+
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setSubmissionPath("ai-manifest")}
+              className="text-xs text-muted hover:text-foreground transition-colors underline underline-offset-4"
+            >
+              {copy.pathSelect.switchToAi}
+            </button>
           </div>
         </>
       )}
