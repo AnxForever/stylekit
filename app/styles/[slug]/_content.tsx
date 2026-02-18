@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeftRight } from "lucide-react";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
@@ -20,6 +21,7 @@ import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleComments } from "@/components/styles/style-comments";
 import { useI18n } from "@/lib/i18n/context";
+import { useCommunityFeed } from "@/lib/swr";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
@@ -44,6 +46,12 @@ export function StyleDetailContent({
   changelog,
 }: Props) {
   const { t } = useI18n();
+  const { data: communityData } = useCommunityFeed({
+    slug: style.slug,
+    limit: 1,
+    offset: 0,
+  });
+  const communityAttribution = communityData?.items?.[0] ?? null;
 
   useEffect(() => {
     const sendAnalytics = () => {
@@ -98,6 +106,37 @@ export function StyleDetailContent({
               <p className="text-lg text-muted leading-relaxed mb-6">
                 {style.description}
               </p>
+              {communityAttribution && (
+                <Link
+                  href={`/community?slug=${style.slug}`}
+                  className="inline-flex items-center gap-3 border border-border bg-background/70 px-3 py-2 mb-6 hover:border-foreground transition-colors"
+                >
+                  {communityAttribution.author.avatarUrl ? (
+                    <Image
+                      src={communityAttribution.author.avatarUrl}
+                      alt={communityAttribution.author.handle}
+                      width={24}
+                      height={24}
+                      unoptimized
+                      className="w-6 h-6 rounded-full"
+                    />
+                  ) : (
+                    <span className="w-6 h-6 rounded-full bg-muted/30 inline-flex items-center justify-center text-[11px]">
+                      {communityAttribution.author.handle.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span className="text-sm text-muted">
+                    by
+                    {" "}
+                    <span className="text-foreground font-medium">
+                      @{communityAttribution.author.handle}
+                    </span>
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted border border-border px-1.5 py-0.5">
+                    {communityAttribution.author.provider}
+                  </span>
+                </Link>
+              )}
               <div className="flex flex-wrap gap-2">
                 {style.keywords.map((keyword) => (
                   <span

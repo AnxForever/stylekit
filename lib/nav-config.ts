@@ -30,6 +30,7 @@ export interface ExternalNavItem {
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
+  { href: "/community", labelKey: "nav.community" },
   { href: "/generate", labelKey: "nav.generator" },
 ];
 

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MessageSquare, Send } from "lucide-react";
-import { getSessionId } from "@/lib/session";
 import { useStyleComments, type Comment } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 
@@ -15,7 +15,6 @@ export function StyleComments({ slug }: StyleCommentsProps) {
   const { data, mutate } = useStyleComments(slug);
   const { user } = useUser();
   const [content, setContent] = useState("");
-  const [authorName, setAuthorName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,26 +26,15 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!content.trim() || submitting) return;
+    if (!content.trim() || submitting || !user) return;
     setSubmitting(true);
     setError("");
-
-    const trimmedContent = content.trim();
-    const trimmedAuthor = authorName.trim() || "Anonymous";
-
-    const body: Record<string, string> = { content: trimmedContent };
-    if (user) {
-      // Logged-in: server extracts user info from auth cookie
-    } else {
-      body.authorName = trimmedAuthor;
-      body.sessionId = getSessionId();
-    }
 
     try {
       const res = await fetch(`/api/styles/${slug}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ content: content.trim() }),
       });
       const responseData = await res.json();
       if (responseData.success) {
@@ -73,10 +61,9 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         <span>{total} comments</span>
       </div>
 
-      {/* Comment form */}
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="flex gap-3">
-          {user ? (
+      {user ? (
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="flex gap-3">
             <div className="flex items-center gap-2 min-w-[128px]">
               {userAvatar ? (
                 <Image
@@ -96,39 +83,38 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                 {userName}
               </span>
             </div>
-          ) : (
-            <input
-              type="text"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              placeholder="Name (optional)"
-              maxLength={50}
-              className="w-32 px-3 py-2 text-sm border border-border rounded-md bg-background"
-            />
-          )}
-          <div className="flex-1 flex gap-2">
-            <input
-              type="text"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Leave a comment (max 280 chars)"
-              maxLength={280}
-              className="flex-1 px-3 py-2 text-sm border border-border rounded-md bg-background"
-            />
-            <button
-              type="submit"
-              disabled={submitting || !content.trim()}
-              className="px-3 py-2 bg-foreground text-background rounded-md text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+            <div className="flex-1 flex gap-2">
+              <input
+                type="text"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Leave a comment (max 280 chars)"
+                maxLength={280}
+                className="flex-1 px-3 py-2 text-sm border border-border rounded-md bg-background"
+              />
+              <button
+                type="submit"
+                disabled={submitting || !content.trim()}
+                className="px-3 py-2 bg-foreground text-background rounded-md text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+          {content.length > 0 && (
+            <p className="text-xs text-muted text-right">{content.length}/280</p>
+          )}
+          {error && <p className="text-xs text-red-500">{error}</p>}
+        </form>
+      ) : (
+        <div className="rounded-md border border-border bg-background/50 px-4 py-3 text-sm text-muted">
+          Sign in to join the discussion.
+          {" "}
+          <Link href="/login" className="underline hover:text-foreground">
+            Go to sign in
+          </Link>
         </div>
-        {content.length > 0 && (
-          <p className="text-xs text-muted text-right">{content.length}/280</p>
-        )}
-        {error && <p className="text-xs text-red-500">{error}</p>}
-      </form>
+      )}
 
       {/* Comment list */}
       {comments.length > 0 && (

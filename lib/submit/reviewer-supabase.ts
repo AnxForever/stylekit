@@ -69,16 +69,28 @@ export async function createSubmissionSupabase(
   designStyle: Record<string, unknown>,
   ipAddress?: string | null,
   userId?: string | null,
-  authorName?: string | null
+  authorName?: string | null,
+  authorAvatarUrl?: string | null,
+  authorProvider?: string | null
 ): Promise<{ id: string; slug: string }> {
   const sb = getSupabaseAdmin();
   if (!sb) throw new Error("Supabase not configured");
+
+  const authorMeta = {
+    handle: authorName ?? null,
+    avatarUrl: authorAvatarUrl ?? null,
+    provider: authorProvider ?? null,
+  };
+  const hasAuthorMeta = Object.values(authorMeta).some((value) => value !== null);
+  const enrichedFormData = hasAuthorMeta
+    ? { ...formData, __author: authorMeta, tokens, designStyle }
+    : { ...formData, tokens, designStyle };
 
   const { data, error } = await sb
     .from("submissions")
     .insert({
       slug,
-      form_data: { ...formData, tokens, designStyle },
+      form_data: enrichedFormData,
       status: "pending",
       ip_address: ipAddress,
       user_id: userId ?? null,
