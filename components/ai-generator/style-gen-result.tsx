@@ -23,6 +23,9 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
   const [showTokens, setShowTokens] = useState(false);
 
+  const getStyleLabel = (slug: string) =>
+    styles.find((style) => style.slug === slug)?.nameEn || slug;
+
   async function handleCopy(format: "css" | "json" | "tailwind") {
     const exported = exportBlendedTokens(result.tokens, format);
     await navigator.clipboard.writeText(exported);
@@ -121,13 +124,12 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
         </p>
         <div className="flex flex-wrap gap-2">
           {result.sourceStyles.map(({ slug, weight }) => {
-            const style = styles.find((s) => s.slug === slug);
             return (
               <div
                 key={slug}
                 className="flex items-center gap-2 px-3 py-1.5 border border-border rounded-full text-xs"
               >
-                <span className="font-medium">{style?.nameEn || slug}</span>
+                <span className="font-medium">{getStyleLabel(slug)}</span>
                 <span className="text-muted">
                   {Math.round(weight * 100)}%
                 </span>
@@ -136,6 +138,99 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
           })}
         </div>
       </div>
+
+      {/* Reasoning */}
+      {result.reasoning && result.reasoning.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
+            {t("aiGen.reasoning")}
+          </p>
+          <ul className="space-y-1.5 rounded-lg border border-border bg-muted/10 p-3">
+            {result.reasoning.map((hint, index) => (
+              <li key={`${hint}-${index}`} className="text-xs text-muted leading-relaxed">
+                {hint}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Signals */}
+      {result.insights && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
+            {t("aiGen.signals")}
+          </p>
+          <div className="space-y-2 rounded-lg border border-border bg-muted/10 p-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted">{t("aiGen.signalBase")}:</span>
+              <span className="font-medium">
+                {result.insights.baseStyle ? getStyleLabel(result.insights.baseStyle) : "-"}
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted">{t("aiGen.signalKeywords")}:</span>
+              {result.insights.matchedKeywords.length > 0 ? (
+                result.insights.matchedKeywords.slice(0, 6).map((keyword) => (
+                  <span
+                    key={`kw-${keyword}`}
+                    className="rounded-full border border-border px-2 py-0.5"
+                  >
+                    {keyword}
+                  </span>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted">{t("aiGen.signalNegativeKeywords")}:</span>
+              {result.insights.negativeKeywords.length > 0 ? (
+                result.insights.negativeKeywords.slice(0, 6).map((keyword) => (
+                  <span
+                    key={`nkw-${keyword}`}
+                    className="rounded-full border border-red-300/70 px-2 py-0.5 text-red-600 dark:text-red-400"
+                  >
+                    {keyword}
+                  </span>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted">{t("aiGen.signalDetectedStyles")}:</span>
+              {result.insights.detectedStyles.length > 0 ? (
+                result.insights.detectedStyles.slice(0, 4).map((slug) => (
+                  <span
+                    key={`detected-${slug}`}
+                    className="rounded-full border border-border px-2 py-0.5"
+                  >
+                    {getStyleLabel(slug)}
+                  </span>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted">{t("aiGen.signalAvoidedStyles")}:</span>
+              {result.insights.avoidedStyles.length > 0 ? (
+                result.insights.avoidedStyles.slice(0, 4).map((slug) => (
+                  <span
+                    key={`avoided-${slug}`}
+                    className="rounded-full border border-red-300/70 px-2 py-0.5 text-red-600 dark:text-red-400"
+                  >
+                    {getStyleLabel(slug)}
+                  </span>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Token Details (Collapsible) */}
       <div className="border border-border rounded-lg overflow-hidden">

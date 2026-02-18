@@ -4,7 +4,47 @@ import {
   getAvailableStyleSlugs,
   getMoodKeywords,
 } from "@/lib/ai-generator";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import {
+  hashGeneratorClientKey,
+  recordGeneratorApiEvent,
+} from "@/lib/generator/api-events";
+import { z } from "zod";
+
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 30;
+const DISCOVERY_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=3600";
+const GENERATE_STYLE_SCHEMA = z.object({
+  description: z.string().trim().min(1, "Description is required.").max(500, "Description must be 500 characters or less"),
+  baseStyle: z.string().trim().min(1).optional(),
+});
+
+function errorResponse(status: number, code: string, message: string, headers?: HeadersInit) {
+  return NextResponse.json(
+    { code, error: message },
+    headers ? { status, headers } : { status }
+  );
+}
+
+function computeWeakEtag(input: string): string {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return `W/"${input.length.toString(16)}-${hash.toString(16)}"`;
+}
+
+function buildDiscoveryPayload() {
+  return {
+    availableStyles: getAvailableStyleSlugs(),
+    moodKeywords: getMoodKeywords(),
+  };
+}
 
 /**
  * POST /api/generate-style
@@ -13,45 +53,111 @@ import { verifyTrustedOrigin } from "@/lib/security/request-origin";
  * Body: { description: string, baseStyle?: string }
  */
 export async function POST(request: NextRequest) {
+  const startedAt = Date.now();
+  const clientKey = getRequestClientKey(request);
+  const clientHash = hashGeneratorClientKey(clientKey);
+
+  const attachTelemetryHeaders = (
+    status: number,
+    code?: string,
+    headers?: HeadersInit
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    if (code) {
+      merged.set("x-stylekit-error-code", code);
+    }
+    return merged;
+  };
+
+  const respondError = (
+    status: number,
+    code: string,
+    message: string,
+    headers?: HeadersInit
+  ) => {
+    recordGeneratorApiEvent({
+      endpoint: "generate-style",
+      outcome: "error",
+      status,
+      code,
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+    return errorResponse(
+      status,
+      code,
+      message,
+      attachTelemetryHeaders(status, code, headers)
+    );
+  };
+
+  const respondSuccess = (payload: unknown) => {
+    const status = 200;
+    recordGeneratorApiEvent({
+      endpoint: "generate-style",
+      outcome: "success",
+      status,
+      durationMs: Date.now() - startedAt,
+      clientHash,
+    });
+    return NextResponse.json(payload, {
+      headers: attachTelemetryHeaders(status),
+    });
+  };
+
   const originCheck = verifyTrustedOrigin(request);
   if (!originCheck.ok) {
-    return NextResponse.json(
-      { error: originCheck.error },
-      { status: originCheck.status ?? 403 }
+    return respondError(
+      originCheck.status ?? 403,
+      "ORIGIN_NOT_ALLOWED",
+      originCheck.error ?? "Cross-origin request denied."
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "api:generate-style",
+    key: clientKey,
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return respondError(
+      429,
+      "RATE_LIMITED",
+      "Too many style generation requests. Please try again later.",
+      createRateLimitHeaders(rateLimit)
     );
   }
 
   try {
-    const body = await request.json();
-    const { description, baseStyle } = body;
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return respondError(400, "INVALID_JSON", "Invalid JSON request body.");
+    }
 
-    if (!description || typeof description !== "string") {
-      return NextResponse.json(
-        { error: "Missing or invalid 'description' field" },
-        { status: 400 }
+    const parsed = GENERATE_STYLE_SCHEMA.safeParse(body);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      return respondError(
+        400,
+        "INVALID_REQUEST",
+        firstIssue?.message ?? "Invalid request body."
       );
     }
 
-    if (description.length > 500) {
-      return NextResponse.json(
-        { error: "Description must be 500 characters or less" },
-        { status: 400 }
-      );
-    }
-
-    if (baseStyle && typeof baseStyle !== "string") {
-      return NextResponse.json(
-        { error: "Invalid 'baseStyle' field" },
-        { status: 400 }
-      );
-    }
+    const { description, baseStyle } = parsed.data;
 
     const result = generateStyleFromDescription({ description, baseStyle });
-    return NextResponse.json(result);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to generate style" },
-      { status: 500 }
+    return respondSuccess(result);
+  } catch (error) {
+    return respondError(
+      500,
+      "GENERATION_FAILED",
+      `Failed to generate style: ${(error as Error).message}`
     );
   }
 }
@@ -60,9 +166,25 @@ export async function POST(request: NextRequest) {
  * GET /api/generate-style
  * Get available base styles and mood keywords
  */
-export async function GET() {
-  return NextResponse.json({
-    availableStyles: getAvailableStyleSlugs(),
-    moodKeywords: getMoodKeywords(),
+export async function GET(request: NextRequest) {
+  const payload = buildDiscoveryPayload();
+  const etag = computeWeakEtag(JSON.stringify(payload));
+  const ifNoneMatch = request.headers.get("if-none-match");
+
+  if (ifNoneMatch === etag) {
+    return new NextResponse(null, {
+      status: 304,
+      headers: {
+        ETag: etag,
+        "Cache-Control": DISCOVERY_CACHE_CONTROL,
+      },
+    });
+  }
+
+  return NextResponse.json(payload, {
+    headers: {
+      ETag: etag,
+      "Cache-Control": DISCOVERY_CACHE_CONTROL,
+    },
   });
 }
