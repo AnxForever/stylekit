@@ -846,12 +846,12 @@ const report = await res.json();`,
     id: "pipeline",
     title: "Pipeline",
     icon: Workflow,
-    description: "Run extract -> analyze -> match -> migrate -> generate -> export pipelines. Rate-limited.",
+    description: "Run extract -> analyze -> match -> migrate -> generate -> export pipelines. Rate-limited. Pipeline endpoints include telemetry headers: x-stylekit-duration-ms, x-stylekit-status, and x-stylekit-error-code (on errors).",
     endpoints: [
       {
         method: "POST",
         path: "/api/pipeline/run",
-        description: "Start a new pipeline run and execute all six stages.",
+        description: "Start a new pipeline run and execute all six stages. Common error codes: ORIGIN_NOT_ALLOWED, RATE_LIMITED, PAYLOAD_TOO_LARGE, INVALID_JSON, INVALID_REQUEST, PIPELINE_EXECUTION_FAILED.",
         bodyParams: [
           { name: "sourceUrl", type: "string", required: true, description: "URL to extract styles from (must be http/https, max 2048 chars)" },
           { name: "target.framework", type: "string", required: true, description: "'html' or 'react'" },
@@ -889,7 +889,7 @@ const report = await res.json();`,
       {
         method: "GET",
         path: "/api/pipeline/run/[id]",
-        description: "Get the status and details of a pipeline run.",
+        description: "Get the status and details of a pipeline run. Common error codes: RUN_NOT_FOUND, PIPELINE_RUN_FETCH_FAILED.",
         params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
         responseExample: `{
   "run": {
@@ -906,7 +906,7 @@ const { run } = await res.json();`,
       {
         method: "POST",
         path: "/api/pipeline/run/[id]/retry",
-        description: "Retry a failed pipeline run from a specific stage.",
+        description: "Retry a failed pipeline run from a specific stage. Common error codes: ORIGIN_NOT_ALLOWED, RATE_LIMITED, PAYLOAD_TOO_LARGE, INVALID_JSON, INVALID_STAGE, RUN_NOT_FOUND, RUN_NOT_FAILED, INVALID_STAGE_ORDER, PIPELINE_RETRY_FAILED.",
         params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
         bodyParams: [
           { name: "fromStage", type: "string", required: true, description: "Stage to retry from (extract|analyze|match|migrate|generate|export)" },
@@ -923,7 +923,7 @@ const { run } = await res.json();`,
       {
         method: "GET",
         path: "/api/pipeline/run/[id]/download",
-        description: "Download exported pipeline artifacts as a zip archive.",
+        description: "Download exported pipeline artifacts as a zip archive. Common error codes: RUN_NOT_FOUND, EXPORT_NOT_FOUND, PIPELINE_DOWNLOAD_FAILED.",
         params: [{ name: "id", type: "string", required: true, description: "Pipeline run ID" }],
         fetchExample: `window.location.href = "/api/pipeline/run/pl_abc123/download";`,
         curlExample: `curl -L https://stylekit.dev/api/pipeline/run/pl_abc123/download -o pipeline.zip`,
