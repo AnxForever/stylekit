@@ -2,6 +2,7 @@
 
 import type { AccessibilityScore } from "@/lib/accessibility";
 import { useI18n } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 interface ScoreBadgeProps {
   score: AccessibilityScore;
@@ -16,7 +17,7 @@ const gradeColors: Record<AccessibilityScore["grade"], string> = {
   F: "bg-red-600 text-white",
 };
 
-const gradeI18nKeys: Record<AccessibilityScore["grade"], string> = {
+const gradeI18nKeys: Record<AccessibilityScore["grade"], TranslationKey> = {
   A: "a11y.excellent",
   B: "a11y.good",
   C: "a11y.fair",
