@@ -189,8 +189,23 @@ export function evaluateGeneratedFiles(
   }
 
   const requiredFiles = config.outputFormat === "react"
-    ? ["package.json", "src/App.tsx", "README.md"]
-    : ["index.html", "README.md"];
+    ? [
+      "package.json",
+      "src/App.tsx",
+      "README.md",
+      "stylekit.config.json",
+      "CONTENT_MAP.md",
+    ]
+    : config.outputFormat === "nextjs"
+      ? [
+        "package.json",
+        "app/layout.tsx",
+        "app/page.tsx",
+        "README.md",
+        "stylekit.config.json",
+        "CONTENT_MAP.md",
+      ]
+      : ["index.html", "README.md", "stylekit.config.json", "CONTENT_MAP.md"];
 
   for (const requiredFile of requiredFiles) {
     if (!files.some((file) => file.name === requiredFile)) {
