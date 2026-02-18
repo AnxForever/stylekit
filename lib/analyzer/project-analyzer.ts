@@ -34,6 +34,7 @@ export interface StyleMatch {
     forbiddenViolations: number; // count of forbidden classes used
     requiredPresence: number; // % of required classes present
     patternScore: number; // score from dominant-pattern heuristics
+    environmentScore: number; // score from package.json / tailwind config context
   };
   explanation: string;
 }
@@ -48,6 +49,7 @@ export interface AnalysisResult {
   topMatches: StyleMatch[];
   classesFound: string[];
   dominantPatterns: string[];
+  environmentHints?: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -71,13 +73,13 @@ const PATTERN_DEFS: PatternDef[] = [
       "soft-ui", "glassmorphism", "neumorphism", "bento-grid", "claymorphism",
       "material-design", "fluent-design",
     ],
-    negative: ["neo-brutalist", "neubrutalism", "minimalist-flat", "editorial"],
+    negative: ["neo-brutalist", "minimalist-flat", "editorial"],
   },
   {
     name: "sharp corners",
     test: (c) => c === "rounded-none",
     positive: [
-      "neo-brutalist", "neubrutalism", "minimalist-flat", "editorial",
+      "neo-brutalist", "minimalist-flat", "editorial",
       "swiss-style", "bauhaus",
     ],
     negative: [
@@ -92,7 +94,7 @@ const PATTERN_DEFS: PatternDef[] = [
       "synthwave", "outrun",
     ],
     negative: [
-      "neo-brutalist", "minimalist-flat", "minimalism", "editorial",
+      "neo-brutalist", "minimalist-flat", "editorial",
       "corporate-clean",
     ],
   },
@@ -100,18 +102,18 @@ const PATTERN_DEFS: PatternDef[] = [
     name: "heavy shadows",
     test: (c) => /^shadow-(lg|xl|2xl)$/.test(c),
     positive: ["neumorphism", "soft-ui", "skeuomorphism"],
-    negative: ["minimalist-flat", "minimalism", "editorial"],
+    negative: ["minimalist-flat", "editorial"],
   },
   {
     name: "hard offset shadows",
     test: (c) => /^shadow-\[\d+px_\d+px_0/.test(c),
-    positive: ["neo-brutalist", "neubrutalism", "neo-brutalist-playful", "neo-brutalist-soft"],
+    positive: ["neo-brutalist", "neo-brutalist-playful", "neo-brutalist-soft"],
     negative: ["neumorphism", "soft-ui", "glassmorphism", "corporate-clean"],
   },
   {
     name: "no shadows",
     test: (c) => c === "shadow-none",
-    positive: ["minimalist-flat", "minimalism", "editorial"],
+    positive: ["minimalist-flat", "editorial"],
     negative: ["neumorphism", "soft-ui"],
   },
   {
@@ -143,7 +145,7 @@ const PATTERN_DEFS: PatternDef[] = [
     name: "neon glow shadows",
     test: (c) => /^shadow-\[0_0_\d+px/.test(c),
     positive: ["cyberpunk-neon", "synthwave", "outrun", "neon-samurai", "neon-gradient"],
-    negative: ["corporate-clean", "editorial", "minimalism"],
+    negative: ["corporate-clean", "editorial", "minimalist-flat"],
   },
   {
     name: "serif fonts",
@@ -177,6 +179,248 @@ const PATTERN_DEFS: PatternDef[] = [
   },
 ];
 
+const STYLE_SLUG_SET = new Set(styles.map((style) => style.slug));
+
+interface EnvironmentContext {
+  styleBoosts: Record<string, number>;
+  styleReasons: Record<string, string[]>;
+  hints: string[];
+}
+
+function addEnvironmentBoost(
+  ctx: EnvironmentContext,
+  slugs: string[],
+  amount: number,
+  reason: string,
+) {
+  for (const slug of slugs) {
+    if (!STYLE_SLUG_SET.has(slug)) continue;
+    ctx.styleBoosts[slug] = (ctx.styleBoosts[slug] ?? 0) + amount;
+    const reasons = ctx.styleReasons[slug] ?? [];
+    if (!reasons.includes(reason)) {
+      reasons.push(reason);
+      ctx.styleReasons[slug] = reasons;
+    }
+  }
+}
+
+function addEnvironmentHint(ctx: EnvironmentContext, hint: string) {
+  if (!ctx.hints.includes(hint)) {
+    ctx.hints.push(hint);
+  }
+}
+
+function readDependencies(packageJson?: string): Set<string> {
+  if (!packageJson) return new Set();
+
+  try {
+    const parsed = JSON.parse(packageJson) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+      peerDependencies?: Record<string, string>;
+    };
+    const all = {
+      ...(parsed.dependencies ?? {}),
+      ...(parsed.devDependencies ?? {}),
+      ...(parsed.peerDependencies ?? {}),
+    };
+    return new Set(Object.keys(all).map((name) => name.toLowerCase()));
+  } catch {
+    return new Set();
+  }
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const cleaned = hex.replace("#", "");
+  if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(cleaned)) return null;
+
+  const full =
+    cleaned.length === 3
+      ? cleaned
+          .split("")
+          .map((char) => `${char}${char}`)
+          .join("")
+      : cleaned;
+
+  return {
+    r: Number.parseInt(full.slice(0, 2), 16),
+    g: Number.parseInt(full.slice(2, 4), 16),
+    b: Number.parseInt(full.slice(4, 6), 16),
+  };
+}
+
+function luminance({ r, g, b }: { r: number; g: number; b: number }): number {
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+function buildEnvironmentContext(input: AnalysisInput): EnvironmentContext {
+  const ctx: EnvironmentContext = {
+    styleBoosts: {},
+    styleReasons: {},
+    hints: [],
+  };
+
+  const deps = readDependencies(input.packageJson);
+
+  if (deps.has("@mui/material") || deps.has("@mui/system")) {
+    addEnvironmentBoost(
+      ctx,
+      ["material-design", "fluent-design", "corporate-clean"],
+      18,
+      "Detected Material UI dependencies",
+    );
+    addEnvironmentHint(ctx, "Material UI dependencies detected");
+  }
+
+  if (deps.has("antd")) {
+    addEnvironmentBoost(
+      ctx,
+      ["corporate-clean", "stripe-style", "notion-style"],
+      16,
+      "Detected Ant Design dependency",
+    );
+    addEnvironmentHint(ctx, "Ant Design dependency detected");
+  }
+
+  if (deps.has("@chakra-ui/react")) {
+    addEnvironmentBoost(
+      ctx,
+      ["soft-ui", "neumorphism", "corporate-clean"],
+      14,
+      "Detected Chakra UI dependency",
+    );
+    addEnvironmentHint(ctx, "Chakra UI dependency detected");
+  }
+
+  if (deps.has("framer-motion") || deps.has("gsap")) {
+    addEnvironmentBoost(
+      ctx,
+      ["modern-gradient", "glassmorphism", "neon-gradient"],
+      12,
+      "Animation-focused dependencies suggest motion-rich UI",
+    );
+    addEnvironmentHint(ctx, "Animation libraries detected");
+  }
+
+  if (
+    deps.has("three") ||
+    deps.has("@react-three/fiber") ||
+    deps.has("@react-three/drei")
+  ) {
+    addEnvironmentBoost(
+      ctx,
+      ["sci-fi-hud", "cyberpunk-neon", "holographic"],
+      14,
+      "3D rendering dependencies suggest futuristic visual direction",
+    );
+    addEnvironmentHint(ctx, "3D rendering dependencies detected");
+  }
+
+  if (
+    deps.has("nextra") ||
+    deps.has("@docusaurus/core") ||
+    deps.has("vitepress")
+  ) {
+    addEnvironmentBoost(
+      ctx,
+      ["notion-style", "editorial", "minimalist-flat"],
+      12,
+      "Documentation-oriented stack detected",
+    );
+    addEnvironmentHint(ctx, "Documentation stack dependency detected");
+  }
+
+  if (input.tailwindConfig) {
+    const hexMatches =
+      input.tailwindConfig.match(/#[0-9a-fA-F]{3,6}/g)?.slice(0, 100) ?? [];
+    const rgbColors = hexMatches
+      .map((hex) => hexToRgb(hex))
+      .filter((color): color is { r: number; g: number; b: number } => color !== null);
+
+    if (rgbColors.length > 0) {
+      const darkRatio =
+        rgbColors.filter((color) => luminance(color) < 0.28).length /
+        rgbColors.length;
+      const pastelRatio =
+        rgbColors.filter((color) => {
+          const max = Math.max(color.r, color.g, color.b);
+          const min = Math.min(color.r, color.g, color.b);
+          const lightness = (max + min) / 2;
+          return lightness > 180 && max - min < 110;
+        }).length / rgbColors.length;
+
+      if (darkRatio >= 0.55) {
+        addEnvironmentBoost(
+          ctx,
+          ["dark-mode", "cyberpunk-neon", "sci-fi-hud"],
+          14,
+          "Tailwind config uses predominantly dark palette tokens",
+        );
+        addEnvironmentHint(ctx, "Tailwind config indicates dark palette preference");
+      }
+
+      if (pastelRatio >= 0.5) {
+        addEnvironmentBoost(
+          ctx,
+          ["soft-ui", "kawaii-minimal", "watercolor-style"],
+          12,
+          "Tailwind config contains mostly soft pastel colors",
+        );
+        addEnvironmentHint(ctx, "Tailwind config indicates pastel palette preference");
+      }
+    }
+
+    const hasRoundedNone = /borderRadius[\s\S]*?(0px|['"]0['"]|rounded-none)/i.test(
+      input.tailwindConfig,
+    );
+    const hasRoundedFull = /borderRadius[\s\S]*?(9999px|full|pill)/i.test(
+      input.tailwindConfig,
+    );
+    const hasBackdropBlur =
+      /backdropBlur|blur\(/i.test(input.tailwindConfig);
+
+    if (hasRoundedNone) {
+      addEnvironmentBoost(
+        ctx,
+        ["neo-brutalist", "minimalist-flat"],
+        10,
+        "Tailwind config includes sharp border radius settings",
+      );
+      addEnvironmentHint(ctx, "Tailwind border radius leans sharp");
+    }
+
+    if (hasRoundedFull) {
+      addEnvironmentBoost(
+        ctx,
+        ["soft-ui", "glassmorphism", "neumorphism"],
+        10,
+        "Tailwind config includes full/round border radius settings",
+      );
+      addEnvironmentHint(ctx, "Tailwind border radius leans rounded");
+    }
+
+    if (hasBackdropBlur) {
+      addEnvironmentBoost(
+        ctx,
+        ["glassmorphism", "liquid-glass", "holographic"],
+        10,
+        "Tailwind config includes blur/backdrop token settings",
+      );
+      addEnvironmentHint(ctx, "Tailwind config includes blur-related tokens");
+    }
+  }
+
+  return ctx;
+}
+
+function calculateEnvironmentScore(
+  styleSlug: string,
+  ctx: EnvironmentContext,
+): number {
+  const boost = ctx.styleBoosts[styleSlug] ?? 0;
+  return Math.max(0, Math.min(100, 50 + boost));
+}
+
 // ---------------------------------------------------------------------------
 // Core analysis
 // ---------------------------------------------------------------------------
@@ -191,6 +435,7 @@ const PATTERN_DEFS: PatternDef[] = [
  *    b. Score based on required-class presence (reward).
  *    c. Score based on recommended-class overlap (reward).
  *    d. Score based on pattern heuristics (positive/negative correlation).
+ *    e. Apply environment context hints from package.json / tailwind config.
  * 3. Combine into a composite confidence score (0-100).
  * 4. Sort descending, return top 5 with explanations.
  */
@@ -203,6 +448,7 @@ export function analyzeProjectStyle(input: AnalysisInput): AnalysisResult {
   }
 
   const dominantPatterns = detectDominantPatterns(classesFound);
+  const environmentContext = buildEnvironmentContext(input);
 
   const scored: StyleMatch[] = [];
 
@@ -216,8 +462,9 @@ export function analyzeProjectStyle(input: AnalysisInput): AnalysisResult {
     const requiredPresence = calculateRequiredPresence(classesFound, rules);
     const classOverlap = calculateClassOverlap(classesFound, rules, tokens);
     const patternScore = calculatePatternScore(classesFound, slug);
+    const environmentScore = calculateEnvironmentScore(slug, environmentContext);
 
-    // Weighted composite:  overlap 30%, required 25%, pattern 30%, forbidden penalty 15%
+    // Weighted composite with context adjustments
     const forbiddenPenalty =
       classesFound.length > 0
         ? Math.min(100, (forbiddenViolations / classesFound.length) * 200)
@@ -225,9 +472,10 @@ export function analyzeProjectStyle(input: AnalysisInput): AnalysisResult {
 
     const raw =
       classOverlap * 0.3 +
-      requiredPresence * 0.25 +
+      requiredPresence * 0.23 +
       patternScore * 0.3 -
-      forbiddenPenalty * 0.15;
+      forbiddenPenalty * 0.15 +
+      (environmentScore - 50) * 0.18;
 
     const confidence = Math.max(0, Math.min(100, Math.round(raw)));
 
@@ -240,6 +488,7 @@ export function analyzeProjectStyle(input: AnalysisInput): AnalysisResult {
         forbiddenViolations,
         requiredPresence: Math.round(requiredPresence),
         patternScore: Math.round(patternScore),
+        environmentScore: Math.round(environmentScore),
       },
       explanation: "", // filled below for top matches
     });
@@ -250,13 +499,21 @@ export function analyzeProjectStyle(input: AnalysisInput): AnalysisResult {
   // Generate explanations only for top 5 (expensive string work)
   const top5 = scored.slice(0, 5).map((m) => ({
     ...m,
-    explanation: generateExplanation(m.slug, m.matchDetails, dominantPatterns),
+    explanation: generateExplanation(
+      m.slug,
+      m.matchDetails,
+      dominantPatterns,
+      environmentContext.styleReasons[m.slug] ?? [],
+    ),
   }));
 
   return {
     topMatches: top5,
     classesFound,
     dominantPatterns,
+    ...(environmentContext.hints.length > 0
+      ? { environmentHints: environmentContext.hints }
+      : {}),
   };
 }
 
@@ -453,6 +710,7 @@ export function generateExplanation(
   slug: string,
   details: StyleMatch["matchDetails"],
   patterns: string[],
+  environmentReasons: string[] = [],
 ): string {
   const parts: string[] = [];
 
@@ -483,6 +741,10 @@ export function generateExplanation(
         `detected patterns: ${relevantPatterns.slice(0, 3).join(", ")}`
       );
     }
+  }
+
+  if (details.environmentScore >= 60 && environmentReasons.length > 0) {
+    parts.push(environmentReasons[0]);
   }
 
   if (parts.length === 0) {
