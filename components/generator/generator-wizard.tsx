@@ -1,10 +1,22 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useDeferredValue } from "react";
+import {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useDeferredValue,
+} from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
-import type { GeneratorConfig, SectionConfig, TemplateType, StyleInput, OutputFormat } from "@/lib/generator/types";
-import { getTemplateByType, landingTemplate } from "@/lib/generator";
+import type {
+  GeneratorConfig,
+  OutputFormat,
+  SectionConfig,
+  StyleInput,
+  TemplateType,
+} from "@/lib/generator/types";
+import { getTemplateByType } from "@/lib/generator";
 import { generateHtmlFiles, generatePreviewHtml } from "@/lib/generator/renderers/html-renderer";
 import {
   evaluateGeneratedFiles,
@@ -14,6 +26,20 @@ import {
 import type { ZipBuildStage, ZipProgressUpdate } from "@/lib/generator/zip-builder";
 import { getStoredStyles } from "@/lib/style-creator/storage";
 import type { StoredCustomStyle } from "@/lib/style-creator/types";
+import {
+  applyScenarioPackToSections,
+  getScenarioPacksByTemplate,
+  type GeneratorScenarioPack,
+} from "@/lib/generator/scenario-packs";
+import {
+  deleteStoredScenarioPack,
+  exportStoredScenarioPacks,
+  getStoredScenarioPacks,
+  importStoredScenarioPacks,
+  saveScenarioPackFromConfig,
+  updateStoredScenarioPack,
+  type StoredScenarioPack,
+} from "@/lib/generator/scenario-storage";
 import { StepIndicator } from "./step-indicator";
 import { StyleStep } from "./style-step";
 import { TemplateStep } from "./template-step";
@@ -26,11 +52,55 @@ interface GeneratorWizardProps {
 const TOTAL_STEPS = 3;
 const PREVIEW_DEBOUNCE_MS = 180;
 
+const DEFAULT_GLOBAL_CONTENT_BY_TEMPLATE: Record<
+  TemplateType,
+  GeneratorConfig["globalContent"]
+> = {
+  landing: {
+    siteName: "My Website",
+    siteDescription: "Welcome to my website",
+  },
+  portfolio: {
+    siteName: "My Portfolio",
+    siteDescription: "Selected projects and experience",
+  },
+  blog: {
+    siteName: "My Blog",
+    siteDescription: "Thoughts, tutorials, and updates",
+  },
+  dashboard: {
+    siteName: "Operations Dashboard",
+    siteDescription: "Track performance and critical metrics",
+  },
+};
+
+function buildSectionsFromTemplate(templateType: TemplateType): SectionConfig[] {
+  const template = getTemplateByType(templateType);
+  if (!template) return [];
+
+  return template.sections.map((section) => ({
+    id: section.id,
+    name: section.name,
+    nameEn: section.nameEn,
+    description: section.description,
+    enabled: section.defaultEnabled,
+    content: Object.fromEntries(
+      section.fields.map((field) => [field.id, field.defaultValue])
+    ),
+  }));
+}
+
+function getDefaultGlobalContent(
+  templateType: TemplateType
+): GeneratorConfig["globalContent"] {
+  return { ...DEFAULT_GLOBAL_CONTENT_BY_TEMPLATE[templateType] };
+}
+
 function getDownloadStageLabel(stage: ZipBuildStage, locale: "zh" | "en"): string {
   if (locale === "zh") {
-    if (stage === "prepare") return "准备文件";
-    if (stage === "compress") return "压缩中";
-    return "收尾中";
+    if (stage === "prepare") return "Preparing files";
+    if (stage === "compress") return "Compressing files";
+    return "Finalizing";
   }
 
   if (stage === "prepare") return "Preparing";
@@ -38,8 +108,19 @@ function getDownloadStageLabel(stage: ZipBuildStage, locale: "zh" | "en"): strin
   return "Finalizing";
 }
 
+function downloadTextFile(content: string, filename: string, mimeType: string): void {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const { t, locale } = useI18n();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPreviewPending, setIsPreviewPending] = useState(false);
@@ -48,48 +129,40 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
   const [downloadNotice, setDownloadNotice] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<ZipProgressUpdate | null>(null);
   const [previewHtml, setPreviewHtml] = useState("");
+
   const [customStyles, setCustomStyles] = useState<StoredCustomStyle[]>([]);
+  const [customScenarioPacks, setCustomScenarioPacks] = useState<StoredScenarioPack[]>([]);
+  const [appliedScenarioId, setAppliedScenarioId] = useState<string | null>(null);
 
-  // Load custom styles on mount
-  useEffect(() => {
-    setCustomStyles(getStoredStyles());
-  }, []);
-
-  // Configuration state
   const [selectedStyleSlug, setSelectedStyleSlug] = useState<string | null>(null);
   const [selectedCustomId, setSelectedCustomId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>("landing");
   const [selectedFormat, setSelectedFormat] = useState<OutputFormat>("html");
-  const [globalContent, setGlobalContent] = useState({
-    siteName: "My Website",
-    siteDescription: "Welcome to my website",
-  });
-  const [sections, setSections] = useState<SectionConfig[]>(() => {
-    // Initialize from landing template
-    return landingTemplate.sections.map((section) => ({
-      id: section.id,
-      name: section.name,
-      nameEn: section.nameEn,
-      description: section.description,
-      enabled: section.defaultEnabled,
-      content: Object.fromEntries(
-        section.fields.map((field) => [field.id, field.defaultValue])
-      ),
-    }));
-  });
+  const [globalContent, setGlobalContent] = useState<GeneratorConfig["globalContent"]>(() =>
+    getDefaultGlobalContent("landing")
+  );
+  const [sections, setSections] = useState<SectionConfig[]>(() =>
+    buildSectionsFromTemplate("landing")
+  );
 
-  // Computed values
+  useEffect(() => {
+    setCustomStyles(getStoredStyles());
+  }, []);
+
+  useEffect(() => {
+    setCustomScenarioPacks(getStoredScenarioPacks(selectedTemplate));
+  }, [selectedTemplate]);
+
   const selectedStyle = useMemo(
-    () => styles.find((s) => s.slug === selectedStyleSlug),
+    () => styles.find((style) => style.slug === selectedStyleSlug),
     [styles, selectedStyleSlug]
   );
 
   const selectedCustomStyle = useMemo(
-    () => customStyles.find((s) => s.id === selectedCustomId),
+    () => customStyles.find((style) => style.id === selectedCustomId),
     [customStyles, selectedCustomId]
   );
 
-  // Create StyleInput for renderer
   const styleInput: StyleInput | null = useMemo(() => {
     if (selectedCustomId && selectedCustomStyle) {
       return { type: "custom", style: selectedCustomStyle };
@@ -98,11 +171,16 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       return { type: "builtin", style: selectedStyle };
     }
     return null;
-  }, [selectedStyleSlug, selectedStyle, selectedCustomId, selectedCustomStyle]);
+  }, [selectedCustomId, selectedCustomStyle, selectedStyleSlug, selectedStyle]);
 
   const templateDef = useMemo(
     () => getTemplateByType(selectedTemplate),
     [selectedTemplate]
+  );
+
+  const scenarioPacks = useMemo<GeneratorScenarioPack[]>(
+    () => [...getScenarioPacksByTemplate(selectedTemplate), ...customScenarioPacks],
+    [selectedTemplate, customScenarioPacks]
   );
 
   const deferredSections = useDeferredValue(sections);
@@ -116,7 +194,14 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       sections,
       globalContent,
     }),
-    [selectedStyleSlug, selectedCustomId, selectedTemplate, selectedFormat, sections, globalContent]
+    [
+      selectedStyleSlug,
+      selectedCustomId,
+      selectedTemplate,
+      selectedFormat,
+      sections,
+      globalContent,
+    ]
   );
 
   const previewConfig: GeneratorConfig = useMemo(
@@ -146,6 +231,26 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     [config, templateDef]
   );
 
+  const contentMetrics = useMemo(() => {
+    const enabledSections = sections.filter((section) => section.enabled);
+    const filledFields = enabledSections.reduce(
+      (count, section) =>
+        count +
+        Object.values(section.content).filter((value) => value.trim().length > 0).length,
+      0
+    );
+    const totalFields = enabledSections.reduce(
+      (count, section) => count + Object.keys(section.content).length,
+      0
+    );
+    return {
+      enabledSectionCount: enabledSections.length,
+      totalSectionCount: sections.length,
+      filledFields,
+      totalFields,
+    };
+  }, [sections]);
+
   useEffect(() => {
     if (!styleInput) {
       setPreviewHtml("");
@@ -173,76 +278,190 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     };
   }, [sanitizedPreviewConfig, styleInput, t]);
 
-  // Handlers
-  const handleSelectStyle = useCallback((slug: string, isCustom: boolean) => {
+  const resetFeedback = useCallback(() => {
     setDownloadError(null);
     setDownloadNotice(null);
-    if (isCustom) {
-      setSelectedCustomId(slug);
-      setSelectedStyleSlug(null);
-    } else {
-      setSelectedStyleSlug(slug);
-      setSelectedCustomId(null);
-    }
   }, []);
 
-  const handleSelectTemplate = useCallback((type: TemplateType) => {
-    setDownloadError(null);
-    setDownloadNotice(null);
-    setSelectedTemplate(type);
-    const template = getTemplateByType(type);
-    if (template) {
-      setSections(
-        template.sections.map((section) => ({
-          id: section.id,
-          name: section.name,
-          nameEn: section.nameEn,
-          description: section.description,
-          enabled: section.defaultEnabled,
-          content: Object.fromEntries(
-            section.fields.map((field) => [field.id, field.defaultValue])
-          ),
-        }))
-      );
-    }
-  }, []);
+  const handleSelectStyle = useCallback(
+    (slug: string, isCustom: boolean) => {
+      resetFeedback();
+      if (isCustom) {
+        setSelectedCustomId(slug);
+        setSelectedStyleSlug(null);
+      } else {
+        setSelectedStyleSlug(slug);
+        setSelectedCustomId(null);
+      }
+    },
+    [resetFeedback]
+  );
+
+  const handleSelectTemplate = useCallback(
+    (templateType: TemplateType) => {
+      resetFeedback();
+      setSelectedTemplate(templateType);
+      setSections(buildSectionsFromTemplate(templateType));
+      setGlobalContent(getDefaultGlobalContent(templateType));
+      setAppliedScenarioId(null);
+    },
+    [resetFeedback]
+  );
 
   const handleUpdateSection = useCallback(
     (sectionId: string, updates: Partial<SectionConfig>) => {
-      setDownloadError(null);
-      setDownloadNotice(null);
+      resetFeedback();
       setSections((prev) =>
-        prev.map((s) =>
-          s.id === sectionId ? { ...s, ...updates } : s
+        prev.map((section) =>
+          section.id === sectionId ? { ...section, ...updates } : section
         )
       );
     },
-    []
+    [resetFeedback]
   );
 
   const handleUpdateSectionContent = useCallback(
     (sectionId: string, fieldId: string, value: string) => {
-      setDownloadError(null);
-      setDownloadNotice(null);
+      resetFeedback();
       setSections((prev) =>
-        prev.map((s) =>
-          s.id === sectionId
-            ? { ...s, content: { ...s.content, [fieldId]: value } }
-            : s
+        prev.map((section) =>
+          section.id === sectionId
+            ? { ...section, content: { ...section.content, [fieldId]: value } }
+            : section
         )
       );
     },
-    []
+    [resetFeedback]
   );
 
-  const handleUpdateGlobalContent = useCallback((content: {
-    siteName: string;
-    siteDescription: string;
-  }) => {
-    setDownloadError(null);
-    setDownloadNotice(null);
-    setGlobalContent(content);
-  }, []);
+  const handleUpdateGlobalContent = useCallback(
+    (content: { siteName: string; siteDescription: string }) => {
+      resetFeedback();
+      setGlobalContent(content);
+    },
+    [resetFeedback]
+  );
+
+  const handleApplyScenarioPack = useCallback(
+    (scenarioId: string) => {
+      resetFeedback();
+      const scenarioPack = scenarioPacks.find((pack) => pack.id === scenarioId);
+      if (!scenarioPack) return;
+
+      setGlobalContent((prev) => ({
+        ...prev,
+        ...scenarioPack.globalContent,
+      }));
+      setSections((prev) => applyScenarioPackToSections(prev, scenarioPack));
+      setAppliedScenarioId(scenarioId);
+    },
+    [resetFeedback, scenarioPacks]
+  );
+
+  const handleResetContent = useCallback(() => {
+    resetFeedback();
+    setSections(buildSectionsFromTemplate(selectedTemplate));
+    setGlobalContent(getDefaultGlobalContent(selectedTemplate));
+    setAppliedScenarioId(null);
+  }, [resetFeedback, selectedTemplate]);
+
+  const handleSaveScenarioPack = useCallback(
+    (name: string, description: string) => {
+      resetFeedback();
+      try {
+        const savedPack = saveScenarioPackFromConfig({
+          templateType: selectedTemplate,
+          name,
+          description,
+          globalContent,
+          sections,
+        });
+        setCustomScenarioPacks((prev) => [savedPack, ...prev.filter((pack) => pack.id !== savedPack.id)]);
+        setAppliedScenarioId(savedPack.id);
+        setDownloadNotice("Saved scenario preset.");
+      } catch (error) {
+        console.error("Failed to save preset:", error);
+        setDownloadError("Failed to save scenario preset.");
+      }
+    },
+    [globalContent, resetFeedback, sections, selectedTemplate]
+  );
+
+  const handleDeleteScenarioPack = useCallback(
+    (scenarioId: string) => {
+      resetFeedback();
+      deleteStoredScenarioPack(scenarioId);
+      setCustomScenarioPacks((prev) => prev.filter((pack) => pack.id !== scenarioId));
+      if (appliedScenarioId === scenarioId) {
+        setAppliedScenarioId(null);
+      }
+      setDownloadNotice("Preset deleted.");
+    },
+    [appliedScenarioId, resetFeedback]
+  );
+
+  const handleUpdateScenarioPack = useCallback(
+    (scenarioId: string, name: string, description: string) => {
+      resetFeedback();
+      const updated = updateStoredScenarioPack(scenarioId, { name, description });
+      if (!updated) {
+        setDownloadError("Preset not found.");
+        return;
+      }
+
+      setCustomScenarioPacks((prev) =>
+        prev.map((pack) => (pack.id === scenarioId ? updated : pack))
+      );
+      setDownloadNotice("Preset updated.");
+    },
+    [resetFeedback]
+  );
+
+  const handleExportScenarioPacks = useCallback(() => {
+    resetFeedback();
+    try {
+      const exportedJson = exportStoredScenarioPacks(selectedTemplate);
+      const date = new Date().toISOString().slice(0, 10);
+      downloadTextFile(
+        exportedJson,
+        `stylekit-scenarios-${selectedTemplate}-${date}.json`,
+        "application/json"
+      );
+      setDownloadNotice("Scenario presets exported.");
+    } catch (error) {
+      console.error("Failed to export presets:", error);
+      setDownloadError("Failed to export scenario presets.");
+    }
+  }, [resetFeedback, selectedTemplate]);
+
+  const handleImportScenarioPacks = useCallback(
+    (jsonContent: string) => {
+      resetFeedback();
+      try {
+        const result = importStoredScenarioPacks(jsonContent, selectedTemplate);
+        const templatePacks = result.packs.filter(
+          (pack) => pack.templateType === selectedTemplate
+        );
+
+        setCustomScenarioPacks(templatePacks);
+        setAppliedScenarioId(null);
+
+        if (result.imported === 0) {
+          setDownloadError("No valid scenario presets found in this file.");
+          return;
+        }
+
+        const notice = result.skipped > 0
+          ? `Imported ${result.imported} presets. Skipped ${result.skipped}.`
+          : `Imported ${result.imported} presets.`;
+        setDownloadNotice(notice);
+      } catch (error) {
+        console.error("Failed to import presets:", error);
+        setDownloadError("Failed to import scenario presets.");
+      }
+    },
+    [resetFeedback, selectedTemplate]
+  );
 
   const handleDownload = useCallback(async () => {
     if (!styleInput || !templateDef) return;
@@ -251,6 +470,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     setDownloadNotice(null);
     setDownloadProgress({ stage: "prepare", progress: 0 });
     setIsDownloading(true);
+
     try {
       const sanitizedConfig = sanitizeGeneratorConfig(config, templateDef);
       const validation = validateGeneratorConfig(sanitizedConfig, templateDef);
@@ -261,12 +481,18 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         setDownloadNotice(validation.warnings[0].message);
       }
 
-      const files = selectedFormat === "react"
-        ? (await import("@/lib/generator/renderers/react-renderer")).generateReactFiles(
-          sanitizedConfig,
-          styleInput
-        )
-        : generateHtmlFiles(sanitizedConfig, styleInput);
+      const files =
+        selectedFormat === "react"
+          ? (await import("@/lib/generator/renderers/react-renderer")).generateReactFiles(
+            sanitizedConfig,
+            styleInput
+          )
+          : selectedFormat === "nextjs"
+            ? (await import("@/lib/generator/renderers/nextjs-renderer")).generateNextjsFiles(
+              sanitizedConfig,
+              styleInput
+            )
+            : generateHtmlFiles(sanitizedConfig, styleInput);
 
       const quality = evaluateGeneratedFiles(sanitizedConfig, files);
       if (quality.errors.length > 0) {
@@ -282,6 +508,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         : styleInput.style.id;
       const folderBase = sanitizedConfig.globalContent.siteName || "stylekit-site";
       const folderName = `${folderBase.toLowerCase().replace(/\s+/g, "-")}-${styleName}`;
+
       await downloadZip(files, folderName, {
         onProgress: (update) => {
           setDownloadProgress({
@@ -293,54 +520,48 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     } catch (error) {
       console.error("Download failed:", error);
       const message = error instanceof Error ? error.message : "";
-      if (message) {
-        setDownloadError(message);
-      } else {
-        setDownloadError(t("generator.downloadFailed"));
-      }
+      setDownloadError(message || t("generator.downloadFailed"));
     } finally {
       setIsDownloading(false);
       setDownloadProgress(null);
     }
-  }, [config, styleInput, templateDef, selectedFormat, t]);
+  }, [config, selectedFormat, styleInput, t, templateDef]);
 
-  // Navigation
   const canProceed = useCallback(() => {
-    switch (currentStep) {
-      case 1:
-        return !!selectedStyleSlug || !!selectedCustomId;
-      case 2:
-        return !!selectedTemplate;
-      case 3:
-        return true;
-      default:
-        return false;
+    if (currentStep === 1) {
+      return !!selectedStyleSlug || !!selectedCustomId;
     }
-  }, [currentStep, selectedStyleSlug, selectedCustomId, selectedTemplate]);
+    if (currentStep === 2) {
+      return !!selectedTemplate;
+    }
+    return true;
+  }, [currentStep, selectedCustomId, selectedStyleSlug, selectedTemplate]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (canProceed() && currentStep < TOTAL_STEPS) {
       setCurrentStep((prev) => prev + 1);
     }
-  };
+  }, [canProceed, currentStep]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
-  };
+  }, [currentStep]);
 
-  // Step labels
-  const stepLabels = [
-    t("generator.step1"),
-    t("generator.step2"),
-    t("generator.step3"),
-  ];
+  const stepLabels = [t("generator.step1"), t("generator.step2"), t("generator.step3")];
   const blockingValidationMessage = configValidation.errors[0]?.message ?? null;
+
+  const selectedTemplateLabel = selectedTemplate === "landing"
+    ? t("generator.landing")
+    : selectedTemplate === "portfolio"
+      ? t("generator.portfolio")
+      : selectedTemplate === "blog"
+        ? t("generator.blog")
+        : t("generator.dashboard");
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
-      {/* Page Header */}
       <div className="mb-8 md:mb-12">
         <p className="text-xs tracking-widest uppercase text-muted mb-2">
           {t("generator.subtitle")}
@@ -353,14 +574,12 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         </p>
       </div>
 
-      {/* Step Indicator */}
       <StepIndicator
         currentStep={currentStep}
         totalSteps={TOTAL_STEPS}
         labels={stepLabels}
       />
 
-      {/* Step Content */}
       <div className="mt-8 md:mt-12">
         {currentStep === 1 && (
           <StyleStep
@@ -387,9 +606,18 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
               templateDef={templateDef}
               sections={sections}
               globalContent={globalContent}
+              scenarioPacks={scenarioPacks}
+              appliedScenarioId={appliedScenarioId}
               onUpdateSection={handleUpdateSection}
               onUpdateSectionContent={handleUpdateSectionContent}
               onUpdateGlobalContent={handleUpdateGlobalContent}
+              onApplyScenarioPack={handleApplyScenarioPack}
+              onResetContent={handleResetContent}
+              onSaveScenarioPack={handleSaveScenarioPack}
+              onDeleteScenarioPack={handleDeleteScenarioPack}
+              onUpdateScenarioPack={handleUpdateScenarioPack}
+              onExportScenarioPacks={handleExportScenarioPacks}
+              onImportScenarioPacks={handleImportScenarioPacks}
               previewHtml={previewHtml}
               isPreviewPending={isPreviewPending}
               previewError={previewError}
@@ -397,15 +625,14 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
             {styleInput && (
               <div className="border border-border p-4 md:p-5">
-                <div className="text-sm text-muted">
+                <div className="text-sm text-muted space-y-1">
                   <p>{t("generator.preview")}</p>
+                  <p>{styleInput.style.name} / {selectedTemplateLabel}</p>
                   <p>
-                    {styleInput.style.name} /{" "}
-                    {selectedTemplate === "landing"
-                      ? t("generator.landing")
-                      : selectedTemplate === "portfolio"
-                        ? t("generator.portfolio")
-                        : selectedTemplate}
+                    Enabled sections: {contentMetrics.enabledSectionCount}/{contentMetrics.totalSectionCount}
+                  </p>
+                  <p>
+                    Filled fields: {contentMetrics.filledFields}/{contentMetrics.totalFields}
                   </p>
                 </div>
               </div>
@@ -414,7 +641,6 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         )}
       </div>
 
-      {/* Navigation Buttons */}
       <div className="flex justify-between mt-8 md:mt-12 pt-6 border-t border-border">
         <button
           onClick={handlePrev}

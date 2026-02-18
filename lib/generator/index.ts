@@ -12,6 +12,10 @@ export { blogTemplate } from "./templates/blog";
 export { dashboardTemplate } from "./templates/dashboard";
 export { generateHtmlFiles, generatePreviewHtml } from "./renderers/html-renderer";
 export { generateReactFiles } from "./renderers/react-renderer";
+export { generateNextjsFiles } from "./renderers/nextjs-renderer";
+export * from "./scenario-packs";
+export * from "./scenario-storage";
+export * from "./export-artifacts";
 
 import type { TemplateDefinition, TemplateType } from "./types";
 import { landingTemplate } from "./templates/landing";

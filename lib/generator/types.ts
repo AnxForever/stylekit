@@ -8,7 +8,7 @@ import type { DesignStyle } from "@/lib/styles";
 export type TemplateType = "landing" | "portfolio" | "blog" | "dashboard";
 
 // Output formats
-export type OutputFormat = "html" | "react";
+export type OutputFormat = "html" | "react" | "nextjs";
 
 // Section configuration
 export interface SectionConfig {
