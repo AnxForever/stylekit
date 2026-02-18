@@ -30,50 +30,17 @@ export interface ExternalNavItem {
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
-  { href: "/generate", labelKey: "nav.generator" },
 ];
 
-// Tools dropdown menu
+// Tools dropdown menu (temporarily empty — re-enable when features are stable)
 export const toolsDropdown: NavDropdown = {
   labelKey: "nav.tools",
-  items: [
-    { href: "/create-style", labelKey: "nav.createStyle" },
-    { href: "/playground", labelKey: "nav.playground" },
-    { href: "/compare", labelKey: "nav.compare" },
-    { href: "/blend", labelKey: "nav.blend" },
-    { href: "/generate-style", labelKey: "nav.aiGenerator" },
-    { href: "/developers", labelKey: "nav.developers" },
-    { href: "/analyze", labelKey: "nav.analyze" },
-    { href: "/migrate", labelKey: "nav.migrate" },
-    { href: "/pipeline", labelKey: "nav.pipeline" },
-  ],
-  groups: [
-    {
-      groupLabelKey: "nav.toolsCreate",
-      items: [
-        { href: "/create-style", labelKey: "nav.createStyle" },
-        { href: "/playground", labelKey: "nav.playground" },
-        { href: "/compare", labelKey: "nav.compare" },
-        { href: "/blend", labelKey: "nav.blend" },
-      ],
-    },
-    {
-      groupLabelKey: "nav.toolsDev",
-      items: [
-        { href: "/generate-style", labelKey: "nav.aiGenerator" },
-        { href: "/analyze", labelKey: "nav.analyze" },
-        { href: "/migrate", labelKey: "nav.migrate" },
-        { href: "/pipeline", labelKey: "nav.pipeline" },
-        { href: "/developers", labelKey: "nav.developers" },
-      ],
-    },
-  ],
+  items: [],
+  groups: [],
 };
 
-// Secondary navigation
-export const secondaryNav: NavItem[] = [
-  { href: "/guide", labelKey: "nav.guide" },
-];
+// Secondary navigation (temporarily empty)
+export const secondaryNav: NavItem[] = [];
 
 export const externalNav: ExternalNavItem[] = [
   {
