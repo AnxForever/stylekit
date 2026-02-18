@@ -7,13 +7,14 @@
  * Exposes StyleKit capabilities as tools, resources, and prompts
  * for AI assistants.
  *
- * Core tools (6):
+ * Core tools (7):
  * - search_knowledge
  * - smart_recommend
  * - get_style
  * - list_styles
  * - lint_code
  * - get_stack_guidelines
+ * - submit_style
  *
  * Experimental tools (disabled by default):
  * - compose_styles
@@ -315,6 +316,62 @@ server.tool(
 
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// -- submit_style --
+const { validateManifestDetailed, validateStyleSubmissionManifest } = require("../../lib/submit/manifest-validator");
+
+server.tool(
+  "submit_style",
+  "Validate and prepare a style submission from manifest JSON. Use dryRun=true (default) to validate without submitting.",
+  {
+    manifest: z
+      .string()
+      .describe("Full manifest JSON string following style-submission-manifest.schema.json"),
+    dryRun: z.boolean().optional().default(true).describe("If true, only validate without submitting"),
+  },
+  async ({ manifest: manifestStr, dryRun }: { manifest: string; dryRun: boolean }) => {
+    let manifest: unknown;
+    try {
+      manifest = JSON.parse(manifestStr);
+    } catch {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ valid: false, error: "Invalid JSON" }) }],
+        isError: true,
+      };
+    }
+
+    const detailed = validateManifestDetailed(manifest);
+    const full = validateStyleSubmissionManifest(manifest);
+
+    const formData = (manifest as Record<string, unknown>)?.formData as Record<string, unknown> | undefined;
+    const report: Record<string, unknown> = {
+      valid: full.ok,
+      dryRun,
+      fieldChecks: detailed.fields,
+      issues: detailed.issues,
+      summary: full.ok
+        ? {
+            slug: formData?.slug,
+            name: formData?.name,
+            nameEn: formData?.nameEn,
+          }
+        : null,
+    };
+
+    if (!dryRun && full.ok) {
+      report.summary = {
+        ...(report.summary as Record<string, unknown>),
+        status: "pending",
+        note: "Submission recorded. Awaiting maintainer review.",
+      };
+    }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
+      isError: !full.ok,
     };
   }
 );
