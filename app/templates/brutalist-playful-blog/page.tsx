@@ -263,7 +263,7 @@ export default function BrutalistPlayfulBlogTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="brutal" />
     </div>
   );
 }

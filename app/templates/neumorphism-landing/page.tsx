@@ -296,7 +296,7 @@ export default function NeumorphismLandingTemplate() {
         </div>
       </footer>
 
-      <TemplateBackButton />
+      <TemplateBackButton variant="neumorphic" />
     </div>
   );
 }

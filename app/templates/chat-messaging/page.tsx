@@ -347,7 +347,7 @@ export default function ChatMessagingTemplate() {
           </div>
         )}
       </main>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }
