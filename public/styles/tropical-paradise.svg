@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#fffde7"/>
+  <!-- Palm leaf left -->
+  <g transform="translate(50,20)">
+    <path d="M80 200 Q40 100 0 0" fill="none" stroke="#00897b" stroke-width="3"/>
+    <path d="M80 200 Q30 130 -20 50 Q20 110 80 200" fill="#00897b" opacity="0.6"/>
+    <path d="M80 200 Q50 120 20 30 Q60 100 80 200" fill="#00897b" opacity="0.5"/>
+    <path d="M80 200 Q70 140 60 60 Q80 120 80 200" fill="#00897b" opacity="0.4"/>
+    <path d="M80 200 Q100 130 110 40 Q100 110 80 200" fill="#00897b" opacity="0.5"/>
+    <path d="M80 200 Q120 140 150 50 Q110 130 80 200" fill="#00897b" opacity="0.4"/>
+  </g>
+  <!-- Palm leaf right -->
+  <g transform="translate(600,10)">
+    <path d="M100 180 Q130 90 160 0" fill="none" stroke="#00897b" stroke-width="3"/>
+    <path d="M100 180 Q140 100 180 20 Q130 100 100 180" fill="#00897b" opacity="0.6"/>
+    <path d="M100 180 Q120 100 130 10 Q115 90 100 180" fill="#00897b" opacity="0.5"/>
+    <path d="M100 180 Q80 100 70 20 Q85 90 100 180" fill="#00897b" opacity="0.5"/>
+    <path d="M100 180 Q60 110 40 30 Q70 100 100 180" fill="#00897b" opacity="0.4"/>
+  </g>
+  <!-- Flowers -->
+  <g transform="translate(180,280)">
+    <circle cx="0" cy="-12" r="10" fill="#ff6f61" opacity="0.8"/>
+    <circle cx="11" cy="-4" r="10" fill="#ff6f61" opacity="0.8"/>
+    <circle cx="7" cy="9" r="10" fill="#ff6f61" opacity="0.8"/>
+    <circle cx="-7" cy="9" r="10" fill="#ff6f61" opacity="0.8"/>
+    <circle cx="-11" cy="-4" r="10" fill="#ff6f61" opacity="0.8"/>
+    <circle cx="0" cy="0" r="6" fill="#ffc107"/>
+  </g>
+  <g transform="translate(620,300)">
+    <circle cx="0" cy="-10" r="8" fill="#ff6f61" opacity="0.7"/>
+    <circle cx="9" cy="-3" r="8" fill="#ff6f61" opacity="0.7"/>
+    <circle cx="6" cy="7" r="8" fill="#ff6f61" opacity="0.7"/>
+    <circle cx="-6" cy="7" r="8" fill="#ff6f61" opacity="0.7"/>
+    <circle cx="-9" cy="-3" r="8" fill="#ff6f61" opacity="0.7"/>
+    <circle cx="0" cy="0" r="5" fill="#ffc107"/>
+  </g>
+  <!-- Small yellow flowers -->
+  <circle cx="300" cy="340" r="6" fill="#ffc107" opacity="0.7"/>
+  <circle cx="500" cy="350" r="5" fill="#ffc107" opacity="0.6"/>
+  <circle cx="400" cy="360" r="4" fill="#ffc107" opacity="0.5"/>
+  <!-- Bottom leaf accents -->
+  <path d="M250 400 Q280 340 320 380 Q290 370 250 400Z" fill="#00897b" opacity="0.4"/>
+  <path d="M480 400 Q510 350 550 390 Q520 370 480 400Z" fill="#00897b" opacity="0.4"/>
+  <!-- Style name -->
+  <text x="400" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#00897b">Tropical</text>
+  <text x="400" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="#ff6f61">Paradise</text>
+</svg>

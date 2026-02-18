@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#ffffff"/>
+  <!-- Concentric circles - left group -->
+  <g transform="translate(250,200)">
+    <circle r="160" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="145" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="130" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="115" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="100" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="85" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="70" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="55" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="40" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="25" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="10" fill="#000000"/>
+  </g>
+  <!-- Concentric circles - right group offset -->
+  <g transform="translate(550,200)">
+    <circle r="160" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="145" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="130" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="115" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="100" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="85" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="70" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="55" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="40" fill="none" stroke="#000000" stroke-width="10"/>
+    <circle r="25" fill="none" stroke="#000000" stroke-width="5"/>
+    <circle r="10" fill="#ff3300"/>
+  </g>
+  <!-- Red accent line -->
+  <line x1="400" y1="0" x2="400" y2="400" stroke="#ff3300" stroke-width="2"/>
+  <!-- Title -->
+  <text x="400" y="390" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#000000" font-weight="bold" letter-spacing="6">OP ART</text>
+</svg>
