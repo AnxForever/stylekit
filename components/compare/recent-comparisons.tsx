@@ -110,7 +110,7 @@ export function RecentComparisons({
             key={r.slugs.join(",")}
             type="button"
             onClick={() => onSelect(r.slugs)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs border border-border rounded-md hover:bg-muted/10 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs border border-border hover:bg-muted/10 transition-colors"
           >
             {r.slugs.map((slug, si) => (
               <span key={slug} className="flex items-center gap-1">

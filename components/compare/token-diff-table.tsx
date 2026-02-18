@@ -116,7 +116,7 @@ export function TokenDiffTable({ entries, nameA, nameB }: TokenDiffTableProps) {
   };
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-border overflow-hidden">
       {/* Table header */}
       <div className="grid grid-cols-[1fr_1.5fr_1.5fr_100px] gap-2 px-4 py-3 bg-muted/5 border-b border-border text-xs font-medium text-muted">
         <span>{t("compare.property")}</span>

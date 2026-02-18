@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
+import { useI18n } from "@/lib/i18n/context";
 import { styleTokensRegistry } from "@/lib/styles/tokens-registry";
 import type { StyleTokens } from "@/lib/styles/tokens";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 interface ComponentCompareProps {
   styleA: string;
@@ -13,10 +15,16 @@ interface ComponentCompareProps {
   styleCName?: string;
 }
 
-const SNIPPETS = [
+interface Snippet {
+  id: string;
+  labelKey: TranslationKey;
+  html: string;
+}
+
+const SNIPPETS: Snippet[] = [
   {
     id: "button",
-    label: "Button",
+    labelKey: "compare.snippetButton",
     html: `<div class="flex flex-wrap gap-3 p-6">
   <button class="px-6 py-2.5 font-semibold text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition">Primary</button>
   <button class="px-6 py-2.5 font-semibold border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition">Secondary</button>
@@ -24,7 +32,7 @@ const SNIPPETS = [
   },
   {
     id: "card",
-    label: "Card",
+    labelKey: "compare.snippetCard",
     html: `<div class="max-w-xs mx-auto p-6">
   <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
     <div class="h-28 bg-gradient-to-br from-blue-500 to-purple-600"></div>
@@ -38,7 +46,7 @@ const SNIPPETS = [
   },
   {
     id: "form",
-    label: "Form",
+    labelKey: "compare.snippetForm",
     html: `<div class="max-w-xs mx-auto p-6 space-y-3">
   <div><label class="block text-sm font-medium mb-1">Email</label>
   <input type="email" placeholder="you@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
@@ -97,7 +105,7 @@ function StyleFrame({ html, styleSlug, label }: { html: string; styleSlug: strin
   return (
     <div className="flex-1 min-w-0">
       <div className="text-xs font-medium text-muted mb-1.5 truncate">{label}</div>
-      <div className="border border-border rounded-lg overflow-hidden bg-white">
+      <div className="border border-border overflow-hidden bg-white">
         <iframe
           ref={ref}
           srcDoc={srcdoc}
@@ -115,6 +123,7 @@ export function ComponentCompare({
   styleA, styleB, styleC,
   styleAName, styleBName, styleCName,
 }: ComponentCompareProps) {
+  const { t } = useI18n();
   const [snippetId, setSnippetId] = useState("button");
   const snippet = SNIPPETS.find((s) => s.id === snippetId) ?? SNIPPETS[0];
 
@@ -126,18 +135,19 @@ export function ComponentCompare({
 
   return (
     <div className="space-y-3">
+      <h3 className="text-lg font-semibold">{t("compare.componentCompare")}</h3>
       <div className="flex items-center gap-2">
         {SNIPPETS.map((s) => (
           <button
             key={s.id}
             onClick={() => setSnippetId(s.id)}
-            className={`px-3 py-1 text-xs rounded-md transition-colors ${
+            className={`px-3 py-1 text-xs transition-colors ${
               snippetId === s.id
                 ? "bg-foreground text-background font-medium"
                 : "text-muted hover:text-foreground border border-border"
             }`}
           >
-            {s.label}
+            {t(s.labelKey)}
           </button>
         ))}
       </div>
