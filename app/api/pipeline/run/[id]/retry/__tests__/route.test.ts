@@ -29,6 +29,16 @@ afterEach(() => {
   executePipelineMock.mockReset();
 });
 
+function mockAllowedRateLimit() {
+  checkRateLimitMock.mockReturnValue({
+    allowed: true,
+    limit: 24,
+    remaining: 23,
+    resetAt: Date.now() + 60_000,
+    retryAfterSec: 60,
+  });
+}
+
 describe("POST /api/pipeline/run/[id]/retry", () => {
   it("rejects cross-origin requests before rate limit check", async () => {
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
@@ -46,6 +56,13 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
     );
 
     expect(response.status).toBe(403);
+    expect(response.headers.get("x-stylekit-status")).toBe("403");
+    expect(response.headers.get("x-stylekit-error-code")).toBe(
+      "ORIGIN_NOT_ALLOWED"
+    );
+    expect(Number(response.headers.get("x-stylekit-duration-ms"))).toBeGreaterThanOrEqual(
+      0
+    );
     await expect(response.json()).resolves.toEqual({
       error: "Cross-origin request denied.",
     });
@@ -74,6 +91,8 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
     );
 
     expect(response.status).toBe(429);
+    expect(response.headers.get("x-stylekit-status")).toBe("429");
+    expect(response.headers.get("x-stylekit-error-code")).toBe("RATE_LIMITED");
     await expect(response.json()).resolves.toEqual({
       error: "Too many retry requests. Please try again later.",
     });
@@ -82,13 +101,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
   });
 
   it("returns 413 when retry payload exceeds limit", async () => {
-    checkRateLimitMock.mockReturnValue({
-      allowed: true,
-      limit: 24,
-      remaining: 23,
-      resetAt: Date.now() + 60_000,
-      retryAfterSec: 60,
-    });
+    mockAllowedRateLimit();
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
@@ -106,20 +119,138 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
     );
 
     expect(response.status).toBe(413);
+    expect(response.headers.get("x-stylekit-status")).toBe("413");
+    expect(response.headers.get("x-stylekit-error-code")).toBe(
+      "PAYLOAD_TOO_LARGE"
+    );
     await expect(response.json()).resolves.toEqual({
       error: "Retry payload is too large.",
     });
     expect(getPipelineRunMock).not.toHaveBeenCalled();
   });
 
-  it("retries failed run from requested stage", async () => {
-    checkRateLimitMock.mockReturnValue({
-      allowed: true,
-      limit: 24,
-      remaining: 23,
-      resetAt: Date.now() + 60_000,
-      retryAfterSec: 60,
+  it("returns 400 when retry payload is invalid json", async () => {
+    mockAllowedRateLimit();
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: "{invalid-json}",
+      }),
+      { params: Promise.resolve({ id: "pl_1" }) }
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("x-stylekit-status")).toBe("400");
+    expect(response.headers.get("x-stylekit-error-code")).toBe("INVALID_JSON");
+    await expect(response.json()).resolves.toEqual({
+      error: "Invalid retry request payload.",
     });
+  });
+
+  it("returns 400 for invalid fromStage values", async () => {
+    mockAllowedRateLimit();
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fromStage: "unknown" }),
+      }),
+      { params: Promise.resolve({ id: "pl_1" }) }
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("x-stylekit-status")).toBe("400");
+    expect(response.headers.get("x-stylekit-error-code")).toBe("INVALID_STAGE");
+    const payload = await response.json();
+    expect(payload.error).toContain("Invalid fromStage.");
+  });
+
+  it("returns 404 when pipeline run does not exist", async () => {
+    mockAllowedRateLimit();
+    getPipelineRunMock.mockReturnValue(undefined);
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/missing/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fromStage: "extract" }),
+      }),
+      { params: Promise.resolve({ id: "missing" }) }
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.headers.get("x-stylekit-status")).toBe("404");
+    expect(response.headers.get("x-stylekit-error-code")).toBe("RUN_NOT_FOUND");
+    await expect(response.json()).resolves.toEqual({
+      error: "Pipeline run not found",
+    });
+  });
+
+  it("returns 400 when retrying a non-failed run", async () => {
+    mockAllowedRateLimit();
+    const runningRun = { ...createFailedRunFixture(), status: "running" as const };
+    getPipelineRunMock.mockReturnValue(runningRun);
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fromStage: "extract" }),
+      }),
+      { params: Promise.resolve({ id: "pl_1" }) }
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("x-stylekit-status")).toBe("400");
+    expect(response.headers.get("x-stylekit-error-code")).toBe("RUN_NOT_FAILED");
+    await expect(response.json()).resolves.toEqual({
+      error: "Can only retry failed pipeline runs",
+    });
+  });
+
+  it("returns 400 when retry stage is after failed stage", async () => {
+    mockAllowedRateLimit();
+    const failedRun = createFailedRunFixture();
+    getPipelineRunMock.mockReturnValue(failedRun);
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fromStage: "generate" }),
+      }),
+      { params: Promise.resolve({ id: "pl_1" }) }
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("x-stylekit-status")).toBe("400");
+    expect(response.headers.get("x-stylekit-error-code")).toBe(
+      "INVALID_STAGE_ORDER"
+    );
+    const payload = await response.json();
+    expect(payload.error).toContain('Cannot retry from "generate"');
+  });
+
+  it("retries failed run from requested stage", async () => {
+    mockAllowedRateLimit();
 
     const failedRun = createFailedRunFixture();
     getPipelineRunMock.mockReturnValue(failedRun);
@@ -142,10 +273,41 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
     );
 
     expect(response.status).toBe(200);
+    expect(response.headers.get("x-stylekit-status")).toBe("200");
+    expect(response.headers.get("x-stylekit-error-code")).toBeNull();
     const body = (await response.json()) as { run: PipelineRun };
     expect(body.run.status).toBe("completed");
     expect(getPipelineRunMock).toHaveBeenCalledWith("pl_1");
     expect(executePipelineMock).toHaveBeenCalledWith(failedRun, "extract");
+  });
+
+  it("returns 500 when retry execution fails", async () => {
+    mockAllowedRateLimit();
+
+    const failedRun = createFailedRunFixture();
+    getPipelineRunMock.mockReturnValue(failedRun);
+    executePipelineMock.mockRejectedValue(new Error("retry boom"));
+
+    const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
+    const response = await POST(
+      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fromStage: "extract" }),
+      }),
+      { params: Promise.resolve({ id: "pl_1" }) }
+    );
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get("x-stylekit-status")).toBe("500");
+    expect(response.headers.get("x-stylekit-error-code")).toBe(
+      "PIPELINE_RETRY_FAILED"
+    );
+    await expect(response.json()).resolves.toEqual({
+      error: "Pipeline retry failed: retry boom",
+    });
   });
 });
 

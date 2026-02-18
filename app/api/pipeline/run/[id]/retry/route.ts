@@ -22,11 +22,39 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const startedAt = Date.now();
+
+  const telemetryHeaders = (
+    status: number,
+    code?: string,
+    headers?: HeadersInit,
+  ): Headers => {
+    const merged = new Headers(headers);
+    merged.set("x-stylekit-duration-ms", String(Date.now() - startedAt));
+    merged.set("x-stylekit-status", String(status));
+    if (code) {
+      merged.set("x-stylekit-error-code", code);
+    }
+    return merged;
+  };
+
+  const respond = (
+    status: number,
+    payload: unknown,
+    code?: string,
+    headers?: HeadersInit,
+  ) =>
+    NextResponse.json(payload, {
+      status,
+      headers: telemetryHeaders(status, code, headers),
+    });
+
   const originCheck = verifyTrustedOrigin(req);
   if (!originCheck.ok) {
-    return NextResponse.json(
+    return respond(
+      originCheck.status ?? 403,
       { error: originCheck.error },
-      { status: originCheck.status ?? 403 },
+      "ORIGIN_NOT_ALLOWED",
     );
   }
 
@@ -37,9 +65,11 @@ export async function POST(
     windowMs: RATE_LIMIT_WINDOW_MS,
   });
   if (!rateLimit.allowed) {
-    return NextResponse.json(
+    return respond(
+      429,
       { error: "Too many retry requests. Please try again later." },
-      { status: 429, headers: createRateLimitHeaders(rateLimit) },
+      "RATE_LIMITED",
+      createRateLimitHeaders(rateLimit),
     );
   }
 
@@ -51,10 +81,9 @@ export async function POST(
       invalidJsonMessage: "Invalid retry request payload.",
     });
     if (!bodyResult.ok) {
-      return NextResponse.json(
-        { error: bodyResult.error },
-        { status: bodyResult.status },
-      );
+      const code =
+        bodyResult.status === 413 ? "PAYLOAD_TOO_LARGE" : "INVALID_JSON";
+      return respond(bodyResult.status, { error: bodyResult.error }, code);
     }
     const body = bodyResult.data;
 
@@ -65,11 +94,12 @@ export async function POST(
       !fromStage ||
       !PIPELINE_STAGES.includes(fromStage as PipelineStageName)
     ) {
-      return NextResponse.json(
+      return respond(
+        400,
         {
           error: `Invalid fromStage. Must be one of: ${PIPELINE_STAGES.join(", ")}`,
         },
-        { status: 400 },
+        "INVALID_STAGE",
       );
     }
 
@@ -77,17 +107,15 @@ export async function POST(
     const run = getPipelineRun(id);
 
     if (!run) {
-      return NextResponse.json(
-        { error: "Pipeline run not found" },
-        { status: 404 },
-      );
+      return respond(404, { error: "Pipeline run not found" }, "RUN_NOT_FOUND");
     }
 
     // -- Can only retry failed runs ------------------------------------------
     if (run.status !== "failed") {
-      return NextResponse.json(
+      return respond(
+        400,
         { error: "Can only retry failed pipeline runs" },
-        { status: 400 },
+        "RUN_NOT_FAILED",
       );
     }
 
@@ -99,11 +127,12 @@ export async function POST(
       STAGE_ORDER[fromStage as PipelineStageName] >
         STAGE_ORDER[failedStage.name]
     ) {
-      return NextResponse.json(
+      return respond(
+        400,
         {
-          error: `Cannot retry from "${fromStage}" — it comes after the failed stage "${failedStage.name}"`,
+          error: `Cannot retry from "${fromStage}" - it comes after the failed stage "${failedStage.name}"`,
         },
-        { status: 400 },
+        "INVALID_STAGE_ORDER",
       );
     }
 
@@ -113,11 +142,12 @@ export async function POST(
       fromStage as PipelineStageName,
     );
 
-    return NextResponse.json({ run: finalRun });
+    return respond(200, { run: finalRun });
   } catch (error) {
-    return NextResponse.json(
+    return respond(
+      500,
       { error: `Pipeline retry failed: ${(error as Error).message}` },
-      { status: 500 },
+      "PIPELINE_RETRY_FAILED",
     );
   }
 }

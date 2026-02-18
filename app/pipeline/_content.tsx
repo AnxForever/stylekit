@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type {
   PipelineRun,
@@ -75,6 +75,26 @@ function stageI18nKey(name: PipelineStageName): string {
   return `pipeline.stage.${name}`;
 }
 
+function unwrapPipelineRun(payload: unknown): PipelineRun | null {
+  if (!payload || typeof payload !== "object") return null;
+
+  const maybeWrapped = payload as { run?: unknown };
+  if (maybeWrapped.run && typeof maybeWrapped.run === "object") {
+    return maybeWrapped.run as PipelineRun;
+  }
+
+  const maybeRun = payload as Partial<PipelineRun>;
+  if (
+    typeof maybeRun.id === "string" &&
+    typeof maybeRun.status === "string" &&
+    Array.isArray(maybeRun.stages)
+  ) {
+    return maybeRun as PipelineRun;
+  }
+
+  return null;
+}
+
 export function PipelineContent() {
   const { t } = useI18n();
   const [viewState, setViewState] = useState<ViewState>("input");
@@ -111,7 +131,11 @@ export function PipelineContent() {
           throw new Error(data.error || `Request failed (${res.status})`);
         }
 
-        const run: PipelineRun = await res.json();
+        const payload = await res.json();
+        const run = unwrapPipelineRun(payload);
+        if (!run) {
+          throw new Error("Invalid pipeline response payload");
+        }
         setPipelineRun(run);
 
         if (run.status === "completed") {
@@ -119,6 +143,8 @@ export function PipelineContent() {
         } else if (run.status === "failed") {
           setError(run.error || "Pipeline failed");
           setViewState("failed");
+        } else {
+          setViewState("running");
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
@@ -149,7 +175,11 @@ export function PipelineContent() {
         throw new Error(data.error || `Retry failed (${res.status})`);
       }
 
-      const run: PipelineRun = await res.json();
+      const payload = await res.json();
+      const run = unwrapPipelineRun(payload);
+      if (!run) {
+        throw new Error("Invalid pipeline retry response payload");
+      }
       setPipelineRun(run);
 
       if (run.status === "completed") {
@@ -157,12 +187,52 @@ export function PipelineContent() {
       } else if (run.status === "failed") {
         setError(run.error || "Pipeline failed");
         setViewState("failed");
+      } else {
+        setViewState("running");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
       setViewState("failed");
     }
   }, [pipelineRun]);
+
+  useEffect(() => {
+    if (viewState !== "running" || !pipelineRun?.id) return;
+    if (pipelineRun.status === "completed" || pipelineRun.status === "failed") return;
+
+    const intervalId = window.setInterval(async () => {
+      try {
+        const res = await fetch(`/api/pipeline/run/${pipelineRun.id}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) return;
+
+        const payload = await res.json();
+        const run = unwrapPipelineRun(payload);
+        if (!run) return;
+
+        setPipelineRun((prev) => {
+          if (!prev) return run;
+          if (prev.status === run.status && prev.updatedAt === run.updatedAt) {
+            return prev;
+          }
+          return run;
+        });
+
+        if (run.status === "completed") {
+          setViewState("completed");
+          setError(null);
+        } else if (run.status === "failed") {
+          setViewState("failed");
+          setError(run.error || "Pipeline failed");
+        }
+      } catch {
+        // best-effort polling
+      }
+    }, 1500);
+
+    return () => window.clearInterval(intervalId);
+  }, [viewState, pipelineRun?.id, pipelineRun?.status]);
 
   const handleReset = useCallback(() => {
     setViewState("input");
@@ -381,7 +451,7 @@ export function PipelineContent() {
         <div className="flex gap-4">
           {pipelineRun.artifacts.downloadUrl && (
             <a
-              href={`/api/pipeline/run/${pipelineRun.id}/download`}
+              href={pipelineRun.artifacts.downloadUrl}
               className="px-6 py-3 bg-foreground text-background text-sm font-medium tracking-wide rounded-lg hover:bg-foreground/90 transition-colors"
             >
               {t("pipeline.download")}
