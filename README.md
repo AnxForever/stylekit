@@ -162,6 +162,7 @@ POST   /api/accessibility             # Accessibility scoring
 POST   /api/analyze-style             # Analyze existing style
 POST   /api/match-style               # Match to closest style
 POST   /api/submit/validate           # Validate AI submission manifest payload
+POST   /api/submit/bundle             # Build and download submission bundle zip
 GET    /api/generate-style            # Generator discovery metadata (ETag-supported)
 POST   /api/generate/design-system    # Generate design system
 
