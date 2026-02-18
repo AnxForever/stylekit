@@ -81,7 +81,7 @@ const outputFormats: {
 ];
 
 export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSelectFormat }: TemplateStepProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div>
@@ -136,12 +136,22 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
       <div className="flex flex-wrap gap-3 max-w-3xl">
         {outputFormats.map((item) => {
           const isSelected = item.format === selectedFormat;
-          const label = item.labelKey
-            ? t(item.labelKey as TranslationKey)
-            : item.label || "";
-          const description = item.descKey
-            ? t(item.descKey as TranslationKey)
-            : item.description || "";
+          const label =
+            item.format === "nextjs"
+              ? locale === "zh"
+                ? "Next.js 应用路由"
+                : "Next.js App Router"
+              : item.labelKey
+                ? t(item.labelKey as TranslationKey)
+                : item.label || "";
+          const description =
+            item.format === "nextjs"
+              ? locale === "zh"
+                ? "基于 Next.js + React + TypeScript 的 App Router 项目结构"
+                : "Next.js + React + TypeScript project with App Router structure"
+              : item.descKey
+                ? t(item.descKey as TranslationKey)
+                : item.description || "";
 
           return (
             <button

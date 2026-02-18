@@ -40,11 +40,21 @@ interface PreviewViewportOption {
   width: string;
 }
 
-const PREVIEW_VIEWPORT_OPTIONS: PreviewViewportOption[] = [
-  { id: "desktop", label: "Desktop", hint: "1440px canvas", width: "100%" },
-  { id: "tablet", label: "Tablet", hint: "820px canvas", width: "820px" },
-  { id: "mobile", label: "Mobile", hint: "390px canvas", width: "390px" },
-];
+function getPreviewViewportOptions(locale: "zh" | "en"): PreviewViewportOption[] {
+  if (locale === "zh") {
+    return [
+      { id: "desktop", label: "桌面", hint: "1440px 画布", width: "100%" },
+      { id: "tablet", label: "平板", hint: "820px 画布", width: "820px" },
+      { id: "mobile", label: "手机", hint: "390px 画布", width: "390px" },
+    ];
+  }
+
+  return [
+    { id: "desktop", label: "Desktop", hint: "1440px canvas", width: "100%" },
+    { id: "tablet", label: "Tablet", hint: "820px canvas", width: "820px" },
+    { id: "mobile", label: "Mobile", hint: "390px canvas", width: "390px" },
+  ];
+}
 
 const LIST_FIELD_PATTERN = /(links|tags|categories|social|navitems|chartlabels|seriesvalues|columns)/i;
 const STABLE_FIELD_PATTERN = /(email|version|rowcount|charttype|date|value|change|count|type)/i;
@@ -69,6 +79,7 @@ function buildEnrichedFieldValue(options: {
   defaultValue: string;
   siteName: string;
   siteDescription: string;
+  locale: "zh" | "en";
 }): string {
   const {
     fieldId,
@@ -77,6 +88,7 @@ function buildEnrichedFieldValue(options: {
     defaultValue,
     siteName,
     siteDescription,
+    locale,
   } = options;
 
   const currentTrimmed = currentValue.trim();
@@ -94,10 +106,14 @@ function buildEnrichedFieldValue(options: {
     return currentTrimmed;
   }
 
-  const normalizedName = siteName.trim() || "your brand";
-  const normalizedDescription = siteDescription.trim() || "clear business outcomes";
+  const normalizedName = siteName.trim() || (locale === "zh" ? "你的品牌" : "your brand");
+  const normalizedDescription =
+    siteDescription.trim() || (locale === "zh" ? "清晰的业务价值" : "clear business outcomes");
 
   if (normalizedFieldId.includes("cta") || normalizedFieldId.includes("button")) {
+    if (locale === "zh") {
+      return currentTrimmed ? `${currentTrimmed}，立即行动` : `从 ${normalizedName} 开始`;
+    }
     return currentTrimmed
       ? `${currentTrimmed} with confidence`
       : `Start with ${normalizedName}`;
@@ -119,7 +135,14 @@ function buildEnrichedFieldValue(options: {
     normalizedFieldId.includes("subtitle") ||
     fieldType === "textarea"
   ) {
+    if (locale === "zh") {
+      return appendDetailSentence(base, `围绕${normalizedDescription}展开。`);
+    }
     return appendDetailSentence(base, `Built around ${normalizedDescription}.`);
+  }
+
+  if (locale === "zh") {
+    return base.length < shortThreshold ? `${base}（${normalizedDescription}）` : base;
   }
 
   return base.length < shortThreshold
@@ -129,25 +152,36 @@ function buildEnrichedFieldValue(options: {
 
 function getFieldSignal(
   value: string,
-  fieldType: FieldDefinition["type"]
+  fieldType: FieldDefinition["type"],
+  locale: "zh" | "en"
 ): { chars: number; words: number; label: string; tone: string } {
   const trimmed = value.trim();
   const chars = trimmed.length;
   const words = countWords(trimmed);
 
   if (chars === 0) {
-    return { chars, words, label: "empty", tone: "text-red-500" };
+    return { chars, words, label: locale === "zh" ? "空白" : "empty", tone: "text-red-500" };
   }
   if (chars < 18) {
-    return { chars, words, label: "thin", tone: "text-amber-600" };
+    return { chars, words, label: locale === "zh" ? "偏短" : "thin", tone: "text-amber-600" };
   }
   if (fieldType === "textarea" && chars < 70) {
-    return { chars, words, label: "needs depth", tone: "text-amber-600" };
+    return {
+      chars,
+      words,
+      label: locale === "zh" ? "需要更深入" : "needs depth",
+      tone: "text-amber-600",
+    };
   }
   if (fieldType === "text" && chars > 90) {
-    return { chars, words, label: "condense", tone: "text-amber-600" };
+    return {
+      chars,
+      words,
+      label: locale === "zh" ? "可再精简" : "condense",
+      tone: "text-amber-600",
+    };
   }
-  return { chars, words, label: "strong", tone: "text-emerald-600" };
+  return { chars, words, label: locale === "zh" ? "良好" : "strong", tone: "text-emerald-600" };
 }
 
 export function ContentStep({
@@ -170,7 +204,66 @@ export function ContentStep({
   isPreviewPending = false,
   previewError = null,
 }: ContentStepProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isZh = locale === "zh";
+  const previewViewportOptions = getPreviewViewportOptions(locale);
+  const uiText = isZh
+    ? {
+        scenarioPresets: "场景预设",
+        scenarioDesc: "可一键应用起步文案，并保存团队常用预设。",
+        resetDefaults: "恢复默认",
+        exportJson: "导出 JSON",
+        importJson: "导入 JSON",
+        customTag: "自定义",
+        builtinTag: "内置",
+        edit: "编辑",
+        delete: "删除",
+        presetName: "预设名称",
+        presetDescription: "预设描述",
+        save: "保存",
+        cancel: "取消",
+        saveCurrentAsPreset: "将当前内容保存为新预设",
+        newPresetName: "新预设名称",
+        presetDescriptionOptional: "预设描述（可选）",
+        savePreset: "保存预设",
+        siteNameWords: "站点名称",
+        descriptionWords: "描述",
+        wordsUnit: "词",
+        fieldsFilled: "已填字段",
+        sectionCopyControls: "区块文案控制",
+        autoEnrich: "自动补全",
+        charsUnit: "字符",
+        previewTitle: "预览",
+        previewFrameTitle: "预览",
+      }
+    : {
+        scenarioPresets: "Scenario presets",
+        scenarioDesc: "Apply starter copy and save team-specific presets.",
+        resetDefaults: "Reset defaults",
+        exportJson: "Export JSON",
+        importJson: "Import JSON",
+        customTag: "Custom",
+        builtinTag: "Built-in",
+        edit: "Edit",
+        delete: "Delete",
+        presetName: "Preset name",
+        presetDescription: "Preset description",
+        save: "Save",
+        cancel: "Cancel",
+        saveCurrentAsPreset: "Save current content as a new preset",
+        newPresetName: "New preset name",
+        presetDescriptionOptional: "Preset description (optional)",
+        savePreset: "Save preset",
+        siteNameWords: "Site name",
+        descriptionWords: "Description",
+        wordsUnit: "words",
+        fieldsFilled: "fields filled",
+        sectionCopyControls: "Section copy controls",
+        autoEnrich: "Auto enrich",
+        charsUnit: "chars",
+        previewTitle: "Preview",
+        previewFrameTitle: "Preview",
+      };
 
   const [expandedSection, setExpandedSection] = useState<string | null>(
     sections[0]?.id || null
@@ -237,6 +330,7 @@ export function ContentStep({
         defaultValue: field.defaultValue,
         siteName: globalContent.siteName,
         siteDescription: globalContent.siteDescription,
+        locale,
       });
 
       if (enrichedValue !== currentValue) {
@@ -260,14 +354,16 @@ export function ContentStep({
     doc.close();
   }, [previewHtml]);
 
-  const activeViewportOption = PREVIEW_VIEWPORT_OPTIONS.find(
+  const activeViewportOption = previewViewportOptions.find(
     (option) => option.id === previewViewport
-  ) ?? PREVIEW_VIEWPORT_OPTIONS[0];
+  ) ?? previewViewportOptions[0];
 
   return (
     <div>
       <h2 className="text-xl md:text-2xl mb-2">{t("generator.editContent")}</h2>
-      <p className="text-muted mb-6">{templateDef.name} - {templateDef.nameEn}</p>
+      <p className="text-muted mb-6">
+        {isZh ? templateDef.name : `${templateDef.nameEn} - ${templateDef.name}`}
+      </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-4">
@@ -276,10 +372,10 @@ export function ContentStep({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs tracking-widest uppercase text-muted">
-                    Scenario presets
+                    {uiText.scenarioPresets}
                   </p>
                   <p className="text-xs text-muted mt-1">
-                    Apply starter copy and save team-specific presets.
+                    {uiText.scenarioDesc}
                   </p>
                 </div>
                 <button
@@ -287,7 +383,7 @@ export function ContentStep({
                   onClick={onResetContent}
                   className="text-xs px-3 py-1.5 border border-border hover:border-foreground transition-colors"
                 >
-                  Reset defaults
+                  {uiText.resetDefaults}
                 </button>
               </div>
 
@@ -297,14 +393,14 @@ export function ContentStep({
                   onClick={onExportScenarioPacks}
                   className="text-xs px-3 py-1.5 border border-border hover:border-foreground transition-colors"
                 >
-                  Export JSON
+                  {uiText.exportJson}
                 </button>
                 <button
                   type="button"
                   onClick={() => importInputRef.current?.click()}
                   className="text-xs px-3 py-1.5 border border-border hover:border-foreground transition-colors"
                 >
-                  Import JSON
+                  {uiText.importJson}
                 </button>
                 <input
                   ref={importInputRef}
@@ -338,7 +434,7 @@ export function ContentStep({
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-medium">{pack.name}</p>
                           <span className="text-[10px] uppercase tracking-wider text-muted">
-                            {isCustom ? "Custom" : "Built-in"}
+                            {isCustom ? uiText.customTag : uiText.builtinTag}
                           </span>
                         </div>
                         <p className="text-xs text-muted mt-1">{pack.description}</p>
@@ -351,14 +447,14 @@ export function ContentStep({
                             onClick={() => handleStartScenarioEdit(pack)}
                             className="text-xs text-muted hover:text-foreground transition-colors"
                           >
-                            Edit
+                            {uiText.edit}
                           </button>
                           <button
                             type="button"
                             onClick={() => onDeleteScenarioPack(pack.id)}
                             className="text-xs text-red-500 hover:text-red-600 transition-colors"
                           >
-                            Delete
+                            {uiText.delete}
                           </button>
                         </div>
                       )}
@@ -369,14 +465,14 @@ export function ContentStep({
                             type="text"
                             value={editingScenarioName}
                             onChange={(event) => setEditingScenarioName(event.target.value)}
-                            placeholder="Preset name"
+                            placeholder={uiText.presetName}
                             className="w-full px-3 py-2 border border-border bg-transparent text-xs focus:outline-none focus:border-foreground transition-colors"
                           />
                           <input
                             type="text"
                             value={editingScenarioDescription}
                             onChange={(event) => setEditingScenarioDescription(event.target.value)}
-                            placeholder="Preset description"
+                            placeholder={uiText.presetDescription}
                             className="w-full px-3 py-2 border border-border bg-transparent text-xs focus:outline-none focus:border-foreground transition-colors"
                           />
                           <div className="flex gap-2">
@@ -386,14 +482,14 @@ export function ContentStep({
                               disabled={!editingScenarioName.trim()}
                               className="text-xs px-2 py-1 border border-border hover:border-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              Save
+                              {uiText.save}
                             </button>
                             <button
                               type="button"
                               onClick={handleCancelScenarioEdit}
                               className="text-xs px-2 py-1 border border-border hover:border-foreground transition-colors"
                             >
-                              Cancel
+                              {uiText.cancel}
                             </button>
                           </div>
                         </div>
@@ -405,20 +501,20 @@ export function ContentStep({
 
               <div className="border-t border-border pt-3 space-y-2">
                 <p className="text-xs tracking-wide uppercase text-muted">
-                  Save current content as a new preset
+                  {uiText.saveCurrentAsPreset}
                 </p>
                 <input
                   type="text"
                   value={scenarioNameDraft}
                   onChange={(event) => setScenarioNameDraft(event.target.value)}
-                  placeholder="New preset name"
+                  placeholder={uiText.newPresetName}
                   className="w-full px-3 py-2 border border-border bg-transparent text-sm focus:outline-none focus:border-foreground transition-colors"
                 />
                 <input
                   type="text"
                   value={scenarioDescriptionDraft}
                   onChange={(event) => setScenarioDescriptionDraft(event.target.value)}
-                  placeholder="Preset description (optional)"
+                  placeholder={uiText.presetDescriptionOptional}
                   className="w-full px-3 py-2 border border-border bg-transparent text-sm focus:outline-none focus:border-foreground transition-colors"
                 />
                 <button
@@ -427,7 +523,7 @@ export function ContentStep({
                   disabled={!scenarioNameDraft.trim()}
                   className="px-3 py-2 text-xs border border-border hover:border-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Save preset
+                  {uiText.savePreset}
                 </button>
               </div>
             </div>
@@ -464,8 +560,8 @@ export function ContentStep({
               />
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted">
-              <span>Site name: {countWords(globalContent.siteName)} words</span>
-              <span>Description: {countWords(globalContent.siteDescription)} words</span>
+              <span>{uiText.siteNameWords}: {countWords(globalContent.siteName)} {uiText.wordsUnit}</span>
+              <span>{uiText.descriptionWords}: {countWords(globalContent.siteDescription)} {uiText.wordsUnit}</span>
             </div>
           </div>
 
@@ -510,9 +606,11 @@ export function ContentStep({
                     </label>
                     <div className="text-left">
                       <p className="font-medium text-sm">{section.name}</p>
-                      <p className="text-xs text-muted">{section.nameEn}</p>
+                      <p className="text-xs text-muted">
+                        {isZh ? section.description : section.nameEn}
+                      </p>
                       <p className="text-[11px] text-muted mt-1">
-                        {filledFieldCount}/{totalFieldCount} fields filled ({completionPercent}%)
+                        {filledFieldCount}/{totalFieldCount} {uiText.fieldsFilled} ({completionPercent}%)
                       </p>
                     </div>
                   </div>
@@ -527,19 +625,19 @@ export function ContentStep({
                   <div className="border-t border-border p-4 space-y-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-[11px] tracking-wide uppercase text-muted">
-                        Section copy controls
+                        {uiText.sectionCopyControls}
                       </p>
                       <button
                         type="button"
                         onClick={() => handleEnrichSection(section)}
                         className="text-[11px] px-2.5 py-1 border border-border hover:border-foreground transition-colors"
                       >
-                        Auto enrich
+                        {uiText.autoEnrich}
                       </button>
                     </div>
                     {sectionDef.fields.map((field) => {
                       const fieldValue = section.content[field.id] || "";
-                      const fieldSignal = getFieldSignal(fieldValue, field.type);
+                      const fieldSignal = getFieldSignal(fieldValue, field.type, locale);
 
                       return (
                         <div key={field.id}>
@@ -568,7 +666,7 @@ export function ContentStep({
                             />
                           )}
                           <p className={`mt-1 text-[11px] ${fieldSignal.tone}`}>
-                            {fieldSignal.chars} chars - {fieldSignal.words} words - {fieldSignal.label}
+                            {fieldSignal.chars} {uiText.charsUnit} - {fieldSignal.words} {uiText.wordsUnit} - {fieldSignal.label}
                           </p>
                         </div>
                       );
@@ -583,10 +681,10 @@ export function ContentStep({
         <div className="lg:sticky lg:top-24 h-fit">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <p className="text-xs tracking-widest uppercase text-muted">
-              {t("generator.preview")}
+              {uiText.previewTitle}
             </p>
             <div className="inline-flex border border-border overflow-hidden">
-              {PREVIEW_VIEWPORT_OPTIONS.map((option) => (
+              {previewViewportOptions.map((option) => (
                 <button
                   key={option.id}
                   type="button"
@@ -622,7 +720,7 @@ export function ContentStep({
             >
               <iframe
                 ref={iframeRef}
-                title="Preview"
+                title={uiText.previewFrameTitle}
                 className="w-full h-full"
                 sandbox="allow-same-origin"
                 style={{ border: "none" }}
