@@ -567,14 +567,45 @@ export function AdminSystemContent() {
                   Last {telemetry.summary.daily.length} days
                 </span>
               </div>
+              <div className="mb-3 flex flex-wrap items-center gap-3 text-[11px] text-muted">
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-amber-500/80" />
+                  network
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-rose-500/80" />
+                  invalid
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-cyan-500/80" />
+                  unexpected
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500/80" />
+                  304 w/o cache
+                </span>
+              </div>
               {telemetry.summary.daily.length === 0 ? (
                 <p className="text-xs text-muted">No fallback trend data available.</p>
               ) : (
                 <div className="space-y-2">
                   {telemetry.summary.daily.map((point) => {
+                    const totalFallbacks = point.fallback.total;
                     const width = maxFallbackDailyCount === 0
                       ? 0
-                      : (point.fallback.total / maxFallbackDailyCount) * 100;
+                      : (totalFallbacks / maxFallbackDailyCount) * 100;
+                    const networkWidth = totalFallbacks === 0
+                      ? 0
+                      : (point.fallback.network / totalFallbacks) * 100;
+                    const invalidPayloadWidth = totalFallbacks === 0
+                      ? 0
+                      : (point.fallback.invalidPayload / totalFallbacks) * 100;
+                    const unexpectedStatusWidth = totalFallbacks === 0
+                      ? 0
+                      : (point.fallback.unexpectedStatus / totalFallbacks) * 100;
+                    const notModifiedWithoutCacheWidth = totalFallbacks === 0
+                      ? 0
+                      : (point.fallback.notModifiedWithoutCache / totalFallbacks) * 100;
                     return (
                       <div key={`fallback-${point.date}`} className="flex items-center gap-3">
                         <span className="w-24 text-xs text-muted font-mono">
@@ -582,12 +613,29 @@ export function AdminSystemContent() {
                         </span>
                         <div className="flex-1 h-2 bg-muted/20 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-amber-500/70 rounded-full transition-all"
+                            className="h-full flex overflow-hidden rounded-full transition-all"
                             style={{ width: `${width}%` }}
-                          />
+                          >
+                            <div
+                              className="h-full bg-amber-500/80"
+                              style={{ width: `${networkWidth}%` }}
+                            />
+                            <div
+                              className="h-full bg-rose-500/80"
+                              style={{ width: `${invalidPayloadWidth}%` }}
+                            />
+                            <div
+                              className="h-full bg-cyan-500/80"
+                              style={{ width: `${unexpectedStatusWidth}%` }}
+                            />
+                            <div
+                              className="h-full bg-emerald-500/80"
+                              style={{ width: `${notModifiedWithoutCacheWidth}%` }}
+                            />
+                          </div>
                         </div>
                         <span className="w-24 text-right text-xs tabular-nums">
-                          {point.fallback.total} reports
+                          {totalFallbacks} reports
                         </span>
                         <span className="w-56 text-right text-[11px] text-muted tabular-nums">
                           n:{point.fallback.network} i:{point.fallback.invalidPayload} u:{point.fallback.unexpectedStatus} 304:{point.fallback.notModifiedWithoutCache}
