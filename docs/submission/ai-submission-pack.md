@@ -122,8 +122,11 @@ Do not include commentary outside fenced blocks.
 3. Generate `self-check.md`.
 4. Validate locally:
    - `pnpm run submission:validate ./manifest.json`
-5. Open issue form: `.github/ISSUE_TEMPLATE/style_submission.yml`.
-6. Paste `manifest.json`, `cover.svg`, and `self-check.md`.
+5. (Optional) Build bundle via API:
+   - `POST /api/submit/bundle` with `{ "manifest": <manifest json> }`
+   - Downloaded ZIP includes `manifest.json`, `cover.svg`, `self-check.md`, scaffold files, and derived outputs.
+6. Open issue form: `.github/ISSUE_TEMPLATE/style_submission.yml`.
+7. Paste `manifest.json`, `cover.svg`, and `self-check.md`.
 
 ## 8) Mapping notes (manifest -> current backend form)
 
@@ -132,6 +135,7 @@ The `formData` object maps directly to backend validation in:
 - `lib/submit/validator.ts`
 - `app/api/submit/route.ts`
 - `app/api/submit/validate/route.ts`
+- `app/api/submit/bundle/route.ts`
 
 If you need to submit through web UI (`/submit`), map `manifest.formData` field-by-field into the wizard.
 
