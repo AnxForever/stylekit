@@ -3,7 +3,15 @@
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import type { TemplateType, OutputFormat } from "@/lib/generator/types";
-import { FileText, Briefcase, PenLine, LayoutDashboard, Code, FileCode } from "lucide-react";
+import {
+  FileText,
+  Briefcase,
+  PenLine,
+  LayoutDashboard,
+  Code,
+  FileCode,
+  Boxes,
+} from "lucide-react";
 
 interface TemplateStepProps {
   selectedTemplate: TemplateType;
@@ -46,8 +54,10 @@ const templates: {
 
 const outputFormats: {
   format: OutputFormat;
-  labelKey: string;
-  descKey: string;
+  labelKey?: string;
+  descKey?: string;
+  label?: string;
+  description?: string;
   icon: React.ReactNode;
 }[] = [
   {
@@ -61,6 +71,12 @@ const outputFormats: {
     labelKey: "generator.reactFormat",
     descKey: "generator.reactFormatDesc",
     icon: <Code className="w-5 h-5" />,
+  },
+  {
+    format: "nextjs",
+    label: "Next.js App Router",
+    description: "Next.js + React + TypeScript project with App Router structure",
+    icon: <Boxes className="w-5 h-5" />,
   },
 ];
 
@@ -120,6 +136,12 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
       <div className="flex flex-wrap gap-3 max-w-3xl">
         {outputFormats.map((item) => {
           const isSelected = item.format === selectedFormat;
+          const label = item.labelKey
+            ? t(item.labelKey as TranslationKey)
+            : item.label || "";
+          const description = item.descKey
+            ? t(item.descKey as TranslationKey)
+            : item.description || "";
 
           return (
             <button
@@ -133,9 +155,9 @@ export function TemplateStep({ selectedTemplate, selectedFormat, onSelect, onSel
             >
               {item.icon}
               <div className="text-left">
-                <p className="font-medium text-sm">{t(item.labelKey as TranslationKey)}</p>
+                <p className="font-medium text-sm">{label}</p>
                 <p className={`text-xs ${isSelected ? "text-background/70" : "text-muted"}`}>
-                  {t(item.descKey as TranslationKey)}
+                  {description}
                 </p>
               </div>
             </button>
