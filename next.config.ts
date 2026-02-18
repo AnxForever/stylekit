@@ -1,20 +1,15 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
-  // 性能优化
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
 
-  // 图片优化配置
   images: {
-    // 支持现代图片格式
     formats: ["image/avif", "image/webp"],
-    // 设备尺寸断点
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    // 图片尺寸断点
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // 允许的外部图片域名（头像等）
     remotePatterns: [
       {
         protocol: "https",
@@ -39,7 +34,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // 实验性优化
   experimental: {
     optimizePackageImports: [
       "lucide-react",
@@ -54,7 +48,7 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-tooltip",
     ],
   },
-  // Product simplification redirects
+
   async redirects() {
     return [
       { source: "/prompt-builder", destination: "/generate", permanent: false },
@@ -70,4 +64,8 @@ const nextConfig: NextConfig = {
   turbopack: {},
 };
 
-export default nextConfig;
+const analyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
+export default analyzer(nextConfig);
