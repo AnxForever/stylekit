@@ -23,7 +23,7 @@ describe("cross-reference: recipes vs tokens", () => {
   it("styles missing tokens are tracked", () => {
     // These styles have recipes but no token definitions yet.
     // Update this list when adding tokens for them.
-    const knownMissing = ["warm-dashboard", "neon-gradient", "liquid-glass"];
+    const knownMissing: string[] = [];
     const missing = recipeSlugs.filter((slug) => !hasStyleTokens(slug));
     expect(missing.sort()).toEqual(knownMissing.sort());
   });

@@ -3096,6 +3096,336 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "terracotta": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#faf5ef] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#b5654a]/30 bg-white rounded-xl p-4 shadow-sm">
+          <div className="text-[#b5654a] text-sm font-medium mb-2">Terracotta</div>
+          <p className="text-[#b5654a]/60 text-xs mb-3">Warm earthy tones</p>
+          <button className="bg-[#b5654a] text-white text-xs px-4 py-1.5 rounded-lg">Explore</button>
+        </div>
+      </div>
+    ),
+  },
+  "brutalist-web": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#ffffff] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-black bg-white p-4">
+          <div className="text-black text-sm font-mono font-bold mb-2">BRUTALIST</div>
+          <p className="text-black/60 text-xs font-mono mb-3">Raw HTML aesthetics</p>
+          <a className="text-[#0000ff] text-xs font-mono underline">click_here.html</a>
+        </div>
+      </div>
+    ),
+  },
+  "mid-century-modern": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f0e1] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white border border-[#e8572a]/20 p-4 rounded">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-3 h-3 rounded-full bg-[#e8572a]" />
+            <div className="w-3 h-3 rounded-full bg-[#2b7a78]" />
+          </div>
+          <div className="text-[#333] text-sm font-medium mb-1">Mid-Century</div>
+          <p className="text-gray-500 text-xs mb-3">Retro geometric elegance</p>
+          <div className="h-1 bg-[#e8572a] rounded-full w-16" />
+        </div>
+      </div>
+    ),
+  },
+  "constructivism": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f2e8d5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-[#1a1a1a] p-4">
+          <div className="text-[#cc0000] text-sm font-black uppercase tracking-wider mb-2 -skew-x-6">Constructivism</div>
+          <div className="h-0.5 bg-[#cc0000] mb-3" />
+          <p className="text-[#f2e8d5]/80 text-xs mb-3">Revolutionary design</p>
+          <div className="bg-[#cc0000] text-[#f2e8d5] text-xs font-bold px-3 py-1.5 inline-block -skew-x-3">ACTION</div>
+        </div>
+      </div>
+    ),
+  },
+  "op-art": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-white flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-4 border-black bg-white p-4">
+          <div className="flex gap-1 mb-2">
+            <div className="w-3 h-3 bg-black" /><div className="w-3 h-3 bg-white border border-black" /><div className="w-3 h-3 bg-black" /><div className="w-3 h-3 bg-[#ff3300]" />
+          </div>
+          <div className="text-black text-sm font-bold mb-1">Op Art</div>
+          <p className="text-black/60 text-xs mb-3">Optical illusion patterns</p>
+          <div className="h-1 bg-black" />
+        </div>
+      </div>
+    ),
+  },
+  "islamic-geometric": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a3a5c] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a74e]/50 bg-[#f5ecd7] p-4">
+          <div className="text-[#1a3a5c] text-sm font-serif mb-2">Islamic Geometric</div>
+          <div className="h-px bg-[#c9a74e] mb-3" />
+          <p className="text-[#1a3a5c]/70 text-xs mb-3">Sacred geometry patterns</p>
+          <div className="flex gap-1">
+            <div className="w-4 h-4 border border-[#c9a74e] rotate-45" />
+            <div className="w-4 h-4 border border-[#1a3a5c] rotate-45" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "indian-festive": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fff8e7] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#e63946] bg-white p-4 rounded">
+          <div className="text-[#e63946] text-sm font-bold mb-2">Indian Festive</div>
+          <div className="flex gap-1 mb-3">
+            <div className="w-2 h-2 rounded-full bg-[#e63946]" />
+            <div className="w-2 h-2 rounded-full bg-[#f77f00]" />
+            <div className="w-2 h-2 rounded-full bg-[#e63946]" />
+          </div>
+          <p className="text-[#e63946]/60 text-xs mb-3">Vibrant celebrations</p>
+          <button className="bg-[#e63946] text-white text-xs px-3 py-1 rounded">Celebrate</button>
+        </div>
+      </div>
+    ),
+  },
+  "african-textile": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#2c1810] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-4 border-[#f0c75e] bg-[#3a2218] p-4">
+          <div className="text-[#f0c75e] text-sm font-bold mb-2">African Textile</div>
+          <div className="flex gap-0.5 mb-3">
+            <div className="flex-1 h-1 bg-[#c4501f]" />
+            <div className="flex-1 h-1 bg-[#f0c75e]" />
+            <div className="flex-1 h-1 bg-[#c4501f]" />
+          </div>
+          <p className="text-[#f0c75e]/70 text-xs">Bold woven patterns</p>
+        </div>
+      </div>
+    ),
+  },
+  "korean-minimal": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#faf9f7] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#3d4a5c]/15 bg-white rounded-2xl p-4">
+          <div className="text-[#3d4a5c] text-sm mb-2">Korean Minimal</div>
+          <p className="text-[#8b9bb0] text-xs mb-3">Soft refined simplicity</p>
+          <button className="border border-[#3d4a5c]/20 text-[#3d4a5c] text-xs px-4 py-1.5 rounded-full">Explore</button>
+        </div>
+      </div>
+    ),
+  },
+  "pastel-goth": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a1225] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#d4a5e3]/30 bg-[#2d1b3d] p-4 rounded-lg shadow-[0_0_15px_rgba(212,165,227,0.15)]">
+          <div className="text-[#d4a5e3] text-sm font-medium mb-2">Pastel Goth</div>
+          <p className="text-[#d4a5e3]/50 text-xs mb-3">Dark meets pastel</p>
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-[#d4a5e3]/40" />
+            <div className="w-3 h-3 rounded-full bg-[#b8e6c8]/40" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "maximalism": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a0a2e] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#ffd700] bg-gradient-to-br from-[#d4145a]/20 to-[#1a0a2e] p-4 rounded-xl shadow-[0_0_20px_rgba(212,20,90,0.3)]">
+          <div className="text-[#ffd700] text-sm font-black mb-2">MAXIMALISM</div>
+          <p className="text-white/60 text-xs mb-3">More is more</p>
+          <button className="bg-[#d4145a] text-white text-xs font-bold px-3 py-1.5 rounded-lg">Go Bold</button>
+        </div>
+      </div>
+    ),
+  },
+  "medieval-manuscript": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f0e6d0] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a74e]/40 bg-[#f7f0e0] p-4">
+          <div className="text-[#8b1a1a] text-sm font-serif mb-2">Medieval Script</div>
+          <div className="h-px bg-[#c9a74e]/50 mb-3" />
+          <p className="text-[#8b1a1a]/60 text-xs font-serif mb-3">Illuminated manuscripts</p>
+          <div className="w-6 h-6 border border-[#c9a74e] flex items-center justify-center text-[#c9a74e] text-xs">M</div>
+        </div>
+      </div>
+    ),
+  },
+  "graffiti-street": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1c1c1e] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-[#2a2a2e] p-4 shadow-[4px_4px_0px_0px_rgba(255,45,85,0.6)]">
+          <div className="text-[#ff2d55] text-sm font-black -skew-x-3 mb-2">GRAFFITI</div>
+          <p className="text-[#00ff88]/70 text-xs mb-3">Street art vibes</p>
+          <div className="flex gap-1">
+            <div className="flex-1 h-1.5 bg-[#ff2d55]" />
+            <div className="flex-1 h-1.5 bg-[#00ff88]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "marble-luxury": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f8f6f3] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a96e]/30 bg-white p-4">
+          <div className="text-[#1a1a1a] text-sm font-serif tracking-wide mb-2">Marble Luxury</div>
+          <div className="h-px bg-[#c9a96e] mb-3" />
+          <p className="text-[#1a1a1a]/50 text-xs font-serif mb-3">Refined elegance</p>
+          <button className="border border-[#c9a96e] text-[#1a1a1a] text-xs px-4 py-1 font-serif">Discover</button>
+        </div>
+      </div>
+    ),
+  },
+  "victorian-botanical": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#faf5ef] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-[#2d4a2d]/30 bg-white p-4 rounded">
+          <div className="text-[#2d4a2d] text-sm font-serif mb-2">Victorian Botanical</div>
+          <div className="h-px bg-[#8b6914]/30 mb-3" />
+          <p className="text-[#2d4a2d]/60 text-xs font-serif mb-3">Ornate natural beauty</p>
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-[#2d4a2d]/20" />
+            <div className="w-3 h-3 rounded-full bg-[#8b6914]/20" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "cubism": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#e8dcc8] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white border border-[#5c4033]/20 p-4 -skew-x-2">
+          <div className="text-[#5c4033] text-sm font-bold skew-x-2 mb-2">Cubism</div>
+          <p className="text-[#5c4033]/60 text-xs skew-x-2 mb-3">Fragmented perspectives</p>
+          <div className="flex gap-1 skew-x-2">
+            <div className="w-4 h-4 bg-[#5c4033]/20 rotate-12" />
+            <div className="w-4 h-4 bg-[#b85c38]/30 -rotate-6" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "tropical-paradise": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fffde7] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white border border-[#00897b]/20 rounded-2xl p-4">
+          <div className="text-[#00897b] text-sm font-bold mb-2">Tropical Paradise</div>
+          <p className="text-[#00897b]/60 text-xs mb-3">Vibrant island vibes</p>
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-[#00897b]" />
+            <div className="w-3 h-3 rounded-full bg-[#ff6f00]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "github-style": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f6f8fa] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#d0d7de] bg-white rounded-md p-4">
+          <div className="text-[#1f2328] text-sm font-semibold mb-2">GitHub Style</div>
+          <p className="text-[#656d76] text-xs mb-3">Clean developer tooling</p>
+          <button className="bg-[#1f883d] text-white text-xs px-3 py-1 rounded-md font-medium">Commit</button>
+        </div>
+      </div>
+    ),
+  },
+  "witchcore": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0d0b14] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a74e]/30 bg-[#1a1528] p-4 rounded-lg shadow-[0_0_15px_rgba(201,167,78,0.1)]">
+          <div className="text-[#c9a74e] text-sm font-serif mb-2">Witchcore</div>
+          <div className="h-px bg-[#c9a74e]/20 mb-3" />
+          <p className="text-[#c9a74e]/50 text-xs font-serif mb-3">Dark mystical arts</p>
+          <div className="text-[#c9a74e]/60 text-xs">&#x2606; &#x263D; &#x2606;</div>
+        </div>
+      </div>
+    ),
+  },
+  "neon-tokyo": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a1a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#ff1493]/40 bg-[#0f0f2a] p-4 shadow-[0_0_20px_rgba(255,20,147,0.2)]">
+          <div className="text-[#ff1493] text-xs font-mono tracking-widest mb-2">NEON TOKYO</div>
+          <div className="h-px bg-gradient-to-r from-[#ff1493] to-[#00ffff] mb-3" />
+          <p className="text-[#00ffff]/60 text-xs font-mono mb-3">Cyberpunk streets</p>
+          <button className="border border-[#00ffff]/50 text-[#00ffff] text-xs font-mono px-3 py-1">ENTER</button>
+        </div>
+      </div>
+    ),
+  },
+  "paper-craft": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fdf6ee] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-2 border-dashed border-[#e85d75]/40 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(232,93,117,0.15)]">
+          <div className="text-[#e85d75] text-sm font-medium mb-2">Paper Craft</div>
+          <p className="text-[#e85d75]/50 text-xs mb-3">Cut and fold aesthetics</p>
+          <div className="flex gap-1">
+            <div className="w-4 h-4 rounded bg-[#e85d75]/15 border border-dashed border-[#e85d75]/30" />
+            <div className="w-4 h-4 rounded bg-[#f4a261]/15 border border-dashed border-[#f4a261]/30" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "blueprint": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1e3a5f] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-white/30 bg-[#1e3a5f] p-4">
+          <div className="text-white text-xs font-mono tracking-wider mb-2">BLUEPRINT</div>
+          <div className="h-px bg-white/30 mb-3" />
+          <p className="text-white/50 text-xs font-mono mb-3">Technical schematics</p>
+          <div className="grid grid-cols-3 gap-1">
+            <div className="h-2 border border-white/20" />
+            <div className="h-2 border border-white/20" />
+            <div className="h-2 border border-white/20" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "zen-garden": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f5f3ee] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c4bba8]/40 bg-[#f5f3ee] p-4 rounded-sm">
+          <div className="text-[#4a5548] text-sm tracking-wide mb-2">Zen Garden</div>
+          <div className="h-px bg-[#c4bba8]/40 mb-3" />
+          <p className="text-[#7a7062] text-xs mb-3">Peaceful stone garden</p>
+          <div className="flex gap-2">
+            <div className="w-3 h-3 rounded-full bg-[#4a5548]/20" />
+            <div className="w-3 h-3 rounded-full bg-[#c4bba8]/30" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "ink-wash": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f8f5f0] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border-b border-[#2c2c2c]/20 bg-[#f8f5f0] p-4">
+          <div className="text-[#2c2c2c] text-sm font-light tracking-[0.2em] mb-2">Ink Wash</div>
+          <div className="h-px bg-[#2c2c2c]/15 mb-3" />
+          <p className="text-[#a89279] text-xs font-light tracking-wide mb-3">Calligraphic fluidity</p>
+          <div className="w-8 h-0.5 bg-[#2c2c2c]/30" />
+        </div>
+      </div>
+    ),
+  },
+  "monochrome": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fafafa] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#e5e5e5] bg-white p-4">
+          <div className="text-[#111111] text-sm font-medium mb-2">Monochrome</div>
+          <div className="h-px bg-[#e5e5e5] mb-3" />
+          <p className="text-[#666666] text-xs mb-3">Pure black and white</p>
+          <button className="bg-[#111111] text-[#fafafa] text-xs px-3 py-1">View</button>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件
