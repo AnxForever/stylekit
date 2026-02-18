@@ -52,6 +52,7 @@ export type {
   AdminGeneratorOutcome,
   AdminGeneratorEvent,
   AdminGeneratorEndpointMetrics,
+  AdminGeneratorDailyPoint,
   AdminGeneratorSummary,
   AdminGeneratorTelemetryData,
   AdminGeneratorTelemetryQuery,

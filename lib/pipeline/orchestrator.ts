@@ -71,7 +71,14 @@ async function runStage<T>(
     const durationMs = Date.now() - start;
     const message = err instanceof Error ? err.message : String(err);
     run = updateStage(run, stageName, "failed", durationMs, message);
-    throw err;
+    const taggedError =
+      (err instanceof Error ? err : new Error(message)) as Error & {
+        stageName?: PipelineStageName;
+        runSnapshot?: PipelineRun;
+      };
+    taggedError.stageName = stageName;
+    taggedError.runSnapshot = run;
+    throw taggedError;
   }
 }
 
@@ -202,9 +209,17 @@ export async function executePipeline(
     return run;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    const failedStage = run.stages.find((s) => s.status === "failed");
+    const tagged = err as {
+      stageName?: PipelineStageName;
+      runSnapshot?: PipelineRun;
+    };
+    if (tagged.runSnapshot) {
+      run = tagged.runSnapshot;
+    }
+    const failedStageName =
+      tagged.stageName || run.stages.find((s) => s.status === "failed")?.name;
     run = updatePipelineRun(run.id, { status: "failed", error: message });
-    trackPipelineFailed(run.id, failedStage?.name, message);
+    trackPipelineFailed(run.id, failedStageName, message);
     return run;
   }
 }

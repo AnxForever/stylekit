@@ -314,6 +314,15 @@ interface AdminGeneratorEndpointMetrics {
   p95DurationMs: number;
 }
 
+interface AdminGeneratorDailyPoint {
+  date: string;
+  total: number;
+  success: number;
+  error: number;
+  avgDurationMs: number;
+  p95DurationMs: number;
+}
+
 interface AdminGeneratorSummary {
   totalRequests: number;
   successCount: number;
@@ -323,6 +332,7 @@ interface AdminGeneratorSummary {
   p95DurationMs: number;
   byEndpoint: Record<AdminGeneratorEndpoint, AdminGeneratorEndpointMetrics>;
   topErrorCodes: Array<{ code: string; count: number }>;
+  daily: AdminGeneratorDailyPoint[];
 }
 
 interface AdminGeneratorTelemetryData {
@@ -339,6 +349,7 @@ interface AdminGeneratorTelemetryQuery {
   limit?: number;
   offset?: number;
   minutes?: number;
+  trendDays?: number;
   endpoint?: AdminGeneratorEndpoint;
   outcome?: AdminGeneratorOutcome;
   code?: string;
@@ -350,6 +361,9 @@ export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery =
   params.set("offset", String(query.offset ?? 0));
   if (typeof query.minutes === "number" && Number.isFinite(query.minutes) && query.minutes > 0) {
     params.set("minutes", String(Math.floor(query.minutes)));
+  }
+  if (typeof query.trendDays === "number" && Number.isFinite(query.trendDays) && query.trendDays > 0) {
+    params.set("trendDays", String(Math.floor(query.trendDays)));
   }
   if (query.endpoint) {
     params.set("endpoint", query.endpoint);
@@ -486,6 +500,7 @@ export type {
   AdminGeneratorOutcome,
   AdminGeneratorEvent,
   AdminGeneratorEndpointMetrics,
+  AdminGeneratorDailyPoint,
   AdminGeneratorSummary,
   AdminGeneratorTelemetryData,
   AdminGeneratorTelemetryQuery,
