@@ -33,10 +33,10 @@ export function Footer() {
                 {t("nav.styles")}
               </Link>
               <Link
-                href="/about"
+                href="/templates"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                {t("nav.about")}
+                {t("nav.templates")}
               </Link>
             </nav>
           </div>
@@ -55,12 +55,6 @@ export function Footer() {
               >
                 {t("footer.githubRepo")}
               </a>
-              <Link
-                href="/submit"
-                className="text-sm text-foreground hover:text-accent transition-colors"
-              >
-                {t("footer.submitStyle")}
-              </Link>
             </nav>
           </div>
         </div>
