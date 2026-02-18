@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { StyleCard } from "@/components/home/style-card";
+import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { TrendingStyles } from "@/components/home/trending-styles";
 import type { StyleMeta } from "@/lib/styles/meta";
@@ -35,31 +36,37 @@ export function HomeContent({ styles }: HomeContentProps) {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-16 md:py-20">
-          <RevealOnScroll instant className="max-w-3xl">
-            <p className={`${sectionLabelClassName} mb-4`}>{t("home.subtitle")}</p>
-            <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight max-w-[11ch] mb-4 sm:mb-6">
-              {t("home.title.line1")}
-              <br />
-              {t("home.title.line2")}
-              <br />
-              <span className="italic">{t("home.title.line3")}</span>
-            </h1>
-            <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
-            <div className="grid grid-cols-1 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
-              <Link
-                href="/styles"
-                className={ctaPrimaryClassName}
-              >
-                {t("nav.styles")}
-              </Link>
-              <Link
-                href="/templates"
-                className={ctaSecondaryClassName}
-              >
-                {t("nav.templates")}
-              </Link>
-            </div>
-          </RevealOnScroll>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 items-center">
+            <RevealOnScroll instant>
+              <p className={`${sectionLabelClassName} mb-4`}>{t("home.subtitle")}</p>
+              <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight max-w-[11ch] mb-4 sm:mb-6">
+                {t("home.title.line1")}
+                <br />
+                {t("home.title.line2")}
+                <br />
+                <span className="italic">{t("home.title.line3")}</span>
+              </h1>
+              <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
+              <div className="grid grid-cols-1 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
+                <Link
+                  href="/styles"
+                  className={ctaPrimaryClassName}
+                >
+                  {t("nav.styles")}
+                </Link>
+                <Link
+                  href="/templates"
+                  className={ctaSecondaryClassName}
+                >
+                  {t("nav.templates")}
+                </Link>
+              </div>
+            </RevealOnScroll>
+
+            <RevealOnScroll instant className="w-full max-w-xl lg:max-w-none lg:justify-self-end">
+              <FeaturedCarousel styles={styles} />
+            </RevealOnScroll>
+          </div>
         </div>
       </section>
 
