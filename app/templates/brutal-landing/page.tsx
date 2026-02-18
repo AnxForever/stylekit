@@ -273,7 +273,7 @@ export default function BrutalLandingTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="brutal" />
     </div>
   );
 }

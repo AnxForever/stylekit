@@ -316,7 +316,7 @@ export default function FitnessHealthTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="fitness" />
     </div>
   );
 }

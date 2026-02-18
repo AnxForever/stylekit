@@ -185,7 +185,7 @@ export default function PortfolioGalleryTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="minimalist" />
     </div>
   );
 }

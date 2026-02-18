@@ -249,7 +249,7 @@ export default function DashboardChartsTemplate() {
           </div>
         </main>
       </div>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }

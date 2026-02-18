@@ -245,7 +245,7 @@ export default function MagazineLandingTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="editorial" />
     </div>
   );
 }

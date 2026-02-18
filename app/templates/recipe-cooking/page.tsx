@@ -410,7 +410,7 @@ export default function RecipeCookingTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="recipe" />
     </div>
   );
 }

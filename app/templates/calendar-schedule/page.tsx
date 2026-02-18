@@ -226,7 +226,7 @@ export default function CalendarScheduleTemplate() {
           )}
         </div>
       </main>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }
