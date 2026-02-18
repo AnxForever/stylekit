@@ -12,6 +12,7 @@
     "typecheck": "npx --no-install tsc --noEmit",
     "security:secrets": "node tools/scripts/check-secrets.cjs",
     "check:style-extractor": "node tools/scripts/check-style-extractor.cjs",
+    "submission:validate": "npx --no-install tsx tools/submission/validate-manifest.ts",
     "test": "npx --no-install vitest run --config tests/vitest.config.ts",
     "test:run": "npx --no-install vitest run --config tests/vitest.config.ts",
     "test:coverage": "npx --no-install vitest run --config tests/vitest.config.ts --coverage",
