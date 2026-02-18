@@ -6,14 +6,57 @@ import {
   STAGE_ORDER,
   type PipelineStageName,
 } from "@/lib/pipeline/types";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
+
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 24;
+const MAX_BODY_BYTES = 4 * 1024;
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const originCheck = verifyTrustedOrigin(req);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 },
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "api:pipeline-retry",
+    key: getRequestClientKey(req),
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many retry requests. Please try again later." },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) },
+    );
+  }
+
   try {
     const { id } = await params;
-    const body = await req.json();
+    const bodyResult = await parseJsonBodyWithLimit<{ fromStage?: string }>(req, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Retry payload is too large.",
+      invalidJsonMessage: "Invalid retry request payload.",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { error: bodyResult.error },
+        { status: bodyResult.status },
+      );
+    }
+    const body = bodyResult.data;
 
     // -- Validate fromStage --------------------------------------------------
     const fromStage = body?.fromStage as string;

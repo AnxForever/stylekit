@@ -12,19 +12,32 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 
+function parseNextPath(value: string | null): string {
+  if (!value || !value.startsWith("/")) return "/";
+  return value;
+}
+
+function parseMetadata(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+  return value as Record<string, unknown>;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+  const next = parseNextPath(searchParams.get("next"));
+  const redirectUrl = `${origin}${next}`;
 
   if (!code) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   }
 
   const cookieStore = await cookies();
@@ -44,23 +57,32 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   }
 
   // Assign sequential ID if the user does not have one yet
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (serviceRoleKey) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user && user.user_metadata?.seq_id === undefined) {
-      const seqId = await getOrAssignSeqId(user.id);
-      const adminClient = createClient(url, serviceRoleKey, {
-        auth: { autoRefreshToken: false, persistSession: false },
-      });
-      await adminClient.auth.admin.updateUserById(user.id, {
-        user_metadata: { seq_id: seqId },
-      });
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user && user.user_metadata?.seq_id === undefined) {
+        const seqId = await getOrAssignSeqId(user.id);
+        const adminClient = createClient(url, serviceRoleKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+        await adminClient.auth.admin.updateUserById(user.id, {
+          user_metadata: {
+            ...parseMetadata(user.user_metadata),
+            seq_id: seqId,
+          },
+        });
+      }
+    } catch {
+      // Non-blocking: auth session is already created.
     }
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  return NextResponse.redirect(redirectUrl);
 }

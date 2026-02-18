@@ -1,14 +1,42 @@
 import { POST } from "@/app/api/style-extract/route";
 
-function buildRequest(payload: unknown) {
+function buildRequest(payload: unknown, origin?: string) {
+  const headers: HeadersInit = { "content-type": "application/json" };
+  if (origin) {
+    headers.origin = origin;
+  }
+
   return new Request("http://localhost/api/style-extract", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers,
     body: JSON.stringify(payload),
   });
 }
 
 describe("POST /api/style-extract", () => {
+  it("rejects cross-origin requests", async () => {
+    const response = await POST(
+      buildRequest({ url: "https://example.com" }, "https://evil.example")
+    );
+    expect(response.status).toBe(403);
+
+    const body = (await response.json()) as { error?: string };
+    expect(body.error).toContain("Cross-origin request denied");
+  });
+
+  it("rejects oversized request body", async () => {
+    const response = await POST(
+      buildRequest({
+        url: "https://example.com",
+        padding: "x".repeat(12_000),
+      })
+    );
+    expect(response.status).toBe(413);
+
+    const body = (await response.json()) as { error?: string };
+    expect(body.error).toContain("too large");
+  });
+
   it("rejects missing url", async () => {
     const response = await POST(buildRequest({}));
     expect(response.status).toBe(400);

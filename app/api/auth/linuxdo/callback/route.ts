@@ -12,13 +12,26 @@ import { NextResponse, type NextRequest } from "next/server";
 import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 
+function parseNextPath(value: string | null): string {
+  if (!value || !value.startsWith("/")) return "/";
+  return value;
+}
+
+function parseMetadata(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+  return value as Record<string, unknown>;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+  const next = parseNextPath(searchParams.get("next"));
+  const redirectUrl = `${origin}${next}`;
 
   if (!code) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -26,7 +39,7 @@ export async function GET(request: NextRequest) {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey || !serviceRoleKey) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   }
 
   try {
@@ -74,6 +87,7 @@ export async function GET(request: NextRequest) {
       });
 
     let supabaseUserId = createData?.user?.id;
+    let mergedMetadata: Record<string, unknown> = { ...userMetadata };
 
     if (createError) {
       // User likely already exists — find and update metadata
@@ -85,8 +99,12 @@ export async function GET(request: NextRequest) {
       const existing = listData?.users?.find((u) => u.email === email);
       if (existing) {
         supabaseUserId = existing.id;
+        mergedMetadata = {
+          ...parseMetadata(existing.user_metadata),
+          ...userMetadata,
+        };
         await adminClient.auth.admin.updateUserById(existing.id, {
-          user_metadata: userMetadata,
+          user_metadata: mergedMetadata,
         });
       } else {
         throw new Error(createError.message);
@@ -94,11 +112,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Assign a stable sequential ID (1, 2, 3…) and persist to metadata
-    if (supabaseUserId) {
-      const seqId = await getOrAssignSeqId(supabaseUserId);
-      await adminClient.auth.admin.updateUserById(supabaseUserId, {
-        user_metadata: { seq_id: seqId },
-      });
+    if (supabaseUserId && mergedMetadata.seq_id === undefined) {
+      try {
+        const seqId = await getOrAssignSeqId(supabaseUserId);
+        mergedMetadata = { ...mergedMetadata, seq_id: seqId };
+        await adminClient.auth.admin.updateUserById(supabaseUserId, {
+          user_metadata: mergedMetadata,
+        });
+      } catch {
+        // Non-blocking: login can continue even if seq assignment fails.
+      }
     }
 
     // 4. Generate a magic link to sign in as this user
@@ -138,17 +161,14 @@ export async function GET(request: NextRequest) {
       throw new Error(`OTP verification failed: ${verifyError.message}`);
     }
 
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(redirectUrl);
   } catch (err) {
     // Log error for debugging (server-side only, not exposed to client)
     const message = err instanceof Error ? err.message : String(err);
     if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
       console.error("[LinuxDo OAuth] Callback error:", message);
     }
-    // Redirect with error indicator (avoid exposing details in URL)
-    return NextResponse.redirect(
-      `${origin}${next}${next.includes("?") ? "&" : "?"}auth_error=linuxdo`,
-    );
+    // Redirect with error indicator — always go to /login for error display
+    return NextResponse.redirect(`${origin}/login?auth_error=linuxdo`);
   }
 }

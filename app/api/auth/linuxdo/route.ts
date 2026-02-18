@@ -8,9 +8,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { buildAuthorizationUrl } from "@/lib/auth/linuxdo";
 
+function parseNextPath(value: string | null): string {
+  if (!value || !value.startsWith("/")) return "/";
+  return value;
+}
+
 export async function GET(request: NextRequest) {
-  const { origin } = new URL(request.url);
-  const next = request.nextUrl.searchParams.get("next") ?? "/";
+  const { origin, searchParams } = new URL(request.url);
+  const next = parseNextPath(searchParams.get("next"));
   const redirectUri = `${origin}/api/auth/linuxdo/callback?next=${encodeURIComponent(next)}`;
 
   try {
