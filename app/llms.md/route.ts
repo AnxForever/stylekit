@@ -53,7 +53,7 @@ StyleKit provides structured design systems that AI can use to generate consiste
 - [Style Recipes](/api/styles/[slug]/recipes): Component recipe templates
 - [Style Extractor](/api/style-extract): Extract style draft from public websites
 
-## MCP Core Tools
+## MCP Tools
 
 - search_knowledge: Search design knowledge domains
 - smart_recommend: Context-aware recommendation with scoring
@@ -61,6 +61,9 @@ StyleKit provides structured design systems that AI can use to generate consiste
 - list_styles: List all styles
 - lint_code: Lint code against style constraints
 - get_stack_guidelines: Get stack-specific implementation guidance
+- compose_styles: Compose visual style + optional layout archetype
+- generate_context_file: Generate IDE rules files for AI coding tools
+- analyze_project_style: Detect nearest style from existing component code
 
 ## Documentation
 

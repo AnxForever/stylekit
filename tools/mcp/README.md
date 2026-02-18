@@ -4,14 +4,24 @@ Model Context Protocol server that exposes StyleKit's design knowledge base as t
 
 ## Tools
 
+### Core tools (enabled by default)
+
 | Tool | Description |
 |------|-------------|
 | `search_knowledge` | Search across all design knowledge domains (colors, typography, UX, etc.) |
-| `get_design_recommendation` | Generate comprehensive design recommendation for a product type |
+| `smart_recommend` | Generate context-aware style recommendations with scoring |
 | `get_style` | Get a specific design style with tokens, recipes, and rules |
 | `list_styles` | List all available design styles |
-| `list_knowledge_domains` | List all knowledge domains with descriptions |
+| `lint_code` | Lint JSX/TSX class usage against a style's constraints |
 | `get_stack_guidelines` | Get coding guidelines for a specific tech stack |
+
+### Experimental tools (disabled by default)
+
+Set `STYLEKIT_ENABLE_EXPERIMENTAL_TOOLS=1` to enable:
+
+| `compose_styles` | Compose visual style + optional layout archetype |
+| `generate_context_file` | Generate IDE context/rules files for AI coding tools |
+| `analyze_project_style` | Detect nearest StyleKit style from component code |
 
 ## Installation
 
@@ -70,20 +80,16 @@ Search for "SaaS dashboard" design recommendations
 
 The AI will use `search_knowledge` to find relevant design patterns, color palettes, and UX guidelines.
 
-### Get Design Recommendation
+### Smart Recommendation
 
 ```
 What's the best design approach for an e-commerce website?
 ```
 
-The AI will use `get_design_recommendation` to generate a comprehensive recommendation including:
-- Style suggestions
-- Color palette
-- Typography pairing
-- Landing page pattern
-- Chart recommendations
-- Icon suggestions
-- UX guidelines
+The AI will use `smart_recommend` to return ranked candidates with:
+- suitability scores
+- context-aware reasoning
+- alternatives and tradeoffs
 
 ### Get Style Details
 
@@ -104,6 +110,16 @@ What are the critical guidelines for Next.js development?
 ```
 
 The AI will use `get_stack_guidelines` to retrieve stack-specific coding guidelines.
+
+### Analyze Existing Code
+
+> Requires `STYLEKIT_ENABLE_EXPERIMENTAL_TOOLS=1`
+
+```
+Which StyleKit style does this component look like?
+```
+
+The AI will use `analyze_project_style` to return top style matches with confidence and explanations.
 
 ## Development
 
