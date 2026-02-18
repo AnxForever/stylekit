@@ -41,6 +41,39 @@ interface CommentsData {
   total: number;
 }
 
+interface CommunityAuthor {
+  handle: string;
+  avatarUrl: string | null;
+  provider: "github" | "linuxdo" | "unknown";
+  userId: string | null;
+}
+
+interface CommunityFeedItem {
+  id: string;
+  slug: string;
+  status: "approved";
+  submittedAt: string;
+  reviewedAt: string | null;
+  title: string;
+  titleEn: string | null;
+  description: string | null;
+  cover: string | null;
+  author: CommunityAuthor;
+}
+
+interface CommunityFeedData {
+  items: CommunityFeedItem[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+interface CommunityFeedQuery {
+  limit?: number;
+  offset?: number;
+  slug?: string;
+}
+
 interface DashboardData {
   totalEvents: number;
   totalStyles: number;
@@ -129,6 +162,16 @@ export function useStyleComments(slug: string, limit = 10) {
   return useSWR<CommentsData>(
     slug ? `/api/styles/${slug}/comments?limit=${limit}` : null
   );
+}
+
+export function useCommunityFeed(query: CommunityFeedQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(query.limit ?? 12));
+  params.set("offset", String(query.offset ?? 0));
+  if (query.slug?.trim()) {
+    params.set("slug", query.slug.trim().toLowerCase());
+  }
+  return useSWR<CommunityFeedData>(`/api/community/feed?${params.toString()}`);
 }
 
 export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
@@ -510,6 +553,10 @@ export type {
   RatingData,
   Comment,
   CommentsData,
+  CommunityAuthor,
+  CommunityFeedItem,
+  CommunityFeedData,
+  CommunityFeedQuery,
   DashboardData,
   AdminAuditActor,
   AdminAuditEvent,

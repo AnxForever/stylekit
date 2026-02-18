@@ -56,7 +56,6 @@ const nextConfig: NextConfig = {
       { source: "/playground", destination: "/generate", permanent: false },
       { source: "/assets", destination: "/styles", permanent: false },
       { source: "/api-test", destination: "/developers", permanent: false },
-      { source: "/submit", destination: "/create-style", permanent: false },
     ];
   },
 

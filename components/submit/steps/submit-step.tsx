@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Check, Copy, Download, ExternalLink, Send, AlertCircle } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
+import { useUser } from "@/lib/auth/use-user";
 
 interface SubmitStepProps {
   formData: {
@@ -57,6 +59,7 @@ interface SubmitStepProps {
 }
 
 export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
+  const { user } = useUser();
   const [copied, setCopied] = useState(false);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -68,6 +71,14 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
   } | null>(null);
 
   const submitToCommunity = async () => {
+    if (!user) {
+      setSubmitResult({
+        success: false,
+        error: "Sign in to submit styles.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitResult(null);
     try {
@@ -249,12 +260,26 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
           <button
             type="button"
             onClick={submitToCommunity}
-            disabled={isSubmitting || !formData.slug.trim() || submitResult?.success === true}
+            disabled={
+              !user ||
+              isSubmitting ||
+              !formData.slug.trim() ||
+              submitResult?.success === true
+            }
             className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Send className="w-4 h-4" />
             {isSubmitting ? "Submitting..." : submitResult?.success ? "Submitted" : "Submit Style"}
           </button>
+          {!user && (
+            <p className="text-xs text-muted">
+              Sign in first to submit to the community.
+              {" "}
+              <Link href="/login" className="underline hover:text-foreground">
+                Sign in
+              </Link>
+            </p>
+          )}
           {submitResult?.success && (
             <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
               <div className="flex items-center gap-2 justify-center">

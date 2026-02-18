@@ -102,6 +102,27 @@ describe("POST /api/submit", () => {
     });
   });
 
+  it("requires authentication before accepting submission payload", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:auth");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 15,
+      remaining: 14,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedGetServerUser.mockResolvedValue(null);
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(401);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "Sign in to submit styles",
+    });
+  });
+
   it("returns validation details for invalid payload", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetRequestClientKey.mockReturnValue("ip:2");
@@ -112,6 +133,10 @@ describe("POST /api/submit", () => {
       resetAt: Date.now() + 1_000,
       retryAfterSec: 0,
     });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx" },
+    } as never);
     mockedParseJsonBodyWithLimit.mockResolvedValue({
       ok: true,
       data: { slug: "" },
@@ -168,12 +193,21 @@ describe("POST /api/submit", () => {
     expect(response.status).toBe(200);
     expect(mockedCreateSubmissionSupabase).toHaveBeenCalledWith(
       "neo-brutalist",
-      { slug: "neo-brutalist" },
+      {
+        slug: "neo-brutalist",
+        __author: {
+          handle: "anx",
+          avatarUrl: null,
+          provider: "github",
+        },
+      },
       { tokens: true },
       { design: true },
       null,
       "user-1",
       "anx",
+      null,
+      "github",
     );
     await expect(response.json()).resolves.toEqual({
       success: true,

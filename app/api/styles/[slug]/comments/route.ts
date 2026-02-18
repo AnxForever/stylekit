@@ -17,8 +17,6 @@ const MAX_BODY_BYTES = 8 * 1024;
 
 const commentSchema = z.object({
   content: z.string().min(1).max(280),
-  authorName: z.string().min(1).max(50).default("Anonymous"),
-  sessionId: z.string().min(1).max(128).optional(),
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
@@ -58,6 +56,21 @@ export async function POST(
       );
     }
 
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { success: false, error: "Comments require database configuration" },
+        { status: 503 }
+      );
+    }
+
+    const user = await getServerUser();
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Sign in to comment" },
+        { status: 401 }
+      );
+    }
+
     const bodyResult = await parseJsonBodyWithLimit(request, {
       maxBytes: MAX_BODY_BYTES,
       tooLargeMessage: "Comment payload is too large.",
@@ -80,13 +93,6 @@ export async function POST(
       );
     }
 
-    if (!isSupabaseConfigured()) {
-      return NextResponse.json(
-        { success: false, error: "Comments require database configuration" },
-        { status: 503 }
-      );
-    }
-
     const { createClient } = await import("@supabase/supabase-js");
     const sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -96,39 +102,20 @@ export async function POST(
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
-    // Detect authenticated user
-    const user = await getServerUser();
-    const userId = user?.id ?? null;
-    const userMeta = user?.user_metadata;
-    const authorName = userId
-      ? (userMeta?.user_name ?? userMeta?.full_name ?? "User")
-      : parsed.data.authorName;
-    const avatarUrl = userId ? (userMeta?.avatar_url ?? null) : null;
-    const sessionId = userId ? null : (parsed.data.sessionId ?? null);
-
-    // Anonymous comments require sessionId
-    if (!userId && !sessionId) {
-      return NextResponse.json(
-        { success: false, error: "sessionId is required for anonymous comments" },
-        { status: 400 }
-      );
-    }
+    const authorName =
+      user.user_metadata?.user_name ??
+      user.user_metadata?.full_name ??
+      "User";
+    const avatarUrl = user.user_metadata?.avatar_url ?? null;
 
     // Rate limit: max 5 comments per identity per style per day
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    let countQuery = sb
+    const { count } = await sb
       .from("style_comments")
       .select("*", { count: "exact", head: true })
       .eq("style_slug", slugParsed.data)
+      .eq("user_id", user.id)
       .gte("created_at", oneDayAgo);
-
-    if (userId) {
-      countQuery = countQuery.eq("user_id", userId);
-    } else {
-      countQuery = countQuery.eq("session_id", sessionId!);
-    }
-
-    const { count } = await countQuery;
 
     if ((count ?? 0) >= 5) {
       return NextResponse.json(
@@ -143,8 +130,8 @@ export async function POST(
         style_slug: slugParsed.data,
         content: parsed.data.content,
         author_name: authorName,
-        session_id: sessionId,
-        user_id: userId,
+        session_id: null,
+        user_id: user.id,
         avatar_url: avatarUrl,
         ip_address: ip,
       })
