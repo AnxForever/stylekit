@@ -8,9 +8,12 @@ import {
   createRateLimitHeaders,
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
+const MAX_BODY_BYTES = 16 * 1024;
 const STYLE_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const pipelineRunSchema = z.object({
@@ -42,6 +45,14 @@ const pipelineRunSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const originCheck = verifyTrustedOrigin(req);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   const rateLimit = checkRateLimit({
     namespace: "api:pipeline-run",
     key: getRequestClientKey(req),
@@ -56,7 +67,16 @@ export async function POST(req: Request) {
   }
 
   try {
-    const parsed = pipelineRunSchema.safeParse(await req.json());
+    const bodyResult = await parseJsonBodyWithLimit(req, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Pipeline payload is too large.",
+      invalidJsonMessage: "Invalid pipeline request payload.",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json({ error: bodyResult.error }, { status: bodyResult.status });
+    }
+
+    const parsed = pipelineRunSchema.safeParse(bodyResult.data);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
       return NextResponse.json(

@@ -11,6 +11,8 @@ import {
   createRateLimitHeaders,
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const MAX_HTML_CHARS = 1_500_000;
 const MAX_CSS_FILES = 4;
@@ -20,12 +22,21 @@ const MAX_REDIRECTS = 5;
 const DNS_LOOKUP_TIMEOUT_MS = 1500;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 24;
+const MAX_BODY_BYTES = 8 * 1024;
 
 class BlockedUrlError extends Error {
   readonly name = "BlockedUrlError";
 }
 
 export async function POST(request: Request) {
+  const originCheck = verifyTrustedOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: originCheck.error },
+      { status: originCheck.status ?? 403 }
+    );
+  }
+
   const rateLimit = checkRateLimit({
     namespace: "api:style-extract",
     key: getRequestClientKey(request),
@@ -40,7 +51,19 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const bodyResult = await parseJsonBodyWithLimit<{ url?: string }>(request, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Extraction request body is too large.",
+      invalidJsonMessage: "Invalid request body.",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { error: bodyResult.error },
+        { status: bodyResult.status }
+      );
+    }
+
+    const body = bodyResult.data;
     const targetUrl = typeof body?.url === "string" ? body.url.trim() : "";
 
     if (!targetUrl) {

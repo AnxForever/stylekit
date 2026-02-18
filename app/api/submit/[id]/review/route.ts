@@ -10,11 +10,13 @@ import { isValidSubmissionId } from "@/lib/submit/reviewer";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const reviewSchema = z.object({
   action: z.enum(["approve", "reject"]),
   note: z.string().trim().max(500).optional(),
 });
+const MAX_BODY_BYTES = 16 * 1024;
 
 export async function POST(
   request: Request,
@@ -46,7 +48,19 @@ export async function POST(
       );
     }
 
-    const parsed = reviewSchema.safeParse(await request.json());
+    const bodyResult = await parseJsonBodyWithLimit(request, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Review payload is too large.",
+      invalidJsonMessage: "Invalid request body",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { success: false, error: bodyResult.error },
+        { status: bodyResult.status }
+      );
+    }
+
+    const parsed = reviewSchema.safeParse(bodyResult.data);
     if (!parsed.success) {
       return NextResponse.json(
         { success: false, error: "Invalid request body" },

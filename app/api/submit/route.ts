@@ -15,10 +15,12 @@ import {
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 15;
+const MAX_BODY_BYTES = 128 * 1024;
 
 export async function POST(request: Request) {
   const originCheck = verifyTrustedOrigin(request);
@@ -49,7 +51,19 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const bodyResult = await parseJsonBodyWithLimit(request, {
+      maxBytes: MAX_BODY_BYTES,
+      tooLargeMessage: "Submission payload is too large.",
+      invalidJsonMessage: "Invalid JSON body",
+    });
+    if (!bodyResult.ok) {
+      return NextResponse.json(
+        { success: false, error: bodyResult.error },
+        { status: bodyResult.status }
+      );
+    }
+
+    const body = bodyResult.data;
 
     const parsed = wizardFormSchema.safeParse(body);
     if (!parsed.success) {
@@ -117,14 +131,10 @@ export async function POST(request: Request) {
       id,
       slug: data.slug,
     });
-  } catch (error) {
-    const message = error instanceof SyntaxError
-      ? "Invalid JSON body"
-      : "Internal server error";
-
+  } catch {
     return NextResponse.json(
-      { success: false, error: message },
-      { status: error instanceof SyntaxError ? 400 : 500 }
+      { success: false, error: "Internal server error" },
+      { status: 500 }
     );
   }
 }
