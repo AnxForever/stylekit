@@ -4,9 +4,8 @@ import { Footer } from "@/components/layout/footer";
 import { CommunityContent } from "./_content";
 
 export const metadata: Metadata = {
-  title: "Community - StyleKit",
-  description:
-    "Explore approved community style submissions with verified author attribution.",
+  title: "社区 - StyleKit",
+  description: "浏览已通过审核的社区投稿风格与作者署名。",
 };
 
 interface CommunityPageProps {

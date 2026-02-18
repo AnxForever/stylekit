@@ -408,14 +408,14 @@ export function ProfileContent() {
             </span>
             <span className="inline-flex items-center gap-2">
               <span className="text-sm text-foreground">
-                {showEmail ? email : maskedEmail || "Hidden"}
+                {showEmail ? email : maskedEmail || t("profile.emailHidden")}
               </span>
               {email && (
                 <button
                   type="button"
                   onClick={() => setShowEmail((current) => !current)}
                   className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showEmail ? "Hide email" : "Show email"}
+                  aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
                 >
                   {showEmail ? (
                     <EyeOff className="w-4 h-4" />

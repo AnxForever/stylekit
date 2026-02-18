@@ -6,6 +6,7 @@ import { Check, Copy, Download, ExternalLink, Send, AlertCircle } from "lucide-r
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
 import { useUser } from "@/lib/auth/use-user";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SubmitStepProps {
   formData: {
@@ -59,6 +60,7 @@ interface SubmitStepProps {
 }
 
 export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
+  const { t } = useI18n();
   const { user } = useUser();
   const [copied, setCopied] = useState(false);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
@@ -74,7 +76,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
     if (!user) {
       setSubmitResult({
         success: false,
-        error: "Sign in to submit styles.",
+        error: t("submit.signInToSubmit"),
       });
       return;
     }
@@ -217,8 +219,8 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
       {/* Success Header */}
       <div className="p-6 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-center">
         <Check className="w-10 h-10 mx-auto mb-3 text-green-600 dark:text-green-400" />
-        <h3 className="text-xl font-semibold mb-1">Style Definition Complete</h3>
-        <p className="text-sm text-muted">Choose how to submit your style below.</p>
+        <h3 className="text-xl font-semibold mb-1">{t("submit.completeTitle")}</h3>
+        <p className="text-sm text-muted">{t("submit.completeDesc")}</p>
       </div>
 
       {/* Action Buttons */}
@@ -232,7 +234,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
           <Download className="w-5 h-5" />
           <div className="text-left">
             <p className="font-medium">{isDownloading ? text.downloadScaffoldLoading : text.downloadScaffold}</p>
-            <p className="text-xs opacity-70">ZIP with style, tokens, cover SVG</p>
+            <p className="text-xs opacity-70">{t("submit.zipDesc")}</p>
           </div>
         </button>
 
@@ -244,7 +246,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
           {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
           <div className="text-left">
             <p className="font-medium">{copied ? text.copied : text.copyJson}</p>
-            <p className="text-xs text-muted">Full JSON definition</p>
+            <p className="text-xs text-muted">{t("submit.fullJsonDesc")}</p>
           </div>
         </button>
       </div>
@@ -254,8 +256,8 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
         <div className="flex flex-col items-center gap-4 text-center">
           <Send className="w-6 h-6" />
           <div>
-            <p className="font-medium mb-1">Submit to Community</p>
-            <p className="text-sm text-muted">Save your style for review and inclusion in the gallery.</p>
+            <p className="font-medium mb-1">{t("submit.communitySectionTitle")}</p>
+            <p className="text-sm text-muted">{t("submit.communitySectionDesc")}</p>
           </div>
           <button
             type="button"
@@ -269,14 +271,14 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
             className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Send className="w-4 h-4" />
-            {isSubmitting ? "Submitting..." : submitResult?.success ? "Submitted" : "Submit Style"}
+            {isSubmitting ? t("submit.submitting") : submitResult?.success ? t("submit.submitted") : t("submit.submitStyle")}
           </button>
           {!user && (
             <p className="text-xs text-muted">
-              Sign in first to submit to the community.
+              {t("submit.signInRequired")}
               {" "}
               <Link href="/login" className="underline hover:text-foreground">
-                Sign in
+                {t("auth.signIn")}
               </Link>
             </p>
           )}
@@ -284,7 +286,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
             <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
               <div className="flex items-center gap-2 justify-center">
                 <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                <span>Submission saved. ID: <code className="font-mono text-xs">{submitResult.id}</code></span>
+                <span>{t("submit.savedPrefix")} <code className="font-mono text-xs">{submitResult.id}</code></span>
               </div>
             </div>
           )}
@@ -292,7 +294,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
             <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
               <div className="flex items-center gap-2 justify-center">
                 <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                <span>Submission failed: {submitResult.error}</span>
+                <span>{t("submit.failedPrefix")} {submitResult.error}</span>
               </div>
             </div>
           )}
@@ -303,7 +305,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
       {scaffoldFiles.length > 0 && (
         <div className="border border-border">
           <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-border">
-            <p className="text-sm font-medium">Generated Files</p>
+            <p className="text-sm font-medium">{t("submit.generatedFiles")}</p>
           </div>
           <div className="divide-y divide-border">
             {scaffoldFiles.map((file) => (
@@ -316,7 +318,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
                     className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border hover:border-foreground transition-colors"
                   >
                     {copiedFile === file.name ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                    {copiedFile === file.name ? "Copied" : "Copy"}
+                    {copiedFile === file.name ? t("submit.copiedFile") : t("submit.copyFile")}
                   </button>
                 </div>
                 <pre className="text-xs font-mono bg-zinc-50 dark:bg-zinc-900 p-3 border border-border overflow-x-auto max-h-48">

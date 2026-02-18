@@ -6,11 +6,13 @@ import { useMemo, useState } from "react";
 import { LogIn, RefreshCw, Send } from "lucide-react";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
+import { useI18n } from "@/lib/i18n/context";
 
 const PAGE_SIZE = 12;
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
+function formatDate(iso: string, locale: "zh" | "en"): string {
+  const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
+  return new Date(iso).toLocaleDateString(dateLocale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -22,6 +24,7 @@ interface CommunityContentProps {
 }
 
 export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
+  const { t, locale } = useI18n();
   const { user } = useUser();
   const [offset, setOffset] = useState(0);
   const normalizedSlug = useMemo(
@@ -46,14 +49,13 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between mb-10">
           <div>
             <p className="text-xs tracking-[0.16em] uppercase text-muted mb-3">
-              Community
+              {t("community.label")}
             </p>
             <h1 className="text-3xl md:text-5xl tracking-tight mb-3">
-              Style Community Gallery
+              {t("community.title")}
             </h1>
             <p className="text-muted max-w-2xl">
-              Browse approved submissions, discover new style directions, and
-              see each contribution credited to its creator.
+              {t("community.description")}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -62,7 +64,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
               className="inline-flex items-center gap-2 px-4 py-2 border border-border hover:border-foreground transition-colors text-sm"
             >
               <Send className="w-4 h-4" />
-              Submit a style
+              {t("community.submitCta")}
             </Link>
             {!user ? (
               <Link
@@ -70,7 +72,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background hover:bg-foreground/90 transition-colors text-sm"
               >
                 <LogIn className="w-4 h-4" />
-                Sign in
+                {t("auth.signIn")}
               </Link>
             ) : null}
           </div>
@@ -79,7 +81,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
         {normalizedSlug && (
           <div className="mb-6 rounded-md border border-border bg-background/70 px-4 py-3 text-sm flex flex-wrap gap-2 items-center justify-between">
             <span className="text-muted">
-              Filtered by style:
+              {t("community.filteredByStyle")}
               {" "}
               <span className="text-foreground font-medium">{normalizedSlug}</span>
             </span>
@@ -87,14 +89,14 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
               href="/community"
               className="underline text-muted hover:text-foreground"
             >
-              Clear filter
+              {t("community.clearFilter")}
             </Link>
           </div>
         )}
 
         {error && (
           <div className="mb-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300 flex items-center justify-between">
-            <span>{error.message || "Failed to load community feed."}</span>
+            <span>{error.message || t("community.loadError")}</span>
             <button
               type="button"
               onClick={() => {
@@ -103,7 +105,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
               className="inline-flex items-center gap-1 underline"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              Retry
+              {t("error.retry")}
             </button>
           </div>
         )}
@@ -121,16 +123,16 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
           </div>
         ) : items.length === 0 ? (
           <div className="border border-dashed border-border p-10 text-center">
-            <h2 className="text-xl mb-2">No community submissions yet</h2>
+            <h2 className="text-xl mb-2">{t("community.emptyTitle")}</h2>
             <p className="text-sm text-muted mb-4">
-              Approved contributions will show up here.
+              {t("community.emptyDesc")}
             </p>
             <Link
               href="/submit"
               className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors"
             >
               <Send className="w-4 h-4" />
-              Submit first style
+              {t("community.emptyAction")}
             </Link>
           </div>
         ) : (
@@ -153,7 +155,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-sm text-muted">
-                        No cover
+                        {t("community.noCover")}
                       </div>
                     )}
                   </Link>
@@ -193,7 +195,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                           </span>
                         )}
                         <span className="truncate">
-                          by
+                          {t("community.by")}
                           {" "}
                           <span className="text-foreground">@{item.author.handle}</span>
                         </span>
@@ -201,7 +203,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                           {item.author.provider}
                         </span>
                       </div>
-                      <time dateTime={item.submittedAt}>{formatDate(item.submittedAt)}</time>
+                      <time dateTime={item.submittedAt}>{formatDate(item.submittedAt, locale)}</time>
                     </div>
                   </div>
                 </article>
@@ -210,9 +212,9 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
 
             <div className="flex items-center justify-between border-t border-border pt-4">
               <p className="text-sm text-muted">
-                Showing {Math.min(offset + 1, total)}-{Math.min(offset + PAGE_SIZE, total)}
+                {t("community.showing")} {Math.min(offset + 1, total)}-{Math.min(offset + PAGE_SIZE, total)}
                 {" "}
-                of {total}
+                {t("community.of")} {total}
               </p>
               <div className="flex gap-2">
                 <button
@@ -221,7 +223,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                   disabled={!hasPrev}
                   className="px-3 py-1.5 text-sm border border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Prev
+                  {t("community.prev")}
                 </button>
                 <button
                   type="button"
@@ -229,7 +231,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                   disabled={!hasNext}
                   className="px-3 py-1.5 text-sm border border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Next
+                  {t("community.next")}
                 </button>
               </div>
             </div>
