@@ -68,6 +68,7 @@ image.jpg
 
 # Temporary
 .tmp/
+/tmp/
 
 # Runtime data (analytics, submissions)
 /.data/
