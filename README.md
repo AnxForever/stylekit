@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/og-image.svg" alt="StyleKit Banner" width="100%" />
+<img src="public/readme/home-hero.png" alt="StyleKit Banner" width="100%" />
 
 # StyleKit
 
