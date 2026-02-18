@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stylekit.top/schemas/style-submission-manifest.schema.json",
+  "title": "StyleKit Style Submission Manifest",
+  "description": "Structured manifest used by AI assistants to produce submission-ready style data for StyleKit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "source",
+    "formData",
+    "assets",
+    "selfCheck"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assistant",
+        "model"
+      ],
+      "properties": {
+        "assistant": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "cursor",
+            "chatgpt",
+            "manual",
+            "other"
+          ]
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "formData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "nameEn",
+        "slug",
+        "description",
+        "category",
+        "styleType",
+        "tags",
+        "primaryColor",
+        "secondaryColor",
+        "accentColors",
+        "background",
+        "foreground",
+        "muted",
+        "keywords",
+        "philosophy",
+        "headingFont",
+        "bodyFont",
+        "fontSizeBase",
+        "fontSizeHeading",
+        "fontSizeSmall",
+        "fontWeightNormal",
+        "fontWeightBold",
+        "lineHeightNormal",
+        "lineHeightTight",
+        "borderRadius",
+        "spacingSm",
+        "spacingMd",
+        "spacingLg",
+        "doList",
+        "dontList",
+        "aiRules",
+        "buttonCode",
+        "cardCode",
+        "inputCode"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nameEn": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "modern",
+            "retro",
+            "minimal",
+            "expressive"
+          ]
+        },
+        "styleType": {
+          "type": "string",
+          "enum": [
+            "visual",
+            "layout",
+            "animation"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "modern",
+              "retro",
+              "minimal",
+              "expressive",
+              "high-contrast",
+              "responsive",
+              "brand-inspired"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "primaryColor": {
+          "$ref": "#/$defs/hexColor"
+        },
+        "secondaryColor": {
+          "$ref": "#/$defs/hexColor"
+        },
+        "accentColors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/hexColor"
+          }
+        },
+        "background": {
+          "$ref": "#/$defs/hexColor"
+        },
+        "foreground": {
+          "$ref": "#/$defs/hexColor"
+        },
+        "muted": {
+          "$ref": "#/$defs/hexColor"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "philosophy": {
+          "type": "string"
+        },
+        "headingFont": {
+          "type": "string"
+        },
+        "bodyFont": {
+          "type": "string"
+        },
+        "fontSizeBase": {
+          "type": "string"
+        },
+        "fontSizeHeading": {
+          "type": "string"
+        },
+        "fontSizeSmall": {
+          "type": "string"
+        },
+        "fontWeightNormal": {
+          "type": "string"
+        },
+        "fontWeightBold": {
+          "type": "string"
+        },
+        "lineHeightNormal": {
+          "type": "string"
+        },
+        "lineHeightTight": {
+          "type": "string"
+        },
+        "borderRadius": {
+          "type": "string"
+        },
+        "spacingSm": {
+          "type": "string"
+        },
+        "spacingMd": {
+          "type": "string"
+        },
+        "spacingLg": {
+          "type": "string"
+        },
+        "doList": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "dontList": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "aiRules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "buttonCode": {
+          "type": "string"
+        },
+        "cardCode": {
+          "type": "string"
+        },
+        "inputCode": {
+          "type": "string"
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coverSvg"
+      ],
+      "properties": {
+        "coverSvg": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Raw SVG content for public/styles/{slug}.svg"
+        },
+        "previewImageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional preview screenshot URL"
+        }
+      }
+    },
+    "selfCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaValid",
+        "requiredFilesPrepared",
+        "componentCoverage",
+        "notes"
+      ],
+      "properties": {
+        "schemaValid": {
+          "type": "boolean"
+        },
+        "requiredFilesPrepared": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "manifest.json",
+              "cover.svg",
+              "self-check.md"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "componentCoverage": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "buttonCode",
+              "cardCode",
+              "inputCode"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hexColor": {
+      "type": "string",
+      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+    },
+    "nonEmptyStringList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "contains": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  }
+}
