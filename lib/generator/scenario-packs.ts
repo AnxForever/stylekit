@@ -340,6 +340,12 @@ const SCENARIO_PACKS: GeneratorScenarioPack[] = [
         content: {
           chartTitle: "ARR Growth by Segment",
           chartType: "line",
+          chartSummary: "Compare booked ARR against plan to surface acceleration and risk windows.",
+          chartLabels: "Jan, Feb, Mar, Apr, May, Jun",
+          primarySeriesLabel: "Booked ARR",
+          primarySeriesValues: "8.4, 8.9, 9.6, 10.4, 11.3, 12.1",
+          secondarySeriesLabel: "Plan ARR",
+          secondarySeriesValues: "8.0, 8.6, 9.1, 9.8, 10.6, 11.4",
         },
       },
       table: {
@@ -390,6 +396,12 @@ const SCENARIO_PACKS: GeneratorScenarioPack[] = [
         content: {
           chartTitle: "Channel Performance Trend",
           chartType: "bar",
+          chartSummary: "Track weekly revenue by top channels and compare against baseline.",
+          chartLabels: "Email, Search, Social, Influencer, Referral, Direct",
+          primarySeriesLabel: "Revenue",
+          primarySeriesValues: "82, 94, 71, 63, 57, 109",
+          secondarySeriesLabel: "Baseline",
+          secondarySeriesValues: "70, 80, 65, 58, 54, 90",
         },
       },
       table: {
