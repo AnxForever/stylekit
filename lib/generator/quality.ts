@@ -195,6 +195,7 @@ export function evaluateGeneratedFiles(
       "README.md",
       "stylekit.config.json",
       "CONTENT_MAP.md",
+      "GENERATOR_BRIEF.md",
     ]
     : config.outputFormat === "nextjs"
       ? [
@@ -204,8 +205,15 @@ export function evaluateGeneratedFiles(
         "README.md",
         "stylekit.config.json",
         "CONTENT_MAP.md",
+        "GENERATOR_BRIEF.md",
       ]
-      : ["index.html", "README.md", "stylekit.config.json", "CONTENT_MAP.md"];
+      : [
+        "index.html",
+        "README.md",
+        "stylekit.config.json",
+        "CONTENT_MAP.md",
+        "GENERATOR_BRIEF.md",
+      ];
 
   for (const requiredFile of requiredFiles) {
     if (!files.some((file) => file.name === requiredFile)) {
