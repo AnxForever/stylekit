@@ -119,7 +119,7 @@ function StylePanel({
   );
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-border overflow-hidden">
       {/* Panel label */}
       <div className="px-4 py-2 bg-muted/5 border-b border-border text-sm font-medium">
         {name}
