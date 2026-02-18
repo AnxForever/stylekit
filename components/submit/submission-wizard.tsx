@@ -59,8 +59,42 @@ const LOCALE_KEY = "stylekit-submit-locale";
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const TOTAL_STEPS = 7;
+const CATEGORY_VALUES: StyleCategory[] = ["modern", "minimal", "expressive", "retro"];
+const STYLE_TYPE_VALUES: StyleType[] = ["visual", "layout", "animation"];
+const TAG_VALUES: StyleTag[] = [
+  "modern",
+  "minimal",
+  "expressive",
+  "retro",
+  "high-contrast",
+  "responsive",
+  "brand-inspired",
+];
 
 const stepIcons = [FileText, Palette, Type, Layers, Code, Eye, Send] as const;
+
+function toSlug(n: string) {
+  return n.toLowerCase().replace(/[\u4e00-\u9fa5]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function asString(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string");
+}
+
+function asTags(value: unknown): StyleTag[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is StyleTag => typeof item === "string" && TAG_VALUES.includes(item as StyleTag));
+}
 
 function hasMeaningful(d: WizardFormData) {
   return !!(d.name.trim() || d.nameEn.trim() || d.slug.trim() ||
@@ -111,6 +145,8 @@ export function SubmissionWizard() {
   const [isExtractingUrl, setIsExtractingUrl] = useState(false);
   const [extractInput, setExtractInput] = useState("");
   const [extractMsg, setExtractMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [manifestInput, setManifestInput] = useState("");
+  const [manifestMsg, setManifestMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const lastFP = useRef("");
   const text = pickLocale(locale, submitCopy);
   const errors = useMemo(() => validate(fd, locale), [fd, locale]);
@@ -199,11 +235,9 @@ export function SubmissionWizard() {
   const nextStep = () => { if (validateStep(step) && step < TOTAL_STEPS) goStep(step + 1); };
   const prevStep = () => { if (step > 1) goStep(step - 1); };
 
-  const generateSlug = (n: string) => n.toLowerCase().replace(/[\u4e00-\u9fa5]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
   const handleNameEnChange = (v: string) => {
     updateField("nameEn", v);
-    if (!fd.slug) updateField("slug", generateSlug(v));
+    if (!fd.slug) updateField("slug", toSlug(v));
   };
 
   const handleSlugChange = (v: string) => {
@@ -245,7 +279,7 @@ export function SubmissionWizard() {
         cardCode: data.cardCode ?? p.cardCode,
         inputCode: data.inputCode ?? p.inputCode,
       };
-      if (!n.slug) { const seed = n.nameEn || n.name; if (seed) n.slug = generateSlug(seed); }
+      if (!n.slug) { const seed = n.nameEn || n.name; if (seed) n.slug = toSlug(seed); }
       return n;
     });
     setExtractMsg({ type: "success", text: `${text.extractorSuccessPrefix} ${src}` });
@@ -274,6 +308,174 @@ export function SubmissionWizard() {
     } catch (e) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${(e as Error).message}` }); }
     finally { setIsExtractingUrl(false); }
   };
+
+  const manifestCopy = useMemo(
+    () =>
+      locale === "zh"
+        ? {
+            title: "导入 manifest.json",
+            description: "可直接粘贴或上传由 AI 生成的 manifest.json（支持 { formData: ... } 或直接 formData 结构）。",
+            placeholder: "在此粘贴 manifest.json ...",
+            apply: "应用 Manifest",
+            upload: "上传 manifest.json",
+            imported: "已导入 Manifest",
+            invalid: "Manifest 无法解析",
+            invalidShape: "Manifest 缺少可识别的 formData 结构",
+          }
+        : {
+            title: "Import manifest.json",
+            description: "Paste or upload AI-generated manifest.json. Supports both { formData: ... } and direct formData shape.",
+            placeholder: "Paste manifest.json here ...",
+            apply: "Apply Manifest",
+            upload: "Upload manifest.json",
+            imported: "Manifest imported",
+            invalid: "Could not parse manifest",
+            invalidShape: "Manifest does not contain a recognizable formData shape",
+          },
+    [locale]
+  );
+
+  const applyManifestPayload = useCallback(
+    (payload: unknown, sourceLabel?: string): boolean => {
+      const root = asRecord(payload);
+      if (!root) {
+        setManifestMsg({ type: "error", text: manifestCopy.invalidShape });
+        return false;
+      }
+
+      const formDataRecord = asRecord(root.formData) ?? root;
+      if (!formDataRecord) {
+        setManifestMsg({ type: "error", text: manifestCopy.invalidShape });
+        return false;
+      }
+
+      setFd((prev) => {
+        const next: WizardFormData = { ...prev };
+
+        const name = asString(formDataRecord.name);
+        if (name != null) next.name = name;
+        const nameEn = asString(formDataRecord.nameEn);
+        if (nameEn != null) next.nameEn = nameEn;
+        const slug = asString(formDataRecord.slug);
+        if (slug != null) next.slug = slug;
+        const description = asString(formDataRecord.description);
+        if (description != null) next.description = description;
+
+        const category = asString(formDataRecord.category);
+        if (category && CATEGORY_VALUES.includes(category as StyleCategory)) {
+          next.category = category as StyleCategory;
+        }
+
+        const styleType = asString(formDataRecord.styleType);
+        if (styleType && STYLE_TYPE_VALUES.includes(styleType as StyleType)) {
+          next.styleType = styleType as StyleType;
+        }
+
+        const tags = asTags(formDataRecord.tags);
+        if (tags.length > 0) next.tags = tags;
+
+        const primaryColor = asString(formDataRecord.primaryColor);
+        if (primaryColor != null) next.primaryColor = primaryColor;
+        const secondaryColor = asString(formDataRecord.secondaryColor);
+        if (secondaryColor != null) next.secondaryColor = secondaryColor;
+        const accentColors = asStringArray(formDataRecord.accentColors);
+        if (accentColors.length > 0) next.accentColors = accentColors;
+        const background = asString(formDataRecord.background);
+        if (background != null) next.background = background;
+        const foreground = asString(formDataRecord.foreground);
+        if (foreground != null) next.foreground = foreground;
+        const muted = asString(formDataRecord.muted);
+        if (muted != null) next.muted = muted;
+
+        const keywords = asStringArray(formDataRecord.keywords);
+        if (keywords.length > 0) next.keywords = keywords;
+        const philosophy = asString(formDataRecord.philosophy);
+        if (philosophy != null) next.philosophy = philosophy;
+        const doList = asStringArray(formDataRecord.doList);
+        if (doList.length > 0) next.doList = doList;
+        const dontList = asStringArray(formDataRecord.dontList);
+        if (dontList.length > 0) next.dontList = dontList;
+        const aiRules = asStringArray(formDataRecord.aiRules);
+        if (aiRules.length > 0) next.aiRules = aiRules;
+
+        const headingFont = asString(formDataRecord.headingFont);
+        if (headingFont != null) next.headingFont = headingFont;
+        const bodyFont = asString(formDataRecord.bodyFont);
+        if (bodyFont != null) next.bodyFont = bodyFont;
+        const fontSizeBase = asString(formDataRecord.fontSizeBase);
+        if (fontSizeBase != null) next.fontSizeBase = fontSizeBase;
+        const fontSizeHeading = asString(formDataRecord.fontSizeHeading);
+        if (fontSizeHeading != null) next.fontSizeHeading = fontSizeHeading;
+        const fontSizeSmall = asString(formDataRecord.fontSizeSmall);
+        if (fontSizeSmall != null) next.fontSizeSmall = fontSizeSmall;
+        const fontWeightNormal = asString(formDataRecord.fontWeightNormal);
+        if (fontWeightNormal != null) next.fontWeightNormal = fontWeightNormal;
+        const fontWeightBold = asString(formDataRecord.fontWeightBold);
+        if (fontWeightBold != null) next.fontWeightBold = fontWeightBold;
+        const lineHeightNormal = asString(formDataRecord.lineHeightNormal);
+        if (lineHeightNormal != null) next.lineHeightNormal = lineHeightNormal;
+        const lineHeightTight = asString(formDataRecord.lineHeightTight);
+        if (lineHeightTight != null) next.lineHeightTight = lineHeightTight;
+        const borderRadius = asString(formDataRecord.borderRadius);
+        if (borderRadius != null) next.borderRadius = borderRadius;
+        const spacingSm = asString(formDataRecord.spacingSm);
+        if (spacingSm != null) next.spacingSm = spacingSm;
+        const spacingMd = asString(formDataRecord.spacingMd);
+        if (spacingMd != null) next.spacingMd = spacingMd;
+        const spacingLg = asString(formDataRecord.spacingLg);
+        if (spacingLg != null) next.spacingLg = spacingLg;
+
+        const buttonCode = asString(formDataRecord.buttonCode);
+        if (buttonCode != null) next.buttonCode = buttonCode;
+        const cardCode = asString(formDataRecord.cardCode);
+        if (cardCode != null) next.cardCode = cardCode;
+        const inputCode = asString(formDataRecord.inputCode);
+        if (inputCode != null) next.inputCode = inputCode;
+
+        if (!next.slug) {
+          const seed = next.nameEn || next.name;
+          if (seed) next.slug = toSlug(seed);
+        }
+
+        return next;
+      });
+
+      setManifestMsg({
+        type: "success",
+        text: sourceLabel ? `${manifestCopy.imported}: ${sourceLabel}` : manifestCopy.imported,
+      });
+      return true;
+    },
+    [manifestCopy]
+  );
+
+  const applyManifestInput = useCallback(() => {
+    const raw = manifestInput.trim();
+    if (!raw) return;
+    setManifestMsg(null);
+    try {
+      const parsed = JSON.parse(raw);
+      if (!applyManifestPayload(parsed, "manifest.json")) {
+        return;
+      }
+    } catch {
+      setManifestMsg({ type: "error", text: manifestCopy.invalid });
+    }
+  }, [applyManifestPayload, manifestCopy.invalid, manifestInput]);
+
+  const importManifestFile = useCallback(
+    async (file: File) => {
+      try {
+        const raw = await file.text();
+        setManifestInput(raw);
+        const parsed = JSON.parse(raw);
+        applyManifestPayload(parsed, file.name);
+      } catch {
+        setManifestMsg({ type: "error", text: manifestCopy.invalid });
+      }
+    },
+    [applyManifestPayload, manifestCopy.invalid]
+  );
 
   const pct = (() => {
     let f = 0; const t = 8;
@@ -400,7 +602,39 @@ export function SubmissionWizard() {
           </div>
 
           {/* Step Content */}
-          {step === 1 && <BasicInfoStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} extractUrl={extractUrl} setExtractUrl={setExtractUrl} isExtractingUrl={isExtractingUrl} extractFromUrl={extractFromUrl} extractInput={extractInput} setExtractInput={setExtractInput} extractMessage={extractMsg} setExtractMessage={setExtractMsg} applyExtractedDraft={applyExtractedDraft} handleNameEnChange={handleNameEnChange} handleSlugChange={handleSlugChange} keywordInput={keywordInput} setKeywordInput={setKeywordInput} addKeyword={addKeyword} removeKeyword={removeKeyword} toggleTag={toggleTag} />}
+          {step === 1 && (
+            <BasicInfoStep
+              formData={fd}
+              updateField={updateField}
+              getVisibleError={getVisibleError}
+              markTouched={markTouched}
+              isAnimating={anim}
+              text={text}
+              manifestCopy={manifestCopy}
+              manifestInput={manifestInput}
+              setManifestInput={setManifestInput}
+              manifestMessage={manifestMsg}
+              setManifestMessage={setManifestMsg}
+              applyManifestInput={applyManifestInput}
+              importManifestFile={importManifestFile}
+              extractUrl={extractUrl}
+              setExtractUrl={setExtractUrl}
+              isExtractingUrl={isExtractingUrl}
+              extractFromUrl={extractFromUrl}
+              extractInput={extractInput}
+              setExtractInput={setExtractInput}
+              extractMessage={extractMsg}
+              setExtractMessage={setExtractMsg}
+              applyExtractedDraft={applyExtractedDraft}
+              handleNameEnChange={handleNameEnChange}
+              handleSlugChange={handleSlugChange}
+              keywordInput={keywordInput}
+              setKeywordInput={setKeywordInput}
+              addKeyword={addKeyword}
+              removeKeyword={removeKeyword}
+              toggleTag={toggleTag}
+            />
+          )}
           {step === 2 && <ColorPaletteStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} addAccentColor={addAccentColor} updateAccentColor={updateAccentColor} removeAccentColor={removeAccentColor} />}
           {step === 3 && <TypographyStep formData={fd} updateField={updateField} isAnimating={anim} />}
           {step === 4 && <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}

@@ -55,6 +55,19 @@ interface BasicInfoStepProps {
     typeLabels: Record<StyleType, string>;
     tagLabels: Record<StyleTag, string>;
   };
+  manifestCopy: {
+    title: string;
+    description: string;
+    placeholder: string;
+    apply: string;
+    upload: string;
+  };
+  manifestInput: string;
+  setManifestInput: (input: string) => void;
+  manifestMessage: { type: "success" | "error"; text: string } | null;
+  setManifestMessage: (msg: { type: "success" | "error"; text: string } | null) => void;
+  applyManifestInput: () => void;
+  importManifestFile: (file: File) => Promise<void>;
   extractUrl: string;
   setExtractUrl: (url: string) => void;
   isExtractingUrl: boolean;
@@ -84,6 +97,13 @@ export function BasicInfoStep({
   markTouched,
   isAnimating,
   text,
+  manifestCopy,
+  manifestInput,
+  setManifestInput,
+  manifestMessage,
+  setManifestMessage,
+  applyManifestInput,
+  importManifestFile,
   extractUrl,
   setExtractUrl,
   isExtractingUrl,
@@ -105,6 +125,51 @@ export function BasicInfoStep({
     <div className={`space-y-6 transition-opacity duration-150 ${isAnimating ? "opacity-0" : "opacity-100"}`}>
       <div className="p-4 border border-border bg-zinc-50 dark:bg-zinc-900">
         <p className="text-sm text-muted">{text.hint}</p>
+      </div>
+
+      <div className="p-4 border border-border bg-background">
+        <label className="block text-sm font-medium mb-2">{manifestCopy.title}</label>
+        <p className="text-xs text-muted mb-3">{manifestCopy.description}</p>
+        <textarea
+          value={manifestInput}
+          onChange={(e) => {
+            setManifestInput(e.target.value);
+            if (manifestMessage) setManifestMessage(null);
+          }}
+          placeholder={manifestCopy.placeholder}
+          rows={5}
+          className="w-full px-4 py-3 border border-border bg-background outline-none transition-colors resize-y focus:border-foreground font-mono text-xs"
+        />
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={applyManifestInput}
+            disabled={!manifestInput.trim()}
+            className="inline-flex items-center justify-center px-4 py-2 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
+          >
+            {manifestCopy.apply}
+          </button>
+          <label className="inline-flex items-center justify-center px-4 py-2 border border-border hover:border-foreground transition-colors text-sm cursor-pointer">
+            {manifestCopy.upload}
+            <input
+              type="file"
+              accept=".json,application/json"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  void importManifestFile(file);
+                }
+                e.currentTarget.value = "";
+              }}
+            />
+          </label>
+          {manifestMessage && (
+            <p className={`text-xs ${manifestMessage.type === "success" ? "text-green-600" : "text-red-500"}`}>
+              {manifestMessage.text}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="p-4 border border-border bg-background">
