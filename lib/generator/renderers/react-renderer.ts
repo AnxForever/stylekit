@@ -3,6 +3,7 @@
  */
 
 import type { GeneratorConfig, GeneratedFile, SectionConfig, StyleInput } from "../types";
+import { generateGeneratorSupportFiles } from "../export-artifacts";
 
 const sectionLookupCache = new WeakMap<SectionConfig[], Map<string, SectionConfig>>();
 
@@ -32,6 +33,61 @@ function getSectionContent(sections: SectionConfig[], sectionId: string): Record
 function isSectionEnabled(sections: SectionConfig[], sectionId: string): boolean {
   const section = getSectionLookup(sections).get(sectionId);
   return section?.enabled ?? true;
+}
+
+function splitCommaList(value: string, fallback: string[]): string[] {
+  const source = value.trim() ? value : fallback.join(", ");
+  return source
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
+function estimateReadingTime(text: string): string {
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(2, Math.round(wordCount / 90));
+  return `${minutes} min read`;
+}
+
+function buildDashboardCellValue(column: string, rowIndex: number): string {
+  const normalized = column.toLowerCase();
+  const names = ["Avery Johnson", "Morgan Chen", "Riley Carter", "Jordan Kim", "Casey Patel"];
+  const owners = ["Ops Team", "Growth Team", "Finance Team", "Platform Team", "CS Team"];
+  const statuses = ["Completed", "Pending", "At Risk", "In Progress", "Blocked"];
+  const priorities = ["Low", "Medium", "High", "Critical"];
+  const dates = ["Mar 03, 2026", "Mar 02, 2026", "Mar 01, 2026", "Feb 28, 2026", "Feb 27, 2026"];
+  const regions = ["US-East", "US-West", "EU-Central", "APAC-SG", "Global"];
+
+  if (normalized.includes("id") || normalized.includes("order")) {
+    return `#${(1200 + rowIndex).toString()}`;
+  }
+  if (normalized.includes("customer") || normalized.includes("account") || normalized.includes("name")) {
+    return names[rowIndex % names.length];
+  }
+  if (normalized.includes("owner") || normalized.includes("team") || normalized.includes("csm")) {
+    return owners[rowIndex % owners.length];
+  }
+  if (normalized.includes("status") || normalized.includes("health")) {
+    return statuses[rowIndex % statuses.length];
+  }
+  if (normalized.includes("priority")) {
+    return priorities[rowIndex % priorities.length];
+  }
+  if (normalized.includes("arr") || normalized.includes("revenue") || normalized.includes("amount")) {
+    const value = 11000 + rowIndex * 1850;
+    return `$${value.toLocaleString()}`;
+  }
+  if (normalized.includes("score")) {
+    return `${88 - rowIndex * 4}`;
+  }
+  if (normalized.includes("date") || normalized.includes("time") || normalized.includes("updated")) {
+    return dates[rowIndex % dates.length];
+  }
+  if (normalized.includes("region")) {
+    return regions[rowIndex % regions.length];
+  }
+
+  return `Value ${rowIndex + 1}`;
 }
 
 /**
@@ -225,14 +281,25 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 /**
  * Generate src/index.css
  */
-function generateIndexCss(): string {
+function generateIndexCss(vars: Record<string, string>): string {
   return `@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --style-primary: ${vars.primary};
+  --style-secondary: ${vars.secondary};
+  --style-accent-1: ${vars["accent-1"]};
+  --style-accent-2: ${vars["accent-2"]};
+  --style-accent-3: ${vars["accent-3"]};
+  --style-background: ${vars.background};
+  --style-foreground: ${vars.foreground};
+  --style-muted: ${vars.muted};
+}
+
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 `;
@@ -510,7 +577,7 @@ function generatePortfolioProjectsComponent(content: Record<string, string>): st
       (p, i) => `        <div className="bg-background border border-muted/30 rounded overflow-hidden shadow-sm hover:-translate-y-1 transition-transform">
           <div
             className="h-48 flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, var(--tw-accent-${(i % 3) + 1}, #888) 0%, var(--tw-primary, #333) 100%)" }}
+            style={{ background: "linear-gradient(135deg, var(--style-accent-${(i % 3) + 1}) 0%, var(--style-primary) 100%)" }}
           >
             <span className="text-6xl font-bold text-white/30">0${i + 1}</span>
           </div>
@@ -703,7 +770,7 @@ function generateBlogHeroComponent(content: Record<string, string>): string {
   const blogName = content.blogName || "My Blog";
   const tagline = content.tagline || "Thoughts, stories, and ideas.";
   const authorName = content.authorName || "Author";
-  const bio = content.bio || "Writer, thinker, maker.";
+  const bio = content.authorBio || content.bio || "Writer, thinker, maker.";
 
   return `export function BlogHero() {
   return (
@@ -738,7 +805,7 @@ function generateBlogHeroComponent(content: Record<string, string>): string {
  * Generate blog posts component
  */
 function generateBlogPostsComponent(content: Record<string, string>): string {
-  const sectionTitle = content.title || "Latest Posts";
+  const sectionTitle = content.sectionTitle || "Latest Posts";
 
   const posts = [
     {
@@ -762,31 +829,47 @@ function generateBlogPostsComponent(content: Record<string, string>): string {
   ];
 
   const postCards = posts
-    .map(
-      (p) => `        <article className="border-b border-muted/30 pb-8 mb-8 last:border-0">
-          <div className="flex items-center gap-3 mb-3">
-            <time className="text-sm text-muted">${p.date}</time>
-            <span className="bg-secondary text-primary text-xs font-medium px-2.5 py-0.5 rounded">${p.category}</span>
+    .map((p, index) => {
+      const readingTime = estimateReadingTime(p.excerpt);
+      const isFeatured = index === 0;
+      const featuredBadge = isFeatured
+        ? '<span className="text-[10px] uppercase tracking-wide font-semibold px-2 py-1 rounded-full bg-primary text-background">Featured</span>'
+        : "";
+      const cardTone = isFeatured
+        ? "border-primary/40 bg-secondary/35"
+        : "border-muted/30 bg-background";
+
+      return `        <article className="group border ${cardTone} rounded-xl p-6 mb-6 last:mb-0 hover:border-primary/60 hover:shadow-sm transition-all">
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <time className="text-sm text-muted">${p.date}</time>
+              <span className="bg-secondary text-primary text-xs font-semibold px-2.5 py-1 rounded-full">${p.category}</span>
+${featuredBadge ? `              ${featuredBadge}` : ""}
+            </div>
+            <span className="text-xs text-muted uppercase tracking-wide">${readingTime}</span>
           </div>
-          <h3 className="text-xl font-bold mb-2">
-            <a href="#" className="text-foreground hover:text-primary transition">${p.title}</a>
+          <h3 className="text-xl font-bold mb-2 leading-tight">
+            <a href="#" className="text-foreground group-hover:text-primary transition-colors">${p.title}</a>
           </h3>
-          <p className="text-muted leading-relaxed mb-3">${p.excerpt}</p>
-          <a href="#" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all">
-            Read more
+          <p className="text-muted leading-relaxed mb-4">${p.excerpt}</p>
+          <a href="#" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all">
+            Continue reading
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </a>
-        </article>`
-    )
+        </article>`;
+    })
     .join("\n");
 
   return `export function BlogPosts() {
   return (
     <section className="flex-1">
-      <h2 className="text-2xl font-bold mb-8">${sectionTitle}</h2>
+      <div className="flex items-end justify-between gap-4 mb-8">
+        <h2 className="text-2xl font-bold">${sectionTitle}</h2>
+        <p className="text-xs uppercase tracking-wide text-muted">${posts.length} curated articles</p>
+      </div>
 ${postCards}
     </section>
   );
@@ -798,18 +881,22 @@ ${postCards}
  * Generate blog sidebar component
  */
 function generateBlogSidebarComponent(content: Record<string, string>): string {
-  const aboutText = content.about || "A blog about design, development, and creative work.";
+  const aboutTitle = content.aboutTitle || "About this publication";
+  const aboutText = content.aboutText || "A blog about design, development, and creative work.";
   const categoriesStr = content.categories || "Design, Development, Workflow, Tutorials";
   const tagsStr = content.tags || "CSS, React, TypeScript, UI, UX, Tailwind, Node.js";
 
-  const categories = categoriesStr.split(",").map((c) => c.trim());
-  const tags = tagsStr.split(",").map((t) => t.trim());
+  const categories = splitCommaList(categoriesStr, ["Design", "Development", "Workflow"]);
+  const tags = splitCommaList(tagsStr, ["CSS", "React", "TypeScript"]);
 
   const categoryItems = categories
     .map(
-      (cat) =>
+      (cat, index) =>
         `            <li>
-              <a href="#" className="text-muted hover:text-foreground transition">${cat}</a>
+              <a href="#" className="flex items-center justify-between text-muted hover:text-foreground transition">
+                <span>${cat}</span>
+                <span className="text-xs text-muted/70">${Math.max(3, 14 - index * 2)}</span>
+              </a>
             </li>`
     )
     .join("\n");
@@ -823,9 +910,9 @@ function generateBlogSidebarComponent(content: Record<string, string>): string {
 
   return `export function BlogSidebar() {
   return (
-    <aside className="w-80 shrink-0 hidden lg:block">
+    <aside className="w-80 shrink-0 hidden lg:block space-y-6">
       <div className="bg-secondary rounded-lg p-4 mb-6">
-        <h3 className="font-bold mb-2">About</h3>
+        <h3 className="font-bold mb-2">${aboutTitle}</h3>
         <p className="text-sm text-muted leading-relaxed">${aboutText}</p>
       </div>
       <div className="mb-6">
@@ -839,6 +926,13 @@ ${categoryItems}
         <div className="flex flex-wrap gap-2">
 ${tagItems}
         </div>
+      </div>
+      <div className="rounded-lg border border-muted/30 p-4">
+        <h3 className="font-bold mb-2">Newsletter</h3>
+        <p className="text-sm text-muted leading-relaxed mb-3">Get one practical article every week.</p>
+        <button className="w-full px-3 py-2 text-sm font-semibold bg-primary text-background rounded hover:opacity-90 transition">
+          Subscribe
+        </button>
       </div>
     </aside>
   );
@@ -880,8 +974,10 @@ ${linkElements}
  * Generate dashboard page App.tsx
  */
 function generateDashboardAppTsx(config: GeneratorConfig): string {
-  const { sections } = config;
+  const { sections, globalContent } = config;
   const imports: string[] = [];
+  const appTitle = globalContent.siteName || "Operations Dashboard";
+  const appDescription = globalContent.siteDescription || "Track performance and critical metrics.";
 
   if (isSectionEnabled(sections, "sidebar")) {
     imports.push('import { Sidebar } from "./components/Sidebar";');
@@ -914,11 +1010,32 @@ function generateDashboardAppTsx(config: GeneratorConfig): string {
 
 export default function App() {
   return (
-    <div className="flex min-h-screen">
-${isSectionEnabled(sections, "sidebar") ? "      <Sidebar />\n" : ""}      <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-6 space-y-6">
-${mainContent}        </div>
-${isSectionEnabled(sections, "footer") ? "        <Footer />\n" : ""}      </div>
+    <div className="min-h-screen bg-secondary/20">
+      <div className="flex min-h-screen">
+${isSectionEnabled(sections, "sidebar") ? "        <Sidebar />\n" : ""}        <div className="flex-1 flex flex-col">
+          <header className="border-b border-muted/30 bg-background/90 backdrop-blur">
+            <div className="px-6 py-4 flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted">Control Center</p>
+                <h1 className="text-2xl font-bold text-foreground mt-1">${appTitle}</h1>
+                <p className="text-sm text-muted mt-1 max-w-2xl">${appDescription}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="px-3 py-2 rounded-lg border border-muted/30 bg-background">
+                  <p className="text-muted">Latency</p>
+                  <p className="font-semibold text-foreground">128ms</p>
+                </div>
+                <div className="px-3 py-2 rounded-lg border border-muted/30 bg-background">
+                  <p className="text-muted">Incidents</p>
+                  <p className="font-semibold text-foreground">0 open</p>
+                </div>
+              </div>
+            </div>
+          </header>
+          <div className="flex-1 p-6 space-y-6">
+${mainContent}          </div>
+${isSectionEnabled(sections, "footer") ? "          <Footer />\n" : ""}        </div>
+      </div>
     </div>
   );
 }
@@ -931,20 +1048,23 @@ ${isSectionEnabled(sections, "footer") ? "        <Footer />\n" : ""}      </div
 function generateDashboardSidebarComponent(content: Record<string, string>): string {
   const appName = content.appName || "Dashboard";
   const navItemsStr = content.navItems || "Overview, Analytics, Reports, Settings";
-  const navItems = navItemsStr.split(",").map((n) => n.trim());
+  const navItems = splitCommaList(navItemsStr, ["Overview", "Analytics", "Reports", "Settings"]);
+  const activeItem = content.activeItem || navItems[0] || "Overview";
 
   const navElements = navItems
     .map(
-      (item, i) =>
-        `          <a
+      (item, i) => {
+        const isActive = item.toLowerCase() === activeItem.toLowerCase();
+        return `          <a
             href="#"
-            className="${i === 0 ? "flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 text-white font-medium" : "flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white transition"}"
+            className="${isActive ? "flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 text-white font-medium" : "flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white transition"}"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               ${i === 0 ? '<rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />' : i === 1 ? '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />' : i === 2 ? '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />' : '<circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />'}
             </svg>
             ${item}
-          </a>`
+          </a>`;
+      }
     )
     .join("\n");
 
@@ -957,6 +1077,12 @@ function generateDashboardSidebarComponent(content: Record<string, string>): str
       <nav className="flex-1 p-3 space-y-1">
 ${navElements}
       </nav>
+      <div className="p-3 border-t border-white/10">
+        <div className="rounded-lg bg-white/5 px-3 py-2">
+          <p className="text-xs uppercase tracking-wide text-gray-400">Status</p>
+          <p className="text-sm font-medium text-white">All systems operational</p>
+        </div>
+      </div>
     </aside>
   );
 }
@@ -967,6 +1093,7 @@ ${navElements}
  * Generate dashboard KPI cards component
  */
 function generateDashboardKpiComponent(content: Record<string, string>): string {
+  const sectionTitle = content.sectionTitle || "Performance Snapshot";
   const kpis = [
     {
       label: content.kpi1Label || "Total Revenue",
@@ -990,52 +1117,184 @@ function generateDashboardKpiComponent(content: Record<string, string>): string 
     },
   ];
 
+  const sparklineProfiles = [
+    ["h-2", "h-3", "h-4", "h-5", "h-6"],
+    ["h-3", "h-4", "h-5", "h-4", "h-6"],
+    ["h-5", "h-4", "h-3", "h-2", "h-3"],
+    ["h-2", "h-3", "h-5", "h-4", "h-5"],
+  ];
+
   const kpiCards = kpis
-    .map(
-      (kpi) => `        <div className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm">
+    .map((kpi, index) => {
+      const isPositive = !kpi.change.trim().startsWith("-");
+      const normalizedChange = kpi.change.replace(/^[+-]/, "");
+      const changeTone = isPositive
+        ? "text-emerald-700 bg-emerald-50"
+        : "text-red-700 bg-red-50";
+      const changeLabel = `${isPositive ? "Up" : "Down"} ${normalizedChange}`;
+      const bars = (sparklineProfiles[index] || sparklineProfiles[0])
+        .map(
+          (heightClass) =>
+            `            <span className="w-1.5 rounded-sm bg-primary/35 ${heightClass}" />`
+        )
+        .join("\n");
+
+      return `        <div className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm">
           <p className="text-sm text-muted mb-1">${kpi.label}</p>
-          <p className="text-2xl font-bold text-foreground mb-1">${kpi.value}</p>
-          <p className="${kpi.change.startsWith("+") ? "text-sm text-green-600" : "text-sm text-red-600"}">${kpi.change} from last period</p>
-        </div>`
-    )
+          <p className="text-2xl font-bold text-foreground">${kpi.value}</p>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${changeTone}">
+              ${changeLabel}
+            </span>
+            <span className="text-xs text-muted">vs last period</span>
+          </div>
+          <div className="mt-4 h-7 flex items-end gap-1">
+${bars}
+          </div>
+        </div>`;
+    })
     .join("\n");
 
   return `export function KpiCards() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <section className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-lg font-bold">${sectionTitle}</h2>
+        <span className="text-xs uppercase tracking-wide text-muted">Updated just now</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 ${kpiCards}
-    </div>
+      </div>
+    </section>
   );
 }
 `;
 }
-
 /**
  * Generate dashboard charts component
  */
 function generateDashboardChartsComponent(content: Record<string, string>): string {
-  const chartTitle = content.title || "Analytics Overview";
+  const chartTitle = content.chartTitle || "Analytics Overview";
+  const chartType = (content.chartType || "bar").toLowerCase();
+  const chartTypeLabel = chartType === "line"
+    ? "Trend analysis"
+    : chartType === "pie"
+      ? "Segment share"
+      : "Monthly comparison";
+
+  const chartBody = chartType === "line"
+    ? `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80">
+        <svg viewBox="0 0 320 160" className="w-full h-44 text-primary">
+          <line x1="8" y1="120" x2="312" y2="120" stroke="rgba(120,120,120,0.35)" strokeWidth="1" />
+          <line x1="8" y1="80" x2="312" y2="80" stroke="rgba(120,120,120,0.22)" strokeWidth="1" />
+          <line x1="8" y1="40" x2="312" y2="40" stroke="rgba(120,120,120,0.12)" strokeWidth="1" />
+          <polyline
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            points="8,118 62,98 116,106 170,74 224,82 278,52 312,58"
+          />
+          <circle cx="62" cy="98" r="4" fill="currentColor" />
+          <circle cx="170" cy="74" r="4" fill="currentColor" />
+          <circle cx="278" cy="52" r="4" fill="currentColor" />
+        </svg>
+        <div className="mt-3 flex justify-between text-xs text-muted">
+          <span>Jan</span>
+          <span>Feb</span>
+          <span>Mar</span>
+          <span>Apr</span>
+          <span>May</span>
+          <span>Jun</span>
+          <span>Jul</span>
+        </div>
+      </div>`
+    : chartType === "pie"
+      ? `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80 md:flex items-center gap-8">
+        <div className="mx-auto md:mx-0 w-36 h-36 rounded-full relative" style={{ background: "conic-gradient(var(--style-primary) 0 42%, var(--style-accent-1) 42% 68%, var(--style-accent-2) 68% 100%)" }}>
+          <div className="absolute inset-[22%] rounded-full bg-background border border-muted/30" />
+        </div>
+        <div className="mt-5 md:mt-0 space-y-3 text-sm">
+          <div className="flex items-center justify-between gap-8">
+            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-primary)" }} />Enterprise</span>
+            <span className="font-semibold">42%</span>
+          </div>
+          <div className="flex items-center justify-between gap-8">
+            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-accent-1)" }} />Mid-market</span>
+            <span className="font-semibold">26%</span>
+          </div>
+          <div className="flex items-center justify-between gap-8">
+            <span className="inline-flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "var(--style-accent-2)" }} />SMB</span>
+            <span className="font-semibold">32%</span>
+          </div>
+        </div>
+      </div>`
+      : `      <div className="rounded-lg border border-muted/30 p-4 bg-background/80">
+        <div className="h-44 flex items-end gap-3">
+          <div className="flex-1 text-center">
+            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/30 h-[38%]" />
+            <p className="text-xs text-muted mt-2">Jan</p>
+          </div>
+          <div className="flex-1 text-center">
+            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/45 h-[58%]" />
+            <p className="text-xs text-muted mt-2">Feb</p>
+          </div>
+          <div className="flex-1 text-center">
+            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/60 h-[72%]" />
+            <p className="text-xs text-muted mt-2">Mar</p>
+          </div>
+          <div className="flex-1 text-center">
+            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary/70 h-[65%]" />
+            <p className="text-xs text-muted mt-2">Apr</p>
+          </div>
+          <div className="flex-1 text-center">
+            <div className="mx-auto w-full max-w-[34px] rounded-t-md bg-primary h-[88%]" />
+            <p className="text-xs text-muted mt-2">May</p>
+          </div>
+        </div>
+      </div>`;
 
   return `export function Charts() {
   return (
-    <div className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm">
-      <h2 className="text-lg font-bold mb-4">${chartTitle}</h2>
-      <div className="bg-secondary/50 rounded-lg aspect-[2/1] flex items-center justify-center">
-        <p className="text-muted font-medium">Chart Area</p>
+    <section className="bg-background border border-muted/30 rounded-lg p-5 shadow-sm space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold">${chartTitle}</h2>
+          <p className="text-sm text-muted">Compare performance trends across key segments.</p>
+        </div>
+        <span className="text-xs uppercase tracking-wide text-muted">${chartTypeLabel}</span>
       </div>
-    </div>
+${chartBody}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="rounded-lg border border-muted/30 px-3 py-2">
+          <p className="text-xs uppercase tracking-wide text-muted">Pipeline</p>
+          <p className="text-sm font-semibold text-foreground mt-1">$3.8M</p>
+        </div>
+        <div className="rounded-lg border border-muted/30 px-3 py-2">
+          <p className="text-xs uppercase tracking-wide text-muted">Forecast</p>
+          <p className="text-sm font-semibold text-foreground mt-1">+12% QoQ</p>
+        </div>
+        <div className="rounded-lg border border-muted/30 px-3 py-2">
+          <p className="text-xs uppercase tracking-wide text-muted">Win Rate</p>
+          <p className="text-sm font-semibold text-foreground mt-1">34.6%</p>
+        </div>
+      </div>
+    </section>
   );
 }
 `;
 }
-
 /**
  * Generate dashboard data table component
  */
 function generateDashboardTableComponent(content: Record<string, string>): string {
-  const tableTitle = content.title || "Recent Transactions";
+  const tableTitle = content.tableTitle || "Recent Transactions";
   const columnsStr = content.columns || "ID, Customer, Amount, Status, Date";
-  const columns = columnsStr.split(",").map((c) => c.trim());
+  const columns = splitCommaList(columnsStr, ["ID", "Customer", "Amount", "Status", "Date"]);
+  const requestedRows = Number.parseInt(content.rowCount || "5", 10);
+  const rowCount = Number.isFinite(requestedRows)
+    ? Math.min(20, Math.max(1, requestedRows))
+    : 5;
+  const tableMeta = `${rowCount} ${rowCount === 1 ? "row" : "rows"} shown`;
 
   const headerCells = columns
     .map(
@@ -1044,31 +1303,50 @@ function generateDashboardTableComponent(content: Record<string, string>): strin
     )
     .join("\n");
 
-  const sampleData = [
-    ["#1001", "Alice Johnson", "$250.00", "Completed", "Jan 15, 2024"],
-    ["#1002", "Bob Smith", "$120.50", "Pending", "Jan 14, 2024"],
-    ["#1003", "Carol White", "$340.00", "Completed", "Jan 13, 2024"],
-    ["#1004", "David Brown", "$89.99", "Failed", "Jan 12, 2024"],
-    ["#1005", "Eve Davis", "$199.00", "Completed", "Jan 11, 2024"],
-  ];
+  const sampleData = Array.from({ length: rowCount }, (_, rowIndex) =>
+    columns.map((column) => buildDashboardCellValue(column, rowIndex))
+  );
 
   const rows = sampleData
-    .map(
-      (row, i) =>
-        `            <tr className="${i % 2 === 1 ? "bg-secondary/30" : "bg-background"}">
-${row.map((cell) => `              <td className="px-4 py-3 text-sm">${cell}</td>`).join("\n")}
-            </tr>`
-    )
+    .map((row, rowIndex) => {
+      const cells = row
+        .map((cell, cellIndex) => {
+          const column = columns[cellIndex]?.toLowerCase() || "";
+          if (column.includes("status") || column.includes("health")) {
+            const tone = cell.toLowerCase().includes("risk") || cell.toLowerCase().includes("blocked")
+              ? "bg-red-50 text-red-700"
+              : cell.toLowerCase().includes("pending") || cell.toLowerCase().includes("progress")
+                ? "bg-amber-50 text-amber-700"
+                : "bg-emerald-50 text-emerald-700";
+            return `              <td className="px-4 py-3 text-sm"><span className="inline-flex px-2 py-1 rounded-full text-xs font-semibold ${tone}">${cell}</span></td>`;
+          }
+          if (cellIndex === 0) {
+            return `              <td className="px-4 py-3 text-sm font-medium text-foreground">${cell}</td>`;
+          }
+          return `              <td className="px-4 py-3 text-sm text-foreground">${cell}</td>`;
+        })
+        .join("\n");
+
+      return `            <tr className="${rowIndex % 2 === 1 ? "bg-secondary/30" : "bg-background"} hover:bg-secondary/40 transition-colors">
+${cells}
+            </tr>`;
+    })
     .join("\n");
 
   return `export function DataTable() {
   return (
     <div className="bg-background border border-muted/30 rounded-lg shadow-sm overflow-hidden">
-      <div className="px-5 py-4 border-b border-muted/30">
-        <h2 className="text-lg font-bold">${tableTitle}</h2>
+      <div className="px-5 py-4 border-b border-muted/30 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold">${tableTitle}</h2>
+          <p className="text-xs text-muted mt-1">${tableMeta} - sorted by latest update</p>
+        </div>
+        <button className="px-3 py-1.5 text-xs font-medium border border-muted/40 rounded hover:border-primary hover:text-primary transition-colors">
+          Export CSV
+        </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[640px]">
           <thead className="bg-secondary/50">
             <tr>
 ${headerCells}
@@ -1084,7 +1362,6 @@ ${rows}
 }
 `;
 }
-
 /**
  * Generate dashboard footer component
  */
@@ -1126,7 +1403,7 @@ export function generateReactFiles(
 
   // Source files
   files.push({ name: "src/main.tsx", content: generateMainTsx(), type: "js" });
-  files.push({ name: "src/index.css", content: generateIndexCss(), type: "css" });
+  files.push({ name: "src/index.css", content: generateIndexCss(cssVars), type: "css" });
 
   if (config.templateType === "landing") {
     files.push({ name: "src/App.tsx", content: generateLandingAppTsx(config), type: "js" });
@@ -1195,6 +1472,10 @@ export function generateReactFiles(
 
   // README
   files.push({ name: "README.md", content: generateReactReadme(config, styleInput), type: "md" });
+
+  for (const supportFile of generateGeneratorSupportFiles(config, styleInput)) {
+    files.push(supportFile);
+  }
 
   return files;
 }
