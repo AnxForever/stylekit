@@ -191,6 +191,7 @@ import { liquidGlass } from "./liquid-glass";
 import { scandinavian } from "./scandinavian";
 import { celShading } from "./cel-shading";
 import { wabiSabi } from "./wabi-sabi";
+import { zenGarden } from "./zen-garden";
 // New styles - Batch 9 (Competitive analysis)
 import { sciFiHud } from "./sci-fi-hud";
 import { kawaiiMinimal } from "./kawaii-minimal";
@@ -200,11 +201,40 @@ import { arcadeCrt } from "./arcade-crt";
 import { frutigerAero } from "./frutiger-aero";
 // New styles - Anti-Design
 import { antiDesign } from "./anti-design";
+// New styles - Brutalist Web
+import { brutalistWeb } from "./brutalist-web";
 // New styles - Batch 11
 import { holographic } from "./holographic";
 import { generativeArt } from "./generative-art";
 import { particle } from "./particle";
 import { vhsAesthetic } from "./vhs-aesthetic";
+// New styles - Terracotta
+import { terracotta } from "./terracotta";
+// New styles - Monochrome
+import { monochrome } from "./monochrome";
+// New styles - Ink Wash
+import { inkWash } from "./ink-wash";
+// New styles - Batch 13
+import { midCenturyModern } from "./mid-century-modern";
+import { constructivism } from "./constructivism";
+import { opArt } from "./op-art";
+import { islamicGeometric } from "./islamic-geometric";
+import { indianFestive } from "./indian-festive";
+import { africanTextile } from "./african-textile";
+import { koreanMinimal } from "./korean-minimal";
+import { pastelGoth } from "./pastel-goth";
+import { maximalism } from "./maximalism";
+import { medievalManuscript } from "./medieval-manuscript";
+import { graffitiStreet } from "./graffiti-street";
+import { marbleLuxury } from "./marble-luxury";
+import { victorianBotanical } from "./victorian-botanical";
+import { cubism } from "./cubism";
+import { tropicalParadise } from "./tropical-paradise";
+import { githubStyle } from "./github-style";
+import { witchcore } from "./witchcore";
+import { neonTokyo } from "./neon-tokyo";
+import { paperCraft } from "./paper-craft";
+import { blueprint } from "./blueprint";
 
 // 风格列表
 export const styles: DesignStyle[] = [
@@ -307,6 +337,7 @@ export const styles: DesignStyle[] = [
   scandinavian,
   celShading,
   wabiSabi,
+  zenGarden,
   // New styles - Batch 9 (Competitive analysis)
   sciFiHud,
   kawaiiMinimal,
@@ -316,11 +347,40 @@ export const styles: DesignStyle[] = [
   frutigerAero,
   // New styles - Anti-Design
   antiDesign,
+  // New styles - Brutalist Web
+  brutalistWeb,
   // New styles - Batch 11
   holographic,
   generativeArt,
   particle,
   vhsAesthetic,
+  // New styles - Terracotta
+  terracotta,
+  // New styles - Monochrome
+  monochrome,
+  // New styles - Ink Wash
+  inkWash,
+  // New styles - Batch 13
+  midCenturyModern,
+  constructivism,
+  opArt,
+  islamicGeometric,
+  indianFestive,
+  africanTextile,
+  koreanMinimal,
+  pastelGoth,
+  maximalism,
+  medievalManuscript,
+  graffitiStreet,
+  marbleLuxury,
+  victorianBotanical,
+  cubism,
+  tropicalParadise,
+  githubStyle,
+  witchcore,
+  neonTokyo,
+  paperCraft,
+  blueprint,
 ];
 
 // 根据 slug 获取风格

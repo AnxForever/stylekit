@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#0d0b14"/>
+  <!-- Stars scattered -->
+  <circle cx="100" cy="50" r="1.5" fill="#c9a74e" opacity="0.8"/>
+  <circle cx="200" cy="30" r="1" fill="#c9a74e" opacity="0.6"/>
+  <circle cx="350" cy="60" r="1.5" fill="#c9a74e" opacity="0.7"/>
+  <circle cx="500" cy="40" r="1" fill="#c9a74e" opacity="0.5"/>
+  <circle cx="650" cy="55" r="1.5" fill="#c9a74e" opacity="0.8"/>
+  <circle cx="750" cy="35" r="1" fill="#c9a74e" opacity="0.6"/>
+  <circle cx="80" cy="350" r="1" fill="#c9a74e" opacity="0.5"/>
+  <circle cx="720" cy="360" r="1.5" fill="#c9a74e" opacity="0.6"/>
+  <circle cx="550" cy="370" r="1" fill="#c9a74e" opacity="0.4"/>
+  <circle cx="250" cy="380" r="1" fill="#c9a74e" opacity="0.5"/>
+  <!-- Moon phases -->
+  <circle cx="200" cy="130" r="20" fill="#c9a74e" opacity="0.15"/>
+  <circle cx="280" cy="130" r="25" fill="none" stroke="#c9a74e" stroke-width="1.5" opacity="0.4"/>
+  <circle cx="280" cy="130" r="25" fill="#c9a74e" opacity="0.05"/>
+  <!-- Full moon -->
+  <circle cx="400" cy="120" r="35" fill="#c9a74e" opacity="0.2"/>
+  <circle cx="400" cy="120" r="35" fill="none" stroke="#c9a74e" stroke-width="2"/>
+  <!-- Waning -->
+  <circle cx="520" cy="130" r="25" fill="none" stroke="#c9a74e" stroke-width="1.5" opacity="0.4"/>
+  <path d="M520 105 A25 25 0 0 1 520 155 A15 25 0 0 0 520 105" fill="#c9a74e" opacity="0.15"/>
+  <circle cx="600" cy="130" r="20" fill="none" stroke="#c9a74e" stroke-width="1" opacity="0.3"/>
+  <path d="M600 110 A20 20 0 0 1 600 150 A10 20 0 0 0 600 110" fill="#c9a74e" opacity="0.1"/>
+  <!-- Pentagram star -->
+  <g transform="translate(400,280)">
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#4a1942" stroke-width="1.5"/>
+    <polygon points="0,-50 14.7,20.2 -47.6,-16.2 47.6,-16.2 -14.7,20.2" fill="none" stroke="#c9a74e" stroke-width="1" opacity="0.5"/>
+  </g>
+  <!-- Mystic triangle -->
+  <polygon points="150,340 180,280 210,340" fill="none" stroke="#4a1942" stroke-width="1.5"/>
+  <circle cx="180" cy="315" r="8" fill="none" stroke="#c9a74e" stroke-width="1" opacity="0.4"/>
+  <polygon points="590,340 620,280 650,340" fill="none" stroke="#4a1942" stroke-width="1.5"/>
+  <circle cx="620" cy="315" r="8" fill="none" stroke="#c9a74e" stroke-width="1" opacity="0.4"/>
+  <!-- Style name -->
+  <text x="400" y="210" text-anchor="middle" font-family="Georgia, serif" font-size="44" fill="#c9a74e" letter-spacing="8">WITCHCORE</text>
+  <line x1="250" y1="225" x2="550" y2="225" stroke="#4a1942" stroke-width="1"/>
+</svg>

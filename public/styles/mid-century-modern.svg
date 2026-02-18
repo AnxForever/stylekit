@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#f5f0e1"/>
+  <!-- Starburst pattern -->
+  <g transform="translate(200,200)">
+    <line x1="0" y1="-120" x2="0" y2="120" stroke="#e8572a" stroke-width="3"/>
+    <line x1="-120" y1="0" x2="120" y2="0" stroke="#e8572a" stroke-width="3"/>
+    <line x1="-85" y1="-85" x2="85" y2="85" stroke="#e8572a" stroke-width="3"/>
+    <line x1="85" y1="-85" x2="-85" y2="85" stroke="#e8572a" stroke-width="3"/>
+    <line x1="-46" y1="-111" x2="46" y2="111" stroke="#e8572a" stroke-width="3"/>
+    <line x1="46" y1="-111" x2="-46" y2="111" stroke="#e8572a" stroke-width="3"/>
+    <line x1="-111" y1="-46" x2="111" y2="46" stroke="#e8572a" stroke-width="3"/>
+    <line x1="111" y1="-46" x2="-111" y2="46" stroke="#e8572a" stroke-width="3"/>
+    <circle cx="0" cy="0" r="18" fill="#e8572a"/>
+    <circle cx="0" cy="0" r="8" fill="#f5f0e1"/>
+  </g>
+  <!-- Organic kidney shapes -->
+  <ellipse cx="420" cy="120" rx="70" ry="35" transform="rotate(-15,420,120)" fill="#2a6e5e" opacity="0.85"/>
+  <ellipse cx="520" cy="180" rx="55" ry="28" transform="rotate(10,520,180)" fill="#c4a35a" opacity="0.85"/>
+  <ellipse cx="450" cy="260" rx="80" ry="30" transform="rotate(-8,450,260)" fill="#e8572a" opacity="0.75"/>
+  <!-- Boomerang shape -->
+  <path d="M600,100 Q650,160 620,230 Q640,170 700,140 Z" fill="#2a6e5e" opacity="0.8"/>
+  <!-- Atomic dots -->
+  <circle cx="380" cy="330" r="6" fill="#e8572a"/>
+  <circle cx="410" cy="340" r="6" fill="#2a6e5e"/>
+  <circle cx="440" cy="330" r="6" fill="#c4a35a"/>
+  <circle cx="470" cy="340" r="6" fill="#e8572a"/>
+  <circle cx="500" cy="330" r="6" fill="#2a6e5e"/>
+  <!-- Diamond accent shapes -->
+  <rect x="680" y="260" width="30" height="30" transform="rotate(45,695,275)" fill="#c4a35a"/>
+  <rect x="720" y="300" width="20" height="20" transform="rotate(45,730,310)" fill="#e8572a"/>
+  <!-- Hairpin legs table silhouette -->
+  <line x1="560" y1="300" x2="545" y2="370" stroke="#2a6e5e" stroke-width="2.5"/>
+  <line x1="680" y1="300" x2="695" y2="370" stroke="#2a6e5e" stroke-width="2.5"/>
+  <rect x="555" y="290" width="130" height="12" rx="2" fill="#2a6e5e"/>
+  <!-- Title -->
+  <text x="400" y="385" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#e8572a" font-weight="bold">Mid-Century Modern</text>
+</svg>

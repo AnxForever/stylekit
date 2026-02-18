@@ -173,11 +173,59 @@ export const dashboardTemplate: TemplateDefinition = {
         },
         {
           id: "chartType",
-          label: "图表类型",
+          label: "Chart Type",
           labelEn: "Chart Type",
           type: "text",
           defaultValue: "bar",
-          placeholder: "如：bar, line, pie",
+          placeholder: "e.g. bar, line, pie",
+        },
+        {
+          id: "chartSummary",
+          label: "Chart Summary",
+          labelEn: "Chart Summary",
+          type: "textarea",
+          defaultValue: "Track trend momentum and segment mix with a single visual.",
+          placeholder: "Short explanation shown above chart area",
+        },
+        {
+          id: "chartLabels",
+          label: "Chart Labels (comma separated)",
+          labelEn: "Chart Labels (comma separated)",
+          type: "text",
+          defaultValue: "Jan, Feb, Mar, Apr, May, Jun",
+          placeholder: "e.g. Jan, Feb, Mar",
+        },
+        {
+          id: "primarySeriesLabel",
+          label: "Primary Series Label",
+          labelEn: "Primary Series Label",
+          type: "text",
+          defaultValue: "Current",
+          placeholder: "Label for primary metric",
+        },
+        {
+          id: "primarySeriesValues",
+          label: "Primary Series Values (comma separated)",
+          labelEn: "Primary Series Values (comma separated)",
+          type: "text",
+          defaultValue: "42, 54, 61, 58, 72, 81",
+          placeholder: "e.g. 42, 54, 61",
+        },
+        {
+          id: "secondarySeriesLabel",
+          label: "Secondary Series Label",
+          labelEn: "Secondary Series Label",
+          type: "text",
+          defaultValue: "Target",
+          placeholder: "Label for secondary metric",
+        },
+        {
+          id: "secondarySeriesValues",
+          label: "Secondary Series Values (comma separated)",
+          labelEn: "Secondary Series Values (comma separated)",
+          type: "text",
+          defaultValue: "38, 46, 52, 56, 62, 68",
+          placeholder: "e.g. 38, 46, 52",
         },
       ],
     },
@@ -241,6 +289,104 @@ export const dashboardTemplate: TemplateDefinition = {
     },
   ],
 };
+
+function splitCommaList(value: string, fallback: string[]): string[] {
+  const source = value.trim() ? value : fallback.join(", ");
+  return source
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
+function parseSeriesValues(value: string, fallback: number[]): number[] {
+  const source = value.trim() ? value : fallback.join(", ");
+  const parsed = source
+    .split(",")
+    .map((item) => Number.parseFloat(item.trim()))
+    .filter((item) => Number.isFinite(item));
+
+  return parsed.length > 0 ? parsed : fallback;
+}
+
+function normalizeSeriesLength(values: number[], targetLength: number): number[] {
+  if (targetLength <= 0) return [];
+  if (values.length === targetLength) {
+    return values.map((value) => Math.max(0, value));
+  }
+
+  const normalized = Array.from({ length: targetLength }, (_unused, index) => {
+    if (values.length === 0) return 0;
+    return values[index % values.length] ?? values[values.length - 1] ?? 0;
+  });
+
+  return normalized.map((value) => Math.max(0, value));
+}
+
+function clampRowCount(value: string): number {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return 5;
+  return Math.min(20, Math.max(1, parsed));
+}
+
+function buildDashboardCellValue(column: string, rowIndex: number): string {
+  const normalized = column.toLowerCase();
+  const names = ["Avery Johnson", "Morgan Chen", "Riley Carter", "Jordan Kim", "Casey Patel"];
+  const owners = ["Ops Team", "Growth Team", "Finance Team", "Platform Team", "CS Team"];
+  const statuses = ["Completed", "Pending", "At Risk", "In Progress", "Blocked"];
+  const priorities = ["Low", "Medium", "High", "Critical"];
+  const dates = ["Mar 03, 2026", "Mar 02, 2026", "Mar 01, 2026", "Feb 28, 2026", "Feb 27, 2026"];
+  const regions = ["US-East", "US-West", "EU-Central", "APAC-SG", "Global"];
+
+  if (normalized.includes("id") || normalized.includes("order")) {
+    return `#${(1200 + rowIndex).toString()}`;
+  }
+  if (normalized.includes("customer") || normalized.includes("account") || normalized.includes("name")) {
+    return names[rowIndex % names.length];
+  }
+  if (normalized.includes("owner") || normalized.includes("team") || normalized.includes("csm")) {
+    return owners[rowIndex % owners.length];
+  }
+  if (normalized.includes("status") || normalized.includes("health")) {
+    return statuses[rowIndex % statuses.length];
+  }
+  if (normalized.includes("priority")) {
+    return priorities[rowIndex % priorities.length];
+  }
+  if (normalized.includes("arr") || normalized.includes("revenue") || normalized.includes("amount")) {
+    const value = 11000 + rowIndex * 1850;
+    return `$${value.toLocaleString()}`;
+  }
+  if (normalized.includes("score")) {
+    return `${88 - rowIndex * 4}`;
+  }
+  if (normalized.includes("date") || normalized.includes("time") || normalized.includes("updated")) {
+    return dates[rowIndex % dates.length];
+  }
+  if (normalized.includes("region")) {
+    return regions[rowIndex % regions.length];
+  }
+
+  return `Value ${rowIndex + 1}`;
+}
+
+function getStatusClass(value: string): string {
+  const normalized = value.toLowerCase();
+  if (
+    normalized.includes("risk") ||
+    normalized.includes("blocked") ||
+    normalized.includes("critical")
+  ) {
+    return "dashboard-status--critical";
+  }
+  if (
+    normalized.includes("pending") ||
+    normalized.includes("progress") ||
+    normalized.includes("review")
+  ) {
+    return "dashboard-status--pending";
+  }
+  return "dashboard-status--completed";
+}
 
 /**
  * Generate HTML for dashboard sidebar navigation
@@ -328,43 +474,185 @@ ${kpiCards}
  * Generate HTML for dashboard charts section
  */
 export function generateDashboardChartsHtml(content: Record<string, string>): string {
-  const chartTitle = content.chartTitle || "收入趋势";
-  const chartType = content.chartType || "bar";
+  const chartTitle = content.chartTitle || "Revenue trend";
+  const rawChartType = (content.chartType || "bar").trim().toLowerCase();
+  const chartType = rawChartType === "line" || rawChartType === "pie" ? rawChartType : "bar";
+  const chartSummary = content.chartSummary || "Track momentum and compare execution against plan.";
 
-  const barChart = `
-          <div class="dashboard-chart-bars">
-            <div class="dashboard-chart-bar" style="height: 40%;">
-              <span class="dashboard-chart-bar-label">Jan</span>
+  const labels = splitCommaList(content.chartLabels || "", ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
+  const primarySeriesLabel = content.primarySeriesLabel || "Current";
+  const secondarySeriesLabel = content.secondarySeriesLabel || "Target";
+
+  const primarySeries = normalizeSeriesLength(
+    parseSeriesValues(content.primarySeriesValues || "", [42, 54, 61, 58, 72, 81]),
+    labels.length
+  );
+  const secondarySeries = normalizeSeriesLength(
+    parseSeriesValues(content.secondarySeriesValues || "", [38, 46, 52, 56, 62, 68]),
+    labels.length
+  );
+
+  const maxValue = Math.max(1, ...primarySeries, ...secondarySeries);
+  const chartTypeLabel = chartType === "line"
+    ? "Trend analysis"
+    : chartType === "pie"
+      ? "Segment distribution"
+      : "Monthly comparison";
+
+  const barGroups = labels
+    .map((label, index) => {
+      const primaryHeight = Math.max(8, Math.round((primarySeries[index] / maxValue) * 100));
+      const secondaryHeight = Math.max(8, Math.round((secondarySeries[index] / maxValue) * 100));
+
+      return `            <div class="dashboard-chart-group">
+              <div class="dashboard-chart-group-bars">
+                <span class="dashboard-chart-bar dashboard-chart-bar--secondary" style="height: ${secondaryHeight}%;" aria-label="${secondarySeriesLabel} ${secondarySeries[index]}"></span>
+                <span class="dashboard-chart-bar dashboard-chart-bar--primary" style="height: ${primaryHeight}%;" aria-label="${primarySeriesLabel} ${primarySeries[index]}"></span>
+              </div>
+              <span class="dashboard-chart-xlabel">${label}</span>
+            </div>`;
+    })
+    .join("\n");
+
+  const horizontalStep = labels.length > 1 ? 304 / (labels.length - 1) : 0;
+  const primaryLinePoints = primarySeries
+    .map((value, index) => {
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `${Math.round(x)},${Math.round(y)}`;
+    })
+    .join(" ");
+  const secondaryLinePoints = secondarySeries
+    .map((value, index) => {
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `${Math.round(x)},${Math.round(y)}`;
+    })
+    .join(" ");
+
+  const lineMarkers = primarySeries
+    .map((value, index) => {
+      if (!(index === 0 || index === primarySeries.length - 1 || index % 2 === 1)) {
+        return "";
+      }
+      const x = 8 + index * horizontalStep;
+      const y = 128 - (value / maxValue) * 92;
+      return `              <circle cx="${Math.round(x)}" cy="${Math.round(y)}" r="3.5" fill="currentColor" />`;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  const lineAxisLabels = labels
+    .map((label) => `            <span>${label}</span>`)
+    .join("\n");
+
+  const piePalette = ["var(--color-primary)", "var(--color-accent-1)", "var(--color-accent-2)", "var(--color-accent-3)"];
+  const pieEntries = labels
+    .map((label, index) => ({
+      label,
+      value: primarySeries[index] ?? 0,
+    }))
+    .filter((entry) => entry.value > 0)
+    .slice(0, 4);
+  if (pieEntries.length === 0) {
+    pieEntries.push({ label: "Segment", value: 1 });
+  }
+
+  const pieTotal = pieEntries.reduce((sum, entry) => sum + entry.value, 0);
+  let pieCursor = 0;
+  const pieSegments = pieEntries.map((entry, index) => {
+    const percent = (entry.value / pieTotal) * 100;
+    const start = pieCursor;
+    const end = pieCursor + percent;
+    pieCursor = end;
+    return {
+      ...entry,
+      percent,
+      start,
+      end,
+      color: piePalette[index % piePalette.length],
+    };
+  });
+
+  const pieGradient = pieSegments
+    .map((segment) => `${segment.color} ${segment.start.toFixed(2)}% ${segment.end.toFixed(2)}%`)
+    .join(", ");
+
+  const pieLegend = pieSegments
+    .map(
+      (segment) => `            <div class="dashboard-pie-legend-item">
+              <span class="dashboard-pie-legend-label">
+                <span class="dashboard-pie-legend-dot" style="background-color: ${segment.color};"></span>
+                ${segment.label}
+              </span>
+              <span class="dashboard-pie-legend-value">${Math.round(segment.percent)}%</span>
+            </div>`
+    )
+    .join("\n");
+
+  const latestValue = primarySeries[primarySeries.length - 1] ?? 0;
+  const previousValue = primarySeries[primarySeries.length - 2] ?? latestValue;
+  const deltaPercent = previousValue === 0 ? 0 : ((latestValue - previousValue) / previousValue) * 100;
+  const deltaLabel = `${deltaPercent >= 0 ? "+" : ""}${deltaPercent.toFixed(1)}%`;
+  const averageValue = primarySeries.reduce((sum, value) => sum + value, 0) / Math.max(1, primarySeries.length);
+  const peakIndex = primarySeries.indexOf(Math.max(...primarySeries));
+  const peakLabel = labels[peakIndex] || labels[labels.length - 1] || "n/a";
+
+  const chartBody = chartType === "line"
+    ? `          <div class="dashboard-line-chart">
+            <svg viewBox="0 0 320 160" class="dashboard-line-chart-svg" aria-label="${chartTitle}">
+              <line x1="8" y1="128" x2="312" y2="128" stroke="rgba(120,120,120,0.35)" stroke-width="1" />
+              <line x1="8" y1="88" x2="312" y2="88" stroke="rgba(120,120,120,0.22)" stroke-width="1" />
+              <line x1="8" y1="48" x2="312" y2="48" stroke="rgba(120,120,120,0.14)" stroke-width="1" />
+              <polyline fill="none" stroke="rgba(120,120,120,0.6)" stroke-width="2" points="${secondaryLinePoints}" />
+              <polyline fill="none" stroke="currentColor" stroke-width="3" points="${primaryLinePoints}" />
+${lineMarkers}
+            </svg>
+            <div class="dashboard-line-axis">
+${lineAxisLabels}
             </div>
-            <div class="dashboard-chart-bar" style="height: 65%;">
-              <span class="dashboard-chart-bar-label">Feb</span>
+          </div>`
+    : chartType === "pie"
+      ? `          <div class="dashboard-pie-layout">
+            <div class="dashboard-pie-chart" style="background: conic-gradient(${pieGradient});">
+              <span class="dashboard-pie-chart-core"></span>
             </div>
-            <div class="dashboard-chart-bar" style="height: 50%;">
-              <span class="dashboard-chart-bar-label">Mar</span>
+            <div class="dashboard-pie-legend">
+${pieLegend}
             </div>
-            <div class="dashboard-chart-bar" style="height: 75%;">
-              <span class="dashboard-chart-bar-label">Apr</span>
-            </div>
-            <div class="dashboard-chart-bar" style="height: 60%;">
-              <span class="dashboard-chart-bar-label">May</span>
-            </div>
-            <div class="dashboard-chart-bar" style="height: 85%;">
-              <span class="dashboard-chart-bar-label">Jun</span>
-            </div>
-            <div class="dashboard-chart-bar" style="height: 70%;">
-              <span class="dashboard-chart-bar-label">Jul</span>
-            </div>
-            <div class="dashboard-chart-bar" style="height: 90%;">
-              <span class="dashboard-chart-bar-label">Aug</span>
-            </div>
+          </div>`
+      : `          <div class="dashboard-chart-grid">
+${barGroups}
           </div>`;
 
   return `
       <section class="dashboard-chart-section">
-        <div class="dashboard-chart-area">
-          <h3 class="dashboard-chart-title">${chartTitle}</h3>
-          <div class="dashboard-chart-container" data-chart-type="${chartType}">
-${barChart}
+        <div class="dashboard-chart-header">
+          <div>
+            <h3 class="dashboard-chart-title">${chartTitle}</h3>
+            <p class="dashboard-chart-summary">${chartSummary}</p>
+          </div>
+          <span class="dashboard-chart-type">${chartTypeLabel}</span>
+        </div>
+        <div class="dashboard-chart-card" data-chart-type="${chartType}">
+${chartBody}
+        </div>
+        <div class="dashboard-chart-legend">
+          <span class="dashboard-chart-legend-item"><span class="dashboard-legend-swatch dashboard-legend-swatch--primary"></span>${primarySeriesLabel}</span>
+          <span class="dashboard-chart-legend-item"><span class="dashboard-legend-swatch dashboard-legend-swatch--secondary"></span>${secondarySeriesLabel}</span>
+        </div>
+        <div class="dashboard-chart-insights">
+          <div class="dashboard-chart-insight">
+            <span class="dashboard-chart-insight-label">Latest</span>
+            <span class="dashboard-chart-insight-value">${latestValue.toFixed(1)}</span>
+          </div>
+          <div class="dashboard-chart-insight">
+            <span class="dashboard-chart-insight-label">Period change</span>
+            <span class="dashboard-chart-insight-value">${deltaLabel}</span>
+          </div>
+          <div class="dashboard-chart-insight">
+            <span class="dashboard-chart-insight-label">Peak period</span>
+            <span class="dashboard-chart-insight-value">${peakLabel} / ${averageValue.toFixed(1)} avg</span>
           </div>
         </div>
       </section>
@@ -375,47 +663,39 @@ ${barChart}
  * Generate HTML for dashboard data table section
  */
 export function generateDashboardTableHtml(content: Record<string, string>): string {
-  const tableTitle = content.tableTitle || "最近订单";
-  const columnsStr = content.columns || "订单号, 客户, 金额, 状态, 日期";
-  const rowCount = parseInt(content.rowCount || "5", 10);
-
-  const columns = columnsStr.split(",").map((c) => c.trim());
+  const tableTitle = content.tableTitle || "Pipeline records";
+  const columns = splitCommaList(content.columns || "", ["ID", "Customer", "Amount", "Status", "Date"]);
+  const rowCount = clampRowCount(content.rowCount || "5");
+  const tableMeta = `${rowCount} ${rowCount === 1 ? "row" : "rows"} shown - sorted by latest update`;
 
   const headerCells = columns
     .map((col) => `<th class="dashboard-table-th">${col}</th>`)
     .join("\n              ");
 
-  // Generate sample data rows
-  const sampleData = [
-    ["#1001", "张三", "$320.00", "已完成", "2024-01-15"],
-    ["#1002", "李四", "$150.00", "处理中", "2024-01-14"],
-    ["#1003", "王五", "$480.00", "已完成", "2024-01-13"],
-    ["#1004", "赵六", "$220.00", "待支付", "2024-01-12"],
-    ["#1005", "孙七", "$560.00", "已完成", "2024-01-11"],
-    ["#1006", "周八", "$190.00", "处理中", "2024-01-10"],
-    ["#1007", "吴九", "$340.00", "已完成", "2024-01-09"],
-  ];
+  const sampleData = Array.from({ length: rowCount }, (_unused, rowIndex) =>
+    columns.map((column) => buildDashboardCellValue(column, rowIndex))
+  );
 
   const rows = sampleData
-    .slice(0, rowCount)
-    .map((row) => {
-      const cells = columns
-        .map((_, colIdx) => {
-          const cellValue = row[colIdx] || "-";
-          // Apply status styling for the status column
-          if (colIdx === 3) {
-            const statusClass =
-              cellValue === "已完成"
-                ? "dashboard-status--completed"
-                : cellValue === "处理中"
-                  ? "dashboard-status--processing"
-                  : "dashboard-status--pending";
-            return `<td class="dashboard-table-td"><span class="dashboard-status ${statusClass}">${cellValue}</span></td>`;
+    .map((row, rowIndex) => {
+      const cells = row
+        .map((cell, colIdx) => {
+          const column = columns[colIdx]?.toLowerCase() || "";
+
+          if (column.includes("status") || column.includes("health")) {
+            return `<td class="dashboard-table-td"><span class="dashboard-status ${getStatusClass(cell)}">${cell}</span></td>`;
           }
-          return `<td class="dashboard-table-td">${cellValue}</td>`;
+
+          if (colIdx === 0) {
+            return `<td class="dashboard-table-td dashboard-table-td--strong">${cell}</td>`;
+          }
+
+          return `<td class="dashboard-table-td">${cell}</td>`;
         })
         .join("\n              ");
-      return `            <tr class="dashboard-table-row">
+
+      const rowToneClass = rowIndex % 2 === 1 ? " dashboard-table-row--alt" : "";
+      return `            <tr class="dashboard-table-row${rowToneClass}">
               ${cells}
             </tr>`;
     })
@@ -423,7 +703,13 @@ export function generateDashboardTableHtml(content: Record<string, string>): str
 
   return `
       <section class="dashboard-table-section">
-        <h3 class="dashboard-table-title">${tableTitle}</h3>
+        <div class="dashboard-table-header">
+          <div>
+            <h3 class="dashboard-table-title">${tableTitle}</h3>
+            <p class="dashboard-table-meta">${tableMeta}</p>
+          </div>
+          <button class="dashboard-table-action" type="button">Export CSV</button>
+        </div>
         <div class="dashboard-table-wrapper">
           <table class="dashboard-table">
             <thead>
@@ -439,6 +725,7 @@ ${rows}
       </section>
 `;
 }
+
 
 /**
  * Generate HTML for dashboard footer
@@ -590,54 +877,212 @@ export function generateDashboardCss(): string {
   margin-bottom: 2rem;
 }
 
-.dashboard-chart-area {
-  background-color: #ffffff;
-  border: var(--border-width) solid var(--color-muted);
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-}
-
 .dashboard-chart-title {
   font-size: var(--font-size-lg);
   color: var(--color-foreground);
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
-.dashboard-chart-container {
-  height: 280px;
-  position: relative;
+.dashboard-chart-summary {
+  margin-top: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  max-width: 52ch;
 }
 
-.dashboard-chart-bars {
+.dashboard-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-chart-type {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-muted);
+  border-radius: var(--border-radius);
+  padding: 0.25rem 0.55rem;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.dashboard-chart-card {
+  background-color: #ffffff;
+  border: var(--border-width) solid var(--color-muted);
+  border-radius: var(--border-radius);
+  padding: 1rem 1.25rem;
+  min-height: 280px;
+}
+
+.dashboard-chart-grid {
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
-  height: 100%;
-  padding: 0 0.5rem;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  min-height: 230px;
+}
+
+.dashboard-chart-group {
+  flex: 1;
+  min-width: 44px;
+  text-align: center;
+}
+
+.dashboard-chart-group-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.25rem;
+  height: 210px;
 }
 
 .dashboard-chart-bar {
-  flex: 1;
+  width: 12px;
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   border-radius: var(--border-radius) var(--border-radius) 0 0;
-  position: relative;
-  min-width: 24px;
   transition: opacity 0.2s ease;
 }
 
-.dashboard-chart-bar:hover {
-  opacity: 0.85;
+.dashboard-chart-bar--secondary {
+  opacity: 0.45;
 }
 
-.dashboard-chart-bar-label {
-  position: absolute;
-  bottom: -1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
+.dashboard-chart-xlabel {
+  display: block;
+  margin-top: 0.55rem;
   font-size: var(--font-size-xs);
   color: var(--color-muted);
   white-space: nowrap;
+}
+
+.dashboard-line-chart-svg {
+  width: 100%;
+  height: 210px;
+  color: var(--color-primary);
+}
+
+.dashboard-line-axis {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.dashboard-pie-layout {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.dashboard-pie-chart {
+  width: 146px;
+  height: 146px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dashboard-pie-chart-core {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid var(--color-muted);
+}
+
+.dashboard-pie-legend {
+  flex: 1;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.dashboard-pie-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-foreground);
+}
+
+.dashboard-pie-legend-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dashboard-pie-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.dashboard-pie-legend-value {
+  font-weight: 600;
+}
+
+.dashboard-chart-legend {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.dashboard-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.dashboard-legend-swatch--primary {
+  background-color: var(--color-primary);
+}
+
+.dashboard-legend-swatch--secondary {
+  background-color: var(--color-primary);
+  opacity: 0.45;
+}
+
+.dashboard-chart-insights {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.dashboard-chart-insight {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--border-radius);
+  padding: 0.55rem 0.65rem;
+}
+
+.dashboard-chart-insight-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dashboard-chart-insight-value {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-foreground);
+  font-weight: 600;
 }
 
 /* Dashboard Table */
@@ -645,10 +1090,40 @@ export function generateDashboardCss(): string {
   margin-bottom: 2rem;
 }
 
+.dashboard-table-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
 .dashboard-table-title {
   font-size: var(--font-size-lg);
   color: var(--color-foreground);
-  margin-bottom: 1rem;
+  margin: 0;
+}
+
+.dashboard-table-meta {
+  margin-top: 0.4rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.dashboard-table-action {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  padding: 0.35rem 0.65rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.dashboard-table-action:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .dashboard-table-wrapper {
@@ -680,6 +1155,14 @@ export function generateDashboardCss(): string {
   border-bottom: 1px solid var(--color-secondary);
 }
 
+.dashboard-table-td--strong {
+  font-weight: 600;
+}
+
+.dashboard-table-row--alt {
+  background-color: rgba(148, 163, 184, 0.08);
+}
+
 .dashboard-table-row:last-child .dashboard-table-td {
   border-bottom: none;
 }
@@ -702,14 +1185,14 @@ export function generateDashboardCss(): string {
   color: #16a34a;
 }
 
-.dashboard-status--processing {
-  background-color: #dbeafe;
-  color: #2563eb;
+.dashboard-status--pending {
+  background-color: #fef3c7;
+  color: #b45309;
 }
 
-.dashboard-status--pending {
-  background-color: #fef9c3;
-  color: #ca8a04;
+.dashboard-status--critical {
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
 /* Dashboard Footer */
@@ -736,6 +1219,10 @@ export function generateDashboardCss(): string {
   .dashboard-kpi-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .dashboard-chart-insights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* Responsive: 768px - Sidebar hides, KPI goes 1-col */
@@ -750,6 +1237,30 @@ export function generateDashboardCss(): string {
 
   .dashboard-content {
     padding: 1rem;
+  }
+
+  .dashboard-chart-header,
+  .dashboard-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-chart-card {
+    padding: 0.9rem;
+  }
+
+  .dashboard-chart-grid {
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .dashboard-pie-layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-chart-insights {
+    grid-template-columns: 1fr;
   }
 
   .dashboard-footer {

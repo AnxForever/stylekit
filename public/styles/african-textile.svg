@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#2c1810"/>
+  <defs>
+    <pattern id="kente1" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#c4501f"/>
+      <rect x="0" y="0" width="20" height="20" fill="#f0c75e"/>
+      <rect x="20" y="20" width="20" height="20" fill="#f0c75e"/>
+    </pattern>
+    <pattern id="kente2" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#1a5632"/>
+      <rect x="10" y="0" width="20" height="40" fill="#f0c75e" opacity="0.4"/>
+      <rect x="0" y="10" width="40" height="20" fill="#c4501f" opacity="0.4"/>
+    </pattern>
+    <pattern id="kente3" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="#c4501f"/>
+      <line x1="0" y1="0" x2="20" y2="20" stroke="#f0c75e" stroke-width="2"/>
+      <line x1="20" y1="0" x2="0" y2="20" stroke="#f0c75e" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <!-- Horizontal kente bands -->
+  <rect x="30" y="20" width="740" height="50" fill="url(#kente1)"/>
+  <rect x="30" y="75" width="740" height="10" fill="#f0c75e"/>
+  <rect x="30" y="90" width="740" height="60" fill="url(#kente2)"/>
+  <rect x="30" y="155" width="740" height="10" fill="#c4501f"/>
+  <rect x="30" y="170" width="740" height="50" fill="url(#kente3)"/>
+  <rect x="30" y="225" width="740" height="10" fill="#1a5632"/>
+  <rect x="30" y="240" width="740" height="50" fill="url(#kente1)"/>
+  <rect x="30" y="295" width="740" height="10" fill="#f0c75e"/>
+  <rect x="30" y="310" width="740" height="50" fill="url(#kente2)"/>
+  <!-- Side borders -->
+  <rect x="15" y="15" width="10" height="370" fill="#f0c75e"/>
+  <rect x="775" y="15" width="10" height="370" fill="#f0c75e"/>
+  <!-- Title -->
+  <text x="400" y="388" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-size="18" fill="#f0c75e" font-weight="bold" letter-spacing="3">AFRICAN TEXTILE</text>
+</svg>

@@ -104,7 +104,6 @@ export default async function StyleDetailPage({
   // Pre-compute version info
   const version = getCurrentVersion(slug);
   const changelog = getChangelog(slug);
-
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
   const jsonLd = {

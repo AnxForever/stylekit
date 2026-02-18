@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#1c1c1e"/>
+  <!-- Spray paint splashes -->
+  <circle cx="150" cy="180" r="80" fill="#ff2d55" opacity="0.7"/>
+  <circle cx="200" cy="150" r="50" fill="#ff2d55" opacity="0.5"/>
+  <circle cx="120" cy="220" r="30" fill="#ff2d55" opacity="0.4"/>
+  <!-- Drip effects -->
+  <rect x="145" y="250" width="8" height="60" rx="4" fill="#ff2d55" opacity="0.6"/>
+  <rect x="170" y="240" width="6" height="80" rx="3" fill="#ff2d55" opacity="0.5"/>
+  <rect x="125" y="260" width="5" height="45" rx="2.5" fill="#ff2d55" opacity="0.4"/>
+  <!-- Cyan splash -->
+  <circle cx="500" cy="120" r="60" fill="#00e5ff" opacity="0.6"/>
+  <circle cx="540" cy="100" r="35" fill="#00e5ff" opacity="0.4"/>
+  <rect x="495" y="175" width="7" height="50" rx="3.5" fill="#00e5ff" opacity="0.5"/>
+  <rect x="520" y="165" width="5" height="65" rx="2.5" fill="#00e5ff" opacity="0.4"/>
+  <!-- Yellow splash -->
+  <circle cx="650" cy="280" r="55" fill="#ffea00" opacity="0.6"/>
+  <circle cx="690" cy="260" r="30" fill="#ffea00" opacity="0.4"/>
+  <rect x="645" y="330" width="6" height="40" rx="3" fill="#ffea00" opacity="0.5"/>
+  <!-- Bold tag-style strokes -->
+  <path d="M300 80 L350 60 L380 100 L340 130 Z" fill="none" stroke="#ff2d55" stroke-width="6" stroke-linecap="round"/>
+  <path d="M580 180 L640 160 L660 210 L610 230 Z" fill="none" stroke="#00e5ff" stroke-width="5" stroke-linecap="round"/>
+  <line x1="80" y1="350" x2="250" y2="320" stroke="#ffea00" stroke-width="4" opacity="0.5"/>
+  <line x1="400" y1="350" x2="550" y2="370" stroke="#ff2d55" stroke-width="3" opacity="0.4"/>
+  <!-- Spray dots -->
+  <circle cx="300" cy="200" r="3" fill="#ff2d55" opacity="0.6"/>
+  <circle cx="320" cy="190" r="2" fill="#ff2d55" opacity="0.5"/>
+  <circle cx="310" cy="215" r="4" fill="#00e5ff" opacity="0.5"/>
+  <circle cx="450" cy="300" r="3" fill="#ffea00" opacity="0.6"/>
+  <circle cx="470" cy="290" r="2" fill="#ffea00" opacity="0.4"/>
+  <circle cx="380" cy="150" r="2" fill="#00e5ff" opacity="0.4"/>
+  <circle cx="250" cy="100" r="3" fill="#ffea00" opacity="0.5"/>
+  <circle cx="700" cy="150" r="2" fill="#ff2d55" opacity="0.4"/>
+  <!-- Style name -->
+  <text x="400" y="220" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="52" font-weight="900" fill="#ff2d55" transform="rotate(-8 400 220)" stroke="#1c1c1e" stroke-width="2">GRAFFITI</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="36" font-weight="900" fill="#00e5ff" transform="rotate(-8 400 270)">STREET</text>
+</svg>
