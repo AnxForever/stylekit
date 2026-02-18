@@ -240,7 +240,7 @@ export default function AuthPagesTemplate() {
           </p>
         </div>
       </div>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }

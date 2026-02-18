@@ -162,7 +162,7 @@ export default function EditorialBlogTemplate() {
       </footer>
 
       {/* Back Link */}
-      <TemplateBackButton />
+      <TemplateBackButton variant="editorial" />
     </div>
   );
 }

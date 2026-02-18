@@ -244,7 +244,7 @@ export default function MinimalistPortfolioTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="minimalist" />
     </div>
   );
 }

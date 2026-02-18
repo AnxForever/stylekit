@@ -329,7 +329,7 @@ export default function SettingsPageTemplate() {
           </p>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }

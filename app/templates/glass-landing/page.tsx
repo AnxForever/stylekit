@@ -122,7 +122,7 @@ export default function GlassLandingTemplate() {
       </footer>
 
       {/* Back Link */}
-      <TemplateBackButton />
+      <TemplateBackButton variant="glass" />
     </div>
   );
 }
