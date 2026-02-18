@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#fff8e7"/>
+  <!-- Ornate top border -->
+  <path d="M0,30 Q50,0 100,30 Q150,0 200,30 Q250,0 300,30 Q350,0 400,30 Q450,0 500,30 Q550,0 600,30 Q650,0 700,30 Q750,0 800,30" fill="none" stroke="#d4af37" stroke-width="2"/>
+  <path d="M0,40 Q50,10 100,40 Q150,10 200,40 Q250,10 300,40 Q350,10 400,40 Q450,10 500,40 Q550,10 600,40 Q650,10 700,40 Q750,10 800,40" fill="none" stroke="#e63946" stroke-width="1.5"/>
+  <!-- Ornate bottom border -->
+  <path d="M0,360 Q50,390 100,360 Q150,390 200,360 Q250,390 300,360 Q350,390 400,360 Q450,390 500,360 Q550,390 600,360 Q650,390 700,360 Q750,390 800,360" fill="none" stroke="#d4af37" stroke-width="2"/>
+  <path d="M0,350 Q50,380 100,350 Q150,380 200,350 Q250,380 300,350 Q350,380 400,350 Q450,380 500,350 Q550,380 600,350 Q650,380 700,350 Q750,380 800,350" fill="none" stroke="#e63946" stroke-width="1.5"/>
+  <!-- Mandala center -->
+  <g transform="translate(400,200)">
+    <!-- Outer petals -->
+    <g fill="none" stroke="#e63946" stroke-width="1.5">
+      <ellipse rx="120" ry="30" transform="rotate(0)"/>
+      <ellipse rx="120" ry="30" transform="rotate(30)"/>
+      <ellipse rx="120" ry="30" transform="rotate(60)"/>
+      <ellipse rx="120" ry="30" transform="rotate(90)"/>
+      <ellipse rx="120" ry="30" transform="rotate(120)"/>
+      <ellipse rx="120" ry="30" transform="rotate(150)"/>
+    </g>
+    <!-- Middle petals -->
+    <g fill="none" stroke="#ff9f1c" stroke-width="1.5">
+      <ellipse rx="80" ry="20" transform="rotate(15)"/>
+      <ellipse rx="80" ry="20" transform="rotate(45)"/>
+      <ellipse rx="80" ry="20" transform="rotate(75)"/>
+      <ellipse rx="80" ry="20" transform="rotate(105)"/>
+      <ellipse rx="80" ry="20" transform="rotate(135)"/>
+      <ellipse rx="80" ry="20" transform="rotate(165)"/>
+    </g>
+    <!-- Inner petals -->
+    <g fill="none" stroke="#d4af37" stroke-width="1.5">
+      <ellipse rx="45" ry="12" transform="rotate(0)"/>
+      <ellipse rx="45" ry="12" transform="rotate(30)"/>
+      <ellipse rx="45" ry="12" transform="rotate(60)"/>
+      <ellipse rx="45" ry="12" transform="rotate(90)"/>
+      <ellipse rx="45" ry="12" transform="rotate(120)"/>
+      <ellipse rx="45" ry="12" transform="rotate(150)"/>
+    </g>
+    <!-- Center circles -->
+    <circle r="20" fill="#e63946" opacity="0.3"/>
+    <circle r="12" fill="#ff9f1c" opacity="0.4"/>
+    <circle r="5" fill="#d4af37"/>
+  </g>
+  <!-- Corner paisley motifs -->
+  <path d="M50,80 Q30,120 50,160 Q80,120 50,80 Z" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+  <path d="M750,80 Q770,120 750,160 Q720,120 750,80 Z" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+  <path d="M50,240 Q30,280 50,320 Q80,280 50,240 Z" fill="none" stroke="#ff9f1c" stroke-width="1.5"/>
+  <path d="M750,240 Q770,280 750,320 Q720,280 750,240 Z" fill="none" stroke="#ff9f1c" stroke-width="1.5"/>
+  <!-- Dots accents -->
+  <circle cx="100" cy="70" r="3" fill="#e63946"/>
+  <circle cx="700" cy="70" r="3" fill="#e63946"/>
+  <circle cx="100" cy="330" r="3" fill="#e63946"/>
+  <circle cx="700" cy="330" r="3" fill="#e63946"/>
+  <!-- Title -->
+  <text x="400" y="385" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#e63946" font-weight="bold" letter-spacing="2">Indian Festive</text>
+</svg>

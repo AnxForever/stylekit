@@ -115,6 +115,27 @@ import { inkWashTokens } from "./ink-wash-tokens";
 import { monochromeTokens } from "./monochrome-tokens";
 import { zenGardenTokens } from "./zen-garden-tokens";
 import { terracottaTokens } from "./terracotta-tokens";
+// New styles - Batch 13
+import { midCenturyModernTokens } from "./mid-century-modern-tokens";
+import { constructivismTokens } from "./constructivism-tokens";
+import { opArtTokens } from "./op-art-tokens";
+import { islamicGeometricTokens } from "./islamic-geometric-tokens";
+import { indianFestiveTokens } from "./indian-festive-tokens";
+import { africanTextileTokens } from "./african-textile-tokens";
+import { koreanMinimalTokens } from "./korean-minimal-tokens";
+import { pastelGothTokens } from "./pastel-goth-tokens";
+import { maximalismTokens } from "./maximalism-tokens";
+import { medievalManuscriptTokens } from "./medieval-manuscript-tokens";
+import { graffitiStreetTokens } from "./graffiti-street-tokens";
+import { marbleLuxuryTokens } from "./marble-luxury-tokens";
+import { victorianBotanicalTokens } from "./victorian-botanical-tokens";
+import { cubismTokens } from "./cubism-tokens";
+import { tropicalParadiseTokens } from "./tropical-paradise-tokens";
+import { githubStyleTokens } from "./github-style-tokens";
+import { witchcoreTokens } from "./witchcore-tokens";
+import { neonTokyoTokens } from "./neon-tokyo-tokens";
+import { paperCraftTokens } from "./paper-craft-tokens";
+import { blueprintTokens } from "./blueprint-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -231,6 +252,27 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "monochrome": monochromeTokens,
   "zen-garden": zenGardenTokens,
   "terracotta": terracottaTokens,
+  // New styles - Batch 13
+  "mid-century-modern": midCenturyModernTokens,
+  "constructivism": constructivismTokens,
+  "op-art": opArtTokens,
+  "islamic-geometric": islamicGeometricTokens,
+  "indian-festive": indianFestiveTokens,
+  "african-textile": africanTextileTokens,
+  "korean-minimal": koreanMinimalTokens,
+  "pastel-goth": pastelGothTokens,
+  "maximalism": maximalismTokens,
+  "medieval-manuscript": medievalManuscriptTokens,
+  "graffiti-street": graffitiStreetTokens,
+  "marble-luxury": marbleLuxuryTokens,
+  "victorian-botanical": victorianBotanicalTokens,
+  "cubism": cubismTokens,
+  "tropical-paradise": tropicalParadiseTokens,
+  "github-style": githubStyleTokens,
+  "witchcore": witchcoreTokens,
+  "neon-tokyo": neonTokyoTokens,
+  "paper-craft": paperCraftTokens,
+  "blueprint": blueprintTokens,
 };
 
 // Get tokens for a style by slug

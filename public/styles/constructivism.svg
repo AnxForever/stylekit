@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#f2e8d5"/>
+  <!-- Diagonal red wedge -->
+  <polygon points="100,400 400,50 450,80 150,400" fill="#cc0000"/>
+  <!-- Bold geometric blocks -->
+  <rect x="300" y="60" width="200" height="60" transform="rotate(-20,400,90)" fill="#1a1a1a"/>
+  <rect x="250" y="160" width="300" height="50" transform="rotate(-20,400,185)" fill="#cc0000"/>
+  <!-- Circle -->
+  <circle cx="600" cy="150" r="80" fill="none" stroke="#1a1a1a" stroke-width="8"/>
+  <circle cx="600" cy="150" r="50" fill="#cc0000"/>
+  <!-- Diagonal lines -->
+  <line x1="0" y1="350" x2="800" y2="100" stroke="#1a1a1a" stroke-width="3"/>
+  <line x1="0" y1="370" x2="800" y2="120" stroke="#1a1a1a" stroke-width="1.5"/>
+  <!-- Triangles -->
+  <polygon points="500,280 580,380 420,380" fill="#1a1a1a"/>
+  <polygon points="650,250 730,350 570,350" fill="none" stroke="#cc0000" stroke-width="4"/>
+  <!-- Small accent rectangles -->
+  <rect x="100" y="50" width="80" height="25" fill="#cc0000"/>
+  <rect x="100" y="85" width="50" height="15" fill="#1a1a1a"/>
+  <!-- Vertical bar -->
+  <rect x="750" y="30" width="15" height="340" fill="#cc0000"/>
+  <!-- Title -->
+  <text x="400" y="385" text-anchor="middle" font-family="'Impact', 'Arial Black', sans-serif" font-size="22" fill="#1a1a1a" font-weight="bold" letter-spacing="4">CONSTRUCTIVISM</text>
+</svg>
