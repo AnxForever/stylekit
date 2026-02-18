@@ -473,11 +473,14 @@ const { submissions } = await res.json();`,
       {
         method: "GET",
         path: "/api/submit/list",
-        description: "List all submissions with their review status.",
-        fetchExample: `const res = await fetch("/api/submit/list");
+        description: "List all submissions with their review status. Requires admin access.",
+        auth: "admin",
+        queryParams: [
+          { name: "status", type: "string", required: false, description: "Filter by status: 'pending', 'approved', or 'rejected'" },
+        ],
+        fetchExample: `const res = await fetch("/api/submit/list?status=pending");
 const submissions = await res.json();`,
-        curlExample: `curl https://stylekit.dev/api/submit/list`,
-        tryItUrl: "/api/submit/list",
+        curlExample: `curl "https://stylekit.dev/api/submit/list?status=pending"`,
       },
       {
         method: "GET",
@@ -992,27 +995,31 @@ const archetype = await res.json();`,
       {
         method: "POST",
         path: "/api/generate/design-system",
-        description: "Generate a complete design system from a style or prompt.",
+        description: "Generate a complete design system from product context and style preferences.",
         bodyParams: [
-          { name: "style", type: "string", required: false, description: "Base style slug" },
-          { name: "prompt", type: "string", required: false, description: "Description for generation" },
+          { name: "productType", type: "string", required: true, description: "Product type (e.g. 'SaaS dashboard', 'e-commerce', 'blog')" },
+          { name: "stylePreference", type: "string", required: false, description: "Style slug or 'auto' (default: 'auto')" },
+          { name: "stackId", type: "string", required: false, description: "Tech stack ID (e.g. 'nextjs', 'react-vite')" },
+          { name: "colorScheme", type: "string", required: false, description: "'light', 'dark', or 'auto' (default: 'auto')" },
+          { name: "includeComponents", type: "string[]", required: false, description: "Components to include (e.g. ['button', 'card', 'input', 'nav'])" },
         ],
         fetchExample: `const res = await fetch("/api/generate/design-system", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ style: "neo-brutalist" })
+  body: JSON.stringify({ productType: "SaaS dashboard", stylePreference: "neo-brutalist" })
 });`,
         curlExample: `curl -X POST https://stylekit.dev/api/generate/design-system \\
   -H "Content-Type: application/json" \\
-  -d '{"style":"neo-brutalist"}'`,
+  -d '{"productType":"SaaS dashboard","stylePreference":"neo-brutalist"}'`,
       },
       {
-        method: "POST",
+        method: "GET",
         path: "/api/ui-plan/schema",
         description: "Get the JSON schema for UI plan validation.",
-        fetchExample: `const res = await fetch("/api/ui-plan/schema", { method: "POST" });
+        fetchExample: `const res = await fetch("/api/ui-plan/schema");
 const schema = await res.json();`,
-        curlExample: `curl -X POST https://stylekit.dev/api/ui-plan/schema`,
+        curlExample: `curl https://stylekit.dev/api/ui-plan/schema`,
+        tryItUrl: "/api/ui-plan/schema",
       },
       {
         method: "POST",
