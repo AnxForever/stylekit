@@ -53,6 +53,7 @@ describe("generateNextjsFiles", () => {
     expect(fileNames).toContain("next-env.d.ts");
     expect(fileNames).toContain("stylekit.config.json");
     expect(fileNames).toContain("CONTENT_MAP.md");
+    expect(fileNames).toContain("GENERATOR_BRIEF.md");
     expect(fileNames).toContain("README.md");
 
     expect(fileNames).not.toContain("src/App.tsx");

@@ -243,13 +243,90 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
       (count, section) => count + Object.keys(section.content).length,
       0
     );
+    const sectionProgress = enabledSections.map((section) => {
+      const entries = Object.values(section.content);
+      const filled = entries.filter((value) => value.trim().length > 0).length;
+      const total = entries.length;
+      const completion = total === 0 ? 0 : Math.round((filled / total) * 100);
+      return {
+        id: section.id,
+        name: section.nameEn || section.name || section.id,
+        filled,
+        total,
+        completion,
+      };
+    });
+
+    const shortFieldCount = enabledSections.reduce((count, section) => {
+      return count + Object.values(section.content)
+        .filter((value) => value.trim().length > 0)
+        .filter((value) => value.trim().length < 18).length;
+    }, 0);
+
+    const valueFrequency = new Map<string, number>();
+    for (const section of enabledSections) {
+      for (const value of Object.values(section.content)) {
+        const normalized = value.trim().toLowerCase();
+        if (!normalized) continue;
+        valueFrequency.set(normalized, (valueFrequency.get(normalized) ?? 0) + 1);
+      }
+    }
+    const repeatedSnippetCount = Array.from(valueFrequency.values()).filter((count) => count > 1).length;
+
+    const fillRatio = totalFields === 0 ? 0 : filledFields / totalFields;
+    const siteNameWordCount = globalContent.siteName.trim().split(/\s+/).filter(Boolean).length;
+    const siteDescriptionWordCount = globalContent.siteDescription.trim().split(/\s+/).filter(Boolean).length;
+
+    let readinessScore = Math.round(fillRatio * 55);
+    if (siteNameWordCount >= 2) readinessScore += 15;
+    if (siteDescriptionWordCount >= 10) readinessScore += 20;
+    readinessScore = Math.max(0, Math.min(100, readinessScore - repeatedSnippetCount * 4 - shortFieldCount * 2));
+
+    const recommendations: string[] = [];
+    if (siteNameWordCount < 2) {
+      recommendations.push("Give the site name at least two words to improve clarity.");
+    }
+    if (siteDescriptionWordCount < 10) {
+      recommendations.push("Expand the site description with outcome-focused copy.");
+    }
+    if (fillRatio < 0.75) {
+      recommendations.push("Complete more section fields before exporting for production use.");
+    }
+    if (shortFieldCount > 0) {
+      recommendations.push("Some fields are too short; add more concrete details and context.");
+    }
+    if (repeatedSnippetCount > 0) {
+      recommendations.push("There are repeated snippets across sections; diversify wording.");
+    }
+    if (selectedFormat === "nextjs") {
+      recommendations.push("For Next.js output, review generated route groups and metadata before shipping.");
+    }
+    if (recommendations.length === 0) {
+      recommendations.push("Looks strong. Run one final copy pass and export.");
+    }
+
+    const readinessTier = readinessScore >= 85
+      ? "Production-ready"
+      : readinessScore >= 65
+        ? "Refine and launch"
+        : "Draft mode";
+
     return {
       enabledSectionCount: enabledSections.length,
       totalSectionCount: sections.length,
       filledFields,
       totalFields,
+      fillPercent: Math.round(fillRatio * 100),
+      shortFieldCount,
+      repeatedSnippetCount,
+      siteNameWordCount,
+      siteDescriptionWordCount,
+      readinessScore,
+      readinessTier,
+      sectionProgress,
+      recommendations,
     };
-  }, [sections]);
+  }, [sections, globalContent, selectedFormat]);
 
   useEffect(() => {
     if (!styleInput) {
@@ -625,15 +702,82 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
             {styleInput && (
               <div className="border border-border p-4 md:p-5">
-                <div className="text-sm text-muted space-y-1">
-                  <p>{t("generator.preview")}</p>
-                  <p>{styleInput.style.name} / {selectedTemplateLabel}</p>
-                  <p>
-                    Enabled sections: {contentMetrics.enabledSectionCount}/{contentMetrics.totalSectionCount}
-                  </p>
-                  <p>
-                    Filled fields: {contentMetrics.filledFields}/{contentMetrics.totalFields}
-                  </p>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs tracking-widest uppercase text-muted mb-1">
+                      Generation intelligence
+                    </p>
+                    <p className="text-sm text-muted">
+                      {styleInput.style.name} / {selectedTemplateLabel}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-semibold tabular-nums">
+                      {contentMetrics.readinessScore}
+                    </p>
+                    <p className="text-xs text-muted">{contentMetrics.readinessTier}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 h-2 w-full bg-border/40 overflow-hidden">
+                  <div
+                    className="h-full bg-foreground transition-all duration-300"
+                    style={{ width: `${contentMetrics.readinessScore}%` }}
+                  />
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                  <div className="border border-border px-3 py-2">
+                    <p className="text-muted">Sections</p>
+                    <p className="font-medium mt-1">
+                      {contentMetrics.enabledSectionCount}/{contentMetrics.totalSectionCount}
+                    </p>
+                  </div>
+                  <div className="border border-border px-3 py-2">
+                    <p className="text-muted">Filled fields</p>
+                    <p className="font-medium mt-1">
+                      {contentMetrics.filledFields}/{contentMetrics.totalFields} ({contentMetrics.fillPercent}%)
+                    </p>
+                  </div>
+                  <div className="border border-border px-3 py-2">
+                    <p className="text-muted">Short fields</p>
+                    <p className="font-medium mt-1">{contentMetrics.shortFieldCount}</p>
+                  </div>
+                  <div className="border border-border px-3 py-2">
+                    <p className="text-muted">Repeated snippets</p>
+                    <p className="font-medium mt-1">{contentMetrics.repeatedSnippetCount}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <p className="text-xs tracking-wide uppercase text-muted">Section completion</p>
+                    {contentMetrics.sectionProgress.map((section) => (
+                      <div key={section.id}>
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-muted">{section.name}</span>
+                          <span className="tabular-nums">
+                            {section.filled}/{section.total}
+                          </span>
+                        </div>
+                        <div className="h-1.5 w-full bg-border/40 overflow-hidden">
+                          <div
+                            className="h-full bg-foreground transition-all duration-300"
+                            style={{ width: `${section.completion}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs tracking-wide uppercase text-muted">Recommendations</p>
+                    {contentMetrics.recommendations.slice(0, 4).map((item) => (
+                      <p key={item} className="text-xs text-muted leading-relaxed">
+                        - {item}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
