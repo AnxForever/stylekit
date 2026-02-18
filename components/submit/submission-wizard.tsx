@@ -290,11 +290,11 @@ export function SubmissionWizard() {
   const stepInfo = [
     { title: text.stepInfo[0].title, desc: text.stepInfo[0].desc },
     { title: text.stepInfo[1].title, desc: text.stepInfo[1].desc },
-    { title: "Typography", desc: "Fonts, sizes, spacing" },
+    { title: locale === "zh" ? "字体排版" : "Typography", desc: locale === "zh" ? "字体、字号、间距" : "Fonts, sizes, spacing" },
     { title: text.stepInfo[2].title, desc: text.stepInfo[2].desc },
     { title: text.stepInfo[3].title, desc: text.stepInfo[3].desc },
-    { title: "Preview", desc: "Validate & score" },
-    { title: "Submit", desc: "Download or GitHub" },
+    { title: locale === "zh" ? "预览校验" : "Preview", desc: locale === "zh" ? "校验与评分" : "Validate & score" },
+    { title: locale === "zh" ? "提交" : "Submit", desc: locale === "zh" ? "下载或 GitHub" : "Download or GitHub" },
   ];
 
   return (
