@@ -369,7 +369,7 @@ export default function EcommerceProductTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }

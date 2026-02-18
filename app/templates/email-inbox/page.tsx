@@ -359,7 +359,7 @@ export default function EmailInboxTemplate() {
           </div>
         )}
       </main>
-      <TemplateBackButton />
+      <TemplateBackButton variant="dark" />
     </div>
   );
 }

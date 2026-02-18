@@ -277,7 +277,7 @@ export default function DocsSiteTemplate() {
           </p>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="modern" />
     </div>
   );
 }

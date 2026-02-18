@@ -317,7 +317,7 @@ export default function BlogSidebarTemplate() {
           </div>
         </div>
       </footer>
-      <TemplateBackButton />
+      <TemplateBackButton variant="editorial" />
     </div>
   );
 }

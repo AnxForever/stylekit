@@ -499,7 +499,7 @@ export default function SocialFeedTemplate() {
       >
         <Plus className="w-6 h-6" />
       </button>
-      <TemplateBackButton />
+      <TemplateBackButton variant="social" />
     </div>
   );
 }
