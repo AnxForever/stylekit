@@ -15,6 +15,18 @@ Read these documents in order before changing code:
 - Never commit secrets, tokens, credentials, or `.env` values.
 - For UI changes, include screenshots or short GIFs in the PR.
 
+## Branch and Scope Rules (Main-Only)
+
+- Treat `main` as the only long-lived integration branch.
+- Do not use long-lived `admin`/`dev` branches for feature delivery.
+- Create one short-lived branch per task via worktree:
+  - `bash tools/scripts/new-cc-worktree.sh admin <task-name>`
+  - `bash tools/scripts/new-cc-worktree.sh web <task-name>`
+- Keep each PR scoped to one area (`admin`, `web`, or `shared`) and declare deploy impact.
+- Read:
+  - `docs/architecture/admin-independence-roadmap.md`
+  - `docs/workflows/cc-main-admin-playbook.md`
+
 ## New Style PR Requirements
 
 When adding a new style, follow `docs/STYLE_ADDITION_CHECKLIST.md` exactly:

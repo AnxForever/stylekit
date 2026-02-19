@@ -74,6 +74,14 @@ pnpm dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+### AI / CC Workflow
+
+For main-only AI development (no long-lived admin branch), use:
+
+- `docs/workflows/cc-main-admin-playbook.md`
+- `docs/architecture/admin-independence-roadmap.md`
+- `AI_CONTEXT.md`
+
 ### Optional: Supabase Setup
 
 To enable auth, ratings, and comments, create a `.env.local`:
