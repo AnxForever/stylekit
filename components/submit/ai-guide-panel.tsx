@@ -21,6 +21,23 @@ Constraints:
 - include buttonCode, cardCode, inputCode
 - do not add unknown fields
 
+Required manifest.json fields:
+- name (string): Style display name in Chinese
+- nameEn (string): Style display name in English
+- slug (string): URL-safe identifier, ^[a-z0-9]+(?:-[a-z0-9]+)*$
+- description (string): Brief style description
+- category: "modern" | "minimal" | "expressive" | "retro"
+- styleType: "visual" | "layout" | "animation"
+- tags: array of style tags
+- primaryColor (hex): Main brand color
+- secondaryColor (hex): Secondary/background color
+- accentColors (hex[]): Additional accent colors
+- doList (string[]): Design rules to follow (min 1)
+- dontList (string[]): Anti-patterns to avoid
+- buttonCode (string): HTML/JSX code for button component
+- cardCode (string): HTML/JSX code for card component
+- inputCode (string): HTML/JSX code for input component
+
 Output format:
 - Return three fenced blocks in this exact order:
   1) \`\`\`json (manifest.json)
@@ -30,10 +47,11 @@ Output format:
 
 interface AiGuidePanelProps {
   locale: Locale;
+  defaultOpen?: boolean;
 }
 
-export function AiGuidePanel({ locale }: AiGuidePanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function AiGuidePanel({ locale, defaultOpen }: AiGuidePanelProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [activeTab, setActiveTab] = useState<"claude" | "chatgpt" | "cursor">("claude");
   const copy = submitCopy[locale];
