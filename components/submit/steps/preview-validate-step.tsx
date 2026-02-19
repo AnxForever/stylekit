@@ -37,6 +37,26 @@ interface PreviewValidateStepProps {
     inputCode: string;
   };
   isAnimating: boolean;
+  onGoToStep?: (step: number) => void;
+}
+
+const FIELD_TO_STEP: Record<string, number> = {
+  "Name": 1,
+  "Slug": 1,
+  "Primary Color": 2,
+  "Secondary Color": 2,
+  "Description": 1,
+  "Philosophy": 1,
+  "Do List": 4,
+  "Don't List": 4,
+  "AI Rules": 4,
+  "Keywords": 1,
+  "Components": 5,
+};
+
+function fieldToStep(field: string): number | undefined {
+  if (field.startsWith("Accent Color")) return 2;
+  return FIELD_TO_STEP[field];
 }
 
 interface ValidationIssue {
@@ -158,7 +178,7 @@ function gradeFromScore(score: number): string {
   return "F";
 }
 
-export function PreviewValidateStep({ formData, isAnimating }: PreviewValidateStepProps) {
+export function PreviewValidateStep({ formData, isAnimating, onGoToStep }: PreviewValidateStepProps) {
   const issues = useMemo(() => validateSubmission(formData), [formData]);
   const errors = issues.filter((i) => i.severity === "error");
   const warnings = issues.filter((i) => i.severity === "warning");
@@ -209,20 +229,44 @@ export function PreviewValidateStep({ formData, isAnimating }: PreviewValidateSt
             <p className="text-sm font-medium">Validation Results</p>
           </div>
           <div className="divide-y divide-border">
-            {errors.map((issue, i) => (
-              <div key={`e-${i}`} className="flex items-center gap-3 px-4 py-3">
-                <X className="w-4 h-4 text-red-500 shrink-0" />
-                <span className="text-sm font-medium w-32 shrink-0">{issue.field}</span>
-                <span className="text-sm text-muted">{issue.message}</span>
-              </div>
-            ))}
-            {warnings.map((issue, i) => (
-              <div key={`w-${i}`} className="flex items-center gap-3 px-4 py-3">
-                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                <span className="text-sm font-medium w-32 shrink-0">{issue.field}</span>
-                <span className="text-sm text-muted">{issue.message}</span>
-              </div>
-            ))}
+            {errors.map((issue, i) => {
+              const targetStep = fieldToStep(issue.field);
+              return (
+                <div key={`e-${i}`} className="flex items-center gap-3 px-4 py-3">
+                  <X className="w-4 h-4 text-red-500 shrink-0" />
+                  <span className="text-sm font-medium w-32 shrink-0">{issue.field}</span>
+                  <span className="text-sm text-muted flex-1">{issue.message}</span>
+                  {onGoToStep && targetStep != null && (
+                    <button
+                      type="button"
+                      onClick={() => onGoToStep(targetStep)}
+                      className="text-xs text-muted underline underline-offset-2 hover:text-foreground transition-colors shrink-0"
+                    >
+                      Step {targetStep}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            {warnings.map((issue, i) => {
+              const targetStep = fieldToStep(issue.field);
+              return (
+                <div key={`w-${i}`} className="flex items-center gap-3 px-4 py-3">
+                  <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span className="text-sm font-medium w-32 shrink-0">{issue.field}</span>
+                  <span className="text-sm text-muted flex-1">{issue.message}</span>
+                  {onGoToStep && targetStep != null && (
+                    <button
+                      type="button"
+                      onClick={() => onGoToStep(targetStep)}
+                      className="text-xs text-muted underline underline-offset-2 hover:text-foreground transition-colors shrink-0"
+                    >
+                      Step {targetStep}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
