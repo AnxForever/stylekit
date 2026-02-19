@@ -413,6 +413,38 @@ export function SubmissionsReview() {
                 )}
               </div>
             )}
+
+            {/* Delete button for pending and rejected submissions */}
+            {(sub.status === "pending" || sub.status === "rejected") && (
+              <div className="mt-4 pt-4 border-t border-border">
+                {confirmDeleteId === sub.id ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-red-600 dark:text-red-400">Are you sure?</span>
+                    <button
+                      disabled={deletingId === sub.id}
+                      onClick={() => handleDelete(sub.id)}
+                      className="px-3 py-1 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {deletingId === sub.id ? "Deleting..." : "Confirm Delete"}
+                    </button>
+                    <button
+                      disabled={deletingId === sub.id}
+                      onClick={() => setConfirmDeleteId(null)}
+                      className="px-3 py-1 text-sm text-muted hover:text-foreground transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setConfirmDeleteId(sub.id)}
+                    className="text-red-600 hover:text-red-700 text-sm transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
