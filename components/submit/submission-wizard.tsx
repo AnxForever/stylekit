@@ -10,7 +10,6 @@ import {
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import type { Locale } from "@/lib/i18n/translations";
 import { pickLocale } from "@/lib/i18n/locale-copy";
-import { parseStyleExtractorInput, type ExtractedStyleDraft } from "@/lib/style-extractor/adapter";
 import { submitCopy } from "@/lib/i18n/submit-copy";
 import { stylesMeta } from "@/lib/styles/meta";
 import { BasicInfoStep } from "./steps/basic-info-step";
@@ -139,18 +138,18 @@ export function SubmissionWizard() {
   const [anim, setAnim] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [stepVal, setStepVal] = useState<Record<number, boolean>>({});
-  const [hasDraft, setHasDraft] = useState(false);
-  const [showDraft, setShowDraft] = useState(false);
+  const [hasDraft, setHasDraft] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      return !!(parsed?.data && hasMeaningful(parsed.data));
+    } catch { return false; }
+  });
+  const [showDraft, setShowDraft] = useState(() => hasDraft);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [keywordInput, setKeywordInput] = useState("");
-  // URL extraction state — retained for future re-enablement (Phase 5)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [extractUrl, setExtractUrl] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isExtractingUrl, setIsExtractingUrl] = useState(false);
-  const [extractInput, setExtractInput] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [extractMsg, setExtractMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [manifestInput, setManifestInput] = useState("");
   const [manifestMsg, setManifestMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [submissionPath, setSubmissionPath] = useState<SubmissionPath>("ai-manifest");
@@ -160,33 +159,31 @@ export function SubmissionWizard() {
 
   useEffect(() => { localStorage.setItem(LOCALE_KEY, locale); }, [locale]);
 
-  // Draft load
+  // Draft fingerprint init (ref-only, no setState needed — state uses lazy init)
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (parsed?.data && hasMeaningful(parsed.data)) {
-        setHasDraft(true);
-        setShowDraft(true);
         lastFP.current = JSON.stringify(parsed.data);
       }
     } catch { /* ignore */ }
   }, []);
 
-  // Auto-save
+  // Auto-save (setState deferred to callbacks to avoid cascading renders)
   useEffect(() => {
     if (!hasMeaningful(fd)) return;
     const fp = JSON.stringify(fd);
     if (fp === lastFP.current) return;
-    setSaveStatus("saving");
-    const t = setTimeout(() => {
+    const showSaving = setTimeout(() => setSaveStatus("saving"), 0);
+    const persist = setTimeout(() => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ data: fd, at: new Date().toISOString() }));
       lastFP.current = fp;
       setHasDraft(true);
       setSaveStatus("saved");
     }, 500);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(showSaving); clearTimeout(persist); };
   }, [fd]);
 
   const loadDraft = () => {
@@ -267,57 +264,6 @@ export function SubmissionWizard() {
   const addAccentColor = () => { if (fd.accentColors.length < 5) updateField("accentColors", [...fd.accentColors, "#3b82f6"]); };
   const updateAccentColor = (i: number, v: string) => { const n = [...fd.accentColors]; n[i] = v; updateField("accentColors", n); };
   const removeAccentColor = (i: number) => { if (fd.accentColors.length > 1) updateField("accentColors", fd.accentColors.filter((_, j) => j !== i)); };
-
-  const applyExtractedData = (data: ExtractedStyleDraft, src: string) => {
-    setFd(p => {
-      const n = { ...p,
-        name: data.name ?? p.name, nameEn: data.nameEn ?? p.nameEn,
-        slug: data.slug ?? p.slug, description: data.description ?? p.description,
-        category: data.category ?? p.category, styleType: data.styleType ?? p.styleType,
-        tags: data.tags?.length ? data.tags : p.tags,
-        primaryColor: data.primaryColor ?? p.primaryColor,
-        secondaryColor: data.secondaryColor ?? p.secondaryColor,
-        accentColors: data.accentColors?.length ? data.accentColors : p.accentColors,
-        keywords: data.keywords?.length ? data.keywords : p.keywords,
-        philosophy: data.philosophy ?? p.philosophy,
-        doList: data.doList?.length ? data.doList : p.doList,
-        dontList: data.dontList?.length ? data.dontList : p.dontList,
-        buttonCode: data.buttonCode ?? p.buttonCode,
-        cardCode: data.cardCode ?? p.cardCode,
-        inputCode: data.inputCode ?? p.inputCode,
-      };
-      if (!n.slug) { const seed = n.nameEn || n.name; if (seed) n.slug = toSlug(seed); }
-      return n;
-    });
-    setExtractMsg({ type: "success", text: `${text.extractorSuccessPrefix} ${src}` });
-  };
-
-  // URL extraction functions — retained for future re-enablement (Phase 5)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const applyExtractedDraft = () => {
-    const p = parseStyleExtractorInput(extractInput);
-    if (!p.ok || !p.data) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${p.error ?? "Unknown"}` }); return; }
-    applyExtractedData(p.data, p.source === "json" ? text.extractorJsonSource : text.extractorMarkdownSource);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const extractFromUrl = async () => {
-    const u = extractUrl.trim(); if (!u) return;
-    setIsExtractingUrl(true); setExtractMsg(null);
-    try {
-      const r = await fetch("/api/style-extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: u }) });
-      const j = await r.json() as { draft?: ExtractedStyleDraft; raw?: string; error?: string };
-      if (!r.ok) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${j.error ?? `HTTP ${r.status}`}` }); return; }
-      const raw = (typeof j.raw === "string" && j.raw.trim()) ? j.raw : (j.draft ? JSON.stringify(j.draft, null, 2) : "");
-      if (!raw) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} Empty output` }); return; }
-      setExtractInput(raw);
-      const p = parseStyleExtractorInput(raw);
-      if (!p.ok || !p.data) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${p.error ?? "Unknown"}` }); return; }
-      const host = (() => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } })();
-      applyExtractedData(p.data, `${text.extractorUrlSource} (${host})`);
-    } catch (e) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${(e as Error).message}` }); }
-    finally { setIsExtractingUrl(false); }
-  };
 
   const manifestCopy = useMemo(
     () =>
@@ -652,7 +598,7 @@ export function SubmissionWizard() {
           {step === 3 && <TypographyStep formData={fd} updateField={updateField} isAnimating={anim} />}
           {step === 4 && <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
           {step === 5 && <ComponentsStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
-          {step === 6 && <PreviewValidateStep formData={fd} isAnimating={anim} />}
+          {step === 6 && <PreviewValidateStep formData={fd} isAnimating={anim} onGoToStep={goStep} />}
           {step === 7 && <SubmitStep formData={fd} isAnimating={anim} text={text} />}
 
           {/* Navigation */}
