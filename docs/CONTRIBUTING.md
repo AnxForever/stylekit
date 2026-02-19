@@ -17,11 +17,25 @@ This repository accepts both human-authored and AI-assisted pull requests.
 - `fix/<short-topic>`
 - `docs/<short-topic>`
 - `refactor/<short-topic>`
+- `cc/admin-<short-topic>`
+- `cc/web-<short-topic>`
+- `cc/shared-<short-topic>`
 
 Examples:
 
 - `feat/new-style-arcade-crt`
 - `fix/supabase-auth-callback`
+- `cc/admin-users-aggregation-fallback`
+
+### Main-only workflow
+
+- `main` is the only long-lived integration branch.
+- Use short-lived branches per task (prefer `cc/*`).
+- Prefer worktree isolation for AI sessions:
+
+```bash
+bash tools/scripts/new-cc-worktree.sh admin <task-name>
+```
 
 ### Commit format
 
