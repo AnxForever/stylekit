@@ -28,7 +28,7 @@ vi.mock("@/lib/security/json-body", () => ({
   parseJsonBodyWithLimit: vi.fn(),
 }));
 
-import { POST } from "@/app/api/submit/[id]/review/route";
+import { POST } from "@/app/api/admin/submissions/[id]/review/route";
 import { rejectSubmission, isValidSubmissionId } from "@/lib/submit/reviewer";
 import {
   isSupabaseConfigured,
@@ -54,7 +54,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("POST /api/submit/[id]/review", () => {
+describe("POST /api/admin/submissions/[id]/review", () => {
   it("rejects untrusted origins", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({
       ok: false,
@@ -63,7 +63,7 @@ describe("POST /api/submit/[id]/review", () => {
     });
 
     const response = await POST(
-      new Request("https://stylekit.top/api/submit/sub-1/review", { method: "POST" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-1/review", { method: "POST" }),
       { params: Promise.resolve({ id: "sub-1" }) },
     );
 
@@ -83,7 +83,7 @@ describe("POST /api/submit/[id]/review", () => {
     mockedIsValidSubmissionId.mockReturnValue(false);
 
     const response = await POST(
-      new Request("https://stylekit.top/api/submit/bad/review", { method: "POST" }),
+      new Request("https://stylekit.top/api/admin/submissions/bad/review", { method: "POST" }),
       { params: Promise.resolve({ id: "bad" }) },
     );
 
@@ -113,7 +113,7 @@ describe("POST /api/submit/[id]/review", () => {
     } as never);
 
     const response = await POST(
-      new Request("https://stylekit.top/api/submit/sub-2/review", { method: "POST" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-2/review", { method: "POST" }),
       { params: Promise.resolve({ id: "sub-2" }) },
     );
 
@@ -145,7 +145,7 @@ describe("POST /api/submit/[id]/review", () => {
     mockedRejectSubmission.mockResolvedValue(null);
 
     const response = await POST(
-      new Request("https://stylekit.top/api/submit/sub-3/review", { method: "POST" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-3/review", { method: "POST" }),
       { params: Promise.resolve({ id: "sub-3" }) },
     );
 

@@ -21,7 +21,7 @@ vi.mock("@/lib/security/request-origin", () => ({
   verifyTrustedOrigin: vi.fn(),
 }));
 
-import { DELETE, GET } from "@/app/api/submit/[id]/route";
+import { DELETE, GET } from "@/app/api/admin/submissions/[id]/route";
 import { existsSync } from "fs";
 import { readFile, unlink } from "fs/promises";
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
@@ -39,7 +39,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("GET /api/submit/[id]", () => {
+describe("GET /api/admin/submissions/[id]", () => {
   it("returns auth error when admin access is denied", async () => {
     mockedCheckAdminApiAccess.mockResolvedValue({
       allowed: false,
@@ -47,7 +47,7 @@ describe("GET /api/submit/[id]", () => {
       status: 403,
     });
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/abc"), {
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions/abc"), {
       params: Promise.resolve({ id: "abc" }),
     });
 
@@ -59,7 +59,7 @@ describe("GET /api/submit/[id]", () => {
     mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true, actor: { type: "user", id: "admin" } });
     mockedIsValidSubmissionId.mockReturnValue(false);
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/bad"), {
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions/bad"), {
       params: Promise.resolve({ id: "bad" }),
     });
 
@@ -72,7 +72,7 @@ describe("GET /api/submit/[id]", () => {
     mockedIsValidSubmissionId.mockReturnValue(true);
     mockedExistsSync.mockReturnValue(false);
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/sub-1"), {
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions/sub-1"), {
       params: Promise.resolve({ id: "sub-1" }),
     });
 
@@ -88,7 +88,7 @@ describe("GET /api/submit/[id]", () => {
       JSON.stringify({ id: "sub-2", slug: "neo-brutalist", status: "pending" }),
     );
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/sub-2"), {
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions/sub-2"), {
       params: Promise.resolve({ id: "sub-2" }),
     });
 
@@ -101,7 +101,7 @@ describe("GET /api/submit/[id]", () => {
   });
 });
 
-describe("DELETE /api/submit/[id]", () => {
+describe("DELETE /api/admin/submissions/[id]", () => {
   it("rejects untrusted origins before admin auth", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({
       ok: false,
@@ -110,7 +110,7 @@ describe("DELETE /api/submit/[id]", () => {
     });
 
     const response = await DELETE(
-      new Request("https://stylekit.top/api/submit/sub-1", { method: "DELETE" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-1", { method: "DELETE" }),
       { params: Promise.resolve({ id: "sub-1" }) },
     );
 
@@ -130,7 +130,7 @@ describe("DELETE /api/submit/[id]", () => {
     });
 
     const response = await DELETE(
-      new Request("https://stylekit.top/api/submit/sub-1", { method: "DELETE" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-1", { method: "DELETE" }),
       { params: Promise.resolve({ id: "sub-1" }) },
     );
 
@@ -149,7 +149,7 @@ describe("DELETE /api/submit/[id]", () => {
     mockedUnlink.mockResolvedValue(undefined);
 
     const response = await DELETE(
-      new Request("https://stylekit.top/api/submit/sub-2", { method: "DELETE" }),
+      new Request("https://stylekit.top/api/admin/submissions/sub-2", { method: "DELETE" }),
       { params: Promise.resolve({ id: "sub-2" }) },
     );
 
