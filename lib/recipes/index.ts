@@ -90,6 +90,46 @@ import { neonGradientRecipes } from "./neon-gradient";
 import { liquidGlassRecipes } from "./liquid-glass";
 // New styles - Batch 9
 import { particleRecipes } from "./particle";
+// New styles - Batch 10
+import { terracottaRecipes } from "./terracotta";
+import { brutalistWebRecipes } from "./brutalist-web";
+import { midCenturyModernRecipes } from "./mid-century-modern";
+import { constructivismRecipes } from "./constructivism";
+import { opArtRecipes } from "./op-art";
+import { islamicGeometricRecipes } from "./islamic-geometric";
+import { indianFestiveRecipes } from "./indian-festive";
+import { africanTextileRecipes } from "./african-textile";
+import { koreanMinimalRecipes } from "./korean-minimal";
+import { pastelGothRecipes } from "./pastel-goth";
+import { maximalismRecipes } from "./maximalism";
+import { medievalManuscriptRecipes } from "./medieval-manuscript";
+import { graffitiStreetRecipes } from "./graffiti-street";
+import { marbleLuxuryRecipes } from "./marble-luxury";
+import { victorianBotanicalRecipes } from "./victorian-botanical";
+import { cubismRecipes } from "./cubism";
+import { tropicalParadiseRecipes } from "./tropical-paradise";
+import { githubStyleRecipes } from "./github-style";
+import { witchcoreRecipes } from "./witchcore";
+import { neonTokyoRecipes } from "./neon-tokyo";
+import { paperCraftRecipes } from "./paper-craft";
+import { blueprintRecipes } from "./blueprint";
+// New styles - Batch 11
+import { zenGardenRecipes } from "./zen-garden";
+import { inkWashRecipes } from "./ink-wash";
+import { monochromeRecipes } from "./monochrome";
+// New styles - Batch 12
+import { sciFiHudRecipes } from "./sci-fi-hud";
+import { kawaiiMinimalRecipes } from "./kawaii-minimal";
+import { filmNoirRecipes } from "./film-noir";
+import { arcadeCrtRecipes } from "./arcade-crt";
+import { frutigerAeroRecipes } from "./frutiger-aero";
+import { holographicRecipes } from "./holographic";
+import { generativeArtRecipes } from "./generative-art";
+import { antiDesignRecipes } from "./anti-design";
+import { vhsAestheticRecipes } from "./vhs-aesthetic";
+import { scandinavianRecipes } from "./scandinavian";
+import { celShadingRecipes } from "./cel-shading";
+import { wabiSabiRecipes } from "./wabi-sabi";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -182,6 +222,46 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "liquid-glass": liquidGlassRecipes,
   // New styles - Batch 9
   particle: particleRecipes,
+  // New styles - Batch 10
+  "terracotta": terracottaRecipes,
+  "brutalist-web": brutalistWebRecipes,
+  "mid-century-modern": midCenturyModernRecipes,
+  "constructivism": constructivismRecipes,
+  "op-art": opArtRecipes,
+  "islamic-geometric": islamicGeometricRecipes,
+  "indian-festive": indianFestiveRecipes,
+  "african-textile": africanTextileRecipes,
+  "korean-minimal": koreanMinimalRecipes,
+  "pastel-goth": pastelGothRecipes,
+  "maximalism": maximalismRecipes,
+  "medieval-manuscript": medievalManuscriptRecipes,
+  "graffiti-street": graffitiStreetRecipes,
+  "marble-luxury": marbleLuxuryRecipes,
+  "victorian-botanical": victorianBotanicalRecipes,
+  "cubism": cubismRecipes,
+  "tropical-paradise": tropicalParadiseRecipes,
+  "github-style": githubStyleRecipes,
+  "witchcore": witchcoreRecipes,
+  "neon-tokyo": neonTokyoRecipes,
+  "paper-craft": paperCraftRecipes,
+  "blueprint": blueprintRecipes,
+  // New styles - Batch 11
+  "zen-garden": zenGardenRecipes,
+  "ink-wash": inkWashRecipes,
+  "monochrome": monochromeRecipes,
+  // New styles - Batch 12
+  "sci-fi-hud": sciFiHudRecipes,
+  "kawaii-minimal": kawaiiMinimalRecipes,
+  "film-noir": filmNoirRecipes,
+  "arcade-crt": arcadeCrtRecipes,
+  "frutiger-aero": frutigerAeroRecipes,
+  "holographic": holographicRecipes,
+  "generative-art": generativeArtRecipes,
+  "anti-design": antiDesignRecipes,
+  "vhs-aesthetic": vhsAestheticRecipes,
+  "scandinavian": scandinavianRecipes,
+  "cel-shading": celShadingRecipes,
+  "wabi-sabi": wabiSabiRecipes,
 };
 
 /**

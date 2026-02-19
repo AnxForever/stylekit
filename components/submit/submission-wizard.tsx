@@ -125,6 +125,8 @@ const stepFields: Record<number, string[]> = {
 };
 
 // ── Component ──────────────────────────────────────────────────────
+export type SubmissionPath = "ai-manifest" | "manual";
+
 export function SubmissionWizard() {
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>(() => {
@@ -141,12 +143,17 @@ export function SubmissionWizard() {
   const [showDraft, setShowDraft] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [keywordInput, setKeywordInput] = useState("");
+  // URL extraction state — retained for future re-enablement (Phase 5)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [extractUrl, setExtractUrl] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isExtractingUrl, setIsExtractingUrl] = useState(false);
   const [extractInput, setExtractInput] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [extractMsg, setExtractMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [manifestInput, setManifestInput] = useState("");
   const [manifestMsg, setManifestMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [submissionPath, setSubmissionPath] = useState<SubmissionPath>("ai-manifest");
   const lastFP = useRef("");
   const text = pickLocale(locale, submitCopy);
   const errors = useMemo(() => validate(fd, locale), [fd, locale]);
@@ -285,12 +292,15 @@ export function SubmissionWizard() {
     setExtractMsg({ type: "success", text: `${text.extractorSuccessPrefix} ${src}` });
   };
 
+  // URL extraction functions — retained for future re-enablement (Phase 5)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const applyExtractedDraft = () => {
     const p = parseStyleExtractorInput(extractInput);
     if (!p.ok || !p.data) { setExtractMsg({ type: "error", text: `${text.extractorErrorPrefix} ${p.error ?? "Unknown"}` }); return; }
     applyExtractedData(p.data, p.source === "json" ? text.extractorJsonSource : text.extractorMarkdownSource);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const extractFromUrl = async () => {
     const u = extractUrl.trim(); if (!u) return;
     setIsExtractingUrl(true); setExtractMsg(null);
@@ -444,9 +454,18 @@ export function SubmissionWizard() {
         type: "success",
         text: sourceLabel ? `${manifestCopy.imported}: ${sourceLabel}` : manifestCopy.imported,
       });
+
+      if (submissionPath === "ai-manifest") {
+        setAnim(true);
+        setTimeout(() => {
+          setStep(6);
+          setAnim(false);
+        }, 150);
+      }
+
       return true;
     },
-    [manifestCopy]
+    [manifestCopy, submissionPath]
   );
 
   const applyManifestInput = useCallback(() => {
@@ -610,6 +629,7 @@ export function SubmissionWizard() {
               markTouched={markTouched}
               isAnimating={anim}
               text={text}
+              locale={locale}
               manifestCopy={manifestCopy}
               manifestInput={manifestInput}
               setManifestInput={setManifestInput}
@@ -617,15 +637,8 @@ export function SubmissionWizard() {
               setManifestMessage={setManifestMsg}
               applyManifestInput={applyManifestInput}
               importManifestFile={importManifestFile}
-              extractUrl={extractUrl}
-              setExtractUrl={setExtractUrl}
-              isExtractingUrl={isExtractingUrl}
-              extractFromUrl={extractFromUrl}
-              extractInput={extractInput}
-              setExtractInput={setExtractInput}
-              extractMessage={extractMsg}
-              setExtractMessage={setExtractMsg}
-              applyExtractedDraft={applyExtractedDraft}
+              submissionPath={submissionPath}
+              setSubmissionPath={setSubmissionPath}
               handleNameEnChange={handleNameEnChange}
               handleSlugChange={handleSlugChange}
               keywordInput={keywordInput}
