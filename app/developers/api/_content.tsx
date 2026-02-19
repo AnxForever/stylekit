@@ -472,58 +472,58 @@ const { submissions } = await res.json();`,
       },
       {
         method: "GET",
-        path: "/api/submit/list",
+        path: "/api/admin/submissions",
         description: "List all submissions with their review status. Requires admin access.",
         auth: "admin",
         queryParams: [
           { name: "status", type: "string", required: false, description: "Filter by status: 'pending', 'approved', or 'rejected'" },
         ],
-        fetchExample: `const res = await fetch("/api/submit/list?status=pending");
+        fetchExample: `const res = await fetch("/api/admin/submissions?status=pending");
 const submissions = await res.json();`,
-        curlExample: `curl "https://stylekit.dev/api/submit/list?status=pending"`,
+        curlExample: `curl "https://stylekit.dev/api/admin/submissions?status=pending"`,
       },
       {
         method: "GET",
-        path: "/api/submit/[id]",
+        path: "/api/admin/submissions/[id]",
         description: "Get details of a specific submission.",
         params: [{ name: "id", type: "string", required: true, description: "Submission ID" }],
-        fetchExample: `const res = await fetch("/api/submit/abc123");
+        fetchExample: `const res = await fetch("/api/admin/submissions/abc123");
 const submission = await res.json();`,
-        curlExample: `curl https://stylekit.dev/api/submit/abc123`,
+        curlExample: `curl https://stylekit.dev/api/admin/submissions/abc123`,
       },
       {
         method: "PATCH",
-        path: "/api/submit/[id]",
+        path: "/api/admin/submissions/[id]",
         description: "Update a submission (e.g. edit fields before review).",
         params: [{ name: "id", type: "string", required: true, description: "Submission ID" }],
         bodyParams: [
           { name: "name", type: "string", required: false, description: "Updated name" },
           { name: "description", type: "string", required: false, description: "Updated description" },
         ],
-        fetchExample: `const res = await fetch("/api/submit/abc123", {
+        fetchExample: `const res = await fetch("/api/admin/submissions/abc123", {
   method: "PATCH",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ name: "Updated Name" })
 });`,
-        curlExample: `curl -X PATCH https://stylekit.dev/api/submit/abc123 \\
+        curlExample: `curl -X PATCH https://stylekit.dev/api/admin/submissions/abc123 \\
   -H "Content-Type: application/json" \\
   -d '{"name":"Updated Name"}'`,
       },
       {
         method: "POST",
-        path: "/api/submit/[id]/review",
+        path: "/api/admin/submissions/[id]/review",
         description: "Submit a review decision for a submission.",
         params: [{ name: "id", type: "string", required: true, description: "Submission ID" }],
         bodyParams: [
           { name: "decision", type: "string", required: true, description: "'approve' or 'reject'" },
           { name: "feedback", type: "string", required: false, description: "Review feedback" },
         ],
-        fetchExample: `const res = await fetch("/api/submit/abc123/review", {
+        fetchExample: `const res = await fetch("/api/admin/submissions/abc123/review", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ decision: "approve", feedback: "Looks great!" })
 });`,
-        curlExample: `curl -X POST https://stylekit.dev/api/submit/abc123/review \\
+        curlExample: `curl -X POST https://stylekit.dev/api/admin/submissions/abc123/review \\
   -H "Content-Type: application/json" \\
   -d '{"decision":"approve","feedback":"Looks great!"}'`,
       },
@@ -566,15 +566,15 @@ curl "https://stylekit.dev/api/analytics?combinations=true"`,
       },
       {
         method: "GET",
-        path: "/api/analytics/dashboard",
+        path: "/api/admin/analytics",
         description: "Dashboard analytics with time-range filtering.",
         queryParams: [
           { name: "range", type: "string", required: false, description: "Time range: '7d', '30d', or 'all' (default: 'all')" },
         ],
-        fetchExample: `const res = await fetch("/api/analytics/dashboard?range=7d");
+        fetchExample: `const res = await fetch("/api/admin/analytics?range=7d");
 const dashboard = await res.json();`,
-        curlExample: `curl "https://stylekit.dev/api/analytics/dashboard?range=7d"`,
-        tryItUrl: "/api/analytics/dashboard",
+        curlExample: `curl "https://stylekit.dev/api/admin/analytics?range=7d"`,
+        tryItUrl: "/api/admin/analytics",
       },
     ],
   },

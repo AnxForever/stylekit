@@ -175,7 +175,7 @@ export function useCommunityFeed(query: CommunityFeedQuery = {}) {
 }
 
 export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
-  return useSWR<DashboardData>(`/api/analytics/dashboard?range=${range}`);
+  return useSWR<DashboardData>(`/api/admin/analytics?range=${range}`);
 }
 
 interface AdminAuditQuery {
