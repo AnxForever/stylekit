@@ -12,13 +12,13 @@ const nonEmptyStringList = z
   });
 
 export const wizardFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  nameEn: z.string().min(1, "English name is required"),
+  name: z.string(),
+  nameEn: z.string(),
   slug: z
     .string()
     .min(1, "Slug is required")
     .regex(SLUG_RE, "Slug must be lowercase letters, numbers, and hyphens"),
-  description: z.string().min(1, "Description is required"),
+  description: z.string(),
   category: z.enum(["modern", "retro", "minimal", "expressive"]),
   styleType: z.enum(["visual", "layout", "animation"]),
   tags: z.array(
@@ -64,13 +64,16 @@ export const wizardFormSchema = z.object({
 
   // Rules
   doList: nonEmptyStringList,
-  dontList: nonEmptyStringList,
+  dontList: z.array(z.string()),
   aiRules: z.array(z.string()),
 
   // Components
   buttonCode: z.string(),
   cardCode: z.string(),
   inputCode: z.string(),
-});
+}).refine(
+  (d) => d.name.trim().length > 0 || d.nameEn.trim().length > 0,
+  { message: "At least one style name (name or nameEn) is required", path: ["name"] }
+);
 
 export type ValidatedWizardFormData = z.infer<typeof wizardFormSchema>;
