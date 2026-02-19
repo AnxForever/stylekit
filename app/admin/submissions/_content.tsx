@@ -55,7 +55,7 @@ export function SubmissionsReview() {
     const params = filter !== "all" ? `?status=${filter}` : "";
 
     try {
-      const res = await fetch(`/api/submit/list${params}`, {
+      const res = await fetch(`/api/admin/submissions${params}`, {
         cache: "no-store",
         signal,
       });
@@ -90,7 +90,7 @@ export function SubmissionsReview() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/submit/${id}/review`, {
+      const res = await fetch(`/api/admin/submissions/${id}/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, note: note || undefined }),
@@ -117,7 +117,7 @@ export function SubmissionsReview() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/submit/${id}/register`, {
+      const res = await fetch(`/api/admin/submissions/${id}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -140,7 +140,7 @@ export function SubmissionsReview() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/submit/${id}`, {
+      const res = await fetch(`/api/admin/submissions/${id}`, {
         method: "DELETE",
       });
 
@@ -175,7 +175,7 @@ export function SubmissionsReview() {
 
     setDetailLoadingId(id);
     try {
-      const res = await fetch(`/api/submit/${id}`);
+      const res = await fetch(`/api/admin/submissions/${id}`);
       if (!res.ok) {
         throw new Error("Failed to load submission details.");
       }
