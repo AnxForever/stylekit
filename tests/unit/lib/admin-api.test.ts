@@ -32,7 +32,7 @@ describe("admin api access", () => {
   it("allows valid admin token without user session lookup", async () => {
     process.env.ADMIN_API_TOKEN = "super-secret-token";
 
-    const request = new Request("https://stylekit.top/api/submit/list", {
+    const request = new Request("https://stylekit.top/api/admin/submissions", {
       headers: {
         "x-admin-token": "super-secret-token",
       },
@@ -48,7 +48,7 @@ describe("admin api access", () => {
   it("rejects missing token when token auth is configured and no auth cookie", async () => {
     process.env.ADMIN_API_TOKEN = "super-secret-token";
 
-    const request = new Request("https://stylekit.top/api/submit/list");
+    const request = new Request("https://stylekit.top/api/admin/submissions");
     const result = await checkAdminApiAccess(request, { nodeEnv: "production" });
 
     expect(result.allowed).toBe(false);
@@ -60,7 +60,7 @@ describe("admin api access", () => {
     process.env.ADMIN_USER_IDS = "user-1";
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as ServerUser);
 
-    const request = new Request("https://stylekit.top/api/submit/list", {
+    const request = new Request("https://stylekit.top/api/admin/submissions", {
       headers: {
         cookie: "sb-project-auth-token=abc",
       },
@@ -76,7 +76,7 @@ describe("admin api access", () => {
     process.env.ADMIN_USER_IDS = "user-1";
     mockedGetServerUser.mockResolvedValue({ id: "user-2" } as ServerUser);
 
-    const request = new Request("https://stylekit.top/api/submit/list", {
+    const request = new Request("https://stylekit.top/api/admin/submissions", {
       headers: {
         cookie: "sb-project-auth-token=abc",
       },
@@ -91,7 +91,7 @@ describe("admin api access", () => {
     delete process.env.ADMIN_USER_IDS;
     delete process.env.ADMIN_API_TOKEN;
 
-    const request = new Request("https://stylekit.top/api/submit/list");
+    const request = new Request("https://stylekit.top/api/admin/submissions");
     const result = await checkAdminApiAccess(request, { nodeEnv: "development" });
 
     expect(result.allowed).toBe(true);
