@@ -181,12 +181,14 @@ GET    /api/styles/{slug}/skill-pack      # Export as skill pack
 GET    /api/styles/{slug}/md              # Export as Markdown
 
 # Admin (requires admin session or ADMIN_API_TOKEN)
-GET    /api/analytics/dashboard           # Admin analytics dataset
+GET    /api/admin/analytics               # Admin analytics dataset
 GET    /api/admin/audit                   # Admin action audit events
 GET    /api/admin/generator               # Generator telemetry + trend + CSV export
-GET    /api/submit/list                   # Review queue
-GET    /api/submit/{id}                   # Submission detail
-POST   /api/submit/{id}/review            # Approve/reject submission
+GET    /api/admin/submissions             # Review queue
+GET    /api/admin/submissions/{id}        # Submission detail
+POST   /api/admin/submissions/{id}/review # Approve/reject submission
+POST   /api/admin/submissions/{id}/register # Register approved submission
+DELETE /api/admin/submissions/{id}        # Delete submission
 ```
 
 Audit query params:
