@@ -7,13 +7,14 @@
  * Exposes StyleKit capabilities as tools, resources, and prompts
  * for AI assistants.
  *
- * Core tools (6):
+ * Core tools (7):
  * - search_knowledge
  * - smart_recommend
  * - get_style
  * - list_styles
  * - lint_code
  * - get_stack_guidelines
+ * - submit_style
  *
  * Experimental tools (disabled by default):
  * - compose_styles
@@ -315,6 +316,59 @@ server.tool(
 
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// -- submit_style --
+server.tool(
+  "submit_style",
+  "Validate and prepare a style submission from manifest JSON. Use dryRun=true (default) to only validate, or dryRun=false to validate and confirm submission readiness.",
+  {
+    manifest: z.string().describe("Full manifest JSON string following style-submission-manifest.schema.json"),
+    dryRun: z.boolean().optional().default(true).describe("If true, only validate without submitting (default: true)"),
+  },
+  async ({ manifest, dryRun }) => {
+    const { validateManifestDetailed, validateStyleSubmissionManifest } = require("../../lib/submit/manifest-validator");
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(manifest);
+    } catch {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ error: "Invalid JSON input" }) }],
+        isError: true,
+      };
+    }
+
+    const detailed = validateManifestDetailed(parsed);
+    const full = validateStyleSubmissionManifest(parsed);
+
+    const fieldChecks = detailed.fields.map((f: { field: string; ok: boolean; detail: string }) => ({
+      field: f.field,
+      status: f.ok ? "OK" : "!!",
+      detail: f.detail,
+    }));
+
+    const report: Record<string, unknown> = {
+      valid: detailed.ok,
+      fieldChecks,
+      issues: detailed.issues,
+    };
+
+    if (detailed.ok && !dryRun) {
+      const { getManifestSummary } = require("../../lib/submit/manifest-validator");
+      report.summary = getManifestSummary(full.data);
+      report.status = "ready_for_submission";
+      report.message = "Manifest is valid and ready for submission. Create a GitHub issue to complete the process.";
+    } else if (detailed.ok && dryRun) {
+      report.message = "Manifest is valid. Set dryRun=false to confirm submission readiness.";
+    } else {
+      report.message = `Manifest has ${detailed.issues.length} validation issue(s). Fix them and try again.`;
+    }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
     };
   }
 );
