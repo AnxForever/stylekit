@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Submission {
   id: string;
@@ -27,6 +27,10 @@ interface RegisterResult {
   errors: string[];
 }
 
+interface FullSubmissionData {
+  formData: Record<string, unknown>;
+}
+
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 
 export function SubmissionsReview() {
@@ -39,6 +43,11 @@ export function SubmissionsReview() {
   const [note, setNote] = useState("");
   const [registeringId, setRegisteringId] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<RegisterResult | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [detailLoadingId, setDetailLoadingId] = useState<string | null>(null);
+  const detailCache = useRef<Map<string, FullSubmissionData>>(new Map());
 
   const fetchSubmissions = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
@@ -123,6 +132,60 @@ export function SubmissionsReview() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to register style.");
       setRegisteringId(null);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/submit/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to delete submission.");
+      }
+
+      setConfirmDeleteId(null);
+      await fetchSubmissions();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete submission.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function toggleDetails(id: string) {
+    if (expandedId === id) {
+      setExpandedId(null);
+      setDetailLoadingId((current) => (current === id ? null : current));
+      return;
+    }
+
+    setExpandedId(id);
+    setError(null);
+
+    if (detailCache.current.has(id)) {
+      setDetailLoadingId(null);
+      return;
+    }
+
+    setDetailLoadingId(id);
+    try {
+      const res = await fetch(`/api/submit/${id}`);
+      if (!res.ok) {
+        throw new Error("Failed to load submission details.");
+      }
+      const data = (await res.json()) as FullSubmissionData;
+      detailCache.current.set(id, data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load details.");
+      setExpandedId((current) => (current === id ? null : current));
+    } finally {
+      setDetailLoadingId((current) => (current === id ? null : current));
     }
   }
 
@@ -217,6 +280,32 @@ export function SubmissionsReview() {
               <p className="text-sm bg-muted/10 p-3 rounded mb-4">
                 Review note: {sub.reviewNote}
               </p>
+            )}
+
+            {/* Detail toggle */}
+            <div className="mb-4">
+              <button
+                onClick={() => toggleDetails(sub.id)}
+                className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
+              >
+                <span className="inline-block transition-transform" style={{
+                  transform: expandedId === sub.id ? "rotate(90deg)" : "rotate(0deg)",
+                }}>
+                  &#9656;
+                </span>
+                {expandedId === sub.id ? "Hide Details" : "View Details"}
+              </button>
+            </div>
+
+            {/* Expanded detail panel */}
+            {expandedId === sub.id && (
+              <div className="mb-4 border border-border rounded-md p-4 space-y-4 text-sm">
+                {detailLoadingId === sub.id && !detailCache.current.has(sub.id) ? (
+                  <p className="text-muted">Loading details...</p>
+                ) : detailCache.current.has(sub.id) ? (
+                  <SubmissionDetail data={detailCache.current.get(sub.id)!} />
+                ) : null}
+              </div>
             )}
 
             {/* Register button for approved submissions */}
@@ -327,6 +416,202 @@ export function SubmissionsReview() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ColorSwatch({ color, label }: { color: string; label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 mr-3 mb-1">
+      <span
+        className="inline-block w-4 h-4 rounded border border-border"
+        style={{ backgroundColor: color }}
+      />
+      <code className="text-xs">{color}</code>
+      {label && <span className="text-xs text-muted">({label})</span>}
+    </span>
+  );
+}
+
+function DetailSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-muted mb-2">{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function SubmissionDetail({ data }: { data: FullSubmissionData }) {
+  const fd = data.formData;
+
+  const str = (key: string): string => {
+    const v = fd[key];
+    return typeof v === "string" ? v : "";
+  };
+
+  const arr = (key: string): string[] => {
+    const v = fd[key];
+    return Array.isArray(v) ? v.filter((s): s is string => typeof s === "string") : [];
+  };
+
+  const primaryColor = str("primaryColor");
+  const secondaryColor = str("secondaryColor");
+  const accentColors = arr("accentColors");
+  const background = str("background");
+  const foreground = str("foreground");
+  const muted = str("muted");
+
+  const headingFont = str("headingFont");
+  const bodyFont = str("bodyFont");
+  const fontSizeBase = str("fontSizeBase");
+  const fontSizeHeading = str("fontSizeHeading");
+  const fontSizeSmall = str("fontSizeSmall");
+  const fontWeightNormal = str("fontWeightNormal");
+  const fontWeightBold = str("fontWeightBold");
+  const lineHeightNormal = str("lineHeightNormal");
+  const lineHeightTight = str("lineHeightTight");
+
+  const borderRadius = str("borderRadius");
+  const spacingSm = str("spacingSm");
+  const spacingMd = str("spacingMd");
+  const spacingLg = str("spacingLg");
+
+  const doList = arr("doList").filter((s) => s.trim());
+  const dontList = arr("dontList").filter((s) => s.trim());
+  const aiRules = arr("aiRules").filter((s) => s.trim());
+
+  const buttonCode = str("buttonCode");
+  const cardCode = str("cardCode");
+  const inputCode = str("inputCode");
+
+  const philosophy = str("philosophy");
+  const keywords = arr("keywords").filter((s) => s.trim());
+  const tags = arr("tags");
+  const styleType = str("styleType");
+
+  return (
+    <div className="space-y-4">
+      {/* Colors */}
+      <DetailSection title="Colors">
+        <div className="flex flex-wrap">
+          {primaryColor && <ColorSwatch color={primaryColor} label="primary" />}
+          {secondaryColor && <ColorSwatch color={secondaryColor} label="secondary" />}
+          {background && <ColorSwatch color={background} label="bg" />}
+          {foreground && <ColorSwatch color={foreground} label="fg" />}
+          {muted && <ColorSwatch color={muted} label="muted" />}
+          {accentColors.map((c, i) => (
+            <ColorSwatch key={i} color={c} label={`accent ${i + 1}`} />
+          ))}
+        </div>
+      </DetailSection>
+
+      {/* Typography */}
+      {(headingFont || bodyFont) && (
+        <DetailSection title="Typography">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
+            {headingFont && <div><span className="text-muted">Heading:</span> {headingFont}</div>}
+            {bodyFont && <div><span className="text-muted">Body:</span> {bodyFont}</div>}
+            {fontSizeBase && <div><span className="text-muted">Size base:</span> {fontSizeBase}</div>}
+            {fontSizeHeading && <div><span className="text-muted">Size heading:</span> {fontSizeHeading}</div>}
+            {fontSizeSmall && <div><span className="text-muted">Size small:</span> {fontSizeSmall}</div>}
+            {fontWeightNormal && <div><span className="text-muted">Weight normal:</span> {fontWeightNormal}</div>}
+            {fontWeightBold && <div><span className="text-muted">Weight bold:</span> {fontWeightBold}</div>}
+            {lineHeightNormal && <div><span className="text-muted">LH normal:</span> {lineHeightNormal}</div>}
+            {lineHeightTight && <div><span className="text-muted">LH tight:</span> {lineHeightTight}</div>}
+          </div>
+        </DetailSection>
+      )}
+
+      {/* Spacing & Border */}
+      {(borderRadius || spacingSm) && (
+        <DetailSection title="Spacing / Border">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
+            {borderRadius && <div><span className="text-muted">Border radius:</span> {borderRadius}</div>}
+            {spacingSm && <div><span className="text-muted">Spacing sm:</span> {spacingSm}</div>}
+            {spacingMd && <div><span className="text-muted">Spacing md:</span> {spacingMd}</div>}
+            {spacingLg && <div><span className="text-muted">Spacing lg:</span> {spacingLg}</div>}
+          </div>
+        </DetailSection>
+      )}
+
+      {/* Design */}
+      {(philosophy || keywords.length > 0 || tags.length > 0 || styleType) && (
+        <DetailSection title="Design">
+          {philosophy && <p className="text-xs mb-2">{philosophy}</p>}
+          {keywords.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {keywords.map((k, i) => (
+                <span key={i} className="px-2 py-0.5 bg-muted/20 rounded text-xs">{k}</span>
+              ))}
+            </div>
+          )}
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {tags.map((t, i) => (
+                <span key={i} className="px-2 py-0.5 bg-muted/10 border border-border rounded text-xs">{t}</span>
+              ))}
+            </div>
+          )}
+          {styleType && <p className="text-xs text-muted">Style type: {styleType}</p>}
+        </DetailSection>
+      )}
+
+      {/* Rules */}
+      {(doList.length > 0 || dontList.length > 0 || aiRules.length > 0) && (
+        <DetailSection title="Rules">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {doList.length > 0 && (
+              <div>
+                <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">Do</p>
+                <ul className="text-xs space-y-0.5 list-disc list-inside">
+                  {doList.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+            {dontList.length > 0 && (
+              <div>
+                <p className="text-xs font-medium text-red-700 dark:text-red-400 mb-1">Don&apos;t</p>
+                <ul className="text-xs space-y-0.5 list-disc list-inside">
+                  {dontList.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+            {aiRules.length > 0 && (
+              <div>
+                <p className="text-xs font-medium mb-1">AI Rules</p>
+                <ul className="text-xs space-y-0.5 list-disc list-inside">
+                  {aiRules.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        </DetailSection>
+      )}
+
+      {/* Components */}
+      {(buttonCode || cardCode || inputCode) && (
+        <DetailSection title="Components">
+          {buttonCode && (
+            <div className="mb-3">
+              <p className="text-xs font-medium text-muted mb-1">Button</p>
+              <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{buttonCode}</pre>
+            </div>
+          )}
+          {cardCode && (
+            <div className="mb-3">
+              <p className="text-xs font-medium text-muted mb-1">Card</p>
+              <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{cardCode}</pre>
+            </div>
+          )}
+          {inputCode && (
+            <div>
+              <p className="text-xs font-medium text-muted mb-1">Input</p>
+              <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{inputCode}</pre>
+            </div>
+          )}
+        </DetailSection>
+      )}
     </div>
   );
 }
