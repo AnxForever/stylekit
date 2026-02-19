@@ -152,7 +152,7 @@ export function BasicInfoStep({
       {/* AI Manifest Path */}
       {submissionPath === "ai-manifest" && (
         <>
-          <AiGuidePanel locale={locale} />
+          <AiGuidePanel locale={locale} defaultOpen={submissionPath === "ai-manifest"} />
 
           <div className="p-4 border border-border bg-background">
             <label className="block text-sm font-medium mb-2">{manifestCopy.title}</label>

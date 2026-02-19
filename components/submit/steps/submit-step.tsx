@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Download, ExternalLink, Send, AlertCircle, Package } from "lucide-react";
+import { Check, Copy, ExternalLink, Send, AlertCircle, Package } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
 import { useUser } from "@/lib/auth/use-user";
@@ -48,8 +48,6 @@ interface SubmitStepProps {
   };
   isAnimating: boolean;
   text: {
-    downloadScaffold: string;
-    downloadScaffoldLoading: string;
     copyJson: string;
     copied: string;
     submissionGuide: string;
@@ -65,7 +63,6 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
   const { user } = useUser();
   const [copied, setCopied] = useState(false);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingBundle, setIsDownloadingBundle] = useState(false);
   const [bundleResult, setBundleResult] = useState<{
     success: boolean;
@@ -197,19 +194,6 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
       setTimeout(() => setCopiedFile(null), 2000);
     } catch {
       // silent
-    }
-  };
-
-  const downloadScaffold = async () => {
-    setIsDownloading(true);
-    try {
-      const files = generateStyleScaffoldFiles(scaffoldInput);
-      const { downloadZip } = await import("@/lib/generator/zip-builder");
-      await downloadZip(files, `${formData.slug}-scaffold`);
-    } catch {
-      // silent
-    } finally {
-      setIsDownloading(false);
     }
   };
 
@@ -358,73 +342,8 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
         <p className="text-sm text-muted">{t("submit.completeDesc")}</p>
       </div>
 
-      {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <button
-          type="button"
-          onClick={downloadScaffold}
-          disabled={isDownloading || !formData.slug.trim()}
-          className="flex items-center justify-center gap-3 p-6 border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Download className="w-5 h-5" />
-          <div className="text-left">
-            <p className="font-medium">{isDownloading ? text.downloadScaffoldLoading : text.downloadScaffold}</p>
-            <p className="text-xs opacity-70">{t("submit.zipDesc")}</p>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={copyJson}
-          className="flex items-center justify-center gap-3 p-6 border-2 border-border hover:border-foreground transition-colors"
-        >
-          {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-          <div className="text-left">
-            <p className="font-medium">{copied ? text.copied : text.copyJson}</p>
-            <p className="text-xs text-muted">{t("submit.fullJsonDesc")}</p>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={downloadSubmissionBundle}
-          disabled={isDownloadingBundle || !formData.slug.trim()}
-          className="flex items-center justify-center gap-3 p-6 border-2 border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Package className="w-5 h-5" />
-          <div className="text-left">
-            <p className="font-medium">
-              {isDownloadingBundle
-                ? t("submit.downloadBundleLoading")
-                : t("submit.downloadBundle")}
-            </p>
-            <p className="text-xs text-muted">{t("submit.bundleDesc")}</p>
-          </div>
-        </button>
-      </div>
-
-      {bundleResult?.success && (
-        <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
-          <div className="flex items-center gap-2 justify-center">
-            <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-            <span>{t("submit.bundleSuccess")}</span>
-          </div>
-        </div>
-      )}
-
-      {bundleResult && !bundleResult.success && (
-        <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
-          <div className="flex items-center gap-2 justify-center">
-            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-            <span>
-              {t("submit.bundleFailedPrefix")} {bundleResult.error}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Submit to Community */}
-      <div className="border-2 border-dashed border-border p-6">
+      {/* Submit to Community - Primary Action */}
+      <div className="border-2 border-foreground p-6">
         <div className="flex flex-col items-center gap-4 text-center">
           <Send className="w-6 h-6" />
           <div>
@@ -440,7 +359,7 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
               !formData.slug.trim() ||
               submitResult?.success === true
             }
-            className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base font-medium"
           >
             <Send className="w-4 h-4" />
             {isSubmitting ? t("submit.submitting") : submitResult?.success ? t("submit.submitted") : t("submit.submitStyle")}
@@ -472,6 +391,66 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
           )}
         </div>
       </div>
+
+      {/* Export Options - Collapsible */}
+      <details className="border border-border">
+        <summary className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 text-sm font-medium cursor-pointer select-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+          Export Options
+        </summary>
+        <div className="p-4 border-t border-border">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={copyJson}
+              className="flex items-center justify-center gap-3 p-6 border-2 border-border hover:border-foreground transition-colors"
+            >
+              {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+              <div className="text-left">
+                <p className="font-medium">{copied ? text.copied : text.copyJson}</p>
+                <p className="text-xs text-muted">{t("submit.fullJsonDesc")}</p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={downloadSubmissionBundle}
+              disabled={isDownloadingBundle || !formData.slug.trim()}
+              className="flex items-center justify-center gap-3 p-6 border-2 border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Package className="w-5 h-5" />
+              <div className="text-left">
+                <p className="font-medium">
+                  {isDownloadingBundle
+                    ? t("submit.downloadBundleLoading")
+                    : t("submit.downloadBundle")}
+                </p>
+                <p className="text-xs text-muted">{t("submit.bundleDesc")}</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </details>
+
+      {/* Bundle Result Feedback */}
+      {bundleResult?.success && (
+        <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
+          <div className="flex items-center gap-2 justify-center">
+            <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+            <span>{t("submit.bundleSuccess")}</span>
+          </div>
+        </div>
+      )}
+
+      {bundleResult && !bundleResult.success && (
+        <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
+          <div className="flex items-center gap-2 justify-center">
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <span>
+              {t("submit.bundleFailedPrefix")} {bundleResult.error}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Generated Files */}
       {scaffoldFiles.length > 0 && (
