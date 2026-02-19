@@ -13,7 +13,7 @@ vi.mock("@/lib/auth/admin-api", () => ({
   checkAdminApiAccess: vi.fn(),
 }));
 
-import { GET } from "@/app/api/submit/list/route";
+import { GET } from "@/app/api/admin/submissions/route";
 import { listSubmissions } from "@/lib/submit/reviewer";
 import {
   isSupabaseConfigured,
@@ -30,7 +30,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("GET /api/submit/list", () => {
+describe("GET /api/admin/submissions", () => {
   it("returns auth error when access is denied", async () => {
     mockedCheckAdminApiAccess.mockResolvedValue({
       allowed: false,
@@ -38,7 +38,7 @@ describe("GET /api/submit/list", () => {
       status: 403,
     });
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/list"));
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions"));
 
     expect(response.status).toBe(403);
     await expect(response.json()).resolves.toEqual({ error: "Forbidden" });
@@ -52,7 +52,7 @@ describe("GET /api/submit/list", () => {
     ] as never);
 
     const response = await GET(
-      new Request("https://stylekit.top/api/submit/list?status=pending"),
+      new Request("https://stylekit.top/api/admin/submissions?status=pending"),
     );
 
     expect(mockedListSubmissionsSupabase).toHaveBeenCalledWith("pending");
@@ -70,7 +70,7 @@ describe("GET /api/submit/list", () => {
       { id: "2", slug: "glassmorphism", status: "approved" },
     ] as never);
 
-    const response = await GET(new Request("https://stylekit.top/api/submit/list"));
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions"));
 
     expect(mockedListSubmissions).toHaveBeenCalledWith(undefined);
     expect(response.status).toBe(200);
