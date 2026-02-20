@@ -54,42 +54,29 @@ export const victorianBotanical: DesignStyle = {
     button: {
       name: "按钮",
       description: "维多利亚植物风格按钮，带细线边框和衬线字体",
-      code: `<button className="
-  px-6 py-3
-  bg-[#2d4a2d] text-[#faf5ef]
-  border border-[#8b6914]/60
-  rounded-lg font-serif tracking-wide
-  shadow-[0_2px_8px_rgba(45,74,45,0.15)]
-  hover:bg-[#3d5c3d] hover:border-[#8b6914]
-  hover:shadow-[0_4px_12px_rgba(139,105,20,0.2)]
-  transition-all duration-300
-">
-  Explore Collection
+      code: `<button className="px-8 py-3 bg-[#faf5ef] text-[#2d4a2d] border border-[#2d4a2d]/30 rounded font-serif italic tracking-widest text-lg shadow-[0_2px_10px_rgba(45,74,45,0.05)] hover:bg-[#2d4a2d] hover:text-[#faf5ef] hover:border-[#8b6914] hover:shadow-[0_4px_15px_rgba(139,105,20,0.15)] active:bg-[#1a2d1a] transition-all duration-700 ease-in-out">
+  Examine Specimen
 </button>`,
     },
     card: {
       name: "卡片",
       description: "维多利亚植物风格卡片，羊皮纸底色搭配细线边框",
-      code: `<div className="
-  p-6
-  bg-[#faf5ef]
-  border border-[#2d4a2d]/20
-  rounded-lg
-  shadow-[0_2px_8px_rgba(45,74,45,0.08)]
-  hover:border-[#8b6914]/40
-  hover:shadow-[0_4px_12px_rgba(139,105,20,0.12)]
-  transition-all duration-300
-">
-  <div className="border-b border-[#2d4a2d]/10 pb-3 mb-4">
-    <h3 className="text-xl font-serif text-[#2d4a2d] tracking-wide">
-      Rosa Damascena
-    </h3>
-    <p className="text-sm font-serif text-[#8b6914] italic mt-1">
-      Rosaceae Family
-    </p>
+      code: `<div className="group p-8 bg-[#faf5ef] border border-[#2d4a2d]/20 rounded-lg shadow-[0_4px_20px_rgba(45,74,45,0.05)] hover:border-[#8b6914]/50 transition-colors duration-700 ease-in-out cursor-text">
+  <div className="border-b border-[#2d4a2d]/15 pb-4 mb-5 flex justify-between items-end">
+    <div>
+      <h3 className="text-2xl font-serif text-[#2d4a2d] tracking-wider group-hover:text-[#8b6914] transition-colors duration-700">
+        Rosa Damascena
+      </h3>
+      <p className="text-sm font-serif text-[#8b6914]/80 italic mt-2">
+        Rosaceae Family, Plate IV.
+      </p>
+    </div>
+    <span className="text-3xl font-serif text-[#2d4a2d]/10 group-hover:scale-110 group-hover:text-[#8b6914]/20 transition-all duration-700">
+      IV
+    </span>
   </div>
-  <p className="text-[#2d4a2d]/70 font-serif text-sm leading-relaxed">
-    A heritage rose cultivar prized for its fragrance, documented in Victorian botanical surveys.
+  <p className="text-[#2d4a2d]/70 font-serif leading-relaxed text-sm">
+    A heritage rose cultivar prized for its deep fragrance. Documented in the royal botanical surveys of 1842, preserved here in meticulous detail.
   </p>
 </div>`,
     },
@@ -233,7 +220,13 @@ export const victorianBotanical: DesignStyle = {
 - 精细的装饰分隔线
 - 衬线字体的 italic 用于学名标注
 - tracking-wide 和 tracking-[0.3em] 用于标签
-- 微妙的纸张纹理背景`,
+- 微妙的纸张纹理背景
+
+## Animation & Interaction Rules
+- Specimen Stillness: 标本是钉在纸上的。严禁使用任何 \`hover:-translate-y\`（上浮）效果。交互必须保持在二维平面上，仅通过颜色和细微的光影变化来传达。
+- Magnifying Inspection: 悬停（Hover）卡片时，内部的标题、首字母或插图可以有非常缓慢的内部放大（如 \`group-hover:scale-105\`），模拟学者拿着放大镜仔细观察标本的视觉。
+- Gilded Reveal: 交互时，暗绿色的文字或极其纤细的边框，应当极其缓慢地（\`duration-700\`）过渡到古典金色（\`#8b6914\`），模拟书页上的金箔在光线下的反射。
+- Ink Deepening: 点击 (\`:active\`) 时，不要缩小，通过加深文字颜色或背景的纸张颜色，模拟用蘸水笔在旧纸上重重地做下标记。`,
 
   examplePrompts: [
     {
