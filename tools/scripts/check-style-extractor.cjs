@@ -6,6 +6,7 @@ const { spawnSync } = require("node:child_process");
 
 const PROJECT_ROOT = process.cwd();
 const EXTRACTOR_ROOT = path.join(PROJECT_ROOT, "style-extractor-dev");
+const STYLE_ROOT = path.join(PROJECT_ROOT, "lib", "styles");
 const SCAN_DIRS = ["scripts", "tests", "tools"];
 const JS_EXTENSIONS = new Set([".js", ".cjs", ".mjs"]);
 
@@ -93,6 +94,132 @@ function runConsistencyChecks() {
   return issues;
 }
 
+function collectStyleFiles(dirPath, out) {
+  if (!fs.existsSync(dirPath)) return;
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      collectStyleFiles(fullPath, out);
+      continue;
+    }
+
+    if (!entry.isFile()) continue;
+    if (!entry.name.endsWith(".ts")) continue;
+    out.push(fullPath);
+  }
+}
+
+function findNextUnescapedBacktick(text, startIndex) {
+  for (let i = startIndex; i < text.length; i += 1) {
+    if (text[i] !== "`") continue;
+
+    let slashCount = 0;
+    let cursor = i - 1;
+    while (cursor >= 0 && text[cursor] === "\\") {
+      slashCount += 1;
+      cursor -= 1;
+    }
+
+    if (slashCount % 2 === 0) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function buildLineStartOffsets(text) {
+  const offsets = [0];
+  for (let i = 0; i < text.length; i += 1) {
+    if (text[i] === "\n") {
+      offsets.push(i + 1);
+    }
+  }
+  return offsets;
+}
+
+function lineNumberFromOffset(lineStarts, offset) {
+  let low = 0;
+  let high = lineStarts.length - 1;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    if (lineStarts[mid] <= offset) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  return high + 1;
+}
+
+function runStylePromptSafetyChecks() {
+  const files = [];
+  const issues = [];
+  collectStyleFiles(STYLE_ROOT, files);
+  files.sort();
+
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    if (!/aiRules:\s*`/.test(source)) {
+      continue;
+    }
+    const lineStarts = buildLineStartOffsets(source);
+
+    let searchFrom = 0;
+    while (true) {
+      const aiRulesIndex = source.indexOf("aiRules:", searchFrom);
+      if (aiRulesIndex === -1) break;
+
+      const startTick = findNextUnescapedBacktick(source, aiRulesIndex + "aiRules:".length);
+      if (startTick === -1) {
+        searchFrom = aiRulesIndex + "aiRules:".length;
+        continue;
+      }
+
+      let cursor = startTick + 1;
+      let closed = false;
+
+      while (cursor < source.length) {
+        const tick = findNextUnescapedBacktick(source, cursor);
+        if (tick === -1) break;
+
+        let afterTick = tick + 1;
+        while (afterTick < source.length && /\s/.test(source[afterTick])) {
+          afterTick += 1;
+        }
+
+        if (source[afterTick] === ",") {
+          closed = true;
+          searchFrom = afterTick + 1;
+          break;
+        }
+
+        issues.push({
+          file,
+          line: lineNumberFromOffset(lineStarts, tick),
+          message: "Unescaped backtick found inside aiRules. Use plain text or escape it as \\`.",
+        });
+        cursor = tick + 1;
+      }
+
+      if (!closed) {
+        issues.push({
+          file,
+          line: lineNumberFromOffset(lineStarts, startTick),
+          message: "aiRules template literal is not properly closed.",
+        });
+        break;
+      }
+    }
+  }
+
+  return issues;
+}
+
 function main() {
   if (!fs.existsSync(EXTRACTOR_ROOT)) {
     console.error("[style-extractor-check] Missing folder: style-extractor-dev");
@@ -113,8 +240,9 @@ function main() {
 
   const syntaxFailures = runSyntaxChecks(files);
   const consistencyIssues = runConsistencyChecks();
+  const promptSafetyIssues = runStylePromptSafetyChecks();
 
-  if (syntaxFailures.length > 0 || consistencyIssues.length > 0) {
+  if (syntaxFailures.length > 0 || consistencyIssues.length > 0 || promptSafetyIssues.length > 0) {
     console.error("[style-extractor-check] Failed.");
 
     if (syntaxFailures.length > 0) {
@@ -133,11 +261,19 @@ function main() {
       }
     }
 
+    if (promptSafetyIssues.length > 0) {
+      console.error(`\nStyle prompt safety issues (${promptSafetyIssues.length}):`);
+      for (const issue of promptSafetyIssues) {
+        const relativePath = path.relative(PROJECT_ROOT, issue.file);
+        console.error(`- ${relativePath}:${issue.line} ${issue.message}`);
+      }
+    }
+
     process.exit(1);
   }
 
   console.log(
-    `[style-extractor-check] OK. Checked ${files.length} JavaScript files + consistency checks.`,
+    `[style-extractor-check] OK. Checked ${files.length} JavaScript files + consistency checks + style prompt safety.`,
   );
 }
 

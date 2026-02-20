@@ -353,7 +353,7 @@ export default function ShowcaseContent() {
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <RevealBlock>
           <div className="bg-[#0a2540] rounded-xl p-8 md:p-12 overflow-hidden">
-            <p className="text-sm font-medium text-[#80e9ff] mb-6 font-mono">// Accept a payment in minutes</p>
+            <p className="text-sm font-medium text-[#80e9ff] mb-6 font-mono">{"// Accept a payment in minutes"}</p>
             <div className="font-mono text-sm leading-relaxed space-y-1">
               <p><span className="text-[#7a73ff]">const</span> <span className="text-[#80e9ff]">stripe</span> = <span className="text-[#7a73ff]">require</span>(<span className="text-[#00d4ff]">&apos;stripe&apos;</span>)(<span className="text-[#00d4ff]">&apos;sk_test_...&apos;</span>);</p>
               <p className="text-gray-500">&#8203;</p>

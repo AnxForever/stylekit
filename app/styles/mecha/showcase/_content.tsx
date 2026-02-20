@@ -313,7 +313,7 @@ export default function ShowcaseContent() {
             >
               <div className="h-0.5 w-8 bg-[#fbbf24]" />
               <span className="text-xs tracking-widest text-[#4a5c3a] font-bold">
-                // SYSTEM ONLINE
+                {"// SYSTEM ONLINE"}
               </span>
             </div>
 
@@ -439,7 +439,7 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">ARSENAL</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-12">
-            // INTERACTIVE ELEMENTS -- OPERATIONAL STATUS: GREEN
+            {"// INTERACTIVE ELEMENTS -- OPERATIONAL STATUS: GREEN"}
           </p>
         </RevealBlock>
 
@@ -473,7 +473,7 @@ export default function ShowcaseContent() {
             {activeTab === "button" && (
               <div className="flex flex-col items-center gap-8">
                 <p className="text-xs tracking-widest text-[#4a5c3a] mb-4">
-                  // HYDRAULIC RIGIDNESS -- 100ms EASE-LINEAR
+                  {"// HYDRAULIC RIGIDNESS -- 100ms EASE-LINEAR"}
                 </p>
                 <div className="flex flex-wrap justify-center gap-6">
                   {/* Primary */}
@@ -606,7 +606,7 @@ export default function ShowcaseContent() {
               <div className="max-w-md mx-auto space-y-8">
                 <div>
                   <label className="block text-xs tracking-widest text-[#fbbf24] mb-3 font-bold">
-                    // COMMAND_INPUT
+                    {"// COMMAND_INPUT"}
                   </label>
                   <input
                     type="text"
@@ -626,7 +626,7 @@ export default function ShowcaseContent() {
                 </div>
                 <div>
                   <label className="block text-xs tracking-widest text-[#ef4444] mb-3 font-bold">
-                    // AUTH_CODE
+                    {"// AUTH_CODE"}
                   </label>
                   <input
                     type="text"
@@ -669,7 +669,7 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">REGISTRY</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
-            // APPROVED COLOUR CODES -- MIL-SPEC COMPLIANT
+            {"// APPROVED COLOUR CODES -- MIL-SPEC COMPLIANT"}
           </p>
         </RevealBlock>
 
@@ -715,7 +715,7 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">PROTOCOL</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
-            // OPERATIONAL DIRECTIVES -- STRICT COMPLIANCE REQUIRED
+            {"// OPERATIONAL DIRECTIVES -- STRICT COMPLIANCE REQUIRED"}
           </p>
         </RevealBlock>
 
