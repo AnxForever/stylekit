@@ -32,6 +32,7 @@ export const ghibliStyle: DesignStyle = {
     "使用圆润柔和的形状",
     "添加微妙的纹理效果",
     "创造梦幻般的渐变背景",
+    "交互动效保持微风感（duration-500 到 700，轻微浮动和小角度旋转）",
   ],
 
   dontList: [
@@ -39,6 +40,7 @@ export const ghibliStyle: DesignStyle = {
     "禁止使用高对比的刺眼配色",
     "禁止使用冰冷的科技感元素",
     "禁止过于复杂的动效",
+    "禁止快速硬切与突兀的高频动效",
   ],
 
   components: {
@@ -47,14 +49,15 @@ export const ghibliStyle: DesignStyle = {
       description: "吉卜力风格按钮",
       code: `<button className="
   px-8 py-4
-  bg-gradient-to-b from-[#7cb9a8] to-[#5a9a8a]
+  bg-gradient-to-b from-[#85cdca] to-[#7cb9a8]
   text-white font-medium
   rounded-full
-  border-2 border-[#5a9a8a]/30
-  shadow-[0_4px_14px_rgba(124,185,168,0.4)]
-  hover:shadow-[0_6px_20px_rgba(124,185,168,0.5)]
-  hover:-translate-y-0.5
-  transition-all duration-300
+  border-2 border-[#5a9a8a]/25
+  shadow-[0_8px_20px_rgba(124,185,168,0.3)]
+  hover:shadow-[0_12px_30px_rgba(124,185,168,0.45)]
+  hover:-translate-y-1 hover:scale-[1.01] hover:rotate-[0.8deg]
+  active:scale-[0.98] active:rotate-0 active:translate-y-0
+  transition-all duration-500 ease-in-out
 ">
   Begin Journey
 </button>`,
@@ -62,25 +65,27 @@ export const ghibliStyle: DesignStyle = {
     card: {
       name: "卡片",
       description: "吉卜力风格卡片",
-      code: `<div className="
-  p-6
+      code: `<div className="group p-8
   bg-gradient-to-br from-[#f4e4bc]/90 to-[#e8d5a3]/90
   rounded-3xl
-  border border-[#d4c49a]/50
-  shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+  border border-[#d4c49a]/45
+  shadow-[0_8px_30px_rgba(90,74,58,0.06)]
+  hover:shadow-[0_16px_40px_rgba(124,185,168,0.18)]
+  hover:-translate-y-1.5 hover:-rotate-[0.8deg] hover:scale-[1.01]
+  transition-all duration-700 ease-in-out
   backdrop-blur-sm
 ">
-  <div className="w-16 h-16 bg-gradient-to-br from-[#85cdca] to-[#7cb9a8] rounded-full flex items-center justify-center mb-4">
+  <div className="w-16 h-16 bg-gradient-to-br from-[#85cdca] to-[#7cb9a8] rounded-full flex items-center justify-center mb-6 shadow-inner group-hover:scale-105 group-hover:rotate-6 transition-all duration-500 ease-in-out">
     {/* Cloud icon */}
     <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
       <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
     </svg>
   </div>
-  <h3 className="text-xl font-semibold text-[#5a4a3a] mb-2">
+  <h3 className="text-2xl font-semibold text-[#5a4a3a] mb-2 group-hover:text-[#7cb9a8] transition-colors duration-500">
     Sky Garden
   </h3>
-  <p className="text-[#7a6a5a]">
-    Where dreams float among the clouds
+  <p className="text-[#7a6a5a] leading-relaxed group-hover:text-[#5a4a3a] transition-colors duration-500">
+    Where dreams float among the clouds, carried by the gentle wind of summer.
   </p>
 </div>`,
     },
@@ -200,7 +205,14 @@ export const ghibliStyle: DesignStyle = {
 - 云朵形状
 - 柔和的圆形
 - 自然图案
-- 渐变背景`,
+- 渐变背景
+
+## Animation & Interaction Rules
+
+- Gentle Breeze: 悬停动画需轻柔克制，可使用微小浮动与低角度旋转（约 1deg 内）模拟自然风感。
+- Watercolor Glow: 阴影应使用本体色的柔和扩散（如鼠尾草绿系），避免厚重黑影破坏水彩质地。
+- Soft Cushion: 点击反馈使用温和按压（如 \`active:scale-[0.98]\`），避免机械式快速收缩。
+- Magic Longing: 交互节奏建议 \`duration-500\` 到 \`duration-700\`，搭配 \`ease-in-out\` 保持童话般从容。`,
 
   examplePrompts: [
     {
