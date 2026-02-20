@@ -27,6 +27,8 @@ const eslintConfig = defineConfig([
     "packages/core/dist/**",
     // GitHub Actions scripts (CJS).
     ".github/**",
+    // Standalone portfolio demo (Vite app, not part of Next.js).
+    "editorial-brutalist-portfolio/**",
   ]),
 ]);
 
