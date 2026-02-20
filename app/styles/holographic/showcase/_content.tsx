@@ -1,82 +1,61 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { Sparkles, Diamond, Layers, Wand2, Star, ArrowLeft, Palette, Check, X, Zap, Globe, Lock } from "lucide-react";
 
-/* ── data ─────────────────────────────────────────────── */
-const features = [
-  { title: "Spectrum Shift", desc: "Gradient slides laterally on hover, simulating angle-dependent holographic foil.", icon: "prism" },
-  { title: "Prismatic Glow", desc: "Multi-color box shadows create depth with cyan and magenta light spills.", icon: "glow" },
-  { title: "Liquid Glass", desc: "Semi-transparent surfaces with backdrop blur over deep cosmic backgrounds.", icon: "glass" },
-  { title: "Jelly Press", desc: "Active state scale-down with snap-back creates satisfying tactile feedback.", icon: "press" },
-];
-
-const pricingTiers = [
-  { name: "Starter", price: "$9", features: ["5 Projects", "Basic Analytics", "Community Support"], highlighted: false },
-  { name: "Pro", price: "$29", features: ["Unlimited Projects", "Advanced Analytics", "Priority Support", "Custom Domains"], highlighted: true },
-  { name: "Enterprise", price: "$99", features: ["Everything in Pro", "SSO & SAML", "Dedicated Account Manager", "SLA Guarantee", "Custom Integrations"], highlighted: false },
-];
-
-const colorTokens = [
-  { name: "Holo Pink", hex: "#ff0080", tw: "bg-[#ff0080]" },
-  { name: "Holo Gold", hex: "#ffd700", tw: "bg-[#ffd700]" },
-  { name: "Holo Cyan", hex: "#00d4ff", tw: "bg-[#00d4ff]" },
-  { name: "Holo Green", hex: "#00ff88", tw: "bg-[#00ff88]" },
-  { name: "Holo Indigo", hex: "#6366f1", tw: "bg-[#6366f1]" },
-  { name: "Holo Purple", hex: "#a855f7", tw: "bg-[#a855f7]" },
-  { name: "Cosmic Dark", hex: "#0a0a1f", tw: "bg-[#0a0a1f]" },
-  { name: "Deep Space", hex: "#1a0b2e", tw: "bg-[#1a0b2e]" },
-];
-
-const doRules = [
-  "Use multi-color gradients with 3+ color stops",
-  "Apply bg-[length:200%_auto] + hover:bg-right for spectrum shift",
-  "Use dark cosmic backgrounds (#0a0a1f, #1a0b2e)",
-  "Add prismatic multi-color box-shadows on hover",
-  "Include holographic sticker badges with full spectrum",
-  "Use semi-transparent cards (bg-white/5) with backdrop-blur",
-];
-
-const dontRules = [
-  "Use flat solid colors without gradient treatment",
-  "Use light or white backgrounds (kills holographic effect)",
-  "Use muted or desaturated color palettes",
-  "Omit active:scale-95 from interactive elements",
-  "Use focus:ring without focus:ring-offset-[#0a0a1f]",
-  "Use hover:scale alone without gradient shift",
-];
-
-/* ── hooks ────────────────────────────────────────────── */
-function useInView() {
+// ---------------------------------------------------------------------------
+// Inline useInView hook
+// ---------------------------------------------------------------------------
+function useInView(options: { threshold?: number; once?: boolean } = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const { threshold = 0.15, once = true } = options;
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
-      { threshold: 0.15 },
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          if (once) observer.disconnect();
+        } else if (!once) {
+          setInView(false);
+        }
+      },
+      { threshold }
     );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, once]);
+
   return { ref, inView };
 }
 
-function RevealBlock({ children, className = "", delay = 0 }: {
+// ---------------------------------------------------------------------------
+// Inline RevealBlock component
+// ---------------------------------------------------------------------------
+function RevealBlock({
+  children,
+  delay = 0,
+  inView,
+  className = "",
+}: {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
+  inView: boolean;
+  className?: string;
 }) {
-  const { ref, inView } = useInView();
   return (
     <div
-      ref={ref}
       className={className}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
       }}
     >
       {children}
@@ -84,501 +63,841 @@ function RevealBlock({ children, className = "", delay = 0 }: {
   );
 }
 
-/* ── sub-components ───────────────────────────────────── */
-function HoloButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+// ---------------------------------------------------------------------------
+// Spectrum button — Spectrum Shift + Jelly Press + Prismatic Glow
+// ---------------------------------------------------------------------------
+function SpectrumButton({
+  children,
+  variant = "primary",
+  className = "",
+  onClick,
+}: {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "warm" | "cool" | "ghost";
+  className?: string;
+  onClick?: () => void;
+}) {
+  const base =
+    "px-6 py-3 rounded-xl font-semibold text-sm transition-[background-position,box-shadow,transform] duration-500 ease-out active:scale-95 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f] cursor-pointer select-none";
+
+  const variants = {
+    primary:
+      "bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] hover:bg-right text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)]",
+    secondary:
+      "bg-gradient-to-r from-[#a855f7] via-[#6366f1] to-[#00d4ff] bg-[length:200%_auto] hover:bg-right text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(168,85,247,0.4)]",
+    warm: "bg-gradient-to-r from-[#ff0080] via-[#ff6b00] to-[#ffd700] bg-[length:200%_auto] hover:bg-right text-white shadow-[0_0_20px_rgba(255,0,128,0.4)] hover:shadow-[0_0_40px_rgba(255,107,0,0.6),0_0_20px_rgba(255,0,128,0.4)]",
+    cool: "bg-gradient-to-r from-[#00ff88] via-[#00d4ff] to-[#6366f1] bg-[length:200%_auto] hover:bg-right text-[#0a0a1f] shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.5),0_0_20px_rgba(0,212,255,0.4)]",
+    ghost:
+      "bg-white/5 backdrop-blur-md border border-white/20 text-white hover:bg-white/10 hover:border-white/30 shadow-none hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]",
+  };
+
   return (
-    <button
-      type="button"
-      className={`px-8 py-3.5 rounded-xl font-bold tracking-wide text-white bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] shadow-[0_0_20px_rgba(147,51,234,0.5)] hover:bg-right hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)] hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f] active:scale-95 active:translate-y-0 active:shadow-[0_0_10px_rgba(147,51,234,0.5)] transition-all duration-500 ease-out ${className}`}
-    >
+    <button className={`${base} ${variants[variant]} ${className}`} onClick={onClick}>
       {children}
     </button>
   );
 }
 
-function HoloCard({ title, desc, children, className = "" }: {
-  title: string;
-  desc: string;
-  children?: React.ReactNode;
+// ---------------------------------------------------------------------------
+// Liquid Glass card
+// ---------------------------------------------------------------------------
+function GlassCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
   className?: string;
 }) {
   return (
-    <div className={`group bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-xl hover:bg-white/10 hover:border-purple-400/40 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 ease-out cursor-pointer ${className}`}>
-      <h3 className="text-lg font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] group-hover:bg-right transition-[background-position] duration-500">
-        {title}
-      </h3>
-      <p className="text-white/60 text-sm group-hover:text-white/75 transition-colors duration-300">
-        {desc}
-      </p>
+    <div
+      className={`group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl transition-all duration-300 ease-out hover:-translate-y-2 hover:bg-white/10 hover:border-purple-400/40 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] ${className}`}
+    >
       {children}
     </div>
   );
 }
 
-function FeatureIcon({ name }: { name: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    prism: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
-        <polygon points="12,2 22,20 2,20" />
-        <line x1="12" y1="8" x2="12" y2="20" />
-        <line x1="7" y1="14" x2="17" y2="14" />
-      </svg>
-    ),
-    glow: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
-        <circle cx="12" cy="12" r="5" />
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-      </svg>
-    ),
-    glass: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
-        <rect x="3" y="3" width="18" height="18" rx="4" />
-        <path d="M3 9h18M9 3v18" />
-      </svg>
-    ),
-    press: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
-        <path d="M12 2v10M8 8l4 4 4-4M5 18h14" />
-      </svg>
-    ),
-  };
-  return <>{icons[name] ?? null}</>;
-}
+// ---------------------------------------------------------------------------
+// Accent color chip data
+// ---------------------------------------------------------------------------
+const ACCENT_COLORS = [
+  { name: "Hot Pink", hex: "#ff0080", glow: "rgba(255,0,128,0.6)", label: "from" },
+  { name: "Gold", hex: "#ffd700", glow: "rgba(255,215,0,0.6)", label: "via" },
+  { name: "Cyan", hex: "#00d4ff", glow: "rgba(0,212,255,0.6)", label: "to" },
+  { name: "Green", hex: "#00ff88", glow: "rgba(0,255,136,0.6)", label: "accent" },
+  { name: "Indigo", hex: "#6366f1", glow: "rgba(99,102,241,0.6)", label: "alt" },
+  { name: "Purple", hex: "#a855f7", glow: "rgba(168,85,247,0.6)", label: "primary" },
+];
 
-/* ── main ─────────────────────────────────────────────── */
+const SPECTRUM_RECIPES = [
+  {
+    name: "Full Spectrum",
+    classes: "from-[#ff0080] via-[#ffd700] to-[#00d4ff]",
+    label: "from-[#ff0080] via-[#ffd700] to-[#00d4ff]",
+  },
+  {
+    name: "Warm Sunset",
+    classes: "from-[#ff0080] via-[#ff6b00] to-[#ffd700]",
+    label: "from-[#ff0080] via-[#ff6b00] to-[#ffd700]",
+  },
+  {
+    name: "Cool Aurora",
+    classes: "from-[#00ff88] via-[#00d4ff] to-[#6366f1]",
+    label: "from-[#00ff88] via-[#00d4ff] to-[#6366f1]",
+  },
+  {
+    name: "Cosmic",
+    classes: "from-[#a855f7] via-[#6366f1] to-[#00d4ff]",
+    label: "from-[#a855f7] via-[#6366f1] to-[#00d4ff]",
+  },
+  {
+    name: "Neon Fusion",
+    classes: "from-[#ff0080] via-[#a855f7] to-[#00ff88]",
+    label: "from-[#ff0080] via-[#a855f7] to-[#00ff88]",
+  },
+];
+
+const COMPONENT_TABS = ["Buttons", "Cards", "Inputs"] as const;
+type ComponentTab = (typeof COMPONENT_TABS)[number];
+
+const PRINCIPLES = [
+  {
+    icon: Diamond,
+    title: "Prismatic Gradients",
+    rule: "DO: Use multi-stop gradients spanning at least 3 hues across 120deg+ of the color wheel.",
+    anti: "NEVER use two-stop gradients — they lack the iridescent depth that defines holographic foil.",
+    color: "from-[#ff0080] to-[#ffd700]",
+    glow: "rgba(255,0,128,0.3)",
+  },
+  {
+    icon: Layers,
+    title: "Glass Morphism",
+    rule: "DO: Layer bg-white/5 + backdrop-blur-xl + border-white/10 over the dark cosmic background.",
+    anti: "NEVER use opaque light backgrounds — holographic lives in deep space, not in daylight.",
+    color: "from-[#00d4ff] to-[#6366f1]",
+    glow: "rgba(0,212,255,0.3)",
+  },
+  {
+    icon: Wand2,
+    title: "Spectrum Shift",
+    rule: "DO: Use bg-[length:200%_auto] + hover:bg-right for lateral color-flow on every interactive element.",
+    anti: "NEVER animate with opacity fades alone — motion must feel like light refracting across foil.",
+    color: "from-[#00ff88] to-[#a855f7]",
+    glow: "rgba(0,255,136,0.3)",
+  },
+  {
+    icon: Star,
+    title: "Prismatic Glow",
+    rule: "DO: Combine dual-color box-shadows — one for the primary hue, one for the accent — on hover.",
+    anti: "NEVER use a single-color glow — two-tone shadows are what sells the holographic illusion.",
+    color: "from-[#ffd700] to-[#00d4ff]",
+    glow: "rgba(255,215,0,0.3)",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 export default function ShowcaseContent() {
   const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"cards" | "pricing" | "badges">("cards");
+  const [activeSpectrumTab, setActiveSpectrumTab] = useState(0);
+  const [activeComponentTab, setActiveComponentTab] = useState<ComponentTab>("Buttons");
+  const [subscribed, setSubscribed] = useState(false);
 
+  // Hero entrance — fires after 100ms to allow paint
   useEffect(() => {
     const t = setTimeout(() => setHeroRevealed(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  // Section reveal refs
+  const { ref: spectrumRef, inView: spectrumInView } = useInView();
+  const { ref: componentsRef, inView: componentsInView } = useInView();
+  const { ref: paletteRef, inView: paletteInView } = useInView();
+  const { ref: principlesRef, inView: principlesInView } = useInView();
+  const { ref: ctaRef, inView: ctaInView } = useInView();
+
   return (
-    <div className="min-h-screen bg-[#0a0a1f] text-white">
+    <div className="min-h-screen bg-[#0a0a1f] text-white relative overflow-x-hidden">
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Ambient static glow — cosmic depth                                 */}
+      {/* ------------------------------------------------------------------ */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 10%, rgba(168,85,247,0.15) 0%, transparent 55%), " +
+            "radial-gradient(ellipse at 80% 85%, rgba(0,212,255,0.1) 0%, transparent 50%), " +
+            "radial-gradient(ellipse at 60% 40%, rgba(255,0,128,0.06) 0%, transparent 40%)",
+        }}
+      />
+
+      {/* Keyframes injected via style tag */}
       <style>{`
-        @keyframes holo-gradient-shift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        @keyframes holo-shift {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
-        @keyframes holo-shimmer {
-          0% { transform: translateX(-100%) rotate(15deg); }
-          100% { transform: translateX(200%) rotate(15deg); }
+        @keyframes holo-badge-pulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.7; }
         }
-        @keyframes holo-float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          33% { transform: translateY(-10px) rotate(1deg); }
-          66% { transform: translateY(-5px) rotate(-0.5deg); }
+        @keyframes float-y {
+          0%, 100% { transform: translateY(0px) rotate(-3deg); }
+          50%       { transform: translateY(-12px) rotate(3deg); }
         }
-        @keyframes holo-pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 1; }
-        }
-        .holo-text-gradient {
-          background: linear-gradient(135deg, #ff0080, #ff6b00, #ffd700, #00ff88, #00d4ff, #6366f1, #a855f7);
-          background-size: 200% 200%;
-          animation: holo-gradient-shift 6s ease infinite;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .holo-border-gradient {
-          position: relative;
-        }
-        .holo-border-gradient::before {
-          content: '';
-          position: absolute;
-          inset: -1px;
-          border-radius: inherit;
-          padding: 1px;
-          background: linear-gradient(135deg, #ff0080, #ffd700, #00d4ff, #00ff88, #6366f1, #a855f7);
-          background-size: 200% 200%;
-          animation: holo-gradient-shift 4s ease infinite;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-        }
-        .holo-sticker {
-          position: relative;
-          overflow: hidden;
-        }
-        .holo-sticker::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.05) 55%, transparent 60%);
-          animation: holo-shimmer 3s ease-in-out infinite;
+        @keyframes star-spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
         }
       `}</style>
 
-      {/* ── Navigation ── */}
+      {/* ------------------------------------------------------------------ */}
+      {/* NAV                                                                 */}
+      {/* ------------------------------------------------------------------ */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a1f]/90 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/styles/holographic/showcase" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff]">
-              Holographic
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link href="/styles/holographic" className="text-white/60 hover:text-white text-sm transition-colors">Docs</Link>
-              <Link href="/styles" className="text-white/60 hover:text-white text-sm transition-colors">Styles</Link>
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/styles/holographic"
+                className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors duration-300"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden md:inline text-sm font-medium">Back</span>
+              </Link>
+              <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
+                Holographic
+              </span>
+            </div>
+
+            <nav className="hidden md:flex items-center gap-8">
+              {["Spectrum", "Components", "Palette", "Principles"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm text-white/60 hover:text-white transition-colors duration-300"
+                >
+                  {item}
+                </a>
+              ))}
             </nav>
+
+            <SpectrumButton variant="primary" className="text-sm px-4 py-2">
+              Use Style
+            </SpectrumButton>
           </div>
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="pt-16 min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Background orbs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#ff0080]/20" style={{ filter: "blur(120px)", animation: "holo-pulse 4s ease-in-out infinite" }} />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-[#00d4ff]/20" style={{ filter: "blur(100px)", animation: "holo-pulse 4s ease-in-out infinite 1s" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-[#ffd700]/10" style={{ filter: "blur(80px)", animation: "holo-pulse 4s ease-in-out infinite 2s" }} />
-        </div>
+      {/* ------------------------------------------------------------------ */}
+      {/* HERO                                                                */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 md:px-12 pt-20 pb-16">
+        {/* Animated holographic background */}
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(135deg, #ff0080, #ff6b00, #ffd700, #00ff88, #00d4ff, #6366f1, #a855f7, #ff0080)",
+            backgroundSize: "400% 400%",
+            animation: "holo-shift 12s ease infinite",
+          }}
+        />
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <div
-            className="inline-block mb-8"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(0.16,1,0.3,1)",
-            }}
-          >
-            <span className="holo-sticker inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-gradient-to-r from-[#ff0080] via-[#ffd700] via-[#00ff88] to-[#00d4ff] text-white">
-              Prismatic Design System
-            </span>
-          </div>
-          <h1
-            className="holo-text-gradient text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.95] mb-8"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition: "all 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
-            }}
-          >
-            Holographic
-          </h1>
-          <p
-            className="text-white/60 text-lg md:text-xl max-w-lg mx-auto mb-12"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s",
-            }}
-          >
-            Prismatic rainbow gradients that shift and shimmer like holographic foil across cosmic dark surfaces.
-          </p>
-          <div
-            className="flex justify-center gap-4"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
-            }}
-          >
-            <HoloButton>Activate Portal</HoloButton>
-            <button type="button" className="px-8 py-3.5 rounded-xl font-bold tracking-wide text-white/70 border border-white/20 hover:text-white hover:border-white/40 hover:bg-white/5 active:scale-95 transition-all duration-300">
-              Explore
-            </button>
-          </div>
-
-          {/* Floating holographic card */}
-          <div
-            className="mt-20 mx-auto max-w-md"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition: "all 1s cubic-bezier(0.16,1,0.3,1) 0.5s",
-              animation: heroRevealed ? "holo-float 6s ease-in-out infinite" : "none",
-            }}
-          >
-            <div className="holo-border-gradient rounded-2xl">
-              <div className="bg-[#0a0a1f]/80 backdrop-blur-xl rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="holo-sticker w-10 h-10 rounded-lg bg-gradient-to-br from-[#ff0080] via-[#ffd700] to-[#00d4ff] flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5"><polygon points="12,2 22,20 2,20" /></svg>
-                  </div>
-                  <span className="holo-text-gradient font-bold">Holographic Card</span>
-                </div>
-                <p className="text-white/50 text-sm">A glass panel floating in cosmic dark space with prismatic rainbow reflections.</p>
+        <div className="relative max-w-5xl mx-auto text-center z-10">
+          {/* Floating holographic badge */}
+          <RevealBlock inView={heroRevealed} delay={0}>
+            <div className="flex justify-center mb-8">
+              <div
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-white border border-white/20 backdrop-blur-md"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(255,0,128,0.3), rgba(147,51,234,0.3), rgba(0,212,255,0.3))",
+                  animation: "holo-badge-pulse 3s ease-in-out infinite",
+                }}
+              >
+                <Sparkles className="w-3 h-3" />
+                Holographic Design System
+                <Sparkles className="w-3 h-3" />
               </div>
             </div>
-          </div>
+          </RevealBlock>
+
+          {/* Main heading */}
+          <RevealBlock inView={heroRevealed} delay={120}>
+            <h1
+              className="text-5xl md:text-7xl lg:text-9xl font-black leading-[0.9] tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] via-[#00ff88] via-[#00d4ff] to-[#a855f7] bg-[length:200%_auto]"
+              style={{ animation: "holo-shift 8s ease infinite" }}
+            >
+              Holo
+              <br />
+              graphic
+            </h1>
+          </RevealBlock>
+
+          {/* Tagline */}
+          <RevealBlock inView={heroRevealed} delay={240}>
+            <p className="mt-8 text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed">
+              Prismatic rainbow gradients that shift like holographic foil.
+              Deep space backgrounds make every color sing at full saturation.
+            </p>
+          </RevealBlock>
+
+          {/* CTAs */}
+          <RevealBlock inView={heroRevealed} delay={360}>
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <SpectrumButton variant="primary" className="px-8 py-4 text-base">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Explore Spectrum
+                </span>
+              </SpectrumButton>
+              <SpectrumButton variant="ghost" className="px-8 py-4 text-base">
+                View Docs
+              </SpectrumButton>
+            </div>
+          </RevealBlock>
+
+          {/* Floating decorative orbs */}
+          <RevealBlock inView={heroRevealed} delay={480}>
+            <div className="mt-16 flex justify-center items-center gap-6">
+              {[
+                { color: "#ff0080", delay: "0s" },
+                { color: "#ffd700", delay: "0.8s" },
+                { color: "#00d4ff", delay: "1.6s" },
+                { color: "#00ff88", delay: "2.4s" },
+                { color: "#a855f7", delay: "3.2s" },
+              ].map(({ color, delay }, i) => (
+                <div
+                  key={i}
+                  className="rounded-full"
+                  style={{
+                    width: 12 + i * 4,
+                    height: 12 + i * 4,
+                    backgroundColor: color,
+                    boxShadow: `0 0 ${16 + i * 6}px ${color}`,
+                    animation: `float-y ${2.5 + i * 0.4}s ease-in-out infinite`,
+                    animationDelay: delay,
+                  }}
+                />
+              ))}
+            </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section className="py-24 px-6">
+      {/* ------------------------------------------------------------------ */}
+      {/* SPECTRUM DEMO                                                       */}
+      {/* ------------------------------------------------------------------ */}
+      <section id="spectrum" className="px-6 md:px-12 py-16 md:py-24" ref={spectrumRef}>
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] to-[#00d4ff] font-bold uppercase tracking-[0.2em] text-sm mb-4">Interaction Physics</p>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-              <span className="holo-text-gradient">Core Principles</span>
+          <RevealBlock inView={spectrumInView} delay={0}>
+            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">
+              Signature Interaction
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Spectrum Shift
             </h2>
+            <p className="text-white/50 mb-10 max-w-lg">
+              {"Hover each button to watch the color flow laterally — bg-[length:200%_auto] + hover:bg-right in action."}
+            </p>
           </RevealBlock>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {features.map((f, i) => (
-              <RevealBlock key={f.title} delay={i * 0.1}>
-                <div className="group bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 hover:bg-white/10 hover:border-purple-400/40 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 ease-out cursor-pointer">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#ff0080]/20 to-[#00d4ff]/20 flex items-center justify-center mb-6 text-white/80 group-hover:text-white group-hover:from-[#ff0080]/40 group-hover:to-[#00d4ff]/40 transition-colors duration-300">
-                    <FeatureIcon name={f.icon} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] group-hover:bg-right transition-[background-position] duration-500">
-                    {f.title}
-                  </h3>
-                  <p className="text-white/50 text-sm group-hover:text-white/70 transition-colors duration-300">{f.desc}</p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
+          {/* Gradient recipe tab switcher */}
+          <RevealBlock inView={spectrumInView} delay={100}>
+            <div className="flex flex-wrap gap-2 mb-8">
+              {SPECTRUM_RECIPES.map((r, i) => (
+                <button
+                  key={r.name}
+                  onClick={() => setActiveSpectrumTab(i)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeSpectrumTab === i
+                      ? "bg-white/15 text-white border border-white/30"
+                      : "bg-white/5 text-white/50 border border-white/10 hover:bg-white/10 hover:text-white/80"
+                  }`}
+                >
+                  {r.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock inView={spectrumInView} delay={200}>
+            {/* Live spectrum button demo */}
+            <GlassCard className="p-8 md:p-12 flex flex-col items-center gap-6">
+              <button
+                className={`px-12 py-5 rounded-2xl font-bold text-lg text-white bg-gradient-to-r ${SPECTRUM_RECIPES[activeSpectrumTab].classes} bg-[length:200%_auto] hover:bg-right transition-[background-position,box-shadow] duration-500 ease-out active:scale-95 shadow-[0_0_30px_rgba(147,51,234,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.6),0_0_25px_rgba(255,0,128,0.4)] focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]`}
+              >
+                Hover Me — Watch the Shift
+              </button>
+              <div className="bg-black/30 rounded-xl px-6 py-3 border border-white/10">
+                <code className="text-xs text-purple-300 font-mono">
+                  bg-gradient-to-r {SPECTRUM_RECIPES[activeSpectrumTab].label}
+                  {" "}bg-[length:200%_auto] hover:bg-right
+                </code>
+              </div>
+            </GlassCard>
+          </RevealBlock>
+
+          {/* All 5 gradient buttons in a row */}
+          <RevealBlock inView={spectrumInView} delay={300}>
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+              {SPECTRUM_RECIPES.map((r) => (
+                <button
+                  key={r.name}
+                  className={`py-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r ${r.classes} bg-[length:200%_auto] hover:bg-right transition-[background-position,box-shadow] duration-500 ease-out active:scale-95 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]`}
+                >
+                  {r.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ── Component Demos (Tab-switched) ── */}
-      <section className="py-24 px-6">
+      {/* ------------------------------------------------------------------ */}
+      {/* COMPONENT GALLERY                                                   */}
+      {/* ------------------------------------------------------------------ */}
+      <section id="components" className="px-6 md:px-12 py-16 md:py-24" ref={componentsRef}>
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-              <span className="holo-text-gradient">Components</span>
+          <RevealBlock inView={componentsInView} delay={0}>
+            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">
+              Component Library
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-10">
+              UI Components
             </h2>
           </RevealBlock>
 
-          {/* Tab Switcher */}
-          <div className="flex justify-center mb-12">
-            <div className="inline-flex bg-white/5 backdrop-blur-xl rounded-xl p-1 border border-white/10">
-              {(["cards", "pricing", "badges"] as const).map((tab) => (
+          {/* Tab switcher */}
+          <RevealBlock inView={componentsInView} delay={80}>
+            <div className="flex gap-1 p-1 bg-white/5 rounded-xl border border-white/10 w-fit mb-10">
+              {COMPONENT_TABS.map((tab) => (
                 <button
                   key={tab}
-                  type="button"
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-2.5 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${activeTab === tab
-                    ? "bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] text-white shadow-[0_0_20px_rgba(147,51,234,0.3)]"
-                    : "text-white/50 hover:text-white"
+                  onClick={() => setActiveComponentTab(tab)}
+                  className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeComponentTab === tab
+                      ? "bg-gradient-to-r from-[#a855f7] to-[#00d4ff] text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
                   {tab}
                 </button>
               ))}
             </div>
-          </div>
+          </RevealBlock>
 
-          {/* Tab Content */}
-          <div className="min-h-[500px]">
-            {activeTab === "cards" && (
-              <RevealBlock>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <HoloCard title="Prismatic Glass" desc="Semi-transparent surface with rainbow border glow and backdrop blur.">
-                    <div className="mt-4 h-32 rounded-xl bg-gradient-to-br from-[#ff0080]/10 via-[#ffd700]/10 to-[#00d4ff]/10 border border-white/5 flex items-center justify-center">
-                      <span className="text-white/30 text-sm">Content Area</span>
-                    </div>
-                  </HoloCard>
-                  <HoloCard title="Spectrum Badge" desc="Full rainbow gradient with shimmer overlay animation.">
-                    <div className="mt-4 flex gap-2">
-                      <span className="holo-sticker inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-[#ff0080] to-[#ffd700] text-white">New</span>
-                      <span className="holo-sticker inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-[#00d4ff] to-[#00ff88] text-white">Featured</span>
-                      <span className="holo-sticker inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white">Pro</span>
-                    </div>
-                  </HoloCard>
-                  <HoloCard title="Cosmic Input" desc="Glass input field with prismatic focus glow.">
-                    <div className="mt-4 space-y-3">
-                      <input
-                        type="text"
-                        placeholder="Enter text..."
-                        className="w-full px-4 py-2.5 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-400/50 focus:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all"
-                      />
-                      <HoloButton className="w-full text-sm py-2.5">Submit</HoloButton>
-                    </div>
-                  </HoloCard>
-                </div>
-              </RevealBlock>
-            )}
+          {/* Buttons panel */}
+          {activeComponentTab === "Buttons" && (
+            <RevealBlock inView={componentsInView} delay={160}>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { label: "Full Spectrum", variant: "primary" as const },
+                  { label: "Cosmic Purple", variant: "secondary" as const },
+                  { label: "Warm Sunset", variant: "warm" as const },
+                  { label: "Cool Aurora", variant: "cool" as const },
+                  { label: "Ghost Glass", variant: "ghost" as const },
+                ].map(({ label, variant }) => (
+                  <GlassCard key={label} className="p-6 flex flex-col gap-4 items-start">
+                    <p className="text-xs tracking-widest uppercase text-white/40">{variant}</p>
+                    <SpectrumButton variant={variant} className="w-full justify-center text-center">
+                      {label}
+                    </SpectrumButton>
+                  </GlassCard>
+                ))}
+                <GlassCard className="p-6 flex flex-col gap-4 items-start">
+                  <p className="text-xs tracking-widest uppercase text-white/40">icon + label</p>
+                  <SpectrumButton variant="primary" className="w-full justify-center text-center">
+                    <span className="flex items-center justify-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      Deploy Now
+                    </span>
+                  </SpectrumButton>
+                </GlassCard>
+              </div>
+            </RevealBlock>
+          )}
 
-            {activeTab === "pricing" && (
-              <RevealBlock>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {pricingTiers.map((tier) => (
+          {/* Cards panel */}
+          {activeComponentTab === "Cards" && (
+            <RevealBlock inView={componentsInView} delay={160}>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: Globe,
+                    title: "Universal Reach",
+                    desc: "Deploy your holographic interface across every platform with pixel-perfect fidelity.",
+                    gradient: "from-[#ff0080] to-[#ffd700]",
+                    glow: "group-hover:shadow-[0_0_30px_rgba(255,0,128,0.3)]",
+                  },
+                  {
+                    icon: Lock,
+                    title: "Secure by Default",
+                    desc: "End-to-end encryption baked into every layer of the prismatic stack.",
+                    gradient: "from-[#00d4ff] to-[#6366f1]",
+                    glow: "group-hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]",
+                  },
+                  {
+                    icon: Zap,
+                    title: "Quantum Speed",
+                    desc: "Sub-millisecond rendering with GPU-accelerated gradient compositing.",
+                    gradient: "from-[#00ff88] to-[#a855f7]",
+                    glow: "group-hover:shadow-[0_0_30px_rgba(0,255,136,0.3)]",
+                  },
+                ].map(({ icon: Icon, title, desc, gradient, glow }) => (
+                  <GlassCard key={title} className={`p-6 ${glow}`}>
                     <div
-                      key={tier.name}
-                      className={`group relative rounded-2xl p-8 border transition-all duration-300 ease-out cursor-pointer ${tier.highlighted
-                        ? "holo-border-gradient bg-white/10 backdrop-blur-xl shadow-[0_0_40px_rgba(147,51,234,0.3)] hover:-translate-y-2"
-                        : "bg-white/5 backdrop-blur-xl border-white/10 hover:bg-white/10 hover:border-purple-400/40 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)]"
-                      }`}
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg`}
                     >
-                      {tier.highlighted && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <span className="holo-sticker inline-block px-4 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] text-white">
-                            Popular
-                          </span>
-                        </div>
-                      )}
-                      <h3 className="text-lg font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] group-hover:bg-right transition-[background-position] duration-500">
-                        {tier.name}
-                      </h3>
-                      <p className="text-4xl font-bold text-white mb-1">{tier.price}<span className="text-sm text-white/40 font-normal">/mo</span></p>
-                      <div className="w-full h-px bg-white/10 my-6" />
-                      <ul className="space-y-3 mb-8">
-                        {tier.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-sm text-white/60">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" className="w-4 h-4 shrink-0"><path d="M5 12l5 5L20 7" /></svg>
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                      {tier.highlighted ? (
-                        <HoloButton className="w-full">Get Started</HoloButton>
-                      ) : (
-                        <button type="button" className="w-full px-6 py-3 rounded-xl font-bold text-sm text-white/70 border border-white/20 hover:text-white hover:border-white/40 hover:bg-white/5 active:scale-95 transition-all duration-300">
-                          Choose Plan
-                        </button>
-                      )}
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                  ))}
+                    <h3
+                      className={`text-lg font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r ${gradient} bg-[length:200%_auto] group-hover:bg-right transition-[background-position] duration-500`}
+                    >
+                      {title}
+                    </h3>
+                    <p className="text-white/50 text-sm leading-relaxed">{desc}</p>
+                  </GlassCard>
+                ))}
+              </div>
+            </RevealBlock>
+          )}
+
+          {/* Inputs panel */}
+          {activeComponentTab === "Inputs" && (
+            <RevealBlock inView={componentsInView} delay={160}>
+              <div className="max-w-lg space-y-5">
+                <div>
+                  <label className="text-xs tracking-widest uppercase text-purple-400 mb-2 block">
+                    Default Input
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Holographic input..."
+                    className="w-full px-4 py-3 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-purple-400/50 focus:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all duration-300"
+                  />
                 </div>
-              </RevealBlock>
-            )}
-
-            {activeTab === "badges" && (
-              <RevealBlock>
-                <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-8 md:p-12 border border-white/10">
-                  <h3 className="text-xl font-bold mb-2 holo-text-gradient">Holographic Badges</h3>
-                  <p className="text-white/50 text-sm mb-8">Sticker-style badges with full rainbow gradient and animated shimmer overlay.</p>
-
-                  <div className="space-y-8">
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-white/30 font-bold mb-4">Pill Badges</p>
-                      <div className="flex flex-wrap gap-3">
-                        <span className="holo-sticker inline-block px-5 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-[#ff0080] via-[#ff6b00] to-[#ffd700] text-white">Hot</span>
-                        <span className="holo-sticker inline-block px-5 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-[#ffd700] via-[#00ff88] to-[#00d4ff] text-white">Fresh</span>
-                        <span className="holo-sticker inline-block px-5 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-[#00d4ff] via-[#6366f1] to-[#a855f7] text-white">Elite</span>
-                        <span className="holo-sticker inline-block px-5 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-[#a855f7] via-[#ff0080] to-[#ff6b00] text-white">Rare</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-white/30 font-bold mb-4">Status Indicators</p>
-                      <div className="flex flex-wrap gap-3">
-                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] text-sm font-medium">
-                          <span className="w-2 h-2 rounded-full bg-[#00ff88]" style={{ animation: "holo-pulse 2s ease-in-out infinite" }} />
-                          Online
-                        </span>
-                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ffd700]/10 border border-[#ffd700]/30 text-[#ffd700] text-sm font-medium">
-                          <span className="w-2 h-2 rounded-full bg-[#ffd700]" style={{ animation: "holo-pulse 2s ease-in-out infinite 0.5s" }} />
-                          Processing
-                        </span>
-                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ff0080]/10 border border-[#ff0080]/30 text-[#ff0080] text-sm font-medium">
-                          <span className="w-2 h-2 rounded-full bg-[#ff0080]" />
-                          Offline
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-white/30 font-bold mb-4">Full Spectrum Badge</p>
-                      <div className="holo-border-gradient inline-block rounded-2xl">
-                        <div className="holo-sticker bg-gradient-to-r from-[#ff0080] via-[#ff6b00] via-[#ffd700] via-[#00ff88] via-[#00d4ff] via-[#6366f1] to-[#a855f7] bg-[length:200%_auto] rounded-2xl px-8 py-4" style={{ animation: "holo-gradient-shift 4s ease infinite" }}>
-                          <p className="text-white font-bold text-lg tracking-wide">HOLOGRAPHIC</p>
-                          <p className="text-white/70 text-xs tracking-[0.3em] uppercase">Premium Collection</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <label className="text-xs tracking-widest uppercase text-cyan-400 mb-2 block">
+                    Cyan Focus Ring
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="spectrum@holo.io"
+                    className="w-full px-4 py-3 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400/50 focus:shadow-[0_0_15px_rgba(0,212,255,0.3)] transition-all duration-300"
+                  />
                 </div>
-              </RevealBlock>
-            )}
-          </div>
+                <div>
+                  <label className="text-xs tracking-widest uppercase text-pink-400 mb-2 block">
+                    Pink Accent
+                  </label>
+                  <input
+                    type="search"
+                    placeholder="Search the spectrum..."
+                    className="w-full px-4 py-3 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-pink-400/50 focus:shadow-[0_0_15px_rgba(255,0,128,0.3)] transition-all duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs tracking-widest uppercase text-white/40 mb-2 block">
+                    Message
+                  </label>
+                  <textarea
+                    placeholder="Write your holographic message..."
+                    rows={4}
+                    className="w-full px-4 py-3 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-purple-400/50 focus:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all duration-300 resize-none"
+                  />
+                </div>
+              </div>
+            </RevealBlock>
+          )}
         </div>
       </section>
 
-      {/* ── Color Palette ── */}
-      <section className="py-24 px-6">
+      {/* ------------------------------------------------------------------ */}
+      {/* PRISMATIC PALETTE                                                   */}
+      {/* ------------------------------------------------------------------ */}
+      <section id="palette" className="px-6 md:px-12 py-16 md:py-24" ref={paletteRef}>
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="holo-text-gradient">Color Spectrum</span>
+          <RevealBlock inView={paletteInView} delay={0}>
+            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">
+              Color System
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Prismatic Palette
             </h2>
+            <p className="text-white/50 mb-10 max-w-lg">
+              Six spectrum stops that combine to produce every holographic gradient. Hover each chip to see its glow.
+            </p>
           </RevealBlock>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {colorTokens.map((c, i) => (
-              <RevealBlock key={c.name} delay={i * 0.05}>
-                <div className="bg-white/5 backdrop-blur-xl rounded-xl overflow-hidden border border-white/10 group hover:border-purple-400/40 transition-all duration-300">
-                  <div className={`h-20 ${c.tw} flex items-end p-3`}>
-                    <span className="text-[10px] font-bold text-white/80 mix-blend-difference">{c.name}</span>
-                  </div>
-                  <div className="p-3 bg-[#0a0a1f]">
-                    <p className="text-xs font-mono text-white/50">{c.hex}</p>
+          <RevealBlock inView={paletteInView} delay={100}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-12">
+              {ACCENT_COLORS.map(({ name, hex, glow, label }) => (
+                <div
+                  key={hex}
+                  className="group rounded-2xl border border-white/10 overflow-hidden bg-white/5 hover:border-white/30 transition-all duration-300 cursor-pointer"
+                  style={{ "--glow-color": glow } as React.CSSProperties}
+                >
+                  <div
+                    className="h-24 transition-all duration-500 group-hover:scale-105"
+                    style={{
+                      backgroundColor: hex,
+                      boxShadow: `inset 0 -8px 16px rgba(0,0,0,0.3)`,
+                    }}
+                  />
+                  <div
+                    className="p-3 transition-all duration-300"
+                    style={{
+                      boxShadow: `0 0 0 0 ${glow}`,
+                    }}
+                  >
+                    <div
+                      className="text-xs font-semibold mb-0.5 text-transparent bg-clip-text"
+                      style={{
+                        backgroundImage: `linear-gradient(to right, ${hex}, white)`,
+                      }}
+                    >
+                      {name}
+                    </div>
+                    <div className="text-[10px] text-white/40 font-mono">{hex}</div>
+                    <div className="text-[10px] text-white/30 mt-0.5 uppercase tracking-wider">{label}</div>
                   </div>
                 </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Live gradient swatch */}
+          <RevealBlock inView={paletteInView} delay={200}>
+            <div className="rounded-2xl overflow-hidden border border-white/10 h-32 md:h-48 relative">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #ff0080, #ff6b00, #ffd700, #00ff88, #00d4ff, #6366f1, #a855f7)",
+                  backgroundSize: "300% 300%",
+                  animation: "holo-shift 8s ease infinite",
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-white font-bold text-xl md:text-3xl drop-shadow-lg tracking-wide">
+                  Full Spectrum Gradient
+                </p>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* DESIGN PRINCIPLES                                                   */}
+      {/* ------------------------------------------------------------------ */}
+      <section id="principles" className="px-6 md:px-12 py-16 md:py-24" ref={principlesRef}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock inView={principlesInView} delay={0}>
+            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">
+              Design Rules
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Holographic Principles
+            </h2>
+            <p className="text-white/50 mb-12 max-w-lg">
+              Four laws that govern every holographic surface. Follow them and the illusion holds.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {PRINCIPLES.map(({ icon: Icon, title, rule, anti, color, glow }, i) => (
+              <RevealBlock key={title} inView={principlesInView} delay={i * 100}>
+                <GlassCard className="p-6 h-full">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0 shadow-lg`}
+                      style={{ boxShadow: `0 4px 20px ${glow}` }}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className={`text-base font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r ${color} bg-[length:200%_auto] group-hover:bg-right transition-[background-position] duration-500`}
+                      >
+                        {title}
+                      </h3>
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-white/70 leading-relaxed">{rule}</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <X className="w-4 h-4 text-pink-400 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-white/50 leading-relaxed">{anti}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
               </RevealBlock>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Design Rules ── */}
-      <section className="py-24 px-6">
+      {/* ------------------------------------------------------------------ */}
+      {/* FOIL ANIMATION DEMO                                                 */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="px-6 md:px-12 py-16 md:py-24">
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="holo-text-gradient">Design Rules</span>
-            </h2>
-          </RevealBlock>
+          <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">
+            Animated Surface
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-10">
+            Holographic Foil
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Slow deep foil */}
+            <div className="rounded-2xl overflow-hidden border border-white/10 h-56 relative group">
+              <div
+                className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #ff0080, #ff6b00, #ffd700, #00ff88, #00d4ff, #6366f1, #a855f7, #ff0080)",
+                  backgroundSize: "300% 300%",
+                  animation: "holo-shift 8s ease infinite",
+                }}
+              />
+              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                <div style={{ animation: "star-spin 8s linear infinite" }}>
+                  <Star className="w-8 h-8 text-white/80" />
+                </div>
+                <p className="text-white font-bold text-lg drop-shadow-lg">Slow Drift · 8s</p>
+                <p className="text-white/60 text-xs">backgroundSize: 300% · ease</p>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <RevealBlock>
-              <div className="bg-[#00ff88]/5 backdrop-blur-xl rounded-2xl p-8 border border-[#00ff88]/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#00ff88] rounded-full flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="black" className="w-5 h-5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-[#00ff88]">Do</h3>
+            {/* Fast energetic foil */}
+            <div className="rounded-2xl overflow-hidden border border-white/10 h-56 relative group">
+              <div
+                className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(45deg, #a855f7, #ff0080, #ffd700, #00d4ff, #00ff88, #6366f1, #a855f7)",
+                  backgroundSize: "400% 400%",
+                  animation: "holo-shift 3s ease infinite",
+                }}
+              />
+              <div className="absolute inset-0 bg-black/10" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                <div style={{ animation: "star-spin 2s linear infinite" }}>
+                  <Sparkles className="w-8 h-8 text-white/80" />
                 </div>
-                <ul className="space-y-4">
-                  {doRules.map((rule) => (
-                    <li key={rule} className="flex items-start gap-3 text-sm text-white/60">
-                      <span className="w-1.5 h-1.5 bg-[#00ff88] rounded-full mt-2 shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-white font-bold text-lg drop-shadow-lg">Fast Pulse · 3s</p>
+                <p className="text-white/60 text-xs">backgroundSize: 400% · ease</p>
               </div>
-            </RevealBlock>
-            <RevealBlock delay={0.15}>
-              <div className="bg-[#ff0080]/5 backdrop-blur-xl rounded-2xl p-8 border border-[#ff0080]/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#ff0080] rounded-full flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-[#ff0080]">Don&apos;t</h3>
-                </div>
-                <ul className="space-y-4">
-                  {dontRules.map((rule) => (
-                    <li key={rule} className="flex items-start gap-3 text-sm text-white/60">
-                      <span className="w-1.5 h-1.5 bg-[#ff0080] rounded-full mt-2 shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-white/10 bg-[#0a0a1f]">
-        <div className="max-w-7xl mx-auto px-6 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-white/40 text-sm">
-              StyleKit &middot; Holographic Showcase
-            </p>
-            <Link href="/styles/holographic" className="text-white/40 hover:text-white text-sm transition-colors">
-              View Full Documentation &rarr;
+      {/* ------------------------------------------------------------------ */}
+      {/* CTA / NEWSLETTER                                                    */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="px-6 md:px-12 py-16 md:py-24" ref={ctaRef}>
+        <div className="max-w-3xl mx-auto text-center">
+          <RevealBlock inView={ctaInView} delay={0}>
+            <div className="relative rounded-3xl overflow-hidden border border-white/10 p-10 md:p-16">
+              {/* Background foil */}
+              <div
+                className="absolute inset-0 opacity-15"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #ff0080, #ffd700, #00d4ff, #a855f7, #ff0080)",
+                  backgroundSize: "300% 300%",
+                  animation: "holo-shift 10s ease infinite",
+                }}
+              />
+              <div className="absolute inset-0 bg-[#0a0a1f]/60 backdrop-blur-sm" />
+
+              <div className="relative z-10">
+                <p className="text-xs tracking-widest uppercase text-purple-400 mb-4">
+                  Stay in the Spectrum
+                </p>
+                <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] mb-4" style={{ animation: "holo-shift 8s ease infinite" }}>
+                  Go Holographic
+                </h2>
+                <p className="text-white/50 mb-8 max-w-md mx-auto">
+                  {"Join the designers building with prismatic gradients. No beige. No boring."}
+                </p>
+
+                {subscribed ? (
+                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-green-500/20 border border-green-400/30 text-green-300 font-medium">
+                    <Check className="w-4 h-4" />
+                    {"You're in the spectrum"}
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+                    <input
+                      type="email"
+                      placeholder="your@email.io"
+                      className="flex-1 px-4 py-3 bg-white/5 backdrop-blur-md border border-white/15 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-purple-400/50 focus:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all duration-300 text-sm"
+                    />
+                    <SpectrumButton
+                      variant="primary"
+                      className="px-6 py-3 whitespace-nowrap"
+                      onClick={() => setSubscribed(true)}
+                    >
+                      Subscribe
+                    </SpectrumButton>
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* FOOTER                                                              */}
+      {/* ------------------------------------------------------------------ */}
+      <footer className="bg-[#0a0a1f] border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <Palette className="w-5 h-5 text-purple-400" />
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
+                Holographic Showcase
+              </span>
+            </div>
+
+            <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/40">
+              {["Spectrum", "Components", "Palette", "Principles"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="hover:text-white/80 transition-colors duration-300"
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+
+            <Link
+              href="/styles/holographic"
+              className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors duration-300 flex items-center gap-1"
+            >
+              Full Documentation
+              <span aria-hidden>→</span>
             </Link>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-white/5 text-center">
+            <p className="text-xs text-white/20">
+              StyleKit · Holographic Design System · Deep Space Edition
+            </p>
           </div>
         </div>
       </footer>

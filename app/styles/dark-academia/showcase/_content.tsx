@@ -1,159 +1,50 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-/* ── data ─────────────────────────────────────────────── */
-const subjects = [
-  { id: "01", title: "Classical Literature", category: "Humanities", desc: "From Homer to Dostoevsky, the great works that shaped Western thought." },
-  { id: "02", title: "Moral Philosophy", category: "Philosophy", desc: "Plato, Aristotle, Nietzsche and the eternal questions of ethics." },
-  { id: "03", title: "Ancient History", category: "History", desc: "The rise and fall of civilizations, echoing through millennia." },
-];
-
-const libraryBooks = [
-  { title: "The Secret History", author: "Donna Tartt", year: "1992", status: "Available" },
-  { title: "Dead Poets Society", author: "N.H. Kleinbaum", year: "1989", status: "Checked Out" },
-  { title: "Brideshead Revisited", author: "Evelyn Waugh", year: "1945", status: "Available" },
-  { title: "The Picture of Dorian Gray", author: "Oscar Wilde", year: "1890", status: "On Hold" },
-  { title: "If We Were Villains", author: "M.L. Rio", year: "2017", status: "Available" },
-];
-
-const semesterSchedule = [
-  { time: "8:00 AM", course: "Latin I", room: "Hall 204", professor: "Dr. Ashworth" },
-  { time: "10:30 AM", course: "History of Art", room: "Gallery Wing", professor: "Prof. Bellini" },
-  { time: "1:00 PM", course: "Ethics & Logic", room: "Old Chapel", professor: "Dr. Thorne" },
-  { time: "3:30 PM", course: "Poetry Workshop", room: "Library Annex", professor: "Prof. Keats" },
-];
-
-const essayProgress = [
-  { title: "On the Nature of Beauty", progress: 85, words: "4,200" },
-  { title: "Aristotelian Ethics Today", progress: 60, words: "2,800" },
-  { title: "Gothic Architecture", progress: 35, words: "1,400" },
-];
-
-const colorTokens = [
-  { name: "Espresso", hex: "#3d2b1f", tw: "bg-[#3d2b1f]", text: "text-[#f5f0e1]" },
-  { name: "Forest Moss", hex: "#2d4a3e", tw: "bg-[#2d4a3e]", text: "text-[#f5f0e1]" },
-  { name: "Antique Gold", hex: "#8b7355", tw: "bg-[#8b7355]", text: "text-white" },
-  { name: "Parchment", hex: "#f5f0e1", tw: "bg-[#f5f0e1]", text: "text-[#3d2b1f]" },
-  { name: "Deep Umber", hex: "#5c4033", tw: "bg-[#5c4033]", text: "text-[#f5f0e1]" },
-  { name: "Candlelight", hex: "#c4a35a", tw: "bg-[#c4a35a]", text: "text-[#3d2b1f]" },
-  { name: "Worn Leather", hex: "#6b4226", tw: "bg-[#6b4226]", text: "text-[#f5f0e1]" },
-  { name: "Ivory", hex: "#ede5d0", tw: "bg-[#ede5d0]", text: "text-[#3d2b1f]" },
-];
-
-const doRules = [
-  "Use deep browns, forest greens, antique gold as primary palette",
-  "Apply serif typefaces for all headings and body text",
-  "Build warm, muted backgrounds with parchment and cream tones",
-  "Use subtle inset shadows to evoke depth and aged surfaces",
-  "Transition durations 700ms-1000ms with ease-in-out for gravitas",
-  "Add ornate borders and classical divider lines in gold tones",
-];
-
-const dontRules = [
-  "Never use neon or high-saturation fluorescent colors",
-  "Avoid modern tech or industrial design elements",
-  "No bouncy, flashy, or attention-grabbing animations",
-  "Never use cold blue-gray palettes or sterile whites",
-  "Do not use sans-serif fonts for primary text",
-  "Avoid sharp geometric shapes without warmth",
-];
-
-/* ── inline SVGs ──────────────────────────────────────── */
-function BookIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function FeatherIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" /><line x1="16" y1="8" x2="2" y2="22" /><line x1="17.5" y1="15" x2="9" y2="15" />
-    </svg>
-  );
-}
-
-function ScrollIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" /><path d="M19 17V5a2 2 0 0 0-2-2H4" />
-    </svg>
-  );
-}
-
-function CandleIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="9" y="10" width="6" height="11" rx="1" /><path d="M12 2c1 2 3 4 3 6a3 3 0 0 1-6 0c0-2 2-4 3-6z" />
-    </svg>
-  );
-}
-
-function ArrowLeftIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ className = "", direction = "down" }: { className?: string; direction?: "down" | "right" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      {direction === "down" ? <polyline points="6 9 12 15 18 9" /> : <polyline points="9 18 15 12 9 6" />}
-    </svg>
-  );
-}
-
-function CheckIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function OrnamentDivider({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex items-center justify-center gap-3 ${className}`}>
-      <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#8b7355]/40" />
-      <svg viewBox="0 0 20 20" className="w-4 h-4 text-[#8b7355]/50">
-        <path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8z" fill="currentColor" />
-      </svg>
-      <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#8b7355]/40" />
-    </div>
-  );
-}
-
-/* ── hooks ────────────────────────────────────────────── */
-function useInView() {
+// ---------------------------------------------------------------------------
+// Inline useInView hook
+// ---------------------------------------------------------------------------
+function useInView(options?: { threshold?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.15 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: options?.threshold ?? 0.15 }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [options?.threshold]);
 
   return { ref, inView };
 }
 
-function RevealBlock({ children, className = "", delay = 0 }: {
+// ---------------------------------------------------------------------------
+// Inline RevealBlock component
+// ---------------------------------------------------------------------------
+function RevealBlock({
+  children,
+  delay = 0,
+  className = "",
+}: {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
+  className?: string;
 }) {
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({ threshold: 0.15 });
+
   return (
     <div
       ref={ref}
@@ -161,7 +52,7 @@ function RevealBlock({ children, className = "", delay = 0 }: {
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transition: `opacity 900ms cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 900ms cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
       }}
     >
       {children}
@@ -169,600 +60,754 @@ function RevealBlock({ children, className = "", delay = 0 }: {
   );
 }
 
-/* ── sub-components ───────────────────────────────────── */
-function AcademiaButton({ children, variant = "filled", className = "" }: {
-  children: React.ReactNode;
-  variant?: "filled" | "outline" | "gold" | "moss";
-  className?: string;
-}) {
-  const base = "px-8 py-3 font-serif tracking-[0.1em] text-sm transition-all duration-700 ease-in-out";
-  const variants: Record<string, string> = {
-    filled: "bg-[#3d2b1f] text-[#f5f0e1] border border-[#8b7355]/30 hover:bg-[#322317] hover:border-[#8b7355]/60 hover:shadow-[0_8px_18px_rgba(61,43,31,0.3)]",
-    outline: "bg-transparent text-[#3d2b1f] border border-[#3d2b1f]/40 hover:bg-[#3d2b1f] hover:text-[#f5f0e1] hover:border-[#3d2b1f]",
-    gold: "bg-[#c4a35a] text-[#3d2b1f] border border-[#8b7355]/30 hover:bg-[#b4933a] hover:shadow-[0_8px_18px_rgba(196,163,90,0.3)]",
-    moss: "bg-[#2d4a3e] text-[#f5f0e1] border border-[#2d4a3e]/50 hover:bg-[#1d3a2e] hover:shadow-[0_8px_18px_rgba(45,74,62,0.3)]",
-  };
-  return <button className={`${base} ${variants[variant]} ${className}`}>{children}</button>;
-}
-
-function AcademiaCard({ title, desc, icon, index = 0 }: {
-  title: string;
-  desc: string;
-  icon: React.ReactNode;
-  index?: number;
-}) {
+// ---------------------------------------------------------------------------
+// Ornamental divider
+// ---------------------------------------------------------------------------
+function GoldDivider() {
   return (
-    <RevealBlock delay={index * 0.1}>
-      <div className="group relative p-8 bg-[#f5f0e1] border border-[#8b7355]/20 shadow-[inset_0_0_35px_rgba(139,115,85,0.04),0_4px_14px_rgba(61,43,31,0.04)] hover:border-[#8b7355]/50 hover:shadow-[inset_0_0_60px_rgba(139,115,85,0.1),0_8px_24px_rgba(61,43,31,0.08)] transition-all duration-1000 ease-in-out overflow-hidden">
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.15),transparent_55%)] transition-opacity duration-1000 ease-in-out pointer-events-none" />
-        <div className="relative">
-          <div className="w-12 h-px bg-[#8b7355]/40 mb-6 group-hover:w-20 group-hover:bg-[#8b7355] transition-all duration-1000 ease-in-out" />
-          <div className="mb-4 text-[#8b7355] group-hover:text-[#c4a35a] transition-colors duration-700">
-            {icon}
-          </div>
-          <h3 className="text-xl font-serif text-[#3d2b1f] mb-3 tracking-wide group-hover:text-[#2d2016] transition-colors duration-700">{title}</h3>
-          <p className="text-[#3d2b1f]/60 font-serif text-sm leading-relaxed group-hover:text-[#3d2b1f]/80 transition-colors duration-700">{desc}</p>
-        </div>
-      </div>
-    </RevealBlock>
-  );
-}
-
-function LibraryBookRow({ book, index }: { book: typeof libraryBooks[0]; index: number }) {
-  const statusColors: Record<string, string> = {
-    "Available": "text-[#2d4a3e] bg-[#2d4a3e]/10",
-    "Checked Out": "text-[#8b4513] bg-[#8b4513]/10",
-    "On Hold": "text-[#c4a35a] bg-[#c4a35a]/10",
-  };
-  return (
-    <RevealBlock delay={index * 0.08} className="group">
-      <div className="flex items-center gap-4 px-6 py-4 border-b border-[#8b7355]/10 last:border-b-0 hover:bg-[#f5f0e1]/60 transition-colors duration-700">
-        <span className="text-xs text-[#8b7355]/40 font-serif w-6">{String(index + 1).padStart(2, "0")}</span>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-serif text-[#3d2b1f] truncate group-hover:text-[#2d2016] transition-colors duration-700">{book.title}</p>
-          <p className="text-xs text-[#3d2b1f]/40 font-serif">{book.author}, {book.year}</p>
-        </div>
-        <span className={`text-xs font-serif px-3 py-1 rounded-sm ${statusColors[book.status] || "text-[#3d2b1f]/40"}`}>{book.status}</span>
-      </div>
-    </RevealBlock>
-  );
-}
-
-function ScheduleRow({ item, index }: { item: typeof semesterSchedule[0]; index: number }) {
-  return (
-    <RevealBlock delay={index * 0.1}>
-      <div className="group grid grid-cols-4 gap-4 px-6 py-4 border-b border-[#8b7355]/10 last:border-b-0 hover:bg-[#f5f0e1]/60 transition-colors duration-700">
-        <span className="text-sm font-serif text-[#c4a35a]">{item.time}</span>
-        <span className="text-sm font-serif text-[#3d2b1f] group-hover:text-[#2d2016] transition-colors duration-700">{item.course}</span>
-        <span className="text-sm font-serif text-[#3d2b1f]/50">{item.room}</span>
-        <span className="text-sm font-serif text-[#2d4a3e]">{item.professor}</span>
-      </div>
-    </RevealBlock>
-  );
-}
-
-function EssayProgressBar({ essay, index }: { essay: typeof essayProgress[0]; index: number }) {
-  return (
-    <RevealBlock delay={index * 0.1}>
-      <div className="space-y-2">
-        <div className="flex justify-between items-baseline">
-          <p className="text-sm font-serif text-[#3d2b1f] italic">{essay.title}</p>
-          <span className="text-xs font-serif text-[#8b7355]">{essay.words} words</span>
-        </div>
-        <div className="h-1.5 bg-[#3d2b1f]/10 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-[#3d2b1f] to-[#2d4a3e] rounded-full transition-all duration-1000 ease-in-out"
-            style={{ width: `${essay.progress}%` }}
-          />
-        </div>
-        <p className="text-right text-xs font-serif text-[#c4a35a]">{essay.progress}%</p>
-      </div>
-    </RevealBlock>
-  );
-}
-
-/* ── main ─────────────────────────────────────────────── */
-export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-
-  useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
-    return () => clearTimeout(t);
-  }, []);
-
-
-  const accordionItems = [
-    { title: "The Dark Academia Aesthetic", content: "Dark Academia romanticizes the pursuit of knowledge through classical education, Gothic architecture, and literary culture. It draws from the golden age of university life, candlelit libraries, and the weight of leather-bound volumes." },
-    { title: "Core Visual Elements", content: "Tweed and leather textures, handwritten letters on aged parchment, dusty bookshelves reaching cathedral ceilings, ornate borders inspired by medieval manuscripts, and warm amber candlelight casting soft shadows." },
-    { title: "Cultural Foundations", content: "The Secret History by Donna Tartt, Dead Poets Society, Oxford and Cambridge traditions, Greek and Latin classics, Romanticism and Gothic literature, and the ideal of the devoted scholar." },
-    { title: "Typography & Color", content: "Classical serif typefaces evoke the printed word. Deep espresso browns, forest moss greens, antique gold accents, and warm parchment backgrounds create a palette of scholarly warmth and timeless sophistication." },
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#f5f0e1]" style={{ fontFamily: "'Georgia', 'Garamond', serif" }}>
-      <style>{`
-        @keyframes da-candle-flicker {
-          0%, 100% { opacity: 0.85; }
-          50% { opacity: 1; }
-        }
-        @keyframes da-quill-write {
-          0% { transform: translateX(0) rotate(0deg); }
-          50% { transform: translateX(2px) rotate(1deg); }
-          100% { transform: translateX(0) rotate(0deg); }
-        }
-        .da-candle { animation: da-candle-flicker 3s ease-in-out infinite; }
-        .da-quill:hover { animation: da-quill-write 2s ease-in-out infinite; }
-        .da-spine { border-left: 3px solid #8b7355; padding-left: 1.25rem; }
-        .da-divider {
-          border: none;
-          height: 1px;
-          background: linear-gradient(to right, transparent, #8b7355, transparent);
-          margin: 0;
-        }
-        .da-tab-active {
-          position: relative;
-        }
-        .da-tab-active::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: #c4a35a;
-        }
-      `}</style>
-
-      {/* ── Navigation ───────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#f5f0e1]/90 backdrop-blur-sm border-b border-[#8b7355]/15">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="group flex items-center gap-2 text-[#3d2b1f]/60 hover:text-[#c4a35a] transition-colors duration-700">
-            <ArrowLeftIcon className="w-4 h-4" />
-            <span className="text-sm font-serif italic tracking-wide">Return to the world</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <BookIcon className="w-4 h-4 text-[#8b7355]/40 da-candle" />
-            <span className="text-sm font-serif text-[#3d2b1f]/40 italic tracking-widest">Dark Academia</span>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Hero ─────────────────────────────────────── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center pt-14 overflow-hidden bg-gradient-to-b from-[#3d2b1f] via-[#2d4a3e] to-[#3d2b1f]">
-        {/* Texture overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
-        }} />
-        {/* Radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(196,163,90,0.08),transparent_70%)]" />
-
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <div
-            className="mb-8"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)",
-            }}
-          >
-            <OrnamentDivider className="mb-8 [&_*]:!border-[#f5f0e1]/20 [&_svg]:!text-[#c4a35a]/50" />
-            <p className="text-sm font-serif text-[#c4a35a]/80 tracking-[0.3em] uppercase mb-4">Est. MDCCCLXXII</p>
-          </div>
-
-          <h1
-            className="text-5xl md:text-8xl font-serif text-[#f5f0e1] tracking-wide leading-[1.1] mb-6"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(30px)",
-              transition: "opacity 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s",
-            }}
-          >
-            Dark Academia
-          </h1>
-
-          <p
-            className="text-base md:text-lg font-serif text-[#f5f0e1]/60 max-w-2xl mx-auto leading-relaxed italic mb-10"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s",
-            }}
-          >
-            To devote oneself to the pursuit of knowledge is the noblest of all callings.
-            In the quiet of the library, truth awaits between the pages.
-          </p>
-
-          <div
-            className="flex flex-wrap justify-center gap-4"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s, transform 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s",
-            }}
-          >
-            <AcademiaButton variant="gold">Enter the Archive</AcademiaButton>
-            <AcademiaButton variant="outline" className="!text-[#f5f0e1]/70 !border-[#f5f0e1]/20 hover:!bg-[#f5f0e1]/10 hover:!text-[#f5f0e1]">View Syllabus</AcademiaButton>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Component Demos (Tab-switched) ───────────── */}
-      <section className="py-20 px-6 bg-[#f5f0e1]">
-        <RevealBlock className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Component Gallery</p>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Study Materials</h2>
-            <p className="text-sm font-serif text-[#3d2b1f]/50 italic max-w-xl mx-auto">Interactive elements designed with the weight and warmth of classical scholarship</p>
-          </div>
-
-          {/* Tab Switcher */}
-          <div className="flex justify-center mb-12">
-            <div className="inline-flex border border-[#8b7355]/20 bg-[#f5f0e1]">
-              {[
-                { key: "catalog", label: "Library Catalog" },
-                { key: "schedule", label: "Lecture Schedule" },
-                { key: "essays", label: "Essay Progress" },
-              ].map((tab, i) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(i)}
-                  className={`relative px-6 py-3 text-sm font-serif tracking-wide transition-all duration-700 ${
-                    activeTab === i
-                      ? "text-[#3d2b1f] bg-white/50 da-tab-active"
-                      : "text-[#3d2b1f]/40 hover:text-[#3d2b1f]/70"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tab: Library Catalog */}
-          {activeTab === 0 && (
-            <div className="bg-white/40 border border-[#8b7355]/15 shadow-[0_4px_20px_rgba(61,43,31,0.04)]">
-              <div className="grid grid-cols-4 gap-4 px-6 py-3 border-b border-[#8b7355]/15 bg-[#3d2b1f]/5">
-                <span className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase col-span-1">No.</span>
-                <span className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase col-span-1">Title & Author</span>
-                <span className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase col-span-1" />
-                <span className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase col-span-1 text-right">Status</span>
-              </div>
-              {libraryBooks.map((book, i) => (
-                <LibraryBookRow key={i} book={book} index={i} />
-              ))}
-            </div>
-          )}
-
-          {/* Tab: Lecture Schedule */}
-          {activeTab === 1 && (
-            <div className="bg-white/40 border border-[#8b7355]/15 shadow-[0_4px_20px_rgba(61,43,31,0.04)]">
-              <div className="grid grid-cols-4 gap-4 px-6 py-3 border-b border-[#8b7355]/15 bg-[#3d2b1f]/5">
-                {["Time", "Course", "Room", "Professor"].map((h) => (
-                  <span key={h} className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase">{h}</span>
-                ))}
-              </div>
-              {semesterSchedule.map((item, i) => (
-                <ScheduleRow key={i} item={item} index={i} />
-              ))}
-            </div>
-          )}
-
-          {/* Tab: Essay Progress */}
-          {activeTab === 2 && (
-            <div className="bg-white/40 border border-[#8b7355]/15 shadow-[0_4px_20px_rgba(61,43,31,0.04)] p-8 space-y-8">
-              {essayProgress.map((essay, i) => (
-                <EssayProgressBar key={i} essay={essay} index={i} />
-              ))}
-              <hr className="da-divider" />
-              <div className="flex justify-between items-center">
-                <p className="text-sm font-serif text-[#3d2b1f]/50 italic">Total progress across all essays</p>
-                <span className="text-sm font-serif text-[#c4a35a]">{Math.round(essayProgress.reduce((s, e) => s + e.progress, 0) / essayProgress.length)}%</span>
-              </div>
-            </div>
-          )}
-        </RevealBlock>
-      </section>
-
-      {/* ── Subject Cards ────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#3d2b1f]/[0.03]">
-        <RevealBlock className="text-center mb-12">
-          <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Academic Pursuits</p>
-          <h2 className="text-3xl md:text-4xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Fields of Study</h2>
-          <p className="text-sm font-serif text-[#3d2b1f]/50 italic">Each discipline a door to deeper understanding</p>
-        </RevealBlock>
-
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          {subjects.map((subject, i) => (
-            <AcademiaCard
-              key={subject.id}
-              title={subject.title}
-              desc={subject.desc}
-              icon={
-                i === 0 ? <BookIcon className="w-7 h-7" /> :
-                i === 1 ? <FeatherIcon className="w-7 h-7" /> :
-                <ScrollIcon className="w-7 h-7" />
-              }
-              index={i}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* ── Buttons & Inputs ─────────────────────────── */}
-      <section className="py-20 px-6 bg-[#f5f0e1]">
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Interactive Elements</p>
-            <h2 className="text-3xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Actions & Inputs</h2>
-            <p className="text-sm font-serif text-[#3d2b1f]/50 italic">Deliberate, purposeful interactions</p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1} className="mb-12">
-            <div className="flex flex-wrap justify-center gap-4">
-              <AcademiaButton variant="filled">Read More</AcademiaButton>
-              <AcademiaButton variant="outline">Annotate</AcademiaButton>
-              <AcademiaButton variant="gold">Bookmark</AcademiaButton>
-              <AcademiaButton variant="moss">Explore</AcademiaButton>
-              <button className="px-8 py-3 font-serif tracking-[0.1em] text-sm bg-[#d4c5a9] text-[#3d2b1f]/40 border border-[#8b7355]/15 cursor-not-allowed">Sealed</button>
-            </div>
-          </RevealBlock>
-
-          <RevealBlock delay={0.2}>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase">Search the Archives</label>
-                <input
-                  type="text"
-                  placeholder="Enter your query..."
-                  className="w-full px-5 py-3.5 bg-[#f5f0e1]/80 border border-[#8b7355]/25 text-[#3d2b1f] placeholder-[#8b7355]/40 font-serif focus:border-[#8b7355] focus:shadow-[0_0_8px_rgba(139,115,85,0.15)] focus:outline-none transition-all duration-700"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-serif text-[#8b7355] tracking-[0.15em] uppercase">Lecture Notes</label>
-                <textarea
-                  rows={3}
-                  placeholder="Write your reflections..."
-                  className="w-full px-5 py-3.5 bg-[#f5f0e1]/80 border border-[#8b7355]/25 text-[#3d2b1f] placeholder-[#8b7355]/40 font-serif resize-none focus:border-[#8b7355] focus:shadow-[0_0_8px_rgba(139,115,85,0.15)] focus:outline-none transition-all duration-700"
-                />
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── Accordion ────────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#3d2b1f]/[0.03]">
-        <div className="max-w-3xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Knowledge Base</p>
-            <h2 className="text-3xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Folios & Marginalia</h2>
-            <p className="text-sm font-serif text-[#3d2b1f]/50 italic">Expand each folio to reveal its contents</p>
-          </RevealBlock>
-
-          <div className="space-y-2">
-            {accordionItems.map((item, i) => (
-              <RevealBlock key={i} delay={i * 0.08}>
-                <div className="bg-white/40 border border-[#8b7355]/15 overflow-hidden">
-                  <button
-                    onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
-                    className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#3d2b1f]/[0.03] transition-colors duration-700"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-serif text-[#c4a35a]">{String(i + 1).padStart(2, "0")}</span>
-                      <span className="font-serif text-[#3d2b1f] tracking-wide">{item.title}</span>
-                    </div>
-                    <ChevronIcon
-                      className={`w-4 h-4 text-[#8b7355] transition-transform duration-700 ${openAccordion === i ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {openAccordion === i && (
-                    <div className="px-6 pb-6">
-                      <div className="da-spine">
-                        <p className="text-sm font-serif text-[#3d2b1f]/60 leading-relaxed italic">{item.content}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Alerts / Notifications ────────────────────── */}
-      <section className="py-20 px-6 bg-[#f5f0e1]">
-        <div className="max-w-3xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Notifications</p>
-            <h2 className="text-3xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Scholarly Notes</h2>
-          </RevealBlock>
-
-          <div className="space-y-3">
-            {[
-              { type: "success", title: "Thesis Accepted", desc: "Your dissertation on Classical Ethics has been approved by the faculty.", color: "#2d4a3e", icon: <CheckIcon className="w-5 h-5" /> },
-              { type: "warning", title: "Deadline Approaching", desc: "The essay on Romantic Poetry is due before the fortnight ends.", color: "#c4a35a", icon: <CandleIcon className="w-5 h-5" /> },
-              { type: "error", title: "Overdue Return", desc: "A leather-bound volume of Virgil must be returned to the library.", color: "#8b4513", icon: <BookIcon className="w-5 h-5" /> },
-              { type: "info", title: "New Acquisition", desc: "A rare first edition of Keats has arrived in the special collections.", color: "#3d2b1f", icon: <FeatherIcon className="w-5 h-5" /> },
-            ].map((alert, i) => (
-              <RevealBlock key={i} delay={i * 0.1}>
-                <div className="flex items-start gap-4 p-5 bg-white/40 border-l-[3px] transition-all duration-700 hover:bg-white/60" style={{ borderLeftColor: alert.color }}>
-                  <div style={{ color: alert.color }} className="mt-0.5">{alert.icon}</div>
-                  <div>
-                    <p className="font-serif font-bold text-sm tracking-wide" style={{ color: alert.color }}>{alert.title}</p>
-                    <p className="text-[#3d2b1f]/50 text-sm font-serif italic mt-1">{alert.desc}</p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Color Palette ────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#3d2b1f]/[0.03]">
-        <div className="max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Visual Identity</p>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Color Palette</h2>
-            <p className="text-sm font-serif text-[#3d2b1f]/50 italic">The warm hues of candlelit libraries and aged parchment</p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {colorTokens.map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 0.06}>
-                <div className="group">
-                  <div className={`${color.tw} h-24 md:h-32 flex items-end p-4 transition-all duration-700 group-hover:shadow-lg`}>
-                    <span className={`text-xs font-serif ${color.text} opacity-80`}>{color.hex}</span>
-                  </div>
-                  <div className="py-3">
-                    <p className="text-sm font-serif text-[#3d2b1f] tracking-wide">{color.name}</p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Design Rules ─────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#f5f0e1]">
-        <div className="max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Guidelines</p>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Design Principles</h2>
-            <p className="text-sm font-serif text-[#3d2b1f]/50 italic">Rules for maintaining scholarly dignity in every interface</p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <RevealBlock delay={0.1}>
-              <div className="p-8 bg-white/40 border border-[#2d4a3e]/15">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#2d4a3e]/10 flex items-center justify-center">
-                    <CheckIcon className="w-4 h-4 text-[#2d4a3e]" />
-                  </div>
-                  <h3 className="font-serif text-[#2d4a3e] tracking-wide text-lg">Observe</h3>
-                </div>
-                <ul className="space-y-3">
-                  {doRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="text-[#2d4a3e] mt-1 text-xs">+</span>
-                      <span className="text-sm font-serif text-[#3d2b1f]/70 leading-relaxed">{rule}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            <RevealBlock delay={0.2}>
-              <div className="p-8 bg-white/40 border border-[#8b4513]/15">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#8b4513]/10 flex items-center justify-center">
-                    <span className="text-[#8b4513] font-serif text-sm">x</span>
-                  </div>
-                  <h3 className="font-serif text-[#8b4513] tracking-wide text-lg">Avoid</h3>
-                </div>
-                <ul className="space-y-3">
-                  {dontRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="text-[#8b4513] mt-1 text-xs">-</span>
-                      <span className="text-sm font-serif text-[#3d2b1f]/70 leading-relaxed">{rule}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Typography Specimen ──────────────────────── */}
-      <section className="py-20 px-6 bg-[#3d2b1f]/[0.03]">
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Typography</p>
-            <h2 className="text-3xl font-serif text-[#3d2b1f] mb-3 tracking-wide">The Written Word</h2>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="p-10 bg-white/40 border border-[#8b7355]/15">
-              <p className="text-6xl md:text-7xl font-serif text-[#3d2b1f] mb-4 tracking-wide">Carpe Diem</p>
-              <hr className="da-divider" />
-              <p className="text-3xl font-serif text-[#2d4a3e] my-4 italic">Seize the Day</p>
-              <p className="text-xl font-serif text-[#c4a35a] italic mb-4">In the pursuit of beauty and truth</p>
-              <p className="text-sm font-serif text-[#3d2b1f]/50 leading-relaxed max-w-2xl">
-                Dark Academia typography favors classical serifs with generous letter-spacing,
-                evoking the printed pages of leather-bound volumes. Each letterform carries
-                the weight of centuries of scholarly tradition. The typeface itself becomes
-                a vessel for the timeless pursuit of knowledge.
-              </p>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── Toggle / Settings ────────────────────────── */}
-      <section className="py-20 px-6 bg-[#f5f0e1]">
-        <div className="max-w-3xl mx-auto">
-          <RevealBlock className="text-center mb-12">
-            <p className="text-xs font-serif text-[#c4a35a] tracking-[0.3em] uppercase mb-3">Preferences</p>
-            <h2 className="text-3xl font-serif text-[#3d2b1f] mb-3 tracking-wide">Study Settings</h2>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <ToggleSection />
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── Footer ───────────────────────────────────── */}
-      <footer className="py-16 px-6 bg-[#3d2b1f]">
-        <div className="max-w-6xl mx-auto text-center">
-          <OrnamentDivider className="mb-8 [&_*]:!border-[#f5f0e1]/10 [&_svg]:!text-[#c4a35a]/30" />
-          <p className="text-sm font-serif text-[#f5f0e1]/30 italic tracking-wide">
-            Dark Academia &mdash; The beauty of knowledge in darkness
-          </p>
-          <p className="text-xs font-serif text-[#f5f0e1]/15 mt-2 tracking-widest uppercase">
-            Memento Mori
-          </p>
-        </div>
-      </footer>
+    <div className="flex items-center gap-4 my-8">
+      <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#8b7355]/40" />
+      <span className="text-[#8b7355]/60 font-serif text-xs tracking-[0.3em]">&#x2767;</span>
+      <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#8b7355]/40" />
     </div>
   );
 }
 
-/* ── Toggle Section (isolated state) ─────────────────── */
-function ToggleSection() {
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
-  const items = [
-    { label: "Candlelight Mode", desc: "Read by warm amber light" },
-    { label: "Classical Music", desc: "Play ambient background music" },
-    { label: "Marginalia", desc: "Show annotation notes in margins" },
-  ];
+// ---------------------------------------------------------------------------
+// Chapter data for the Reading Room switcher
+// ---------------------------------------------------------------------------
+const CHAPTERS = [
+  {
+    subject: "Philosophy",
+    quote:
+      "The unexamined life is not worth living. In the quiet of the library, one confronts the eternal questions that no age has yet answered.",
+    author: "Socrates",
+    year: "399 BC",
+    source: "Apology",
+  },
+  {
+    subject: "Literature",
+    quote:
+      "Books are a uniquely portable magic. Every page turned is a world entered, every chapter closed a life briefly lived and mourned.",
+    author: "Stephen King",
+    year: "2000",
+    source: "On Writing",
+  },
+  {
+    subject: "Art History",
+    quote:
+      "To look at beauty is to submit to its instruction. The great paintings do not hang in silence — they speak to those who stand long enough to listen.",
+    author: "John Berger",
+    year: "1972",
+    source: "Ways of Seeing",
+  },
+  {
+    subject: "History",
+    quote:
+      "History is a gallery of pictures in which there are few originals and many copies. Each civilization believes itself the first, and the last.",
+    author: "Alexis de Tocqueville",
+    year: "1835",
+    source: "Democracy in America",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Component gallery tabs
+// ---------------------------------------------------------------------------
+const GALLERY_TABS = ["Buttons", "Cards", "Inputs"] as const;
+type GalleryTab = (typeof GALLERY_TABS)[number];
+
+// ---------------------------------------------------------------------------
+// Main showcase component
+// ---------------------------------------------------------------------------
+export default function ShowcaseContent() {
+  // Hero entrance state
+  const [heroRevealed, setHeroRevealed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Reading Room chapter switcher
+  const [activeChapter, setActiveChapter] = useState(0);
+
+  // Component gallery tab
+  const [activeGallery, setActiveGallery] = useState<GalleryTab>("Buttons");
 
   return (
-    <div className="bg-white/40 border border-[#8b7355]/15 p-6 divide-y divide-[#8b7355]/10">
-      {items.map((item, i) => (
-        <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-          <div>
-            <p className="font-serif text-[#3d2b1f] text-sm tracking-wide">{item.label}</p>
-            <p className="text-xs font-serif text-[#3d2b1f]/40 mt-0.5">{item.desc}</p>
+    <div className="min-h-screen bg-[#f5f0e1] font-serif text-[#3d2b1f]">
+
+      {/* NAV */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#3d2b1f]/95 backdrop-blur-sm border-b border-[#8b7355]/30">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-14 md:h-16">
+            <Link
+              href="/styles/dark-academia/showcase"
+              className="font-serif text-[#f5f0e1]/90 tracking-[0.25em] uppercase text-sm"
+            >
+              Dark Academia
+            </Link>
+            <nav className="flex items-center gap-2 text-[#f5f0e1]/50 text-xs tracking-widest select-none">
+              <Link
+                href="/styles/dark-academia"
+                className="relative group px-3 py-1 transition-colors duration-700 hover:text-[#8b7355]"
+              >
+                Docs
+                <span className="absolute bottom-0 left-3 w-0 h-px bg-[#8b7355] group-hover:w-[calc(100%-1.5rem)] transition-all duration-1000 ease-in-out" />
+              </Link>
+              <span className="opacity-30">|</span>
+              <Link
+                href="/styles"
+                className="relative group px-3 py-1 transition-colors duration-700 hover:text-[#8b7355]"
+              >
+                Gallery
+                <span className="absolute bottom-0 left-3 w-0 h-px bg-[#8b7355] group-hover:w-[calc(100%-1.5rem)] transition-all duration-1000 ease-in-out" />
+              </Link>
+              <span className="opacity-30">|</span>
+              <Link
+                href="/"
+                className="relative group px-3 py-1 transition-colors duration-700 hover:text-[#8b7355]"
+              >
+                Home
+                <span className="absolute bottom-0 left-3 w-0 h-px bg-[#8b7355] group-hover:w-[calc(100%-1.5rem)] transition-all duration-1000 ease-in-out" />
+              </Link>
+            </nav>
           </div>
-          <button
-            onClick={() => {
-              const next = [...toggleStates];
-              next[i] = !next[i];
-              setToggleStates(next);
-            }}
-            className={`relative w-12 h-6 rounded-full transition-colors duration-700 ${
-              toggleStates[i] ? "bg-[#3d2b1f]" : "bg-[#3d2b1f]/20"
-            }`}
-          >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#f5f0e1] rounded-full shadow transition-transform duration-700 ${toggleStates[i] ? "translate-x-6" : ""}`} />
-          </button>
         </div>
-      ))}
+      </header>
+
+      {/* HERO */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#3d2b1f] via-[#2d4a3e]/80 to-[#3d2b1f]">
+        {/* Parchment texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat",
+          }}
+        />
+
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          {/* Eyebrow */}
+          <p
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
+              transition:
+                "opacity 900ms cubic-bezier(0.16,1,0.3,1) 0ms, transform 900ms cubic-bezier(0.16,1,0.3,1) 0ms",
+            }}
+            className="text-[#8b7355]/70 text-xs tracking-[0.4em] uppercase mb-6"
+          >
+            StyleKit — Design System Showcase
+          </p>
+
+          {/* Main title */}
+          <h1
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
+              transition:
+                "opacity 1000ms cubic-bezier(0.16,1,0.3,1) 150ms, transform 1000ms cubic-bezier(0.16,1,0.3,1) 150ms",
+            }}
+            className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#f5f0e1] leading-[1.1] tracking-wide mb-4"
+          >
+            <em>Dark Academia</em>
+          </h1>
+
+          {/* Gold rule */}
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 1000ms ease-in-out 350ms",
+            }}
+            className="flex items-center justify-center gap-4 my-7"
+          >
+            <div className="w-16 h-px bg-[#8b7355]/40" />
+            <span className="text-[#8b7355]/60 text-xs tracking-[0.3em]">&#x2767;</span>
+            <div className="w-16 h-px bg-[#8b7355]/40" />
+          </div>
+
+          {/* Subtitle */}
+          <p
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
+              transition:
+                "opacity 1000ms cubic-bezier(0.16,1,0.3,1) 400ms, transform 1000ms cubic-bezier(0.16,1,0.3,1) 400ms",
+            }}
+            className="font-serif italic text-[#f5f0e1]/60 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
+          >
+            Classical libraries. Leather-bound tomes. Knowledge as a form of reverence.
+            Warm, still, solemn — an interface as stable as an ancient folio.
+          </p>
+
+          {/* CTA */}
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
+              transition:
+                "opacity 1000ms cubic-bezier(0.16,1,0.3,1) 600ms, transform 1000ms cubic-bezier(0.16,1,0.3,1) 600ms",
+            }}
+          >
+            <button className="px-10 py-4 bg-[#3d2b1f] text-[#f5f0e1] font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/45 hover:shadow-[0_8px_18px_rgba(61,43,31,0.35)] duration-700 ease-in-out transition-shadow text-sm uppercase">
+              Enter the Archive
+            </button>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div
+          style={{
+            opacity: heroRevealed ? 1 : 0,
+            transition: "opacity 1200ms ease-in-out 900ms",
+          }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#8b7355]/40 text-xs tracking-[0.3em] uppercase flex flex-col items-center gap-2"
+        >
+          <span>Scroll</span>
+          <div className="w-px h-6 bg-[#8b7355]/30" />
+        </div>
+      </section>
+
+      {/* READING ROOM */}
+      <section className="py-20 md:py-32 px-6 bg-[#f5f0e1]">
+        <div className="max-w-4xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Reading Room
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Course of Study
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <RevealBlock delay={150}>
+            <div className="flex flex-wrap gap-0 mb-10 border border-[#8b7355]/25 rounded-sm overflow-hidden">
+              {CHAPTERS.map((ch, i) => (
+                <button
+                  key={ch.subject}
+                  onClick={() => setActiveChapter(i)}
+                  className={[
+                    "flex-1 min-w-[80px] py-3 px-4 text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-700 ease-in-out border-r border-[#8b7355]/20 last:border-r-0",
+                    activeChapter === i
+                      ? "bg-[#3d2b1f] text-[#f5f0e1]"
+                      : "bg-[#f5f0e1] text-[#3d2b1f]/50 hover:text-[#8b7355]",
+                  ].join(" ")}
+                >
+                  {ch.subject}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={200}>
+            <div className="bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 md:p-12 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] pointer-events-none" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#8b7355]/60 via-[#8b7355]/30 to-[#8b7355]/60" />
+              <div className="relative pl-4">
+                <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-6 font-serif">
+                  {CHAPTERS[activeChapter].source} &middot; {CHAPTERS[activeChapter].year}
+                </p>
+                <blockquote className="font-serif italic text-xl md:text-2xl text-[#3d2b1f]/80 leading-relaxed mb-8">
+                  &ldquo;{CHAPTERS[activeChapter].quote}&rdquo;
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-px bg-[#8b7355]/40" />
+                  <p className="font-serif text-sm text-[#8b7355] tracking-wide">
+                    {CHAPTERS[activeChapter].author}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* COMPONENT GALLERY */}
+      <section className="py-20 md:py-32 px-6 bg-[#3d2b1f]/[0.04]">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Workshop
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Component Gallery
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <RevealBlock delay={150}>
+            <div className="flex gap-0 mb-10 border-b border-[#8b7355]/20">
+              {GALLERY_TABS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveGallery(tab)}
+                  className={[
+                    "px-6 py-3 text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-700 ease-in-out border-b-2 -mb-px",
+                    activeGallery === tab
+                      ? "border-[#8b7355] text-[#3d2b1f]"
+                      : "border-transparent text-[#3d2b1f]/40 hover:text-[#8b7355]",
+                  ].join(" ")}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {activeGallery === "Buttons" && (
+            <RevealBlock delay={0}>
+              <div className="space-y-10">
+                <div>
+                  <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-5 font-serif">
+                    Primary Actions
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="group relative px-8 py-3 bg-[#3d2b1f] text-[#f5f0e1] font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/45 hover:shadow-[0_8px_18px_rgba(61,43,31,0.35)] duration-700 ease-in-out transition-shadow text-sm overflow-hidden">
+                      <span className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                      <span className="relative">Read More</span>
+                    </button>
+                    <button className="group relative px-8 py-3 bg-[#2d4a3e] text-[#f5f0e1] font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/30 hover:shadow-[0_8px_18px_rgba(45,74,62,0.35)] duration-700 ease-in-out transition-shadow text-sm overflow-hidden">
+                      <span className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.15),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                      <span className="relative">Explore</span>
+                    </button>
+                    <button className="group relative px-8 py-3 bg-[#f5f0e1] text-[#3d2b1f] font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/45 hover:border-[#8b7355] hover:shadow-[0_8px_18px_rgba(61,43,31,0.15)] duration-700 ease-in-out transition-all text-sm overflow-hidden">
+                      <span className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,115,85,0.1),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                      <span className="relative">Annotate</span>
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-5 font-serif">
+                    Ghost Variants
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="px-8 py-3 font-serif tracking-[0.15em] rounded-sm border border-[#3d2b1f]/30 text-[#3d2b1f]/70 hover:border-[#8b7355] hover:text-[#8b7355] duration-700 ease-in-out transition-all text-sm">
+                      Browse Catalog
+                    </button>
+                    <button className="px-8 py-3 font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/40 text-[#8b7355] hover:bg-[#8b7355]/10 duration-700 ease-in-out transition-all text-sm">
+                      Bookmark
+                    </button>
+                    <button
+                      disabled
+                      className="px-8 py-3 font-serif tracking-[0.15em] rounded-sm border border-[#3d2b1f]/10 text-[#3d2b1f]/25 cursor-not-allowed text-sm"
+                    >
+                      Sealed
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          )}
+
+          {activeGallery === "Cards" && (
+            <RevealBlock delay={0}>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "The Library",
+                    category: "Architecture",
+                    body: "Endless shelves of leather-bound volumes, the scent of old pages mingling with candle wax and centuries of accumulated thought.",
+                  },
+                  {
+                    title: "The Letter",
+                    category: "Correspondence",
+                    body: "Written by candlelight, each word chosen with deliberate care, sealed with dark wax and sent across the cold corridor of time.",
+                  },
+                  {
+                    title: "The Lecture",
+                    category: "Academia",
+                    body: "A professor speaks of ancient civilizations while autumn rain patterns against tall Gothic windows, the chalk dust still hanging in the air.",
+                  },
+                ].map((card) => (
+                  <div
+                    key={card.title}
+                    className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-7 overflow-hidden cursor-default"
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                    <div className="absolute left-0 top-4 bottom-4 w-0.5 bg-[#8b7355]/30 group-hover:bg-[#8b7355]/60 transition-colors duration-700" />
+                    <div className="relative pl-3">
+                      <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-3 font-serif transition-colors duration-700 group-hover:text-[#8b7355]">
+                        {card.category}
+                      </p>
+                      <h3 className="font-serif text-xl text-[#3d2b1f] mb-3 tracking-wide">
+                        {card.title}
+                      </h3>
+                      <div className="w-8 h-px bg-[#8b7355]/40 group-hover:w-16 group-hover:bg-[#8b7355] duration-1000 ease-in-out transition-all mb-4" />
+                      <p className="font-serif text-sm text-[#3d2b1f]/60 leading-relaxed">
+                        {card.body}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </RevealBlock>
+          )}
+
+          {activeGallery === "Inputs" && (
+            <RevealBlock delay={0}>
+              <div className="max-w-2xl space-y-6">
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/80 mb-2">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Your name..."
+                    className="w-full px-5 py-3 bg-[#f5f0e1] border border-[#8b7355]/30 rounded-sm font-serif text-sm text-[#3d2b1f] placeholder:text-[#3d2b1f]/30 focus:outline-none focus:border-[#8b7355] focus:shadow-[0_0_8px_rgba(139,115,85,0.2)] transition-all duration-700"
+                  />
+                </div>
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/80 mb-2">
+                    Search the Archives
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Search tomes, authors, subjects..."
+                    className="w-full px-5 py-3 bg-[#f5f0e1] border border-[#8b7355]/30 rounded-sm font-serif text-sm text-[#3d2b1f] placeholder:text-[#3d2b1f]/30 focus:outline-none focus:border-[#8b7355] focus:shadow-[0_0_8px_rgba(139,115,85,0.2)] transition-all duration-700"
+                  />
+                </div>
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/80 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    placeholder="Record your observations..."
+                    rows={4}
+                    className="w-full px-5 py-3 bg-[#f5f0e1] border border-[#8b7355]/30 rounded-sm font-serif text-sm text-[#3d2b1f] placeholder:text-[#3d2b1f]/30 focus:outline-none focus:border-[#8b7355] focus:shadow-[0_0_8px_rgba(139,115,85,0.2)] transition-all duration-700 resize-none"
+                  />
+                </div>
+                <button className="px-8 py-3 bg-[#3d2b1f] text-[#f5f0e1] font-serif tracking-[0.15em] rounded-sm border border-[#8b7355]/45 hover:shadow-[0_8px_18px_rgba(61,43,31,0.35)] duration-700 ease-in-out transition-shadow text-sm">
+                  Submit
+                </button>
+              </div>
+            </RevealBlock>
+          )}
+        </div>
+      </section>
+
+      {/* COLOR PALETTE */}
+      <section className="py-20 md:py-32 px-6 bg-[#f5f0e1]">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Palette
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Ink Samples
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mt-4">
+            {[
+              { name: "Deep Brown", hex: "#3d2b1f", label: "Primary" },
+              { name: "Forest Green", hex: "#2d4a3e", label: "Secondary" },
+              { name: "Antique Gold", hex: "#8b7355", label: "Accent I" },
+              { name: "Parchment", hex: "#f5f0e1", label: "Background" },
+              { name: "Dark Brown", hex: "#5c4033", label: "Accent III" },
+            ].map((swatch, i) => (
+              <RevealBlock key={swatch.hex} delay={i * 80}>
+                <div className="group border border-[#8b7355]/20 rounded-sm overflow-hidden hover:border-[#8b7355]/50 transition-colors duration-700">
+                  <div
+                    className="h-28 md:h-36 relative overflow-hidden"
+                    style={{ backgroundColor: swatch.hex }}
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.15),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity" />
+                  </div>
+                  <div className="p-3 bg-[#f5f0e1] border-t border-[#8b7355]/15">
+                    <p className="font-serif text-xs text-[#3d2b1f] tracking-wide">{swatch.name}</p>
+                    <p className="font-serif text-[10px] text-[#8b7355]/70 mt-0.5">{swatch.hex}</p>
+                    <p className="font-serif text-[10px] text-[#3d2b1f]/40 mt-0.5 tracking-[0.2em] uppercase">{swatch.label}</p>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TYPOGRAPHY */}
+      <section className="py-20 md:py-32 px-6 bg-[#3d2b1f]/[0.04]">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Written Word
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Typography
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-10 mt-6">
+            <RevealBlock delay={0}>
+              <div className="bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8">
+                <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-5 font-serif">Display</p>
+                <p className="font-serif text-5xl text-[#3d2b1f] leading-tight mb-2">
+                  <em>Carpe Diem</em>
+                </p>
+                <p className="font-serif text-3xl text-[#2d4a3e] leading-tight mb-2">
+                  Seize the Day
+                </p>
+                <p className="font-serif text-xl text-[#8b7355] leading-snug">
+                  In Pursuit of Beauty
+                </p>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={100}>
+              <div className="bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8">
+                <p className="text-[#8b7355]/60 text-xs tracking-[0.3em] uppercase mb-5 font-serif">{"Body & Detail"}</p>
+                <p className="font-serif text-base text-[#3d2b1f]/75 leading-relaxed mb-5">
+                  Dark Academia typography draws from the great printed traditions —
+                  classical serifs with generous tracking, evoking leather-bound volumes
+                  and the gravity of the written word.
+                </p>
+                <div className="space-y-2">
+                  {[
+                    { label: "Display", cls: "text-2xl" },
+                    { label: "Heading", cls: "text-lg" },
+                    { label: "Body", cls: "text-base" },
+                    { label: "Caption", cls: "text-xs tracking-widest uppercase" },
+                  ].map((t) => (
+                    <div key={t.label} className="flex items-baseline gap-4">
+                      <span className="font-serif text-[10px] tracking-[0.2em] uppercase text-[#8b7355]/50 w-14 shrink-0">{t.label}</span>
+                      <span className={`font-serif text-[#3d2b1f]/70 ${t.cls}`}>Aa Bb Cc</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* DESIGN RULES */}
+      <section className="py-20 md:py-32 px-6 bg-[#f5f0e1]">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Curriculum
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Design Rules
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-8 mt-4">
+            <RevealBlock delay={0}>
+              <div className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#2d4a3e]/50" />
+                <div className="relative pl-4">
+                  <p className="font-serif text-xs tracking-[0.3em] uppercase text-[#2d4a3e] mb-5">
+                    Commandments
+                  </p>
+                  <ul className="space-y-4">
+                    {[
+                      "Use deep brown, forest green, and antique gold exclusively",
+                      "Employ serif fonts throughout — body, headings, captions alike",
+                      "Allow duration-700 to duration-1000 for all transitions",
+                      "Introduce candlelight glow on hover via radial gradient",
+                      "Expanding gold underlines signal interactivity",
+                      "Parchment cream as the resting background",
+                      "Inset shadows suggest paper depth, never harsh drop shadows",
+                    ].map((rule) => (
+                      <li key={rule} className="flex items-start gap-3">
+                        <span className="text-[#2d4a3e] font-serif text-base leading-none mt-0.5 shrink-0">&#x2713;</span>
+                        <span className="font-serif text-sm text-[#3d2b1f]/70 leading-relaxed">{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={100}>
+              <div className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5c4033]/50" />
+                <div className="relative pl-4">
+                  <p className="font-serif text-xs tracking-[0.3em] uppercase text-[#5c4033] mb-5">
+                    Prohibitions
+                  </p>
+                  <ul className="space-y-4">
+                    {[
+                      "Never use neon, high-saturation, or cool-toned colors",
+                      "No playful scale(), bounce, or jump animations",
+                      "Avoid modern sans-serif fonts — they break the atmosphere",
+                      "Do not apply rapid transitions (below duration-500)",
+                      "No hard drop-shadows or glowing outlines",
+                      "Avoid cold gray or blue backgrounds",
+                      "Never stack many bright decorative elements — keep it still",
+                    ].map((rule) => (
+                      <li key={rule} className="flex items-start gap-3">
+                        <span className="text-[#5c4033] font-serif text-base leading-none mt-0.5 shrink-0">&#x2717;</span>
+                        <span className="font-serif text-sm text-[#3d2b1f]/70 leading-relaxed">{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* QUOTE SHOWCASE */}
+      <section className="py-20 md:py-32 px-6 bg-[#3d2b1f]">
+        <div className="max-w-3xl mx-auto text-center">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/60 text-xs tracking-[0.35em] uppercase mb-10 font-serif">
+              From the Commonplace Book
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <div className="flex items-center justify-center gap-4 mb-10">
+              <div className="flex-1 h-px bg-[#8b7355]/20" />
+              <span className="text-[#8b7355]/40 font-serif text-xs tracking-[0.3em]">&#x2767;</span>
+              <div className="flex-1 h-px bg-[#8b7355]/20" />
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={200}>
+            <blockquote className="font-serif italic text-2xl md:text-3xl text-[#f5f0e1]/80 leading-relaxed mb-8">
+              &ldquo;The love of learning, the sequestered nooks,
+              <br />
+              And all the sweet serenity of books.&rdquo;
+            </blockquote>
+          </RevealBlock>
+
+          <RevealBlock delay={300}>
+            <div className="flex items-center justify-center gap-4 mt-6">
+              <div className="w-8 h-px bg-[#8b7355]/40" />
+              <p className="font-serif text-sm text-[#8b7355] tracking-[0.2em]">
+                Henry Wadsworth Longfellow
+              </p>
+              <div className="w-8 h-px bg-[#8b7355]/40" />
+            </div>
+            <p className="font-serif text-xs text-[#8b7355]/40 tracking-[0.25em] uppercase mt-2">
+              Morituri Salutamus, 1875
+            </p>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* INTERACTION STATES */}
+      <section className="py-20 md:py-32 px-6 bg-[#f5f0e1]">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <p className="text-[#8b7355]/70 text-xs tracking-[0.35em] uppercase mb-3">
+              The Behaviour
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#3d2b1f] mb-2 tracking-wide">
+              Interaction States
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <GoldDivider />
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-6 mt-4">
+            <RevealBlock delay={0}>
+              <div className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 overflow-hidden cursor-default min-h-[200px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.25),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                <p className="relative font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/60 mb-2">
+                  Candlelight Reveal
+                </p>
+                <p className="relative font-serif text-sm text-[#3d2b1f]/60 leading-relaxed">
+                  Hover to see warm radial glow emerge from the corner, as if a candle were drawn near.
+                </p>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={80}>
+              <div className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 overflow-hidden cursor-default min-h-[200px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                <p className="relative font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/60 mb-2">
+                  Expanding Underline
+                </p>
+                <div className="relative">
+                  <p className="font-serif text-lg text-[#3d2b1f] mb-2 tracking-wide">A Study in Gold</p>
+                  <div className="w-8 h-px bg-[#8b7355]/40 group-hover:w-24 group-hover:bg-[#8b7355] duration-1000 ease-in-out transition-all" />
+                </div>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={160}>
+              <div className="group relative bg-[#f5f0e1] border border-[#8b7355]/25 rounded-sm shadow-[inset_0_0_35px_rgba(139,115,85,0.05)] p-8 overflow-hidden cursor-default min-h-[200px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,230,180,0.2),transparent_55%)] opacity-0 group-hover:opacity-100 duration-1000 transition-opacity pointer-events-none" />
+                <p className="relative font-serif text-xs tracking-[0.3em] uppercase text-[#8b7355]/60 mb-2">
+                  Antique Slowness
+                </p>
+                <p className="relative font-serif text-sm text-[#3d2b1f]/60 group-hover:text-[#8b7355] duration-700 ease-in-out transition-colors leading-relaxed">
+                  Ink and gold transitions at duration-700 to 1000 — the pace of turning a page.
+                </p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#3d2b1f] border-t border-[#8b7355]/30">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <p className="font-serif text-[#f5f0e1]/80 tracking-[0.2em] uppercase text-sm mb-1">
+                Dark Academia
+              </p>
+              <p className="font-serif text-[#8b7355]/50 text-xs tracking-wide italic">
+                StyleKit Design System
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 text-[#8b7355]/30">
+              <div className="w-16 h-px bg-[#8b7355]/20" />
+              <span className="font-serif text-xs tracking-[0.3em]">&#x2767;</span>
+              <div className="w-16 h-px bg-[#8b7355]/20" />
+            </div>
+
+            <div className="flex gap-6 text-xs font-serif tracking-[0.2em] uppercase">
+              <Link
+                href="/styles/dark-academia"
+                className="text-[#f5f0e1]/40 hover:text-[#8b7355] transition-colors duration-700"
+              >
+                Documentation
+              </Link>
+              <Link
+                href="/styles"
+                className="text-[#f5f0e1]/40 hover:text-[#8b7355] transition-colors duration-700"
+              >
+                All Styles
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }
