@@ -5,6 +5,8 @@ import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const FAVORITES_TABLE_CANDIDATES = ["user_favorites", "style_favorites"] as const;
+const LEGACY_USER_SESSION_PREFIX = "user:";
 
 const mergeSchema = z.object({
   slugs: z.array(z.string().regex(SLUG_RE)).max(200),
@@ -55,28 +57,140 @@ export async function POST(request: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    // Bulk upsert: ignore duplicates
-    const rows = parsed.data.slugs.map((slug) => ({
-      user_id: user.id,
-      style_slug: slug,
-    }));
+    let merged = false;
 
-    const { error } = await sb
-      .from("user_favorites")
-      .upsert(rows, { onConflict: "user_id,style_slug", ignoreDuplicates: true });
+    for (const tableName of FAVORITES_TABLE_CANDIDATES) {
+      try {
+        const didMerge = await upsertFavoritesForUser(
+          sb,
+          tableName,
+          user.id,
+          parsed.data.slugs
+        );
+        if (didMerge) {
+          merged = true;
+        }
+      } catch {
+        if (!merged) {
+          return NextResponse.json(
+            { success: false, error: "Failed to merge favorites" },
+            { status: 500 }
+          );
+        }
+      }
+    }
 
-    if (error) {
+    if (!merged) {
       return NextResponse.json(
         { success: false, error: "Failed to merge favorites" },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, merged: rows.length });
+    return NextResponse.json({ success: true, merged: parsed.data.slugs.length });
   } catch {
     return NextResponse.json(
       { success: false, error: "Invalid request" },
       { status: 400 }
     );
   }
+}
+
+function buildLegacyUserSessionId(userId: string): string {
+  return `${LEGACY_USER_SESSION_PREFIX}${userId}`;
+}
+
+async function upsertFavoritesForUser(
+  sb: any,
+  tableName: string,
+  userId: string,
+  slugs: string[]
+): Promise<boolean> {
+  const userRows = slugs.map((slug) => ({
+    user_id: userId,
+    style_slug: slug,
+  }));
+
+  const userScopedUpsert = await sb
+    .from(tableName)
+    .upsert(userRows, { onConflict: "user_id,style_slug", ignoreDuplicates: true });
+
+  if (!userScopedUpsert.error) {
+    return true;
+  }
+
+  if (isMissingUserIdColumnError(userScopedUpsert.error)) {
+    const sessionRows = slugs.map((slug) => ({
+      session_id: buildLegacyUserSessionId(userId),
+      style_slug: slug,
+    }));
+
+    const legacyScopedUpsert = await sb
+      .from(tableName)
+      .upsert(sessionRows, { onConflict: "session_id,style_slug", ignoreDuplicates: true });
+
+    if (!legacyScopedUpsert.error) {
+      return true;
+    }
+
+    if (isSkippableFavoritesSchemaError(legacyScopedUpsert.error)) {
+      return false;
+    }
+
+    throw legacyScopedUpsert.error;
+  }
+
+  if (isSkippableFavoritesSchemaError(userScopedUpsert.error)) {
+    return false;
+  }
+
+  throw userScopedUpsert.error;
+}
+
+function isMissingUserIdColumnError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const code = "code" in error && typeof error.code === "string" ? error.code : null;
+  if (code !== "42703") {
+    return false;
+  }
+
+  const message = readErrorMessage(error).toLowerCase();
+  return message.includes("user_id");
+}
+
+function isSkippableFavoritesSchemaError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const code = "code" in error && typeof error.code === "string" ? error.code : null;
+  if (code === "42P01" || code === "PGRST205" || code === "42703" || code === "23502") {
+    return true;
+  }
+
+  const message = readErrorMessage(error).toLowerCase();
+  return (
+    (message.includes("relation") && message.includes("does not exist")) ||
+    (message.includes("table") && message.includes("not found")) ||
+    (message.includes("column") && message.includes("does not exist")) ||
+    (message.includes("null value") && message.includes("session_id"))
+  );
+}
+
+function readErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  if (error && typeof error === "object") {
+    if ("message" in error && typeof error.message === "string") {
+      return error.message;
+    }
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  return "Unknown error";
 }

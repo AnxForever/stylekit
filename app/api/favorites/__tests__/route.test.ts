@@ -47,13 +47,134 @@ describe("favorites route", () => {
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
 
-    const order = vi.fn().mockResolvedValue({
-      data: [{ style_slug: "neo-brutalist" }, { style_slug: "glassmorphism" }],
-      error: null,
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: [{ style_slug: "neo-brutalist" }, { style_slug: "glassmorphism" }],
+                error: null,
+              }),
+            })),
+          })),
+        };
+      }
+      if (table === "style_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: [{ style_slug: "glassmorphism" }, { style_slug: "neo-brutalist" }],
+                error: null,
+              }),
+            })),
+          })),
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
     });
-    const eq = vi.fn().mockReturnValue({ order });
-    const select = vi.fn().mockReturnValue({ eq });
-    const from = vi.fn().mockReturnValue({ select });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await GET();
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      favorites: ["neo-brutalist", "glassmorphism"],
+    });
+  });
+
+  it("GET falls back to style_favorites when user_favorites is missing", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: "42P01", message: "relation does not exist" },
+              }),
+            })),
+          })),
+        };
+      }
+      if (table === "style_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: [{ style_slug: "neo-brutalist" }],
+                error: null,
+              }),
+            })),
+          })),
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await GET();
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      favorites: ["neo-brutalist"],
+    });
+  });
+
+  it("GET falls back to legacy session_id rows when user_id column is missing", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: "42703", message: "column user_id does not exist" },
+              }),
+            })),
+            in: vi.fn((column: string, values: string[]) => ({
+              order: vi.fn().mockResolvedValue({
+                data:
+                  column === "session_id" &&
+                  values.includes("user:user-legacy")
+                    ? [{ style_slug: "neo-brutalist" }, { style_slug: "glassmorphism" }]
+                    : [],
+                error: null,
+              }),
+            })),
+          })),
+        };
+      }
+      if (table === "style_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: "42P01", message: "relation does not exist" },
+              }),
+            })),
+            in: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: "42P01", message: "relation does not exist" },
+              }),
+            })),
+          })),
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
     mockedCreateClient.mockReturnValue({ from } as never);
 
     const response = await GET();
@@ -107,6 +228,59 @@ describe("favorites route", () => {
       user_id: "user-2",
       style_slug: "neo-brutalist",
     });
+    expect(insert).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toEqual({ success: true });
+  });
+
+  it("POST falls back to legacy session_id insert when user_id column is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const insertUserFavorites = vi.fn((payload: Record<string, unknown>) => {
+      if ("user_id" in payload) {
+        return Promise.resolve({
+          error: { code: "42703", message: "column user_id does not exist" },
+        });
+      }
+      if ("session_id" in payload) {
+        return Promise.resolve({ error: null });
+      }
+      return Promise.resolve({ error: { message: "unexpected payload" } });
+    });
+
+    const insertStyleFavorites = vi.fn().mockResolvedValue({
+      error: { code: "42P01", message: "relation does not exist" },
+    });
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return { insert: insertUserFavorites };
+      }
+      if (table === "style_favorites") {
+        return { insert: insertStyleFavorites };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/favorites", {
+        method: "POST",
+        body: JSON.stringify({ slug: "neo-brutalist" }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(insertUserFavorites).toHaveBeenCalledWith({
+      user_id: "user-legacy",
+      style_slug: "neo-brutalist",
+    });
+    expect(insertUserFavorites).toHaveBeenCalledWith({
+      session_id: "user:user-legacy",
+      style_slug: "neo-brutalist",
+    });
     await expect(response.json()).resolves.toEqual({ success: true });
   });
 
@@ -130,6 +304,58 @@ describe("favorites route", () => {
     expect(response.status).toBe(200);
     expect(eqFirst).toHaveBeenCalledWith("user_id", "user-3");
     expect(eqSecond).toHaveBeenCalledWith("style_slug", "neo-brutalist");
+    expect(del).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toEqual({ success: true });
+  });
+
+  it("DELETE falls back to legacy session_id delete when user_id column is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const userTableDelete = vi.fn().mockReturnValue({
+      eq: vi.fn((firstColumn: string, firstValue: string) => ({
+        eq: vi.fn(() => {
+          if (firstColumn === "user_id" && firstValue === "user-legacy") {
+            return Promise.resolve({
+              error: { code: "42703", message: "column user_id does not exist" },
+            });
+          }
+          if (firstColumn === "session_id" && firstValue === "user:user-legacy") {
+            return Promise.resolve({ error: null });
+          }
+          return Promise.resolve({ error: { message: "unexpected delete call" } });
+        }),
+      })),
+    });
+
+    const styleTableDelete = vi.fn().mockReturnValue({
+      eq: vi.fn(() => ({
+        eq: vi.fn().mockResolvedValue({
+          error: { code: "42P01", message: "relation does not exist" },
+        }),
+      })),
+    });
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return { delete: userTableDelete };
+      }
+      if (table === "style_favorites") {
+        return { delete: styleTableDelete };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await DELETE(
+      new Request("https://stylekit.top/api/favorites?slug=neo-brutalist", {
+        method: "DELETE",
+      }),
+    );
+
+    expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ success: true });
   });
 });
