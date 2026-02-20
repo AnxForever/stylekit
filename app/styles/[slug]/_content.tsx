@@ -7,11 +7,9 @@ import { ArrowLeftRight } from "lucide-react";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
-import { RulesExporter } from "@/components/style-preview/rules-exporter";
+import { PromptPairExporter } from "@/components/style-preview/prompt-pair-exporter";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
-import { ExamplePrompts } from "@/components/style-preview/example-prompts";
-import { QuickStartGuide } from "@/components/style-preview/quick-start-guide";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
 import { ScoreBadge } from "@/components/accessibility/score-badge";
@@ -175,14 +173,28 @@ export function StyleDetailContent({
             </div>
           </div>
 
-          {/* Quick Start Guide */}
-          <div className="mt-12">
-            <QuickStartGuide
-              aiRules={style.aiRules}
-              styleName={style.name}
-              styleSlug={style.slug}
-            />
-          </div>
+        </div>
+      </section>
+
+      {/* Prompt Pair Export */}
+      <section className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            {t("promptPair.sectionLabel")}
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-4">{t("promptPair.title")}</h2>
+          <p className="text-muted mb-8 max-w-2xl">
+            {t("promptPair.description").replace("{name}", style.name)}
+          </p>
+          <PromptPairExporter
+            styleName={style.name}
+            styleSlug={style.slug}
+            aiRules={style.aiRules}
+            enhancedRules={enhancedRules}
+            doList={style.doList}
+            dontList={style.dontList}
+            keywords={style.keywords}
+          />
         </div>
       </section>
 
@@ -259,27 +271,6 @@ export function StyleDetailContent({
           <CodeBlock code={style.globalCss} language="css" />
         </div>
       </section>
-
-      {/* Example Prompts */}
-      {style.examplePrompts && style.examplePrompts.length > 0 && (
-        <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              {t("styleDetail.quickStart")}
-            </p>
-            <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.examplePrompts")}</h2>
-            <p className="text-muted mb-8 max-w-2xl">
-              {t("styleDetail.examplePromptsDesc").replace("{name}", style.name)}
-            </p>
-            <ExamplePrompts
-              prompts={style.examplePrompts}
-              styleName={style.name}
-              styleSlug={style.slug}
-              aiRules={style.aiRules}
-            />
-          </div>
-        </section>
-      )}
 
       {/* Compatible Styles (for layout patterns only) */}
       {style.styleType === "layout" && compatibleStyles.length > 0 && (
@@ -390,26 +381,6 @@ export function StyleDetailContent({
             {t("styleDetail.exportStylePackDesc")}
           </p>
           <StylePackExport style={style} />
-        </div>
-      </section>
-
-      {/* AI Rules Export */}
-      <section>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {t("styleDetail.export")}
-          </p>
-          <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.aiRulesTitle")}</h2>
-          <p className="text-muted mb-8 max-w-2xl">
-            {t("styleDetail.aiRulesDesc").replace("{name}", style.name)}
-          </p>
-          <RulesExporter
-            aiRules={style.aiRules}
-            globalCss={style.globalCss}
-            styleName={style.name}
-            styleSlug={style.slug}
-            enhancedRules={enhancedRules}
-          />
         </div>
       </section>
 
