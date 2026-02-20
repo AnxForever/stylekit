@@ -572,7 +572,7 @@ export default function ShowcaseContent() {
             <RevealBlock delay={0.1}>
               <div className="space-y-6">
                 <h3 className="font-mono text-sm uppercase tracking-widest text-[#39ff14]">
-                  <NeonText color="#39ff14">// REQUIRED</NeonText>
+                  <NeonText color="#39ff14">{"// REQUIRED"}</NeonText>
                 </h3>
                 <ul className="space-y-3 font-mono text-sm">
                   <li className="flex items-start gap-3">
@@ -606,7 +606,7 @@ export default function ShowcaseContent() {
             <RevealBlock delay={0.2}>
               <div className="space-y-6">
                 <h3 className="font-mono text-sm uppercase tracking-widest text-[#ff2a2a]">
-                  <NeonText color="#ff2a2a">// FORBIDDEN</NeonText>
+                  <NeonText color="#ff2a2a">{"// FORBIDDEN"}</NeonText>
                 </h3>
                 <ul className="space-y-3 font-mono text-sm">
                   <li className="flex items-start gap-3">
@@ -682,9 +682,9 @@ export default function ShowcaseContent() {
               <p className="font-mono text-lg font-bold text-white mb-1" style={{ textShadow: "-2px 0 #ff00ff, 2px 0 #00ffff" }}>
                 ARCADE CRT
               </p>
-              <p className="font-mono text-xs text-[#39ff14]/40 uppercase tracking-widest">
-                CREDITS: {String(coinCount).padStart(2, "0")} // INSERT COIN TO CONTINUE
-              </p>
+                  <p className="font-mono text-xs text-[#39ff14]/40 uppercase tracking-widest">
+                    {`CREDITS: ${String(coinCount).padStart(2, "0")} // INSERT COIN TO CONTINUE`}
+                  </p>
             </div>
             <div className="flex gap-4">
               <Link

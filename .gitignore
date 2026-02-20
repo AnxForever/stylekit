@@ -84,3 +84,11 @@ uiprompt-*.json
 
 # npm lock file (project uses pnpm)
 package-lock.json
+
+# Temporary dev scripts (batch processing tools)
+process.js
+tools/scripts/refine.js
+tools/scripts/refine-batch-01.mjs
+
+# External sub-projects
+editorial-brutalist-portfolio/
