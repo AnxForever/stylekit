@@ -1,419 +1,1531 @@
-﻿"use client";
+"use client";
 
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Cpu, Shield, Zap, Terminal, Radio, Radar } from "lucide-react";
-import {
-  ShowcaseHero,
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Deep Purple", hex: "#7c3aed", bg: "bg-[#7c3aed]" },
-  { name: "Cyan-Green", hex: "#06d6a0", bg: "bg-[#06d6a0]" },
-  { name: "Hot Pink", hex: "#ff006e", bg: "bg-[#ff006e]" },
-  { name: "Sky Blue", hex: "#38bdf8", bg: "bg-[#38bdf8]" },
-  { name: "Dark BG", hex: "#0f0f1a", bg: "bg-[#0f0f1a]" },
-];
+/* ------------------------------------------------------------------ */
+/*  Inline hooks & primitives                                          */
+/* ------------------------------------------------------------------ */
 
-export default function ShowcaseContent() {
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
   return (
-    <div className="min-h-screen bg-[#0f0f1a] relative overflow-hidden">
-      {/* Hexagonal grid background */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpath d='M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z' fill='none' stroke='%237c3aed' stroke-width='0.4' opacity='0.06'/%3E%3C/svg%3E\")",
-        }}
-      />
-
-      {/* HUD viewport frame corners */}
-      <div className="fixed top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-[#06d6a0]/40 pointer-events-none z-20" />
-      <div className="fixed top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-[#06d6a0]/40 pointer-events-none z-20" />
-      <div className="fixed bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-[#06d6a0]/40 pointer-events-none z-20" />
-      <div className="fixed bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-[#06d6a0]/40 pointer-events-none z-20" />
-
-      {/* Ambient glow */}
-      <div className="fixed top-0 right-0 w-80 h-80 bg-[#7c3aed]/8 blur-[100px] pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-64 h-64 bg-[#06d6a0]/6 blur-[80px] pointer-events-none" />
-
-      {/* Navigation bar with HUD data readout */}
-      <nav className="relative z-10 px-6 py-4 border-b border-[#7c3aed]/20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/cyber-anime"
-            className="flex items-center gap-2 text-[#06d6a0] hover:text-[#06d6a0]/80 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold uppercase tracking-widest text-sm">
-              Back
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-[#06d6a0]/50 font-mono text-xs tracking-wider">
-              SYS::ONLINE
-            </span>
-            <span className="w-2 h-2 bg-[#06d6a0] animate-pulse" />
-            <span className="font-bold text-xl text-[#7c3aed] uppercase tracking-widest">
-              CYBER ANIME
-            </span>
-          </div>
-          <Link
-            href="/styles"
-            className="px-4 py-2 border border-[#06d6a0]/50 text-[#06d6a0] font-bold uppercase tracking-widest text-sm shadow-[0_0_10px_rgba(6,214,160,0.2)] hover:shadow-[0_0_15px_rgba(6,214,160,0.4)] transition-all duration-300"
-          >
-            All Styles
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero: HUD cockpit initialization sequence */}
-      <ShowcaseHero
-        title="CYBER ANIME"
-        description="HUD interfaces, holographic panels, mecha cockpit aesthetics"
-        className="relative z-10 pt-28 pb-24 px-6 text-center"
-        titleClassName="text-6xl md:text-8xl font-bold text-[#7c3aed] uppercase tracking-wider mb-4 [text-shadow:0_0_40px_rgba(124,58,237,0.4),0_0_80px_rgba(124,58,237,0.15)]"
-        descriptionClassName="text-lg text-[#e0e0ff]/40 font-mono max-w-2xl mx-auto mb-12"
-      >
-        <div className="inline-flex items-center gap-4 mb-10">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#06d6a0]/50" />
-          <span className="text-sm font-mono text-[#06d6a0]/70 uppercase tracking-[0.3em]">
-            Cockpit Interface Active
-          </span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#06d6a0]/50" />
-        </div>
-        <div className="flex flex-wrap justify-center gap-4">
-          <button className="relative overflow-hidden px-10 py-4 bg-[#7c3aed] text-white font-bold uppercase tracking-widest border border-[#06d6a0]/50 shadow-[0_0_15px_rgba(124,58,237,0.4),0_0_30px_rgba(124,58,237,0.15)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6),0_0_50px_rgba(124,58,237,0.2)] transition-all duration-300">
-            <span className="relative z-10">Execute</span>
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 3px)",
-              }}
-            />
-          </button>
-          <button className="px-10 py-4 bg-transparent text-[#06d6a0] font-bold uppercase tracking-widest border border-[#06d6a0] shadow-[0_0_10px_rgba(6,214,160,0.3)] hover:shadow-[0_0_20px_rgba(6,214,160,0.5)] transition-all duration-300">
-            Scan
-          </button>
-        </div>
-      </ShowcaseHero>
-
-      {/* Color palette in HUD panel format */}
-      <ShowcaseSection
-        title="COLOR MATRIX"
-        subtitle="NEON SPECTRUM // PALETTE DATA"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-[#e0e0ff] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#e0e0ff]/30 uppercase tracking-widest mb-10 text-center text-xs font-mono"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border border-[#7c3aed]/30 bg-[#0f0f1a]/90 backdrop-blur-sm shadow-[0_0_10px_rgba(124,58,237,0.15)]"
-            labelClassName="font-bold text-sm text-[#e0e0ff] uppercase tracking-wider"
-            hexClassName="text-xs text-[#06d6a0] font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Mecha cockpit: split-panel dashboard layout */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#e0e0ff] uppercase tracking-widest mb-4">
-              COCKPIT DASHBOARD
-            </h2>
-            <p className="text-[#e0e0ff]/30 uppercase tracking-widest text-xs font-mono">
-              HUD Data Panels // Multi-Glow System
-            </p>
-          </div>
-
-          {/* Asymmetric 2-column cockpit layout */}
-          <div className="grid md:grid-cols-5 gap-6">
-            {/* Left panel: large data readout */}
-            <div
-              className="md:col-span-3 relative overflow-hidden p-6 md:p-8 bg-[#0f0f1a]/90 border border-[#7c3aed]/30 backdrop-blur-sm shadow-[0_0_20px_rgba(124,58,237,0.2)] hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all duration-300"
-              style={{
-                clipPath:
-                  "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))",
-              }}
-            >
-              {/* HUD corner decorations */}
-              <div className="absolute top-0 left-0 w-5 h-5 border-l-2 border-t-2 border-[#06d6a0]/50" />
-              <div className="absolute top-0 right-5 w-5 h-5 border-r-2 border-t-2 border-[#06d6a0]/50" />
-              <div className="absolute bottom-0 left-5 w-5 h-5 border-l-2 border-b-2 border-[#06d6a0]/50" />
-              <div className="absolute bottom-0 right-0 w-5 h-5 border-r-2 border-b-2 border-[#06d6a0]/50" />
-
-              <div className="flex items-center gap-3 mb-6">
-                <Radar className="w-5 h-5 text-[#7c3aed]" />
-                <h3 className="text-lg font-bold text-[#06d6a0] uppercase tracking-wider">
-                  Primary Systems
-                </h3>
-                <span className="ml-auto text-[10px] font-mono text-[#e0e0ff]/30 uppercase">
-                  Status: Active
-                </span>
-              </div>
-
-              {/* Data readout rows */}
-              <div className="space-y-4">
-                {[
-                  { label: "REACTOR", value: "98.2%", color: "#06d6a0", width: "w-[98%]" },
-                  { label: "SHIELDS", value: "76.5%", color: "#38bdf8", width: "w-[76%]" },
-                  { label: "WEAPONS", value: "100%", color: "#ff006e", width: "w-full" },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <div className="flex justify-between mb-1.5">
-                      <span className="text-xs font-mono text-[#e0e0ff]/60 uppercase tracking-wider">
-                        {item.label}
-                      </span>
-                      <span
-                        className="text-xs font-mono uppercase"
-                        style={{ color: item.color }}
-                      >
-                        {item.value}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-[#1a1a2e] border border-[#7c3aed]/20">
-                      <div
-                        className={`h-full ${item.width}`}
-                        style={{
-                          background: `linear-gradient(90deg, ${item.color}40, ${item.color})`,
-                          boxShadow: `0 0 8px ${item.color}40`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Scan line overlay */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-[0.03]"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 3px)",
-                }}
-              />
-            </div>
-
-            {/* Right panel: stacked status cards */}
-            <div className="md:col-span-2 flex flex-col gap-6">
-              {[
-                {
-                  icon: Cpu,
-                  title: "NEURAL CORE",
-                  subtitle: "Processing online",
-                  borderColor: "border-[#7c3aed]/40",
-                  glowColor: "rgba(124,58,237,0.2)",
-                  iconColor: "text-[#7c3aed]",
-                  titleColor: "text-[#7c3aed]",
-                },
-                {
-                  icon: Shield,
-                  title: "FIREWALL",
-                  subtitle: "Threat level zero",
-                  borderColor: "border-[#06d6a0]/40",
-                  glowColor: "rgba(6,214,160,0.2)",
-                  iconColor: "text-[#06d6a0]",
-                  titleColor: "text-[#06d6a0]",
-                },
-                {
-                  icon: Zap,
-                  title: "OVERCLOCK",
-                  subtitle: "Maximum output",
-                  borderColor: "border-[#ff006e]/30",
-                  glowColor: "rgba(255,0,110,0.15)",
-                  iconColor: "text-[#ff006e]",
-                  titleColor: "text-[#ff006e]",
-                },
-              ].map((card) => (
-                <div
-                  key={card.title}
-                  className={`relative overflow-hidden p-5 bg-[#0f0f1a]/90 border ${card.borderColor} backdrop-blur-sm hover:-translate-y-1 transition-all duration-300`}
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))",
-                    boxShadow: `0 0 15px ${card.glowColor}`,
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`w-10 h-10 border ${card.borderColor} flex items-center justify-center flex-shrink-0`}
-                    >
-                      <card.icon className={`w-5 h-5 ${card.iconColor}`} />
-                    </div>
-                    <div>
-                      <h3
-                        className={`text-sm font-bold ${card.titleColor} uppercase tracking-wider mb-1`}
-                      >
-                        {card.title}
-                      </h3>
-                      <p className="text-[#e0e0ff]/40 text-xs font-mono">
-                        {card.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Button showcase in terminal-style panel */}
-      <ShowcaseSection
-        title="CONTROLS"
-        subtitle="HOLOGRAPHIC ACTIONS // SCAN LINE TEXTURE"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-[#e0e0ff] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#e0e0ff]/30 uppercase tracking-widest mb-10 text-center text-xs font-mono"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div
-            className="relative overflow-hidden p-8 bg-[#0f0f1a]/90 border border-[#7c3aed]/20 backdrop-blur-sm shadow-[0_0_20px_rgba(124,58,237,0.1)]"
-            style={{
-              clipPath:
-                "polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
-            }}
-          >
-            <div className="flex items-center gap-2 mb-6">
-              <Radio className="w-4 h-4 text-[#06d6a0]" />
-              <p className="text-sm font-bold text-[#06d6a0] uppercase tracking-widest">
-                Action Panel
-              </p>
-              <div className="ml-auto flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#06d6a0]" />
-                <span className="w-1.5 h-1.5 bg-[#7c3aed]" />
-                <span className="w-1.5 h-1.5 bg-[#ff006e]" />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <button className="relative overflow-hidden px-6 py-3 bg-[#7c3aed] text-white font-bold uppercase tracking-widest text-sm border border-[#06d6a0]/50 shadow-[0_0_10px_rgba(124,58,237,0.3),0_0_20px_rgba(124,58,237,0.15)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5),0_0_40px_rgba(124,58,237,0.2)] transition-all duration-300">
-                <span className="relative z-10">Primary</span>
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 3px)",
-                  }}
-                />
-              </button>
-              <button className="px-6 py-3 bg-transparent text-[#06d6a0] font-bold uppercase tracking-widest text-sm border border-[#06d6a0] shadow-[0_0_10px_rgba(6,214,160,0.3)] hover:shadow-[0_0_15px_rgba(6,214,160,0.5)] transition-all duration-300">
-                Secondary
-              </button>
-              <button className="px-6 py-3 bg-[#ff006e] text-white font-bold uppercase tracking-widest text-sm border border-[#ff006e]/50 shadow-[0_0_10px_rgba(255,0,110,0.3),0_0_20px_rgba(255,0,110,0.15)] hover:shadow-[0_0_20px_rgba(255,0,110,0.5)] transition-all duration-300">
-                Accent
-              </button>
-              <button className="px-6 py-3 bg-transparent text-[#38bdf8] font-bold uppercase tracking-widest text-sm border border-[#38bdf8]/50 shadow-[0_0_10px_rgba(56,189,248,0.3)] hover:shadow-[0_0_15px_rgba(56,189,248,0.5)] transition-all duration-300">
-                Info
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Terminal access form */}
-      <ShowcaseSection
-        title="TERMINAL"
-        subtitle="SECURE ACCESS // AUTHENTICATION PROTOCOL"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-[#e0e0ff] uppercase tracking-widest mb-4 text-center"
-        subtitleClassName="text-[#e0e0ff]/30 uppercase tracking-widest mb-10 text-center text-xs font-mono"
-      >
-        <div className="max-w-md mx-auto">
-          <div
-            className="relative overflow-hidden p-8 bg-[#0f0f1a]/90 border border-[#7c3aed]/30 backdrop-blur-sm shadow-[0_0_20px_rgba(124,58,237,0.15)]"
-            style={{
-              clipPath:
-                "polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
-            }}
-          >
-            {/* HUD corner marks */}
-            <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-[#06d6a0]/50" />
-            <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-[#06d6a0]/50" />
-
-            <div className="text-center mb-6">
-              <div className="w-14 h-14 mx-auto border border-[#06d6a0]/50 flex items-center justify-center mb-4 shadow-[0_0_10px_rgba(6,214,160,0.2)]">
-                <Terminal className="w-7 h-7 text-[#06d6a0]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#7c3aed] uppercase tracking-widest">
-                Access
-              </h3>
-              <p className="text-[10px] font-mono text-[#e0e0ff]/30 mt-1 uppercase tracking-wider">
-                Authentication required
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#06d6a0] uppercase tracking-widest mb-2">
-                  User ID
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#06d6a0] font-mono text-sm">
-                    &gt;
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Enter user ID..."
-                    className="w-full pl-8 pr-4 py-3 bg-[#0f0f1a]/80 border border-[#7c3aed]/30 text-[#e0e0ff] placeholder-[#e0e0ff]/30 font-mono focus:border-[#06d6a0] focus:shadow-[0_0_15px_rgba(6,214,160,0.3)] focus:outline-none transition-all duration-300 caret-[#06d6a0]"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-[#ff006e] uppercase tracking-widest mb-2">
-                  Access Key
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ff006e] font-mono text-sm">
-                    &gt;
-                  </span>
-                  <input
-                    type="password"
-                    placeholder="Enter access key..."
-                    className="w-full pl-8 pr-4 py-3 bg-[#0f0f1a]/80 border border-[#7c3aed]/30 text-[#e0e0ff] placeholder-[#e0e0ff]/30 font-mono focus:border-[#ff006e] focus:shadow-[0_0_15px_rgba(255,0,110,0.3)] focus:outline-none transition-all duration-300 caret-[#ff006e]"
-                  />
-                </div>
-              </div>
-              <button className="relative overflow-hidden w-full px-6 py-3 bg-[#7c3aed] text-white font-bold uppercase tracking-widest text-sm border border-[#06d6a0]/50 shadow-[0_0_15px_rgba(124,58,237,0.4),0_0_30px_rgba(124,58,237,0.15)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all duration-300">
-                <span className="relative z-10">Authenticate</span>
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 3px)",
-                  }}
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Footer */}
-      <footer className="relative z-10 py-8 px-6 border-t border-[#7c3aed]/20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <span className="text-[10px] font-mono text-[#e0e0ff]/20 uppercase tracking-wider">
-            v2.0 // HUD Interface
-          </span>
-          <p className="text-[#e0e0ff]/30 text-sm uppercase tracking-widest">
-            Cyber Anime Showcase /{" "}
-            <Link
-              href="/"
-              className="text-[#06d6a0] hover:text-[#06d6a0]/80 transition-colors"
-            >
-              StyleKit
-            </Link>
-          </p>
-          <span className="text-[10px] font-mono text-[#e0e0ff]/20 uppercase tracking-wider">
-            Status: Online
-          </span>
-        </div>
-      </footer>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
     </div>
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  HUD Corner decoration                                              */
+/* ------------------------------------------------------------------ */
+
+function HudCorners({
+  color = "#7c3aed",
+  size = "w-5 h-5",
+}: {
+  color?: string;
+  size?: string;
+}) {
+  const borderStyle = `2px solid ${color}`;
+  return (
+    <>
+      <span
+        className={`absolute top-0 left-0 ${size} pointer-events-none`}
+        style={{ borderTop: borderStyle, borderLeft: borderStyle }}
+      />
+      <span
+        className={`absolute top-0 right-0 ${size} pointer-events-none`}
+        style={{ borderTop: borderStyle, borderRight: borderStyle }}
+      />
+      <span
+        className={`absolute bottom-0 left-0 ${size} pointer-events-none`}
+        style={{ borderBottom: borderStyle, borderLeft: borderStyle }}
+      />
+      <span
+        className={`absolute bottom-0 right-0 ${size} pointer-events-none`}
+        style={{ borderBottom: borderStyle, borderRight: borderStyle }}
+      />
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Static data                                                        */
+/* ------------------------------------------------------------------ */
+
+const mechaCards = [
+  {
+    id: "SYS-01",
+    title: "ANIMATION ENGINE",
+    subtitle: "Fluid Motion Core",
+    desc: "Every frame is a calculated masterpiece. The animation pipeline processes 60 keyframes per second, interpolating between states with the precision of a mecha targeting system.",
+    stat1: { label: "FRAME RATE", value: "60 FPS" },
+    stat2: { label: "LATENCY", value: "< 2ms" },
+    accent: "#06d6a0",
+    tag: "MOTION",
+  },
+  {
+    id: "SYS-02",
+    title: "MANGA RENDER",
+    subtitle: "Cel Shader Protocol",
+    desc: "Traditional manga aesthetics fused with real-time rendering. Ink lines traced at subpixel precision, halftone patterns generated procedurally across each surface.",
+    stat1: { label: "LINE WIDTH", value: "0.5px" },
+    stat2: { label: "TONE DEPTH", value: "256bit" },
+    accent: "#7c3aed",
+    tag: "RENDER",
+  },
+  {
+    id: "SYS-03",
+    title: "NEURAL SYNC",
+    subtitle: "Pilot Interface Link",
+    desc: "Bidirectional data stream between the human operator and the mechanical frame. Emotional state translated into control vectors in real-time. Synchronization rate critical.",
+    stat1: { label: "SYNC RATE", value: "98.7%" },
+    stat2: { label: "SIGNAL", value: "STRONG" },
+    accent: "#ff006e",
+    tag: "NEURAL",
+  },
+];
+
+const episodes = [
+  {
+    num: "EP.01",
+    title: "AWAKENING PROTOCOL",
+    genre: ["ACTION", "MECHA"],
+    runtime: "24:00",
+    status: "COMPLETE",
+    gradFrom: "#7c3aed",
+    gradTo: "#0f0f2e",
+    desc: "The pilot synchronizes with Unit-01 for the first time. A new era of warfare begins in Neo-Tokyo.",
+  },
+  {
+    num: "EP.02",
+    title: "GHOST IN THE GRID",
+    genre: ["DRAMA", "SCI-FI"],
+    runtime: "24:00",
+    status: "COMPLETE",
+    gradFrom: "#06d6a0",
+    gradTo: "#0f1f1a",
+    desc: "Data phantoms haunt the city neural network. Detective Akira dives into the digital underworld.",
+  },
+  {
+    num: "EP.03",
+    title: "NEON REQUIEM",
+    genre: ["ACTION", "TRAGEDY"],
+    runtime: "24:00",
+    status: "COMPLETE",
+    gradFrom: "#ff006e",
+    gradTo: "#1f0010",
+    desc: "A beloved comrade falls in the battle over the Shibuya district. The cost of war becomes real.",
+  },
+  {
+    num: "EP.04",
+    title: "HOLLOW SIGNAL",
+    genre: ["MYSTERY", "THRILLER"],
+    runtime: "24:00",
+    status: "COMPLETE",
+    gradFrom: "#38bdf8",
+    gradTo: "#0a1520",
+    desc: "Encrypted transmissions from an unknown source lead the team into a government black site.",
+  },
+  {
+    num: "EP.05",
+    title: "SYNCHRONIZE",
+    genre: ["DRAMA", "MECHA"],
+    runtime: "24:00",
+    status: "AIRING",
+    gradFrom: "#7c3aed",
+    gradTo: "#38bdf8",
+    desc: "Yuki and Ren achieve 100% synchronization. The mecha evolves beyond its original programming.",
+  },
+  {
+    num: "EP.06",
+    title: "OMEGA THRESHOLD",
+    genre: ["ACTION", "FINALE"],
+    runtime: "48:00",
+    status: "UPCOMING",
+    gradFrom: "#ff006e",
+    gradTo: "#7c3aed",
+    desc: "The final confrontation approaches. All systems nominal. Initiating last stand sequence now.",
+  },
+];
+
+const colorSwatches = [
+  {
+    name: "DEEP NIGHT",
+    hex: "#0f0f1a",
+    label: "// DEEP NIGHT",
+    code: "#0f0f1a",
+    glow: "rgba(15,15,26,0.8)",
+    displayColor: "#7c3aed",
+  },
+  {
+    name: "VIOLET",
+    hex: "#7c3aed",
+    label: "// VIOLET",
+    code: "#7c3aed",
+    glow: "rgba(124,58,237,0.6)",
+    displayColor: "#7c3aed",
+  },
+  {
+    name: "CYAN GREEN",
+    hex: "#06d6a0",
+    label: "// CYAN GREEN",
+    code: "#06d6a0",
+    glow: "rgba(6,214,160,0.6)",
+    displayColor: "#06d6a0",
+  },
+  {
+    name: "HOT PINK",
+    hex: "#ff006e",
+    label: "// HOT PINK",
+    code: "#ff006e",
+    glow: "rgba(255,0,110,0.6)",
+    displayColor: "#ff006e",
+  },
+  {
+    name: "SKY BLUE",
+    hex: "#38bdf8",
+    label: "// SKY BLUE",
+    code: "#38bdf8",
+    glow: "rgba(56,189,248,0.6)",
+    displayColor: "#38bdf8",
+  },
+];
+
+const doRules = [
+  "Use angled HUD bracket corners on every interactive panel",
+  "Apply scan line overlays at 4px intervals to create depth",
+  "Layer violet glow on primary actions and focused states",
+  "Use monospace font for all data readouts and status labels",
+  "Animate with pulse effects on active/online indicators",
+  "Maintain deep night (#0f0f1a) as the base canvas always",
+  "Use cyan-green for success and online system states",
+  "Hot pink exclusively for warnings, alerts, and critical data",
+];
+
+const dontRules = [
+  "Never use white backgrounds — this aesthetic lives in the dark",
+  "Never mix sans-serif into HUD label and readout text",
+  "Never omit corner brackets from card and panel elements",
+  "Never use soft rounded corners on mecha-frame components",
+  "Never animate at speeds slower than 150ms — lag feels broken",
+  "Never use yellow or warm tones — the palette is cool and electric",
+  "Never skip the scan line overlay on hero and primary sections",
+  "Never use flat solid borders without a matching glow shadow",
+];
+
+const typeRows = [
+  {
+    scale: "DISPLAY XL",
+    size: "text-7xl",
+    sample: "NEURAL",
+    color: "#7c3aed",
+    delay: 0,
+  },
+  {
+    scale: "DISPLAY LG",
+    size: "text-5xl",
+    sample: "SYNCHRONIZE",
+    color: "#ffffff",
+    delay: 0.06,
+  },
+  {
+    scale: "HEADING",
+    size: "text-3xl",
+    sample: "MECHA INTERFACE",
+    color: "#06d6a0",
+    delay: 0.12,
+  },
+  {
+    scale: "SUBHEADING",
+    size: "text-xl",
+    sample: "UNIT-01 PILOT SYNCHRONIZATION COMPLETE",
+    color: "#38bdf8",
+    delay: 0.18,
+  },
+  {
+    scale: "BODY MONO",
+    size: "text-sm",
+    sample:
+      "Data streams flow across the neural link at 400 terabytes per second. The mecha responds instantly.",
+    color: "rgba(255,255,255,0.7)",
+    delay: 0.24,
+  },
+  {
+    scale: "HUD LABEL",
+    size: "text-xs",
+    sample:
+      "// STATUS: ONLINE // SYNC: 98.7% // ALT: 3,600m // VECTOR: 045N //",
+    color: "#ff006e",
+    delay: 0.3,
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                               */
+/* ------------------------------------------------------------------ */
+
+type SystemStatus = "online" | "scanning" | "offline";
+type ActiveComponent = "button" | "card" | "input";
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                         */
+/* ------------------------------------------------------------------ */
+
+export default function CyberAnimeShowcase() {
+  const [activeEpisode, setActiveEpisode] = useState<number | null>(null);
+  const [systemStatus, setSystemStatus] = useState<SystemStatus>("online");
+  const [activeComponent, setActiveComponent] =
+    useState<ActiveComponent>("button");
+  const [inputValue, setInputValue] = useState("");
+  const [buttonHovered, setButtonHovered] = useState(false);
+
+  function cycleStatus() {
+    setSystemStatus((prev) => {
+      if (prev === "online") return "scanning";
+      if (prev === "scanning") return "offline";
+      return "online";
+    });
+  }
+
+  const statusColor: Record<SystemStatus, string> = {
+    online: "#06d6a0",
+    scanning: "#38bdf8",
+    offline: "#ff006e",
+  };
+
+  const statusLabel: Record<SystemStatus, string> = {
+    online: "[ ONLINE ]",
+    scanning: "[ SCANNING ]",
+    offline: "[ OFFLINE ]",
+  };
+
+  const scanlineStyle: React.CSSProperties = {
+    backgroundImage:
+      "linear-gradient(transparent 50%, rgba(124,58,237,0.05) 50%)",
+    backgroundSize: "100% 4px",
+  };
+
+  /* ---------------------------------------------------------------- */
+  /* SECTION 1 — Fixed Nav                                             */
+  /* ---------------------------------------------------------------- */
+  return (
+    <div className="min-h-screen bg-[#0f0f1a] text-white overflow-x-hidden">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 border-b border-[#7c3aed]/30"
+        style={{
+          background: "rgba(15,15,26,0.95)",
+          backdropFilter: "blur(12px)",
+          boxShadow:
+            "0 1px 0 rgba(124,58,237,0.4), 0 4px 24px rgba(124,58,237,0.15)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-sm text-[#7c3aed] font-bold tracking-widest">
+              STYLEKIT
+            </span>
+            <span className="font-mono text-[#7c3aed]/50 text-sm">{" // "}</span>
+            <span className="font-mono text-[#7c3aed]/80 text-xs tracking-widest uppercase">
+              CYBER ANIME
+            </span>
+          </div>
+
+          {/* Center — status badge, click to cycle */}
+          <button
+            onClick={cycleStatus}
+            className="font-mono text-xs px-2 py-0.5 border transition-all duration-150 cursor-pointer"
+            style={{
+              color: statusColor[systemStatus],
+              borderColor: `${statusColor[systemStatus]}40`,
+              boxShadow: `0 0 8px ${statusColor[systemStatus]}30`,
+            }}
+          >
+            {statusLabel[systemStatus]}
+          </button>
+
+          {/* Return */}
+          <Link
+            href="/"
+            className="font-mono text-xs text-white/50 hover:text-[#7c3aed] transition-colors duration-150 tracking-widest"
+          >
+            StyleKit{" "}
+            <span className="text-[#7c3aed]">→</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 2 — Hero (HUD Display)                                   */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        className="relative min-h-screen flex items-center justify-center pt-14 overflow-hidden"
+        style={scanlineStyle}
+      >
+        {/* Background grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+
+        {/* Radial glow center */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,58,237,0.12) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* HUD Frame */}
+        <div className="relative max-w-5xl w-full mx-6">
+          <div
+            className="relative border border-[#7c3aed]/40 p-8 md:p-16"
+            style={{
+              boxShadow:
+                "0 0 40px rgba(124,58,237,0.2), inset 0 0 40px rgba(124,58,237,0.05)",
+            }}
+          >
+            <HudCorners color="#7c3aed" size="w-8 h-8" />
+
+            {/* Top status bar */}
+            <div className="flex items-center justify-between mb-10">
+              <div className="font-mono text-xs text-[#06d6a0]/70 tracking-widest">
+                SYS // UNIT-01 ONLINE
+              </div>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="h-1.5 rounded-sm"
+                    style={{
+                      width: `${i * 6 + 8}px`,
+                      background: i <= 4 ? "#06d6a0" : "rgba(6,214,160,0.2)",
+                      boxShadow:
+                        i <= 4 ? "0 0 4px rgba(6,214,160,0.6)" : "none",
+                    }}
+                  />
+                ))}
+                <span className="font-mono text-xs text-[#06d6a0] ml-1">
+                  SIGNAL
+                </span>
+              </div>
+            </div>
+
+            {/* Main title */}
+            <div className="text-center mb-10">
+              <div className="font-mono text-xs text-[#7c3aed]/60 tracking-[0.4em] mb-4 uppercase">
+                {"// STYLE DESIGNATION //"}
+              </div>
+              <h1
+                className="font-mono font-black tracking-tighter leading-none text-white mb-1"
+                style={{
+                  fontSize: "clamp(3rem, 8vw, 7rem)",
+                  textShadow:
+                    "0 0 30px rgba(124,58,237,0.8), 0 0 60px rgba(124,58,237,0.4)",
+                }}
+              >
+                CYBER
+              </h1>
+              <h1
+                className="font-mono font-black tracking-tighter leading-none"
+                style={{
+                  fontSize: "clamp(3rem, 8vw, 7rem)",
+                  color: "#7c3aed",
+                  textShadow:
+                    "0 0 30px rgba(124,58,237,0.9), 0 0 60px rgba(124,58,237,0.5)",
+                }}
+              >
+                ANIME
+              </h1>
+              <div className="font-mono text-xs text-[#06d6a0]/70 tracking-[0.3em] mt-4">
+                赛博动漫风 / CYBERPUNK HUD AESTHETIC
+              </div>
+            </div>
+
+            {/* Data readouts */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+              {[
+                { label: "COORD X", value: "139.6917E" },
+                { label: "COORD Y", value: "35.6895N" },
+                { label: "ALT", value: "3,600 m" },
+                { label: "DATE", value: "2077.03.15" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="relative border border-[#7c3aed]/20 p-3"
+                  style={{ background: "rgba(124,58,237,0.05)" }}
+                >
+                  <HudCorners color="#7c3aed" size="w-3 h-3" />
+                  <div className="font-mono text-[10px] text-[#7c3aed]/60 tracking-widest mb-1">
+                    {item.label}
+                  </div>
+                  <div className="font-mono text-sm text-[#06d6a0]">
+                    {item.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Animated pulse */}
+            <div className="flex items-center justify-center mt-10 gap-3">
+              <div className="relative">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    background: "#06d6a0",
+                    boxShadow: "0 0 12px rgba(6,214,160,0.8)",
+                    animation: "ca-pulse 2s infinite",
+                  }}
+                />
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    border: "1px solid rgba(6,214,160,0.6)",
+                    animation: "ca-ping 2s cubic-bezier(0,0,0.2,1) infinite",
+                  }}
+                />
+              </div>
+              <span className="font-mono text-xs text-[#06d6a0] tracking-widest">
+                SYSTEM NOMINAL
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom HUD info bar */}
+          <div className="flex items-center justify-between mt-2 px-1">
+            <span className="font-mono text-[10px] text-[#7c3aed]/40 tracking-widest">
+              {"// STYLEKIT CYBER-ANIME v2.077"}
+            </span>
+            <span className="font-mono text-[10px] text-[#06d6a0]/40 tracking-widest">
+              {"RENDER OK //"}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 3 — Mecha Frame Cards                                     */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="py-24 max-w-7xl mx-auto px-6">
+        <RevealBlock>
+          <div className="mb-4">
+            <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+              {"// SUBSYSTEM MANIFEST //"}
+            </span>
+          </div>
+          <h2
+            className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+            style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+          >
+            MECHA SYSTEMS
+          </h2>
+          <div className="font-mono text-sm text-white/40 tracking-widest mb-14">
+            Core modules powering the aesthetic engine
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {mechaCards.map((card, i) => (
+            <RevealBlock key={card.id} delay={i * 0.12}>
+              <div
+                className="relative border border-[#7c3aed]/30 p-6 h-full"
+                style={{
+                  background: "rgba(15,15,26,0.9)",
+                  backgroundImage:
+                    "linear-gradient(transparent 50%, rgba(124,58,237,0.03) 50%)",
+                  backgroundSize: "100% 4px",
+                }}
+              >
+                <HudCorners color={card.accent} size="w-5 h-5" />
+
+                {/* Hot pink accent dot */}
+                <div
+                  className="absolute top-3 right-8 w-1.5 h-1.5 rounded-full"
+                  style={{
+                    background: "#ff006e",
+                    boxShadow: "0 0 8px rgba(255,0,110,0.8)",
+                  }}
+                />
+
+                {/* Card header */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span
+                      className="font-mono text-[10px] tracking-widest px-2 py-0.5 border"
+                      style={{
+                        color: card.accent,
+                        borderColor: `${card.accent}40`,
+                        boxShadow: `0 0 8px ${card.accent}20`,
+                      }}
+                    >
+                      {card.tag}
+                    </span>
+                    <span className="font-mono text-[10px] text-white/30">
+                      {card.id}
+                    </span>
+                  </div>
+                  <h3
+                    className="font-mono font-bold text-xl text-white mt-3"
+                    style={{
+                      textShadow: `0 0 12px ${card.accent}40`,
+                    }}
+                  >
+                    {card.title}
+                  </h3>
+                  <div className="font-mono text-xs text-white/40 mt-1">
+                    {card.subtitle}
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div
+                  className="h-px w-full mb-4"
+                  style={{
+                    background: `linear-gradient(90deg, ${card.accent}60, transparent)`,
+                  }}
+                />
+
+                {/* Description */}
+                <p className="text-sm text-white/60 leading-relaxed mb-6">
+                  {card.desc}
+                </p>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-3 mt-auto">
+                  {[card.stat1, card.stat2].map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="relative border border-[#7c3aed]/15 p-2"
+                      style={{ background: "rgba(124,58,237,0.04)" }}
+                    >
+                      <HudCorners color="#7c3aed" size="w-2 h-2" />
+                      <div className="font-mono text-[9px] text-white/30 tracking-widest mb-0.5">
+                        {stat.label}
+                      </div>
+                      <div
+                        className="font-mono text-sm font-bold"
+                        style={{ color: card.accent }}
+                      >
+                        {stat.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 4 — Component Showcase                                    */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        className="py-24"
+        style={{
+          background:
+            "linear-gradient(180deg, #0f0f1a 0%, #100a1f 50%, #0f0f1a 100%)",
+          ...scanlineStyle,
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <RevealBlock>
+            <div className="mb-4">
+              <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+                {"// COMPONENT LIBRARY //"}
+              </span>
+            </div>
+            <h2
+              className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+              style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+            >
+              UI COMPONENTS
+            </h2>
+            <div className="font-mono text-sm text-white/40 tracking-widest mb-10">
+              Holographic elements from the interface toolkit
+            </div>
+          </RevealBlock>
+
+          {/* Tab switcher */}
+          <RevealBlock delay={0.1}>
+            <div className="flex gap-2 mb-10">
+              {(["button", "card", "input"] as ActiveComponent[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveComponent(tab)}
+                  className="font-mono text-xs px-4 py-2 border transition-all duration-150 tracking-widest uppercase"
+                  style={
+                    activeComponent === tab
+                      ? {
+                          background: "rgba(124,58,237,0.2)",
+                          borderColor: "#7c3aed",
+                          color: "#7c3aed",
+                          boxShadow: "0 0 16px rgba(124,58,237,0.4)",
+                        }
+                      : {
+                          background: "transparent",
+                          borderColor: "rgba(124,58,237,0.2)",
+                          color: "rgba(255,255,255,0.4)",
+                        }
+                  }
+                >
+                  {"// "}
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Component display panel */}
+          <RevealBlock delay={0.2}>
+            <div
+              className="relative border border-[#7c3aed]/30 p-8 md:p-14"
+              style={{
+                background: "rgba(15,15,26,0.95)",
+                boxShadow: "0 0 40px rgba(124,58,237,0.1)",
+              }}
+            >
+              <HudCorners color="#7c3aed" size="w-6 h-6" />
+
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-10">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    background: "#06d6a0",
+                    boxShadow: "0 0 8px rgba(6,214,160,0.8)",
+                  }}
+                />
+                <span className="font-mono text-xs text-[#06d6a0] tracking-widest">
+                  COMPONENT // {activeComponent.toUpperCase()} MODULE
+                </span>
+              </div>
+
+              {/* BUTTON */}
+              {activeComponent === "button" && (
+                <div className="flex flex-col items-center gap-8">
+                  <div className="font-mono text-xs text-white/30 tracking-widest mb-2">
+                    HOLOGRAPHIC BUTTON — PRIMARY ACTION
+                  </div>
+                  <button
+                    onMouseEnter={() => setButtonHovered(true)}
+                    onMouseLeave={() => setButtonHovered(false)}
+                    className="relative px-10 py-4 font-mono text-sm tracking-widest uppercase overflow-hidden transition-all duration-150"
+                    style={{
+                      background: buttonHovered
+                        ? "rgba(124,58,237,0.3)"
+                        : "rgba(124,58,237,0.1)",
+                      border: "1px solid #7c3aed",
+                      color: buttonHovered ? "#ffffff" : "#7c3aed",
+                      boxShadow: buttonHovered
+                        ? "0 0 30px rgba(124,58,237,0.6), inset 0 0 30px rgba(124,58,237,0.1)"
+                        : "0 0 16px rgba(124,58,237,0.3)",
+                    }}
+                  >
+                    <HudCorners color="#7c3aed" size="w-3 h-3" />
+                    <span
+                      className="absolute inset-0 transition-all duration-150"
+                      style={{
+                        background: buttonHovered
+                          ? "linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)"
+                          : "transparent",
+                      }}
+                    />
+                    <span className="relative z-10">INITIATE SEQUENCE</span>
+                  </button>
+                  <div className="font-mono text-[10px] text-white/20 tracking-widest text-center">
+                    HOVER TO ACTIVATE HOLOGRAPHIC SWEEP EFFECT
+                  </div>
+                </div>
+              )}
+
+              {/* CARD */}
+              {activeComponent === "card" && (
+                <div className="flex justify-center">
+                  <div
+                    className="relative border border-[#7c3aed]/40 p-6 max-w-sm w-full"
+                    style={{
+                      background: "rgba(124,58,237,0.06)",
+                      boxShadow:
+                        "0 0 30px rgba(124,58,237,0.2), inset 0 0 30px rgba(124,58,237,0.04)",
+                      backgroundImage:
+                        "linear-gradient(transparent 50%, rgba(124,58,237,0.05) 50%)",
+                      backgroundSize: "100% 4px",
+                    }}
+                  >
+                    <HudCorners color="#06d6a0" size="w-5 h-5" />
+                    <div
+                      className="absolute top-2 right-6 w-1.5 h-1.5 rounded-full"
+                      style={{
+                        background: "#ff006e",
+                        boxShadow: "0 0 8px rgba(255,0,110,0.8)",
+                      }}
+                    />
+                    <div className="font-mono text-[10px] text-[#06d6a0] tracking-widest mb-3">
+                      HUD PANEL // UNIT STATUS
+                    </div>
+                    <h3 className="font-mono font-bold text-2xl text-white mb-1">
+                      EVANGELION
+                    </h3>
+                    <div className="font-mono text-xs text-white/40 mb-4">
+                      Unit-01 / Berserk Mode
+                    </div>
+                    <div
+                      className="h-px w-full mb-4"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, rgba(6,214,160,0.4), transparent)",
+                      }}
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { l: "SYNC", v: "400%", c: "#ff006e" },
+                        { l: "POWER", v: "INFINITE", c: "#06d6a0" },
+                        { l: "PILOT", v: "SHINJI", c: "#38bdf8" },
+                        { l: "STATUS", v: "BERSERK", c: "#ff006e" },
+                      ].map((row) => (
+                        <div
+                          key={row.l}
+                          className="relative border border-[#7c3aed]/15 p-2"
+                          style={{ background: "rgba(124,58,237,0.04)" }}
+                        >
+                          <HudCorners color="#7c3aed" size="w-1.5 h-1.5" />
+                          <div className="font-mono text-[9px] text-white/30 mb-0.5">
+                            {row.l}
+                          </div>
+                          <div
+                            className="font-mono text-xs font-bold"
+                            style={{ color: row.c }}
+                          >
+                            {row.v}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* INPUT */}
+              {activeComponent === "input" && (
+                <div className="flex flex-col items-center gap-6 max-w-md mx-auto w-full">
+                  <div className="font-mono text-xs text-white/30 tracking-widest">
+                    TERMINAL INPUT — DATA ENTRY INTERFACE
+                  </div>
+                  <div className="w-full relative">
+                    <HudCorners color="#06d6a0" size="w-4 h-4" />
+                    <div className="font-mono text-[10px] text-[#06d6a0]/60 tracking-widest mb-2 pl-1">
+                      {">"} ENTER COMMAND
+                    </div>
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="type your command here_"
+                      className="w-full font-mono text-sm px-4 py-3 outline-none transition-all duration-150"
+                      style={{
+                        background: "rgba(6,214,160,0.05)",
+                        border: "1px solid rgba(6,214,160,0.4)",
+                        color: "#06d6a0",
+                        caretColor: "#06d6a0",
+                        boxShadow: inputValue
+                          ? "0 0 16px rgba(6,214,160,0.2), inset 0 0 16px rgba(6,214,160,0.04)"
+                          : "none",
+                      }}
+                    />
+                    {inputValue && (
+                      <div className="font-mono text-[10px] text-[#06d6a0]/50 tracking-widest mt-2 pl-1">
+                        {">"} INPUT RECEIVED: {inputValue.length} CHARS
+                      </div>
+                    )}
+                  </div>
+                  <div className="font-mono text-[10px] text-white/20 tracking-widest text-center">
+                    MONOSPACE FONT — CYAN-GREEN BORDER — DARK BACKGROUND
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 5 — Color System                                          */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="py-24 max-w-7xl mx-auto px-6">
+        <RevealBlock>
+          <div className="mb-4">
+            <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+              {"// PALETTE MATRIX //"}
+            </span>
+          </div>
+          <h2
+            className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+            style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+          >
+            COLOR SYSTEM
+          </h2>
+          <div className="font-mono text-sm text-white/40 tracking-widest mb-14">
+            Five frequencies that define the spectrum
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {colorSwatches.map((swatch, i) => (
+            <RevealBlock key={swatch.name} delay={i * 0.08}>
+              <div
+                className="relative border border-[#7c3aed]/20 overflow-hidden transition-all duration-150 hover:border-[#7c3aed]/50"
+                style={{ background: "rgba(15,15,26,0.9)" }}
+              >
+                <HudCorners color="#7c3aed" size="w-4 h-4" />
+
+                {/* Color block */}
+                <div
+                  className="h-28 w-full"
+                  style={{
+                    background: swatch.hex,
+                    boxShadow: `inset 0 -8px 24px ${swatch.glow}`,
+                  }}
+                />
+
+                {/* Info */}
+                <div className="p-4">
+                  <div
+                    className="font-mono text-[10px] tracking-widest mb-1"
+                    style={{ color: swatch.displayColor }}
+                  >
+                    {swatch.label}
+                  </div>
+                  <div className="font-mono text-lg font-bold text-white mb-1">
+                    {swatch.name}
+                  </div>
+                  <div
+                    className="font-mono text-sm"
+                    style={{
+                      color: swatch.displayColor,
+                      textShadow: `0 0 8px ${swatch.glow}`,
+                    }}
+                  >
+                    {swatch.code}
+                  </div>
+                </div>
+
+                {/* Bottom glow line */}
+                <div
+                  className="h-0.5 w-full"
+                  style={{
+                    background: `linear-gradient(90deg, ${swatch.hex}60, ${swatch.hex}, ${swatch.hex}60)`,
+                    boxShadow: `0 0 8px ${swatch.glow}`,
+                  }}
+                />
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 6 — Anime Episode Grid                                    */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        className="py-24"
+        style={{
+          background:
+            "linear-gradient(180deg, #0f0f1a 0%, #0a0718 50%, #0f0f1a 100%)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <RevealBlock>
+            <div className="mb-4">
+              <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+                {"// EPISODE ARCHIVE //"}
+              </span>
+            </div>
+            <h2
+              className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+              style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+            >
+              BROADCAST GRID
+            </h2>
+            <div className="font-mono text-sm text-white/40 tracking-widest mb-14">
+              Series: NEON PROTOCOL — Season 01
+            </div>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {episodes.map((ep, i) => {
+              const isActive = activeEpisode === i;
+              return (
+                <RevealBlock key={ep.num} delay={i * 0.08}>
+                  <button
+                    onClick={() => setActiveEpisode(isActive ? null : i)}
+                    className="w-full text-left relative border transition-all duration-150"
+                    style={{
+                      borderColor: isActive
+                        ? "#7c3aed"
+                        : "rgba(124,58,237,0.25)",
+                      background: "rgba(15,15,26,0.95)",
+                      boxShadow: isActive
+                        ? "0 0 24px rgba(124,58,237,0.4)"
+                        : "none",
+                    }}
+                  >
+                    <HudCorners color="#7c3aed" size="w-4 h-4" />
+
+                    {/* Thumbnail placeholder */}
+                    <div
+                      className="relative h-36 w-full overflow-hidden"
+                      style={{
+                        background: `linear-gradient(135deg, ${ep.gradFrom} 0%, ${ep.gradTo} 100%)`,
+                      }}
+                    >
+                      {/* Scan line on thumbnail */}
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                          backgroundImage:
+                            "linear-gradient(transparent 50%, rgba(0,0,0,0.2) 50%)",
+                          backgroundSize: "100% 4px",
+                        }}
+                      />
+
+                      {/* Episode number */}
+                      <div className="absolute top-3 left-3">
+                        <span
+                          className="font-mono text-xs px-2 py-0.5 border border-white/30"
+                          style={{ background: "rgba(0,0,0,0.6)" }}
+                        >
+                          {ep.num}
+                        </span>
+                      </div>
+
+                      {/* Status badge */}
+                      <div className="absolute top-3 right-3">
+                        <span
+                          className="font-mono text-[9px] px-2 py-0.5 border tracking-widest"
+                          style={
+                            ep.status === "COMPLETE"
+                              ? {
+                                  color: "#06d6a0",
+                                  borderColor: "rgba(6,214,160,0.5)",
+                                  background: "rgba(6,214,160,0.1)",
+                                }
+                              : ep.status === "AIRING"
+                                ? {
+                                    color: "#38bdf8",
+                                    borderColor: "rgba(56,189,248,0.5)",
+                                    background: "rgba(56,189,248,0.1)",
+                                  }
+                                : {
+                                    color: "#ff006e",
+                                    borderColor: "rgba(255,0,110,0.5)",
+                                    background: "rgba(255,0,110,0.1)",
+                                  }
+                          }
+                        >
+                          {ep.status}
+                        </span>
+                      </div>
+
+                      {/* Play button on active */}
+                      <div
+                        className="absolute inset-0 flex items-center justify-center transition-opacity duration-150"
+                        style={{ opacity: isActive ? 1 : 0 }}
+                      >
+                        <div
+                          className="w-12 h-12 border-2 border-white/80 flex items-center justify-center"
+                          style={{
+                            background: "rgba(124,58,237,0.6)",
+                            boxShadow: "0 0 20px rgba(124,58,237,0.6)",
+                          }}
+                        >
+                          <span className="text-white text-lg ml-1">&#9654;</span>
+                        </div>
+                      </div>
+
+                      {/* Runtime bar */}
+                      <div
+                        className="absolute bottom-0 left-0 right-0 px-3 py-1.5 flex justify-between items-center"
+                        style={{ background: "rgba(0,0,0,0.5)" }}
+                      >
+                        <div className="flex gap-2">
+                          {ep.genre.map((g) => (
+                            <span
+                              key={g}
+                              className="font-mono text-[9px] tracking-widest text-white/60"
+                            >
+                              {g}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="font-mono text-[9px] text-white/40">
+                          {ep.runtime}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card body */}
+                    <div className="p-4">
+                      <h3 className="font-mono font-bold text-sm text-white mb-1 tracking-wide">
+                        {ep.title}
+                      </h3>
+
+                      {/* Expanded info */}
+                      <div
+                        className="overflow-hidden transition-all duration-150"
+                        style={{
+                          maxHeight: isActive ? "80px" : "0px",
+                          opacity: isActive ? 1 : 0,
+                        }}
+                      >
+                        <div
+                          className="h-px w-full mb-2 mt-1"
+                          style={{
+                            background:
+                              "linear-gradient(90deg, rgba(124,58,237,0.4), transparent)",
+                          }}
+                        />
+                        <p className="text-xs text-white/50 leading-relaxed font-mono">
+                          {ep.desc}
+                        </p>
+                      </div>
+
+                      {!isActive && (
+                        <div className="font-mono text-[10px] text-[#7c3aed]/50 tracking-widest mt-1">
+                          {"CLICK TO EXPAND //"}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                </RevealBlock>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 7 — Do / Don't Rules                                      */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="py-24 max-w-7xl mx-auto px-6">
+        <RevealBlock>
+          <div className="mb-4">
+            <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+              {"// DESIGN PROTOCOL //"}
+            </span>
+          </div>
+          <h2
+            className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+            style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+          >
+            DIRECTIVES
+          </h2>
+          <div className="font-mono text-sm text-white/40 tracking-widest mb-14">
+            Operational rules for the cyber anime aesthetic
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* DO panel */}
+          <RevealBlock delay={0.1}>
+            <div
+              className="relative border border-[#06d6a0]/30 p-8 h-full"
+              style={{
+                background: "rgba(6,214,160,0.03)",
+                boxShadow: "0 0 30px rgba(6,214,160,0.08)",
+              }}
+            >
+              <HudCorners color="#06d6a0" size="w-5 h-5" />
+
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    background: "#06d6a0",
+                    boxShadow: "0 0 8px rgba(6,214,160,0.8)",
+                  }}
+                />
+                <span className="font-mono text-xs text-[#06d6a0] tracking-widest">
+                  {"// EXECUTE"}
+                </span>
+              </div>
+
+              <h3
+                className="font-mono font-bold text-2xl mb-6"
+                style={{
+                  color: "#06d6a0",
+                  textShadow: "0 0 16px rgba(6,214,160,0.5)",
+                }}
+              >
+                DO
+              </h3>
+
+              <ul className="space-y-3">
+                {doRules.map((rule, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span
+                      className="font-mono text-[#06d6a0] mt-0.5 shrink-0"
+                      style={{ textShadow: "0 0 6px rgba(6,214,160,0.6)" }}
+                    >
+                      &#9658;
+                    </span>
+                    <span className="text-sm text-white/70 leading-relaxed">
+                      {rule}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div
+                className="h-px w-full mt-8"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(6,214,160,0.6), transparent)",
+                }}
+              />
+              <div className="font-mono text-[10px] text-[#06d6a0]/40 tracking-widest mt-2">
+                DIRECTIVES LOADED // {doRules.length} RULES
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* DON'T panel */}
+          <RevealBlock delay={0.2}>
+            <div
+              className="relative border border-[#ff006e]/30 p-8 h-full"
+              style={{
+                background: "rgba(255,0,110,0.03)",
+                boxShadow: "0 0 30px rgba(255,0,110,0.08)",
+              }}
+            >
+              <HudCorners color="#ff006e" size="w-5 h-5" />
+
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    background: "#ff006e",
+                    boxShadow: "0 0 8px rgba(255,0,110,0.8)",
+                  }}
+                />
+                <span className="font-mono text-xs text-[#ff006e] tracking-widest">
+                  {"// PROHIBITED"}
+                </span>
+              </div>
+
+              <h3
+                className="font-mono font-bold text-2xl mb-6"
+                style={{
+                  color: "#ff006e",
+                  textShadow: "0 0 16px rgba(255,0,110,0.5)",
+                }}
+              >
+                {"DON'T"}
+              </h3>
+
+              <ul className="space-y-3">
+                {dontRules.map((rule, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span
+                      className="font-mono text-[#ff006e] mt-0.5 shrink-0"
+                      style={{ textShadow: "0 0 6px rgba(255,0,110,0.6)" }}
+                    >
+                      &#10005;
+                    </span>
+                    <span className="text-sm text-white/70 leading-relaxed">
+                      {rule}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div
+                className="h-px w-full mt-8"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,0,110,0.6), transparent)",
+                }}
+              />
+              <div className="font-mono text-[10px] text-[#ff006e]/40 tracking-widest mt-2">
+                RESTRICTIONS ACTIVE // {dontRules.length} RULES
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 8 — Typography Scale                                      */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        className="py-24"
+        style={{
+          background:
+            "linear-gradient(180deg, #0f0f1a 0%, #0d0a1a 50%, #0f0f1a 100%)",
+          ...scanlineStyle,
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <RevealBlock>
+            <div className="mb-4">
+              <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+                {"// TYPOGRAPHIC MATRIX //"}
+              </span>
+            </div>
+            <h2
+              className="font-mono font-bold text-4xl md:text-5xl text-white mb-2"
+              style={{ textShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+            >
+              TYPE SYSTEM
+            </h2>
+            <div className="font-mono text-sm text-white/40 tracking-widest mb-14">
+              Monospace HUD labels. Display headers. System readouts.
+            </div>
+          </RevealBlock>
+
+          <div className="space-y-4">
+            {typeRows.map((row) => (
+              <RevealBlock key={row.scale} delay={row.delay}>
+                <div
+                  className="relative border border-[#7c3aed]/15 p-4 flex flex-col md:flex-row md:items-center gap-4 transition-all duration-150 hover:border-[#7c3aed]/30"
+                  style={{ background: "rgba(124,58,237,0.03)" }}
+                >
+                  <HudCorners color="#7c3aed" size="w-3 h-3" />
+                  <div className="font-mono text-[9px] text-[#7c3aed]/50 tracking-widest w-28 shrink-0">
+                    {row.scale}
+                  </div>
+                  <div
+                    className={`${row.size} font-mono font-bold leading-tight truncate`}
+                    style={{
+                      color: row.color,
+                      textShadow:
+                        row.color !== "rgba(255,255,255,0.7)"
+                          ? `0 0 16px ${row.color}50`
+                          : "none",
+                    }}
+                  >
+                    {row.sample}
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* SECTION 9 — Footer                                               */}
+      {/* ---------------------------------------------------------------- */}
+      <footer
+        className="relative border-t border-[#7c3aed]/20 overflow-hidden"
+        style={{
+          background: "#0f0f1a",
+          backgroundImage:
+            "linear-gradient(transparent 50%, rgba(124,58,237,0.04) 50%)",
+          backgroundSize: "100% 4px",
+        }}
+      >
+        {/* Top glow line */}
+        <div
+          className="h-px w-full"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(124,58,237,0.6) 50%, transparent)",
+            boxShadow: "0 0 12px rgba(124,58,237,0.4)",
+          }}
+        />
+
+        {/* HUD status bar */}
+        <div
+          className="border-b border-[#7c3aed]/15 px-6 py-2"
+          style={{ background: "rgba(124,58,237,0.04)" }}
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {[
+                { l: "SYS", v: "NOMINAL", c: "#06d6a0" },
+                { l: "PWR", v: "100%", c: "#06d6a0" },
+                { l: "NET", v: "SECURE", c: "#38bdf8" },
+                { l: "THR", v: "MINIMAL", c: "#7c3aed" },
+              ].map((item) => (
+                <div key={item.l} className="flex items-center gap-1.5">
+                  <span className="font-mono text-[10px] text-white/30 tracking-widest">
+                    {item.l}:
+                  </span>
+                  <span
+                    className="font-mono text-[10px] tracking-widest"
+                    style={{ color: item.c }}
+                  >
+                    {item.v}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <span className="font-mono text-[10px] text-[#ff006e]/60 tracking-widest">
+              NEO-TOKYO // 2077
+            </span>
+          </div>
+        </div>
+
+        {/* Main footer content */}
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            {/* Brand */}
+            <div>
+              <div className="font-mono font-black text-3xl text-white mb-1">
+                STYLEKIT
+              </div>
+              <div className="font-mono text-sm mb-4" style={{ color: "#7c3aed" }}>
+                {"// CYBER ANIME EDITION"}
+              </div>
+              <p className="text-sm text-white/40 leading-relaxed">
+                Design systems for the future. Cyberpunk HUD interfaces fused
+                with anime expression. Every component a data terminal.
+              </p>
+            </div>
+
+            {/* Nav links */}
+            <div>
+              <div className="font-mono text-xs text-[#7c3aed]/60 tracking-widest mb-4">
+                {"// NAV MATRIX"}
+              </div>
+              <ul className="space-y-2">
+                {["All Styles", "Documentation", "Components", "Guidelines"].map(
+                  (item) => (
+                    <li key={item}>
+                      <span className="font-mono text-sm text-white/40 hover:text-[#7c3aed] transition-colors duration-150 cursor-pointer tracking-wide">
+                        {">"} {item}
+                      </span>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+
+            {/* Signal status block */}
+            <div>
+              <div className="font-mono text-xs text-[#7c3aed]/60 tracking-widest mb-4">
+                {"// SIGNAL STATUS"}
+              </div>
+              <div
+                className="relative border border-[#7c3aed]/25 p-4"
+                style={{ background: "rgba(124,58,237,0.05)" }}
+              >
+                <HudCorners color="#7c3aed" size="w-3 h-3" />
+                <div className="space-y-2">
+                  {[
+                    "CARRIER LOCKED",
+                    "ENCRYPTION ACTIVE",
+                    "BANDWIDTH FULL",
+                  ].map((status) => (
+                    <div key={status} className="flex items-center gap-2">
+                      <div
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{
+                          background: "#06d6a0",
+                          boxShadow: "0 0 6px rgba(6,214,160,0.8)",
+                        }}
+                      />
+                      <span className="font-mono text-[10px] text-[#06d6a0] tracking-widest">
+                        {status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* End transmission line */}
+          <div className="border-t border-[#7c3aed]/15 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="font-mono text-sm text-white/30 tracking-widest">
+              {"// END TRANSMISSION"}
+              <span
+                className="ml-1 text-[#7c3aed]"
+                style={{ animation: "ca-blink 1s step-end infinite" }}
+              >
+                _
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{
+                  background: "#7c3aed",
+                  boxShadow: "0 0 12px rgba(124,58,237,0.9)",
+                  animation: "ca-pulse 2s infinite",
+                }}
+              />
+              <span className="font-mono text-xs text-[#7c3aed]/60 tracking-widest">
+                STYLEKIT CYBER-ANIME // 2077
+              </span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Global keyframes */}
+      <style>{`
+        @keyframes ca-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+        @keyframes ca-ping {
+          75%, 100% {
+            transform: scale(2.5);
+            opacity: 0;
+          }
+        }
+        @keyframes ca-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
