@@ -13,6 +13,12 @@ vi.mock("@/lib/submit/reviewer", () => ({
   isValidSubmissionId: vi.fn(),
 }));
 
+vi.mock("@/lib/submit/reviewer-supabase", () => ({
+  isSupabaseConfigured: vi.fn(),
+  getSubmissionSupabase: vi.fn(),
+  deleteSubmissionSupabase: vi.fn(),
+}));
+
 vi.mock("@/lib/auth/admin-api", () => ({
   checkAdminApiAccess: vi.fn(),
 }));
@@ -25,6 +31,11 @@ import { DELETE, GET } from "@/app/api/admin/submissions/[id]/route";
 import { existsSync } from "fs";
 import { readFile, unlink } from "fs/promises";
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
+import {
+  deleteSubmissionSupabase,
+  getSubmissionSupabase,
+  isSupabaseConfigured,
+} from "@/lib/submit/reviewer-supabase";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
@@ -32,6 +43,9 @@ const mockedExistsSync = vi.mocked(existsSync);
 const mockedReadFile = vi.mocked(readFile);
 const mockedUnlink = vi.mocked(unlink);
 const mockedIsValidSubmissionId = vi.mocked(isValidSubmissionId);
+const mockedDeleteSubmissionSupabase = vi.mocked(deleteSubmissionSupabase);
+const mockedGetSubmissionSupabase = vi.mocked(getSubmissionSupabase);
+const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedCheckAdminApiAccess = vi.mocked(checkAdminApiAccess);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 
@@ -70,6 +84,7 @@ describe("GET /api/admin/submissions/[id]", () => {
   it("returns 404 when submission file does not exist", async () => {
     mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true, actor: { type: "user", id: "admin" } });
     mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedIsSupabaseConfigured.mockReturnValue(false);
     mockedExistsSync.mockReturnValue(false);
 
     const response = await GET(new Request("https://stylekit.top/api/admin/submissions/sub-1"), {
@@ -83,6 +98,7 @@ describe("GET /api/admin/submissions/[id]", () => {
   it("returns parsed submission payload", async () => {
     mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true, actor: { type: "user", id: "admin" } });
     mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedIsSupabaseConfigured.mockReturnValue(false);
     mockedExistsSync.mockReturnValue(true);
     mockedReadFile.mockResolvedValue(
       JSON.stringify({ id: "sub-2", slug: "neo-brutalist", status: "pending" }),
@@ -98,6 +114,29 @@ describe("GET /api/admin/submissions/[id]", () => {
       slug: "neo-brutalist",
       status: "pending",
     });
+  });
+
+  it("reads submission from supabase when configured", async () => {
+    mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true, actor: { type: "user", id: "admin" } });
+    mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedGetSubmissionSupabase.mockResolvedValue({
+      id: "sub-3",
+      slug: "community-style",
+      status: "approved",
+    } as never);
+
+    const response = await GET(new Request("https://stylekit.top/api/admin/submissions/sub-3"), {
+      params: Promise.resolve({ id: "sub-3" }),
+    });
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      id: "sub-3",
+      slug: "community-style",
+      status: "approved",
+    });
+    expect(mockedGetSubmissionSupabase).toHaveBeenCalledWith("sub-3");
   });
 });
 
@@ -145,6 +184,7 @@ describe("DELETE /api/admin/submissions/[id]", () => {
       actor: { type: "user", id: "admin" },
     });
     mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedIsSupabaseConfigured.mockReturnValue(false);
     mockedExistsSync.mockReturnValue(true);
     mockedUnlink.mockResolvedValue(undefined);
 
@@ -159,5 +199,28 @@ describe("DELETE /api/admin/submissions/[id]", () => {
       id: "sub-2",
     });
     expect(mockedUnlink).toHaveBeenCalledTimes(1);
+  });
+
+  it("deletes submission from supabase when configured", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedCheckAdminApiAccess.mockResolvedValue({
+      allowed: true,
+      actor: { type: "user", id: "admin" },
+    });
+    mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedDeleteSubmissionSupabase.mockResolvedValue(true);
+
+    const response = await DELETE(
+      new Request("https://stylekit.top/api/admin/submissions/sub-4", { method: "DELETE" }),
+      { params: Promise.resolve({ id: "sub-4" }) },
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      id: "sub-4",
+    });
+    expect(mockedDeleteSubmissionSupabase).toHaveBeenCalledWith("sub-4");
   });
 });

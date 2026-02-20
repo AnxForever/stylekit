@@ -128,7 +128,8 @@ export function SubmissionsReview() {
         throw new Error(data?.error ?? "Failed to register style.");
       }
 
-      setRegisterResult(data as RegisterResult);
+      const payload = data as { result?: RegisterResult } | null;
+      setRegisterResult(payload?.result ?? (data as RegisterResult));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to register style.");
       setRegisteringId(null);
@@ -311,10 +312,13 @@ export function SubmissionsReview() {
             {/* Register button for approved submissions */}
             {sub.status === "approved" && (
               <div className="mb-4">
+                <p className="text-xs text-muted mb-2">
+                  Approved submissions are already live in <code>/styles/{sub.slug}</code>. Registration is optional codebase archiving.
+                </p>
                 {registeringId === sub.id && registerResult ? (
                   <div className="border border-border rounded-md p-4 space-y-3">
                     <p className={`text-sm font-medium ${registerResult.success ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
-                      {registerResult.success ? "Style registered successfully" : "Registration completed with errors"}
+                      {registerResult.success ? "Style archived to codebase successfully" : "Registration completed with errors"}
                     </p>
                     {registerResult.filesWritten.length > 0 && (
                       <div>
@@ -359,7 +363,7 @@ export function SubmissionsReview() {
                     onClick={() => handleRegister(sub.id)}
                     className="px-4 py-2 border-2 border-foreground rounded-md text-sm font-medium hover:bg-foreground hover:text-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                   >
-                    {registeringId === sub.id ? "Registering..." : "Register Style"}
+                    {registeringId === sub.id ? "Registering..." : "Register to Codebase"}
                   </button>
                 )}
               </div>

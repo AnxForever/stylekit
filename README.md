@@ -54,6 +54,7 @@ StyleKit is a comprehensive design system toolkit that helps both humans and AI 
 - **GitHub OAuth** — User authentication via Supabase
 - **Ratings & Comments** — Community feedback on styles
 - **Style Submissions** — Submit and review community styles
+- **Instant Community Availability** — Approved community styles are browseable at `/styles/{slug}` without codebase registration
 - **Favorites** — Save and sync favorite styles
 - **Bilingual (EN/ZH)** — Full internationalization support
 - **PWA** — Installable with offline support via service worker
@@ -187,7 +188,7 @@ GET    /api/admin/generator               # Generator telemetry + trend + CSV ex
 GET    /api/admin/submissions             # Review queue
 GET    /api/admin/submissions/{id}        # Submission detail
 POST   /api/admin/submissions/{id}/review # Approve/reject submission
-POST   /api/admin/submissions/{id}/register # Register approved submission
+POST   /api/admin/submissions/{id}/register # Optional: archive approved submission into codebase files
 DELETE /api/admin/submissions/{id}        # Delete submission
 ```
 
