@@ -32,6 +32,9 @@ export const outrun: DesignStyle = {
     "添加霓虹发光效果",
     "使用粗体无衬线字体",
     "添加棕榈树或跑车剪影元素",
+    "交互叠加双霓虹光晕：hover:shadow-[0_0_20px_#ff006e,0_0_40px_#00d4ff]（Dual Neon Glow）",
+    "网格或扫描线在 hover 时可用 bg-position 产生位移，制造向地平线冲刺感（Perspective Drive）",
+    "active 状态加入轻微屏幕闪烁（active:bg-[#ff006e]/20）与短促下压反馈",
   ],
 
   dontList: [
@@ -39,42 +42,56 @@ export const outrun: DesignStyle = {
     "禁止使用现代简约风格",
     "禁止省略霓虹发光效果",
     "禁止使用柔和低饱和配色",
+    "禁止只使用单色发光（Outrun 必须有洋红+青色的色散层次）",
+    "禁止完全静止的网格背景（缺少速度幻觉会丢失风格核心）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Outrun 风格按钮",
+      description: "Outrun 风格按钮，双霓虹色散与扫描线位移反馈",
       code: `<button className="
-  px-8 py-4
-  bg-gradient-to-r from-[#ff006e] to-[#a020f0]
-  text-white font-bold uppercase tracking-wider
-  rounded-lg
-  shadow-[0_0_20px_rgba(255,0,110,0.5)]
-  hover:shadow-[0_0_30px_rgba(0,212,255,0.7)]
-  hover:scale-105
+  group relative px-10 py-4
+  bg-gradient-to-b from-[#110022] to-[#0a0a0a]
+  text-[#00d4ff] font-black uppercase tracking-[0.2em]
+  rounded-sm
+  border border-[#ff006e]
+  shadow-[0_0_15px_rgba(255,0,110,0.5)]
+  hover:text-white hover:border-[#00d4ff]
+  hover:shadow-[0_0_25px_rgba(0,212,255,0.8),inset_0_0_15px_rgba(255,0,110,0.4)]
+  active:scale-95 active:bg-[#ff006e]/20
   transition-all duration-300
+  overflow-hidden
 ">
-  Drive
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#ff006e_2px,#ff006e_4px)] opacity-10 group-hover:[background-position:0_8px] transition-all duration-300" />
+  <span className="relative z-10 drop-shadow-[0_0_5px_currentColor]">Drive</span>
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Outrun 风格卡片",
+      description: "Outrun 风格卡片，地平线网格与日落霓虹响应",
       code: `<div className="
-  p-8
-  bg-[#0a0a0a]/80
-  rounded-lg
-  border border-[#ff006e]/50
-  shadow-[0_0_20px_rgba(255,0,110,0.3)]
-  backdrop-blur-sm
+  group relative p-8
+  bg-[#0a0a0a]/90
+  rounded-sm
+  border-t border-[#ff006e]/50
+  border-b-4 border-b-[#00d4ff]/80
+  shadow-[0_0_30px_rgba(255,0,110,0.2)]
+  hover:shadow-[0_10px_40px_rgba(0,212,255,0.4)]
+  hover:-translate-y-1
+  transition-all duration-300
+  backdrop-blur-md overflow-hidden cursor-crosshair
 ">
-  <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff006e] to-[#00d4ff] mb-3">
-    MIDNIGHT RUN
-  </h3>
-  <p className="text-[#a020f0]/70">
-    Chase the horizon
-  </p>
+  <div className="absolute bottom-0 left-0 w-full h-1/2 bg-[linear-gradient(transparent_50%,rgba(0,212,255,0.2)_50%)] bg-[length:100%_4px] opacity-30 group-hover:opacity-60 group-hover:[background-position:0_12px] transition-all duration-500 [transform:perspective(100px)_rotateX(60deg)]" />
+  <div className="relative z-10">
+    <div className="w-12 h-12 rounded-full bg-gradient-to-b from-[#ff6b35] via-[#ff006e] to-[#a020f0] mb-4 shadow-[0_0_15px_rgba(255,107,53,0.6)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(255,107,53,0.8)] transition-all duration-300" />
+    <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-[#00d4ff] mb-2 tracking-wider">
+      NIGHT CITY
+    </h3>
+    <p className="text-[#ff006e] font-mono text-sm uppercase tracking-widest group-hover:text-[#ff6b35] transition-colors">
+      &gt; Grid simulation active
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -222,7 +239,14 @@ export const outrun: DesignStyle = {
 - 透视网格地板
 - 日落太阳
 - 棕榈树剪影
-- 扫描线效果`,
+- 扫描线效果
+
+## Animation & Interaction Rules
+
+- Perspective Drive: 网格或扫描线在 hover 时通过 bg-position 位移制造高速前冲幻觉。
+- Dual Neon Glow: 悬停发光至少叠加洋红与青色两层阴影，形成复古霓虹色散。
+- CRT Jitter: active 状态允许短促闪烁和轻微下压，模拟老式屏幕反馈。
+- Horizon Tilt: 卡片交互可配合极轻微抬升和底部光带增强地平线动势。`,
 
   examplePrompts: [
     {

@@ -33,6 +33,9 @@ export const parallaxSections: DesignStyle = {
     "使用 sticky top-0 创造粘性滚动效果",
     "背景图片使用 bg-cover bg-center 保证比例",
     "过渡区块使用渐变或模糊效果",
+    "交互优先通过透明度和 blur 变化表达景深，避免大位移动画引发眩晕",
+    "卡片可加入缓慢扫光层（Glass Glare）增强镜头反光感",
+    "统一使用较长缓动 duration-500/700 营造电影式叙事节奏",
   ],
 
   dontList: [
@@ -41,38 +44,47 @@ export const parallaxSections: DesignStyle = {
     "禁止过多视差层级造成性能问题",
     "禁止忽略移动端的视差降级处理",
     "禁止内容过于密集破坏焦点",
+    "禁止卡片 hover 大幅上下跳动（背景已有位移，前景应克制）",
+    "禁止短促急促动画（会破坏沉浸叙事）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "带模糊背景的浮动按钮",
+      description: "带模糊背景的沉浸式按钮，强调玻璃态光学变化",
       code: `<button className="
-  px-8 py-4
-  bg-white/20 backdrop-blur-md
+  px-10 py-4
+  bg-white/10 backdrop-blur-md
   text-white
+  uppercase tracking-widest
   rounded-full
   font-medium
-  border border-white/30
-  hover:bg-white/30
-  transition-all duration-300
+  border border-white/20
+  hover:bg-white/30 hover:border-white/50
+  hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
+  active:bg-white/5
+  transition-all duration-500 ease-out
 ">
-  Explore More
+  Explore Story
 </button>`,
     },
     card: {
       name: "内容卡片",
-      description: "半透明背景的内容卡片",
+      description: "半透明背景内容卡片，强调景深与玻璃反光层",
       code: `<div className="
-  p-8 md:p-12
-  bg-white/90 backdrop-blur-sm
+  group relative p-10 md:p-14
+  bg-black/40 backdrop-blur-md
   rounded-2xl
-  shadow-xl
+  border border-white/10
+  hover:bg-black/60 hover:border-white/30 hover:backdrop-blur-xl
+  transition-all duration-700 ease-out
   max-w-2xl
+  overflow-hidden
 ">
-  <h3 className="text-3xl font-bold text-[#1e3a5f] mb-4">Section Title</h3>
-  <p className="text-gray-600 leading-relaxed">
-    Scroll to reveal more content. Each section creates a unique visual moment.
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+  <h3 className="text-4xl font-light text-white mb-6 tracking-wide group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] transition-all duration-500">The Parallax View</h3>
+  <p className="text-white/70 leading-relaxed text-lg font-light group-hover:text-white/90 transition-colors duration-500">
+    Scroll to reveal layered storytelling. Foreground stays calm while background depth keeps moving.
   </p>
 </div>`,
     },
@@ -157,11 +169,17 @@ export const parallaxSections: DesignStyle = {
 ## 布局规则
 - 每个区块使用 min-h-screen 全屏高度
 - 背景使用 bg-fixed bg-cover bg-center
-- 内容使用半透明背景 bg-white/90 backdrop-blur
+- 内容使用半透明背景（场景可选 bg-white/90 或 bg-black/40）并配合 backdrop-blur
 - 导航使用 fixed + backdrop-blur-lg
 
 ## 禁止
 - 使用 bg-scroll（破坏视差效果）
 - 区块高度不一致
-- 背景与内容对比度不足`,
+- 背景与内容对比度不足
+
+## Animation & Interaction Rules
+- Decoupled Depth: 前景卡片避免大幅 Y 轴浮动，优先用透明度与 blur 强化景深反馈。
+- Glass Glare: 可使用渐变扫光层在 hover 时缓慢浮现，模拟镜头反光。
+- Cinematic Slowness: 交互节奏使用 duration-500 到 700，保持叙事连贯和沉浸感。
+- Immersive Focus: active 反馈优先背景明暗变化，避免明显缩放破坏排版稳定。`,
 };
