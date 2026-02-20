@@ -47,6 +47,9 @@ Core principles:
     "Create intentional visual conflict between adjacent elements",
     "Use hard offset shadows only (e.g., shadow-[8px_8px_0_#000])",
     "Use font-black weight and uppercase for emphasis",
+    "Use aggressive hover states with abrupt color flips and border jumps",
+    "Break alignment on interaction using translate/rotate/size shifts",
+    "Prefer transition-none or linear timing for raw feedback",
   ],
 
   dontList: [
@@ -57,6 +60,7 @@ Core principles:
     "Don't use gradients (flat colors only)",
     "Don't make things pretty or harmonious",
     "Don't use backdrop-blur or translucency",
+    "Don't use smooth polished easing (ease-in-out, spring, bounce)",
   ],
 
   components: {
@@ -66,15 +70,17 @@ Core principles:
       code: `<button className="
   px-6 py-3
   bg-[#FF0000] text-white
-  font-black text-sm uppercase
+  font-black text-xl uppercase
   border-4 border-black
   rounded-none
-  shadow-[4px_4px_0_#000]
-  hover:shadow-[6px_6px_0_#000]
-  hover:-translate-x-[2px] hover:-translate-y-[2px]
-  active:shadow-[2px_2px_0_#000]
-  active:translate-x-[2px] active:translate-y-[2px]
-  transition-all duration-100
+  shadow-[8px_8px_0_#000]
+  hover:bg-[#0000FF] hover:text-[#FFFF00]
+  hover:border-8 hover:shadow-[12px_12px_0_#000]
+  hover:-translate-x-2 hover:rotate-3
+  active:bg-[#FFFF00] active:text-black
+  active:shadow-none active:translate-x-[8px] active:translate-y-[8px]
+  transition-none
+  cursor-help
 ">
   CLICK ME
 </button>`,
@@ -88,9 +94,12 @@ Core principles:
   p-6
   rounded-none
   shadow-[8px_8px_0_#000]
+  hover:bg-[#FFFF00]
+  hover:border-8
   hover:shadow-[12px_12px_0_#000]
-  hover:-translate-x-1 hover:-translate-y-1
-  transition-all duration-100
+  hover:-translate-x-2 hover:-translate-y-2
+  hover:rotate-1
+  transition-none
 ">
   <h3 className="text-2xl font-black uppercase mb-2">CARD TITLE</h3>
   <p className="text-sm font-bold text-black/70">Raw brutalist content block</p>
@@ -107,12 +116,14 @@ Core principles:
     bg-white
     border-4 border-black
     rounded-none
-    text-black font-bold
+    text-black font-black
     placeholder:text-gray-400
     focus:outline-none
-    focus:border-[#0000FF]
-    focus:shadow-[4px_4px_0_#0000FF]
-    transition-all duration-100
+    focus:bg-[#FFFF00]
+    focus:border-8 focus:border-[#FF0000]
+    focus:shadow-[16px_16px_0_#0000FF]
+    focus:-translate-y-2 focus:rotate-1
+    transition-none
   "
 />`,
     },
@@ -226,6 +237,13 @@ Core principles:
 - Layout: Intentionally break grid alignment. Rotate elements (-3deg to 5deg)
 - Fonts: Bold sans-serif. Mix sizes within sections for visual tension
 - White space: Can be either very tight or exaggerated - never "just right"
+
+## Animation & Interaction Rules
+
+- Aggressive hover only: abrupt color collisions, border-thickness jumps, and harsh offsets
+- Broken layout on interaction is encouraged: alignment can intentionally fail on hover/focus
+- Zero polish: use transition-none or linear with near-zero duration; no smooth easing curves
+- Focus states should be louder than default states (thicker borders, stronger shadows, rotation/shift)
 
 ## Color Palette
 
