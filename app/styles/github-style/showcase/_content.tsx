@@ -1,536 +1,1026 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft, GitBranch, GitPullRequest, Code,
-  ChevronDown, Check, X, AlertTriangle, Info,
-  Users, TrendingUp, Eye, Heart,
-  Star, BookOpen, Terminal,
-} from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "White", hex: "#ffffff", bg: "bg-[#ffffff]", border: true },
-  { name: "Subtle Gray", hex: "#f6f8fa", bg: "bg-[#f6f8fa]", border: true },
-  { name: "Border", hex: "#d0d7de", bg: "bg-[#d0d7de]" },
-  { name: "Foreground", hex: "#1f2328", bg: "bg-[#1f2328]" },
-  { name: "Muted", hex: "#656d76", bg: "bg-[#656d76]" },
-  { name: "Blue", hex: "#0969da", bg: "bg-[#0969da]" },
-  { name: "Green", hex: "#1f883d", bg: "bg-[#1f883d]" },
-  { name: "Red", hex: "#cf222e", bg: "bg-[#cf222e]" },
+/* ------------------------------------------------------------------ */
+/*  Inline hooks                                                        */
+/* ------------------------------------------------------------------ */
+
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                                */
+/* ------------------------------------------------------------------ */
+
+const fileTree = [
+  { name: "src", type: "dir", indent: 0 },
+  { name: "components", type: "dir", indent: 1 },
+  { name: "Button.tsx", type: "file", indent: 2, time: "2h ago" },
+  { name: "Card.tsx", type: "file", indent: 2, time: "4h ago" },
+  { name: "Input.tsx", type: "file", indent: 2, time: "1d ago" },
+  { name: "styles", type: "dir", indent: 1 },
+  { name: "tokens.ts", type: "file", indent: 2, time: "3d ago" },
+  { name: "global.css", type: "file", indent: 2, time: "1w ago" },
+  { name: "README.md", type: "file", indent: 0, time: "2h ago" },
+  { name: "package.json", type: "file", indent: 0, time: "5d ago" },
+  { name: "tsconfig.json", type: "file", indent: 0, time: "2w ago" },
 ];
 
-export default function ShowcaseContent() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(65);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+const commits = [
+  { hash: "a3f8d21", msg: "feat: add RevealBlock animation component", author: "AnxForever", time: "2 hours ago", status: "success" },
+  { hash: "b1c2e90", msg: "fix: correct focus ring opacity on dark backgrounds", author: "contributor", time: "5 hours ago", status: "success" },
+  { hash: "c4d5f12", msg: "refactor: extract useInView hook to shared module", author: "AnxForever", time: "1 day ago", status: "warning" },
+  { hash: "e7f8a34", msg: "docs: update contributing guidelines", author: "contributor", time: "2 days ago", status: "error" },
+];
+
+const issueItems = [
+  {
+    number: 42,
+    title: "Button focus ring missing in Safari 16",
+    labels: [{ text: "bug", color: "#cf222e", bg: "#FFEBE9" }, { text: "accessibility", color: "#0969da", bg: "#ddf4ff" }],
+    author: "anx4758",
+    comments: 7,
+    open: true,
+  },
+  {
+    number: 41,
+    title: "Add dark mode variant for Card component",
+    labels: [{ text: "enhancement", color: "#1f883d", bg: "#dafbe1" }, { text: "good first issue", color: "#9a6700", bg: "#fff8c5" }],
+    author: "contributor",
+    comments: 3,
+    open: true,
+  },
+  {
+    number: 40,
+    title: "Document all design token categories",
+    labels: [{ text: "documentation", color: "#0969da", bg: "#ddf4ff" }],
+    author: "AnxForever",
+    comments: 12,
+    open: false,
+  },
+  {
+    number: 39,
+    title: "Input placeholder color contrast fails WCAG AA",
+    labels: [{ text: "bug", color: "#cf222e", bg: "#FFEBE9" }, { text: "a11y", color: "#1f883d", bg: "#dafbe1" }],
+    author: "reviewer",
+    comments: 5,
+    open: false,
+  },
+];
+
+const grayScale = [
+  { name: "Text Primary", hex: "#1f2328", role: "Headings, body text" },
+  { name: "Text Muted", hex: "#656d76", role: "Secondary text, captions" },
+  { name: "Text Subtle", hex: "#8b949e", role: "Placeholder, disabled" },
+  { name: "Border Default", hex: "#d0d7de", role: "Dividers, outlines" },
+  { name: "Canvas Inset", hex: "#f6f8fa", role: "Code blocks, inputs" },
+  { name: "Canvas Default", hex: "#ffffff", role: "Page & card backgrounds" },
+  { name: "Nav Dark", hex: "#24292f", role: "Top navigation bar" },
+];
+
+const semanticColors = [
+  { name: "Interactive Blue", hex: "#0969da", bg: "#ddf4ff", role: "Links, primary CTA" },
+  { name: "Success Green", hex: "#1f883d", bg: "#dafbe1", role: "Merge, success states" },
+  { name: "Warning Amber", hex: "#9a6700", bg: "#fff8c5", role: "Pending, review needed" },
+  { name: "Danger Red", hex: "#cf222e", bg: "#FFEBE9", role: "Close, delete, errors" },
+];
+
+const doRules = [
+  "Use #0969da as the sole primary interactive color",
+  "Build hierarchy with gray levels, not color variety",
+  "Apply rounded-md (6px) corners consistently",
+  "Use font-mono with bg-[#f6f8fa] for all code blocks",
+  "Semantic colors only: green=success, amber=warning, red=danger",
+  "Keep transitions 75–150ms, no easing theatrics",
+  "Focus rings: focus:ring-4 + brand color at 30% opacity",
+  "Card hover: subtle background + border darkening only",
+];
+
+const dontRules = [
+  "No gradient backgrounds on UI surfaces",
+  "No rounded-2xl or larger (except avatars)",
+  "No shadow-lg or shadow-xl on cards",
+  "No serif fonts — system sans-serif stack only",
+  "No purely decorative animations or particle effects",
+  "No off-brand accent colors for decoration",
+  "No font-size above text-3xl in content areas",
+  "No padding above p-6 for compact information density",
+];
+
+const prItems = [
+  { number: 15, title: "feat: GitHub Style showcase complete rebuild", author: "AnxForever", checks: "passing", branch: "feat/showcase-p" },
+  { number: 14, title: "fix: community runtime resolver caching", author: "AnxForever", checks: "passing", branch: "fix/community-cache" },
+  { number: 13, title: "chore: update vitest to v2.1", author: "dependabot", checks: "pending", branch: "deps/vitest-2.1" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                           */
+/* ------------------------------------------------------------------ */
+
+export default function GitHubStyleShowcase() {
+  const [activeTab, setActiveTab] = useState<"code" | "issues" | "pulls">("code");
+  const [openIssueFilter, setOpenIssueFilter] = useState<"open" | "closed">("open");
+  const [hoveredFile, setHoveredFile] = useState<string | null>(null);
   const [toggleStates, setToggleStates] = useState([true, false, true]);
+  const [activeComponentTab, setActiveComponentTab] = useState<"button" | "card" | "input" | "code">("button");
+  const [copied, setCopied] = useState(false);
 
-  const tabs = [
-    { label: "Code", icon: Code },
-    { label: "Pull Requests", icon: GitPullRequest },
-    { label: "Docs", icon: BookOpen },
-  ];
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
-  const accordionItems = [
-    { title: "What is GitHub Style design?", content: "GitHub Style is a design language born from the world's largest developer platform. It prioritises content over chrome, using a refined grayscale system, semantic functional colours, and minimal decoration to create interfaces where code and documentation are the star." },
-    { title: "Key Principles", content: "Content-first hierarchy. A precise gray-scale ladder from #1f2328 to #f6f8fa. Blue (#0969da) as the sole interaction colour. Green for success, yellow for warning, red for danger -- each colour carries strict semantic meaning." },
-    { title: "Developer Experience", content: "Every design decision serves efficiency. Compact spacing, monospace code blocks, subtle borders, and near-zero shadows create an environment where developers can focus entirely on their work without visual distraction." },
-  ];
+  const filteredIssues = issueItems.filter((i) =>
+    openIssueFilter === "open" ? i.open : !i.open,
+  );
 
   return (
-    <div className="min-h-screen bg-white text-[#1f2328]">
-      {/* Navigation */}
-      <nav className="px-6 py-3 bg-[#24292f] text-white">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/github-style"
-            className="flex items-center gap-2 text-[#8b949e] hover:text-white transition-colors duration-150"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm font-semibold">Back</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <GitBranch className="w-4 h-4 text-white" />
-            <span className="font-semibold text-sm text-white">
-              GitHub Style
-            </span>
+    <div className="min-h-screen bg-white font-sans" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif' }}>
+
+      {/* ── Fixed Nav ─────────────────────────────────────────────── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#24292f] border-b border-[#30363d]">
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
+          {/* Octocat SVG */}
+          <svg height="32" viewBox="0 0 16 16" width="32" fill="#ffffff" className="shrink-0">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+          </svg>
+
+          <div className="hidden md:flex items-center flex-1 max-w-xs">
+            <input
+              type="text"
+              placeholder="Search or jump to..."
+              className="w-full px-3 py-1 bg-transparent border border-[#57606a] rounded-md text-sm text-white placeholder-[#8b949e] focus:bg-[#0d1117] focus:border-[#58a6ff] focus:outline-none transition-all duration-150"
+            />
           </div>
-          <Link
-            href="/styles"
-            className="px-3 py-1.5 text-sm font-semibold text-white border border-[#57606a] rounded-md hover:border-[#8b949e] transition-colors duration-150"
-          >
-            All Styles
+
+          <div className="hidden md:flex items-center gap-4 text-sm text-[#e6edf3] font-semibold ml-2">
+            <span className="hover:text-white transition-colors cursor-pointer">Pull requests</span>
+            <span className="hover:text-white transition-colors cursor-pointer">Issues</span>
+            <span className="hover:text-white transition-colors cursor-pointer">Marketplace</span>
+            <span className="hover:text-white transition-colors cursor-pointer">Explore</span>
+          </div>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-[#0969da] flex items-center justify-center text-white text-xs font-bold">A</div>
+          </div>
+
+          <Link href="/" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#8b949e] border border-[#57606a] rounded-md hover:border-[#8b949e] hover:text-[#e6edf3] transition-all duration-150 ml-2">
+            StyleKit &rarr;
           </Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="py-16 px-6 border-b border-[#d0d7de]">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[#656d76] text-sm">stylekit</span>
-            <span className="text-[#656d76]">/</span>
-            <span className="text-[#0969da] text-xl font-semibold">github-style</span>
-            <span className="ml-2 px-2 py-0.5 text-xs font-medium text-[#656d76] border border-[#d0d7de] rounded-full">
-              Public
-            </span>
-          </div>
-          <p className="text-sm text-[#656d76] mb-6">
-            A clean, developer-focused design system built on grayscale hierarchy, semantic colours, and content-first principles.
-          </p>
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1 text-sm text-[#656d76]">
-              <Star className="w-4 h-4" />
-              <span className="font-semibold text-[#1f2328]">4,207</span>
-              <span>stars</span>
-            </div>
-            <div className="flex items-center gap-1 text-sm text-[#656d76]">
-              <GitBranch className="w-4 h-4" />
-              <span className="font-semibold text-[#1f2328]">891</span>
-              <span>forks</span>
-            </div>
-            <div className="flex items-center gap-1 text-sm text-[#656d76]">
-              <Eye className="w-4 h-4" />
-              <span className="font-semibold text-[#1f2328]">142</span>
-              <span>watching</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="pt-14">
 
-      {/* Stats */}
-      <ShowcaseSection
-        title="Overview"
-        subtitle="Repository metrics"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: Users, label: "Contributors", value: "2,841" },
-            { icon: TrendingUp, label: "Growth", value: "+18%" },
-            { icon: Eye, label: "Views", value: "142K" },
-            { icon: Heart, label: "Sponsors", value: "3,209" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="p-4 bg-white rounded-md border border-[#d0d7de] hover:bg-[#f6f8fa] transition-colors duration-150"
-            >
-              <stat.icon className="w-4 h-4 text-[#656d76] mb-3" />
-              <p className="text-2xl font-semibold text-[#1f2328] mb-1">{stat.value}</p>
-              <p className="text-xs text-[#656d76]">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color Palette"
-        subtitle="Grayscale system with semantic accents"
-        className="py-8 px-6 bg-[#f6f8fa]"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-5xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-md overflow-hidden border border-[#d0d7de] bg-white"
-            labelClassName="text-sm font-semibold text-[#1f2328]"
-            hexClassName="text-xs text-[#656d76] font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Typography */}
-      <ShowcaseSection
-        title="Typography"
-        subtitle="System fonts and monospace"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-4xl mx-auto space-y-4">
-          <div className="p-6 bg-white rounded-md border border-[#d0d7de]">
-            <p className="text-3xl font-semibold text-[#1f2328] mb-3">Heading</p>
-            <p className="text-xl font-semibold text-[#1f2328] mb-3">Subheading</p>
-            <p className="text-sm text-[#1f2328] mb-3 leading-relaxed">
-              Body text is set at 14px with a 1.5 line-height. Clear, functional, and optimised for long reading sessions of code and documentation.
-            </p>
-            <p className="text-xs text-[#656d76] mb-4">
-              Muted caption text for secondary information
-            </p>
-            <div className="p-3 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
-              <code className="text-sm font-mono text-[#1f2328]">
-                const style = &quot;github&quot;; // monospace code
-              </code>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Buttons */}
-      <ShowcaseSection
-        title="Buttons"
-        subtitle="Functional and semantic"
-        className="py-8 px-6 bg-[#f6f8fa]"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-6 bg-white rounded-md border border-[#d0d7de]">
-            <div className="flex flex-wrap gap-3 items-center">
-              <button className="px-4 py-1.5 bg-[#1f883d] text-white text-sm font-semibold rounded-md border border-[#1b7f37] shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#1a7f37] transition-colors duration-150">
-                Merge
-              </button>
-              <button className="px-4 py-1.5 bg-[#f6f8fa] text-[#1f2328] text-sm font-semibold rounded-md border border-[#d0d7de] shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#f3f4f6] transition-colors duration-150">
-                Default
-              </button>
-              <button className="px-4 py-1.5 bg-[#0969da] text-white text-sm font-semibold rounded-md border border-[#0860ca] shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#0860ca] transition-colors duration-150">
-                Primary
-              </button>
-              <button className="px-4 py-1.5 bg-[#cf222e] text-white text-sm font-semibold rounded-md border border-[#c11e2a] shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#c11e2a] transition-colors duration-150">
-                Danger
-              </button>
-              <button className="text-sm font-semibold text-[#0969da] hover:underline transition-colors duration-150">
-                Link
-              </button>
-              <button className="px-4 py-1.5 bg-[#f6f8fa] text-[#8b949e] text-sm font-semibold rounded-md border border-[#d0d7de] cursor-not-allowed">
-                Disabled
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection
-        title="Cards"
-        subtitle="Repository list items"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-5xl mx-auto space-y-3">
-          {[
-            { name: "design-system", desc: "A comprehensive design token system for building consistent UIs", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k", updated: "2 hours ago" },
-            { name: "react-components", desc: "Accessible React component library following GitHub design principles", lang: "TypeScript", langColor: "#3178c6", stars: "892", updated: "5 hours ago" },
-            { name: "css-utilities", desc: "Utility-first CSS classes inspired by GitHub Primer", lang: "CSS", langColor: "#563d7c", stars: "547", updated: "1 day ago" },
-          ].map((repo, index) => (
-            <div key={index} className="p-4 bg-white rounded-md border border-[#d0d7de] hover:bg-[#f6f8fa] transition-colors duration-150">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[#0969da] text-sm font-semibold hover:underline cursor-pointer">
-                  stylekit/{repo.name}
-                </span>
-                <span className="px-1.5 py-0.5 text-xs font-medium text-[#656d76] border border-[#d0d7de] rounded-full">
-                  Public
-                </span>
+        {/* ── Hero — Repository View ─────────────────────────────── */}
+        <section className="border-b border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4 pt-6 pb-0">
+            <RevealBlock delay={0}>
+              <div className="flex items-center gap-1.5 text-sm mb-4 flex-wrap">
+                <span className="text-[#0969da] hover:underline cursor-pointer font-semibold">AnxForever</span>
+                <span className="text-[#656d76]">/</span>
+                <span className="text-[#0969da] hover:underline cursor-pointer font-semibold text-lg">stylekit</span>
+                <span className="ml-2 px-2 py-0.5 text-xs font-medium text-[#656d76] border border-[#d0d7de] rounded-full">Public</span>
               </div>
-              <p className="text-[#656d76] text-sm mb-3">{repo.desc}</p>
-              <div className="flex items-center gap-4 text-xs text-[#656d76]">
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: repo.langColor }} />
-                  {repo.lang}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Star className="w-3 h-3" />
-                  {repo.stars}
-                </span>
-                <span>Updated {repo.updated}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
+            </RevealBlock>
 
-      {/* Tabs */}
-      <ShowcaseSection
-        title="Tabs"
-        subtitle="Content navigation"
-        className="py-8 px-6 bg-[#f6f8fa]"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md border border-[#d0d7de] overflow-hidden">
-            <div className="flex border-b border-[#d0d7de]">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border-b-2 -mb-px ${
-                    activeTab === index
-                      ? "text-[#1f2328] border-[#fd8c73]"
-                      : "text-[#656d76] border-transparent hover:text-[#1f2328] hover:border-[#d0d7de]"
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                  {index === 1 && (
-                    <span className="ml-1 px-1.5 py-0.5 text-xs bg-[#e8e8e8] text-[#656d76] rounded-full">3</span>
-                  )}
-                </button>
-              ))}
-            </div>
-            <div className="p-4 min-h-[120px]">
-              {activeTab === 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-[#1f2328] mb-2">Source Code</h4>
-                  <div className="p-3 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
-                    <code className="text-sm font-mono text-[#1f2328]">
-                      src/ lib/ components/ package.json
-                    </code>
+            <RevealBlock delay={0.05}>
+              <div className="flex items-center gap-4 text-sm text-[#656d76] mb-4 flex-wrap">
+                <div className="flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
+                  </svg>
+                  <span><strong className="text-[#1f2328]">1,247</strong> stars</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.252 2.252 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z" />
+                  </svg>
+                  <span><strong className="text-[#1f2328]">89</strong> forks</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
+                  </svg>
+                  <span><strong className="text-[#1f2328]">42</strong> issues</span>
+                </div>
+                <div className="flex items-center gap-1.5 ml-auto">
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-[#1f2328] bg-[#f6f8fa] border border-[#d0d7de] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#f3f4f6] transition-colors duration-150">
+                    <svg className="w-4 h-4 text-[#656d76]" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
+                    </svg>
+                    Star
+                    <span className="px-1.5 py-0.5 text-xs bg-[#eaeef2] rounded-full">1.2k</span>
+                  </button>
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-[#1f2328] bg-[#f6f8fa] border border-[#d0d7de] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#f3f4f6] transition-colors duration-150">
+                    Fork
+                    <span className="px-1.5 py-0.5 text-xs bg-[#eaeef2] rounded-full">89</span>
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Tab bar */}
+            <RevealBlock delay={0.1}>
+              <div className="flex gap-1 border-b border-[#d0d7de] -mb-px">
+                {(["code", "issues", "pulls"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold capitalize border-b-2 transition-colors duration-100 ${
+                      activeTab === tab
+                        ? "text-[#1f2328] border-[#fd8c73]"
+                        : "text-[#656d76] border-transparent hover:text-[#1f2328] hover:bg-[#f6f8fa]"
+                    }`}
+                  >
+                    {tab === "code" && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z" />
+                      </svg>
+                    )}
+                    {tab === "issues" && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
+                      </svg>
+                    )}
+                    {tab === "pulls" && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.45 5.154A4.25 4.25 0 0 0 9.25 7.5h1.378a2.251 2.251 0 1 1 0 1.5H9.25A5.734 5.734 0 0 1 5 6.823L3 9.099V11.5a2.25 2.25 0 1 1-1.5 0v-8.5a2.25 2.25 0 1 1 1.5 0v1.456l2.45-2.302ZM4 2.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0ZM4 13.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm8.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
+                      </svg>
+                    )}
+                    {tab}
+                    {tab === "issues" && (
+                      <span className="px-1.5 py-0.5 text-xs font-medium bg-[#eaeef2] text-[#656d76] rounded-full">42</span>
+                    )}
+                    {tab === "pulls" && (
+                      <span className="px-1.5 py-0.5 text-xs font-medium bg-[#eaeef2] text-[#656d76] rounded-full">3</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </RevealBlock>
+          </div>
+        </section>
+
+        {/* ── Tab Content ───────────────────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-4 py-6">
+
+          {/* Code tab — file tree */}
+          {activeTab === "code" && (
+            <div className="grid md:grid-cols-3 gap-6">
+              <RevealBlock className="md:col-span-2" delay={0}>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-[#1f2328] bg-[#f6f8fa] border border-[#d0d7de] rounded-md hover:bg-[#f3f4f6] transition-colors duration-150">
+                      <svg className="w-4 h-4 text-[#656d76]" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" />
+                      </svg>
+                      main
+                      <svg className="w-3 h-3 text-[#656d76]" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z" />
+                      </svg>
+                    </button>
+                    <span className="text-sm text-[#656d76]">
+                      <strong className="text-[#1f2328]">12</strong> branches
+                    </span>
+                    <span className="text-sm text-[#656d76]">
+                      <strong className="text-[#1f2328]">4</strong> tags
+                    </span>
+                  </div>
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white bg-[#1f883d] border border-[#1b7f37] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#1a7f37] active:scale-[0.98] transition-all duration-100">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8V1.5Z" />
+                    </svg>
+                    Code
+                  </button>
+                </div>
+
+                {/* File tree */}
+                <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                  <div className="flex items-center gap-3 px-4 py-3 bg-[#f6f8fa] border-b border-[#d0d7de] text-sm">
+                    <div className="w-5 h-5 rounded-full bg-[#0969da] shrink-0 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-[#1f2328] font-semibold truncate">feat: add RevealBlock animation component</span>
+                    <span className="text-[#656d76] ml-auto shrink-0">2 hours ago</span>
+                  </div>
+
+                  {fileTree.map((file) => (
+                    <div
+                      key={`${file.name}-${file.indent}`}
+                      onMouseEnter={() => setHoveredFile(file.name)}
+                      onMouseLeave={() => setHoveredFile(null)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm border-b border-[#d0d7de] last:border-0 hover:bg-[#f6f8fa] transition-colors duration-100 cursor-pointer"
+                      style={{ paddingLeft: `${16 + file.indent * 20}px` }}
+                    >
+                      {file.type === "dir" ? (
+                        <svg className="w-4 h-4 text-[#54aeff] shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M.513 1.513A1.75 1.75 0 0 1 1.75 1h3.5c.55 0 1.07.26 1.4.7l.9 1.2a.25.25 0 0 0 .2.1H13a1 1 0 0 1 1 1v8.75A1.75 1.75 0 0 1 12.25 14H1.75A1.75 1.75 0 0 1 0 12.25V2.75c0-.464.184-.91.513-1.237Z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4 text-[#656d76] shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688Z" />
+                        </svg>
+                      )}
+                      <span className={`flex-1 truncate transition-colors duration-100 ${hoveredFile === file.name ? "text-[#0969da]" : "text-[#1f2328]"}`}>
+                        {file.name}
+                      </span>
+                      {file.type === "file" && (
+                        <span className="text-[#656d76] text-xs shrink-0">{file.time}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </RevealBlock>
+
+              {/* Sidebar */}
+              <RevealBlock delay={0.1}>
+                <div className="space-y-4">
+                  <div className="border border-[#d0d7de] rounded-md p-4">
+                    <h3 className="text-sm font-semibold text-[#1f2328] mb-2">About</h3>
+                    <p className="text-sm text-[#656d76] leading-relaxed mb-4">
+                      120+ curated design style presets with tokens, component code, and AI rules.
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-[#656d76]">
+                        <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z" />
+                        </svg>
+                        stylekit@stylekit.dev
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-[#0969da] hover:underline cursor-pointer">
+                        <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z" />
+                        </svg>
+                        stylekit.dev
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {["design-system", "tokens", "next-js", "typescript", "tailwind"].map((tag) => (
+                        <span key={tag} className="px-2 py-0.5 text-xs font-medium text-[#0969da] bg-[#ddf4ff] rounded-full hover:bg-[#b6e3ff] cursor-pointer transition-colors duration-100">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border border-[#d0d7de] rounded-md p-4">
+                    <h3 className="text-sm font-semibold text-[#1f2328] mb-3">Releases</h3>
+                    <div className="space-y-3">
+                      {[
+                        { tag: "v2.1.0", desc: "Community runtime + showcase", date: "Feb 2026" },
+                        { tag: "v2.0.0", desc: "Batch L-N showcase rebuild", date: "Jan 2026" },
+                        { tag: "v1.9.0", desc: "120 styles milestone", date: "Dec 2025" },
+                      ].map((rel) => (
+                        <div key={rel.tag} className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-[#1f883d] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2.5 7.775V2.75a.25.25 0 0 1 .25-.25h5.025a.25.25 0 0 1 .177.073l6.25 6.25a.25.25 0 0 1 0 .354l-5.025 5.025a.25.25 0 0 1-.354 0l-6.25-6.25a.25.25 0 0 1-.073-.177Zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.75 1.75 0 0 1 1 7.775ZM6 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" />
+                          </svg>
+                          <div>
+                            <p className="text-sm text-[#0969da] font-semibold">{rel.tag}</p>
+                            <p className="text-xs text-[#656d76]">{rel.desc}</p>
+                            <p className="text-xs text-[#656d76]">{rel.date}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              )}
-              {activeTab === 1 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-[#1f2328] mb-2">Open Pull Requests</h4>
-                  <p className="text-sm text-[#656d76] leading-relaxed">3 open pull requests awaiting review. All checks passing.</p>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-[#1f2328] mb-2">Documentation</h4>
-                  <p className="text-sm text-[#656d76] leading-relaxed">Getting started guide, API reference, and contribution guidelines.</p>
-                </div>
-              )}
+              </RevealBlock>
             </div>
-          </div>
-        </div>
-      </ShowcaseSection>
+          )}
 
-      {/* Accordion */}
-      <ShowcaseSection
-        title="Accordion"
-        subtitle="Expandable sections"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-3xl mx-auto space-y-2">
-          {accordionItems.map((item, index) => (
-            <div key={index} className="bg-white rounded-md border border-[#d0d7de] overflow-hidden">
-              <button
-                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
-                className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-[#f6f8fa] transition-colors duration-150"
-              >
-                <span className="text-sm font-semibold text-[#1f2328]">{item.title}</span>
-                <ChevronDown className={`w-4 h-4 text-[#656d76] transition-transform duration-200 ${openAccordion === index ? "rotate-180" : ""}`} />
-              </button>
-              {openAccordion === index && (
-                <div className="px-4 pb-4 border-t border-[#d0d7de]">
-                  <p className="text-sm text-[#656d76] leading-relaxed pt-3">{item.content}</p>
+          {/* Issues tab */}
+          {activeTab === "issues" && (
+            <RevealBlock delay={0}>
+              <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                <div className="flex items-center gap-0 bg-[#f6f8fa] border-b border-[#d0d7de] px-4 py-2">
+                  <button
+                    onClick={() => setOpenIssueFilter("open")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-md transition-colors duration-100 ${openIssueFilter === "open" ? "text-[#1f2328]" : "text-[#656d76] hover:text-[#1f2328]"}`}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
+                    </svg>
+                    {issueItems.filter((i) => i.open).length} Open
+                  </button>
+                  <button
+                    onClick={() => setOpenIssueFilter("closed")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-md transition-colors duration-100 ${openIssueFilter === "closed" ? "text-[#1f2328]" : "text-[#656d76] hover:text-[#1f2328]"}`}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+                    </svg>
+                    {issueItems.filter((i) => !i.open).length} Closed
+                  </button>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
 
-      {/* Alerts */}
-      <ShowcaseSection
-        title="Alerts"
-        subtitle="Semantic notifications"
-        className="py-8 px-6 bg-[#f6f8fa]"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-3xl mx-auto space-y-2">
-          <div className="flex items-start gap-3 p-3 bg-[#dafbe1] rounded-md border border-[#1f883d]/20">
-            <Check className="w-4 h-4 text-[#1f883d] mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-[#1f2328]">All checks passed</p>
-              <p className="text-xs text-[#656d76] mt-0.5">3 successful checks. Ready to merge.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 p-3 bg-[#fff8c5] rounded-md border border-[#9a6700]/20">
-            <AlertTriangle className="w-4 h-4 text-[#9a6700] mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-[#1f2328]">Review required</p>
-              <p className="text-xs text-[#656d76] mt-0.5">At least 1 approving review is required.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 p-3 bg-[#ffebe9] rounded-md border border-[#cf222e]/20">
-            <X className="w-4 h-4 text-[#cf222e] mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-[#1f2328]">CI failed</p>
-              <p className="text-xs text-[#656d76] mt-0.5">2 failing checks. Review the build logs.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 p-3 bg-[#ddf4ff] rounded-md border border-[#0969da]/20">
-            <Info className="w-4 h-4 text-[#0969da] mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-[#1f2328]">Tip</p>
-              <p className="text-xs text-[#656d76] mt-0.5">Use <code className="px-1 py-0.5 bg-[#f6f8fa] rounded text-xs font-mono">gh pr status</code> to check from the CLI.</p>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Toggle */}
-      <ShowcaseSection
-        title="Toggle"
-        subtitle="Settings"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md border border-[#d0d7de] p-4 space-y-4">
-            {[
-              { label: "Branch protection", desc: "Require pull request reviews before merging" },
-              { label: "Auto-merge", desc: "Automatically merge when requirements are met" },
-              { label: "Delete head branch", desc: "Delete branch after pull request is merged" },
-            ].map((item, index) => (
-              <div key={index} className="flex items-center justify-between py-1">
-                <div>
-                  <p className="text-sm font-semibold text-[#1f2328]">{item.label}</p>
-                  <p className="text-xs text-[#656d76] mt-0.5">{item.desc}</p>
-                </div>
-                <button
-                  onClick={() => {
-                    const newStates = [...toggleStates];
-                    newStates[index] = !newStates[index];
-                    setToggleStates(newStates);
-                  }}
-                  className={`relative w-12 h-6 rounded-full transition-colors duration-150 ${
-                    toggleStates[index] ? "bg-[#0969da]" : "bg-[#d0d7de]"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-150 ${
-                      toggleStates[index] ? "translate-x-6" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Progress */}
-      <ShowcaseSection
-        title="Progress"
-        subtitle="Build and deploy status"
-        className="py-8 px-6 bg-[#f6f8fa]"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md border border-[#d0d7de] p-4 space-y-5">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-semibold text-[#1f2328]">Build progress</p>
-                <p className="text-xs text-[#656d76] font-mono">{progress}%</p>
-              </div>
-              <div className="h-2 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
-                <div
-                  className="h-full bg-[#1f883d] rounded-md transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-[#1f2328] mb-2">Pipeline stages</p>
-              <div className="grid grid-cols-4 gap-2">
-                {[100, 100, progress, 0].map((value, index) => (
-                  <div key={index}>
-                    <div className="h-2 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
-                      <div
-                        className={`h-full rounded-md transition-all ${value === 100 ? "bg-[#1f883d]" : value > 0 ? "bg-[#0969da]" : ""}`}
-                        style={{ width: `${value}%` }}
-                      />
+                {filteredIssues.length === 0 ? (
+                  <div className="py-16 text-center text-[#656d76] text-sm">
+                    No {openIssueFilter} issues found.
+                  </div>
+                ) : (
+                  filteredIssues.map((issue) => (
+                    <div key={issue.number} className="group flex items-start gap-3 px-4 py-4 border-b border-[#d0d7de] last:border-0 hover:bg-[#f6f8fa] transition-colors duration-100">
+                      <div className="mt-0.5 shrink-0">
+                        {issue.open ? (
+                          <svg className="w-4 h-4 text-[#1f883d]" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4 text-[#8250df]" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.28 6.78a.75.75 0 0 0-1.06-1.06L7.25 8.69 5.78 7.22a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l3.5-3.5Z" />
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-1.5 0a6.5 6.5 0 1 0-13 0 6.5 6.5 0 0 0 13 0Z" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start gap-2 flex-wrap">
+                          <span className="text-sm font-semibold text-[#1f2328] group-hover:text-[#0969da] cursor-pointer transition-colors duration-100">
+                            {issue.title}
+                          </span>
+                          <div className="flex gap-1 flex-wrap">
+                            {issue.labels.map((label) => (
+                              <span
+                                key={label.text}
+                                className="px-2 py-0.5 text-xs font-medium rounded-full"
+                                style={{ color: label.color, backgroundColor: label.bg }}
+                              >
+                                {label.text}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-[#656d76] mt-1">
+                          #{issue.number} opened by <span className="text-[#0969da] hover:underline cursor-pointer">{issue.author}</span>
+                        </p>
+                      </div>
+                      {issue.comments > 0 && (
+                        <div className="flex items-center gap-1 text-xs text-[#656d76] shrink-0 mt-0.5 hover:text-[#0969da] cursor-pointer transition-colors duration-100">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0 1 13.25 12H9.06l-2.573 2.573A1.458 1.458 0 0 1 4 13.543V12H2.75A1.75 1.75 0 0 1 1 10.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h4.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25H2.75Z" />
+                          </svg>
+                          {issue.comments}
+                        </div>
+                      )}
                     </div>
-                    <p className="text-xs text-[#656d76] mt-1 text-center">{["Lint", "Test", "Build", "Deploy"][index]}</p>
+                  ))
+                )}
+              </div>
+            </RevealBlock>
+          )}
+
+          {/* Pulls tab */}
+          {activeTab === "pulls" && (
+            <RevealBlock delay={0}>
+              <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                <div className="bg-[#f6f8fa] border-b border-[#d0d7de] px-4 py-2">
+                  <span className="text-sm font-semibold text-[#1f2328]">{prItems.length} Open pull requests</span>
+                </div>
+                {prItems.map((pr) => (
+                  <div key={pr.number} className="group flex items-start gap-3 px-4 py-4 border-b border-[#d0d7de] last:border-0 hover:bg-[#f6f8fa] transition-colors duration-100">
+                    <svg className="w-4 h-4 text-[#1f883d] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M5.45 5.154A4.25 4.25 0 0 0 9.25 7.5h1.378a2.251 2.251 0 1 1 0 1.5H9.25A5.734 5.734 0 0 1 5 6.823L3 9.099V11.5a2.25 2.25 0 1 1-1.5 0v-8.5a2.25 2.25 0 1 1 1.5 0v1.456l2.45-2.302ZM4 2.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0ZM4 13.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm8.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
+                    </svg>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#1f2328] group-hover:text-[#0969da] cursor-pointer transition-colors duration-100">
+                        {pr.title}
+                      </p>
+                      <p className="text-xs text-[#656d76] mt-1">
+                        #{pr.number} by <span className="text-[#0969da]">{pr.author}</span>
+                        {" \u00b7 "}wants to merge into{" "}
+                        <code className="px-1 py-0.5 bg-[#f6f8fa] rounded text-xs font-mono border border-[#d0d7de]">main</code>
+                        {" "}from{" "}
+                        <code className="px-1 py-0.5 bg-[#f6f8fa] rounded text-xs font-mono border border-[#d0d7de]">{pr.branch}</code>
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+                        pr.checks === "passing" ? "text-[#1f883d] bg-[#dafbe1]" :
+                        pr.checks === "pending" ? "text-[#9a6700] bg-[#fff8c5]" :
+                        "text-[#cf222e] bg-[#FFEBE9]"
+                      }`}>
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+                        </svg>
+                        {pr.checks}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="flex items-center gap-3 pt-3 border-t border-[#d0d7de]">
-              <button
-                onClick={() => setProgress(Math.max(0, progress - 10))}
-                className="px-3 py-1.5 text-sm font-semibold text-[#1f2328] bg-[#f6f8fa] border border-[#d0d7de] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#f3f4f6] transition-colors duration-150"
-              >
-                Re-run
-              </button>
-              <button
-                onClick={() => setProgress(Math.min(100, progress + 10))}
-                className="px-3 py-1.5 text-sm font-semibold text-white bg-[#1f883d] border border-[#1b7f37] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#1a7f37] transition-colors duration-150"
-              >
-                Continue
-              </button>
+            </RevealBlock>
+          )}
+        </section>
+
+        {/* ── Commit Activity ───────────────────────────────────── */}
+        <section className="py-12 border-t border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4">
+            <RevealBlock delay={0}>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#1f2328]">Commit Activity</h2>
+                <p className="text-sm text-[#656d76] mt-1">Recent commits with CI check status</p>
+              </div>
+            </RevealBlock>
+
+            <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+              {commits.map((commit, i) => (
+                <RevealBlock key={commit.hash} delay={i * 0.06}>
+                  <div className="flex items-center gap-4 px-4 py-3 border-b border-[#d0d7de] last:border-0 hover:bg-[#f6f8fa] transition-colors duration-100 group">
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${
+                      commit.status === "success" ? "bg-[#1f883d]" :
+                      commit.status === "warning" ? "bg-[#9a6700]" :
+                      "bg-[#cf222e]"
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#1f2328] group-hover:text-[#0969da] truncate transition-colors duration-100 cursor-pointer">
+                        {commit.msg}
+                      </p>
+                      <p className="text-xs text-[#656d76] mt-0.5">
+                        <span className="text-[#0969da]">{commit.author}</span> committed {commit.time}
+                      </p>
+                    </div>
+                    <code className="text-xs font-mono text-[#0969da] hover:underline cursor-pointer shrink-0 px-2 py-1 bg-[#f6f8fa] border border-[#d0d7de] rounded-md">
+                      {commit.hash}
+                    </code>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
+                      commit.status === "success" ? "text-[#1f883d] bg-[#dafbe1]" :
+                      commit.status === "warning" ? "text-[#9a6700] bg-[#fff8c5]" :
+                      "text-[#cf222e] bg-[#FFEBE9]"
+                    }`}>
+                      {commit.status}
+                    </span>
+                  </div>
+                </RevealBlock>
+              ))}
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
+        </section>
 
-      {/* Form */}
-      <ShowcaseSection
-        title="Form"
-        subtitle="Issue submission"
-        className="py-8 px-6"
-        titleClassName="text-xl font-semibold text-[#1f2328] mb-1"
-        subtitleClassName="text-sm text-[#656d76] mb-8"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-md border border-[#d0d7de] p-6">
-            <h3 className="text-lg font-semibold text-[#1f2328] mb-4 flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-[#656d76]" />
-              New Issue
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">Title</label>
-                <input
-                  type="text"
-                  placeholder="Bug report or feature request"
-                  className="w-full px-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#1f2328] placeholder-[#656d76] focus:bg-white focus:border-[#0969da] focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)] focus:outline-none transition-all duration-150"
-                />
+        {/* ── Component Gallery ─────────────────────────────────── */}
+        <section className="py-12 bg-[#f6f8fa] border-t border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4">
+            <RevealBlock delay={0}>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#1f2328]">Component Gallery</h2>
+                <p className="text-sm text-[#656d76] mt-1">Canonical GitHub-style UI components</p>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">Email</label>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full px-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#1f2328] placeholder-[#656d76] focus:bg-white focus:border-[#0969da] focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)] focus:outline-none transition-all duration-150"
-                />
+
+              <div className="flex gap-1 bg-white border border-[#d0d7de] rounded-md p-1 w-fit mb-6">
+                {(["button", "card", "input", "code"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveComponentTab(tab)}
+                    className={`px-3 py-1.5 text-sm font-semibold rounded capitalize transition-colors duration-100 ${
+                      activeComponentTab === tab
+                        ? "bg-[#0969da] text-white"
+                        : "text-[#656d76] hover:text-[#1f2328] hover:bg-[#f6f8fa]"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">Description</label>
-                <textarea
-                  placeholder="Describe the issue or feature..."
-                  rows={3}
-                  className="w-full px-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#1f2328] placeholder-[#656d76] focus:bg-white focus:border-[#0969da] focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)] focus:outline-none transition-all duration-150 resize-none"
-                />
+            </RevealBlock>
+
+            {activeComponentTab === "button" && (
+              <RevealBlock delay={0.05}>
+                <div className="bg-white border border-[#d0d7de] rounded-md p-6">
+                  <h3 className="text-sm font-semibold text-[#1f2328] mb-4">Button Variants</h3>
+                  <div className="flex flex-wrap gap-3 mb-6">
+                    <button className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold text-white bg-[#1f883d] border border-[#1b7f37] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#1a7f37] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#1f883d]/30 transition-all duration-100">
+                      Merge pull request
+                    </button>
+                    <button className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold text-white bg-[#0969da] border border-[#0860ca] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#0860ca] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#0969da]/30 transition-all duration-100">
+                      Submit review
+                    </button>
+                    <button className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold text-[#1f2328] bg-[#f6f8fa] border border-[#d0d7de] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#f3f4f6] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#0969da]/20 transition-all duration-100">
+                      Cancel
+                    </button>
+                    <button className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold text-white bg-[#cf222e] border border-[#c21e2d] rounded-md shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#c21e2d] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#cf222e]/30 transition-all duration-100">
+                      Close issue
+                    </button>
+                    <button disabled className="px-4 py-1.5 text-sm font-semibold text-[#8c959f] bg-[#f6f8fa] border border-[#d0d7de] rounded-md cursor-not-allowed opacity-60">
+                      Disabled
+                    </button>
+                  </div>
+                  <p className="text-xs text-[#656d76] font-mono border-t border-[#d0d7de] pt-4">
+                    active:scale-[0.98] — micro tactile confirmation, never full transform
+                  </p>
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeComponentTab === "card" && (
+              <RevealBlock delay={0.05}>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {[
+                    { name: "stylekit", owner: "AnxForever", desc: "120+ design style presets with tokens, component code, and AI rules.", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k", forks: "89", updated: "2 hours ago", badge: "Public" },
+                    { name: "claude-code-kit", owner: "AnxForever", desc: "Custom agents, rules, and skills for Claude Code productivity.", lang: "TypeScript", langColor: "#3178c6", stars: "487", forks: "34", updated: "1 day ago", badge: "Private" },
+                  ].map((repo) => (
+                    <div key={repo.name} className="group p-4 bg-white border border-[#d0d7de] rounded-md hover:bg-[#f6f8fa] hover:border-[#8c959f] transition-all duration-150 cursor-pointer">
+                      <div className="flex items-start justify-between mb-2">
+                        <span className="text-[#0969da] text-sm font-semibold group-hover:underline">{repo.owner}/{repo.name}</span>
+                        <span className="px-1.5 py-0.5 text-xs font-medium text-[#656d76] border border-[#d0d7de] rounded-full">{repo.badge}</span>
+                      </div>
+                      <p className="text-sm text-[#656d76] mb-3 leading-relaxed">{repo.desc}</p>
+                      <div className="flex items-center gap-4 text-xs text-[#656d76]">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: repo.langColor }} />
+                          {repo.lang}
+                        </span>
+                        <span>{repo.stars} stars</span>
+                        <span>{repo.forks} forks</span>
+                        <span>Updated {repo.updated}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeComponentTab === "input" && (
+              <RevealBlock delay={0.05}>
+                <div className="bg-white border border-[#d0d7de] rounded-md p-6 max-w-lg">
+                  <h3 className="text-sm font-semibold text-[#1f2328] mb-5">Input States</h3>
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">Default</label>
+                      <input
+                        type="text"
+                        placeholder="Search or jump to..."
+                        className="w-full px-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#1f2328] placeholder-[#656d76] focus:bg-white focus:border-[#0969da] focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)] focus:outline-none transition-all duration-150"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">Error state</label>
+                      <input
+                        type="text"
+                        defaultValue="invalid@"
+                        className="w-full px-3 py-1.5 bg-white border border-[#cf222e] rounded-md text-sm text-[#1f2328] shadow-[0_0_0_3px_rgba(207,34,46,0.3)] focus:outline-none"
+                      />
+                      <p className="text-xs text-[#cf222e] mt-1.5">Enter a valid email address.</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#1f2328] mb-1.5">With icon</label>
+                      <div className="relative">
+                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#656d76]" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z" />
+                        </svg>
+                        <input
+                          type="text"
+                          placeholder="Search repositories..."
+                          className="w-full pl-9 pr-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#1f2328] placeholder-[#656d76] focus:bg-white focus:border-[#0969da] focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)] focus:outline-none transition-all duration-150"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#656d76] mb-1.5">Disabled</label>
+                      <input
+                        type="text"
+                        disabled
+                        placeholder="Not editable"
+                        className="w-full px-3 py-1.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-md text-sm text-[#656d76] cursor-not-allowed opacity-60"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeComponentTab === "code" && (
+              <RevealBlock delay={0.05}>
+                <div className="bg-white border border-[#d0d7de] rounded-md overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-2 bg-[#f6f8fa] border-b border-[#d0d7de]">
+                    <span className="text-sm font-semibold text-[#1f2328]">tokens.ts</span>
+                    <button
+                      onClick={handleCopy}
+                      className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-[#656d76] border border-[#d0d7de] rounded-md hover:bg-white hover:text-[#1f2328] active:scale-[0.98] transition-all duration-100"
+                    >
+                      {copied ? (
+                        <span className="text-[#1f883d]">Copied!</span>
+                      ) : (
+                        "Copy"
+                      )}
+                    </button>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm font-mono">
+                      <tbody>
+                        {[
+                          { line: "1", content: "export const githubTokens = {", color: "#1f2328" },
+                          { line: "2", content: "  colors: {", color: "#1f2328" },
+                          { line: "3", content: "    primary:   '#0969da', // Interactive blue", color: "#0969da" },
+                          { line: "4", content: "    success:   '#1f883d', // Merge green", color: "#1f883d" },
+                          { line: "5", content: "    warning:   '#9a6700', // Review amber", color: "#9a6700" },
+                          { line: "6", content: "    danger:    '#cf222e', // Close red", color: "#cf222e" },
+                          { line: "7", content: "    fg:        '#1f2328', // Text primary", color: "#656d76" },
+                          { line: "8", content: "    fgMuted:   '#656d76', // Text secondary", color: "#656d76" },
+                          { line: "9", content: "    border:    '#d0d7de', // All borders", color: "#656d76" },
+                          { line: "10", content: "    canvas:    '#f6f8fa', // Subtle bg", color: "#656d76" },
+                          { line: "11", content: "  },", color: "#1f2328" },
+                          { line: "12", content: "  radius:  'rounded-md', // 6px uniform", color: "#1f2328" },
+                          { line: "13", content: "  duration: '150ms',      // Max animation", color: "#1f2328" },
+                          { line: "14", content: "};", color: "#1f2328" },
+                        ].map((row) => (
+                          <tr key={row.line} className="hover:bg-[#f6f8fa] transition-colors duration-75">
+                            <td className="pl-4 pr-6 py-0.5 text-right text-xs text-[#8b949e] select-none w-8">{row.line}</td>
+                            <td className="pr-4 py-0.5" style={{ color: row.color }}>{row.content}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+          </div>
+        </section>
+
+        {/* ── Color System ──────────────────────────────────────── */}
+        <section className="py-12 border-t border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4">
+            <RevealBlock delay={0}>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#1f2328]">Color System</h2>
+                <p className="text-sm text-[#656d76] mt-1">Precise gray-scale hierarchy + semantic functional colors</p>
               </div>
-              <button className="w-full py-1.5 bg-[#1f883d] text-white text-sm font-semibold rounded-md border border-[#1b7f37] shadow-[0_1px_0_rgba(27,31,36,0.04)] hover:bg-[#1a7f37] transition-colors duration-150 mt-2">
-                Submit New Issue
-              </button>
+            </RevealBlock>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <RevealBlock delay={0.05}>
+                <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                  <div className="px-4 py-3 bg-[#f6f8fa] border-b border-[#d0d7de]">
+                    <h3 className="text-sm font-semibold text-[#1f2328]">Gray Scale</h3>
+                    <p className="text-xs text-[#656d76] mt-0.5">Semantic roles for every level</p>
+                  </div>
+                  <div className="divide-y divide-[#d0d7de]">
+                    {grayScale.map((c) => (
+                      <div key={c.hex} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#f6f8fa] transition-colors duration-100">
+                        <div
+                          className="w-8 h-8 rounded-md border border-[#d0d7de] shrink-0"
+                          style={{ backgroundColor: c.hex }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-[#1f2328]">{c.name}</p>
+                          <p className="text-xs text-[#656d76] truncate">{c.role}</p>
+                        </div>
+                        <code className="text-xs font-mono text-[#656d76] shrink-0">{c.hex}</code>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+
+              <RevealBlock delay={0.1}>
+                <div className="space-y-4">
+                  <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                    <div className="px-4 py-3 bg-[#f6f8fa] border-b border-[#d0d7de]">
+                      <h3 className="text-sm font-semibold text-[#1f2328]">Semantic Colors</h3>
+                      <p className="text-xs text-[#656d76] mt-0.5">Functional color roles — no decoration</p>
+                    </div>
+                    <div className="divide-y divide-[#d0d7de]">
+                      {semanticColors.map((c) => (
+                        <div key={c.hex} className="flex items-center gap-3 px-4 py-3 hover:bg-[#f6f8fa] transition-colors duration-100">
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="w-6 h-6 rounded-md" style={{ backgroundColor: c.hex }} />
+                            <div className="w-6 h-6 rounded-md" style={{ backgroundColor: c.bg }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-[#1f2328]">{c.name}</p>
+                            <p className="text-xs text-[#656d76]">{c.role}</p>
+                          </div>
+                          <code className="text-xs font-mono text-[#656d76] shrink-0">{c.hex}</code>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border border-[#d0d7de] rounded-md overflow-hidden">
+                    <div className="px-4 py-3 bg-[#f6f8fa] border-b border-[#d0d7de]">
+                      <h3 className="text-sm font-semibold text-[#1f2328]">Repository Settings</h3>
+                    </div>
+                    <div className="divide-y divide-[#d0d7de]">
+                      {[
+                        { label: "Branch protection", desc: "Require PR reviews before merging" },
+                        { label: "Auto-merge", desc: "Merge when requirements are met" },
+                        { label: "Delete head branch", desc: "Auto-delete after merge" },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between px-4 py-3 hover:bg-[#f6f8fa] transition-colors duration-100">
+                          <div>
+                            <p className="text-sm font-semibold text-[#1f2328]">{item.label}</p>
+                            <p className="text-xs text-[#656d76] mt-0.5">{item.desc}</p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              const next = [...toggleStates];
+                              next[i] = !next[i];
+                              setToggleStates(next);
+                            }}
+                            className={`relative w-10 h-5 rounded-full transition-colors duration-150 focus:outline-none focus:ring-4 focus:ring-[#0969da]/20 ${toggleStates[i] ? "bg-[#0969da]" : "bg-[#d0d7de]"}`}
+                          >
+                            <span
+                              className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-150 ${toggleStates[i] ? "left-5" : "left-0.5"}`}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
+        </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-[#d0d7de]">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-xs text-[#656d76]">
-            GitHub Style Showcase &middot; Part of{" "}
-            <Link href="/" className="text-[#0969da] hover:underline transition-colors duration-150">
-              StyleKit
-            </Link>
-          </p>
-        </div>
-      </footer>
+        {/* ── Design Rules ──────────────────────────────────────── */}
+        <section className="py-12 bg-[#f6f8fa] border-t border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4">
+            <RevealBlock delay={0}>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#1f2328]">Design Rules</h2>
+                <p className="text-sm text-[#656d76] mt-1">GitHub style is defined as much by what it never does</p>
+              </div>
+            </RevealBlock>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <RevealBlock delay={0.05}>
+                <div className="border border-[#d0d7de] rounded-md overflow-hidden bg-white">
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#d0d7de] bg-[#dafbe1]">
+                    <svg className="w-4 h-4 text-[#1f883d]" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-[#1f883d]">Do</span>
+                  </div>
+                  <div className="divide-y divide-[#d0d7de]">
+                    {doRules.map((rule, i) => (
+                      <div key={i} className="flex items-start gap-3 px-4 py-2.5 hover:bg-[#f6f8fa] transition-colors duration-100">
+                        <svg className="w-3.5 h-3.5 text-[#1f883d] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+                        </svg>
+                        <span className="text-sm text-[#1f2328]">{rule}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+
+              <RevealBlock delay={0.1}>
+                <div className="border border-[#d0d7de] rounded-md overflow-hidden bg-white">
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#d0d7de] bg-[#FFEBE9]">
+                    <svg className="w-4 h-4 text-[#cf222e]" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-[#cf222e]">Don&apos;t</span>
+                  </div>
+                  <div className="divide-y divide-[#d0d7de]">
+                    {dontRules.map((rule, i) => (
+                      <div key={i} className="flex items-start gap-3 px-4 py-2.5 hover:bg-[#f6f8fa] transition-colors duration-100">
+                        <svg className="w-3.5 h-3.5 text-[#cf222e] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
+                        </svg>
+                        <span className="text-sm text-[#1f2328]">{rule}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Typography ────────────────────────────────────────── */}
+        <section className="py-12 border-t border-[#d0d7de]">
+          <div className="max-w-7xl mx-auto px-4">
+            <RevealBlock delay={0}>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#1f2328]">Typography</h2>
+                <p className="text-sm text-[#656d76] mt-1">System font stack — no web font overhead</p>
+              </div>
+            </RevealBlock>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <RevealBlock delay={0.05}>
+                <div className="border border-[#d0d7de] rounded-md p-5 bg-white space-y-5">
+                  {[
+                    { label: "Display / Heading", size: "text-2xl", weight: "font-semibold", sample: "Design System v2.1", meta: "24px · Semibold", muted: false },
+                    { label: "Section Title", size: "text-xl", weight: "font-semibold", sample: "Repository Overview", meta: "20px · Semibold", muted: false },
+                    { label: "Body / Description", size: "text-sm", weight: "font-normal", sample: "A comprehensive token library for building consistent developer tooling across platforms.", meta: "14px · Regular", muted: false },
+                    { label: "Caption / Meta", size: "text-xs", weight: "font-normal", sample: "Updated 2 hours ago by AnxForever", meta: "12px · Regular", muted: true },
+                    { label: "Label / Badge", size: "text-xs", weight: "font-medium", sample: "good first issue", meta: "12px · Medium", muted: false },
+                  ].map((t) => (
+                    <div key={t.label} className="pb-5 border-b border-[#d0d7de] last:pb-0 last:border-0">
+                      <p className="text-xs text-[#656d76] mb-2 font-mono">{t.label} &mdash; {t.meta}</p>
+                      <p className={`${t.size} ${t.weight} ${t.muted ? "text-[#656d76]" : "text-[#1f2328]"} leading-relaxed`}>
+                        {t.sample}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </RevealBlock>
+
+              <RevealBlock delay={0.1}>
+                <div className="border border-[#d0d7de] rounded-md overflow-hidden bg-white">
+                  <div className="px-4 py-3 bg-[#f6f8fa] border-b border-[#d0d7de]">
+                    <h3 className="text-sm font-semibold text-[#1f2328]">Monospace Stack</h3>
+                    <p className="text-xs text-[#656d76] mt-0.5">Code blocks, commit hashes, file names</p>
+                  </div>
+                  <div className="p-4 space-y-3 text-sm font-mono">
+                    <div className="p-3 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
+                      <p className="text-xs text-[#656d76] mb-2">Inline code</p>
+                      <p className="text-[#1f2328] text-sm">
+                        Use <code className="px-1.5 py-0.5 bg-white rounded border border-[#d0d7de] text-xs">rounded-md</code> for all corners.
+                      </p>
+                    </div>
+                    <div className="p-3 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
+                      <p className="text-xs text-[#656d76] mb-2">Code block</p>
+                      <pre className="text-xs text-[#1f2328] leading-relaxed overflow-x-auto">{`const color = {
+  primary: "#0969da",
+  border:  "#d0d7de",
+};`}</pre>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-[#f6f8fa] rounded-md border border-[#d0d7de]">
+                      <p className="text-xs text-[#656d76]">Commit hash:</p>
+                      <code className="text-xs text-[#0969da] hover:underline cursor-pointer">a3f8d21</code>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Footer ────────────────────────────────────────────── */}
+        <footer className="py-8 border-t border-[#d0d7de] bg-[#f6f8fa]">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <svg height="20" viewBox="0 0 16 16" width="20" fill="#656d76">
+                  <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+                </svg>
+                <span className="text-sm text-[#656d76]">GitHub Style &middot; Part of</span>
+                <Link href="/" className="text-sm text-[#0969da] hover:underline transition-colors duration-100">
+                  StyleKit
+                </Link>
+              </div>
+              <div className="flex items-center gap-6 text-xs text-[#656d76]">
+                <span>Primary: <code className="font-mono text-[#0969da]">#0969da</code></span>
+                <span>Text: <code className="font-mono text-[#1f2328]">#1f2328</code></span>
+                <span>Border: <code className="font-mono">#d0d7de</code></span>
+                <span>Nav: <code className="font-mono">#24292f</code></span>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </div>
     </div>
   );
 }
