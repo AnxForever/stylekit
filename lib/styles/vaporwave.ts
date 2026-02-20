@@ -92,6 +92,9 @@ body { background: #0a0a0f; }
     "融入日文文字或希腊雕塑元素",
     "使用网格线背景营造复古感",
     "字体使用粗体或像素风格",
+    "hover 引入迷幻扭曲：轻微旋转、位移与渐变流动",
+    "点击使用错误弹窗式错位位移，营造旧系统 glitch 反馈",
+    "霓虹光晕强调粉+青双色散射，形成 Aesthetic 重影效果",
   ],
 
   dontList: [
@@ -99,6 +102,8 @@ body { background: #0a0a0f; }
     "禁止使用过于现代简约的设计",
     "禁止省略霓虹发光效果",
     "禁止使用过于正式的字体",
+    "禁止仅用单色 glow，必须体现粉青双色发光重影",
+    "禁止所有交互都过快，hover 需保留漂浮式慢节奏",
   ],
 
   components: {
@@ -106,34 +111,46 @@ body { background: #0a0a0f; }
       name: "按钮",
       description: "蒸汽波风格按钮，霓虹发光效果",
       code: `<button className="
-  px-8 py-4
-  bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500
-  text-white font-bold uppercase tracking-wider
-  border-2 border-white/30
-  shadow-[0_0_20px_rgba(255,113,206,0.5),0_0_40px_rgba(1,205,254,0.3)]
-  hover:shadow-[0_0_30px_rgba(255,113,206,0.7),0_0_60px_rgba(1,205,254,0.5)]
-  hover:scale-105
-  transition-all duration-300
+  relative px-10 py-3
+  bg-gradient-to-r from-[#ff71ce] via-[#b967ff] to-[#01cdfe] bg-[length:200%_auto]
+  text-white font-black uppercase tracking-[0.3em]
+  border-2 border-white/50
+  shadow-[4px_4px_0_rgba(1,205,254,0.6)]
+  hover:bg-right
+  hover:shadow-[8px_8px_0_rgba(255,113,206,0.8),0_0_30px_rgba(185,103,255,0.5)]
+  hover:-translate-y-1 hover:-rotate-2
+  active:rotate-0 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none
+  transition-all duration-300 ease-out
 ">
-  AESTHETIC
+  A E S T H E T I C S
 </button>`,
     },
     card: {
       name: "卡片",
       description: "蒸汽波风格卡片",
       code: `<div className="
-  p-8
-  bg-gradient-to-br from-purple-900/80 to-pink-900/80
-  backdrop-blur-sm
-  border border-pink-500/30
-  shadow-[0_0_30px_rgba(255,113,206,0.3)]
+  group p-8
+  bg-[#2b0057]/60 backdrop-blur-xl
+  border-t-2 border-l-2 border-[#ff71ce]/50 border-b-4 border-r-4 border-[#01cdfe]/50
+  shadow-[0_10px_30px_rgba(255,113,206,0.2)]
+  hover:shadow-[0_0_50px_rgba(1,205,254,0.4)]
+  hover:-translate-y-2 hover:rotate-1
+  transition-all duration-500
+  relative overflow-hidden cursor-pointer
 ">
-  <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-3">
-    アエステティック
-  </h3>
-  <p className="text-pink-200/80">
-    Welcome to the aesthetic dimension
-  </p>
+  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,113,206,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(1,205,254,0.2)_1px,transparent_1px)] bg-[size:15px_15px] opacity-20 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700" style={{ transform: "perspective(200px) rotateX(45deg)" }} />
+
+  <div className="relative z-10">
+    <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#ff71ce] to-[#01cdfe] mb-3 tracking-[0.2em] group-hover:tracking-[0.4em] transition-all duration-500" style={{ textShadow: "2px 2px 0px rgba(185,103,255,0.5)" }}>
+      V I R T U A L
+    </h3>
+    <div className="inline-block bg-[#01cdfe] text-[#2b0057] px-2 py-1 font-mono font-bold text-xs uppercase mb-4">
+      Windows 95.exe
+    </div>
+    <p className="text-[#ff71ce] font-medium leading-relaxed drop-shadow-[0_0_5px_rgba(255,113,206,0.5)]">
+      Welcome to the aesthetic dimension. Where marble statues cry digital tears and the mall music never stops playing.
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -261,7 +278,14 @@ body { background: #0a0a0f; }
 - 日文文字装饰
 - 希腊雕塑图片
 - 棕榈树、日落元素
-- VHS 故障效果`,
+- VHS 故障效果
+
+## Animation & Interaction Rules
+
+- Aesthetic Warp: hover 引入轻微旋转与位移，并驱动渐变流动（如 bg-[length:200%_auto] + hover:bg-right）。
+- Glitch/Error Snap: active 使用突兀错位（如 translate-x / -translate-y），模拟旧系统故障弹窗反馈。
+- Dual-Color Irradiation: 发光必须呈现粉色 #ff71ce 与青色 #01cdfe 双重散射重影。
+- Floating Slowness: 非点击动画使用 duration-500 左右，营造互联网废墟中的缓慢漂浮感。`,
 
   examplePrompts: [
     {

@@ -34,6 +34,9 @@ export const timelineVertical: DesignStyle = {
     "添加滚动触发的入场动画",
     "节点使用统一的时间/序号格式",
     "连接线使用柔和颜色不喧宾夺主",
+    "卡片 hover 时节点需同步高亮或放大，建立轴线联动感",
+    "卡片 hover 可轻微沿水平轴外移，表达历史节点被拉出审视",
+    "交互过渡使用 duration-200 ease-out，保障快速时间浏览",
   ],
 
   dontList: [
@@ -42,6 +45,8 @@ export const timelineVertical: DesignStyle = {
     "禁止移动端保持双侧布局",
     "禁止忽略时间/序号标识",
     "禁止内容过长导致连接线过长",
+    "禁止节点与卡片交互脱节（仅卡片变化）",
+    "禁止使用迟缓或拖泥带水的过渡时序",
   ],
 
   components: {
@@ -65,40 +70,22 @@ export const timelineVertical: DesignStyle = {
     card: {
       name: "时间线节点卡片",
       description: "时间线中的事件卡片",
-      code: `<div className="
-  relative
-  p-6
-  bg-white
-  rounded-xl
-  shadow-sm
-  border border-zinc-100
-  hover:shadow-md
-  transition-shadow
-">
-  {/* Connector dot */}
-  <div className="
-    absolute top-8 -left-[41px]
-    w-4 h-4
-    bg-blue-500
-    rounded-full
-    border-4 border-white
-    shadow
-  " />
+      code: `<div className="group relative pl-10 sm:pl-0">
+  <div className="absolute top-6 left-0 sm:left-1/2 sm:-ml-[9px] w-4 h-4 bg-zinc-200 rounded-full border-4 border-white shadow-sm z-10 group-hover:bg-blue-500 group-hover:scale-125 group-hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-200 ease-out" />
 
-  {/* Date */}
-  <time className="text-sm text-zinc-400 mb-2 block">
-    January 2024
-  </time>
-
-  {/* Title */}
-  <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-    Milestone Title
-  </h3>
-
-  {/* Description */}
-  <p className="text-zinc-600 text-sm">
-    Brief description of what happened at this point in the timeline.
-  </p>
+  <div className="sm:w-1/2 sm:pr-12 sm:text-right">
+    <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100 group-hover:shadow-md group-hover:border-blue-200 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all duration-200 ease-out">
+      <time className="text-sm text-blue-600 font-bold tracking-wide mb-2 block uppercase group-hover:tracking-widest transition-all duration-200">
+        January 2024
+      </time>
+      <h3 className="text-xl font-semibold text-zinc-900 mb-2">
+        Milestone Reached
+      </h3>
+      <p className="text-zinc-600 text-sm leading-relaxed">
+        The chronological event comes to life when interacted with, illuminating its specific point in history.
+      </p>
+    </div>
+  </div>
 </div>`,
     },
     input: {
@@ -376,6 +363,13 @@ Scroll-triggered:
 - Items fade in on scroll
 - Stagger animation
 - Node pulse on current
+
+## Animation & Interaction Rules
+
+- Node Synchronization: hover 某卡片时，时间轴节点必须同步高亮、放大或发光，建立强连接。
+- Pull-out Effect: 卡片 hover 可轻微上浮并沿水平轴外移（translate-x），模拟节点被拉出审视。
+- Sequential Smoothness: 过渡使用 duration-200 ease-out，支持快速滑动浏览时的稳定反馈。
+- Connected Focus: 聚焦卡片边框颜色需和时间轴主线一致，确保叙事连贯性。
 
 ## Self-Check
 
