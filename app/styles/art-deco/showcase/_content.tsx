@@ -1,723 +1,1221 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ArrowLeft, Diamond, Crown, Gem, ChevronDown, ChevronUp,
-  Check, X, AlertTriangle, Info, Building2, Sparkles, Award,
-  Users, TrendingUp, Eye
-} from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Gold", hex: "#d4af37", bg: "bg-[#d4af37]" },
-  { name: "Dark Navy", hex: "#1a1a2e", bg: "bg-[#1a1a2e]" },
-  { name: "Navy", hex: "#2d2d44", bg: "bg-[#2d2d44]" },
-  { name: "Cream", hex: "#f5f5dc", bg: "bg-[#f5f5dc]" },
-  { name: "Bronze", hex: "#c9a227", bg: "bg-[#c9a227]" },
-  { name: "Emerald", hex: "#2e8b57", bg: "bg-[#2e8b57]" },
-  { name: "Burgundy", hex: "#722f37", bg: "bg-[#722f37]" },
-  { name: "Ivory", hex: "#fffff0", bg: "bg-[#fffff0]" },
-];
-
-// Art Deco corner decoration component
-function DecoCorners({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const sizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-6 h-6",
-    lg: "w-8 h-8",
-  };
-  return (
-    <>
-      <div className={`absolute top-0 left-0 ${sizeClasses[size]} border-t-2 border-l-2 border-yellow-500`} />
-      <div className={`absolute top-0 right-0 ${sizeClasses[size]} border-t-2 border-r-2 border-yellow-500`} />
-      <div className={`absolute bottom-0 left-0 ${sizeClasses[size]} border-b-2 border-l-2 border-yellow-500`} />
-      <div className={`absolute bottom-0 right-0 ${sizeClasses[size]} border-b-2 border-r-2 border-yellow-500`} />
-    </>
-  );
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
 }
 
-// Art Deco divider
-function DecoDivider({ className = "" }: { className?: string }) {
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
   return (
-    <div className={`flex items-center justify-center gap-2 ${className}`}>
-      <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-yellow-500" />
-      <Diamond className="w-3 h-3 text-yellow-500" />
-      <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-yellow-500" />
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
     </div>
   );
 }
 
-export default function ShowcaseContent() {
+// Art Deco corner decoration
+function DecoCorners({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const s = { sm: "w-4 h-4", md: "w-6 h-6", lg: "w-8 h-8" }[size];
+  return (
+    <>
+      <div className={`absolute top-0 left-0 ${s} border-t-2 border-l-2 border-yellow-500/70 group-hover:border-yellow-400 transition-colors duration-500`} />
+      <div className={`absolute top-0 right-0 ${s} border-t-2 border-r-2 border-yellow-500/70 group-hover:border-yellow-400 transition-colors duration-500`} />
+      <div className={`absolute bottom-0 left-0 ${s} border-b-2 border-l-2 border-yellow-500/70 group-hover:border-yellow-400 transition-colors duration-500`} />
+      <div className={`absolute bottom-0 right-0 ${s} border-b-2 border-r-2 border-yellow-500/70 group-hover:border-yellow-400 transition-colors duration-500`} />
+    </>
+  );
+}
+
+// Art Deco decorative divider
+function DecoDivider({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-3 ${className}`}>
+      <div className="h-px flex-1 max-w-24 bg-gradient-to-r from-transparent to-yellow-500/60" />
+      <span className="text-yellow-500 text-xs">◆</span>
+      <div className="h-px w-6 bg-yellow-500/60" />
+      <span className="text-yellow-400 text-base">◈</span>
+      <div className="h-px w-6 bg-yellow-500/60" />
+      <span className="text-yellow-500 text-xs">◆</span>
+      <div className="h-px flex-1 max-w-24 bg-gradient-to-l from-transparent to-yellow-500/60" />
+    </div>
+  );
+}
+
+// Section header
+function SectionHeader({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <RevealBlock className="text-center mb-12">
+      <p className="text-xs font-serif text-yellow-600 uppercase tracking-[0.4em] mb-3">◄ {subtitle} ►</p>
+      <h2 className="text-3xl md:text-4xl font-serif text-yellow-500 tracking-[0.25em] uppercase mb-4">
+        {title}
+      </h2>
+      <DecoDivider />
+    </RevealBlock>
+  );
+}
+
+// Sunburst SVG decoration
+function Sunburst({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className={className}
+      aria-hidden="true"
+    >
+      {Array.from({ length: 24 }).map((_, i) => (
+        <line
+          key={i}
+          x1="100"
+          y1="100"
+          x2={100 + 95 * Math.cos((i * Math.PI * 2) / 24)}
+          y2={100 + 95 * Math.sin((i * Math.PI * 2) / 24)}
+          stroke="#d4af37"
+          strokeWidth={i % 2 === 0 ? "1.5" : "0.5"}
+          strokeOpacity="0.4"
+        />
+      ))}
+      <circle cx="100" cy="100" r="8" fill="#d4af37" fillOpacity="0.3" />
+      <circle cx="100" cy="100" r="4" fill="#d4af37" fillOpacity="0.6" />
+    </svg>
+  );
+}
+
+export default function ArtDecoShowcase() {
   const [activeTab, setActiveTab] = useState(0);
   const [progress, setProgress] = useState(72);
   const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
+  const [heroRevealed, setHeroRevealed] = useState(false);
 
-  const tabs = [
-    { label: "Architecture", icon: Building2 },
-    { label: "Jewelry", icon: Gem },
-    { label: "Fashion", icon: Crown },
+  useEffect(() => {
+    const t = setTimeout(() => setHeroRevealed(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const tabs = ["Architecture", "Jewelry", "Fashion"];
+
+  const tabContent = [
+    {
+      heading: "Architectural Marvels",
+      body: "From the Chrysler Building to the Empire State, Art Deco architecture defines the golden age of American design with bold geometric forms and ornate stepped crowns.",
+    },
+    {
+      heading: "Precious Adornments",
+      body: "Art Deco jewelry features bold geometric shapes, vibrant gemstones, and the lavish use of platinum. Each piece is a wearable sculpture from the Jazz Age.",
+    },
+    {
+      heading: "Haute Couture",
+      body: "The 1920s brought revolutionary changes to fashion — dropped waistlines, geometric beading, bias-cut silhouettes, and luxurious fabrics that moved like liquid gold.",
+    },
   ];
 
   const accordionItems = [
     {
       title: "What defines Art Deco?",
-      content: "Art Deco is characterized by rich colors, bold geometric forms, and lavish ornamentation. It represents luxury, glamour, exuberance, and faith in social and technological progress."
+      content:
+        "Art Deco is characterized by rich colors, bold geometric forms, and lavish ornamentation. It represents luxury, glamour, exuberance, and faith in social and technological progress.",
     },
     {
       title: "Historical origins",
-      content: "Emerging in France before World War I, Art Deco flourished internationally in the 1920s and 1930s, influencing architecture, visual arts, fashion, and industrial design."
+      content:
+        "Emerging in France before World War I, Art Deco flourished internationally in the 1920s and 1930s, influencing architecture, visual arts, fashion, and industrial design.",
     },
     {
       title: "Key design elements",
-      content: "Symmetrical geometric patterns, stepped forms, chevron patterns, sunburst motifs, and the use of expensive materials like jade, ivory, and lacquer define the style."
+      content:
+        "Symmetrical geometric patterns, stepped forms, chevron motifs, sunburst rays, and the use of expensive materials like jade, ivory, and lacquer define the style.",
     },
   ];
 
+  const paletteColors = [
+    { name: "Gold", hex: "#d4af37", light: false },
+    { name: "Deep Black", hex: "#0d0d0d", light: false },
+    { name: "Dark Navy", hex: "#1a1a2e", light: false },
+    { name: "Navy", hex: "#2d2d44", light: false },
+    { name: "Bronze", hex: "#c9a227", light: false },
+    { name: "Deep Teal", hex: "#1a4a4a", light: false },
+    { name: "Ivory", hex: "#f5f0e8", light: true },
+    { name: "Cream", hex: "#f5f5dc", light: true },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Radial decoration */}
-      <div className="fixed inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left"
-              style={{ transform: `rotate(${i * 30}deg)` }}
-            />
-          ))}
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#0d0d0d] via-[#1a1a2e] to-[#0d0d0d] text-gray-300 relative overflow-hidden">
+      {/* Global style */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
+        .font-art-deco { font-family: 'Playfair Display', Georgia, serif; }
+        .gold-shimmer {
+          background: linear-gradient(135deg, #c9a84c 0%, #f5e066 40%, #c9a84c 60%, #d4af37 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .gold-shimmer-hover {
+          background: linear-gradient(135deg, #c9a84c 0%, #f5e066 40%, #c9a84c 60%, #d4af37 100%);
+          background-size: 200% auto;
+          transition: background-position 0.8s ease;
+        }
+        .gold-shimmer-hover:hover {
+          background-position: right center;
+        }
+        .deco-bg-pattern {
+          background-image: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 28px,
+            rgba(212,175,55,0.04) 28px,
+            rgba(212,175,55,0.04) 29px
+          );
+        }
+        .chevron-border {
+          border-image: repeating-linear-gradient(
+            90deg,
+            #d4af37 0px,
+            #d4af37 4px,
+            transparent 4px,
+            transparent 8px
+          ) 1;
+        }
+      `}</style>
+
+      {/* Fixed background radial sunburst */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <Sunburst className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] opacity-20" />
+        <div className="deco-bg-pattern absolute inset-0 opacity-100" />
       </div>
 
-      {/* Geometric pattern overlay */}
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
-        <div className="w-full h-full bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,#d4af37_20px,#d4af37_21px)]" />
-      </div>
-
-      {/* Navigation */}
-      <nav className="relative z-10 px-6 py-4 border-b border-yellow-600/30 backdrop-blur-sm bg-slate-900/50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 1 — NAVIGATION
+      ═══════════════════════════════════════════════════════ */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-yellow-600/30 backdrop-blur-md bg-[#0d0d0d]/80">
+        {/* Top geometric band */}
+        <div className="h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+          {/* Back link */}
           <Link
             href="/styles/art-deco"
-            className="flex items-center gap-2 text-yellow-500 hover:text-yellow-400 transition-colors group"
+            className="group flex items-center gap-2 text-yellow-500/80 hover:text-yellow-400 transition-colors duration-300"
           >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-serif tracking-wider text-sm">Back to Docs</span>
+            <span className="text-xs group-hover:-translate-x-1 transition-transform duration-300 inline-block">◄</span>
+            <span className="font-serif text-xs uppercase tracking-[0.25em]">Back to Docs</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <Diamond className="w-4 h-4 text-yellow-500" />
-            <span className="font-serif text-xl text-yellow-500 tracking-[0.3em]">
-              ART DECO
-            </span>
-            <Diamond className="w-4 h-4 text-yellow-500" />
+
+          {/* Center logo */}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2 text-yellow-600/40">
+              <span className="text-xs">▲</span>
+              <span className="text-xs">▲</span>
+              <span className="text-xs">▲</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-yellow-600/60 text-sm">◆</span>
+              <span className="font-serif text-lg text-yellow-500 tracking-[0.4em] uppercase">Art Deco</span>
+              <span className="text-yellow-600/60 text-sm">◆</span>
+            </div>
+            <div className="hidden md:flex items-center gap-2 text-yellow-600/40">
+              <span className="text-xs">▼</span>
+              <span className="text-xs">▼</span>
+              <span className="text-xs">▼</span>
+            </div>
           </div>
+
+          {/* All styles link */}
           <Link
             href="/styles"
-            className="px-4 py-2 border border-yellow-500 text-yellow-500 text-sm font-serif tracking-wider hover:bg-yellow-500 hover:text-slate-900 transition-all"
+            className="px-5 py-2 border border-yellow-500/60 text-yellow-500 text-xs font-serif uppercase tracking-[0.2em] hover:bg-yellow-500 hover:text-[#0d0d0d] transition-all duration-500"
           >
             All Styles
           </Link>
         </div>
+        {/* Bottom geometric band */}
+        <div className="h-px bg-gradient-to-r from-transparent via-yellow-600/50 to-transparent" />
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative z-10 pt-24 pb-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          {/* Decorative top element */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-20 h-0.5 bg-gradient-to-r from-transparent to-yellow-500" />
-            <Sparkles className="w-6 h-6 text-yellow-500" />
-            <div className="w-20 h-0.5 bg-gradient-to-l from-transparent to-yellow-500" />
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 2 — HERO
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 pt-36 pb-28 px-6 text-center">
+        <div className="max-w-5xl mx-auto">
+          {/* Stepped geometric frame */}
+          <div
+            className="relative inline-block mb-10"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 1s ease 0.1s",
+            }}
+          >
+            {/* Outer border */}
+            <div className="border border-yellow-600/30 p-3">
+              {/* Inner border */}
+              <div className="border border-yellow-500/50 p-3">
+                {/* Innermost border */}
+                <div className="border border-yellow-600/20 px-12 py-2">
+                  <p className="text-xs font-serif text-yellow-600/80 uppercase tracking-[0.5em]">
+                    ◈ The Golden Age ◈
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-yellow-500 mb-6 tracking-[0.2em]">
-            ART DECO
-          </h1>
+          {/* Main title */}
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 0.9s ease 0.25s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s",
+            }}
+          >
+            <h1 className="text-7xl md:text-9xl font-serif font-bold uppercase tracking-[0.15em] mb-2 leading-none">
+              <span className="gold-shimmer">ART</span>
+            </h1>
+            <h1 className="text-7xl md:text-9xl font-serif font-bold uppercase tracking-[0.15em] mb-6 leading-none">
+              <span className="gold-shimmer">DECO</span>
+            </h1>
+          </div>
 
-          <DecoDivider className="mb-8" />
+          {/* Sunburst ornament */}
+          <div
+            className="flex items-center justify-center gap-6 mb-8"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 1s ease 0.5s",
+            }}
+          >
+            <div className="flex-1 max-w-40 h-px bg-gradient-to-r from-transparent to-yellow-500/70" />
+            <div className="flex items-center gap-2 text-yellow-500/60">
+              <span className="text-sm">◄</span>
+              <span className="text-yellow-500 text-xl">◆</span>
+              <span className="text-sm">►</span>
+            </div>
+            <div className="flex-1 max-w-40 h-px bg-gradient-to-l from-transparent to-yellow-500/70" />
+          </div>
 
-          <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 tracking-wider font-serif">
-            The Golden Age of Design - 1920年代奢华与现代的完美融合
-          </p>
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 0.9s ease 0.65s",
+            }}
+          >
+            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 font-serif tracking-wider leading-relaxed">
+              1920年代的奢华与几何之美 — Gatsby-era glamour reborn in pixels.
+              Symmetry, gold, and bold geometry define an era of exquisite excess.
+            </p>
 
-          <div className="flex flex-wrap justify-center gap-6">
-            <button className="group px-12 py-5 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.3em] border-2 border-yellow-400 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all duration-300">
-              <span className="flex items-center gap-3">
-                <Diamond className="w-5 h-5 group-hover:rotate-45 transition-transform" />
-                Discover
-              </span>
-            </button>
-            <button className="px-12 py-5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-serif uppercase tracking-[0.3em] hover:bg-yellow-500/10 transition-all duration-300">
-              <span className="flex items-center gap-3">
-                <Eye className="w-5 h-5" />
-                Explore
-              </span>
-            </button>
+            {/* CTA buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <button className="group relative px-14 py-5 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 bg-[length:200%_auto] text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.3em] border border-yellow-400 shadow-[0_0_30px_rgba(212,175,55,0.25)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] hover:bg-right hover:-translate-y-0.5 transition-all duration-700">
+                <span className="flex items-center gap-3">
+                  <span className="group-hover:rotate-45 transition-transform duration-500 inline-block">◆</span>
+                  Discover
+                  <span className="group-hover:-rotate-45 transition-transform duration-500 inline-block">◆</span>
+                </span>
+              </button>
+              <button className="px-14 py-5 bg-transparent border-2 border-yellow-500/70 text-yellow-500 font-serif uppercase tracking-[0.3em] hover:bg-yellow-500/10 hover:border-yellow-400 hover:-translate-y-0.5 transition-all duration-500">
+                ▷ Explore
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom decorative row */}
+          <div
+            className="mt-16 flex items-center justify-center gap-3"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 1s ease 0.9s",
+            }}
+          >
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-px bg-yellow-500/40"
+                style={{ width: i === 3 ? "48px" : i === 1 || i === 5 ? "24px" : "12px" }}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <ShowcaseSection
-        title="Statistics"
-        subtitle="Numbers that define excellence"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {[
-            { icon: Users, label: "Members", value: "12.8K" },
-            { icon: TrendingUp, label: "Growth", value: "+89%" },
-            { icon: Eye, label: "Views", value: "2.4M" },
-            { icon: Award, label: "Awards", value: "147" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="group relative p-6 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/30 hover:border-yellow-500/60 transition-all duration-300"
-            >
-              <DecoCorners size="sm" />
-              <stat.icon className="w-8 h-8 text-yellow-500/60 group-hover:text-yellow-500 mb-3 transition-colors" />
-              <p className="text-3xl md:text-4xl font-serif text-yellow-500 mb-1">{stat.value}</p>
-              <p className="text-sm text-gray-500 uppercase tracking-wider">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color Palette"
-        subtitle="Luxurious gold and deep navy"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 3 — COMPONENT DEMOS: BUTTONS
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="border border-yellow-600/30 bg-slate-800/50 backdrop-blur-sm hover:border-yellow-500/50 transition-all duration-300"
-            labelClassName="font-serif text-sm text-yellow-400 tracking-wider"
-            hexClassName="text-xs text-gray-500 font-mono"
-          />
-        </div>
-      </ShowcaseSection>
+          <SectionHeader title="Buttons" subtitle="Golden Radiance" />
 
-      {/* Buttons */}
-      <ShowcaseSection
-        title="Buttons"
-        subtitle="Golden radiance with elegant borders"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Variants */}
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
-            <p className="text-sm font-serif text-yellow-500 uppercase tracking-[0.3em] mb-6 text-center">Variants</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <button className="px-8 py-3 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:scale-105 transition-all">
-                Primary
-              </button>
-              <button className="px-8 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-serif uppercase tracking-[0.2em] hover:bg-yellow-500 hover:text-black transition-all">
-                Outline
-              </button>
-              <button className="px-8 py-3 bg-slate-800 border border-yellow-600/30 text-yellow-400 font-serif uppercase tracking-[0.2em] hover:border-yellow-500 transition-all">
-                Secondary
-              </button>
-              <button className="px-8 py-3 bg-transparent text-yellow-500/70 font-serif uppercase tracking-[0.2em] hover:text-yellow-400 transition-all">
-                Ghost
-              </button>
+          <RevealBlock delay={0.1}>
+            <div className="relative p-10 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 mb-6">
+              <DecoCorners size="lg" />
+              <p className="text-center text-xs font-serif text-yellow-600/70 uppercase tracking-[0.35em] mb-8">
+                ◈──────◈ Variants ◈──────◈
+              </p>
+              <div className="flex flex-wrap justify-center gap-5">
+                {/* Primary */}
+                <button className="group px-10 py-4 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 bg-[length:200%_auto] text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.25em] border border-yellow-400/70 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_35px_rgba(212,175,55,0.5)] hover:bg-right hover:-translate-y-0.5 transition-all duration-700">
+                  Primary
+                </button>
+                {/* Outline */}
+                <button className="px-10 py-4 bg-transparent border-2 border-yellow-500/70 text-yellow-500 font-serif uppercase tracking-[0.25em] hover:bg-yellow-500 hover:text-[#0d0d0d] hover:-translate-y-0.5 transition-all duration-500">
+                  Outline
+                </button>
+                {/* Secondary */}
+                <button className="px-10 py-4 bg-[#1a1a2e] border border-yellow-600/30 text-yellow-400 font-serif uppercase tracking-[0.25em] hover:border-yellow-500 hover:text-yellow-300 transition-all duration-500">
+                  Secondary
+                </button>
+                {/* Ghost */}
+                <button className="px-10 py-4 bg-transparent text-yellow-500/60 font-serif uppercase tracking-[0.25em] hover:text-yellow-400 hover:underline underline-offset-4 transition-all duration-300">
+                  Ghost
+                </button>
+              </div>
             </div>
-          </div>
+          </RevealBlock>
 
-          {/* Sizes */}
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="md" />
-            <p className="text-sm font-serif text-yellow-500 uppercase tracking-[0.3em] mb-6 text-center">Sizes</p>
-            <div className="flex flex-wrap justify-center gap-4 items-center">
-              <button className="px-5 py-2 text-sm bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.15em] shadow-[0_0_10px_rgba(212,175,55,0.3)] transition-all">
-                Small
-              </button>
-              <button className="px-8 py-3 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all">
-                Medium
-              </button>
-              <button className="px-10 py-4 text-lg bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all">
-                Large
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection
-        title="Cards"
-        subtitle="Geometric borders and symmetry"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          {[
-            { icon: Diamond, title: "LUXURY", desc: "Timeless elegance in every detail" },
-            { icon: Crown, title: "PRESTIGE", desc: "Royal sophistication redefined" },
-            { icon: Gem, title: "REFINED", desc: "Exquisite craftsmanship always" },
-          ].map((card, index) => (
-            <div key={index} className="group relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50 hover:border-yellow-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] transition-all duration-300">
+          <RevealBlock delay={0.2}>
+            <div className="relative p-10 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30">
               <DecoCorners size="md" />
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
-                <card.icon className="w-8 h-8 text-slate-900" />
-              </div>
-              <h3 className="text-xl font-serif text-yellow-500 text-center mb-2 tracking-[0.2em]">
-                {card.title}
-              </h3>
-              <DecoDivider className="mb-3" />
-              <p className="text-gray-400 text-center text-sm mb-4">{card.desc}</p>
-              <button className="block mx-auto text-sm text-yellow-500/70 uppercase tracking-wider hover:text-yellow-400 transition-colors">
-                Learn More
-              </button>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Tabs */}
-      <ShowcaseSection
-        title="Tabs"
-        subtitle="Organized elegance"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
-            {/* Tab Headers */}
-            <div className="flex border-b border-yellow-600/30 mb-6">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`flex items-center gap-2 px-6 py-3 font-serif uppercase tracking-wider text-sm transition-all duration-300 ${
-                    activeTab === index
-                      ? 'text-yellow-500 border-b-2 border-yellow-500 -mb-[1px]'
-                      : 'text-gray-500 hover:text-yellow-400'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
+              <p className="text-center text-xs font-serif text-yellow-600/70 uppercase tracking-[0.35em] mb-8">
+                ◈──────◈ Sizes ◈──────◈
+              </p>
+              <div className="flex flex-wrap justify-center gap-5 items-center">
+                <button className="px-6 py-2.5 text-sm bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.2em] shadow-[0_0_12px_rgba(212,175,55,0.25)] hover:shadow-[0_0_22px_rgba(212,175,55,0.5)] transition-all duration-500">
+                  Small
                 </button>
-              ))}
-            </div>
-            {/* Tab Content */}
-            <div className="min-h-[120px]">
-              {activeTab === 0 && (
-                <div className="text-gray-400">
-                  <h4 className="text-lg font-serif text-yellow-500 mb-3 tracking-wider">Architectural Marvels</h4>
-                  <p>From the Chrysler Building to the Empire State, Art Deco architecture defines the golden age of American design with bold geometric forms.</p>
-                </div>
-              )}
-              {activeTab === 1 && (
-                <div className="text-gray-400">
-                  <h4 className="text-lg font-serif text-yellow-500 mb-3 tracking-wider">Precious Adornments</h4>
-                  <p>Art Deco jewelry features bold geometric shapes, vibrant gemstones, and the lavish use of platinum and white gold.</p>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div className="text-gray-400">
-                  <h4 className="text-lg font-serif text-yellow-500 mb-3 tracking-wider">Haute Couture</h4>
-                  <p>The 1920s brought revolutionary changes to fashion with dropped waistlines, geometric patterns, and luxurious fabrics.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Alerts */}
-      <ShowcaseSection
-        title="Alerts"
-        subtitle="Distinguished notifications"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-3xl mx-auto space-y-4">
-          {/* Success */}
-          <div className="flex items-start gap-4 p-5 bg-emerald-500/10 border border-emerald-500/30">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center flex-shrink-0">
-              <Check className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h4 className="font-serif text-emerald-400 tracking-wider mb-1">SUCCESS</h4>
-              <p className="text-emerald-300/70 text-sm">Your reservation has been confirmed at the Grand Ballroom.</p>
-            </div>
-          </div>
-
-          {/* Warning */}
-          <div className="flex items-start gap-4 p-5 bg-amber-500/10 border border-amber-500/30">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h4 className="font-serif text-amber-400 tracking-wider mb-1">ATTENTION</h4>
-              <p className="text-amber-300/70 text-sm">The gala event dress code requires formal evening attire.</p>
-            </div>
-          </div>
-
-          {/* Error */}
-          <div className="flex items-start gap-4 p-5 bg-red-500/10 border border-red-500/30">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center flex-shrink-0">
-              <X className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h4 className="font-serif text-red-400 tracking-wider mb-1">ERROR</h4>
-              <p className="text-red-300/70 text-sm">We regret to inform you that the requested suite is unavailable.</p>
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex items-start gap-4 p-5 bg-yellow-500/10 border border-yellow-500/30">
-            <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center flex-shrink-0">
-              <Info className="w-5 h-5 text-slate-900" />
-            </div>
-            <div>
-              <h4 className="font-serif text-yellow-400 tracking-wider mb-1">NOTICE</h4>
-              <p className="text-yellow-300/70 text-sm">The exhibition gallery will be open until midnight this weekend.</p>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Progress */}
-      <ShowcaseSection
-        title="Progress"
-        subtitle="Tracking excellence"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
-            <div className="space-y-8">
-              {/* Gold Progress */}
-              <div>
-                <div className="flex justify-between mb-3">
-                  <span className="text-sm font-serif text-yellow-500 uppercase tracking-wider">Project Status</span>
-                  <span className="text-sm text-yellow-400">{progress}%</span>
-                </div>
-                <div className="h-2 bg-slate-800 border border-yellow-600/30 overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-400 shadow-[0_0_10px_rgba(212,175,55,0.5)] transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Emerald Progress */}
-              <div>
-                <div className="flex justify-between mb-3">
-                  <span className="text-sm font-serif text-emerald-400 uppercase tracking-wider">Completion</span>
-                  <span className="text-sm text-emerald-400">85%</span>
-                </div>
-                <div className="h-2 bg-slate-800 border border-emerald-600/30 overflow-hidden">
-                  <div className="h-full w-[85%] bg-gradient-to-r from-emerald-600 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex gap-3 pt-4">
-                <button 
-                  onClick={() => setProgress(Math.max(0, progress - 10))}
-                  className="px-4 py-2 text-sm border border-yellow-600/50 text-yellow-500 font-serif uppercase tracking-wider hover:bg-yellow-500/10 transition-all"
-                >
-                  -10%
+                <button className="px-10 py-4 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.25em] shadow-[0_0_18px_rgba(212,175,55,0.25)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all duration-500">
+                  Medium
                 </button>
-                <button 
-                  onClick={() => setProgress(Math.min(100, progress + 10))}
-                  className="px-4 py-2 text-sm border border-yellow-600/50 text-yellow-500 font-serif uppercase tracking-wider hover:bg-yellow-500/10 transition-all"
-                >
-                  +10%
+                <button className="px-14 py-5 text-lg bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.25em] shadow-[0_0_25px_rgba(212,175,55,0.25)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all duration-500">
+                  Large
                 </button>
               </div>
             </div>
-          </div>
+          </RevealBlock>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Tags & Badges */}
-      <ShowcaseSection
-        title="Tags & Badges"
-        subtitle="Distinguished labels"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
-            {/* Tags */}
-            <div className="mb-8">
-              <p className="text-sm font-serif text-yellow-500 uppercase tracking-[0.2em] mb-4 text-center">Tags</p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <span className="px-4 py-1.5 border border-yellow-500/50 text-yellow-400 text-sm font-serif uppercase tracking-wider">
-                  Luxury
-                </span>
-                <span className="px-4 py-1.5 border border-emerald-500/50 text-emerald-400 text-sm font-serif uppercase tracking-wider">
-                  Exclusive
-                </span>
-                <span className="px-4 py-1.5 border border-amber-500/50 text-amber-400 text-sm font-serif uppercase tracking-wider">
-                  Premium
-                </span>
-                <span className="px-4 py-1.5 border border-gray-500/50 text-gray-400 text-sm font-serif uppercase tracking-wider">
-                  Vintage
-                </span>
-              </div>
-            </div>
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 4 — COMPONENT DEMOS: CARDS
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <SectionHeader title="Cards" subtitle="Stepped Geometric Frames" />
 
-            <DecoDivider className="mb-8" />
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                symbol: "◆",
+                title: "LUXURY",
+                subtitle: "Gold Standard",
+                desc: "Timeless elegance in every detail. The gold standard of design, refined to its purest geometric form.",
+                delay: 0.1,
+              },
+              {
+                symbol: "◈",
+                title: "PRESTIGE",
+                subtitle: "Royal Craft",
+                desc: "Royal sophistication redefined for the modern era, drawing from the grandeur of 1920s haute couture.",
+                delay: 0.2,
+              },
+              {
+                symbol: "◇",
+                title: "REFINED",
+                subtitle: "Pure Form",
+                desc: "Exquisite craftsmanship distilled into pure geometric language, where every line serves beauty.",
+                delay: 0.3,
+              },
+            ].map((card) => (
+              <RevealBlock key={card.title} delay={card.delay}>
+                <div className="group relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 hover:border-yellow-500/70 hover:shadow-[0_0_35px_rgba(212,175,55,0.12)] transition-all duration-700 cursor-pointer">
+                  {/* Expanding corner decorations on hover */}
+                  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:w-10 group-hover:h-10 transition-all duration-500" />
+                  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:w-10 group-hover:h-10 transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:w-10 group-hover:h-10 transition-all duration-500" />
+                  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:w-10 group-hover:h-10 transition-all duration-500" />
 
-            {/* Badges */}
-            <div>
-              <p className="text-sm font-serif text-yellow-500 uppercase tracking-[0.2em] mb-4 text-center">Badges</p>
-              <div className="flex flex-wrap justify-center gap-4 items-center">
-                <span className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-700 text-black text-sm font-bold">
-                  5
-                </span>
-                <span className="inline-flex items-center justify-center px-3 h-8 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black text-sm font-bold uppercase tracking-wider">
-                  New
-                </span>
-                <span className="inline-flex items-center justify-center px-3 h-8 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-bold uppercase tracking-wider">
-                  VIP
-                </span>
-                <span className="inline-flex items-center justify-center w-8 h-8 border-2 border-yellow-500 text-yellow-500 text-sm font-bold">
-                  99
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
+                  <div className="flex flex-col items-center text-center relative z-10">
+                    {/* Diamond icon */}
+                    <div className="w-16 h-16 flex items-center justify-center mb-5 bg-gradient-to-br from-yellow-700/20 to-yellow-500/10 border border-yellow-600/30 group-hover:border-yellow-500/60 transition-all duration-500">
+                      <span className="text-3xl text-yellow-500/80 group-hover:text-yellow-400 group-hover:scale-110 transition-all duration-500 inline-block">
+                        {card.symbol}
+                      </span>
+                    </div>
 
-      {/* Toggle Switch */}
-      <ShowcaseSection
-        title="Toggles"
-        subtitle="Elegant switches"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="md" />
-            <div className="space-y-5">
-              {[
-                { label: "Gold Membership", index: 0 },
-                { label: "VIP Access", index: 1 },
-                { label: "Notifications", index: 2 },
-              ].map((item) => (
-                <div key={item.index} className="flex items-center justify-between">
-                  <span className="text-gray-300 font-serif tracking-wider">{item.label}</span>
-                  <button
-                    onClick={() => {
-                      const newStates = [...toggleStates];
-                      newStates[item.index] = !newStates[item.index];
-                      setToggleStates(newStates);
-                    }}
-                    className={`relative w-14 h-7 border transition-all duration-300 ${
-                      toggleStates[item.index]
-                        ? 'bg-gradient-to-r from-yellow-600/30 to-yellow-500/30 border-yellow-500 shadow-[0_0_10px_rgba(212,175,55,0.3)]'
-                        : 'bg-slate-800 border-yellow-600/30'
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 w-6 h-6 transition-all duration-300 ${
-                        toggleStates[item.index]
-                          ? 'left-7 bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-[0_0_8px_rgba(212,175,55,0.5)]'
-                          : 'left-0.5 bg-slate-600'
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
+                    <h3 className="text-xl font-serif text-yellow-500 tracking-[0.3em] uppercase mb-1 group-hover:text-yellow-300 transition-colors duration-500">
+                      {card.title}
+                    </h3>
+                    <p className="text-xs text-yellow-600/60 uppercase tracking-[0.25em] mb-4 font-serif">
+                      {card.subtitle}
+                    </p>
 
-      {/* Accordion */}
-      <ShowcaseSection
-        title="Accordion"
-        subtitle="Expandable content"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-3">
-            {accordionItems.map((item, index) => (
-              <div 
-                key={index}
-                className={`relative border transition-all duration-300 ${
-                  openAccordion === index 
-                    ? 'border-yellow-500 shadow-[0_0_20px_rgba(212,175,55,0.15)]' 
-                    : 'border-yellow-600/30'
-                } bg-gradient-to-b from-slate-900 to-slate-800`}
-              >
-                <button
-                  onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
-                  className="w-full flex items-center justify-between p-5 text-left"
-                >
-                  <span className="font-serif text-yellow-400 tracking-wider">{item.title}</span>
-                  {openAccordion === index ? (
-                    <ChevronUp className="w-5 h-5 text-yellow-500" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-yellow-600" />
-                  )}
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ${
-                  openAccordion === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                }`}>
-                  <div className="px-5 pb-5 text-gray-400 text-sm">
-                    {item.content}
+                    {/* Inner rule */}
+                    <div className="w-10 h-px bg-yellow-500/40 group-hover:w-20 transition-all duration-700 mb-4" />
+
+                    <p className="text-gray-500 text-sm leading-relaxed group-hover:text-gray-400 transition-colors duration-500">
+                      {card.desc}
+                    </p>
+
+                    <button className="mt-5 text-xs font-serif text-yellow-600/60 uppercase tracking-[0.3em] hover:text-yellow-400 transition-colors duration-300">
+                      Learn More ►
+                    </button>
                   </div>
                 </div>
-              </div>
+              </RevealBlock>
             ))}
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Form */}
-      <ShowcaseSection
-        title="Form"
-        subtitle="Elegant input components"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 5 — COMPONENT DEMOS: INPUTS & FORM
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Form" subtitle="Elegant Inputs" />
 
-            <h3 className="text-xl font-serif text-yellow-500 text-center mb-4 tracking-[0.3em]">CONTACT</h3>
-            <DecoDivider className="mb-6" />
+          <RevealBlock delay={0.1}>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Inputs */}
+              <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30">
+                <DecoCorners size="md" />
+                <p className="text-center text-xs font-serif text-yellow-600/70 uppercase tracking-[0.35em] mb-6">
+                  ◈──── Input Fields ────◈
+                </p>
+                <div className="space-y-5">
+                  <div>
+                    <label className="block text-xs font-serif text-yellow-500/80 uppercase tracking-[0.25em] mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name..."
+                      className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-100 placeholder-yellow-700/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_18px_rgba(212,175,55,0.18)] focus:outline-none transition-all duration-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-serif text-yellow-500/80 uppercase tracking-[0.25em] mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="Enter your email..."
+                      className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-100 placeholder-yellow-700/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_18px_rgba(212,175,55,0.18)] focus:outline-none transition-all duration-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-serif text-yellow-500/80 uppercase tracking-[0.25em] mb-2">
+                      Select
+                    </label>
+                    <select className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-300/70 font-serif tracking-wider focus:border-yellow-500 focus:outline-none transition-all duration-500 appearance-none cursor-pointer">
+                      <option value="">Choose a category...</option>
+                      <option value="arch">Architecture</option>
+                      <option value="art">Fine Art</option>
+                      <option value="fashion">Fashion</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-            <div className="space-y-5">
-              <div>
-                <label className="block text-xs font-serif text-yellow-500 uppercase tracking-[0.2em] mb-2">Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter your name..."
-                  className="w-full px-4 py-3 bg-slate-900 border border-yellow-600/50 text-yellow-100 placeholder-yellow-600/40 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none transition-all"
-                />
+              {/* Contact form */}
+              <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30">
+                <DecoCorners size="md" />
+                <h3 className="text-xl font-serif text-yellow-500 text-center tracking-[0.35em] uppercase mb-1">
+                  Contact
+                </h3>
+                <DecoDivider className="mb-6" />
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Your name..."
+                    className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-100 placeholder-yellow-700/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_18px_rgba(212,175,55,0.18)] focus:outline-none transition-all duration-500"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Your email..."
+                    className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-100 placeholder-yellow-700/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_18px_rgba(212,175,55,0.18)] focus:outline-none transition-all duration-500"
+                  />
+                  <textarea
+                    rows={3}
+                    placeholder="Your message..."
+                    className="w-full px-5 py-3 bg-[#0d0d0d] border border-yellow-600/40 text-yellow-100 placeholder-yellow-700/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_18px_rgba(212,175,55,0.18)] focus:outline-none transition-all duration-500 resize-none"
+                  />
+                  <button className="w-full py-4 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700 bg-[length:200%_auto] text-[#0d0d0d] font-serif font-bold uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:bg-right transition-all duration-700">
+                    Submit ◆
+                  </button>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-serif text-yellow-500 uppercase tracking-[0.2em] mb-2">Email</label>
-                <input
-                  type="email"
-                  placeholder="Enter your email..."
-                  className="w-full px-4 py-3 bg-slate-900 border border-yellow-600/50 text-yellow-100 placeholder-yellow-600/40 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-serif text-yellow-500 uppercase tracking-[0.2em] mb-2">Message</label>
-                <textarea
-                  rows={3}
-                  placeholder="Your message..."
-                  className="w-full px-4 py-3 bg-slate-900 border border-yellow-600/50 text-yellow-100 placeholder-yellow-600/40 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none transition-all resize-none"
-                />
-              </div>
-              <button className="w-full px-6 py-4 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-black font-semibold uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all">
-                Submit
-              </button>
             </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 6 — COLOR PALETTE
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Color Palette" subtitle="Luxurious Hues" />
+
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+              {paletteColors.map((color, i) => (
+                <div
+                  key={color.name}
+                  className="group cursor-pointer"
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                >
+                  <div
+                    className="h-24 md:h-32 w-full relative overflow-hidden border border-yellow-600/20 group-hover:border-yellow-500/60 transition-all duration-500 group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
+                    style={{ backgroundColor: color.hex }}
+                  >
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
+                    {/* Hex label on hover */}
+                    <div className="absolute bottom-2 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span
+                        className="text-xs font-mono px-2 py-0.5 font-bold"
+                        style={{ color: color.light ? "#0d0d0d" : "#d4af37" }}
+                      >
+                        {color.hex}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-center">
+                    <p className="text-xs font-serif text-yellow-500/70 uppercase tracking-[0.2em]">
+                      {color.name}
+                    </p>
+                    <p className="text-xs text-gray-600 font-mono mt-0.5">{color.hex}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Gold gradient showcase */}
+          <RevealBlock delay={0.2}>
+            <div className="relative p-8 border border-yellow-600/30 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e]">
+              <DecoCorners size="md" />
+              <p className="text-center text-xs font-serif text-yellow-600/70 uppercase tracking-[0.35em] mb-6">
+                ◈──── Gold Leaf Shimmer ────◈
+              </p>
+              <div
+                className="h-16 w-full"
+                style={{
+                  background: "linear-gradient(135deg, #c9a84c 0%, #f5e066 25%, #d4af37 50%, #f5e066 75%, #c9a84c 100%)",
+                }}
+              />
+              <div className="mt-4 flex justify-between text-xs font-mono text-yellow-600/50">
+                <span>#c9a84c</span>
+                <span>#f5e066</span>
+                <span>#d4af37</span>
+                <span>#f5e066</span>
+                <span>#c9a84c</span>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 7 — DESIGN RULES (DO / DON'T)
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Design Rules" subtitle="The Art Deco Doctrine" />
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* DO list */}
+            <RevealBlock delay={0.1}>
+              <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 h-full">
+                <DecoCorners size="md" />
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <span className="text-yellow-500 text-lg">◆</span>
+                  <h3 className="font-serif text-yellow-500 uppercase tracking-[0.3em] text-sm">
+                    The Decalogues
+                  </h3>
+                  <span className="text-yellow-500 text-lg">◆</span>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "使用金色和深色的高对比配色",
+                    "添加几何对称图案和放射状线条",
+                    "使用优雅的衬线字体",
+                    "添加金色边框和装饰线",
+                    "保持对称和平衡的布局",
+                    "使用细腻的线条装饰",
+                  ].map((rule, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="text-yellow-500 mt-0.5 flex-shrink-0">▸</span>
+                      <span className="text-gray-400 text-sm font-serif tracking-wide leading-relaxed">
+                        {rule}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* DON'T list */}
+            <RevealBlock delay={0.2}>
+              <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 h-full">
+                <DecoCorners size="md" />
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <span className="text-red-500/60 text-lg">◇</span>
+                  <h3 className="font-serif text-red-400/80 uppercase tracking-[0.3em] text-sm">
+                    Forbidden Paths
+                  </h3>
+                  <span className="text-red-500/60 text-lg">◇</span>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "禁止使用过于鲜艳的配色",
+                    "禁止使用不对称的混乱布局",
+                    "禁止使用过于现代的无衬线字体",
+                    "禁止省略装饰性元素",
+                  ].map((rule, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="text-red-400/70 mt-0.5 flex-shrink-0">✕</span>
+                      <span className="text-gray-500 text-sm font-serif tracking-wide leading-relaxed line-through decoration-red-400/40">
+                        {rule}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Avatars */}
-      <ShowcaseSection
-        title="Avatars"
-        subtitle="Distinguished profiles"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-serif text-yellow-500 mb-4 text-center tracking-[0.2em]"
-        subtitleClassName="text-gray-400 mb-10 text-center tracking-wider"
-      >
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 8 — TYPOGRAPHY
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Typography" subtitle="Tall Serif Letterforms" />
+
+          <RevealBlock delay={0.1}>
+            <div className="relative p-10 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 mb-6">
+              <DecoCorners size="lg" />
+              <div className="text-center space-y-6">
+                <div>
+                  <p className="text-xs font-serif text-yellow-600/50 uppercase tracking-[0.4em] mb-2">Display / 96px</p>
+                  <h2 className="text-7xl md:text-9xl font-serif font-bold text-yellow-500/80 tracking-[0.1em] leading-none">
+                    Aa
+                  </h2>
+                </div>
+                <DecoDivider />
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-xs font-serif text-yellow-600/50 uppercase tracking-[0.3em] mb-2">Heading / 48px</p>
+                    <p className="text-5xl font-serif text-yellow-500/70 tracking-[0.15em]">Gold</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-serif text-yellow-600/50 uppercase tracking-[0.3em] mb-2">Subheading / 24px</p>
+                    <p className="text-2xl font-serif text-yellow-400/60 tracking-[0.2em] uppercase">Luxury</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-serif text-yellow-600/50 uppercase tracking-[0.3em] mb-2">Body / 16px</p>
+                    <p className="text-base font-serif text-gray-400 tracking-wider leading-relaxed">
+                      The golden ratio of elegance.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Alphabet showcase */}
+          <RevealBlock delay={0.2}>
+            <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 mb-6">
+              <DecoCorners size="sm" />
+              <p className="text-center text-xs font-serif text-yellow-600/50 uppercase tracking-[0.35em] mb-5">
+                ◈──── All Caps Alphabet ────◈
+              </p>
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
+                {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
+                  <span
+                    key={letter}
+                    className="text-xl font-serif text-yellow-500/50 tracking-widest hover:text-yellow-300 transition-colors duration-300 cursor-default"
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Tracking scale */}
+          <RevealBlock delay={0.3}>
+            <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30">
+              <DecoCorners size="sm" />
+              <p className="text-center text-xs font-serif text-yellow-600/50 uppercase tracking-[0.35em] mb-6">
+                ◈──── Letter Spacing Scale ────◈
+              </p>
+              <div className="space-y-4">
+                {[
+                  { label: "Normal", cls: "tracking-normal", val: "0em" },
+                  { label: "Wide", cls: "tracking-wide", val: "0.025em" },
+                  { label: "Wider", cls: "tracking-wider", val: "0.05em" },
+                  { label: "Widest", cls: "tracking-widest", val: "0.1em" },
+                  { label: "Ultra", cls: "tracking-[0.3em]", val: "0.3em" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-4">
+                    <span className="text-xs font-mono text-yellow-600/50 w-16 flex-shrink-0">{item.val}</span>
+                    <div className="h-px w-6 bg-yellow-600/30 flex-shrink-0" />
+                    <span className={`font-serif text-yellow-400/70 uppercase text-sm ${item.cls}`}>
+                      Art Deco — The Golden Era
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 9 — INTERACTIVE TABS
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="relative p-8 bg-gradient-to-b from-slate-900 to-slate-800 border border-yellow-600/50">
-            <DecoCorners size="lg" />
-            <div className="flex flex-wrap items-end justify-center gap-8">
-              {/* Small */}
-              <div className="text-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center text-black font-serif font-bold text-sm mb-2">
-                  J
-                </div>
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Small</span>
+          <SectionHeader title="Tabs" subtitle="Organized Elegance" />
+
+          <RevealBlock delay={0.1}>
+            <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30">
+              <DecoCorners size="lg" />
+              {/* Tab headers */}
+              <div className="flex border-b border-yellow-600/20 mb-6">
+                {tabs.map((tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(i)}
+                    className={`px-6 py-3 font-serif uppercase tracking-[0.2em] text-sm transition-all duration-300 ${
+                      activeTab === i
+                        ? "text-yellow-500 border-b-2 border-yellow-500 -mb-px"
+                        : "text-gray-500 hover:text-yellow-400"
+                    }`}
+                  >
+                    {i === activeTab ? "◆ " : ""}{tab}
+                  </button>
+                ))}
               </div>
-              {/* Medium */}
-              <div className="text-center">
-                <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center text-black font-serif font-bold text-lg mb-2">
-                  GG
-                </div>
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Medium</span>
+              {/* Tab content */}
+              <div className="min-h-[100px]">
+                {tabs.map((_, i) => (
+                  <div
+                    key={i}
+                    className="transition-all duration-500"
+                    style={{
+                      display: activeTab === i ? "block" : "none",
+                    }}
+                  >
+                    <h4 className="font-serif text-yellow-500 tracking-wider mb-3">
+                      {tabContent[i].heading}
+                    </h4>
+                    <p className="text-gray-500 text-sm leading-relaxed font-serif">
+                      {tabContent[i].body}
+                    </p>
+                  </div>
+                ))}
               </div>
-              {/* Large */}
-              <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center text-black font-serif font-bold text-2xl mb-2">
-                  FS
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 10 — PROGRESS & ACCORDION
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Interactions" subtitle="Dynamic Elegance" />
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Progress */}
+            <RevealBlock delay={0.1}>
+              <div className="relative p-8 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 h-full">
+                <DecoCorners size="md" />
+                <p className="text-center text-xs font-serif text-yellow-600/70 uppercase tracking-[0.35em] mb-6">
+                  ◈──── Progress ────◈
+                </p>
+                <div className="space-y-7">
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs font-serif text-yellow-500/80 uppercase tracking-wider">Project Status</span>
+                      <span className="text-xs text-yellow-400 font-mono">{progress}%</span>
+                    </div>
+                    <div className="h-2 bg-[#0d0d0d] border border-yellow-600/30 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-400 shadow-[0_0_12px_rgba(212,175,55,0.5)] transition-all duration-700"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-xs font-serif text-emerald-400/80 uppercase tracking-wider">Completion</span>
+                      <span className="text-xs text-emerald-400 font-mono">85%</span>
+                    </div>
+                    <div className="h-2 bg-[#0d0d0d] border border-emerald-600/30 overflow-hidden">
+                      <div className="h-full w-[85%] bg-gradient-to-r from-emerald-700 to-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]" />
+                    </div>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => setProgress((p) => Math.max(0, p - 10))}
+                      className="px-5 py-2 text-sm border border-yellow-600/40 text-yellow-500 font-serif uppercase tracking-wider hover:bg-yellow-500/10 transition-all duration-300"
+                    >
+                      ◄ -10%
+                    </button>
+                    <button
+                      onClick={() => setProgress((p) => Math.min(100, p + 10))}
+                      className="px-5 py-2 text-sm border border-yellow-600/40 text-yellow-500 font-serif uppercase tracking-wider hover:bg-yellow-500/10 transition-all duration-300"
+                    >
+                      +10% ►
+                    </button>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Large</span>
               </div>
-              {/* Outlined */}
-              <div className="text-center">
-                <div className="w-16 h-16 border-2 border-yellow-500 bg-slate-900 flex items-center justify-center text-yellow-500 font-serif font-bold text-xl mb-2">
-                  AD
-                </div>
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Outlined</span>
+            </RevealBlock>
+
+            {/* Accordion */}
+            <RevealBlock delay={0.2}>
+              <div className="space-y-3">
+                {accordionItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className={`relative border transition-all duration-500 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] ${
+                      openAccordion === i
+                        ? "border-yellow-500/60 shadow-[0_0_20px_rgba(212,175,55,0.1)]"
+                        : "border-yellow-600/20"
+                    }`}
+                  >
+                    <button
+                      onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
+                      className="w-full flex items-center justify-between px-5 py-4 text-left"
+                    >
+                      <span className="font-serif text-yellow-400/90 tracking-wider text-sm">
+                        {openAccordion === i ? "◆ " : "◇ "}{item.title}
+                      </span>
+                      <span className="text-yellow-600/60 text-xs transition-transform duration-300" style={{
+                        transform: openAccordion === i ? "rotate(180deg)" : "rotate(0deg)",
+                      }}>
+                        ▼
+                      </span>
+                    </button>
+                    <div
+                      className="overflow-hidden transition-all duration-500"
+                      style={{
+                        maxHeight: openAccordion === i ? "200px" : "0",
+                        opacity: openAccordion === i ? 1 : 0,
+                      }}
+                    >
+                      <div className="px-5 pb-5 text-gray-500 text-sm font-serif leading-relaxed">
+                        {item.content}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              {/* Group */}
-              <div className="text-center">
-                <div className="flex -space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center text-black font-serif font-bold border-2 border-slate-900">A</div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white font-serif font-bold border-2 border-slate-900">B</div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-black font-serif font-bold border-2 border-slate-900">+3</div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 11 — PHILOSOPHY / MANIFESTO
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <SectionHeader title="Philosophy" subtitle="The Art Deco Manifesto" />
+
+          <RevealBlock delay={0.1}>
+            <div className="relative p-12 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+              {/* Multi-layer stepped border */}
+              <div className="absolute inset-3 border border-yellow-600/20 pointer-events-none" />
+              <div className="absolute inset-5 border border-yellow-600/10 pointer-events-none" />
+              <DecoCorners size="lg" />
+
+              <div className="mb-8">
+                <Sunburst className="w-28 h-28 mx-auto opacity-40" />
+              </div>
+
+              <blockquote className="text-xl md:text-2xl font-serif text-yellow-400/70 leading-relaxed tracking-wider italic mb-8">
+                &ldquo;Art Deco is not merely a style — it is a declaration that beauty and function
+                are not opposites, but allies in the grand theater of human expression.&rdquo;
+              </blockquote>
+
+              <DecoDivider className="mb-6" />
+
+              <div className="grid md:grid-cols-2 gap-6 text-left">
+                {[
+                  {
+                    heading: "几何对称",
+                    sub: "Geometric Symmetry",
+                    body: "放射状线条与重复几何图案构成视觉秩序的骨架。",
+                  },
+                  {
+                    heading: "奢华感",
+                    sub: "Luxurious Presence",
+                    body: "金色、黑色、深蓝形成的高端配色，传递精致与繁荣。",
+                  },
+                  {
+                    heading: "精致工艺",
+                    sub: "Refined Craft",
+                    body: "细腻的线条和装饰细节彰显对工艺的极致追求。",
+                  },
+                  {
+                    heading: "现代与传统",
+                    sub: "Modernity Meets Tradition",
+                    body: "机械时代美学与古典优雅的完美结合，超越时代的语言。",
+                  },
+                ].map((p) => (
+                  <div key={p.heading} className="flex gap-4">
+                    <span className="text-yellow-500/50 mt-1 flex-shrink-0">◆</span>
+                    <div>
+                      <h4 className="font-serif text-yellow-500/80 tracking-wider text-sm uppercase mb-0.5">
+                        {p.heading}
+                      </h4>
+                      <p className="text-xs text-yellow-600/50 uppercase tracking-[0.25em] mb-2 font-serif">
+                        {p.sub}
+                      </p>
+                      <p className="text-gray-500 text-sm font-serif leading-relaxed">{p.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 12 — GEOMETRIC PATTERNS SHOWCASE
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Geometric Patterns" subtitle="Decorative DNA" />
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {/* Chevron pattern */}
+            <RevealBlock delay={0.1}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div
+                  className="h-24 w-full mb-4 opacity-60"
+                  style={{
+                    background: "repeating-linear-gradient(90deg, #d4af37 0px, #d4af37 2px, transparent 2px, transparent 20px)",
+                  }}
+                />
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Vertical Striping</p>
+              </div>
+            </RevealBlock>
+
+            {/* Diamond grid */}
+            <RevealBlock delay={0.15}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div
+                  className="h-24 w-full mb-4 opacity-50"
+                  style={{
+                    background: `
+                      repeating-linear-gradient(45deg, #d4af37 0px, #d4af37 1px, transparent 1px, transparent 20px),
+                      repeating-linear-gradient(-45deg, #d4af37 0px, #d4af37 1px, transparent 1px, transparent 20px)
+                    `,
+                  }}
+                />
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Diamond Grid</p>
+              </div>
+            </RevealBlock>
+
+            {/* Sunburst */}
+            <RevealBlock delay={0.2}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div className="h-24 w-full mb-4 flex items-center justify-center">
+                  <Sunburst className="w-20 h-20 opacity-60" />
                 </div>
-                <span className="text-xs text-gray-500 uppercase tracking-wider mt-2 block">Group</span>
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Sunburst Rays</p>
+              </div>
+            </RevealBlock>
+
+            {/* Chevron steps */}
+            <RevealBlock delay={0.25}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div className="h-24 w-full mb-4 flex flex-col items-center justify-center gap-1.5">
+                  {["▲▲▲▲▲▲▲", "▲▲▲▲▲", "▲▲▲", "▲"].map((row, i) => (
+                    <div key={i} className="text-yellow-500/30 text-sm tracking-widest">{row}</div>
+                  ))}
+                </div>
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Stepped Chevrons</p>
+              </div>
+            </RevealBlock>
+
+            {/* Fan shape */}
+            <RevealBlock delay={0.3}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div
+                  className="h-24 w-full mb-4 opacity-40"
+                  style={{
+                    background: "conic-gradient(from 180deg at 50% 100%, #d4af37 0deg, transparent 30deg, #d4af37 30deg, transparent 60deg, #d4af37 60deg, transparent 90deg, #d4af37 90deg, transparent 120deg, #d4af37 120deg, transparent 150deg, #d4af37 150deg, transparent 180deg)",
+                  }}
+                />
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Fan Motif</p>
+              </div>
+            </RevealBlock>
+
+            {/* Horizontal rule decoration */}
+            <RevealBlock delay={0.35}>
+              <div className="relative p-6 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a2e] border border-yellow-600/30 text-center">
+                <DecoCorners size="sm" />
+                <div className="h-24 w-full mb-4 flex flex-col items-center justify-center gap-3">
+                  <div className="flex items-center gap-1 text-yellow-500/50 text-xs tracking-widest">
+                    <span>◈</span>
+                    <div className="flex-1 w-20 h-px bg-yellow-500/30" />
+                    <span>◆</span>
+                    <div className="flex-1 w-20 h-px bg-yellow-500/30" />
+                    <span>◈</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-yellow-500/30 text-xs tracking-widest">
+                    <span>◇</span>
+                    <div className="flex-1 w-16 h-px bg-yellow-500/20" />
+                    <span>◇</span>
+                    <div className="flex-1 w-16 h-px bg-yellow-500/20" />
+                    <span>◇</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-yellow-500/20 text-xs tracking-widest">
+                    <div className="w-28 h-px bg-yellow-500/15" />
+                  </div>
+                </div>
+                <p className="text-xs font-serif text-yellow-600/70 uppercase tracking-[0.25em]">Rule Decorations</p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SECTION 13 — FOOTER
+      ═══════════════════════════════════════════════════════ */}
+      <footer className="relative z-10 border-t border-yellow-600/20 backdrop-blur-sm bg-[#0d0d0d]/70">
+        {/* Top decorative band */}
+        <div className="h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+
+        <div className="max-w-6xl mx-auto px-6 py-16 text-center">
+          {/* Stepped geometric footer ornament */}
+          <div className="flex flex-col items-center gap-1 mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-24 h-px bg-yellow-600/30" />
+              <span className="text-yellow-500/50 text-xs">▲▲▲</span>
+              <div className="w-24 h-px bg-yellow-600/30" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-px bg-yellow-600/20" />
+              <span className="text-yellow-500/40 text-xs">▲▲</span>
+              <div className="w-16 h-px bg-yellow-600/20" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-px bg-yellow-600/15" />
+              <span className="text-yellow-500/30 text-xs">▲</span>
+              <div className="w-8 h-px bg-yellow-600/15" />
+            </div>
+          </div>
+
+          {/* Logo mark */}
+          <div className="relative inline-block mb-6">
+            <div className="border border-yellow-600/30 p-2">
+              <div className="border border-yellow-500/40 p-2">
+                <div className="px-10 py-3">
+                  <div className="flex items-center gap-4">
+                    <span className="text-yellow-600/50 text-sm">◆</span>
+                    <span className="font-serif text-2xl text-yellow-500 tracking-[0.4em] uppercase">
+                      Art Deco
+                    </span>
+                    <span className="text-yellow-600/50 text-sm">◆</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-12 px-6 border-t border-yellow-600/30 backdrop-blur-sm bg-slate-900/50">
-        <div className="max-w-6xl mx-auto text-center">
           <DecoDivider className="mb-6" />
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Diamond className="w-4 h-4 text-yellow-500" />
-            <span className="text-xl font-serif text-yellow-500 tracking-[0.3em]">ART DECO</span>
-            <Diamond className="w-4 h-4 text-yellow-500" />
-          </div>
-          <p className="text-gray-500 text-sm font-serif tracking-wider mb-4">
+
+          <p className="text-gray-600 text-sm font-serif tracking-wider mb-3">
             Part of the{" "}
-            <Link href="/" className="text-yellow-500 hover:text-yellow-400 transition-colors">
+            <Link href="/" className="text-yellow-500/70 hover:text-yellow-400 transition-colors duration-300">
               StyleKit
             </Link>{" "}
             Design System Collection
           </p>
-          <p className="text-gray-600 text-xs font-serif tracking-[0.2em] uppercase">
-            The Golden Age of Design
+
+          <p className="text-gray-700 text-xs font-serif tracking-[0.3em] uppercase">
+            ◈ The Golden Age of Design · 1920–1940 · Revived ◈
           </p>
+
+          {/* Bottom chevron pyramid */}
+          <div className="flex flex-col items-center gap-1 mt-10">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-px bg-yellow-600/15" />
+              <span className="text-yellow-500/20 text-xs">▼</span>
+              <div className="w-8 h-px bg-yellow-600/15" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-px bg-yellow-600/10" />
+              <span className="text-yellow-500/15 text-xs">▼▼</span>
+              <div className="w-16 h-px bg-yellow-600/10" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-24 h-px bg-yellow-600/05" />
+              <span className="text-yellow-500/10 text-xs">▼▼▼</span>
+              <div className="w-24 h-px bg-yellow-600/05" />
+            </div>
+          </div>
         </div>
+
+        {/* Bottom geometric band */}
+        <div className="h-1 bg-gradient-to-r from-transparent via-yellow-600/40 to-transparent" />
       </footer>
     </div>
   );
