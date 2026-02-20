@@ -32,6 +32,10 @@ export const risograph: DesignStyle = {
     "保持扁平色块无渐变",
     "添加颗粒/网点纹理感",
     "使用米白/奶白色纸张背景",
+    "Misregistration Offset: hover must use dual-direction shadows simulating two Riso ink plates out of register: `hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]` — one shadow goes bottom-right (blue plate), the other top-left (orange plate)",
+    "Instant Print: all transitions use `duration-100 ease-linear` — mechanical printing press speed, not organic motion",
+    "Overprint Illusion: active state switches background to the secondary ink color `active:bg-[#2563eb]`, simulating two Riso ink layers fully overlapping at the press point",
+    "Registration Shift: green corner element uses `translate-x-2 -translate-y-2` at rest and `group-hover:translate-x-0 group-hover:translate-y-0` on hover — the registration mark locks into place as the press completes its cycle",
   ],
 
   dontList: [
@@ -39,40 +43,44 @@ export const risograph: DesignStyle = {
     "禁止使用太多颜色（最多3-4种）",
     "禁止使用写实阴影或光照效果",
     "禁止使用圆滑的圆角设计",
+    "禁止使用单方向阴影（Riso 总是两个墨版，阴影必须双向）",
+    "禁止使用 `ease-in-out` 或 `ease`（印刷机是机械的，必须 `ease-linear`）",
+    "禁止在阴影中使用 blur（所有偏移必须是零模糊的硬边）",
+    "禁止用 opacity 过渡实现 hover 颜色变化（必须是印刷机瞬间切换）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Risograph 风格按钮",
+      description: "Risograph 风格按钮，Misregistration Offset 双向错位阴影 + Instant Print 机械速度 + Overprint Illusion active 颜色",
       code: `<button className="
-  px-6 py-3
+  px-8 py-3
   bg-[#ff6b9d] text-white
-  font-mono font-bold uppercase tracking-wider
+  font-mono font-bold uppercase tracking-widest
   rounded-sm
-  shadow-[3px_3px_0px_#2563eb]
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  hover:shadow-[1px_1px_0px_#2563eb]
-  transition-all duration-200
+  border-2 border-[#1a1a1a]
+  shadow-[4px_4px_0_#2563eb]
+  hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]
+  hover:-translate-x-[2px] hover:translate-y-[2px]
+  active:translate-x-[4px] active:translate-y-[4px]
+  active:shadow-none
+  active:bg-[#2563eb]
+  transition-all duration-100 ease-linear
 ">
-  Print
+  Overprint
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Risograph 风格卡片",
-      code: `<div className="
-  p-8
-  bg-[#fffbf0]
-  border-2 border-[#1a1a1a]
-  rounded-sm
-  shadow-[4px_4px_0px_#ff6b9d]
-">
-  <h3 className="text-2xl font-mono font-bold text-[#2563eb] uppercase mb-3">
-    OVERPRINT
+      description: "Risograph 风格卡片，Registration Shift 绿色角落定位 + Misregistration 双向阴影 + 标题 Overprint 色变",
+      code: `<div className="group p-8 bg-[#fffbf0] border-[3px] border-[#1a1a1a] rounded-sm shadow-[6px_6px_0_#ff6b9d] hover:shadow-[8px_8px_0_#2563eb,-6px_-6px_0_#ff6b9d] transition-all duration-100 ease-linear cursor-pointer relative overflow-hidden">
+  {/* Registration mark — shifts into position on hover (Registration Shift) */}
+  <div className="absolute top-0 right-0 w-16 h-16 bg-[#22c55e] border-b-[3px] border-l-[3px] border-[#1a1a1a] transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear" />
+  <h3 className="text-3xl font-mono font-black text-[#2563eb] uppercase mb-4 tracking-tighter group-hover:text-[#ff8a00] transition-colors duration-100 ease-linear" style={{ textShadow: '2px 2px 0 #1a1a1a' }}>
+    RISO_PRINT
   </h3>
-  <p className="text-[#1a1a1a]/70 font-mono">
-    Limited palette, unlimited expression
+  <p className="text-[#1a1a1a] font-mono font-bold leading-relaxed border-t-[3px] border-[#1a1a1a] pt-4">
+    Embrace the beauty of mechanical imperfection and limited palette expression.
   </p>
 </div>`,
     },
@@ -204,7 +212,14 @@ Primary:
 - Overprint offset effects
 - Grain/noise texture overlays
 - Halftone dot patterns
-- Registration marks as decoration`,
+- Registration marks as decoration
+
+## Animation & Interaction Rules
+
+- Misregistration Offset: Hover must use dual-direction shadows simulating two ink plates out of register: \`hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]\`. One shadow goes bottom-right (blue plate), the other goes top-left (orange plate). Single-direction shadows break the print illusion.
+- Instant Print: All transitions \`duration-100 ease-linear\` — mechanical printing press speed. Never use \`ease-in-out\` or organic curves.
+- Overprint Illusion: Active state switches background to the secondary ink color \`active:bg-[#2563eb]\`, simulating the moment two Riso ink layers fully overlap at the point of contact.
+- Registration Shift: Green corner element uses \`translate-x-2 -translate-y-2\` at rest and \`group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear\` on hover — the registration mark locks into place as the press completes its cycle.`,
 
   examplePrompts: [
     {

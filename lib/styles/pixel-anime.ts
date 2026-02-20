@@ -35,6 +35,10 @@ Core principles:
     "Keep interactions step-based (translate-x/y in 2px increments)",
     "Use NES-palette colors: blue #4a90d9, red #ff6b6b, gold #ffd93d, green #50c878",
     "Add pixel corner block decorations on major containers",
+    "Framerate Drop: use `duration-75 ease-linear` for all transitions to simulate 15fps GBA/NDS-era animation cadence",
+    "Blocky Aura: hover glow must be hard-edge multi-directional colored shadows with zero blur: `hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]`",
+    "Anime Action: button active state applies squash-and-stretch `active:scale-x-110 active:scale-y-90` — classic Japanese animation physics on press",
+    "Corner Blink: card corner pixel squares use `group-hover:animate-pulse` to simulate game UI idle standby animation; never animate in non-hover state",
   ],
 
   dontList: [
@@ -43,40 +47,49 @@ Core principles:
     "Never use blur effects (blur, backdrop-blur)",
     "Never use serif fonts",
     "Never use soft shadows (shadow-sm/md/lg/xl)",
+    "Never use `ease-in-out` or `ease` curves — only `ease-linear` or `transition-none` (pixel animations are abrupt, not organic)",
+    "Never use blurred glow shadows for the Blocky Aura effect — zero blur is mandatory for 8-bit authenticity",
+    "Never trigger Corner Blink animation outside of `group-hover` state — idle blinking on load creates visual noise",
   ],
 
   components: {
     button: {
       name: "RPG Menu Button",
-      description: "Button with pixel borders, corner block decorations, and step-based hover translate",
+      description: "Pixel anime button with Blocky Aura multi-shadow hover + Anime Action squash-and-stretch on press",
       code: `<button className="
-  relative px-6 py-3
+  px-6 py-3
   bg-[#4a90d9] text-white
-  font-mono font-bold uppercase tracking-wider
+  font-mono font-bold uppercase tracking-widest
   border-2 border-[#1a1040]
-  shadow-[4px_4px_0px_#1a1040]
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  hover:shadow-[2px_2px_0px_#1a1040]
-  active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
-  transition-all duration-150 ease-linear
+  shadow-[4px_4px_0_#1a1040]
+  hover:bg-[#5aa0e9]
+  hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]
+  hover:-translate-y-1
+  active:scale-x-110 active:scale-y-90
+  active:translate-x-[4px] active:translate-y-[4px]
+  active:shadow-none
+  transition-all duration-75 ease-linear
 ">
   ATTACK
 </button>`,
     },
     card: {
       name: "RPG Dialogue Box",
-      description: "Card with pixel frame border, inner double-border, and corner block decorations",
-      code: `<div className="relative p-6 bg-[#1a1040] border-2 border-[#4a90d9] shadow-[4px_4px_0px_#1a1040]">
-  <div className="absolute -top-[4px] -left-[4px] w-[8px] h-[8px] bg-[#4a90d9]" />
-  <div className="absolute -top-[4px] -right-[4px] w-[8px] h-[8px] bg-[#4a90d9]" />
-  <div className="absolute -bottom-[4px] -left-[4px] w-[8px] h-[8px] bg-[#4a90d9]" />
-  <div className="absolute -bottom-[4px] -right-[4px] w-[8px] h-[8px] bg-[#4a90d9]" />
-  <h3 className="text-xl font-mono font-bold text-[#ffd93d] uppercase mb-2">
-    QUEST LOG
-  </h3>
-  <p className="text-[#e0e0ff]/70 font-mono text-sm">
-    Adventure awaits!
-  </p>
+      description: "Card with Corner Blink pixel squares on group-hover + Blocky Aura shadow shift",
+      code: `<div className="group relative p-6 bg-[#1a1040] border-2 border-[#4a90d9] shadow-[6px_6px_0_#1a1040] hover:shadow-[8px_8px_0_#4a90d9] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-75 ease-linear cursor-pointer">
+  {/* Corner pixels — blink on hover (Corner Blink) */}
+  <div className="absolute -top-[6px] -left-[6px] w-[12px] h-[12px] bg-[#4a90d9] border-2 border-[#1a1040] group-hover:bg-[#ffd93d] group-hover:animate-pulse transition-colors duration-75" />
+  <div className="absolute -top-[6px] -right-[6px] w-[12px] h-[12px] bg-[#4a90d9] border-2 border-[#1a1040] group-hover:bg-[#ffd93d] group-hover:animate-pulse transition-colors duration-75" />
+  <div className="absolute -bottom-[6px] -left-[6px] w-[12px] h-[12px] bg-[#4a90d9] border-2 border-[#1a1040] group-hover:bg-[#ffd93d] group-hover:animate-pulse transition-colors duration-75" />
+  <div className="absolute -bottom-[6px] -right-[6px] w-[12px] h-[12px] bg-[#4a90d9] border-2 border-[#1a1040] group-hover:bg-[#ffd93d] group-hover:animate-pulse transition-colors duration-75" />
+  <div className="relative">
+    <h3 className="text-2xl font-mono font-bold text-[#ffd93d] uppercase mb-2 group-hover:text-white transition-colors duration-75">
+      QUEST LOG
+    </h3>
+    <p className="text-[#e0e0ff]/70 font-mono text-sm group-hover:text-[#ffd93d] transition-colors duration-75">
+      &gt; A new adventure awaits! Press A to continue...
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -216,7 +229,7 @@ Core principles:
 - Bold 2px borders: border-2 border-[#1a1040]
 - Flat colors only, no gradients
 - Step-based hover: hover:translate-x-[2px] hover:translate-y-[2px]
-- Linear easing: ease-linear, duration-150
+- Linear easing: ease-linear, duration-75
 
 ## Color Palette (NES-inspired)
 
@@ -235,7 +248,14 @@ Primary:
 - HP/MP/EXP status bar progress indicators
 - Pixel-grid background pattern (8px grid)
 - Blinking pixel arrow cursor/continue indicators
-- Step-based pixel-aligned hover translations`,
+- Step-based pixel-aligned hover translations
+
+## Animation & Interaction Rules
+
+- Framerate Drop: All transitions must use \`duration-75 ease-linear\` to simulate 15fps GBA/NDS-era animation. Never use \`ease-in-out\` or smooth bezier curves — pixel animations are abrupt state changes.
+- Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur: \`hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]\`. No \`blur()\` or \`drop-shadow()\` ever.
+- Anime Action: Button active state applies squash-and-stretch: \`active:scale-x-110 active:scale-y-90\` — Japanese animation physics on press, not a translate drop.
+- Corner Blink: Card corner pixel squares must use \`group-hover:animate-pulse\` to simulate idle game UI animation. Never animate in non-hover state — blink only when the player's cursor is over the card.`,
 
   examplePrompts: [
     {
