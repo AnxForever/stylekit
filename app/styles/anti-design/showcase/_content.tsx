@@ -75,13 +75,13 @@ function AntiMarquee() {
         {[0, 1].map((i) => (
           <div key={i} className="flex-1 flex justify-around items-center font-black text-sm uppercase tracking-wider text-black">
             <span>NO CURVES</span>
-            <span className="text-[#FF0000]">//</span>
+            <span className="text-[#FF0000]">{"//"}</span>
             <span>THICK BORDERS</span>
-            <span className="text-[#0000FF]">//</span>
+            <span className="text-[#0000FF]">{"//"}</span>
             <span>HARD SHADOWS</span>
-            <span className="text-[#FF00FF]">//</span>
+            <span className="text-[#FF00FF]">{"//"}</span>
             <span>RAW POWER</span>
-            <span className="text-[#00FF00]">//</span>
+            <span className="text-[#00FF00]">{"//"}</span>
           </div>
         ))}
       </div>

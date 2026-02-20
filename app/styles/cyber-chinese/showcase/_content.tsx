@@ -302,7 +302,7 @@ export default function ShowcaseContent() {
             >
               <div className="h-px w-8 bg-[#d4553a]" />
               <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#c9a227]">
-                // SYSTEM_ORIENT_V2
+                {"// SYSTEM_ORIENT_V2"}
               </span>
             </div>
 
@@ -386,15 +386,15 @@ export default function ShowcaseContent() {
               {/* Status readouts */}
               <div className="space-y-2 font-bold text-xs tracking-widest uppercase">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#c9a227]">// ORIENT_LINK</span>
+                  <span className="text-[#c9a227]">{"// ORIENT_LINK"}</span>
                   <span className="text-[#00d4ff]" style={{ animation: "cc-neon-flicker 3s infinite" }}>ACTIVE</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#c9a227]">// NEON_GRID</span>
+                  <span className="text-[#c9a227]">{"// NEON_GRID"}</span>
                   <span className="text-[#d4553a]">ONLINE</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#c9a227]">// SEAL_AUTH</span>
+                  <span className="text-[#c9a227]">{"// SEAL_AUTH"}</span>
                   <span className="text-[#a020f0]">VERIFIED</span>
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function ShowcaseContent() {
             {activeTab === "button" && (
               <div className="flex flex-col items-center gap-8">
                 <p className="text-xs tracking-[0.2em] uppercase text-[#c9a227]/50 mb-4 font-bold">
-                  // Neon warm-up hover -- scan sweep on interaction
+                  {"// Neon warm-up hover -- scan sweep on interaction"}
                 </p>
                 <div className="flex flex-wrap justify-center gap-6">
                   {/* Primary */}
@@ -552,7 +552,7 @@ export default function ShowcaseContent() {
                       <SealStamp char={card.seal} className="text-[#d4553a]" size={40} />
                     </div>
                     <span className="block text-xs tracking-[0.3em] text-[#c9a227]/60 mb-2 font-bold uppercase">
-                      // Unit_0{i + 1}
+                      {`// Unit_0${i + 1}`}
                     </span>
                     <h3 className="text-xl font-bold text-[#c9a227] mb-3 uppercase tracking-wider">
                       {card.title}
@@ -570,7 +570,7 @@ export default function ShowcaseContent() {
               <div className="max-w-md mx-auto space-y-8">
                 <div>
                   <label className="block text-xs tracking-[0.25em] uppercase text-[#c9a227] mb-3 font-bold">
-                    // Inscription_Field
+                    {"// Inscription_Field"}
                   </label>
                   <input
                     type="text"
@@ -590,7 +590,7 @@ export default function ShowcaseContent() {
                 </div>
                 <div>
                   <label className="block text-xs tracking-[0.25em] uppercase text-[#c9a227] mb-3 font-bold">
-                    // Seal_Code
+                    {"// Seal_Code"}
                   </label>
                   <input
                     type="text"
