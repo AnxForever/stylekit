@@ -51,50 +51,50 @@ export const constructivism: DesignStyle = {
   components: {
     button: {
       name: "按钮",
-      description: "构成主义风格按钮",
+      description:
+        "构成主义侵入按钮：黑色色块从左侧横扫，hover 时斜向位移 + 阴影骤减，active 时苏维埃配色翻转（红字黑底）",
       code: `<button className="
-  px-8 py-3
+  group relative px-8 py-3
   bg-[#cc0000] text-[#f2e8d5]
-  font-sans font-black uppercase tracking-widest text-sm
-  rounded-none
-  border-4 border-[#1a1a1a]
-  shadow-[4px_4px_0_#1a1a1a]
+  font-sans font-black uppercase tracking-[0.2em] text-sm
+  rounded-none border-4 border-[#1a1a1a]
+  shadow-[6px_6px_0_#1a1a1a]
   hover:shadow-[2px_2px_0_#1a1a1a]
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
-  transition-all duration-150
+  hover:translate-x-[4px] hover:translate-y-[4px]
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none
+  active:bg-[#1a1a1a] active:text-[#cc0000]
+  transition-all duration-75 ease-linear
+  overflow-hidden
   -rotate-1
 ">
-  ACTION
+  {/* Black block invasion — sweeps in from the left on hover */}
+  <div className="absolute inset-0 bg-[#1a1a1a] -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear" />
+  <span className="relative z-10">ACTION</span>
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "构成主义风格卡片",
-      code: `<div className="
-  relative p-0
-  bg-[#f2e8d5]
-  border-4 border-[#1a1a1a]
-  rounded-none
-  shadow-[6px_6px_0_#1a1a1a]
-  overflow-hidden
-">
-  {/* Diagonal red banner */}
-  <div className="bg-[#cc0000] px-6 py-3 -rotate-0">
-    <h3 className="text-lg font-sans font-black text-[#f2e8d5] uppercase tracking-[0.2em]">
+      description:
+        "构成主义卡片：group-hover 时红色横幅变黑、文字变红，对角分隔线归零，色块翻转——整张卡像宣传册翻面",
+      code: `<div className="group relative p-0 bg-[#f2e8d5] border-4 border-[#1a1a1a] rounded-none shadow-[6px_6px_0_#1a1a1a] overflow-hidden">
+  {/* Banner — switches from red to black on group-hover */}
+  <div className="bg-[#cc0000] group-hover:bg-[#1a1a1a] px-6 py-3 transition-colors duration-75 ease-linear">
+    <h3 className="text-lg font-sans font-black text-[#f2e8d5] group-hover:text-[#cc0000] uppercase tracking-[0.2em] transition-colors duration-75 ease-linear">
       MANIFESTO
     </h3>
   </div>
 
   <div className="p-6">
-    {/* Diagonal accent line */}
-    <div className="w-full h-1 bg-[#1a1a1a] mb-4 -rotate-2" />
+    {/* Diagonal accent line — tilted at rest, straightens on hover */}
+    <div className="w-full h-1 bg-[#1a1a1a] mb-4 -rotate-2 group-hover:rotate-0 transition-transform duration-75 ease-linear" />
     <p className="text-[#1a1a1a] font-sans font-bold leading-tight text-sm uppercase tracking-wider">
       Art must serve the revolution. Design is a weapon of progress and transformation.
     </p>
+    {/* Color swatches — red/black swap on hover */}
     <div className="mt-4 flex gap-2">
-      <span className="w-4 h-4 bg-[#cc0000] inline-block" />
-      <span className="w-4 h-4 bg-[#1a1a1a] inline-block" />
+      <span className="w-4 h-4 bg-[#cc0000] group-hover:bg-[#1a1a1a] inline-block transition-colors duration-75" />
+      <span className="w-4 h-4 bg-[#1a1a1a] group-hover:bg-[#cc0000] inline-block transition-colors duration-75" />
       <span className="w-4 h-4 bg-[#d4a843] inline-block" />
     </div>
   </div>
@@ -102,7 +102,7 @@ export const constructivism: DesignStyle = {
     },
     input: {
       name: "输入框",
-      description: "构成主义风格输入框",
+      description: "构成主义输入框：粗边框，聚焦时红色阴影框切入，零延迟",
       code: `<input
   type="text"
   placeholder="INPUT TEXT..."
@@ -114,24 +114,24 @@ export const constructivism: DesignStyle = {
     text-[#1a1a1a] placeholder-[#8b4513]/50
     font-sans font-bold uppercase tracking-wider text-sm
     focus:border-[#cc0000]
-    focus:shadow-[0_0_0_2px_#cc0000]
+    focus:shadow-[4px_4px_0_#cc0000]
     focus:outline-none
-    transition-all duration-150
+    transition-all duration-75 ease-linear
   "
 />`,
     },
     hero: {
       name: "Hero 区块",
-      description: "构成主义风格 Hero",
+      description: "构成主义 Hero：对角红色分割、几何黑块、海报式排版",
       code: `<section className="
   min-h-screen
   flex items-center justify-center
   bg-[#f2e8d5]
   relative overflow-hidden
 ">
-  {/* Diagonal red block */}
+  {/* Diagonal red block — skewed geometric slab */}
   <div className="absolute top-0 right-0 w-1/3 h-full bg-[#cc0000] -skew-x-12 translate-x-16" />
-  {/* Black geometric accent */}
+  {/* Black geometric accent — rotated square at corner */}
   <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#1a1a1a] rotate-45 -translate-x-24 translate-y-24" />
 
   <div className="relative z-10 text-left px-8 md:px-16 max-w-4xl">
@@ -146,16 +146,21 @@ export const constructivism: DesignStyle = {
       Art into life. Design as revolution.
     </p>
     <button className="
+      group relative
       px-12 py-4
       bg-[#1a1a1a] text-[#f2e8d5]
       font-sans font-black uppercase tracking-[0.3em]
       rounded-none border-4 border-[#1a1a1a]
       shadow-[6px_6px_0_#cc0000]
-      hover:shadow-[3px_3px_0_#cc0000]
-      hover:translate-x-[3px] hover:translate-y-[3px]
-      transition-all duration-150
+      hover:shadow-[2px_2px_0_#cc0000]
+      hover:translate-x-[4px] hover:translate-y-[4px]
+      active:translate-x-[6px] active:translate-y-[6px]
+      active:shadow-none active:bg-[#cc0000] active:text-[#1a1a1a]
+      transition-all duration-75 ease-linear
+      overflow-hidden
     ">
-      Begin
+      <div className="absolute inset-0 bg-[#cc0000] -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear" />
+      <span className="relative z-10">BEGIN</span>
     </button>
   </div>
 </section>`,
@@ -217,6 +222,7 @@ export const constructivism: DesignStyle = {
 - 使用柔和字重 font-light font-normal font-medium
 - 使用超过三色体系的配色
 - 使用曲线和有机形状
+- 使用超过 duration-100 的过渡（构成主义是机械的，不是流畅的）
 
 ## 必须遵守
 
@@ -224,11 +230,20 @@ export const constructivism: DesignStyle = {
 - 纯黑 bg-[#1a1a1a] text-[#1a1a1a] border-[#1a1a1a]
 - 泛黄纸色 bg-[#f2e8d5]
 - 尖锐直角 rounded-none
-- 硬边阴影 shadow-[4px_4px_0_#1a1a1a]
-- 超粗字体 font-black font-bold uppercase
-- 宽字距 tracking-wider tracking-[0.3em]
+- 硬边阴影 shadow-[4px_4px_0_#1a1a1a] 或 shadow-[6px_6px_0_#1a1a1a]
+- 超粗字体 font-black uppercase
+- 宽字距 tracking-wider tracking-[0.2em] tracking-[0.3em]
 - 粗边框 border-4 border-[#1a1a1a]
 - 对角线元素 -rotate-2 skew-x-3
+- 交互按钮必须用 group 包裹以支持侵入色块
+
+## Animation & Interaction Rules
+
+- Block Invasion: 按钮内必须有一个 absolute inset-0 黑色覆盖层（bg-[#1a1a1a] 或 bg-[#cc0000]），初始 -translate-x-full，group-hover:translate-x-0，用 transition-transform duration-100 ease-linear 横扫。文字放在 relative z-10 的 span 内。
+- Diagonal Aggression: hover 时元素斜向位移——X 和 Y 同时移动（hover:translate-x-[4px] hover:translate-y-[4px]），模拟版画压下去的方向感。阴影同步缩小（shadow-[6px] → shadow-[2px]）。
+- Soviet Reversal: active 时配色翻转——苏维埃红底按钮变黑底红字（active:bg-[#1a1a1a] active:text-[#cc0000]）；黑底按钮变红底黑字（active:bg-[#cc0000] active:text-[#1a1a1a]）。影子骤归零（active:shadow-none）。
+- Line Snap: 卡片内的对角分隔线（-rotate-2）在 group-hover 时 rotate-0 归正，模拟革命"纠正"秩序的紧张感。
+- Mechanical Easing: 所有动画使用 duration-75 ease-linear 或 duration-100 ease-linear。严禁 ease-in-out 或 ease（太柔和）。
 
 ## 配色
 
@@ -243,7 +258,16 @@ export const constructivism: DesignStyle = {
 - 对角线分割
 - 几何块面碰撞
 - 极端字重对比
-- 左对齐为主`,
+- 左对齐为主
+
+## 自检
+
+每次生成代码后检查：
+1. 按钮是 group 包裹，内有黑色侵入层（-translate-x-full → group-hover:translate-x-0）
+2. hover 斜向位移（translate-x + translate-y 同时移动）
+3. active 配色翻转（红↔黑），shadow-none
+4. 所有动画 duration-75/100 ease-linear
+5. 无任何圆角、柔和阴影、渐变`,
 
   examplePrompts: [
     {
