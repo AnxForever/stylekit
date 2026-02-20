@@ -1,92 +1,53 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { Menu, Search, MoreVertical, Plus, Check, Star, Zap, Shield, Layers, Grid, Palette } from "lucide-react";
 
-/* ── data ─────────────────────────────────────────────── */
-const features = [
-  { icon: "layers", title: "Elevation System", desc: "Shadows communicate depth and spatial relationships between surfaces." },
-  { icon: "palette", title: "Bold Color", desc: "Intentional use of color creates hierarchy and draws attention to key elements." },
-  { icon: "touch_app", title: "Responsive Motion", desc: "Meaningful animations provide feedback and guide users through interactions." },
-  { icon: "grid_on", title: "8dp Grid", desc: "All spacing follows an 8dp baseline grid for visual harmony and consistency." },
-];
-
-const elevationLevels = [
-  { dp: 0, label: "dp0 - Flat", shadow: "shadow-none", bg: "bg-white" },
-  { dp: 1, label: "dp1 - Resting", shadow: "shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)]", bg: "bg-white" },
-  { dp: 2, label: "dp2 - Raised", shadow: "shadow-[0_3px_6px_rgba(0,0,0,0.16),0_3px_6px_rgba(0,0,0,0.23)]", bg: "bg-white" },
-  { dp: 4, label: "dp4 - Hover", shadow: "shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]", bg: "bg-white" },
-  { dp: 8, label: "dp8 - Picked Up", shadow: "shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)]", bg: "bg-white" },
-];
-
-const taskList = [
-  { id: 1, title: "Review design system tokens", done: true },
-  { id: 2, title: "Update elevation guidelines", done: true },
-  { id: 3, title: "Create component library", done: false },
-  { id: 4, title: "Write accessibility audit", done: false },
-  { id: 5, title: "Prepare release notes", done: false },
-];
-
-const colorTokens = [
-  { name: "Primary", hex: "#6200ee", tw: "bg-[#6200ee]", text: "text-white" },
-  { name: "Primary Variant", hex: "#3700b3", tw: "bg-[#3700b3]", text: "text-white" },
-  { name: "Secondary", hex: "#03dac6", tw: "bg-[#03dac6]", text: "text-black" },
-  { name: "Background", hex: "#fafafa", tw: "bg-[#fafafa]", text: "text-black" },
-  { name: "Surface", hex: "#ffffff", tw: "bg-white", text: "text-black" },
-  { name: "Error", hex: "#b00020", tw: "bg-[#b00020]", text: "text-white" },
-  { name: "On Primary", hex: "#ffffff", tw: "bg-white", text: "text-black" },
-  { name: "On Secondary", hex: "#000000", tw: "bg-black", text: "text-white" },
-];
-
-const doRules = [
-  "Use elevation shadows to express hierarchy",
-  "Apply ripple effect for click feedback",
-  "Use bold, vivid primary and accent colors",
-  "Follow 8dp spacing grid for all layouts",
-  "Use Roboto font family throughout",
-  "Add meaningful micro-animations for transitions",
-];
-
-const dontRules = [
-  "Use inconsistent shadow depths across surfaces",
-  "Use overly muted or pastel color palettes",
-  "Omit interactive feedback on tappable elements",
-  "Break the 8dp grid spacing system",
-  "Skip active:scale on buttons (Material Pseudo-Ripple)",
-  "Use non-standard easing curves (must use cubic-bezier(0.4,0,0.2,1))",
-];
-
-/* ── hooks ────────────────────────────────────────────── */
-function useInView() {
+// Inline useInView hook
+function useInView(options?: IntersectionObserverInit) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
-      { threshold: 0.15 },
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options }
     );
-    obs.observe(el);
-    return () => obs.disconnect();
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
-function RevealBlock({ children, className = "", delay = 0 }: {
+// Inline RevealBlock component
+function RevealBlock({
+  children,
+  delay = 0,
+  className = "",
+}: {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
+  className?: string;
 }) {
   const { ref, inView } = useInView();
+
   return (
     <div
       ref={ref}
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transform: inView ? "translateY(0px)" : "translateY(24px)",
+        transition: `opacity 600ms cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 600ms cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
       }}
     >
       {children}
@@ -94,441 +55,843 @@ function RevealBlock({ children, className = "", delay = 0 }: {
   );
 }
 
-/* ── sub-components ───────────────────────────────────── */
-function MaterialIcon({ name, className = "" }: { name: string; className?: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    layers: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z" />
-      </svg>
-    ),
-    palette: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.2-.64-1.67-.08-.1-.13-.21-.13-.33 0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
-      </svg>
-    ),
-    touch_app: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z" />
-      </svg>
-    ),
-    grid_on: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z" />
-      </svg>
-    ),
-  };
-  return <>{icons[name] ?? null}</>;
-}
+// Elevation dp values mapped to box-shadow CSS strings
+const elevationShadows: Record<number, string> = {
+  1: "0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24)",
+  2: "0 3px 6px rgba(0,0,0,0.16),0 3px 6px rgba(0,0,0,0.23)",
+  4: "0 10px 20px rgba(0,0,0,0.19),0 6px 6px rgba(0,0,0,0.23)",
+  8: "0 14px 28px rgba(0,0,0,0.25),0 10px 10px rgba(0,0,0,0.22)",
+  16: "0 19px 38px rgba(0,0,0,0.30),0 15px 12px rgba(0,0,0,0.22)",
+  24: "0 24px 48px rgba(0,0,0,0.35),0 18px 14px rgba(0,0,0,0.22)",
+};
 
-function RippleButton({ children, variant = "filled", className = "" }: {
-  children: React.ReactNode;
-  variant?: "filled" | "outlined" | "text" | "tonal";
-  className?: string;
-}) {
-  const base =
-    "relative px-6 py-2.5 font-medium uppercase tracking-[0.08em] text-sm rounded overflow-hidden transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] active:scale-[0.98]";
-  const variants: Record<string, string> = {
-    filled:
-      "bg-[#6200ee] text-white shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),0_2px_2px_0_rgba(0,0,0,0.14),0_1px_5px_0_rgba(0,0,0,0.12)] hover:shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14),0_1px_10px_0_rgba(0,0,0,0.12)] hover:bg-[#7528e5]",
-    outlined:
-      "bg-transparent text-[#6200ee] border border-[#6200ee]/50 hover:bg-[#6200ee]/5 hover:border-[#6200ee]",
-    text: "bg-transparent text-[#6200ee] hover:bg-[#6200ee]/5",
-    tonal:
-      "bg-[#6200ee]/10 text-[#6200ee] hover:bg-[#6200ee]/15",
-  };
-  return (
-    <button type="button" className={`${base} ${variants[variant]} ${className}`}>
-      <span className="relative z-10">{children}</span>
-    </button>
-  );
-}
+const COMPONENT_TABS = ["Buttons", "Cards", "Inputs", "FABs"] as const;
+type ComponentTab = (typeof COMPONENT_TABS)[number];
 
-function MaterialCard({ title, subtitle, image }: { title: string; subtitle: string; image: string }) {
-  return (
-    <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] hover:shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] hover:-translate-y-1 transition-all duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden cursor-pointer group">
-      <div className="h-48 overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)]" />
-      </div>
-      <div className="p-4">
-        <h3 className="text-base font-medium text-black/87 mb-1">{title}</h3>
-        <p className="text-sm text-black/60">{subtitle}</p>
-      </div>
-      <div className="px-4 pb-4 flex gap-2">
-        <RippleButton variant="text">Read</RippleButton>
-        <RippleButton variant="text">Share</RippleButton>
-      </div>
-    </div>
-  );
-}
-
-function FloatingInputField({ id, label }: { id: string; label: string }) {
-  return (
-    <div className="relative pt-5">
-      <input
-        type="text"
-        id={id}
-        placeholder=" "
-        className="peer w-full px-4 py-3 bg-gray-50 border-b-2 border-gray-400 rounded-t-md text-black/85 focus:outline-none focus:border-[#6200ee] focus:bg-gray-100 transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-      />
-      <label
-        htmlFor={id}
-        className="absolute left-4 top-8 text-black/60 text-base transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#6200ee] peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs"
-      >
-        {label}
-      </label>
-    </div>
-  );
-}
-
-/* ── main ─────────────────────────────────────────────── */
 export default function ShowcaseContent() {
   const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"buttons" | "cards" | "inputs" | "elevation">("buttons");
+  const [activeComponentTab, setActiveComponentTab] =
+    useState<ComponentTab>("Buttons");
+  const [selectedElevation, setSelectedElevation] = useState<number>(4);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-black/87" style={{ fontFamily: "Roboto, -apple-system, BlinkMacSystemFont, sans-serif" }}>
-      <style>{`
-        @keyframes md-ripple {
-          0% { transform: scale(0); opacity: 0.4; }
-          100% { transform: scale(2.5); opacity: 0; }
-        }
-        .md-tab-indicator {
-          position: relative;
-        }
-        .md-tab-indicator::after {
-          content: '';
-          position: absolute;
-          bottom: 0; left: 0; right: 0;
-          height: 2px;
-          background: #6200ee;
-          transform: scaleX(0);
-          transition: transform 250ms cubic-bezier(0.4,0,0.2,1);
-        }
-        .md-tab-indicator.active::after {
-          transform: scaleX(1);
-        }
-        .md-fab-pulse {
-          animation: fab-pulse 2s ease-in-out infinite;
-        }
-        @keyframes fab-pulse {
-          0%, 100% { box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.2); }
-          50% { box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.2), 0 0 0 8px rgba(98,0,238,0.15); }
-        }
-      `}</style>
-
-      {/* ── Navigation (App Bar) ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#6200ee] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14),0_1px_10px_0_rgba(0,0,0,0.12)] flex items-center px-6">
+    <div className="min-h-screen bg-[#fafafa] font-sans text-gray-900">
+      {/* App Bar */}
+      <header
+        className="fixed top-0 left-0 right-0 h-16 bg-[#6200ee] z-50 flex items-center px-4"
+        style={{
+          boxShadow:
+            "0 2px 4px -1px rgba(0,0,0,0.2),0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12)",
+        }}
+      >
         <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
-          <Link href="/styles/material-design/showcase" className="text-white font-medium text-xl tracking-tight">
-            Material Design
-          </Link>
-          <nav className="flex items-center gap-6">
-            <Link href="/styles/material-design" className="text-white/70 hover:text-white text-sm font-medium uppercase tracking-wider transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-              Docs
-            </Link>
-            <Link href="/styles" className="text-white/70 hover:text-white text-sm font-medium uppercase tracking-wider transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-              Styles
-            </Link>
-          </nav>
+          <div className="flex items-center gap-4">
+            <button
+              className="w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]"
+              aria-label="Menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <span className="text-white font-medium text-xl tracking-wide">
+              Material Design
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              className="w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            <button
+              className="w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]"
+              aria-label="More"
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="pt-16 min-h-screen flex items-center bg-gradient-to-br from-[#6200ee] via-[#7c4dff] to-[#b388ff] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-[#03dac6]" style={{ filter: "blur(120px)" }} />
-          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full bg-[#ff0266]" style={{ filter: "blur(100px)" }} />
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
-          <div className="max-w-2xl">
-            <p
-              className="text-white/60 font-medium uppercase tracking-[0.2em] text-sm mb-6"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "all 0.6s cubic-bezier(0.4,0,0.2,1)",
-              }}
-            >
-              Design System
+      {/* Hero */}
+      <section className="pt-16 bg-gradient-to-br from-[#6200ee] via-[#7c4dff] to-[#b388ff] overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 py-20 md:py-32">
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition:
+                "opacity 700ms cubic-bezier(0.16,1,0.3,1) 0ms, transform 700ms cubic-bezier(0.16,1,0.3,1) 0ms",
+            }}
+          >
+            <p className="text-[#03dac6] font-medium text-sm uppercase tracking-[0.12em] mb-4">
+              Google Design System
             </p>
-            <h1
-              className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-8"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                transition: "all 0.7s cubic-bezier(0.4,0,0.2,1) 0.1s",
-              }}
-            >
-              Build beautiful,
+          </div>
+
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition:
+                "opacity 700ms cubic-bezier(0.16,1,0.3,1) 120ms, transform 700ms cubic-bezier(0.16,1,0.3,1) 120ms",
+            }}
+          >
+            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6">
+              Paper and
               <br />
-              usable products
-              <br />
-              <span className="text-[#03dac6]">faster.</span>
+              <span className="text-[#03dac6]">Ink</span>
             </h1>
-            <p
-              className="text-white/70 text-lg md:text-xl mb-12 max-w-md leading-relaxed"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "all 0.7s cubic-bezier(0.4,0,0.2,1) 0.25s",
-              }}
-            >
-              Material Design is a system of guidelines, components, and tools that support the best practices of user interface design.
+          </div>
+
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition:
+                "opacity 700ms cubic-bezier(0.16,1,0.3,1) 240ms, transform 700ms cubic-bezier(0.16,1,0.3,1) 240ms",
+            }}
+          >
+            <p className="text-white/80 text-lg md:text-xl max-w-xl leading-relaxed mb-10">
+              Elements have physical elevation via shadows. Bold color, meaningful
+              motion. Build beautiful, usable products faster.
             </p>
-            <div
-              className="flex gap-4"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "all 0.7s cubic-bezier(0.4,0,0.2,1) 0.4s",
-              }}
-            >
-              <button type="button" className="px-8 py-3 bg-white text-[#6200ee] font-medium uppercase tracking-[0.08em] text-sm rounded shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),0_2px_2px_0_rgba(0,0,0,0.14),0_1px_5px_0_rgba(0,0,0,0.12)] hover:shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14),0_1px_10px_0_rgba(0,0,0,0.12)] active:scale-[0.98] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                Get Started
-              </button>
-              <button type="button" className="px-8 py-3 bg-transparent text-white border border-white/30 font-medium uppercase tracking-[0.08em] text-sm rounded hover:bg-white/10 hover:border-white/50 active:scale-[0.98] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                Learn More
-              </button>
-            </div>
           </div>
 
-          {/* Floating Cards */}
-          <div className="hidden lg:block absolute right-12 top-1/2 -translate-y-1/2">
-            <div
-              className="w-64 bg-white rounded-xl shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] p-6 mb-4"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0) rotate(-2deg)" : "translateY(60px) rotate(-2deg)",
-                transition: "all 0.8s cubic-bezier(0.4,0,0.2,1) 0.3s",
+          <div
+            className="flex flex-wrap gap-4"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition:
+                "opacity 700ms cubic-bezier(0.16,1,0.3,1) 360ms, transform 700ms cubic-bezier(0.16,1,0.3,1) 360ms",
+            }}
+          >
+            <button
+              className="px-8 py-3 bg-[#03dac6] text-black font-medium uppercase tracking-[0.08em] text-sm rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]"
+              style={{ boxShadow: elevationShadows[4] }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                  elevationShadows[8];
+                (e.currentTarget as HTMLButtonElement).style.transform =
+                  "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                  elevationShadows[4];
+                (e.currentTarget as HTMLButtonElement).style.transform =
+                  "translateY(0)";
               }}
             >
-              <div className="w-10 h-10 bg-[#6200ee] rounded-full flex items-center justify-center mb-4">
-                <MaterialIcon name="layers" className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="font-medium text-black/87 mb-1">Elevation</h3>
-              <p className="text-sm text-black/54">Surfaces at different elevations</p>
-            </div>
+              Get Started
+            </button>
+            <button className="px-8 py-3 border-2 border-white/50 text-white font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-white/10 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+              Learn More
+            </button>
+          </div>
+
+          {/* Hero floating card */}
+          <div
+            className="mt-16 md:mt-20"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(48px)",
+              transition:
+                "opacity 800ms cubic-bezier(0.16,1,0.3,1) 480ms, transform 800ms cubic-bezier(0.16,1,0.3,1) 480ms",
+            }}
+          >
             <div
-              className="w-64 bg-white rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)] p-6 ml-12"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0) rotate(1deg)" : "translateY(60px) rotate(1deg)",
-                transition: "all 0.8s cubic-bezier(0.4,0,0.2,1) 0.5s",
-              }}
+              className="bg-white rounded-2xl p-6 md:p-8 max-w-2xl"
+              style={{ boxShadow: elevationShadows[8] }}
             >
-              <div className="w-10 h-10 bg-[#03dac6] rounded-full flex items-center justify-center mb-4">
-                <MaterialIcon name="palette" className="w-5 h-5 text-black" />
-              </div>
-              <h3 className="font-medium text-black/87 mb-1">Color System</h3>
-              <p className="text-sm text-black/54">Bold, intentional color use</p>
+              <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2">
+                Design Principle
+              </p>
+              <p className="text-gray-900 text-xl md:text-2xl font-medium leading-snug">
+                {"Material is the metaphor. A material metaphor is the unifying theory of a rationalized space and a system of motion."}
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section className="py-24 px-6 max-w-6xl mx-auto">
-        <RevealBlock className="mb-16">
-          <p className="text-[#6200ee] font-medium uppercase tracking-[0.2em] text-sm mb-4">Foundation</p>
-          <h2 className="text-3xl md:text-5xl font-bold text-black/87 tracking-tight mb-4">
-            Core Principles
-          </h2>
-          <p className="text-black/60 text-lg max-w-xl">
-            Material Design is built on a foundation of four key principles that guide every design decision.
-          </p>
-        </RevealBlock>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {features.map((f, i) => (
-            <RevealBlock key={f.icon} delay={i * 0.1}>
-              <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] hover:shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] hover:-translate-y-1 transition-all duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)] p-8 group cursor-pointer">
-                <div className="w-12 h-12 bg-[#6200ee]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#6200ee] transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                  <MaterialIcon name={f.icon} className="w-6 h-6 text-[#6200ee] group-hover:text-white transition-colors duration-[250ms]" />
-                </div>
-                <h3 className="text-xl font-medium text-black/87 mb-2">{f.title}</h3>
-                <p className="text-black/60 text-sm leading-relaxed">{f.desc}</p>
-              </div>
-            </RevealBlock>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Component Demos (Tab-switched) ── */}
-      <section className="py-24 px-6 bg-white">
+      {/* Elevation System Demo */}
+      <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock className="mb-12">
-            <p className="text-[#6200ee] font-medium uppercase tracking-[0.2em] text-sm mb-4">Components</p>
-            <h2 className="text-3xl md:text-5xl font-bold text-black/87 tracking-tight">
-              Material Components
+          <RevealBlock>
+            <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2 text-center">
+              Core Concept
+            </p>
+            <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-4 text-center">
+              Elevation System
             </h2>
+            <p className="text-gray-600 text-center max-w-xl mx-auto mb-12">
+              Every surface has a z-axis position. Shadow depth communicates
+              elevation above the base surface. Click a card to select it.
+            </p>
           </RevealBlock>
 
-          {/* Tab Bar */}
-          <div className="flex border-b border-black/12 mb-12">
-            {(["buttons", "cards", "inputs", "elevation"] as const).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-                className={`md-tab-indicator px-6 py-4 font-medium uppercase tracking-[0.08em] text-sm transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${activeTab === tab ? "active text-[#6200ee]" : "text-black/60 hover:text-black/87 hover:bg-black/5"}`}
-              >
-                {tab}
-              </button>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            {([1, 2, 4, 8, 16, 24] as const).map((dp, i) => (
+              <RevealBlock key={dp} delay={i * 60}>
+                <button
+                  onClick={() => setSelectedElevation(dp)}
+                  className="w-full bg-white rounded-xl p-6 flex flex-col items-center gap-3 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1"
+                  style={{
+                    boxShadow:
+                      selectedElevation === dp
+                        ? elevationShadows[8]
+                        : elevationShadows[dp],
+                    border:
+                      selectedElevation === dp
+                        ? "2px solid #6200ee"
+                        : "2px solid transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedElevation !== dp) {
+                      (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                        elevationShadows[8];
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedElevation !== dp) {
+                      (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                        elevationShadows[dp];
+                    }
+                  }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-lg bg-[#6200ee]/10"
+                    style={{ boxShadow: elevationShadows[dp] }}
+                  />
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    dp{dp}
+                  </span>
+                </button>
+              </RevealBlock>
             ))}
           </div>
 
-          {/* Tab Content */}
-          <div className="min-h-[400px]">
-            {activeTab === "buttons" && (
-              <RevealBlock>
-                <div className="bg-[#fafafa] rounded-xl p-8 md:p-12">
-                  <h3 className="text-xl font-medium text-black/87 mb-2">Button Variants</h3>
-                  <p className="text-black/60 text-sm mb-8">Material buttons come in four variants, each with specific use cases and elevation levels.</p>
-                  <div className="space-y-8">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em] text-black/40 font-medium mb-4">Filled (High Emphasis)</p>
-                      <div className="flex flex-wrap gap-4">
-                        <RippleButton variant="filled">Submit</RippleButton>
-                        <RippleButton variant="filled" className="bg-[#03dac6] text-black hover:bg-[#00c4b4]">Secondary</RippleButton>
-                        <RippleButton variant="filled" className="bg-[#b00020] hover:bg-[#9b001a]">Error</RippleButton>
-                      </div>
+          <RevealBlock delay={200}>
+            <div
+              className="bg-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-4"
+              style={{ boxShadow: elevationShadows[selectedElevation] }}
+            >
+              <div className="flex-1">
+                <p className="font-medium text-gray-900 mb-1">
+                  dp{selectedElevation} —{" "}
+                  {selectedElevation === 1
+                    ? "Resting state (switch, card)"
+                    : selectedElevation === 2
+                      ? "Card (hover state)"
+                      : selectedElevation === 4
+                        ? "App Bar top"
+                        : selectedElevation === 8
+                          ? "Card (picked up), button (pressed)"
+                          : selectedElevation === 16
+                            ? "Nav drawer, Modal side sheet"
+                            : "Dialog, Picker"}
+                </p>
+                <p className="text-sm text-gray-500 font-mono">
+                  {elevationShadows[selectedElevation]}
+                </p>
+              </div>
+              <div className="text-[#6200ee] font-medium text-sm uppercase tracking-[0.08em]">
+                Selected
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Component Demo */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock>
+            <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2 text-center">
+              Component Library
+            </p>
+            <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-4 text-center">
+              Material Components
+            </h2>
+            <p className="text-gray-600 text-center max-w-xl mx-auto mb-10">
+              Production-ready components built on the Material Design specification.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={100}>
+            <div className="flex border-b border-gray-200 mb-10 overflow-x-auto">
+              {COMPONENT_TABS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveComponentTab(tab)}
+                  className={`px-6 py-4 font-medium text-sm uppercase tracking-[0.08em] whitespace-nowrap transition-colors ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] relative flex-shrink-0 ${
+                    activeComponentTab === tab
+                      ? "text-[#6200ee]"
+                      : "text-gray-500 hover:text-gray-800"
+                  }`}
+                >
+                  {tab}
+                  {activeComponentTab === tab && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6200ee]" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {activeComponentTab === "Buttons" && (
+            <RevealBlock>
+              <div className="space-y-8">
+                <div>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-[0.08em] mb-4">
+                    Contained
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    {[
+                      { label: "Contained", bg: "#6200ee", text: "text-white" },
+                      { label: "Secondary", bg: "#03dac6", text: "text-black" },
+                      { label: "Destructive", bg: "#b00020", text: "text-white" },
+                    ].map(({ label, bg, text }) => (
+                      <button
+                        key={label}
+                        className={`px-6 py-2 font-medium uppercase tracking-[0.08em] text-sm rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1 ${text}`}
+                        style={{ background: bg, boxShadow: elevationShadows[2] }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                            elevationShadows[8];
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                            elevationShadows[2];
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                    <button className="px-6 py-2 bg-gray-300 text-gray-500 font-medium uppercase tracking-[0.08em] text-sm rounded-full cursor-not-allowed">
+                      Disabled
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-[0.08em] mb-4">
+                    Outlined
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="px-6 py-2 border-2 border-[#6200ee] text-[#6200ee] font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-[#6200ee]/8 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+                      Primary
+                    </button>
+                    <button className="px-6 py-2 border-2 border-[#03dac6] text-[#018786] font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-[#03dac6]/10 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+                      Secondary
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-[0.08em] mb-4">
+                    Text
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="px-6 py-2 text-[#6200ee] font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-[#6200ee]/8 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+                      Text Button
+                    </button>
+                    <button className="px-6 py-2 text-[#018786] font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-[#03dac6]/10 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+                      Secondary Text
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          )}
+
+          {activeComponentTab === "Cards" && (
+            <RevealBlock>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: <Zap className="w-12 h-12 text-white" />,
+                    gradient: "from-[#6200ee] to-[#b388ff]",
+                    title: "Performance",
+                    body: "Lightning-fast rendering with hardware-accelerated animations and optimized layout algorithms.",
+                    action: "Explore",
+                  },
+                  {
+                    icon: <Star className="w-12 h-12 text-white" />,
+                    gradient: "from-[#03dac6] to-[#018786]",
+                    title: "Beautiful",
+                    body: "Stunning interfaces that delight users with meaningful motion and bold color choices.",
+                    action: "Discover",
+                  },
+                  {
+                    icon: <Shield className="w-12 h-12 text-white" />,
+                    gradient: "from-[#7c4dff] to-[#651fff]",
+                    title: "Reliable",
+                    body: "Tested across platforms and screen sizes. Consistent behavior you can depend on.",
+                    action: "Learn",
+                  },
+                ].map((card, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl overflow-hidden transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] hover:-translate-y-1 cursor-pointer"
+                    style={{ boxShadow: elevationShadows[1] }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        elevationShadows[8];
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        elevationShadows[1];
+                    }}
+                  >
+                    <div
+                      className={`h-44 bg-gradient-to-br ${card.gradient} flex items-center justify-center`}
+                    >
+                      {card.icon}
                     </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em] text-black/40 font-medium mb-4">Outlined (Medium Emphasis)</p>
-                      <div className="flex flex-wrap gap-4">
-                        <RippleButton variant="outlined">Cancel</RippleButton>
-                        <RippleButton variant="outlined" className="text-[#03dac6] border-[#03dac6]/50 hover:border-[#03dac6] hover:bg-[#03dac6]/5">Secondary</RippleButton>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em] text-black/40 font-medium mb-4">Text (Low Emphasis)</p>
-                      <div className="flex flex-wrap gap-4">
-                        <RippleButton variant="text">Learn More</RippleButton>
-                        <RippleButton variant="text">Dismiss</RippleButton>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em] text-black/40 font-medium mb-4">Tonal (Medium Emphasis)</p>
-                      <div className="flex flex-wrap gap-4">
-                        <RippleButton variant="tonal">Option</RippleButton>
-                        <RippleButton variant="tonal" className="bg-[#03dac6]/10 text-[#018786] hover:bg-[#03dac6]/20">Tonal Alt</RippleButton>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em] text-black/40 font-medium mb-4">Floating Action Button</p>
-                      <button type="button" className="md-fab-pulse w-14 h-14 bg-[#03dac6] rounded-2xl flex items-center justify-center shadow-[0_6px_10px_0_rgba(0,0,0,0.14),0_1px_18px_0_rgba(0,0,0,0.12),0_3px_5px_-1px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_10px_1px_rgba(0,0,0,0.14),0_3px_14px_2px_rgba(0,0,0,0.12),0_5px_5px_-3px_rgba(0,0,0,0.2)] active:scale-[0.98] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                        <svg viewBox="0 0 24 24" fill="black" className="w-6 h-6"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
+                    <div className="p-6">
+                      <h3 className="text-xl font-medium text-gray-900 mb-2">
+                        {card.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                        {card.body}
+                      </p>
+                      <button className="text-[#6200ee] font-medium uppercase tracking-[0.08em] text-sm px-4 py-2 -ml-4 rounded-full hover:bg-[#6200ee]/8 transition-colors ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]">
+                        {card.action}
                       </button>
                     </div>
                   </div>
-                </div>
-              </RevealBlock>
-            )}
+                ))}
+              </div>
+            </RevealBlock>
+          )}
 
-            {activeTab === "cards" && (
-              <RevealBlock>
-                <div className="bg-[#fafafa] rounded-xl p-8 md:p-12">
-                  <h3 className="text-xl font-medium text-black/87 mb-2">Card Surfaces</h3>
-                  <p className="text-black/60 text-sm mb-8">Cards contain content and actions about a single subject. Hover to see elevation change.</p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <MaterialCard title="Material Surface" subtitle="Elevation responds to interaction" image="https://picsum.photos/seed/md1/600/400" />
-                    <MaterialCard title="Color System" subtitle="Bold, intentional color palette" image="https://picsum.photos/seed/md2/600/400" />
-                    <MaterialCard title="Motion Design" subtitle="Meaningful responsive animations" image="https://picsum.photos/seed/md3/600/400" />
+          {activeComponentTab === "Inputs" && (
+            <RevealBlock>
+              <div className="max-w-lg mx-auto space-y-6">
+                <p className="text-sm text-gray-500 mb-4">
+                  Floating labels animate upward on focus using the CSS{" "}
+                  <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[#6200ee] text-xs">
+                    peer
+                  </code>{" "}
+                  pattern. Click each field to see the animation.
+                </p>
+                {[
+                  { type: "text", label: "Full Name" },
+                  { type: "email", label: "Email Address" },
+                  { type: "password", label: "Password" },
+                ].map(({ type, label }) => (
+                  <div key={label} className="relative">
+                    <input
+                      type={type}
+                      placeholder=" "
+                      className="peer w-full px-4 pt-6 pb-2 bg-gray-100 border-0 border-b-2 border-gray-400 rounded-t-lg text-gray-900 focus:outline-none focus:border-[#6200ee] focus:bg-gray-50 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms]"
+                    />
+                    <label className="absolute left-4 top-4 text-gray-500 text-base transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#6200ee] peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs">
+                      {label}
+                    </label>
                   </div>
-                  <div className="mt-8 bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] p-6">
-                    <h4 className="font-medium text-black/87 mb-4">Task List</h4>
-                    <div className="divide-y divide-black/8">
-                      {taskList.map((task) => (
-                        <div key={task.id} className="flex items-center gap-4 py-3 group cursor-pointer hover:bg-black/[0.02] -mx-6 px-6 transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                          <div className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center transition-colors duration-[250ms] ${task.done ? "bg-[#6200ee] border-[#6200ee]" : "border-black/30 group-hover:border-[#6200ee]"}`}>
-                            {task.done && <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>}
-                          </div>
-                          <span className={`text-sm ${task.done ? "text-black/40 line-through" : "text-black/87"}`}>{task.title}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
+                ))}
+                <button
+                  className="w-full py-3 bg-[#6200ee] text-white font-medium uppercase tracking-[0.08em] text-sm rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1"
+                  style={{ boxShadow: elevationShadows[2] }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      elevationShadows[8];
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      elevationShadows[2];
+                  }}
+                >
+                  Sign In
+                </button>
+              </div>
+            </RevealBlock>
+          )}
 
-            {activeTab === "inputs" && (
-              <RevealBlock>
-                <div className="bg-[#fafafa] rounded-xl p-8 md:p-12">
-                  <h3 className="text-xl font-medium text-black/87 mb-2">Text Fields</h3>
-                  <p className="text-black/60 text-sm mb-8">Material text fields feature floating labels that animate on focus. Click the fields to see the interaction.</p>
-                  <div className="max-w-md space-y-6">
-                    <FloatingInputField id="md-name" label="Full Name" />
-                    <FloatingInputField id="md-email" label="Email Address" />
-                    <FloatingInputField id="md-subject" label="Subject" />
-                    <div className="relative pt-5">
-                      <textarea
-                        id="md-message"
-                        rows={4}
-                        placeholder=" "
-                        className="peer w-full px-4 py-3 bg-gray-50 border-b-2 border-gray-400 rounded-t-md text-black/85 focus:outline-none focus:border-[#6200ee] focus:bg-gray-100 transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] resize-none"
-                      />
-                      <label
-                        htmlFor="md-message"
-                        className="absolute left-4 top-8 text-black/60 text-base transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#6200ee] peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs"
+          {activeComponentTab === "FABs" && (
+            <RevealBlock>
+              <div className="space-y-8">
+                <p className="text-sm text-gray-500">
+                  Floating Action Buttons represent the primary action on a screen.
+                  They float at dp6 and use the secondary color by convention.
+                </p>
+                <div className="flex flex-wrap items-end gap-8">
+                  {[
+                    {
+                      size: "w-10 h-10",
+                      icon: <Plus className="w-4 h-4" />,
+                      label: "Mini",
+                    },
+                    {
+                      size: "w-14 h-14",
+                      icon: <Plus className="w-6 h-6" />,
+                      label: "Standard",
+                    },
+                    {
+                      size: "w-14 h-14",
+                      icon: <Star className="w-6 h-6" />,
+                      label: "Primary",
+                      bg: "#6200ee",
+                      text: "text-white",
+                    },
+                  ].map(({ size, icon, label, bg, text }) => (
+                    <div key={label} className="flex flex-col items-center gap-3">
+                      <button
+                        className={`${size} rounded-full flex items-center justify-center transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1 ${text ?? "text-black"}`}
+                        style={{
+                          background: bg ?? "#03dac6",
+                          boxShadow: elevationShadows[4],
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                            elevationShadows[8];
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                            elevationShadows[4];
+                        }}
                       >
-                        Message
-                      </label>
+                        {icon}
+                      </button>
+                      <span className="text-xs text-gray-500 uppercase tracking-wide">
+                        {label}
+                      </span>
                     </div>
-                    <RippleButton variant="filled">Send Message</RippleButton>
+                  ))}
+                  <div className="flex flex-col items-center gap-3">
+                    <button
+                      className="h-14 px-6 bg-[#03dac6] rounded-full flex items-center gap-3 text-black font-medium uppercase tracking-[0.08em] text-sm transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1"
+                      style={{ boxShadow: elevationShadows[4] }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                          elevationShadows[8];
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                          elevationShadows[4];
+                      }}
+                    >
+                      <Plus className="w-5 h-5" />
+                      Compose
+                    </button>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">
+                      Extended
+                    </span>
                   </div>
                 </div>
-              </RevealBlock>
-            )}
-
-            {activeTab === "elevation" && (
-              <RevealBlock>
-                <div className="bg-[#fafafa] rounded-xl p-8 md:p-12">
-                  <h3 className="text-xl font-medium text-black/87 mb-2">Elevation System</h3>
-                  <p className="text-black/60 text-sm mb-8">Material uses shadows to express elevation. Higher surfaces cast larger shadows. Hover each card to see the effect.</p>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                    {elevationLevels.map((level) => (
-                      <div key={level.dp} className={`${level.bg} ${level.shadow} rounded-xl p-6 text-center hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] transition-all duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer`}>
-                        <p className="text-2xl font-bold text-[#6200ee] mb-2">{level.dp}</p>
-                        <p className="text-xs text-black/60">{level.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
-          </div>
+              </div>
+            </RevealBlock>
+          )}
         </div>
       </section>
 
-      {/* ── Color Palette ── */}
-      <section className="py-24 px-6 bg-[#fafafa]">
+      {/* Color System */}
+      <section className="py-20 px-6 bg-[#fafafa]">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock className="mb-12">
-            <p className="text-[#6200ee] font-medium uppercase tracking-[0.2em] text-sm mb-4">Tokens</p>
-            <h2 className="text-3xl md:text-5xl font-bold text-black/87 tracking-tight">
+          <RevealBlock>
+            <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2 text-center">
+              Visual Language
+            </p>
+            <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-4 text-center">
               Color System
             </h2>
+            <p className="text-gray-600 text-center max-w-xl mx-auto mb-12">
+              Color is used intentionally to convey meaning, establish hierarchy,
+              and create consistent brand identity.
+            </p>
           </RevealBlock>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {colorTokens.map((c, i) => (
-              <RevealBlock key={c.name} delay={i * 0.05}>
-                <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] overflow-hidden group hover:shadow-[0_3px_6px_rgba(0,0,0,0.16),0_3px_6px_rgba(0,0,0,0.23)] transition-shadow duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-                  <div className={`h-24 ${c.tw} ${c.text} flex items-end p-4`}>
-                    <span className="text-xs font-medium uppercase tracking-wider opacity-80">{c.name}</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {[
+              {
+                label: "Primary",
+                main: "#6200ee",
+                variants: ["#7c4dff", "#b388ff", "#ede7f6"],
+                textMain: "text-white",
+              },
+              {
+                label: "Secondary",
+                main: "#03dac6",
+                variants: ["#018786", "#80cbc4", "#e0f2f1"],
+                textMain: "text-black",
+              },
+              {
+                label: "Error",
+                main: "#b00020",
+                variants: ["#cf6679", "#fcd3d9", "#fff8f8"],
+                textMain: "text-white",
+              },
+              {
+                label: "Neutral",
+                main: "#212121",
+                variants: ["#616161", "#9e9e9e", "#f5f5f5"],
+                textMain: "text-white",
+              },
+            ].map((swatch, i) => (
+              <RevealBlock key={swatch.label} delay={i * 80}>
+                <div
+                  className="rounded-2xl overflow-hidden"
+                  style={{ boxShadow: elevationShadows[1] }}
+                >
+                  <div
+                    className={`h-24 flex items-end p-4 ${swatch.textMain}`}
+                    style={{ background: swatch.main }}
+                  >
+                    <div>
+                      <p className="font-medium text-sm">{swatch.label}</p>
+                      <p className="text-xs opacity-80 font-mono">{swatch.main}</p>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <p className="text-sm font-mono text-black/87">{c.hex}</p>
+                  {swatch.variants.map((v, vi) => (
+                    <div
+                      key={v}
+                      className="h-10 flex items-center px-4"
+                      style={{ background: v }}
+                    >
+                      <span
+                        className="text-xs font-mono"
+                        style={{
+                          color:
+                            vi >= 1
+                              ? "#212121"
+                              : "rgba(255,255,255,0.9)",
+                        }}
+                      >
+                        {v}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          <RevealBlock delay={200}>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {[
+                { label: "Pink Accent", hex: "#ff0266" },
+                { label: "Yellow Accent", hex: "#ffde03" },
+                { label: "Green Accent", hex: "#00c853" },
+                { label: "Surface", hex: "#ffffff" },
+                { label: "Background", hex: "#fafafa" },
+                { label: "On Primary", hex: "#ffffff" },
+              ].map((c) => (
+                <div key={c.label} className="text-center">
+                  <div
+                    className="h-12 rounded-xl mb-2 border border-gray-200"
+                    style={{ background: c.hex }}
+                  />
+                  <p className="text-xs font-medium text-gray-700">{c.label}</p>
+                  <p className="text-xs text-gray-400 font-mono">{c.hex}</p>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Design Principles */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock>
+            <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2 text-center">
+              Philosophy
+            </p>
+            <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-4 text-center">
+              Design Principles
+            </h2>
+            <p className="text-gray-600 text-center max-w-xl mx-auto mb-12">
+              Material Design is guided by three core principles that inform every
+              decision.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            {[
+              {
+                icon: <Layers className="w-8 h-8 text-[#6200ee]" />,
+                title: "Material is the Metaphor",
+                desc: "A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality.",
+              },
+              {
+                icon: <Palette className="w-8 h-8 text-[#6200ee]" />,
+                title: "Bold, Graphic, Intentional",
+                desc: "Typography, grids, space, scale, color, and imagery guide visual treatments. These elements do far more than please the eye.",
+              },
+              {
+                icon: <Zap className="w-8 h-8 text-[#6200ee]" />,
+                title: "Motion Provides Meaning",
+                desc: "Motion respects and reinforces the user as the prime mover. Primary user actions are inflection points that initiate motion.",
+              },
+            ].map((p, i) => (
+              <RevealBlock key={i} delay={i * 100}>
+                <div
+                  className="bg-[#fafafa] rounded-2xl p-8 h-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] hover:-translate-y-1"
+                  style={{ boxShadow: elevationShadows[1] }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      elevationShadows[8];
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      elevationShadows[1];
+                  }}
+                >
+                  <div className="w-14 h-14 bg-[#6200ee]/10 rounded-2xl flex items-center justify-center mb-6">
+                    {p.icon}
                   </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    {p.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Do / Don't */}
+          <RevealBlock delay={200}>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="rounded-2xl p-8 border-2 border-[#00c853]/30 bg-[#00c853]/5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center">
+                    <Check className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 text-lg">Do</h3>
+                </div>
+                <ul className="space-y-3 text-sm text-gray-600">
+                  {[
+                    "Use elevation to show hierarchy — higher surfaces are more important",
+                    "Apply the Material deceleration curve (0.4, 0, 0.2, 1) to all transitions",
+                    "Use UPPERCASE tracking for button labels",
+                    "Follow the 8dp grid — all spacing should be multiples of 8",
+                    "Use the secondary color sparingly for the most important action",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span className="text-[#00c853] font-bold mt-0.5">+</span>
+                      <span>{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl p-8 border-2 border-[#b00020]/30 bg-[#b00020]/5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-full bg-[#b00020] flex items-center justify-center">
+                    <span className="text-white font-bold text-sm leading-none">
+                      x
+                    </span>
+                  </div>
+                  <h3 className="font-medium text-gray-900 text-lg">{"Don't"}</h3>
+                </div>
+                <ul className="space-y-3 text-sm text-gray-600">
+                  {[
+                    "Assign arbitrary shadows — every shadow value should map to a dp level",
+                    "Use linear easing for motion — it feels mechanical and unnatural",
+                    "Overuse color — primary and secondary should appear purposefully",
+                    "Place two FABs on a single screen — one primary action per view",
+                    "Use odd spacing values — the 8dp grid must be respected",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span className="text-[#b00020] font-bold mt-0.5">-</span>
+                      <span>{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Typography */}
+      <section className="py-20 px-6 bg-[#fafafa]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock>
+            <p className="text-[#6200ee] font-medium text-xs uppercase tracking-[0.12em] mb-2 text-center">
+              Type Scale
+            </p>
+            <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-4 text-center">
+              Typography
+            </h2>
+            <p className="text-gray-600 text-center max-w-xl mx-auto mb-12">
+              Material Design uses the Roboto typeface. The type scale provides 13
+              styles with defined size, weight, and letter spacing.
+            </p>
+          </RevealBlock>
+
+          <div className="space-y-2">
+            {[
+              {
+                role: "H1",
+                cls: "text-6xl font-light",
+                tracking: "-0.015em",
+                sample: "Display Large",
+              },
+              {
+                role: "H2",
+                cls: "text-5xl font-light",
+                tracking: "-0.005em",
+                sample: "Display Medium",
+              },
+              {
+                role: "H3",
+                cls: "text-4xl font-normal",
+                tracking: "0em",
+                sample: "Display Small",
+              },
+              {
+                role: "H4",
+                cls: "text-3xl font-normal",
+                tracking: "0.0025em",
+                sample: "Headline",
+              },
+              {
+                role: "H5",
+                cls: "text-2xl font-medium",
+                tracking: "0em",
+                sample: "Title Large",
+              },
+              {
+                role: "Label",
+                cls: "text-sm font-medium",
+                tracking: "0.1em",
+                sample: "LABEL UPPERCASE",
+              },
+            ].map((t, i) => (
+              <RevealBlock key={t.role} delay={i * 60}>
+                <div
+                  className="bg-white rounded-xl px-6 py-5 flex items-baseline gap-6 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] hover:-translate-y-0.5"
+                  style={{ boxShadow: elevationShadows[1] }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      elevationShadows[4];
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      elevationShadows[1];
+                  }}
+                >
+                  <span className="text-xs font-mono text-gray-400 w-10 flex-shrink-0">
+                    {t.role}
+                  </span>
+                  <span
+                    className={`${t.cls} text-gray-900 flex-1`}
+                    style={{ letterSpacing: t.tracking }}
+                  >
+                    {t.sample}
+                  </span>
+                  <span className="text-xs text-gray-400 font-mono hidden md:block">
+                    {t.cls}
+                  </span>
                 </div>
               </RevealBlock>
             ))}
@@ -536,70 +899,69 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ── Design Rules ── */}
-      <section className="py-24 px-6 bg-white">
+      {/* Footer */}
+      <footer className="bg-[#6200ee] py-12 px-6">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock className="mb-16">
-            <p className="text-[#6200ee] font-medium uppercase tracking-[0.2em] text-sm mb-4">Guidelines</p>
-            <h2 className="text-3xl md:text-5xl font-bold text-black/87 tracking-tight">
-              Design Rules
-            </h2>
-          </RevealBlock>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <RevealBlock>
-              <div className="bg-[#00c853]/5 rounded-xl p-8 border border-[#00c853]/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#00c853] rounded-full flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-[#00c853]">Do</h3>
-                </div>
-                <ul className="space-y-4">
-                  {doRules.map((rule) => (
-                    <li key={rule} className="flex items-start gap-3 text-sm text-black/70">
-                      <span className="w-1.5 h-1.5 bg-[#00c853] rounded-full mt-2 shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <Grid className="w-6 h-6 text-[#03dac6]" />
+                <span className="text-white font-medium text-xl">
+                  Material Design
+                </span>
               </div>
-            </RevealBlock>
-            <RevealBlock delay={0.15}>
-              <div className="bg-[#b00020]/5 rounded-xl p-8 border border-[#b00020]/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-[#b00020] rounded-full flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-[#b00020]">Don&apos;t</h3>
-                </div>
-                <ul className="space-y-4">
-                  {dontRules.map((rule) => (
-                    <li key={rule} className="flex items-start gap-3 text-sm text-black/70">
-                      <span className="w-1.5 h-1.5 bg-[#b00020] rounded-full mt-2 shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
+              <p className="text-white/60 text-sm max-w-sm">
+                {"A design system built and supported by Google. Material helps teams build high-quality digital experiences."}
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/styles/material-design"
+                className="px-6 py-2 border-2 border-white/30 text-white font-medium uppercase tracking-[0.08em] text-sm rounded-full hover:bg-white/10 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98]"
+              >
+                Docs
+              </Link>
+              <Link
+                href="/styles"
+                className="px-6 py-2 bg-[#03dac6] text-black font-medium uppercase tracking-[0.08em] text-sm rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-0.5"
+                style={{ boxShadow: elevationShadows[2] }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow =
+                    elevationShadows[8];
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow =
+                    elevationShadows[2];
+                }}
+              >
+                All Styles
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className="bg-[#6200ee] border-t border-white/10">
-        <div className="max-w-6xl mx-auto px-6 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-white/60 text-sm font-medium">
-              StyleKit &middot; Material Design Showcase
+          <div className="mt-10 pt-8 border-t border-white/20">
+            <p className="text-white/40 text-xs text-center">
+              StyleKit · Material Design Showcase
             </p>
-            <Link href="/styles/material-design" className="text-white/60 hover:text-white text-sm font-medium uppercase tracking-wider transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-              View Full Documentation &rarr;
-            </Link>
           </div>
         </div>
       </footer>
+
+      {/* Fixed FAB */}
+      <button
+        className="fixed right-6 bottom-6 w-14 h-14 bg-[#03dac6] rounded-full flex items-center justify-center text-black z-50 transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] active:scale-[0.98] hover:-translate-y-1"
+        style={{ boxShadow: elevationShadows[4] }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+            elevationShadows[8];
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+            elevationShadows[4];
+        }}
+        aria-label="Create"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </div>
   );
 }
