@@ -1,6 +1,5 @@
-import { getStyleBySlug } from "@/lib/styles";
-import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateSkillPack } from "@/lib/export/skill-pack";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -8,7 +7,8 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const style = getStyleBySlug(slug);
+  const resolved = await resolveStyleBySlug(slug);
+  const style = resolved?.style;
 
   if (!style) {
     return NextResponse.json(
@@ -17,8 +17,11 @@ export async function GET(
     );
   }
 
-  const tokens = getStyleTokens(slug);
-  const skillPackContent = generateSkillPack({ style, tokens });
+  const tokens = resolved.tokens;
+  const skillPackContent = generateSkillPack({
+    style,
+    tokens: tokens ?? undefined,
+  });
 
   return new Response(skillPackContent, {
     headers: {

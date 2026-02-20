@@ -1,7 +1,8 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StylesContent } from "@/components/styles/styles-content";
-import { getAllStylesMeta, type StyleType, type StyleTag } from "@/lib/styles/meta";
+import { type StyleType, type StyleTag } from "@/lib/styles/meta";
+import { listCatalogStylesMeta } from "@/lib/styles/community-runtime";
 
 type StyleSort = "recommended" | "name-asc" | "name-desc";
 
@@ -15,7 +16,7 @@ interface StylesPageProps {
 }
 
 export default async function StylesPage({ searchParams }: StylesPageProps) {
-  const allStyles = getAllStylesMeta();
+  const allStyles = await listCatalogStylesMeta();
   const params = await searchParams;
 
   // 解析 URL 参数作为初始值

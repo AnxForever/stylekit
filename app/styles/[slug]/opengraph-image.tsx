@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { getStyleBySlug, styles } from "@/lib/styles";
+import { styles } from "@/lib/styles";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 
 export const alt = "StyleKit style preview";
 export const size = { width: 1200, height: 630 };
@@ -15,7 +16,8 @@ export default async function OGImage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const style = getStyleBySlug(slug);
+  const resolved = await resolveStyleBySlug(slug);
+  const style = resolved?.style;
 
   if (!style) {
     return new ImageResponse(

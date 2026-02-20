@@ -3,8 +3,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { getStyleBySlug, styles } from "@/lib/styles";
-import { getStyleTokens, hasStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
@@ -23,10 +23,11 @@ export const revalidate = 86400;
 // 动态 metadata
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const style = getStyleBySlug(slug);
-  if (!style) {
+  const resolved = await resolveStyleBySlug(slug);
+  if (!resolved) {
     return { title: "Style Not Found — StyleKit" };
   }
+  const style = resolved.style;
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
   const url = `${BASE_URL}/styles/${slug}`;
@@ -67,11 +68,12 @@ export default async function StyleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const style = getStyleBySlug(slug);
+  const resolved = await resolveStyleBySlug(slug);
 
-  if (!style) {
+  if (!resolved) {
     notFound();
   }
+  const { style } = resolved;
 
   // Pre-compute compatible styles for layout patterns
   const compatibleStyles =
@@ -90,20 +92,23 @@ export default async function StyleDetailPage({
       : [];
 
   // Pre-compute enhanced rules
-  const enhancedRules = hasStyleTokens(slug)
+  const enhancedRules = resolved.tokens
     ? generateEnhancedAIRules({
         style,
-        tokens: getStyleTokens(slug)!,
+        tokens: resolved.tokens,
         format: "full",
       })
     : null;
 
   // Pre-compute accessibility score
-  const accessibilityScore = scoreStyle(slug);
+  const accessibilityScore =
+    resolved.source === "static" ? scoreStyle(slug) : null;
 
   // Pre-compute version info
-  const version = getCurrentVersion(slug);
-  const changelog = getChangelog(slug);
+  const version =
+    resolved.source === "static" ? getCurrentVersion(slug) : undefined;
+  const changelog =
+    resolved.source === "static" ? getChangelog(slug) : [];
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
   const jsonLd = {
@@ -138,6 +143,7 @@ export default async function StyleDetailPage({
         <main className="flex-1">
           <StyleDetailContent
             style={style}
+            styleSource={resolved.source}
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}
