@@ -92,3 +92,7 @@ tools/scripts/refine-batch-01.mjs
 
 # External sub-projects
 editorial-brutalist-portfolio/
+
+# AI Studio exported data files
+"ai_studio_code*.txt"
+ai_studio_code*.txt
