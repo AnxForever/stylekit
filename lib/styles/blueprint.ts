@@ -54,40 +54,48 @@ export const blueprint: DesignStyle = {
     button: {
       name: "按钮",
       description: "蓝图风格的技术按钮",
-      code: `// Blueprint Primary
-<button className="px-6 py-3 bg-transparent border border-white/60 text-white font-mono uppercase tracking-widest text-sm hover:bg-white/10 hover:border-white transition-all duration-200">
-  Execute
+      code: `// Blueprint Primary (Snappy)
+<button className="group relative px-6 py-2 bg-transparent text-[#a0c4e8] font-mono text-sm uppercase tracking-widest border border-[#a0c4e8]/50 hover:bg-[#a0c4e8]/10 hover:border-white hover:text-white active:bg-[#ff6b35] active:border-[#ff6b35] active:text-white transition-all duration-100 motion-reduce:transition-none overflow-hidden">
+  <span className="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-white opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
+  <span className="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-white opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
+  <span className="relative z-10">Execute</span>
 </button>
 
-// Blueprint Filled
-<button className="px-6 py-3 bg-white text-[#1e3a5f] font-mono font-bold uppercase tracking-widest text-sm hover:bg-[#a0c4e8] transition-all duration-200">
-  Compile
+// Blueprint Filled (CAD Confirm)
+<button className="group relative px-6 py-2 bg-white text-[#1e3a5f] font-mono font-bold text-sm uppercase tracking-widest border border-white hover:bg-[#a0c4e8] active:bg-[#ff6b35] active:text-white active:border-[#ff6b35] transition-all duration-100 motion-reduce:transition-none overflow-hidden">
+  <span className="absolute left-2 right-2 top-1/2 h-px -translate-y-1/2 bg-[#1e3a5f]/0 group-hover:bg-[#1e3a5f]/25 transition-colors duration-100" />
+  <span className="relative z-10">Compile</span>
 </button>
 
 // Annotation Variant
-<button className="px-6 py-3 bg-transparent border border-[#ff6b35]/60 text-[#ff6b35] font-mono uppercase tracking-widest text-sm hover:bg-[#ff6b35]/10 hover:border-[#ff6b35] transition-all duration-200">
-  Annotate
+<button className="group relative px-6 py-2 bg-transparent border border-[#ff6b35]/60 text-[#ff6b35] font-mono text-sm uppercase tracking-widest hover:bg-[#ff6b35]/10 hover:border-[#ff6b35] hover:text-white active:bg-[#ff6b35] active:text-white transition-all duration-100 motion-reduce:transition-none overflow-hidden">
+  <span className="absolute inset-y-1 left-1 w-px bg-[#ff6b35]/0 group-hover:bg-[#ff6b35]" />
+  <span className="absolute inset-y-1 right-1 w-px bg-[#ff6b35]/0 group-hover:bg-[#ff6b35]" />
+  <span className="relative z-10">Annotate</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "蓝图风格的制图卡片",
-      code: `<div className="bg-[#1e3a5f]/60 border border-white/20 p-6 relative">
-  {/* Corner markers */}
-  <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/50" />
-  <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-white/50" />
-  <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-white/50" />
-  <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/50" />
+      code: `<div className="group relative p-8 bg-[#1e3a5f] border border-white/20 hover:border-white/60 transition-colors duration-100 motion-reduce:transition-none cursor-crosshair overflow-hidden">
+  {/* Blueprint Grid Overlay */}
+  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none group-hover:bg-[linear-gradient(rgba(160,196,232,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(160,196,232,0.1)_1px,transparent_1px)] transition-all duration-100" />
 
-  <div className="flex items-center gap-3 mb-4">
+  {/* Corner markers */}
+  <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-white/40 group-hover:border-[#ff6b35] transition-colors duration-100" />
+  <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-white/40 group-hover:border-[#ff6b35] transition-colors duration-100" />
+  <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-white/40 group-hover:border-[#ff6b35] transition-colors duration-100" />
+  <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-white/40 group-hover:border-[#ff6b35] transition-colors duration-100" />
+
+  <div className="relative z-10 flex items-center gap-3 mb-4">
     <div className="w-2 h-[1px] bg-[#ff6b35]" />
     <span className="text-[#ff6b35] font-mono text-xs uppercase tracking-widest">Section A-2</span>
     <div className="flex-1 h-[1px] bg-white/10" />
   </div>
-  <h3 className="text-white font-mono text-lg tracking-wider mb-3">
+  <h3 className="relative z-10 text-white font-mono text-lg tracking-wider uppercase mb-3">
     Structural Overview
   </h3>
-  <p className="text-[#a0c4e8]/70 font-mono text-sm leading-relaxed">
+  <p className="relative z-10 text-[#a0c4e8]/75 font-mono text-sm leading-relaxed">
     Cross-section analysis of the primary load-bearing framework.
   </p>
 </div>`,
@@ -185,7 +193,13 @@ SPECIAL EFFECTS:
 - Grid background pattern (20px spacing)
 - Corner bracket markers on containers
 - Dimension lines with end markers
-- Coordinate labels as decorative elements`,
+- Coordinate labels as decorative elements
+
+Animation & Interaction Rules:
+- CAD Precision: 交互动效必须干脆、精密，优先使用 \`duration-100\`（可在 75-150ms 范围内微调），避免拖沓的 \`ease-in-out\`。
+- Crosshair Reveals: 悬停可交互元素时，使用 \`before\`/\`after\` 或角落标记浮现十字准星与对位提示。
+- Blueprint Highlight: 默认以蓝白为主，\`active\` 或确认态可短暂点亮工程橙 \`#ff6b35\`，但不能长时间占据主视觉。
+- Grid Interaction: 容器 hover 可轻微提高网格线可见度（白线到浅蓝线），仅作为测量反馈，不做情绪化动画。`,
 
   examplePrompts: [
     {

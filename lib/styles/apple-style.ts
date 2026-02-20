@@ -51,8 +51,12 @@ export const appleStyle: DesignStyle = {
   bg-[#0071e3]
   rounded-full
   text-white font-medium
+  shadow-[0_4px_14px_rgba(0,113,227,0.3)]
+  hover:shadow-[0_6px_20px_rgba(0,113,227,0.4)]
+  hover:-translate-y-0.5
   hover:bg-[#0077ed]
-  transition-colors duration-200
+  active:scale-[0.96]
+  transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]
 ">
   Buy
 </button>`,
@@ -61,19 +65,25 @@ export const appleStyle: DesignStyle = {
       name: "卡片",
       description: "Apple 风格产品卡片",
       code: `<div className="
-  p-8
+  group p-8
   bg-white
-  rounded-2xl
-  shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+  rounded-3xl
+  shadow-[0_4px_12px_rgba(0,0,0,0.04)]
+  hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]
+  hover:-translate-y-1
+  active:scale-[0.98]
+  transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]
   text-center
+  cursor-pointer
+  overflow-hidden
 ">
-  <div className="w-48 h-48 mx-auto mb-6 bg-[#f5f5f7] rounded-2xl flex items-center justify-center">
-    <span className="text-6xl text-gray-300">Product</span>
+  <div className="w-48 h-48 mx-auto mb-6 bg-[#f5f5f7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
+    <span className="text-6xl text-gray-300 group-hover:text-gray-400 transition-colors duration-500"></span>
   </div>
-  <h3 className="text-2xl font-semibold text-black mb-2">
+  <h3 className="text-2xl font-semibold text-black mb-2 tracking-tight">
     iPhone 15 Pro
   </h3>
-  <p className="text-gray-500 mb-4">
+  <p className="text-gray-500 mb-4 group-hover:text-gray-700 transition-colors duration-500">
     Titanium. So strong. So light. So Pro.
   </p>
   <p className="text-lg font-medium text-black">
@@ -255,6 +265,13 @@ body {
 - 最大宽度: max-w-5xl 或 max-w-[980px]
 - 大量留白: py-20, py-24
 - 居中对齐: text-center, mx-auto
+
+## Animation & Interaction Rules
+
+- Spring Physics: 严禁使用默认的 linear 或基础 ease。必须使用丝滑的减速曲线，如 \`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]\`。
+- Haptic Touch: 所有可交互元素（按钮、卡片）必须具备物理按压的阻尼感，强制添加 \`active:scale-[0.98]\` 或 \`active:scale-[0.96]\`。
+- Contextual Depth: 卡片悬停时，利用 \`group-hover\` 让内部图片或图标产生微妙放大（\`scale-105\`），营造视差纵深感。
+- Subtle Blurs: 交互过程可以伴随背景模糊度或不透明度的平滑过渡。
 
 ## 自检
 

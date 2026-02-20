@@ -49,28 +49,28 @@ export const softUI: DesignStyle = {
       name: "按钮",
       description: "Soft UI 风格的按钮",
       code: `// Primary Button
-<button className="px-6 py-3 bg-indigo-500 text-white rounded-2xl shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200 font-medium">
+<button className="px-6 py-3 bg-indigo-500 text-white rounded-2xl shadow-[0_10px_24px_rgba(99,102,241,0.25)] hover:shadow-[0_18px_32px_rgba(99,102,241,0.35)] hover:-translate-y-1 active:translate-y-[2px] active:scale-[0.96] active:shadow-[inset_0_4px_10px_rgba(67,56,202,0.28)] transition-all duration-300 ease-in-out font-medium">
   Get Started
 </button>
 
 // Secondary Button
-<button className="px-6 py-3 bg-white text-gray-700 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 font-medium">
+<button className="px-6 py-3 bg-white text-gray-700 rounded-2xl shadow-[0_10px_24px_rgba(148,163,184,0.25)] hover:shadow-[0_16px_30px_rgba(148,163,184,0.35)] hover:-translate-y-1 active:translate-y-[2px] active:scale-[0.97] active:shadow-[inset_0_4px_10px_rgba(148,163,184,0.2)] transition-all duration-300 ease-in-out font-medium">
   Learn More
 </button>
 
 // Soft Ghost
-<button className="px-6 py-3 text-indigo-500 bg-indigo-50 rounded-2xl hover:bg-indigo-100 transition-colors duration-200 font-medium">
+<button className="px-6 py-3 text-indigo-500 bg-indigo-50 rounded-2xl hover:bg-indigo-100 active:shadow-[inset_0_3px_8px_rgba(99,102,241,0.15)] transition-all duration-300 ease-in-out font-medium">
   Cancel
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Soft UI 风格的卡片",
-      code: `<div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-  <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6">
+      code: `<div className="group bg-white rounded-3xl shadow-[0_12px_32px_rgba(148,163,184,0.25)] p-8 hover:shadow-[0_24px_48px_rgba(99,102,241,0.2)] hover:-translate-y-2 transition-all duration-500 ease-in-out">
+  <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-indigo-50 transition-all duration-300 ease-in-out">
     <Icon className="w-7 h-7 text-indigo-500" />
   </div>
-  <h3 className="text-xl font-semibold text-gray-800 mb-3">Feature Title</h3>
+  <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors duration-300">Feature Title</h3>
   <p className="text-gray-500 leading-relaxed">
     Soft, friendly description that puts users at ease.
   </p>
@@ -83,7 +83,7 @@ export const softUI: DesignStyle = {
   <label className="block text-sm font-medium text-gray-600">Email</label>
   <input
     type="email"
-    className="w-full px-5 py-3.5 bg-gray-50 border-0 rounded-2xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all duration-200"
+    className="w-full px-5 py-3.5 bg-gray-50 border-0 rounded-2xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/20 focus:shadow-[0_10px_26px_rgba(99,102,241,0.14)] transition-all duration-300 ease-in-out"
     placeholder="you@example.com"
   />
 </div>`,
@@ -133,7 +133,14 @@ COLOR RULES:
 SPACING:
 - Card padding: p-6 md:p-8
 - Section padding: py-16 md:py-24
-- Gap: gap-6 md:gap-8`,
+- Gap: gap-6 md:gap-8
+
+## Animation & Interaction Rules
+
+- Cloud Float: hover 以上浮加阴影扩散为主，阴影保持彩色且柔和，避免脏灰硬影。
+- Pillow Press: active 状态用轻微缩放和内阴影，呈现按入枕面的柔软反馈。
+- Friendly Viscosity: 交互节奏推荐 duration-300 和 ease-in-out，避免突兀速度变化。
+- Halo Focus: 表单 focus 使用大半径低不透明度 ring 与柔光阴影，不依赖硬边框。`,
 
   examplePrompts: [
     {

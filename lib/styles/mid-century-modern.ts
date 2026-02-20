@@ -57,12 +57,12 @@ export const midCenturyModern: DesignStyle = {
   bg-[#e8572a] text-[#f5f0e1]
   font-sans font-semibold uppercase tracking-wider text-sm
   rounded-lg
-  border-2 border-[#c44420]
-  shadow-[0_4px_0_#c44420]
-  hover:shadow-[0_2px_0_#c4442020]
-  hover:translate-y-[2px]
-  active:shadow-none active:translate-y-[4px]
-  transition-all duration-200
+  border-2 border-[#3d3d3d]
+  shadow-[4px_4px_0_#3d3d3d]
+  hover:shadow-[6px_6px_0_#3d3d3d]
+  hover:-translate-y-[2px] hover:-translate-x-[2px]
+  active:shadow-none active:translate-y-[4px] active:translate-x-[4px]
+  transition-all duration-150 ease-out
 ">
   Explore
 </button>`,
@@ -71,27 +71,31 @@ export const midCenturyModern: DesignStyle = {
       name: "卡片",
       description: "中世纪现代风格卡片",
       code: `<div className="
-  relative p-8
+  group relative p-8
   bg-[#f5f0e1]
   border-2 border-[#3d3d3d]
   rounded-xl
   shadow-[4px_4px_0_#3d3d3d]
+  hover:bg-[#efe9d3]
+  hover:shadow-[8px_8px_0_#3d3d3d]
+  hover:-translate-y-1 hover:-translate-x-1
+  transition-all duration-200 ease-out
 ">
   {/* Starburst decoration */}
   <div className="absolute top-4 right-4 w-8 h-8">
-    <div className="w-full h-full text-[#c4a35a]">
+    <div className="w-full h-full text-[#c4a35a] group-hover:rotate-45 group-hover:text-[#a88945] transition-all duration-500 ease-in-out">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <polygon points="12,0 14,9 24,9 16,14 18,24 12,18 6,24 8,14 0,9 10,9" />
       </svg>
     </div>
   </div>
 
-  <div className="w-12 h-1 bg-[#e8572a] rounded-full mb-4" />
-  <h3 className="text-xl font-sans font-bold text-[#3d3d3d] tracking-wide mb-3">
+  <div className="w-12 h-1 bg-[#e8572a] rounded-full mb-4 group-hover:w-20 transition-all duration-300 ease-out" />
+  <h3 className="text-xl font-sans font-bold text-[#3d3d3d] tracking-wide mb-3 group-hover:text-[#e8572a] transition-colors duration-200">
     Atomic Living
   </h3>
-  <p className="text-[#3d3d3d]/70 font-sans leading-relaxed">
-    Timeless design for the modern home. Where form meets function in perfect harmony.
+  <p className="text-[#3d3d3d]/75 font-sans leading-relaxed">
+    Timeless design for the modern home. Where form meets function in perfect, analog harmony.
   </p>
 </div>`,
     },
@@ -251,7 +255,14 @@ export const midCenturyModern: DesignStyle = {
 - 有机曲线形状
 - 肾形和椭圆容器
 - 色块分隔线
-- 几何装饰图形`,
+- 几何装饰图形
+
+## Animation & Interaction Rules
+
+- Analog Switch: 交互应模拟复古机械按键，active 以硬位移 + 阴影消失表达阻尼反馈。
+- Brass Shimmer: 黄铜装饰（如星芒）在 hover 轻微旋转并加深色泽，营造金属反光。
+- Retro Elevation: 卡片 hover 通过硬边阴影加长与轻微反向位移强化版画式层级。
+- Warm Dimming: 奶油底色在交互时仅做轻微变暗，避免高对比闪烁或现代霓虹感。`,
 
   examplePrompts: [
     {

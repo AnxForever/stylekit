@@ -49,29 +49,29 @@ export const steampunk: DesignStyle = {
       name: "按钮",
       description: "蒸汽朋克风格的黄铜机械按钮",
       code: `// Brass Primary
-<button className="px-6 py-3 bg-gradient-to-b from-[#b5a642] to-[#8a7d32] text-[#2a1f15] rounded border border-[#d4c85c] shadow-[0_0_12px_rgba(181,166,66,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_0_20px_rgba(181,166,66,0.5)] transition-all duration-300 font-serif font-bold uppercase tracking-wider">
+<button className="px-6 py-3 bg-gradient-to-b from-[#b5a642] via-[#d4c85c] to-[#8a7d32] bg-[length:100%_180%] bg-[position:0_0] text-[#2a1f15] rounded-sm border border-[#d4c85c] shadow-[0_6px_0_#5c4a1f,inset_0_1px_1px_rgba(255,255,255,0.35)] hover:bg-[position:0_100%] hover:shadow-[0_6px_0_#5c4a1f,0_0_20px_rgba(181,166,66,0.55)] hover:-translate-y-[1px] active:translate-y-[6px] active:shadow-[0_0_0_#5c4a1f,inset_0_2px_4px_rgba(0,0,0,0.5)] transition-all duration-100 ease-linear font-serif font-bold uppercase tracking-wider">
   Engage
 </button>
 
 // Copper Outline
-<button className="px-6 py-3 bg-transparent border-2 border-[#b87333] text-[#b87333] rounded shadow-[0_0_10px_rgba(184,115,51,0.2)] hover:shadow-[0_0_20px_rgba(184,115,51,0.4)] hover:bg-[#b87333]/10 transition-all duration-300 font-serif font-bold uppercase tracking-wider">
+<button className="px-6 py-3 bg-transparent border-2 border-[#b87333] text-[#b87333] rounded-sm shadow-[0_0_10px_rgba(184,115,51,0.2)] hover:bg-[#b87333]/10 hover:shadow-[0_0_20px_rgba(184,115,51,0.45)] hover:-translate-y-[1px] active:translate-y-[2px] transition-all duration-100 ease-linear font-serif font-bold uppercase tracking-wider">
   Activate
 </button>
 
 // Iron Variant
-<button className="px-6 py-3 bg-gradient-to-b from-[#5a5a5a] to-[#3a3a3a] text-[#f5f0e1] rounded border border-[#6a6a6a] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.3)] hover:from-[#6a6a6a] hover:to-[#4a4a4a] transition-all duration-300 font-serif font-bold uppercase tracking-wider">
+<button className="px-6 py-3 bg-gradient-to-b from-[#5a5a5a] to-[#3a3a3a] text-[#f5f0e1] rounded-sm border border-[#6a6a6a] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.3)] hover:from-[#6a6a6a] hover:to-[#4a4a4a] active:translate-y-[2px] transition-all duration-100 ease-linear font-serif font-bold uppercase tracking-wider">
   Deploy
 </button>`,
     },
     card: {
       name: "卡片",
       description: "蒸汽朋克风格的机械面板卡片",
-      code: `<div className="bg-[#2a1f15] border-2 border-[#b87333]/40 rounded p-6 shadow-[0_0_15px_rgba(184,115,51,0.15)] hover:shadow-[0_0_25px_rgba(184,115,51,0.25)] hover:border-[#b87333]/60 transition-all duration-300 relative overflow-hidden">
+      code: `<div className="group bg-[#2a1f15] border-2 border-[#b87333]/40 rounded-sm p-6 shadow-[0_0_15px_rgba(184,115,51,0.15)] hover:bg-[#241a12] hover:shadow-[0_0_24px_rgba(184,115,51,0.3)] hover:border-[#b5a642]/70 transition-all duration-150 ease-linear relative overflow-hidden">
   {/* Corner rivets */}
-  <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#d4c85c] to-[#8a7d32] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.3)]" />
-  <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#d4c85c] to-[#8a7d32] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.3)]" />
-  <div className="absolute bottom-2 left-2 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#d4c85c] to-[#8a7d32] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.3)]" />
-  <div className="absolute bottom-2 right-2 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#d4c85c] to-[#8a7d32] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.3)]" />
+  <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-[linear-gradient(135deg,#d4c85c_0%,#8a7d32_45%,#d4c85c_100%)] bg-[length:200%_100%] bg-[position:0_0] group-hover:bg-[position:100%_0] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.45)] transition-all duration-300 ease-linear" />
+  <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[linear-gradient(135deg,#d4c85c_0%,#8a7d32_45%,#d4c85c_100%)] bg-[length:200%_100%] bg-[position:0_0] group-hover:bg-[position:100%_0] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.45)] transition-all duration-300 ease-linear" />
+  <div className="absolute bottom-2 left-2 w-2.5 h-2.5 rounded-full bg-[linear-gradient(135deg,#d4c85c_0%,#8a7d32_45%,#d4c85c_100%)] bg-[length:200%_100%] bg-[position:0_0] group-hover:bg-[position:100%_0] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.45)] transition-all duration-300 ease-linear" />
+  <div className="absolute bottom-2 right-2 w-2.5 h-2.5 rounded-full bg-[linear-gradient(135deg,#d4c85c_0%,#8a7d32_45%,#d4c85c_100%)] bg-[length:200%_100%] bg-[position:0_0] group-hover:bg-[position:100%_0] shadow-[inset_0_-1px_2px_rgba(0,0,0,0.45)] transition-all duration-300 ease-linear" />
 
   <div className="relative">
     <div className="flex items-center gap-3 mb-4">
@@ -161,7 +161,14 @@ SPECIAL EFFECTS:
 - Corner rivet decorations (small brass circles)
 - Metallic inset shadows for depth
 - Warm glow on hover interactions
-- Gradient overlays for metal texture`,
+- Gradient overlays for metal texture
+
+## Animation & Interaction Rules
+
+- Clockwork Grind: 动效节奏短促且线性，模拟齿轮和杠杆的机械咬合，不做柔软回弹。
+- Steam Release: active 时执行干脆下沉并压平阴影，释放时恢复黄铜高光，形成短促阀门反馈。
+- Rivet Glint: 铆钉使用滑动渐变制造慢速反光流转，强调金属工艺细节。
+- Brass Oxidation: hover 时深棕底色略加深，黄铜描边与文本同步提亮，拉开材质对比。`,
 
   examplePrompts: [
     {

@@ -59,39 +59,45 @@ export const maximalism: DesignStyle = {
         "极繁主义按钮，多层阴影、渐变背景、粗边框和装饰性 hover 效果",
       code: `<button
   className="
-    px-8 py-4
-    bg-gradient-to-r from-[#d4145a] to-[#8338ec]
-    text-white font-black uppercase tracking-widest
+    relative z-10 px-8 py-4
+    bg-[#ff00ff]
+    text-[#ffff00] font-black uppercase tracking-widest text-2xl
     border-4 border-[#ffbe0b]
-    shadow-[4px_4px_0px_#ffbe0b,8px_8px_0px_#3a86ff]
-    hover:shadow-[2px_2px_0px_#ffbe0b,4px_4px_0px_#3a86ff]
-    hover:translate-x-[2px] hover:translate-y-[2px]
-    active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
-    transition-all duration-200
-    text-lg
+    shadow-[8px_8px_0px_#00ffff]
+    hover:z-50 hover:scale-110 hover:-rotate-3
+    hover:bg-[#00ffff] hover:text-[#ff00ff] hover:border-[#ffff00]
+    hover:shadow-[16px_16px_0px_#000]
+    active:scale-90 active:rotate-6 active:shadow-none
+    transition-all duration-150
   "
 >
-  MORE IS MORE
+  OVERLOAD
 </button>`,
     },
     card: {
       name: "卡片",
       description:
         "极繁主义卡片，渐变边框、多层装饰阴影和混搭字体排版",
-      code: `<div className="relative">
+      code: `<div className="group relative z-10 transition-all duration-200 hover:z-50 hover:scale-105 hover:rotate-2">
   {/* Decorative background layer */}
   <div className="absolute -top-2 -left-2 w-full h-full bg-[#ffbe0b] rounded-sm" />
-  <div className="absolute -top-1 -left-1 w-full h-full bg-[#3a86ff] rounded-sm" />
+  <div className="absolute -top-1 -left-1 w-full h-full bg-[#3a86ff] rounded-sm group-hover:bg-[#00ffff]" />
   <div
     className="
       relative
       p-8
-      bg-[#1a0a2e]
+      bg-[#ffff00]
       border-4 border-[#d4145a]
       rounded-sm
-      shadow-[6px_6px_0px_#8338ec]
+      shadow-[12px_12px_0px_#ff00ff]
+      group-hover:bg-[#ff00ff] group-hover:shadow-[24px_24px_0px_#00ffff]
+      transition-all duration-200
     "
   >
+    <div className="absolute -top-8 -right-8 flex h-24 w-24 rotate-12 items-center justify-center rounded-full border-4 border-black bg-[#00ffff] text-3xl font-black text-black transition-all duration-200 group-hover:-rotate-45 group-hover:scale-150 group-hover:bg-[#ffff00]">
+      !!!
+    </div>
+
     <div className="flex items-center gap-3 mb-4">
       <span className="px-3 py-1 bg-[#ffbe0b] text-[#1a0a2e] text-xs font-mono font-bold uppercase tracking-wider">
         Featured
@@ -100,17 +106,12 @@ export const maximalism: DesignStyle = {
         New
       </span>
     </div>
-    <h3 className="text-3xl font-serif font-black text-[#ffbe0b] mb-3 uppercase">
-      Maximalism
+    <h3 className="text-5xl font-serif font-black text-black mb-3 uppercase leading-none group-hover:text-[#ffff00] transition-colors">
+      More is More
     </h3>
-    <p className="text-[#d4145a]/80 font-sans text-sm leading-relaxed">
-      More is more. Embrace the excess.
+    <p className="text-xl font-bold text-black border-l-8 border-[#00ffff] pl-4 group-hover:text-white group-hover:border-[#ffff00] transition-colors">
+      Why whisper when you can scream? Overlap, clash, and dominate the viewport.
     </p>
-    <div className="mt-6 pt-4 border-t-2 border-dashed border-[#8338ec]/50">
-      <span className="text-[#3a86ff] font-mono text-xs tracking-widest uppercase">
-        Explore &rarr;
-      </span>
-    </div>
   </div>
 </div>`,
     },
@@ -295,7 +296,14 @@ Primary:
 2. Gradient borders & backgrounds: from-[#d4145a] via-[#8338ec] to-[#3a86ff]
 3. Mixed typography: font-serif headings, font-sans body, font-mono labels on same page
 4. Decorative badges: colored tag spans with font-mono uppercase tracking
-5. Double/dashed border accents: border-dashed border-[#8338ec]/50 as section dividers`,
+5. Double/dashed border accents: border-dashed border-[#8338ec]/50 as section dividers
+
+## Animation & Interaction Rules
+
+- Z-Index Popping: 悬停元素必须快速前置（hover:z-50）并放大旋转，主动从拥挤布局中“挤出”。
+- Sensory Overload: hover 可同时触发颜色反转、阴影暴增和角度变化，维持高压视觉刺激。
+- Snappy & Aggressive: 使用短时长（duration-100~200）快速切换，避免柔和优雅缓动。
+- Active Chaos: active 允许强烈压缩与角度突变，制造失控但可读的“爆裂反馈”。`,
 
   examplePrompts: [
     {

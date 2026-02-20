@@ -265,7 +265,7 @@ export const constructivism: DesignStyle = {
 每次生成代码后检查：
 1. 按钮是 group 包裹，内有黑色侵入层（-translate-x-full → group-hover:translate-x-0）
 2. hover 斜向位移（translate-x + translate-y 同时移动）
-3. active 配色翻转（红↔黑），shadow-none
+3. active 配色翻转（红与黑双向切换），shadow-none
 4. 所有动画 duration-75/100 ease-linear
 5. 无任何圆角、柔和阴影、渐变`,
 

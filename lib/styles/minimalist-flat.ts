@@ -49,17 +49,17 @@ export const minimalistFlat: DesignStyle = {
       name: "按钮",
       description: "Minimalist Flat 风格的按钮",
       code: `// Primary Button - Filled
-<button className="px-6 py-3 bg-black text-white font-medium hover:bg-white hover:text-black border-2 border-black transition-colors duration-200">
+<button className="px-8 py-4 bg-black text-white font-bold border-2 border-black hover:bg-white hover:text-black active:bg-gray-200 transition-none">
   Get Started
 </button>
 
 // Secondary Button - Outlined
-<button className="px-6 py-3 bg-white text-black font-medium border-2 border-black hover:bg-black hover:text-white transition-colors duration-200">
+<button className="px-8 py-4 bg-white text-black font-bold border-2 border-black hover:bg-black hover:text-white active:bg-gray-100 transition-none">
   Learn More
 </button>
 
 // Accent Button
-<button className="px-6 py-3 bg-[#ff3366] text-white font-medium border-2 border-[#ff3366] hover:bg-white hover:text-[#ff3366] transition-colors duration-200">
+<button className="px-8 py-4 bg-[#ff3366] text-white font-bold border-2 border-[#ff3366] hover:bg-white hover:text-[#ff3366] active:bg-[#ffd6e2] transition-none">
   Accent Action
 </button>`,
     },
@@ -67,18 +67,18 @@ export const minimalistFlat: DesignStyle = {
       name: "卡片",
       description: "Minimalist Flat 风格的卡片",
       code: `// Bordered Card
-<div className="border-2 border-black p-8 hover:bg-black hover:text-white transition-colors duration-200 group">
+<div className="group border-2 border-black p-8 hover:bg-black hover:text-white transition-none cursor-pointer">
   <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-gray-300">Category</span>
-  <h3 className="text-2xl font-bold mt-2 mb-4">Card Title</h3>
+  <h3 className="text-3xl font-black mt-2 mb-4 leading-tight">Flat Dynamics</h3>
   <p className="leading-relaxed">
-    Brief description with minimal styling and maximum impact.
+    Brief description with minimal styling, maximum contrast, and instant interaction feedback.
   </p>
 </div>
 
 // Color Block Card
-<div className="bg-[#ff3366] text-white p-8">
-  <h3 className="text-2xl font-bold mb-4">Featured</h3>
-  <p className="leading-relaxed opacity-90">
+<div className="bg-[#ff3366] text-white border-2 border-[#ff3366] p-8 hover:bg-white hover:text-[#ff3366] transition-none">
+  <h3 className="text-2xl font-black mb-4">Featured</h3>
+  <p className="leading-relaxed">
     High contrast color block for emphasis.
   </p>
 </div>`,
@@ -148,7 +148,14 @@ COLOR RULES:
 TYPOGRAPHY:
 - Headers: font-bold tracking-tight
 - Body: Regular weight, good line-height
-- Labels: text-xs uppercase tracking-widest`,
+- Labels: text-xs uppercase tracking-widest
+
+## Animation & Interaction Rules
+
+- Strict 2D Flatness: 禁止使用 translate、scale、shadow 等 Z 轴反馈，所有交互仅在二维平面内完成。
+- High-Contrast Inversion: hover 以前景/背景反色为主，保证视觉反馈干脆明确。
+- Instant Sharpness: 交互优先 transition-none 或 duration-75 的短反馈，不做柔和过渡。
+- Border Dynamics: 聚焦或 hover 通过边框粗细/底线变化建立层次，替代阴影与位移。`,
 
   examplePrompts: [
     {

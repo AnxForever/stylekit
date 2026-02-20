@@ -47,13 +47,17 @@ export const artDeco: DesignStyle = {
       description: "装饰艺术风格按钮",
       code: `<button className="
   px-10 py-4
-  bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600
-  text-black font-semibold uppercase tracking-[0.3em]
-  border-2 border-yellow-400
-  shadow-[0_0_20px_rgba(212,175,55,0.3)]
-  hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]
-  hover:bg-gradient-to-r hover:from-yellow-500 hover:via-yellow-400 hover:to-yellow-500
-  transition-all duration-300
+  bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700
+  bg-[length:200%_auto]
+  text-slate-900 font-serif font-bold uppercase tracking-[0.3em]
+  border border-yellow-300
+  shadow-[0_0_20px_rgba(212,175,55,0.2)]
+  hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]
+  hover:bg-right
+  hover:-translate-y-0.5
+  active:translate-y-0
+  active:shadow-[0_0_10px_rgba(212,175,55,0.4)]
+  transition-all duration-700 ease-out
 ">
   Discover
 </button>`,
@@ -62,23 +66,28 @@ export const artDeco: DesignStyle = {
       name: "卡片",
       description: "装饰艺术风格卡片",
       code: `<div className="
-  relative p-8
+  group relative p-10
   bg-gradient-to-b from-slate-900 to-slate-800
-  border border-yellow-600/50
+  border border-yellow-600/30
+  hover:border-yellow-500/80
+  transition-colors duration-700
+  overflow-hidden
 ">
   {/* Corner decorations */}
-  <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-yellow-500" />
-  <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-yellow-500" />
-  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-yellow-500" />
-  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-yellow-500" />
+  <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
+  <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
+  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:-translate-x-1 group-hover:translate-y-1 transition-all duration-500" />
+  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-yellow-600/50 group-hover:border-yellow-400 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-500" />
 
-  <h3 className="text-2xl font-serif text-yellow-500 text-center mb-4 tracking-wider">
-    ELEGANCE
-  </h3>
-  <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto mb-4" />
-  <p className="text-gray-400 text-center">
-    Timeless sophistication
-  </p>
+  <div className="relative z-10 flex flex-col items-center">
+    <h3 className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 via-yellow-300 to-yellow-600 bg-[length:200%_auto] group-hover:bg-right transition-all duration-1000 mb-6 tracking-[0.2em] text-center">
+      ELEGANCE
+    </h3>
+    <div className="w-12 h-[1px] bg-yellow-500/50 group-hover:w-24 transition-all duration-700 mb-6" />
+    <p className="text-slate-400 text-center font-serif group-hover:text-slate-300 transition-colors duration-500">
+      Timeless sophistication and golden era luxury.
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -235,7 +244,14 @@ export const artDeco: DesignStyle = {
 - 角落装饰边框
 - 放射状线条
 - 渐变分隔线
-- 几何图案`,
+- 几何图案
+
+## Animation & Interaction Rules
+
+- Elegant & Slow: 动画必须显得高贵从容。使用较长持续时间，如 \`duration-500\` 或 \`duration-700\`，绝不能有急促弹跳感。
+- Golden Shimmer: 悬停时，通过背景渐变位置移动（如 \`bg-[length:200%_auto] hover:bg-right\`）模拟黄金材质反光与流泽。
+- Symmetrical Expansion: 交互时，尽量保持对称性。例如悬停卡片时，四角装饰线框可以产生向外轻微扩张（通过 \`group-hover:translate\` 实现）。
+- Subtle Lift: 采用极轻微上浮和金色光晕放大效果。`,
 
   examplePrompts: [
     {

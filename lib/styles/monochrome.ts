@@ -47,29 +47,36 @@ export const monochrome: DesignStyle = {
       name: "按钮",
       description: "单色极简按钮，黑底白字，无圆角装饰",
       code: `<button className="
-  px-6 py-3
+  px-8 py-4
   bg-[#111111] text-[#fafafa]
-  text-sm font-medium tracking-wider uppercase
+  text-xs font-medium tracking-[0.2em] uppercase
   rounded-sm
-  hover:bg-[#333333]
-  transition-colors duration-200
+  hover:bg-[#2a2a2a]
+  transition-colors duration-700 ease-in-out
 ">
-  Continue
+  Discover
 </button>`,
     },
     card: {
       name: "卡片",
       description: "单色极简卡片，细边框，灰色背景",
       code: `<div className="
-  p-6
+  group p-10
   bg-[#f5f5f5]
   rounded-sm
   border border-[#e5e5e5]
-  hover:border-[#999999]
-  transition-colors duration-200
+  hover:bg-[#ebebeb]
+  hover:border-[#cccccc]
+  transition-colors duration-700 ease-in-out
 ">
-  <h3 className="text-lg font-bold text-[#111111] mb-3">Title</h3>
-  <p className="text-sm font-light text-[#666666] leading-relaxed">Content</p>
+  <h3 className="text-2xl font-light text-[#111111] mb-6 tracking-wide">The Silent Void</h3>
+  <p className="text-sm font-light text-[#666666] leading-relaxed group-hover:text-[#444444] transition-colors duration-700">
+    In the absence of color, form and space reveal their true essence.
+  </p>
+  <div className="mt-8 flex items-center">
+    <span className="text-xs uppercase tracking-widest text-[#111111]">Read More</span>
+    <div className="ml-4 h-px w-0 bg-[#111111] transition-all duration-700 ease-in-out group-hover:w-12" />
+  </div>
 </div>`,
     },
     input: {
@@ -106,9 +113,16 @@ export const monochrome: DesignStyle = {
 - NEVER use any color with hue (no blue, red, green, pink, orange, etc.)
 - Build hierarchy with font-weight contrast: font-light for body, font-bold for headings
 - Use generous negative space (py-24, px-8) for breathing room
-- Borders must be subtle: border-[#e5e5e5] only
+- Borders must be subtle: grayscale borders in the #e5e5e5 to #cccccc range
 - No rounded-full, no heavy shadows, no gradients
 - Keep corners sharp: rounded-sm or rounded-none
 - Uppercase tracking-wider for labels and small text
-- Grid-based alignment for all layouts`,
+- Grid-based alignment for all layouts
+
+## Animation & Interaction Rules
+
+- Deliberate Slowness: 交互应使用 duration-500 到 700 的缓慢节奏，避免快速跳变。
+- Grayscale Breathing: 仅允许相邻灰阶过渡（如 #111111 到 #2a2a2a），保持克制。
+- Line Growth: 优先使用细线延展作为交互提示，减少大面积反差切换。
+- Static Elevation: 避免 translate 和重阴影，维持安静二维平面感。`,
 };

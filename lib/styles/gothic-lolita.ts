@@ -47,31 +47,49 @@ export const gothicLolita: DesignStyle = {
       description: "哥特萝莉风格按钮",
       code: `<button className="
   px-8 py-4
-  bg-[#4a1a4a]
-  border border-[#8b1a2a]/60
-  text-[#e5e5e5] font-serif tracking-wide
-  shadow-[0_2px_8px_rgba(75,26,75,0.5)]
-  hover:shadow-[0_4px_16px_rgba(139,26,42,0.5)]
+  bg-[#0a0a0a]
+  border border-[#4a1a4a]
+  text-[#e5e5e5] font-serif tracking-[0.2em]
+  shadow-[inset_0_0_10px_rgba(74,26,74,0.3)]
+  hover:bg-[#1a0a1a]
   hover:border-[#8b1a2a]
-  transition-all duration-300
+  hover:text-white
+  hover:shadow-[0_8px_24px_rgba(139,26,42,0.35),inset_0_0_12px_rgba(139,26,42,0.2)]
+  active:scale-[0.98]
+  active:shadow-[inset_0_0_24px_rgba(0,0,0,0.8)]
+  transition-all duration-500 ease-in-out
 ">
-  Enter
+  Unlock Secret
 </button>`,
     },
     card: {
       name: "卡片",
       description: "哥特萝莉风格卡片",
       code: `<div className="
+  group
   p-8
-  bg-[#0a0a0a]/90
+  bg-gradient-to-b from-[#1a0a1a] to-[#0a0a0a]
   border border-[#4a1a4a]/50
-  shadow-[0_4px_16px_rgba(74,26,74,0.4)]
+  shadow-[0_4px_16px_rgba(74,26,74,0.35)]
+  hover:border-[#8b1a2a]/70
+  hover:shadow-[0_10px_30px_rgba(139,26,42,0.25)]
+  transition-all duration-700 ease-in-out
+  relative overflow-hidden
 ">
-  <h3 className="text-2xl font-serif text-[#e5e5e5] mb-3">
+  <div className="absolute top-4 left-4 w-6 h-6 border-l border-t border-[#e5e5e5]/20 transition-colors duration-500 group-hover:border-[#e5e5e5]/60" />
+  <div className="absolute top-4 right-4 w-6 h-6 border-r border-t border-[#e5e5e5]/20 transition-colors duration-500 group-hover:border-[#e5e5e5]/60" />
+
+  <div className="mb-6 flex justify-center opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+    <div className="h-6 w-px bg-[#e5e5e5]/70 relative">
+      <div className="absolute left-[-8px] top-1/2 h-px w-4 -translate-y-1/2 bg-[#e5e5e5]/70" />
+    </div>
+  </div>
+
+  <h3 className="text-2xl font-serif text-[#e5e5e5] mb-3 tracking-widest text-center group-hover:drop-shadow-[0_0_8px_rgba(229,229,229,0.25)] transition-all duration-500">
     Dark Elegance
   </h3>
-  <p className="text-[#e5e5e5]/60 font-serif">
-    A whisper of lace and shadow
+  <p className="text-[#e5e5e5]/60 font-serif text-center group-hover:text-[#e5e5e5]/85 transition-colors duration-500">
+    A whisper of lace and shadow, wrapped in velvet moonlight.
   </p>
 </div>`,
     },
@@ -199,7 +217,14 @@ export const gothicLolita: DesignStyle = {
 - 十字架装饰
 - 玫瑰图案
 - 对称装饰花纹
-- 哥特式拱门`,
+- 哥特式拱门
+
+## Animation & Interaction Rules
+
+- Velvet Depth: hover 以深紫/血红阴影的缓慢扩散为主，体现丝绒质感，避免轻浮弹跳。
+- Lace Elegance: 交互时长建议 duration-500 到 700，使用 ease-in-out 保持精致与克制。
+- Corset Press: active 使用轻微收束（scale-[0.98]）和内阴影加强，模拟束腰式阻尼反馈。
+- Silver Whisper: 边框与文字可在 hover 中缓慢浮现银白微光，增强暗黑华丽层次。`,
 
   examplePrompts: [
     {

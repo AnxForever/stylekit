@@ -47,26 +47,36 @@ export const zenGarden: DesignStyle = {
       name: "按钮",
       description: "枯山水按钮，透明底色搭配细底线",
       code: `<button className="
-  px-6 py-2.5
+  px-8 py-3
   bg-transparent
-  text-[#4a5548] font-serif text-sm tracking-wide
-  border-b border-[#4a5548]/25
-  hover:border-[#8a9a7b]
-  transition-colors duration-700
+  text-[#4a5548]/70 font-serif text-sm tracking-widest
+  border border-transparent
+  hover:border-[#8a9a7b]/30
+  hover:text-[#4a5548]
+  hover:bg-[#8a9a7b]/5
+  hover:shadow-[0_0_20px_rgba(138,154,123,0.05)]
+  focus-visible:outline-none focus-visible:border-[#8a9a7b]/40
+  transition-all duration-1000 ease-in-out
 ">
-  Continue
+  Enter Quietude
 </button>`,
     },
     card: {
       name: "卡片",
       description: "枯山水卡片，沙白背景搭配苔绿左边框",
       code: `<div className="
-  p-8
+  group p-12
   bg-[#f5f3ee]
   border-l border-[#8a9a7b]/30
+  hover:border-[#8a9a7b]/50
+  transition-colors duration-1000 ease-in-out
 ">
-  <h3 className="text-lg font-serif font-light text-[#4a5548] mb-4 tracking-wide">Title</h3>
-  <p className="text-sm text-[#7a7062] leading-relaxed">Content</p>
+  <h3 className="text-xl font-serif font-light text-[#4a5548]/60 group-hover:text-[#4a5548] tracking-widest mb-6 transition-colors duration-1000 ease-in-out">
+    静 寂
+  </h3>
+  <p className="text-[#4a5548]/50 font-serif font-light leading-loose group-hover:text-[#4a5548]/80 transition-colors duration-1000 ease-in-out delay-100">
+    Listen to the sound of snow falling on moss. The mind becomes clear when the water is still.
+  </p>
 </div>`,
     },
     input: {
@@ -110,5 +120,11 @@ export const zenGarden: DesignStyle = {
 - Very slow transitions: duration-700 or longer
 - No bright colors, no heavy borders, no fast animations
 - Think raked sand patterns, carefully placed stones, quiet moss
-- Every element should feel like it was placed with meditative intention`,
+- Every element should feel like it was placed with meditative intention
+
+Animation & Interaction Rules:
+- Meditative Slowness: 交互必须缓慢克制，使用 \`duration-700\` 到 \`duration-1000\` 与 \`ease-in-out\`。
+- Zero Displacement: 禁止使用 \`translate\`、\`rotate\`，避免任何物理位移动效；焦点应通过显隐与色阶变化表达。
+- Ephemeral Fades: 仅使用低对比度的颜色加深、透明度浮现、或极淡阴影淡入淡出，不做弹跳与高对比闪烁。
+- Quiet Focus: 文本可默认半透明（如 \`text-[#4a5548]/70\`），hover/focus 时缓慢趋于清晰，保持冥想式节奏。`,
 };

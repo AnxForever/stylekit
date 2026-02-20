@@ -53,7 +53,7 @@ GitHub 的设计证明了一个道理：在信息密集的场景中，克制的�
   components: {
     button: {
       name: "按钮",
-      description: "GitHub 风格按钮，简洁实用",
+      description: "GitHub 风格按钮，强调克制反馈与可访问聚焦",
       code: `<button className="
   px-4 py-1.5
   bg-[#1f883d] text-white
@@ -63,24 +63,28 @@ GitHub 的设计证明了一个道理：在信息密集的场景中，克制的�
   shadow-[0_1px_0_rgba(27,31,36,0.04)]
   hover:bg-[#1a7f37]
   active:bg-[#197935]
-  transition-colors duration-150
+  active:scale-[0.98]
+  focus:outline-none focus:ring-4 focus:ring-[#1f883d]/30
+  transition-all duration-100
 ">
   Merge pull request
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "GitHub 风格卡片/仓库列表项",
+      description: "GitHub 风格卡片/仓库列表项，细边框与轻量 hover 提示",
       code: `<div className="
+  group
   p-4
   bg-white
   border border-[#d0d7de]
   rounded-md
   hover:bg-[#f6f8fa]
+  hover:border-[#8c959f]
   transition-colors duration-150
 ">
   <div className="flex items-center gap-2 mb-2">
-    <span className="text-[#0969da] text-sm font-semibold hover:underline cursor-pointer">
+    <span className="text-[#0969da] text-sm font-semibold group-hover:underline cursor-pointer">
       stylekit/design-system
     </span>
     <span className="px-1.5 py-0.5 text-xs font-medium text-[#656d76] border border-[#d0d7de] rounded-full">
@@ -280,6 +284,13 @@ body {
 - 浅背景: #f6f8fa
 - 背景: #ffffff
 - 深色导航: #24292f
+
+## Animation & Interaction Rules
+
+- Extreme Utility: 交互以状态表达为先，避免位移/放大等吸睛动效，时长控制在 duration-75 到 150。
+- Micro-Tactility: 按钮按下仅提供轻微确认（如 active:scale-[0.98] + 背景加深），不过度拟物。
+- A11y Focus Rings: 焦点态必须提供清晰 ring（focus:ring-4 + 品牌蓝/绿透明度），不能只改边框色。
+- Subtle Borders: 卡片 hover 优先微调背景与边框深浅，不使用明显投影。  
 
 ## 自检
 

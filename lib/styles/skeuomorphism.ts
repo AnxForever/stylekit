@@ -48,36 +48,41 @@ export const skeuomorphism: DesignStyle = {
       code: `<button className="
   px-8 py-4
   bg-gradient-to-b from-gray-100 via-gray-200 to-gray-300
+  bg-[length:100%_180%] bg-[position:0_0]
   border border-gray-400
   rounded-lg
   text-gray-700 font-semibold
-  shadow-[0_4px_6px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(0,0,0,0.1)]
-  hover:from-gray-200 hover:via-gray-300 hover:to-gray-400
-  active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
-  active:translate-y-[1px]
-  transition-all duration-100
+  shadow-[0_4px_6px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(0,0,0,0.14)]
+  hover:bg-[position:0_20%]
+  hover:shadow-[0_5px_8px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(0,0,0,0.14)]
+  active:translate-y-[2px]
+  active:shadow-[0_1px_2px_rgba(0,0,0,0.45),inset_0_2px_5px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.8)]
+  transition-all duration-75 ease-linear
 ">
-  Press Me
+  Mechanical Switch
 </button>`,
     },
     card: {
       name: "卡片",
       description: "拟物风格卡片",
       code: `<div className="
+  group
   p-6
   bg-gradient-to-b from-amber-50 to-amber-100
   border border-amber-300
   rounded-xl
-  shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.5)]
+  shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.7),inset_0_-1px_0_rgba(0,0,0,0.12)]
+  hover:shadow-[0_10px_20px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.75),inset_0_-1px_0_rgba(0,0,0,0.12)]
   relative overflow-hidden
+  transition-shadow duration-200
 ">
   {/* Leather texture overlay */}
-  <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml,...')] pointer-events-none" />
-  <h3 className="text-xl font-bold text-amber-900 mb-2">
-    Leather Card
+  <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[radial-gradient(#3f2f1f_0.7px,transparent_0.7px)] bg-[size:5px_5px] bg-[position:0_0] group-hover:bg-[position:2px_2px] group-hover:opacity-[0.05] transition-all duration-200" />
+  <h3 className="text-xl font-bold text-amber-900 mb-2 [text-shadow:0_1px_0_rgba(255,255,255,0.8)]">
+    Stitched Leather
   </h3>
-  <p className="text-amber-800">
-    Realistic texture and depth
+  <p className="text-amber-800 [text-shadow:0_1px_0_rgba(255,255,255,0.75)]">
+    Rich material depth with stable highlight and tactile resistance.
   </p>
 </div>`,
     },
@@ -185,7 +190,14 @@ export const skeuomorphism: DesignStyle = {
 
 - 顶部高光 (inset 0 1px 0 rgba(255,255,255,0.8))
 - 底部暗边 (inset 0 -1px 0 rgba(0,0,0,0.1))
-- 外部投影 (0 4px 8px rgba(0,0,0,0.3))`,
+- 外部投影 (0 4px 8px rgba(0,0,0,0.3))
+
+## Animation & Interaction Rules
+
+- Tactile Resistance: active 状态使用短时下压和更紧凑外阴影，模拟按键阻尼，不使用弹跳放大。
+- Fixed Illuminant: 顶部高光和底部暗边在 hover 与 active 中保持稳定，确保光源始终来自上方。
+- Texture Shimmer: 材质层允许轻微 background-position 位移，表达金属拉丝或皮革纹理的受光变化。
+- Embossed Focus: 输入焦点优先加深 inset 阴影，而不是强烈外发光轮廓。`,
 
   examplePrompts: [
     {
