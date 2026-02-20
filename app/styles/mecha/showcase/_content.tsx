@@ -1,25 +1,25 @@
 "use client";
-
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
-function useInView() {
+function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
       },
-      { threshold: 0.15 }
+      { threshold: 0.15, ...options }
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
-
   return { ref, inView };
 }
 
@@ -39,8 +39,8 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
       {children}
@@ -48,7 +48,7 @@ function RevealBlock({
   );
 }
 
-/* --- Inline SVG & Decoration Components --- */
+/* ─── Decoration helpers ─── */
 
 function WarningStripe({ className = "" }: { className?: string }) {
   return (
@@ -86,9 +86,9 @@ function StatusIndicator({
 }) {
   return (
     <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest">
-      <div className="w-2 h-2" style={{ backgroundColor: color }} />
+      <div className="w-2 h-2 shrink-0" style={{ backgroundColor: color }} />
       <span className="text-[#4a5c3a]">{label}</span>
-      <span className="ml-auto" style={{ color }}>
+      <span className="ml-auto font-bold" style={{ color }}>
         {status}
       </span>
     </div>
@@ -98,8 +98,10 @@ function StatusIndicator({
 function UnitLabel({ text, className = "" }: { text: string; className?: string }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <div className="w-3 h-3 bg-[#fbbf24]" />
-      <span className="text-xs font-mono text-[#4a5c3a] uppercase tracking-widest">{text}</span>
+      <div className="w-3 h-3 bg-[#fbbf24] shrink-0" />
+      <span className="text-xs font-mono text-[#4a5c3a] uppercase tracking-widest font-bold">
+        {text}
+      </span>
     </div>
   );
 }
@@ -113,18 +115,23 @@ function PowerBar({
   percent: number;
   color?: string;
 }) {
+  const { ref, inView } = useInView();
   return (
-    <div>
+    <div ref={ref}>
       <div className="flex justify-between mb-1">
         <span className="text-xs font-mono uppercase tracking-widest text-[#4a5c3a]">{label}</span>
-        <span className="text-xs font-mono uppercase tracking-widest" style={{ color }}>
+        <span className="text-xs font-mono uppercase tracking-widest font-bold" style={{ color }}>
           {percent}%
         </span>
       </div>
-      <div className="h-2 bg-[#0f1c38] border border-[#4a5c3a]/30 rounded-none">
+      <div className="h-2 bg-[#0f1c38] border border-[#4a5c3a]/30 rounded-none overflow-hidden">
         <div
-          className="h-full rounded-none transition-all duration-150 ease-linear"
-          style={{ width: `${percent}%`, backgroundColor: color }}
+          className="h-full rounded-none"
+          style={{
+            width: inView ? `${percent}%` : "0%",
+            backgroundColor: color,
+            transition: "width 0.8s ease-linear 0.2s",
+          }}
         />
       </div>
     </div>
@@ -157,15 +164,14 @@ function PanelFrame({
       className={`relative rounded-none ${className}`}
       style={{
         border: `2px solid ${borderColor}`,
-        clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)",
+        clipPath:
+          "polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)",
       }}
     >
-      {/* Offset shadow panel */}
       <div
         className="absolute top-1 left-1 -right-1 -bottom-1 pointer-events-none rounded-none"
-        style={{ border: "1px solid rgba(251, 191, 36, 0.15)" }}
+        style={{ border: "1px solid rgba(251, 191, 36, 0.12)" }}
       />
-      {/* Top-right corner bracket */}
       <div
         className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 pointer-events-none"
         style={{ borderColor: `${borderColor}60` }}
@@ -175,7 +181,7 @@ function PanelFrame({
   );
 }
 
-/* --- Color data --- */
+/* ─── Static data ─── */
 
 const colorPalette = [
   { name: "Deep Navy", hex: "#1a2744", role: "Primary Background", textColor: "#fbbf24" },
@@ -186,15 +192,13 @@ const colorPalette = [
   { name: "Steel Dark", hex: "#2b2b2b", role: "Button Surface", textColor: "#fbbf24" },
 ];
 
-/* --- Do / Don't rules --- */
-
 const doRules = [
   "Use military green and deep navy as base palette",
   "Add warning yellow #fbbf24 and danger red #ef4444 for accents",
   "Use monospace fonts with uppercase and tracking-widest",
   "Design sharp-cornered panels with no border-radius (rounded-none)",
   "Add technical annotations, unit numbers, and status codes",
-  "Use hard-edge shadows (shadow-[4px_4px_0px_color]) on panels",
+  "Use hard-edge shadows shadow-[4px_4px_0px_color] on panels",
 ];
 
 const dontRules = [
@@ -204,71 +208,183 @@ const dontRules = [
   "Avoid handwritten, cursive, or decorative fonts",
 ];
 
-export default function ShowcaseContent() {
+const weaponSystems = [
+  { id: "WPN-01", name: "RAIL GUN ARRAY", damage: "9800 kJ", status: "ARMED", color: "#fbbf24" },
+  { id: "WPN-02", name: "PLASMA LANCE", damage: "7200 kJ", status: "READY", color: "#fbbf24" },
+  { id: "WPN-03", name: "MISSILE PODS", damage: "4x3600 kJ", status: "LOCKED", color: "#ef4444" },
+  { id: "WPN-04", name: "EMP BURST", damage: "WIDE AOE", status: "STANDBY", color: "#4a5c3a" },
+];
+
+const shieldSectors = [
+  { sector: "FORWARD", integrity: 94, color: "#fbbf24" },
+  { sector: "PORT", integrity: 81, color: "#fbbf24" },
+  { sector: "STARBOARD", integrity: 76, color: "#ef4444" },
+  { sector: "AFT", integrity: 62, color: "#ef4444" },
+];
+
+const pilotRoster = [
+  {
+    id: "PILOT-001",
+    callsign: "STEEL_HAWK",
+    unit: "EVA-01",
+    sync: 87,
+    status: "ACTIVE",
+    color: "#fbbf24",
+  },
+  {
+    id: "PILOT-002",
+    callsign: "RED_FALCON",
+    unit: "EVA-02",
+    sync: 92,
+    status: "STANDBY",
+    color: "#ef4444",
+  },
+  {
+    id: "PILOT-003",
+    callsign: "GHOST_REX",
+    unit: "EVA-03",
+    sync: 74,
+    status: "OFFLINE",
+    color: "#4a5c3a",
+  },
+];
+
+const missionLog = [
+  { timestamp: "03:14:09", code: "SYS_BOOT", message: "Primary reactor online", type: "ok" },
+  { timestamp: "03:14:11", code: "NET_SYNC", message: "Tactical network established", type: "ok" },
+  { timestamp: "03:14:15", code: "ARM_CHK", message: "All weapon arrays calibrated", type: "ok" },
+  { timestamp: "03:14:22", code: "WARN_001", message: "Starboard shield degraded -18%", type: "warn" },
+  { timestamp: "03:14:30", code: "ALERT_01", message: "Hostiles detected — grid ref 7F", type: "alert" },
+  { timestamp: "03:14:35", code: "ENGAGE", message: "Weapons free — all units deploy", type: "ok" },
+];
+
+/* ─── Main Component ─── */
+
+export default function MechaShowcase() {
   const [heroRevealed, setHeroRevealed] = useState(false);
   const [activeTab, setActiveTab] = useState<"button" | "card" | "input">("button");
   const [hoveredPanel, setHoveredPanel] = useState<number | null>(null);
+  const [selectedWeapon, setSelectedWeapon] = useState<string | null>(null);
+  const [syncRatePilot, setSyncRatePilot] = useState(0);
+  const [hudLive, setHudLive] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroRevealed(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSyncRatePilot((v) => {
+        const next = v + 1;
+        if (next > 87) {
+          clearInterval(interval);
+          return 87;
+        }
+        return next;
+      });
+    }, 20);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0f1c38] text-[#e5e5e5] font-mono uppercase">
       <style>{`
         @keyframes mecha-scanline {
-          0% { transform: translateY(-100%); }
+          0%   { transform: translateY(-100%); }
           100% { transform: translateY(100vh); }
         }
         @keyframes mecha-blink {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
+          50%       { opacity: 0.25; }
+        }
+        @keyframes mecha-pulse-border {
+          0%, 100% { border-color: rgba(251,191,36,0.4); }
+          50%       { border-color: rgba(251,191,36,1); }
+        }
+        @keyframes mecha-hud-scan {
+          0%   { background-position: 0 0; }
+          100% { background-position: 0 40px; }
         }
         .mecha-scanline-overlay::after {
           content: '';
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
+          top: 0; left: 0; right: 0;
           height: 2px;
-          background: linear-gradient(90deg, transparent, rgba(251,191,36,0.15), transparent);
+          background: linear-gradient(90deg, transparent, rgba(251,191,36,0.18), transparent);
           animation: mecha-scanline 4s linear infinite;
           pointer-events: none;
         }
-        .mecha-hover-underline {
-          position: relative;
-        }
+        .mecha-hover-underline { position: relative; }
         .mecha-hover-underline::after {
           content: '';
           position: absolute;
           width: 100%;
           transform: scaleX(0);
           height: 2px;
-          bottom: 0;
-          left: 0;
+          bottom: 0; left: 0;
           background: #fbbf24;
           transform-origin: bottom right;
-          transition: transform 0.15s ease-linear;
+          transition: transform 0.12s ease-linear;
         }
         .mecha-hover-underline:hover::after {
           transform: scaleX(1);
           transform-origin: bottom left;
         }
+        .mecha-rivet::before, .mecha-rivet::after {
+          content: '';
+          position: absolute;
+          width: 6px; height: 6px;
+          border-radius: 9999px;
+          background: #4a5c3a;
+          border: 1px solid #fbbf2430;
+        }
+        .mecha-rivet::before { top: 8px; left: 8px; }
+        .mecha-rivet::after  { top: 8px; right: 8px; }
+        .mecha-hud-grid {
+          animation: mecha-hud-scan 2s linear infinite;
+        }
+        .weapon-lock-active {
+          animation: mecha-pulse-border 0.8s ease-linear infinite;
+        }
       `}</style>
 
-      {/* ===== 1. Fixed Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f1c38]/95 backdrop-blur-sm">
+      {/* ===== 1. Navigation Bar ===== */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f1c38]/96">
         <WarningStripe />
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-14 md:h-16 border-b border-[#4a5c3a]/30">
+            {/* Logo / System ID */}
             <Link
               href="/styles/mecha/showcase"
               className="flex items-center gap-3 text-[#fbbf24] tracking-widest text-sm font-bold"
             >
               <div className="w-3 h-3 bg-[#fbbf24]" />
               MECHA_SYS
+              <span className="hidden md:inline text-[#4a5c3a] text-[10px] font-normal ml-2">
+                // ARMOR_CLASS v4.1
+              </span>
             </Link>
+
+            {/* Center status badges */}
+            <div className="hidden md:flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 bg-[#fbbf24]"
+                  style={{ animation: "mecha-blink 2s ease-linear infinite" }}
+                />
+                <span className="text-[10px] tracking-widest text-[#4a5c3a]">SYSTEMS NOMINAL</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 bg-[#ef4444]"
+                  style={{ animation: "mecha-blink 1s ease-linear infinite" }}
+                />
+                <span className="text-[10px] tracking-widest text-[#ef4444]">THREAT: ELEVATED</span>
+              </div>
+            </div>
+
+            {/* Nav links */}
             <nav className="flex items-center gap-6 md:gap-8">
               <Link
                 href="/styles/mecha"
@@ -282,12 +398,19 @@ export default function ShowcaseContent() {
               >
                 STYLEKIT
               </Link>
+              <div className="hidden md:flex items-center gap-2 px-4 py-1 border border-[#ef4444]/50 text-[#ef4444] text-[10px] tracking-widest">
+                <div
+                  className="w-1.5 h-1.5 bg-[#ef4444]"
+                  style={{ animation: "mecha-blink 0.8s ease-linear infinite" }}
+                />
+                COMBAT_READY
+              </div>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* ===== 2. Hero Section ===== */}
+      {/* ===== 2. Hero — Cockpit HUD Boot Sequence ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <TechGrid />
 
@@ -299,62 +422,81 @@ export default function ShowcaseContent() {
         {/* Scanline overlay */}
         <div className="absolute inset-0 mecha-scanline-overlay pointer-events-none" />
 
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center pt-32 md:pt-0">
-          {/* Left: Title block */}
+        {/* Diagonal panel lines — left side */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-px pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, transparent, #4a5c3a40, transparent)",
+          }}
+        />
+        <div
+          className="absolute left-8 top-0 bottom-0 w-px pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, transparent, #fbbf2420, transparent)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center pt-32 pb-16 md:pt-0">
+          {/* Left: Mecha title */}
           <div>
+            {/* Boot label */}
             <div
               className="flex items-center gap-3 mb-6"
               style={{
                 opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.4s ease-linear, transform 0.4s ease-linear",
+                transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
+                transition: "opacity 0.3s ease-linear, transform 0.3s ease-linear",
               }}
             >
               <div className="h-0.5 w-8 bg-[#fbbf24]" />
               <span className="text-xs tracking-widest text-[#4a5c3a] font-bold">
-                {"// SYSTEM ONLINE"}
+                {"// SYSTEM ONLINE — SEQUENCE COMPLETE"}
               </span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold leading-[0.95] tracking-tight mb-6">
+            {/* Big title */}
+            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold leading-[0.9] tracking-tight mb-6">
               <span
                 className="block text-[#fbbf24]"
                 style={{
                   opacity: heroRevealed ? 1 : 0,
                   transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition: "opacity 0.5s ease-linear, transform 0.5s ease-linear",
+                  transition: "opacity 0.5s ease-linear 0.05s, transform 0.5s ease-linear 0.05s",
                 }}
               >
                 MECHA
               </span>
               <span
-                className="block text-[#4a5c3a] text-4xl md:text-5xl mt-2"
+                className="block text-[#4a5c3a] text-4xl md:text-5xl mt-2 tracking-widest"
                 style={{
                   opacity: heroRevealed ? 1 : 0,
                   transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition: "opacity 0.5s ease-linear 0.1s, transform 0.5s ease-linear 0.1s",
+                  transition: "opacity 0.5s ease-linear 0.15s, transform 0.5s ease-linear 0.15s",
                 }}
               >
                 ARMOR CLASS
               </span>
             </h1>
 
+            {/* Subtitle */}
             <p
-              className="text-sm md:text-base text-[#4a5c3a] tracking-wider max-w-md mb-8"
+              className="text-sm md:text-base text-[#4a5c3a] tracking-wider max-w-md mb-10 leading-relaxed normal-case"
               style={{
                 opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.5s ease-linear 0.2s, transform 0.5s ease-linear 0.2s",
+                transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
+                transition: "opacity 0.5s ease-linear 0.25s, transform 0.5s ease-linear 0.25s",
               }}
             >
-              Industrial-grade design framework. Military precision. Zero compromise.
+              Industrial-grade design system. Inspired by Gundam, Evangelion, and Pacific Rim.
+              Military precision. Zero compromise. Zero organic curves.
             </p>
 
+            {/* CTA buttons */}
             <div
+              className="flex flex-wrap gap-4"
               style={{
                 opacity: heroRevealed ? 1 : 0,
-                transition: "opacity 0.5s ease-linear 0.3s",
+                transition: "opacity 0.5s ease-linear 0.35s",
               }}
             >
               <button
@@ -382,42 +524,68 @@ export default function ShowcaseContent() {
                 />
                 <span className="relative z-10">DEPLOY_SYSTEM</span>
               </button>
+
+              <button
+                className="
+                  px-10 py-3
+                  bg-transparent text-[#4a5c3a]
+                  font-bold tracking-widest rounded-none
+                  border-2 border-[#4a5c3a]
+                  hover:border-[#fbbf24] hover:text-[#fbbf24]
+                  hover:shadow-[0_0_8px_rgba(251,191,36,0.25)]
+                  active:translate-y-[2px]
+                  transition-all duration-100 ease-linear
+                "
+              >
+                REVIEW_SPECS
+              </button>
             </div>
           </div>
 
-          {/* Right: System status panel */}
+          {/* Right: Live HUD status panel */}
           <div
             className="hidden md:block"
             style={{
               opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateX(0)" : "translateX(40px)",
-              transition: "opacity 0.5s ease-linear 0.2s, transform 0.5s ease-linear 0.2s",
+              transform: heroRevealed ? "translateX(0)" : "translateX(48px)",
+              transition: "opacity 0.6s ease-linear 0.25s, transform 0.6s ease-linear 0.25s",
             }}
           >
             <PanelFrame className="p-6 bg-[#1a2744]">
-              <UnitLabel text="UNIT-01 // STATUS PANEL" className="mb-6" />
+              {/* HUD header */}
+              <div className="flex items-center justify-between mb-6">
+                <UnitLabel text="UNIT-01 // STATUS PANEL" />
+                <div
+                  className="w-2 h-2 bg-[#ef4444]"
+                  style={{ animation: "mecha-blink 0.8s ease-linear infinite" }}
+                />
+              </div>
 
+              {/* Power readouts */}
               <div className="space-y-4 mb-6">
                 <PowerBar label="REACTOR_CORE" percent={94} color="#fbbf24" />
                 <PowerBar label="ARMOR_INTEGRITY" percent={87} color="#4a5c3a" />
                 <PowerBar label="WEAPON_SYS" percent={100} color="#fbbf24" />
                 <PowerBar label="SHIELD_GEN" percent={72} color="#ef4444" />
+                <PowerBar label="SYNC_RATIO" percent={syncRatePilot} color="#fbbf24" />
               </div>
 
-              <div className="border-t border-[#4a5c3a]/30 pt-4 space-y-2">
+              {/* Status lines */}
+              <div className="border-t border-[#4a5c3a]/30 pt-4 space-y-2 mb-4">
                 <StatusIndicator label="MAIN_DRIVE" status="ACTIVE" color="#fbbf24" />
                 <StatusIndicator label="COMMS_LINK" status="ONLINE" color="#4a5c3a" />
                 <StatusIndicator label="THREAT_LVL" status="ELEVATED" color="#ef4444" />
+                <StatusIndicator label="PILOT_SYNC" status={`${syncRatePilot}%`} color="#fbbf24" />
               </div>
 
-              {/* Blinking alert */}
-              <div className="mt-4 flex items-center gap-2">
+              {/* Alert row */}
+              <div className="flex items-center gap-2 border-t border-[#4a5c3a]/20 pt-3">
                 <div
                   className="w-2 h-2 bg-[#ef4444]"
                   style={{ animation: "mecha-blink 1s ease-linear infinite" }}
                 />
-                <span className="text-[10px] tracking-widest text-[#ef4444]">
-                  ALERT: COMBAT_READY
+                <span className="text-[10px] tracking-widest text-[#ef4444] font-bold">
+                  ALERT: COMBAT_READY — WEAPONS FREE
                 </span>
               </div>
             </PanelFrame>
@@ -430,7 +598,7 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ===== 3. Component Demos ===== */}
+      {/* ===== 3. Component Arsenal ===== */}
       <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
         <RevealBlock>
           <MechaDivider />
@@ -439,11 +607,11 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">ARSENAL</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-12">
-            {"// INTERACTIVE ELEMENTS -- OPERATIONAL STATUS: GREEN"}
+            {"// INTERACTIVE ELEMENTS — OPERATIONAL STATUS: GREEN"}
           </p>
         </RevealBlock>
 
-        {/* Tab Switcher */}
+        {/* Tab selector */}
         <RevealBlock delay={0.1} className="mb-12">
           <div className="flex gap-0 border-2 border-[#4a5c3a] rounded-none">
             {(["button", "card", "input"] as const).map((tab) => (
@@ -456,11 +624,11 @@ export default function ShowcaseContent() {
                   ${
                     activeTab === tab
                       ? "bg-[#fbbf24] text-[#1a2744] shadow-[inset_0_-2px_0_#c9a227]"
-                      : "bg-[#1a2744] text-[#4a5c3a] hover:text-[#fbbf24] hover:bg-[#1a2744]/80"
+                      : "bg-[#1a2744] text-[#4a5c3a] hover:text-[#fbbf24]"
                   }
                 `}
               >
-                {tab}
+                {tab === "button" ? "WEAPON_SYS" : tab === "card" ? "ARMOR_PANEL" : "CMD_TERM"}
               </button>
             ))}
           </div>
@@ -468,15 +636,15 @@ export default function ShowcaseContent() {
 
         {/* Demo panel */}
         <RevealBlock delay={0.2}>
-          <PanelFrame className="p-8 md:p-12 bg-[#1a2744] min-h-[300px]">
-            {/* Button demo */}
+          <PanelFrame className="p-8 md:p-12 bg-[#1a2744] min-h-[340px]">
+            {/* Button weapons demo */}
             {activeTab === "button" && (
               <div className="flex flex-col items-center gap-8">
-                <p className="text-xs tracking-widest text-[#4a5c3a] mb-4">
-                  {"// HYDRAULIC RIGIDNESS -- 100ms EASE-LINEAR"}
+                <p className="text-xs tracking-widest text-[#4a5c3a] mb-2">
+                  {"// WEAPON TRIGGER SYSTEMS — HYDRAULIC RIGIDNESS: 100ms EASE-LINEAR"}
                 </p>
                 <div className="flex flex-wrap justify-center gap-6">
-                  {/* Primary */}
+                  {/* Primary engage */}
                   <button
                     className="
                       group relative overflow-hidden px-10 py-3
@@ -502,7 +670,8 @@ export default function ShowcaseContent() {
                     />
                     <span className="relative z-10">ENGAGE_SYSTEM</span>
                   </button>
-                  {/* Danger */}
+
+                  {/* Danger eject */}
                   <button
                     className="
                       px-10 py-3
@@ -519,7 +688,8 @@ export default function ShowcaseContent() {
                   >
                     EJECT_POD
                   </button>
-                  {/* Ghost */}
+
+                  {/* Ghost standby */}
                   <button
                     className="
                       px-10 py-3
@@ -535,26 +705,42 @@ export default function ShowcaseContent() {
                     STANDBY
                   </button>
                 </div>
+
+                {/* Interaction spec */}
+                <div className="flex items-center gap-8 mt-4 border-t border-[#4a5c3a]/20 pt-6 w-full">
+                  {[
+                    { label: "HOVER_SPEED", value: "100ms" },
+                    { label: "EASING", value: "LINEAR" },
+                    { label: "SHADOW", value: "4px HARD" },
+                  ].map((spec) => (
+                    <div key={spec.label} className="text-center">
+                      <p className="text-[10px] text-[#4a5c3a] tracking-widest mb-1">{spec.label}</p>
+                      <p className="text-sm text-[#fbbf24] font-bold tracking-widest">{spec.value}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Card demo */}
+            {/* Card armor panels demo */}
             {activeTab === "card" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
                   {
                     title: "ARMOR PANEL",
-                    desc: "Status: Operational. Hull integrity nominal.",
+                    desc: "Hull integrity nominal. All structural joints reinforced.",
                     unit: "UNIT-01",
                     statusColor: "#fbbf24",
                     statusText: "ACTIVE",
+                    series: "EVA-01",
                   },
                   {
                     title: "WEAPON ARRAY",
-                    desc: "Targeting systems calibrated. Ready to deploy.",
+                    desc: "Targeting systems calibrated. Rail guns at full charge.",
                     unit: "UNIT-02",
                     statusColor: "#ef4444",
                     statusText: "ARMED",
+                    series: "EVA-02",
                   },
                 ].map((card, i) => (
                   <div
@@ -564,7 +750,7 @@ export default function ShowcaseContent() {
                       bg-[#1a2744] rounded-none
                       border-2 border-[#4a5c3a]
                       border-l-4 border-l-[#fbbf24]
-                      shadow-[4px_4px_0px_rgba(251,191,36,0.3)]
+                      shadow-[4px_4px_0px_rgba(251,191,36,0.25)]
                       hover:border-l-[10px]
                       transition-all duration-150 ease-linear
                       cursor-pointer
@@ -578,30 +764,45 @@ export default function ShowcaseContent() {
                   >
                     <div className="absolute top-2 right-2 h-8 w-8 border-t-2 border-r-2 border-[#fbbf24]/40 transition-all duration-150 ease-linear group-hover:translate-x-[-2px] group-hover:translate-y-[2px] group-hover:border-[#fbbf24]" />
 
+                    <div className="text-[10px] text-[#4a5c3a]/60 tracking-widest mb-2">
+                      {card.series}
+                    </div>
                     <UnitLabel text={card.unit} className="mb-3" />
                     <h3 className="text-xl font-bold text-[#fbbf24] mb-2 tracking-wider">
                       {card.title}
                     </h3>
-                    <p className="text-[#4a5c3a]/80 text-sm mb-4">{card.desc}</p>
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-[10px] tracking-widest" style={{ color: card.statusColor }}>
-                        {card.statusText}
+                    <p className="text-[#4a5c3a]/80 text-sm mb-6 normal-case leading-relaxed">
+                      {card.desc}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] tracking-widest text-[#4a5c3a]">
+                        PANEL REF #{i + 1}
                       </span>
-                      <div
-                        className="h-2 w-2"
-                        style={{
-                          backgroundColor: card.statusColor,
-                          animation:
-                            hoveredPanel === i ? "mecha-blink 0.5s ease-linear infinite" : "none",
-                        }}
-                      />
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="text-[10px] tracking-widest font-bold"
+                          style={{ color: card.statusColor }}
+                        >
+                          {card.statusText}
+                        </span>
+                        <div
+                          className="h-2 w-2"
+                          style={{
+                            backgroundColor: card.statusColor,
+                            animation:
+                              hoveredPanel === i
+                                ? "mecha-blink 0.5s ease-linear infinite"
+                                : "none",
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Input demo */}
+            {/* Input command terminal demo */}
             {activeTab === "input" && (
               <div className="max-w-md mx-auto space-y-8">
                 <div>
@@ -616,7 +817,7 @@ export default function ShowcaseContent() {
                       bg-[#1a2744]/80
                       border-2 border-[#4a5c3a] rounded-none
                       text-[#fbbf24] placeholder-[#4a5c3a]/60
-                      font-mono
+                      font-mono uppercase tracking-wider
                       focus:border-[#fbbf24]
                       focus:shadow-[0_0_8px_rgba(251,191,36,0.4)]
                       focus:outline-none
@@ -626,17 +827,17 @@ export default function ShowcaseContent() {
                 </div>
                 <div>
                   <label className="block text-xs tracking-widest text-[#ef4444] mb-3 font-bold">
-                    {"// AUTH_CODE"}
+                    {"// AUTH_CODE — RESTRICTED ACCESS"}
                   </label>
                   <input
-                    type="text"
+                    type="password"
                     placeholder="ENTER ACCESS CODE..."
                     className="
                       w-full px-4 py-3
                       bg-[#1a2744]/80
                       border-2 border-[#ef4444]/50 rounded-none
                       text-[#ef4444] placeholder-[#ef4444]/30
-                      font-mono
+                      font-mono uppercase tracking-wider
                       focus:border-[#ef4444]
                       focus:shadow-[0_0_8px_rgba(239,68,68,0.4)]
                       focus:outline-none
@@ -644,10 +845,43 @@ export default function ShowcaseContent() {
                     "
                   />
                 </div>
+                <div>
+                  <label className="block text-xs tracking-widest text-[#4a5c3a] mb-3 font-bold">
+                    {"// TARGET_COORDINATES"}
+                  </label>
+                  <div className="flex gap-0">
+                    <input
+                      type="text"
+                      placeholder="GRID-X"
+                      className="
+                        flex-1 px-4 py-3
+                        bg-[#1a2744]/80
+                        border-2 border-r border-[#4a5c3a] rounded-none
+                        text-[#e5e5e5] placeholder-[#4a5c3a]/60
+                        font-mono uppercase tracking-wider
+                        focus:border-[#fbbf24]
+                        focus:outline-none
+                        transition-all duration-100 ease-linear
+                      "
+                    />
+                    <input
+                      type="text"
+                      placeholder="GRID-Y"
+                      className="
+                        flex-1 px-4 py-3
+                        bg-[#1a2744]/80
+                        border-2 border-l-0 border-[#4a5c3a] rounded-none
+                        text-[#e5e5e5] placeholder-[#4a5c3a]/60
+                        font-mono uppercase tracking-wider
+                        focus:border-[#fbbf24]
+                        focus:outline-none
+                        transition-all duration-100 ease-linear
+                      "
+                    />
+                  </div>
+                </div>
                 <div className="flex items-center gap-4">
-                  <div
-                    className="w-5 h-5 border-2 border-[#4a5c3a] flex items-center justify-center cursor-pointer hover:border-[#fbbf24] transition-colors duration-100 ease-linear rounded-none"
-                  >
+                  <div className="w-5 h-5 border-2 border-[#4a5c3a] flex items-center justify-center cursor-pointer hover:border-[#fbbf24] transition-colors duration-100 ease-linear rounded-none">
                     <div className="w-2.5 h-2.5 bg-[#fbbf24]" />
                   </div>
                   <span className="text-xs text-[#4a5c3a] tracking-widest">
@@ -660,7 +894,205 @@ export default function ShowcaseContent() {
         </RevealBlock>
       </section>
 
-      {/* ===== 4. Color Palette ===== */}
+      {/* ===== 4. HUD — Full System Status ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
+        <RevealBlock>
+          <MechaDivider />
+          <h2 className="text-3xl md:text-5xl text-center tracking-wider mb-4 font-bold">
+            <span className="text-[#fbbf24]">TACTICAL</span>{" "}
+            <span className="text-[#4a5c3a]">HUD DISPLAY</span>
+          </h2>
+          <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
+            {"// HEADS-UP DISPLAY — LIVE COMBAT TELEMETRY FEED"}
+          </p>
+        </RevealBlock>
+
+        {/* Top row: Weapon systems + Shield sectors */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          {/* Weapon lock panel */}
+          <RevealBlock delay={0.1}>
+            <PanelFrame className="p-6 bg-[#1a2744]" borderColor="#fbbf24">
+              <UnitLabel text="WEAPON // LOCK-ON MATRIX" className="mb-6" />
+              <div className="space-y-3">
+                {weaponSystems.map((wpn) => (
+                  <button
+                    key={wpn.id}
+                    onClick={() =>
+                      setSelectedWeapon(selectedWeapon === wpn.id ? null : wpn.id)
+                    }
+                    className="w-full flex items-center gap-4 p-3 border border-[#4a5c3a]/40 hover:border-[#fbbf24] transition-all duration-100 ease-linear rounded-none text-left"
+                    style={{
+                      backgroundColor:
+                        selectedWeapon === wpn.id ? "rgba(251,191,36,0.08)" : "transparent",
+                      borderColor:
+                        selectedWeapon === wpn.id ? wpn.color : undefined,
+                    }}
+                  >
+                    <div className="w-2 h-2 shrink-0" style={{ backgroundColor: wpn.color }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] text-[#4a5c3a] tracking-widest mb-0.5">
+                        {wpn.id}
+                      </div>
+                      <div className="text-xs text-[#fbbf24] font-bold tracking-widest truncate">
+                        {wpn.name}
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-[10px] text-[#4a5c3a] tracking-widest mb-0.5">
+                        DAMAGE
+                      </div>
+                      <div className="text-xs font-bold tracking-widest" style={{ color: wpn.color }}>
+                        {wpn.damage}
+                      </div>
+                    </div>
+                    <div
+                      className="text-[10px] font-bold tracking-widest w-16 text-right"
+                      style={{ color: wpn.color }}
+                    >
+                      {wpn.status}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              {selectedWeapon && (
+                <div className="mt-4 border-t border-[#fbbf24]/20 pt-4 flex items-center gap-2">
+                  <div
+                    className="w-2 h-2 bg-[#fbbf24]"
+                    style={{ animation: "mecha-blink 0.5s ease-linear infinite" }}
+                  />
+                  <span className="text-[10px] tracking-widest text-[#fbbf24] font-bold">
+                    TARGET LOCKED: {selectedWeapon}
+                  </span>
+                </div>
+              )}
+            </PanelFrame>
+          </RevealBlock>
+
+          {/* Shield sectors */}
+          <RevealBlock delay={0.2}>
+            <PanelFrame className="p-6 bg-[#1a2744]" borderColor="#4a5c3a">
+              <UnitLabel text="SHIELD // SECTOR INTEGRITY" className="mb-6" />
+              <div className="space-y-5">
+                {shieldSectors.map((s) => (
+                  <PowerBar
+                    key={s.sector}
+                    label={`${s.sector} SHIELD`}
+                    percent={s.integrity}
+                    color={s.color}
+                  />
+                ))}
+              </div>
+              <div className="mt-6 border-t border-[#4a5c3a]/20 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] tracking-widest text-[#4a5c3a]">
+                    OVERALL INTEGRITY
+                  </span>
+                  <span className="text-sm font-bold text-[#fbbf24] tracking-widest">78.25%</span>
+                </div>
+              </div>
+            </PanelFrame>
+          </RevealBlock>
+        </div>
+
+        {/* Pilot roster */}
+        <RevealBlock delay={0.25} className="mb-8">
+          <PanelFrame className="p-6 bg-[#1a2744]" borderColor="#4a5c3a">
+            <UnitLabel text="PILOT // ROSTER & SYNC RATES" className="mb-6" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {pilotRoster.map((pilot) => (
+                <div
+                  key={pilot.id}
+                  className="
+                    p-4 border border-[#4a5c3a]/30
+                    hover:border-[#fbbf24] transition-all duration-100 ease-linear
+                    group cursor-pointer
+                  "
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-[10px] text-[#4a5c3a] tracking-widest">{pilot.id}</div>
+                    <div
+                      className="w-2 h-2"
+                      style={{
+                        backgroundColor: pilot.color,
+                        animation:
+                          pilot.status === "ACTIVE"
+                            ? "mecha-blink 1.2s ease-linear infinite"
+                            : "none",
+                      }}
+                    />
+                  </div>
+                  <div className="text-sm font-bold tracking-widest text-[#fbbf24] mb-1">
+                    {pilot.callsign}
+                  </div>
+                  <div className="text-[10px] text-[#4a5c3a] tracking-widest mb-4">{pilot.unit}</div>
+                  <PowerBar label="SYNC" percent={pilot.sync} color={pilot.color} />
+                  <div className="mt-2 text-[10px] tracking-widest" style={{ color: pilot.color }}>
+                    {pilot.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </PanelFrame>
+        </RevealBlock>
+
+        {/* Mission log / combat log */}
+        <RevealBlock delay={0.3}>
+          <PanelFrame className="p-6 bg-[#1a2744]" borderColor="#fbbf24">
+            <div className="flex items-center justify-between mb-6">
+              <UnitLabel text="MISSION // COMBAT LOG" />
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 bg-[#fbbf24]"
+                  style={{ animation: "mecha-blink 1.5s ease-linear infinite" }}
+                />
+                <span className="text-[10px] text-[#4a5c3a] tracking-widest">LIVE FEED</span>
+              </div>
+            </div>
+            <div className="space-y-2 font-mono">
+              {missionLog.map((entry, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-4 p-3 border-l-2 text-xs"
+                  style={{
+                    borderColor:
+                      entry.type === "alert"
+                        ? "#ef4444"
+                        : entry.type === "warn"
+                        ? "#fbbf24"
+                        : "#4a5c3a",
+                    backgroundColor:
+                      entry.type === "alert"
+                        ? "rgba(239,68,68,0.06)"
+                        : entry.type === "warn"
+                        ? "rgba(251,191,36,0.05)"
+                        : "transparent",
+                  }}
+                >
+                  <span className="text-[#4a5c3a]/60 tracking-widest shrink-0 text-[10px]">
+                    {entry.timestamp}
+                  </span>
+                  <span
+                    className="tracking-widest font-bold shrink-0 text-[10px]"
+                    style={{
+                      color:
+                        entry.type === "alert"
+                          ? "#ef4444"
+                          : entry.type === "warn"
+                          ? "#fbbf24"
+                          : "#4a5c3a",
+                    }}
+                  >
+                    [{entry.code}]
+                  </span>
+                  <span className="text-[#e5e5e5]/60 tracking-wider normal-case">{entry.message}</span>
+                </div>
+              ))}
+            </div>
+          </PanelFrame>
+        </RevealBlock>
+      </section>
+
+      {/* ===== 5. Color / Material Palette ===== */}
       <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
         <RevealBlock>
           <MechaDivider />
@@ -669,25 +1101,35 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">REGISTRY</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
-            {"// APPROVED COLOUR CODES -- MIL-SPEC COMPLIANT"}
+            {"// APPROVED COLOUR CODES — MIL-SPEC COMPLIANT"}
           </p>
         </RevealBlock>
 
-        <RevealBlock delay={0.15}>
+        <RevealBlock delay={0.1}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {colorPalette.map((color, i) => (
-              <RevealBlock key={color.hex} delay={0.1 + i * 0.05}>
+              <RevealBlock key={color.hex} delay={0.08 + i * 0.05}>
                 <div className="group cursor-pointer">
                   <div
                     className="
-                      w-full aspect-[4/3] mb-4 border-2 border-[#4a5c3a]/30 rounded-none
+                      w-full aspect-[4/3] mb-4
+                      border-2 border-[#4a5c3a]/30 rounded-none
                       group-hover:border-[#fbbf24]
-                      group-hover:shadow-[4px_4px_0px_rgba(251,191,36,0.3)]
+                      group-hover:shadow-[4px_4px_0px_rgba(251,191,36,0.25)]
                       transition-all duration-100 ease-linear
-                      flex items-end p-4
+                      flex items-end p-4 relative overflow-hidden
                     "
                     style={{ backgroundColor: color.hex }}
                   >
+                    {/* Rivet dots */}
+                    <div
+                      className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full opacity-40"
+                      style={{ backgroundColor: color.textColor }}
+                    />
+                    <div
+                      className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full opacity-40"
+                      style={{ backgroundColor: color.textColor }}
+                    />
                     <span
                       className="text-xs tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-100 font-bold"
                       style={{ color: color.textColor }}
@@ -698,15 +1140,37 @@ export default function ShowcaseContent() {
                   <h4 className="text-xs tracking-widest mb-1 font-bold text-[#fbbf24]">
                     {color.name}
                   </h4>
-                  <p className="text-[10px] text-[#4a5c3a] tracking-widest">{color.role}</p>
+                  <p className="text-[10px] text-[#4a5c3a] tracking-widest normal-case">
+                    {color.role}
+                  </p>
                 </div>
               </RevealBlock>
             ))}
           </div>
         </RevealBlock>
+
+        {/* Warning stripe swatch */}
+        <RevealBlock delay={0.3} className="mt-12">
+          <PanelFrame className="overflow-hidden bg-[#1a2744]" borderColor="#fbbf24">
+            <div className="p-6">
+              <UnitLabel text="HAZARD // WARNING PATTERN" className="mb-4" />
+              <p className="text-xs text-[#4a5c3a] tracking-widest mb-4 normal-case">
+                Diagonal black-and-yellow warning stripes used on structural danger zones, button
+                hover overlays, and section boundaries.
+              </p>
+            </div>
+            <div
+              className="h-16"
+              style={{
+                background:
+                  "repeating-linear-gradient(-45deg, #fbbf24, #fbbf24 16px, #1a2744 16px, #1a2744 32px)",
+              }}
+            />
+          </PanelFrame>
+        </RevealBlock>
       </section>
 
-      {/* ===== 5. Design Rules (Do / Don't) ===== */}
+      {/* ===== 6. Design Protocol — Do / Don't ===== */}
       <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
         <RevealBlock>
           <MechaDivider />
@@ -715,7 +1179,7 @@ export default function ShowcaseContent() {
             <span className="text-[#4a5c3a]">PROTOCOL</span>
           </h2>
           <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
-            {"// OPERATIONAL DIRECTIVES -- STRICT COMPLIANCE REQUIRED"}
+            {"// OPERATIONAL DIRECTIVES — STRICT COMPLIANCE REQUIRED"}
           </p>
         </RevealBlock>
 
@@ -760,10 +1224,10 @@ export default function ShowcaseContent() {
           </RevealBlock>
         </div>
 
-        {/* Interaction rules */}
+        {/* Interaction spec card */}
         <RevealBlock delay={0.3} className="mt-12">
           <PanelFrame className="p-8 bg-[#1a2744]" borderColor="#fbbf24">
-            <UnitLabel text="INTERACTION // SPEC" className="mb-6" />
+            <UnitLabel text="INTERACTION // SPEC SHEET" className="mb-6" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
                 {
@@ -800,23 +1264,167 @@ export default function ShowcaseContent() {
         </RevealBlock>
       </section>
 
-      {/* ===== 6. Footer ===== */}
+      {/* ===== 7. Philosophy Section ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
+        <RevealBlock>
+          <MechaDivider />
+          <h2 className="text-3xl md:text-5xl text-center tracking-wider mb-4 font-bold">
+            <span className="text-[#fbbf24]">DESIGN</span>{" "}
+            <span className="text-[#4a5c3a]">PHILOSOPHY</span>
+          </h2>
+          <p className="text-center text-xs text-[#4a5c3a] tracking-widest mb-16">
+            {"// MECHA AESTHETIC — ORIGIN & DOCTRINE"}
+          </p>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              id: "01",
+              title: "ARMOR PANELS",
+              desc: "Simulate mecha outer shell with segmented panel design. Each element is a discrete armored unit with hard-edge borders and angular clip-paths.",
+              color: "#4a5c3a",
+            },
+            {
+              id: "02",
+              title: "WARNING SYSTEMS",
+              desc: "Yellow warning and red danger signal systems are non-negotiable. They communicate urgency with industrial clarity — no ambiguity allowed.",
+              color: "#fbbf24",
+            },
+            {
+              id: "03",
+              title: "MILITARY TECH",
+              desc: "Military green and deep navy form the industrial palette. Monospace fonts with uppercase tracking carry technical annotations and unit IDs.",
+              color: "#ef4444",
+            },
+          ].map((item, i) => (
+            <RevealBlock key={item.id} delay={0.1 + i * 0.1}>
+              <PanelFrame className="p-6 bg-[#1a2744] h-full" borderColor={item.color}>
+                <div className="text-4xl font-bold tracking-tight mb-4" style={{ color: item.color }}>
+                  {item.id}
+                </div>
+                <h3 className="text-sm font-bold tracking-widest mb-3" style={{ color: item.color }}>
+                  {item.title}
+                </h3>
+                <p className="text-xs text-[#e5e5e5]/50 leading-relaxed tracking-wider normal-case">
+                  {item.desc}
+                </p>
+              </PanelFrame>
+            </RevealBlock>
+          ))}
+        </div>
+
+        {/* Keyword tags */}
+        <RevealBlock delay={0.4} className="mt-12">
+          <div className="flex flex-wrap gap-3 justify-center">
+            {[
+              "GUNDAM",
+              "EVANGELION",
+              "PACIFIC_RIM",
+              "MILITARY_TECH",
+              "INDUSTRIAL",
+              "ANGULAR",
+              "HUD_INTERFACE",
+              "COCKPIT_UI",
+              "ARMOR_PLATE",
+              "RIVET_DETAIL",
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="
+                  px-4 py-2 text-[10px] tracking-widest font-bold
+                  border border-[#4a5c3a]/40 text-[#4a5c3a]
+                  hover:border-[#fbbf24] hover:text-[#fbbf24]
+                  transition-all duration-100 ease-linear
+                  cursor-default rounded-none
+                "
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ===== 8. Footer — Mission Briefing ===== */}
       <footer className="border-t-2 border-[#4a5c3a]/30">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
           <MechaDivider />
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6">
+
+          {/* Mission briefing grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 mt-6">
+            {/* Unit ID */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-3 h-3 bg-[#fbbf24]" />
+                <span className="text-xs tracking-widest text-[#fbbf24] font-bold">
+                  MISSION BRIEFING
+                </span>
+              </div>
+              <p className="text-[10px] text-[#4a5c3a]/70 tracking-wider leading-relaxed normal-case">
+                Operation: Stylekit Deploy. Unit: Mecha Armor Class. Classification: Design System
+                Active. Objective: Establish industrial-grade visual doctrine.
+              </p>
+            </div>
+
+            {/* Quick status */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-3 h-3 bg-[#4a5c3a]" />
+                <span className="text-xs tracking-widest text-[#4a5c3a] font-bold">
+                  SYSTEM STATUS
+                </span>
+              </div>
+              <div className="space-y-2">
+                <StatusIndicator label="SHOWCASE" status="ONLINE" color="#fbbf24" />
+                <StatusIndicator label="COMPONENTS" status="NOMINAL" color="#4a5c3a" />
+                <StatusIndicator label="HUD_FEED" status="LIVE" color="#fbbf24" />
+                <StatusIndicator label="THREAT_LVL" status="ELEVATED" color="#ef4444" />
+              </div>
+            </div>
+
+            {/* Links */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-3 h-3 bg-[#ef4444]" />
+                <span className="text-xs tracking-widest text-[#ef4444] font-bold">
+                  NAVIGATION
+                </span>
+              </div>
+              <div className="space-y-3">
+                <Link
+                  href="/styles/mecha"
+                  className="block text-xs tracking-widest text-[#4a5c3a] mecha-hover-underline pb-1 hover:text-[#fbbf24] transition-colors duration-100 ease-linear"
+                >
+                  VIEW FULL DOCUMENTATION &rarr;
+                </Link>
+                <Link
+                  href="/styles"
+                  className="block text-xs tracking-widest text-[#4a5c3a] mecha-hover-underline pb-1 hover:text-[#fbbf24] transition-colors duration-100 ease-linear"
+                >
+                  ALL STYLES &rarr;
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-[#4a5c3a]/20 pt-6">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-[#fbbf24]" />
               <p className="text-xs tracking-widest text-[#4a5c3a]">
-                STYLEKIT // MECHA SHOWCASE
+                STYLEKIT // MECHA_SYS // ARMOR_CLASS v4.1
               </p>
             </div>
-            <Link
-              href="/styles/mecha"
-              className="text-xs tracking-widest text-[#4a5c3a] mecha-hover-underline pb-1 hover:text-[#fbbf24] transition-colors duration-100 ease-linear font-bold"
-            >
-              VIEW FULL DOCUMENTATION &rarr;
-            </Link>
+            <div className="flex items-center gap-2">
+              <div
+                className="w-2 h-2 bg-[#4a5c3a]"
+                style={{ animation: "mecha-blink 2s ease-linear infinite" }}
+              />
+              <span className="text-[10px] tracking-widest text-[#4a5c3a]">
+                ALL SYSTEMS OPERATIONAL
+              </span>
+            </div>
           </div>
         </div>
         <WarningStripe />
