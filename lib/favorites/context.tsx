@@ -23,7 +23,6 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 const STORAGE_KEY = "stylekit-favorites";
-const MERGED_KEY = "stylekit-favorites-merged";
 
 function readLocalFavorites(): string[] {
   try {
@@ -54,8 +53,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
     async function loadServerFavorites() {
       try {
-        // One-time merge: push localStorage favorites to server on first login
-        if (!mergedRef.current && !localStorage.getItem(MERGED_KEY)) {
+        // Merge local favorites to server on login (upsert-based and idempotent).
+        if (!mergedRef.current) {
           mergedRef.current = true;
           const localSlugs = readLocalFavorites();
           if (localSlugs.length > 0) {
@@ -64,7 +63,6 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ slugs: localSlugs }),
             });
-            localStorage.setItem(MERGED_KEY, "1");
           }
         }
 
