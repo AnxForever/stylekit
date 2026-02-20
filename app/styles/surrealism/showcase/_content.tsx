@@ -1,181 +1,448 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft, ChevronDown, Check, X, AlertTriangle, Info,
-  Eye, Moon, Cloud, Clock
-} from "lucide-react";
-import {
-  ShowcaseHero, ShowcaseSection, ColorPaletteGrid, type ColorItem,
-} from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Midnight Blue", value: "#1a1a4e", textColor: "white" },
-  { name: "Desert Gold", value: "#d4a843", textColor: "black" },
-  { name: "Rose Blush", value: "#e8a0b4", textColor: "black" },
-  { name: "Horizon White", value: "#f0ece2", textColor: "black" },
-  { name: "Dream Teal", value: "#2a9d8f", textColor: "white" },
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const galleryItems = [
+  { id: 1, title: "The Persistence of Memory", category: "Dream", desc: "Time melts across desert landscapes of the mind" },
+  { id: 2, title: "Elephants of Desire", category: "Subconscious", desc: "Towering figures on impossibly thin legs stride through twilight" },
+  { id: 3, title: "The Burning Giraffe", category: "Metamorphosis", desc: "Flame and form merge in the half-light of awakening" },
+  { id: 4, title: "Eye of the Unconscious", category: "Portal", desc: "An iris opens onto landscapes that only sleep reveals" },
+  { id: 5, title: "Melting Clocks", category: "Time", desc: "Hours bend and pour like liquid gold across stone" },
+  { id: 6, title: "The Dream Chamber", category: "Space", desc: "Architecture folding inward upon itself in perpetual recursion" },
 ];
 
-export default function ShowcaseContent() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(55);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
+const colorPalette = [
+  { name: "Midnight", value: "#1a1a3e" },
+  { name: "Desert Gold", value: "#d4a574" },
+  { name: "Rose Dust", value: "#c38d94" },
+  { name: "Dream Violet", value: "#4a3f6b" },
+  { name: "Cream", value: "#f0ece4" },
+];
 
-  const tabs = ["Dreams", "Illusions", "Reality"];
-  const accordionItems = [
-    { title: "What is Surrealism?", content: "Surrealism is an artistic movement that sought to channel the unconscious mind as a means of unlocking the power of imagination. It juxtaposes unexpected elements to create dreamlike scenes." },
-    { title: "Techniques", content: "Automatism, frottage, decalcomania, and juxtaposition of unrelated objects. Artists embraced chance, dreams, and the irrational as creative sources." },
-    { title: "Legacy", content: "Surrealism continues to influence contemporary art, film, advertising, and digital design, encouraging us to look beyond the surface of reality." },
-  ];
+const doRules = [
+  "Dream-like Distortion: hover applies hover:skew-x-2 hover:-rotate-1",
+  "Timeless Easing: duration-700 ease-in-out minimum, prefer duration-1000",
+  "Abyssal Glow: hover shadow uses rose/gold diffuse glow, never black",
+  "Color Melting: orb decorations expand group-hover:scale-150 duration-[2000ms]",
+  "Use font-serif italic for dreamy atmospheric text",
+  "Use soft gradients from midnight to rose and gold",
+];
+
+const dontRules = [
+  "Never use hover:scale-105 -- surrealism uses skew and rotate",
+  "Never use black drop shadows -- Abyssal Glow only",
+  "Never use duration-200 or shorter -- Timeless Easing requires 700ms+",
+  "Never use transition-none on decorative orbs -- Color Melting needs 2000ms",
+  "No strict symmetric grids -- organic layouts only",
+  "No bright neon colors -- muted dreamscape palette only",
+];
+
+/* ------------------------------------------------------------------ */
+/*  Hooks & Utilities                                                  */
+/* ------------------------------------------------------------------ */
+
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, inView };
+}
+
+function RevealBlock({ children, className = "", delay = 0 }: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
+function MeltingOrb({ className }: { className: string }) {
+  return (
+    <div className={`absolute rounded-full blur-3xl pointer-events-none ${className}`} />
+  );
+}
+
+function DreamCard({ item, index }: { item: typeof galleryItems[0]; index: number }) {
+  return (
+    <RevealBlock delay={index * 0.08}>
+      <div className="group relative p-8 bg-gradient-to-br from-[#f0ece4] to-[#f0ece4]/80 border border-[#d4a574]/30 rounded-2xl overflow-hidden hover:shadow-[0_0_50px_rgba(195,141,148,0.3)] hover:-translate-y-1 hover:skew-x-1 transition-all duration-700 ease-in-out cursor-pointer">
+        {/* Melting orb -- gold */}
+        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[#d4a574]/20 blur-2xl group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out" />
+        {/* Melting orb -- rose */}
+        <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-[#c38d94]/20 blur-2xl group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out" />
+        <div className="relative z-10">
+          <span className="text-xs font-serif italic text-[#c38d94]/70 tracking-wider">{item.category}</span>
+          <h3 className="text-2xl font-serif italic text-[#1a1a3e] mb-1 mt-1 group-hover:tracking-widest transition-all duration-1000 ease-in-out">
+            {item.title}
+          </h3>
+          <div className="h-px bg-[#d4a574] w-8 group-hover:w-full transition-all duration-1000 ease-in-out mb-4 mt-2" />
+          <p className="text-[#1a1a3e]/60 font-serif text-sm leading-relaxed">
+            {item.desc}
+          </p>
+        </div>
+      </div>
+    </RevealBlock>
+  );
+}
+
+function SurrealButton({ children, variant = "primary" }: { children: React.ReactNode; variant?: "primary" | "secondary" }) {
+  if (variant === "secondary") {
+    return (
+      <button className="px-8 py-3.5 bg-transparent text-[#d4a574] font-serif italic tracking-wide border border-[#d4a574]/50 rounded-full hover:bg-[#d4a574]/10 hover:shadow-[0_0_30px_rgba(212,165,116,0.15)] hover:skew-x-1 hover:-rotate-[0.5deg] transition-all duration-700 ease-in-out">
+        {children}
+      </button>
+    );
+  }
+  return (
+    <button className="px-10 py-4 bg-gradient-to-br from-[#1a1a3e] to-[#c38d94] text-[#f0ece4] font-serif italic tracking-wide border border-[#d4a574]/50 rounded-[40%_60%_70%_30%/30%_30%_70%_70%] shadow-[0_4px_20px_rgba(195,141,148,0.2)] hover:shadow-[0_0_50px_rgba(195,141,148,0.3)] hover:-translate-y-1 hover:skew-x-2 hover:-rotate-1 active:translate-y-1 active:skew-x-0 active:rotate-0 transition-all duration-1000 ease-in-out">
+      {children}
+    </button>
+  );
+}
+
+function SurrealInput() {
+  return (
+    <div>
+      <label className="block text-sm font-serif italic text-[#c38d94]/70 mb-2 tracking-wide">
+        Whisper your dreams
+      </label>
+      <input
+        type="text"
+        placeholder="Enter the dream..."
+        className="w-full px-6 py-4 bg-[#f0ece4] border border-[#d4a574]/40 rounded-lg text-[#1a1a3e] placeholder-[#c38d94]/50 font-serif italic focus:border-[#c38d94] focus:shadow-[0_0_16px_rgba(195,141,148,0.3)] focus:outline-none transition-all duration-500"
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main                                                               */
+/* ------------------------------------------------------------------ */
+
+export default function ShowcaseContent() {
+  const [heroRevealed, setHeroRevealed] = useState(false);
+  const [activeTab, setActiveTab] = useState<"button" | "card" | "input">("button");
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#f0ece2]" style={{ fontFamily: "'Garamond', 'Georgia', serif" }}>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#f0ece2]/90 backdrop-blur-sm border-b border-[#1a1a4e]/10">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-[#1a1a4e] hover:text-[#d4a843] transition-colors"><ArrowLeft className="w-4 h-4" /><span className="text-sm">Awaken</span></Link>
-          <span className="text-[#1a1a4e]/60 text-sm tracking-widest uppercase">Surrealism</span>
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a3e] via-[#1a1a3e] to-[#f0ece4] text-[#f0ece4]">
+      <style>{`
+        @keyframes surreal-float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-12px) rotate(2deg); }
+        }
+        @keyframes surreal-pulse {
+          0%, 100% { opacity: 0.15; transform: scale(1); }
+          50% { opacity: 0.25; transform: scale(1.1); }
+        }
+      `}</style>
+
+      {/* ===== Navigation ===== */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1a3e]/80 backdrop-blur-md border-b border-[#d4a574]/10">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <Link href="/styles/surrealism/showcase" className="font-serif italic text-lg text-[#d4a574] tracking-widest">
+              Surrealism
+            </Link>
+            <nav className="flex items-center gap-6 md:gap-8">
+              <Link href="/styles/surrealism" className="font-serif italic text-xs tracking-wider text-[#f0ece4]/50 hover:text-[#d4a574] transition-colors duration-700">
+                Docs
+              </Link>
+              <Link href="/styles" className="font-serif italic text-xs tracking-wider text-[#f0ece4]/50 hover:text-[#d4a574] transition-colors duration-700">
+                Styles
+              </Link>
+            </nav>
+          </div>
         </div>
-      </nav>
+      </header>
 
-      <ShowcaseHero title="Surrealism" subtitle="Beyond the visible, into the landscapes of the subconscious mind" className="relative pt-24 pb-20 px-6 text-center overflow-hidden" titleClassName="text-7xl md:text-9xl text-[#1a1a4e] mb-6 tracking-tight" subtitleClassName="text-lg text-[#e8a0b4] max-w-2xl mx-auto italic">
-        <div className="absolute top-20 right-10 w-24 h-24 border-2 border-[#d4a843]/30 rounded-full animate-pulse" />
-        <div className="absolute bottom-10 left-20 w-16 h-16 bg-[#e8a0b4]/20 rotate-45" />
-      </ShowcaseHero>
+      {/* ===== Hero ===== */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        {/* Background orbs */}
+        <MeltingOrb className="top-20 right-[15%] w-72 h-72 bg-[#d4a574]/15" />
+        <MeltingOrb className="bottom-32 left-[10%] w-56 h-56 bg-[#c38d94]/15" />
+        <MeltingOrb className="top-[40%] left-[50%] w-40 h-40 bg-[#4a3f6b]/15" />
 
-      {/* Stats */}
-      <ShowcaseSection title="Statistics" subtitle="Numbers from the dream" className="py-16 px-6" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { icon: Eye, label: "Visions", value: "3,421", bg: "bg-[#1a1a4e]" },
-            { icon: Moon, label: "Dreams", value: "∞", bg: "bg-[#d4a843]" },
-            { icon: Cloud, label: "Thoughts", value: "7.8K", bg: "bg-[#2a9d8f]" },
-            { icon: Clock, label: "Moments", value: "24:00", bg: "bg-[#e8a0b4]" },
-          ].map((stat, i) => (
-            <div key={i} className="relative p-6 bg-white border border-[#1a1a4e]/10 hover:shadow-xl transition-all group" style={{ clipPath: i % 2 === 0 ? "polygon(0 5%, 100% 0, 100% 95%, 0 100%)" : "polygon(0 0, 100% 5%, 100% 100%, 0 95%)" }}>
-              <div className={`w-10 h-10 ${stat.bg} rounded-full flex items-center justify-center mb-3`}><stat.icon className="w-5 h-5 text-white" /></div>
-              <p className="text-3xl font-light text-[#1a1a4e]">{stat.value}</p>
-              <p className="text-sm text-[#1a1a4e]/50">{stat.label}</p>
-            </div>
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          <p
+            className="text-sm font-serif italic text-[#d4a574]/70 tracking-[0.3em] mb-6"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+            }}
+          >
+            Beyond the threshold of consciousness
+          </p>
+          <h1
+            className="text-6xl md:text-8xl lg:text-[9rem] font-serif italic leading-[0.9] tracking-tight mb-8"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0) skewX(0deg)" : "translateY(40px) skewX(-2deg)",
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.15s",
+            }}
+          >
+            <span className="text-[#f0ece4]">Sur</span>
+            <span className="text-[#d4a574]">real</span>
+            <span className="text-[#c38d94]">ism</span>
+          </h1>
+          <p
+            className="text-lg md:text-xl font-serif italic text-[#f0ece4]/50 max-w-lg mx-auto mb-12 leading-relaxed"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s",
+            }}
+          >
+            Where dreams dissolve the boundaries of reason, and the subconscious paints with impossible colors.
+          </p>
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s",
+            }}
+          >
+            <SurrealButton>Enter the Dream</SurrealButton>
+            <SurrealButton variant="secondary">Observe</SurrealButton>
+          </div>
+        </div>
+
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1a1a3e] to-transparent pointer-events-none" />
+      </section>
+
+      {/* ===== Dream Gallery ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock>
+          <div className="text-center mb-16">
+            <span className="text-xs font-serif italic text-[#c38d94]/60 tracking-[0.3em] block mb-3">The Gallery</span>
+            <h2 className="text-4xl md:text-6xl font-serif italic text-[#f0ece4] mb-4">Dreamscapes</h2>
+            <p className="text-[#f0ece4]/40 font-serif italic max-w-md mx-auto">
+              Visions pulled from the boundary between sleep and waking
+            </p>
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {galleryItems.map((item, i) => (
+            <DreamCard key={item.id} item={item} index={i} />
           ))}
         </div>
-      </ShowcaseSection>
+      </section>
 
-      <ShowcaseSection title="Color Palette" subtitle="Hues of the unconscious" className="py-16 px-6 bg-[#1a1a4e]/5" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <ColorPaletteGrid colors={colors} className="max-w-4xl mx-auto" />
-      </ShowcaseSection>
-
-      {/* Typography */}
-      <ShowcaseSection title="Typography" subtitle="Words that dissolve" className="py-16 px-6" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-4xl mx-auto p-8 bg-white border border-[#1a1a4e]/10">
-          <p className="text-6xl text-[#1a1a4e] mb-3" style={{ fontFamily: "'Georgia', serif" }}>The Persistence</p>
-          <p className="text-3xl text-[#d4a843] italic mb-3">of Memory and Form</p>
-          <p className="text-xl text-[#2a9d8f] mb-3">Melting clocks drip onto dreamscapes</p>
-          <p className="text-base text-[#1a1a4e]/60">In the surrealist tradition, typography becomes a doorway into the unconscious. Letters warp, meanings shift, and the familiar becomes strange.</p>
-        </div>
-      </ShowcaseSection>
-
-      {/* Buttons */}
-      <ShowcaseSection title="Buttons" subtitle="Portals to elsewhere" className="py-16 px-6 bg-[#1a1a4e]/5" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-4">
-          <button className="px-8 py-3 bg-[#1a1a4e] text-white hover:bg-[#d4a843] transition-colors">Enter Dream</button>
-          <button className="px-8 py-3 bg-[#d4a843] text-[#1a1a4e] hover:bg-[#e8a0b4] transition-colors">Float</button>
-          <button className="px-8 py-3 border-2 border-[#1a1a4e] text-[#1a1a4e] hover:bg-[#1a1a4e] hover:text-white transition-colors">Observe</button>
-          <button className="px-8 py-3 bg-[#2a9d8f] text-white hover:bg-[#238b7e] transition-colors">Dissolve</button>
-          <button className="px-8 py-3 bg-[#e8a0b4] text-[#1a1a4e] hover:bg-[#d48ea2] transition-colors">Imagine</button>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection title="Cards" subtitle="Windows into the surreal" className="py-16 px-6" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-          {[
-            { title: "The Dream", desc: "A landscape where elephants walk on stilts and clocks melt in the afternoon sun.", color: "#1a1a4e", accent: "#d4a843" },
-            { title: "The Mirror", desc: "Reflection reveals not what is, but what could be in parallel dimensions.", color: "#2a9d8f", accent: "#e8a0b4" },
-            { title: "The Void", desc: "Emptiness filled with infinite possibility, where thought becomes form.", color: "#d4a843", accent: "#1a1a4e" },
-          ].map((card, i) => (
-            <div key={i} className="relative p-6 bg-white border border-[#1a1a4e]/10 overflow-hidden group hover:-translate-y-1 transition-transform">
-              <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: card.accent, clipPath: "circle(50% at 100% 0)" }} />
-              <h3 className="text-xl font-light mb-3" style={{ color: card.color }}>{card.title}</h3>
-              <p className="text-[#1a1a4e]/60 text-sm leading-relaxed">{card.desc}</p>
+      {/* ===== Component Demos ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12 bg-gradient-to-b from-transparent via-[#f0ece4]/5 to-transparent">
+        <div className="max-w-4xl mx-auto">
+          <RevealBlock>
+            <div className="text-center mb-12">
+              <span className="text-xs font-serif italic text-[#d4a574]/60 tracking-[0.3em] block mb-3">Components</span>
+              <h2 className="text-4xl md:text-5xl font-serif italic text-[#f0ece4] mb-4">Elements of Dream</h2>
             </div>
-          ))}
-        </div>
-      </ShowcaseSection>
+          </RevealBlock>
 
-      {/* Tabs */}
-      <ShowcaseSection title="Tabs" subtitle="Shifting perspectives" className="py-16 px-6 bg-[#1a1a4e]/5" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-3xl mx-auto bg-white border border-[#1a1a4e]/10">
-          <div className="flex border-b border-[#1a1a4e]/10">
-            {tabs.map((tab, i) => (
-              <button key={i} onClick={() => setActiveTab(i)} className={`flex-1 py-4 text-sm tracking-wider uppercase transition-colors ${activeTab === i ? "bg-[#1a1a4e] text-white" : "text-[#1a1a4e]/50 hover:text-[#1a1a4e]"}`}>{tab}</button>
+          {/* Tab Switcher */}
+          <RevealBlock delay={0.1} className="mb-12">
+            <div className="flex justify-center gap-2">
+              {(["button", "card", "input"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-2.5 font-serif italic text-sm tracking-wider rounded-full border transition-all duration-700 ease-in-out ${
+                    activeTab === tab
+                      ? "bg-[#d4a574]/20 border-[#d4a574]/40 text-[#d4a574]"
+                      : "bg-transparent border-[#f0ece4]/10 text-[#f0ece4]/40 hover:text-[#f0ece4]/70 hover:border-[#f0ece4]/20"
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Tab Content */}
+          <RevealBlock delay={0.15}>
+            <div className="relative p-8 md:p-12 rounded-2xl bg-gradient-to-br from-[#1a1a3e]/50 to-[#4a3f6b]/20 border border-[#d4a574]/15 overflow-hidden">
+              {/* Decorative orbs */}
+              <div className="absolute top-0 right-0 w-40 h-40 rounded-full bg-[#c38d94]/10 blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-[#d4a574]/10 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col items-center gap-6">
+                {activeTab === "button" && (
+                  <div className="flex flex-col items-center gap-6">
+                    <SurrealButton>Enter the Dream</SurrealButton>
+                    <SurrealButton variant="secondary">Observe</SurrealButton>
+                    <p className="text-xs font-serif italic text-[#f0ece4]/30 mt-4">
+                      Dream-like Distortion: skew-x-2 + -rotate-1 on hover, Abyssal Glow shadow, Timeless Easing duration-1000
+                    </p>
+                  </div>
+                )}
+
+                {activeTab === "card" && (
+                  <div className="w-full max-w-md">
+                    <DreamCard
+                      item={{ id: 0, title: "The Persistence of Memory", category: "Dream", desc: "Time melts in the desert of consciousness" }}
+                      index={0}
+                    />
+                    <p className="text-xs font-serif italic text-[#f0ece4]/30 mt-6 text-center">
+                      Color Melting orbs expand over 2000ms, title tracking expands, underline extends
+                    </p>
+                  </div>
+                )}
+
+                {activeTab === "input" && (
+                  <div className="w-full max-w-md">
+                    <SurrealInput />
+                    <p className="text-xs font-serif italic text-[#f0ece4]/30 mt-6 text-center">
+                      Abyssal Glow focus ring, serif italic placeholder, rose-dust border on focus
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ===== Color Palette ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock>
+            <div className="text-center mb-16">
+              <span className="text-xs font-serif italic text-[#c38d94]/60 tracking-[0.3em] block mb-3">Palette</span>
+              <h2 className="text-4xl md:text-5xl font-serif italic text-[#f0ece4]">Colors of the Subconscious</h2>
+            </div>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {colorPalette.map((color, i) => (
+              <RevealBlock key={color.value} delay={i * 0.06}>
+                <div className="group flex flex-col items-center gap-3">
+                  <div
+                    className="w-full aspect-square rounded-2xl border border-[#d4a574]/20 hover:shadow-[0_0_40px_rgba(195,141,148,0.2)] hover:skew-x-1 hover:-rotate-1 transition-all duration-700 ease-in-out overflow-hidden"
+                    style={{ backgroundColor: color.value }}
+                  >
+                    {/* Inner melting orb */}
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-white/10 blur-lg group-hover:scale-[2] transition-transform duration-[2000ms] ease-in-out" />
+                    </div>
+                  </div>
+                  <span className="text-xs font-serif italic text-[#f0ece4]/50">{color.name}</span>
+                  <span className="text-[10px] font-mono text-[#d4a574]/40">{color.value}</span>
+                </div>
+              </RevealBlock>
             ))}
           </div>
-          <div className="p-6 min-h-[120px]">
-            {activeTab === 0 && <div><h4 className="text-lg text-[#1a1a4e] mb-2">Dream States</h4><p className="text-[#1a1a4e]/60 text-sm italic">In the dream, time flows differently. Objects transform, gravity shifts, and the impossible becomes mundane.</p></div>}
-            {activeTab === 1 && <div><h4 className="text-lg text-[#d4a843] mb-2">Optical Illusions</h4><p className="text-[#1a1a4e]/60 text-sm italic">What the eye sees is merely the surface. Look deeper, and reality unfolds into unexpected dimensions.</p></div>}
-            {activeTab === 2 && <div><h4 className="text-lg text-[#2a9d8f] mb-2">Waking World</h4><p className="text-[#1a1a4e]/60 text-sm italic">Even in the mundane lies the extraordinary. Surrealism teaches us to see the marvelous in the everyday.</p></div>}
-          </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Accordion */}
-      <ShowcaseSection title="Accordion" subtitle="Layers of meaning" className="py-16 px-6" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-3xl mx-auto space-y-2">
-          {accordionItems.map((item, i) => (
-            <div key={i} className="bg-white border border-[#1a1a4e]/10 overflow-hidden">
-              <button onClick={() => setOpenAccordion(openAccordion === i ? null : i)} className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#1a1a4e]/5 transition-colors">
-                <span className="text-[#1a1a4e]">{item.title}</span>
-                <ChevronDown className={`w-5 h-5 text-[#d4a843] transition-transform ${openAccordion === i ? "rotate-180" : ""}`} />
-              </button>
-              {openAccordion === i && <div className="px-6 pb-5"><p className="text-[#1a1a4e]/60 text-sm italic leading-relaxed">{item.content}</p></div>}
+      {/* ===== Design Rules ===== */}
+      <section className="py-24 md:py-32 px-6 md:px-12 bg-gradient-to-b from-transparent via-[#4a3f6b]/10 to-transparent">
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock>
+            <div className="text-center mb-16">
+              <span className="text-xs font-serif italic text-[#d4a574]/60 tracking-[0.3em] block mb-3">Manifesto</span>
+              <h2 className="text-4xl md:text-5xl font-serif italic text-[#f0ece4]">Laws of the Dream</h2>
             </div>
-          ))}
-        </div>
-      </ShowcaseSection>
+          </RevealBlock>
 
-      {/* Alerts */}
-      <ShowcaseSection title="Alerts" subtitle="Messages from beyond" className="py-16 px-6 bg-[#1a1a4e]/5" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-3xl mx-auto space-y-3">
-          <div className="flex items-center gap-4 p-4 bg-[#2a9d8f]/10 border-l-4 border-[#2a9d8f]"><Check className="w-5 h-5 text-[#2a9d8f]" /><div><p className="font-medium text-[#2a9d8f]">Lucid</p><p className="text-[#1a1a4e]/60 text-sm">You are awake within the dream.</p></div></div>
-          <div className="flex items-center gap-4 p-4 bg-[#d4a843]/10 border-l-4 border-[#d4a843]"><AlertTriangle className="w-5 h-5 text-[#d4a843]" /><div><p className="font-medium text-[#d4a843]">Shifting</p><p className="text-[#1a1a4e]/60 text-sm">Reality is bending at the edges.</p></div></div>
-          <div className="flex items-center gap-4 p-4 bg-[#e8a0b4]/10 border-l-4 border-[#e8a0b4]"><X className="w-5 h-5 text-[#e8a0b4]" /><div><p className="font-medium text-[#e8a0b4]">Dissolved</p><p className="text-[#1a1a4e]/60 text-sm">The boundary has vanished entirely.</p></div></div>
-          <div className="flex items-center gap-4 p-4 bg-[#1a1a4e]/10 border-l-4 border-[#1a1a4e]"><Info className="w-5 h-5 text-[#1a1a4e]" /><div><p className="font-medium text-[#1a1a4e]">Whisper</p><p className="text-[#1a1a4e]/60 text-sm">The unconscious speaks in symbols.</p></div></div>
-        </div>
-      </ShowcaseSection>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Do */}
+            <RevealBlock delay={0.05}>
+              <div className="relative p-8 rounded-2xl bg-[#f0ece4]/5 border border-[#d4a574]/15 overflow-hidden">
+                <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-[#d4a574]/10 blur-2xl pointer-events-none" />
+                <h3 className="text-lg font-serif italic text-[#d4a574] mb-6 relative z-10">
+                  <svg className="inline-block w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Embrace
+                </h3>
+                <ul className="space-y-3 relative z-10">
+                  {doRules.map((rule) => (
+                    <li key={rule} className="text-sm font-serif text-[#f0ece4]/50 leading-relaxed pl-4 border-l border-[#d4a574]/20">
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
 
-      {/* Toggle */}
-      <ShowcaseSection title="Toggle" subtitle="Between states" className="py-16 px-6" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-3xl mx-auto bg-white border border-[#1a1a4e]/10 p-6 space-y-4">
-          {[{ label: "Dream Mode", desc: "Shift into subconscious view" },{ label: "Time Warp", desc: "Distort temporal perception" },{ label: "Gravity Off", desc: "Float freely in space" }].map((item, i) => (
-            <div key={i} className="flex items-center justify-between py-3 border-b border-[#1a1a4e]/10 last:border-b-0">
-              <div><p className="text-[#1a1a4e]">{item.label}</p><p className="text-sm text-[#1a1a4e]/40">{item.desc}</p></div>
-              <button onClick={() => { const n = [...toggleStates]; n[i] = !n[i]; setToggleStates(n); }} className={`relative w-14 h-7 rounded-full transition-colors ${toggleStates[i] ? "bg-[#1a1a4e]" : "bg-[#1a1a4e]/20"}`}>
-                <span className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${toggleStates[i] ? "translate-x-7" : ""}`} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Progress */}
-      <ShowcaseSection title="Progress" subtitle="Descent into dream" className="py-16 px-6 bg-[#1a1a4e]/5" titleClassName="text-3xl text-[#1a1a4e] mb-2 text-center" subtitleClassName="text-[#e8a0b4] italic mb-10 text-center">
-        <div className="max-w-3xl mx-auto bg-white border border-[#1a1a4e]/10 p-6 space-y-6">
-          <div>
-            <div className="flex justify-between mb-2"><p className="text-[#1a1a4e]">Dream Depth</p><p className="text-sm text-[#d4a843]">{progress}%</p></div>
-            <div className="h-2 bg-[#1a1a4e]/10 rounded-full"><div className="h-full bg-gradient-to-r from-[#1a1a4e] via-[#2a9d8f] to-[#d4a843] rounded-full transition-all" style={{ width: `${progress}%` }} /></div>
+            {/* Don't */}
+            <RevealBlock delay={0.1}>
+              <div className="relative p-8 rounded-2xl bg-[#f0ece4]/5 border border-[#c38d94]/15 overflow-hidden">
+                <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[#c38d94]/10 blur-2xl pointer-events-none" />
+                <h3 className="text-lg font-serif italic text-[#c38d94] mb-6 relative z-10">
+                  <svg className="inline-block w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  Avoid
+                </h3>
+                <ul className="space-y-3 relative z-10">
+                  {dontRules.map((rule) => (
+                    <li key={rule} className="text-sm font-serif text-[#f0ece4]/50 leading-relaxed pl-4 border-l border-[#c38d94]/20">
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
           </div>
-          <div className="flex justify-center gap-4">
-            <button onClick={() => setProgress(Math.max(0, progress - 10))} className="px-6 py-2 border border-[#1a1a4e] text-[#1a1a4e] hover:bg-[#1a1a4e] hover:text-white transition-colors">Surface</button>
-            <button onClick={() => setProgress(Math.min(100, progress + 10))} className="px-6 py-2 bg-[#1a1a4e] text-white hover:bg-[#d4a843] hover:text-[#1a1a4e] transition-colors">Deeper</button>
-          </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      <footer className="py-12 px-6 text-center border-t border-[#1a1a4e]/10">
-        <p className="text-[#1a1a4e]/40 text-sm italic">Surrealism - The eye of the unconscious sees the invisible</p>
+      {/* ===== Footer ===== */}
+      <footer className="py-16 px-6 md:px-12 border-t border-[#d4a574]/10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-serif italic text-sm text-[#f0ece4]/30 tracking-wider">
+            Surrealism Showcase
+          </p>
+          <nav className="flex items-center gap-6">
+            <Link href="/styles/surrealism" className="font-serif italic text-xs text-[#f0ece4]/30 hover:text-[#d4a574] transition-colors duration-700">
+              Docs
+            </Link>
+            <Link href="/styles" className="font-serif italic text-xs text-[#f0ece4]/30 hover:text-[#d4a574] transition-colors duration-700">
+              All Styles
+            </Link>
+          </nav>
+        </div>
       </footer>
     </div>
   );
