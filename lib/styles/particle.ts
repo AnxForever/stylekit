@@ -34,6 +34,9 @@ Core principles:
     "Use cool-toned accent colors (blue, teal, violet)",
     "Apply subtle glow effects to particles and key UI elements",
     "Use backdrop-blur for glass-like card surfaces",
+    "Hover 时强化节点激活感（角落亮点、细边框高光、局部电流光）",
+    "阴影保持低不透明度大范围扩散，营造星云式幽灵光晕",
+    "前景组件响应要快（duration-150~200），与背景慢速粒子形成反差",
   ],
 
   dontList: [
@@ -43,38 +46,44 @@ Core principles:
     "Don't use patterns that compete with particle animation",
     "Don't use light backgrounds",
     "Don't use conventional box shadows (use glow effects instead)",
+    "Don't let hover glow become solid opaque blocks (must stay airy and translucent)",
+    "Don't apply long bouncy easing to controls (particle UI should feel precise)",
   ],
 
   components: {
     button: {
       name: "Button",
-      description: "Particle System style buttons with blue glow on hover",
+      description: "Particle UI 按钮，快速响应并带节点扫光激活",
       code: `// Primary Button
-<button className="px-6 py-3 rounded-lg font-medium text-sm bg-blue-600 text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-  Get Started
+<button className="group relative px-8 py-3 rounded-lg font-mono text-sm uppercase tracking-widest bg-blue-600/10 border border-blue-500/30 text-blue-400 transition-all duration-200 hover:bg-blue-600 hover:text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.4),inset_0_0_10px_rgba(255,255,255,0.2)] active:scale-95 overflow-hidden">
+  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-linear" />
+  <span className="relative z-10">Get Started</span>
 </button>
 
 // Secondary Button
-<button className="px-6 py-3 rounded-lg font-medium text-sm bg-white/5 backdrop-blur border border-white/10 text-white/80 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+<button className="px-6 py-3 rounded-lg font-medium text-sm bg-white/5 backdrop-blur border border-white/10 text-white/80 transition-all duration-200 hover:bg-white/10 hover:border-blue-400/30 hover:text-white">
   Learn More
 </button>
 
 // Ghost Button
-<button className="px-6 py-3 rounded-lg font-medium text-sm text-white/60 transition-all duration-300 hover:text-white hover:bg-white/5">
+<button className="px-6 py-3 rounded-lg font-medium text-sm text-white/60 transition-all duration-200 hover:text-white hover:bg-white/5">
   View Docs
-</button>`,
+</button>
+`,
     },
     card: {
       name: "Card",
-      description: "Dark glass cards with subtle borders and blue glow on hover",
-      code: `<div className="bg-[#0f1419]/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 shadow-lg transition-all duration-300 hover:border-blue-500/20 hover:shadow-[0_0_25px_rgba(59,130,246,0.1)]">
+      description: "深色玻璃卡片，hover 时节点高亮与星云式边缘发光",
+      code: `<div className="group relative bg-[#0f1419]/80 backdrop-blur-xl rounded-xl p-8 border border-white/5 transition-all duration-300 hover:border-blue-500/40 hover:bg-[#151b22] hover:shadow-[0_0_40px_rgba(59,130,246,0.1)] overflow-hidden">
+  <div className="absolute top-0 right-0 w-2 h-2 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_10px_#60a5fa] transition-opacity duration-300" />
+  <div className="absolute bottom-0 left-0 w-2 h-2 bg-teal-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_10px_#2dd4bf] transition-opacity duration-300 delay-75" />
   <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-      <Icon className="w-5 h-5 text-blue-400" />
+    <div className="w-10 h-10 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500 group-hover:scale-110 transition-all duration-300">
+      <span className="text-blue-400 group-hover:text-white transition-colors duration-300">N</span>
     </div>
-    <h3 className="text-lg font-semibold text-[#e0e8ff]">Feature Title</h3>
+    <h3 className="text-lg font-semibold text-[#e0e8ff] group-hover:text-white transition-colors duration-200">Feature Title</h3>
   </div>
-  <p className="text-white/50 leading-relaxed">
+  <p className="text-white/50 leading-relaxed group-hover:text-white/70 transition-colors duration-200">
     Description with clean readability on deep dark background.
   </p>
 </div>`,
@@ -184,7 +193,13 @@ PARTICLE LAYER:
 - Purely decorative, never blocks content
 - 50-150 particles, 1-6px size
 - Slow random drift animation
-- Connection lines at very low opacity`,
+- Connection lines at very low opacity
+
+## Animation & Interaction Rules
+- Node Excitation: hover 时用细边框高光和角落微亮点表现节点激活与能量注入。
+- Nebula Glow: 阴影采用低不透明度大范围蓝青扩散，避免厚重实体阴影。
+- Quantum Snap: 前景控件交互用 duration-150~200，保持精确快速反馈。
+- Text Illumination: 卡片 hover 时次要文本可从 white/50 提升到 white/70 或亮蓝色。`,
 
   examplePrompts: [
     {

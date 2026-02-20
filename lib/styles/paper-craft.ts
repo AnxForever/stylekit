@@ -38,6 +38,9 @@ export const paperCraft: DesignStyle = {
     "文字使用深色 text-[#2d2d2d] 搭配手写感字体或圆润无衬线字体",
     "层叠效果使用多个 div 带 absolute 定位和不同阴影深度",
     "悬停时微微抬起 hover:-translate-y-1 hover:shadow-[5px_5px_0px_rgba(0,0,0,0.12)]",
+    "多层卡片在 hover 时让底层纸片向不同角度散开（Layer Separation）",
+    "按钮和卡片位移时，阴影偏移距离同步增大，强调纸片离开桌面的厚度",
+    "输入框 focus 使用更深 inset 阴影模拟纸板切口（Cutout Depth）",
   ],
 
   dontList: [
@@ -48,45 +51,47 @@ export const paperCraft: DesignStyle = {
     "禁止使用高饱和度的荧光色",
     "禁止使用渐变发光效果",
     "禁止使用 drop-shadow 滤镜（使用 box-shadow 模拟纸张阴影）",
+    "禁止使用弹簧回弹曲线（纸片轻但不橡胶）",
+    "禁止层叠纸片在 hover 时完全同向运动（会丢失手工剥离感）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "纸艺风格的纸片按钮",
+      description: "纸艺风格纸片按钮，强调硬挺纸板位移和阴影联动",
       code: `// Paper Primary
-<button className="px-6 py-3 bg-[#e85d75] text-white font-bold rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.12)] active:translate-y-0.5 active:shadow-[1px_1px_0px_rgba(0,0,0,0.08)] transition-all duration-200 rotate-[-0.5deg]">
+<button className="px-8 py-3 bg-[#e85d75] text-white font-bold rounded-xl shadow-[4px_4px_0px_rgba(45,45,45,0.15)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0px_rgba(45,45,45,0.15)] active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0px_rgba(45,45,45,0.2)] transition-all duration-200 ease-out -rotate-1 hover:rotate-0">
   Create
 </button>
 
 // Paper Teal
-<button className="px-6 py-3 bg-[#5cb8a5] text-white font-bold rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.12)] active:translate-y-0.5 active:shadow-[1px_1px_0px_rgba(0,0,0,0.08)] transition-all duration-200 rotate-[0.5deg]">
+<button className="px-8 py-3 bg-[#5cb8a5] text-white font-bold rounded-xl shadow-[4px_4px_0px_rgba(45,45,45,0.15)] hover:-translate-y-1 hover:translate-x-0.5 hover:shadow-[6px_6px_0px_rgba(45,45,45,0.14)] active:translate-y-1 active:shadow-[1px_1px_0px_rgba(45,45,45,0.2)] transition-all duration-200 ease-out rotate-[0.5deg] hover:rotate-0">
   Explore
 </button>
 
 // Paper Outline
-<button className="px-6 py-3 bg-white border-2 border-[#2d2d2d] text-[#2d2d2d] font-bold rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-[1px_1px_0px_rgba(0,0,0,0.06)] transition-all duration-200">
+<button className="px-8 py-3 bg-white border-2 border-[#2d2d2d] text-[#2d2d2d] font-bold rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_rgba(0,0,0,0.12)] active:translate-y-0.5 active:shadow-[1px_1px_0px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out">
   Learn More
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "纸艺风格的层叠卡片",
-      code: `<div className="relative">
+      description: "纸艺风格层叠卡片，hover 时纸层分离散开",
+      code: `<div className="group relative w-full max-w-sm">
   {/* Back paper layer */}
-  <div className="absolute inset-0 bg-[#f5c040] rounded-2xl rotate-[2deg] shadow-[4px_4px_0px_rgba(0,0,0,0.06)]" />
+  <div className="absolute inset-0 bg-[#f5c040] rounded-2xl rotate-[2deg] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] group-hover:rotate-[6deg] group-hover:translate-x-2 group-hover:translate-y-1 transition-all duration-300 ease-out" />
   {/* Middle paper layer */}
-  <div className="absolute inset-0 bg-[#5cb8a5] rounded-2xl rotate-[1deg] shadow-[3px_3px_0px_rgba(0,0,0,0.06)]" />
+  <div className="absolute inset-0 bg-[#5cb8a5] rounded-2xl -rotate-[1deg] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] group-hover:-rotate-[4deg] group-hover:-translate-x-2 group-hover:translate-y-2 transition-all duration-300 ease-out delay-75" />
   {/* Front card */}
-  <div className="relative bg-white rounded-2xl p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.08)]">
-    <div className="inline-block px-3 py-1 bg-[#e85d75] text-white text-xs font-bold rounded-lg mb-3 rotate-[-1deg]">
+  <div className="relative bg-white rounded-2xl p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.08)] group-hover:-translate-y-2 group-hover:shadow-[8px_8px_0px_rgba(0,0,0,0.12)] transition-all duration-300 ease-out">
+    <div className="inline-block px-3 py-1 bg-[#e85d75] text-white text-xs font-bold rounded-lg mb-3 -rotate-1 group-hover:rotate-0 transition-transform duration-200">
       Craft
     </div>
     <h3 className="text-[#2d2d2d] text-xl font-bold mb-2">
       Paper Origami
     </h3>
     <p className="text-[#666666] leading-relaxed text-sm">
-      Fold, cut, and create beautiful paper sculptures with layered depth.
+      Fold, cut, and create layered paper sculptures with tactile handmade depth.
     </p>
   </div>
 </div>`,
@@ -99,7 +104,7 @@ export const paperCraft: DesignStyle = {
   <div className="relative">
     <input
       type="text"
-      className="w-full px-4 py-3 bg-white border-2 border-[#e0d8cc] rounded-xl text-[#2d2d2d] placeholder-[#b0a898] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.04)] focus:outline-none focus:border-[#e85d75] focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.04),0_0_0_3px_rgba(232,93,117,0.15)] transition-all duration-200"
+      className="w-full px-4 py-3 bg-white border-2 border-[#e0d8cc] rounded-xl text-[#2d2d2d] placeholder-[#b0a898] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.04)] focus:outline-none focus:border-[#e85d75] focus:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.08),0_0_0_3px_rgba(232,93,117,0.15)] transition-all duration-200 ease-out"
       placeholder="Write here..."
     />
   </div>
@@ -168,7 +173,14 @@ SPECIAL EFFECTS:
 - Multi-layer paper stacking with rotation offsets
 - Inset shadows for cut-out/embossed feel
 - Active press-down: active:translate-y-0.5
-- Paper texture overlay for authenticity`,
+- Paper texture overlay for authenticity
+
+## Animation & Interaction Rules
+
+- Layer Separation: 多层纸片 hover 时需向不同方向轻微散开，并放大层间阴影偏移。
+- Crisp Cutouts: input focus 或 active 反馈可加深 inset 阴影，模拟纸板切口深度。
+- Stiff Paper Feel: 交互用 duration-200/300 + ease-out，避免 spring 弹性。
+- Offset Lift: 元素位移时阴影偏移应同步增加，保持纸片离面物理一致性。`,
 
   examplePrompts: [
     {

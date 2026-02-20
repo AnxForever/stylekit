@@ -38,6 +38,9 @@ export const pastelGoth: DesignStyle = {
     "边框使用粉彩色半透明 border border-[#d4a5e3]/30",
     "标题可使用 font-bold 但搭配粉彩色以柔化",
     "适当使用渐变 bg-gradient-to-r 在粉彩色之间过渡",
+    "hover 时让粉紫和粉青光晕叠加扩散，制造 Toxic Glow 的反差甜暗感",
+    "交互节奏使用 duration-300 到 500，保持 Creepy Softness 的慵懒氛围",
+    "卡片角落点缀元素可轻微错位或旋转，强化 Occult Hover 的亚文化气质",
   ],
 
   dontList: [
@@ -48,46 +51,55 @@ export const pastelGoth: DesignStyle = {
     "禁止使用直角无圆角 rounded-none",
     "禁止省略粉彩色高亮——纯黑暗不是粉彩哥特",
     "禁止使用过于明亮的绿色 text-green-400, bg-green-500",
+    "禁止只做单一紫色光晕（需要粉紫/粉青/粉粉的冲突层次）",
+    "禁止使用过快的 100ms 级动画（会失去诡异柔软感）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "粉彩哥特风格按钮，暗底粉彩发光",
+      description: "粉彩哥特按钮，病态甜美光晕与反差按压反馈",
       code: `<button className="
-  px-8 py-4
+  px-8 py-3.5
   bg-[#2d1b3d] text-[#d4a5e3]
-  font-bold tracking-wide
+  font-bold tracking-widest uppercase
   rounded-xl
-  border border-[#d4a5e3]/30
-  shadow-[0_0_16px_rgba(212,165,227,0.25)]
-  hover:shadow-[0_0_24px_rgba(212,165,227,0.4)]
-  hover:border-[#d4a5e3]/60
-  transition-all duration-300
+  border-2 border-[#d4a5e3]/30
+  shadow-[0_0_15px_rgba(212,165,227,0.2)]
+  hover:bg-[#d4a5e3] hover:text-[#1a1225]
+  hover:shadow-[0_0_25px_rgba(245,165,184,0.6),0_0_16px_rgba(126,200,200,0.35)]
+  hover:-translate-y-1
+  active:bg-[#f5a5b8] active:shadow-[0_0_10px_rgba(245,165,184,0.8)] active:scale-95
+  transition-all duration-300 ease-out
 ">
   Enter the Void
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "粉彩哥特风格卡片，暗底与粉彩装饰",
+      description: "粉彩哥特卡片，暗底荧光点缀与柔慢诡异悬停",
       code: `<div className="
-  p-8
+  group p-8
   bg-[#1a1225]
-  rounded-xl
+  rounded-2xl
   border border-[#b8a5f5]/20
-  shadow-[0_0_20px_rgba(184,165,245,0.15)]
+  shadow-[0_8px_30px_rgba(0,0,0,0.5)]
+  hover:border-[#f5a5b8]/50
+  hover:shadow-[0_10px_40px_rgba(245,165,184,0.15),0_0_20px_rgba(126,200,200,0.1)]
+  hover:-translate-y-1
+  transition-all duration-500 ease-out
+  cursor-pointer
 ">
-  <div className="flex gap-2 mb-4">
-    <div className="w-2 h-2 rounded-full bg-[#d4a5e3]" />
-    <div className="w-2 h-2 rounded-full bg-[#7ec8c8]" />
-    <div className="w-2 h-2 rounded-full bg-[#f5a5b8]" />
+  <div className="flex gap-3 mb-6">
+    <div className="w-3 h-3 rounded-full bg-[#d4a5e3] shadow-[0_0_8px_#d4a5e3] group-hover:scale-125 transition-transform duration-300" />
+    <div className="w-3 h-3 rounded-full bg-[#7ec8c8] shadow-[0_0_8px_#7ec8c8] group-hover:scale-125 transition-transform duration-300 delay-75" />
+    <div className="w-3 h-3 rounded-full bg-[#f5a5b8] shadow-[0_0_8px_#f5a5b8] group-hover:scale-125 transition-transform duration-300 delay-150" />
   </div>
-  <h3 className="text-2xl font-bold text-[#d4a5e3] mb-3">
+  <h3 className="text-2xl font-black text-[#d4a5e3] mb-3 tracking-wide group-hover:text-[#f5a5b8] transition-colors duration-300">
     Midnight Garden
   </h3>
-  <p className="text-[#b8a5f5]/60">
-    Where shadows bloom in pastel light
+  <p className="text-[#b8a5f5]/70 font-medium leading-relaxed group-hover:text-[#b8a5f5]/90 transition-colors duration-300">
+    Where shadows bloom in pastel light, with a soft and rebellious undercurrent.
   </p>
 </div>`,
     },
@@ -272,7 +284,14 @@ Primary:
 - Cross and gothic symbols in pastel
 - Gradient text (lavender to pink to periwinkle)
 - Small pastel dots as decorations
-- Semi-transparent borders with pastel glow`,
+- Semi-transparent borders with pastel glow
+
+## Animation & Interaction Rules
+
+- Toxic Glow: hover 光晕需体现粉紫、粉青、粉粉的冲突叠加，而非单色发光。
+- Creepy Softness: 交互保持 duration-300 到 500，允许轻微上浮但避免过度弹跳。
+- Sweet Rebellious Press: active 状态可短暂反转边框/光晕色彩，突出亚文化叛逆感。
+- Occult Hover: 角落装饰或微符号可轻微错位和提亮，营造不安又可爱的氛围。`,
 
   examplePrompts: [
     {
