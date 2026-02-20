@@ -1,8 +1,8 @@
-import { getAllStylesMeta } from "@/lib/styles/meta";
+import { listCatalogStylesMeta } from "@/lib/styles/community-runtime";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const styleMeta = getAllStylesMeta();
+  const styleMeta = await listCatalogStylesMeta();
 
   return NextResponse.json({
     total: styleMeta.length,

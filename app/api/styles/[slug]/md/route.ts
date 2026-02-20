@@ -1,6 +1,6 @@
-import { getStyleBySlug } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 
 /**
  * /api/styles/[slug]/md - Markdown variant for LLM consumption
@@ -13,7 +13,8 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const style = getStyleBySlug(slug);
+  const resolved = await resolveStyleBySlug(slug);
+  const style = resolved?.style;
 
   if (!style) {
     return new Response("# Error\n\nStyle not found", {
@@ -22,8 +23,9 @@ export async function GET(
     });
   }
 
-  const tokens = getStyleTokens(slug);
-  const recipes = getStyleRecipes(slug);
+  const tokens = resolved.tokens ?? getStyleTokens(slug);
+  const recipes =
+    resolved.source === "static" ? getStyleRecipes(slug) : null;
 
   const sections: string[] = [];
 
