@@ -32,6 +32,8 @@ export const cyberChinese: DesignStyle = {
     "添加霓虹发光效果",
     "融入中国传统纹样元素（如印章、云纹）",
     "深色背景为主基调",
+    "交互动效保持仪式感：hover 提亮金边与霓虹，active 下压 1-2px",
+    "可在 hover/focus 使用短时扫描光带或云纹流光，强化东方赛博反馈",
   ],
 
   dontList: [
@@ -39,6 +41,8 @@ export const cyberChinese: DesignStyle = {
     "禁止使用柔和圆润的造型",
     "禁止省略霓虹发光效果",
     "禁止使用过于西式的装饰元素",
+    "禁止使用弹簧回弹、俏皮抖动或大幅缩放动画",
+    "禁止控制类组件使用超过 400ms 的缓慢过渡",
   ],
 
   components: {
@@ -46,27 +50,38 @@ export const cyberChinese: DesignStyle = {
       name: "按钮",
       description: "赛博中华风格按钮",
       code: `<button className="
-  px-8 py-4
-  bg-[#d4553a]
+  group relative px-8 py-4 overflow-hidden
+  bg-[#d4553a] rounded-none
   border border-[#c9a227]
   text-white font-bold tracking-wider
   shadow-[0_0_16px_rgba(212,85,58,0.5)]
-  hover:shadow-[0_0_24px_rgba(201,162,39,0.6)]
-  hover:border-[#c9a227]
-  transition-all duration-300
+  hover:-translate-y-[1px]
+  hover:shadow-[0_0_28px_rgba(201,162,39,0.55),0_0_40px_rgba(0,212,255,0.2)]
+  hover:border-[#00d4ff]/70
+  active:translate-y-[2px]
+  active:shadow-[0_0_12px_rgba(212,85,58,0.4)]
+  transition-[transform,box-shadow,border-color] duration-220 ease-out
 ">
-  Enter
+  <span className="relative z-10">Enter</span>
+  <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-[#00d4ff]/25 to-transparent skew-x-[-20deg] transition-transform duration-300 group-hover:translate-x-[420%]" />
 </button>`,
     },
     card: {
       name: "卡片",
       description: "赛博中华风格卡片",
       code: `<div className="
-  p-8
+  group relative p-8
   bg-[#0a0a0a]/90
+  rounded-none
   border border-[#d4553a]/40
   shadow-[0_0_16px_rgba(212,85,58,0.3)]
+  hover:-translate-y-[2px]
+  hover:border-[#00d4ff]/60
+  hover:shadow-[0_0_24px_rgba(0,212,255,0.3),0_0_36px_rgba(212,85,58,0.25)]
+  active:translate-y-[1px]
+  transition-[transform,box-shadow,border-color] duration-250 ease-out
 ">
+  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100 bg-[linear-gradient(90deg,transparent,rgba(0,212,255,0.08),transparent)]" />
   <h3 className="text-2xl font-bold text-[#c9a227] mb-3">
     CYBER ORIENT
   </h3>
@@ -199,6 +214,14 @@ export const cyberChinese: DesignStyle = {
 - 直角无圆角 rounded-none
 - 霓虹发光效果 shadow-[0_0_Xpx_rgba(...)]
 - 中国传统纹样元素
+
+## Animation & Interaction Rules
+
+- 交互节奏应短促克制：控制在 180-300ms，优先使用 transform、box-shadow、border-color 的组合过渡
+- Hover 重点是“霓虹升温”：边框与发光增强，允许 1-2px 轻微上浮，不做大幅位移
+- Active 必须体现“按印”反馈：下压 1-3px 或轻微缩放到 0.98，并同步收紧光晕
+- 扫描光带/云纹流光应为触发式短动画（hover/focus），避免无限循环造成噪音
+- 禁止弹簧回弹、可爱抖动、慢速淡入淡出等与硬朗赛博调性冲突的交互
 
 ## 配色
 
