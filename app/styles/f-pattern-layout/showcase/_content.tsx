@@ -1,260 +1,707 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, Eye, TrendingUp, Clock, User, ChevronRight, Bookmark, Share2 } from "lucide-react";
-import {
-  ShowcaseHero,
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-const colors: ColorItem[] = [
-  { name: "Primary", hex: "#e63946", bg: "bg-[#e63946]" },
-  { name: "Dark", hex: "#1a1a2e", bg: "bg-[#1a1a2e]" },
-  { name: "Background", hex: "#f8f9fa", bg: "bg-[#f8f9fa]", border: true },
-  { name: "Border", hex: "#e5e7eb", bg: "bg-[#e5e7eb]" },
-  { name: "Text", hex: "#374151", bg: "bg-[#374151]" },
-];
+/* ------------------------------------------------------------------ */
+/*  Inline useInView                                                   */
+/* ------------------------------------------------------------------ */
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, inView };
+}
 
-const articles = [
-  { title: "Understanding the F-Pattern in Web Design", category: "UX Design", time: "5 min read", featured: true },
-  { title: "How Users Read on the Web", category: "Research", time: "3 min read", featured: false },
-  { title: "Optimizing Content for Scanners", category: "Content", time: "4 min read", featured: false },
-  { title: "Eye-Tracking Studies Revealed", category: "Research", time: "6 min read", featured: false },
-];
-
-export default function ShowcaseContent() {
+/* ------------------------------------------------------------------ */
+/*  RevealBlock                                                        */
+/* ------------------------------------------------------------------ */
+function RevealBlock({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, inView } = useInView();
   return (
-    <div className="min-h-screen bg-[#f8f9fa]">
-      {/* Navigation - F-pattern top bar */}
-      <nav className="sticky top-0 z-50 px-6 py-4 bg-white border-b border-[#e5e7eb]">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/f-pattern-layout"
-            className="flex items-center gap-2 text-[#374151] hover:text-[#e63946] transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
-          <span className="font-bold text-xl text-[#1a1a2e]">F-Pattern Layout</span>
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-[#e63946] text-white font-semibold text-sm rounded-lg hover:bg-[#d62839] transition-colors"
-          >
-            All Styles
-          </Link>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ================================================================== */
+/*  F-Pattern Layout Showcase                                          */
+/* ================================================================== */
+export default function FPatternLayoutShowcaseContent() {
+  const [heroRevealed, setHeroRevealed] = useState(false);
+  const [activeTab, setActiveTab] = useState<"button" | "card" | "input">("button");
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e]">
+      {/* ============================================================ */}
+      {/*  FIXED NAV                                                    */}
+      {/* ============================================================ */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <span className="text-xl font-bold tracking-tight text-[#1a1a2e]">
+            F-Pattern
+          </span>
+          <div className="hidden md:flex items-center gap-6 text-sm text-gray-500">
+            <a href="#f-demo" className="hover:text-[#1a1a2e] transition-colors">Demo</a>
+            <a href="#components" className="hover:text-[#1a1a2e] transition-colors">Components</a>
+            <a href="#palette" className="hover:text-[#1a1a2e] transition-colors">Palette</a>
+            <a href="#rules" className="hover:text-[#1a1a2e] transition-colors">Rules</a>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <ShowcaseHero
-        title="F-Pattern Layout"
-        description="Optimized for how users naturally scan content-heavy pages. The F-pattern follows the eye's natural reading path: left to right, then down."
-        className="pt-16 pb-12 px-6 text-center"
-        titleClassName="text-4xl md:text-5xl font-bold text-[#1a1a2e] mb-6"
-        descriptionClassName="text-lg text-[#374151] max-w-2xl mx-auto mb-8"
-      >
-        <div className="flex items-center justify-center gap-2 text-[#e63946]">
-          <Eye className="w-5 h-5" />
-          <span className="font-medium">Eye-tracking optimized</span>
-        </div>
-      </ShowcaseHero>
+      {/* ============================================================ */}
+      {/*  HERO                                                         */}
+      {/* ============================================================ */}
+      <section className="relative overflow-hidden bg-white border-b border-gray-100">
+        <div
+          className="max-w-6xl mx-auto px-6 py-20 md:py-28"
+          style={{
+            opacity: heroRevealed ? 1 : 0,
+            transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
+            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
+          {/* F-shape SVG overlay */}
+          <svg
+            className="absolute top-8 right-8 w-48 h-48 opacity-[0.04]"
+            viewBox="0 0 200 200"
+            fill="none"
+            stroke="#1a1a2e"
+            strokeWidth="6"
+          >
+            <path d="M40 20 L160 20" />
+            <path d="M40 20 L40 180" />
+            <path d="M40 90 L130 90" />
+          </svg>
 
-      {/* F-Pattern Visualization */}
-      <ShowcaseSection
-        title="The F-Pattern"
-        subtitle="How users scan content"
-        className="py-12 px-6"
-        titleClassName="text-2xl font-bold text-[#1a1a2e] mb-3 text-center"
-        subtitleClassName="text-[#6b7280] mb-8 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="relative bg-white rounded-xl border border-[#e5e7eb] p-8 overflow-hidden">
-            {/* F visualization */}
-            <div className="absolute top-8 left-8 right-8 h-1 bg-[#e63946]/20 rounded" />
-            <div className="absolute top-20 left-8 w-3/4 h-1 bg-[#e63946]/15 rounded" />
-            <div className="absolute top-8 left-8 w-1 bottom-8 bg-[#e63946]/10 rounded" />
-
-            {/* Content blocks following F */}
-            <div className="space-y-6">
-              {/* Top bar - full width scan */}
-              <div className="flex items-center justify-between pb-6 border-b border-[#e5e7eb]">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#e63946] rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1a1a2e]">Featured Story</h3>
-                    <p className="text-sm text-[#6b7280]">Top headline gets full attention</p>
-                  </div>
-                </div>
-                <span className="text-[#e63946] font-semibold">Breaking</span>
-              </div>
-
-              {/* Second row - shorter scan */}
-              <div className="flex items-center gap-4 pb-6 border-b border-[#e5e7eb]">
-                <div className="w-8 h-8 bg-[#f3f4f6] rounded flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-[#6b7280]" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-[#1a1a2e]">Secondary content scanned partially</h4>
-                  <p className="text-sm text-[#6b7280]">Users scan less of subsequent rows</p>
-                </div>
-              </div>
-
-              {/* Vertical scan - left side only */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-[#e63946] rounded-full" />
-                  <span className="text-[#374151]">Quick scan items</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-[#e63946] rounded-full" />
-                  <span className="text-[#374151]">Left-aligned for visibility</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-[#e63946] rounded-full" />
-                  <span className="text-[#374151]">Vertical scanning down</span>
-                </div>
-              </div>
-            </div>
+          <span className="inline-block text-xs font-semibold uppercase tracking-widest text-[#e63946] mb-4">
+            Layout Style
+          </span>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#1a1a2e] mb-4 max-w-3xl">
+            F-Pattern Layout
+          </h1>
+          <p className="text-lg md:text-xl text-gray-500 max-w-prose mb-8 leading-relaxed">
+            Based on eye-tracking research by the Nielsen Norman Group. Users scan
+            web pages in an F-shaped pattern: two horizontal stripes followed by a
+            vertical movement down the left side.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <span className="px-3 py-1 text-xs font-medium bg-[#1a1a2e] text-white rounded-full">
+              Eye-Tracking
+            </span>
+            <span className="px-3 py-1 text-xs font-medium bg-[#e63946]/10 text-[#e63946] rounded-full">
+              Content-First
+            </span>
+            <span className="px-3 py-1 text-xs font-medium bg-[#457b9d]/10 text-[#457b9d] rounded-full">
+              Scannable
+            </span>
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color System"
-        subtitle="Clean, content-focused palette"
-        className="py-12 px-6 bg-white border-y border-[#e5e7eb]"
-        titleClassName="text-2xl font-bold text-[#1a1a2e] mb-3 text-center"
-        subtitleClassName="text-[#6b7280] mb-8 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-lg overflow-hidden border border-[#e5e7eb]"
-            labelClassName="font-semibold text-sm text-[#1a1a2e]"
-            hexClassName="text-xs text-[#6b7280] font-mono"
-          />
-        </div>
-      </ShowcaseSection>
+      {/* ============================================================ */}
+      {/*  LIVE F-PATTERN DEMO                                          */}
+      {/* ============================================================ */}
+      <section id="f-demo" className="max-w-6xl mx-auto px-6 py-16">
+        <RevealBlock>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a2e] mb-2">
+            Live F-Pattern Demo
+          </h2>
+          <p className="text-gray-500 mb-8 max-w-prose">
+            The three strokes of the F: a full-width top bar, a shorter secondary
+            scan, and a vertical content stream on the left.
+          </p>
+        </RevealBlock>
 
-      {/* Article List Demo */}
-      <ShowcaseSection
-        title="Content List Example"
-        subtitle="F-pattern optimized article layout"
-        className="py-12 px-6"
-        titleClassName="text-2xl font-bold text-[#1a1a2e] mb-3 text-center"
-        subtitleClassName="text-[#6b7280] mb-8 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Main content area - 2 columns */}
-            <div className="md:col-span-2 space-y-4">
-              {/* Featured article - gets most attention */}
-              <article className="p-6 bg-white rounded-xl border border-[#e5e7eb] hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-1 bg-[#e63946]/10 text-[#e63946] text-xs font-semibold rounded">Featured</span>
-                  <span className="text-sm text-[#6b7280]">UX Design</span>
+        <RevealBlock delay={0.15}>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            {/* Stroke 1 -- full-width header */}
+            <div className="relative border-b border-gray-100 p-6 md:p-8">
+              <div className="absolute top-2 left-2 text-[10px] font-mono font-bold text-[#e63946]/60 uppercase tracking-widest">
+                Stroke 1 - Full-width scan
+              </div>
+              <div className="pt-4 flex flex-col md:flex-row md:items-center gap-6">
+                <div className="flex-1">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e63946]">
+                    Featured
+                  </span>
+                  <h3 className="text-2xl font-bold text-[#1a1a2e] mt-1 mb-2">
+                    Understanding F-Pattern Reading Behavior
+                  </h3>
+                  <p className="text-gray-500 text-sm max-w-prose leading-relaxed">
+                    Eye-tracking studies show users rarely read web content word by
+                    word. Instead they scan in an F-shaped pattern, focusing on the
+                    top and left side of the page.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-[#1a1a2e] mb-2 hover:text-[#e63946] transition-colors cursor-pointer">
-                  Understanding the F-Pattern in Web Design
-                </h3>
-                <p className="text-[#6b7280] mb-4">Learn how eye-tracking research has shaped modern web layouts and why content placement matters.</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-sm text-[#6b7280]">
-                    <span className="flex items-center gap-1"><User className="w-4 h-4" /> Author</span>
-                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 5 min</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-[#f3f4f6] rounded-lg transition-colors">
-                      <Bookmark className="w-4 h-4 text-[#6b7280]" />
-                    </button>
-                    <button className="p-2 hover:bg-[#f3f4f6] rounded-lg transition-colors">
-                      <Share2 className="w-4 h-4 text-[#6b7280]" />
-                    </button>
-                  </div>
+                <div className="w-full md:w-48 h-32 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center text-gray-300 text-sm">
+                  Hero Image
                 </div>
-              </article>
-
-              {/* Regular articles - scanned vertically */}
-              {articles.slice(1).map((article, i) => (
-                <article key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[#e5e7eb] hover:shadow-md transition-shadow">
-                  <div className="w-16 h-16 bg-[#f3f4f6] rounded-lg shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <span className="text-xs text-[#e63946] font-semibold">{article.category}</span>
-                    <h4 className="font-semibold text-[#1a1a2e] truncate hover:text-[#e63946] transition-colors cursor-pointer">{article.title}</h4>
-                    <span className="text-sm text-[#6b7280]">{article.time}</span>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-[#9ca3af] shrink-0" />
-                </article>
-              ))}
+              </div>
             </div>
 
-            {/* Sidebar - less attention */}
-            <aside className="space-y-4">
-              <div className="p-4 bg-white rounded-xl border border-[#e5e7eb]">
-                <h4 className="font-semibold text-[#1a1a2e] mb-3">Popular Tags</h4>
-                <div className="flex flex-wrap gap-2">
-                  {["UX", "Design", "Research", "Web", "UI"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 bg-[#f3f4f6] text-[#374151] text-sm rounded-full hover:bg-[#e5e7eb] cursor-pointer transition-colors">
+            {/* Stroke 2 -- shorter secondary bar */}
+            <div className="relative border-b border-gray-100 px-6 md:px-8 py-4">
+              <div className="absolute top-2 left-2 text-[10px] font-mono font-bold text-[#457b9d]/60 uppercase tracking-widest">
+                Stroke 2 - Secondary scan
+              </div>
+              <div className="pt-4 flex flex-wrap gap-2">
+                {["All", "Research", "Design", "Development", "UX"].map((tag) => (
+                  <button
+                    key={tag}
+                    className={`px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-150 ${
+                      tag === "All"
+                        ? "bg-[#1a1a2e] text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Stroke 3 -- vertical left content + sidebar */}
+            <div className="relative flex flex-col md:flex-row">
+              <div className="absolute top-2 left-2 text-[10px] font-mono font-bold text-[#2a9d8f]/60 uppercase tracking-widest z-10">
+                Stroke 3 - Vertical scan
+              </div>
+
+              {/* Main content list */}
+              <div className="flex-1 pt-6 divide-y divide-gray-100">
+                {[
+                  { title: "How Users Read on the Web", cat: "Research", time: "8 min" },
+                  { title: "Designing for Scannable Content", cat: "Design", time: "5 min" },
+                  { title: "Content Hierarchy Best Practices", cat: "UX", time: "6 min" },
+                  { title: "Left-Aligned Layouts and Readability", cat: "Development", time: "4 min" },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="group flex gap-4 px-6 md:px-8 py-5 hover:bg-gray-50/70 transition-all duration-200 cursor-pointer"
+                  >
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 group-hover:contrast-110 group-hover:brightness-95 transition-all duration-200" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base font-semibold text-[#1a1a2e] group-hover:text-[#e63946] group-hover:translate-x-1 transition-all duration-200">
+                        {item.title}
+                      </h4>
+                      <p className="text-sm text-gray-400 mt-1">
+                        {item.cat} &middot; {item.time} read
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Sidebar */}
+              <aside className="w-full md:w-56 flex-shrink-0 border-t md:border-t-0 md:border-l border-gray-100 p-6">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">
+                  Trending
+                </h4>
+                {["Eye-tracking", "Typography", "Grid Systems", "Whitespace"].map((t, i) => (
+                  <div
+                    key={i}
+                    className="text-sm text-[#1a1a2e] py-2 border-b border-gray-100 last:border-0 hover:text-[#457b9d] cursor-pointer transition-colors duration-150"
+                  >
+                    {t}
+                  </div>
+                ))}
+
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mt-6 mb-3">
+                  Tags
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {["UX", "Layout", "Reading", "Research"].map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-500 rounded-full hover:bg-[#e63946]/10 hover:text-[#e63946] cursor-pointer transition-colors duration-150"
+                    >
                       {tag}
                     </span>
                   ))}
                 </div>
-              </div>
-
-              <div className="p-4 bg-[#1a1a2e] rounded-xl text-white">
-                <h4 className="font-semibold mb-2">Newsletter</h4>
-                <p className="text-sm text-white/70 mb-3">Get weekly design tips</p>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm placeholder-white/50 border border-white/20 focus:outline-none focus:border-white/40"
-                />
-                <button className="w-full mt-2 py-2 bg-[#e63946] rounded-lg text-sm font-semibold hover:bg-[#d62839] transition-colors">
-                  Subscribe
-                </button>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Design Rules */}
-      <ShowcaseSection
-        title="F-Pattern Rules"
-        subtitle="Key principles for this layout"
-        className="py-12 px-6 bg-white border-y border-[#e5e7eb]"
-        titleClassName="text-2xl font-bold text-[#1a1a2e] mb-3 text-center"
-        subtitleClassName="text-[#6b7280] mb-8 text-center"
-      >
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-4">
-          {[
-            { title: "Top row = priority", desc: "Place most important content in the first horizontal line" },
-            { title: "Left-align key info", desc: "Critical elements should be on the left edge" },
-            { title: "Decreasing importance", desc: "Content importance decreases as users scan down" },
-            { title: "Visual anchors", desc: "Use icons and images to catch vertical scanning" },
-          ].map((rule, i) => (
-            <div key={i} className="p-4 bg-[#f8f9fa] rounded-lg border border-[#e5e7eb]">
-              <h4 className="font-semibold text-[#1a1a2e] mb-1">{rule.title}</h4>
-              <p className="text-sm text-[#6b7280]">{rule.desc}</p>
+              </aside>
             </div>
-          ))}
-        </div>
-      </ShowcaseSection>
+          </div>
+        </RevealBlock>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-[#e5e7eb]">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-[#6b7280] text-sm">
-            F-Pattern Layout Showcase · Part of{" "}
-            <Link href="/" className="text-[#e63946] hover:underline">
-              StyleKit
-            </Link>
+        {/* F-shape annotation */}
+        <RevealBlock delay={0.3} className="mt-8">
+          <div className="bg-[#1a1a2e] rounded-xl p-6 md:p-8 text-white">
+            <h3 className="text-lg font-bold mb-4">F-Shape Anatomy</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-0.5 bg-[#e63946]" />
+                  <span className="font-semibold text-[#e63946]">Stroke 1</span>
+                </div>
+                <p className="text-gray-400 leading-relaxed">
+                  Full-width horizontal scan across the top. Users read headlines,
+                  featured content, and navigation links first.
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-0.5 bg-[#457b9d]" />
+                  <span className="font-semibold text-[#457b9d]">Stroke 2</span>
+                </div>
+                <p className="text-gray-400 leading-relaxed">
+                  A shorter horizontal scan below the first. Typically covers
+                  sub-navigation, categories, or secondary headlines.
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-0.5 h-8 bg-[#2a9d8f]" />
+                  <span className="font-semibold text-[#2a9d8f]">Vertical</span>
+                </div>
+                <p className="text-gray-400 leading-relaxed">
+                  Users scan down the left side, reading the beginning of each
+                  line. Strong left-alignment is essential.
+                </p>
+              </div>
+            </div>
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  COMPONENT DEMOS (tab-switched)                               */}
+      {/* ============================================================ */}
+      <section id="components" className="max-w-6xl mx-auto px-6 py-16">
+        <RevealBlock>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a2e] mb-2">
+            Component Library
+          </h2>
+          <p className="text-gray-500 mb-8 max-w-prose">
+            Core UI components designed for scannable, content-first layouts.
           </p>
+        </RevealBlock>
+
+        <RevealBlock delay={0.1}>
+          {/* Tab bar */}
+          <div className="flex gap-1 mb-8 bg-gray-100 rounded-lg p-1 w-fit">
+            {(["button", "card", "input"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-5 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                  activeTab === tab
+                    ? "bg-white text-[#1a1a2e] shadow-sm"
+                    : "text-gray-500 hover:text-[#1a1a2e]"
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab content */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 md:p-12">
+            {activeTab === "button" && (
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    Primary CTA
+                  </h3>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="px-6 py-3 bg-[#e63946] text-white rounded-lg font-medium hover:bg-[#c1121f] active:scale-[0.98] transition-all duration-150 ease-out">
+                      Read More
+                    </button>
+                    <button className="px-6 py-3 bg-[#457b9d] text-white rounded-lg font-medium hover:bg-[#3a6a88] active:scale-[0.98] transition-all duration-150 ease-out">
+                      Subscribe
+                    </button>
+                    <button className="px-6 py-3 bg-[#1a1a2e] text-white rounded-lg font-medium hover:bg-[#2d2d4a] active:scale-[0.98] transition-all duration-150 ease-out">
+                      View All
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    Secondary / Ghost
+                  </h3>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="px-6 py-3 border border-gray-200 text-[#1a1a2e] rounded-lg font-medium hover:border-[#e63946] hover:text-[#e63946] active:scale-[0.98] transition-all duration-150">
+                      Bookmark
+                    </button>
+                    <button className="px-6 py-3 text-gray-500 font-medium hover:text-[#1a1a2e] hover:bg-gray-50 rounded-lg active:scale-[0.98] transition-all duration-150">
+                      Share
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "card" && (
+              <div className="space-y-4">
+                {[
+                  {
+                    title: "Eye-Tracking and Web Design",
+                    summary:
+                      "How understanding gaze patterns improves content placement and increases engagement rates across different page types.",
+                    cat: "Research",
+                    time: "8 min",
+                  },
+                  {
+                    title: "Building Scannable Interfaces",
+                    summary:
+                      "Practical techniques for structuring content so users can quickly find what they need without reading everything.",
+                    cat: "Design",
+                    time: "5 min",
+                  },
+                  {
+                    title: "Typography for Readability",
+                    summary:
+                      "Choosing typefaces, line heights, and column widths that support natural reading patterns.",
+                    cat: "Development",
+                    time: "6 min",
+                  },
+                ].map((item, i) => (
+                  <article
+                    key={i}
+                    className="group flex gap-6 p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50/70 hover:shadow-sm transition-all duration-200 cursor-pointer relative"
+                  >
+                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 group-hover:contrast-125 group-hover:brightness-95 transition-all duration-200" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-[#1a1a2e] mb-1 line-clamp-1 group-hover:text-[#e63946] group-hover:translate-x-1 group-hover:underline underline-offset-4 decoration-1 transition-all duration-200">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-500 text-sm line-clamp-2 mb-2">
+                        {item.summary}
+                      </p>
+                      <span className="text-xs text-gray-400">
+                        {item.cat} &middot; {item.time} read
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "input" && (
+              <div className="space-y-8 max-w-lg">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    Search
+                  </h3>
+                  <input
+                    type="text"
+                    placeholder="Search articles..."
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#457b9d]/20 focus:border-[#457b9d] transition-all"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    Newsletter Signup
+                  </h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e63946]/20 focus:border-[#e63946] transition-all"
+                    />
+                    <button className="px-5 py-3 bg-[#e63946] text-white rounded-lg font-medium hover:bg-[#c1121f] active:scale-[0.98] transition-all duration-150 flex-shrink-0">
+                      Join
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    Comment
+                  </h3>
+                  <textarea
+                    placeholder="Share your thoughts..."
+                    rows={3}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#457b9d]/20 focus:border-[#457b9d] transition-all resize-none"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  COLOR PALETTE                                                */}
+      {/* ============================================================ */}
+      <section id="palette" className="max-w-6xl mx-auto px-6 py-16">
+        <RevealBlock>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a2e] mb-2">
+            Color Palette
+          </h2>
+          <p className="text-gray-500 mb-8 max-w-prose">
+            A restrained palette that prioritizes readability. Accent colors are
+            used sparingly to guide the eye along the F-shape.
+          </p>
+        </RevealBlock>
+
+        <RevealBlock delay={0.1}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { name: "Primary", value: "#1a1a2e", text: "white" },
+              { name: "Secondary", value: "#f8f9fa", text: "#1a1a2e" },
+              { name: "Accent Red", value: "#e63946", text: "white" },
+              { name: "Accent Blue", value: "#457b9d", text: "white" },
+              { name: "Accent Teal", value: "#2a9d8f", text: "white" },
+              { name: "Accent Gold", value: "#e9c46a", text: "#1a1a2e" },
+            ].map((c) => (
+              <div
+                key={c.value}
+                className="group rounded-xl overflow-hidden border border-gray-200 hover:shadow-md transition-shadow duration-200"
+              >
+                <div
+                  className="h-24 flex items-end p-4"
+                  style={{ backgroundColor: c.value }}
+                >
+                  <span
+                    className="text-xs font-mono font-bold opacity-80"
+                    style={{ color: c.text }}
+                  >
+                    {c.value}
+                  </span>
+                </div>
+                <div className="bg-white px-4 py-3">
+                  <span className="text-sm font-medium text-[#1a1a2e]">
+                    {c.name}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  DESIGN RULES                                                 */}
+      {/* ============================================================ */}
+      <section id="rules" className="max-w-6xl mx-auto px-6 py-16">
+        <RevealBlock>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a2e] mb-2">
+            Design Rules
+          </h2>
+          <p className="text-gray-500 mb-8 max-w-prose">
+            Guidelines derived from eye-tracking research to maximize content
+            scannability and reading flow.
+          </p>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* DO */}
+          <RevealBlock delay={0.1}>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8 h-full">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full bg-[#2a9d8f]/10 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8.5L6.5 12L13 4" stroke="#2a9d8f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-[#2a9d8f]">Do</h3>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Place the most important content at the top (first horizontal stroke)",
+                  "Use left-aligned navigation and key information (vertical stroke)",
+                  "Maintain clear heading hierarchy: h1 > h2 > h3",
+                  "Use lists and sections for scannability",
+                  "Keep text left-aligned to match reading habits",
+                  "Use max-w-prose to limit line width for readability",
+                ].map((rule, i) => (
+                  <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span className="text-[#2a9d8f] font-bold flex-shrink-0">+</span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+
+          {/* DON'T */}
+          <RevealBlock delay={0.2}>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8 h-full">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full bg-[#e63946]/10 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 4L12 12M12 4L4 12" stroke="#e63946" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-[#e63946]">Don&apos;t</h3>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Place important content in the bottom-right corner",
+                  "Center-align large blocks of text",
+                  "Ignore content priority ordering",
+                  "Use long paragraphs without segmentation",
+                  "Leave excessive whitespace on the left side",
+                ].map((rule, i) => (
+                  <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span className="text-[#e63946] font-bold flex-shrink-0">&minus;</span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+        </div>
+
+        {/* Interaction rules */}
+        <RevealBlock delay={0.3} className="mt-6">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
+            <h3 className="text-lg font-bold text-[#1a1a2e] mb-6">
+              Interaction Guidelines
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  title: "Eye-Tracking Guides",
+                  desc: "List items shift right on hover (translate-x-1) or reveal underlines to help users lock on during scanning.",
+                  color: "#e63946",
+                },
+                {
+                  title: "Fast Feedback",
+                  desc: "Use duration-150 to duration-200 for news/content interactions. Avoid long transitions that interrupt reading.",
+                  color: "#457b9d",
+                },
+                {
+                  title: "Contrast Pop",
+                  desc: "Hovered items use subtle shadow or border contrast to visually separate from the content stream.",
+                  color: "#2a9d8f",
+                },
+                {
+                  title: "Image Focus",
+                  desc: "Thumbnails increase contrast or brightness on hover as click affordance, but the effect stays restrained.",
+                  color: "#e9c46a",
+                },
+              ].map((item, i) => (
+                <div key={i} className="flex gap-3">
+                  <div
+                    className="w-1 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <div>
+                    <h4 className="text-sm font-semibold text-[#1a1a2e] mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </RevealBlock>
+
+        {/* F-shape visual anatomy */}
+        <RevealBlock delay={0.4} className="mt-6">
+          <div className="bg-[#1a1a2e] rounded-xl p-6 md:p-8 text-white">
+            <h3 className="text-lg font-bold mb-6">F-Pattern Visual Anatomy</h3>
+            <div className="relative w-full max-w-md mx-auto">
+              <svg viewBox="0 0 300 240" className="w-full" fill="none">
+                {/* Stroke 1 */}
+                <rect x="20" y="20" width="260" height="16" rx="3" fill="#e63946" opacity="0.8" />
+                <text x="26" y="32" fontSize="9" fill="white" fontWeight="600">
+                  Stroke 1: Header + Featured Content
+                </text>
+
+                {/* Stroke 2 */}
+                <rect x="20" y="56" width="180" height="12" rx="3" fill="#457b9d" opacity="0.8" />
+                <text x="26" y="66" fontSize="8" fill="white" fontWeight="600">
+                  Stroke 2: Categories / Search
+                </text>
+
+                {/* Vertical stem */}
+                <rect x="20" y="86" width="12" height="130" rx="3" fill="#2a9d8f" opacity="0.8" />
+
+                {/* Content lines */}
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <g key={i}>
+                    <rect
+                      x="44"
+                      y={90 + i * 26}
+                      width={140 - i * 10}
+                      height="6"
+                      rx="2"
+                      fill="white"
+                      opacity="0.15"
+                    />
+                    <rect
+                      x="44"
+                      y={100 + i * 26}
+                      width={100 - i * 8}
+                      height="4"
+                      rx="2"
+                      fill="white"
+                      opacity="0.08"
+                    />
+                  </g>
+                ))}
+
+                {/* Sidebar area */}
+                <rect x="210" y="86" width="70" height="130" rx="4" fill="white" opacity="0.06" />
+                <text x="220" y="106" fontSize="7" fill="white" opacity="0.3" fontWeight="600">
+                  Sidebar
+                </text>
+
+                {/* Labels */}
+                <text x="22" y="232" fontSize="8" fill="#2a9d8f" fontWeight="600">
+                  Vertical scan (left edge)
+                </text>
+              </svg>
+            </div>
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  FOOTER                                                       */}
+      {/* ============================================================ */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
+          <span className="text-sm text-gray-400">
+            F-Pattern Layout &mdash; Content-first design based on eye-tracking research
+          </span>
+          <div className="flex gap-6 text-sm text-gray-400">
+            <span className="hover:text-[#1a1a2e] cursor-pointer transition-colors duration-150">
+              Documentation
+            </span>
+            <span className="hover:text-[#1a1a2e] cursor-pointer transition-colors duration-150">
+              Examples
+            </span>
+            <span className="hover:text-[#1a1a2e] cursor-pointer transition-colors duration-150">
+              Research
+            </span>
+          </div>
         </div>
       </footer>
     </div>

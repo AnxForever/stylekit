@@ -1,292 +1,630 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Play,
-  Check,
-  Star,
-  Zap,
-  Shield,
-  Target,
-  Palette,
-} from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-// Split Screen 閰嶈壊
-const colors: ColorItem[] = [
-  { name: "Dark", hex: "#0f0f0f", bg: "bg-[#0f0f0f]" },
-  { name: "Light", hex: "#ffffff", bg: "bg-white", border: true },
-  { name: "Red", hex: "#ff4757", bg: "bg-[#ff4757]" },
-  { name: "Green", hex: "#2ed573", bg: "bg-[#2ed573]" },
-  { name: "Blue", hex: "#1e90ff", bg: "bg-[#1e90ff]" },
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const features = [
+  { id: "01", left: "Visual Impact", right: "Content Depth", desc: "Combine striking imagery with detailed content side by side." },
+  { id: "02", left: "Dark Contrast", right: "Light Clarity", desc: "Use opposing palettes to create dramatic visual tension." },
+  { id: "03", left: "Brand Story", right: "Product Details", desc: "Narrative on one side, specs on the other." },
 ];
 
-// 璁捐瑙勫垯
-const designRules = [
-  { title: "Split layout", desc: "Use grid grid-cols-1 lg:grid-cols-2 for the two panels." },
-  { title: "Mobile stacking", desc: "Stack panels vertically on small screens." },
-  { title: "Contrast panels", desc: "Use contrasting colors to emphasize the split." },
-  { title: "Visual balance", desc: "Keep weight balanced across both sides." },
-  { title: "Full height", desc: "Use min-h-screen to fill the viewport." },
-  { title: "Centered content", desc: "Use flex utilities to center content." },
+const useCases = [
+  { title: "Product Comparison", desc: "Present two options side by side with contrasting visuals. Let users compare features at a glance.", icon: "compare" },
+  { title: "Brand Showcase", desc: "Visual panel for imagery, content panel for storytelling. Create immersive brand narratives.", icon: "brand" },
+  { title: "Portfolio Project", desc: "Sticky image gallery on one side, scrollable project details on the other.", icon: "portfolio" },
+  { title: "Before & After", desc: "Show transformation stories with contrasting panels that reveal change.", icon: "transform" },
 ];
+
+const paletteColors = [
+  { name: "Primary", value: "#0f0f0f", text: "text-white" },
+  { name: "Secondary", value: "#ffffff", text: "text-[#0f0f0f]" },
+  { name: "Accent Red", value: "#ff4757", text: "text-white" },
+  { name: "Accent Green", value: "#2ed573", text: "text-[#0f0f0f]" },
+  { name: "Accent Blue", value: "#1e90ff", text: "text-white" },
+  { name: "Accent Orange", value: "#ffa502", text: "text-[#0f0f0f]" },
+];
+
+const doRules = [
+  "Use CSS Grid or Flexbox for split layout: grid grid-cols-2",
+  "Large screens keep split, small screens stack: lg:grid-cols-2 grid-cols-1",
+  "Use contrasting or complementary content between panels",
+  "One side for visuals, one side for text content",
+  "Maintain visual weight balance between sides",
+  "Add transition animations to enhance experience",
+];
+
+const dontRules = [
+  "Never use identical content on both sides",
+  "Never keep split layout on mobile (too narrow)",
+  "Never create severe visual imbalance between panels",
+  "Never ignore content reading order",
+  "Never use overly harsh divider lines",
+];
+
+/* ------------------------------------------------------------------ */
+/*  Inline hooks & components                                          */
+/* ------------------------------------------------------------------ */
+
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, inView };
+}
+
+function RevealBlock({ children, className = "", delay = 0 }: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
+function SplitPanel({ side, children, className = "" }: {
+  side: "left" | "right";
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const base = side === "left"
+    ? "bg-[#0f0f0f] text-white"
+    : "bg-white text-[#0f0f0f]";
+  return (
+    <div className={`relative min-h-[50vh] lg:min-h-[60vh] flex flex-col justify-center p-8 lg:p-16 transition-all duration-500 ease-out ${base} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function FeatureRow({ item, index }: { item: typeof features[number]; index: number }) {
+  return (
+    <RevealBlock delay={index * 0.1}>
+      <div className="group grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 lg:gap-12 items-center py-10 border-b border-[#0f0f0f]/10 cursor-pointer">
+        {/* Left label */}
+        <div className="text-right hidden lg:block">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#0f0f0f]/40">{item.id}</span>
+          <h3 className="text-2xl lg:text-3xl font-bold mt-1 group-hover:tracking-wider transition-all duration-500">{item.left}</h3>
+        </div>
+
+        {/* Divider */}
+        <div className="hidden lg:flex flex-col items-center gap-2">
+          <div className="w-px h-8 bg-[#0f0f0f]/20 group-hover:bg-[#ff4757] transition-colors duration-500" />
+          <div className="w-3 h-3 rounded-full border-2 border-[#0f0f0f]/20 group-hover:border-[#ff4757] group-hover:bg-[#ff4757] transition-all duration-500" />
+          <div className="w-px h-8 bg-[#0f0f0f]/20 group-hover:bg-[#ff4757] transition-colors duration-500" />
+        </div>
+
+        {/* Right label */}
+        <div className="lg:text-left">
+          <div className="lg:hidden flex items-center gap-4 mb-2">
+            <span className="text-xs uppercase tracking-[0.2em] text-[#0f0f0f]/40">{item.id}</span>
+            <span className="font-bold">{item.left}</span>
+            <span className="text-[#0f0f0f]/30">vs</span>
+          </div>
+          <h3 className="text-2xl lg:text-3xl font-bold group-hover:tracking-wider transition-all duration-500">{item.right}</h3>
+          <p className="text-sm text-[#0f0f0f]/60 mt-2 max-w-sm">{item.desc}</p>
+        </div>
+      </div>
+    </RevealBlock>
+  );
+}
+
+function UseCaseIcon({ icon }: { icon: string }) {
+  const paths: Record<string, string> = {
+    compare: "M9 5H2v14h7V5zm13 0h-7v14h7V5z",
+    brand: "M12 2L2 7v10l10 5 10-5V7L12 2z",
+    portfolio: "M4 6h16v12H4V6zm2 2v8h12V8H6z",
+    transform: "M4 4h7v7H4V4zm9 9h7v7h-7v-7z",
+  };
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#ff4757]">
+      <path d={paths[icon] || paths.compare} />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main                                                               */
+/* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [selectedPlan, setSelectedPlan] = useState(0);
+  const [heroRevealed, setHeroRevealed] = useState(false);
+  const [activeTab, setActiveTab] = useState<"buttons" | "cards" | "inputs" | "panels">("buttons");
+  const [hoveredSide, setHoveredSide] = useState<"left" | "right" | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  const tabs = ["buttons", "cards", "inputs", "panels"] as const;
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-transparent">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/split-screen"
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-white/10 backdrop-blur text-white rounded-full text-sm hover:bg-white/20 transition-colors"
-          >
-            All Styles
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-white text-[#0f0f0f]">
+      <style>{`
+        @keyframes split-pulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
+        }
+        @keyframes split-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .split-divider-pulse { animation: split-pulse 2s ease-in-out infinite; }
+      `}</style>
 
-      {/* Hero Split Screen */}
+      {/* ===== Navigation ===== */}
+      <header className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <Link href="/styles/split-screen/showcase" className="text-white text-lg font-bold tracking-[0.15em] uppercase">
+              Split Screen
+            </Link>
+            <nav className="flex items-center gap-6 md:gap-8">
+              <Link href="/styles/split-screen" className="text-white/60 text-xs tracking-[0.2em] uppercase hover:text-white transition-colors duration-300">
+                Docs
+              </Link>
+              <Link href="/styles" className="text-white/60 text-xs tracking-[0.2em] uppercase hover:text-white transition-colors duration-300">
+                Styles
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* ===== Hero: 50/50 Split ===== */}
       <section className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        {/* Left Panel - Dark */}
-        <div className="relative min-h-[50vh] lg:min-h-screen bg-zinc-900 flex items-center justify-center p-8 lg:p-16">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
-          <div className="relative z-10 max-w-lg">
-            {/* 瑙嗚椋庢牸鏍囨敞 */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white/70 text-xs mb-4">
-              <Palette className="w-3.5 h-3.5" />
-              <span>瑙嗚椋庢牸: Modern Gradient</span>
-            </div>
-            <span className="inline-block px-3 py-1 bg-white/10 text-white/80 rounded-full text-sm mb-6">
-              Split Screen Layout
+        {/* Left: Dark */}
+        <div
+          className="relative min-h-[50vh] lg:min-h-screen bg-[#0f0f0f] flex items-center justify-center overflow-hidden transition-all duration-700 ease-out"
+          style={{ flex: hoveredSide === "left" ? 1.15 : hoveredSide === "right" ? 0.85 : 1 }}
+          onMouseEnter={() => setHoveredSide("left")}
+          onMouseLeave={() => setHoveredSide(null)}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,71,87,0.12),transparent_60%)]" />
+          <div className="relative z-10 p-8 lg:p-16 text-center">
+            <span
+              className="block text-xs uppercase tracking-[0.3em] text-white/40 mb-6"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s",
+              }}
+            >
+              Left Panel
             </span>
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Two Sides,<br />One Story
+            <h1
+              className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95]"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transform: heroRevealed ? "translateX(0)" : "translateX(-40px)",
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+              }}
+            >
+              Dark<br />
+              <span className="text-[#ff4757]">Mode.</span>
             </h1>
-            <p className="text-xl text-white/70 mb-8">
-              Create visual tension and narrative flow by dividing the viewport into contrasting sections.
+            <p
+              className="text-white/50 text-sm mt-6 max-w-xs mx-auto"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s",
+              }}
+            >
+              High-contrast visual treatment for dramatic storytelling and bold impact.
             </p>
-            <div className="flex gap-4">
-              <button className="px-6 py-3 bg-white text-zinc-900 font-semibold rounded-lg hover:bg-zinc-100 transition-colors">
-                Get Started
-              </button>
-              <button className="px-6 py-3 text-white font-semibold flex items-center gap-2 hover:text-white/80 transition-colors">
-                <Play className="w-5 h-5" /> Watch Demo
-              </button>
-            </div>
+            <button
+              className="mt-8 px-8 py-4 border-2 border-white text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.6s, background-color 0.15s, color 0.15s",
+              }}
+            >
+              Select Dark
+            </button>
           </div>
         </div>
 
-        {/* Right Panel - Light */}
-        <div className="min-h-[50vh] lg:min-h-screen bg-white flex items-center justify-center p-8 lg:p-16">
-          <div className="max-w-lg">
-            <div className="text-8xl font-bold text-zinc-200 mb-6">01</div>
-            <h2 className="text-3xl font-bold text-zinc-900 mb-4">Visual Contrast</h2>
-            <p className="text-zinc-600 mb-6">
-              The split layout creates a powerful visual dichotomy, perfect for comparing options, telling stories, or highlighting key information.
-            </p>
-            <ul className="space-y-3">
-              {["Brand storytelling", "Product comparisons", "Before & after", "Dual CTAs"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-zinc-700">
-                  <Check className="w-5 h-5 text-green-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color System"
-        subtitle="High contrast pairs for maximum impact"
-        className="py-20 px-6 bg-zinc-50"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-lg overflow-hidden shadow-sm"
-            labelClassName="font-semibold text-sm text-zinc-900"
-            hexClassName="text-xs text-zinc-500 font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Product Comparison Split */}
-      <section className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        {/* Option A */}
+        {/* Right: Light */}
         <div
-          className={`relative min-h-[50vh] lg:min-h-screen bg-zinc-900 flex items-center justify-center p-8 lg:p-16 cursor-pointer transition-all ${
-            selectedPlan === 0 ? "lg:flex-[1.2]" : "lg:flex-[0.8]"
-          }`}
-          onClick={() => setSelectedPlan(0)}
+          className="relative min-h-[50vh] lg:min-h-screen bg-white flex items-center justify-center overflow-hidden transition-all duration-700 ease-out"
+          style={{
+            flex: hoveredSide === "right" ? 1.15 : hoveredSide === "left" ? 0.85 : 1,
+            opacity: hoveredSide === "left" ? 0.6 : 1,
+          }}
+          onMouseEnter={() => setHoveredSide("right")}
+          onMouseLeave={() => setHoveredSide(null)}
         >
-          <div className="text-center text-white max-w-md">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Zap className="w-8 h-8" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Starter Plan</h2>
-            <div className="text-5xl font-bold mb-2">$9<span className="text-xl text-white/60">/mo</span></div>
-            <p className="text-white/60 mb-6">Perfect for individuals</p>
-            <ul className="space-y-3 text-left mb-8">
-              {["5 Projects", "Basic Analytics", "Email Support"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-white/80">
-                  <Check className="w-4 h-4 text-green-400" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button className={`w-full py-4 rounded-lg font-semibold transition-colors ${
-              selectedPlan === 0
-                ? "bg-white text-zinc-900"
-                : "bg-white/10 text-white hover:bg-white/20"
-            }`}>
-              {selectedPlan === 0 ? "Selected" : "Choose Starter"}
-            </button>
-          </div>
-        </div>
-
-        {/* Option B */}
-        <div
-          className={`relative min-h-[50vh] lg:min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center p-8 lg:p-16 cursor-pointer transition-all ${
-            selectedPlan === 1 ? "lg:flex-[1.2]" : "lg:flex-[0.8]"
-          }`}
-          onClick={() => setSelectedPlan(1)}
-        >
-          <div className="absolute top-8 right-8 px-3 py-1 bg-white/20 text-white rounded-full text-sm">
-            Popular
-          </div>
-          <div className="text-center text-white max-w-md">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Star className="w-8 h-8" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Pro Plan</h2>
-            <div className="text-5xl font-bold mb-2">$29<span className="text-xl text-white/60">/mo</span></div>
-            <p className="text-white/60 mb-6">For growing teams</p>
-            <ul className="space-y-3 text-left mb-8">
-              {["Unlimited Projects", "Advanced Analytics", "Priority Support", "Custom Domain"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-white/90">
-                  <Check className="w-4 h-4 text-green-300" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button className={`w-full py-4 rounded-lg font-semibold transition-colors ${
-              selectedPlan === 1
-                ? "bg-white text-blue-600"
-                : "bg-white/20 text-white hover:bg-white/30"
-            }`}>
-              {selectedPlan === 1 ? "Selected" : "Choose Pro"}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Design Rules */}
-      <ShowcaseSection
-        title="Design Rules"
-        subtitle="Key principles for Split Screen layouts"
-        className="py-20 px-6 bg-white"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {designRules.map((rule, i) => (
-              <div key={i} className="p-5 bg-zinc-50 rounded-xl">
-                <h4 className="font-semibold text-zinc-900 mb-2">{rule.title}</h4>
-                <p className="text-sm text-zinc-600">{rule.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* 60/40 Split Example */}
-      <section className="min-h-[80vh] grid grid-cols-1 lg:grid-cols-[60fr_40fr]">
-        {/* Left - Image */}
-        <div className="min-h-[40vh] lg:min-h-full bg-gradient-to-br from-rose-500 to-orange-400 flex items-center justify-center p-8">
-          <div className="text-white text-center">
-            <div className="text-6xl font-bold mb-4">60%</div>
-            <p className="text-xl text-white/80">Visual Panel</p>
-          </div>
-        </div>
-
-        {/* Right - Content */}
-        <div className="min-h-[40vh] lg:min-h-full bg-zinc-100 flex items-center p-8 lg:p-12">
-          <div>
-            <span className="text-sm font-semibold text-rose-500 uppercase tracking-wider">Asymmetric Split</span>
-            <h2 className="text-3xl font-bold text-zinc-900 mt-2 mb-4">60/40 Ratio</h2>
-            <p className="text-zinc-600 mb-6">
-              Unequal splits create visual hierarchy, giving more emphasis to one side. Use 60/40 or 70/30 ratios for emphasis.
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(30,144,255,0.06),transparent_60%)]" />
+          <div className="relative z-10 p-8 lg:p-16 text-center">
+            <span
+              className="block text-xs uppercase tracking-[0.3em] text-[#0f0f0f]/40 mb-6"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
+              }}
+            >
+              Right Panel
+            </span>
+            <h1
+              className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#0f0f0f] leading-[0.95]"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transform: heroRevealed ? "translateX(0)" : "translateX(40px)",
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
+              }}
+            >
+              Light<br />
+              <span className="text-[#1e90ff]">Mode.</span>
+            </h1>
+            <p
+              className="text-[#0f0f0f]/50 text-sm mt-6 max-w-xs mx-auto"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s",
+              }}
+            >
+              Editorial clarity for long-form reading and daylight ergonomics.
             </p>
-            <button className="px-6 py-3 bg-zinc-900 text-white font-semibold rounded-lg hover:bg-zinc-800 transition-colors">
-              Learn More <ArrowRight className="w-4 h-4 inline ml-2" />
+            <button
+              className="mt-8 px-8 py-4 border-2 border-[#0f0f0f] bg-[#0f0f0f] text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.7s, background-color 0.15s, color 0.15s",
+              }}
+            >
+              Select Light
             </button>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <ShowcaseSection
-        title="Use Cases"
-        subtitle="When to use Split Screen layout"
-        className="py-20 px-6 bg-zinc-50"
-        titleClassName="text-3xl font-bold text-zinc-900 mb-4 text-center"
-        subtitleClassName="text-zinc-600 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          {[
-            { icon: Target, title: "Product Showcases", desc: "Image on one side, details on the other" },
-            { icon: Zap, title: "A/B Comparisons", desc: "Side-by-side feature or pricing comparison" },
-            { icon: Shield, title: "Brand Stories", desc: "Visual narrative with supporting content" },
-            { icon: Star, title: "Landing Pages", desc: "Hero sections with split visual impact" },
-          ].map((item, i) => (
-            <div key={i} className="flex gap-4 p-5 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-zinc-100 rounded-lg flex items-center justify-center shrink-0">
-                <item.icon className="w-6 h-6 text-zinc-700" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-zinc-900 mb-1">{item.title}</h3>
-                <p className="text-sm text-zinc-600">{item.desc}</p>
-              </div>
+      {/* ===== Marquee Divider ===== */}
+      <div className="w-full overflow-hidden border-y border-[#0f0f0f]/10 py-4 bg-white">
+        <div className="flex w-[200%]" style={{ animation: "split-marquee 20s linear infinite" }}>
+          {[0, 1].map((i) => (
+            <div key={i} className="flex-1 flex justify-around items-center text-xs tracking-[0.3em] uppercase text-[#0f0f0f]/40 font-medium">
+              <span>50/50 Split</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ff4757]/40" />
+              <span>60/40 Ratio</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2ed573]/40" />
+              <span>Sticky Panels</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1e90ff]/40" />
+              <span>Diagonal Split</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ffa502]/40" />
             </div>
           ))}
         </div>
-      </ShowcaseSection>
+      </div>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-zinc-200 bg-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-zinc-500 text-sm">
-            Split Screen Showcase{" "}
-            <Link href="/" className="text-zinc-900 hover:underline">
-              StyleKit
-            </Link>
+      {/* ===== Features: Left/Right Contrast List ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-16">
+          <h2 className="text-5xl md:text-7xl font-bold mb-4">
+            Contrast <span className="text-[#0f0f0f]/30">Creates</span> Tension.
+          </h2>
+          <p className="text-sm uppercase tracking-[0.2em] text-[#0f0f0f]/50 max-w-lg">
+            Split Screen layout divides the viewport into two contrasting regions, creating visual tension and narrative flow.
           </p>
+        </RevealBlock>
+
+        {features.map((f, i) => (
+          <FeatureRow key={f.id} item={f} index={i} />
+        ))}
+      </section>
+
+      {/* ===== Component Demos (Tab-Switched) ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 bg-[#fafafa]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-16">
+            <h2 className="text-5xl md:text-7xl font-bold mb-4">
+              Component <span className="text-[#0f0f0f]/30">Library.</span>
+            </h2>
+            <p className="text-sm text-[#0f0f0f]/50 max-w-lg">
+              Interactive components designed for contrasting split panels.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <div className="flex gap-2 mb-12 flex-wrap">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.1em] transition-colors duration-150 ${
+                  activeTab === tab
+                    ? "bg-[#0f0f0f] text-white"
+                    : "bg-transparent text-[#0f0f0f]/60 hover:bg-[#0f0f0f]/5"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="min-h-[400px]">
+            {activeTab === "buttons" && (
+              <RevealBlock>
+                <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[400px] overflow-hidden">
+                  <div className="bg-[#0f0f0f] p-12 flex flex-col items-start justify-center gap-6">
+                    <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-2">Dark Panel Buttons</p>
+                    <button className="px-8 py-4 border-2 border-white text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out">
+                      Primary Action
+                    </button>
+                    <button className="px-8 py-4 border-2 border-white/30 text-white/60 font-semibold hover:border-white hover:text-white transition-colors duration-150 ease-out">
+                      Secondary Action
+                    </button>
+                    <button className="px-6 py-3 bg-[#ff4757] text-white font-semibold hover:bg-[#ff6b7a] transition-colors duration-150 ease-out">
+                      Accent CTA
+                    </button>
+                  </div>
+                  <div className="bg-white p-12 flex flex-col items-start justify-center gap-6 border-l border-[#0f0f0f]/10">
+                    <p className="text-[#0f0f0f]/40 text-xs uppercase tracking-[0.2em] mb-2">Light Panel Buttons</p>
+                    <button className="px-8 py-4 border-2 border-[#0f0f0f] bg-[#0f0f0f] text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out">
+                      Primary Action
+                    </button>
+                    <button className="px-8 py-4 border-2 border-[#0f0f0f]/30 text-[#0f0f0f]/60 font-semibold hover:border-[#0f0f0f] hover:text-[#0f0f0f] transition-colors duration-150 ease-out">
+                      Secondary Action
+                    </button>
+                    <button className="px-6 py-3 bg-[#1e90ff] text-white font-semibold hover:bg-[#3da0ff] transition-colors duration-150 ease-out">
+                      Accent CTA
+                    </button>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeTab === "cards" && (
+              <RevealBlock>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden">
+                  <div className="group relative bg-[#0f0f0f] text-white p-8 lg:p-12 min-h-[300px] flex flex-col justify-center transition-all duration-500 ease-out hover:flex-[1.1]">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_55%)] scale-100 group-hover:scale-105 transition-transform duration-500 ease-out" />
+                    <div className="relative z-10">
+                      <span className="text-sm uppercase tracking-[0.2em] text-white/50 mb-4 block">Night Edit</span>
+                      <h3 className="text-3xl lg:text-4xl font-bold mb-4">Dark Panel</h3>
+                      <p className="text-white/60 mb-6 max-w-sm">High-contrast visual treatment for dramatic storytelling.</p>
+                      <button className="px-6 py-3 border-2 border-white text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out">
+                        Select Dark
+                      </button>
+                    </div>
+                  </div>
+                  <div className="group relative bg-white text-[#0f0f0f] p-8 lg:p-12 min-h-[300px] flex flex-col justify-center transition-all duration-500 ease-out hover:flex-[1.1]">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,0,0,0.05),transparent_55%)] scale-100 group-hover:scale-105 transition-transform duration-500 ease-out" />
+                    <div className="relative z-10">
+                      <span className="text-sm uppercase tracking-[0.2em] text-[#0f0f0f]/50 mb-4 block">Day Edit</span>
+                      <h3 className="text-3xl lg:text-4xl font-bold mb-4">Light Panel</h3>
+                      <p className="text-[#0f0f0f]/60 mb-6 max-w-sm">Editorial clarity for reading and daylight ergonomics.</p>
+                      <button className="px-6 py-3 border-2 border-[#0f0f0f] bg-[#0f0f0f] text-white font-semibold hover:bg-white hover:text-[#0f0f0f] transition-colors duration-150 ease-out">
+                        Select Light
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeTab === "inputs" && (
+              <RevealBlock>
+                <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+                  <div className="bg-[#0f0f0f] p-12 flex flex-col gap-8">
+                    <p className="text-white/40 text-xs uppercase tracking-[0.2em]">Dark Panel Inputs</p>
+                    <div>
+                      <label className="block text-white/50 text-xs uppercase tracking-[0.15em] mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter your name"
+                        className="w-full px-4 py-3 bg-transparent border-b-2 border-white/20 text-white text-lg placeholder-white/30 focus:outline-none focus:border-white transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/50 text-xs uppercase tracking-[0.15em] mb-2">Email</label>
+                      <input
+                        type="email"
+                        placeholder="you@example.com"
+                        className="w-full px-4 py-3 bg-transparent border-b-2 border-white/20 text-white text-lg placeholder-white/30 focus:outline-none focus:border-[#ff4757] transition-colors"
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-white p-12 flex flex-col gap-8 border-l border-[#0f0f0f]/10">
+                    <p className="text-[#0f0f0f]/40 text-xs uppercase tracking-[0.2em]">Light Panel Inputs</p>
+                    <div>
+                      <label className="block text-[#0f0f0f]/50 text-xs uppercase tracking-[0.15em] mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter your name"
+                        className="w-full px-4 py-3 bg-transparent border-b-2 border-[#0f0f0f]/20 text-[#0f0f0f] text-lg placeholder-[#0f0f0f]/30 focus:outline-none focus:border-[#0f0f0f] transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#0f0f0f]/50 text-xs uppercase tracking-[0.15em] mb-2">Email</label>
+                      <input
+                        type="email"
+                        placeholder="you@example.com"
+                        className="w-full px-4 py-3 bg-transparent border-b-2 border-[#0f0f0f]/20 text-[#0f0f0f] text-lg placeholder-[#0f0f0f]/30 focus:outline-none focus:border-[#1e90ff] transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+
+            {activeTab === "panels" && (
+              <RevealBlock>
+                <div className="space-y-8">
+                  {/* 50/50 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden border border-[#0f0f0f]/10">
+                    <SplitPanel side="left">
+                      <span className="text-xs uppercase tracking-[0.2em] text-white/40 mb-4">50/50 Split</span>
+                      <h3 className="text-3xl font-bold">Equal Halves</h3>
+                      <p className="text-white/60 mt-2">Both panels share the viewport equally.</p>
+                    </SplitPanel>
+                    <SplitPanel side="right">
+                      <span className="text-xs uppercase tracking-[0.2em] text-[#0f0f0f]/40 mb-4">Balanced Layout</span>
+                      <h3 className="text-3xl font-bold">Perfect Balance</h3>
+                      <p className="text-[#0f0f0f]/60 mt-2">Content and visuals given equal weight.</p>
+                    </SplitPanel>
+                  </div>
+
+                  {/* 60/40 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-[60fr_40fr] overflow-hidden border border-[#0f0f0f]/10">
+                    <SplitPanel side="left">
+                      <span className="text-xs uppercase tracking-[0.2em] text-white/40 mb-4">60/40 Split</span>
+                      <h3 className="text-3xl font-bold">Emphasized</h3>
+                      <p className="text-white/60 mt-2">Primary content gets 60% of the viewport.</p>
+                    </SplitPanel>
+                    <SplitPanel side="right">
+                      <span className="text-xs uppercase tracking-[0.2em] text-[#0f0f0f]/40 mb-4">Secondary</span>
+                      <h3 className="text-2xl font-bold">Support</h3>
+                      <p className="text-[#0f0f0f]/60 mt-2">Supplementary content in 40%.</p>
+                    </SplitPanel>
+                  </div>
+                </div>
+              </RevealBlock>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Use Cases ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-16">
+          <h2 className="text-5xl md:text-7xl font-bold mb-4">
+            Use <span className="text-[#0f0f0f]/30">Cases.</span>
+          </h2>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {useCases.map((uc, i) => (
+            <RevealBlock key={uc.title} delay={i * 0.1}>
+              <div className="group p-8 border border-[#0f0f0f]/10 hover:border-[#0f0f0f]/30 transition-colors duration-300 cursor-pointer">
+                <div className="flex items-start gap-4 mb-4">
+                  <UseCaseIcon icon={uc.icon} />
+                  <h3 className="text-xl font-bold group-hover:tracking-wide transition-all duration-300">{uc.title}</h3>
+                </div>
+                <p className="text-[#0f0f0f]/60 text-sm leading-relaxed">{uc.desc}</p>
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== Color Palette ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 bg-[#0f0f0f] text-white">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-16">
+            <h2 className="text-5xl md:text-7xl font-bold mb-4">
+              Color <span className="text-white/30">Palette.</span>
+            </h2>
+            <p className="text-sm text-white/50 max-w-lg">
+              High-contrast primaries with vibrant accents for maximum visual tension.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {paletteColors.map((c, i) => (
+              <RevealBlock key={c.name} delay={i * 0.05}>
+                <div className="group cursor-pointer">
+                  <div
+                    className={`aspect-square flex items-end p-4 transition-transform duration-300 group-hover:scale-[1.03] ${c.text}`}
+                    style={{ backgroundColor: c.value }}
+                  >
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider">{c.name}</p>
+                      <p className="text-xs opacity-60 font-mono mt-1">{c.value}</p>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Design Rules ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-16">
+          <h2 className="text-5xl md:text-7xl font-bold mb-4">
+            Design <span className="text-[#0f0f0f]/30">Rules.</span>
+          </h2>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <RevealBlock>
+            <h3 className="text-xs uppercase tracking-[0.2em] text-[#2ed573] font-semibold mb-8 flex items-center gap-3">
+              <span className="w-8 h-px bg-[#2ed573]" />
+              Do
+            </h3>
+            <ul className="space-y-4">
+              {doRules.map((rule, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-[#0f0f0f]/70">
+                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#2ed573] flex-shrink-0" />
+                  {rule}
+                </li>
+              ))}
+            </ul>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <h3 className="text-xs uppercase tracking-[0.2em] text-[#ff4757] font-semibold mb-8 flex items-center gap-3">
+              <span className="w-8 h-px bg-[#ff4757]" />
+              Don&apos;t
+            </h3>
+            <ul className="space-y-4">
+              {dontRules.map((rule, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-[#0f0f0f]/70">
+                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#ff4757] flex-shrink-0" />
+                  {rule}
+                </li>
+              ))}
+            </ul>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ===== Footer ===== */}
+      <footer className="border-t border-[#0f0f0f]/10">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs tracking-[0.2em] uppercase text-[#0f0f0f]/40">
+              StyleKit &middot; Split Screen Showcase
+            </p>
+            <Link href="/styles/split-screen" className="text-xs tracking-[0.2em] uppercase hover:text-[#0f0f0f] text-[#0f0f0f]/60 transition-colors">
+              View Full Documentation &rarr;
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
   );
 }
-
-
