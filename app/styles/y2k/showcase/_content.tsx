@@ -1,674 +1,1664 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ArrowLeft, Sparkles, Star, Heart, Zap, Globe, Music, Camera,
-  ChevronDown, ChevronUp, Check, X, AlertTriangle, Info,
-  Users, TrendingUp, Eye, MessageCircle
-} from "lucide-react";
-import {
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-const colors: ColorItem[] = [
-  { name: "Silver", hex: "#c0c0c0", bg: "bg-[#c0c0c0]" },
-  { name: "Hot Pink", hex: "#ff69b4", bg: "bg-[#ff69b4]" },
-  { name: "Cyan", hex: "#00ffff", bg: "bg-[#00ffff]" },
-  { name: "Magenta", hex: "#ff00ff", bg: "bg-[#ff00ff]" },
-  { name: "Sky Blue", hex: "#87ceeb", bg: "bg-[#87ceeb]" },
-  { name: "Lavender", hex: "#e6e6fa", bg: "bg-[#e6e6fa]" },
-  { name: "Lime", hex: "#32cd32", bg: "bg-[#32cd32]" },
-  { name: "Chrome", hex: "#dcdcdc", bg: "bg-[#dcdcdc]" },
-];
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
 
-export default function ShowcaseContent() {
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+export default function Y2KShowcase() {
   const [activeTab, setActiveTab] = useState(0);
+  const [cursorVisible, setCursorVisible] = useState(true);
   const [progress, setProgress] = useState(68);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
   const [toggleStates, setToggleStates] = useState([true, false, true]);
 
-  const tabs = [
-    { label: "Music", icon: Music },
-    { label: "Photos", icon: Camera },
-    { label: "Friends", icon: Users },
-  ];
+  // Blinking cursor effect
+  useEffect(() => {
+    const id = setInterval(() => setCursorVisible((v) => !v), 530);
+    return () => clearInterval(id);
+  }, []);
 
-  const accordionItems = [
-    { title: "What is Y2K aesthetic?", content: "Y2K aesthetic celebrates the optimistic vision of the future from the late 1990s and early 2000s, featuring chrome, iridescent colors, and futuristic shapes." },
-    { title: "Design elements", content: "Key elements include metallic gradients, bubble shapes, rainbow holographics, glossy textures, and space-age typography." },
-    { title: "Color palette", content: "The palette features silver chrome, hot pink, electric blue, lime green, and iridescent rainbow effects." },
-  ];
+  const tabs = ["Music", "Photos", "Friends"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-cyan-100 relative overflow-hidden">
-      {/* Animated floating bubbles */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-[10%] w-40 h-40 rounded-full bg-gradient-to-br from-pink-300/40 to-purple-300/20 blur-2xl animate-[float_15s_ease-in-out_infinite]" />
-        <div className="absolute top-40 right-[15%] w-56 h-56 rounded-full bg-gradient-to-br from-cyan-300/40 to-blue-300/20 blur-2xl animate-[float_20s_ease-in-out_infinite_2s]" />
-        <div className="absolute bottom-32 left-[20%] w-32 h-32 rounded-full bg-gradient-to-br from-purple-300/40 to-pink-300/20 blur-2xl animate-[float_18s_ease-in-out_infinite_1s]" />
-        <div className="absolute top-1/2 right-[8%] w-24 h-24 rounded-full bg-gradient-to-br from-lime-300/30 to-cyan-300/20 blur-xl animate-[float_12s_ease-in-out_infinite_3s]" />
-        {/* Star decorations */}
-        <Star className="absolute top-32 left-[30%] w-6 h-6 text-pink-300/50 animate-pulse" />
-        <Star className="absolute top-48 right-[25%] w-4 h-4 text-cyan-300/50 animate-pulse" style={{ animationDelay: '1s' }} />
-        <Star className="absolute bottom-40 left-[40%] w-5 h-5 text-purple-300/50 animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-30px) scale(1.05); }
+      {/* ------------------------------------------------------------------ */}
+      {/* Global styles                                                        */}
+      {/* ------------------------------------------------------------------ */}
+      <style>{`
+        @keyframes float-bubble {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-24px) scale(1.04); }
         }
+        @keyframes marquee-scroll {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes rainbow-shift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes chrome-shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes blink-star {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.8); }
+        }
+        .bubble-1 { animation: float-bubble 14s ease-in-out infinite; }
+        .bubble-2 { animation: float-bubble 18s ease-in-out infinite 2s; }
+        .bubble-3 { animation: float-bubble 11s ease-in-out infinite 1s; }
+        .bubble-4 { animation: float-bubble 16s ease-in-out infinite 3s; }
+        .marquee-track { animation: marquee-scroll 22s linear infinite; }
+        .rainbow-bg {
+          background: linear-gradient(270deg, #ff69b4, #00ffff, #ff00ff, #87ceeb, #ff69b4);
+          background-size: 300% 300%;
+          animation: rainbow-shift 5s ease infinite;
+        }
+        .chrome-text {
+          background: linear-gradient(90deg, #a0a0a0, #ffffff, #c0c0c0, #ffffff, #a0a0a0);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: chrome-shimmer 4s linear infinite;
+        }
+        .holographic-border {
+          border: 2px solid transparent;
+          background-clip: padding-box;
+          position: relative;
+        }
+        .holographic-border::before {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: inherit;
+          background: linear-gradient(135deg, #ff69b4, #00ffff, #ff00ff, #87ceeb, #ff69b4);
+          background-size: 300% 300%;
+          animation: rainbow-shift 4s ease infinite;
+          z-index: -1;
+        }
+        .spin-star { animation: spin-slow 8s linear infinite; }
+        .blink-star { animation: blink-star 1.5s ease-in-out infinite; }
+        .group:hover .group-hover-scale { transform: scale(1.08) rotate(3deg); }
+        .group-hover-scale { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
       `}</style>
 
-      {/* Navigation */}
-      <nav className="relative z-10 px-6 py-4 bg-gradient-to-b from-white/80 to-white/40 backdrop-blur-md border-b border-white/50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      {/* ------------------------------------------------------------------ */}
+      {/* Floating background bubbles                                          */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="bubble-1 absolute top-[8%] left-[6%] w-52 h-52 rounded-full bg-gradient-to-br from-pink-300/35 to-purple-200/20 blur-3xl" />
+        <div className="bubble-2 absolute top-[30%] right-[8%] w-72 h-72 rounded-full bg-gradient-to-br from-cyan-300/35 to-blue-200/20 blur-3xl" />
+        <div className="bubble-3 absolute bottom-[20%] left-[18%] w-40 h-40 rounded-full bg-gradient-to-br from-purple-300/35 to-pink-200/20 blur-2xl" />
+        <div className="bubble-4 absolute top-[60%] right-[20%] w-32 h-32 rounded-full bg-gradient-to-br from-lime-300/25 to-cyan-200/15 blur-2xl" />
+
+        {/* Star decorations */}
+        <span className="blink-star absolute top-[14%] left-[28%] text-pink-300/60 text-2xl select-none">✦</span>
+        <span className="blink-star absolute top-[22%] right-[22%] text-cyan-300/60 text-xl select-none" style={{ animationDelay: "0.8s" }}>★</span>
+        <span className="blink-star absolute bottom-[35%] left-[42%] text-purple-300/50 text-3xl select-none" style={{ animationDelay: "1.4s" }}>✸</span>
+        <span className="blink-star absolute top-[50%] left-[10%] text-pink-200/40 text-lg select-none" style={{ animationDelay: "0.4s" }}>✦</span>
+        <span className="blink-star absolute bottom-[12%] right-[30%] text-cyan-200/50 text-2xl select-none" style={{ animationDelay: "2s" }}>★</span>
+      </div>
+
+      {/* ================================================================== */}
+      {/* 1. NAVIGATION BAR — chrome gradient, pixel font                     */}
+      {/* ================================================================== */}
+      <nav
+        className="sticky top-0 z-50 px-6 py-3 backdrop-blur-md border-b border-white/40"
+        style={{
+          background: "linear-gradient(135deg, rgba(232,232,232,0.85), rgba(255,255,255,0.90), rgba(192,192,192,0.80), rgba(160,160,160,0.70))",
+        }}
+      >
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          {/* Back link */}
           <Link
             href="/styles/y2k"
-            className="flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors group"
+            className="group flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Back to Docs</span>
+            <span
+              className="group-hover:-translate-x-1 transition-transform inline-block text-lg"
+              aria-hidden="true"
+            >
+              &larr;
+            </span>
+            <span
+              className="text-xs font-bold tracking-widest uppercase hidden sm:inline"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Back to Docs
+            </span>
           </Link>
+
+          {/* Center logo */}
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-pink-400" />
-            <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
+            <span className="text-pink-400 text-lg blink-star">✦</span>
+            <span
+              className="font-black text-2xl chrome-text tracking-widest"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
               Y2K
             </span>
-            <Sparkles className="w-5 h-5 text-cyan-400" />
+            <span className="text-cyan-400 text-lg blink-star" style={{ animationDelay: "0.5s" }}>✦</span>
           </div>
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-gradient-to-r from-pink-400 to-cyan-400 rounded-full text-white text-sm font-medium shadow-[0_4px_15px_rgba(255,105,180,0.3)] hover:shadow-[0_6px_20px_rgba(255,105,180,0.4)] hover:scale-105 transition-all"
-          >
-            All Styles
-          </Link>
+
+          {/* Nav links */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/styles"
+              className="px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase text-white shadow-md hover:scale-105 transition-all duration-300"
+              style={{
+                background: "linear-gradient(135deg, #ff69b4, #c084fc, #00ffff)",
+                fontFamily: "'Courier New', monospace",
+                boxShadow: "0 4px 14px rgba(255,105,180,0.35)",
+              }}
+            >
+              All Styles
+            </Link>
+          </div>
         </div>
+
+        {/* Holographic underline strip */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-0.5 rainbow-bg"
+          style={{ opacity: 0.7 }}
+        />
       </nav>
 
-      {/* Hero Section */}
+      {/* ================================================================== */}
+      {/* MARQUEE BAND                                                         */}
+      {/* ================================================================== */}
+      <div
+        className="relative z-10 overflow-hidden py-2"
+        style={{
+          background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff, #ff00ff)",
+        }}
+      >
+        <div className="marquee-track flex gap-0 whitespace-nowrap">
+          {/* Duplicated content for seamless loop */}
+          {[...Array(2)].map((_, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-6 px-6 text-white text-xs font-bold tracking-[0.25em] uppercase"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              <span>✦ Y2K AESTHETIC</span>
+              <span>★ MILLENNIUM VIBES</span>
+              <span>✸ CHROME &amp; PINK</span>
+              <span>✦ FUTURE IS NOW</span>
+              <span>★ YEAR 2000</span>
+              <span>✸ BUBBLE UI</span>
+              <span>✦ HOLOGRAPHIC</span>
+              <span>★ IRIDESCENT</span>
+              <span>✸ METALLIC</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ================================================================== */}
+      {/* 2. HERO — chrome text, millennium countdown aesthetic                */}
+      {/* ================================================================== */}
       <section className="relative z-10 pt-24 pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto">
-          {/* Decorative stars */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <Star className="w-6 h-6 text-pink-400 animate-pulse" />
-            <Heart className="w-5 h-5 text-purple-400" />
-            <Star className="w-6 h-6 text-cyan-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
-          </div>
-
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6 tracking-tight">
-            Y2K
-          </h1>
-          <p className="text-lg text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500 font-medium tracking-[0.2em] uppercase mb-4">
-            Aesthetic
-          </p>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-12">
-            The future is bright and shiny - millennium dreams in chrome and rainbow
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-5">
-            <button className="group px-10 py-4 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-[length:200%_100%] rounded-full text-white font-bold shadow-[0_4px_25px_rgba(255,105,180,0.4)] hover:shadow-[0_8px_35px_rgba(255,105,180,0.6)] hover:bg-right transition-all duration-500">
-              <span className="flex items-center gap-2">
-                <Zap className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                Enter the Future
+          <RevealBlock delay={0.05}>
+            {/* Decorative badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8 border border-white/60 backdrop-blur-sm shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(192,192,192,0.4))",
+              }}
+            >
+              <span className="text-pink-500 blink-star">✦</span>
+              <span
+                className="text-xs font-bold tracking-[0.3em] uppercase text-gray-600"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                Est. Year 2000
               </span>
-            </button>
-            <button className="px-10 py-4 bg-gradient-to-b from-gray-100 via-white to-gray-200 rounded-full text-gray-700 font-bold border border-white/80 shadow-[0_4px_15px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:scale-105 transition-all duration-300">
-              <span className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Explore
-              </span>
-            </button>
+              <span className="text-cyan-500 blink-star" style={{ animationDelay: "0.6s" }}>✦</span>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.12}>
+            {/* Main headline */}
+            <h1
+              className="text-8xl md:text-[10rem] lg:text-[12rem] font-black leading-none tracking-tighter mb-4 select-none"
+              style={{
+                background: "linear-gradient(135deg, #e8e8e8 0%, #ffffff 20%, #c0c0c0 40%, #f0f0f0 60%, #a0a0a0 80%, #ffffff 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "chrome-shimmer 4s linear infinite",
+                filter: "drop-shadow(0 2px 8px rgba(192,192,192,0.5))",
+              }}
+            >
+              Y2K
+            </h1>
+          </RevealBlock>
+
+          <RevealBlock delay={0.2}>
+            <p
+              className="text-sm font-bold tracking-[0.5em] uppercase mb-4"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontFamily: "'Courier New', monospace",
+              }}
+            >
+              Aesthetic
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.28}>
+            {/* Blinking cursor tagline */}
+            <p
+              className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto mb-4"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              The future is bright and shiny
+              <span
+                className="inline-block w-0.5 h-5 bg-pink-400 ml-1 align-middle"
+                style={{ opacity: cursorVisible ? 1 : 0, transition: "opacity 0.1s" }}
+              />
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.35}>
+            <p className="text-base text-gray-400 max-w-xl mx-auto mb-12">
+              2000年代初的未来主义美学 — 金属质感、透明塑料、气泡元素、银色和彩虹渐变，充满对数字时代的乐观想象。
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.42}>
+            <div className="flex flex-wrap justify-center gap-5">
+              {/* Rainbow CTA */}
+              <button
+                className="group px-10 py-4 rounded-full text-white font-black tracking-widest uppercase text-sm transition-all duration-500 hover:scale-105 hover:shadow-[0_8px_35px_rgba(255,105,180,0.6)]"
+                style={{
+                  background: "linear-gradient(135deg, #ff69b4, #c084fc, #00ffff)",
+                  boxShadow: "0 4px 25px rgba(255,105,180,0.4)",
+                  fontFamily: "'Courier New', monospace",
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  <span className="group-hover:rotate-12 transition-transform inline-block">&#9889;</span>
+                  Enter the Future
+                </span>
+              </button>
+
+              {/* Chrome CTA */}
+              <button
+                className="px-10 py-4 rounded-full text-gray-700 font-black tracking-widest uppercase text-sm transition-all duration-300 hover:scale-105"
+                style={{
+                  background: "linear-gradient(135deg, #e8e8e8, #ffffff, #c0c0c0, #a0a0a0)",
+                  border: "1px solid rgba(255,255,255,0.8)",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.05)",
+                  fontFamily: "'Courier New', monospace",
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  <span>&#127760;</span>
+                  Explore
+                </span>
+              </button>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* 3. COMPONENT DEMOS — Button, Card, Input                            */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-pink-400 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Component Library
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              UI Components
+            </h2>
+            <p className="text-gray-500 mt-2">Chrome, silver, hot pink — bubble-era UI kit</p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Button demo */}
+            <RevealBlock delay={0.05}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,182,193,0.2))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-pink-500 mb-6"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Buttons
+                </p>
+                <div className="flex flex-col gap-4">
+                  <button
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #c084fc, #00ffff)",
+                      boxShadow: "0 4px 20px rgba(255,105,180,0.4)",
+                    }}
+                  >
+                    Rainbow
+                  </button>
+                  <button
+                    className="px-7 py-3 rounded-full text-gray-700 font-bold text-sm transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #e8e8e8, #ffffff, #c0c0c0)",
+                      border: "1px solid rgba(255,255,255,0.8)",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.08), inset 0 2px 4px rgba(255,255,255,0.9)",
+                    }}
+                  >
+                    Chrome
+                  </button>
+                  <button
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #ff1493)",
+                      boxShadow: "0 4px 15px rgba(255,105,180,0.4)",
+                    }}
+                  >
+                    Hot Pink
+                  </button>
+                  <button
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #00ffff, #00bfff)",
+                      boxShadow: "0 4px 15px rgba(0,255,255,0.4)",
+                    }}
+                  >
+                    Cyan
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Card demo */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(192,192,192,0.25))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-purple-500 mb-6"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Card
+                </p>
+                {/* Y2K card */}
+                <div
+                  className="group p-6 rounded-3xl border border-white/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(255,105,180,0.2)]"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,182,193,0.3))",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {/* Traffic light dots */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <div
+                      className="w-3 h-3 rounded-full group-hover-scale"
+                      style={{ background: "linear-gradient(135deg, #00ffff, #c084fc)" }}
+                    />
+                    <div
+                      className="w-3 h-3 rounded-full group-hover-scale"
+                      style={{ background: "linear-gradient(135deg, #ff69b4, #c084fc)", animationDelay: "0.1s" }}
+                    />
+                    <div
+                      className="w-3 h-3 rounded-full group-hover-scale"
+                      style={{ background: "linear-gradient(135deg, #c084fc, #00ffff)", animationDelay: "0.2s" }}
+                    />
+                  </div>
+                  <h3
+                    className="text-xl font-bold mb-2"
+                    style={{
+                      background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Future is Now
+                  </h3>
+                  <p className="text-gray-500 text-sm">Welcome to the new millennium — chrome dreams and holographic skies.</p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Input demo */}
+            <RevealBlock delay={0.2}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(0,255,255,0.1))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-cyan-500 mb-6"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Input
+                </p>
+                <div className="flex flex-col gap-5">
+                  {/* Default input */}
+                  <div>
+                    <label
+                      className="block text-xs font-medium text-gray-500 mb-1.5 tracking-wide"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="coolkid2000"
+                      className="w-full px-5 py-3 rounded-full text-gray-700 placeholder-gray-400 text-sm focus:outline-none transition-all"
+                      style={{
+                        background: "linear-gradient(135deg, #ffffff, #f5f5f5)",
+                        border: "1px solid rgba(255,105,180,0.3)",
+                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.04)",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    />
+                  </div>
+                  {/* Email input */}
+                  <div>
+                    <label
+                      className="block text-xs font-medium text-gray-500 mb-1.5 tracking-wide"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="you@millennium.com"
+                      className="w-full px-5 py-3 rounded-full text-gray-700 placeholder-gray-400 text-sm focus:outline-none transition-all"
+                      style={{
+                        background: "linear-gradient(135deg, #ffffff, #f5f5f5)",
+                        border: "1px solid rgba(0,255,255,0.4)",
+                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.04)",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    />
+                  </div>
+                  {/* Chrome submit */}
+                  <button
+                    className="w-full py-3 rounded-full text-white font-bold text-sm tracking-widest uppercase transition-all duration-300 hover:scale-[1.02]"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #c084fc, #00ffff)",
+                      boxShadow: "0 4px 20px rgba(255,105,180,0.35)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    Join Now ✦
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <ShowcaseSection
-        title="Stats"
-        subtitle="Futuristic metrics display"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {[
-            { icon: Users, label: "Friends", value: "2,847", color: "from-pink-400 to-purple-400" },
-            { icon: TrendingUp, label: "Vibes", value: "+420%", color: "from-purple-400 to-cyan-400" },
-            { icon: Eye, label: "Views", value: "1.2M", color: "from-cyan-400 to-lime-400" },
-            { icon: MessageCircle, label: "Messages", value: "8,921", color: "from-lime-400 to-pink-400" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="group p-5 bg-gradient-to-br from-white/70 to-white/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(255,105,180,0.15)] transition-all duration-300"
+      {/* ================================================================== */}
+      {/* 4. COLOR PALETTE — silver, hot pink, cyan, magenta                  */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-cyan-500 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
             >
-              <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-2xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-              <p className={`text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${stat.color} mb-1`}>{stat.value}</p>
-              <p className="text-sm text-gray-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
+              Color System
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Color Palette
+            </h2>
+            <p className="text-gray-500 mt-2">Chrome & iridescent rainbow spectrum</p>
+          </RevealBlock>
 
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="Color Palette"
-        subtitle="Rainbow gradients & chrome"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-5xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-2xl overflow-hidden bg-gradient-to-b from-white/60 to-white/30 backdrop-blur-sm border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_40px_rgba(255,105,180,0.15)] transition-all duration-300"
-            labelClassName="font-bold text-sm text-gray-700"
-            hexClassName="text-xs text-pink-500 font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Buttons */}
-      <ShowcaseSection
-        title="Buttons"
-        subtitle="Chrome shine & rainbow gradients"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Variants */}
-          <div className="p-8 bg-gradient-to-br from-white/70 to-pink-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">Variants</p>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-7 py-3 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-[length:200%_100%] rounded-full text-white font-bold shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:bg-right hover:scale-105 transition-all duration-500">
-                Rainbow
-              </button>
-              <button className="px-7 py-3 bg-gradient-to-b from-gray-100 via-white to-gray-200 rounded-full text-gray-700 font-bold border border-white/80 shadow-[0_4px_15px_rgba(0,0,0,0.08),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.05)] hover:scale-105 transition-all">
-                Chrome
-              </button>
-              <button className="px-7 py-3 bg-gradient-to-r from-pink-400 to-pink-500 rounded-full text-white font-bold shadow-[0_4px_15px_rgba(255,105,180,0.4)] hover:scale-105 transition-all">
-                Pink
-              </button>
-              <button className="px-7 py-3 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full text-white font-bold shadow-[0_4px_15px_rgba(0,255,255,0.4)] hover:scale-105 transition-all">
-                Cyan
-              </button>
-            </div>
-          </div>
-
-          {/* Sizes */}
-          <div className="p-8 bg-gradient-to-br from-white/70 to-cyan-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <p className="text-sm font-bold text-cyan-500 uppercase tracking-wide mb-6">Sizes</p>
-            <div className="flex flex-wrap gap-4 items-center">
-              <button className="px-5 py-2 text-sm bg-gradient-to-r from-pink-400 to-purple-400 rounded-full text-white font-bold shadow-[0_3px_12px_rgba(255,105,180,0.3)] hover:scale-105 transition-all">
-                Small
-              </button>
-              <button className="px-7 py-3 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full text-white font-bold shadow-[0_4px_15px_rgba(255,105,180,0.4)] hover:scale-105 transition-all">
-                Medium
-              </button>
-              <button className="px-9 py-4 text-lg bg-gradient-to-r from-pink-400 to-purple-400 rounded-full text-white font-bold shadow-[0_5px_20px_rgba(255,105,180,0.4)] hover:scale-105 transition-all">
-                Large
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection
-        title="Cards"
-        subtitle="Bubble glass effects"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          {[
-            { icon: Sparkles, title: "Sparkle", desc: "Shiny and bright effects", gradient: "from-pink-400 to-purple-400", bg: "to-pink-100/40" },
-            { icon: Star, title: "Star", desc: "Futuristic space vibes", gradient: "from-cyan-400 to-purple-400", bg: "to-cyan-100/40" },
-            { icon: Heart, title: "Love", desc: "Sweet millennium dreams", gradient: "from-purple-400 to-pink-400", bg: "to-purple-100/40" },
-          ].map((card, index) => (
-            <div key={index} className={`group p-6 bg-gradient-to-br from-white/70 ${card.bg} backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_40px_rgba(255,105,180,0.2)] hover:-translate-y-1 transition-all duration-300`}>
-              <div className={`w-16 h-16 bg-gradient-to-r ${card.gradient} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                <card.icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className={`text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${card.gradient} mb-2`}>
-                {card.title}
-              </h3>
-              <p className="text-gray-600 mb-4">{card.desc}</p>
-              <button className="text-sm font-medium text-pink-500 hover:text-pink-600 transition-colors">
-                Learn more
-              </button>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Tabs */}
-      <ShowcaseSection
-        title="Tabs"
-        subtitle="Navigate your digital world"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-6 bg-gradient-to-br from-white/70 to-purple-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            {/* Tab Headers */}
-            <div className="flex gap-2 p-1.5 bg-white/50 rounded-full mb-6">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ${
-                    activeTab === index
-                      ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-white/60'
-                  }`}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              { name: "Silver", hex: "#c0c0c0", tag: "Primary", swatch: "linear-gradient(135deg, #e8e8e8, #ffffff, #c0c0c0, #a0a0a0)" },
+              { name: "Hot Pink", hex: "#ff69b4", tag: "Secondary", swatch: "linear-gradient(135deg, #ff69b4, #ff1493)" },
+              { name: "Cyan", hex: "#00ffff", tag: "Accent 1", swatch: "linear-gradient(135deg, #00ffff, #00bfff)" },
+              { name: "Magenta", hex: "#ff00ff", tag: "Accent 2", swatch: "linear-gradient(135deg, #ff00ff, #c084fc)" },
+              { name: "Sky Blue", hex: "#87ceeb", tag: "Accent 3", swatch: "linear-gradient(135deg, #87ceeb, #4fc3f7)" },
+              { name: "Chrome", hex: "#dcdcdc", tag: "Surface", swatch: "linear-gradient(135deg, #e8e8e8, #ffffff, #dcdcdc)" },
+              { name: "Lavender", hex: "#e6e6fa", tag: "Soft", swatch: "linear-gradient(135deg, #e6e6fa, #c084fc50)" },
+              { name: "Iridescent", hex: "Rainbow", tag: "Special", swatch: "linear-gradient(135deg, #ff69b4, #00ffff, #ff00ff, #87ceeb)" },
+            ].map((c, i) => (
+              <RevealBlock key={c.name} delay={i * 0.05}>
+                <div
+                  className="group rounded-2xl overflow-hidden border border-white/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(255,105,180,0.2)]"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3))",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+                  }}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {/* Tab Content */}
-            <div className="min-h-[120px] p-5 bg-white/40 rounded-2xl">
-              {activeTab === 0 && (
-                <div>
-                  <h4 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-3">Your Playlist</h4>
-                  <div className="flex gap-3">
-                    {['Pop Hits', 'Dance Mix', 'Chill Vibes'].map((item) => (
-                      <span key={item} className="px-3 py-1.5 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full text-sm text-purple-600 font-medium">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {activeTab === 1 && (
-                <div>
-                  <h4 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 mb-3">Photo Albums</h4>
-                  <p className="text-gray-600">128 photos in 5 albums. Last upload: today!</p>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div>
-                  <h4 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-3">Friend List</h4>
-                  <p className="text-gray-600">You have 2,847 friends online. 42 new requests!</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Alerts */}
-      <ShowcaseSection
-        title="Alerts"
-        subtitle="Cute notifications"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto space-y-4">
-          {/* Success */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-lime-100/80 to-cyan-100/60 backdrop-blur-sm rounded-2xl border border-lime-200/60 shadow-[0_4px_20px_rgba(50,205,50,0.15)]">
-            <div className="w-10 h-10 bg-gradient-to-r from-lime-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-md">
-              <Check className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-lime-700">Yay! Success!</p>
-              <p className="text-lime-600/80 text-sm">Your profile has been updated successfully!</p>
-            </div>
-          </div>
-
-          {/* Warning */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-amber-100/80 to-orange-100/60 backdrop-blur-sm rounded-2xl border border-amber-200/60 shadow-[0_4px_20px_rgba(255,193,7,0.15)]">
-            <div className="w-10 h-10 bg-gradient-to-r from-amber-400 to-orange-400 rounded-xl flex items-center justify-center shadow-md">
-              <AlertTriangle className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-amber-700">Heads up!</p>
-              <p className="text-amber-600/80 text-sm">Your subscription will expire in 3 days.</p>
-            </div>
-          </div>
-
-          {/* Error */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-pink-100/80 to-red-100/60 backdrop-blur-sm rounded-2xl border border-pink-200/60 shadow-[0_4px_20px_rgba(255,105,180,0.15)]">
-            <div className="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 rounded-xl flex items-center justify-center shadow-md">
-              <X className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-pink-700">Oops!</p>
-              <p className="text-pink-600/80 text-sm">Something went wrong. Please try again.</p>
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-cyan-100/80 to-blue-100/60 backdrop-blur-sm rounded-2xl border border-cyan-200/60 shadow-[0_4px_20px_rgba(0,255,255,0.15)]">
-            <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-xl flex items-center justify-center shadow-md">
-              <Info className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-cyan-700">FYI!</p>
-              <p className="text-cyan-600/80 text-sm">New features are available. Check them out!</p>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Progress */}
-      <ShowcaseSection
-        title="Progress"
-        subtitle="Level up your stats"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white/70 to-pink-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <div className="space-y-8">
-              {/* Rainbow Progress */}
-              <div>
-                <div className="flex justify-between mb-3">
-                  <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Profile Complete</span>
-                  <span className="text-sm font-bold text-purple-500">{progress}%</span>
-                </div>
-                <div className="h-4 bg-white/60 rounded-full overflow-hidden shadow-inner">
-                  <div 
-                    className="h-full bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 rounded-full shadow-lg transition-all duration-500"
-                    style={{ width: `${progress}%` }}
+                  {/* Swatch */}
+                  <div
+                    className="h-24 w-full transition-transform duration-300 group-hover:scale-105"
+                    style={{ background: c.swatch }}
                   />
-                </div>
-              </div>
-
-              {/* Pink Progress */}
-              <div>
-                <div className="flex justify-between mb-3">
-                  <span className="text-sm font-bold text-pink-500">Popularity</span>
-                  <span className="text-sm font-bold text-pink-500">85%</span>
-                </div>
-                <div className="h-4 bg-white/60 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full w-[85%] bg-gradient-to-r from-pink-400 to-pink-500 rounded-full shadow-lg" />
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex gap-3 pt-4">
-                <button 
-                  onClick={() => setProgress(Math.max(0, progress - 10))}
-                  className="px-5 py-2 text-sm bg-gradient-to-r from-pink-400 to-purple-400 rounded-full text-white font-bold shadow-md hover:scale-105 transition-all"
-                >
-                  -10%
-                </button>
-                <button 
-                  onClick={() => setProgress(Math.min(100, progress + 10))}
-                  className="px-5 py-2 text-sm bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full text-white font-bold shadow-md hover:scale-105 transition-all"
-                >
-                  +10%
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Tags & Badges */}
-      <ShowcaseSection
-        title="Tags & Badges"
-        subtitle="Show off your style"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white/70 to-cyan-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            {/* Tags */}
-            <div className="mb-8">
-              <p className="text-sm font-bold text-cyan-500 uppercase tracking-wide mb-4">Tags</p>
-              <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-1.5 bg-gradient-to-r from-pink-100 to-pink-200 rounded-full text-pink-600 text-sm font-medium border border-pink-200/60">
-                  Trendy
-                </span>
-                <span className="px-4 py-1.5 bg-gradient-to-r from-cyan-100 to-cyan-200 rounded-full text-cyan-600 text-sm font-medium border border-cyan-200/60">
-                  Cool
-                </span>
-                <span className="px-4 py-1.5 bg-gradient-to-r from-purple-100 to-purple-200 rounded-full text-purple-600 text-sm font-medium border border-purple-200/60">
-                  Retro
-                </span>
-                <span className="px-4 py-1.5 bg-gradient-to-r from-lime-100 to-lime-200 rounded-full text-lime-600 text-sm font-medium border border-lime-200/60">
-                  Fresh
-                </span>
-              </div>
-            </div>
-
-            {/* Badges */}
-            <div>
-              <p className="text-sm font-bold text-purple-500 uppercase tracking-wide mb-4">Badges</p>
-              <div className="flex flex-wrap gap-4 items-center">
-                <span className="w-10 h-10 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                  5
-                </span>
-                <span className="px-4 h-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-wide shadow-lg">
-                  New
-                </span>
-                <span className="px-4 h-8 bg-gradient-to-r from-lime-400 to-cyan-400 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-wide shadow-lg">
-                  VIP
-                </span>
-                <span className="w-10 h-10 bg-gradient-to-b from-gray-100 to-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm border border-white/60 shadow-[inset_0_2px_3px_rgba(255,255,255,0.8)]">
-                  99
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Toggle */}
-      <ShowcaseSection
-        title="Toggles"
-        subtitle="Switch your vibes"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white/70 to-purple-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <div className="space-y-5">
-              {[
-                { label: "Party Mode", index: 0 },
-                { label: "Dark Theme", index: 1 },
-                { label: "Notifications", index: 2 },
-              ].map((item) => (
-                <div key={item.index} className="flex items-center justify-between">
-                  <span className="text-gray-700 font-medium">{item.label}</span>
-                  <button
-                    onClick={() => {
-                      const newStates = [...toggleStates];
-                      newStates[item.index] = !newStates[item.index];
-                      setToggleStates(newStates);
-                    }}
-                    className={`relative w-14 h-8 rounded-full transition-all duration-300 ${
-                      toggleStates[item.index]
-                        ? 'bg-gradient-to-r from-pink-400 to-purple-400 shadow-[0_0_15px_rgba(255,105,180,0.4)]'
-                        : 'bg-gray-200'
-                    }`}
-                  >
+                  {/* Label */}
+                  <div className="p-4">
+                    <p className="font-bold text-sm text-gray-700">{c.name}</p>
+                    <p
+                      className="text-xs text-pink-500 font-mono mt-0.5"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      {c.hex}
+                    </p>
                     <span
-                      className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-md transition-all duration-300 ${
-                        toggleStates[item.index] ? 'left-7' : 'left-1'
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Accordion */}
-      <ShowcaseSection
-        title="Accordion"
-        subtitle="Expand your knowledge"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-3">
-            {accordionItems.map((item, index) => (
-              <div 
-                key={index}
-                className={`rounded-2xl overflow-hidden transition-all duration-300 ${
-                  openAccordion === index 
-                    ? 'bg-gradient-to-br from-white/80 to-pink-100/60 shadow-[0_8px_30px_rgba(255,105,180,0.15)]' 
-                    : 'bg-gradient-to-br from-white/60 to-white/40'
-                } backdrop-blur-md border border-white/60`}
-              >
-                <button
-                  onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
-                  className="w-full flex items-center justify-between p-5 text-left"
-                >
-                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">{item.title}</span>
-                  {openAccordion === index ? (
-                    <ChevronUp className="w-5 h-5 text-pink-500" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  )}
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ${
-                  openAccordion === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                }`}>
-                  <div className="px-5 pb-5 text-gray-600">
-                    {item.content}
+                      className="inline-block mt-2 px-2 py-0.5 text-xs rounded-full text-gray-500"
+                      style={{
+                        background: "rgba(192,192,192,0.2)",
+                        border: "1px solid rgba(192,192,192,0.3)",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      {c.tag}
+                    </span>
                   </div>
                 </div>
-              </div>
+              </RevealBlock>
             ))}
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Form */}
-      <ShowcaseSection
-        title="Form"
-        subtitle="Join the millennium club"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white/70 to-pink-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <Star className="w-5 h-5 text-pink-400" />
-              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Sign Up</h3>
-              <Star className="w-5 h-5 text-cyan-400" />
-            </div>
+      {/* ================================================================== */}
+      {/* 5. DESIGN RULES — do / don't                                        */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-purple-500 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Design Rules
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Do &amp; Don&apos;t
+            </h2>
+            <p className="text-gray-500 mt-2">The rules of the millennium era</p>
+          </RevealBlock>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-2">Username</label>
-                <input
-                  type="text"
-                  placeholder="coolkid2000"
-                  className="w-full px-4 py-3 bg-white/60 border border-pink-200/60 rounded-xl text-gray-700 placeholder-gray-400 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 focus:outline-none transition-all"
-                />
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Do */}
+            <RevealBlock delay={0.05}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(0,255,255,0.08))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style={{ background: "linear-gradient(135deg, #00ffff, #c084fc)" }}
+                  >
+                    &#10003;
+                  </div>
+                  <h3
+                    className="text-lg font-black tracking-widest uppercase text-gray-700"
+                    style={{ fontFamily: "'Courier New', monospace" }}
+                  >
+                    Do
+                  </h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Use silver/metal gradients: from-gray-300 via-white to-gray-300",
+                    "Add bubble/sphere decorative elements",
+                    "Use translucent effects: bg-white/30 backdrop-blur",
+                    "Apply rainbow gradient text effects",
+                    "Use rounded-full for that futuristic shape language",
+                    "Add star and sparkle decorations ✦ ★ ✸",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span
+                        className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                        style={{ background: "linear-gradient(135deg, #00ffff, #87ceeb)", boxShadow: "0 2px 8px rgba(0,255,255,0.3)" }}
+                      >
+                        &#10003;
+                      </span>
+                      <span className="text-sm text-gray-600">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-2">Email</label>
-                <input
-                  type="email"
-                  placeholder="you@millennium.com"
-                  className="w-full px-4 py-3 bg-white/60 border border-cyan-200/60 rounded-xl text-gray-700 placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-200 focus:outline-none transition-all"
-                />
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,105,180,0.08))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style={{ background: "linear-gradient(135deg, #ff69b4, #ff1493)" }}
+                  >
+                    &#10005;
+                  </div>
+                  <h3
+                    className="text-lg font-black tracking-widest uppercase text-gray-700"
+                    style={{ fontFamily: "'Courier New', monospace" }}
+                  >
+                    Don&apos;t
+                  </h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Use dark, muted color palettes — vibes must be bright",
+                    "Use completely flat design without gloss or reflection",
+                    "Omit the gloss and specular highlight effects",
+                    "Use rough or grungy textures",
+                    "Use sharp right-angle corners — everything must be rounded",
+                    "Use monochrome — Y2K demands color abundance",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span
+                        className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                        style={{ background: "linear-gradient(135deg, #ff69b4, #ff1493)", boxShadow: "0 2px 8px rgba(255,105,180,0.3)" }}
+                      >
+                        &#10005;
+                      </span>
+                      <span className="text-sm text-gray-600">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <button className="w-full py-4 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 rounded-xl text-white font-bold shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_30px_rgba(255,105,180,0.5)] hover:scale-[1.02] transition-all duration-300">
-                Join Now
-              </button>
-            </div>
+            </RevealBlock>
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Avatars */}
-      <ShowcaseSection
-        title="Avatars"
-        subtitle="Express yourself"
-        className="relative z-10 py-16 px-6"
-        titleClassName="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 text-center"
-        subtitleClassName="text-gray-500 mb-10 text-center"
-      >
+      {/* ================================================================== */}
+      {/* 6. TYPOGRAPHY — pixel/techno fonts                                   */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-pink-400 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Type System
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Typography
+            </h2>
+            <p className="text-gray-500 mt-2">Pixel-era &amp; techno fonts — the sound of the year 2000</p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Pixel/mono font samples */}
+            <RevealBlock delay={0.05}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(192,192,192,0.2))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-6"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Pixel / Mono
+                </p>
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Courier New', monospace" }}>Display / Hero</p>
+                    <p
+                      className="text-5xl font-black chrome-text leading-none"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Y2K
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Courier New', monospace" }}>Heading / H1</p>
+                    <p
+                      className="text-3xl font-bold"
+                      style={{
+                        fontFamily: "'Courier New', monospace",
+                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      Future is Now
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Courier New', monospace" }}>Subheading / H2</p>
+                    <p
+                      className="text-xl font-semibold text-gray-600"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Millennium Dreams
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Courier New', monospace" }}>Body Text</p>
+                    <p
+                      className="text-sm text-gray-500 leading-relaxed"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Welcome to the year 2000. The web is a place of chrome<br />
+                      and pink, pixels and dreams. The future is loading...
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Courier New', monospace" }}>Label / Caption</p>
+                    <p
+                      className="text-xs font-bold tracking-[0.4em] uppercase text-pink-400"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      Loading System... 100%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Rainbow text effects */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,0,255,0.06))",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                }}
+              >
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-6"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Rainbow Effects
+                </p>
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: "'Courier New', monospace" }}>Holographic Text</p>
+                    <p
+                      className="text-4xl font-black"
+                      style={{
+                        background: "linear-gradient(270deg, #ff69b4, #00ffff, #ff00ff, #87ceeb, #ff69b4)",
+                        backgroundSize: "300% 300%",
+                        animation: "rainbow-shift 3s ease infinite",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      IRIDESCENT
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: "'Courier New', monospace" }}>Chrome Text</p>
+                    <p
+                      className="text-3xl font-black chrome-text"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      METALLIC
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: "'Courier New', monospace" }}>Pink Gradient</p>
+                    <p
+                      className="text-2xl font-bold"
+                      style={{
+                        background: "linear-gradient(90deg, #ff69b4, #ff1493, #c084fc)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      HOT PINK
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: "'Courier New', monospace" }}>Cyan Glow</p>
+                    <p
+                      className="text-xl font-bold"
+                      style={{
+                        color: "#00ffff",
+                        textShadow: "0 0 12px rgba(0,255,255,0.5)",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      ELECTRIC BLUE
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* TABS — interactive                                                   */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white/70 to-cyan-100/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <div className="flex flex-wrap items-end justify-center gap-6">
-              {/* Small */}
-              <div className="text-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg mb-2">
-                  A
-                </div>
-                <span className="text-xs text-gray-500">Small</span>
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-purple-500 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Interactive
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              My Profile
+            </h2>
+            <p className="text-gray-500 mt-2">Navigate your digital world</p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.08}>
+            <div
+              className="p-8 rounded-3xl border border-white/60 backdrop-blur-md"
+              style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.75), rgba(192,192,192,0.2))",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+              }}
+            >
+              {/* Tab bar */}
+              <div
+                className="flex gap-2 p-1.5 rounded-full mb-6"
+                style={{ background: "rgba(255,255,255,0.5)" }}
+              >
+                {tabs.map((tab, idx) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(idx)}
+                    className="flex-1 py-2.5 rounded-full font-bold text-sm tracking-wide transition-all duration-300"
+                    style={{
+                      fontFamily: "'Courier New', monospace",
+                      background:
+                        activeTab === idx
+                          ? "linear-gradient(135deg, #ff69b4, #c084fc)"
+                          : "transparent",
+                      color: activeTab === idx ? "#ffffff" : "#6b7280",
+                      boxShadow:
+                        activeTab === idx
+                          ? "0 4px 14px rgba(255,105,180,0.35)"
+                          : "none",
+                    }}
+                  >
+                    {tab}
+                  </button>
+                ))}
               </div>
-              {/* Medium */}
-              <div className="text-center">
-                <div className="w-14 h-14 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-2">
-                  BF
-                </div>
-                <span className="text-xs text-gray-500">Medium</span>
+
+              {/* Tab content */}
+              <div
+                className="min-h-[120px] p-6 rounded-2xl"
+                style={{ background: "rgba(255,255,255,0.4)" }}
+              >
+                {activeTab === 0 && (
+                  <div>
+                    <h4
+                      className="text-lg font-bold mb-3"
+                      style={{
+                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      &#9834; Your Playlist
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {["Pop Hits 2000", "Dance Mix", "Chill Vibes", "Y2K Anthems", "Millennium Bangers"].map((t) => (
+                        <span
+                          key={t}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium text-purple-600"
+                          style={{
+                            background: "linear-gradient(135deg, rgba(255,105,180,0.15), rgba(192,132,252,0.15))",
+                            border: "1px solid rgba(192,132,252,0.3)",
+                            fontFamily: "'Courier New', monospace",
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {activeTab === 1 && (
+                  <div>
+                    <h4
+                      className="text-lg font-bold mb-3"
+                      style={{
+                        background: "linear-gradient(90deg, #00ffff, #c084fc)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      &#128247; Photo Albums
+                    </h4>
+                    <p className="text-gray-600 text-sm" style={{ fontFamily: "'Courier New', monospace" }}>
+                      128 photos across 5 albums. Last upload: today! Memory card 85% full.
+                    </p>
+                  </div>
+                )}
+                {activeTab === 2 && (
+                  <div>
+                    <h4
+                      className="text-lg font-bold mb-3"
+                      style={{
+                        background: "linear-gradient(90deg, #c084fc, #ff69b4)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      &#128101; Friend List
+                    </h4>
+                    <p className="text-gray-600 text-sm" style={{ fontFamily: "'Courier New', monospace" }}>
+                      2,847 friends online. 42 new requests! You are very popular ✦
+                    </p>
+                  </div>
+                )}
               </div>
-              {/* Large */}
-              <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg mb-2">
-                  XO
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* PROGRESS + TOGGLES                                                   */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+          {/* Progress */}
+          <RevealBlock delay={0.05}>
+            <div
+              className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm h-full"
+              style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,105,180,0.1))",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+              }}
+            >
+              <p
+                className="text-xs font-bold tracking-widest uppercase text-pink-500 mb-6"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                Progress Bars
+              </p>
+              <div className="space-y-7">
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span
+                      className="text-sm font-bold"
+                      style={{
+                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      Profile Complete
+                    </span>
+                    <span className="text-sm font-bold text-purple-500" style={{ fontFamily: "'Courier New', monospace" }}>
+                      {progress}%
+                    </span>
+                  </div>
+                  <div
+                    className="h-5 rounded-full overflow-hidden"
+                    style={{ background: "rgba(255,255,255,0.6)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${progress}%`,
+                        background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                        boxShadow: "0 2px 8px rgba(255,105,180,0.4)",
+                      }}
+                    />
+                  </div>
                 </div>
-                <span className="text-xs text-gray-500">Large</span>
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-bold text-pink-500" style={{ fontFamily: "'Courier New', monospace" }}>Popularity</span>
+                    <span className="text-sm font-bold text-pink-500" style={{ fontFamily: "'Courier New', monospace" }}>85%</span>
+                  </div>
+                  <div
+                    className="h-5 rounded-full overflow-hidden"
+                    style={{ background: "rgba(255,255,255,0.6)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" }}
+                  >
+                    <div
+                      className="h-full w-[85%] rounded-full"
+                      style={{
+                        background: "linear-gradient(90deg, #ff69b4, #ff1493)",
+                        boxShadow: "0 2px 8px rgba(255,105,180,0.4)",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-bold text-cyan-500" style={{ fontFamily: "'Courier New', monospace" }}>Chrome Level</span>
+                    <span className="text-sm font-bold text-cyan-500" style={{ fontFamily: "'Courier New', monospace" }}>62%</span>
+                  </div>
+                  <div
+                    className="h-5 rounded-full overflow-hidden"
+                    style={{ background: "rgba(255,255,255,0.6)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" }}
+                  >
+                    <div
+                      className="h-full w-[62%] rounded-full"
+                      style={{
+                        background: "linear-gradient(90deg, #c0c0c0, #ffffff, #a0a0a0)",
+                        boxShadow: "0 2px 8px rgba(192,192,192,0.5)",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={() => setProgress(Math.max(0, progress - 10))}
+                    className="px-5 py-2 text-sm text-white font-bold rounded-full transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #c084fc)",
+                      boxShadow: "0 3px 12px rgba(255,105,180,0.3)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    -10%
+                  </button>
+                  <button
+                    onClick={() => setProgress(Math.min(100, progress + 10))}
+                    className="px-5 py-2 text-sm text-white font-bold rounded-full transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: "linear-gradient(135deg, #00ffff, #c084fc)",
+                      boxShadow: "0 3px 12px rgba(0,255,255,0.3)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    +10%
+                  </button>
+                </div>
               </div>
-              {/* Chrome */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-b from-gray-100 via-white to-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xl border border-white/60 shadow-[0_4px_15px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.9)] mb-2">
-                  Y2
-                </div>
-                <span className="text-xs text-gray-500">Chrome</span>
+            </div>
+          </RevealBlock>
+
+          {/* Toggles */}
+          <RevealBlock delay={0.12}>
+            <div
+              className="p-8 rounded-3xl border border-white/60 backdrop-blur-sm h-full"
+              style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(192,132,252,0.1))",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+              }}
+            >
+              <p
+                className="text-xs font-bold tracking-widest uppercase text-purple-500 mb-6"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                Toggles
+              </p>
+              <div className="space-y-6">
+                {[
+                  { label: "Party Mode", emoji: "&#127881;" },
+                  { label: "Dark Theme", emoji: "&#127774;" },
+                  { label: "Notifications", emoji: "&#128276;" },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <span
+                      className="text-gray-700 font-medium text-sm flex items-center gap-2"
+                      style={{ fontFamily: "'Courier New', monospace" }}
+                    >
+                      <span dangerouslySetInnerHTML={{ __html: item.emoji }} />
+                      {item.label}
+                    </span>
+                    <button
+                      onClick={() => {
+                        const next = [...toggleStates];
+                        next[idx] = !next[idx];
+                        setToggleStates(next);
+                      }}
+                      className="relative w-14 h-8 rounded-full transition-all duration-300"
+                      style={{
+                        background: toggleStates[idx]
+                          ? "linear-gradient(135deg, #ff69b4, #c084fc)"
+                          : "#e5e7eb",
+                        boxShadow: toggleStates[idx]
+                          ? "0 0 14px rgba(255,105,180,0.4)"
+                          : "none",
+                      }}
+                    >
+                      <span
+                        className="absolute top-1 w-6 h-6 rounded-full bg-white shadow-md transition-all duration-300"
+                        style={{
+                          left: toggleStates[idx] ? "calc(100% - 28px)" : "4px",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
+                        }}
+                      />
+                    </button>
+                  </div>
+                ))}
               </div>
-              {/* Group */}
-              <div className="text-center">
-                <div className="flex -space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold border-2 border-white shadow-md">A</div>
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold border-2 border-white shadow-md">B</div>
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold border-2 border-white shadow-md">+5</div>
+
+              {/* Badge / pill section */}
+              <div className="mt-8 pt-6 border-t border-white/40">
+                <p
+                  className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-4"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Badges
+                </p>
+                <div className="flex flex-wrap gap-3 items-center">
+                  <span
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #c084fc)",
+                      boxShadow: "0 4px 12px rgba(255,105,180,0.4)",
+                    }}
+                  >
+                    5
+                  </span>
+                  <span
+                    className="px-4 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-wide"
+                    style={{
+                      background: "linear-gradient(135deg, #00ffff, #c084fc)",
+                      boxShadow: "0 3px 10px rgba(0,255,255,0.4)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    New
+                  </span>
+                  <span
+                    className="px-4 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-wide"
+                    style={{
+                      background: "linear-gradient(135deg, #ff69b4, #ff1493)",
+                      boxShadow: "0 3px 10px rgba(255,105,180,0.4)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    VIP
+                  </span>
+                  <span
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm"
+                    style={{
+                      background: "linear-gradient(135deg, #e8e8e8, #ffffff, #c0c0c0)",
+                      border: "1px solid rgba(255,255,255,0.8)",
+                      boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9)",
+                    }}
+                  >
+                    99
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500 mt-2 block">Group</span>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* STAT CARDS                                                           */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-cyan-400 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Metrics
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Stats &amp; Metrics
+            </h2>
+            <p className="text-gray-500 mt-2">Futuristic data display — millennium dashboard</p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              { label: "Friends", value: "2,847", icon: "&#128101;", gradient: "from-pink-400 to-purple-400", glow: "rgba(255,105,180,0.3)" },
+              { label: "Vibes", value: "+420%", icon: "&#128200;", gradient: "from-purple-400 to-cyan-400", glow: "rgba(192,132,252,0.3)" },
+              { label: "Views", value: "1.2M", icon: "&#128065;", gradient: "from-cyan-400 to-lime-400", glow: "rgba(0,255,255,0.3)" },
+              { label: "Messages", value: "8,921", icon: "&#128172;", gradient: "from-lime-400 to-pink-400", glow: "rgba(50,205,50,0.2)" },
+            ].map((stat, i) => (
+              <RevealBlock key={stat.label} delay={i * 0.07}>
+                <div
+                  className="group p-6 rounded-3xl border border-white/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35))",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 12px 40px ${stat.glow}`;
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.08)";
+                  }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 text-xl transition-transform duration-300 group-hover:scale-110"
+                    style={{
+                      background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                      backgroundImage: `linear-gradient(135deg, ${stat.gradient.replace("from-", "").replace("-400 to-", " to ").replace("-400", "")})`,
+                    }}
+                  >
+                    <span dangerouslySetInnerHTML={{ __html: stat.icon }} />
+                  </div>
+                  <p
+                    className="text-3xl font-black mb-1"
+                    style={{
+                      background: `linear-gradient(90deg, #ff69b4, #c084fc)`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    {stat.value}
+                  </p>
+                  <p
+                    className="text-sm text-gray-500"
+                    style={{ fontFamily: "'Courier New', monospace" }}
+                  >
+                    {stat.label}
+                  </p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* PHILOSOPHY / ABOUT SECTION                                           */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-12">
+            <p
+              className="text-xs font-bold tracking-[0.4em] uppercase text-pink-500 mb-2"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Philosophy
+            </p>
+            <h2
+              className="text-4xl font-black"
+              style={{
+                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              About Y2K
+            </h2>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: "&#9889;",
+                title: "Futuristic Optimism",
+                desc: "The dawn of the digital age — an era of boundless optimism for the millennium. Technology was magic, the internet was infinite.",
+                grad: "from-pink-400 to-purple-400",
+              },
+              {
+                icon: "&#10024;",
+                title: "Metallic Surfaces",
+                desc: "Silver, chrome, and iridescent finishes dominated — every surface reflected a glittering, optimistic future in polished alloy.",
+                grad: "from-purple-400 to-cyan-400",
+              },
+              {
+                icon: "&#127752;",
+                title: "Rainbow Holographics",
+                desc: "Holographic foil, rainbow refractions, and iridescent gradients were the signatures of a generation obsessed with light and color.",
+                grad: "from-cyan-400 to-pink-400",
+              },
+            ].map((item, i) => (
+              <RevealBlock key={item.title} delay={i * 0.1}>
+                <div
+                  className="group p-8 rounded-3xl border border-white/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(255,105,180,0.15)]"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35))",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 text-2xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                    style={{
+                      background: `linear-gradient(135deg, ${item.grad.includes("pink") ? "#ff69b4" : item.grad.includes("cyan") ? "#00ffff" : "#c084fc"}, ${item.grad.includes("purple") ? "#c084fc" : item.grad.includes("pink") ? "#ff69b4" : "#00ffff"})`,
+                      boxShadow: "0 6px 20px rgba(255,105,180,0.3)",
+                    }}
+                  >
+                    <span dangerouslySetInnerHTML={{ __html: item.icon }} />
+                  </div>
+                  <h3
+                    className="text-lg font-bold mb-3"
+                    style={{
+                      background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================== */}
+      {/* "UNDER CONSTRUCTION" NOSTALGIA BAND                                  */}
+      {/* ================================================================== */}
+      <section className="relative z-10 py-6 px-6">
+        <RevealBlock>
+          <div
+            className="max-w-6xl mx-auto rounded-2xl overflow-hidden border border-white/40"
+            style={{
+              background: "linear-gradient(135deg, rgba(255,255,255,0.6), rgba(192,192,192,0.3))",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+            }}
+          >
+            {/* Yellow-black stripe header */}
+            <div
+              className="h-3"
+              style={{
+                background: "repeating-linear-gradient(45deg, #ff69b4 0px, #ff69b4 10px, #fff 10px, #fff 20px)",
+              }}
+            />
+            <div className="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <span
+                  className="text-3xl blink-star"
+                  style={{ animationDuration: "0.8s" }}
+                >
+                  &#128679;
+                </span>
+                <div>
+                  <p
+                    className="font-black text-gray-700 tracking-widest uppercase text-sm"
+                    style={{ fontFamily: "'Courier New', monospace" }}
+                  >
+                    Under Construction
+                  </p>
+                  <p
+                    className="text-xs text-gray-500 mt-0.5"
+                    style={{ fontFamily: "'Courier New', monospace" }}
+                  >
+                    This page is best viewed in 800x600 resolution ✦ IE 6.0
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span
+                  className="text-xs font-bold text-pink-500 tracking-widest"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  ★ NETSCAPE COMPATIBLE ★
+                </span>
+              </div>
+            </div>
+            {/* Bottom stripe */}
+            <div
+              className="h-3"
+              style={{
+                background: "repeating-linear-gradient(-45deg, #00ffff 0px, #00ffff 10px, #fff 10px, #fff 20px)",
+              }}
+            />
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ================================================================== */}
+      {/* 7. FOOTER                                                            */}
+      {/* ================================================================== */}
+      <footer
+        className="relative z-10 pt-16 pb-10 px-6"
+        style={{
+          background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.7))",
+        }}
+      >
+        {/* Holographic divider */}
+        <div
+          className="max-w-6xl mx-auto h-px mb-12 rounded-full"
+          style={{
+            background: "linear-gradient(90deg, transparent, #ff69b4, #c084fc, #00ffff, transparent)",
+          }}
+        />
+
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-10 mb-12">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-pink-400 blink-star">✦</span>
+                <span
+                  className="font-black text-2xl chrome-text"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  Y2K
+                </span>
+                <span className="text-cyan-400 blink-star" style={{ animationDelay: "0.5s" }}>✦</span>
+              </div>
+              <p
+                className="text-sm text-gray-500 leading-relaxed"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                Celebrating the optimistic vision of the year 2000 — chrome, iridescent, bubbly, and bright.
+              </p>
+            </div>
+
+            {/* Keywords */}
+            <div>
+              <p
+                className="text-xs font-bold tracking-[0.3em] uppercase text-gray-400 mb-4"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                Keywords
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Y2K", "千禧", "未来主义", "金属", "透明", "气泡", "2000年代"].map((kw) => (
+                  <span
+                    key={kw}
+                    className="px-3 py-1 rounded-full text-xs text-gray-600"
+                    style={{
+                      background: "rgba(192,192,192,0.25)",
+                      border: "1px solid rgba(192,192,192,0.4)",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Links */}
+            <div>
+              <p
+                className="text-xs font-bold tracking-[0.3em] uppercase text-gray-400 mb-4"
+                style={{ fontFamily: "'Courier New', monospace" }}
+              >
+                StyleKit
+              </p>
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/styles"
+                  className="text-sm text-gray-500 hover:text-pink-500 transition-colors"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  &#8594; All Styles
+                </Link>
+                <Link
+                  href="/styles/y2k"
+                  className="text-sm text-gray-500 hover:text-cyan-500 transition-colors"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  &#8594; Y2K Docs
+                </Link>
+                <Link
+                  href="/"
+                  className="text-sm text-gray-500 hover:text-purple-500 transition-colors"
+                  style={{ fontFamily: "'Courier New', monospace" }}
+                >
+                  &#8594; StyleKit Home
+                </Link>
               </div>
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-12 px-6 bg-gradient-to-b from-transparent to-white/60">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-5 h-5 text-pink-400" />
-            <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
-              Y2K
-            </span>
-            <Sparkles className="w-5 h-5 text-cyan-400" />
+          {/* Copyright */}
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <span className="text-pink-300/60 blink-star">✦</span>
+              <span className="text-gray-400 text-xs" style={{ fontFamily: "'Courier New', monospace" }}>
+                Part of the{" "}
+                <Link href="/" className="text-pink-500 hover:text-pink-600 transition-colors font-medium">
+                  StyleKit
+                </Link>{" "}
+                Design System Collection
+              </span>
+              <span className="text-cyan-300/60 blink-star" style={{ animationDelay: "0.7s" }}>✦</span>
+            </div>
+            <p
+              className="text-gray-300 text-xs"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              The Future is Bright and Shiny &#x2022; Est. Year 2000
+            </p>
           </div>
-          <p className="text-gray-500 text-sm mb-2">
-            Part of the{" "}
-            <Link href="/" className="text-pink-500 hover:text-pink-600 transition-colors font-medium">
-              StyleKit
-            </Link>{" "}
-            Design System Collection
-          </p>
-          <p className="text-gray-400 text-xs">
-            The Future is Bright and Shiny
-          </p>
         </div>
       </footer>
     </div>
