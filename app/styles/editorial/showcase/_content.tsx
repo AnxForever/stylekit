@@ -1,474 +1,401 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Check, X, AlertTriangle, Info, ChevronLeft, ChevronRight } from "lucide-react";
+
+const featuredWorks = [
+  { id: "01", title: "The Modernist", category: "Art Direction", image: "https://picsum.photos/seed/edit1/800/1000?grayscale" },
+  { id: "02", title: "Silent Space", category: "Photography", image: "https://picsum.photos/seed/edit2/800/1000?grayscale" },
+  { id: "03", title: "Lumina", category: "Brand Identity", image: "https://picsum.photos/seed/edit3/800/1000?grayscale" },
+];
+
+const projects = [
+  { id: 1, title: "Aesthetic", category: "Editorial", image: "https://picsum.photos/seed/p1/800/1200?grayscale", aspect: "aspect-[3/4]" },
+  { id: 2, title: "Form & Function", category: "Product", image: "https://picsum.photos/seed/p2/1200/800?grayscale", aspect: "aspect-[4/3]" },
+  { id: 3, title: "Monochrome", category: "Photography", image: "https://picsum.photos/seed/p3/800/800?grayscale", aspect: "aspect-square" },
+  { id: 4, title: "The Grid", category: "Web Design", image: "https://picsum.photos/seed/p4/800/1000?grayscale", aspect: "aspect-[4/5]" },
+];
+
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, inView };
+}
+
+function RevealBlock({ children, className = "", delay = 0 }: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function ShowcaseContent() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [heroRevealed, setHeroRevealed] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#0a0a0a]">
+    <div className="min-h-screen bg-[#F9F8F6] text-[#1C1C1C]">
+      <style>{`
+        .hover-underline { position: relative; }
+        .hover-underline::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          transform: scaleX(0);
+          height: 1px;
+          bottom: 0;
+          left: 0;
+          background-color: currentColor;
+          transform-origin: bottom right;
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hover-underline:hover::after {
+          transform: scaleX(1);
+          transform-origin: bottom left;
+        }
+        .clip-reveal {
+          clip-path: inset(100% 0 0 0);
+          transition: clip-path 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .clip-reveal.revealed {
+          clip-path: inset(0% 0 0 0);
+        }
+        @keyframes editorial-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+
       {/* Navigation */}
-      <header className="border-b border-[#e5e5e5]">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9F8F6]/90 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <Link href="/styles/editorial/showcase" className="font-serif text-lg md:text-xl tracking-[0.3em] uppercase">
-              EDITORIAL
+          <div className="flex items-center justify-between h-16 md:h-20 border-b border-[#1C1C1C]/10">
+            <Link href="/styles/editorial/showcase" className="font-serif text-lg tracking-[0.3em] uppercase">
+              Editorial
             </Link>
-            <nav className="flex items-center gap-8">
-              <Link href="/styles/editorial" className="text-sm tracking-wide text-[#6b7280] hover:text-[#0a0a0a] transition-colors">
-                文档
+            <nav className="flex items-center gap-6 md:gap-8">
+              <Link href="/styles/editorial" className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60 hover-underline pb-1">
+                Docs
               </Link>
-              <Link href="/styles" className="text-sm tracking-wide text-[#6b7280] hover:text-[#0a0a0a] transition-colors">
-                返回
+              <Link href="/styles" className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60 hover-underline pb-1">
+                Styles
               </Link>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-32">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">设计风格</p>
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight mb-6">
-            优雅的
+      {/* ===== HOME: Hero ===== */}
+      <section className="pt-32 md:pt-48 pb-16 px-6 md:px-12 max-w-7xl mx-auto relative">
+        {/* Rotating Asterisk */}
+        <svg
+          width="60" height="60" viewBox="0 0 100 100"
+          className="absolute top-24 right-12 md:right-24 text-[#1C1C1C]/15 hidden md:block pointer-events-none"
+          style={{ animation: "editorial-spin 25s linear infinite" }}
+        >
+          <path d="M48 0 L52 0 L52 48 L100 48 L100 52 L52 52 L52 100 L48 100 L48 52 L0 52 L0 48 L48 48 Z" fill="currentColor" />
+          <path d="M14 14 L17 11 L50 44 L83 11 L86 14 L53 47 L86 80 L83 83 L50 50 L17 83 L14 80 L47 47 Z" fill="currentColor" />
+        </svg>
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 md:mb-40 gap-12">
+          <h1 className="font-serif text-6xl md:text-8xl lg:text-[9rem] leading-[0.9] tracking-tighter">
+            <span
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+                display: "inline-block",
+              }}
+            >
+              Digital
+            </span>
             <br />
-            <span className="italic">杂志排版</span>
+            <span
+              className="italic text-[#1C1C1C]/60"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
+                display: "inline-block",
+              }}
+            >
+              Craftsmanship.
+            </span>
           </h1>
-          <p className="text-lg md:text-xl text-[#6b7280] leading-relaxed max-w-md">
-            Editorial 风格强调内容至上，通过精致的字体和留白营造高级感。
+          <p
+            className="max-w-xs font-sans text-xs leading-relaxed uppercase tracking-[0.2em] text-[#1C1C1C]/60"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s",
+            }}
+          >
+            Elevating brands through refined typography, minimalist layouts, and purposeful interactions.
           </p>
         </div>
-      </section>
 
-      {/* Color Palette */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">配色方案</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">色彩系统</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            {[
-              { name: "Primary", hex: "#0a0a0a", bg: "bg-[#0a0a0a]", text: "text-white" },
-              { name: "Secondary", hex: "#fafafa", bg: "bg-[#fafafa] border", text: "text-[#0a0a0a]" },
-              { name: "Accent", hex: "#e63946", bg: "bg-[#e63946]", text: "text-white" },
-              { name: "Muted", hex: "#6b7280", bg: "bg-[#6b7280]", text: "text-white" },
-              { name: "Border", hex: "#e5e5e5", bg: "bg-[#e5e5e5]", text: "text-[#0a0a0a]" },
-            ].map((color) => (
-              <div key={color.name} className="border border-[#e5e5e5]">
-                <div className={`h-24 md:h-32 ${color.bg}`} />
-                <div className="p-3 md:p-4 border-t border-[#e5e5e5]">
-                  <p className="text-sm font-medium">{color.name}</p>
-                  <p className="text-xs text-[#6b7280]">{color.hex}</p>
-                </div>
-              </div>
-            ))}
+        {/* Hero Image */}
+        <div className={`clip-reveal ${heroRevealed ? "revealed" : ""} w-full aspect-[4/5] md:aspect-[21/9] bg-gray-200 overflow-hidden mb-32`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://picsum.photos/seed/editorial_hero/1920/1080?grayscale"
+            alt="Editorial Hero"
+            className="w-full h-full object-cover"
+            style={{
+              transform: heroRevealed ? "scale(1)" : "scale(1.2)",
+              transition: "transform 1.5s cubic-bezier(0.16,1,0.3,1) 0.2s",
+            }}
+          />
+        </div>
+
+        {/* Featured Work List */}
+        <div className="mb-32">
+          <div className="flex justify-between items-end border-b border-[#1C1C1C]/10 pb-6 mb-8">
+            <h2 className="font-sans text-xs font-medium tracking-[0.2em] uppercase">Selected Works</h2>
+            <span className="font-sans text-xs tracking-[0.2em] uppercase hover-underline pb-1 cursor-pointer">View All</span>
           </div>
-        </div>
-      </section>
 
-      {/* Typography */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">字体排版</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">Typography</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">衬线标题</p>
-              <h3 className="font-serif text-3xl md:text-5xl tracking-tight mb-4">
-                The Art of <span className="italic">Typography</span>
-              </h3>
-              <p className="text-sm text-[#6b7280]">font-serif · tracking-tight · 400 weight</p>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">无衬线正文</p>
-              <p className="text-base md:text-lg leading-relaxed mb-4">
-                正文使用无衬线字体，保持良好的可读性。行高 leading-relaxed 确保文字有足够的呼吸空间。
-              </p>
-              <p className="text-sm text-[#6b7280]">font-sans · leading-relaxed · 400 weight</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Buttons */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">交互元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">按钮 Button</h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">Primary</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-[#0a0a0a] text-[#fafafa] text-sm tracking-wide hover:bg-[#0a0a0a]/90 transition-colors">按钮文字</button>
-                <button className="px-6 py-3 bg-[#e63946] text-white text-sm tracking-wide hover:bg-[#e63946]/90 transition-colors">强调按钮</button>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">Outline</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 border border-[#e5e5e5] text-sm tracking-wide hover:border-[#0a0a0a] transition-colors">轮廓按钮</button>
-                <button className="px-6 py-3 border border-[#0a0a0a] text-sm tracking-wide hover:bg-[#0a0a0a] hover:text-white transition-colors">深色轮廓</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Cards */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">内容展示</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">卡片 Card</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { category: "设计", title: "极简主义的力量", desc: "少即是多的设计哲学" },
-              { category: "排版", title: "字体的艺术", desc: "衬线与无衬线的平衡" },
-              { category: "留白", title: "呼吸的空间", desc: "负空间让内容更突出" },
-            ].map((card, i) => (
-              <div key={i} className="border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors group">
-                <div className="aspect-[16/9] bg-zinc-100" />
-                <div className="p-6">
-                  <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-2">{card.category}</p>
-                  <h3 className="font-serif text-xl mb-3 group-hover:text-[#e63946] transition-colors">{card.title}</h3>
-                  <p className="text-sm text-[#6b7280] leading-relaxed">{card.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Form Elements */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">表单设计</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">表单 Form</h2>
-          <div className="space-y-6">
-            <div>
-              <label className="text-xs tracking-widest uppercase text-[#6b7280] mb-2 block">姓名</label>
-              <input type="text" placeholder="请输入..." className="w-full px-4 py-3 border border-[#e5e5e5] text-sm focus:outline-none focus:border-[#0a0a0a] transition-colors placeholder:text-[#6b7280]" />
-            </div>
-            <div>
-              <label className="text-xs tracking-widest uppercase text-[#6b7280] mb-2 block">邮箱</label>
-              <input type="email" placeholder="example@email.com" className="w-full px-4 py-3 border border-[#e5e5e5] text-sm focus:outline-none focus:border-[#0a0a0a] transition-colors placeholder:text-[#6b7280]" />
-            </div>
-            <div>
-              <label className="text-xs tracking-widest uppercase text-[#6b7280] mb-2 block">留言</label>
-              <textarea placeholder="请输入您的留言..." rows={4} className="w-full px-4 py-3 border border-[#e5e5e5] text-sm focus:outline-none focus:border-[#0a0a0a] transition-colors placeholder:text-[#6b7280] resize-none" />
-            </div>
-            <button className="w-full px-6 py-3 bg-[#0a0a0a] text-[#fafafa] text-sm tracking-wide hover:bg-[#0a0a0a]/90 transition-colors">提交</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Article Example */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">文章排版</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">文章示例</h2>
-          <article className="prose">
-            <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">2024年1月15日 · 设计理念</p>
-            <h3 className="font-serif text-2xl md:text-3xl tracking-tight mb-6">
-              留白的艺术：<span className="italic">为何空间如此重要</span>
-            </h3>
-            <p className="text-base md:text-lg leading-relaxed text-[#6b7280] mb-6 first-letter:font-serif first-letter:text-5xl first-letter:float-left first-letter:mr-3 first-letter:leading-none first-letter:text-[#0a0a0a]">
-              在设计中，留白不仅仅是空白区域，它是一种强有力的设计元素。适当的留白能够引导读者的视线，强调重要内容，并创造出优雅的视觉层次。
-            </p>
-            <p className="text-base md:text-lg leading-relaxed text-[#6b7280]">
-              当我们谈论留白时，我们实际上是在讨论内容之间的关系。每一处间距都是经过深思熟虑的决定，它们共同构成了页面的节奏和韵律。
-            </p>
-          </article>
-        </div>
-      </section>
-
-      {/* Tabs */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">导航元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">标签页 Tabs</h2>
-          <div className="border border-[#e5e5e5]">
-            <div className="flex border-b border-[#e5e5e5]">
-              {["概述", "详情", "评论"].map((tab, i) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(i)}
-                  className={`px-6 py-4 text-sm tracking-wide transition-colors ${
-                    activeTab === i
-                      ? "bg-white border-b-2 border-[#0a0a0a] -mb-px"
-                      : "text-[#6b7280] hover:text-[#0a0a0a]"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <div className="p-6 text-sm text-[#6b7280] leading-relaxed">
-              {activeTab === 0 && "概述内容 — 简洁的产品或服务介绍，突出核心价值主张。"}
-              {activeTab === 1 && "详情内容 — 深入的功能说明和技术规格，满足专业用户需求。"}
-              {activeTab === 2 && "评论内容 — 用户反馈和评价，建立信任和社会证明。"}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Tags / Badges */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">标记元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">标签 Tags</h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分类标签</p>
-              <div className="flex flex-wrap gap-3">
-                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">设计</span>
-                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">排版</span>
-                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#e5e5e5] hover:border-[#0a0a0a] transition-colors cursor-pointer">品牌</span>
-                <span className="px-3 py-1 text-xs tracking-widest uppercase bg-[#0a0a0a] text-white">精选</span>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">状态标签</p>
-              <div className="flex flex-wrap gap-3">
-                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#0a0a0a]">新品</span>
-                <span className="px-3 py-1 text-xs tracking-widest uppercase bg-[#e63946] text-white">限量</span>
-                <span className="px-3 py-1 text-xs tracking-widest uppercase border border-[#6b7280] text-[#6b7280]">已售罄</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Alerts */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">通知元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">提示 Alerts</h2>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 border border-[#e5e5e5]">
-              <Info className="w-5 h-5 text-[#6b7280] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-1">信息提示</p>
-                <p className="text-sm text-[#6b7280]">这是一条普通的信息通知，用于传达一般性内容。</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 border-l-2 border-l-[#0a0a0a] border border-[#e5e5e5]">
-              <Check className="w-5 h-5 text-[#0a0a0a] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-1">操作成功</p>
-                <p className="text-sm text-[#6b7280]">您的更改已成功保存。</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 border-l-2 border-l-amber-500 border border-[#e5e5e5]">
-              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-1">注意事项</p>
-                <p className="text-sm text-[#6b7280]">请在继续之前仔细检查您的输入。</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 border-l-2 border-l-[#e63946] border border-[#e5e5e5]">
-              <X className="w-5 h-5 text-[#e63946] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-1">错误提示</p>
-                <p className="text-sm text-[#6b7280]">操作失败，请稍后重试。</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Dropdown */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-xs mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4 text-center">选择元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12 text-center">下拉菜单</h2>
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="w-full px-4 py-3 border border-[#e5e5e5] text-sm flex items-center justify-between hover:border-[#0a0a0a] transition-colors"
-            >
-              <span>选择分类</span>
-              <ChevronDown className={`w-4 h-4 text-[#6b7280] transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-px bg-white border border-[#e5e5e5] z-10">
-                {["全部分类", "设计", "排版", "品牌", "摄影"].map((item) => (
-                  <button
-                    key={item}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-[#fafafa] transition-colors border-b border-[#e5e5e5] last:border-b-0"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Table */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">数据展示</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">表格 Table</h2>
-          <div className="border border-[#e5e5e5] overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#e5e5e5] bg-[#fafafa]">
-                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">作品</th>
-                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">类型</th>
-                  <th className="px-4 py-3 text-left text-xs tracking-widest uppercase text-[#6b7280] font-normal">日期</th>
-                  <th className="px-4 py-3 text-right text-xs tracking-widest uppercase text-[#6b7280] font-normal">状态</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { title: "品牌视觉设计", type: "品牌", date: "2024.01", status: "已发布" },
-                  { title: "杂志排版设计", type: "排版", date: "2024.02", status: "进行中" },
-                  { title: "产品摄影", type: "摄影", date: "2024.03", status: "草稿" },
-                ].map((row, i) => (
-                  <tr key={i} className="border-b border-[#e5e5e5] last:border-b-0 hover:bg-white transition-colors">
-                    <td className="px-4 py-4 text-sm font-medium">{row.title}</td>
-                    <td className="px-4 py-4 text-sm text-[#6b7280]">{row.type}</td>
-                    <td className="px-4 py-4 text-sm text-[#6b7280]">{row.date}</td>
-                    <td className="px-4 py-4 text-right">
-                      <span className={`text-xs tracking-widest uppercase ${
-                        row.status === "已发布" ? "text-[#0a0a0a]" :
-                        row.status === "进行中" ? "text-[#e63946]" : "text-[#6b7280]"
-                      }`}>
-                        {row.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Blockquote */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">引用元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">引言 Quote</h2>
-          <blockquote className="border-l-2 border-[#0a0a0a] pl-6 md:pl-8">
-            <p className="font-serif text-xl md:text-2xl italic leading-relaxed mb-4">
-              &ldquo;设计不仅仅是外观和感觉。设计是它如何运作的。&rdquo;
-            </p>
-            <footer className="text-sm text-[#6b7280]">
-              <span className="tracking-widest uppercase">— Steve Jobs</span>
-            </footer>
-          </blockquote>
-        </div>
-      </section>
-
-      {/* Pagination */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分页导航</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">分页 Pagination</h2>
-          <div className="flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              className="w-10 h-10 border border-[#e5e5e5] flex items-center justify-center hover:border-[#0a0a0a] transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            {[1, 2, 3, 4, 5].map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 text-sm transition-colors ${
-                  currentPage === page
-                    ? "bg-[#0a0a0a] text-white"
-                    : "border border-[#e5e5e5] hover:border-[#0a0a0a]"
-                }`}
+          <div className="flex flex-col">
+            {featuredWorks.map((work) => (
+              <div
+                key={work.id}
+                className="group relative flex flex-col md:flex-row justify-between items-start md:items-center py-10 md:py-16 border-b border-[#1C1C1C]/10 hover:bg-[#1C1C1C]/[0.02] transition-colors px-4 -mx-4 cursor-pointer"
               >
-                {page}
-              </button>
+                <div className="flex items-center gap-8 md:gap-16 z-10">
+                  <span className="font-sans text-xs tracking-widest text-[#1C1C1C]/40">{work.id}</span>
+                  <h3 className="font-serif text-4xl md:text-6xl group-hover:italic transition-all duration-500">{work.title}</h3>
+                </div>
+                <span className="font-sans text-xs tracking-[0.2em] uppercase mt-6 md:mt-0 z-10 text-[#1C1C1C]/60">{work.category}</span>
+
+                {/* Hover Image Reveal */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] aspect-[3/4] pointer-events-none opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-500 ease-out hidden md:block z-0 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={work.image} alt={work.title} className="w-full h-full object-cover" />
+                </div>
+              </div>
             ))}
-            <button
-              onClick={() => setCurrentPage(Math.min(5, currentPage + 1))}
-              className="w-10 h-10 border border-[#e5e5e5] flex items-center justify-center hover:border-[#0a0a0a] transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
+          </div>
+        </div>
+      </section>
+
+      {/* Infinite Marquee */}
+      <div className="w-full overflow-hidden border-y border-[#1C1C1C]/10 py-6 bg-[#F9F8F6]">
+        <div className="flex w-[200%]" style={{ animation: "marquee 25s linear infinite" }}>
+          {[0, 1].map((i) => (
+            <div key={i} className="flex-1 flex justify-around items-center font-sans text-xs tracking-[0.3em] uppercase text-[#1C1C1C]/60">
+              <span>Art Direction</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C]/20" />
+              <span>Digital Design</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C]/20" />
+              <span>Brand Identity</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C]/20" />
+              <span>Interaction</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C]/20" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ===== WORK: Archive Grid ===== */}
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-24">
+          <h2 className="font-serif text-5xl md:text-7xl mb-6">
+            Selected <span className="italic text-[#1C1C1C]/60">Archive.</span>
+          </h2>
+          <p className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60 max-w-md">
+            A curated collection of digital experiences, brand identities, and editorial designs.
+          </p>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-24">
+          {projects.map((project, i) => (
+            <RevealBlock key={project.id} className={`group cursor-pointer ${i % 2 !== 0 ? "md:mt-32" : ""}`} delay={i % 2 === 0 ? 0 : 0.2}>
+              <div className={`w-full ${project.aspect} overflow-hidden mb-6 bg-gray-200 relative`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                />
+              </div>
+              <div className="flex justify-between items-start">
+                <h3 className="font-serif text-2xl md:text-3xl group-hover:italic transition-all">{project.title}</h3>
+                <span className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40">{project.category}</span>
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== ABOUT ===== */}
+      <section className="border-t border-[#1C1C1C]/10 py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
+          {/* Portrait */}
+          <div className="lg:col-span-5">
+            <div className="w-full aspect-[3/4] bg-gray-200 overflow-hidden lg:sticky lg:top-32">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://picsum.photos/seed/portrait/800/1000?grayscale"
+                alt="Portrait"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="lg:col-span-7 pt-4 lg:pt-24">
+            <RevealBlock>
+              <h2 className="font-serif text-4xl md:text-6xl leading-tight mb-16">
+                I believe in design <br />
+                <span className="italic text-[#1C1C1C]/60">that whispers,</span> <br />
+                rather than shouts.
+              </h2>
+            </RevealBlock>
+
+            <RevealBlock delay={0.15}>
+              <div className="space-y-8 font-sans text-sm md:text-base leading-relaxed text-[#1C1C1C]/80 max-w-xl">
+                <p>
+                  With over a decade of experience in digital design and art direction, I help brands articulate their vision through refined aesthetics and purposeful interactions. My approach is rooted in traditional editorial design principles, adapted for the modern web.
+                </p>
+                <p>
+                  I focus on typography, negative space, and subtle motion to create experiences that feel crafted rather than assembled. Currently based in Paris, working with clients worldwide.
+                </p>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.3} className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-[#1C1C1C]/10 pt-12">
+              <div>
+                <h3 className="font-sans text-xs tracking-[0.2em] uppercase mb-6 text-[#1C1C1C]/40">Services</h3>
+                <ul className="space-y-3 font-serif text-xl">
+                  <li>Art Direction</li>
+                  <li>Digital Design</li>
+                  <li>Brand Identity</li>
+                  <li>Interaction Design</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-sans text-xs tracking-[0.2em] uppercase mb-6 text-[#1C1C1C]/40">Selected Clients</h3>
+                <ul className="space-y-3 font-serif text-xl italic text-[#1C1C1C]/80">
+                  <li>Vogue</li>
+                  <li>Kinfolk</li>
+                  <li>Acne Studios</li>
+                  <li>A24 Films</li>
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CONTACT ===== */}
+      <section className="border-t border-[#1C1C1C]/10 py-24 md:py-40 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          <RevealBlock>
+            <h2 className="font-serif text-6xl md:text-8xl mb-8">
+              Say <span className="italic text-[#1C1C1C]/60">Hello.</span>
+            </h2>
+            <p className="font-sans text-sm leading-relaxed text-[#1C1C1C]/60 max-w-md mb-16">
+              Whether you have a project in mind or just want to say hi, I am always open to discussing new opportunities and collaborations.
+            </p>
+
+            <div className="space-y-8 font-sans text-xs tracking-[0.2em] uppercase">
+              <div>
+                <span className="block text-[#1C1C1C]/40 mb-2">Email</span>
+                <span className="hover-underline pb-1 text-base normal-case">hello@studio.com</span>
+              </div>
+              <div>
+                <span className="block text-[#1C1C1C]/40 mb-2">Based In</span>
+                <span className="text-base normal-case">Paris, France</span>
+              </div>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.2} className="space-y-12 lg:pt-8">
+            <div className="relative">
+              <input
+                type="text"
+                id="ed-name"
+                className="w-full bg-transparent border-b border-[#1C1C1C]/20 py-4 font-serif text-xl focus:outline-none focus:border-[#1C1C1C] transition-colors peer placeholder-transparent"
+                placeholder="Name"
+              />
+              <label htmlFor="ed-name" className="absolute left-0 top-4 font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40 transition-all peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#1C1C1C] peer-placeholder-shown:top-4 peer-placeholder-shown:text-xs">
+                Your Name
+              </label>
+            </div>
+
+            <div className="relative">
+              <input
+                type="email"
+                id="ed-email"
+                className="w-full bg-transparent border-b border-[#1C1C1C]/20 py-4 font-serif text-xl focus:outline-none focus:border-[#1C1C1C] transition-colors peer placeholder-transparent"
+                placeholder="Email"
+              />
+              <label htmlFor="ed-email" className="absolute left-0 top-4 font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40 transition-all peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#1C1C1C] peer-placeholder-shown:top-4 peer-placeholder-shown:text-xs">
+                Email Address
+              </label>
+            </div>
+
+            <div className="relative">
+              <textarea
+                id="ed-message"
+                rows={4}
+                className="w-full bg-transparent border-b border-[#1C1C1C]/20 py-4 font-serif text-xl focus:outline-none focus:border-[#1C1C1C] transition-colors peer placeholder-transparent resize-none"
+                placeholder="Message"
+              />
+              <label htmlFor="ed-message" className="absolute left-0 top-4 font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40 transition-all peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#1C1C1C] peer-placeholder-shown:top-4 peer-placeholder-shown:text-xs">
+                Project Details
+              </label>
+            </div>
+
+            <button type="button" className="font-sans text-xs tracking-[0.2em] uppercase hover-underline pb-1 flex items-center gap-4 group">
+              Submit Inquiry
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-2 transition-transform">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Dividers */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">分隔元素</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">分隔线 Divider</h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">简单分隔</p>
-              <hr className="border-t border-[#e5e5e5]" />
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">带文字</p>
-              <div className="flex items-center gap-4">
-                <hr className="flex-1 border-t border-[#e5e5e5]" />
-                <span className="text-xs tracking-widest uppercase text-[#6b7280]">或</span>
-                <hr className="flex-1 border-t border-[#e5e5e5]" />
-              </div>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">装饰分隔</p>
-              <div className="flex items-center justify-center gap-2">
-                <span className="w-2 h-2 bg-[#0a0a0a]" />
-                <span className="w-2 h-2 bg-[#6b7280]" />
-                <span className="w-2 h-2 bg-[#e5e5e5]" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Rules Summary */}
-      <section className="border-b border-[#e5e5e5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="text-xs tracking-widest uppercase text-[#6b7280] mb-4">设计规范</p>
-          <h2 className="font-serif text-2xl md:text-4xl tracking-tight mb-8 md:mb-12">核心规则</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h3 className="font-serif text-xl mb-6 text-[#0a0a0a]">必须遵循</h3>
-              <ul className="space-y-3 text-sm text-[#6b7280]">
-                <li className="flex items-start gap-3"><span className="text-[#0a0a0a]">—</span><span>标题使用衬线字体 font-serif</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#0a0a0a]">—</span><span>正文使用无衬线字体 font-sans</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#0a0a0a]">—</span><span>大量留白 py-16 md:py-24</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#0a0a0a]">—</span><span>细边框 border border-[#e5e5e5]</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#0a0a0a]">—</span><span>小写标签 uppercase tracking-widest text-xs</span></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-serif text-xl mb-6 text-[#e63946]">禁止事项</h3>
-              <ul className="space-y-3 text-sm text-[#6b7280]">
-                <li className="flex items-start gap-3"><span className="text-[#e63946]">×</span><span>粗边框或阴影</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#e63946]">×</span><span>过多颜色</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#e63946]">×</span><span>过多装饰元素</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#e63946]">×</span><span>标题使用无衬线字体</span></li>
-                <li className="flex items-start gap-3"><span className="text-[#e63946]">×</span><span>元素堆积，缺乏呼吸感</span></li>
-              </ul>
-            </div>
-          </div>
+          </RevealBlock>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#e5e5e5]">
+      <footer className="border-t border-[#1C1C1C]/10">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[#6b7280]">StyleKit · Editorial Showcase</p>
-            <Link href="/styles/editorial" className="text-sm tracking-wide hover:text-[#e63946] transition-colors">
-              查看完整文档 →
+            <p className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40">
+              StyleKit &middot; Editorial Showcase
+            </p>
+            <Link href="/styles/editorial" className="font-sans text-xs tracking-[0.2em] uppercase hover-underline pb-1">
+              View Full Documentation &rarr;
             </Link>
           </div>
         </div>
