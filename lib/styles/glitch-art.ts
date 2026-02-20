@@ -33,6 +33,7 @@ export const glitchArt: DesignStyle = {
     "保持纯黑背景 bg-[#0a0a0a]，无圆角 rounded-none",
     "添加扫描线纹理覆盖层（repeating-linear-gradient）",
     "使用左边框（border-l-2）而非全边框来标记卡片",
+    "状态切换优先 transition-none，必要时仅使用 duration-75 ease-linear",
   ],
 
   dontList: [
@@ -41,6 +42,7 @@ export const glitchArt: DesignStyle = {
     "禁止使用衬线或无衬线字体（font-serif, font-sans）",
     "禁止使用毛玻璃效果（backdrop-blur）",
     "禁止使用粉色、自然色系等非CMY色彩",
+    "禁止使用 ease-in-out、spring 等顺滑过渡曲线",
   ],
 
   components: {
@@ -48,36 +50,43 @@ export const glitchArt: DesignStyle = {
       name: "按钮",
       description: "故障风格按钮，带RGB通道分离阴影",
       code: `<button className="
-  px-6 py-3
-  bg-[#00ffff] text-[#0a0a0a]
+  px-8 py-3
+  bg-[#0a0a0a] text-[#00ffff]
   font-mono font-bold uppercase tracking-widest
   rounded-none
-  border border-[#00ffff]/30
+  border border-[#00ffff]/50
   shadow-[3px_0_#ff00ff,-3px_0_#ffff00]
-  hover:shadow-[6px_0_#ff00ff,-6px_0_#ffff00]
-  transition-all duration-100
+  hover:bg-[#00ffff] hover:text-[#0a0a0a]
+  hover:shadow-[6px_2px_#ff00ff,-6px_-2px_#ffff00]
+  hover:skew-x-2
+  active:skew-x-[-10deg] active:scale-x-110 active:scale-y-90 active:translate-x-2 active:shadow-none
+  transition-none
 ">
-  EXECUTE_
+  EXECUTE_CMD
 </button>`,
     },
     card: {
       name: "卡片",
       description: "数据损坏面板，带位移带边框",
-      code: `<div className="
+      code: `<div className="group
   p-6
   bg-[#0a0a0a]
-  border-l-2 border-[#00ffff]/40
+  border-l-4 border-[#00ffff]
   rounded-none
+  hover:border-[#ff00ff]
+  hover:-translate-x-1 hover:translate-y-1
+  transition-none
   relative overflow-hidden
 ">
-  <h3 className="text-lg font-mono font-bold text-[#00ffff] uppercase mb-2">
-    SIGNAL
+  <div className="absolute top-1/2 left-0 w-full h-1 bg-[#ffffff]/20 -translate-y-1/2 opacity-0 group-hover:opacity-100 pointer-events-none" />
+  <h3 className="text-xl font-mono font-black text-[#00ffff] uppercase mb-3 group-hover:text-[#ff00ff] group-hover:tracking-[0.2em] transition-none">
+    SYS_SIGNAL
   </h3>
-  <p className="text-[#ffffff]/25 font-mono text-sm">
-    Data stream intercepted and decoded from corrupted channel
+  <p className="text-[#ffffff]/40 font-mono text-sm leading-relaxed group-hover:text-white transition-none">
+    [ERR_0x7A] Data stream intercepted. Rendering matrices corrupted. Proceed with caution.
   </p>
-  <div className="mt-4 pt-3 border-t border-[#00ffff]/10">
-    <span className="font-mono text-xs text-[#00ffff]/30">SECTOR_0x7A // ACTIVE</span>
+  <div className="mt-5 pt-3 border-t border-[#00ffff]/20 group-hover:border-[#ffff00]/50 transition-none">
+    <span className="font-mono text-xs font-bold text-[#ffff00] bg-[#ffff00]/10 px-2 py-1 group-hover:bg-[#ff00ff] group-hover:text-white transition-none">SECTOR // COMPROMISED</span>
   </div>
 </div>`,
     },
@@ -228,7 +237,7 @@ export const glitchArt: DesignStyle = {
 - Sharp edges: rounded-none on all elements
 - Scan line overlay: repeating-linear-gradient for CRT effect
 - Left-border accent on cards: border-l-2 border-[color]/40
-- Fast transitions: duration-100 (not 300ms)
+- Hard switching: transition-none by default, optionally duration-75 ease-linear for minimal state transitions
 
 ## Color Palette
 
@@ -246,7 +255,14 @@ Primary:
 - VHS tracking error lines (thin horizontal lines spanning full viewport width)
 - Data corruption blocks (scattered semi-transparent colored rectangles)
 - Signal monitor panels with hex readouts and progress bars
-- Scan line texture overlay on cards and interactive areas`,
+- Scan line texture overlay on cards and interactive areas
+
+## Animation & Interaction Rules
+
+- Violent Chromatic Split: hover/active 时可放大 RGB 错位幅度（6px 级别），优先用于文字与边缘阴影。
+- Zero Smoothing: 默认使用 \`transition-none\`；若必须过渡，仅允许 \`duration-75 ease-linear\` 的硬切风格。
+- Structural Tear: \`:active\` 可使用 \`skew\`、\`scale-x\`、\`translate-x\` 制造撕裂感，避免常规柔和按压反馈。
+- Hover Noise: hover 可执行前景/背景快速反转与警告色跳变，但应保持主文案可读。`,
 
   examplePrompts: [
     {
