@@ -10,11 +10,11 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
       skeleton: {
         element: "button",
         baseClasses: [
-          "font-medium",
+          "font-normal",
           "tracking-wide",
           "uppercase",
           "text-sm",
-          "transition-all duration-300",
+          "transition-colors duration-200",
         ],
       },
       parameters: [
@@ -46,7 +46,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
           labelZh: "主要",
           classes: [
             "bg-[#0a0a0a] text-white",
-            "border-b-2 border-[#0a0a0a]",
+            "border-b border-[#0a0a0a]",
           ],
         },
         secondary: {
@@ -64,7 +64,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
           labelZh: "强调",
           classes: [
             "bg-[#e63946] text-white",
-            "border-b-2 border-[#e63946]",
+            "border-b border-[#e63946]",
           ],
         },
         ghost: {
@@ -73,7 +73,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
           labelZh: "幽灵",
           classes: [
             "bg-transparent text-[#0a0a0a]",
-            "border-b-2 border-transparent",
+            "border-b border-transparent",
           ],
         },
       },
@@ -84,9 +84,9 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
       states: {
         hover: [
           "hover:opacity-80",
-          "hover:border-b-2 hover:border-[#0a0a0a]",
+          "hover:border-b hover:border-[#0a0a0a]",
         ],
-        active: ["active:opacity-70"],
+        active: ["active:opacity-60"],
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
@@ -101,7 +101,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
         baseClasses: [
           "bg-white",
           "border-b border-gray-200",
-          "transition-all duration-300",
+          "transition-colors duration-200",
         ],
       },
       parameters: [
@@ -137,13 +137,13 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
           id: "featured",
           label: "Featured",
           labelZh: "精选",
-          classes: ["border-b-2 border-[#0a0a0a]"],
+          classes: ["border-b border-[#0a0a0a]"],
         },
         accent: {
           id: "accent",
           label: "Accent",
           labelZh: "强调",
-          classes: ["border-b-2 border-[#e63946]"],
+          classes: ["border-b border-[#e63946]"],
         },
       },
       slots: [
@@ -152,7 +152,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
       ],
       states: {
         hover: [
-          "hover:border-b-2 hover:border-[#0a0a0a]",
+          "hover:border-b hover:border-[#0a0a0a]",
         ],
       },
     },
@@ -166,11 +166,11 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
         element: "input",
         baseClasses: [
           "w-full",
-          "border-b-2 border-gray-300",
+          "border-b border-gray-300",
           "bg-transparent",
           "rounded-none",
           "focus:outline-none",
-          "transition-all duration-300",
+          "transition-colors duration-200",
         ],
       },
       parameters: [
@@ -220,7 +220,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
       skeleton: {
         element: "div",
         baseClasses: [
-          "font-bold",
+          "font-normal",
           "tracking-tight",
           "leading-tight",
           "text-[#0a0a0a]",
@@ -275,7 +275,7 @@ export const editorialRecipes = createStyleRecipes("editorial", "Editorial", {
         element: "div",
         baseClasses: [
           "inline-block",
-          "font-medium",
+          "font-normal",
           "text-xs",
           "uppercase",
           "tracking-widest",

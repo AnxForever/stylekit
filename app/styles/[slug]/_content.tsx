@@ -180,6 +180,7 @@ export function StyleDetailContent({
             <QuickStartGuide
               aiRules={style.aiRules}
               styleName={style.name}
+              styleSlug={style.slug}
             />
           </div>
         </div>
@@ -273,6 +274,7 @@ export function StyleDetailContent({
             <ExamplePrompts
               prompts={style.examplePrompts}
               styleName={style.name}
+              styleSlug={style.slug}
               aiRules={style.aiRules}
             />
           </div>
@@ -405,6 +407,7 @@ export function StyleDetailContent({
             aiRules={style.aiRules}
             globalCss={style.globalCss}
             styleName={style.name}
+            styleSlug={style.slug}
             enhancedRules={enhancedRules}
           />
         </div>
