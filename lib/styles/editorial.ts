@@ -5,122 +5,150 @@ export const editorial: DesignStyle = {
   name: "编辑杂志风",
   nameEn: "Editorial",
   description:
-    "优雅的杂志排版风格，衬线标题、无衬线正文、精致的留白和网格系统。灵感来自高端时尚杂志和报纸排版。",
+    "优雅的杂志排版风格，衬线标题、无衬线正文、精致的留白和网格系统。灵感来自高端时尚杂志和报纸排版。暖米色背景、柔和黑文字、精细的透明度层次和动画下划线交互。",
   cover: "/styles/editorial.svg",
   styleType: "visual",
   tags: ["minimal"],
   category: "minimal",
   colors: {
-    primary: "#0a0a0a",
-    secondary: "#fafafa",
-    accent: ["#e63946", "#6b7280", "#e5e5e5"],
+    primary: "#1C1C1C",
+    secondary: "#F9F8F6",
+    accent: ["#1C1C1C", "#6b7280"],
   },
-  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义"],
+  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "单色"],
 
   philosophy: `Editorial（编辑杂志风）设计风格源于传统印刷媒体的排版美学，特别是高端时尚杂志和报纸的设计语言。这种风格强调内容的层次结构、精致的字体搭配和大量留白。
 
 核心理念：
-- 内容为王：设计服务于内容，不喧宾夺主
-- 字体层次：衬线标题与无衬线正文形成对比
-- 留白即美：适当的负空间让内容呼吸
-- 网格秩序：严谨的栅格系统组织内容`,
+- 内容为王：设计服务于内容，不喧宾夺主。UI 是低声细语，不是大声喊叫
+- 字体层次：衬线标题与无衬线正文形成对比，标签使用 uppercase tracking 增加呼吸感
+- 留白即美：适当的负空间让内容呼吸，section 间距 py-24 md:py-40 起步
+- 单色克制：仅使用 #1C1C1C 配合不同透明度（/60 /40 /10）构建视觉层次，拒绝彩色装饰
+- 微妙动效：hover-underline 动画、clip-path reveal、group-hover:italic 等克制而精致的交互`,
 
   doList: [
     "标题使用衬线字体 font-serif，正文使用无衬线字体 font-sans",
-    "使用大量留白 py-16 md:py-24 或更大",
-    "边框使用细线 border border-border",
-    "使用小写字母的标签样式 uppercase tracking-widest text-xs",
-    "保持颜色克制，主要使用黑白灰",
-    "强调色用于点睛之笔，如链接、重要按钮",
-    "使用 letter-spacing 调整标题字间距 tracking-tight",
+    "背景使用暖米色 bg-[#F9F8F6]，文字使用柔和黑 text-[#1C1C1C]",
+    "使用透明度层次构建灰度：text-[#1C1C1C]/60（次要）、/40（辅助）、/10（边框）",
+    "标签样式使用 font-sans text-xs tracking-[0.2em] uppercase",
+    "Section 间距至少 py-24 md:py-40，容器内边距 px-6 md:px-12",
+    "链接和按钮使用 hover-underline 动画下划线效果",
+    "标题使用 tracking-tighter 紧凑字间距，hero 标题 text-6xl md:text-8xl 起步",
+    "斜体用于副标题或装饰性文字：italic text-[#1C1C1C]/60",
+    "表单使用底线输入框 + 浮动标签（peer-focus 模式）",
+    "hover 交互使用 group-hover:italic 和微妙的 transition-all duration-500",
   ],
 
   dontList: [
-    "禁止使用过多颜色，保持 2-3 色调",
-    "禁止使用粗边框或阴影",
-    "禁止使用过多装饰元素",
+    "禁止使用彩色强调色（红、蓝、绿等），保持纯单色体系",
+    "禁止使用粗边框或阴影（shadow-*）",
+    "禁止使用 #0a0a0a 纯黑或 #fafafa 冷白作为主色",
     "禁止标题使用无衬线字体",
     "禁止过小的行高，正文至少 leading-relaxed",
     "禁止元素堆积，保持呼吸感",
+    "禁止使用渐变、背景图案或装饰性几何元素",
+    "禁止使用大圆角 rounded-xl 以上",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Editorial 风格的按钮，简洁克制",
-      code: `<button className="
-  px-6 py-3
-  bg-foreground text-background
-  text-sm tracking-wide
-  hover:bg-foreground/90
-  transition-colors
+      description: "Editorial 风格的按钮，使用 hover-underline 动画下划线",
+      code: `{/* 主要按钮：下划线动画 */}
+<button className="
+  font-sans text-xs tracking-[0.2em] uppercase
+  relative pb-1
+  after:content-[''] after:absolute after:w-full after:h-px
+  after:bottom-0 after:left-0 after:bg-current
+  after:origin-bottom-right after:scale-x-0
+  hover:after:origin-bottom-left hover:after:scale-x-100
+  after:transition-transform after:duration-500
+  after:ease-[cubic-bezier(0.16,1,0.3,1)]
+  flex items-center gap-4 group
 ">
-  按钮文字
+  Submit Inquiry
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-2 transition-transform">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
 </button>
 
-{/* 轮廓按钮 */}
-<button className="
-  px-6 py-3
-  border border-border
-  text-sm tracking-wide
-  hover:border-foreground
-  transition-colors
+{/* 次要按钮：纯文字 */}
+<span className="
+  font-sans text-xs tracking-[0.2em] uppercase
+  text-[#1C1C1C]/60 cursor-pointer
+  hover:text-[#1C1C1C] transition-colors
 ">
-  按钮文字
-</button>`,
+  View All
+</span>`,
     },
     card: {
       name: "卡片",
-      description: "带细边框的优雅卡片",
+      description: "作品列表项，hover 时标题变斜体并浮现预览图",
       code: `<div className="
-  border border-border
-  hover:border-foreground
-  transition-colors
+  group relative flex flex-col md:flex-row
+  justify-between items-start md:items-center
+  py-10 md:py-16
+  border-b border-[#1C1C1C]/10
+  hover:bg-[#1C1C1C]/[0.02]
+  transition-colors px-4 -mx-4 cursor-pointer
 ">
-  <div className="aspect-[16/9] bg-zinc-100" />
-  <div className="p-6">
-    <p className="text-xs tracking-widest uppercase text-muted mb-2">
-      分类标签
-    </p>
-    <h3 className="text-xl mb-3">卡片标题</h3>
-    <p className="text-sm text-muted leading-relaxed">
-      卡片描述文字，使用较小字号和灰色
-    </p>
+  <div className="flex items-center gap-8 md:gap-16 z-10">
+    <span className="font-sans text-xs tracking-widest text-[#1C1C1C]/40">01</span>
+    <h3 className="font-serif text-4xl md:text-6xl group-hover:italic transition-all duration-500">
+      The Modernist
+    </h3>
   </div>
+  <span className="font-sans text-xs tracking-[0.2em] uppercase mt-6 md:mt-0 z-10 text-[#1C1C1C]/60">
+    Art Direction
+  </span>
 </div>`,
     },
     input: {
       name: "输入框",
-      description: "简洁的表单输入框",
-      code: `<input
-  type="text"
-  placeholder="请输入..."
-  className="
-    w-full px-4 py-3
-    border border-border
-    text-sm
-    focus:outline-none
-    focus:border-foreground
-    transition-colors
-    placeholder:text-muted
-  "
-/>`,
+      description: "底线输入框 + 浮动标签，衬线字体输入文字",
+      code: `<div className="relative">
+  <input
+    type="text"
+    id="name"
+    className="
+      w-full bg-transparent
+      border-b border-[#1C1C1C]/20
+      py-4 font-serif text-xl
+      focus:outline-none focus:border-[#1C1C1C]
+      transition-colors
+      peer placeholder-transparent
+    "
+    placeholder="Name"
+  />
+  <label
+    htmlFor="name"
+    className="
+      absolute left-0 top-4
+      font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40
+      transition-all
+      peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#1C1C1C]
+      peer-placeholder-shown:top-4 peer-placeholder-shown:text-xs
+    "
+  >
+    Your Name
+  </label>
+</div>`,
     },
     nav: {
       name: "导航栏",
-      description: "简约的顶部导航",
-      code: `<header className="border-b border-border">
+      description: "固定顶部导航，毛玻璃背景，hover-underline 链接",
+      code: `<header className="fixed top-0 left-0 right-0 z-50 bg-[#F9F8F6]/90 backdrop-blur-sm">
   <div className="max-w-7xl mx-auto px-6 md:px-12">
-    <div className="flex items-center justify-between h-16 md:h-20">
-      <a href="/" className="masthead text-lg md:text-xl">
-        LOGO
+    <div className="flex items-center justify-between h-16 md:h-20 border-b border-[#1C1C1C]/10">
+      <a href="/" className="font-serif text-lg tracking-[0.3em] uppercase">
+        Editorial
       </a>
-      <nav className="flex items-center gap-8">
-        <a href="#" className="text-sm tracking-wide text-muted hover:text-foreground transition-colors">
-          链接一
+      <nav className="flex items-center gap-6 md:gap-8">
+        <a href="#" className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60 hover-underline pb-1">
+          Work
         </a>
-        <a href="#" className="text-sm tracking-wide text-muted hover:text-foreground transition-colors">
-          链接二
+        <a href="#" className="font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60 hover-underline pb-1">
+          About
         </a>
       </nav>
     </div>
@@ -129,19 +157,19 @@ export const editorial: DesignStyle = {
     },
     hero: {
       name: "Hero 区块",
-      description: "杂志封面式的 Hero 区域",
-      code: `<section className="border-b border-border">
-  <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-32">
-    <p className="text-xs tracking-widest uppercase text-muted mb-4">
-      小标签
-    </p>
-    <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
-      优雅的<br />
-      <span className="italic">杂志排版</span>
+      description: "超大衬线标题 + 副标题斜体 + clip-path 图片揭示",
+      code: `<section className="pt-32 md:pt-48 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
+  <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 md:mb-40 gap-12">
+    <h1 className="font-serif text-6xl md:text-8xl lg:text-[9rem] leading-[0.9] tracking-tighter">
+      Digital <br />
+      <span className="italic text-[#1C1C1C]/60">Craftsmanship.</span>
     </h1>
-    <p className="text-lg md:text-xl text-muted leading-relaxed max-w-md">
-      Editorial 风格强调内容至上，通过精致的字体和留白营造高级感。
+    <p className="max-w-xs font-sans text-xs leading-relaxed uppercase tracking-[0.2em] text-[#1C1C1C]/60">
+      Elevating brands through refined typography, minimalist layouts, and purposeful interactions.
     </p>
+  </div>
+  <div className="w-full aspect-[21/9] bg-gray-200 overflow-hidden">
+    <img src="hero.jpg" alt="Hero" className="w-full h-full object-cover" />
   </div>
 </section>`,
     },
@@ -149,128 +177,158 @@ export const editorial: DesignStyle = {
 
   globalCss: `/* Editorial 全局样式 */
 :root {
-  --background: #fafafa;
-  --foreground: #0a0a0a;
-  --accent: #e63946;
-  --muted: #6b7280;
-  --border: #e5e5e5;
+  --ed-bg: #F9F8F6;
+  --ed-fg: #1C1C1C;
 }
 
-/* 标题使用衬线字体 */
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--ed-bg);
+  color: var(--ed-fg);
+  -webkit-font-smoothing: antialiased;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   font-weight: 400;
   letter-spacing: -0.02em;
 }
 
-/* 正文使用无衬线字体 */
-body {
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-  background: var(--background);
-  color: var(--foreground);
-}
-
-/* 选中文字样式 */
 ::selection {
-  background: var(--accent);
-  color: white;
+  background: var(--ed-fg);
+  color: var(--ed-bg);
 }
 
-/* 杂志刊头样式 */
-.masthead {
-  font-family: ui-serif, Georgia, serif;
-  font-weight: 400;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+/* Hover underline animation */
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
-/* 首字下沉 */
-.drop-cap::first-letter {
-  font-family: ui-serif, Georgia, serif;
-  float: left;
-  font-size: 4rem;
-  line-height: 0.8;
-  padding-right: 0.5rem;
+/* Clip-path image reveal */
+.clip-reveal {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.clip-reveal.revealed {
+  clip-path: inset(0% 0 0 0);
 }`,
 
-  aiRules: `你是一个 Editorial（编辑杂志风）设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `You are an Editorial design style frontend development expert. All generated code must strictly follow these constraints:
 
-## 核心原则
+## Core Palette
 
-- 内容为王，设计服务于内容
-- 大量留白，让内容呼吸
-- 字体层次分明
+- Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
+- Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
+- Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
+- NO colored accents. This style is purely monochromatic.
 
-## 字体规则
+## Typography
 
-- 标题：衬线字体 font-serif, letter-spacing: -0.02em
-- 正文：无衬线字体 font-sans
-- 标签：大写 + 字间距 uppercase tracking-widest text-xs
+- Headings: font-serif, tracking-tighter, weight 400 (never bold)
+- Hero titles: text-6xl md:text-8xl lg:text-[9rem] leading-[0.9]
+- Labels: font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40
+- Body: font-sans text-sm or text-base leading-relaxed text-[#1C1C1C]/80
+- Italic for decorative subtitles: italic text-[#1C1C1C]/60
 
-## 颜色规则
+## Layout
 
-- 主色：黑 #0a0a0a、白 #fafafa
-- 强调色：#e63946（仅用于点睛）
-- 灰色：#6b7280（辅助文字）
-- 边框：#e5e5e5（细边框）
+- Section spacing: py-24 md:py-40 minimum
+- Container: max-w-7xl mx-auto px-6 md:px-12
+- Generous gaps: gap-12 lg:gap-24
+- Content width: max-w-xs or max-w-md for body text
+- Use 12-column grids: grid-cols-12 with col-span-5/col-span-7 splits
 
-## 间距规则
+## Interactions
 
-- Section 间距：py-16 md:py-24 或更大
-- 容器内边距：px-6 md:px-12
-- 元素间距：mb-4 md:mb-6
+- Links: hover-underline animation (scaleX from right-to-left on hover)
+- Titles: group-hover:italic transition-all duration-500
+- Images: group-hover:scale-105 transition-transform duration-1000
+- Arrows: group-hover:translate-x-2 transition-transform
+- Borders: border-[#1C1C1C]/10, hover:bg-[#1C1C1C]/[0.02]
 
-## 边框规则
+## Form Fields
 
-- 只使用细边框：border border-border
-- hover 时边框变深：hover:border-foreground
-- 避免阴影
+- Bottom-border only: border-b border-[#1C1C1C]/20
+- Floating labels with peer-focus pattern
+- Input text: font-serif text-xl
+- Focus: focus:border-[#1C1C1C] (no outline, no shadow, no ring)
 
-## 禁止事项
+## Navigation
 
-- 禁止粗边框
-- 禁止阴影效果
-- 禁止过多颜色
-- 禁止标题用无衬线
-- 禁止元素堆积`,
+- Fixed: fixed top-0 z-50 bg-[#F9F8F6]/90 backdrop-blur-sm
+- Logo: font-serif text-lg tracking-[0.3em] uppercase
+- Links: font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60
+
+## Absolutely Forbidden
+
+- Colored accents (red, blue, green) - this is a monochrome style
+- Box shadows (shadow-*)
+- Thick borders (border-2 and above)
+- Large border-radius (rounded-xl and above)
+- Gradients or background patterns
+- Bold font weights on headings (font-bold, font-semibold)
+- Pure black #000 or #0a0a0a
+- Pure white #fff or #fafafa as background
+- Decorative geometric shapes or icons`,
 
   examplePrompts: [
+    {
+      title: "创意作品集",
+      titleEn: "Creative Portfolio",
+      description: "编辑杂志风格的创意设计师作品集",
+      descriptionEn: "Editorial-style creative designer portfolio with monochrome palette",
+      prompt: `Use Editorial style to create a creative portfolio page:
+1. Fixed nav: font-serif logo with tracking-[0.3em], hover-underline links
+2. Hero: massive serif title (9rem+) with italic subtitle in #1C1C1C/60, clip-path image reveal
+3. Featured works: numbered list (01, 02, 03) with hover image float and group-hover:italic
+4. Infinite marquee ticker: services list with dot separators
+5. Archive grid: masonry 2-col layout with staggered scroll reveals
+6. About section: sticky portrait left, serif quote right, services/clients lists
+7. Contact: floating-label inputs with bottom borders, hover-underline submit button
+8. Palette: bg-[#F9F8F6], text-[#1C1C1C] with /60 /40 /10 opacity hierarchy only`,
+    },
     {
       title: "杂志风格博客",
       titleEn: "Magazine Style Blog",
       description: "经典杂志排版的博客首页",
       descriptionEn: "Classic magazine layout blog homepage",
-      prompt: `用 Editorial 杂志排版风格创建一个博客首页，要求：
-1. 导航栏：细边框分隔，链接使用小写字母 + 字间距
-2. 特色文章：大图配衬线字体大标题，作者信息用 text-xs uppercase
-3. 文章网格：2-3 列，每篇文章有分类标签、标题、摘要
-4. 排版：标题用 font-serif，正文用 font-sans，大量留白
-5. 颜色：黑白为主，仅标签或链接用强调色`,
+      prompt: `Use Editorial style to create a magazine blog homepage:
+1. Navigation: fixed top, bg-[#F9F8F6]/90 backdrop-blur, hover-underline links
+2. Featured article: full-width grayscale image with clip-path reveal, serif title text-7xl
+3. Article list: numbered editorial list with border-b border-[#1C1C1C]/10 dividers
+4. Typography: font-serif headings tracking-tighter, font-sans text-xs labels with tracking-[0.2em] uppercase
+5. Footer: minimal, text-xs uppercase with dot separators
+6. Colors: monochrome only, #F9F8F6 background, #1C1C1C text with opacity variants`,
     },
     {
-      title: "产品详情页",
-      titleEn: "Product Detail Page",
-      description: "高端产品展示页面",
-      descriptionEn: "Premium product showcase page",
-      prompt: `用 Editorial 风格设计一个高端产品详情页，要求：
-1. Hero：全宽产品图，标题用衬线字体
-2. 产品信息：左图右文布局，规格用细边框表格
-3. 特性列表：图标 + 文字，保持简洁
-4. 购买区：价格突出，按钮用细边框 + hover 变黑
-5. 整体：极简配色，大量留白，细边框分割区域`,
-    },
-    {
-      title: "关于我们页面",
-      titleEn: "About Us Page",
-      description: "公司/团队介绍页",
-      descriptionEn: "Company/Team introduction page",
-      prompt: `用 Editorial 风格创建一个公司介绍页面，要求：
-1. Hero：大标题 font-serif，配简短 slogan
-2. 公司故事：左右交替布局，图文搭配
-3. 团队成员：网格展示，照片 + 姓名 + 职位
-4. 数据展示：大数字 + 小标签说明
-5. 联系方式：简洁表单，细边框输入框
-风格要点：衬线标题、无衬线正文、细边框、大留白`,
+      title: "工作室介绍",
+      titleEn: "Studio About Page",
+      description: "设计工作室的介绍页面",
+      descriptionEn: "Design studio about page with editorial typography",
+      prompt: `Use Editorial style to design a studio about page:
+1. Layout: 12-col grid, col-span-5 sticky portrait + col-span-7 content
+2. Hero quote: font-serif text-6xl with line breaks and italic decorative words
+3. Body text: font-sans text-sm leading-relaxed text-[#1C1C1C]/80, max-w-xl
+4. Services & clients: two-column grid with uppercase tracking labels, serif list items
+5. Contact section: Say Hello heading text-8xl, floating-label form inputs
+6. Interactions: IntersectionObserver scroll reveals, group-hover:italic on links
+7. Palette: bg-[#F9F8F6], pure monochrome, NO accent colors`,
     },
   ],
 };
