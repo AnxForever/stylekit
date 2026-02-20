@@ -1,574 +1,949 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { ChevronDown, Check, X, AlertTriangle, Info } from "lucide-react";
 
-/* ---------- inline useInView ---------- */
-function useInView() {
+function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.15 }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); observer.disconnect(); }
+    }, { threshold: 0.15, ...options });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
   return { ref, inView };
 }
 
-/* ---------- inline RevealBlock ---------- */
-function RevealBlock({ children, className = "", delay = 0 }: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const { ref, inView } = useInView();
+function RevealBlock({ children, delay = 0, inView }: { children: React.ReactNode; delay?: number; inView: boolean }) {
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
-      }}
-    >
+    <div style={{
+      opacity: inView ? 1 : 0,
+      transform: inView ? "translateY(0)" : "translateY(24px)",
+      transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+    }}>
       {children}
     </div>
   );
 }
 
-/* ---------- Gothic Ornament Divider ---------- */
-function GothicDivider({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex items-center justify-center gap-4 ${className}`}>
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#c9a227]/40" />
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#c9a227]/60 flex-shrink-0">
-        <path d="M12 2L14 8L20 8L15 12L17 18L12 14L7 18L9 12L4 8L10 8Z" fill="currentColor" />
-      </svg>
-      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#c9a227]/40" />
-    </div>
-  );
-}
-
-/* ---------- Gothic Corner Ornament ---------- */
-function CornerOrnaments() {
-  return (
-    <>
-      <div className="absolute top-0 left-0 w-10 h-10 border-t border-l border-[#c9a227]/20" />
-      <div className="absolute top-0 right-0 w-10 h-10 border-t border-r border-[#c9a227]/20" />
-      <div className="absolute bottom-0 left-0 w-10 h-10 border-b border-l border-[#c9a227]/20" />
-      <div className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-[#c9a227]/20" />
-    </>
-  );
-}
-
-/* ---------- data ---------- */
-const chapters = [
-  { num: "I", title: "The Cathedral", desc: "In the shadow of soaring spires, where pointed arches pierce the heavens and flying buttresses hold the weight of centuries." },
-  { num: "II", title: "The Rose Window", desc: "Crimson and gold light bleeds through intricate stonework, casting jeweled patterns across cold marble floors." },
-  { num: "III", title: "The Manuscript", desc: "Illuminated letters dance across vellum pages, each stroke a prayer rendered in gold leaf and lapis lazuli." },
-  { num: "IV", title: "The Crypt", desc: "Beneath the nave, where flickering torchlight reveals the secrets of those who came before, carved in eternal stone." },
-];
-
-const colorPalette = [
-  { name: "Deep Purple", hex: "#2d1b4e", desc: "Primary darkness" },
-  { name: "Blood Red", hex: "#8b1a1a", desc: "Sacred crimson" },
-  { name: "Void Black", hex: "#0a0a0a", desc: "Background" },
-  { name: "Sacred Gold", hex: "#c9a227", desc: "Illumination" },
-  { name: "Gold Light", hex: "#dfc266", desc: "Hover glow" },
-  { name: "Dark Violet", hex: "#4a2d6e", desc: "Accent depth" },
-];
-
-const componentTabs = ["Buttons", "Inputs", "Cards"] as const;
-
 export default function ShowcaseContent() {
   const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<(typeof componentTabs)[number]>("Buttons");
+  const [activeVariant, setActiveVariant] = useState<"Cathedral" | "Manuscript">("Cathedral");
+  const [activeTab, setActiveTab] = useState(0);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroRevealed(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  const { ref: componentsRef, inView: componentsInView } = useInView();
+  const { ref: philosophyRef, inView: philosophyInView } = useInView();
+  const { ref: paletteRef, inView: paletteInView } = useInView();
+  const { ref: typographyRef, inView: typographyInView } = useInView();
+  const { ref: formsRef, inView: formsInView } = useInView();
+  const { ref: rulesRef, inView: rulesInView } = useInView();
+
+  const cathedralCards = [
+    {
+      title: "The Nave",
+      latin: "Navis Cathedralis",
+      desc: "The central passage where pilgrims gather beneath soaring vaulted ceilings of stone and shadow, drawn toward the altar by divine geometry.",
+      accent: "#8b1a1a",
+    },
+    {
+      title: "Rose Window",
+      latin: "Fenestra Rosae",
+      desc: "Stained glass petals radiate outward from a sacred center, flooding the interior with colored divine light at each turning of the sun.",
+      accent: "#c9a227",
+    },
+    {
+      title: "The Cloister",
+      latin: "Claustrum Sanctum",
+      desc: "Silent arcaded corridors where contemplation deepens and footsteps echo against ancient stone worn smooth by centuries of devotion.",
+      accent: "#4a2d6e",
+    },
+  ];
+
+  const manuscriptCards = [
+    {
+      title: "Illumination",
+      latin: "Illuminatio Divina",
+      desc: "Gold leaf catches candlelight as the scribe's brush traces intricate borders around sacred text, preserving wisdom for eternity.",
+      accent: "#c9a227",
+    },
+    {
+      title: "Bestiary",
+      latin: "Liber Bestiarum",
+      desc: "Fantastical creatures fill the margins — dragons, griffins, and chimeras — watching over the sacred words with eternal vigilance.",
+      accent: "#8b1a1a",
+    },
+    {
+      title: "Psalter",
+      latin: "Psalterium Regium",
+      desc: "Royal psalms transcribed by candlelight, each letter a devotion, each page a testament to the enduring power of the written word.",
+      accent: "#4a2d6e",
+    },
+  ];
+
+  const displayCards = activeVariant === "Cathedral" ? cathedralCards : manuscriptCards;
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#c9a227]">
-      <style>{`
-        @keyframes gothic-glow {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-        @keyframes candle-flicker {
-          0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(201,162,39,0.4); }
-          25% { opacity: 0.95; text-shadow: 0 0 15px rgba(201,162,39,0.6); }
-          75% { opacity: 0.98; text-shadow: 0 0 8px rgba(201,162,39,0.3); }
-        }
-        @keyframes marquee-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .candle-text { animation: candle-flicker 3s ease-in-out infinite; }
-        .gold-glow { text-shadow: 0 0 10px rgba(201,162,39,0.4), 0 0 20px rgba(201,162,39,0.2); }
-      `}</style>
 
-      {/* ===== Fixed Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-[#c9a227]/20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/styles/gothic" className="font-serif text-xs uppercase tracking-[0.2em] text-[#c9a227]/60 hover:text-[#c9a227] transition-colors duration-500">
-              Return
-            </Link>
-            <span className="font-serif text-sm uppercase tracking-[0.3em] text-[#c9a227] gold-glow">
+      {/* Navigation */}
+      <header className="bg-[#0a0a0a] border-b border-[#c9a227]/20 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <Link
+              href="/styles/gothic/showcase"
+              className="font-serif text-lg md:text-xl tracking-widest uppercase text-[#c9a227] hover:text-[#c9a227]/80 transition-colors"
+            >
               GOTHIC
-            </span>
-            <nav className="flex items-center gap-6">
-              <Link href="/styles/gothic" className="hidden md:block font-serif text-xs uppercase tracking-[0.2em] text-[#c9a227]/40 hover:text-[#c9a227] transition-colors duration-500">
+            </Link>
+            <nav className="flex items-center gap-8">
+              <Link
+                href="/styles/gothic"
+                className="text-sm tracking-wider text-[#c9a227]/50 hover:text-[#c9a227] transition-colors font-serif"
+              >
                 Docs
               </Link>
-              <Link href="/styles" className="font-serif text-xs uppercase tracking-[0.2em] text-[#c9a227]/40 hover:text-[#c9a227] transition-colors duration-500">
-                Styles
+              <Link
+                href="/styles"
+                className="text-sm tracking-wider text-[#c9a227]/50 hover:text-[#c9a227] transition-colors font-serif"
+              >
+                StyleKit
               </Link>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* ===== Hero Section ===== */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background radial glow */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_30%,#c9a227_0%,transparent_60%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#2d1b4e]/20 to-[#0a0a0a]" />
-
-        {/* Ornate border frames */}
-        <div className="absolute inset-6 md:inset-12 border border-[#c9a227]/10" />
-        <div className="absolute inset-8 md:inset-16 border border-[#c9a227]/5" />
-
-        <div className="relative z-10 text-center px-6">
-          {/* Top ornament */}
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#2d1b4e] to-[#0a0a0a] min-h-[90vh] flex items-center justify-center">
+        {/* Radial gold glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at 50% 30%, #c9a227 0%, transparent 60%)",
+            opacity: 0.06,
+          }}
+        />
+        {/* Decorative pointed arch frame */}
+        <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none">
           <div
-            className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent mx-auto mb-8"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 1s ease-in-out",
-            }}
+            className="w-64 h-32 border-x border-t border-[#c9a227]/15"
+            style={{ clipPath: "polygon(0 100%, 0 40%, 50% 0, 100% 40%, 100% 100%)" }}
           />
+        </div>
+        {/* Vertical gold line top */}
+        <div className="absolute top-0 left-1/2 -translate-x-px w-px h-16 bg-gradient-to-b from-transparent via-[#c9a227]/40 to-transparent" />
+        {/* Vertical gold line bottom */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-px w-px h-16 bg-gradient-to-t from-transparent via-[#c9a227]/40 to-transparent" />
 
-          <h1
-            className="text-6xl md:text-8xl lg:text-[9rem] font-serif text-[#c9a227] tracking-wider leading-none"
-            style={{
-              textShadow: "0 0 40px rgba(201,162,39,0.3), 0 0 80px rgba(201,162,39,0.1)",
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1)",
-            }}
-          >
-            GOTHIC
-          </h1>
-
-          <p
-            className="mt-6 text-xl md:text-2xl text-[#c9a227]/60 font-serif italic tracking-wide"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s",
-            }}
-          >
-            In tenebris lux
-          </p>
-
-          <p
-            className="mt-2 text-sm text-[#c9a227]/40 font-serif tracking-[0.3em] uppercase"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 1s ease-in-out 0.4s",
-            }}
-          >
-            Cathedral Architecture &middot; Dark Romance &middot; Sacred Geometry
-          </p>
-
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <div
             style={{
               opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 1s ease-in-out 0.6s",
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.1s",
             }}
           >
-            <button className="mt-12 px-10 py-4 bg-[#0a0a0a] border border-[#c9a227]/40 text-[#c9a227] font-serif uppercase tracking-[0.2em] text-sm shadow-[0_4px_20px_rgba(10,10,10,0.9),inset_0_0_0_1px_rgba(201,162,39,0.1)] hover:bg-[#2d1b4e]/30 hover:border-[#c9a227] hover:text-[#dfc266] hover:shadow-[0_0_30px_rgba(201,162,39,0.2),inset_0_0_10px_rgba(201,162,39,0.1)] active:bg-[#000000] active:shadow-[inset_0_10px_20px_rgba(0,0,0,0.9)] transition-all duration-700 ease-in-out">
-              Enter the Sanctum
-            </button>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/50 font-serif mb-6">
+              哥特式风格 · Stilus Gothicus
+            </p>
           </div>
 
-          {/* Bottom ornament */}
           <div
-            className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent mx-auto mt-12"
             style={{
               opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 1s ease-in-out 0.8s",
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.25s",
             }}
-          />
+          >
+            <h1
+              className="font-serif text-6xl md:text-8xl lg:text-9xl tracking-wider uppercase mb-6"
+              style={{
+                color: "#c9a227",
+                textShadow: "0 0 60px rgba(201,162,39,0.35), 0 0 120px rgba(201,162,39,0.15)",
+              }}
+            >
+              GOTHIC
+            </h1>
+          </div>
+
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.4s",
+            }}
+          >
+            {/* Gold divider */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#c9a227]/50" />
+              <span className="text-[#c9a227]/40 font-serif text-sm">†</span>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#c9a227]/50" />
+            </div>
+            <p className="font-serif italic text-lg md:text-xl text-[#c9a227]/60 tracking-wider max-w-2xl mx-auto mb-10">
+              In tenebris et umbra, pulchritudo latet.
+              <span className="block text-sm mt-2 text-[#c9a227]/40 not-italic tracking-widest">
+                In darkness and shadow, beauty lies hidden.
+              </span>
+            </p>
+          </div>
+
+          <div
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.55s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.55s",
+            }}
+          >
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <button className="px-8 py-3 border border-[#c9a227]/60 text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#c9a227]/10 hover:shadow-[0_6px_24px_rgba(201,162,39,0.4)] transition-all duration-300">
+                Enter the Cathedral
+              </button>
+              <button className="px-8 py-3 bg-[#8b1a1a] text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#8b1a1a]/80 hover:shadow-[0_6px_24px_rgba(139,26,26,0.5)] transition-all duration-300">
+                Explore the Crypt
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ===== Marquee ===== */}
-      <div className="w-full overflow-hidden border-y border-[#c9a227]/10 py-4 bg-[#0a0a0a]">
-        <div className="flex w-[200%]" style={{ animation: "marquee-scroll 30s linear infinite" }}>
-          {[0, 1].map((i) => (
-            <div key={i} className="flex-1 flex justify-around items-center font-serif text-xs uppercase tracking-[0.3em] text-[#c9a227]/30">
-              <span>Cathedral</span>
-              <span className="text-[#8b1a1a]/40">&#10013;</span>
-              <span>Rose Window</span>
-              <span className="text-[#8b1a1a]/40">&#10013;</span>
-              <span>Manuscript</span>
-              <span className="text-[#8b1a1a]/40">&#10013;</span>
-              <span>Gargoyle</span>
-              <span className="text-[#8b1a1a]/40">&#10013;</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ===== Chapters / Feature Cards ===== */}
-      <section className="py-24 md:py-40 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <div className="text-center mb-20">
-              <h2 className="text-4xl md:text-6xl font-serif text-[#c9a227] tracking-wider mb-4 gold-glow">
-                CHAPTERS
-              </h2>
-              <p className="text-sm text-[#c9a227]/40 font-serif tracking-[0.2em] uppercase">
-                A journey through darkness and illumination
-              </p>
-              <GothicDivider className="mt-8 max-w-xs mx-auto" />
+      {/* Components Demo — Cathedral vs Manuscript Toggle */}
+      <section className="py-20 md:py-28 px-6" ref={componentsRef}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock inView={componentsInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Component Gallery
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-4"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Sacred Forms
+            </h2>
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <div className="h-px w-12 bg-[#c9a227]/30" />
+              <span className="font-serif text-xs text-[#c9a227]/30 italic tracking-wider">elementa designi</span>
+              <div className="h-px w-12 bg-[#c9a227]/30" />
             </div>
           </RevealBlock>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {chapters.map((ch, i) => (
-              <RevealBlock key={ch.num} delay={i * 0.1}>
-                <div className="group relative p-10 bg-gradient-to-b from-[#111111] to-[#0a0a0a] border border-[#c9a227]/20 shadow-[0_10px_40px_rgba(0,0,0,0.9)] hover:border-[#c9a227]/60 hover:shadow-[0_0_40px_rgba(45,27,78,0.6)] transition-all duration-700 ease-in-out overflow-hidden">
-                  <CornerOrnaments />
+          {/* Variant toggle */}
+          <RevealBlock inView={componentsInView} delay={0.1}>
+            <div className="flex justify-center mb-12">
+              <div className="border border-[#c9a227]/30 flex">
+                {(["Cathedral", "Manuscript"] as const).map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setActiveVariant(v)}
+                    className={`px-8 py-3 font-serif text-sm tracking-widest uppercase transition-all duration-300 ${
+                      activeVariant === v
+                        ? "bg-[#c9a227]/15 text-[#c9a227] border-[#c9a227]/50"
+                        : "text-[#c9a227]/40 hover:text-[#c9a227]/70"
+                    }`}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
 
-                  <div className="relative z-10">
-                    <span className="text-5xl font-serif text-[#c9a227]/20 group-hover:text-[#c9a227]/40 transition-colors duration-700">{ch.num}</span>
-                    <h3 className="text-2xl md:text-3xl font-serif text-[#c9a227]/80 mb-4 tracking-widest uppercase mt-2 group-hover:text-[#dfc266] group-hover:drop-shadow-[0_0_8px_rgba(201,162,39,0.4)] transition-all duration-700">
-                      {ch.title}
+          {/* Cards */}
+          <RevealBlock inView={componentsInView} delay={0.2}>
+            <div className="grid md:grid-cols-3 gap-6 mb-16">
+              {displayCards.map((card, i) => (
+                <div
+                  key={card.title}
+                  className="group relative bg-[#0d0d0d] border border-[#c9a227]/20 overflow-hidden cursor-pointer hover:border-[#c9a227]/60 hover:shadow-[0_8px_30px_rgba(45,27,78,0.5)] transition-all duration-300"
+                  style={{ transitionDelay: `${i * 50}ms` }}
+                >
+                  {/* Candlelight hover effect */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                    style={{
+                      background: `radial-gradient(circle at top right, ${card.accent}26, transparent 60%)`,
+                    }}
+                  />
+                  {/* Top gold bar */}
+                  <div className="h-px w-full" style={{ background: `linear-gradient(to right, transparent, ${card.accent}80, transparent)` }} />
+                  <div className="p-7">
+                    <p className="font-serif text-xs italic tracking-wider mb-2" style={{ color: `${card.accent}80` }}>
+                      {card.latin}
+                    </p>
+                    <h3
+                      className="font-serif text-xl tracking-wider uppercase mb-4 transition-colors duration-300"
+                      style={{ color: card.accent }}
+                    >
+                      {card.title}
                     </h3>
-                    <div className="w-12 h-px bg-[#8b1a1a]/50 mb-6 group-hover:w-full group-hover:bg-[#8b1a1a] transition-all duration-1000 ease-in-out" />
-                    <p className="text-[#c9a227]/50 font-serif leading-relaxed group-hover:text-[#c9a227]/80 transition-colors duration-700">
-                      {ch.desc}
+                    {/* Expanding gold underline */}
+                    <div
+                      className="h-px w-8 group-hover:w-full mb-4 transition-all duration-700"
+                      style={{ background: `${card.accent}60` }}
+                    />
+                    <p className="text-sm text-[#c9a227]/50 leading-relaxed font-serif italic">
+                      {card.desc}
                     </p>
                   </div>
+                  {/* Bottom arch decoration */}
+                  <div className="absolute bottom-0 right-0 w-12 h-12 border-l border-t opacity-20" style={{ borderColor: card.accent }} />
                 </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Component Demos (Tab-Switched) ===== */}
-      <section className="py-24 md:py-40 px-6 border-y border-[#c9a227]/10">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-serif text-[#c9a227] tracking-wider mb-4 gold-glow">
-                COMPONENTS
-              </h2>
-              <p className="text-sm text-[#c9a227]/40 font-serif tracking-[0.2em] uppercase">
-                Sacred elements of the interface
-              </p>
-              <GothicDivider className="mt-8 max-w-xs mx-auto" />
-            </div>
-          </RevealBlock>
-
-          {/* Tab Switcher */}
-          <RevealBlock delay={0.1}>
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {componentTabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 font-serif text-xs uppercase tracking-[0.2em] border transition-all duration-500 ease-in-out ${
-                    activeTab === tab
-                      ? "bg-[#2d1b4e]/30 border-[#c9a227] text-[#c9a227] shadow-[0_0_20px_rgba(201,162,39,0.2)]"
-                      : "bg-transparent border-[#c9a227]/20 text-[#c9a227]/40 hover:border-[#c9a227]/60 hover:text-[#c9a227]/80"
-                  }`}
-                >
-                  {tab}
-                </button>
               ))}
             </div>
           </RevealBlock>
 
-          {/* Tab: Buttons */}
-          {activeTab === "Buttons" && (
-            <RevealBlock delay={0.15}>
-              <div className="max-w-2xl mx-auto space-y-8">
-                <h3 className="text-sm font-serif uppercase tracking-[0.2em] text-[#c9a227]/40 text-center">Button Variants</h3>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <button className="px-10 py-4 bg-[#0a0a0a] border border-[#c9a227]/40 text-[#c9a227] font-serif uppercase tracking-[0.2em] shadow-[0_4px_20px_rgba(10,10,10,0.9),inset_0_0_0_1px_rgba(201,162,39,0.1)] hover:bg-[#2d1b4e]/30 hover:border-[#c9a227] hover:text-[#dfc266] hover:shadow-[0_0_30px_rgba(201,162,39,0.2),inset_0_0_10px_rgba(201,162,39,0.1)] active:bg-[#000000] active:shadow-[inset_0_10px_20px_rgba(0,0,0,0.9)] transition-all duration-700 ease-in-out">
-                    Enter Sanctum
-                  </button>
-                  <button className="px-10 py-4 bg-[#2d1b4e]/20 border border-[#8b1a1a]/40 text-[#8b1a1a] font-serif uppercase tracking-[0.2em] shadow-[0_4px_20px_rgba(10,10,10,0.9)] hover:bg-[#8b1a1a]/20 hover:border-[#8b1a1a] hover:text-[#c9a227] hover:shadow-[0_0_30px_rgba(139,26,26,0.3)] active:shadow-[inset_0_10px_20px_rgba(0,0,0,0.9)] transition-all duration-700 ease-in-out">
-                    Blood Oath
-                  </button>
-                </div>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <button className="px-8 py-3 bg-transparent border border-[#c9a227]/20 text-[#c9a227]/60 font-serif text-xs uppercase tracking-[0.2em] hover:border-[#c9a227]/60 hover:text-[#c9a227] transition-all duration-500">
-                    Ghost Button
-                  </button>
-                  <button className="px-8 py-3 bg-[#c9a227] text-[#0a0a0a] font-serif text-xs uppercase tracking-[0.2em] hover:bg-[#dfc266] hover:shadow-[0_0_20px_rgba(201,162,39,0.4)] active:scale-[0.98] transition-all duration-500">
-                    Illuminated
-                  </button>
-                </div>
+          {/* Button variants */}
+          <RevealBlock inView={componentsInView} delay={0.3}>
+            <div className="bg-[#0d0d0d] border border-[#c9a227]/20 p-8 mb-8">
+              <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">
+                Button Variants
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="px-7 py-3 border border-[#c9a227]/60 text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#c9a227]/10 hover:shadow-[0_6px_24px_rgba(201,162,39,0.4)] transition-all duration-300">
+                  Gold Outline
+                </button>
+                <button className="px-7 py-3 bg-[#8b1a1a] text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#8b1a1a]/80 hover:shadow-[0_6px_24px_rgba(139,26,26,0.5)] transition-all duration-300">
+                  Blood Red
+                </button>
+                <button className="px-7 py-3 bg-[#2d1b4e] text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#4a2d6e] hover:shadow-[0_6px_24px_rgba(45,27,78,0.5)] transition-all duration-300">
+                  Deep Purple
+                </button>
+                <button className="px-7 py-3 bg-[#c9a227] text-[#0a0a0a] font-serif text-sm tracking-widest uppercase hover:bg-[#c9a227]/90 hover:shadow-[0_6px_24px_rgba(201,162,39,0.5)] transition-all duration-300">
+                  Sacred Gold
+                </button>
+                <button
+                  className="px-7 py-3 font-serif text-sm tracking-widest uppercase cursor-not-allowed"
+                  style={{ color: "#c9a227", opacity: 0.25, border: "1px solid currentColor" }}
+                  disabled
+                >
+                  Forbidden
+                </button>
               </div>
-            </RevealBlock>
-          )}
+            </div>
+          </RevealBlock>
 
-          {/* Tab: Inputs */}
-          {activeTab === "Inputs" && (
-            <RevealBlock delay={0.15}>
-              <div className="max-w-lg mx-auto space-y-8">
-                <h3 className="text-sm font-serif uppercase tracking-[0.2em] text-[#c9a227]/40 text-center">Inscription Fields</h3>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-[#c9a227]/40 font-serif text-xs uppercase tracking-[0.2em] mb-2">Name</label>
-                    <input
-                      type="text"
-                      placeholder="Inscribe here..."
-                      className="w-full px-6 py-4 bg-[#0a0a0a]/80 border-2 border-[#c9a227]/30 text-[#c9a227] placeholder-[#c9a227]/30 font-serif focus:border-[#c9a227] focus:shadow-[0_0_16px_rgba(201,162,39,0.3)] focus:outline-none transition-all duration-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[#c9a227]/40 font-serif text-xs uppercase tracking-[0.2em] mb-2">Missive</label>
-                    <textarea
-                      rows={4}
-                      placeholder="Compose your missive..."
-                      className="w-full px-6 py-4 bg-[#0a0a0a]/80 border-2 border-[#c9a227]/30 text-[#c9a227] placeholder-[#c9a227]/30 font-serif focus:border-[#c9a227] focus:shadow-[0_0_16px_rgba(201,162,39,0.3)] focus:outline-none resize-none transition-all duration-500"
-                    />
-                  </div>
+          {/* Gothic input */}
+          <RevealBlock inView={componentsInView} delay={0.4}>
+            <div className="bg-[#0d0d0d] border border-[#c9a227]/20 p-8">
+              <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">
+                Sacred Form
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs tracking-[0.3em] uppercase text-[#c9a227]/50 font-serif mb-2">
+                    Name of the Penitent
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your name..."
+                    className="w-full px-4 py-3 bg-transparent border border-[#c9a227]/30 text-[#c9a227]/80 font-serif text-sm tracking-wider placeholder:text-[#c9a227]/20 focus:outline-none focus:border-[#c9a227]/60 focus:shadow-[0_0_12px_rgba(201,162,39,0.15)] transition-all duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs tracking-[0.3em] uppercase text-[#c9a227]/50 font-serif mb-2">
+                    Sacred Epistle
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="your@epistula.com"
+                    className="w-full px-4 py-3 bg-transparent border border-[#c9a227]/30 text-[#c9a227]/80 font-serif text-sm tracking-wider placeholder:text-[#c9a227]/20 focus:outline-none focus:border-[#c9a227]/60 focus:shadow-[0_0_12px_rgba(201,162,39,0.15)] transition-all duration-300"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs tracking-[0.3em] uppercase text-[#c9a227]/50 font-serif mb-2">
+                    Your Confession
+                  </label>
+                  <textarea
+                    placeholder="Speak your words into the void..."
+                    rows={3}
+                    className="w-full px-4 py-3 bg-transparent border border-[#c9a227]/30 text-[#c9a227]/80 font-serif text-sm tracking-wider placeholder:text-[#c9a227]/20 focus:outline-none focus:border-[#c9a227]/60 focus:shadow-[0_0_12px_rgba(201,162,39,0.15)] transition-all duration-300 resize-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <button className="px-8 py-3 bg-[#8b1a1a] text-[#c9a227] font-serif text-sm tracking-widest uppercase hover:bg-[#8b1a1a]/80 hover:shadow-[0_6px_24px_rgba(139,26,26,0.5)] transition-all duration-300">
+                    Submit Petition
+                  </button>
                 </div>
               </div>
-            </RevealBlock>
-          )}
-
-          {/* Tab: Cards */}
-          {activeTab === "Cards" && (
-            <RevealBlock delay={0.15}>
-              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div className="group relative p-8 bg-gradient-to-b from-[#111111] to-[#0a0a0a] border border-[#c9a227]/20 shadow-[0_10px_40px_rgba(0,0,0,0.9)] hover:border-[#c9a227]/60 hover:shadow-[0_0_40px_rgba(45,27,78,0.6)] transition-all duration-700 ease-in-out overflow-hidden">
-                  <CornerOrnaments />
-                  <div className="relative z-10">
-                    <h4 className="text-xl font-serif text-[#c9a227]/80 tracking-widest uppercase group-hover:text-[#dfc266] transition-colors duration-700">Standard Card</h4>
-                    <div className="w-8 h-px bg-[#8b1a1a]/50 my-4 group-hover:w-full group-hover:bg-[#8b1a1a] transition-all duration-1000" />
-                    <p className="text-[#c9a227]/50 font-serif text-sm leading-relaxed group-hover:text-[#c9a227]/80 transition-colors duration-700">
-                      A vessel of dark elegance, framed in sacred gold with whispered shadow beneath.
-                    </p>
-                  </div>
-                </div>
-                <div className="group relative p-8 bg-gradient-to-b from-[#1a0a0a] to-[#0a0a0a] border border-[#8b1a1a]/30 shadow-[0_10px_40px_rgba(0,0,0,0.9)] hover:border-[#8b1a1a]/70 hover:shadow-[0_0_40px_rgba(139,26,26,0.4)] transition-all duration-700 ease-in-out overflow-hidden">
-                  <CornerOrnaments />
-                  <div className="relative z-10">
-                    <h4 className="text-xl font-serif text-[#8b1a1a] tracking-widest uppercase group-hover:text-[#c9a227] transition-colors duration-700">Blood Card</h4>
-                    <div className="w-8 h-px bg-[#8b1a1a]/50 my-4 group-hover:w-full group-hover:bg-[#c9a227] transition-all duration-1000" />
-                    <p className="text-[#c9a227]/40 font-serif text-sm leading-relaxed group-hover:text-[#c9a227]/70 transition-colors duration-700">
-                      Crimson-bordered sanctum, where the blood of ages stains the margins of memory.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
+            </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ===== Inline Color Palette ===== */}
-      <section className="py-24 md:py-40 px-6">
+      {/* Design Philosophy — Cathedral Architecture */}
+      <section className="bg-[#0a0a0a] py-20 md:py-28 px-6 border-t border-[#c9a227]/10" ref={philosophyRef}>
         <div className="max-w-7xl mx-auto">
-          <RevealBlock>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-serif text-[#c9a227] tracking-wider mb-4 gold-glow">
-                PALETTE
-              </h2>
-              <p className="text-sm text-[#c9a227]/40 font-serif tracking-[0.2em] uppercase">
-                Sacred hues of the cathedral
-              </p>
-              <GothicDivider className="mt-8 max-w-xs mx-auto" />
-            </div>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {colorPalette.map((c, i) => (
-              <RevealBlock key={c.name} delay={i * 0.06}>
-                <div className="group border border-[#c9a227]/15 hover:border-[#c9a227]/40 hover:shadow-[0_0_20px_rgba(201,162,39,0.1)] transition-all duration-500">
-                  <div className="h-24 md:h-32" style={{ backgroundColor: c.hex }} />
-                  <div className="p-4 bg-[#0a0a0a] border-t border-[#c9a227]/15">
-                    <p className="font-serif text-xs text-[#c9a227]/80 uppercase tracking-wider">{c.name}</p>
-                    <p className="font-serif text-xs text-[#c9a227]/40 mt-1">{c.hex}</p>
-                    <p className="font-serif text-[10px] text-[#c9a227]/25 mt-1 italic">{c.desc}</p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Design Rules ===== */}
-      <section className="py-24 md:py-40 px-6 border-y border-[#c9a227]/10">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-serif text-[#c9a227] tracking-wider mb-4 gold-glow">
-                SACRED LAWS
-              </h2>
-              <p className="text-sm text-[#c9a227]/40 font-serif tracking-[0.2em] uppercase">
-                The commandments of gothic design
-              </p>
-              <GothicDivider className="mt-8 max-w-xs mx-auto" />
-            </div>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <RevealBlock delay={0.1}>
-              <div className="space-y-6">
-                <h3 className="font-serif text-lg uppercase tracking-[0.2em] text-[#c9a227]">
-                  Thou Shalt
-                </h3>
-                <ul className="space-y-4 font-serif text-sm">
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Use deep purple, blood red, and black as primary colors</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Add gold decorative lines and borders</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Use serif fonts for classical gravitas</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Cultivate dark, mysterious atmosphere</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Use pointed arch shapes and gothic patterns</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#c9a227]/60 flex-shrink-0 mt-0.5">&#10013;</span>
-                    <span className="text-[#c9a227]/70">Use slow, candlelight-paced transitions (500-700ms)</span>
-                  </li>
-                </ul>
-              </div>
-            </RevealBlock>
-
-            <RevealBlock delay={0.2}>
-              <div className="space-y-6">
-                <h3 className="font-serif text-lg uppercase tracking-[0.2em] text-[#8b1a1a]">
-                  Thou Shalt Not
-                </h3>
-                <ul className="space-y-4 font-serif text-sm">
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use bright white backgrounds</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use cheerful or cute design elements</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use sans-serif fonts for headings</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use large rounded corners</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use bouncy or playful animations</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#8b1a1a]/60 flex-shrink-0 mt-0.5">&#10007;</span>
-                    <span className="text-[#8b1a1a]/60 line-through">Use overly minimal, flat design</span>
-                  </li>
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Rose Window Section ===== */}
-      <section className="py-24 md:py-40 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5" style={{ background: "radial-gradient(circle at 50% 50%, #c9a227 0%, transparent 50%)" }} />
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <RevealBlock>
-            <h2 className="text-3xl md:text-5xl font-serif text-[#c9a227] tracking-wider mb-8 italic gold-glow">
-              The Rose Window
+          <RevealBlock inView={philosophyInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Philosophia Designi
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-12"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Cathedral Architecture
             </h2>
-            <p className="text-[#c9a227]/50 font-serif leading-relaxed max-w-2xl mx-auto mb-12">
-              Like the great rose windows of Notre-Dame and Chartres, the Gothic style transforms light itself into art. Each element is a precisely cut piece of a greater whole, filtering the divine through carefully arranged geometry and color.
-            </p>
           </RevealBlock>
 
-          <RevealBlock delay={0.15}>
-            {/* Rose window representation */}
-            <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-full border-2 border-[#c9a227]/20 relative">
-              <div className="absolute inset-4 rounded-full border border-[#8b1a1a]/30" />
-              <div className="absolute inset-8 rounded-full border border-[#c9a227]/20" />
-              <div className="absolute inset-12 rounded-full" style={{ background: "radial-gradient(circle, #2d1b4e 20%, #8b1a1a 50%, #0a0a0a 70%)" }} />
-              {/* Cross overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-px h-full bg-[#c9a227]/15" />
+          {/* Tab navigation */}
+          <RevealBlock inView={philosophyInView} delay={0.1}>
+            <div className="border border-[#c9a227]/20 mb-0">
+              <div className="flex border-b border-[#c9a227]/20">
+                {["Structure", "Light", "Ornament"].map((tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(i)}
+                    className={`flex-1 py-4 font-serif text-xs tracking-[0.3em] uppercase transition-all duration-300 ${
+                      activeTab === i
+                        ? "bg-[#c9a227]/10 text-[#c9a227] border-b-2 border-[#c9a227]/60 -mb-px"
+                        : "text-[#c9a227]/30 hover:text-[#c9a227]/60"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
               </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-full h-px bg-[#c9a227]/15" />
+              <div className="p-8 md:p-12 bg-[#0d0d0d] min-h-[200px]">
+                {activeTab === 0 && (
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="font-serif text-xl text-[#c9a227] tracking-wider uppercase mb-4">
+                        Pointed Arch Principle
+                      </h3>
+                      <p className="font-serif italic text-[#c9a227]/60 leading-relaxed text-sm mb-4">
+                        The pointed arch redirects weight outward and downward, allowing walls to soar higher than was ever possible in the Romanesque tradition. This structural revelation became the defining form of the Gothic aesthetic.
+                      </p>
+                      <p className="font-serif italic text-[#c9a227]/40 text-sm leading-relaxed">
+                        In design: use vertical emphasis, sharp angles, and upward-reaching compositions. Never settle for horizontal sprawl when vertical aspiration is possible.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      {/* Decorative pointed arch SVG */}
+                      <div className="relative w-48 h-64 flex items-end justify-center">
+                        <div
+                          className="w-32 h-48 border-2 border-[#c9a227]/30"
+                          style={{
+                            clipPath: "polygon(0 100%, 0 35%, 50% 0, 100% 35%, 100% 100%)",
+                          }}
+                        />
+                        <div
+                          className="absolute inset-0 flex items-center justify-center"
+                          style={{ paddingTop: "40px" }}
+                        >
+                          <div
+                            className="w-16 h-24 border border-[#c9a227]/20"
+                            style={{
+                              clipPath: "polygon(0 100%, 0 40%, 50% 0, 100% 40%, 100% 100%)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {activeTab === 1 && (
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="font-serif text-xl text-[#c9a227] tracking-wider uppercase mb-4">
+                        The Rose Window
+                      </h3>
+                      <p className="font-serif italic text-[#c9a227]/60 leading-relaxed text-sm mb-4">
+                        Stained glass transformed stone walls into vessels of divine light. Each colored panel was chosen not for decoration, but to narrate scripture to an illiterate populace through the universal language of luminous color.
+                      </p>
+                      <p className="font-serif italic text-[#c9a227]/40 text-sm leading-relaxed">
+                        In design: use gold accents as focal points of light against deep darkness. Let radial gradients suggest the rose window. Allow the dark to make the light sacred.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      {/* Rose window representation */}
+                      <div className="relative w-40 h-40 rounded-full border border-[#c9a227]/30 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full"
+                          style={{ background: "radial-gradient(circle at center, rgba(201,162,39,0.15) 0%, transparent 70%)" }}
+                        />
+                        <div className="w-24 h-24 rounded-full border border-[#c9a227]/20 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-[#c9a227]/20 border border-[#c9a227]/40" />
+                        </div>
+                        {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+                          <div
+                            key={deg}
+                            className="absolute w-px h-16 bg-[#c9a227]/15 origin-bottom"
+                            style={{ transform: `rotate(${deg}deg) translateX(-50%)`, bottom: "50%", left: "50%" }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {activeTab === 2 && (
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="font-serif text-xl text-[#c9a227] tracking-wider uppercase mb-4">
+                        Sacred Ornamentation
+                      </h3>
+                      <p className="font-serif italic text-[#c9a227]/60 leading-relaxed text-sm mb-4">
+                        Gothic ornament is never gratuitous. Gargoyles serve as waterspouts and spiritual guardians. Tracery carries water away from stone joints. Every decorative element has structural or symbolic purpose rooted in doctrine.
+                      </p>
+                      <p className="font-serif italic text-[#c9a227]/40 text-sm leading-relaxed">
+                        In design: use gold borders and decorative lines as structural dividers. Every ornamental element should guide the eye or reinforce hierarchy — beauty and function as one.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      {["Gold border lines as structural dividers", "Serif letterforms as sacred letterforms", "Dark ground as the void — light as revelation", "Latin mottos as gravitas anchors"].map((rule) => (
+                        <div key={rule} className="flex items-start gap-3">
+                          <span className="text-[#c9a227]/50 font-serif mt-0.5">†</span>
+                          <span className="font-serif text-sm text-[#c9a227]/60 italic">{rule}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Accordion */}
+          <RevealBlock inView={philosophyInView} delay={0.2}>
+            <div className="mt-8 space-y-2">
+              {[
+                {
+                  title: "Memento Mori — Remember You Must Die",
+                  content: "Gothic aesthetics are rooted in the medieval preoccupation with mortality and the transience of earthly existence. Death was not morbid but instructive — a reminder that only the eternal matters. This solemn awareness gives Gothic design its gravity and weight.",
+                },
+                {
+                  title: "Lux in Tenebris — Light in Darkness",
+                  content: "The greatest achievement of Gothic architecture is the creation of sacred light within a structure of stone. The contrast between deep shadow and gold luminance mirrors the theological contrast between sin and grace, ignorance and revelation, mortality and transcendence.",
+                },
+                {
+                  title: "Sub Specie Aeternitatis — Under the Aspect of Eternity",
+                  content: "Gothic craftsmen built for eternity, not for fashion. Every stone was laid with the knowledge that the cathedral would outlast its builders by centuries. This permanence mindset demands that design choices be deliberate, studied, and worthy of endurance.",
+                },
+              ].map((item, i) => (
+                <div key={i} className="border border-[#c9a227]/20 bg-[#0d0d0d]">
+                  <button
+                    onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#c9a227]/5 transition-colors duration-200"
+                  >
+                    <span className="font-serif text-sm tracking-wider text-[#c9a227]/80">{item.title}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#c9a227]/50 transition-transform duration-300 flex-shrink-0 ml-4 ${openAccordion === i ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {openAccordion === i && (
+                    <div className="px-6 pb-5 border-t border-[#c9a227]/10">
+                      <p className="font-serif italic text-sm text-[#c9a227]/50 leading-relaxed mt-4">
+                        {item.content}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Color Palette */}
+      <section className="py-20 md:py-28 px-6 border-t border-[#c9a227]/10" ref={paletteRef}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock inView={paletteInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Chromata Sacra
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-4"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Color Palette
+            </h2>
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <div className="h-px w-12 bg-[#c9a227]/30" />
+              <span className="font-serif text-xs text-[#c9a227]/30 italic tracking-wider">colores tenebrarum</span>
+              <div className="h-px w-12 bg-[#c9a227]/30" />
+            </div>
+          </RevealBlock>
+
+          <RevealBlock inView={paletteInView} delay={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+              {[
+                { name: "Deep Purple", hex: "#2d1b4e", role: "Primary", bg: "bg-[#2d1b4e]", note: "Cathedral shadow" },
+                { name: "Blood Red", hex: "#8b1a1a", role: "Secondary", bg: "bg-[#8b1a1a]", note: "Sacred wound" },
+                { name: "Sacred Gold", hex: "#c9a227", role: "Accent", bg: "bg-[#c9a227]", note: "Divine light" },
+                { name: "Near Black", hex: "#0a0a0a", role: "Ground", bg: "bg-[#0a0a0a] border border-[#c9a227]/20", note: "The void" },
+                { name: "Medium Purple", hex: "#4a2d6e", role: "Support", bg: "bg-[#4a2d6e]", note: "Dusk cloister" },
+              ].map((color) => (
+                <div key={color.name} className="group border border-[#c9a227]/20 hover:border-[#c9a227]/50 transition-all duration-300">
+                  <div className={`h-24 md:h-32 ${color.bg}`} />
+                  <div className="p-4 border-t border-[#c9a227]/20 bg-[#0d0d0d]">
+                    <p className="font-serif text-xs tracking-widest uppercase text-[#c9a227]/50 mb-1">{color.role}</p>
+                    <p className="font-serif text-sm text-[#c9a227]/80 tracking-wider">{color.name}</p>
+                    <p className="text-xs text-[#c9a227]/30 font-mono mt-1">{color.hex}</p>
+                    <p className="font-serif text-xs italic text-[#c9a227]/25 mt-1">{color.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Alerts / proclamations */}
+          <RevealBlock inView={paletteInView} delay={0.2}>
+            <div className="mt-12 space-y-3">
+              <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">
+                Proclamationes — Alert States
+              </p>
+              <div className="flex items-start gap-4 p-4 bg-[#0d0d0d] border border-[#c9a227]/20 border-l-2 border-l-[#c9a227]">
+                <Check className="w-5 h-5 text-[#c9a227] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-serif text-sm tracking-wider text-[#c9a227] uppercase">Blessed — Ritual Complete</p>
+                  <p className="font-serif text-xs italic text-[#c9a227]/40 mt-1">The sacred operation has been fulfilled.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 bg-[#0d0d0d] border border-[#c9a227]/20 border-l-2 border-l-[#c9a227]/40">
+                <AlertTriangle className="w-5 h-5 text-[#c9a227]/60 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-serif text-sm tracking-wider text-[#c9a227]/70 uppercase">Omen — Heed the Warning</p>
+                  <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">Dark forces stir at the edges of perception.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 bg-[#0d0d0d] border border-[#c9a227]/20 border-l-2 border-l-[#8b1a1a]">
+                <X className="w-5 h-5 text-[#8b1a1a] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-serif text-sm tracking-wider text-[#8b1a1a] uppercase">Cursed — Ritual Failed</p>
+                  <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">Something ancient and malevolent has intervened.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 bg-[#0d0d0d] border border-[#c9a227]/20 border-l-2 border-l-[#4a2d6e]">
+                <Info className="w-5 h-5 text-[#4a2d6e] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-serif text-sm tracking-wider text-[#4a2d6e] uppercase">Prophecy — Ancient Knowledge</p>
+                  <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">The scrolls speak of things yet to come.</p>
+                </div>
               </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
-      <footer className="border-t border-[#c9a227]/10 px-6 py-12">
+      {/* Typography Rules */}
+      <section className="bg-[#0a0a0a] py-20 md:py-28 px-6 border-t border-[#c9a227]/10" ref={typographyRef}>
         <div className="max-w-7xl mx-auto">
-          <GothicDivider className="mb-10" />
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
-              <p className="font-serif text-lg text-[#c9a227] tracking-wider gold-glow">
-                GOTHIC
-              </p>
-              <p className="font-serif text-xs text-[#c9a227]/30 tracking-[0.2em] uppercase mt-1">
-                In tenebris lux &middot; In darkness, light
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <Link
-                href="/styles/gothic"
-                className="px-6 py-2.5 font-serif text-xs uppercase tracking-[0.2em] text-[#c9a227]/60 border border-[#c9a227]/20 hover:border-[#c9a227]/60 hover:text-[#c9a227] transition-all duration-500"
-              >
-                View Docs
-              </Link>
-              <Link
-                href="/styles"
-                className="px-6 py-2.5 font-serif text-xs uppercase tracking-[0.2em] text-[#c9a227]/60 border border-[#c9a227]/20 hover:border-[#c9a227]/60 hover:text-[#c9a227] transition-all duration-500"
-              >
-                All Styles
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-10 pt-6 border-t border-[#c9a227]/5 text-center">
-            <p className="font-serif text-xs text-[#c9a227]/20 tracking-[0.2em] uppercase">
-              StyleKit &middot; Gothic Showcase
+          <RevealBlock inView={typographyInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Ars Typographica
             </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-12"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Typography Rules
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock inView={typographyInView} delay={0.1}>
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-[#0d0d0d] border border-[#c9a227]/20 p-8">
+                <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">Hierarchy Display</p>
+                <div className="space-y-5">
+                  <div>
+                    <p className="font-serif text-4xl md:text-5xl tracking-wider text-[#c9a227]" style={{ textShadow: "0 0 20px rgba(201,162,39,0.3)" }}>
+                      GOTHIC
+                    </p>
+                    <p className="text-xs text-[#c9a227]/30 font-serif italic mt-1">H1 · serif · tracking-wider · gold glow</p>
+                  </div>
+                  <div className="h-px bg-[#c9a227]/10" />
+                  <div>
+                    <p className="font-serif text-2xl tracking-wider text-[#8b1a1a]">
+                      Sanctum Altare
+                    </p>
+                    <p className="text-xs text-[#c9a227]/30 font-serif italic mt-1">H2 · serif · blood red · tracking-wider</p>
+                  </div>
+                  <div className="h-px bg-[#c9a227]/10" />
+                  <div>
+                    <p className="font-serif text-lg tracking-wider text-[#c9a227]/70 uppercase">
+                      Via Crucis
+                    </p>
+                    <p className="text-xs text-[#c9a227]/30 font-serif italic mt-1">H3 · serif · gold/70 · uppercase</p>
+                  </div>
+                  <div className="h-px bg-[#c9a227]/10" />
+                  <div>
+                    <p className="font-serif text-sm italic text-[#c9a227]/55 leading-relaxed">
+                      Sub specie aeternitatis, omnia mutantur.
+                    </p>
+                    <p className="text-xs text-[#c9a227]/30 font-serif italic mt-1">Body · serif · italic · gold/55</p>
+                  </div>
+                  <div className="h-px bg-[#c9a227]/10" />
+                  <div>
+                    <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/35 font-serif">
+                      Captions & Labels
+                    </p>
+                    <p className="text-xs text-[#c9a227]/30 font-serif italic mt-1">Caption · tracking-[0.4em] · gold/35</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#0d0d0d] border border-[#c9a227]/20 p-8">
+                <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">Illuminated Quote</p>
+                <blockquote className="border-l-2 border-[#c9a227]/50 pl-6 mb-8">
+                  <p className="font-serif text-lg italic text-[#c9a227]/70 leading-relaxed mb-3">
+                    &ldquo;In the shadow of the cathedral, the soul learns to see without eyes — perceiving the divine in the play of light across ancient stone.&rdquo;
+                  </p>
+                  <footer className="font-serif text-xs tracking-widest uppercase text-[#c9a227]/35">
+                    — Vita Cathedralis
+                  </footer>
+                </blockquote>
+
+                <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-4">Drop Cap</p>
+                <p className="font-serif text-sm italic text-[#c9a227]/50 leading-relaxed">
+                  <span
+                    className="float-left mr-2 font-serif leading-none text-[#c9a227]"
+                    style={{ fontSize: "3.5rem", lineHeight: 1, textShadow: "0 0 20px rgba(201,162,39,0.4)" }}
+                  >
+                    D
+                  </span>
+                  arkness is not the absence of light. It is the canvas upon which light inscribes its most sacred revelations. Without the void of the cathedral walls, the rose window would be merely colored glass — meaningless and mute.
+                </p>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Dropdown demo */}
+          <RevealBlock inView={typographyInView} delay={0.2}>
+            <div className="max-w-sm mx-auto">
+              <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-4 text-center">
+                Sacred Archive — Dropdown
+              </p>
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  className="w-full px-5 py-3 bg-[#0d0d0d] border border-[#c9a227]/30 font-serif text-sm tracking-wider text-[#c9a227]/70 flex items-center justify-between hover:border-[#c9a227]/60 transition-all duration-300"
+                >
+                  <span>Select Chapter</span>
+                  <ChevronDown className={`w-4 h-4 text-[#c9a227]/50 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-px bg-[#0d0d0d] border border-[#c9a227]/30 z-10">
+                    {["Genesis — In principio", "Exodus — The Long March", "Psalms — Songs of Darkness", "Revelation — The Final Arch"].map((item) => (
+                      <button
+                        key={item}
+                        className="w-full px-5 py-3 text-left font-serif text-sm text-[#c9a227]/60 hover:text-[#c9a227] hover:bg-[#c9a227]/5 border-b border-[#c9a227]/10 last:border-b-0 transition-all duration-200 tracking-wider"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Forms / Gothic-styled interaction section */}
+      <section className="py-20 md:py-28 px-6 border-t border-[#c9a227]/10" ref={formsRef}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock inView={formsInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Vitae Sanctorum
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-12"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Illuminated Manuscripts
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock inView={formsInView} delay={0.1}>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  numeral: "I",
+                  title: "The Hours",
+                  subtitle: "Horae Canonicae",
+                  desc: "From Matins before dawn to Compline at dusk, the canonical hours organize sacred time. Each hour is a brushstroke in the illuminated manuscript of the day.",
+                  accent: "#c9a227",
+                },
+                {
+                  numeral: "II",
+                  title: "The Bestiary",
+                  subtitle: "Liber Bestiarum",
+                  desc: "Fantastic creatures populate the margins of medieval manuscripts — dragons represent sin, unicorns purity, pelicans sacrifice. Each beast a symbol encrypted in vellum.",
+                  accent: "#8b1a1a",
+                },
+                {
+                  numeral: "III",
+                  title: "The Psalter",
+                  subtitle: "Psalterium Aureum",
+                  desc: "The Golden Psalter of St. Gallen: each page a devotional labor lasting months. Gold leaf laid over gesso catches candlelight and sanctifies the written word.",
+                  accent: "#4a2d6e",
+                },
+              ].map((item) => (
+                <div
+                  key={item.numeral}
+                  className="group relative bg-[#0d0d0d] border border-[#c9a227]/20 p-8 overflow-hidden cursor-pointer hover:border-[#c9a227]/50 hover:shadow-[0_8px_30px_rgba(45,27,78,0.5)] transition-all duration-300"
+                >
+                  {/* Candlelight hover effect */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                    style={{
+                      background: `radial-gradient(circle at top right, ${item.accent}20, transparent 60%)`,
+                    }}
+                  />
+                  {/* Roman numeral decorative */}
+                  <div
+                    className="absolute top-4 right-6 font-serif text-6xl opacity-5"
+                    style={{ color: item.accent }}
+                  >
+                    {item.numeral}
+                  </div>
+                  <p className="font-serif text-xs italic mb-2" style={{ color: `${item.accent}60` }}>
+                    {item.subtitle}
+                  </p>
+                  <h3
+                    className="font-serif text-xl tracking-wider uppercase mb-3 transition-colors duration-300"
+                    style={{ color: item.accent }}
+                  >
+                    {item.title}
+                  </h3>
+                  {/* Expanding gold underline */}
+                  <div
+                    className="h-px w-8 group-hover:w-full mb-4 transition-all duration-700"
+                    style={{ background: `${item.accent}50` }}
+                  />
+                  <p className="font-serif italic text-sm text-[#c9a227]/50 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Tags / Badges */}
+          <RevealBlock inView={formsInView} delay={0.2}>
+            <div className="mt-12 bg-[#0d0d0d] border border-[#c9a227]/20 p-8">
+              <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-6">
+                Sigilla — Tags & Badges
+              </p>
+              <div className="space-y-6">
+                <div>
+                  <p className="font-serif text-xs italic text-[#c9a227]/30 mb-3">Orders of Knighthood</p>
+                  <div className="flex flex-wrap gap-3">
+                    {["Templar", "Hospitaller", "Teutonic", "Santiago", "Calatrava"].map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-4 py-1 font-serif text-xs tracking-widest uppercase border border-[#c9a227]/30 text-[#c9a227]/60 hover:border-[#c9a227]/60 hover:text-[#c9a227] hover:bg-[#c9a227]/5 cursor-pointer transition-all duration-200"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="h-px bg-[#c9a227]/10" />
+                <div>
+                  <p className="font-serif text-xs italic text-[#c9a227]/30 mb-3">Sacred Status Marks</p>
+                  <div className="flex flex-wrap gap-3">
+                    <span className="px-4 py-1 font-serif text-xs tracking-widest uppercase bg-[#c9a227] text-[#0a0a0a]">Blessed</span>
+                    <span className="px-4 py-1 font-serif text-xs tracking-widest uppercase bg-[#8b1a1a] text-[#c9a227]">Cursed</span>
+                    <span className="px-4 py-1 font-serif text-xs tracking-widest uppercase bg-[#2d1b4e] text-[#c9a227]">Sealed</span>
+                    <span className="px-4 py-1 font-serif text-xs tracking-widest uppercase border border-[#c9a227]/30 text-[#c9a227]/40 cursor-not-allowed">Forbidden</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Design Rules — Do and Don't */}
+      <section className="bg-[#0a0a0a] py-20 md:py-28 px-6 border-t border-[#c9a227]/10" ref={rulesRef}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock inView={rulesInView} delay={0}>
+            <p className="text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 font-serif mb-3 text-center">
+              Regulae Monasticae
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-wider uppercase text-[#c9a227] text-center mb-12"
+              style={{ textShadow: "0 0 30px rgba(201,162,39,0.2)" }}>
+              Sacred Rules
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock inView={rulesInView} delay={0.1}>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-[#0d0d0d] border border-[#c9a227]/20 p-8">
+                <h3 className="font-serif text-xl tracking-wider uppercase text-[#c9a227] mb-6 flex items-center gap-3">
+                  <Check className="w-5 h-5" />
+                  Mandatum — Must Follow
+                </h3>
+                <ul className="space-y-4">
+                  {[
+                    "Deep purple, blood red, near-black as the foundation palette",
+                    "Gold (#c9a227) accents for all luminous focal points",
+                    "Serif fonts for all titles, headings, and body text",
+                    "tracking-wider or tracking-widest on all important text",
+                    "Dark backgrounds throughout — no white or light sections",
+                    "Gold borders at 20–60% opacity for structural definition",
+                    "Pointed arch shapes and upward-reaching compositions",
+                    "Latin mottos and italicized phrases for gravitas",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span className="text-[#c9a227] font-serif mt-0.5 flex-shrink-0">†</span>
+                      <span className="font-serif text-sm italic text-[#c9a227]/60">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-[#0d0d0d] border border-[#8b1a1a]/30 p-8">
+                <h3 className="font-serif text-xl tracking-wider uppercase text-[#8b1a1a] mb-6 flex items-center gap-3">
+                  <X className="w-5 h-5" />
+                  Prohibitum — Never Do
+                </h3>
+                <ul className="space-y-4">
+                  {[
+                    "Bright or cheerful colors — pastels, neons, vivid primaries",
+                    "Cute, rounded, or playful design elements",
+                    "Modern sans-serif as main title fonts",
+                    "Overly minimalist design stripped of ornament",
+                    "White or very light section backgrounds",
+                    "Casual or informal tone in copy or labels",
+                    "Flat, shadowless modern UI patterns",
+                    "Horizontal sprawl instead of vertical aspiration",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span className="text-[#8b1a1a] font-serif mt-0.5 flex-shrink-0">×</span>
+                      <span className="font-serif text-sm italic text-[#c9a227]/50">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#0a0a0a] border-t border-[#c9a227]/20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <p className="font-serif text-xs tracking-[0.4em] uppercase text-[#c9a227]/40 italic">
+                In tenebris lux — In darkness, light
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-px w-12 bg-[#c9a227]/20" />
+              <span className="font-serif text-xs text-[#c9a227]/25 tracking-widest uppercase">
+                Gothic · StyleKit
+              </span>
+              <div className="h-px w-12 bg-[#c9a227]/20" />
+            </div>
+            <Link
+              href="/styles/gothic"
+              className="font-serif text-xs tracking-widest uppercase text-[#c9a227]/40 hover:text-[#c9a227]/70 transition-colors"
+            >
+              Docs →
+            </Link>
           </div>
         </div>
       </footer>
