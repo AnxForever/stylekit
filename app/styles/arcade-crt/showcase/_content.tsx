@@ -1,10 +1,9 @@
 "use client";
-
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 // ---------------------------------------------------------------------------
-// Inline hooks — no @/components/showcase imports
+// Inline hooks — zero @/components/showcase imports
 // ---------------------------------------------------------------------------
 
 function useInView(options = {}) {
@@ -13,35 +12,38 @@ function useInView(options = {}) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
           setInView(true);
-          observer.disconnect();
+          obs.disconnect();
         }
       },
       { threshold: 0.15, ...options }
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
   return { ref, inView };
 }
 
 function RevealBlock({
   children,
+  className = "",
   delay = 0,
-  inView,
 }: {
   children: React.ReactNode;
+  className?: string;
   delay?: number;
-  inView: boolean;
 }) {
+  const { ref, inView } = useInView();
   return (
     <div
+      ref={ref}
+      className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(24px)",
+        transform: inView ? "translateY(0)" : "translateY(28px)",
         transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
@@ -51,12 +53,18 @@ function RevealBlock({
 }
 
 // ---------------------------------------------------------------------------
-// Local sub-components
+// Sub-components
 // ---------------------------------------------------------------------------
 
 function ScanlineOverlay() {
   return (
-    <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.03)_2px,rgba(57,255,20,0.03)_4px)] pointer-events-none" />
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        background:
+          "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(57,255,20,0.05) 2px,rgba(57,255,20,0.05) 4px)",
+      }}
+    />
   );
 }
 
@@ -66,7 +74,7 @@ function NeonDot({ color = "#39ff14" }: { color?: string }) {
       className="w-2 h-2 shrink-0"
       style={{
         background: color,
-        boxShadow: `0 0 10px ${color}, 0 0 20px ${color}60`,
+        boxShadow: `0 0 8px ${color}, 0 0 16px ${color}60`,
       }}
     />
   );
@@ -74,7 +82,7 @@ function NeonDot({ color = "#39ff14" }: { color?: string }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#39ff14]/60 mb-6">
+    <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#39ff14]/50 mb-6">
       {"// "}{children}
     </p>
   );
@@ -104,24 +112,24 @@ function NeonBar({ value, color }: { value: number; color: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Main Component
+// Main Export
 // ---------------------------------------------------------------------------
 
-export default function ArcadeCrtShowcaseContent() {
-  // Hero reveal
+export default function ArcadeCrtShowcase() {
+  // Hero entrance
   const [heroRevealed, setHeroRevealed] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroRevealed(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  // Interactive state — credits counter
+  // INSERT COIN credits counter (interactive)
   const [credits, setCredits] = useState(0);
 
-  // Interactive state — active game tab
+  // Active game selection (interactive)
   const [activeGame, setActiveGame] = useState(0);
 
-  // Interactive state — active color in palette
+  // Active color swatch
   const [activeColor, setActiveColor] = useState(0);
 
   // Blinking cursor
@@ -131,12 +139,12 @@ export default function ArcadeCrtShowcaseContent() {
     return () => clearInterval(t);
   }, []);
 
-  // useInView hooks — destructured immediately (React Compiler rule)
-  const { ref: componentsRef, inView: componentsInView } = useInView();
-  const { ref: highScoreRef, inView: highScoreInView } = useInView();
-  const { ref: paletteRef, inView: paletteInView } = useInView();
-  const { ref: typographyRef, inView: typographyInView } = useInView();
-  const { ref: rulesRef, inView: rulesInView } = useInView();
+  // CRT power flicker on load
+  const [crtPowered, setCrtPowered] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setCrtPowered(true), 300);
+    return () => clearTimeout(t);
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Data
@@ -211,6 +219,45 @@ export default function ArcadeCrtShowcaseContent() {
     { name: "Surface", hex: "#0a0a0a", glow: "rgba(57,255,20,0.1)", label: "SURFACE" },
   ];
 
+  const crtEffects = [
+    {
+      label: "Scanline Overlay",
+      color: "#39ff14",
+      desc: "repeating-linear-gradient(0deg) at 4px intervals over every surface",
+      code: "bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.05)_2px,rgba(57,255,20,0.05)_4px)]",
+    },
+    {
+      label: "RGB Aberration",
+      color: "#ff00ff",
+      desc: "text-shadow offset on headlines: -2px magenta / +2px cyan",
+      code: "textShadow: '-2px 0 #ff00ff, 2px 0 #00ffff'",
+    },
+    {
+      label: "Neon Glow",
+      color: "#00ffff",
+      desc: "box-shadow / text-shadow with spread to simulate phosphor emission",
+      code: "shadow-[0_0_15px_rgba(57,255,20,0.4)]",
+    },
+    {
+      label: "CRT Vignette",
+      color: "#FFFF00",
+      desc: "radial-gradient dark edges to replicate CRT screen curvature darkening",
+      code: "bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(0,0,0,0.7)_100%)]",
+    },
+    {
+      label: "Phosphor Flicker",
+      color: "#ff8533",
+      desc: "neon-flicker keyframe animation — high-frequency opacity oscillation",
+      code: "animation: neon-flicker 3s ease-in-out infinite",
+    },
+    {
+      label: "Screen Curvature",
+      color: "#ff2a2a",
+      desc: "border-radius with asymmetric % values to simulate CRT barrel distortion",
+      code: "rounded-[30%_30%_30%_30%/10%_10%_10%_10%]",
+    },
+  ];
+
   const selectedGame = games[activeGame];
 
   // ---------------------------------------------------------------------------
@@ -218,85 +265,139 @@ export default function ArcadeCrtShowcaseContent() {
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#39ff14] font-mono">
+    <div
+      className="min-h-screen bg-[#050505] text-[#39ff14] font-mono"
+      style={{ opacity: crtPowered ? 1 : 0, transition: "opacity 0.4s ease" }}
+    >
       <style jsx global>{`
+        @keyframes crtBlink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        @keyframes crtScan {
+          0% { background-position: 0 0; }
+          100% { background-position: 0 100%; }
+        }
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
         @keyframes rgb-shift {
           0%, 100% { text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff; }
-          50%       { text-shadow: -4px 0 #ff00ff, 4px 0 #00ffff; }
+          50% { text-shadow: -4px 0 #ff00ff, 4px 0 #00ffff; }
         }
         @keyframes neon-flicker {
           0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-          20%, 24%, 55% { opacity: 0.85; }
-        }
-        @keyframes crt-scanmove {
-          0%   { transform: translateY(0); }
-          100% { transform: translateY(4px); }
-        }
-        @keyframes blink-cursor {
-          0%, 49% { opacity: 1; }
-          50%, 100% { opacity: 0; }
+          20%, 24%, 55% { opacity: 0.82; }
         }
         @keyframes neon-pulse-green {
           0%, 100% { box-shadow: 0 0 20px rgba(57,255,20,0.5), 0 0 40px rgba(57,255,20,0.3); }
-          50%       { box-shadow: 0 0 30px rgba(57,255,20,0.8), 0 0 60px rgba(57,255,20,0.5); }
+          50% { box-shadow: 0 0 35px rgba(57,255,20,0.9), 0 0 70px rgba(57,255,20,0.5); }
+        }
+        @keyframes coin-bounce {
+          0%, 100% { transform: translateY(0); }
+          30% { transform: translateY(-6px); }
+          60% { transform: translateY(-2px); }
         }
       `}</style>
 
       {/* ------------------------------------------------------------------ */}
-      {/* NAV                                                                 */}
+      {/* FIXED NAV                                                           */}
       {/* ------------------------------------------------------------------ */}
-      <nav className="sticky top-0 z-50 bg-[#050505]/95 border-b-2 border-[#39ff14]/30 backdrop-blur-sm px-6 md:px-10 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          {/* Left — logo */}
-          <div className="flex items-center gap-6">
-            <Link
-              href="/styles/arcade-crt"
-              className="text-[#39ff14] font-mono text-sm uppercase tracking-[0.15em] hover:text-[#39ff14]/70 transition-colors"
-              style={{ textShadow: "0 0 10px #39ff14, 0 0 20px #39ff14" }}
-            >
-              ARCADE CRT
-            </Link>
-            <div className="hidden sm:flex items-center gap-2">
-              <NeonDot />
-              <span className="text-[#39ff14]/40 font-mono text-[10px] uppercase tracking-[0.2em]">
-                CRT-9000
-              </span>
-            </div>
+      <nav className="sticky top-0 z-50 bg-[#050505]/95 border-b-2 border-[#39ff14]/30 backdrop-blur-sm">
+        {/* Ticker bar above nav */}
+        <div className="overflow-hidden bg-[#39ff14]/5 border-b border-[#39ff14]/10 py-1">
+          <div
+            className="whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.3em] text-[#39ff14]/50"
+            style={{ animation: "marquee 22s linear infinite" }}
+          >
+            ARCADE CRT DESIGN SYSTEM &nbsp;&bull;&nbsp; PHOSPHOR GREEN &nbsp;&bull;&nbsp; RGB CHROMATIC
+            ABERRATION &nbsp;&bull;&nbsp; SCANLINE OVERLAYS &nbsp;&bull;&nbsp; NEON GLOW &nbsp;&bull;&nbsp;
+            INSERT COIN &nbsp;&bull;&nbsp; PIXEL BLASTER &nbsp;&bull;&nbsp; NEON DRIFT &nbsp;&bull;&nbsp;
+            CYBER QUEST &nbsp;&bull;&nbsp; GRID FIGHTER &nbsp;&bull;&nbsp; ARCADE CRT DESIGN SYSTEM
+            &nbsp;&bull;&nbsp; HIGH SCORE &nbsp;&bull;&nbsp; 80S-90S NOSTALGIA &nbsp;&bull;&nbsp;
           </div>
+        </div>
 
-          {/* Right — links + credits */}
-          <div className="flex items-center gap-6">
-            <Link
-              href="/styles/arcade-crt"
-              className="hidden sm:block text-[#00ffff] font-mono text-[10px] uppercase tracking-[0.2em] hover:text-[#00ffff]/70 transition-colors"
-            >
-              Docs
-            </Link>
-            <Link
-              href="/styles"
-              className="text-[#39ff14]/60 font-mono text-[10px] uppercase tracking-[0.2em] hover:text-[#39ff14] transition-colors"
-            >
-              StyleKit
-            </Link>
-            <div className="flex items-center gap-2 border border-[#FFFF00]/40 px-3 py-1">
-              <span className="text-[#FFFF00] font-mono text-[10px] uppercase tracking-[0.2em]">
-                CREDIT: {String(credits).padStart(2, "0")}
-              </span>
+        <div className="px-6 md:px-10 py-3">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            {/* Left */}
+            <div className="flex items-center gap-6">
+              <Link
+                href="/styles/arcade-crt"
+                className="text-[#39ff14] font-mono text-sm uppercase tracking-[0.15em] hover:text-[#39ff14]/70 transition-colors"
+                style={{ textShadow: "0 0 10px #39ff14, 0 0 20px #39ff14" }}
+              >
+                ARCADE CRT
+              </Link>
+              <div className="hidden sm:flex items-center gap-2">
+                <NeonDot />
+                <span className="text-[#39ff14]/40 font-mono text-[10px] uppercase tracking-[0.2em]">
+                  CRT-9000
+                </span>
+              </div>
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-4 md:gap-6">
+              <Link
+                href="/styles/arcade-crt"
+                className="hidden sm:block text-[#00ffff] font-mono text-[10px] uppercase tracking-[0.2em] hover:text-[#00ffff]/70 transition-colors"
+              >
+                Docs
+              </Link>
+              <Link
+                href="/styles"
+                className="text-[#39ff14]/50 font-mono text-[10px] uppercase tracking-[0.2em] hover:text-[#39ff14] transition-colors"
+              >
+                StyleKit
+              </Link>
+              <div className="flex items-center gap-2 border border-[#FFFF00]/40 px-3 py-1">
+                <span
+                  className="text-[#FFFF00] font-mono text-[10px] uppercase tracking-[0.2em]"
+                  style={{ textShadow: "0 0 8px #FFFF00" }}
+                >
+                  CREDIT: {String(credits).padStart(2, "0")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       {/* ------------------------------------------------------------------ */}
-      {/* HERO                                                                */}
+      {/* HERO — ATTRACT SCREEN                                               */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative px-6 md:px-10 pt-20 pb-24 overflow-hidden">
+      <section className="relative px-6 md:px-10 pt-20 pb-28 overflow-hidden">
+        {/* Scanlines */}
         <ScanlineOverlay />
+
         {/* CRT vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(0,0,0,0.6)_100%)] pointer-events-none" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%)",
+          }}
+        />
+
+        {/* CRT screen curvature border illusion */}
+        <div
+          className="absolute inset-4 pointer-events-none border border-[#39ff14]/5"
+          style={{ borderRadius: "30% 30% 30% 30% / 10% 10% 10% 10%" }}
+        />
+
+        {/* Pixel grid decoration top-right */}
+        <div
+          className="absolute top-8 right-8 w-32 h-32 opacity-10 hidden md:block"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg,#39ff14 0,#39ff14 1px,transparent 1px,transparent 8px), repeating-linear-gradient(90deg,#39ff14 0,#39ff14 1px,transparent 1px,transparent 8px)",
+          }}
+        />
 
         <div className="relative max-w-6xl mx-auto">
-          {/* Pre-title label */}
+          {/* Pre-title terminal line */}
           <div
             style={{
               opacity: heroRevealed ? 1 : 0,
@@ -308,21 +409,24 @@ export default function ArcadeCrtShowcaseContent() {
               {">> INSERT COIN TO START"}
               <span
                 className="inline-block w-2 h-4 bg-[#00ffff] ml-1 align-middle"
-                style={{ opacity: cursorVisible ? 1 : 0 }}
+                style={{
+                  animation: "crtBlink 1.06s step-end infinite",
+                }}
               />
             </p>
           </div>
 
-          {/* Main title */}
+          {/* Main title with RGB aberration */}
           <div
             style={{
               opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(30px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
+              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
+              transition:
+                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
             }}
           >
             <h1
-              className="text-6xl md:text-8xl lg:text-9xl font-mono font-bold uppercase tracking-wider leading-none mb-2"
+              className="text-6xl md:text-8xl lg:text-[9rem] font-mono font-bold uppercase tracking-wider leading-none mb-1"
               style={{
                 color: "#39ff14",
                 animation: "rgb-shift 2.5s ease-in-out infinite",
@@ -331,7 +435,7 @@ export default function ArcadeCrtShowcaseContent() {
               ARCADE
             </h1>
             <h1
-              className="text-6xl md:text-8xl lg:text-9xl font-mono font-bold uppercase tracking-wider leading-none mb-8"
+              className="text-6xl md:text-8xl lg:text-[9rem] font-mono font-bold uppercase tracking-wider leading-none mb-8"
               style={{
                 color: "#39ff14",
                 animation: "rgb-shift 2.5s ease-in-out infinite 0.3s",
@@ -341,35 +445,38 @@ export default function ArcadeCrtShowcaseContent() {
             </h1>
           </div>
 
-          {/* Sub-title + CTA row */}
+          {/* Subtitle + CTA */}
           <div
             style={{
               opacity: heroRevealed ? 1 : 0,
               transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s",
+              transition:
+                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s",
             }}
           >
-            <p className="font-mono text-[#39ff14]/60 text-sm max-w-lg leading-relaxed mb-10">
-              80-90s arcade CRT monitor nostalgia. Scanline overlays, neon
-              phosphor glow, RGB chromatic aberration, monospace pixel fonts,
-              near-black backgrounds.
+            <p className="font-mono text-[#39ff14]/55 text-sm max-w-lg leading-relaxed mb-10">
+              80-90s arcade CRT monitor nostalgia. Scanline overlays, neon phosphor glow,
+              RGB chromatic aberration, monospace pixel fonts, near-black backgrounds.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
+              {/* Primary CTA — physical button press */}
               <button
                 onClick={() => setCredits((c) => c + 1)}
-                className="px-8 py-4 bg-[#39ff14] text-black font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#39ff14] transition-all duration-200"
+                className="px-8 py-4 bg-[#39ff14] text-black font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#39ff14] transition-all duration-150 active:translate-y-[6px]"
                 style={{ animation: "neon-pulse-green 2s ease-in-out infinite" }}
               >
                 INSERT COIN
               </button>
-              <button className="px-8 py-4 bg-transparent text-[#00ffff] font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:bg-[#00ffff]/10 hover:shadow-[0_0_30px_rgba(0,255,255,0.5)] transition-all duration-200">
+              <button
+                className="px-8 py-4 bg-transparent text-[#00ffff] font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:bg-[#00ffff]/10 hover:shadow-[0_0_30px_rgba(0,255,255,0.5)] transition-all duration-200 active:translate-y-[6px]"
+              >
                 PLAYER SELECT
               </button>
             </div>
           </div>
 
-          {/* Score display */}
+          {/* Score display strip */}
           <div
             className="mt-12 flex flex-wrap gap-8"
             style={{
@@ -384,7 +491,7 @@ export default function ArcadeCrtShowcaseContent() {
               { label: "LIVES", value: "03", color: "#ff2a2a" },
             ].map((item) => (
               <div key={item.label}>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35 mb-1">
                   {item.label}
                 </p>
                 <p
@@ -399,253 +506,311 @@ export default function ArcadeCrtShowcaseContent() {
               </div>
             ))}
           </div>
+
+          {/* INSERT COIN flashing label */}
+          <div
+            className="mt-10 inline-flex items-center gap-3 border border-[#FFFF00]/30 px-5 py-2"
+            style={{
+              opacity: heroRevealed ? 1 : 0,
+              transition: "opacity 0.7s ease 0.85s",
+            }}
+          >
+            <div
+              className="w-2 h-2 bg-[#FFFF00]"
+              style={{ animation: "crtBlink 0.8s step-end infinite", boxShadow: "0 0 8px #FFFF00" }}
+            />
+            <span
+              className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#FFFF00]"
+              style={{ animation: "crtBlink 0.8s step-end infinite" }}
+            >
+              INSERT COIN
+            </span>
+          </div>
         </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* GAME SELECT / INTERACTIVE TAB                                       */}
+      {/* GAME SELECT                                                         */}
       {/* ------------------------------------------------------------------ */}
       <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <SectionLabel>Game Select</SectionLabel>
+          <RevealBlock delay={0}>
+            <SectionLabel>Game Select</SectionLabel>
+          </RevealBlock>
 
-          {/* Tab row */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          {/* Game cards row — each with different neon border + glow */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             {games.map((g, i) => (
-              <button
-                key={g.id}
-                onClick={() => setActiveGame(i)}
-                className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] border-2 transition-all duration-200"
-                style={
-                  activeGame === i
-                    ? {
+              <RevealBlock key={g.id} delay={i * 0.08}>
+                <button
+                  onClick={() => setActiveGame(i)}
+                  className="group w-full relative border-2 p-4 text-left transition-all duration-200 overflow-hidden"
+                  style={{
+                    borderColor:
+                      activeGame === i ? g.color : `${g.color}30`,
+                    background:
+                      activeGame === i ? `${g.color}12` : "transparent",
+                    boxShadow:
+                      activeGame === i ? `0 0 25px ${g.color}35` : "none",
+                  }}
+                >
+                  {/* Scanlines inside card */}
+                  <div
+                    className="absolute inset-0 pointer-events-none group-hover:opacity-100 opacity-60 transition-opacity"
+                    style={{
+                      background:
+                        "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(57,255,20,0.04) 2px,rgba(57,255,20,0.04) 4px)",
+                    }}
+                  />
+                  <div className="relative">
+                    <NeonDot color={g.color} />
+                    <p
+                      className="font-mono text-[9px] uppercase tracking-[0.2em] mt-2 mb-1"
+                      style={{ color: `${g.color}80` }}
+                    >
+                      {g.genre}
+                    </p>
+                    <p
+                      className="font-mono font-bold text-sm uppercase tracking-[0.1em] group-hover:tracking-[0.15em] transition-all duration-200"
+                      style={{
                         color: g.color,
-                        borderColor: g.color,
-                        background: `${g.color}18`,
-                        boxShadow: `0 0 20px ${g.color}40`,
-                      }
-                    : {
-                        color: "#39ff14",
-                        borderColor: "rgba(57,255,20,0.2)",
-                        background: "transparent",
-                      }
-                }
-              >
-                {g.title}
-              </button>
+                        textShadow:
+                          activeGame === i
+                            ? `-2px 0 #ff00ff, 2px 0 #00ffff`
+                            : "none",
+                      }}
+                    >
+                      {g.title}
+                    </p>
+                    <p
+                      className="font-mono text-[9px] mt-2"
+                      style={{ color: "#FFFF00", opacity: 0.7 }}
+                    >
+                      {g.score}
+                    </p>
+                  </div>
+                </button>
+              </RevealBlock>
             ))}
           </div>
 
-          {/* Selected game panel */}
-          <div className="relative bg-[#0a0a0a] border-2 overflow-hidden transition-all duration-200 p-6"
-            style={{
-              borderColor: `${selectedGame.color}50`,
-              boxShadow: `0 0 40px ${selectedGame.color}20`,
-            }}
-          >
-            <ScanlineOverlay />
-            <div className="relative grid md:grid-cols-2 gap-8">
-              {/* Left — game info */}
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <NeonDot color={selectedGame.color} />
-                  <span
-                    className="font-mono text-[10px] uppercase tracking-[0.3em]"
-                    style={{ color: selectedGame.color }}
-                  >
-                    {selectedGame.genre}
-                  </span>
-                </div>
-                <h2
-                  className="font-mono font-bold text-3xl md:text-4xl uppercase tracking-wider mb-4"
-                  style={{
-                    color: selectedGame.color,
-                    textShadow: `-3px 0 #ff00ff, 3px 0 #00ffff`,
-                  }}
-                >
-                  {selectedGame.title}
-                </h2>
-                <p className="font-mono text-sm text-[#39ff14]/60 leading-relaxed mb-6">
-                  {selectedGame.desc}
-                </p>
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40">
-                    Hi-Score:
-                  </span>
-                  <span
-                    className="font-mono text-lg font-bold"
-                    style={{
-                      color: "#FFFF00",
-                      textShadow: "0 0 10px #FFFF00, 0 0 20px #FFFF00",
-                    }}
-                  >
-                    {selectedGame.score}
-                  </span>
-                </div>
-              </div>
-
-              {/* Right — stats bars */}
-              <div className="space-y-5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-4">
-                  Stats
-                </p>
-                {[
-                  { label: "DIFFICULTY", value: selectedGame.difficulty, color: "#ff2a2a" },
-                  { label: "SPEED", value: selectedGame.speed, color: "#00ffff" },
-                  { label: "POWER", value: selectedGame.power, color: selectedGame.color },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <div className="flex justify-between mb-2">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/50">
-                        {stat.label}
-                      </span>
-                      <span
-                        className="font-mono text-xs font-bold"
-                        style={{ color: stat.color }}
-                      >
-                        {stat.value}
-                      </span>
-                    </div>
-                    <NeonBar value={stat.value} color={stat.color} />
+          {/* Active game details panel */}
+          <RevealBlock delay={0.1}>
+            <div
+              className="relative bg-[#0a0a0a] border-2 overflow-hidden p-6 transition-all duration-300"
+              style={{
+                borderColor: `${selectedGame.color}50`,
+                boxShadow: `0 0 40px ${selectedGame.color}18`,
+              }}
+            >
+              <ScanlineOverlay />
+              <div className="relative grid md:grid-cols-2 gap-8">
+                {/* Left — info */}
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <NeonDot color={selectedGame.color} />
+                    <span
+                      className="font-mono text-[10px] uppercase tracking-[0.3em]"
+                      style={{ color: selectedGame.color }}
+                    >
+                      {selectedGame.genre}
+                    </span>
                   </div>
-                ))}
-                <div className="pt-4">
-                  <button
-                    className="w-full py-3 font-mono text-xs uppercase tracking-[0.2em] border-2 transition-all duration-200"
+                  <h2
+                    className="font-mono font-bold text-3xl md:text-4xl uppercase tracking-wider mb-4"
                     style={{
                       color: selectedGame.color,
-                      borderColor: selectedGame.color,
-                      boxShadow: `0 0 15px ${selectedGame.color}30`,
+                      textShadow: "-3px 0 #ff00ff, 3px 0 #00ffff",
                     }}
                   >
-                    START GAME
-                  </button>
+                    {selectedGame.title}
+                  </h2>
+                  <p className="font-mono text-sm text-[#39ff14]/55 leading-relaxed mb-6">
+                    {selectedGame.desc}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35">
+                      Hi-Score:
+                    </span>
+                    <span
+                      className="font-mono text-lg font-bold"
+                      style={{
+                        color: "#FFFF00",
+                        textShadow: "0 0 10px #FFFF00, 0 0 20px #FFFF00",
+                      }}
+                    >
+                      {selectedGame.score}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right — stat bars */}
+                <div className="space-y-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35 mb-4">
+                    Stats
+                  </p>
+                  {[
+                    { label: "DIFFICULTY", value: selectedGame.difficulty, color: "#ff2a2a" },
+                    { label: "SPEED", value: selectedGame.speed, color: "#00ffff" },
+                    { label: "POWER", value: selectedGame.power, color: selectedGame.color },
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <div className="flex justify-between mb-2">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/45">
+                          {stat.label}
+                        </span>
+                        <span
+                          className="font-mono text-xs font-bold"
+                          style={{ color: stat.color }}
+                        >
+                          {stat.value}
+                        </span>
+                      </div>
+                      <NeonBar value={stat.value} color={stat.color} />
+                    </div>
+                  ))}
+                  <div className="pt-4">
+                    <button
+                      className="w-full py-3 font-mono text-xs uppercase tracking-[0.2em] border-2 transition-all duration-200 active:translate-y-[6px]"
+                      style={{
+                        color: selectedGame.color,
+                        borderColor: selectedGame.color,
+                        boxShadow: `0 0 15px ${selectedGame.color}30`,
+                      }}
+                    >
+                      START GAME
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </RevealBlock>
         </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}
       {/* HIGH SCORE LEADERBOARD                                              */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-10 pb-20" ref={highScoreRef}>
+      <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock inView={highScoreInView} delay={0}>
+          <RevealBlock delay={0}>
             <SectionLabel>High Score Board</SectionLabel>
           </RevealBlock>
 
-          <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 overflow-hidden">
-            <ScanlineOverlay />
+          <RevealBlock delay={0.05}>
+            <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 overflow-hidden">
+              <ScanlineOverlay />
 
-            {/* Header row */}
-            <div className="relative border-b-2 border-[#39ff14]/20 px-6 py-4 grid grid-cols-12 gap-4">
-              <span className="col-span-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40">
-                RNK
-              </span>
-              <span className="col-span-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40">
-                NAME
-              </span>
-              <span className="col-span-7 text-right font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40">
-                SCORE
-              </span>
-            </div>
+              {/* Header */}
+              <div className="relative border-b-2 border-[#39ff14]/20 px-6 py-4 grid grid-cols-12 gap-4">
+                <span className="col-span-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35">
+                  RNK
+                </span>
+                <span className="col-span-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35">
+                  NAME
+                </span>
+                <span className="col-span-7 text-right font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35">
+                  SCORE
+                </span>
+              </div>
 
-            {/* Score rows */}
-            {highScores.map((entry, i) => (
-              <RevealBlock key={entry.rank} inView={highScoreInView} delay={i * 0.06}>
-                <div
-                  className="relative border-b border-[#39ff14]/10 last:border-b-0 px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-[#39ff14]/5 transition-colors"
-                >
-                  {/* Rank */}
-                  <div className="col-span-1 flex items-center gap-2">
-                    {entry.rank <= 3 ? (
+              {/* Rows */}
+              {highScores.map((entry, i) => (
+                <RevealBlock key={entry.rank} delay={i * 0.06}>
+                  <div className="relative border-b border-[#39ff14]/8 last:border-b-0 px-6 py-4 grid grid-cols-12 gap-4 items-center group hover:bg-[#39ff14]/5 transition-colors cursor-default">
+                    {/* Rank */}
+                    <div className="col-span-1">
                       <span
                         className="font-mono font-bold text-sm"
                         style={{
-                          color: entry.rank === 1 ? "#FFFF00" : entry.rank === 2 ? "#39ff14" : "#00ffff",
-                          textShadow: `0 0 10px ${entry.rank === 1 ? "#FFFF00" : entry.rank === 2 ? "#39ff14" : "#00ffff"}`,
+                          color:
+                            entry.rank === 1
+                              ? "#FFFF00"
+                              : entry.rank === 2
+                              ? "#39ff14"
+                              : entry.rank === 3
+                              ? "#00ffff"
+                              : "rgba(57,255,20,0.3)",
+                          textShadow:
+                            entry.rank <= 3
+                              ? `0 0 10px ${entry.rank === 1 ? "#FFFF00" : entry.rank === 2 ? "#39ff14" : "#00ffff"}`
+                              : "none",
                         }}
                       >
                         {String(entry.rank).padStart(2, "0")}
                       </span>
-                    ) : (
-                      <span className="font-mono text-sm text-[#39ff14]/30">
-                        {String(entry.rank).padStart(2, "0")}
+                    </div>
+
+                    {/* Name */}
+                    <div className="col-span-4 flex items-center gap-3">
+                      <NeonDot color={entry.color} />
+                      <span
+                        className="font-mono font-bold text-lg uppercase tracking-[0.3em] group-hover:tracking-[0.4em] transition-all duration-300"
+                        style={{
+                          color: entry.color,
+                          textShadow: `0 0 8px ${entry.color}`,
+                        }}
+                      >
+                        {entry.name}
                       </span>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Name */}
-                  <div className="col-span-4 flex items-center gap-3">
-                    <NeonDot color={entry.color} />
-                    <span
-                      className="font-mono font-bold text-lg uppercase tracking-[0.3em]"
-                      style={{
-                        color: entry.color,
-                        textShadow: `0 0 8px ${entry.color}`,
-                      }}
-                    >
-                      {entry.name}
-                    </span>
+                    {/* Score */}
+                    <div className="col-span-7 text-right">
+                      <span
+                        className="font-mono font-bold text-lg tracking-wider"
+                        style={{
+                          color: entry.rank === 1 ? "#FFFF00" : "#39ff14",
+                          textShadow:
+                            entry.rank === 1
+                              ? "0 0 12px #FFFF00, 0 0 24px #FFFF00"
+                              : "0 0 8px #39ff14",
+                        }}
+                      >
+                        {entry.score}
+                      </span>
+                    </div>
                   </div>
+                </RevealBlock>
+              ))}
 
-                  {/* Score */}
-                  <div className="col-span-7 text-right">
-                    <span
-                      className="font-mono font-bold text-lg tracking-wider"
-                      style={{
-                        color: entry.rank === 1 ? "#FFFF00" : "#39ff14",
-                        textShadow:
-                          entry.rank === 1
-                            ? "0 0 10px #FFFF00, 0 0 20px #FFFF00"
-                            : "0 0 8px #39ff14",
-                      }}
-                    >
-                      {entry.score}
-                    </span>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-
-            {/* Footer */}
-            <div className="relative border-t-2 border-[#39ff14]/20 px-6 py-3 flex justify-between items-center">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/30">
-                {"Today's Records"}
-              </span>
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2"
-                  style={{
-                    background: "#39ff14",
-                    boxShadow: "0 0 8px rgba(57,255,20,0.8)",
-                    animation: "neon-flicker 3s ease-in-out infinite",
-                  }}
-                />
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40">
-                  Live
+              {/* Footer */}
+              <div className="relative border-t-2 border-[#39ff14]/20 px-6 py-3 flex justify-between items-center">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/25">
+                  {"Today's Records"}
                 </span>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-2 h-2"
+                    style={{
+                      background: "#39ff14",
+                      boxShadow: "0 0 8px rgba(57,255,20,0.8)",
+                      animation: "neon-flicker 3s ease-in-out infinite",
+                    }}
+                  />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/35">
+                    Live
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          </RevealBlock>
         </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* COMPONENTS DEMO                                                     */}
+      {/* COMPONENT DEMOS                                                     */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-10 pb-20" ref={componentsRef}>
+      <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock inView={componentsInView} delay={0}>
+          <RevealBlock delay={0}>
             <SectionLabel>Components</SectionLabel>
           </RevealBlock>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Buttons */}
-            <RevealBlock inView={componentsInView} delay={0.05}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.15)] transition-all duration-200">
+            <RevealBlock delay={0.05}>
+              <div className="group relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.12)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
@@ -655,26 +820,29 @@ export default function ArcadeCrtShowcaseContent() {
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <button className="px-5 py-2.5 bg-[#39ff14] text-black font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#39ff14] shadow-[0_0_20px_rgba(57,255,20,0.5)] hover:shadow-[0_0_40px_rgba(57,255,20,0.8)] transition-all duration-200">
+                    <button className="px-5 py-2.5 bg-[#39ff14] text-black font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#39ff14] shadow-[0_0_20px_rgba(57,255,20,0.5)] hover:shadow-[0_0_40px_rgba(57,255,20,0.8)] transition-all duration-200 active:translate-y-[6px]">
                       Start
                     </button>
-                    <button className="px-5 py-2.5 bg-transparent text-[#ff00ff] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#ff00ff] shadow-[0_0_15px_rgba(255,0,255,0.3)] hover:bg-[#ff00ff]/10 hover:shadow-[0_0_30px_rgba(255,0,255,0.5)] transition-all duration-200">
+                    <button className="px-5 py-2.5 bg-transparent text-[#ff00ff] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#ff00ff] shadow-[0_0_15px_rgba(255,0,255,0.3)] hover:bg-[#ff00ff]/10 hover:shadow-[0_0_30px_rgba(255,0,255,0.5)] transition-all duration-200 active:translate-y-[6px]">
                       Player 2
                     </button>
-                    <button className="px-5 py-2.5 bg-transparent text-[#00ffff] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:bg-[#00ffff]/10 hover:shadow-[0_0_30px_rgba(0,255,255,0.5)] transition-all duration-200">
+                    <button className="px-5 py-2.5 bg-transparent text-[#00ffff] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:bg-[#00ffff]/10 hover:shadow-[0_0_30px_rgba(0,255,255,0.5)] transition-all duration-200 active:translate-y-[6px]">
                       Options
                     </button>
-                    <button className="px-5 py-2.5 bg-transparent text-[#ff2a2a] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#ff2a2a] shadow-[0_0_15px_rgba(255,42,42,0.3)] hover:bg-[#ff2a2a]/10 hover:shadow-[0_0_30px_rgba(255,42,42,0.5)] transition-all duration-200">
+                    <button className="px-5 py-2.5 bg-transparent text-[#ff2a2a] font-mono text-xs uppercase tracking-[0.2em] border-2 border-[#ff2a2a] shadow-[0_0_15px_rgba(255,42,42,0.3)] hover:bg-[#ff2a2a]/10 hover:shadow-[0_0_30px_rgba(255,42,42,0.5)] transition-all duration-200 active:translate-y-[6px]">
                       Quit
                     </button>
                   </div>
+                  <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.15em] text-[#39ff14]/25 group-hover:text-[#39ff14]/45 transition-colors">
+                    active:translate-y-[6px] — physical button press
+                  </p>
                 </div>
               </div>
             </RevealBlock>
 
-            {/* Inputs */}
-            <RevealBlock inView={componentsInView} delay={0.1}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.15)] transition-all duration-200">
+            {/* Terminal Inputs */}
+            <RevealBlock delay={0.1}>
+              <div className="group relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.12)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
@@ -709,15 +877,15 @@ export default function ArcadeCrtShowcaseContent() {
               </div>
             </RevealBlock>
 
-            {/* Cards */}
-            <RevealBlock inView={componentsInView} delay={0.15}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.15)] transition-all duration-200">
+            {/* Score Cards */}
+            <RevealBlock delay={0.15}>
+              <div className="group relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#ff00ff]/50 hover:shadow-[0_0_30px_rgba(255,0,255,0.1)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
                     <NeonDot color="#ff00ff" />
                     <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff00ff]">
-                      Card Component
+                      Score Cards
                     </span>
                   </div>
                   <div className="space-y-3">
@@ -728,18 +896,21 @@ export default function ArcadeCrtShowcaseContent() {
                     ].map((card) => (
                       <div
                         key={card.title}
-                        className="flex items-center justify-between border border-[#39ff14]/10 px-4 py-3 hover:border-[#39ff14]/30 transition-colors"
+                        className="group/card flex items-center justify-between border border-[#39ff14]/10 px-4 py-3 hover:border-[#39ff14]/35 hover:bg-[#39ff14]/5 transition-all duration-200 cursor-default"
                       >
                         <div className="flex items-center gap-3">
                           <NeonDot color={card.color} />
                           <span
-                            className="font-mono text-xs uppercase tracking-[0.1em]"
+                            className="font-mono text-xs uppercase tracking-[0.1em] group-hover/card:tracking-[0.2em] transition-all duration-200"
                             style={{ color: card.color }}
                           >
                             {card.title}
                           </span>
                         </div>
-                        <span className="font-mono text-xs text-[#FFFF00]/80">
+                        <span
+                          className="font-mono text-xs"
+                          style={{ color: "#FFFF00", opacity: 0.8 }}
+                        >
                           {card.sub}
                         </span>
                       </div>
@@ -749,9 +920,9 @@ export default function ArcadeCrtShowcaseContent() {
               </div>
             </RevealBlock>
 
-            {/* Alerts / Status */}
-            <RevealBlock inView={componentsInView} delay={0.2}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.15)] transition-all duration-200">
+            {/* System Alerts */}
+            <RevealBlock delay={0.2}>
+              <div className="group relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden hover:border-[#ff2a2a]/50 hover:shadow-[0_0_30px_rgba(255,42,42,0.08)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
@@ -761,38 +932,31 @@ export default function ArcadeCrtShowcaseContent() {
                     </span>
                   </div>
                   <div className="space-y-3">
-                    <div className="flex items-start gap-3 border-l-2 border-[#39ff14] pl-3 py-1">
-                      <span className="font-mono text-[10px] text-[#39ff14] uppercase tracking-[0.1em] shrink-0">
-                        [OK]
-                      </span>
-                      <span className="font-mono text-xs text-[#39ff14]/70">
-                        CRT display online — phosphor warm-up complete
-                      </span>
-                    </div>
-                    <div className="flex items-start gap-3 border-l-2 border-[#FFFF00] pl-3 py-1">
-                      <span className="font-mono text-[10px] text-[#FFFF00] uppercase tracking-[0.1em] shrink-0">
-                        [WRN]
-                      </span>
-                      <span className="font-mono text-xs text-[#FFFF00]/70">
-                        Coin mechanism check — low credits
-                      </span>
-                    </div>
-                    <div className="flex items-start gap-3 border-l-2 border-[#ff2a2a] pl-3 py-1">
-                      <span className="font-mono text-[10px] text-[#ff2a2a] uppercase tracking-[0.1em] shrink-0">
-                        [ERR]
-                      </span>
-                      <span className="font-mono text-xs text-[#ff2a2a]/70">
-                        Player 2 controller disconnected
-                      </span>
-                    </div>
-                    <div className="flex items-start gap-3 border-l-2 border-[#00ffff] pl-3 py-1">
-                      <span className="font-mono text-[10px] text-[#00ffff] uppercase tracking-[0.1em] shrink-0">
-                        [INF]
-                      </span>
-                      <span className="font-mono text-xs text-[#00ffff]/70">
-                        Audio subsystem initialized — ready
-                      </span>
-                    </div>
+                    {[
+                      { tag: "[OK]", msg: "CRT display online — phosphor warm-up complete", color: "#39ff14" },
+                      { tag: "[WRN]", msg: "Coin mechanism check — low credits", color: "#FFFF00" },
+                      { tag: "[ERR]", msg: "Player 2 controller disconnected", color: "#ff2a2a" },
+                      { tag: "[INF]", msg: "Audio subsystem initialized — ready", color: "#00ffff" },
+                    ].map((alert) => (
+                      <div
+                        key={alert.tag}
+                        className="flex items-start gap-3 border-l-2 pl-3 py-1 transition-all duration-200 hover:pl-5"
+                        style={{ borderColor: alert.color }}
+                      >
+                        <span
+                          className="font-mono text-[10px] uppercase tracking-[0.1em] shrink-0"
+                          style={{ color: alert.color, textShadow: `0 0 6px ${alert.color}` }}
+                        >
+                          {alert.tag}
+                        </span>
+                        <span
+                          className="font-mono text-xs leading-relaxed"
+                          style={{ color: `${alert.color}B0` }}
+                        >
+                          {alert.msg}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -802,24 +966,153 @@ export default function ArcadeCrtShowcaseContent() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* COLOR PALETTE                                                       */}
+      {/* CRT EFFECTS SHOWCASE                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-10 pb-20" ref={paletteRef}>
+      <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock inView={paletteInView} delay={0}>
+          <RevealBlock delay={0}>
+            <SectionLabel>CRT Effects</SectionLabel>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            {crtEffects.map((fx, i) => (
+              <RevealBlock key={fx.label} delay={i * 0.07}>
+                <div
+                  className="group relative bg-[#0a0a0a] border-2 p-5 overflow-hidden hover:scale-[1.02] transition-all duration-200"
+                  style={{
+                    borderColor: `${fx.color}35`,
+                    boxShadow: `inset 0 0 20px ${fx.color}08`,
+                  }}
+                >
+                  <ScanlineOverlay />
+                  <div className="relative">
+                    {/* Color indicator */}
+                    <div
+                      className="w-10 h-10 mb-4 flex items-center justify-center border-2"
+                      style={{
+                        borderColor: fx.color,
+                        background: `${fx.color}15`,
+                        boxShadow: `0 0 15px ${fx.color}30`,
+                      }}
+                    >
+                      <div
+                        className="w-4 h-4"
+                        style={{
+                          background: fx.color,
+                          boxShadow: `0 0 8px ${fx.color}`,
+                          animation: i % 2 === 0 ? "neon-flicker 4s ease-in-out infinite" : "none",
+                        }}
+                      />
+                    </div>
+
+                    <p
+                      className="font-mono font-bold text-sm uppercase tracking-[0.2em] mb-2 group-hover:tracking-[0.3em] transition-all duration-300"
+                      style={{
+                        color: fx.color,
+                        textShadow: `-1px 0 #ff00ff, 1px 0 #00ffff`,
+                      }}
+                    >
+                      {fx.label}
+                    </p>
+                    <p
+                      className="font-mono text-xs leading-relaxed mb-4"
+                      style={{ color: `${fx.color}80` }}
+                    >
+                      {fx.desc}
+                    </p>
+                    <div
+                      className="font-mono text-[9px] px-3 py-2 border border-dashed leading-relaxed break-all"
+                      style={{
+                        borderColor: `${fx.color}30`,
+                        color: `${fx.color}55`,
+                        background: `${fx.color}08`,
+                      }}
+                    >
+                      {fx.code}
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Live CRT demo panel */}
+          <RevealBlock delay={0.5}>
+            <div className="mt-8 relative overflow-hidden border-2 border-[#39ff14]/30 p-8 md:p-12">
+              {/* Full scanline overlay */}
+              <ScanlineOverlay />
+
+              {/* Vignette */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%)",
+                }}
+              />
+
+              {/* CRT curvature border */}
+              <div
+                className="absolute inset-2 border border-[#39ff14]/8 pointer-events-none"
+                style={{ borderRadius: "30% 30% 30% 30% / 10% 10% 10% 10%" }}
+              />
+
+              <div className="relative text-center">
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#39ff14]/40 mb-4">
+                  Live CRT Preview
+                </p>
+                <h2
+                  className="font-mono font-bold text-5xl md:text-7xl uppercase tracking-wider leading-none mb-4"
+                  style={{
+                    color: "#39ff14",
+                    animation: "rgb-shift 2.5s ease-in-out infinite",
+                  }}
+                >
+                  PHOSPHOR
+                </h2>
+                <p
+                  className="font-mono text-[#39ff14]/50 text-sm mb-2"
+                  style={{ animation: "neon-flicker 6s ease-in-out infinite" }}
+                >
+                  Scanlines + RGB Aberration + Vignette + Curvature
+                </p>
+                <div className="flex justify-center gap-3 mt-6">
+                  {["#39ff14", "#ff00ff", "#00ffff", "#FFFF00", "#ff2a2a"].map((c) => (
+                    <div
+                      key={c}
+                      className="w-3 h-3"
+                      style={{
+                        background: c,
+                        boxShadow: `0 0 10px ${c}, 0 0 20px ${c}`,
+                        animation: `neon-flicker ${2 + Math.random() * 2}s ease-in-out infinite`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* COLOR SYSTEM                                                        */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="px-6 md:px-10 pb-20">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock delay={0}>
             <SectionLabel>Color System</SectionLabel>
           </RevealBlock>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {palette.map((c, i) => (
-              <RevealBlock key={c.hex} inView={paletteInView} delay={i * 0.05}>
+              <RevealBlock key={c.hex} delay={i * 0.05}>
                 <button
                   onClick={() => setActiveColor(i)}
-                  className="w-full text-left group transition-all duration-200"
+                  className="group w-full text-left transition-all duration-200"
                 >
-                  {/* Swatch */}
                   <div
-                    className="w-full aspect-square border-2 transition-all duration-200"
+                    className="w-full aspect-square border-2 transition-all duration-200 group-hover:scale-[1.05]"
                     style={{
                       background: c.hex,
                       borderColor: activeColor === i ? c.hex : "rgba(57,255,20,0.15)",
@@ -829,10 +1122,9 @@ export default function ArcadeCrtShowcaseContent() {
                           : "none",
                     }}
                   />
-                  {/* Meta */}
                   <div className="pt-2">
                     <p
-                      className="font-mono text-[9px] uppercase tracking-[0.2em] mb-0.5"
+                      className="font-mono text-[9px] uppercase tracking-[0.2em] mb-0.5 group-hover:tracking-[0.3em] transition-all duration-200"
                       style={{ color: activeColor === i ? c.hex : "#39ff14" }}
                     >
                       {c.label}
@@ -844,8 +1136,8 @@ export default function ArcadeCrtShowcaseContent() {
             ))}
           </div>
 
-          {/* Selected color info */}
-          <RevealBlock inView={paletteInView} delay={0.5}>
+          {/* Selected color panel */}
+          <RevealBlock delay={0.5}>
             <div
               className="mt-6 relative bg-[#0a0a0a] border-2 p-6 overflow-hidden transition-all duration-300"
               style={{
@@ -860,7 +1152,7 @@ export default function ArcadeCrtShowcaseContent() {
                   style={{
                     background: palette[activeColor].hex,
                     borderColor: palette[activeColor].hex,
-                    boxShadow: `0 0 20px ${palette[activeColor].glow}`,
+                    boxShadow: `0 0 20px ${palette[activeColor].glow}, 0 0 40px ${palette[activeColor].glow}`,
                   }}
                 />
                 <div>
@@ -877,6 +1169,21 @@ export default function ArcadeCrtShowcaseContent() {
                     {palette[activeColor].hex} &mdash; {palette[activeColor].label}
                   </p>
                 </div>
+                <div className="ml-auto hidden md:block">
+                  <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#39ff14]/30 mb-1">
+                    Usage
+                  </div>
+                  <div
+                    className="font-mono text-xs px-3 py-1 border"
+                    style={{
+                      color: palette[activeColor].hex,
+                      borderColor: `${palette[activeColor].hex}30`,
+                      background: `${palette[activeColor].hex}10`,
+                    }}
+                  >
+                    color: {palette[activeColor].hex}
+                  </div>
+                </div>
               </div>
             </div>
           </RevealBlock>
@@ -884,18 +1191,18 @@ export default function ArcadeCrtShowcaseContent() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* TYPOGRAPHY / EFFECTS                                                */}
+      {/* TYPOGRAPHY                                                          */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-10 pb-20" ref={typographyRef}>
+      <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock inView={typographyInView} delay={0}>
+          <RevealBlock delay={0}>
             <SectionLabel>Typography & Effects</SectionLabel>
           </RevealBlock>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* RGB Aberration */}
-            <RevealBlock inView={typographyInView} delay={0.05}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden">
+            {/* RGB Aberration scale */}
+            <RevealBlock delay={0.05}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden group hover:border-[#39ff14]/60 transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-6">
@@ -919,16 +1226,16 @@ export default function ArcadeCrtShowcaseContent() {
                   >
                     Heading S
                   </h4>
-                  <p className="font-mono text-xs text-[#39ff14]/40 uppercase tracking-[0.1em]">
+                  <p className="font-mono text-[9px] text-[#39ff14]/35 uppercase tracking-[0.1em]">
                     text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff
                   </p>
                 </div>
               </div>
             </RevealBlock>
 
-            {/* Neon glow text */}
-            <RevealBlock inView={typographyInView} delay={0.1}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden">
+            {/* Neon glow text variants */}
+            <RevealBlock delay={0.1}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden group hover:border-[#39ff14]/60 transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative space-y-5">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-6">
@@ -955,35 +1262,50 @@ export default function ArcadeCrtShowcaseContent() {
               </div>
             </RevealBlock>
 
-            {/* Scanline demo */}
-            <RevealBlock inView={typographyInView} delay={0.15}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden">
+            {/* Blinking cursor demo */}
+            <RevealBlock delay={0.15}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden group hover:border-[#00ffff]/50 transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-6">
-                    Scanline Overlay
+                    Terminal / Blinking Cursor
                   </p>
-                  <div className="bg-[#0d0d0d] border border-[#39ff14]/20 p-4 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.05)_2px,rgba(57,255,20,0.05)_4px)]" />
-                    <p className="relative font-mono text-sm text-[#39ff14]/80 leading-loose">
-                      Every surface uses the scanline overlay:
-                      <br />
-                      repeating-linear-gradient(0deg, ...)
-                      <br />
-                      2px lines at 4px intervals
-                    </p>
+                  <div className="space-y-3">
+                    {[
+                      "BOOT SEQUENCE INITIATED...",
+                      "LOADING ASSETS [====----] 42%",
+                      "PLAYER DATA FOUND",
+                      "CONNECTING TO ARCADE NET",
+                    ].map((line, idx) => (
+                      <p
+                        key={idx}
+                        className="font-mono text-sm text-[#39ff14]/70"
+                      >
+                        {"> "}
+                        {line}
+                        {idx === 3 && (
+                          <span
+                            className="inline-block w-2 h-4 bg-[#39ff14] ml-1 align-middle"
+                            style={{ opacity: cursorVisible ? 1 : 0 }}
+                          />
+                        )}
+                      </p>
+                    ))}
                   </div>
+                  <p className="mt-5 font-mono text-[9px] uppercase tracking-[0.15em] text-[#39ff14]/25">
+                    animation: crtBlink 1.06s step-end infinite
+                  </p>
                 </div>
               </div>
             </RevealBlock>
 
-            {/* Monospace type scale */}
-            <RevealBlock inView={typographyInView} delay={0.2}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden">
+            {/* Type scale */}
+            <RevealBlock delay={0.2}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-8 overflow-hidden group hover:border-[#39ff14]/60 transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/40 mb-6">
-                    Type Scale / font-mono only
+                    Type Scale — font-mono only
                   </p>
                   <div className="space-y-3">
                     <p className="font-mono text-3xl font-bold text-[#39ff14]">
@@ -992,7 +1314,7 @@ export default function ArcadeCrtShowcaseContent() {
                     <p className="font-mono text-xl font-bold text-[#39ff14]/80">
                       HEADING
                     </p>
-                    <p className="font-mono text-base text-[#39ff14]/70">
+                    <p className="font-mono text-base text-[#39ff14]/65">
                       BODY TEXT — MONOSPACE ONLY
                     </p>
                     <p className="font-mono text-sm text-[#39ff14]/50">
@@ -1012,16 +1334,16 @@ export default function ArcadeCrtShowcaseContent() {
       {/* ------------------------------------------------------------------ */}
       {/* DESIGN RULES                                                        */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-10 pb-20" ref={rulesRef}>
+      <section className="px-6 md:px-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <RevealBlock inView={rulesInView} delay={0}>
+          <RevealBlock delay={0}>
             <SectionLabel>Design Rules</SectionLabel>
           </RevealBlock>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Do list */}
-            <RevealBlock inView={rulesInView} delay={0.08}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden">
+            {/* Must Follow */}
+            <RevealBlock delay={0.08}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 overflow-hidden group hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.1)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-6">
@@ -1037,7 +1359,7 @@ export default function ArcadeCrtShowcaseContent() {
                     {[
                       "Scanline overlay on ALL content areas",
                       "Neon glow (text-shadow / box-shadow) on key elements",
-                      "font-mono for every text element, no exceptions",
+                      "font-mono for every text element — no exceptions",
                       "Near-black background (#050505 or #0a0a0a)",
                       "RGB chromatic aberration on ALL headings",
                       "High-saturation neon colors only",
@@ -1050,7 +1372,7 @@ export default function ArcadeCrtShowcaseContent() {
                         >
                           +
                         </span>
-                        <span className="font-mono text-xs text-[#39ff14]/70 leading-relaxed">
+                        <span className="font-mono text-xs text-[#39ff14]/65 leading-relaxed">
                           {rule}
                         </span>
                       </li>
@@ -1060,9 +1382,9 @@ export default function ArcadeCrtShowcaseContent() {
               </div>
             </RevealBlock>
 
-            {/* Don't list */}
-            <RevealBlock inView={rulesInView} delay={0.14}>
-              <div className="relative bg-[#0a0a0a] border-2 border-[#ff2a2a]/30 p-6 overflow-hidden">
+            {/* Forbidden */}
+            <RevealBlock delay={0.14}>
+              <div className="relative bg-[#0a0a0a] border-2 border-[#ff2a2a]/30 p-6 overflow-hidden group hover:border-[#ff2a2a]/60 hover:shadow-[0_0_30px_rgba(255,42,42,0.08)] transition-all duration-200">
                 <ScanlineOverlay />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-6">
@@ -1091,7 +1413,7 @@ export default function ArcadeCrtShowcaseContent() {
                         >
                           x
                         </span>
-                        <span className="font-mono text-xs text-[#ff2a2a]/60 leading-relaxed">
+                        <span className="font-mono text-xs text-[#ff2a2a]/55 leading-relaxed">
                           {rule}
                         </span>
                       </li>
@@ -1107,8 +1429,9 @@ export default function ArcadeCrtShowcaseContent() {
       {/* ------------------------------------------------------------------ */}
       {/* FOOTER                                                              */}
       {/* ------------------------------------------------------------------ */}
-      <footer className="bg-[#050505] border-t-2 border-[#39ff14]/20 px-6 md:px-10 py-10">
-        <div className="max-w-6xl mx-auto">
+      <footer className="relative bg-[#050505] border-t-2 border-[#39ff14]/20 px-6 md:px-10 py-10 overflow-hidden">
+        <ScanlineOverlay />
+        <div className="relative max-w-6xl mx-auto">
           {/* Top row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
             <div>
@@ -1128,13 +1451,13 @@ export default function ArcadeCrtShowcaseContent() {
             <div className="flex gap-6">
               <Link
                 href="/styles/arcade-crt"
-                className="font-mono text-xs uppercase tracking-[0.2em] text-[#39ff14]/60 hover:text-[#39ff14] transition-colors"
+                className="font-mono text-xs uppercase tracking-[0.2em] text-[#39ff14]/55 hover:text-[#39ff14] transition-colors"
               >
                 Documentation
               </Link>
               <Link
                 href="/styles"
-                className="font-mono text-xs uppercase tracking-[0.2em] text-[#00ffff]/60 hover:text-[#00ffff] transition-colors"
+                className="font-mono text-xs uppercase tracking-[0.2em] text-[#00ffff]/55 hover:text-[#00ffff] transition-colors"
               >
                 All Styles
               </Link>
@@ -1143,7 +1466,7 @@ export default function ArcadeCrtShowcaseContent() {
 
           {/* Credits line */}
           <div className="border-t border-[#39ff14]/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#39ff14]/25">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#39ff14]/22">
               {"CREDITS: "}{String(credits).padStart(2, "0")}{" // INSERT COIN"}
             </p>
             <div className="flex items-center gap-3">
@@ -1155,7 +1478,7 @@ export default function ArcadeCrtShowcaseContent() {
                   animation: "neon-flicker 4s ease-in-out infinite",
                 }}
               />
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/25">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#39ff14]/22">
                 CRT-9000 // System Online
               </p>
             </div>
