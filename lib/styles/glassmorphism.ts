@@ -33,6 +33,7 @@ export const glassmorphism: DesignStyle = {
     "使用渐变背景作为底层 bg-gradient-to-br",
     "圆角适中 rounded-xl 或 rounded-2xl",
     "文字使用高对比度确保可读性",
+    "交互时加入单次扫光高光层并提升边框亮度",
   ],
 
   dontList: [
@@ -41,42 +42,55 @@ export const glassmorphism: DesignStyle = {
     "禁止使用硬边缘阴影",
     "禁止省略 backdrop-blur（这是核心效果）",
     "禁止在低对比度环境下使用浅色文字",
+    "禁止使用频闪或高频循环发光动画",
   ],
 
   components: {
     button: {
       name: "按钮",
       description: "玻璃拟态风格按钮，带有半透明背景和模糊效果",
-      code: `<button className="
+      code: `<button className="group relative
   px-6 py-3
   bg-white/20 backdrop-blur-md
-  border border-white/30
+  border border-white/25
   rounded-xl
   text-white font-medium
-  shadow-lg shadow-black/10
-  hover:bg-white/30
-  hover:shadow-xl
-  transition-all duration-300
+  shadow-[0_4px_15px_rgba(0,0,0,0.1)]
+  hover:bg-white/25 hover:border-white/45
+  hover:shadow-[0_10px_26px_rgba(0,0,0,0.16)]
+  hover:-translate-y-0.5
+  active:scale-[0.98]
+  transition-all duration-300 ease-out
+  overflow-hidden
 ">
-  Glass Button
+  <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/35 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+  <span className="relative z-10">Glass Button</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "毛玻璃卡片，适合在渐变背景上展示内容",
-      code: `<div className="
+      code: `<div className="group relative
   p-6 md:p-8
   bg-white/20 backdrop-blur-xl
-  border border-white/30
+  border border-white/25
   rounded-2xl
-  shadow-xl shadow-black/10
+  shadow-[0_8px_32px_rgba(0,0,0,0.1)]
+  hover:border-white/45
+  hover:shadow-[0_16px_48px_rgba(0,0,0,0.16)]
+  hover:-translate-y-2
+  transition-all duration-300 ease-out
+  overflow-hidden
 ">
-  <h3 className="text-xl font-semibold text-white mb-2">
-    Glass Card
-  </h3>
-  <p className="text-white/80">
-    毛玻璃效果的卡片内容
-  </p>
+  <span className="absolute inset-0 -translate-x-[150%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[150%] transition-transform duration-1000 ease-out" />
+  <div className="relative z-10">
+    <h3 className="text-xl font-semibold text-white mb-2">
+      Glass Card
+    </h3>
+    <p className="text-white/80">
+      毛玻璃效果的卡片内容
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -221,6 +235,13 @@ export const glassmorphism: DesignStyle = {
 1. 底层：渐变背景或图片
 2. 中层：毛玻璃容器
 3. 顶层：内容元素
+
+## Animation & Interaction Rules
+
+- Optical Glint: 使用倾斜渐变高光层（sweep）模拟玻璃折射，保持单次扫光，避免频闪。
+- Floating Depth: hover 可使用轻微上浮（如 \`-translate-y-0.5\` 到 \`-translate-y-2\`）并同步放大阴影扩散范围。
+- Edge Illumination: 边框透明度在交互时从 \`border-white/20\` 提升到 \`border-white/40+\`，强调玻璃切边。
+- Smooth Translucency: 过渡优先 \`duration-300\` 与 \`ease-out\`，营造光学变化的丝滑感。
 
 ## 自检
 

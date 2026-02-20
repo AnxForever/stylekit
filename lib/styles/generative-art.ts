@@ -47,6 +47,7 @@ export const generativeArt: DesignStyle = {
     "使用数学缓动函数驱动动画",
     "卡片使用 bg-neutral-900/80 backdrop-blur 的暗色玻璃效果",
     "交互元素使用紫色发光 shadow-[0_0_20px_rgba(124,58,237,0.4)]",
+    "交互反馈保持线性精确（ease-linear + duration-200）",
   ],
 
   dontList: [
@@ -57,34 +58,35 @@ export const generativeArt: DesignStyle = {
     "禁止使用非程序化派生的装饰元素",
     "禁止使用浅色/白色背景",
     "禁止使用 serif 或 sans 字体（必须用 monospace）",
+    "禁止使用 spring、bounce 等拟物弹性动效",
   ],
 
   components: {
     button: {
       name: "按钮",
       description: "Generative Art 风格算法主题按钮",
-      code: `// Primary - Violet Glow
-<button className="px-6 py-3 rounded-lg font-mono text-sm transition-all duration-300 border bg-violet-600 text-white border-violet-500 hover:bg-violet-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)]">
-  Execute
+      code: `<button className="group relative px-6 py-3 rounded-lg overflow-hidden font-mono text-sm uppercase tracking-[0.18em] bg-violet-900/35 text-violet-300 border border-violet-500/50 hover:border-violet-400 hover:text-white hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] active:opacity-90 transition-all duration-200 ease-linear">
+  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(124,58,237,0.3)_50%,transparent_75%)] bg-[length:200%_200%] bg-[0%_0%] group-hover:bg-[100%_100%] transition-all duration-500 ease-linear" />
+  <span className="relative z-10 group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">Generate</span>
 </button>
 
-// Secondary - Outline
-<button className="px-6 py-3 rounded-lg font-mono text-sm transition-all duration-300 border bg-transparent text-violet-400 border-violet-500/40 hover:border-violet-400 hover:bg-violet-500/10">
-  Parameters
+<button className="group px-6 py-3 rounded-lg font-mono text-sm uppercase tracking-[0.18em] bg-transparent text-violet-400 border border-violet-500/40 hover:border-violet-400 hover:bg-violet-500/10 hover:shadow-[0_0_14px_rgba(124,58,237,0.25)] transition-all duration-200 ease-linear">
+  <span className="group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">Parameters</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Generative Art 风格暗色玻璃卡片",
-      code: `<div className="bg-neutral-900/80 backdrop-blur rounded-xl p-6 border border-neutral-800 relative overflow-hidden hover:border-violet-500/30 hover:shadow-[0_0_25px_rgba(124,58,237,0.15)] transition-all duration-300">
-  <div className="relative">
+      code: `<div className="group bg-neutral-900/80 backdrop-blur rounded-xl p-6 border border-neutral-800 relative overflow-hidden hover:border-violet-500/40 hover:shadow-[0_0_30px_rgba(124,58,237,0.14)] transition-all duration-200 ease-linear cursor-crosshair">
+  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(124,58,237,0.05)_2px,rgba(124,58,237,0.05)_4px)] transition-opacity duration-200 ease-linear" />
+  <div className="relative z-10">
     <div className="flex items-center gap-3 mb-4">
-      <div className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)]" />
-      <h3 className="text-violet-400 font-mono text-xs uppercase tracking-wider">Algorithm</h3>
+      <div className="w-2 h-2 rounded-none bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)] group-hover:rotate-45 transition-transform duration-200 ease-linear" />
+      <h3 className="text-violet-400 font-mono text-xs uppercase tracking-[0.2em]">Algorithm // 0x42</h3>
     </div>
-    <h4 className="text-white text-lg font-mono font-bold mb-2">Perlin Noise</h4>
-    <p className="text-neutral-400 font-mono text-sm leading-relaxed">
-      Gradient noise function for organic procedural textures.
+    <h4 className="text-white text-lg font-mono font-bold mb-2 group-hover:text-violet-200 transition-colors duration-200 ease-linear">Perlin Noise</h4>
+    <p className="text-neutral-400 font-mono text-sm leading-relaxed group-hover:text-neutral-300 transition-colors duration-200 ease-linear">
+      Gradient noise function for organic procedural textures. Seed dynamically injected.
     </p>
   </div>
 </div>`,
@@ -202,7 +204,13 @@ SPECIAL EFFECTS:
 - Subtle animations with mathematical easing
 - Color cycling via HSL rotation
 - SVG pattern overlays (dot grids, concentric circles)
-- Backdrop blur for glass-panel cards`,
+- Backdrop blur for glass-panel cards
+
+Animation & Interaction Rules:
+- Algorithmic Flow: 交互应体现参数计算过程，可通过网格或渐变层的线性位移模拟噪点流动。
+- Parameter Shifting: 悬停时可轻微调整字距与标记形态（如方点旋转），暗示 seed/参数变化，但避免过度花哨。
+- Exact Precision: 优先使用 \`ease-linear\` 与 \`duration-200\`，保持程序化、可预测的反馈节奏。
+- Mathematical Glow: 发光应以清晰几何边缘为主，避免过度雾化导致信息层级变糊。`,
 
   examplePrompts: [
     {

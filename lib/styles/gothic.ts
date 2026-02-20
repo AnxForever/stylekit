@@ -32,6 +32,7 @@ export const gothic: DesignStyle = {
     "营造黑暗、神秘的氛围",
     "使用尖拱形状和哥特式图案",
     "添加精致的装饰纹样",
+    "交互以缓慢光影增强为主，保持庄严厚重感",
   ],
 
   dontList: [
@@ -39,6 +40,7 @@ export const gothic: DesignStyle = {
     "禁止使用圆润可爱的元素",
     "禁止使用现代无衬线字体作为主标题",
     "禁止使用过于简约的设计",
+    "禁止快速抖动、弹性跳动等轻浮动效",
   ],
 
   components: {
@@ -46,32 +48,43 @@ export const gothic: DesignStyle = {
       name: "按钮",
       description: "哥特式风格按钮",
       code: `<button className="
-  px-8 py-4
-  bg-[#2d1b4e]
-  border-2 border-[#c9a227]/60
-  text-[#c9a227] font-serif uppercase tracking-widest
-  shadow-[0_4px_16px_rgba(45,27,78,0.6)]
-  hover:shadow-[0_6px_24px_rgba(201,162,39,0.4)]
+  px-10 py-4
+  bg-[#0a0a0a]
+  border border-[#c9a227]/40
+  text-[#c9a227] font-serif uppercase tracking-[0.2em]
+  shadow-[0_4px_20px_rgba(10,10,10,0.9),inset_0_0_0_1px_rgba(201,162,39,0.1)]
+  hover:bg-[#2d1b4e]/30
   hover:border-[#c9a227]
-  transition-all duration-300
+  hover:text-[#dfc266]
+  hover:shadow-[0_0_30px_rgba(201,162,39,0.2),inset_0_0_10px_rgba(201,162,39,0.1)]
+  active:bg-[#000000]
+  active:shadow-[inset_0_10px_20px_rgba(0,0,0,0.9)]
+  transition-all duration-700 ease-in-out
 ">
-  Enter
+  Enter Sanctum
 </button>`,
     },
     card: {
       name: "卡片",
       description: "哥特式风格卡片",
-      code: `<div className="
-  p-8
-  bg-[#0a0a0a]/90
-  border-2 border-[#c9a227]/40
-  shadow-[0_4px_20px_rgba(10,10,10,0.8)]
+      code: `<div className="group relative p-10
+  bg-gradient-to-b from-[#111111] to-[#0a0a0a]
+  border border-[#c9a227]/20
+  shadow-[0_10px_40px_rgba(0,0,0,0.9)]
+  hover:border-[#c9a227]/60
+  hover:shadow-[0_0_40px_rgba(45,27,78,0.6)]
+  transition-all duration-700 ease-in-out
+  overflow-hidden
 ">
-  <h3 className="text-2xl font-serif text-[#c9a227] mb-3 tracking-wider">
+  <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-[#c9a227]/10 group-hover:border-[#c9a227]/80 transition-colors duration-700" />
+  <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#c9a227]/10 group-hover:border-[#c9a227]/80 transition-colors duration-700" />
+
+  <h3 className="text-3xl font-serif text-[#c9a227]/80 mb-4 tracking-widest uppercase group-hover:text-[#dfc266] group-hover:drop-shadow-[0_0_8px_rgba(201,162,39,0.4)] transition-all duration-700">
     CATHEDRAL
   </h3>
-  <p className="text-[#c9a227]/60 font-serif">
-    In the shadow of the spire
+  <div className="w-12 h-px bg-[#8b1a1a]/50 mb-6 group-hover:w-full group-hover:bg-[#8b1a1a] transition-all duration-1000 ease-in-out" />
+  <p className="text-[#c9a227]/50 font-serif leading-relaxed group-hover:text-[#c9a227]/80 transition-colors duration-700">
+    In the shadow of the spire, where crimson light bleeds through rose windows onto the cold marble floor.
   </p>
 </div>`,
     },
@@ -195,7 +208,14 @@ export const gothic: DesignStyle = {
 - 尖拱形状
 - 金色装饰线
 - 精致边框
-- 玫瑰窗图案`,
+- 玫瑰窗图案
+
+## Animation & Interaction Rules
+
+- Cathedral Weight: 禁止轻浮弹跳或快速位移，交互应以光影与色阶的缓慢变化为主。
+- Divine Illumination: 金色边框与文字在 hover 时缓慢增强发光，模拟烛火与神圣光晕。
+- Stone Mechanism: \`:active\` 通过深色内阴影增强按压阻尼感，而非常规缩放反馈。
+- Eternal Slowness: 动画建议 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`，维持庄严厚重气质。`,
 
   examplePrompts: [
     {
