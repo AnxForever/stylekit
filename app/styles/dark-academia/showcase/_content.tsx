@@ -272,7 +272,6 @@ export default function ShowcaseContent() {
     return () => clearTimeout(t);
   }, []);
 
-  const tabs = ["catalog", "schedule", "essays"];
 
   const accordionItems = [
     { title: "The Dark Academia Aesthetic", content: "Dark Academia romanticizes the pursuit of knowledge through classical education, Gothic architecture, and literary culture. It draws from the golden age of university life, candlelit libraries, and the weight of leather-bound volumes." },

@@ -708,7 +708,7 @@ export default function FilmNoirShowcase() {
 
           <RevealBlock delay={0.1}>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {colorPalette.map((color, i) => (
+              {colorPalette.map((color) => (
                 <div key={color.hex} className="group">
                   <div
                     className="aspect-square border border-neutral-800 group-hover:border-neutral-600 transition-colors duration-500 flex items-end p-3"

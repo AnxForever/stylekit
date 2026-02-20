@@ -179,29 +179,6 @@ const dontRules = [
 /*  Sub-components (all inline)                                        */
 /* ------------------------------------------------------------------ */
 
-/** Timeline node dot */
-function NodeDot({
-  color,
-  active = false,
-}: {
-  color: string;
-  active?: boolean;
-}) {
-  return (
-    <div
-      className={`w-4 h-4 rounded-full border-4 border-white shadow-sm z-10 transition-all duration-200 ease-out ${
-        active
-          ? "scale-125 shadow-[0_0_10px_rgba(59,130,246,0.4)]"
-          : "group-hover:scale-125"
-      }`}
-      style={{
-        backgroundColor: active ? color : "#e2e8f0",
-        boxShadow: active ? `0 0 10px ${color}40` : undefined,
-      }}
-    />
-  );
-}
-
 /** Timeline event card */
 function TimelineCard({
   year,
