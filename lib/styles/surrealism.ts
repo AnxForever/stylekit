@@ -32,6 +32,10 @@ export const surrealism: DesignStyle = {
     "添加柔和的阴影营造深度",
     "使用衬线字体和斜体",
     "保持神秘而优雅的氛围",
+    "Dream-like Distortion: hover applies subtle geometric reality-bending `hover:skew-x-2 hover:-rotate-1` — as if the element is being pulled through a dream portal",
+    "Timeless Easing: all transitions use `duration-700 ease-in-out` or `duration-1000 ease-in-out` — surrealist time is elastic, never hurried",
+    "Abyssal Glow: hover shadow uses large diffuse rose/gold `hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]` — light emerges from deep within, never black drop shadows",
+    "Color Melting: blurred orb decorations expand on hover `group-hover:scale-150 transition-transform duration-[2000ms]` — colors slowly bleed and melt across the canvas",
   ],
 
   dontList: [
@@ -39,40 +43,48 @@ export const surrealism: DesignStyle = {
     "禁止使用严格对称的网格布局",
     "禁止使用现代简约的无装饰设计",
     "禁止使用刺眼的霓虹色彩",
+    "禁止使用 `hover:scale-105`（超现实主义使用 `skew` 和 `rotate` 扭曲现实，不是放大）",
+    "禁止使用黑色投影（Abyssal Glow 使用玫瑰/金色漫射光晕，黑色阴影会破坏梦境感）",
+    "禁止使用 `duration-200` 或更短的过渡（Timeless Easing 要求 `duration-700` 以上——梦境时间是弹性的）",
+    "禁止在卡片装饰光球上使用 `transition-none`（Color Melting 需要缓慢的 `duration-[2000ms]` 扩散）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "超现实主义风格按钮",
+      description: "超现实主义风格按钮，Dream-like Distortion `skew+rotate` + Timeless Easing `duration-1000` + Abyssal Glow 漫射光晕 + 有机圆角",
       code: `<button className="
-  px-8 py-4
-  bg-gradient-to-r from-[#1a1a3e] to-[#c38d94]
+  px-10 py-4
+  bg-gradient-to-br from-[#1a1a3e] to-[#c38d94]
   text-[#f0ece4] font-serif italic tracking-wide
   border border-[#d4a574]/50
-  rounded-lg shadow-lg
-  hover:shadow-[0_8px_30px_rgba(195,141,148,0.4)]
-  hover:scale-105
-  transition-all duration-500
+  rounded-[40%_60%_70%_30%/30%_30%_70%_70%]
+  shadow-[0_4px_20px_rgba(195,141,148,0.2)]
+  hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]
+  hover:-translate-y-1 hover:skew-x-2 hover:-rotate-1
+  active:translate-y-1 active:skew-x-0 active:rotate-0
+  transition-all duration-1000 ease-in-out
 ">
   Enter the Dream
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "超现实主义风格卡片",
-      code: `<div className="
-  p-8
-  bg-gradient-to-br from-[#f0ece4] to-[#f0ece4]/80
-  border border-[#d4a574]/30
-  rounded-2xl shadow-lg
-">
-  <h3 className="text-2xl font-serif italic text-[#1a1a3e] mb-3">
-    The Persistence of Memory
-  </h3>
-  <p className="text-[#1a1a3e]/60 font-serif">
-    Time melts in the desert of consciousness
-  </p>
+      description: "超现实主义风格卡片，Color Melting 光球扩散 `group-hover:scale-150 duration-[2000ms]` + 标题字距扩展 + 下划线延伸 + Dream-like Distortion",
+      code: `<div className="group relative p-8 bg-gradient-to-br from-[#f0ece4] to-[#f0ece4]/80 border border-[#d4a574]/30 rounded-2xl overflow-hidden hover:shadow-[0_0_50px_rgba(195,141,148,0.3)] hover:-translate-y-1 hover:skew-x-1 transition-all duration-700 ease-in-out cursor-pointer">
+  {/* Melting orb — gold */}
+  <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[#d4a574]/20 blur-2xl group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out" />
+  {/* Melting orb — rose */}
+  <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-[#c38d94]/20 blur-2xl group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out" />
+  <div className="relative z-10">
+    <h3 className="text-2xl font-serif italic text-[#1a1a3e] mb-1 group-hover:tracking-widest transition-all duration-1000 ease-in-out">
+      The Persistence of Memory
+    </h3>
+    <div className="h-px bg-[#d4a574] w-8 group-hover:w-full transition-all duration-1000 ease-in-out mb-4 mt-2" />
+    <p className="text-[#1a1a3e]/60 font-serif">
+      Time melts in the desert of consciousness
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -198,7 +210,14 @@ export const surrealism: DesignStyle = {
 - 模糊光晕背景装饰
 - 非对称布局和有机形状
 - 柔和的过渡动画 (duration-500)
-- 意想不到的颜色渐变组合`,
+- 意想不到的颜色渐变组合
+
+## Animation & Interaction Rules
+
+- Dream-like Distortion: Hover applies geometric reality-bending \`hover:skew-x-2 hover:-rotate-1\` — as if the element is being pulled through a dream portal. Never use \`hover:scale-105\` alone; distortion (skew/rotate) is how surrealism deforms reality.
+- Timeless Easing: All transitions use \`duration-700 ease-in-out\` minimum, preferring \`duration-1000 ease-in-out\` — surrealist time is elastic. Never use \`duration-200\` or faster; urgency is a rational concept.
+- Abyssal Glow: Hover shadow uses large diffuse rose/gold \`hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]\` — light wells up from within the dream. Never use black drop shadows; they belong to the rational world.
+- Color Melting: Blurred orb decorations slowly expand \`group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out\` — colors bleed across the canvas over 2 full seconds. The expanding underline \`group-hover:w-full transition-all duration-1000\` and heading \`group-hover:tracking-widest transition-all duration-1000\` melt together.`,
 
   examplePrompts: [
     {
