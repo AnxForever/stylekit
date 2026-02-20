@@ -52,34 +52,40 @@ Core principles:
     "Use minimal spacing - tight margins and padding",
     "Let HTML structure define visual hierarchy (h1 > h2 > h3 > p)",
     "Use plain black (#000000) text on white background",
+    "按钮使用 transition-none 确保零延迟状态切换",
+    "输入框聚焦时用 focus:bg-[#ffffcc] 黄色高亮，模拟90年代浏览器选中感",
   ],
 
   dontList: [
     "Don't use rounded corners of any kind",
     "Don't use box shadows or text shadows",
     "Don't use gradients or background images",
-    "Don't use CSS animations or transitions",
-    "Don't use hover effects beyond underline changes",
+    "Don't use CSS animations or transitions of any kind (transition-none is the rule)",
+    "Don't use hover effects beyond underline or color changes",
     "Don't use custom web fonts or icon fonts",
     "Don't use background colors other than white",
     "Don't use large padding or excessive whitespace",
     "Don't use card-based layouts with visual embellishment",
+    "Don't use focus:ring — use focus:outline-dotted instead",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Brutalist Web 风格按钮 - 纯朴HTML按钮，1px边框、系统字体、无圆角",
+      description:
+        "Windows 95 系统按钮：斜面边框营造凸起感，active 时边框反转模拟按压凹陷，transition-none 零延迟",
       code: `<button className="
-  px-3 py-1
-  bg-white text-black
-  font-mono text-sm
-  border border-black
+  px-4 py-1.5
+  bg-[#dfdfdf] text-black
+  font-sans text-sm
+  border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080]
   rounded-none
   cursor-pointer
-  hover:underline
+  hover:bg-[#e9e9e9]
+  active:border-t-[#808080] active:border-l-[#808080] active:border-r-white active:border-b-white
+  transition-none
 ">
-  Submit
+  Submit Form
 </button>`,
     },
     card: {
@@ -98,19 +104,20 @@ Core principles:
     },
     input: {
       name: "输入框",
-      description: "Brutalist Web 风格输入框 - 1px内凹边框、系统字体",
+      description:
+        "内凹 Windows 95 式输入框：聚焦时黄色高亮，点状虚线焦点框",
       code: `<input
   type="text"
   placeholder="Enter text..."
   className="
     w-full px-2 py-1
     bg-white
-    border border-black
+    border-2 border-t-[#808080] border-l-[#808080] border-r-white border-b-white
     rounded-none
     text-black font-mono text-sm
-    focus:outline-dotted
-    focus:outline-1
-    focus:outline-black
+    focus:outline-dotted focus:outline-1 focus:outline-black focus:outline-offset-1
+    focus:bg-[#ffffcc]
+    transition-none
   "
 />`,
     },
@@ -123,10 +130,10 @@ Core principles:
   px-4 py-2
   font-mono text-sm
 ">
-  <a href="#" className="text-[#0000ff] underline mr-4">Home</a>
-  <a href="#" className="text-[#0000ff] underline mr-4">About</a>
-  <a href="#" className="text-[#0000ff] underline mr-4">Archive</a>
-  <a href="#" className="text-[#0000ff] underline">Links</a>
+  <a href="#" className="text-[#0000ff] underline mr-4 hover:text-[#ff0000]">Home</a>
+  <a href="#" className="text-[#0000ff] underline mr-4 hover:text-[#ff0000]">About</a>
+  <a href="#" className="text-[#0000ff] underline mr-4 hover:text-[#ff0000]">Archive</a>
+  <a href="#" className="text-[#0000ff] underline hover:text-[#ff0000]">Links</a>
 </nav>`,
     },
     hero: {
@@ -174,6 +181,8 @@ Core principles:
   --bw-visited: #551a8b;
   --bw-red: #ff0000;
   --bw-green: #008000;
+  --bw-gray: #808080;
+  --bw-silver: #dfdfdf;
 }
 
 /* System font stack */
@@ -226,6 +235,34 @@ th, td {
   padding: 4px 8px;
   text-align: left;
   font-family: monospace;
+}
+
+/* Windows 95 raised button */
+.bw-btn {
+  background: var(--bw-silver);
+  border-width: 2px;
+  border-style: solid;
+  border-color: white var(--bw-gray) var(--bw-gray) white;
+  cursor: pointer;
+}
+
+/* Windows 95 pressed button */
+.bw-btn:active {
+  border-color: var(--bw-gray) white white var(--bw-gray);
+}
+
+/* Inset input field (Windows 95 style) */
+.bw-input {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--bw-gray) white white var(--bw-gray);
+  background: var(--bw-white);
+}
+
+.bw-input:focus {
+  outline: 1px dotted var(--bw-black);
+  outline-offset: 1px;
+  background: #ffffcc;
 }`,
 
   aiRules: `You are a Brutalist Web style frontend development expert. All generated code must recreate the raw, unstyled feel of 1990s early internet HTML pages.
@@ -235,37 +272,47 @@ th, td {
 - Rounded corners of any kind (rounded-sm, rounded-md, rounded-lg, rounded-xl, rounded-full)
 - Box shadows or text shadows of any kind
 - Gradients of any kind (backgrounds must be flat white)
-- CSS animations, transitions, or transforms
+- CSS animations, transitions, or transforms — use transition-none everywhere
 - Hover effects beyond underline or color changes
 - Custom web fonts or icon fonts (system fonts only)
-- Background colors other than white (except for rare structural contrast)
-- Thick borders (max 1px)
+- Background colors other than white or #dfdfdf (system silver)
+- Thick borders (max 2px for bevel effect, else 1px)
 - Large padding or spacing that feels "designed"
 - Card-style layouts with decorative embellishment
+- focus:ring-* (use focus:outline-dotted instead)
 
 ## Must Follow
 
-- Backgrounds: Pure white (#ffffff) everywhere
+- Backgrounds: Pure white (#ffffff) everywhere, #dfdfdf for system UI elements
 - Text: Black (#000000) only, no gray shades
-- Links: Blue (#0000ff) underlined, visited links purple (#551a8b)
-- Borders: 1px solid black maximum, thin structural lines only
+- Links: Blue (#0000ff) underlined, visited links purple (#551a8b), hover red (#ff0000)
+- Borders: 1px solid black for content; 2px bevel (border-t-white border-l-white border-r-[#808080] border-b-[#808080]) for buttons
 - Border-radius: ALWAYS 0, never round anything
 - Headings: Times New Roman or Georgia (font-serif), bold
 - Body text: System monospace or sans-serif font stack
 - Layout: Linear, document-flow, single-column preferred
 - Spacing: Minimal - tight margins, small padding (px-2 py-1, px-4 py-2)
 - Hierarchy: Rely on HTML heading levels (h1-h6) not visual tricks
-- Interactive elements: Plain HTML-style buttons with 1px borders
-- Images: Inline, no decorative treatments, optional alt-text visible
+- Interactive elements: Windows 95-style bevel buttons
+
+## Animation & Interaction Rules
+
+- Zero Transition: ALL state changes must be instant. Always add transition-none to every interactive element. Hover, active, focus state switches happen at 0ms — this IS the brutalist physics.
+- Native Button Bevel: Buttons use the Windows 95 raised border illusion: border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080]. On :active, reverse the bevel: active:border-t-[#808080] active:border-l-[#808080] active:border-r-white active:border-b-white. No shadow, no scale, no translate — pure border reversal.
+- Raw Focus: Never use focus:ring. Use focus:outline-dotted focus:outline-1 focus:outline-black focus:outline-offset-1. For inputs, add focus:bg-[#ffffcc] to simulate the 90s yellow text selection highlight.
+- Link Hover: Only color change (blue → red) and existing underline. No other effects.
 
 ## Color Palette
 
 - Pure Black: #000000 (all text, borders)
 - Pure White: #ffffff (all backgrounds)
+- System Silver: #dfdfdf (button backgrounds)
+- System Gray: #808080 (border shadow side)
 - Link Blue: #0000ff (hyperlinks)
 - Visited Purple: #551a8b (visited links)
 - Red: #ff0000 (hover state, errors)
 - Green: #008000 (success, secondary accent)
+- Yellow: #ffffcc (focus highlight)
 
 ## Visual References
 
@@ -286,7 +333,9 @@ Think of: early Craigslist, academic personal homepages, W3C specification pages
 5. Blue underlined links section: "My Projects", "My Blog", "Contact"
 6. Simple 1px border table listing recent updates with dates
 7. Footer with "Last updated" date and webmaster email link
-8. No shadows, no rounded corners, no gradients, no animations`,
+8. No shadows, no rounded corners, no gradients, no animations
+9. Buttons: Windows 95 bevel border style, transition-none
+10. Inputs: inset bevel border, focus:bg-[#ffffcc] yellow highlight`,
     },
     {
       title: "学术论文索引",
