@@ -8,28 +8,12 @@ import Link from "next/link";
 /* ------------------------------------------------------------------ */
 
 const sidebarPages = [
-  { label: "Getting Started", active: false },
-  { label: "Quick Note", active: true },
-  { label: "Personal Home", active: false },
-  { label: "Task Board", active: false },
-  { label: "Project Tracker", active: false },
-];
-
-const blockTypes: Array<{
-  type: string;
-  content?: string;
-  level?: number;
-  emoji?: string;
-  detail?: string;
-}> = [
-  { type: "heading", content: "Welcome to Notion Style", level: 1 },
-  { type: "paragraph", content: "A clean and minimal design system inspired by Notion. Content-first, distraction-free, functionally elegant." },
-  { type: "callout", emoji: "!", content: "This showcase demonstrates the Notion aesthetic: subtle borders, soft hover states, and clear hierarchy." },
-  { type: "divider" },
-  { type: "heading", content: "Core Principles", level: 2 },
-  { type: "toggle", content: "Content First", detail: "Design serves content, never competes with it. Every visual element has a functional purpose." },
-  { type: "toggle", content: "Subtle Interactions", detail: "Hover and click feedback is gentle and natural. Block highlighting uses only a 5% brightness shift." },
-  { type: "toggle", content: "Clear Hierarchy", detail: "Font size and color distinguish information layers. No gradients, no heavy shadows, no decoration." },
+  { icon: "home", label: "Home", active: false },
+  { icon: "page", label: "Quick Note", active: true },
+  { icon: "page", label: "Personal Home", active: false },
+  { icon: "database", label: "Task Board", active: false },
+  { icon: "database", label: "Project Tracker", active: false },
+  { icon: "page", label: "Design System", active: false },
 ];
 
 const taskItems = [
@@ -38,43 +22,47 @@ const taskItems = [
   { done: false, text: "Implement responsive layout", tag: "Dev", tagColor: "#eb5757" },
   { done: false, text: "Write documentation", tag: "Docs", tagColor: "#dfab01" },
   { done: false, text: "User testing round", tag: "QA", tagColor: "#9b9a97" },
+  { done: false, text: "Deploy to production", tag: "Ops", tagColor: "#e07b39" },
 ];
 
 const tableData = [
-  { name: "Typography", status: "Done", priority: "High", owner: "Design Team" },
-  { name: "Color System", status: "Done", priority: "High", owner: "Design Team" },
-  { name: "Components", status: "In Progress", priority: "Medium", owner: "Dev Team" },
-  { name: "Documentation", status: "Not Started", priority: "Low", owner: "Tech Writer" },
+  { name: "Typography", status: "Done", priority: "High", owner: "Design" },
+  { name: "Color System", status: "Done", priority: "High", owner: "Design" },
+  { name: "Components", status: "In Progress", priority: "Medium", owner: "Dev" },
+  { name: "Animations", status: "In Progress", priority: "Low", owner: "Dev" },
+  { name: "Documentation", status: "Not Started", priority: "Low", owner: "Writer" },
 ];
 
 const paletteColors = [
-  { name: "Text", value: "#37352f", text: "text-white" },
-  { name: "Background", value: "#ffffff", text: "text-[#37352f]" },
-  { name: "Surface", value: "#f7f6f3", text: "text-[#37352f]" },
-  { name: "Hover", value: "#efedea", text: "text-[#37352f]" },
-  { name: "Active", value: "#e3e1db", text: "text-[#37352f]" },
-  { name: "Blue", value: "#2eaadc", text: "text-white" },
-  { name: "Red", value: "#eb5757", text: "text-white" },
-  { name: "Green", value: "#0f7b6c", text: "text-white" },
+  { name: "Text", value: "#37352f", textClass: "text-white" },
+  { name: "Background", value: "#ffffff", textClass: "text-[#37352f]" },
+  { name: "Surface", value: "#f7f6f3", textClass: "text-[#37352f]" },
+  { name: "Hover", value: "#efedea", textClass: "text-[#37352f]" },
+  { name: "Active", value: "#e3e1db", textClass: "text-[#37352f]" },
+  { name: "Blue", value: "#2eaadc", textClass: "text-white" },
+  { name: "Red", value: "#eb5757", textClass: "text-white" },
+  { name: "Teal", value: "#0f7b6c", textClass: "text-white" },
 ];
 
 const doRules = [
-  "Use Notion signature beige background #f7f6f3",
-  "Subtle borders with border-gray-200",
-  "Hover uses light gray background: hover:bg-[#efedea]",
-  "Maintain clear text hierarchy with size and color",
-  "Use system font stack for readability",
-  "Cards use group class with drag handle illusion",
+  "Use Notion signature surface color #f7f6f3",
+  "Subtle borders with border-gray-200 or opacity variants",
+  "Hover uses #efedea, active press uses #e3e1db",
+  "Maintain clear text hierarchy with size and opacity",
+  "System font stack: -apple-system, BlinkMacSystemFont, Segoe UI",
+  "Drag handle ⋮⋮ appears on block hover, opacity 0 to 100",
   "All transitions duration-150 for instant responsiveness",
+  "Keep corners small: rounded or rounded-md only",
 ];
 
 const dontRules = [
   "Never use large corners rounded-2xl or larger",
-  "Never use gradient backgrounds",
-  "Never use heavy shadows shadow-xl or shadow-2xl",
-  "Never use overly vivid colors",
-  "Never apply translate or scale animations",
-  "Never add hover border changes or shadow jumps",
+  "Never use gradient backgrounds on content areas",
+  "Never use heavy shadows (shadow-xl or shadow-2xl)",
+  "Never use overly vivid or saturated colors",
+  "Never apply translate or scale transforms on interaction",
+  "Never add border changes or shadow jumps on hover",
+  "Never animate layout-affecting properties",
 ];
 
 /* ------------------------------------------------------------------ */
@@ -99,7 +87,11 @@ function useInView() {
   return { ref, inView };
 }
 
-function RevealBlock({ children, className = "", delay = 0 }: {
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
@@ -121,96 +113,59 @@ function RevealBlock({ children, className = "", delay = 0 }: {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
+/*  Drag Handle                                                        */
 /* ------------------------------------------------------------------ */
 
-function NotionBlock({ block }: { block: typeof blockTypes[number] }) {
-  const [toggleOpen, setToggleOpen] = useState(false);
+function DragHandle({ top = "top-2" }: { top?: string }) {
+  return (
+    <div
+      className={`absolute -left-5 ${top} opacity-0 group-hover:opacity-100 transition-opacity duration-150 cursor-grab select-none`}
+      aria-hidden="true"
+    >
+      <span className="text-[#37352f]/30 text-sm leading-none">&#x22EE;&#x22EE;</span>
+    </div>
+  );
+}
 
-  if (block.type === "heading") {
-    const size = block.level === 1 ? "text-4xl font-bold" : "text-2xl font-semibold";
-    return (
-      <div className="group -ml-6 pl-6 py-1 hover:bg-[#efedea] transition-colors duration-150 rounded-md relative">
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          <span className="text-gray-400 text-xs cursor-grab select-none">&#x2af8;</span>
-        </div>
-        {block.level === 1 ? (
-          <h2 className={`${size} text-[#37352f]`}>{block.content}</h2>
-        ) : (
-          <h3 className={`${size} text-[#37352f]`}>{block.content}</h3>
-        )}
-      </div>
-    );
-  }
+/* ------------------------------------------------------------------ */
+/*  Block Components                                                   */
+/* ------------------------------------------------------------------ */
 
-  if (block.type === "paragraph") {
-    return (
-      <div className="group -ml-6 pl-6 py-0.5 hover:bg-[#efedea] transition-colors duration-150 rounded-md relative">
-        <div className="absolute left-0 top-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          <span className="text-gray-400 text-xs cursor-grab select-none">&#x2af8;</span>
-        </div>
-        <p className="text-[#37352f]/80 leading-relaxed">{block.content}</p>
-      </div>
-    );
-  }
-
-  if (block.type === "callout") {
-    return (
-      <div className="group -ml-6 pl-6 py-0.5 hover:bg-[#efedea] transition-colors duration-150 rounded-md relative">
-        <div className="absolute left-0 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          <span className="text-gray-400 text-xs cursor-grab select-none">&#x2af8;</span>
-        </div>
-        <div className="flex gap-3 p-4 bg-[#f7f6f3] rounded-md border border-gray-200">
-          <span className="text-lg flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#2eaadc]/10 rounded text-[#2eaadc] text-xs font-bold">{block.emoji}</span>
-          <p className="text-[#37352f]/80 text-sm leading-relaxed">{block.content}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (block.type === "divider") {
-    return <hr className="border-t border-[#37352f]/[0.09] my-2" />;
-  }
-
-  if (block.type === "toggle") {
-    return (
-      <div className="group -ml-6 pl-6 py-0.5 hover:bg-[#efedea] transition-colors duration-150 rounded-md relative">
-        <div className="absolute left-0 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          <span className="text-gray-400 text-xs cursor-grab select-none">&#x2af8;</span>
-        </div>
-        <button
-          type="button"
-          onClick={() => setToggleOpen(!toggleOpen)}
-          className="flex items-center gap-2 w-full text-left py-1"
+function ToggleBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="group relative pl-5">
+      <DragHandle />
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 w-full text-left py-1 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md px-2 -ml-2 transition-colors duration-150"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          className={`text-[#37352f]/40 flex-shrink-0 transition-transform duration-150 ${open ? "rotate-90" : ""}`}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            className={`text-[#37352f]/50 transition-transform duration-150 flex-shrink-0 ${toggleOpen ? "rotate-90" : ""}`}
-          >
-            <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <span className="text-[#37352f] font-medium">{block.content}</span>
-        </button>
-        {toggleOpen && (
-          <div className="ml-6 mt-1 text-[#37352f]/70 text-sm leading-relaxed pb-1">
-            {block.detail}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return null;
+          <path d="M5 3l5 4-5 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="text-[#37352f] font-medium text-sm">{title}</span>
+      </button>
+      {open && (
+        <div className="ml-5 mt-1 pb-2 text-[#37352f]/70 text-sm leading-relaxed border-l border-gray-200 pl-4">
+          {children}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function TaskCheckbox({ item }: { item: typeof taskItems[number] }) {
   const [checked, setChecked] = useState(item.done);
   return (
-    <div className="group flex items-center gap-3 py-2 px-3 -mx-3 rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer">
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex-shrink-0">
-        <span className="text-gray-400 text-xs cursor-grab select-none">&#x2af8;</span>
+    <div className="group flex items-center gap-3 py-2 px-3 -mx-3 rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer relative">
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex-shrink-0 select-none text-[#37352f]/30 text-sm leading-none">
+        &#x22EE;&#x22EE;
       </div>
       <button
         type="button"
@@ -229,12 +184,41 @@ function TaskCheckbox({ item }: { item: typeof taskItems[number] }) {
         {item.text}
       </span>
       <span
-        className="text-xs px-2 py-0.5 rounded-sm"
-        style={{ backgroundColor: `${item.tagColor}15`, color: item.tagColor }}
+        className="text-xs px-2 py-0.5 rounded-sm font-medium"
+        style={{ backgroundColor: `${item.tagColor}18`, color: item.tagColor }}
       >
         {item.tag}
       </span>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sidebar Icon                                                        */
+/* ------------------------------------------------------------------ */
+
+function SidebarIcon({ type }: { type: string }) {
+  if (type === "database") {
+    return (
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-[#37352f]/40 flex-shrink-0">
+        <rect x="1" y="1" width="11" height="3" rx="0.5" stroke="currentColor" strokeWidth="1" />
+        <rect x="1" y="5.5" width="11" height="3" rx="0.5" stroke="currentColor" strokeWidth="1" />
+        <rect x="1" y="10" width="11" height="2" rx="0.5" stroke="currentColor" strokeWidth="1" />
+      </svg>
+    );
+  }
+  if (type === "home") {
+    return (
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-[#37352f]/40 flex-shrink-0">
+        <path d="M1.5 6.5L6.5 2L11.5 6.5V11.5H8.5V8.5H4.5V11.5H1.5V6.5Z" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-[#37352f]/40 flex-shrink-0">
+      <rect x="2" y="1.5" width="9" height="10" rx="1" stroke="currentColor" strokeWidth="1" />
+      <path d="M4.5 4.5h4M4.5 6.5h4M4.5 8.5h2.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -244,7 +228,7 @@ function TaskCheckbox({ item }: { item: typeof taskItems[number] }) {
 
 export default function ShowcaseContent() {
   const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"blocks" | "checklist" | "table" | "board">("blocks");
+  const [activeTab, setActiveTab] = useState<"checklist" | "table" | "board">("checklist");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -252,63 +236,92 @@ export default function ShowcaseContent() {
     return () => clearTimeout(t);
   }, []);
 
-  const tabs = ["blocks", "checklist", "table", "board"] as const;
+  const tabs = ["checklist", "table", "board"] as const;
 
   return (
-    <div className="min-h-screen bg-white text-[#37352f]">
+    <div className="min-h-screen bg-[#f7f6f3] text-[#37352f] font-sans" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif' }}>
+
       {/* ===== Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-[#37352f]/[0.09]">
-        <div className="max-w-5xl mx-auto px-4 md:px-6">
-          <div className="flex items-center justify-between h-11">
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-1 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150 md:hidden"
-              >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 5h12M3 9h12M3 13h12" />
-                </svg>
-              </button>
-              <Link href="/styles/notion-style/showcase" className="text-sm font-medium text-[#37352f] flex items-center gap-2">
-                <div className="w-5 h-5 bg-[#f7f6f3] border border-gray-200 rounded flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-white border border-gray-300" />
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#f7f6f3]/95 backdrop-blur-sm border-b border-[#e8e6e3]">
+        <div className="flex items-center justify-between h-11 px-4 max-w-full">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-1.5 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150 md:hidden"
+              aria-label="Toggle sidebar"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" />
+              </svg>
+            </button>
+
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1 text-sm text-[#37352f]/50">
+              <Link href="/styles/notion-style/showcase" className="hover:text-[#37352f] transition-colors duration-150 flex items-center gap-1.5">
+                <div className="w-4 h-4 bg-white border border-gray-200 rounded-sm flex items-center justify-center">
+                  <span className="text-[#37352f] font-bold text-[9px]">N</span>
                 </div>
                 Notion Style
               </Link>
-            </div>
-            <nav className="flex items-center gap-1">
-              <Link href="/styles/notion-style" className="px-2 py-1 text-xs text-[#37352f]/50 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150">
-                Docs
-              </Link>
-              <Link href="/styles" className="px-2 py-1 text-xs text-[#37352f]/50 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150">
-                Styles
-              </Link>
+              <svg width="12" height="12" viewBox="0 0 12 12" className="opacity-40">
+                <path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+              <span className="text-[#37352f]">Showcase</span>
             </nav>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button type="button" className="px-2.5 py-1 text-xs text-[#37352f]/60 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150 flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <circle cx="5" cy="5" r="3.5" />
+                <path d="M9.5 9.5l-2-2" strokeLinecap="round" />
+              </svg>
+              Search
+            </button>
+            <button type="button" className="px-2.5 py-1 text-xs text-[#37352f]/60 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150">
+              Share
+            </button>
+            <Link href="/styles/notion-style" className="px-2.5 py-1 text-xs text-[#37352f]/60 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150">
+              Docs
+            </Link>
+            <Link href="/styles" className="px-2.5 py-1 text-xs text-[#37352f]/60 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150">
+              All Styles
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* ===== Sidebar overlay (mobile) ===== */}
+      {/* ===== Mobile sidebar overlay ===== */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 md:hidden" onClick={() => setSidebarOpen(false)}>
           <div className="absolute inset-0 bg-black/20" />
           <aside
-            className="absolute left-0 top-0 bottom-0 w-60 bg-[#f7f6f3] border-r border-gray-200 p-3 pt-14"
+            className="absolute left-0 top-0 bottom-0 w-60 bg-[#f7f6f3] border-r border-[#e8e6e3] p-3 pt-14 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
+            <div className="mb-3">
+              <button
+                type="button"
+                className="w-full px-2 py-1.5 text-left text-sm text-[#37352f]/50 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md transition-colors duration-150 flex items-center gap-2"
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-[#37352f]/40">
+                  <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1" />
+                  <path d="M10.5 10.5l-2-2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                </svg>
+                Search
+              </button>
+            </div>
             <div className="space-y-0.5">
               {sidebarPages.map((pg) => (
                 <div
                   key={pg.label}
                   className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
-                    pg.active ? "bg-[#efedea]" : "hover:bg-[#efedea]"
+                    pg.active ? "bg-[#efedea] text-[#37352f]" : "text-[#37352f]/70 hover:bg-[#efedea]"
                   }`}
                 >
-                  <svg width="14" height="14" viewBox="0 0 14 14" className="text-[#37352f]/40 flex-shrink-0">
-                    <rect x="2" y="2" width="10" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1" />
-                  </svg>
-                  <span className={`text-[#37352f] ${pg.active ? "font-medium" : ""}`}>{pg.label}</span>
+                  <SidebarIcon type={pg.icon} />
+                  <span className={pg.active ? "font-medium" : ""}>{pg.label}</span>
                 </div>
               ))}
             </div>
@@ -316,139 +329,272 @@ export default function ShowcaseContent() {
         </div>
       )}
 
-      {/* ===== Main content with sidebar ===== */}
-      <div className="flex pt-11">
+      {/* ===== Layout: Sidebar + Main ===== */}
+      <div className="flex pt-11 min-h-screen">
+
         {/* Desktop sidebar */}
-        <aside className="hidden md:block w-60 flex-shrink-0 bg-[#f7f6f3] border-r border-gray-200 p-3 pt-6 min-h-screen sticky top-11">
-          <div className="mb-4">
+        <aside className="hidden md:flex flex-col w-64 flex-shrink-0 bg-[#f7f6f3] border-r border-[#e8e6e3] sticky top-11 self-start h-[calc(100vh-2.75rem)] overflow-y-auto">
+          <div className="p-3">
+            {/* Search */}
             <button
               type="button"
-              className="w-full px-2 py-1.5 text-left text-sm text-[#37352f]/50 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md transition-colors duration-150 flex items-center gap-2"
+              className="w-full px-2 py-1.5 mb-1 text-left text-sm text-[#37352f]/50 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md transition-colors duration-150 flex items-center gap-2"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" className="text-[#37352f]/40">
-                <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1" />
-                <path d="M10 10l3 3" stroke="currentColor" strokeWidth="1" />
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-[#37352f]/40">
+                <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1" />
+                <path d="M10.5 10.5l-2-2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
               </svg>
               Search
             </button>
-          </div>
-          <div className="space-y-0.5">
-            {sidebarPages.map((pg) => (
-              <div
-                key={pg.label}
-                className={`group flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
-                  pg.active ? "bg-[#efedea]" : "hover:bg-[#efedea]"
-                }`}
+
+            {/* Workspace */}
+            <div className="mt-3 mb-2 px-2">
+              <span className="text-xs font-medium text-[#37352f]/40 uppercase tracking-wider">Workspace</span>
+            </div>
+
+            {/* Pages */}
+            <div className="space-y-0.5">
+              {sidebarPages.map((pg) => (
+                <div
+                  key={pg.label}
+                  className={`group flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
+                    pg.active
+                      ? "bg-[#efedea] text-[#37352f]"
+                      : "text-[#37352f]/70 hover:bg-[#efedea] hover:text-[#37352f]"
+                  }`}
+                >
+                  <SidebarIcon type={pg.icon} />
+                  <span className={`flex-1 ${pg.active ? "font-medium text-[#37352f]" : ""}`}>{pg.label}</span>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#37352f]/40">
+                      <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* New page */}
+            <div className="mt-3 pt-3 border-t border-[#e8e6e3]">
+              <button
+                type="button"
+                className="w-full px-2 py-1.5 text-left text-sm text-[#37352f]/40 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md transition-colors duration-150 flex items-center gap-2"
               >
-                <svg width="14" height="14" viewBox="0 0 14 14" className="text-[#37352f]/40 flex-shrink-0">
-                  <rect x="2" y="2" width="10" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1" />
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1" className="text-[#37352f]/40">
+                  <path d="M6.5 2.5v8M2.5 6.5h8" strokeLinecap="round" />
                 </svg>
-                <span className={`text-[#37352f] ${pg.active ? "font-medium" : ""}`}>{pg.label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 pt-4 border-t border-[#37352f]/[0.09]">
-            <button
-              type="button"
-              className="w-full px-2 py-1.5 text-left text-sm text-[#37352f]/40 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md transition-colors duration-150 flex items-center gap-2"
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1" className="text-[#37352f]/40">
-                <path d="M7 3v8M3 7h8" />
-              </svg>
-              New page
-            </button>
+                New page
+              </button>
+            </div>
           </div>
         </aside>
 
-        {/* Main content area */}
-        <main className="flex-1 max-w-3xl mx-auto px-6 py-12">
-          {/* ===== Hero ===== */}
-          <section className="mb-16">
+        {/* Main content */}
+        <main className="flex-1 min-w-0">
+
+          {/* ===== Section 1: Hero — Document-style cover + heading ===== */}
+          <section className="mb-0">
+            {/* Cover image */}
             <div
-              className="mb-6"
+              className="w-full h-36 md:h-52 bg-gradient-to-r from-[#2eaadc]/20 via-[#0f7b6c]/15 to-[#37352f]/10 overflow-hidden"
               style={{
                 opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(12px)",
-                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1)",
               }}
             >
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-lg bg-[#f7f6f3] border border-gray-200 mb-6">
-                <div className="h-8 w-8 rounded bg-white border border-gray-300 flex items-center justify-center">
-                  <span className="text-[#37352f] font-bold text-sm">N</span>
-                </div>
+              <div className="w-full h-full flex items-end px-8 pb-4">
+                <span className="text-[#37352f]/10 text-[80px] md:text-[120px] font-bold leading-none select-none">N</span>
               </div>
             </div>
 
-            <h1
-              className="text-4xl md:text-5xl font-bold text-[#37352f] mb-4"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s",
-              }}
-            >
-              Notion Style Showcase
-            </h1>
+            {/* Page icon + title */}
+            <div className="max-w-3xl mx-auto px-6 md:px-16">
+              {/* Icon */}
+              <div
+                className="-mt-7 mb-4 w-14 h-14 flex items-center justify-center text-4xl select-none"
+                style={{
+                  opacity: heroRevealed ? 1 : 0,
+                  transform: heroRevealed ? "translateY(0)" : "translateY(10px)",
+                  transition: "opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s",
+                }}
+              >
+                {"📄"}
+              </div>
 
-            <p
-              className="text-lg text-[#37352f]/50 max-w-xl"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(12px)",
-                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s",
-              }}
-            >
-              A clean and minimal design system for documentation and productivity applications. Content-first, distraction-free.
-            </p>
+              {/* Title */}
+              <h1
+                className="text-4xl md:text-5xl font-bold text-[#37352f] mb-3 leading-tight"
+                style={{
+                  opacity: heroRevealed ? 1 : 0,
+                  transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
+                  transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s",
+                }}
+              >
+                Notion Style
+              </h1>
 
-            <div
-              className="flex gap-2 mt-8"
-              style={{
-                opacity: heroRevealed ? 1 : 0,
-                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s",
-              }}
-            >
-              <button type="button" className="px-3 py-1.5 bg-[#2eaadc] text-white rounded text-sm font-medium hover:bg-[#2899c6] transition-colors duration-150">
-                Get Started
-              </button>
-              <button type="button" className="px-3 py-1.5 bg-transparent text-[#37352f]/60 rounded text-sm font-medium hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150">
-                Learn More
-              </button>
+              {/* Description */}
+              <p
+                className="text-base text-[#37352f]/50 mb-6 max-w-xl"
+                style={{
+                  opacity: heroRevealed ? 1 : 0,
+                  transform: heroRevealed ? "translateY(0)" : "translateY(12px)",
+                  transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.25s",
+                }}
+              >
+                A design system inspired by quiet productivity. Every block is a building unit. Every interaction is a gentle acknowledgment.
+              </p>
+
+              {/* Hero metadata row */}
+              <div
+                className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#37352f]/40 border-b border-[#e8e6e3] pb-6 mb-10"
+                style={{
+                  opacity: heroRevealed ? 1 : 0,
+                  transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.35s",
+                }}
+              >
+                <span>
+                  <span className="text-[#37352f]/30">Created </span>
+                  Feb 20, 2026
+                </span>
+                <span>
+                  <span className="text-[#37352f]/30">Status </span>
+                  <span className="text-[#0f7b6c]">Published</span>
+                </span>
+                <span>
+                  <span className="text-[#37352f]/30">Category </span>
+                  Design System
+                </span>
+              </div>
             </div>
           </section>
 
-          {/* ===== Block Editor Demo ===== */}
-          <section className="mb-20">
+          {/* ===== Section 2: Block Types Demo ===== */}
+          <section className="max-w-3xl mx-auto px-6 md:px-16 mb-16">
             <RevealBlock>
               <div className="space-y-1">
-                {blockTypes.map((block, i) => (
-                  <NotionBlock key={i} block={block} />
-                ))}
+                {/* H1 Block */}
+                <div className="group relative pl-5">
+                  <DragHandle top="top-2" />
+                  <h2 className="text-3xl font-bold text-[#37352f] py-1 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md px-2 -ml-2 transition-colors duration-150 cursor-text">
+                    Welcome to Notion Style
+                  </h2>
+                </div>
+
+                {/* H2 Block */}
+                <div className="group relative pl-5 mt-6">
+                  <DragHandle top="top-1" />
+                  <h3 className="text-xl font-semibold text-[#37352f] py-1 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md px-2 -ml-2 transition-colors duration-150 cursor-text">
+                    Core principles
+                  </h3>
+                </div>
+
+                {/* Paragraph Block */}
+                <div className="group relative pl-5">
+                  <DragHandle top="top-1" />
+                  <p className="text-[#37352f]/80 leading-relaxed text-sm py-0.5 hover:bg-[#efedea] active:bg-[#e3e1db] rounded-md px-2 -ml-2 transition-colors duration-150 cursor-text">
+                    A clean and minimal design system for documentation and productivity. Content-first, distraction-free, functionally elegant. The design serves the content — never competes with it.
+                  </p>
+                </div>
+
+                {/* Callout Block */}
+                <div className="group relative pl-5 pt-1">
+                  <DragHandle top="top-3" />
+                  <div className="flex gap-3 p-3.5 bg-[#2eaadc]/5 rounded-md border border-[#2eaadc]/20 hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-text">
+                    <span className="flex-shrink-0 text-base">{"💡"}</span>
+                    <p className="text-[#37352f]/80 text-sm leading-relaxed">
+                      Hover any block to reveal the drag handle <strong>&#x22EE;&#x22EE;</strong> on the left. This is the Drag Handle Illusion — present only when needed.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="group relative pl-5 py-2">
+                  <DragHandle top="top-2" />
+                  <hr className="border-t border-[#37352f]/[0.09]" />
+                </div>
+
+                {/* Toggle Blocks */}
+                <ToggleBlock title="Content First">
+                  Design serves content, never competes with it. Every visual element has a functional purpose.
+                </ToggleBlock>
+
+                <ToggleBlock title="Subtle Interactions">
+                  Hover and click feedback is gentle and natural. Block highlighting uses only a 5% brightness shift — never translate, never scale.
+                </ToggleBlock>
+
+                <ToggleBlock title="Clear Hierarchy">
+                  {"Font size and opacity distinguish information layers. No gradients, no heavy shadows, no decoration for decoration's sake."}
+                </ToggleBlock>
+
+                {/* Quote Block */}
+                <div className="group relative pl-5 pt-1">
+                  <DragHandle top="top-3" />
+                  <blockquote className="border-l-[3px] border-[#37352f] pl-4 py-1 hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 rounded-r-md cursor-text">
+                    <p className="text-[#37352f]/70 text-sm leading-relaxed italic">
+                      {"The best interface is the one you don't notice. Notion's design achieves invisibility through restraint."}
+                    </p>
+                  </blockquote>
+                </div>
+
+                {/* Code Block */}
+                <div className="group relative pl-5 pt-1">
+                  <DragHandle top="top-3" />
+                  <div className="bg-[#37352f] rounded-md overflow-hidden hover:ring-1 hover:ring-[#37352f]/30 transition-all duration-150">
+                    <div className="flex items-center justify-between px-4 py-2 bg-white/5">
+                      <span className="text-xs text-white/40 font-mono">typescript</span>
+                    </div>
+                    <pre className="px-4 pb-4 text-xs text-green-300 font-mono leading-relaxed overflow-x-auto">
+                      <code>{`// Drag handle: opacity 0 → 1 on block hover
+<div className="group relative">
+  <div className="opacity-0 group-hover:opacity-100
+    transition-opacity duration-150 absolute -left-5">
+    ⋮⋮
+  </div>
+  <p className="hover:bg-[#efedea]
+    active:bg-[#e3e1db]
+    transition-colors duration-150">
+    Block content here
+  </p>
+</div>`}</code>
+                    </pre>
+                  </div>
+                </div>
               </div>
             </RevealBlock>
           </section>
 
-          <hr className="border-t border-[#37352f]/[0.09] mb-20" />
+          <div className="max-w-3xl mx-auto px-6 md:px-16">
+            <hr className="border-t border-[#37352f]/[0.09] mb-16" />
+          </div>
 
-          {/* ===== Component Demos (Tab-Switched) ===== */}
-          <section className="mb-20">
-            <RevealBlock className="mb-8">
-              <h2 className="text-2xl font-semibold text-[#37352f] mb-2">Component Library</h2>
-              <p className="text-sm text-[#37352f]/50">
+          {/* ===== Section 3: Interactive Database View ===== */}
+          <section className="max-w-3xl mx-auto px-6 md:px-16 mb-16">
+            <RevealBlock className="mb-6">
+              <div className="flex items-center gap-3 mb-1">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[#37352f]/40">
+                  <rect x="1.5" y="1.5" width="13" height="3.5" rx="0.5" stroke="currentColor" strokeWidth="1" />
+                  <rect x="1.5" y="6.5" width="13" height="3.5" rx="0.5" stroke="currentColor" strokeWidth="1" />
+                  <rect x="1.5" y="11.5" width="13" height="3" rx="0.5" stroke="currentColor" strokeWidth="1" />
+                </svg>
+                <h2 className="text-xl font-semibold text-[#37352f]">Component Library</h2>
+              </div>
+              <p className="text-sm text-[#37352f]/50 ml-7">
                 Interactive components following Notion design conventions.
               </p>
             </RevealBlock>
 
-            {/* Tabs */}
-            <div className="flex gap-1 mb-8 border-b border-[#37352f]/[0.09] pb-px">
+            {/* Tab bar */}
+            <div className="flex gap-0.5 mb-6 border-b border-[#e8e6e3]">
               {tabs.map((tab) => (
                 <button
                   key={tab}
+                  type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`px-3 py-1.5 text-sm capitalize transition-colors duration-150 relative ${
+                  className={`relative px-3 py-1.5 text-sm capitalize transition-colors duration-150 rounded-t-md ${
                     activeTab === tab
                       ? "text-[#37352f] font-medium"
-                      : "text-[#37352f]/50 hover:bg-[#efedea]"
+                      : "text-[#37352f]/50 hover:bg-[#efedea] hover:text-[#37352f]"
                   }`}
                 >
                   {tab}
@@ -459,148 +605,168 @@ export default function ShowcaseContent() {
               ))}
             </div>
 
-            {/* Tab Content */}
-            <div className="min-h-[300px]">
-              {activeTab === "blocks" && (
-                <RevealBlock>
-                  <div className="space-y-3">
-                    {["Text Block", "Heading Block", "Callout Block", "Toggle Block", "Code Block"].map((name) => (
-                      <div key={name} className="group p-3 -mx-3 rounded-md hover:bg-[#efedea] transition-colors duration-150 flex gap-2 cursor-pointer">
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 pt-0.5 flex-shrink-0">
-                          <span className="text-gray-400 text-sm cursor-grab select-none">&#x2af8;</span>
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-[#37352f] mb-1 group-hover:underline decoration-gray-300 underline-offset-4">
-                            {name}
-                          </h3>
-                          <p className="text-gray-500 text-sm">
-                            {name === "Text Block" && "The fundamental building block for all content."}
-                            {name === "Heading Block" && "Three levels of headings for clear document structure."}
-                            {name === "Callout Block" && "Highlight important information with custom icons."}
-                            {name === "Toggle Block" && "Collapsible content for progressive disclosure."}
-                            {name === "Code Block" && "Syntax-highlighted code with language detection."}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </RevealBlock>
-              )}
-
-              {activeTab === "checklist" && (
-                <RevealBlock>
-                  <div className="space-y-0.5">
-                    {taskItems.map((item, i) => (
-                      <TaskCheckbox key={i} item={item} />
-                    ))}
-                  </div>
+            {/* Tab: Checklist */}
+            {activeTab === "checklist" && (
+              <RevealBlock>
+                <div className="space-y-0.5">
+                  {taskItems.map((item, i) => (
+                    <TaskCheckbox key={i} item={item} />
+                  ))}
                   <button
                     type="button"
-                    className="mt-4 px-3 py-1.5 text-sm text-[#37352f]/40 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150 flex items-center gap-2"
+                    className="mt-2 px-3 py-1.5 text-sm text-[#37352f]/40 hover:bg-[#efedea] active:bg-[#e3e1db] rounded transition-colors duration-150 flex items-center gap-2 -mx-3"
                   >
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1" className="text-[#37352f]/40">
-                      <path d="M7 3v8M3 7h8" />
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1" className="text-[#37352f]/40">
+                      <path d="M6.5 2.5v8M2.5 6.5h8" strokeLinecap="round" />
                     </svg>
                     Add item
                   </button>
-                </RevealBlock>
-              )}
+                </div>
+              </RevealBlock>
+            )}
 
-              {activeTab === "table" && (
-                <RevealBlock>
-                  <div className="border border-gray-200 rounded-md overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-[#f7f6f3]">
-                          <th className="text-left px-4 py-2 font-medium text-[#37352f]/60 border-b border-r border-gray-200">Name</th>
-                          <th className="text-left px-4 py-2 font-medium text-[#37352f]/60 border-b border-r border-gray-200">Status</th>
-                          <th className="text-left px-4 py-2 font-medium text-[#37352f]/60 border-b border-r border-gray-200">Priority</th>
-                          <th className="text-left px-4 py-2 font-medium text-[#37352f]/60 border-b border-gray-200">Owner</th>
+            {/* Tab: Table */}
+            {activeTab === "table" && (
+              <RevealBlock>
+                <div className="border border-[#e8e6e3] rounded-md overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[#f7f6f3]">
+                        <th className="text-left px-4 py-2.5 font-medium text-[#37352f]/50 text-xs border-b border-r border-[#e8e6e3]">Name</th>
+                        <th className="text-left px-4 py-2.5 font-medium text-[#37352f]/50 text-xs border-b border-r border-[#e8e6e3]">Status</th>
+                        <th className="text-left px-4 py-2.5 font-medium text-[#37352f]/50 text-xs border-b border-r border-[#e8e6e3]">Priority</th>
+                        <th className="text-left px-4 py-2.5 font-medium text-[#37352f]/50 text-xs border-b border-[#e8e6e3]">Owner</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white">
+                      {tableData.map((row, i) => (
+                        <tr
+                          key={i}
+                          className="group hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer"
+                        >
+                          <td className="px-4 py-2.5 border-b border-r border-[#e8e6e3] text-[#37352f] text-sm">
+                            <div className="flex items-center gap-2">
+                              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs leading-none">&#x22EE;&#x22EE;</div>
+                              {row.name}
+                            </div>
+                          </td>
+                          <td className="px-4 py-2.5 border-b border-r border-[#e8e6e3]">
+                            <span className={`text-xs px-2 py-0.5 rounded-sm font-medium ${
+                              row.status === "Done"
+                                ? "bg-[#0f7b6c]/10 text-[#0f7b6c]"
+                                : row.status === "In Progress"
+                                  ? "bg-[#2eaadc]/10 text-[#2eaadc]"
+                                  : "bg-gray-100 text-gray-400"
+                            }`}>
+                              {row.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 border-b border-r border-[#e8e6e3] text-[#37352f]/60 text-sm">{row.priority}</td>
+                          <td className="px-4 py-2.5 border-b border-[#e8e6e3] text-[#37352f]/60 text-sm">{row.owner}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {tableData.map((row, i) => (
-                          <tr key={i} className="hover:bg-[#efedea] transition-colors duration-150">
-                            <td className="px-4 py-2.5 border-b border-r border-gray-200 text-[#37352f]">{row.name}</td>
-                            <td className="px-4 py-2.5 border-b border-r border-gray-200">
-                              <span className={`text-xs px-2 py-0.5 rounded-sm ${
-                                row.status === "Done" ? "bg-[#0f7b6c]/10 text-[#0f7b6c]"
-                                  : row.status === "In Progress" ? "bg-[#2eaadc]/10 text-[#2eaadc]"
-                                    : "bg-gray-100 text-gray-500"
-                              }`}>
-                                {row.status}
-                              </span>
-                            </td>
-                            <td className="px-4 py-2.5 border-b border-r border-gray-200 text-[#37352f]/70">{row.priority}</td>
-                            <td className="px-4 py-2.5 border-b border-gray-200 text-[#37352f]/70">{row.owner}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="bg-white border-t border-[#e8e6e3] px-4 py-2">
+                    <button type="button" className="text-xs text-[#37352f]/40 hover:text-[#37352f] transition-colors duration-150 flex items-center gap-1.5">
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round">
+                        <path d="M5.5 1.5v8M1.5 5.5h8" />
+                      </svg>
+                      New
+                    </button>
                   </div>
-                </RevealBlock>
-              )}
+                </div>
+              </RevealBlock>
+            )}
 
-              {activeTab === "board" && (
-                <RevealBlock>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* To Do */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xs font-medium text-[#37352f]/50 uppercase tracking-wider">To Do</span>
-                        <span className="text-xs text-[#37352f]/30">3</span>
-                      </div>
-                      <div className="space-y-2">
-                        {["Implement responsive layout", "Write documentation", "User testing round"].map((t) => (
-                          <div key={t} className="group p-3 bg-white border border-gray-200 rounded-md hover:bg-[#efedea] transition-colors duration-150 cursor-pointer">
+            {/* Tab: Board */}
+            {activeTab === "board" && (
+              <RevealBlock>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* To Do column */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 px-1">
+                      <span className="text-xs font-semibold text-[#37352f]/50 uppercase tracking-wider">To Do</span>
+                      <span className="text-xs text-[#37352f]/30">3</span>
+                    </div>
+                    <div className="space-y-2">
+                      {["Implement responsive layout", "Write documentation", "User testing round"].map((t) => (
+                        <div
+                          key={t}
+                          className="group p-3 bg-white border border-[#e8e6e3] rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer"
+                        >
+                          <div className="flex items-start gap-2">
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs mt-0.5">&#x22EE;&#x22EE;</div>
                             <p className="text-sm text-[#37352f]">{t}</p>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                    {/* In Progress */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xs font-medium text-[#2eaadc] uppercase tracking-wider">In Progress</span>
-                        <span className="text-xs text-[#37352f]/30">1</span>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="group p-3 bg-white border border-gray-200 rounded-md hover:bg-[#efedea] transition-colors duration-150 cursor-pointer">
-                          <p className="text-sm text-[#37352f]">Design component library</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs px-2 py-0.5 rounded-sm bg-[#0f7b6c]/10 text-[#0f7b6c]">Design</span>
-                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                    {/* Done */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xs font-medium text-[#0f7b6c] uppercase tracking-wider">Done</span>
-                        <span className="text-xs text-[#37352f]/30">1</span>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="group p-3 bg-white border border-gray-200 rounded-md hover:bg-[#efedea] transition-colors duration-150 cursor-pointer">
-                          <p className="text-sm text-[#37352f] line-through opacity-60">Set up project structure</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs px-2 py-0.5 rounded-sm bg-[#2eaadc]/10 text-[#2eaadc]">Setup</span>
+                  </div>
+
+                  {/* In Progress column */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 px-1">
+                      <span className="text-xs font-semibold text-[#2eaadc] uppercase tracking-wider">In Progress</span>
+                      <span className="text-xs text-[#37352f]/30">2</span>
+                    </div>
+                    <div className="space-y-2">
+                      {[
+                        { text: "Design component library", tag: "Design", color: "#0f7b6c" },
+                        { text: "Set up project structure", tag: "Setup", color: "#2eaadc" },
+                      ].map((card) => (
+                        <div
+                          key={card.text}
+                          className="group p-3 bg-white border border-[#e8e6e3] rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer"
+                        >
+                          <div className="flex items-start gap-2 mb-2">
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs mt-0.5">&#x22EE;&#x22EE;</div>
+                            <p className="text-sm text-[#37352f]">{card.text}</p>
                           </div>
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-sm font-medium ml-4"
+                            style={{ backgroundColor: `${card.color}15`, color: card.color }}
+                          >
+                            {card.tag}
+                          </span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Done column */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 px-1">
+                      <span className="text-xs font-semibold text-[#0f7b6c] uppercase tracking-wider">Done</span>
+                      <span className="text-xs text-[#37352f]/30">1</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="group p-3 bg-white border border-[#e8e6e3] rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer opacity-70">
+                        <div className="flex items-start gap-2 mb-2">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs mt-0.5">&#x22EE;&#x22EE;</div>
+                          <p className="text-sm text-[#37352f] line-through">Color system research</p>
+                        </div>
+                        <span className="text-xs px-2 py-0.5 rounded-sm font-medium ml-4 bg-[#0f7b6c]/10 text-[#0f7b6c]">Research</span>
                       </div>
                     </div>
                   </div>
-                </RevealBlock>
-              )}
-            </div>
+                </div>
+              </RevealBlock>
+            )}
           </section>
 
-          <hr className="border-t border-[#37352f]/[0.09] mb-20" />
+          <div className="max-w-3xl mx-auto px-6 md:px-16">
+            <hr className="border-t border-[#37352f]/[0.09] mb-16" />
+          </div>
 
-          {/* ===== Color Palette ===== */}
-          <section className="mb-20">
-            <RevealBlock className="mb-8">
-              <h2 className="text-2xl font-semibold text-[#37352f] mb-2">Color Palette</h2>
-              <p className="text-sm text-[#37352f]/50">
+          {/* ===== Section 4: Color Palette ===== */}
+          <section className="max-w-3xl mx-auto px-6 md:px-16 mb-16">
+            <RevealBlock className="mb-6">
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-4 h-4 rounded-sm bg-gradient-to-br from-[#2eaadc] via-[#0f7b6c] to-[#eb5757]" />
+                <h2 className="text-xl font-semibold text-[#37352f]">Color Palette</h2>
+              </div>
+              <p className="text-sm text-[#37352f]/50 ml-7">
                 Restrained and functional. Colors serve meaning, not decoration.
               </p>
             </RevealBlock>
@@ -610,70 +776,183 @@ export default function ShowcaseContent() {
                 <RevealBlock key={c.name} delay={i * 0.04}>
                   <div className="group cursor-pointer">
                     <div
-                      className={`aspect-[3/2] rounded-md flex items-end p-3 border border-gray-200 ${c.text}`}
+                      className={`aspect-[4/3] rounded-md flex items-end p-3 border border-[#e8e6e3] hover:ring-1 hover:ring-[#37352f]/20 transition-all duration-150 ${c.textClass}`}
                       style={{ backgroundColor: c.value }}
                     >
                       <div>
-                        <p className="text-xs font-medium">{c.name}</p>
-                        <p className="text-xs opacity-60 font-mono">{c.value}</p>
+                        <p className="text-xs font-semibold leading-tight">{c.name}</p>
+                        <p className="text-xs opacity-60 font-mono leading-tight">{c.value}</p>
                       </div>
                     </div>
                   </div>
                 </RevealBlock>
               ))}
             </div>
+
+            {/* Highlight colors row */}
+            <RevealBlock delay={0.3} className="mt-6">
+              <p className="text-xs text-[#37352f]/40 mb-3">Text highlight colors</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "Default", bg: "#37352f14", text: "#37352f" },
+                  { label: "Blue", bg: "#2eaadc20", text: "#2eaadc" },
+                  { label: "Red", bg: "#eb575720", text: "#eb5757" },
+                  { label: "Teal", bg: "#0f7b6c20", text: "#0f7b6c" },
+                  { label: "Yellow", bg: "#dfab0120", text: "#dfab01" },
+                  { label: "Orange", bg: "#e07b3920", text: "#e07b39" },
+                  { label: "Pink", bg: "#e255a120", text: "#e255a1" },
+                  { label: "Purple", bg: "#9065b020", text: "#9065b0" },
+                ].map((chip) => (
+                  <div
+                    key={chip.label}
+                    className="group relative px-3 py-1 rounded-md text-xs font-medium hover:brightness-95 active:brightness-90 transition-all duration-150 cursor-pointer"
+                    style={{ backgroundColor: chip.bg, color: chip.text }}
+                  >
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute -left-3 top-1/2 -translate-y-1/2 select-none text-[#37352f]/30 text-xs">&#x22EE;&#x22EE;</div>
+                    {chip.label}
+                  </div>
+                ))}
+              </div>
+            </RevealBlock>
           </section>
 
-          <hr className="border-t border-[#37352f]/[0.09] mb-20" />
+          <div className="max-w-3xl mx-auto px-6 md:px-16">
+            <hr className="border-t border-[#37352f]/[0.09] mb-16" />
+          </div>
 
-          {/* ===== Design Rules ===== */}
-          <section className="mb-20">
-            <RevealBlock className="mb-8">
-              <h2 className="text-2xl font-semibold text-[#37352f] mb-2">Design Rules</h2>
+          {/* ===== Section 5: Interaction Showcase ===== */}
+          <section className="max-w-3xl mx-auto px-6 md:px-16 mb-16">
+            <RevealBlock className="mb-6">
+              <h2 className="text-xl font-semibold text-[#37352f] mb-1">Interaction Physics</h2>
+              <p className="text-sm text-[#37352f]/50">
+                Ultimate restraint. Zero translate. Zero scale. Only color.
+              </p>
             </RevealBlock>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Block highlight demo */}
               <RevealBlock>
-                <div className="flex items-center gap-3 p-3 bg-[#0f7b6c]/5 rounded-md mb-4">
-                  <span className="text-xs font-bold text-[#0f7b6c] uppercase tracking-wider">Do</span>
+                <div className="border border-[#e8e6e3] rounded-md overflow-hidden bg-white">
+                  <div className="px-4 py-3 border-b border-[#e8e6e3] bg-[#f7f6f3]">
+                    <span className="text-xs font-medium text-[#37352f]/50">Block Highlighting</span>
+                  </div>
+                  <div className="p-4 space-y-0.5">
+                    {["Heading block", "Paragraph block", "List item block", "Callout block"].map((name) => (
+                      <div
+                        key={name}
+                        className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-pointer"
+                      >
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs">&#x22EE;&#x22EE;</div>
+                        <span className="text-sm text-[#37352f]">{name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <ul className="space-y-3">
-                  {doRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#37352f]/70">
-                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#0f7b6c] flex-shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
               </RevealBlock>
 
+              {/* Button variants */}
               <RevealBlock delay={0.1}>
-                <div className="flex items-center gap-3 p-3 bg-[#eb5757]/5 rounded-md mb-4">
-                  <span className="text-xs font-bold text-[#eb5757] uppercase tracking-wider">Don&apos;t</span>
+                <div className="border border-[#e8e6e3] rounded-md overflow-hidden bg-white">
+                  <div className="px-4 py-3 border-b border-[#e8e6e3] bg-[#f7f6f3]">
+                    <span className="text-xs font-medium text-[#37352f]/50">Button Variants</span>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <button type="button" className="px-3 py-1.5 bg-[#2eaadc] text-white rounded text-sm font-medium hover:bg-[#2899c6] transition-colors duration-150 block w-full text-left">
+                      Primary action
+                    </button>
+                    <button type="button" className="px-3 py-1.5 bg-transparent text-[#37352f] border border-[#e8e6e3] rounded text-sm hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 block w-full text-left">
+                      Secondary action
+                    </button>
+                    <button type="button" className="px-3 py-1.5 bg-[#eb5757]/10 text-[#eb5757] rounded text-sm hover:bg-[#eb5757]/15 active:bg-[#eb5757]/20 transition-colors duration-150 block w-full text-left">
+                      Destructive action
+                    </button>
+                    <button type="button" className="px-3 py-1.5 text-[#37352f]/50 rounded text-sm hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 block w-full text-left">
+                      Ghost action
+                    </button>
+                  </div>
                 </div>
-                <ul className="space-y-3">
-                  {dontRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#37352f]/70">
-                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#eb5757] flex-shrink-0" />
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
               </RevealBlock>
             </div>
+          </section>
+
+          <div className="max-w-3xl mx-auto px-6 md:px-16">
+            <hr className="border-t border-[#37352f]/[0.09] mb-16" />
+          </div>
+
+          {/* ===== Section 6: Design Rules ===== */}
+          <section className="max-w-3xl mx-auto px-6 md:px-16 mb-16">
+            <RevealBlock className="mb-6">
+              <h2 className="text-xl font-semibold text-[#37352f] mb-1">Design Rules</h2>
+              <p className="text-sm text-[#37352f]/50">Written as Notion callout blocks.</p>
+            </RevealBlock>
+
+            {/* Do list as callout */}
+            <RevealBlock className="mb-8">
+              <div className="flex gap-3 p-4 bg-[#0f7b6c]/5 rounded-md border border-[#0f7b6c]/20 mb-4">
+                <span className="text-base flex-shrink-0">{"✅"}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#0f7b6c] mb-3">Do</p>
+                  <ul className="space-y-2">
+                    {doRules.map((rule, i) => (
+                      <li key={i} className="group flex items-start gap-2 text-sm text-[#37352f]/70 rounded-md px-1 py-0.5 hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-default">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs mt-0.5 flex-shrink-0">&#x22EE;&#x22EE;</div>
+                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#0f7b6c] flex-shrink-0" />
+                        {rule}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Don't list as callout */}
+            <RevealBlock delay={0.1}>
+              <div className="flex gap-3 p-4 bg-[#eb5757]/5 rounded-md border border-[#eb5757]/20">
+                <span className="text-base flex-shrink-0">{"🚫"}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#eb5757] mb-3">{"Don't"}</p>
+                  <ul className="space-y-2">
+                    {dontRules.map((rule, i) => (
+                      <li key={i} className="group flex items-start gap-2 text-sm text-[#37352f]/70 rounded-md px-1 py-0.5 hover:bg-[#efedea] active:bg-[#e3e1db] transition-colors duration-150 cursor-default">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none text-[#37352f]/30 text-xs mt-0.5 flex-shrink-0">&#x22EE;&#x22EE;</div>
+                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#eb5757] flex-shrink-0" />
+                        {rule}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
           </section>
 
           {/* ===== Footer ===== */}
-          <footer className="border-t border-[#37352f]/[0.09] pt-8 pb-16">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-xs text-[#37352f]/40">
-                StyleKit &middot; Notion Style Showcase
-              </p>
-              <Link href="/styles/notion-style" className="text-xs text-[#37352f]/50 hover:text-[#37352f] transition-colors duration-150">
-                View Full Documentation &rarr;
-              </Link>
+          <footer className="max-w-3xl mx-auto px-6 md:px-16 border-t border-[#e8e6e3] py-8 mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <p className="text-xs text-[#37352f]/40 mb-1">
+                  StyleKit &middot; Notion Style Showcase
+                </p>
+                <p className="text-xs text-[#37352f]/30">
+                  Quiet productivity. Blocks over components.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/styles/notion-style"
+                  className="text-xs text-[#37352f]/50 hover:text-[#37352f] hover:bg-[#efedea] active:bg-[#e3e1db] px-2 py-1 rounded transition-colors duration-150"
+                >
+                  Documentation &rarr;
+                </Link>
+                <Link
+                  href="/styles"
+                  className="text-xs text-[#37352f]/50 hover:text-[#37352f] hover:bg-[#efedea] active:bg-[#e3e1db] px-2 py-1 rounded transition-colors duration-150"
+                >
+                  All Styles &rarr;
+                </Link>
+              </div>
             </div>
           </footer>
+
         </main>
       </div>
     </div>

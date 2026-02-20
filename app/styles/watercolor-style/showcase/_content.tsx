@@ -3,54 +3,68 @@
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 
-/* ------------------------------------------------------------------ */
-/*  Data                                                               */
-/* ------------------------------------------------------------------ */
+// ─── Data ──────────────────────────────────────────────────────────────────────
+
+const paletteMoods = [
+  {
+    id: "dawn",
+    label: "Dawn",
+    blobs: [
+      { color: "#e8a87c", opacity: 0.32, top: "8%",  left: "-4%",  w: 380, h: 380 },
+      { color: "#fad4b8", opacity: 0.38, top: "30%", left: "28%",  w: 300, h: 300 },
+      { color: "#c38d94", opacity: 0.22, top: "3%",  left: "55%",  w: 270, h: 270 },
+      { color: "#d4a373", opacity: 0.28, top: "52%", left: "68%",  w: 250, h: 250 },
+    ],
+  },
+  {
+    id: "tide",
+    label: "Tide",
+    blobs: [
+      { color: "#85cdca", opacity: 0.38, top: "12%", left: "6%",   w: 360, h: 360 },
+      { color: "#4a6fa5", opacity: 0.18, top: "38%", left: "38%",  w: 310, h: 310 },
+      { color: "#85cdca", opacity: 0.28, top: "3%",  left: "58%",  w: 260, h: 260 },
+      { color: "#b8dfe0", opacity: 0.33, top: "55%", left: "66%",  w: 230, h: 230 },
+    ],
+  },
+  {
+    id: "dusk",
+    label: "Dusk",
+    blobs: [
+      { color: "#c38d94", opacity: 0.33, top: "7%",  left: "5%",   w: 340, h: 340 },
+      { color: "#4a6fa5", opacity: 0.22, top: "33%", left: "33%",  w: 285, h: 285 },
+      { color: "#e8a87c", opacity: 0.28, top: "8%",  left: "58%",  w: 255, h: 255 },
+      { color: "#c38d94", opacity: 0.18, top: "60%", left: "70%",  w: 240, h: 240 },
+    ],
+  },
+];
+
+const typographyScale = [
+  { label: "Display",    cls: "text-5xl md:text-6xl", sample: "Soft Beauty"                                       },
+  { label: "Heading 1",  cls: "text-4xl md:text-5xl", sample: "Painted Light"                                     },
+  { label: "Heading 2",  cls: "text-3xl md:text-4xl", sample: "Gentle Wash"                                       },
+  { label: "Heading 3",  cls: "text-2xl md:text-3xl", sample: "Organic Flow"                                      },
+  { label: "Body Large", cls: "text-xl",              sample: "Texture over precision, always."                   },
+  { label: "Body",       cls: "text-base",            sample: "Digital elements rendered as if painted on wet paper." },
+  { label: "Caption",    cls: "text-sm",              sample: "Soft edges, color bleeding, imprecise beauty."     },
+];
+
+const designRules = [
+  { type: "do",   rule: "Use semi-transparent fills",  detail: "bg-[#4a6fa5]/20 feels painted, not flat."             },
+  { type: "do",   rule: "Embrace organic shapes",       detail: "Irregular border-radius mimics brushwork."            },
+  { type: "do",   rule: "Layer wash blobs freely",      detail: "Overlapping blur-3xl divs create painted depth."      },
+  { type: "dont", rule: "Avoid sharp, solid fills",     detail: "Fully opaque blocks kill the painterly mood."         },
+  { type: "dont", rule: "Skip rigid uniform corners",   detail: "rounded-md is too mechanical for this style."         },
+  { type: "dont", rule: "No harsh contrast jumps",      detail: "Abrupt color transitions break the soft aesthetic."   },
+];
 
 const galleryItems = [
-  { title: "Morning Mist", category: "Landscape", desc: "Soft blues and greens blending into warm dawn tones.", color: "#4a6fa5" },
-  { title: "Peach Blossom", category: "Botanical", desc: "Warm peach washes on textured paper, capturing spring.", color: "#e8a87c" },
-  { title: "Ocean Depths", category: "Abstract", desc: "Layered teal and blue washes creating liquid depth.", color: "#85cdca" },
-  { title: "Rose Garden", category: "Floral", desc: "Delicate rose pigments bleeding into cream paper.", color: "#c38d94" },
+  { title: "Morning Mist",   category: "Landscape", accent: "#4a6fa5", secondary: "#85cdca" },
+  { title: "Peach Blossom",  category: "Botanical", accent: "#e8a87c", secondary: "#d4a373" },
+  { title: "Ocean Depths",   category: "Abstract",  accent: "#85cdca", secondary: "#4a6fa5" },
+  { title: "Rose Garden",    category: "Floral",    accent: "#c38d94", secondary: "#e8a87c" },
 ];
 
-const principles = [
-  { title: "Flow", desc: "Colors flow like water on paper, with natural gradients and organic edges. Nothing is forced or mechanical.", icon: "flow" },
-  { title: "Soft Edges", desc: "No hard boundaries. Everything transitions gently, like pigment meeting wet paper.", icon: "soft" },
-  { title: "Paper Texture", desc: "A warm, cream-toned base that evokes the feeling of watercolor paper beneath your fingers.", icon: "paper" },
-  { title: "Transparency", desc: "Colors layer with semi-transparency, creating depth through overlap rather than opacity.", icon: "layer" },
-];
-
-const paletteColors = [
-  { name: "Blue Gray", value: "#4a6fa5", text: "text-white", desc: "Primary text and accents" },
-  { name: "Paper", value: "#faf8f5", text: "text-[#4a6fa5]", desc: "Base background" },
-  { name: "Peach", value: "#e8a87c", text: "text-white", desc: "Warm accent wash" },
-  { name: "Teal", value: "#85cdca", text: "text-white", desc: "Cool accent wash" },
-  { name: "Rose", value: "#c38d94", text: "text-white", desc: "Floral accent" },
-  { name: "Sand", value: "#d4a373", text: "text-white", desc: "Earth tone accent" },
-];
-
-const doRules = [
-  "Use soft gradients bg-gradient-to-* to simulate watercolor blending",
-  "Use semi-transparent colors with opacity or rgba",
-  "Use large border-radius: rounded-3xl or rounded-full",
-  "Use warm paper-tone background: bg-[#faf8f5]",
-  "Use serif italic typography for artistic feel",
-  "Use blur-3xl color blobs for watercolor wash effects",
-];
-
-const dontRules = [
-  "Never use hard borders like border-4 border-black",
-  "Never use hard-edge box shadows",
-  "Never use pure black backgrounds",
-  "Never use sharp corners rounded-none",
-  "Never use oversaturated or harsh colors",
-  "Never use bold sans-serif uppercase text",
-];
-
-/* ------------------------------------------------------------------ */
-/*  Inline hooks & components                                          */
-/* ------------------------------------------------------------------ */
+// ─── Inline hook ───────────────────────────────────────────────────────────────
 
 function useInView() {
   const ref = useRef<HTMLDivElement>(null);
@@ -70,7 +84,13 @@ function useInView() {
   return { ref, inView };
 }
 
-function RevealBlock({ children, className = "", delay = 0 }: {
+// ─── Inline RevealBlock ────────────────────────────────────────────────────────
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
@@ -91,490 +111,760 @@ function RevealBlock({ children, className = "", delay = 0 }: {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
-
-function WatercolorBlob({ color, className = "" }: { color: string; className?: string }) {
-  return (
-    <div
-      className={`absolute rounded-full blur-3xl pointer-events-none ${className}`}
-      style={{ backgroundColor: `${color}20` }}
-    />
-  );
-}
-
-function GalleryCard({ item, index }: { item: typeof galleryItems[number]; index: number }) {
-  return (
-    <RevealBlock delay={index * 0.1}>
-      <div className="group cursor-pointer">
-        <div
-          className="relative aspect-[4/5] rounded-3xl overflow-hidden mb-4"
-          style={{
-            background: `
-              radial-gradient(ellipse at ${30 + index * 15}% ${40 + index * 10}%, ${item.color}30 0%, transparent 60%),
-              radial-gradient(ellipse at ${60 - index * 10}% ${70 - index * 5}%, #faf8f5 0%, transparent 70%),
-              linear-gradient(135deg, ${item.color}15, #faf8f5, ${item.color}10)
-            `,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
-          <div
-            className="absolute w-32 h-32 rounded-full blur-2xl group-hover:blur-xl transition-all duration-700"
-            style={{
-              backgroundColor: `${item.color}25`,
-              top: "20%",
-              left: "15%",
-            }}
-          />
-          <div
-            className="absolute w-40 h-40 rounded-full blur-2xl group-hover:blur-xl transition-all duration-700"
-            style={{
-              backgroundColor: `${item.color}15`,
-              bottom: "25%",
-              right: "10%",
-            }}
-          />
-          <div className="absolute bottom-6 left-6 right-6">
-            <span className="text-xs font-serif italic text-[#4a6fa5]/60 tracking-wider">{item.category}</span>
-          </div>
-        </div>
-        <h3 className="text-xl font-serif italic text-[#4a6fa5] mb-1 group-hover:text-[#4a6fa5]/80 transition-colors duration-300">
-          {item.title}
-        </h3>
-        <p className="text-sm text-[#4a6fa5]/50 font-serif">{item.desc}</p>
-      </div>
-    </RevealBlock>
-  );
-}
-
-function PrincipleCard({ item, index }: { item: typeof principles[number]; index: number }) {
-  const iconPaths: Record<string, string> = {
-    flow: "M3 12c3-6 6 6 9 0s6 6 9 0",
-    soft: "M12 3c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z",
-    paper: "M4 4h16v16H4V4zm2 2v12h12V6H6z",
-    layer: "M2 12l10-6 10 6-10 6-10-6zm0 4l10 6 10-6",
-  };
-  return (
-    <RevealBlock delay={index * 0.1}>
-      <div
-        className="relative p-8 rounded-3xl overflow-hidden group cursor-pointer"
-        style={{
-          background: `linear-gradient(135deg, ${paletteColors[index + 2]?.value || "#e8a87c"}12, white, ${paletteColors[index + 2]?.value || "#85cdca"}08)`,
-        }}
-      >
-        <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ backgroundColor: paletteColors[index + 2]?.value || "#e8a87c" }} />
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4a6fa5" strokeWidth="1.5" className="mb-4 opacity-60">
-          <path d={iconPaths[item.icon]} strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <h3 className="text-lg font-serif italic text-[#4a6fa5] mb-2">{item.title}</h3>
-        <p className="text-sm text-[#4a6fa5]/60 font-serif leading-relaxed">{item.desc}</p>
-      </div>
-    </RevealBlock>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Main                                                               */
-/* ------------------------------------------------------------------ */
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"buttons" | "cards" | "inputs" | "washes">("buttons");
+  const [heroRevealed, setHeroRevealed]   = useState(false);
+  const [activeMood, setActiveMood]       = useState(0);
+  const [activeTab, setActiveTab]         = useState<"buttons" | "cards" | "inputs">("buttons");
+  const [submitted, setSubmitted]         = useState(false);
+  const [msgValue, setMsgValue]           = useState("");
 
   useEffect(() => {
     const t = setTimeout(() => setHeroRevealed(true), 100);
     return () => clearTimeout(t);
   }, []);
 
-  const tabs = ["buttons", "cards", "inputs", "washes"] as const;
+  const mood = paletteMoods[activeMood];
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-[#4a6fa5]">
+    <div
+      className="min-h-screen text-[#3a3430]"
+      style={{ backgroundColor: "#faf8f5", fontFamily: "Georgia, 'Times New Roman', serif" }}
+    >
       <style>{`
-        @keyframes wc-float {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-12px) scale(1.03); }
+        @keyframes blob-drift {
+          0%,100% { transform: scale(1) translate(0px,0px); }
+          25%      { transform: scale(1.04) translate(6px,-5px); }
+          50%      { transform: scale(0.97) translate(-5px,7px); }
+          75%      { transform: scale(1.02) translate(-6px,-2px); }
         }
+        @keyframes float-gentle {
+          0%,100% { transform: translateY(0px) rotate(0deg); }
+          40%     { transform: translateY(-10px) rotate(1.2deg); }
+          70%     { transform: translateY(-5px) rotate(-0.6deg); }
+        }
+        @keyframes wc-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .wb { animation: blob-drift 13s ease-in-out infinite; }
+        .wb:nth-child(2) { animation-delay:-4s; animation-duration:16s; }
+        .wb:nth-child(3) { animation-delay:-8s; animation-duration:11s; }
+        .wb:nth-child(4) { animation-delay:-11s; animation-duration:18s; }
+        .fc { animation: float-gentle 7s ease-in-out infinite; }
+        .fc:nth-child(2) { animation-delay:-2.5s; }
+        .fc:nth-child(3) { animation-delay:-5s; }
+        .paper {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+          background-repeat: repeat;
+        }
+        .wb-btn { transition: all 0.5s ease-in-out; }
+        .wb-btn:hover { opacity: 0.87; transform: scale(1.03); }
+        .or1 { border-radius: 2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem; }
+        .or2 { border-radius: 3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem; }
+        .or3 { border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%; }
       `}</style>
 
-      {/* ===== Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#faf8f5] via-[#e8a87c]/5 to-[#85cdca]/5 backdrop-blur-sm border-b border-[#4a6fa5]/[0.08]">
-        <div className="max-w-5xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/styles/watercolor-style/showcase" className="font-serif text-lg italic text-[#4a6fa5]">
-              Aquarelle
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link href="/styles/watercolor-style" className="font-serif text-sm text-[#4a6fa5]/50 hover:text-[#4a6fa5] transition-colors duration-300">
-                Docs
-              </Link>
-              <Link href="/styles" className="font-serif text-sm text-[#4a6fa5]/50 hover:text-[#4a6fa5] transition-colors duration-300">
-                Styles
-              </Link>
-            </nav>
-          </div>
-        </div>
+      {/* ─── NAV ──────────────────────────────────────────────────────────────── */}
+      <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+        <nav
+          className="flex items-center gap-6 md:gap-10 px-6 py-3 backdrop-blur-md"
+          style={{
+            backgroundColor: "rgba(250,248,245,0.84)",
+            borderRadius: "9999px",
+            border: "1px solid rgba(74,111,165,0.16)",
+            boxShadow: "0 4px 24px rgba(74,111,165,0.10)",
+          }}
+        >
+          <Link
+            href="/styles/watercolor-style/showcase"
+            className="font-serif italic text-[#4a6fa5] text-base tracking-wide"
+          >
+            Watercolor
+          </Link>
+          <span
+            className="hidden md:block w-2 h-2 rounded-full"
+            style={{ backgroundColor: "rgba(232,168,124,0.65)" }}
+          />
+          <Link
+            href="/styles/watercolor-style"
+            className="text-sm text-[#3a3430]/55 hover:text-[#4a6fa5] transition-colors duration-300"
+            style={{ fontFamily: "system-ui, sans-serif" }}
+          >
+            Docs
+          </Link>
+          <Link
+            href="/styles"
+            className="text-sm text-[#3a3430]/55 hover:text-[#4a6fa5] transition-colors duration-300"
+            style={{ fontFamily: "system-ui, sans-serif" }}
+          >
+            Styles
+          </Link>
+        </nav>
       </header>
 
-      {/* ===== Hero ===== */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-        <WatercolorBlob color="#e8a87c" className="w-72 h-72 top-16 left-[5%]" />
-        <WatercolorBlob color="#85cdca" className="w-96 h-96 bottom-16 right-[5%]" />
-        <WatercolorBlob color="#c38d94" className="w-80 h-80 top-1/3 left-1/2 -translate-x-1/2" />
-        <WatercolorBlob color="#4a6fa5" className="w-64 h-64 bottom-1/4 left-[20%]" />
-        <WatercolorBlob color="#d4a373" className="w-56 h-56 top-[20%] right-[15%]" />
-
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
-          }}
+      {/* ─── HERO ─────────────────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex flex-col justify-center items-center overflow-hidden pt-24 pb-20 paper">
+        {/* Wash blobs */}
+        <div
+          className="wb absolute rounded-full blur-3xl pointer-events-none"
+          style={{ backgroundColor: "rgba(232,168,124,0.26)", width: 440, height: 440, top: "5%", left: "-10%" }}
+        />
+        <div
+          className="wb absolute rounded-full blur-3xl pointer-events-none"
+          style={{ backgroundColor: "rgba(133,205,202,0.24)", width: 400, height: 400, top: "3%", right: "-8%" }}
+        />
+        <div
+          className="wb absolute rounded-full blur-3xl pointer-events-none"
+          style={{ backgroundColor: "rgba(195,141,148,0.20)", width: 320, height: 320, bottom: "10%", left: "12%" }}
+        />
+        <div
+          className="wb absolute rounded-full blur-3xl pointer-events-none"
+          style={{ backgroundColor: "rgba(74,111,165,0.16)", width: 360, height: 360, bottom: "4%", right: "8%" }}
+        />
+        <div
+          className="wb absolute rounded-full blur-3xl pointer-events-none"
+          style={{ backgroundColor: "rgba(212,163,115,0.18)", width: 280, height: 280, top: "40%", left: "45%" }}
         />
 
-        <div className="relative z-10 text-center max-w-3xl">
+        {/* Hero text */}
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <p
-            className="text-sm font-serif italic text-[#4a6fa5]/50 tracking-wider mb-6"
+            className="text-sm tracking-[0.24em] uppercase mb-6"
             style={{
+              fontFamily: "system-ui, sans-serif",
+              color: "rgba(74,111,165,0.65)",
               opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            Where colors dance and flow freely
+            StyleKit Design System
           </p>
+
           <h1
-            className="text-5xl md:text-7xl lg:text-8xl font-serif italic leading-[1.1] mb-6"
+            className="font-serif italic leading-tight mb-6"
             style={{
+              fontSize: "clamp(3rem, 9vw, 7rem)",
+              color: "#3a3430",
               opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(30px)",
-              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1)",
+              transform: heroRevealed ? "translateY(0)" : "translateY(48px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s",
             }}
           >
-            <span className="text-[#4a6fa5]">Watercolor</span>
+            Watercolor
             <br />
-            <span
-              className="inline-block"
-              style={{
-                background: "linear-gradient(135deg, #e8a87c, #85cdca, #c38d94)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Style.
-            </span>
+            <span style={{ color: "#4a6fa5" }}>Style</span>
           </h1>
+
           <p
-            className="text-lg md:text-xl font-serif text-[#4a6fa5]/60 max-w-xl mx-auto mb-10"
+            className="text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-10 font-serif italic"
             style={{
+              color: "rgba(58,52,48,0.60)",
               opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
+              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s",
             }}
           >
-            Soft color washes, organic edges, and paper textures that bring digital interfaces to life with artistic warmth.
+            Organic, imprecise beauty. Digital elements rendered as if painted on wet paper — soft edges, color bleeding, texture over precision.
           </p>
+
           <div
             style={{
               opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s",
+              transform: heroRevealed ? "translateY(0)" : "translateY(18px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s",
             }}
           >
-            <button className="px-10 py-4 bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80 rounded-full text-white font-serif text-lg shadow-lg shadow-[#4a6fa5]/20 hover:shadow-xl hover:shadow-[#4a6fa5]/30 hover:-translate-y-0.5 transition-all duration-300">
-              Begin Painting
+            <button
+              type="button"
+              className="wb-btn inline-flex items-center gap-3 px-8 py-3.5 font-serif italic text-[#faf8f5] text-base or1"
+              style={{
+                backgroundColor: "rgba(74,111,165,0.80)",
+                boxShadow: "0 8px 32px rgba(74,111,165,0.24)",
+              }}
+            >
+              Explore the palette
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-          {["#e8a87c", "#85cdca", "#c38d94", "#d4a373", "#4a6fa5"].map((c, i) => (
+        {/* Floating organic decoration shapes */}
+        <div
+          className="fc absolute hidden lg:block"
+          style={{ bottom: "18%", left: "5%", opacity: heroRevealed ? 0.88 : 0, transition: "opacity 1.2s 0.65s" }}
+        >
+          <div className="w-20 h-20 or3" style={{ backgroundColor: "rgba(212,163,115,0.32)", backdropFilter: "blur(2px)" }} />
+        </div>
+        <div
+          className="fc absolute hidden lg:block"
+          style={{ top: "28%", right: "6%", opacity: heroRevealed ? 0.80 : 0, transition: "opacity 1.2s 0.80s" }}
+        >
+          <div className="w-14 h-14" style={{ backgroundColor: "rgba(133,205,202,0.38)", borderRadius: "45% 55% 60% 40% / 55% 45% 55% 45%" }} />
+        </div>
+        <div
+          className="fc absolute hidden lg:block"
+          style={{ bottom: "30%", right: "12%", opacity: heroRevealed ? 0.75 : 0, transition: "opacity 1.2s 0.95s" }}
+        >
+          <div className="w-10 h-10" style={{ backgroundColor: "rgba(195,141,148,0.35)", borderRadius: "50% 60% 45% 55% / 60% 45% 55% 50%" }} />
+        </div>
+
+        {/* Scroll dots */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2.5"
+          style={{ opacity: heroRevealed ? 0.6 : 0, transition: "opacity 1s 0.9s" }}
+        >
+          {["#e8a87c", "#85cdca", "#c38d94", "#4a6fa5", "#d4a373"].map((c, i) => (
             <div
-              key={i}
-              className="w-3 h-3 rounded-full opacity-40"
-              style={{
-                backgroundColor: c,
-                animation: `wc-float 3s ease-in-out ${i * 0.3}s infinite`,
-              }}
+              key={c}
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: c, animationDelay: `${i * 0.15}s` }}
             />
           ))}
         </div>
       </section>
 
-      {/* ===== Principles ===== */}
-      <section className="py-24 md:py-40 px-6 md:px-12 max-w-5xl mx-auto">
-        <RevealBlock className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif italic mb-4">
-            Core <span className="text-[#4a6fa5]/40">Principles</span>
+      {/* ─── MARQUEE ──────────────────────────────────────────────────────────── */}
+      <div
+        className="w-full overflow-hidden py-5"
+        style={{ borderTop: "1px solid rgba(74,111,165,0.10)", borderBottom: "1px solid rgba(74,111,165,0.10)" }}
+      >
+        <div
+          className="flex whitespace-nowrap"
+          style={{ animation: "wc-marquee 30s linear infinite", width: "200%" }}
+        >
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="flex-1 flex justify-around items-center font-serif italic text-sm"
+              style={{ color: "rgba(74,111,165,0.50)" }}
+            >
+              <span>Organic Beauty</span>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "rgba(232,168,124,0.60)" }} />
+              <span>Color Bleeding</span>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "rgba(133,205,202,0.60)" }} />
+              <span>Painted Texture</span>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "rgba(195,141,148,0.60)" }} />
+              <span>Soft Edges</span>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "rgba(212,163,115,0.60)" }} />
+              <span>Wet Paper</span>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "rgba(74,111,165,0.40)" }} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── PALETTE MOODS ────────────────────────────────────────────────────── */}
+      <section className="py-24 md:py-36 px-6 md:px-12 max-w-6xl mx-auto">
+        <RevealBlock>
+          <h2 className="font-serif italic text-4xl md:text-5xl text-[#3a3430] mb-2">
+            Palette <span style={{ color: "#4a6fa5" }}>Moods</span>
           </h2>
-          <p className="text-sm font-serif text-[#4a6fa5]/50 max-w-md mx-auto">
-            The essence of watercolor translated into digital design language.
+          <p className="mb-10 font-serif italic" style={{ color: "rgba(58,52,48,0.58)" }}>
+            Each mood blends accent washes to evoke a different time of day.
           </p>
         </RevealBlock>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {principles.map((p, i) => (
-            <PrincipleCard key={p.title} item={p} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Gallery ===== */}
-      <section className="py-24 md:py-40 px-6 md:px-12 max-w-6xl mx-auto relative">
-        <WatercolorBlob color="#e8a87c" className="w-64 h-64 -top-12 -left-12" />
-        <WatercolorBlob color="#85cdca" className="w-48 h-48 bottom-0 -right-8" />
-
-        <RevealBlock className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif italic mb-4">
-            Gallery of <span className="text-[#4a6fa5]/40">Washes</span>
-          </h2>
-          <p className="text-sm font-serif text-[#4a6fa5]/50 max-w-md">
-            Each piece demonstrates the layered, transparent qualities of watercolor design.
-          </p>
-        </RevealBlock>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {galleryItems.map((item, i) => (
-            <GalleryCard key={item.title} item={item} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Component Demos (Tab-Switched) ===== */}
-      <section className="py-24 md:py-40 px-6 md:px-12 relative">
-        <WatercolorBlob color="#c38d94" className="w-80 h-80 top-20 right-0" />
-        <div className="max-w-5xl mx-auto relative z-10">
-          <RevealBlock className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif italic mb-4">
-              Component <span className="text-[#4a6fa5]/40">Palette</span>
-            </h2>
-            <p className="text-sm font-serif text-[#4a6fa5]/50 max-w-md">
-              UI elements rendered in watercolor aesthetic.
-            </p>
-          </RevealBlock>
-
-          {/* Tabs */}
-          <div className="flex gap-2 mb-12 flex-wrap">
-            {tabs.map((tab) => (
+        {/* Mood tabs — useState interaction */}
+        <RevealBlock delay={0.1}>
+          <div className="flex gap-3 mb-10 flex-wrap">
+            {paletteMoods.map((m, idx) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-5 py-2.5 rounded-full text-sm font-serif capitalize transition-all duration-300 ${
-                  activeTab === tab
-                    ? "bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80 text-white shadow-lg shadow-[#4a6fa5]/15"
-                    : "bg-white/60 text-[#4a6fa5]/60 hover:bg-white/80 border border-[#4a6fa5]/10"
-                }`}
+                key={m.id}
+                type="button"
+                onClick={() => setActiveMood(idx)}
+                className="px-6 py-2 font-serif italic text-base transition-all duration-500"
+                style={{
+                  borderRadius: idx === activeMood ? "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem" : "9999px",
+                  backgroundColor: idx === activeMood ? "rgba(74,111,165,0.16)" : "rgba(74,111,165,0.05)",
+                  color: idx === activeMood ? "#4a6fa5" : "rgba(58,52,48,0.50)",
+                  border: idx === activeMood ? "1px solid rgba(74,111,165,0.28)" : "1px solid transparent",
+                }}
               >
-                {tab}
+                {m.label}
               </button>
             ))}
           </div>
-
-          {/* Tab Content */}
-          <div className="min-h-[350px]">
-            {activeTab === "buttons" && (
-              <RevealBlock>
-                <div
-                  className="p-10 rounded-3xl"
-                  style={{
-                    background: "radial-gradient(ellipse at 20% 50%, #e8a87c15 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, #85cdca12 0%, transparent 50%), #faf8f5",
-                  }}
-                >
-                  <p className="text-sm font-serif italic text-[#4a6fa5]/50 mb-8">Button variations</p>
-                  <div className="flex flex-wrap gap-4">
-                    <button className="px-8 py-4 bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80 rounded-full text-white font-serif shadow-lg shadow-[#4a6fa5]/20 hover:shadow-xl hover:shadow-[#4a6fa5]/30 hover:-translate-y-0.5 transition-all duration-300">
-                      Primary
-                    </button>
-                    <button className="px-8 py-4 bg-white/60 rounded-full text-[#4a6fa5] font-serif border border-[#4a6fa5]/20 shadow-lg shadow-[#4a6fa5]/5 hover:bg-white/80 hover:-translate-y-0.5 transition-all duration-300">
-                      Secondary
-                    </button>
-                    <button className="px-8 py-4 bg-gradient-to-r from-[#e8a87c]/70 to-[#d4a373]/70 rounded-full text-white font-serif shadow-lg shadow-[#e8a87c]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                      Warm Accent
-                    </button>
-                    <button className="px-8 py-4 bg-gradient-to-r from-[#c38d94]/70 to-[#e8a87c]/70 rounded-full text-white font-serif shadow-lg shadow-[#c38d94]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                      Rose
-                    </button>
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
-
-            {activeTab === "cards" && (
-              <RevealBlock>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-8 bg-gradient-to-br from-[#e8a87c]/15 via-white to-[#85cdca]/15 rounded-3xl shadow-lg shadow-[#4a6fa5]/5 border border-[#4a6fa5]/5 backdrop-blur-sm group cursor-pointer hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl font-serif italic text-[#4a6fa5] mb-3">Peach and Teal</h3>
-                    <p className="text-[#4a6fa5]/60 font-serif text-sm leading-relaxed mb-4">
-                      Warm and cool colors layered with transparency, creating gentle depth and movement.
-                    </p>
-                    <div className="flex gap-2">
-                      <div className="w-6 h-6 rounded-full bg-[#e8a87c]/40 blur-[1px]" />
-                      <div className="w-6 h-6 rounded-full bg-[#85cdca]/40 blur-[1px]" />
-                    </div>
-                  </div>
-                  <div className="p-8 bg-gradient-to-br from-[#c38d94]/15 via-white to-[#d4a373]/15 rounded-3xl shadow-lg shadow-[#4a6fa5]/5 border border-[#4a6fa5]/5 backdrop-blur-sm group cursor-pointer hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl font-serif italic text-[#4a6fa5] mb-3">Rose and Sand</h3>
-                    <p className="text-[#4a6fa5]/60 font-serif text-sm leading-relaxed mb-4">
-                      Earth tones blending softly into floral hues, evoking a garden in watercolor.
-                    </p>
-                    <div className="flex gap-2">
-                      <div className="w-6 h-6 rounded-full bg-[#c38d94]/40 blur-[1px]" />
-                      <div className="w-6 h-6 rounded-full bg-[#d4a373]/40 blur-[1px]" />
-                    </div>
-                  </div>
-                  <div className="md:col-span-2 p-8 bg-gradient-to-r from-[#4a6fa5]/10 via-white to-[#85cdca]/10 rounded-3xl shadow-lg shadow-[#4a6fa5]/5 border border-[#4a6fa5]/5 backdrop-blur-sm">
-                    <h3 className="text-xl font-serif italic text-[#4a6fa5] mb-3">Full Wash</h3>
-                    <p className="text-[#4a6fa5]/60 font-serif text-sm leading-relaxed">
-                      A wider card demonstrating how watercolor aesthetics scale across larger surfaces. The gradient wash feels like a single brushstroke across the canvas.
-                    </p>
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
-
-            {activeTab === "inputs" && (
-              <RevealBlock>
-                <div
-                  className="p-10 rounded-3xl space-y-8"
-                  style={{
-                    background: "radial-gradient(ellipse at 70% 20%, #85cdca10 0%, transparent 50%), radial-gradient(ellipse at 30% 80%, #e8a87c10 0%, transparent 50%), white",
-                  }}
-                >
-                  <p className="text-sm font-serif italic text-[#4a6fa5]/50 mb-4">Form elements</p>
-                  <div>
-                    <label className="block text-sm font-serif italic text-[#4a6fa5]/60 mb-2">Your Name</label>
-                    <input
-                      type="text"
-                      placeholder="Write here..."
-                      className="w-full px-5 py-4 bg-white/60 border border-[#4a6fa5]/15 rounded-2xl text-[#4a6fa5] placeholder-[#4a6fa5]/30 font-serif focus:outline-none focus:border-[#4a6fa5]/30 focus:bg-white/80 focus:shadow-lg focus:shadow-[#4a6fa5]/5 transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-serif italic text-[#4a6fa5]/60 mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      placeholder="you@example.com"
-                      className="w-full px-5 py-4 bg-white/60 border border-[#4a6fa5]/15 rounded-2xl text-[#4a6fa5] placeholder-[#4a6fa5]/30 font-serif focus:outline-none focus:border-[#4a6fa5]/30 focus:bg-white/80 focus:shadow-lg focus:shadow-[#4a6fa5]/5 transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-serif italic text-[#4a6fa5]/60 mb-2">Your Message</label>
-                    <textarea
-                      rows={4}
-                      placeholder="Let your words flow..."
-                      className="w-full px-5 py-4 bg-white/60 border border-[#4a6fa5]/15 rounded-2xl text-[#4a6fa5] placeholder-[#4a6fa5]/30 font-serif focus:outline-none focus:border-[#4a6fa5]/30 focus:bg-white/80 focus:shadow-lg focus:shadow-[#4a6fa5]/5 transition-all duration-300 resize-none"
-                    />
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
-
-            {activeTab === "washes" && (
-              <RevealBlock>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="aspect-square rounded-3xl overflow-hidden relative">
-                    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, #e8a87c30 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, #85cdca25 0%, transparent 50%), #faf8f5" }} />
-                    <div className="absolute inset-0 flex items-end p-6">
-                      <p className="text-sm font-serif italic text-[#4a6fa5]/60">Warm + Cool Wash</p>
-                    </div>
-                  </div>
-                  <div className="aspect-square rounded-3xl overflow-hidden relative">
-                    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 30%, #c38d9435 0%, transparent 60%), radial-gradient(ellipse at 40% 80%, #d4a37320 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, #e8a87c15 0%, transparent 60%), #faf8f5" }} />
-                    <div className="absolute inset-0 flex items-end p-6">
-                      <p className="text-sm font-serif italic text-[#4a6fa5]/60">Triple Bloom</p>
-                    </div>
-                  </div>
-                  <div className="aspect-square rounded-3xl overflow-hidden relative">
-                    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 30%, #4a6fa520 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, #4a6fa515 0%, transparent 50%), linear-gradient(180deg, #faf8f5, #4a6fa508)" }} />
-                    <div className="absolute inset-0 flex items-end p-6">
-                      <p className="text-sm font-serif italic text-[#4a6fa5]/60">Monochrome Wash</p>
-                    </div>
-                  </div>
-                </div>
-              </RevealBlock>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Color Palette ===== */}
-      <section className="py-24 md:py-40 px-6 md:px-12 relative">
-        <WatercolorBlob color="#d4a373" className="w-64 h-64 top-10 left-0" />
-        <div className="max-w-5xl mx-auto relative z-10">
-          <RevealBlock className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif italic mb-4">
-              Color <span className="text-[#4a6fa5]/40">Palette</span>
-            </h2>
-            <p className="text-sm font-serif text-[#4a6fa5]/50 max-w-md">
-              Semi-transparent washes on warm paper. Always use these colors at reduced opacity for the watercolor effect.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {paletteColors.map((c, i) => (
-              <RevealBlock key={c.name} delay={i * 0.06}>
-                <div className="group cursor-pointer">
-                  <div
-                    className={`aspect-[3/2] rounded-2xl flex flex-col items-start justify-end p-4 shadow-lg shadow-[#4a6fa5]/5 ${c.text}`}
-                    style={{ backgroundColor: c.value }}
-                  >
-                    <p className="text-sm font-serif italic">{c.name}</p>
-                    <p className="text-xs opacity-60 font-mono">{c.value}</p>
-                  </div>
-                  <p className="text-xs font-serif text-[#4a6fa5]/40 mt-2">{c.desc}</p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Design Rules ===== */}
-      <section className="py-24 md:py-40 px-6 md:px-12 max-w-5xl mx-auto">
-        <RevealBlock className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif italic mb-4">
-            Design <span className="text-[#4a6fa5]/40">Rules</span>
-          </h2>
         </RevealBlock>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <RevealBlock>
-            <div className="p-6 bg-gradient-to-br from-[#85cdca]/10 via-white to-transparent rounded-3xl mb-4">
-              <span className="text-sm font-serif italic text-[#85cdca]">Do</span>
+        {/* Wash canvas */}
+        <RevealBlock delay={0.2}>
+          <div
+            className="relative w-full overflow-hidden paper"
+            style={{
+              height: 360,
+              borderRadius: "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem",
+              border: "1px solid rgba(74,111,165,0.09)",
+              backgroundColor: "#faf8f5",
+            }}
+          >
+            {mood.blobs.map((b, idx) => (
+              <div
+                key={idx}
+                className="absolute rounded-full blur-3xl pointer-events-none transition-all duration-700"
+                style={{ backgroundColor: b.color, opacity: b.opacity, width: b.w, height: b.h, top: b.top, left: b.left }}
+              />
+            ))}
+            <div className="relative z-10 flex flex-col items-center justify-center h-full">
+              <p className="font-serif italic text-3xl md:text-4xl text-[#3a3430]/65 mb-2">{mood.label}</p>
+              <p
+                className="text-sm tracking-widest uppercase"
+                style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.38)" }}
+              >
+                {mood.id} palette
+              </p>
             </div>
-            <ul className="space-y-4">
-              {doRules.map((rule, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-[#4a6fa5]/70 font-serif">
-                  <span className="mt-1 w-2 h-2 rounded-full bg-[#85cdca]/60 flex-shrink-0 blur-[0.5px]" />
-                  {rule}
-                </li>
-              ))}
-            </ul>
+          </div>
+        </RevealBlock>
+
+        {/* Swatches */}
+        <RevealBlock delay={0.3} className="mt-8 flex flex-wrap gap-4">
+          {[
+            { hex: "#4a6fa5", name: "Muted Blue"  },
+            { hex: "#e8a87c", name: "Peach"        },
+            { hex: "#85cdca", name: "Teal"         },
+            { hex: "#c38d94", name: "Mauve"        },
+            { hex: "#d4a373", name: "Warm Tan"     },
+            { hex: "#faf8f5", name: "Paper White", border: true },
+          ].map((s) => (
+            <div key={s.hex} className="flex flex-col items-center gap-2">
+              <div
+                className="w-14 h-14 or3"
+                style={{
+                  backgroundColor: s.hex,
+                  border: s.border ? "1px solid rgba(74,111,165,0.18)" : "none",
+                  boxShadow: `0 4px 16px ${s.hex}44`,
+                }}
+              />
+              <span
+                className="text-xs text-center"
+                style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.48)" }}
+              >
+                {s.name}
+              </span>
+            </div>
+          ))}
+        </RevealBlock>
+      </section>
+
+      {/* ─── COMPONENT DEMOS ──────────────────────────────────────────────────── */}
+      <section
+        className="py-24 md:py-36 paper"
+        style={{ backgroundColor: "rgba(74,111,165,0.03)" }}
+      >
+        <div className="px-6 md:px-12 max-w-6xl mx-auto">
+          <RevealBlock>
+            <h2 className="font-serif italic text-4xl md:text-5xl text-[#3a3430] mb-2">Components</h2>
+            <p className="mb-12 font-serif italic" style={{ color: "rgba(58,52,48,0.58)" }}>
+              Every element painted with the same organic hand.
+            </p>
           </RevealBlock>
 
-          <RevealBlock delay={0.15}>
-            <div className="p-6 bg-gradient-to-br from-[#c38d94]/10 via-white to-transparent rounded-3xl mb-4">
-              <span className="text-sm font-serif italic text-[#c38d94]">Don&apos;t</span>
-            </div>
-            <ul className="space-y-4">
-              {dontRules.map((rule, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-[#4a6fa5]/70 font-serif">
-                  <span className="mt-1 w-2 h-2 rounded-full bg-[#c38d94]/60 flex-shrink-0 blur-[0.5px]" />
-                  {rule}
-                </li>
+          {/* Tab switcher */}
+          <RevealBlock delay={0.1}>
+            <div className="flex gap-3 mb-10 flex-wrap">
+              {(["buttons", "cards", "inputs"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className="px-6 py-2 font-serif italic text-base capitalize transition-all duration-500"
+                  style={{
+                    borderRadius: tab === activeTab ? "3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem" : "9999px",
+                    backgroundColor: tab === activeTab ? "rgba(133,205,202,0.20)" : "rgba(133,205,202,0.06)",
+                    color: tab === activeTab ? "#2a7a76" : "rgba(58,52,48,0.50)",
+                    border: tab === activeTab ? "1px solid rgba(133,205,202,0.35)" : "1px solid transparent",
+                  }}
+                >
+                  {tab}
+                </button>
               ))}
-            </ul>
+            </div>
           </RevealBlock>
+
+          {/* Tab: Buttons */}
+          {activeTab === "buttons" && (
+            <RevealBlock>
+              <div
+                className="relative p-8 md:p-12 overflow-hidden paper"
+                style={{
+                  backgroundColor: "#faf8f5",
+                  borderRadius: "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem",
+                  border: "1px solid rgba(74,111,165,0.10)",
+                  boxShadow: "0 8px 32px rgba(74,111,165,0.07)",
+                }}
+              >
+                <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(232,168,124,0.28)" }} />
+                <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(133,205,202,0.22)" }} />
+                <div className="relative z-10 flex flex-wrap gap-4">
+                  <button type="button" className="wb-btn px-7 py-3 font-serif italic text-[#faf8f5] or1" style={{ backgroundColor: "rgba(74,111,165,0.80)", boxShadow: "0 6px 24px rgba(74,111,165,0.22)" }}>
+                    Primary Wash
+                  </button>
+                  <button type="button" className="wb-btn px-7 py-3 font-serif italic text-[#4a6fa5] or2" style={{ backgroundColor: "rgba(74,111,165,0.10)", border: "1px solid rgba(74,111,165,0.28)" }}>
+                    Soft Outline
+                  </button>
+                  <button type="button" className="wb-btn px-7 py-3 font-serif italic text-[#faf8f5] or1" style={{ backgroundColor: "rgba(232,168,124,0.78)", boxShadow: "0 6px 24px rgba(232,168,124,0.22)" }}>
+                    Peach Wash
+                  </button>
+                  <button type="button" className="wb-btn px-7 py-3 font-serif italic text-[#faf8f5] or2" style={{ backgroundColor: "rgba(195,141,148,0.75)", boxShadow: "0 6px 24px rgba(195,141,148,0.22)" }}>
+                    Mauve Ghost
+                  </button>
+                  <button type="button" className="wb-btn px-7 py-3 font-serif italic text-[#2a7a76] or1" style={{ backgroundColor: "rgba(133,205,202,0.18)", border: "1px solid rgba(133,205,202,0.35)" }}>
+                    Teal Ghost
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
+          )}
+
+          {/* Tab: Cards */}
+          {activeTab === "cards" && (
+            <RevealBlock>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {galleryItems.map((item, idx) => (
+                  <div
+                    key={item.title}
+                    className="relative p-8 overflow-hidden paper group"
+                    style={{
+                      backgroundColor: "#faf8f5",
+                      border: `1px solid ${item.accent}22`,
+                      boxShadow: `0 8px 32px ${item.accent}14`,
+                      borderRadius: idx % 2 === 0
+                        ? "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem"
+                        : "3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem",
+                      transition: "all 0.5s ease-in-out",
+                    }}
+                  >
+                    <div
+                      className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+                      style={{ backgroundColor: `${item.accent}38` }}
+                    />
+                    <div
+                      className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full blur-3xl pointer-events-none"
+                      style={{ backgroundColor: `${item.secondary}30` }}
+                    />
+                    <span
+                      className="text-xs uppercase tracking-widest mb-3 block relative z-10"
+                      style={{ fontFamily: "system-ui, sans-serif", color: `${item.accent}88` }}
+                    >
+                      {item.category}
+                    </span>
+                    <h3 className="font-serif italic text-xl text-[#3a3430] mb-2 relative z-10">{item.title}</h3>
+                    <p className="text-sm font-serif relative z-10" style={{ color: "rgba(58,52,48,0.55)" }}>
+                      Layered washes of transparency create depth through overlap rather than opacity.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </RevealBlock>
+          )}
+
+          {/* Tab: Inputs */}
+          {activeTab === "inputs" && (
+            <RevealBlock>
+              <div
+                className="relative p-8 md:p-12 overflow-hidden paper"
+                style={{
+                  backgroundColor: "#faf8f5",
+                  borderRadius: "3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem",
+                  border: "1px solid rgba(195,141,148,0.18)",
+                  boxShadow: "0 8px 32px rgba(74,111,165,0.07)",
+                }}
+              >
+                <div className="absolute -top-8 -left-8 w-36 h-36 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(195,141,148,0.28)" }} />
+                <div className="absolute -bottom-6 -right-6 w-28 h-28 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(133,205,202,0.24)" }} />
+                <div className="relative z-10 space-y-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.42)" }}>Name</label>
+                    <input
+                      type="text"
+                      placeholder="Your name..."
+                      className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none transition-all duration-500"
+                      style={{ backgroundColor: "rgba(74,111,165,0.05)", border: "1px solid rgba(74,111,165,0.16)", borderRadius: "1.5rem 2rem 1.5rem 2rem" }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.14)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.40)"; }}
+                      onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.16)"; }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.42)" }}>Email</label>
+                    <input
+                      type="email"
+                      placeholder="hello@studio.com"
+                      className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none transition-all duration-500"
+                      style={{ backgroundColor: "rgba(74,111,165,0.05)", border: "1px solid rgba(74,111,165,0.16)", borderRadius: "2rem 1.5rem 2rem 1.5rem" }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.14)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.40)"; }}
+                      onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.16)"; }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.42)" }}>Message</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Write freely, like paint on wet paper..."
+                      className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none resize-none transition-all duration-500"
+                      style={{ backgroundColor: "rgba(74,111,165,0.05)", border: "1px solid rgba(74,111,165,0.16)", borderRadius: "2rem 2.5rem 2rem 2.5rem" }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.14)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.40)"; }}
+                      onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.16)"; }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          )}
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
-      <footer className="border-t border-[#4a6fa5]/[0.08]">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs font-serif text-[#4a6fa5]/40">
+      {/* ─── TYPOGRAPHY ───────────────────────────────────────────────────────── */}
+      <section className="py-24 md:py-36 px-6 md:px-12 max-w-6xl mx-auto">
+        <RevealBlock>
+          <h2 className="font-serif italic text-4xl md:text-5xl text-[#3a3430] mb-2">Typography</h2>
+          <p className="mb-14 font-serif italic" style={{ color: "rgba(58,52,48,0.58)" }}>
+            Serif italic headings anchor the painterly voice.
+          </p>
+        </RevealBlock>
+
+        <div>
+          {typographyScale.map((item, idx) => (
+            <RevealBlock key={item.label} delay={idx * 0.05}>
+              <div
+                className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-8 py-6"
+                style={{
+                  borderBottom:
+                    idx < typographyScale.length - 1
+                      ? "1px solid rgba(74,111,165,0.09)"
+                      : "none",
+                }}
+              >
+                <span
+                  className="text-xs uppercase tracking-widest w-28 shrink-0"
+                  style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.38)" }}
+                >
+                  {item.label}
+                </span>
+                <span className={`font-serif italic leading-tight text-[#3a3430] ${item.cls}`}>
+                  {item.sample}
+                </span>
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── DESIGN RULES ─────────────────────────────────────────────────────── */}
+      <section
+        className="py-24 md:py-36 paper"
+        style={{ backgroundColor: "rgba(232,168,124,0.05)" }}
+      >
+        <div className="px-6 md:px-12 max-w-6xl mx-auto">
+          <RevealBlock>
+            <h2 className="font-serif italic text-4xl md:text-5xl text-[#3a3430] mb-2">Design Rules</h2>
+            <p className="mb-14 font-serif italic" style={{ color: "rgba(58,52,48,0.58)" }}>
+              The principles that keep every element feeling painted, not printed.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {designRules.map((rule, idx) => {
+              const isDo = rule.type === "do";
+              return (
+                <RevealBlock key={idx} delay={idx * 0.07}>
+                  <div
+                    className="relative p-7 overflow-hidden"
+                    style={{
+                      backgroundColor: isDo ? "rgba(133,205,202,0.09)" : "rgba(195,141,148,0.09)",
+                      border: `1px solid ${isDo ? "rgba(133,205,202,0.22)" : "rgba(195,141,148,0.22)"}`,
+                      borderRadius: idx % 2 === 0
+                        ? "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem"
+                        : "3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem",
+                    }}
+                  >
+                    <div
+                      className="absolute -bottom-5 -right-5 w-20 h-20 rounded-full blur-2xl pointer-events-none"
+                      style={{ backgroundColor: isDo ? "rgba(133,205,202,0.38)" : "rgba(195,141,148,0.38)" }}
+                    />
+                    <div className="flex items-start gap-4 relative z-10">
+                      <span
+                        className="text-xs font-medium uppercase tracking-widest px-2.5 py-1 shrink-0 mt-0.5"
+                        style={{
+                          fontFamily: "system-ui, sans-serif",
+                          color: isDo ? "#2a7a6a" : "#904050",
+                          backgroundColor: isDo ? "rgba(133,205,202,0.22)" : "rgba(195,141,148,0.22)",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {isDo ? "Do" : "Avoid"}
+                      </span>
+                      <div>
+                        <p className="font-serif italic text-[#3a3430] text-lg mb-1">{rule.rule}</p>
+                        <p className="text-sm font-serif" style={{ color: "rgba(58,52,48,0.52)" }}>{rule.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+                </RevealBlock>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CONTACT ──────────────────────────────────────────────────────────── */}
+      <section className="py-24 md:py-36 px-6 md:px-12 max-w-4xl mx-auto">
+        <RevealBlock>
+          <h2 className="font-serif italic text-4xl md:text-5xl text-[#3a3430] mb-2">
+            Send a <span style={{ color: "#4a6fa5" }}>Note</span>
+          </h2>
+          <p className="mb-12 font-serif italic" style={{ color: "rgba(58,52,48,0.58)" }}>
+            Like a letter sealed with a wax stamp — unhurried, considered.
+          </p>
+        </RevealBlock>
+
+        {submitted ? (
+          <RevealBlock>
+            <div
+              className="relative text-center py-16 px-8 overflow-hidden paper"
+              style={{
+                backgroundColor: "rgba(133,205,202,0.10)",
+                borderRadius: "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem",
+                border: "1px solid rgba(133,205,202,0.22)",
+              }}
+            >
+              <div className="absolute inset-0 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(133,205,202,0.12)" }} />
+              <p className="font-serif italic text-3xl text-[#3a3430] mb-3 relative z-10">Thank you</p>
+              <p className="font-serif italic relative z-10" style={{ color: "rgba(58,52,48,0.58)" }}>
+                Your note has been received, like a brushstroke on fresh paper.
+              </p>
+              <button
+                type="button"
+                className="wb-btn mt-8 px-6 py-2 font-serif italic text-[#4a6fa5] relative z-10"
+                style={{ backgroundColor: "rgba(74,111,165,0.10)", border: "1px solid rgba(74,111,165,0.22)", borderRadius: "9999px" }}
+                onClick={() => { setSubmitted(false); setMsgValue(""); }}
+              >
+                Write another
+              </button>
+            </div>
+          </RevealBlock>
+        ) : (
+          <RevealBlock delay={0.1}>
+            <div
+              className="relative p-8 md:p-12 overflow-hidden paper"
+              style={{
+                backgroundColor: "#faf8f5",
+                borderRadius: "2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem",
+                border: "1px solid rgba(74,111,165,0.10)",
+                boxShadow: "0 12px 48px rgba(74,111,165,0.07)",
+              }}
+            >
+              <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(232,168,124,0.24)" }} />
+              <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(133,205,202,0.18)" }} />
+
+              <div className="relative z-10 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.40)" }}>Name</label>
+                    <input
+                      type="text"
+                      placeholder="Your name..."
+                      className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none transition-all duration-500"
+                      style={{ backgroundColor: "rgba(74,111,165,0.04)", border: "1px solid rgba(74,111,165,0.15)", borderRadius: "1.5rem 2rem 1.5rem 2rem" }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.13)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.38)"; }}
+                      onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.15)"; }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.40)" }}>Email</label>
+                    <input
+                      type="email"
+                      placeholder="hello@studio.com"
+                      className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none transition-all duration-500"
+                      style={{ backgroundColor: "rgba(74,111,165,0.04)", border: "1px solid rgba(74,111,165,0.15)", borderRadius: "2rem 1.5rem 2rem 1.5rem" }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.13)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.38)"; }}
+                      onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.15)"; }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.40)" }}>Message</label>
+                  <textarea
+                    rows={5}
+                    placeholder="Write freely, like paint on wet paper..."
+                    value={msgValue}
+                    onChange={(e) => setMsgValue(e.target.value)}
+                    className="w-full px-4 py-3 font-serif italic text-[#3a3430] placeholder-[#3a3430]/30 outline-none resize-none transition-all duration-500"
+                    style={{ backgroundColor: "rgba(74,111,165,0.04)", border: "1px solid rgba(74,111,165,0.15)", borderRadius: "2rem 2.5rem 2rem 2.5rem" }}
+                    onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(74,111,165,0.13)"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.38)"; }}
+                    onBlur={(e)  => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "rgba(74,111,165,0.15)"; }}
+                  />
+                  {msgValue.length > 0 && (
+                    <p className="text-xs mt-1 text-right" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.32)" }}>
+                      {msgValue.length} characters
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="wb-btn flex items-center gap-3 px-8 py-3 font-serif italic text-[#faf8f5] or1"
+                    style={{ backgroundColor: "rgba(74,111,165,0.80)", boxShadow: "0 6px 24px rgba(74,111,165,0.20)" }}
+                    onClick={() => setSubmitted(true)}
+                  >
+                    Send note
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        )}
+      </section>
+
+      {/* ─── FOOTER ───────────────────────────────────────────────────────────── */}
+      <footer
+        className="relative overflow-hidden paper"
+        style={{ borderTop: "1px solid rgba(74,111,165,0.09)" }}
+      >
+        <div className="absolute -top-16 left-1/4 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(232,168,124,0.16)" }} />
+        <div className="absolute -top-10 right-1/3 w-48 h-48 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(133,205,202,0.13)" }} />
+        <div className="absolute bottom-0 left-1/2 w-52 h-52 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(195,141,148,0.10)" }} />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 py-16">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div>
+              <p className="font-serif italic text-3xl text-[#3a3430] mb-2">Watercolor Style</p>
+              <p className="text-sm font-serif italic" style={{ color: "rgba(58,52,48,0.48)" }}>Part of the StyleKit design system</p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-3">
+              <Link href="/styles/watercolor-style" className="font-serif italic text-[#4a6fa5] hover:opacity-70 transition-opacity duration-300">
+                View documentation
+              </Link>
+              <Link href="/styles" className="font-serif italic text-[#3a3430]/45 hover:opacity-70 transition-opacity duration-300 text-sm">
+                All styles
+              </Link>
+            </div>
+          </div>
+
+          <div
+            className="mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4"
+            style={{ borderTop: "1px solid rgba(74,111,165,0.09)" }}
+          >
+            <p className="text-xs" style={{ fontFamily: "system-ui, sans-serif", color: "rgba(58,52,48,0.32)" }}>
               StyleKit &middot; Watercolor Style Showcase
             </p>
-            <Link href="/styles/watercolor-style" className="text-xs font-serif text-[#4a6fa5]/50 hover:text-[#4a6fa5] transition-colors duration-300">
-              View Full Documentation &rarr;
-            </Link>
+            <div className="flex gap-2">
+              {["#e8a87c", "#85cdca", "#c38d94", "#4a6fa5", "#d4a373"].map((color) => (
+                <div
+                  key={color}
+                  className="w-3 h-3 or3"
+                  style={{ backgroundColor: color, opacity: 0.58 }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </footer>
