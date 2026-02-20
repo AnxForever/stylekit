@@ -32,6 +32,10 @@ export const synthwave: DesignStyle = {
     "添加霓虹发光效果",
     "使用复古风格字体",
     "添加太阳/山脉剪影元素",
+    "Arcade Pulse: neon border and glow elements use `hover:animate-pulse` or flicker on hover — the arcade machine's CRT screen energizes when touched",
+    "Multidimensional Neon: button uses simultaneous inset cyan + outer pink shadows `shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]` — two neon tubes glow from opposite directions, intensify together on hover",
+    "Virtual Grid Shift: background pixel grid uses `group-hover:opacity-30 group-hover:scale-110 transition-all duration-500` — the virtual space expands as the player approaches",
+    "Overvoltage Press: active state causes power surge `active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]` — all neon goes white as the circuit overloads at the moment of contact",
   ],
 
   dontList: [
@@ -39,41 +43,48 @@ export const synthwave: DesignStyle = {
     "禁止使用现代简约的设计",
     "禁止省略霓虹发光效果",
     "禁止使用过于正式的字体",
+    "禁止使用单向霓虹光（Multidimensional Neon 要求 inset + outer 双向同时发光）",
+    "禁止 hover 只改变一个 shadow 值（必须同时增强 inset cyan 和 outer pink 双轨）",
+    "禁止 active 状态保留彩色（Overvoltage Press 要求 `active:bg-white active:text-black` — 过载一切归零）",
+    "禁止 Virtual Grid 在非 group-hover 时变化（网格只在玩家接近时才激活）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "合成波风格按钮",
+      description: "合成波风格按钮，Multidimensional Neon 双向霓虹 + Overvoltage Press `active:scale-90 active:bg-white` 过载归零 + `duration-200 ease-out`",
       code: `<button className="
   px-8 py-4
   bg-transparent
-  border-2 border-pink-500
-  text-pink-500 font-bold uppercase tracking-wider
-  shadow-[0_0_10px_rgba(255,0,255,0.5),inset_0_0_10px_rgba(255,0,255,0.1)]
-  hover:bg-pink-500 hover:text-black
-  hover:shadow-[0_0_20px_rgba(255,0,255,0.8),0_0_40px_rgba(255,0,255,0.4)]
-  transition-all duration-300
+  border-2 border-[#ff00ff]
+  text-[#00ffff] font-bold uppercase tracking-wider
+  shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]
+  hover:border-[#00ffff]
+  hover:shadow-[0_0_30px_rgba(0,255,255,0.8),inset_0_0_20px_rgba(255,0,255,0.6)]
+  active:scale-90
+  active:bg-white active:text-black
+  active:shadow-[0_0_50px_#ffffff]
+  transition-all duration-200 ease-out
 ">
   Start
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "合成波风格卡片",
-      code: `<div className="
-  p-8
-  bg-gradient-to-b from-purple-900/80 to-black/80
-  border border-pink-500/50
-  shadow-[0_0_20px_rgba(255,0,255,0.2)]
-  backdrop-blur-sm
-">
-  <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500 mb-3">
-    RETRO FUTURE
-  </h3>
-  <p className="text-pink-200/70">
-    Back to the 80s
-  </p>
+      description: "合成波风格卡片，Virtual Grid Shift `group-hover:scale-110 duration-500` + 强调条 `group-hover:bg-[#00ffff] group-hover:shadow-[0_0_10px_#00ffff]` + 标题渐变变色",
+      code: `<div className="group relative p-8 bg-gradient-to-b from-purple-900/80 to-black/80 border border-[#ff00ff]/50 shadow-[0_0_20px_rgba(255,0,255,0.2)] overflow-hidden cursor-pointer hover:shadow-[0_0_40px_rgba(255,0,255,0.4)] transition-shadow duration-300">
+  {/* Virtual grid — shifts on hover (Virtual Grid Shift) */}
+  <div className="absolute inset-0 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500" style={{backgroundImage: 'linear-gradient(rgba(255,0,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,255,0.4) 1px, transparent 1px)', backgroundSize: '20px 20px'}} />
+  <div className="relative z-10">
+    {/* Neon accent bar */}
+    <div className="h-[2px] w-8 bg-[#ff00ff] shadow-[0_0_6px_#ff00ff] group-hover:bg-[#00ffff] group-hover:shadow-[0_0_10px_#00ffff] transition-colors duration-300 mb-4" />
+    <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff00ff] to-[#7b68ee] group-hover:from-white group-hover:to-[#00ffff] transition-all duration-500 mb-3">
+      RETRO FUTURE
+    </h3>
+    <p className="text-pink-200/70">
+      Back to the 80s
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -217,7 +228,14 @@ export const synthwave: DesignStyle = {
 - 透视网格地板
 - 日落太阳
 - 山脉剪影
-- 扫描线效果`,
+- 扫描线效果
+
+## Animation & Interaction Rules
+
+- Arcade Pulse: Neon border elements use \`hover:animate-pulse\` — the arcade machine's CRT screen flickers to life when touched. Only trigger on hover, never on load.
+- Multidimensional Neon: Button uses simultaneous inset cyan + outer pink: \`shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]\` at rest. On hover BOTH intensify together: \`hover:shadow-[0_0_30px_rgba(0,255,255,0.8),inset_0_0_20px_rgba(255,0,255,0.6)]\`. Never single-direction neon — two tubes always glow from opposite directions.
+- Virtual Grid Shift: Background pixel grid uses \`group-hover:opacity-30 group-hover:scale-110 transition-all duration-500\` — the virtual space expands as the player approaches, creating depth through the monitor glass.
+- Overvoltage Press: Active state causes a power surge: \`active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]\` — all neon color drains to white as the circuit overloads at the moment of contact. The entire color system collapses to pure electricity.`,
 
   examplePrompts: [
     {

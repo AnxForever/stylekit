@@ -37,6 +37,10 @@ export const swissPoster: DesignStyle = {
     "使用 border-2 border-[#000000] 分隔区域",
     "使用 gap-0 让元素紧贴",
     "使用非对称布局（如 3/9、8/4 分栏）",
+    "Absolute Objectivity: zero translate, scale, or shadow on any element — Swiss Poster communicates through color and typography alone, motion is noise",
+    "Snap Transitions: all interactions use `transition-none` — color changes are instantaneous hard cuts, like ink stamped onto paper",
+    "Color Block Invasion: hover replaces background with solid black `hover:bg-[#000000]` and text inverts to white `hover:text-[#ffffff]` — the color block takes over the entire element",
+    "Typographic Highlighting: year/label element switches to `group-hover:text-[#ff0000] transition-none` on hover — the red typographic accent activates like a stamp",
   ],
 
   dontList: [
@@ -46,12 +50,16 @@ export const swissPoster: DesignStyle = {
     "禁止使用渐变",
     "禁止使用虚线边框（border-dashed）",
     "禁止使用元素间距（gap-4 等），用 gap-0 + 边框",
+    "禁止使用任何 `translate`、`scale` 或 `rotate` 动画（Absolute Objectivity — Swiss Poster 用色彩和排版传达，不用运动）",
+    "禁止使用 `active:scale-[0.98]` 或任何 scale（海报不会因为被触碰而缩放）",
+    "禁止使用 `transition-all duration-*` 中任何非零延迟（必须 `transition-none` — 印刷颜色切换是瞬时的）",
+    "禁止 hover 只改变文字颜色而不改变背景（Color Block Invasion 要求整块颜色翻转，不只是文字变色）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Swiss Poster 风格按钮 - 黑色粗体大写无圆角",
+      description: "Swiss Poster 风格按钮，Color Block Invasion 整块颜色翻转 + Snap Transitions `transition-none` + active 反转为白底黑字",
       code: `<button className="
   px-8 py-3
   bg-[#000000] text-[#ffffff]
@@ -59,28 +67,24 @@ export const swissPoster: DesignStyle = {
   rounded-none
   border-2 border-[#000000]
   hover:bg-[#ff0000] hover:border-[#ff0000]
-  active:scale-[0.98]
-  transition-all duration-100
+  active:bg-[#ffffff] active:text-[#000000] active:border-[#000000]
+  transition-none
 ">
   ENTER
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Swiss Poster 风格卡片 - 边框分隔色块悬停",
-      code: `<div className="
-  p-8
-  bg-[#ffffff]
-  border-2 border-[#000000]
-  rounded-none
-  hover:bg-[#ff0000] hover:text-[#ffffff]
-  group
-  transition-all duration-100
-">
-  <h3 className="text-3xl font-sans font-black text-[#000000] group-hover:text-[#ffffff] uppercase tracking-tight mb-3 transition-colors duration-100">
+      description: "Swiss Poster 风格卡片，Color Block Invasion 整块黑色 + Typographic Highlighting 年份标签变红 + `transition-none` 瞬切",
+      code: `<div className="group p-8 bg-[#ffffff] border-2 border-[#000000] rounded-none hover:bg-[#000000] transition-none cursor-pointer">
+  <span className="text-xs font-sans font-black text-[#000000]/40 group-hover:text-[#ff0000] uppercase tracking-[0.3em] transition-none">
+    2024
+  </span>
+  <h3 className="text-3xl font-sans font-black text-[#000000] group-hover:text-[#ffffff] uppercase tracking-tight mb-3 mt-2 transition-none">
     HELVETICA
   </h3>
-  <p className="text-[#000000]/60 group-hover:text-[#ffffff]/70 font-sans transition-colors duration-100">
+  <div className="h-[2px] bg-[#000000] group-hover:bg-[#ff0000] transition-none mb-4" />
+  <p className="text-[#000000]/60 group-hover:text-[#ffffff]/70 font-sans transition-none">
     Grid-aligned typographic content
   </p>
 </div>`,
@@ -237,7 +241,14 @@ Primary:
 - Extreme font size contrasts (160px vs 10px)
 - Edge-to-edge button groups (gap-0, border-l-0)
 - Vertical text using writing-mode: vertical-lr
-- Section borders as visual separators instead of spacing`,
+- Section borders as visual separators instead of spacing
+
+## Animation & Interaction Rules
+
+- Absolute Objectivity: Zero \`translate\`, \`scale\`, or \`shadow\` changes on any interactive element. Swiss Poster communicates through color and typography alone — motion is visual noise that undermines the grid's authority.
+- Snap Transitions: All state changes use \`transition-none\` — color flips are instantaneous, like ink stamped onto paper in a single press. Never use \`duration-100\` or any timed transition.
+- Color Block Invasion: Hover replaces the entire background with solid black \`hover:bg-[#000000]\` and text inverts to \`hover:text-[#ffffff] transition-none\`. The color block takes over completely — no partial fills, no gradients.
+- Typographic Highlighting: The year/category label activates to \`group-hover:text-[#ff0000] transition-none\` on hover — the red typographic accent fires like a stamp imprint, the only color note in a black-and-white composition.`,
 
   examplePrompts: [
     {
