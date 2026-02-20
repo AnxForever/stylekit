@@ -96,6 +96,94 @@ describe("POST /api/favorites/merge", () => {
       ],
       { onConflict: "user_id,style_slug", ignoreDuplicates: true },
     );
+    expect(upsert).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      merged: 2,
+    });
+  });
+
+  it("falls back to style_favorites when user_favorites schema is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return {
+          upsert: vi.fn().mockResolvedValue({
+            error: { code: "42P01", message: "relation does not exist" },
+          }),
+        };
+      }
+      if (table === "style_favorites") {
+        return {
+          upsert: vi.fn().mockResolvedValue({ error: null }),
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/favorites/merge", {
+        method: "POST",
+        body: JSON.stringify({ slugs: ["neo-brutalist"] }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      merged: 1,
+    });
+  });
+
+  it("falls back to legacy session_id upsert when user_id column is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const userFavoritesUpsert = vi.fn((rows: Array<Record<string, unknown>>, options: Record<string, unknown>) => {
+      if (options.onConflict === "user_id,style_slug") {
+        return Promise.resolve({
+          error: { code: "42703", message: "column user_id does not exist" },
+        });
+      }
+      if (options.onConflict === "session_id,style_slug") {
+        const first = rows[0] ?? {};
+        if (first.session_id === "user:user-legacy") {
+          return Promise.resolve({ error: null });
+        }
+      }
+      return Promise.resolve({ error: { message: "unexpected payload" } });
+    });
+
+    const styleFavoritesUpsert = vi.fn().mockResolvedValue({
+      error: { code: "42P01", message: "relation does not exist" },
+    });
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return { upsert: userFavoritesUpsert };
+      }
+      if (table === "style_favorites") {
+        return { upsert: styleFavoritesUpsert };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/favorites/merge", {
+        method: "POST",
+        body: JSON.stringify({ slugs: ["neo-brutalist", "glassmorphism"] }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,
       merged: 2,
