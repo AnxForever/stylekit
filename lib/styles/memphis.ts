@@ -32,6 +32,11 @@ export const memphis: DesignStyle = {
     "不规则的布局和形状",
     "添加点状、条纹、波浪图案",
     "使用粗体无衬线字体",
+    "卡片使用 group 类，内部几何装饰在 hover 时各自向不同方向位移或旋转（Playful Chaos，游乐场活泼感）",
+    "按钮 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none（Toy Button Physics，玩具按键触感）",
+    "标题和文字在 group-hover 时可瞬间切换高饱和撞色（Pop Swap，波普色彩反转），使用 transition-colors duration-150",
+    "所有动画使用 duration-150 ease-out，保持波普玩具的干脆感",
+    "按钮 hover 时换色并增大阴影：hover:bg-pink-400 hover:shadow-[8px_8px_0px_#000]（撞色波普强化）",
   ],
 
   dontList: [
@@ -39,43 +44,54 @@ export const memphis: DesignStyle = {
     "禁止过于对称规整的布局",
     "禁止使用细边框",
     "禁止省略几何装饰元素",
+    "禁止几何装饰在 hover 时保持静止（失去孟菲斯游乐场的灵魂）",
+    "禁止按钮 active 状态保留阴影（压下去就应该完全贴地，active:shadow-none 是必须的）",
+    "禁止按钮 hover 使用位移减小阴影（应是增大阴影 + 换色，而非向阴影方向移动）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "孟菲斯风格按钮",
+      description: "孟菲斯风格按钮，波普换色 + 玩具按键触感",
       code: `<button className="
-  relative px-8 py-4
+  group relative px-8 py-4
   bg-yellow-400
   border-4 border-black
   text-black font-black uppercase
   shadow-[6px_6px_0px_#000]
-  hover:shadow-[3px_3px_0px_#000]
-  hover:translate-x-[3px] hover:translate-y-[3px]
-  transition-all duration-150
+  hover:bg-pink-400
+  hover:shadow-[8px_8px_0px_#000]
+  hover:-translate-y-1 hover:-rotate-2
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none
+  transition-all duration-150 ease-out
 ">
-  <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full" />
+  <span className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 rounded-full border-2 border-black group-hover:scale-125 transition-transform duration-150" />
+  <span className="absolute -bottom-2 -left-2 w-4 h-4 bg-cyan-400 border-2 border-black group-hover:-translate-x-2 group-hover:rotate-45 transition-all duration-150" />
   Click Me!
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "孟菲斯风格卡片",
+      description: "孟菲斯风格卡片，Playful Chaos 几何各自独立运动 + Pop Swap 撞色反转",
       code: `<div className="
-  relative p-8
+  group relative p-8
   bg-pink-300
   border-4 border-black
   shadow-[8px_8px_0px_#000]
+  hover:shadow-[12px_12px_0px_#000]
+  hover:-translate-y-2 hover:-rotate-1
+  transition-all duration-200 ease-out
+  cursor-pointer
 ">
-  {/* Decorative shapes */}
-  <div className="absolute -top-4 -left-4 w-8 h-8 bg-yellow-400 rounded-full border-2 border-black" />
-  <div className="absolute -bottom-3 -right-3 w-0 h-0 border-l-[20px] border-l-transparent border-b-[30px] border-b-cyan-400 border-r-[20px] border-r-transparent" />
+  {/* Decorative shapes — each moves in a different direction (Playful Chaos) */}
+  <div className="absolute -top-4 -left-4 w-10 h-10 bg-yellow-400 rounded-full border-2 border-black group-hover:translate-x-4 group-hover:-translate-y-2 transition-transform duration-200 ease-out" />
+  <div className="absolute -bottom-3 -right-3 w-0 h-0 border-l-[20px] border-l-transparent border-b-[30px] border-b-cyan-400 border-r-[20px] border-r-transparent group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:rotate-12 transition-all duration-200 ease-out" />
 
-  <h3 className="text-2xl font-black text-black mb-3">
+  <h3 className="text-2xl font-black text-black mb-3 group-hover:text-white transition-colors duration-150">
     MEMPHIS
   </h3>
-  <p className="text-black/80 font-medium">
+  <p className="text-black/80 font-medium group-hover:bg-yellow-400 group-hover:text-black transition-colors duration-150 px-1">
     Bold, colorful, and fun!
   </p>
 </div>`,
@@ -207,7 +223,14 @@ export const memphis: DesignStyle = {
 - 圆形 rounded-full
 - 三角形（用 border 实现）
 - 方形 rotate-45
-- 波浪线、点状、条纹图案`,
+- 波浪线、点状、条纹图案
+
+## Animation & Interaction Rules
+
+- Playful Chaos: 卡片内装饰几何使用 group 类各自向不同方向独立运动（circle: group-hover:translate-x-4 group-hover:-translate-y-2；triangle: group-hover:-translate-x-2 group-hover:rotate-12），禁止统一方向。
+- Toy Button Physics: 按钮 active 状态 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none，模拟玩具按键完全贴地。
+- Pop Swap: hover 时即刻切换高饱和撞色（hover:bg-pink-400），transition-colors duration-150，禁止使用渐变过渡。
+- Snappy Motion: 所有动画 duration-150 ease-out，保持波普玩具的干脆感。`,
 
   examplePrompts: [
     {
