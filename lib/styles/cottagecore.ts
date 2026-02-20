@@ -46,12 +46,16 @@ export const cottagecore: DesignStyle = {
       name: "按钮",
       description: "田园核风格按钮",
       code: `<button className="
-  px-6 py-3
-  bg-[#5a8f5a] text-white
+  px-8 py-3
+  bg-[#5a8f5a] text-[#faf6f0]
   font-serif rounded-full
-  shadow-md
-  hover:shadow-lg hover:scale-105
-  transition-all duration-300
+  shadow-[0_4px_10px_rgba(90,143,90,0.2)]
+  hover:shadow-[0_8px_20px_rgba(90,143,90,0.3)]
+  hover:-translate-y-0.5 hover:rotate-[0.8deg]
+  active:rotate-0 active:scale-[0.97]
+  active:shadow-[0_2px_6px_rgba(90,143,90,0.2)]
+  transition-all duration-500 ease-in-out
+  motion-reduce:transform-none
 ">
   Gather
 </button>`,
@@ -60,17 +64,23 @@ export const cottagecore: DesignStyle = {
       name: "卡片",
       description: "田园核风格卡片",
       code: `<div className="
-  p-8
+  group p-8
   bg-[#faf6f0]
-  rounded-2xl
+  rounded-3xl
   border border-[#d4a0a0]/40
-  shadow-md
+  shadow-[0_4px_20px_rgba(139,115,85,0.05)]
+  hover:shadow-[0_12px_30px_rgba(139,115,85,0.1)]
+  hover:-translate-y-1 hover:-rotate-[0.8deg]
+  transition-all duration-700 ease-in-out
 ">
-  <h3 className="text-2xl font-serif text-[#8b7355] mb-3">
+  <div className="w-12 h-12 mb-4 text-[#d4a0a0] group-hover:scale-105 group-hover:rotate-6 transition-all duration-500 ease-in-out">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 4 5 4 9c0 4.4 7 11.3 7.6 11.9.2.2.6.2.8 0C13 20.3 20 13.4 20 9c0-4-4-7-8-7z"/></svg>
+  </div>
+  <h3 className="text-2xl font-serif text-[#8b7355] mb-3 group-hover:text-[#5a8f5a] transition-colors duration-500">
     Wildflower Meadow
   </h3>
-  <p className="text-[#8b7355]/70 font-serif">
-    Where daisies dance in the summer breeze
+  <p className="text-[#8b7355]/70 font-serif leading-relaxed">
+    Where every stitch tells a story of spring.
   </p>
 </div>`,
     },
@@ -184,7 +194,14 @@ Primary:
 - Floral and botanical decorations
 - Linen/paper texture backgrounds
 - Hand-drawn or embroidery style accents
-- Mushroom and berry motifs`,
+- Mushroom and berry motifs
+
+## Animation & Interaction Rules
+
+- Gentle & Breezy: 动画节奏应轻柔舒缓，优先 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`。
+- Handmade Imperfection: 悬停可加入非常轻微的旋转（建议不超过 1deg）和小幅放大，避免机械式直上直下。
+- Soft Cushion Press: 点击反馈以柔和按压为主，推荐 \`active:scale-[0.97]\`；\`0.95\` 仅用于大面积元素，避免显得卡通化。
+- Botanical Sway: 装饰性花叶图标可在 hover 时微幅摆动，幅度需克制，不能变成明显抖动动画。`,
 
   examplePrompts: [
     {

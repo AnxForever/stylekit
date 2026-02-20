@@ -49,34 +49,34 @@ export const modernGradient: DesignStyle = {
       name: "按钮",
       description: "Modern Gradient 风格的渐变按钮",
       code: `// Primary Gradient Button
-<button className="px-6 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-2xl font-medium hover:from-violet-600 hover:to-fuchsia-600 shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-300">
+<button className="px-8 py-4 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-500 bg-[length:200%_auto] text-white rounded-2xl font-bold tracking-wide shadow-[0_8px_20px_rgba(167,139,250,0.3)] hover:bg-right hover:shadow-[0_15px_30px_rgba(217,70,239,0.4)] hover:-translate-y-1 hover:scale-[1.02] active:scale-95 transition-all duration-500 ease-out">
   Get Started
 </button>
 
 // Outline Gradient Button
-<button className="px-6 py-3 rounded-2xl font-medium relative group">
+<button className="px-6 py-3 rounded-2xl font-medium relative group hover:-translate-y-1 hover:scale-[1.02] transition-all duration-500 ease-out">
   <span className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-2xl" />
-  <span className="absolute inset-[2px] bg-slate-950 rounded-[14px] group-hover:bg-slate-900 transition-colors" />
+  <span className="absolute inset-[2px] bg-slate-950 rounded-[14px] group-hover:bg-slate-900 transition-colors duration-500" />
   <span className="relative bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
     Learn More
   </span>
 </button>
 
 // Glass Button
-<button className="px-6 py-3 backdrop-blur-xl bg-white/10 border border-white/20 text-white rounded-2xl font-medium hover:bg-white/20 transition-all duration-300">
+<button className="px-6 py-3 backdrop-blur-xl bg-white/10 border border-white/20 text-white rounded-2xl font-medium hover:bg-white/20 hover:border-violet-400/50 hover:shadow-[0_12px_30px_rgba(139,92,246,0.28)] hover:-translate-y-1 transition-all duration-500 ease-out">
   Explore
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Modern Gradient 风格的玻璃卡片",
-      code: `<div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition-all duration-300">
-  <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center mb-6">
+      code: `<div className="group backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:border-violet-400/50 hover:shadow-[0_20px_50px_rgba(167,139,250,0.18)] hover:-translate-y-2 hover:scale-[1.02] transition-all duration-500 ease-out cursor-pointer">
+  <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 ease-out">
     <Icon className="w-7 h-7 text-white" />
   </div>
   <h3 className="text-xl font-semibold text-white mb-3">Feature Title</h3>
-  <p className="text-white/70 leading-relaxed">
-    Stunning visual effects with modern gradient aesthetics.
+  <p className="text-white/70 leading-relaxed group-hover:text-white/85 transition-colors duration-500">
+    Stunning visual effects with modern gradient aesthetics and fluid color flow.
   </p>
 </div>`,
     },
@@ -151,7 +151,14 @@ COLOR COMBOS:
 TYPOGRAPHY:
 - Headings: White or gradient text
 - Body: text-white/70 or text-white/80
-- Font weight: font-medium to font-semibold`,
+- Font weight: font-medium to font-semibold
+
+## Animation & Interaction Rules
+
+- Gradient Flow: 渐变交互应包含色带位移（如 bg-[length:200%_auto] + hover:bg-right），避免静态变亮/变暗。
+- Neon Dispersion: hover 时彩色阴影扩散半径显著增加，强化未来感光晕。
+- Zero-Gravity Float: 卡片与按钮可轻微上浮并微缩放，建议 duration-500 + ease-out。
+- Luminous Borders: 半透明边框在 hover 时提亮到品牌色透明度，形成被内部光线点亮的边缘。`,
 
   examplePrompts: [
     {

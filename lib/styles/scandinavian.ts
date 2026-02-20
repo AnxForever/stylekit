@@ -33,6 +33,9 @@ export const scandinavian: DesignStyle = {
     "使用细腻的字重 font-extralight font-light",
     "极简的边框和分隔 border-[#d4cdc5]/40",
     "平滑缓慢的过渡动画 transition-colors duration-500",
+    "交互以亮度和色温微调为主，模拟羊毛和木材的温润触感",
+    "悬停提示优先使用边框或背景的细微变化，避免强阴影和明显位移",
+    "次级文本在 hover 时缓慢提亮，强化排版呼吸感",
   ],
 
   dontList: [
@@ -40,6 +43,8 @@ export const scandinavian: DesignStyle = {
     "禁止使用粗重的边框和阴影",
     "禁止密集排列元素，保持充分留白",
     "禁止使用装饰性字体或过大字号",
+    "禁止弹跳、回弹或快速 scale 动效",
+    "禁止使用强烈按压反馈（active 仅允许细微明暗变化）",
   ],
 
   components: {
@@ -47,29 +52,36 @@ export const scandinavian: DesignStyle = {
       name: "按钮",
       description: "北欧极简风按钮，含蓄优雅",
       code: `<button className="
-  px-6 py-3
+  px-10 py-3.5
   bg-[#3d3d3d] text-[#f5f0eb]
-  text-sm tracking-wider
+  font-light text-sm tracking-wide
   rounded-sm
   hover:bg-[#5a7a6b]
-  transition-colors duration-300
+  hover:brightness-95
+  active:bg-[#4a6358]
+  transition-all duration-700 ease-in-out
 ">
-  Continue
+  explore
 </button>`,
     },
     card: {
       name: "卡片",
       description: "北欧极简风卡片，自然简约",
       code: `<div className="
-  p-6
+  group p-10
   bg-white/60
   rounded-sm
-  border border-[#d4cdc5]/40
-  hover:border-[#5a7a6b]/30
-  transition-colors
+  border border-[#d4cdc5]/30
+  hover:border-[#d4cdc5]/80
+  hover:bg-[#fcfaf8]
+  transition-all duration-700 ease-in-out
 ">
-  <h3 className="text-lg font-light text-[#3d3d3d] mb-3">Title</h3>
-  <p className="text-sm text-[#a89279] leading-relaxed">Content</p>
+  <h3 className="text-xl font-light text-[#3d3d3d] mb-4 tracking-wide group-hover:text-[#5a7a6b] transition-colors duration-700">
+    Hygge Moment
+  </h3>
+  <p className="text-sm font-light text-[#a89279] leading-relaxed group-hover:text-[#8a7660] transition-colors duration-700">
+    Embracing the quiet comfort of simple things with balanced light, texture, and breath.
+  </p>
 </div>`,
     },
     input: {
@@ -107,5 +119,12 @@ export const scandinavian: DesignStyle = {
 - Generous whitespace and breathing room
 - Subtle borders and transitions
 - No bright colors, no heavy shadows
-- Lowercase text for a calm, approachable feel`,
+- Lowercase text for a calm, approachable feel
+
+## Animation & Interaction Rules
+
+- Warm Texture: 动效应传达天然材质触感，优先亮度/色温微调，避免弹跳与缩放。
+- Morning Fog: 过渡建议使用 duration-700 + ease-in-out，像晨雾散去般缓慢显现。
+- Silent Elevation: hover 提示优先边框和底色细微变化，阴影保持极轻或省略。
+- No Impact: active 状态仅做轻微明暗反馈，不做明显形变。`,
 };

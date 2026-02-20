@@ -51,40 +51,45 @@ Core principles:
       name: "Button",
       description: "Sharp-edged button with slash-mark corner cuts and dual-color neon glow",
       code: `<button className="
-  relative px-6 py-3
-  bg-[#dc2626] text-white
+  group relative overflow-hidden
+  px-6 py-3
+  bg-[#080818] text-[#dc2626]
   font-sans font-bold uppercase tracking-widest
   border border-[#dc2626]/60
-  shadow-[0_0_15px_rgba(220,38,38,0.5)]
-  hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]
-  hover:border-[#dc2626]
-  transition-all duration-300
-  before:content-[''] before:absolute before:top-0 before:right-0
-  before:w-3 before:h-3 before:border-t before:border-r before:border-[#a020f0]
-  after:content-[''] after:absolute after:bottom-0 after:left-0
-  after:w-3 after:h-3 after:border-b after:border-l after:border-[#a020f0]
+  shadow-[0_0_12px_rgba(220,38,38,0.35)]
+  hover:bg-[#dc2626] hover:text-white
+  hover:shadow-[0_0_18px_rgba(220,38,38,0.75)]
+  active:translate-x-[3px]
+  transition-all duration-100 ease-linear
 ">
-  Strike
+  <span className="absolute top-0 right-0 h-3 w-3 border-t border-r border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-2 group-hover:w-2 group-hover:border-white" />
+  <span className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-2 group-hover:w-2 group-hover:border-white" />
+  <span className="absolute left-[-35%] top-1/2 h-[1px] w-[30%] -translate-y-1/2 rotate-[-20deg] bg-white opacity-0 group-hover:opacity-100 group-hover:left-[110%] transition-all duration-100 ease-linear" />
+  <span className="relative z-10">Strike</span>
 </button>`,
     },
     card: {
       name: "Card",
       description: "Armor-plate styled card with angular borders and neon edge glow",
       code: `<div className="
-  relative p-8
+  group relative p-8
   bg-[#080818]
-  border border-[#dc2626]/30
-  shadow-[0_0_15px_rgba(220,38,38,0.2)]
-  hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
-  hover:border-[#dc2626]/60
-  transition-all duration-300
+  border border-[#dc2626]/35
+  shadow-[0_0_12px_rgba(220,38,38,0.2)]
+  hover:shadow-[0_0_20px_rgba(220,38,38,0.55)]
+  hover:border-[#dc2626]
+  transition-all duration-100 ease-linear
   [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]
 ">
-  <h3 className="text-2xl font-sans font-bold text-[#dc2626] uppercase tracking-wider mb-3">
+  <span className="absolute top-3 right-3 h-4 w-4 border-t border-r border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-3 group-hover:w-3 group-hover:border-white" />
+  <span className="absolute bottom-3 left-3 h-4 w-4 border-b border-l border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-3 group-hover:w-3 group-hover:border-white" />
+  <span className="absolute left-[-25%] top-1/2 h-[1px] w-[22%] -translate-y-1/2 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-100 group-hover:left-[105%] transition-all duration-100 ease-linear" />
+  <h3 className="text-2xl font-sans font-bold text-[#dc2626] uppercase tracking-wider mb-3 transition-colors duration-75 group-hover:text-white">
     BUSHIDO
   </h3>
-  <p className="text-white/50 font-sans">
-    The way of the warrior, illuminated by neon
+  <div className="h-[2px] w-12 bg-[#a020f0] mb-4 transition-all duration-100 ease-linear group-hover:w-24 group-hover:bg-white" />
+  <p className="text-white/55 font-sans">
+    The way of the warrior, illuminated by precise neon steel.
   </p>
 </div>`,
     },
@@ -251,7 +256,14 @@ Primary:
 - Torii gate shaped frames (double-beam top border)
 - Dual-color glow effect (stroke color != glow color)
 - Armor-plate angular card clip-paths
-- Calligraphy brush-stroke neon dividers`,
+- Calligraphy brush-stroke neon dividers
+
+## Animation & Interaction Rules
+
+- Katana Slash: interactions must resolve in 75ms to 100ms, with slash-line sweeps that feel like a single blade pass.
+- Target Lock: corner markers should brighten and contract on hover to simulate lock-on feedback.
+- Lethal Glow: glow stays concentrated and high-saturation (red/purple), avoiding broad soft haze.
+- Instant Parry: active state should snap with slight X-axis jolt or immediate color inversion, never soft scaling.`,
 
   examplePrompts: [
     {

@@ -53,35 +53,43 @@ export const koreanMinimal: DesignStyle = {
   components: {
     button: {
       name: "按钮",
-      description: "韩式极简风格按钮，克制而精致",
+      description: "韩式极简风格按钮，强调慢节奏呼吸感与低对比反馈",
       code: `<button className="
-  px-8 py-3
-  bg-[#3d4a5c] text-[#faf9f7]
-  font-normal tracking-wide
+  px-10 py-3.5
+  bg-[#faf9f7] text-[#3d4a5c]
+  font-light tracking-wide
   rounded-2xl
-  shadow-sm
-  hover:shadow-md hover:bg-[#3d4a5c]/90
-  transition-all duration-300
+  border border-[#3d4a5c]/10
+  shadow-[0_4px_15px_rgba(232,212,184,0.18)]
+  hover:-translate-y-0.5
+  hover:text-[#2f3946]
+  hover:shadow-[0_16px_36px_rgba(168,197,184,0.18)]
+  active:bg-[#f3f0ea]
+  transition-all duration-700 ease-in-out
 ">
-  Continue
+  Discover
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "韩式极简风格卡片，大量留白与细线边框",
+      description: "韩式极简风格卡片，微距上浮与奶油化暖阴影过渡",
       code: `<div className="
+  group
   p-10
   bg-[#faf9f7]
   rounded-2xl
-  border border-[#3d4a5c]/8
-  shadow-sm
+  border border-[#3d4a5c]/10
+  shadow-[0_8px_24px_rgba(232,212,184,0.14)]
+  hover:-translate-y-0.5
+  hover:shadow-[0_24px_50px_rgba(212,165,165,0.16)]
+  transition-all duration-1000 ease-in-out
 ">
-  <div className="w-8 h-[2px] bg-[#d4a5a5] mb-6" />
-  <h3 className="text-xl font-normal text-[#3d4a5c] mb-4 tracking-wide">
+  <div className="w-8 h-px bg-[#d4a5a5]/80 mb-6" />
+  <h3 className="text-xl font-light text-[#3d4a5c] mb-4 tracking-wide group-hover:text-[#2f3946] transition-colors duration-700">
     Gentle Touch
   </h3>
-  <p className="text-sm text-[#3d4a5c]/50 leading-relaxed">
-    Where simplicity speaks louder than complexity
+  <p className="text-sm text-[#3d4a5c]/55 leading-relaxed group-hover:text-[#3d4a5c]/70 transition-colors duration-700">
+    A slow and delicate interface rhythm, where warmth appears in quiet gradients.
   </p>
 </div>`,
     },
@@ -227,7 +235,14 @@ Primary:
 - Less is always more
 - Subtle is always better than obvious
 - Every element must have room to breathe
-- Decorations should be minimal (thin lines, small dots)`,
+- Decorations should be minimal (thin lines, small dots)
+
+## Animation & Interaction Rules
+
+- Lazy Breathing: 过渡建议使用 duration-700 以上与 ease-in-out，保持慵懒平稳，不做短促反馈。
+- Micro Lift: hover 位移保持在 -translate-y-0.5 量级，通过超浅暖色阴影扩散表达层次。
+- Muted Whisper: 文字与边框只做同色系微差过渡，避免高对比跳色破坏安静氛围。
+- Soft Press: active 反馈优先使用背景轻微加深，不依赖明显缩放与弹跳。`,
 
   examplePrompts: [
     {

@@ -53,7 +53,8 @@ export const fPatternLayout: DesignStyle = {
   rounded-lg
   font-medium
   hover:bg-[#c1121f]
-  transition-colors
+  active:scale-[0.98]
+  transition-all duration-150 ease-out
 ">
   Read More
 </button>`,
@@ -61,16 +62,18 @@ export const fPatternLayout: DesignStyle = {
     card: {
       name: "卡片",
       description: "F型布局中的内容卡片",
-      code: `<article className="
-  flex gap-6 p-6
+      code: `<article className="group flex gap-6 p-6
   bg-white
   border-b border-gray-100
-  hover:bg-gray-50
-  transition-colors
+  hover:bg-gray-50/70
+  hover:shadow-sm
+  transition-all duration-200
+  cursor-pointer
+  relative
 ">
-  <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0" />
+  <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 group-hover:contrast-125 group-hover:brightness-95 transition-all duration-200" />
   <div className="flex-1 min-w-0">
-    <h3 className="text-lg font-semibold text-[#1a1a2e] mb-1 line-clamp-1">
+    <h3 className="text-lg font-semibold text-[#1a1a2e] mb-1 line-clamp-1 group-hover:text-[#e63946] group-hover:translate-x-1 group-hover:underline underline-offset-4 decoration-1 transition-all duration-200">
       Article Title
     </h3>
     <p className="text-gray-600 text-sm line-clamp-2 mb-2">
@@ -255,7 +258,14 @@ export const fPatternLayout: DesignStyle = {
 2. 有清晰的标题层级
 3. 文字左对齐
 4. 内容可快速扫描
-5. 响应式适配完善`,
+5. 响应式适配完善
+
+## Animation & Interaction Rules
+
+- Eye-Tracking Guides: 列表项 hover 时，主标题可轻微右移（如 \`translate-x-1\`）或下划线浮现，帮助扫描阶段快速锁定。
+- Fast Feedback: 资讯类交互建议 \`duration-150\` 到 \`duration-200\`，避免冗长过渡打断阅读。
+- Contrast Pop: 当前 hover 项可通过轻微阴影或边框对比强化，从信息流中短暂剥离。
+- Image Focus: 缩略图 hover 时可提升对比度或亮度，作为可点击反馈，但幅度必须克制。`,
 
   examplePrompts: [
     {

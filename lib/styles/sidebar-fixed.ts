@@ -34,6 +34,9 @@ export const sidebarFixed: DesignStyle = {
     "侧边栏宽度统一 w-64 (256px) 或 w-72 (288px)",
     "当前页面在侧边栏中高亮显示",
     "侧边栏可以包含品牌 logo、导航、用户信息",
+    "导航项交互保持快速克制（duration-150），优先颜色和轻微图标位移反馈",
+    "当前激活项使用稳定锚点（如左侧强调线）而非浮动动画",
+    "主内容卡片 hover 仅允许微弱抬升和轻量阴影扩散",
   ],
 
   dontList: [
@@ -42,6 +45,8 @@ export const sidebarFixed: DesignStyle = {
     "禁止忽略当前页面状态指示",
     "禁止导航层级过深难以操作",
     "禁止侧边栏内容溢出无滚动",
+    "禁止侧边栏菜单使用弹跳、旋转等花哨动画",
+    "禁止激活项缺少清晰视觉锚点",
   ],
 
   components: {
@@ -74,6 +79,9 @@ export const sidebarFixed: DesignStyle = {
   rounded-xl
   border border-zinc-200
   shadow-sm
+  hover:-translate-y-0.5
+  hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]
+  transition-all duration-150 ease-out
 ">
   <h3 className="text-lg font-semibold text-zinc-900 mb-2">
     Card Title
@@ -108,47 +116,27 @@ export const sidebarFixed: DesignStyle = {
     nav: {
       name: "侧边导航",
       description: "侧边栏的导航菜单",
-      code: `<nav className="space-y-1">
+      code: `<nav className="space-y-1 w-64 p-4 border-r border-zinc-200 h-screen bg-white">
   <a href="#" className="
-    flex items-center gap-3 px-4 py-3
-    bg-blue-50 text-blue-600
-    rounded-lg font-medium
+    group relative flex items-center gap-3 px-3 py-2.5
+    bg-blue-50 text-blue-700 rounded-lg font-medium
+    transition-colors duration-150
   ">
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-l-lg" />
+    <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
     </svg>
     Dashboard
   </a>
   <a href="#" className="
-    flex items-center gap-3 px-4 py-3
+    group flex items-center gap-3 px-3 py-2.5
     text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900
-    rounded-lg transition-colors
+    rounded-lg transition-colors duration-150
   ">
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-5 h-5 ml-1 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
     </svg>
     Analytics
-  </a>
-  <a href="#" className="
-    flex items-center gap-3 px-4 py-3
-    text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900
-    rounded-lg transition-colors
-  ">
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
-    Users
-  </a>
-  <a href="#" className="
-    flex items-center gap-3 px-4 py-3
-    text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900
-    rounded-lg transition-colors
-  ">
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-    Settings
   </a>
 </nav>`,
     },
@@ -385,7 +373,14 @@ After generating code, verify:
 2. Main content has correct margin
 3. Mobile has hamburger menu
 4. Current page is highlighted
-5. Sidebar scrolls if content overflows`,
+5. Sidebar scrolls if content overflows
+
+## Animation & Interaction Rules
+
+- Frictionless Utility: 高交互区统一使用 duration-150，避免花哨动效打断效率。
+- Magnetic Icon Shift: hover 时 icon 轻微右移（translate-x-0.5），引导视线进入主内容区。
+- Solid Active State: 当前项保持稳定锚点（左侧强调线或加粗边界），避免漂浮感。
+- Content Lift: 主区卡片 hover 仅允许 -translate-y-0.5 和轻量阴影，保证阅读稳定。`,
 
   examplePrompts: [
     {

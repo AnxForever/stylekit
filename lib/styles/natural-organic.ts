@@ -49,30 +49,39 @@ export const naturalOrganic: DesignStyle = {
       name: "按钮",
       description: "Natural Organic 风格的按钮",
       code: `// Primary Button
-<button className="px-6 py-3 bg-stone-800 text-stone-50 rounded-full hover:bg-stone-700 transition-colors duration-300 font-medium">
-  Shop Now
+<button
+  className="px-10 py-4 bg-stone-800 text-stone-50 hover:bg-[#8b9d77] hover:text-white active:scale-95 transition-all duration-500 ease-in-out font-serif tracking-wide"
+  style={{ borderRadius: "30px 40px 40px 30px / 40px 30px 40px 40px" }}
+>
+  Shop Nature
 </button>
 
 // Secondary Button
-<button className="px-6 py-3 bg-transparent text-stone-800 border border-stone-300 rounded-full hover:bg-stone-100 hover:border-stone-400 transition-all duration-300 font-medium">
+<button className="px-6 py-3 bg-transparent text-stone-800 border border-stone-300 rounded-[28px] hover:bg-stone-100 hover:border-stone-400 transition-all duration-500 ease-in-out font-medium">
   Learn More
 </button>
 
 // Earthy Accent
-<button className="px-6 py-3 bg-[#8b9d77] text-white rounded-full hover:bg-[#7a8c66] transition-colors duration-300 font-medium">
+<button className="px-6 py-3 bg-[#8b9d77] text-white rounded-[26px] hover:bg-[#7a8c66] transition-colors duration-500 ease-in-out font-medium">
   Subscribe
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Natural Organic 风格的卡片",
-      code: `<div className="bg-[#faf6f1] rounded-[2rem] p-8 border border-stone-200 hover:border-stone-300 transition-colors duration-300">
-  <div className="w-16 h-16 bg-[#8b9d77]/20 rounded-full flex items-center justify-center mb-6">
+      code: `<div
+  className="group bg-[#faf6f1] p-10 border border-stone-200 hover:bg-[#f2ece4] hover:border-stone-300 hover:translate-y-0.5 transition-all duration-700 ease-in-out"
+  style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
+>
+  <div
+    className="w-16 h-16 bg-[#8b9d77]/20 flex items-center justify-center mb-6 group-hover:bg-[#8b9d77]/30 group-hover:scale-105 transition-all duration-700 ease-in-out"
+    style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
+  >
     <Leaf className="w-8 h-8 text-[#8b9d77]" />
   </div>
-  <h3 className="text-xl font-serif text-stone-800 mb-3">Organic Ingredients</h3>
+  <h3 className="text-2xl font-serif text-stone-800 mb-4 group-hover:text-[#6a7a58] transition-colors duration-500">Organic Roots</h3>
   <p className="text-stone-600 leading-relaxed">
-    Sourced from sustainable farms that care for the earth.
+    Sourced from sustainable earth and shaped by slow natural rhythms.
   </p>
 </div>`,
     },
@@ -112,9 +121,9 @@ TYPE: Warm, earthy, nature-inspired design
 MUST USE:
 - Earth tones: stone, amber, olive, sage colors
 - Warm background: bg-[#faf6f1], bg-amber-50
-- Organic shapes: rounded-full, rounded-[2rem], blob shapes
+- Organic shapes: rounded-[2rem] and blob-style irregular radii
 - Serif fonts for headings: font-serif
-- Soft transitions: transition-colors duration-300
+- Soft transitions: duration-300 to duration-700 with ease-in-out
 - Natural imagery and icons (leaves, plants, earth)
 
 MUST AVOID:
@@ -134,7 +143,14 @@ COLOR PALETTE:
 TYPOGRAPHY:
 - Headings: font-serif, tracking-tight
 - Body: font-sans, stone-600
-- Comfortable line-height`,
+- Comfortable line-height
+
+## Animation & Interaction Rules
+
+- Organic Morphing: 使用不规则圆角（blob）并在交互中缓慢变化，避免工业化标准圆角。
+- Soft Earth Press: hover 可轻微下沉（translate-y-0.5）并加深土色层次，不做漂浮弹跳。
+- Botanical Slowness: 动画节奏建议 duration-500 以上 + ease-in-out，模拟自然生长速度。
+- Verdant Tint: 交互时文字/图标向深绿色缓慢过渡，表达植物被光照唤醒的生命感。`,
 
   examplePrompts: [
     {

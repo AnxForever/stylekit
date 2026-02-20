@@ -53,8 +53,9 @@ export const splitScreen: DesignStyle = {
     px-8 py-4
     bg-black text-white
     font-semibold
-    hover:bg-zinc-800
-    transition-colors
+    border-2 border-black
+    hover:bg-white hover:text-black
+    transition-colors duration-150 ease-out
   ">
     Left Option
   </button>
@@ -63,8 +64,8 @@ export const splitScreen: DesignStyle = {
     bg-white text-black
     border-2 border-black
     font-semibold
-    hover:bg-zinc-100
-    transition-colors
+    hover:bg-black hover:text-white
+    transition-colors duration-150 ease-out
   ">
     Right Option
   </button>
@@ -73,23 +74,34 @@ export const splitScreen: DesignStyle = {
     card: {
       name: "分屏面板",
       description: "分屏布局中的内容面板",
-      code: `<div className="
-  h-full
-  p-8 lg:p-16
-  flex flex-col justify-center
-">
-  <span className="text-sm uppercase tracking-widest text-zinc-500 mb-4">
-    Category
-  </span>
-  <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-    Panel Title
-  </h2>
-  <p className="text-lg text-zinc-600 mb-8 max-w-md">
-    Detailed description text that explains the content of this panel section.
-  </p>
-  <button className="self-start px-8 py-4 bg-black text-white font-semibold">
-    Learn More
-  </button>
+      code: `<div className="grid grid-cols-1 lg:grid-cols-2 min-h-[60vh] overflow-hidden">
+  <article className="peer/left group relative min-h-[50vh] lg:min-h-[60vh] bg-black text-white p-8 lg:p-16 flex flex-col justify-center transition-all duration-500 ease-out hover:flex-[1.1]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.14),transparent_55%)] scale-100 group-hover:scale-105 transition-transform duration-500 ease-out" />
+    <div className="relative z-10">
+      <span className="text-sm uppercase tracking-[0.22em] text-white/60 mb-4 block">Night Edit</span>
+      <h2 className="text-4xl lg:text-5xl font-bold mb-6">Dark Mode</h2>
+      <p className="text-lg text-white/70 mb-8 max-w-md">
+        High-contrast visual treatment for dramatic storytelling.
+      </p>
+      <button className="self-start px-8 py-4 border-2 border-white text-white font-semibold hover:bg-white hover:text-black transition-colors duration-150 ease-out">
+        Select Dark
+      </button>
+    </div>
+  </article>
+
+  <article className="peer/right relative min-h-[50vh] lg:min-h-[60vh] bg-white text-black p-8 lg:p-16 flex flex-col justify-center transition-all duration-500 ease-out peer-hover/left:opacity-55 hover:opacity-100 hover:flex-[1.1]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,0,0,0.08),transparent_55%)] scale-100 hover:scale-105 transition-transform duration-500 ease-out" />
+    <div className="relative z-10">
+      <span className="text-sm uppercase tracking-[0.22em] text-zinc-500 mb-4 block">Day Edit</span>
+      <h2 className="text-4xl lg:text-5xl font-bold mb-6">Light Mode</h2>
+      <p className="text-lg text-zinc-600 mb-8 max-w-md">
+        Editorial clarity for long-form reading and daylight ergonomics.
+      </p>
+      <button className="self-start px-8 py-4 border-2 border-black bg-black text-white font-semibold hover:bg-white hover:text-black transition-colors duration-150 ease-out">
+        Select Light
+      </button>
+    </div>
+  </article>
 </div>`,
     },
     input: {
@@ -317,7 +329,14 @@ After generating code, verify:
 2. Panels have contrasting content
 3. Visual balance maintained
 4. Reading order makes sense
-5. Transitions are smooth`,
+5. Transitions are smooth
+
+## Animation & Interaction Rules
+
+- Counter-Weight Focus: hover one panel while the opposite panel gently desaturates or fades in prominence.
+- Sharp Editorial Cuts: button hover uses direct black-white inversion with short duration and no gradient easing tricks.
+- Screen-Spanning Lines: center divider or split seam can briefly intensify on focus change, but motion stays minimal.
+- Static Text: descriptive text blocks must stay position-stable; avoid translate or scale on body copy.`,
 
   examplePrompts: [
     {

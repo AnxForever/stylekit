@@ -51,49 +51,48 @@ export const neoBrutalistPlayful: DesignStyle = {
     button: {
       name: "按钮",
       description: "俏皮版 Brutal 按钮",
-      code: `{/* 带旋转的主按钮 */}
-<button className="
+      code: `<button className="
+  group relative
   bg-[#ff6b6b] text-white font-black
   px-6 py-3 md:px-8 md:py-4
   border-4 border-black
-  shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]
-  hover:shadow-none
-  hover:translate-x-[3px] hover:translate-y-[3px]
-  hover:scale-105
-  transition-all
-  rotate-[-1deg]
+  shadow-[6px_6px_0px_0px_rgba(78,205,196,1)]
+  hover:shadow-[8px_8px_0px_0px_rgba(255,230,109,1)]
+  hover:-translate-y-1 hover:translate-x-[1px]
+  rotate-[-2deg] hover:rotate-[3deg]
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none active:scale-95 active:rotate-0
+  transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
   text-base md:text-lg
 ">
-  点我呀
-</button>
-
-{/* 多彩按钮组 */}
-<div className="flex gap-4">
-  <button className="bg-[#4ecdc4] ...">Go!</button>
-  <button className="bg-[#ffe66d] text-black ...">Yeah!</button>
-</div>`,
+  <span className="absolute -top-2 -right-2 h-3 w-3 border-2 border-black bg-[#ffe66d] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-1 group-hover:-translate-y-1" />
+  <span className="absolute -bottom-2 -left-2 h-3 w-3 border-2 border-black bg-[#4ecdc4] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-x-1 group-hover:translate-y-1" />
+  <span className="relative z-10">点我呀</span>
+</button>`,
     },
     card: {
       name: "卡片",
       description: "带旋转和彩色阴影的卡片",
       code: `<div className="
+  group
   bg-white
   border-4 border-black
   shadow-[8px_8px_0px_0px_rgba(78,205,196,1)]
   hover:shadow-[12px_12px_0px_0px_rgba(255,107,107,1)]
-  hover:-translate-y-2 hover:scale-[1.02]
-  transition-all duration-300
+  hover:-translate-y-2 hover:rotate-[2deg]
+  transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
   p-6 md:p-8
-  rotate-[1deg]
+  rotate-[-1deg]
+  cursor-pointer
 ">
   <div className="mb-4 flex items-center gap-2">
-    <div className="h-4 w-4 bg-[#ff6b6b] border-2 border-black" />
-    <div className="h-4 w-4 bg-[#4ecdc4] border-2 border-black" />
-    <div className="h-4 w-4 bg-[#ffe66d] border-2 border-black" />
+    <div className="h-4 w-4 bg-[#ff6b6b] border-2 border-black transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-125" />
+    <div className="h-4 w-4 bg-[#4ecdc4] border-2 border-black transition-transform duration-300 delay-75 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2" />
+    <div className="h-4 w-4 bg-[#ffe66d] border-2 border-black transition-transform duration-300 delay-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-45" />
   </div>
-  <h3 className="font-black text-xl md:text-2xl mb-2">有趣的卡片</h3>
-  <p className="font-mono text-sm md:text-base text-gray-700">
-    带有轻微旋转和彩色阴影
+  <h3 className="font-black text-xl md:text-2xl mb-2 group-hover:text-[#ff6b6b] transition-colors duration-200">有趣的卡片</h3>
+  <p className="font-mono text-sm md:text-base text-black/80">
+    带有弹簧感位移与彩色阴影跳跃的俏皮交互
   </p>
 </div>`,
     },
@@ -290,6 +289,13 @@ h1, h2, h3, h4, h5, h6 {
 - hover:scale-105 放大
 - hover:-translate-y-2 上浮
 - transition-all duration-300
+
+## Animation & Interaction Rules
+
+- Toy Spring: 通过 duration-300 + ease-[cubic-bezier(0.34,1.56,0.64,1)] 让位移和旋转带有弹簧回弹感，区别于原版的硬切反馈。
+- Tilt Exaggeration: 初始轻微倾斜在 hover 时切换到反向更大角度（仍控制在 3 度内），保持俏皮但可控。
+- Color Ping-Pong: 硬边阴影在青、粉、黄之间跳跃切换，维持野兽派结构同时增强玩具感。
+- Joyful Press: :active 需要“压扁”反馈：阴影归零 + 等量位移 + 轻微缩放 (active:scale-95)。
 
 ## 禁止
 

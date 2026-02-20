@@ -54,41 +54,42 @@ export const neonTokyo: DesignStyle = {
     button: {
       name: "按钮",
       description: "霓虹东京风格的发光按钮",
-      code: `// Neon Pink
-<button className="px-6 py-3 bg-transparent border-2 border-[#ff1493] text-[#ff1493] font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(255,20,147,0.4),inset_0_0_15px_rgba(255,20,147,0.1)] hover:shadow-[0_0_30px_rgba(255,20,147,0.6),inset_0_0_20px_rgba(255,20,147,0.2)] hover:bg-[#ff1493]/10 transition-all duration-300 rounded-sm">
+      code: `<button className="
+  group relative
+  px-6 py-3
+  bg-[#0a0a1a]/80 backdrop-blur-md
+  border-2 border-[#ff1493]
+  text-[#ff1493] font-bold uppercase tracking-wider
+  shadow-[0_0_15px_rgba(255,20,147,0.4),0_0_20px_rgba(0,240,255,0.15),inset_0_0_12px_rgba(255,20,147,0.08)]
+  hover:text-white hover:border-[#00f0ff] hover:bg-[#ff1493]/10
+  hover:shadow-[0_0_28px_rgba(255,20,147,0.7),0_0_36px_rgba(0,240,255,0.45),0_0_44px_rgba(255,107,0,0.3)]
+  active:bg-[#ff1493]/20
+  transition-all duration-500
+  rounded-sm
+">
   Enter
-</button>
-
-// Cyan Neon
-<button className="px-6 py-3 bg-[#00f0ff] text-[#0a0a1a] font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.5)] hover:shadow-[0_0_35px_rgba(0,240,255,0.7)] transition-all duration-300 rounded-sm">
-  Explore
-</button>
-
-// Warm Neon
-<button className="px-6 py-3 bg-transparent border-2 border-[#ff6b00] text-[#ff6b00] font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(255,107,0,0.4)] hover:shadow-[0_0_30px_rgba(255,107,0,0.6)] hover:bg-[#ff6b00]/10 transition-all duration-300 rounded-sm">
-  Discover
 </button>`,
     },
     card: {
       name: "卡片",
       description: "霓虹东京风格的街景卡片",
-      code: `<div className="bg-[#0a0a1a]/80 backdrop-blur-md border border-[#ff1493]/30 rounded-sm p-6 shadow-[0_0_15px_rgba(255,20,147,0.15)] hover:shadow-[0_0_25px_rgba(255,20,147,0.25)] hover:border-[#ff1493]/50 transition-all duration-300 relative overflow-hidden">
-  {/* Neon reflection overlay */}
-  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#ff1493]/5 to-transparent pointer-events-none" />
+      code: `<div className="group relative overflow-hidden bg-[#0a0a1a]/80 backdrop-blur-md border border-[#ff1493]/30 rounded-sm p-6 shadow-[0_0_15px_rgba(255,20,147,0.15)] hover:border-[#ff1493]/60 hover:shadow-[0_0_28px_rgba(255,20,147,0.35),0_0_44px_rgba(0,240,255,0.18)] transition-all duration-500">
+  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#ff1493]/10 via-[#00f0ff]/0 to-transparent pointer-events-none transition-all duration-500 group-hover:from-[#ff1493]/30 group-hover:via-[#00f0ff]/15" />
+  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#ff6b00]/10 to-transparent pointer-events-none opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
 
   <div className="relative">
     <div className="flex items-center justify-between mb-4">
-      <span className="text-[#00f0ff] text-xs font-bold uppercase tracking-widest">Kabukicho</span>
+      <span className="text-[#00f0ff] text-xs font-bold uppercase tracking-widest transition-colors duration-300 group-hover:text-white">Kabukicho</span>
       <div className="flex gap-1">
-        <div className="w-1.5 h-1.5 bg-[#ff1493] shadow-[0_0_6px_rgba(255,20,147,0.8)]" />
-        <div className="w-1.5 h-1.5 bg-[#00f0ff] shadow-[0_0_6px_rgba(0,240,255,0.8)]" />
-        <div className="w-1.5 h-1.5 bg-[#ff6b00] shadow-[0_0_6px_rgba(255,107,0,0.8)]" />
+        <div className="w-1.5 h-1.5 bg-[#ff1493] shadow-[0_0_6px_rgba(255,20,147,0.8)] transition-all duration-300 group-hover:scale-150 group-hover:shadow-[0_0_14px_rgba(255,20,147,1)]" />
+        <div className="w-1.5 h-1.5 bg-[#00f0ff] shadow-[0_0_6px_rgba(0,240,255,0.8)] transition-all duration-300 delay-75 group-hover:scale-150 group-hover:shadow-[0_0_14px_rgba(0,240,255,1)]" />
+        <div className="w-1.5 h-1.5 bg-[#ff6b00] shadow-[0_0_6px_rgba(255,107,0,0.8)] transition-all duration-300 delay-150 group-hover:scale-150 group-hover:shadow-[0_0_14px_rgba(255,107,0,1)]" />
       </div>
     </div>
-    <h3 className="text-white text-xl font-bold mb-3" style={{textShadow: "0 0 10px rgba(255,20,147,0.4)"}}>
+    <h3 className="text-white text-xl font-bold mb-3 animate-[neon-flicker_3s_linear_infinite] transition-all duration-300 group-hover:[text-shadow:0_0_16px_rgba(255,20,147,0.8),0_0_28px_rgba(0,240,255,0.35)]">
       Midnight Alley
     </h3>
-    <p className="text-gray-400 leading-relaxed text-sm">
+    <p className="text-gray-400 leading-relaxed text-sm transition-colors duration-300 group-hover:text-gray-200">
       Neon signs flicker above rain-slicked streets, casting liquid color across the pavement.
     </p>
   </div>
@@ -184,7 +185,14 @@ DIFFERENCE FROM CYBERPUNK-NEON:
 - Warmer, more organic feel
 - Multi-color neon mixing (not cyan-dominant)
 - Street photography aesthetic, not sci-fi
-- Wet reflections, not scan lines`,
+- Wet reflections, not scan lines
+
+## Animation & Interaction Rules
+
+- Rain-Slicked Reflections: bottom reflection gradients should intensify on hover with higher opacity and mixed-color refraction.
+- Signboard Flicker: primary neon headings can use subtle irregular flicker to mimic aging street signage.
+- Bleeding Glows: hover state should expand pink/cyan/orange glow layers simultaneously so light bleeds at the edges.
+- Damp Atmosphere: transitions stay smooth (duration-300 to 500) to preserve wet-night ambience rather than sharp arcade motion.`,
 
   examplePrompts: [
     {

@@ -46,29 +46,44 @@ export const mecha: DesignStyle = {
       name: "按钮",
       description: "机甲风格按钮",
       code: `<button className="
-  px-6 py-3
-  bg-[#fbbf24] text-[#1a2744]
+  group relative overflow-hidden px-10 py-3
+  bg-[#2b2b2b] text-[#fbbf24]
   font-mono font-bold uppercase tracking-widest
   rounded-none
-  border-2 border-[#1a2744]
+  border-2 border-[#fbbf24]/60
   shadow-[4px_4px_0px_#1a2744]
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  hover:shadow-[2px_2px_0px_#1a2744]
-  transition-all duration-200
-">
-  LAUNCH
+  hover:bg-[#fbbf24] hover:text-[#1a2744]
+  hover:border-[#fbbf24]
+  active:translate-y-[2px] active:shadow-[2px_2px_0px_#1a2744]
+  transition-all duration-100 ease-linear
+" style={{ clipPath: "polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)" }}>
+  <span
+    className="pointer-events-none absolute inset-0 opacity-0 transition-none group-hover:opacity-20"
+    style={{
+      backgroundImage:
+        "repeating-linear-gradient(45deg,#000 0px,#000 6px,transparent 6px,transparent 12px)",
+    }}
+  />
+  <span className="relative z-10">ENGAGE_SYSTEM</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "机甲风格卡片",
       code: `<div className="
+  group
+  relative overflow-hidden
   p-8
   bg-[#1a2744]
   rounded-none
   border-2 border-[#4a5c3a]
+  border-l-4 border-l-[#fbbf24]
   shadow-[4px_4px_0px_rgba(251,191,36,0.3)]
-">
+  hover:border-l-[10px]
+  transition-all duration-150 ease-linear
+" style={{ clipPath: "polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)" }}>
+  <div className="absolute top-2 right-2 h-8 w-8 border-t-2 border-r-2 border-[#fbbf24]/40 transition-all duration-150 ease-linear group-hover:translate-x-[-2px] group-hover:translate-y-[2px] group-hover:border-[#fbbf24]" />
+
   <div className="flex items-center gap-2 mb-3">
     <div className="w-3 h-3 bg-[#fbbf24]"></div>
     <span className="text-xs font-mono text-[#4a5c3a] uppercase tracking-widest">UNIT-01</span>
@@ -79,6 +94,10 @@ export const mecha: DesignStyle = {
   <p className="text-[#4a5c3a]/80 font-mono text-sm">
     Status: Operational
   </p>
+  <div className="mt-5 flex items-center justify-end gap-2">
+    <span className="text-[10px] font-mono uppercase tracking-widest text-[#fbbf24]">Active</span>
+    <div className="h-2 w-2 bg-[#ef4444] group-hover:animate-pulse" />
+  </div>
 </div>`,
     },
     input: {
@@ -238,7 +257,14 @@ Primary:
 - Warning stripe patterns
 - Status indicators with square dots
 - Technical annotations and unit numbers
-- Panel borders with offset outlines`,
+- Panel borders with offset outlines
+
+## Animation & Interaction Rules
+
+- Hydraulic Rigidness: 交互应使用 duration-100~150 + ease-linear 的机械硬切，不使用柔软弹簧缓动。
+- Armor Shifting: hover 可通过 clip-path 缺角变化与边框厚度突变，模拟装甲板咬合滑动。
+- Hazard Flashing: 关键控件在 hover 需要出现警告色脉冲（红/黄）与斜纹提示，强化工业警戒感。
+- Tactical Lock-on: active 使用干脆的直线位移与阴影回落，像扣动重型扳机后的锁定反馈。`,
 
   examplePrompts: [
     {

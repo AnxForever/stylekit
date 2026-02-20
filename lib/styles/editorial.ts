@@ -53,8 +53,20 @@ export const editorial: DesignStyle = {
   components: {
     button: {
       name: "按钮",
-      description: "Editorial 风格的按钮，使用 hover-underline 动画下划线",
-      code: `{/* 主要按钮：下划线动画 */}
+      description: "Editorial 风格按钮，强调黑白反转与细线提示",
+      code: `{/* Contrast button */}
+<button className="
+  px-8 py-4
+  bg-[#1C1C1C] text-[#F9F8F6]
+  font-sans text-xs font-medium tracking-[0.2em] uppercase
+  border border-[#1C1C1C]
+  hover:bg-[#F9F8F6] hover:text-[#1C1C1C]
+  transition-colors duration-200
+">
+  Read Story
+</button>
+
+{/* Text link with underline reveal */}
 <button className="
   font-sans text-xs tracking-[0.2em] uppercase
   relative pb-1
@@ -66,41 +78,33 @@ export const editorial: DesignStyle = {
   after:ease-[cubic-bezier(0.16,1,0.3,1)]
   flex items-center gap-4 group
 ">
-  Submit Inquiry
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-2 transition-transform">
-    <path d="M5 12h14M12 5l7 7-7 7"/>
-  </svg>
-</button>
-
-{/* 次要按钮：纯文字 */}
-<span className="
-  font-sans text-xs tracking-[0.2em] uppercase
-  text-[#1C1C1C]/60 cursor-pointer
-  hover:text-[#1C1C1C] transition-colors
-">
   View All
-</span>`,
+</button>
+`,
     },
     card: {
       name: "卡片",
-      description: "作品列表项，hover 时标题变斜体并浮现预览图",
+      description: "杂志内容卡片，慢速画幅放大与细线延展",
       code: `<div className="
-  group relative flex flex-col md:flex-row
-  justify-between items-start md:items-center
-  py-10 md:py-16
-  border-b border-[#1C1C1C]/10
-  hover:bg-[#1C1C1C]/[0.02]
-  transition-colors px-4 -mx-4 cursor-pointer
+  group border-t border-[#1C1C1C]/10 pt-6
+  hover:border-[#1C1C1C]/40
+  transition-colors duration-500
+  cursor-pointer
 ">
-  <div className="flex items-center gap-8 md:gap-16 z-10">
-    <span className="font-sans text-xs tracking-widest text-[#1C1C1C]/40">01</span>
-    <h3 className="font-serif text-4xl md:text-6xl group-hover:italic transition-all duration-500">
-      The Modernist
-    </h3>
+  <div className="aspect-[4/5] bg-[#1C1C1C]/5 overflow-hidden mb-6">
+    <div className="w-full h-full bg-[#1C1C1C]/10 group-hover:scale-105 transition-transform duration-1000 ease-out" />
   </div>
-  <span className="font-sans text-xs tracking-[0.2em] uppercase mt-6 md:mt-0 z-10 text-[#1C1C1C]/60">
-    Art Direction
-  </span>
+  <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#1C1C1C]/40 mb-3 group-hover:text-[#1C1C1C]/70 transition-colors duration-300">
+    Architecture
+  </p>
+  <h3 className="font-serif text-3xl tracking-tighter leading-snug mb-4">
+    <span className="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-current group-hover:after:w-full after:transition-[width] after:duration-500">
+      The Silent Brutalism
+    </span>
+  </h3>
+  <p className="font-sans text-sm text-[#1C1C1C]/60 leading-relaxed">
+    Exploring the raw concrete monoliths that define the modern urban landscape.
+  </p>
 </div>`,
     },
     input: {
@@ -285,7 +289,14 @@ h1, h2, h3, h4, h5, h6 {
 - Bold font weights on headings (font-bold, font-semibold)
 - Pure black #000 or #0a0a0a
 - Pure white #fff or #fafafa as background
-- Decorative geometric shapes or icons`,
+- Decorative geometric shapes or icons
+
+## Animation & Interaction Rules
+
+- Cinematic Image Zoom: 配图区域应使用容器裁切 + 子元素慢速放大（如 \`group-hover:scale-105 duration-1000\`），保持时装大片式凝视感。
+- Brutal Contrast: 交互对比应果断，但仅在既有调色盘中反转（\`#1C1C1C\` 与 \`#F9F8F6\`），禁止回退到纯黑纯白。
+- Text Restraint: 文字本体不位移；hover 提示优先使用细线延展、字色加深等排版型反馈。
+- Layout Lines: 分隔线 hover 时可从 \`/10\` 加深至 \`/40\`，用于强调网格骨架，不添加阴影和炫技动画。`,
 
   examplePrompts: [
     {

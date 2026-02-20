@@ -35,6 +35,9 @@ export const sciFiHud: DesignStyle = {
     "角标装饰使用 L 型边框 border-t-2 border-l-2",
     "状态指示器使用发光脉冲动画",
     "进度条使用渐变填充 + 发光扫描效果",
+    "交互时角标做锁定位移（收缩/外扩）以体现 Tactical Lock",
+    "扫描线在 hover 时提升对比或位移，模拟数据过载",
+    "active 状态使用高亮内发光反馈全息点击而非重力下沉",
   ],
 
   dontList: [
@@ -44,6 +47,8 @@ export const sciFiHud: DesignStyle = {
     "禁止使用衬线字体",
     "禁止使用圆润可爱的设计语言",
     "禁止大圆角 rounded-2xl+",
+    "禁止面板交互只有普通阴影加深（缺少系统激活感）",
+    "禁止状态灯静止不动（HUD 需持续脉冲或闪烁）",
   ],
 
   components: {
@@ -51,43 +56,47 @@ export const sciFiHud: DesignStyle = {
       name: "HUD 按钮",
       description: "半透明发光边框按钮，悬停增强辉光",
       code: `// Primary HUD Button
-<button className="px-6 py-3 bg-slate-900/80 border border-cyan-500/40 text-cyan-400 rounded shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] hover:-translate-y-0.5 transition-all duration-300 font-mono text-sm uppercase tracking-widest">
-  Initialize
+<button className="group relative px-8 py-3 bg-slate-900/80 border border-cyan-500/50 text-cyan-400 rounded-sm shadow-[0_0_10px_rgba(6,182,212,0.3)] hover:bg-cyan-500/10 hover:border-cyan-300 hover:text-cyan-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.6),inset_0_0_10px_rgba(6,182,212,0.2)] active:scale-95 active:shadow-[inset_0_0_20px_rgba(255,255,255,0.6)] transition-all duration-150 ease-out overflow-hidden font-mono text-sm uppercase tracking-widest">
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(6,182,212,0.1)_2px,rgba(6,182,212,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+  <span className="relative z-10">Initialize</span>
 </button>
 
 // Active HUD Button
-<button className="px-6 py-3 bg-cyan-500/20 border border-cyan-300 text-cyan-300 rounded shadow-[0_0_20px_rgba(6,182,212,0.5)] font-mono text-sm uppercase tracking-widest">
+<button className="px-6 py-3 bg-cyan-500/20 border border-cyan-300 text-cyan-300 rounded-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] font-mono text-sm uppercase tracking-widest">
   System Active
 </button>
 
 // Danger HUD Button
-<button className="px-6 py-3 bg-slate-900/80 border border-red-500/40 text-red-400 rounded shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:border-red-400 hover:shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all duration-300 font-mono text-sm uppercase tracking-widest">
+<button className="px-6 py-3 bg-slate-900/80 border border-red-500/40 text-red-400 rounded-sm shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:border-red-400 hover:shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all duration-150 font-mono text-sm uppercase tracking-widest">
   Override
 </button>`,
     },
     card: {
       name: "HUD 面板",
-      description: "半透明玻璃面板，带角标装饰和扫描线",
-      code: `<div className="relative bg-slate-900/85 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:border-cyan-500/60 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:-translate-y-0.5 transition-all duration-300">
-  {/* L-shaped corner decorations */}
-  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
-  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
-  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
-  <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
+      description: "半透明玻璃面板，带角标锁定和扫描线过载效果",
+      code: `<div className="group relative bg-slate-900/80 backdrop-blur-xl border border-cyan-500/20 rounded-sm p-8 shadow-[0_4px_24px_rgba(0,0,0,0.6)] hover:border-cyan-400/60 hover:shadow-[0_0_30px_rgba(6,182,212,0.25)] transition-all duration-200 cursor-crosshair">
+  {/* L-shaped corner lock animation */}
+  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:border-cyan-300 transition-all duration-150" />
+  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:border-cyan-300 transition-all duration-150" />
+  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-500 group-hover:-translate-x-1 group-hover:translate-y-1 group-hover:border-cyan-300 transition-all duration-150" />
+  <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-500 group-hover:translate-x-1 group-hover:translate-y-1 group-hover:border-cyan-300 transition-all duration-150" />
 
-  {/* Scanline overlay */}
-  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(148,163,184,0.03)_2px,rgba(148,163,184,0.03)_4px)] pointer-events-none rounded-lg" />
+  {/* Scanline overload */}
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(148,163,184,0.03)_2px,rgba(148,163,184,0.03)_4px)] group-hover:opacity-80 pointer-events-none rounded-sm transition-opacity duration-150" />
 
-  <div className="relative">
-    <div className="flex items-center gap-3 mb-4">
-      <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)] animate-pulse" />
-      <h3 className="text-slate-400 font-mono text-xs uppercase tracking-widest">System Module</h3>
+  <div className="relative z-10">
+    <div className="flex items-center gap-3 mb-5">
+      <div className="w-2 h-2 bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)] group-hover:bg-cyan-300 group-hover:animate-pulse" />
+      <h3 className="text-cyan-500 font-mono text-xs uppercase tracking-[0.2em] group-hover:text-cyan-300 transition-colors">
+        System Module
+      </h3>
     </div>
-    <h4 className="text-[#E5F2FF] text-lg font-bold mb-3 font-mono">
+    <h4 className="text-white text-xl font-mono font-bold mb-3 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-200">
       Subsystem Status
     </h4>
-    <p className="text-slate-400 text-sm leading-relaxed">
-      All systems nominal. Quantum core operating at optimal efficiency.
+    <p className="text-slate-400 text-sm font-mono leading-relaxed group-hover:text-slate-300 transition-colors duration-200">
+      &gt; Quantum core operating at optimal efficiency.
+      <br/>&gt; Awaiting command input...
     </p>
   </div>
 </div>`,
@@ -199,7 +208,13 @@ SPECIAL EFFECTS:
 - Status pulse glow (2s ease-in-out)
 - Data line slide-in animation
 - Progress bar shine sweep
-- Scanline repeating gradient overlay`,
+- Scanline repeating gradient overlay
+
+## Animation & Interaction Rules
+- Tactical Lock: hover 时四角 L 型角标需进行短促锁定位移（duration-150）。
+- Data Overload: 悬停时提升扫描线可见度与发光强度，模拟数据过载。
+- Holographic Pierce: active 状态优先高亮内发光反馈，不做重力式下沉。
+- Terminal Blinking: 状态灯和关键提示保持脉冲或闪烁，维持系统在线感。`,
 
   examplePrompts: [
     {

@@ -48,42 +48,26 @@ export const arcadeCrt: DesignStyle = {
     button: {
       name: "按钮",
       description: "Arcade CRT 霓虹按钮，带发光效果和像素字体",
-      code: `// Neon Green Primary
-<button className="px-6 py-3 bg-[#39ff14] text-black font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#39ff14] shadow-[0_0_20px_rgba(57,255,20,0.5)] hover:shadow-[0_0_40px_rgba(57,255,20,0.8)] transition-all duration-200">
-  INSERT COIN
-</button>
-
-// Cyan Outline
-<button className="px-6 py-3 bg-transparent text-[#00ffff] font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:bg-[#00ffff]/10 transition-all duration-200">
-  SELECT
-</button>
-
-// Magenta Variant
-<button className="px-6 py-3 bg-transparent text-[#ff00ff] font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#ff00ff] shadow-[0_0_15px_rgba(255,0,255,0.3)] hover:bg-[#ff00ff]/10 transition-all duration-200">
-  PLAYER 2
-</button>
-
-// Red Danger
-<button className="px-6 py-3 bg-transparent text-[#ff2a2a] font-mono text-sm uppercase tracking-[0.2em] border-2 border-[#ff2a2a] shadow-[0_0_15px_rgba(255,42,42,0.3)] hover:bg-[#ff2a2a]/10 transition-all duration-200">
-  GAME OVER
+      code: `<button className="group relative px-8 py-4 bg-[#39ff14]/10 text-[#39ff14] font-mono text-xl uppercase tracking-[0.2em] border-2 border-[#39ff14] shadow-[0_0_15px_rgba(57,255,20,0.4),inset_0_0_15px_rgba(57,255,20,0.2)] hover:bg-[#39ff14] hover:text-black hover:shadow-[0_0_40px_rgba(57,255,20,0.8),inset_0_0_20px_rgba(57,255,20,0.5)] active:translate-y-[6px] active:shadow-[0_0_10px_rgba(57,255,20,0.5)] transition-all duration-150">
+  <span className="group-hover:animate-pulse">INSERT COIN</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Arcade CRT 风格的发光边框卡片，带扫描线叠加",
-      code: `<div className="bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 relative overflow-hidden hover:border-[#39ff14]/60 hover:shadow-[0_0_30px_rgba(57,255,20,0.2)] transition-all duration-200">
+      code: `<div className="group bg-[#0a0a0a] border-2 border-[#39ff14]/30 p-6 relative overflow-hidden hover:border-[#39ff14] hover:shadow-[0_0_30px_rgba(57,255,20,0.2)] hover:-translate-y-1 transition-all duration-200 cursor-crosshair">
   {/* Scanline overlay */}
-  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.03)_2px,rgba(57,255,20,0.03)_4px)] pointer-events-none" />
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(57,255,20,0.05)_2px,rgba(57,255,20,0.05)_4px)] pointer-events-none group-hover:opacity-50 transition-opacity duration-200" />
 
   <div className="relative">
     <div className="flex items-center gap-3 mb-3">
-      <div className="w-2 h-2 bg-[#39ff14] shadow-[0_0_10px_rgba(57,255,20,0.8)]" />
+      <div className="w-3 h-3 bg-[#39ff14] shadow-[0_0_10px_rgba(57,255,20,0.8)] group-hover:animate-ping" />
       <h3 className="text-[#39ff14] font-mono text-xs uppercase tracking-[0.2em]">Game Module</h3>
     </div>
-    <h4 className="text-white text-lg font-mono font-bold mb-2" style={{textShadow: '-2px 0 #ff00ff, 2px 0 #00ffff'}}>
+    <h4 className="text-white text-xl font-mono font-bold mb-2 transition-all duration-100 group-hover:text-[#39ff14] group-active:translate-x-[2px]" style={{textShadow: '-2px 0 #ff00ff, 2px 0 #00ffff'}}>
       TITLE HERE
     </h4>
-    <p className="text-[#39ff14]/60 font-mono text-sm leading-relaxed">
+    <p className="text-[#39ff14]/60 font-mono text-sm leading-relaxed group-hover:text-[#39ff14]/90">
       Description text with terminal green tint.
     </p>
   </div>
@@ -213,7 +197,13 @@ SPECIAL EFFECTS:
 - Scanline overlay via CSS repeating-linear-gradient
 - RGB chromatic aberration on headings
 - Neon flicker animation for atmosphere
-- CRT screen curvature hint via vignette`,
+- CRT screen curvature hint via vignette
+
+Animation & Interaction Rules:
+- Neon Breathing: 悬停时，外发光 (box-shadow) 必须明显膨胀，甚至可以加入微弱的 \`animate-pulse\` 模拟电压不稳的闪烁感。
+- Arcade Button Press: 点击状态 (\`:active\`) 必须模拟真实的物理街机按键被用力砸下的感觉。使用强烈位移 \`active:translate-y-[4px]\`，并瞬间改变阴影大小。
+- CRT Distortion: 交互时，可以通过改变 text-shadow 的偏移量，瞬间放大 RGB 色差（如洋红和青色分离距离）。
+- Instant Feedback: CRT 没有平滑物理惯性，交互响应时间应偏短，如 \`duration-100\` 或 \`duration-150\`。`,
 
   examplePrompts: [
     {

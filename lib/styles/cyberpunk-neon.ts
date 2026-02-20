@@ -48,38 +48,29 @@ export const cyberpunkNeon: DesignStyle = {
     button: {
       name: "按钮",
       description: "Cyberpunk 风格的霓虹按钮",
-      code: `// Neon Primary
-<button className="px-6 py-3 bg-transparent border border-cyan-400 text-cyan-400 rounded-lg shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:bg-cyan-400/10 transition-all duration-300 font-mono uppercase tracking-wider">
-  Initialize
-</button>
-
-// Neon Filled
-<button className="px-6 py-3 bg-cyan-400 text-black rounded-lg shadow-[0_0_20px_rgba(0,255,255,0.5)] hover:shadow-[0_0_30px_rgba(0,255,255,0.7)] transition-all duration-300 font-mono font-bold uppercase tracking-wider">
-  Execute
-</button>
-
-// Magenta Variant
-<button className="px-6 py-3 bg-transparent border border-fuchsia-500 text-fuchsia-500 rounded-lg shadow-[0_0_15px_rgba(255,0,255,0.4)] hover:shadow-[0_0_25px_rgba(255,0,255,0.6)] hover:bg-fuchsia-500/10 transition-all duration-300 font-mono uppercase tracking-wider">
-  Override
+      code: `<button className="group relative px-6 py-3 bg-transparent border border-cyan-400 text-cyan-300 rounded-sm font-mono text-sm uppercase tracking-[0.18em] shadow-[0_0_10px_rgba(0,255,255,0.4),inset_0_0_10px_rgba(0,255,255,0.15)] hover:bg-cyan-400/15 hover:shadow-[0_0_26px_rgba(0,255,255,0.8),inset_0_0_18px_rgba(0,255,255,0.35)] hover:text-cyan-100 active:translate-x-[2px] active:-translate-y-[1px] active:border-fuchsia-500 active:text-fuchsia-400 active:shadow-[0_0_8px_rgba(255,0,255,0.75)] transition-all duration-100 overflow-hidden motion-reduce:transition-none">
+  <span className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent skew-x-12 group-hover:left-[120%] transition-all duration-150" />
+  <span className="relative z-10 drop-shadow-[0_0_8px_currentColor] group-hover:animate-pulse">Initialize</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Cyberpunk 风格的发光卡片",
-      code: `<div className="bg-gray-950 border border-cyan-400/30 rounded-lg p-6 shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] hover:border-cyan-400/50 transition-all duration-300 relative overflow-hidden">
+      code: `<div className="group bg-gray-950 border border-cyan-400/30 rounded-sm p-6 shadow-[0_0_15px_rgba(0,255,255,0.15)] hover:shadow-[0_0_30px_rgba(0,255,255,0.45)] hover:border-cyan-300 transition-all duration-150 relative overflow-hidden">
   {/* Scan line effect */}
-  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,255,255,0.03)_50%)] bg-[length:100%_4px] pointer-events-none" />
+  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,255,255,0.03)_50%)] bg-[length:100%_4px] pointer-events-none opacity-60 group-hover:opacity-100 group-hover:bg-[length:100%_2px] transition-all duration-150" />
+  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_top,rgba(255,0,255,0.12),transparent_45%)] pointer-events-none transition-opacity duration-150" />
 
   <div className="relative">
     <div className="flex items-center gap-3 mb-4">
-      <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(0,255,255,0.8)]" />
-      <h3 className="text-cyan-400 font-mono uppercase tracking-wider text-sm">System Module</h3>
+      <div className="w-2 h-2 rounded-none bg-cyan-400 shadow-[0_0_10px_rgba(0,255,255,0.8)] group-hover:animate-ping" />
+      <h3 className="text-cyan-400 font-mono uppercase tracking-[0.2em] text-xs group-hover:text-white transition-colors duration-150">System Module</h3>
     </div>
-    <h4 className="text-white text-xl font-bold mb-3" style={{textShadow: '0 0 10px rgba(255,255,255,0.3)'}}>
+    <h4 className="text-white text-xl font-bold mb-3 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] group-active:translate-x-[1px] transition-all duration-150">
       Neural Interface
     </h4>
-    <p className="text-gray-400 leading-relaxed">
-      Advanced cybernetic enhancement module with quantum processing.
+    <p className="text-gray-400 leading-relaxed font-mono text-sm group-hover:text-cyan-400/80 transition-colors duration-150">
+      &gt; Advanced cybernetic enhancement module operational.
     </p>
   </div>
 </div>`,
@@ -154,7 +145,13 @@ COLOR RULES:
 SPECIAL EFFECTS:
 - Scan line overlay for tech feel
 - Pulsing elements with animate-pulse
-- Glow intensifies on hover`,
+- Glow intensifies on hover
+
+Animation & Interaction Rules:
+- Unstable Neon: 发光效果可带轻微脉冲与强弱波动，但不能持续高频闪烁到影响可读性。
+- Glitch Press: \`:active\` 优先使用错位平移（如 \`translate-x\` + \`-translate-y\`）与颜色反转，避免常规按钮缩放反馈。
+- CRT Scanline: 大面积卡片在 hover 时提升扫描线密度或可见度，强调终端正在扫描的状态变化。
+- Fast & Raw: 常规交互响应建议 \`duration-100\` 到 \`duration-150\`；仅扫描扫光可放宽到 \`duration-300\` 以内。`,
 
   examplePrompts: [
     {

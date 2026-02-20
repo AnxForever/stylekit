@@ -63,11 +63,12 @@ export const graffitiStreet: DesignStyle = {
     bg-[#ff2d55]
     text-white font-black uppercase tracking-wider text-lg
     border-4 border-[#1c1c1e]
-    shadow-[4px_4px_0px_#00e5ff]
-    hover:shadow-[2px_2px_0px_#00e5ff]
-    hover:translate-x-[2px] hover:translate-y-[2px]
-    active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
-    transition-all duration-150
+    shadow-[6px_6px_0px_#00e5ff]
+    hover:bg-[#00e5ff] hover:text-[#1c1c1e]
+    hover:shadow-[8px_8px_0px_#ffea00]
+    hover:-translate-y-1
+    active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
+    transition-all duration-100 ease-linear
   "
   style={{ transform: "rotate(-2deg) skewX(-2deg)" }}
 >
@@ -80,30 +81,34 @@ export const graffitiStreet: DesignStyle = {
         "涂鸦风格卡片，深灰背景、多色边框、喷漆文字和倾斜装饰",
       code: `<div
   className="
+    group
     p-8
     bg-[#1c1c1e]
     border-4 border-[#ff2d55]
-    shadow-[6px_6px_0px_#ffea00]
+    shadow-[8px_8px_0px_#ffea00]
+    hover:shadow-[12px_12px_0px_#00e5ff]
+    hover:-translate-y-2 hover:-rotate-1
+    transition-all duration-150 ease-linear
     relative overflow-hidden
   "
-  style={{ transform: "rotate(0.5deg)" }}
+  style={{ transform: "rotate(1deg)" }}
 >
   {/* Spray paint drip decoration */}
-  <div className="absolute top-0 right-8 w-2 h-12 bg-[#ff2d55]/40 rounded-b-full" />
-  <div className="absolute top-0 right-12 w-1.5 h-8 bg-[#00e5ff]/30 rounded-b-full" />
+  <div className="absolute top-0 right-8 w-3 h-12 bg-[#ff2d55] origin-top group-hover:scale-y-[2.5] transition-transform duration-300 ease-out" />
+  <div className="absolute top-0 right-14 w-2 h-9 bg-[#00e5ff] origin-top group-hover:scale-y-[3] transition-transform duration-500 ease-out delay-75" />
 
   <span className="inline-block px-3 py-1 bg-[#ffea00] text-[#1c1c1e] text-xs font-black uppercase tracking-widest mb-4"
-    style={{ transform: "rotate(-1deg)" }}
+    style={{ transform: "rotate(-2deg)" }}
   >
     Fresh
   </span>
   <h3 className="text-3xl font-black text-[#00e5ff] uppercase mb-3"
-    style={{ transform: "skewX(-3deg)" }}
+    style={{ transform: "skewX(-4deg)" }}
   >
     STREET ART
   </h3>
-  <p className="text-white/60 text-sm font-bold">
-    The wall is the canvas. The city is the gallery.
+  <p className="text-white/70 text-sm font-bold group-hover:text-white transition-colors duration-100">
+    The wall is the canvas. The city is the gallery. Make it loud.
   </p>
 </div>`,
     },
@@ -316,7 +321,14 @@ Primary:
 2. Drip decorations: thin vertical div elements simulating paint drips
 3. Brick wall texture: repeating-linear-gradient grid pattern in the background
 4. Stencil text: font-black uppercase with letter-spacing and optional stroke
-5. Color tag badges: inline colored spans with font-black uppercase labels`,
+5. Color tag badges: inline colored spans with font-black uppercase labels
+
+## Animation & Interaction Rules
+
+- Paint Drip: hover 时让滴落装饰沿 Y 轴拉伸，模拟新喷漆的流淌感。
+- Vandalism Snap: 交互允许更激进的旋转/倾斜切换，强调未经许可的街头破坏感。
+- Hard Contrast: active 需瞬间移除硬阴影并大幅位移，制造“盖章撞墙”式冲击。
+- Zero Polish: 动画保持短促硬切（duration-100/150 + ease-linear），避免优雅顺滑风格。`,
 
   examplePrompts: [
     {
