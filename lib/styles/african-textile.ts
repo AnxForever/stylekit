@@ -38,6 +38,9 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
     "使用粗边框 border-2 或 border-4 传达织物的结构感",
     "组件使用小圆角 rounded-lg 保持手工但不粗糙",
     "标题使用 font-bold uppercase tracking-widest 传达庄重感",
+    "交互节奏保持沉稳，优先使用 duration-300",
+    "点击态加入按压阻尼（active:scale-[0.98] + active:brightness-90）",
+    "悬停时允许局部织纹块轻微错位，模拟织物拉扯",
   ],
 
   dontList: [
@@ -47,6 +50,7 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
     "禁止使用纯白背景 bg-white",
     "禁止使用玻璃拟态或模糊效果 backdrop-blur",
     "禁止省略几何装饰元素",
+    "禁止使用轻飘快速交互（duration-75 + 大幅位移）",
   ],
 
   components: {
@@ -54,40 +58,50 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
       name: "按钮",
       description: "非洲纺织风格按钮，粗边框与大地色",
       code: `<button className="
-  px-8 py-4
+  group relative px-8 py-4
   bg-[#c4501f] text-[#e8d5b5]
   font-bold uppercase tracking-widest
   rounded-lg
-  border-2 border-[#f0c75e]
+  border-4 border-[#2c1810]
   shadow-[4px_4px_0px_#2c1810]
   hover:shadow-[6px_6px_0px_#2c1810]
-  hover:translate-x-[-2px] hover:translate-y-[-2px]
-  transition-all duration-200
+  hover:-translate-y-1
+  active:shadow-none active:translate-y-[4px] active:translate-x-[4px]
+  active:scale-[0.98] active:brightness-90
+  transition-all duration-300
 ">
-  Explore
+  <span className="inline-flex items-center gap-2">
+    Explore
+    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="3" d="M5 12h14M12 5l7 7-7 7"></path>
+    </svg>
+  </span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "非洲纺织风格卡片，几何装饰与手工质感",
       code: `<div className="
-  p-8
+  group p-8
   bg-[#e8d5b5]
   rounded-lg
-  border-2 border-[#2c1810]
-  shadow-[4px_4px_0px_#2c1810]
+  border-4 border-[#2c1810]
+  shadow-[6px_6px_0px_#2c1810]
+  hover:shadow-[8px_8px_0px_#2c1810]
+  hover:-translate-y-1
+  transition-all duration-300
 ">
-  <div className="flex gap-1 mb-4">
+  <div className="flex gap-1 mb-4 group-hover:gap-2 transition-all duration-300">
     <div className="w-4 h-4 bg-[#c4501f]" />
-    <div className="w-4 h-4 bg-[#f0c75e]" />
+    <div className="w-4 h-4 bg-[#f0c75e] group-hover:-translate-y-1 transition-transform duration-300" />
     <div className="w-4 h-4 bg-[#1a5632]" />
-    <div className="w-4 h-4 bg-[#c4501f]" />
+    <div className="w-4 h-4 bg-[#c4501f] group-hover:translate-y-1 transition-transform duration-300" />
     <div className="w-4 h-4 bg-[#f0c75e]" />
   </div>
-  <h3 className="text-2xl font-bold text-[#2c1810] uppercase tracking-wider mb-3">
+  <h3 className="text-2xl font-bold text-[#2c1810] uppercase tracking-wider mb-3 group-hover:text-[#c4501f] transition-colors duration-300">
     Kente Weave
   </h3>
-  <p className="text-[#2c1810]/70">
+  <p className="text-[#2c1810]/80 font-medium">
     Woven threads carry the stories of generations
   </p>
 </div>`,
@@ -237,6 +251,14 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
 - Thick borders border-2 or border-4
 - Hard offset shadows shadow-[4px_4px_0px_#2c1810]
 - Uppercase bold headings with wide tracking
+
+## Animation & Interaction Rules
+
+- Heavy tactility: interactions should feel weighted and handcrafted, not floating
+- Use deliberate timing around duration-300 for primary hover/active feedback
+- Deep press on click: use active:scale-[0.98], active:brightness-90, and shadow collapse
+- Woven shifts: geometric accent blocks can move 1-2px on hover to mimic textile tension
+- Avoid glitch or jitter motion; movement must stay grounded and physical
 
 ## Color Palette
 
