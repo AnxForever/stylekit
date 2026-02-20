@@ -1,6 +1,5 @@
 "use client";
-
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
@@ -23,6 +22,8 @@ const doRules = [
   "Typographic Highlighting: year/label switches to red on hover, transition-none",
   "12-column grid with asymmetric splits (3/9, 8/4, never 6/6)",
   "gap-0 with border-2 border-[#000000] as structural dividers",
+  "font-sans font-black for all headings — no decorative typefaces",
+  "uppercase tracking-widest for all labels and UI text",
 ];
 
 const dontRules = [
@@ -32,6 +33,8 @@ const dontRules = [
   "Never use rounded corners — rounded-none everywhere, no exceptions",
   "Never use gradients or blur effects of any kind",
   "Never hover only text color without background flip (Color Block Invasion required)",
+  "Never use gap-4 or any spacing — use gap-0 with border dividers",
+  "Never use dashed or dotted borders — only solid border-2",
 ];
 
 const typescaleSteps = [
@@ -62,35 +65,66 @@ const gridSplitExamples = [
   },
 ];
 
+const manifestoPrinciples = [
+  {
+    number: "01",
+    title: "TYPOGRAPHY IS THE DESIGN",
+    body: "The typeface is not decoration — it is architecture. Every letterform carries structural weight equal to any grid line or color block.",
+    accent: "#ff0000",
+  },
+  {
+    number: "02",
+    title: "THE GRID IS ABSOLUTE",
+    body: "12 columns. Asymmetric splits. Every element snaps to the grid with mathematical precision. Deviation is not a design choice — it is an error.",
+    accent: "#0057b8",
+  },
+  {
+    number: "03",
+    title: "COLOR AS SIGNAL",
+    body: "Red, blue, yellow. These are not decorations. They are signals. A red block means urgency. A black block means authority. Never use color arbitrarily.",
+    accent: "#ffcc00",
+  },
+  {
+    number: "04",
+    title: "ZERO ORNAMENT",
+    body: "No shadows. No gradients. No rounded corners. No blur. If it cannot be explained functionally, it does not exist in Swiss Poster design.",
+    accent: "#000000",
+  },
+];
+
+const colorBlocks = [
+  { hex: "#ff0000", name: "RED", role: "ACCENT — HOVER STATES", textColor: "text-[#ffffff]", mutedColor: "text-[#ffffff]/60", labelColor: "text-[#ffffff]/70", subColor: "text-[#ffffff]/40", bg: "bg-[#ff0000]" },
+  { hex: "#0057b8", name: "BLUE", role: "ACCENT — COLOR BLOCKS", textColor: "text-[#ffffff]", mutedColor: "text-[#ffffff]/60", labelColor: "text-[#ffffff]/70", subColor: "text-[#ffffff]/40", bg: "bg-[#0057b8]" },
+  { hex: "#ffcc00", name: "YELLOW", role: "ACCENT — COLOR BLOCKS", textColor: "text-[#000000]", mutedColor: "text-[#000000]/50", labelColor: "text-[#000000]/60", subColor: "text-[#000000]/40", bg: "bg-[#ffcc00]" },
+];
+
 /* ------------------------------------------------------------------ */
 /*  Inline Hooks                                                       */
 /* ------------------------------------------------------------------ */
 
-function useInView() {
+function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
           setInView(true);
-          observer.disconnect();
+          obs.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.15, ...options }
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
-
   return { ref, inView };
 }
 
 /* ------------------------------------------------------------------ */
-/*  Inline RevealBlock                                                 */
+/*  RevealBlock — no style prop allowed                                */
 /* ------------------------------------------------------------------ */
 
 function RevealBlock({
@@ -109,7 +143,7 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transform: inView ? "translateY(0)" : "translateY(28px)",
         transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
@@ -215,8 +249,8 @@ function PosterInput() {
 /*  Main                                                               */
 /* ------------------------------------------------------------------ */
 
-export default function ShowcaseContent() {
-  const { ref: heroRef, inView: heroInView } = useInView();
+export default function SwissPosterShowcase() {
+  const { ref: heroRef, inView: _heroInView } = useInView();
   const [heroRevealed, setHeroRevealed] = useState(false);
   const [activeTab, setActiveTab] = useState<"BUTTONS" | "CARDS" | "INPUTS">("BUTTONS");
 
@@ -229,26 +263,30 @@ export default function ShowcaseContent() {
     <div className="min-h-screen bg-[#ffffff] text-[#000000]">
 
       {/* ================================================================
-          NAV
+          NAV — fixed, strict 12-col grid, red/black/white
       ================================================================= */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#ffffff] border-b-2 border-[#000000]">
         <div className="grid grid-cols-12 gap-0">
-          {/* Brand */}
+          {/* Brand — 3 cols */}
           <div className="col-span-4 md:col-span-3 px-4 md:px-8 py-4 border-r-2 border-[#000000] flex items-center">
             <span className="font-sans font-black text-xs uppercase tracking-[0.3em] leading-none">
               SWISS POSTER
             </span>
           </div>
 
-          {/* Center year label */}
-          <div className="hidden md:flex col-span-6 px-8 py-4 items-center">
+          {/* Center year label — 6 cols */}
+          <div className="hidden md:flex col-span-6 px-8 py-4 items-center gap-6">
             <span className="text-[10px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.5em]">
-              2024
+              1957
+            </span>
+            <div className="h-[1px] flex-1 bg-[#000000]/10" />
+            <span className="text-[10px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.5em]">
+              ZURICH
             </span>
           </div>
 
-          {/* Nav items */}
-          <div className="col-span-8 md:col-span-3 px-2 py-0 flex items-stretch justify-end gap-0">
+          {/* Nav items — 3 cols */}
+          <div className="col-span-8 md:col-span-3 px-0 py-0 flex items-stretch justify-end gap-0">
             <Link
               href="/styles/swiss-poster"
               className="px-4 py-4 font-sans font-black text-[10px] uppercase tracking-[0.3em] text-[#000000]/50 hover:bg-[#000000] hover:text-[#ffffff] transition-none border-l-2 border-[#000000] flex items-center"
@@ -257,7 +295,7 @@ export default function ShowcaseContent() {
             </Link>
             <Link
               href="/styles"
-              className="px-4 py-4 font-sans font-black text-[10px] uppercase tracking-[0.3em] text-[#000000]/50 hover:bg-[#000000] hover:text-[#ffffff] transition-none border-l-2 border-[#000000] flex items-center"
+              className="px-4 py-4 font-sans font-black text-[10px] uppercase tracking-[0.3em] text-[#000000]/50 hover:bg-[#ff0000] hover:text-[#ffffff] transition-none border-l-2 border-[#000000] flex items-center"
             >
               ALL STYLES
             </Link>
@@ -266,39 +304,49 @@ export default function ShowcaseContent() {
       </header>
 
       {/* ================================================================
-          HERO — 12-col asymmetric: 8 left + 4 right red block
+          HERO — poster-scale typography, 8/4 asymmetric, red block right
       ================================================================= */}
       <section className="pt-[57px] border-b-2 border-[#000000]">
         <div className="grid grid-cols-12 gap-0">
 
-          {/* Left 8 cols */}
+          {/* Left 8 cols — enormous type */}
           <div className="col-span-12 md:col-span-8 px-6 md:px-12 pt-10 pb-14 md:border-r-2 border-[#000000]">
-            <h1
-              ref={heroRef}
-              className="font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter"
+            <div ref={heroRef}>
+              <h1
+                className="font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter"
+                style={{
+                  fontSize: "clamp(72px, 12vw, 160px)",
+                  opacity: heroRevealed ? 1 : 0,
+                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
+                  transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+                }}
+              >
+                SWISS
+              </h1>
+              <h2
+                className="font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter -mt-1"
+                style={{
+                  fontSize: "clamp(48px, 8vw, 100px)",
+                  opacity: heroRevealed ? 1 : 0,
+                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
+                  transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
+                }}
+              >
+                POSTER
+              </h2>
+            </div>
+
+            {/* Divider line */}
+            <div
+              className="h-[2px] bg-[#000000] mt-8"
               style={{
-                fontSize: "clamp(72px, 12vw, 160px)",
                 opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s",
               }}
-            >
-              SWISS
-            </h1>
-            <h2
-              className="font-sans font-black text-[#000000] uppercase leading-[0.85] tracking-tighter -mt-1"
-              style={{
-                fontSize: "clamp(48px, 8vw, 100px)",
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
-              }}
-            >
-              POSTER
-            </h2>
+            />
 
             <p
-              className="text-xs font-sans text-[#000000]/50 leading-relaxed uppercase tracking-widest mt-8 max-w-sm"
+              className="text-xs font-sans text-[#000000]/50 leading-relaxed uppercase tracking-widest mt-6 max-w-sm"
               style={{
                 opacity: heroRevealed ? 1 : 0,
                 transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
@@ -320,28 +368,56 @@ export default function ShowcaseContent() {
               <PosterButton>EXPLORE</PosterButton>
               <PosterButton variant="secondary">LEARN</PosterButton>
             </div>
+
+            {/* Bottom stats row */}
+            <div
+              className="grid grid-cols-3 gap-0 mt-12 border-t-2 border-[#000000]"
+              style={{
+                opacity: heroRevealed ? 1 : 0,
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.7s",
+              }}
+            >
+              <div className="pt-4 border-r-2 border-[#000000] pr-4">
+                <span className="block font-sans font-black text-2xl md:text-4xl text-[#000000] uppercase tracking-tighter leading-none">12</span>
+                <span className="block text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.3em] mt-1">COLUMNS</span>
+              </div>
+              <div className="pt-4 border-r-2 border-[#000000] px-4">
+                <span className="block font-sans font-black text-2xl md:text-4xl text-[#000000] uppercase tracking-tighter leading-none">0</span>
+                <span className="block text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.3em] mt-1">DECORATION</span>
+              </div>
+              <div className="pt-4 pl-4">
+                <span className="block font-sans font-black text-2xl md:text-4xl text-[#000000] uppercase tracking-tighter leading-none">1957</span>
+                <span className="block text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.3em] mt-1">ORIGIN</span>
+              </div>
+            </div>
           </div>
 
           {/* Right 4 cols — solid red block with vertical text */}
-          <div className="hidden md:flex col-span-4 bg-[#ff0000] items-center justify-center min-h-[420px] relative">
+          <div className="hidden md:flex col-span-4 bg-[#ff0000] items-center justify-center min-h-[480px] relative">
             <span
               className="font-sans font-black text-[#ffffff] text-sm uppercase tracking-[0.5em]"
               style={{ writingMode: "vertical-lr", transform: "rotate(180deg)" }}
             >
               INTERNATIONAL STYLE
             </span>
+            {/* Bottom year stamp */}
+            <span
+              className="absolute bottom-6 left-0 right-0 text-center text-[9px] font-sans font-black text-[#ffffff]/40 uppercase tracking-[0.4em]"
+            >
+              MULLER-BROCKMANN
+            </span>
           </div>
         </div>
       </section>
 
       {/* ================================================================
-          GRID SYSTEM DEMO — visible column markers + 3 asymmetric splits
+          GRID SYSTEM DEMO — column markers + asymmetric splits
       ================================================================= */}
       <section className="border-b-2 border-[#000000]">
         {/* Section header */}
         <div className="border-b-2 border-[#000000]">
           <div className="grid grid-cols-12 gap-0">
-            <div className="col-span-12 px-6 md:px-12 py-6">
+            <div className="col-span-9 px-6 md:px-12 py-6">
               <RevealBlock>
                 <span className="text-[10px] font-sans font-black text-[#000000]/40 uppercase tracking-[0.4em] block mb-1">
                   Structure
@@ -351,13 +427,18 @@ export default function ShowcaseContent() {
                 </h2>
               </RevealBlock>
             </div>
+            <div className="col-span-3 border-l-2 border-[#000000] flex items-end justify-end px-6 py-6">
+              <span className="text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.3em] text-right">
+                12 COL
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="px-6 md:px-12 py-8 space-y-0">
+        <div className="px-6 md:px-12 py-8">
           {/* Column index row */}
           <RevealBlock>
-            <div className="grid grid-cols-12 gap-0 border-2 border-[#000000] mb-0">
+            <div className="grid grid-cols-12 gap-0 border-2 border-[#000000]">
               {Array.from({ length: 12 }, (_, i) => (
                 <div
                   key={i}
@@ -381,7 +462,6 @@ export default function ShowcaseContent() {
           {gridSplitExamples.map((example, idx) => (
             <RevealBlock key={example.label} delay={0.05 * (idx + 1)}>
               <div className="border-x-2 border-b-2 border-[#000000]">
-                {/* Label row */}
                 <div className="border-b border-[#000000]/10 px-4 py-2">
                   <span className="text-[9px] font-sans font-black text-[#000000]/40 uppercase tracking-[0.4em]">
                     {example.label}
@@ -434,17 +514,15 @@ export default function ShowcaseContent() {
           </div>
         </div>
 
-        <div className="px-6 md:px-12 py-6 space-y-0">
+        <div className="px-6 md:px-12 py-6">
           {typescaleSteps.map((step, i) => (
             <RevealBlock key={step.size} delay={i * 0.04}>
               <div className="grid grid-cols-12 gap-0 border-b border-[#000000]/10 py-3 items-baseline hover:bg-[#000000] group transition-none cursor-default">
-                {/* Size label */}
                 <div className="col-span-2 flex items-baseline">
                   <span className="text-[9px] font-sans font-black text-[#000000]/30 group-hover:text-[#ff0000] uppercase tracking-[0.3em] transition-none">
                     {step.size}
                   </span>
                 </div>
-                {/* Sample text */}
                 <div className="col-span-7 overflow-hidden">
                   <span
                     className={`font-sans font-black text-[#000000] group-hover:text-[#ffffff] uppercase ${step.tracking} transition-none leading-none block`}
@@ -453,7 +531,6 @@ export default function ShowcaseContent() {
                     {step.sampleText}
                   </span>
                 </div>
-                {/* Role label */}
                 <div className="col-span-3 flex items-baseline justify-end">
                   <span className="text-[9px] font-sans font-black text-[#000000]/30 group-hover:text-[#ffffff]/40 uppercase tracking-[0.2em] transition-none text-right">
                     {step.label}
@@ -469,7 +546,7 @@ export default function ShowcaseContent() {
           COMPONENT SHOWCASE — tab switcher: BUTTONS / CARDS / INPUTS
       ================================================================= */}
       <section className="border-b-2 border-[#000000]">
-        {/* Header */}
+        {/* Section header */}
         <div className="border-b-2 border-[#000000]">
           <div className="grid grid-cols-12 gap-0">
             <div className="col-span-12 px-6 md:px-12 py-6">
@@ -509,7 +586,6 @@ export default function ShowcaseContent() {
           {activeTab === "BUTTONS" && (
             <RevealBlock>
               <div className="space-y-10">
-                {/* Primary group */}
                 <div>
                   <p className="text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.4em] mb-4">
                     PRIMARY / SECONDARY GROUP (gap-0, border-l-0)
@@ -520,7 +596,6 @@ export default function ShowcaseContent() {
                   </div>
                 </div>
 
-                {/* Color accent buttons */}
                 <div>
                   <p className="text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.4em] mb-4">
                     COLOR BLOCK BUTTONS — hover inverts to black + white
@@ -530,6 +605,13 @@ export default function ShowcaseContent() {
                     <PosterButton variant="accent" color="#0057b8">BLUE</PosterButton>
                     <PosterButton variant="accent" color="#ffcc00">YELLOW</PosterButton>
                   </div>
+                </div>
+
+                <div>
+                  <p className="text-[9px] font-sans font-black text-[#000000]/30 uppercase tracking-[0.4em] mb-4">
+                    STANDALONE PRIMARY
+                  </p>
+                  <PosterButton>ENTER</PosterButton>
                 </div>
 
                 <p className="text-[9px] font-sans text-[#000000]/30 uppercase tracking-[0.3em]">
@@ -576,7 +658,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ================================================================
-          COLOR BLOCK SYSTEM — 3 full-height blocks: red / blue / yellow
+          COLOR BLOCK SYSTEM — primary + 3 accent blocks
       ================================================================= */}
       <section className="border-b-2 border-[#000000]">
         <div className="border-b-2 border-[#000000]">
@@ -594,70 +676,35 @@ export default function ShowcaseContent() {
           </div>
         </div>
 
-        {/* Three large color blocks */}
+        {/* Three large accent color blocks */}
         <div className="grid grid-cols-3 gap-0">
-          {/* Red */}
-          <RevealBlock className="border-r-2 border-[#000000]" delay={0}>
-            <div className="bg-[#ff0000] flex flex-col items-start justify-between px-6 md:px-10 py-12 min-h-[280px] md:min-h-[360px]">
-              <span className="text-[10px] font-sans font-black text-[#ffffff]/60 uppercase tracking-[0.4em]">
-                2024
-              </span>
-              <div>
-                <span className="block font-sans font-black text-[#ffffff] uppercase text-2xl md:text-4xl tracking-tighter leading-none mb-2">
-                  RED
+          {colorBlocks.map((block, idx) => (
+            <RevealBlock
+              key={block.hex}
+              className={idx < 2 ? "border-r-2 border-[#000000]" : ""}
+              delay={idx * 0.05}
+            >
+              <div className={`${block.bg} flex flex-col items-start justify-between px-6 md:px-10 py-12 min-h-[280px] md:min-h-[360px]`}>
+                <span className={`text-[10px] font-sans font-black ${block.mutedColor} uppercase tracking-[0.4em]`}>
+                  2024
                 </span>
-                <span className="block text-[10px] font-sans font-black text-[#ffffff]/70 uppercase tracking-[0.3em]">
-                  #FF0000
-                </span>
-              </div>
-              <span className="text-[9px] font-sans font-black text-[#ffffff]/40 uppercase tracking-[0.3em]">
-                ACCENT — HOVER STATES
-              </span>
-            </div>
-          </RevealBlock>
-
-          {/* Blue */}
-          <RevealBlock className="border-r-2 border-[#000000]" delay={0.05}>
-            <div className="bg-[#0057b8] flex flex-col items-start justify-between px-6 md:px-10 py-12 min-h-[280px] md:min-h-[360px]">
-              <span className="text-[10px] font-sans font-black text-[#ffffff]/60 uppercase tracking-[0.4em]">
-                2024
-              </span>
-              <div>
-                <span className="block font-sans font-black text-[#ffffff] uppercase text-2xl md:text-4xl tracking-tighter leading-none mb-2">
-                  BLUE
-                </span>
-                <span className="block text-[10px] font-sans font-black text-[#ffffff]/70 uppercase tracking-[0.3em]">
-                  #0057B8
+                <div>
+                  <span className={`block font-sans font-black ${block.textColor} uppercase text-2xl md:text-4xl tracking-tighter leading-none mb-2`}>
+                    {block.name}
+                  </span>
+                  <span className={`block text-[10px] font-sans font-black ${block.labelColor} uppercase tracking-[0.3em]`}>
+                    {block.hex.toUpperCase()}
+                  </span>
+                </div>
+                <span className={`text-[9px] font-sans font-black ${block.subColor} uppercase tracking-[0.3em]`}>
+                  {block.role}
                 </span>
               </div>
-              <span className="text-[9px] font-sans font-black text-[#ffffff]/40 uppercase tracking-[0.3em]">
-                ACCENT — COLOR BLOCKS
-              </span>
-            </div>
-          </RevealBlock>
-
-          {/* Yellow */}
-          <RevealBlock delay={0.1}>
-            <div className="bg-[#ffcc00] flex flex-col items-start justify-between px-6 md:px-10 py-12 min-h-[280px] md:min-h-[360px]">
-              <span className="text-[10px] font-sans font-black text-[#000000]/50 uppercase tracking-[0.4em]">
-                2024
-              </span>
-              <div>
-                <span className="block font-sans font-black text-[#000000] uppercase text-2xl md:text-4xl tracking-tighter leading-none mb-2">
-                  YELLOW
-                </span>
-                <span className="block text-[10px] font-sans font-black text-[#000000]/60 uppercase tracking-[0.3em]">
-                  #FFCC00
-                </span>
-              </div>
-              <span className="text-[9px] font-sans font-black text-[#000000]/40 uppercase tracking-[0.3em]">
-                ACCENT — COLOR BLOCKS
-              </span>
-            </div>
-          </RevealBlock>
+            </RevealBlock>
+          ))}
         </div>
 
-        {/* Black + White blocks */}
+        {/* Black + White primary pair */}
         <div className="grid grid-cols-2 gap-0 border-t-2 border-[#000000]">
           <RevealBlock className="border-r-2 border-[#000000]" delay={0.05}>
             <div className="bg-[#000000] flex flex-col items-start justify-between px-6 md:px-10 py-8 min-h-[160px]">
@@ -669,7 +716,7 @@ export default function ShowcaseContent() {
             </div>
           </RevealBlock>
           <RevealBlock delay={0.1}>
-            <div className="bg-[#ffffff] border-0 flex flex-col items-start justify-between px-6 md:px-10 py-8 min-h-[160px]">
+            <div className="bg-[#ffffff] flex flex-col items-start justify-between px-6 md:px-10 py-8 min-h-[160px]">
               <span className="text-[10px] font-sans font-black text-[#000000]/40 uppercase tracking-[0.4em]">SECONDARY</span>
               <div className="flex items-end justify-between w-full">
                 <span className="font-sans font-black text-[#000000] uppercase text-xl md:text-3xl tracking-tighter leading-none">WHITE</span>
@@ -714,6 +761,63 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ================================================================
+          MANIFESTO — 4 principles, 9/3 asymmetric split
+      ================================================================= */}
+      <section className="border-b-2 border-[#000000]">
+        <div className="border-b-2 border-[#000000]">
+          <div className="grid grid-cols-12 gap-0">
+            <div className="col-span-12 px-6 md:px-12 py-6">
+              <RevealBlock>
+                <span className="text-[10px] font-sans font-black text-[#000000]/40 uppercase tracking-[0.4em] block mb-1">
+                  Philosophy
+                </span>
+                <h2 className="text-4xl md:text-6xl font-sans font-black uppercase tracking-tighter leading-none">
+                  PRINCIPLES
+                </h2>
+              </RevealBlock>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-0">
+          {/* Large red number block — 3 cols */}
+          <div className="hidden md:flex col-span-3 bg-[#ff0000] items-center justify-center min-h-full border-r-2 border-[#000000]">
+            <span
+              className="font-sans font-black text-[#ffffff]/30 uppercase"
+              style={{ fontSize: "clamp(60px, 10vw, 140px)", writingMode: "vertical-lr" }}
+            >
+              04
+            </span>
+          </div>
+
+          {/* Principles list — 9 cols */}
+          <div className="col-span-12 md:col-span-9">
+            {manifestoPrinciples.map((p, i) => (
+              <RevealBlock key={p.number} delay={i * 0.06}>
+                <div className="group p-6 md:p-10 border-b-2 border-[#000000] hover:bg-[#000000] transition-none cursor-default">
+                  <div className="grid grid-cols-9 gap-0 items-start">
+                    <div className="col-span-2">
+                      <span className="font-sans font-black text-4xl md:text-6xl text-[#000000]/10 group-hover:text-[#ff0000] uppercase tracking-tighter leading-none transition-none">
+                        {p.number}
+                      </span>
+                    </div>
+                    <div className="col-span-7">
+                      <h3 className="font-sans font-black text-sm md:text-base uppercase tracking-widest text-[#000000] group-hover:text-[#ffffff] transition-none mb-2 leading-tight">
+                        {p.title}
+                      </h3>
+                      <p className="text-xs font-sans text-[#000000]/50 group-hover:text-[#ffffff]/60 leading-relaxed transition-none">
+                        {p.body}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
           DESIGN RULES — DO / DON'T in Swiss grid
       ================================================================= */}
       <section className="border-b-2 border-[#000000]">
@@ -733,7 +837,7 @@ export default function ShowcaseContent() {
         </div>
 
         <div className="grid grid-cols-12 gap-0">
-          {/* DO — black blocks */}
+          {/* DO column */}
           <RevealBlock delay={0.05} className="col-span-12 md:col-span-6 md:border-r-2 border-[#000000]">
             <div className="p-6 md:p-10">
               <div className="flex items-center gap-3 mb-6">
@@ -760,7 +864,7 @@ export default function ShowcaseContent() {
             </div>
           </RevealBlock>
 
-          {/* DON'T — white with black borders */}
+          {/* DON'T column */}
           <RevealBlock delay={0.1} className="col-span-12 md:col-span-6 border-t-2 md:border-t-0 border-[#000000]">
             <div className="p-6 md:p-10">
               <div className="flex items-center gap-3 mb-6">
@@ -771,7 +875,7 @@ export default function ShowcaseContent() {
                 {dontRules.map((rule, i) => (
                   <li
                     key={i}
-                    className="group py-3 border-b border-[#000000]/10 border-2 border-transparent hover:border-2 hover:border-[#000000] hover:bg-[#000000] transition-none cursor-default mb-2 last:mb-0"
+                    className="group py-3 border-b border-[#000000]/10 hover:bg-[#000000] transition-none cursor-default mb-2 last:mb-0"
                   >
                     <div className="flex items-start gap-4 px-2">
                       <span className="text-[9px] font-sans font-black text-[#ff0000]/50 group-hover:text-[#ff0000] transition-none mt-0.5 shrink-0 w-5">
@@ -790,11 +894,43 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ================================================================
+          FULL-WIDTH POSTER STATEMENT — large red block
+      ================================================================= */}
+      <section className="border-b-2 border-[#000000]">
+        <RevealBlock>
+          <div className="bg-[#ff0000] px-6 md:px-12 py-16 md:py-24 grid grid-cols-12 gap-0">
+            <div className="col-span-12 md:col-span-8">
+              <span className="text-[10px] font-sans font-black text-[#ffffff]/50 uppercase tracking-[0.5em] block mb-6">
+                ZURICH — 1957 — INTERNATIONAL TYPOGRAPHIC STYLE
+              </span>
+              <h2
+                className="font-sans font-black text-[#ffffff] uppercase leading-[0.85] tracking-tighter"
+                style={{ fontSize: "clamp(40px, 7vw, 100px)" }}
+              >
+                TYPOGRAPHY IS NOT DECORATION.
+              </h2>
+              <h2
+                className="font-sans font-black text-[#ffffff]/40 uppercase leading-[0.85] tracking-tighter mt-2"
+                style={{ fontSize: "clamp(40px, 7vw, 100px)" }}
+              >
+                IT IS STRUCTURE.
+              </h2>
+            </div>
+            <div className="col-span-12 md:col-span-4 flex flex-col justify-end items-end pt-8 md:pt-0">
+              <span className="text-[9px] font-sans font-black text-[#ffffff]/30 uppercase tracking-[0.4em] text-right max-w-[160px] leading-relaxed">
+                JOSEF MULLER-BROCKMANN — GRID SYSTEMS IN GRAPHIC DESIGN
+              </span>
+            </div>
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ================================================================
           FOOTER — bg-[#000000], white text, grid layout
       ================================================================= */}
       <footer className="bg-[#000000]">
         <div className="grid grid-cols-12 gap-0">
-          {/* Left: brand + year */}
+          {/* Left: brand + year — 8 cols */}
           <div className="col-span-12 md:col-span-8 px-6 md:px-12 pt-12 pb-10 md:border-r-2 border-[#ffffff]/20">
             <span
               className="font-sans font-black text-[#ffffff] uppercase tracking-tighter leading-none block"
@@ -805,12 +941,21 @@ export default function ShowcaseContent() {
             <p className="text-[10px] font-sans font-black text-[#ffffff]/40 uppercase tracking-[0.4em] mt-4">
               INTERNATIONAL TYPOGRAPHIC STYLE — ZURICH 1957
             </p>
+
+            {/* Color accent strip */}
+            <div className="flex gap-0 mt-8">
+              <div className="h-[3px] flex-1 bg-[#ff0000]" />
+              <div className="h-[3px] flex-1 bg-[#0057b8]" />
+              <div className="h-[3px] flex-1 bg-[#ffcc00]" />
+              <div className="h-[3px] flex-1 bg-[#ffffff]" />
+            </div>
+
             <p className="text-[9px] font-sans text-[#ffffff]/20 uppercase tracking-[0.3em] mt-8">
               &copy;2024 STYLEKIT — ZERO DECORATION, PURE FUNCTION
             </p>
           </div>
 
-          {/* Right: links */}
+          {/* Right: links — 4 cols */}
           <div className="col-span-12 md:col-span-4 px-6 md:px-10 py-10 flex flex-col justify-between border-t-2 md:border-t-0 border-[#ffffff]/20">
             <div className="space-y-0">
               <Link
@@ -836,6 +981,7 @@ export default function ShowcaseContent() {
               </Link>
             </div>
 
+            {/* Color dot markers */}
             <div className="flex gap-0 mt-8">
               <div className="w-4 h-4 bg-[#ff0000] rounded-none" />
               <div className="w-4 h-4 bg-[#0057b8] rounded-none" />
