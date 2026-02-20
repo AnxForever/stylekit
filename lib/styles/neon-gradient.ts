@@ -52,106 +52,65 @@ export const neonGradient: DesignStyle = {
     button: {
       name: "按钮",
       description: "霓虹渐变按钮，带发光效果",
-      code: `{/* 主按钮 - 青粉渐变 */}
+      code: `{/* 主按钮 - 流体霓虹 */}
 <button className="
   px-6 py-3 md:px-8 md:py-4
-  bg-gradient-to-r from-cyan-400 to-pink-500
+  bg-gradient-to-r from-cyan-400 via-pink-500 to-cyan-400
+  bg-[length:200%_auto] bg-left
   text-white font-bold
   rounded-xl
-  border-2 border-white/20
-  shadow-[0_0_20px_rgba(236,72,153,0.5)]
-  hover:shadow-[0_0_30px_rgba(236,72,153,0.7)]
-  hover:scale-105
-  transition-all duration-300
+  border-4 border-white/20
+  shadow-[0_0_18px_rgba(236,72,153,0.45)]
+  hover:bg-right
+  hover:shadow-[0_0_24px_#ec4899,0_0_42px_rgba(34,211,238,0.45)]
+  hover:-translate-y-1
+  active:scale-[0.98]
+  active:shadow-[inset_0_0_20px_rgba(255,255,255,0.8)]
+  transition-all duration-500 ease-out
   text-sm md:text-base
 ">
   开始免费试用
 </button>
 
-{/* 次按钮 - 透明边框 */}
+{/* 次按钮 - 电流描边 */}
 <button className="
   px-6 py-3 md:px-8 md:py-4
   bg-transparent
   text-white font-bold
   rounded-xl
-  border-2 border-cyan-400
+  border-4 border-cyan-400
+  shadow-[0_0_12px_rgba(34,211,238,0.25)]
   hover:bg-cyan-400/10
-  hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]
-  transition-all duration-300
+  hover:shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_36px_rgba(168,85,247,0.35)]
+  transition-all duration-500 ease-out
   text-sm md:text-base
 ">
   观看演示
-</button>
-
-{/* 图标按钮 */}
-<button className="
-  w-12 h-12
-  bg-gradient-to-br from-purple-500 to-pink-500
-  rounded-xl
-  border-2 border-yellow-400
-  shadow-[0_0_15px_rgba(250,204,21,0.4)]
-  hover:scale-110
-  transition-all duration-300
-  flex items-center justify-center
-">
-  <ArrowRight className="w-5 h-5 text-white" />
 </button>`,
     },
     card: {
       name: "卡片",
       description: "渐变填充卡片，粗彩色边框",
-      code: `{/* 紫粉渐变卡片 */}
-<div className="
-  bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500
+      code: `<div className="
+  group relative overflow-hidden
+  bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-400
+  bg-[length:200%_200%] bg-left
   rounded-2xl md:rounded-3xl
   border-4 border-yellow-400
   p-6 md:p-8
-  shadow-[0_0_30px_rgba(168,85,247,0.4)]
-  hover:shadow-[0_0_40px_rgba(168,85,247,0.6)]
+  shadow-[0_0_28px_rgba(168,85,247,0.4)]
+  hover:bg-right
+  hover:shadow-[0_0_24px_#ec4899,0_0_44px_rgba(34,211,238,0.45)]
   hover:-translate-y-2
-  transition-all duration-300
+  transition-all duration-500 ease-out
 ">
-  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(255,255,255,0.25)] group-hover:scale-110 group-hover:animate-pulse transition-all duration-500">
     <Zap className="w-6 h-6 text-white" />
   </div>
-  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">快点</h3>
-  <p className="text-white/80 text-sm md:text-base">极速响应，毫秒级延迟</p>
-</div>
-
-{/* 青绿渐变卡片 */}
-<div className="
-  bg-gradient-to-br from-cyan-400 via-teal-500 to-green-500
-  rounded-2xl md:rounded-3xl
-  border-4 border-pink-400
-  p-6 md:p-8
-  shadow-[0_0_30px_rgba(34,211,238,0.4)]
-  hover:shadow-[0_0_40px_rgba(34,211,238,0.6)]
-  hover:-translate-y-2
-  transition-all duration-300
-">
-  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-    <Shield className="w-6 h-6 text-white" />
-  </div>
-  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">安全</h3>
-  <p className="text-white/80 text-sm md:text-base">企业级安全保障</p>
-</div>
-
-{/* 粉红渐变卡片 */}
-<div className="
-  bg-gradient-to-br from-pink-500 via-rose-500 to-red-500
-  rounded-2xl md:rounded-3xl
-  border-4 border-cyan-400
-  p-6 md:p-8
-  shadow-[0_0_30px_rgba(236,72,153,0.4)]
-  hover:shadow-[0_0_40px_rgba(236,72,153,0.6)]
-  hover:-translate-y-2
-  transition-all duration-300
-">
-  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-    <Users className="w-6 h-6 text-white" />
-  </div>
-  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">团队</h3>
-  <p className="text-white/80 text-sm md:text-base">无缝协作体验</p>
+  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">极速响应</h3>
+  <p className="text-white/85 text-sm md:text-base">
+    渐变流动、双层色散发光与通电图标共同构成高能霓虹反馈。
+  </p>
 </div>`,
     },
     input: {
@@ -541,6 +500,13 @@ body {
 - hover:scale-105 放大
 - hover:-translate-y-2 上浮
 - transition-all duration-300
+
+## Animation & Interaction Rules
+
+- Fluid Luminescence: 渐变背景需使用 bg-[length:200%_auto] 并在 hover 切换 bg-position，制造灯管内色流滑动感。
+- Chromatic Glow: 悬停光晕使用至少双层阴影（近层高饱和 + 远层扩散）来模拟霓虹色散，而非单色放大。
+- Electric Activation: :active 采用强内发光或瞬时高亮，不做明显压缩，呈现“通电”反馈。
+- Smooth High-Tech: 动画以 duration-300 到 500 + ease-out 为主，保持丝滑科技感。
 
 ## 禁止
 

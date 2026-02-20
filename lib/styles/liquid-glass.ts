@@ -89,45 +89,57 @@ export const liquidGlass: DesignStyle = {
       name: "按钮",
       description: "流动玻璃按钮，具有彩虹边缘渐变和液态压缩效果",
       code: `<button className="
-  relative px-6 py-3
+  group relative overflow-hidden px-8 py-4
   bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
   rounded-[20px]
   text-white font-medium
-  shadow-lg shadow-black/5
-  before:absolute before:inset-0 before:rounded-[20px]
-  before:p-[1px] before:-z-10
+  before:absolute before:inset-0 before:-z-10 before:rounded-[20px]
   before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]
-  after:absolute after:inset-[1px] after:rounded-[19px] after:-z-10
-  after:bg-gradient-to-b after:from-white/20 after:to-transparent
-  hover:bg-white/15 hover:shadow-xl
-  hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]
-  active:scale-[0.98]
-  transition-all duration-500 ease-out
+  before:p-[1px]
+  after:absolute after:inset-[1px] after:-z-10 after:rounded-[19px] after:bg-white/10
+  border border-white/20
+  shadow-[0_8px_24px_rgba(0,0,0,0.12)]
+  hover:bg-white/15 hover:border-white/40
+  hover:shadow-[0_18px_42px_rgba(0,0,0,0.22)]
+  hover:scale-[1.02]
+  active:scale-95
+  transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]
 ">
-  Liquid Button
+  <span className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[130%]" />
+  <span className="relative z-10">Spatial UI</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "流动玻璃卡片，多层深度、彩虹边缘折射效果",
       code: `<div className="
-  relative p-6 md:p-8
+  group relative overflow-hidden p-6 md:p-8
   bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
   rounded-[24px]
-  shadow-xl shadow-black/10
+  border border-white/20
+  shadow-[0_12px_30px_rgba(0,0,0,0.18)]
   before:absolute before:inset-0 before:rounded-[24px]
   before:p-[1px] before:-z-10
   before:bg-gradient-to-br before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]
   after:absolute after:inset-[1px] after:rounded-[23px] after:-z-10
   after:bg-gradient-to-b after:from-white/15 after:to-transparent
   [box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]
+  hover:bg-white/15 hover:border-white/40
+  hover:-translate-y-2 hover:scale-[1.01]
+  hover:shadow-[0_28px_64px_rgba(0,0,0,0.35)]
+  transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]
 ">
+  <div className="pointer-events-none absolute -inset-1/2 bg-gradient-to-br from-[#ff2d55]/25 via-[#a855f7]/20 to-[#007aff]/25 blur-3xl opacity-45 transition-all duration-1000 ease-out group-hover:rotate-12 group-hover:scale-110" />
+  <div className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[130%]" />
+
+  <div className="relative z-10">
   <h3 className="text-xl font-semibold text-white mb-2">
     Liquid Glass Card
   </h3>
   <p className="text-white/80">
-    多层玻璃效果，边缘带有彩虹光线折射
+    多层玻璃体积感与流体折射叠加，营造空间计算般的前推深度。
   </p>
+  </div>
 </div>`,
     },
     input: {
@@ -426,6 +438,13 @@ export const liquidGlass: DesignStyle = {
 3. 液态动画：animation: liquid-morph 8s ease-in-out infinite
 4. 发光效果：hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
 5. 压缩反馈：active:scale-[0.98]
+
+## Animation & Interaction Rules
+
+- Fluid Refraction: 通过滑动高光层与内部渐变云团模拟流体折射，不仅模糊，还要有“流动中的光”。
+- Spatial Push: hover 需有轻微前推（scale 约 1.01-1.02）并同步扩散阴影，建议使用 cubic-bezier 物理缓动。
+- Specular Edges: 交互时边框亮度从 border-white/20 提升至 /40，强化玻璃倒角高光感。
+- Silky Squeeze: active 使用柔软压缩（active:scale-95~98）形成硅胶般触感，避免硬切缩放。
 
 ## 自检
 

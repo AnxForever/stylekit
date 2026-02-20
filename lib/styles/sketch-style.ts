@@ -32,6 +32,9 @@ export const sketchStyle: DesignStyle = {
     "阴影使用交叉线条效果而非纯色",
     "元素保留轻微倾斜 rotate-[-1deg] 增加手绘感",
     "使用铅笔灰色 #2c2c2c 作为主色调",
+    "hover 时可模拟铅笔涂黑：从透明底迅速过渡到铅笔灰背景并反白文字",
+    "标题和链接的强调线使用虚线/波浪式手绘下划线而非完美直线",
+    "active 状态强化按压感：减少阴影并增加轻微倾斜抖动",
   ],
 
   dontList: [
@@ -40,6 +43,8 @@ export const sketchStyle: DesignStyle = {
     "禁止使用渐变效果",
     "禁止使用玻璃模糊效果",
     "禁止使用过于饱和的颜色",
+    "禁止长时间平滑动画（手绘反馈应短促直接）",
+    "禁止过度规则的 hover 变化（需保留笔触粗糙感）",
   ],
 
   components: {
@@ -47,37 +52,47 @@ export const sketchStyle: DesignStyle = {
       name: "按钮",
       description: "手绘风格按钮，不规则边框",
       code: `<button className="
-  px-6 py-3
+  px-8 py-3
   bg-transparent
+  text-[#2c2c2c] font-serif italic font-bold tracking-widest
   border-2 border-dashed border-[#2c2c2c]
   rounded-sm
-  text-[#2c2c2c] font-serif italic
+  shadow-[4px_4px_0_rgba(44,44,44,0.15)]
   hover:bg-[#2c2c2c] hover:text-[#f5f0e8]
-  active:rotate-[-1deg]
-  transition-all duration-200
-  relative
+  hover:shadow-[6px_6px_0_rgba(44,44,44,0.25)]
+  hover:-translate-y-1 hover:rotate-1
+  active:translate-y-[4px] active:translate-x-[4px]
+  active:rotate-[-2deg] active:shadow-none
+  transition-all duration-150
 ">
-  Click here
+  Sketch It
 </button>`,
     },
     card: {
       name: "卡片",
       description: "素描本风格卡片",
       code: `<div className="
-  p-6
+  group p-8
   bg-[#f5f0e8]
   border-2 border-[#2c2c2c]
   rounded-sm
-  rotate-[-0.5deg]
+  -rotate-1
   relative
-  shadow-[3px_3px_0_rgba(44,44,44,0.15)]
+  shadow-[5px_5px_0_rgba(44,44,44,0.15)]
+  hover:rotate-0
+  hover:shadow-[8px_8px_0_rgba(44,44,44,0.2)]
+  hover:-translate-y-1
+  transition-all duration-200
+  overflow-hidden
 ">
-  <div className="absolute top-2 right-2 w-3 h-3 rounded-full border border-[#2c2c2c]" />
-  <h3 className="text-xl font-serif italic text-[#2c2c2c] mb-2">
-    Sketch Card
+  <div className="absolute top-4 right-4 w-8 h-8 rounded-[40%_60%_70%_30%] border border-[#2c2c2c] opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300" />
+  <div className="absolute top-4 right-4 w-8 h-8 rounded-[60%_40%_30%_70%] border border-[#2c2c2c] opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 delay-75" />
+
+  <h3 className="text-2xl font-serif italic font-bold text-[#2c2c2c] mb-4">
+    Rough Draft
   </h3>
-  <p className="text-[#666] font-serif text-sm">
-    Drawn with pencil and heart
+  <p className="text-[#555] font-serif leading-relaxed">
+    Drawn with pencil, eraser, and intention. Imperfect lines still tell a clear story.
   </p>
 </div>`,
     },
@@ -269,7 +284,14 @@ export const sketchStyle: DesignStyle = {
 2. 边框为虚线或不规则风格
 3. 文字使用衬线斜体
 4. 元素有轻微倾斜
-5. 整体感觉像手绘素描本`,
+5. 整体感觉像手绘素描本
+
+## Animation & Interaction Rules
+
+- Pencil Shading: hover 时可将线框元素快速涂黑并反白文字，模拟铅笔涂抹。
+- Stroke Jitter: 交互允许轻微旋转和位移抖动，保留手绘笔触不稳定感。
+- Scribble Reveal: 文本强调优先使用虚线/波浪下划线或手绘轨迹样式。
+- Paper Press: active 状态应减少阴影并增强倾斜，表现笔尖压纸阻尼感。`,
 
   examplePrompts: [
     {

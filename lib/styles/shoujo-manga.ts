@@ -38,6 +38,9 @@ export const shoujoManga: DesignStyle = {
     "使用圆角设计（rounded-full 按钮, rounded-2xl 卡片, rounded-3xl 面板）",
     "保持浅色背景（珍珠白 #fff5f7, 白色 #ffffff）",
     "使用漫画分格的不对称网格排版（grid-cols-12 span 混合）",
+    "交互采用柔和膨胀和粉色大光晕，模拟少女漫画心跳感（Dokidoki Bounce）",
+    "网点纹理在 hover 时可微幅提亮或轻微位移，增强翻页感",
+    "active 状态使用柔软回弹和低冲击反馈，保持梦幻基调",
   ],
 
   dontList: [
@@ -47,6 +50,8 @@ export const shoujoManga: DesignStyle = {
     "禁止使用等宽字体 font-mono",
     "禁止使用强烈的硬阴影或 RGB 分离阴影",
     "禁止使用纯黑背景或深灰背景",
+    "禁止使用短促生硬的 100ms 动画和机械下沉反馈",
+    "禁止用高对比硬光代替柔焦粉彩阴影",
   ],
 
   components: {
@@ -54,43 +59,51 @@ export const shoujoManga: DesignStyle = {
       name: "按钮",
       description: "少女漫画风格药丸按钮，带粉色光晕阴影",
       code: `<button className="
-  px-7 py-3
+  px-10 py-3.5
   bg-[#ffb7c5] text-white
-  font-sans font-medium
+  font-sans font-bold tracking-wide
   rounded-full
-  shadow-[0_4px_15px_#ffb7c560]
+  shadow-[0_8px_20px_rgba(255,183,197,0.4)]
+  hover:bg-[#ff9eb3]
+  hover:shadow-[0_15px_30px_rgba(255,183,197,0.6)]
+  hover:-translate-y-1
   hover:scale-105
-  hover:shadow-[0_6px_20px_#ffb7c580]
-  transition-all duration-300
+  active:scale-95
+  active:shadow-[0_4px_10px_rgba(255,183,197,0.4)]
+  transition-all duration-300 ease-out
 ">
-  Sakura
+  Sakura Bloom
 </button>`,
     },
     card: {
       name: "卡片",
       description: "漫画面板卡片，带网点纹理和花朵边角装饰",
       code: `<div className="
-  relative overflow-hidden
-  p-8
+  group relative overflow-hidden
+  p-10
   bg-[#fff5f7]
-  border-2 border-[#ffb7c5]/20
-  rounded-2xl
-  shadow-[0_4px_20px_#ffb7c520]
+  border-[3px] border-[#ffb7c5]/30
+  rounded-3xl
+  shadow-[0_10px_30px_rgba(255,183,197,0.15)]
+  hover:border-[#ffb7c5]/60
+  hover:shadow-[0_20px_50px_rgba(255,183,197,0.3)]
+  hover:-translate-y-2
+  transition-all duration-500 ease-out
 ">
-  <!-- Screentone dot pattern background -->
-  <div className="absolute inset-0 pointer-events-none"
+  <div className="absolute inset-0 pointer-events-none group-hover:opacity-10 transition-opacity duration-500"
     style={{
-      backgroundImage: "radial-gradient(circle, #ffb7c5 0.6px, transparent 0.6px)",
-      backgroundSize: "10px 10px",
-      opacity: 0.06,
+      backgroundImage: "radial-gradient(circle, #ffb7c5 1.5px, transparent 1px)",
+      backgroundSize: "12px 12px",
+      opacity: 0.05,
     }}
   />
   <div className="relative z-10">
-    <h3 className="text-xl font-sans font-bold text-[#ffb7c5] mb-3">
-      Sakura Card
+    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#ffb7c5] to-[#f5a5b8] shadow-inner group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 ease-out" />
+    <h3 className="text-2xl font-sans font-bold text-[#ff9eb3] mb-3 group-hover:text-[#ff7a98] transition-colors duration-300 text-center">
+      Spring Memory
     </h3>
-    <p className="text-[#4a5568]/50 font-sans leading-relaxed">
-      A gentle breeze carries cherry blossoms...
+    <p className="text-[#718096] font-medium leading-relaxed group-hover:text-[#4a5568] transition-colors duration-300 text-center">
+      A gentle breeze carries cherry blossoms and soft daydreams across the page.
     </p>
   </div>
 </div>`,
@@ -302,7 +315,13 @@ Primary:
 - Sparkle stars: gold #fde68a dots with glow shadow (shadow-[0_0_8px_#fde68a])
 - Lace scallop borders: radial-gradient wave pattern at top/bottom of form cards
 - Manga panel grid: asymmetric grid-cols-12 layout with col-span mixing for panel arrangement
-- Cherry blossom petals: rotated rounded-[50%_0_50%_50%] divs as floating decorations`,
+- Cherry blossom petals: rotated rounded-[50%_0_50%_50%] divs as floating decorations
+
+## Animation & Interaction Rules
+- Dokidoki Bounce: hover 采用柔和 scale-105 和缓慢膨胀，表现心跳般节奏。
+- Soft Focus Glow: 使用大范围低透明粉色阴影，避免硬边高对比发光。
+- Screentone Shimmer: 网点纹理在 hover 时提升不透明度或轻微位移，增强漫画翻页感。
+- Soft Squish: active 仅做温和 scale-95，不使用机械式强下沉。`,
 
   examplePrompts: [
     {

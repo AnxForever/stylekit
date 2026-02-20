@@ -47,37 +47,38 @@ export const geometricBold: DesignStyle = {
   components: {
     button: {
       name: "按钮",
-      description: "Geometric Bold 风格的按钮",
+      description: "Geometric Bold 风格按钮，强调硬切换色块与几何碰撞反馈",
       code: `// Primary Button - Square
-<button className="px-8 py-4 bg-black text-white font-bold uppercase tracking-widest hover:bg-red-500 transition-colors duration-200">
-  Explore
+<button className="group relative px-8 py-4 bg-black text-white border-4 border-black font-bold uppercase tracking-widest transition-transform duration-100 ease-linear hover:bg-red-500 hover:-translate-x-1 hover:-translate-y-1 active:translate-x-1 active:translate-y-1">
+  <span className="absolute inset-0 -z-10 translate-x-2 translate-y-2 bg-blue-600 transition-transform duration-100 ease-linear group-hover:translate-x-3 group-hover:translate-y-3 group-active:translate-x-1 group-active:translate-y-1" />
+  <span className="relative">Explore</span>
 </button>
 
 // Circle Button
-<button className="w-24 h-24 bg-blue-600 text-white rounded-full font-bold uppercase text-xs tracking-widest hover:bg-black transition-colors duration-200">
+<button className="w-24 h-24 bg-blue-600 text-white rounded-full border-4 border-black font-bold uppercase text-xs tracking-widest transition-all duration-100 ease-linear hover:bg-black hover:text-white hover:scale-[1.08] active:scale-95">
   Click
 </button>
 
 // Outlined Button
-<button className="px-8 py-4 bg-white text-black border-4 border-black font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-200">
+<button className="px-8 py-4 bg-white text-black border-4 border-black font-bold uppercase tracking-widest transition-all duration-100 ease-linear hover:bg-black hover:text-white hover:translate-x-1 hover:-translate-y-1 active:translate-y-1 active:translate-x-1">
   View Work
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Geometric Bold 风格的卡片",
-      code: `<div className="relative bg-white border-4 border-black p-8 group">
+      description: "Geometric Bold 风格卡片，强调形状突变与结构位移",
+      code: `<div className="group relative bg-white border-4 border-black p-8 transition-all duration-100 ease-linear hover:bg-yellow-300 hover:-translate-x-2 hover:-translate-y-2">
   {/* Decorative shape */}
-  <div className="absolute -top-6 -right-6 w-12 h-12 bg-red-500 rotate-45 group-hover:rotate-90 transition-transform duration-300" />
+  <div className="absolute -top-6 -right-6 w-12 h-12 bg-red-500 rotate-45 border-4 border-black transition-all duration-100 ease-linear group-hover:scale-150 group-hover:rotate-90 group-hover:bg-blue-600" />
 
-  <span className="text-xs font-bold uppercase tracking-[0.3em]">01</span>
-  <h3 className="text-3xl font-black uppercase mt-2 mb-4">Project Name</h3>
-  <p className="text-gray-600 leading-relaxed">
-    Bold geometric design with strong visual impact.
+  <span className="inline-block text-xs font-bold uppercase tracking-[0.3em] bg-black text-white px-2 py-1 transition-colors duration-100 ease-linear group-hover:bg-red-500">01</span>
+  <h3 className="text-4xl font-black uppercase mt-3 mb-4 leading-none">Project Name</h3>
+  <p className="text-black/70 leading-relaxed">
+    Bold geometric design with hard color cuts and shape-driven motion.
   </p>
 
-  {/* Bottom accent */}
-  <div className="absolute bottom-0 left-0 w-full h-2 bg-black" />
+  {/* Bottom accent bar */}
+  <div className="absolute bottom-0 left-0 h-2 w-1/4 bg-black transition-all duration-100 ease-linear group-hover:w-full group-hover:bg-blue-600" />
 </div>`,
     },
     input: {
@@ -146,7 +147,14 @@ COLOR RULES:
 TYPOGRAPHY:
 - Headings: font-black uppercase
 - Labels: text-xs tracking-[0.3em]
-- Numbers: Often used as design elements`,
+- Numbers: Often used as design elements
+
+## Animation & Interaction Rules
+
+- Blocky Impact: 交互使用纯色硬切与短位移反馈，避免柔和透明度过渡。
+- Shape Snapping: 几何装饰在 hover 时可瞬时旋转/放大，形成结构突变感。
+- Heavy Press: active 状态优先用位移与层级回弹表达按压，不依赖柔和缩放。
+- Linear & Fast: 统一使用 duration-100 + ease-linear，拒绝弹簧感和慢速拖尾。`,
 
   examplePrompts: [
     {

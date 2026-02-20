@@ -54,11 +54,14 @@ export const neoBrutalistSoft: DesignStyle = {
   bg-pink-400 text-white font-bold
   px-4 py-2 md:px-6 md:py-3
   border-2 border-gray-800
-  shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]
-  md:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)]
-  hover:shadow-none
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  transition-all
+  shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)]
+  md:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)]
+  hover:bg-pink-300
+  hover:shadow-[6px_6px_0px_0px_rgba(244,114,182,0.35),10px_10px_14px_rgba(244,114,182,0.2)]
+  hover:-translate-y-0.5 hover:-translate-x-0.5
+  active:translate-x-[4px] active:translate-y-[4px]
+  active:shadow-none
+  transition-all duration-200 ease-out
   text-sm md:text-base
 ">
   柔和按钮
@@ -70,9 +73,11 @@ export const neoBrutalistSoft: DesignStyle = {
   px-4 py-2 md:px-6 md:py-3
   border-2 border-gray-800
   shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)]
-  hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]
-  hover:bg-lime-300
-  transition-all
+  hover:bg-lime-200
+  hover:shadow-[6px_6px_0px_0px_rgba(163,230,53,0.3),10px_10px_14px_rgba(163,230,53,0.2)]
+  hover:-translate-y-0.5 hover:-translate-x-0.5
+  active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
+  transition-all duration-200 ease-out
 ">
   次要按钮
 </button>`,
@@ -81,19 +86,21 @@ export const neoBrutalistSoft: DesignStyle = {
       name: "卡片",
       description: "柔和阴影的卡片",
       code: `<div className="
+  group
   bg-white
   border-2 border-gray-800
-  shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)]
-  md:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)]
-  hover:shadow-[6px_6px_0px_0px_rgba(244,114,182,0.4)]
-  md:hover:shadow-[8px_8px_0px_0px_rgba(244,114,182,0.4)]
+  shadow-[4px_4px_0px_0px_rgba(0,0,0,0.12)]
+  md:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.12)]
+  hover:bg-lime-50/70
+  hover:shadow-[6px_6px_0px_0px_rgba(163,230,53,0.32),10px_12px_18px_rgba(163,230,53,0.2)]
+  md:hover:shadow-[8px_8px_0px_0px_rgba(163,230,53,0.32),12px_14px_20px_rgba(163,230,53,0.2)]
   hover:-translate-y-1
-  transition-all duration-300
+  transition-all duration-300 ease-out
   p-4 md:p-6
 ">
-  <h3 className="font-bold text-lg md:text-xl text-gray-800 mb-2">卡片标题</h3>
+  <h3 className="font-bold text-lg md:text-xl text-gray-800 mb-2 transition-colors duration-200 group-hover:text-lime-700">卡片标题</h3>
   <p className="font-mono text-sm md:text-base text-gray-600">
-    柔和的卡片描述文字
+    柔和纸张质感，保留野兽派结构但降低冲击感
   </p>
 </div>`,
     },
@@ -245,6 +252,13 @@ body {
 - 绿色：#a3e635（lime-400）
 - 蓝色：#38bdf8（sky-400）
 - 黄色：#fbbf24（amber-400）
+
+## Animation & Interaction Rules
+
+- Paper Lift: 悬停时使用小幅 -translate 与半透明彩色阴影扩散，模拟厚纸卡片被轻轻抬起。
+- Gentle Snap: 点击时仍保留“阴影归零 + 位移”的野兽派血统，但过渡必须 duration-200 ease-out，避免暴力顿挫。
+- Pastel Shifts: 交互色彩在灰、粉、浅绿之间平滑切换，不使用高饱和纯色闪烁。
+- Soft Outlines: 输入框/交互焦点优先使用半透明彩色硬边阴影，而不是更粗的深色边框突变。
 
 ## 禁止
 

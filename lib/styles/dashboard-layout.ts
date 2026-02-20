@@ -53,7 +53,9 @@ export const dashboardLayout: DesignStyle = {
   rounded-lg
   font-medium text-sm
   hover:bg-[#4f46e5]
-  transition-colors
+  active:scale-[0.97]
+  focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:ring-offset-1
+  transition-all duration-150 ease-out
 ">
   Export Data
 </button>`,
@@ -61,19 +63,22 @@ export const dashboardLayout: DesignStyle = {
     card: {
       name: "KPI 卡片",
       description: "关键指标展示卡片",
-      code: `<div className="
-  p-6
+      code: `<div className="group p-6
   bg-white
   rounded-xl
   shadow-sm
   border border-gray-100
+  hover:bg-gray-50
+  hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5
+  transition-all duration-150 ease-out
+  cursor-pointer
 ">
   <div className="flex items-center justify-between mb-4">
-    <span className="text-sm font-medium text-gray-500">Total Revenue</span>
-    <span className="text-xs font-medium text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-full">+12.5%</span>
+    <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">Total Revenue</span>
+    <span className="text-xs font-medium text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-full group-hover:bg-[#10b981]/20 transition-colors duration-150">+12.5%</span>
   </div>
-  <div className="text-3xl font-bold text-[#111827]">$48,230</div>
-  <p className="text-sm text-gray-500 mt-1">vs. $42,890 last month</p>
+  <div className="text-3xl font-bold text-[#111827] origin-left group-hover:text-[#4f46e5] group-hover:scale-[1.02] transition-all duration-150">$48,230</div>
+  <p className="text-sm text-gray-500 mt-1 group-hover:text-gray-600 transition-colors duration-150">vs. $42,890 last month</p>
 </div>`,
     },
     input: {
@@ -309,7 +314,14 @@ export const dashboardLayout: DesignStyle = {
 2. KPI卡片数据清晰
 3. 图表区域比例适当
 4. 状态颜色编码正确
-5. 响应式适配完善`,
+5. 响应式适配完善
+
+## Animation & Interaction Rules
+
+- Crisp SaaS Feel: 所有微交互应快速清晰，优先使用 \`duration-150\` + \`ease-out\`。
+- KPI Focus: KPI 卡片 hover 时可轻微上浮，并通过 \`group-hover\` 让核心数字微放大或变色，强化视线聚焦。
+- Hover Hinting: 数据卡片、数据行、可操作面板在悬停时必须提供明确底色反馈（如 \`hover:bg-gray-50\`）。
+- Action Precision: 按钮点击应有明确按下反馈（如 \`active:scale-[0.97]\`），并保留可见 focus ring 以满足 a11y。`,
 
   examplePrompts: [
     {

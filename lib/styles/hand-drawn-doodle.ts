@@ -53,16 +53,18 @@ export const handDrawnDoodle: DesignStyle = {
       description: "Hand-Drawn Doodle 风格按钮 - 虚线边框标记笔阴影",
       code: `<button className="
   px-6 py-3
-  bg-[#2c2c2c] text-[#fffef5]
-  font-sans font-semibold tracking-wide
+  bg-[#fffef5] text-[#2c2c2c]
+  font-sans font-bold tracking-widest uppercase
   rounded-sm
   border-2 border-dashed border-[#2c2c2c]
-  shadow-[3px_3px_0px_#ff6b6b]
-  hover:translate-x-[1px] hover:translate-y-[1px]
-  hover:shadow-[2px_2px_0px_#ff6b6b]
-  hover:rotate-[-0.5deg]
-  active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-  transition-all duration-200
+  shadow-[4px_4px_0px_#ff6b6b]
+  hover:bg-[#2c2c2c] hover:text-[#fffef5]
+  hover:-translate-y-1 hover:translate-x-[1px]
+  hover:rotate-[1deg]
+  hover:shadow-[6px_6px_0px_#4ecdc4]
+  active:translate-x-[3px] active:translate-y-[3px]
+  active:shadow-none active:scale-[0.98] active:rotate-0
+  transition-all duration-150 ease-linear
 ">
   Doodle!
 </button>`,
@@ -71,21 +73,23 @@ export const handDrawnDoodle: DesignStyle = {
       name: "卡片",
       description: "Hand-Drawn Doodle 风格卡片 - 笔记本纸张虚线边框",
       code: `<div className="
+  group
   p-8
   bg-[#fffef5]
-  border-2 border-dashed border-[#2c2c2c]
+  border-[3px] border-dashed border-[#2c2c2c]
   rounded-sm
-  shadow-[4px_4px_0px_#4ecdc4]
-  hover:shadow-[6px_6px_0px_#4ecdc4]
-  hover:rotate-[0.5deg]
-  transition-all duration-200
+  shadow-[5px_5px_0px_#ffd93d]
+  hover:-translate-y-1 hover:rotate-[-1deg]
+  hover:shadow-[8px_8px_0px_#ff6b6b]
+  transition-all duration-150 ease-linear
 ">
-  <h3 className="text-2xl font-sans font-bold text-[#2c2c2c] mb-3">
+  <h3 className="text-3xl font-sans font-black text-[#2c2c2c] mb-3 transform -skew-x-3 group-hover:skew-x-0 transition-transform duration-150">
     Sketch Note
   </h3>
-  <p className="text-[#2c2c2c]/55 font-sans">
-    Scribbled with love and creativity
+  <p className="text-[#2c2c2c]/70 font-sans font-semibold leading-relaxed group-hover:text-[#2c2c2c] transition-colors duration-150">
+    Scribbled with love, coffee, and a perfectly imperfect process.
   </p>
+  <div className="mt-4 h-1 w-1/2 bg-[#4ecdc4] transform -rotate-1 transition-all duration-200 group-hover:w-full group-hover:bg-[#ff6b6b]" />
 </div>`,
     },
     input: {
@@ -281,7 +285,14 @@ Primary:
 - Subtle element rotations for sketchy feel
 - Spiral binding holes on left edge
 - Coffee stain ring decorations
-- Hand-drawn stars and squiggles via SVG`,
+- Hand-drawn stars and squiggles via SVG
+
+## Animation & Interaction Rules
+
+- Stop-Motion Jitter: hover 通过微小旋转与位移制造手绘颤动感，避免平滑机械运动。
+- Ink Filling: 可增强边框粗细或颜色对比来模拟“补笔”，但仍保持 border-dashed 手绘语义。
+- Offset Smudge: 仅使用硬边偏移阴影，hover 时改变偏移量与标记笔颜色，像二次描边。
+- Paper Press: active 状态压平阴影并轻微缩放（如 scale-[0.98]），呈现手指按纸反馈。`,
 
   examplePrompts: [
     {

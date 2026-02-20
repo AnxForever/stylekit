@@ -49,33 +49,33 @@ export const solarpunk: DesignStyle = {
       name: "按钮",
       description: "Solarpunk 风格的有机自然按钮",
       code: `// Leaf Primary
-<button className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-2xl shadow-lg shadow-green-300/40 hover:shadow-xl hover:shadow-green-300/50 hover:scale-105 transition-all duration-300 font-medium">
+<button className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-2xl shadow-[0_8px_20px_rgba(52,211,153,0.3)] hover:from-amber-400 hover:to-yellow-500 hover:shadow-[0_12px_32px_rgba(251,191,36,0.4)] hover:-translate-y-1 hover:rotate-1 active:scale-95 active:opacity-95 transition-all duration-500 ease-out font-medium">
   Grow Together
 </button>
 
 // Solar Gold
-<button className="px-6 py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 rounded-2xl shadow-lg shadow-amber-300/40 hover:shadow-xl hover:shadow-amber-300/50 hover:scale-105 transition-all duration-300 font-medium">
+<button className="px-6 py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 rounded-2xl shadow-[0_8px_20px_rgba(251,191,36,0.3)] hover:from-yellow-300 hover:to-amber-400 hover:shadow-[0_14px_34px_rgba(251,191,36,0.45)] hover:-translate-y-1 hover:-rotate-1 active:scale-95 active:opacity-95 transition-all duration-500 ease-out font-medium">
   Harvest Energy
 </button>
 
 // Outline Organic
-<button className="px-6 py-3 bg-transparent border-2 border-green-400 text-green-600 rounded-2xl hover:bg-green-50 hover:shadow-lg hover:shadow-green-200/40 transition-all duration-300 font-medium">
+<button className="px-6 py-3 bg-white/50 backdrop-blur-sm border-2 border-green-400 text-green-600 rounded-2xl hover:bg-green-50/80 hover:shadow-[0_10px_24px_rgba(74,222,128,0.28)] hover:-translate-y-0.5 active:opacity-90 transition-all duration-500 ease-out font-medium">
   Explore Nature
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Solarpunk 风格的自然生态卡片",
-      code: `<div className="bg-white/80 backdrop-blur-sm border border-green-200 rounded-3xl p-6 shadow-lg shadow-green-100/50 hover:shadow-xl hover:shadow-green-200/40 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+      code: `<div className="group bg-white/80 backdrop-blur-sm border border-green-200 rounded-3xl p-6 shadow-lg shadow-green-100/50 hover:shadow-[0_20px_48px_rgba(52,211,153,0.24)] hover:-translate-y-2 hover:rotate-1 hover:scale-[1.01] transition-all duration-700 ease-in-out relative overflow-hidden">
   {/* Organic decoration */}
-  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-100 to-transparent rounded-bl-full" />
+  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-100 to-transparent rounded-bl-full scale-100 group-hover:scale-150 group-hover:from-amber-200/70 transition-all duration-700 ease-in-out" />
 
   <div className="relative">
     <div className="flex items-center gap-3 mb-4">
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center group-hover:from-amber-400 group-hover:to-yellow-500 transition-colors duration-500">
         <Leaf className="w-4 h-4 text-white" />
       </div>
-      <h3 className="text-green-700 font-semibold text-sm uppercase tracking-wide">Eco Module</h3>
+      <h3 className="text-green-700 font-semibold text-sm uppercase tracking-wide group-hover:text-amber-700 transition-colors duration-500">Eco Module</h3>
     </div>
     <h4 className="text-gray-800 text-xl font-bold mb-3">
       Solar Garden
@@ -160,7 +160,14 @@ SPECIAL EFFECTS:
 - Organic gradient decorations
 - Subtle backdrop blur for depth
 - Hover lift with shadow enhancement
-- Smooth transitions duration-300`,
+- Smooth transitions duration-300
+
+## Animation & Interaction Rules
+
+- Phototropic Lift: 元素悬停时以上浮加微倾斜模拟向光生长，幅度保持轻微避免失稳。
+- Solar Flare: 主按钮 hover 时从绿色向暖金提亮，并释放更大暖色光晕。
+- Organic Unfolding: 装饰斑块和叶形元素用较长时长展开，推荐 duration-700 与 ease-in-out。
+- Soft Glass Resonance: active 状态优先通过透明度和阴影密度变化反馈，不使用机械硬压感。`,
 
   examplePrompts: [
     {

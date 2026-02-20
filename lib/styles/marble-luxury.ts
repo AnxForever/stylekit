@@ -59,16 +59,21 @@ export const marbleLuxury: DesignStyle = {
         "大理石奢华按钮，细边框金色描边、衬线字体和优雅 hover 过渡",
       code: `<button
   className="
-    px-10 py-4
+    group
+    px-12 py-4
     bg-[#1a1a1a]
-    text-[#f8f6f3] font-serif tracking-[0.2em] uppercase
+    text-[#f8f6f3] font-serif tracking-[0.16em]
     border border-[#c9a96e]/40
-    hover:bg-[#c9a96e] hover:text-[#1a1a1a]
-    hover:border-[#c9a96e]
-    transition-all duration-500 ease-in-out
+    shadow-[0_10px_28px_rgba(0,0,0,0.28)]
+    hover:border-[#c9a96e]/70
+    hover:shadow-[0_18px_40px_rgba(0,0,0,0.42)]
+    active:shadow-[inset_0_6px_12px_rgba(0,0,0,0.55),0_10px_28px_rgba(0,0,0,0.28)]
+    transition-all duration-700 ease-out
   "
 >
-  Discover
+  <span className="bg-gradient-to-r from-[#c9a96e] via-[#f1dbc1] to-[#c9a96e] bg-[length:200%_auto] bg-clip-text text-transparent transition-[background-position,color] duration-700 ease-out group-hover:bg-right">
+    Exclusive
+  </span>
 </button>`,
     },
     card: {
@@ -76,17 +81,23 @@ export const marbleLuxury: DesignStyle = {
       description:
         "大理石奢华卡片，温暖白底、金色细边框和大量内边距留白",
       code: `<div className="
+  group
+  relative overflow-hidden
   p-12
   bg-[#f8f6f3]
   border border-[#c9a96e]/20
-  shadow-[0_2px_20px_rgba(0,0,0,0.04)]
-  hover:shadow-[0_4px_30px_rgba(0,0,0,0.06)]
-  transition-all duration-500
+  shadow-[0_10px_28px_rgba(0,0,0,0.08)]
+  hover:border-[#c9a96e]/45
+  hover:shadow-[0_16px_40px_rgba(0,0,0,0.14)]
+  transition-all duration-700
 ">
+  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,169,110,0.08),transparent_55%)] opacity-40 transition-opacity duration-700 group-hover:opacity-60" />
+
+  <div className="relative z-10">
   <span className="text-xs font-serif text-[#c9a96e] tracking-[0.3em] uppercase mb-6 block">
     Collection
   </span>
-  <h3 className="text-2xl font-serif text-[#1a1a1a] mb-4 tracking-wide">
+  <h3 className="text-2xl font-serif text-[#1a1a1a] mb-4 tracking-wide bg-gradient-to-r from-[#8a7968] via-[#c9a96e] to-[#8a7968] bg-[length:200%_auto] bg-clip-text text-transparent transition-[background-position] duration-1000 group-hover:bg-right">
     Carrara White
   </h3>
   <p className="text-[#8a7968] font-serif text-sm leading-relaxed mb-6">
@@ -96,6 +107,7 @@ export const marbleLuxury: DesignStyle = {
     <span className="text-xs font-serif text-[#8a7968] tracking-[0.2em] uppercase">
       View Details &rarr;
     </span>
+  </div>
   </div>
 </div>`,
     },
@@ -280,7 +292,14 @@ Primary:
 2. Gold line separators: 1px border-t border-[#c9a96e]/20 or custom gradient lines
 3. Extreme whitespace: p-12, py-20, generous margins for breathing room
 4. Underline-on-hover: animated gold underlines expanding from center
-5. Frame borders: fine gold border inset from page edges as decorative framing`,
+5. Frame borders: fine gold border inset from page edges as decorative framing
+
+## Animation & Interaction Rules
+
+- Monumental Weight: 元素位置保持稳定，避免 hover 位移和缩放，重量感通过光影层次变化体现。
+- Foil Stamping Shift: 金色/玫瑰金文字在 hover 时可做缓慢流光位移（bg-position），模拟金属抛光反射。
+- Cold & Rigid: active 状态不做弹性形变，使用轻微 inset 阴影表达冷硬材质被按压的触感。
+- Polish Gleam: 卡片仅做低频、低幅度亮度与阴影变化（duration-700），维持大理石抛光质地。`,
 
   examplePrompts: [
     {
