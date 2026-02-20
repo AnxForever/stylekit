@@ -35,6 +35,7 @@ Core principles:
     "Include terminal/data readout style text with monospace font",
     "Use hexagonal grid background pattern instead of square grid",
     "Keep all backgrounds dark (#0f0f1a) with semi-transparent overlays",
+    "Use cockpit-like micro interactions: fast hover lift, active press, and glow amplification within 180-280ms",
   ],
 
   dontList: [
@@ -43,6 +44,8 @@ Core principles:
     "Never use rounded-full - all shapes must be angular/geometric",
     "Never use light or white backgrounds as primary surfaces",
     "Never use standard shadow-sm/md/lg - only neon glow shadows",
+    "Never use bouncy spring animations or playful elastic motion",
+    "Never use slow cinematic transitions over 400ms for controls",
   ],
 
   components: {
@@ -50,36 +53,45 @@ Core principles:
       name: "Holographic Button",
       description: "Button with vertical scan line texture and multi-layer neon glow, styled like a cockpit control",
       code: `<button className="
-  relative px-6 py-3 overflow-hidden
-  bg-[#7c3aed] text-white
+  group relative px-6 py-3 overflow-hidden
+  bg-[#7c3aed] text-white rounded-none
   font-sans font-bold uppercase tracking-widest
   border border-[#06d6a0]/50
   shadow-[0_0_10px_rgba(124,58,237,0.3),0_0_20px_rgba(124,58,237,0.15)]
-  hover:shadow-[0_0_15px_rgba(124,58,237,0.5),0_0_30px_rgba(124,58,237,0.25)]
+  hover:-translate-y-[1px] hover:scale-[1.01]
+  hover:shadow-[0_0_16px_rgba(124,58,237,0.55),0_0_34px_rgba(6,214,160,0.22)]
   hover:border-[#06d6a0]
-  transition-all duration-300
+  active:translate-y-[2px] active:scale-[0.98]
+  active:shadow-[0_0_10px_rgba(124,58,237,0.25),0_0_18px_rgba(6,214,160,0.12)]
+  transition-[transform,box-shadow,border-color] duration-220 ease-out
 ">
   <span className="relative z-10">EXECUTE</span>
-  <div className="absolute inset-0 opacity-10" style={{
+  <div className="pointer-events-none absolute inset-0 opacity-10" style={{
     backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 3px)"
   }} />
+  <div className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-[#38bdf8]/30 to-transparent skew-x-[-20deg] transition-transform duration-300 group-hover:translate-x-[420%]" />
 </button>`,
     },
     card: {
       name: "HUD Panel",
       description: "Card with angled mecha-frame corners, scan line overlay, and data readout header",
       code: `<div className="
-  relative p-6 overflow-hidden
+  group relative p-6 overflow-hidden
   bg-[#0f0f1a]/90
   border border-[#7c3aed]/30
   backdrop-blur-sm
   shadow-[0_0_20px_rgba(124,58,237,0.2)]
-  hover:shadow-[0_0_30px_rgba(124,58,237,0.4)]
-  hover:border-[#7c3aed]/60
-  transition-all duration-300
+  hover:-translate-y-[2px]
+  hover:shadow-[0_0_34px_rgba(124,58,237,0.45),0_0_56px_rgba(6,214,160,0.12)]
+  hover:border-[#06d6a0]/70
+  active:translate-y-[1px]
+  transition-[transform,box-shadow,border-color] duration-250 ease-out
 " style={{ clipPath: "polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))" }}>
-  <div className="absolute top-0 left-0 w-4 h-4 border-l border-t border-[#06d6a0]/60" />
-  <div className="absolute top-0 right-4 w-4 h-4 border-r border-t border-[#06d6a0]/60" />
+  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100" style={{
+    backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(56,189,248,0.08) 2px, rgba(56,189,248,0.08) 3px)"
+  }} />
+  <div className="absolute top-0 left-0 w-4 h-4 border-l border-t border-[#06d6a0]/60 transition-colors duration-200 group-hover:border-[#06d6a0]" />
+  <div className="absolute top-0 right-4 w-4 h-4 border-r border-t border-[#06d6a0]/60 transition-colors duration-200 group-hover:border-[#06d6a0]" />
   <h3 className="text-xl font-bold text-[#06d6a0] uppercase tracking-wider mb-2">
     DATA PANEL
   </h3>
@@ -237,6 +249,14 @@ Core principles:
 - Monospace terminal text for data readouts
 - Hexagonal grid background pattern
 - Multi-layer neon glow: shadow-[0_0_Xpx_rgba(...),0_0_Ypx_rgba(...)]
+
+## Animation & Interaction Rules
+
+- Motion must feel like cockpit controls: quick and precise, usually 160-280ms with ease-out
+- Hover states should amplify HUD feedback through slight lift (1-2px), stronger neon glow, and brighter bracket borders
+- Active states should feel tactile: brief press-down (1-2px or scale to 0.97-0.99) with compressed glow
+- Use directional holographic sweeps or scan pulses triggered by hover/focus; keep them short and state-based
+- Avoid bouncy spring motion, long cinematic fades, or decorative animations that reduce data legibility
 
 ## Color Palette
 

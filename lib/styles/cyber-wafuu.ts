@@ -36,6 +36,8 @@ Core principles:
     "Use torii gate shape for navigation framing",
     "Add circuit trace connecting lines between elements",
     "Layer traditional patterns with digital overlay effects",
+    "Use restrained interaction motion: subtle hover lift (1-2px) with circuit-glow amplification",
+    "Trigger directional circuit sweeps or shoji-line brightening on hover/focus for ritual feedback",
   ],
 
   dontList: [
@@ -44,6 +46,8 @@ Core principles:
     "No Western serif fonts",
     "No rounded-full borders",
     "No light backgrounds (bg-white, bg-gray-50)",
+    "No bouncy spring motion or large scale transforms",
+    "No slow dreamy transitions beyond 320ms on interactive controls",
   ],
 
   components: {
@@ -51,34 +55,42 @@ Core principles:
       name: "Button",
       description: "Button with seigaiha pattern background and neon glow border",
       code: `<button className="
-  relative px-6 py-3
-  bg-[#1e3a5f] text-[#e2e8f0]
+  group relative px-6 py-3 overflow-hidden
+  bg-[#1e3a5f] text-[#e2e8f0] rounded-none
   font-sans font-semibold tracking-wider
   border border-[#1e3a5f]/60
   shadow-[0_0_12px_rgba(30,58,95,0.4)]
-  hover:shadow-[0_0_20px_rgba(56,189,248,0.4)]
+  hover:-translate-y-[1px]
+  hover:shadow-[0_0_20px_rgba(56,189,248,0.4),0_0_32px_rgba(201,162,39,0.16)]
   hover:border-[#38bdf8]/60
-  transition-all duration-300
+  active:translate-y-[1px]
+  active:shadow-[0_0_12px_rgba(56,189,248,0.28)]
+  transition-[transform,box-shadow,border-color] duration-250 ease-out
 ">
-  Execute
+  <span className="relative z-10">Execute</span>
+  <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-[#38bdf8]/20 to-transparent skew-x-[-20deg] transition-transform duration-300 group-hover:translate-x-[420%]" />
 </button>`,
     },
     card: {
       name: "Card",
       description: "Shoji grid frame card with kintsugi gold accent lines",
       code: `<div className="
-  relative p-8
+  group relative p-8
   bg-[#080814]
+  rounded-none
   border border-[#1e3a5f]/30
   shadow-[0_0_15px_rgba(30,58,95,0.2)]
-  hover:shadow-[0_0_20px_rgba(56,189,248,0.3)]
-  hover:border-[#38bdf8]/40
-  transition-all duration-300
+  hover:-translate-y-[2px]
+  hover:shadow-[0_0_24px_rgba(56,189,248,0.35),0_0_36px_rgba(201,162,39,0.16)]
+  hover:border-[#38bdf8]/45
+  active:translate-y-[1px]
+  transition-[transform,box-shadow,border-color] duration-280 ease-out
 ">
-  <div className="absolute top-0 left-1/3 w-px h-full bg-[#1e3a5f]/15" />
-  <div className="absolute top-0 left-2/3 w-px h-full bg-[#1e3a5f]/15" />
-  <div className="absolute top-1/2 left-0 w-full h-px bg-[#1e3a5f]/10" />
-  <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#c9a227]/30 to-transparent" />
+  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100 bg-[linear-gradient(135deg,rgba(56,189,248,0.08),transparent_45%,rgba(201,162,39,0.05))]" />
+  <div className="absolute top-0 left-1/3 w-px h-full bg-[#1e3a5f]/15 transition-opacity duration-200 group-hover:opacity-70" />
+  <div className="absolute top-0 left-2/3 w-px h-full bg-[#1e3a5f]/15 transition-opacity duration-200 group-hover:opacity-70" />
+  <div className="absolute top-1/2 left-0 w-full h-px bg-[#1e3a5f]/10 transition-opacity duration-200 group-hover:opacity-70" />
+  <div className="absolute top-2 left-2 right-2 h-px bg-gradient-to-r from-transparent via-[#c9a227]/30 to-transparent transition-opacity duration-200 group-hover:opacity-80" />
   <div className="relative z-10">
     <h3 className="text-2xl font-sans font-bold text-[#38bdf8] tracking-wider mb-3">
       SEIGAIHA
@@ -250,6 +262,14 @@ Core principles:
 - Circuit trace line connections between elements
 - Electric blue accent: #38bdf8 with glow effects
 - Vermillion #c41e3a and gold #c9a227 for traditional accents
+
+## Animation & Interaction Rules
+
+- Motion should feel ceremonial and precise, not playful: keep transitions in the 200-320ms range with ease-out
+- Hover should use subtle lift (1-2px), circuit-glow expansion, and shoji line brightening
+- Active states should compress gently (press-down 1px or scale 0.98-0.99) while tightening glow
+- Prefer directional sweeps (circuit trace / wave shimmer) triggered by hover or focus, then stop
+- Avoid infinite decorative loops on core controls, bounce springs, or oversized transforms that break the calm discipline
 
 ## Color Palette
 

@@ -38,6 +38,7 @@ export const cubism: DesignStyle = {
     "通过 z-index 和重叠元素模拟多视角效果",
     "文字使用 font-bold 和 uppercase 强调几何感",
     "使用 clip-path 或 transform 创造碎片化视觉",
+    "交互反馈保持硬朗：hover/active 以 1-4px 平移和阴影位移为主，duration 控制在 150-200ms",
   ],
 
   dontList: [
@@ -48,6 +49,7 @@ export const cubism: DesignStyle = {
     "禁止使用圆形或有机曲线形状",
     "禁止使用轻薄的细线边框 border",
     "禁止使用过于柔和的阴影",
+    "禁止使用弹簧回弹、漂浮循环或大幅缩放动效（如 hover:scale-110）",
   ],
 
   components: {
@@ -55,31 +57,36 @@ export const cubism: DesignStyle = {
       name: "按钮",
       description: "立体主义风格按钮，棱角分明的几何形状",
       code: `<button className="
-  px-8 py-3
+  group relative px-8 py-3 overflow-hidden
   bg-[#5c4033] text-[#e8dcc8]
   border-2 border-[#8b7355]
-  rounded-sm font-bold uppercase tracking-widest text-sm
+  rounded-sm -skew-x-[3deg] font-bold uppercase tracking-widest text-sm
   shadow-[4px_4px_0px_#8b7355]
-  hover:shadow-[2px_2px_0px_#8b7355]
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
-  transition-all duration-150
+  hover:shadow-[2px_2px_0px_#3d5c6e]
+  hover:translate-x-[2px] hover:translate-y-[2px] hover:-rotate-[1deg]
+  active:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:rotate-0
+  transition-[transform,box-shadow,border-color] duration-150
 ">
-  Explore
+  <span className="relative z-10">Explore</span>
+  <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-[#9b3d25]/20 skew-x-[-18deg] transition-transform duration-150 group-hover:translate-x-[420%]" />
 </button>`,
     },
     card: {
       name: "卡片",
       description: "立体主义风格卡片，几何碎片化构图",
       code: `<div className="
-  relative p-6
+  group relative p-6
   bg-[#e8dcc8]
   border-2 border-[#5c4033]
   rounded-sm
   shadow-[6px_6px_0px_#5c4033]
+  hover:-translate-x-[2px] hover:-translate-y-[2px]
+  hover:shadow-[8px_8px_0px_#3d5c6e] hover:border-[#3d5c6e]
+  active:translate-x-[2px] active:translate-y-[2px] active:shadow-[4px_4px_0px_#5c4033]
+  transition-[transform,box-shadow,border-color] duration-150
 ">
-  <div className="absolute top-0 right-0 w-16 h-16 bg-[#3d5c6e]/20 -skew-x-12" />
-  <div className="absolute bottom-0 left-0 w-12 h-12 bg-[#9b3d25]/15 skew-y-6" />
+  <div className="absolute top-0 right-0 w-16 h-16 bg-[#3d5c6e]/20 -skew-x-12 transition-transform duration-150 group-hover:-translate-x-1 group-hover:translate-y-1" />
+  <div className="absolute bottom-0 left-0 w-12 h-12 bg-[#9b3d25]/15 skew-y-6 transition-transform duration-150 group-hover:translate-x-1 group-hover:-translate-y-1" />
   <div className="relative z-10">
     <h3 className="text-xl font-bold text-[#5c4033] uppercase tracking-wider mb-2">
       Analytical Phase
@@ -210,6 +217,14 @@ export const cubism: DesignStyle = {
 - font-bold uppercase tracking-widest 强调几何感
 - 通过 skew, rotate, clip-path 创建碎片化视觉
 - 元素重叠和不对称布局
+
+## Animation & Interaction Rules
+
+- 动效必须短促硬朗：过渡时长控制在 100-200ms，优先使用 transform、box-shadow、border-color 的组合过渡
+- Hover 反馈以几何错位为主：1-2px 位移 + 阴影偏移 + 轻微角度扰动（1-3deg）
+- Active 状态必须有“压印”感：位移 3-4px，同时阴影显著收缩或移除
+- 禁止弹簧回弹、漂浮循环、缓慢淡入淡出和大幅 scale 动画
+- 可使用一次性光带/切片掠过效果，但不能喧宾夺主或引入模糊柔化
 
 ## 配色
 
