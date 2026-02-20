@@ -26,9 +26,21 @@ const mockedGetServerUser = vi.mocked(getServerUser);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedCreateClient = vi.mocked(createClient);
+const originalSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const originalSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 afterEach(() => {
   vi.clearAllMocks();
+  if (originalSupabaseUrl === undefined) {
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  } else {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = originalSupabaseUrl;
+  }
+  if (originalSupabaseAnonKey === undefined) {
+    delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  } else {
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = originalSupabaseAnonKey;
+  }
 });
 
 describe("POST /api/favorites/merge", () => {
@@ -184,6 +196,51 @@ describe("POST /api/favorites/merge", () => {
     );
 
     expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      merged: 2,
+    });
+  });
+
+  it("authenticates with bearer token when cookie auth is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue(null);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon-key";
+
+    const upsert = vi.fn().mockResolvedValue({ error: null });
+    const from = vi.fn().mockReturnValue({ upsert });
+
+    mockedCreateClient.mockImplementation((_url: string, key: string) => {
+      if (key === "anon-key") {
+        return {
+          auth: {
+            getUser: vi.fn().mockResolvedValue({
+              data: { user: { id: "user-bearer" } },
+            }),
+          },
+        } as never;
+      }
+      return { from } as never;
+    });
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/favorites/merge", {
+        method: "POST",
+        headers: { Authorization: "Bearer token-123" },
+        body: JSON.stringify({ slugs: ["neo-brutalist", "glassmorphism"] }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(upsert).toHaveBeenCalledWith(
+      [
+        { user_id: "user-bearer", style_slug: "neo-brutalist" },
+        { user_id: "user-bearer", style_slug: "glassmorphism" },
+      ],
+      { onConflict: "user_id,style_slug", ignoreDuplicates: true },
+    );
     await expect(response.json()).resolves.toEqual({
       success: true,
       merged: 2,
