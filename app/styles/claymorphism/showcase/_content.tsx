@@ -1,541 +1,1352 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  ArrowLeft, Sparkles, Heart, Star, ChevronDown, 
-  Check, X, AlertTriangle, Info, Users, TrendingUp, Eye, MessageCircle,
-  Music, Camera, Gamepad2
-} from "lucide-react";
-import {
-  ShowcaseHero,
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-// Claymorphism 配色
-const colors: ColorItem[] = [
-  { name: "Pink", hex: "#f8b4d9", bg: "bg-[#f8b4d9]" },
-  { name: "Cream", hex: "#fef3c7", bg: "bg-[#fef3c7]" },
-  { name: "Mint", hex: "#a7f3d0", bg: "bg-[#a7f3d0]" },
-  { name: "Lavender", hex: "#c4b5fd", bg: "bg-[#c4b5fd]" },
-  { name: "Lemon", hex: "#fcd34d", bg: "bg-[#fcd34d]" },
+/* ------------------------------------------------------------------ */
+/*  Hooks                                                               */
+/* ------------------------------------------------------------------ */
+
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return { ref, inView };
+}
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Static data                                                         */
+/* ------------------------------------------------------------------ */
+
+const palette = [
+  { name: "Clay Pink", hex: "#f8b4d9", textDark: true },
+  { name: "Warm Cream", hex: "#fef3c7", textDark: true },
+  { name: "Mint Green", hex: "#a7f3d0", textDark: true },
+  { name: "Lavender", hex: "#c4b5fd", textDark: true },
+  { name: "Golden Yellow", hex: "#fcd34d", textDark: true },
 ];
 
-export default function ShowcaseContent() {
-  const [count, setCount] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(65);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
+const buttonVariants = [
+  { label: "Pink Clay", bg: "#f8b4d9", shadow: "rgba(248,180,217,0.55)" },
+  { label: "Mint", bg: "#a7f3d0", shadow: "rgba(167,243,208,0.55)" },
+  { label: "Lavender", bg: "#c4b5fd", shadow: "rgba(196,181,253,0.55)" },
+  { label: "Yellow", bg: "#fcd34d", shadow: "rgba(252,211,77,0.55)" },
+  { label: "Cream", bg: "#fed7aa", shadow: "rgba(254,215,170,0.55)" },
+];
 
-  const tabs = [
-    { label: "Music", icon: Music },
-    { label: "Photos", icon: Camera },
-    { label: "Games", icon: Gamepad2 },
-  ];
+const cardItems = [
+  {
+    emoji: "🎨",
+    title: "Creative Studio",
+    desc: "Craft playful, squishy interfaces that feel tangible and alive.",
+    bg: "#f8b4d9",
+    badge: "Design",
+    badgeBg: "#fcd34d",
+  },
+  {
+    emoji: "🌿",
+    title: "Fresh Ideas",
+    desc: "Soft mint tones and rounded shapes create a calm, welcoming space.",
+    bg: "#a7f3d0",
+    badge: "Concept",
+    badgeBg: "#c4b5fd",
+  },
+  {
+    emoji: "✨",
+    title: "Magic Touch",
+    desc: "Lavender gradients and glowing highlights bring pure delight.",
+    bg: "#c4b5fd",
+    badge: "Style",
+    badgeBg: "#f8b4d9",
+  },
+];
 
-  const accordionItems = [
-    { title: "What is Claymorphism?", content: "Claymorphism is a design trend that mimics the soft, rounded appearance of clay or plasticine. It features oversized border-radius, subtle inner shadows, and pastel color gradients." },
-    { title: "Key Elements", content: "Large rounded corners (32px+), inner and outer shadows for 3D depth, soft pastel gradients, and playful, touchable-looking UI components." },
-    { title: "Best Use Cases", content: "Perfect for children's apps, creative tools, playful brands, and any interface that wants to feel friendly and approachable." },
-  ];
+const shadowLevels = [
+  {
+    label: "Flat",
+    desc: "No depth — just a solid color block with no shadow.",
+    shadow: "none",
+    bg: "#f8b4d9",
+    inner: "none",
+  },
+  {
+    label: "Clay",
+    desc: "Standard clay shadow: outer drop + inner highlight shine.",
+    shadow: "8px 8px 0px 0px rgba(0,0,0,0.15)",
+    bg: "#a7f3d0",
+    inner: "inset 0 2px 4px rgba(255,255,255,0.6)",
+  },
+  {
+    label: "Deep Clay",
+    desc: "Exaggerated depth for hero elements, buttons, CTAs.",
+    shadow: "12px 12px 0px 0px rgba(0,0,0,0.18)",
+    bg: "#c4b5fd",
+    inner: "inset 0 3px 6px rgba(255,255,255,0.7)",
+  },
+  {
+    label: "Soft Bloom",
+    desc: "Blurred shadow gives airy, cloud-like floating effect.",
+    shadow: "0 16px 40px rgba(248,180,217,0.55)",
+    bg: "#fcd34d",
+    inner: "inset 0 2px 5px rgba(255,255,255,0.65)",
+  },
+];
+
+const doRules = [
+  "Use rounded-3xl or rounded-full — extreme rounded corners everywhere",
+  "Combine outer offset shadow + inner white highlight for true clay depth",
+  "Stick to candy pastel palette: pink, mint, lavender, yellow, cream",
+  "Add hover:scale and active:scale for squish press interactions",
+  "Use inner highlight: inset 0 2px 4px rgba(255,255,255,0.6)",
+  "Apply soft pastel gradients: from-[#f8b4d9] to-[#c4b5fd]",
+  "Keep backgrounds warm: cream, amber-50, very light pastels",
+];
+
+const dontRules = [
+  "Never use sharp corners — not even rounded-sm or rounded-md",
+  "Never use dark or moody backgrounds",
+  "Never use flat minimal styling with no shadows",
+  "Never use harsh dark drop shadows with heavy opacity",
+  "Never use cool grays or desaturated neutrals",
+  "Never use monospace or condensed fonts",
+  "Never mix neon or electric colors into the palette",
+];
+
+const features = [
+  {
+    icon: "🍬",
+    title: "Candy Colors",
+    desc: "Soft, cheerful pastels that feel edible and playful.",
+    bg: "#ffd6e7",
+  },
+  {
+    icon: "🫧",
+    title: "Squishy Depth",
+    desc: "Combined inner + outer shadows simulate real clay volume.",
+    bg: "#d1fae5",
+  },
+  {
+    icon: "🧸",
+    title: "Rounded Everything",
+    desc: "Extreme border-radius — nothing has a sharp edge.",
+    bg: "#ede9fe",
+  },
+  {
+    icon: "✋",
+    title: "Tactile Feel",
+    desc: "Press animations make UI feel physically touchable.",
+    bg: "#fef9c3",
+  },
+  {
+    icon: "🌈",
+    title: "Gradient Surfaces",
+    desc: "Pastel gradients add softness and dimension to surfaces.",
+    bg: "#fce7f3",
+  },
+  {
+    icon: "💫",
+    title: "Inner Shine",
+    desc: "White inset highlight at top edge simulates clay sheen.",
+    bg: "#e0f2fe",
+  },
+];
+
+const stats = [
+  { value: "99%", label: "Squish Factor", color: "#f8b4d9" },
+  { value: "3D", label: "Clay Depth", color: "#a7f3d0" },
+  { value: "0px", label: "Sharp Corners", color: "#c4b5fd" },
+  { value: "100%", label: "Candy Vibes", color: "#fcd34d" },
+];
+
+const inputTabs = ["Text", "Email", "Search"];
+
+const floatingBlobs = [
+  {
+    top: "8%",
+    left: "3%",
+    w: "120px",
+    h: "100px",
+    bg: "#f8b4d9",
+    r: "60% 40% 55% 45% / 50% 60% 40% 50%",
+    opacity: 0.55,
+  },
+  {
+    top: "15%",
+    right: "4%",
+    w: "90px",
+    h: "90px",
+    bg: "#a7f3d0",
+    r: "45% 55% 40% 60% / 60% 40% 55% 45%",
+    opacity: 0.5,
+  },
+  {
+    top: "42%",
+    left: "1%",
+    w: "70px",
+    h: "80px",
+    bg: "#c4b5fd",
+    r: "55% 45% 60% 40% / 45% 55% 45% 55%",
+    opacity: 0.45,
+  },
+  {
+    top: "60%",
+    right: "2%",
+    w: "100px",
+    h: "85px",
+    bg: "#fcd34d",
+    r: "40% 60% 45% 55% / 55% 45% 60% 40%",
+    opacity: 0.4,
+  },
+  {
+    top: "78%",
+    left: "2%",
+    w: "80px",
+    h: "70px",
+    bg: "#fed7aa",
+    r: "60% 40% 50% 50% / 40% 60% 40% 60%",
+    opacity: 0.45,
+  },
+  {
+    top: "85%",
+    right: "5%",
+    w: "65px",
+    h: "75px",
+    bg: "#f8b4d9",
+    r: "50% 50% 40% 60% / 60% 40% 55% 45%",
+    opacity: 0.4,
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                      */
+/* ------------------------------------------------------------------ */
+
+function ClayButton({
+  label,
+  bg,
+  size = "md",
+}: {
+  label: string;
+  bg: string;
+  shadow?: string;
+  size?: "sm" | "md" | "lg";
+}) {
+  const [pressed, setPressed] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const padMap = { sm: "px-5 py-2 text-sm", md: "px-7 py-3 text-base", lg: "px-9 py-4 text-lg" };
+
+  const scale = pressed ? 0.96 : hovered ? 1.04 : 1;
+  const boxShadow = pressed
+    ? `4px 4px 0px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.5)`
+    : hovered
+    ? `12px 12px 0px 0px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.6)`
+    : `8px 8px 0px 0px rgba(0,0,0,0.13), inset 0 2px 4px rgba(255,255,255,0.6)`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100">
-      {/* Navigation */}
-      <nav className="px-6 py-4 bg-gradient-to-b from-pink-200 to-pink-300 rounded-b-[32px] shadow-[0_8px_16px_rgba(0,0,0,0.1),inset_0_4px_8px_rgba(255,255,255,0.4)]">
+    <button
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); setPressed(false); }}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      style={{
+        backgroundColor: bg,
+        boxShadow,
+        transform: `scale(${scale})`,
+        transition: "transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s ease",
+      }}
+      className={`${padMap[size]} rounded-full font-bold text-gray-700 cursor-pointer border-0 outline-none`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ClayCard({ item }: { item: (typeof cardItems)[0] }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        backgroundColor: item.bg,
+        boxShadow: hovered
+          ? `12px 12px 0px 0px rgba(0,0,0,0.14), inset 0 2px 5px rgba(255,255,255,0.65)`
+          : `8px 8px 0px 0px rgba(0,0,0,0.12), inset 0 2px 4px rgba(255,255,255,0.6)`,
+        transform: hovered ? "scale(1.03) translateY(-4px)" : "scale(1) translateY(0)",
+        transition: "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease",
+      }}
+      className="rounded-3xl p-6 flex flex-col gap-4 cursor-pointer"
+    >
+      {/* Inner shine strip */}
+      <div
+        className="absolute inset-x-4 top-3 h-1 rounded-full pointer-events-none"
+        style={{ background: "rgba(255,255,255,0.55)" }}
+      />
+      <div className="relative">
+        <div className="text-4xl mb-3">{item.emoji}</div>
+        <span
+          className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
+          style={{
+            backgroundColor: item.badgeBg,
+            boxShadow: "3px 3px 0px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.5)",
+          }}
+        >
+          {item.badge}
+        </span>
+        <h3 className="text-xl font-black text-gray-800 mb-2">{item.title}</h3>
+        <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function ClayInput({
+  placeholder,
+  type = "text",
+}: {
+  placeholder: string;
+  type?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState("");
+
+  return (
+    <div className="relative">
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder}
+        style={{
+          background: "rgba(255,255,255,0.85)",
+          boxShadow: focused
+            ? `0 0 0 3px #f8b4d9, 6px 6px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.7)`
+            : `6px 6px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.6)`,
+          transition: "box-shadow 0.2s ease",
+        }}
+        className="w-full rounded-2xl px-5 py-3 text-gray-700 font-medium border-0 outline-none placeholder-gray-400"
+      />
+      {/* Top shine */}
+      <div
+        className="absolute inset-x-3 top-2 h-0.5 rounded-full pointer-events-none"
+        style={{ background: "rgba(255,255,255,0.7)" }}
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                         */
+/* ------------------------------------------------------------------ */
+
+export default function ShowcaseContent() {
+  const { ref: heroRef, inView: heroInView } = useInView();
+
+  const [activeColorTab, setActiveColorTab] = useState(0);
+  const [activeInputTab, setActiveInputTab] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(248);
+  const [activeNav, setActiveNav] = useState("home");
+
+  const navItems = [
+    { id: "home", label: "Home" },
+    { id: "explore", label: "Explore" },
+    { id: "create", label: "Create" },
+    { id: "play", label: "Play" },
+  ];
+
+  function handleLike() {
+    setLiked((prev) => !prev);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+  }
+
+  return (
+    <div
+      className="min-h-screen relative overflow-x-hidden"
+      style={{ backgroundColor: "#fffbeb", fontFamily: "'Inter', system-ui, sans-serif" }}
+    >
+      {/* Floating background blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+        {floatingBlobs.map((blob, i) => (
+          <div
+            key={i}
+            className="absolute"
+            style={{
+              top: blob.top,
+              left: (blob as { left?: string }).left,
+              right: (blob as { right?: string }).right,
+              width: blob.w,
+              height: blob.h,
+              backgroundColor: blob.bg,
+              borderRadius: blob.r,
+              opacity: blob.opacity,
+              filter: "blur(1px)",
+              boxShadow: `4px 4px 0px rgba(0,0,0,0.06), inset 0 2px 4px rgba(255,255,255,0.5)`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* 1. Navigation                                                     */}
+      {/* ---------------------------------------------------------------- */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
+        style={{
+          background: "rgba(255,251,235,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "2px solid rgba(248,180,217,0.25)",
+        }}
+      >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
+          {/* Logo */}
           <Link
-            href="/styles/claymorphism"
-            className="flex items-center gap-2 text-pink-700 hover:text-pink-900 transition-colors font-medium"
+            href="/"
+            className="flex items-center gap-2 group"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Docs</span>
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center font-black text-gray-700 text-sm"
+              style={{
+                background: "linear-gradient(135deg, #f8b4d9, #c4b5fd)",
+                boxShadow: "4px 4px 0px rgba(0,0,0,0.12), inset 0 1px 3px rgba(255,255,255,0.6)",
+              }}
+            >
+              SK
+            </div>
+            <span className="font-black text-gray-800 text-lg tracking-tight">StyleKit</span>
+            <span
+              className="text-sm font-semibold px-2 py-0.5 rounded-full ml-1"
+              style={{
+                backgroundColor: "#f8b4d9",
+                boxShadow: "2px 2px 0px rgba(0,0,0,0.1)",
+              }}
+            >
+              →
+            </span>
           </Link>
-          <span className="font-bold text-xl text-pink-700">Claymorphism</span>
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-gradient-to-b from-pink-300 to-pink-400 rounded-2xl text-white font-medium shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)] hover:translate-y-0.5 transition-all"
-          >
-            All Styles
-          </Link>
+
+          {/* Nav items */}
+          <div className="hidden md:flex items-center gap-2">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveNav(item.id)}
+                className="px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 cursor-pointer border-0 outline-none"
+                style={{
+                  backgroundColor: activeNav === item.id ? "#f8b4d9" : "transparent",
+                  boxShadow:
+                    activeNav === item.id
+                      ? "4px 4px 0px rgba(0,0,0,0.12), inset 0 1px 3px rgba(255,255,255,0.6)"
+                      : "none",
+                  color: activeNav === item.id ? "#7c2d62" : "#6b7280",
+                  transform: activeNav === item.id ? "scale(1.03)" : "scale(1)",
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <ClayButton label="Get Started" bg="#a7f3d0" shadow="rgba(167,243,208,0.5)" size="sm" />
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <ShowcaseHero
-        title="Claymorphism"
-        description="柔软的粘土质感，超大圆角配合内外阴影，营造可爱的 3D 立体效果"
-        className="pt-20 pb-16 px-6 text-center"
-        titleClassName="text-5xl md:text-7xl font-bold text-pink-600 mb-6"
-        descriptionClassName="text-xl text-pink-500 max-w-2xl mx-auto mb-10"
+      {/* ---------------------------------------------------------------- */}
+      {/* 2. Hero                                                           */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        ref={heroRef}
+        className="relative pt-36 pb-28 px-6 text-center overflow-hidden"
+        style={{ zIndex: 1 }}
       >
-        <div className="flex flex-wrap justify-center gap-4">
-          <button className="px-8 py-4 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-            开始使用
-          </button>
-          <button className="px-8 py-4 bg-gradient-to-b from-amber-200 to-amber-300 rounded-full text-amber-800 font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-            查看文档
-          </button>
-        </div>
-      </ShowcaseHero>
+        {/* Hero decorative blobs */}
+        <div
+          className="absolute top-20 left-12 w-32 h-28 pointer-events-none"
+          style={{
+            backgroundColor: "#fcd34d",
+            borderRadius: "55% 45% 60% 40% / 45% 55% 45% 55%",
+            boxShadow: "8px 8px 0px rgba(0,0,0,0.12), inset 0 2px 5px rgba(255,255,255,0.65)",
+            opacity: heroInView ? 0.85 : 0,
+            transform: heroInView ? "scale(1) rotate(-8deg)" : "scale(0.6) rotate(-8deg)",
+            transition: "opacity 0.8s ease 0.1s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.1s",
+          }}
+        />
+        <div
+          className="absolute top-28 right-16 w-24 h-24 pointer-events-none"
+          style={{
+            backgroundColor: "#a7f3d0",
+            borderRadius: "40% 60% 45% 55% / 60% 40% 60% 40%",
+            boxShadow: "8px 8px 0px rgba(0,0,0,0.12), inset 0 2px 5px rgba(255,255,255,0.65)",
+            opacity: heroInView ? 0.85 : 0,
+            transform: heroInView ? "scale(1) rotate(12deg)" : "scale(0.6) rotate(12deg)",
+            transition: "opacity 0.8s ease 0.2s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.2s",
+          }}
+        />
+        <div
+          className="absolute bottom-16 left-20 w-20 h-20 pointer-events-none"
+          style={{
+            backgroundColor: "#c4b5fd",
+            borderRadius: "60% 40% 55% 45% / 40% 60% 40% 60%",
+            boxShadow: "6px 6px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.6)",
+            opacity: heroInView ? 0.75 : 0,
+            transform: heroInView ? "scale(1) rotate(5deg)" : "scale(0.6) rotate(5deg)",
+            transition: "opacity 0.8s ease 0.3s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s",
+          }}
+        />
+        <div
+          className="absolute bottom-20 right-24 w-28 h-22 pointer-events-none"
+          style={{
+            backgroundColor: "#f8b4d9",
+            borderRadius: "45% 55% 40% 60% / 55% 45% 55% 45%",
+            boxShadow: "7px 7px 0px rgba(0,0,0,0.11), inset 0 2px 4px rgba(255,255,255,0.6)",
+            opacity: heroInView ? 0.75 : 0,
+            transform: heroInView ? "scale(1) rotate(-15deg)" : "scale(0.6) rotate(-15deg)",
+            transition: "opacity 0.8s ease 0.15s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s",
+          }}
+        />
 
-      {/* Stats */}
-      <ShowcaseSection
-        title="Statistics"
-        subtitle="Playful metrics display"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {[
-            { icon: Users, label: "Friends", value: "1,842", gradient: "from-pink-300 to-pink-400", bg: "from-pink-100 to-pink-200" },
-            { icon: TrendingUp, label: "Growth", value: "+86%", gradient: "from-green-300 to-green-400", bg: "from-green-100 to-green-200" },
-            { icon: Eye, label: "Views", value: "928K", gradient: "from-purple-300 to-purple-400", bg: "from-purple-100 to-purple-200" },
-            { icon: MessageCircle, label: "Messages", value: "4,521", gradient: "from-amber-300 to-amber-400", bg: "from-amber-100 to-amber-200" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className={`p-5 bg-gradient-to-br ${stat.bg} rounded-[24px] shadow-[8px_8px_16px_rgba(0,0,0,0.08),inset_4px_4px_8px_rgba(255,255,255,0.5),inset_-2px_-2px_4px_rgba(0,0,0,0.03)]`}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Badge */}
+          <div
+            className="inline-block mb-6"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0) scale(1)" : "translateY(20px) scale(0.9)",
+              transition: "opacity 0.6s ease 0.05s, transform 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.05s",
+            }}
+          >
+            <span
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-gray-700"
+              style={{
+                background: "linear-gradient(135deg, #f8b4d9, #fcd34d)",
+                boxShadow: "6px 6px 0px rgba(0,0,0,0.12), inset 0 2px 4px rgba(255,255,255,0.65)",
+              }}
             >
-              <div className={`w-12 h-12 bg-gradient-to-b ${stat.gradient} rounded-full flex items-center justify-center mb-3 shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-              <p className="text-3xl font-bold text-gray-700 mb-1">{stat.value}</p>
-              <p className="text-sm text-gray-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="配色系统"
-        subtitle="柔和的糖果色系"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-[32px] overflow-hidden shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4)]"
-            labelClassName="font-bold text-sm text-pink-700"
-            hexClassName="text-xs text-pink-500 font-mono"
-          />
-        </div>
-      </ShowcaseSection>
-
-      {/* Buttons */}
-      <ShowcaseSection
-        title="按钮"
-        subtitle="带有按压效果的粘土按钮"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="p-8 bg-gradient-to-br from-white to-pink-50 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6">颜色</p>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-3 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                粉色
-              </button>
-              <button className="px-6 py-3 bg-gradient-to-b from-green-200 to-green-300 rounded-full text-green-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                薄荷
-              </button>
-              <button className="px-6 py-3 bg-gradient-to-b from-purple-200 to-purple-300 rounded-full text-purple-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                淡紫
-              </button>
-              <button className="px-6 py-3 bg-gradient-to-b from-yellow-200 to-yellow-300 rounded-full text-yellow-800 font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                柠檬
-              </button>
-            </div>
-
-            <p className="text-sm font-bold text-pink-500 uppercase tracking-wide mb-6 mt-10">尺寸</p>
-            <div className="flex flex-wrap items-center gap-4">
-              <button className="px-4 py-2 text-sm bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)] hover:translate-y-0.5 active:translate-y-1 transition-all duration-200">
-                小
-              </button>
-              <button className="px-6 py-3 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                中
-              </button>
-              <button className="px-8 py-4 text-lg bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white font-bold shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                大
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Cards */}
-      <ShowcaseSection
-        title="卡片"
-        subtitle="柔软的 3D 粘土卡片"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          <div className="p-6 bg-gradient-to-br from-amber-100 to-amber-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <div className="w-16 h-16 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-amber-800 mb-2">创意设计</h3>
-            <p className="text-amber-700">适合儿童应用和创意项目</p>
+              <span>Clay + Play-Doh UI</span>
+              <span>✦</span>
+              <span>Claymorphism</span>
+            </span>
           </div>
 
-          <div className="p-6 bg-gradient-to-br from-green-100 to-green-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <div className="w-16 h-16 bg-gradient-to-b from-green-300 to-green-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
-              <Heart className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">友好界面</h3>
-            <p className="text-green-700">温暖亲切的用户体验</p>
-          </div>
-
-          <div className="p-6 bg-gradient-to-br from-purple-100 to-purple-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <div className="w-16 h-16 bg-gradient-to-b from-purple-300 to-purple-400 rounded-full flex items-center justify-center mb-4 shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)]">
-              <Star className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-purple-800 mb-2">趣味互动</h3>
-            <p className="text-purple-700">带来愉悦的交互体验</p>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Form Elements */}
-      <ShowcaseSection
-        title="表单元素"
-        subtitle="内凹效果的粘土输入框"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-gradient-to-br from-white to-pink-50 rounded-[48px] shadow-[20px_20px_40px_rgba(0,0,0,0.1),inset_8px_8px_16px_rgba(255,255,255,0.8),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            <h3 className="text-2xl font-bold text-pink-600 mb-6 text-center">Sign Up</h3>
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Your name"
-                className="w-full px-6 py-4 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)] focus:outline-none focus:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.15),inset_-4px_-4px_8px_rgba(255,255,255,0.9),0_0_0_4px_rgba(248,180,217,0.3)] transition-all"
-              />
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="w-full px-6 py-4 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)] focus:outline-none focus:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.15),inset_-4px_-4px_8px_rgba(255,255,255,0.9),0_0_0_4px_rgba(248,180,217,0.3)] transition-all"
-              />
-              <button className="w-full py-4 bg-gradient-to-b from-pink-400 to-pink-500 rounded-full text-white font-bold text-lg shadow-[8px_8px_16px_rgba(0,0,0,0.15),inset_4px_4px_8px_rgba(255,255,255,0.3)] hover:translate-y-1 active:translate-y-2 transition-all duration-200">
-                Create Account
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Tabs */}
-      <ShowcaseSection
-        title="Tabs"
-        subtitle="Soft navigation tabs"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-6 bg-gradient-to-br from-white to-pink-50 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]">
-            {/* Tab Headers */}
-            <div className="flex gap-2 p-1.5 bg-gradient-to-b from-gray-100 to-gray-200 rounded-full mb-6 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ${
-                    activeTab === index
-                      ? "bg-gradient-to-b from-pink-300 to-pink-400 text-white shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]"
-                      : "text-gray-600 hover:bg-white/50"
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {/* Tab Content */}
-            <div className="min-h-[120px] p-5 bg-gradient-to-b from-gray-50 to-gray-100 rounded-2xl shadow-[inset_2px_2px_4px_rgba(0,0,0,0.05)]">
-              {activeTab === 0 && (
-                <div>
-                  <h4 className="text-lg font-bold text-pink-600 mb-3">Your Playlist</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {["Pop Hits", "Chill Beats", "Workout Mix"].map((item) => (
-                      <span key={item} className="px-3 py-1.5 bg-gradient-to-b from-pink-100 to-pink-200 rounded-full text-sm text-pink-700 font-medium shadow-[2px_2px_4px_rgba(0,0,0,0.05)]">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {activeTab === 1 && (
-                <div>
-                  <h4 className="text-lg font-bold text-purple-600 mb-3">Photo Albums</h4>
-                  <p className="text-gray-600">256 photos in 8 albums. Last upload: today!</p>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div>
-                  <h4 className="text-lg font-bold text-green-600 mb-3">Game Library</h4>
-                  <p className="text-gray-600">12 games installed. 3 currently playing!</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Accordion */}
-      <ShowcaseSection
-        title="Accordion"
-        subtitle="Expandable content blocks"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto space-y-3">
-          {accordionItems.map((item, index) => (
-            <div
-              key={index}
-              className="bg-gradient-to-br from-white to-pink-50 rounded-[24px] shadow-[8px_8px_16px_rgba(0,0,0,0.08),inset_4px_4px_8px_rgba(255,255,255,0.5),inset_-2px_-2px_4px_rgba(0,0,0,0.03)] overflow-hidden"
+          {/* Main title */}
+          <h1
+            className="text-6xl md:text-8xl font-black text-gray-800 leading-tight mb-6 tracking-tight"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.7s ease 0.15s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s",
+            }}
+          >
+            Squishy.{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #f8b4d9 0%, #c4b5fd 50%, #a7f3d0 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
             >
-              <button
-                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
-                className="w-full px-6 py-4 flex items-center justify-between text-left"
+              Soft.
+            </span>
+            <br />
+            Touchable.
+          </h1>
+
+          {/* Subtitle */}
+          <p
+            className="text-xl md:text-2xl text-gray-500 font-medium mb-10 max-w-2xl mx-auto leading-relaxed"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s ease 0.25s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s",
+            }}
+          >
+            UI that feels like clay — oversized rounded corners, candy pastel colors,
+            and 3D depth that makes every element look squishy and alive.
+          </p>
+
+          {/* CTA buttons */}
+          <div
+            className="flex flex-wrap items-center justify-center gap-4"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s ease 0.35s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s",
+            }}
+          >
+            <ClayButton label="Explore the Style" bg="#f8b4d9" shadow="rgba(248,180,217,0.5)" size="lg" />
+            <ClayButton label="View Components" bg="#a7f3d0" shadow="rgba(167,243,208,0.5)" size="lg" />
+          </div>
+
+          {/* Stats row */}
+          <div
+            className="flex flex-wrap items-center justify-center gap-6 mt-14"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s ease 0.45s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s",
+            }}
+          >
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="flex flex-col items-center px-6 py-4 rounded-3xl"
+                style={{
+                  backgroundColor: s.color,
+                  boxShadow: "6px 6px 0px rgba(0,0,0,0.11), inset 0 2px 4px rgba(255,255,255,0.6)",
+                  minWidth: "110px",
+                }}
               >
-                <span className="font-bold text-pink-700">{item.title}</span>
-                <div className={`w-8 h-8 bg-gradient-to-b from-pink-200 to-pink-300 rounded-full flex items-center justify-center shadow-[2px_2px_4px_rgba(0,0,0,0.1),inset_1px_1px_2px_rgba(255,255,255,0.4)] transition-transform ${openAccordion === index ? "rotate-180" : ""}`}>
-                  <ChevronDown className="w-4 h-4 text-pink-600" />
-                </div>
-              </button>
-              {openAccordion === index && (
-                <div className="px-6 pb-5">
-                  <p className="text-gray-600 leading-relaxed">{item.content}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </ShowcaseSection>
-
-      {/* Alerts */}
-      <ShowcaseSection
-        title="Alerts"
-        subtitle="Friendly notifications"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto space-y-4">
-          {/* Success */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-[20px] shadow-[6px_6px_12px_rgba(0,0,0,0.08),inset_3px_3px_6px_rgba(255,255,255,0.5)]">
-            <div className="w-10 h-10 bg-gradient-to-b from-green-300 to-green-400 rounded-full flex items-center justify-center shadow-[3px_3px_6px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
-              <Check className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-green-700">Yay! Success!</p>
-              <p className="text-green-600/80 text-sm">Everything went perfectly!</p>
-            </div>
-          </div>
-
-          {/* Warning */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-amber-100 to-amber-200 rounded-[20px] shadow-[6px_6px_12px_rgba(0,0,0,0.08),inset_3px_3px_6px_rgba(255,255,255,0.5)]">
-            <div className="w-10 h-10 bg-gradient-to-b from-amber-300 to-amber-400 rounded-full flex items-center justify-center shadow-[3px_3px_6px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
-              <AlertTriangle className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-amber-700">Heads up!</p>
-              <p className="text-amber-600/80 text-sm">Something needs your attention.</p>
-            </div>
-          </div>
-
-          {/* Error */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-red-100 to-red-200 rounded-[20px] shadow-[6px_6px_12px_rgba(0,0,0,0.08),inset_3px_3px_6px_rgba(255,255,255,0.5)]">
-            <div className="w-10 h-10 bg-gradient-to-b from-red-300 to-red-400 rounded-full flex items-center justify-center shadow-[3px_3px_6px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
-              <X className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-red-700">Oopsie!</p>
-              <p className="text-red-600/80 text-sm">Something went wrong. Try again?</p>
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-[20px] shadow-[6px_6px_12px_rgba(0,0,0,0.08),inset_3px_3px_6px_rgba(255,255,255,0.5)]">
-            <div className="w-10 h-10 bg-gradient-to-b from-blue-300 to-blue-400 rounded-full flex items-center justify-center shadow-[3px_3px_6px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
-              <Info className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-blue-700">Did you know?</p>
-              <p className="text-blue-600/80 text-sm">Here is some helpful information.</p>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Toggle */}
-      <ShowcaseSection
-        title="Toggle"
-        subtitle="Soft switches"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-6 bg-gradient-to-br from-white to-pink-50 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)] space-y-5">
-            {[
-              { label: "Notifications", desc: "Receive push notifications" },
-              { label: "Dark Mode", desc: "Switch to dark theme" },
-              { label: "Auto-save", desc: "Save changes automatically" },
-            ].map((item, index) => (
-              <div key={index} className="flex items-center justify-between py-2">
-                <div>
-                  <p className="font-bold text-pink-700">{item.label}</p>
-                  <p className="text-sm text-gray-500">{item.desc}</p>
-                </div>
-                <button
-                  onClick={() => {
-                    const newStates = [...toggleStates];
-                    newStates[index] = !newStates[index];
-                    setToggleStates(newStates);
-                  }}
-                  className={`relative w-16 h-9 rounded-full transition-all duration-300 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)] ${
-                    toggleStates[index] 
-                      ? "bg-gradient-to-b from-pink-300 to-pink-400" 
-                      : "bg-gradient-to-b from-gray-200 to-gray-300"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-1 left-1 w-7 h-7 bg-white rounded-full shadow-[2px_2px_4px_rgba(0,0,0,0.15)] transition-transform duration-300 ${
-                      toggleStates[index] ? "translate-x-7" : "translate-x-0"
-                    }`}
-                  />
-                </button>
+                <span className="text-2xl font-black text-gray-800">{s.value}</span>
+                <span className="text-xs font-semibold text-gray-600 mt-0.5">{s.label}</span>
               </div>
             ))}
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Progress */}
-      <ShowcaseSection
-        title="Progress"
-        subtitle="Playful progress bars"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-6 bg-gradient-to-br from-white to-purple-50 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)] space-y-6">
-            {/* Linear Progress */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="font-bold text-purple-700">Download Progress</p>
-                <p className="text-sm text-purple-500 font-mono">{progress}%</p>
-              </div>
-              <div className="h-4 bg-gradient-to-b from-gray-100 to-gray-200 rounded-full shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]">
-                <div
-                  className="h-full bg-gradient-to-r from-pink-400 to-purple-400 rounded-full shadow-[2px_2px_4px_rgba(0,0,0,0.1)] transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
+      {/* ---------------------------------------------------------------- */}
+      {/* 3. Component Demos                                                */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative px-6 py-20" style={{ zIndex: 1 }}>
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              Component Library
+            </h2>
+            <p className="text-gray-500 text-lg font-medium max-w-xl mx-auto">
+              Every element shaped by clay: puffed up, colorful, and satisfying to press.
+            </p>
+          </RevealBlock>
 
-            {/* Multi-color Progress */}
-            <div>
-              <p className="font-bold text-purple-700 mb-3">Level Progress</p>
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { value: 100, color: "from-pink-400 to-pink-500" },
-                  { value: 100, color: "from-green-400 to-green-500" },
-                  { value: 65, color: "from-purple-400 to-purple-500" },
-                  { value: 0, color: "from-amber-400 to-amber-500" },
-                ].map((item, index) => (
-                  <div key={index}>
-                    <div className="h-3 bg-gradient-to-b from-gray-100 to-gray-200 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.1)]">
-                      <div
-                        className={`h-full bg-gradient-to-r ${item.color} rounded-full`}
-                        style={{ width: `${item.value}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 text-center">Lvl {index + 1}</p>
-                  </div>
+          {/* Tab switcher */}
+          <RevealBlock delay={0.1} className="mb-10">
+            <div className="flex justify-center">
+              <div
+                className="inline-flex gap-1.5 p-1.5 rounded-full"
+                style={{
+                  backgroundColor: "#fde68a",
+                  boxShadow: "5px 5px 0px rgba(0,0,0,0.1), inset 0 2px 3px rgba(255,255,255,0.5)",
+                }}
+              >
+                {["Buttons", "Cards", "Inputs"].map((tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveColorTab(i)}
+                    className="px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-200 cursor-pointer border-0 outline-none"
+                    style={{
+                      backgroundColor: activeColorTab === i ? "#f8b4d9" : "transparent",
+                      boxShadow:
+                        activeColorTab === i
+                          ? "4px 4px 0px rgba(0,0,0,0.12), inset 0 1px 3px rgba(255,255,255,0.6)"
+                          : "none",
+                      color: activeColorTab === i ? "#7c2d62" : "#92400e",
+                      transform: activeColorTab === i ? "scale(1.04)" : "scale(1)",
+                      transition: "all 0.2s cubic-bezier(0.34,1.56,0.64,1)",
+                    }}
+                  >
+                    {tab}
+                  </button>
                 ))}
               </div>
             </div>
+          </RevealBlock>
 
-            {/* Interactive Control */}
-            <div className="flex items-center justify-center gap-4 pt-4">
-              <button
-                onClick={() => setProgress(Math.max(0, progress - 10))}
-                className="px-5 py-2 bg-gradient-to-b from-gray-200 to-gray-300 rounded-full text-gray-700 font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)] hover:translate-y-0.5 active:translate-y-1 transition-all"
+          {/* Buttons panel */}
+          {activeColorTab === 0 && (
+            <RevealBlock>
+              <div
+                className="rounded-3xl p-10"
+                style={{
+                  backgroundColor: "#fff7ed",
+                  boxShadow: "10px 10px 0px rgba(0,0,0,0.1), inset 0 2px 5px rgba(255,255,255,0.7)",
+                }}
               >
-                - 10%
-              </button>
-              <button
-                onClick={() => setProgress(Math.min(100, progress + 10))}
-                className="px-5 py-2 bg-gradient-to-b from-purple-300 to-purple-400 rounded-full text-white font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)] hover:translate-y-0.5 active:translate-y-1 transition-all"
+                <h3 className="text-xl font-black text-gray-700 mb-2">Clay Buttons</h3>
+                <p className="text-sm text-gray-500 mb-8">
+                  Press any button — feel the squish animation. Each color has calibrated shadow depth.
+                </p>
+                <div className="flex flex-wrap gap-4 mb-8">
+                  {buttonVariants.map((v) => (
+                    <ClayButton key={v.label} label={v.label} bg={v.bg} shadow={v.shadow} />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <ClayButton label="Small Pill" bg="#f8b4d9" shadow="rgba(248,180,217,0.5)" size="sm" />
+                  <ClayButton label="Medium Slab" bg="#c4b5fd" shadow="rgba(196,181,253,0.5)" size="md" />
+                  <ClayButton label="Large Chunk" bg="#a7f3d0" shadow="rgba(167,243,208,0.5)" size="lg" />
+                </div>
+
+                {/* Like button demo */}
+                <div className="mt-8 pt-8 border-t border-pink-100">
+                  <p className="text-sm text-gray-500 mb-4 font-medium">Interactive Like Button</p>
+                  <button
+                    onClick={handleLike}
+                    className="inline-flex items-center gap-3 px-7 py-3 rounded-full font-bold text-gray-700 cursor-pointer border-0 outline-none transition-all duration-200"
+                    style={{
+                      backgroundColor: liked ? "#f8b4d9" : "#fef3c7",
+                      boxShadow: liked
+                        ? "6px 6px 0px rgba(0,0,0,0.13), inset 0 2px 4px rgba(255,255,255,0.6)"
+                        : "4px 4px 0px rgba(0,0,0,0.1), inset 0 2px 3px rgba(255,255,255,0.5)",
+                      transform: liked ? "scale(1.04)" : "scale(1)",
+                    }}
+                  >
+                    <span className="text-xl" style={{ transform: liked ? "scale(1.3)" : "scale(1)", display: "inline-block", transition: "transform 0.2s cubic-bezier(0.34,1.56,0.64,1)" }}>
+                      {liked ? "♥" : "♡"}
+                    </span>
+                    <span>{likeCount} Likes</span>
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
+          )}
+
+          {/* Cards panel */}
+          {activeColorTab === 1 && (
+            <RevealBlock>
+              <div className="grid md:grid-cols-3 gap-6">
+                {cardItems.map((item, i) => (
+                  <RevealBlock key={item.title} delay={i * 0.08} className="relative">
+                    <ClayCard item={item} />
+                  </RevealBlock>
+                ))}
+              </div>
+
+              {/* Wide card */}
+              <RevealBlock delay={0.25} className="mt-6">
+                <div
+                  className="rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center"
+                  style={{
+                    background: "linear-gradient(135deg, #f8b4d9 0%, #c4b5fd 100%)",
+                    boxShadow: "10px 10px 0px rgba(0,0,0,0.13), inset 0 2px 6px rgba(255,255,255,0.65)",
+                  }}
+                >
+                  {/* Shine */}
+                  <div
+                    className="absolute inset-x-6 top-4 h-1 rounded-full pointer-events-none"
+                    style={{ background: "rgba(255,255,255,0.5)" }}
+                  />
+                  <div className="text-6xl">🎪</div>
+                  <div className="flex-1">
+                    <span
+                      className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
+                      style={{
+                        backgroundColor: "#fcd34d",
+                        boxShadow: "3px 3px 0px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      Featured
+                    </span>
+                    <h3 className="text-2xl font-black text-white mb-2">The Full Clay Experience</h3>
+                    <p className="text-pink-100 leading-relaxed">
+                      Gradient surfaces + extreme rounded corners + 3D offset shadows. This card
+                      demonstrates how layering techniques compound to maximum clay depth.
+                    </p>
+                  </div>
+                  <ClayButton label="Explore" bg="#fcd34d" shadow="rgba(252,211,77,0.5)" size="md" />
+                </div>
+              </RevealBlock>
+            </RevealBlock>
+          )}
+
+          {/* Inputs panel */}
+          {activeColorTab === 2 && (
+            <RevealBlock>
+              <div
+                className="rounded-3xl p-10"
+                style={{
+                  backgroundColor: "#f0fdf4",
+                  boxShadow: "10px 10px 0px rgba(0,0,0,0.1), inset 0 2px 5px rgba(255,255,255,0.7)",
+                }}
               >
-                + 10%
-              </button>
+                <h3 className="text-xl font-black text-gray-700 mb-2">Clay Inputs</h3>
+                <p className="text-sm text-gray-500 mb-6">
+                  Click any field — the pink ring focus state shows the clay glow effect.
+                </p>
+
+                {/* Input type tabs */}
+                <div className="flex gap-2 mb-6">
+                  {inputTabs.map((tab, i) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveInputTab(i)}
+                      className="px-4 py-1.5 rounded-full text-sm font-semibold cursor-pointer border-0 outline-none transition-all duration-150"
+                      style={{
+                        backgroundColor: activeInputTab === i ? "#a7f3d0" : "#d1fae5",
+                        boxShadow:
+                          activeInputTab === i
+                            ? "3px 3px 0px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.6)"
+                            : "none",
+                        color: activeInputTab === i ? "#065f46" : "#6b7280",
+                      }}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-4 max-w-md">
+                  <ClayInput
+                    placeholder={
+                      activeInputTab === 0
+                        ? "Your name..."
+                        : activeInputTab === 1
+                        ? "hello@example.com"
+                        : "Search for something..."
+                    }
+                    type={
+                      activeInputTab === 0
+                        ? "text"
+                        : activeInputTab === 1
+                        ? "email"
+                        : "search"
+                    }
+                  />
+                  <ClayInput placeholder="Another squishy field..." />
+                  <ClayInput placeholder="Tell us something..." />
+                </div>
+
+                <div className="mt-6">
+                  <ClayButton label="Submit" bg="#a7f3d0" shadow="rgba(167,243,208,0.5)" size="md" />
+                </div>
+              </div>
+            </RevealBlock>
+          )}
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* 4. Color Palette                                                  */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative px-6 py-20" style={{ zIndex: 1 }}>
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              Candy Color Palette
+            </h2>
+            <p className="text-gray-500 text-lg font-medium max-w-xl mx-auto">
+              Five soft, cheerful colors chosen for maximum clay warmth. No dark tones. No neons.
+              Pure pastel joy.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+            {palette.map((color, i) => (
+              <RevealBlock key={color.name} delay={i * 0.08}>
+                <div
+                  className="rounded-3xl overflow-hidden cursor-pointer"
+                  style={{
+                    boxShadow: "8px 8px 0px rgba(0,0,0,0.12), inset 0 2px 5px rgba(255,255,255,0.65)",
+                  }}
+                >
+                  {/* Swatch */}
+                  <div
+                    className="h-36 relative"
+                    style={{ backgroundColor: color.hex }}
+                  >
+                    {/* Shine strip */}
+                    <div
+                      className="absolute inset-x-4 top-3 h-1 rounded-full"
+                      style={{ background: "rgba(255,255,255,0.6)" }}
+                    />
+                    {/* Small clay blob decoration */}
+                    <div
+                      className="absolute bottom-4 right-4 w-8 h-8"
+                      style={{
+                        background: "rgba(255,255,255,0.35)",
+                        borderRadius: "55% 45% 60% 40% / 40% 60% 40% 60%",
+                        boxShadow: "2px 2px 0px rgba(0,0,0,0.08)",
+                      }}
+                    />
+                  </div>
+                  {/* Info */}
+                  <div
+                    className="p-4"
+                    style={{ backgroundColor: "#fffbeb" }}
+                  >
+                    <p className="font-black text-gray-800 text-sm mb-0.5">{color.name}</p>
+                    <p className="text-xs font-mono text-gray-500">{color.hex}</p>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Gradient demo */}
+          <RevealBlock delay={0.4} className="mt-8">
+            <div
+              className="rounded-3xl p-8 relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #f8b4d9 0%, #c4b5fd 40%, #a7f3d0 70%, #fcd34d 100%)",
+                boxShadow: "10px 10px 0px rgba(0,0,0,0.12), inset 0 3px 6px rgba(255,255,255,0.65)",
+              }}
+            >
+              <div
+                className="absolute inset-x-8 top-4 h-1.5 rounded-full"
+                style={{ background: "rgba(255,255,255,0.55)" }}
+              />
+              <p className="text-white font-black text-xl mb-2">All-Color Gradient</p>
+              <p className="text-white/80 text-sm max-w-sm">
+                Combining all five palette colors produces a signature claymorphism rainbow gradient.
+                Use sparingly for hero and accent surfaces.
+              </p>
             </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* 5. Clay Effects Demo                                              */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative px-6 py-20" style={{ zIndex: 1 }}>
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              Shadow Depth System
+            </h2>
+            <p className="text-gray-500 text-lg font-medium max-w-xl mx-auto">
+              The clay 3D illusion comes from combining an outer offset shadow with an inner highlight.
+              Here are four depth levels, side by side.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {shadowLevels.map((level, i) => (
+              <RevealBlock key={level.label} delay={i * 0.1}>
+                <div className="flex flex-col items-center gap-5">
+                  {/* Demo shape */}
+                  <div
+                    className="w-full h-32 rounded-3xl flex items-center justify-center"
+                    style={{
+                      backgroundColor: level.bg,
+                      boxShadow:
+                        level.inner !== "none"
+                          ? `${level.shadow}, ${level.inner}`
+                          : level.shadow,
+                    }}
+                  >
+                    <span className="font-black text-gray-700 text-sm">{level.label}</span>
+                  </div>
+
+                  {/* Info */}
+                  <div
+                    className="w-full rounded-2xl p-4"
+                    style={{
+                      backgroundColor: "#fff7ed",
+                      boxShadow: "4px 4px 0px rgba(0,0,0,0.08), inset 0 1px 3px rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    <p className="font-bold text-gray-700 text-sm mb-1">{level.label}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">{level.desc}</p>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Code snippet */}
+          <RevealBlock delay={0.4}>
+            <div
+              className="rounded-3xl overflow-hidden"
+              style={{
+                boxShadow: "8px 8px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.5)",
+              }}
+            >
+              <div
+                className="px-6 py-4 flex items-center gap-3"
+                style={{
+                  background: "linear-gradient(135deg, #f8b4d9, #fcd34d)",
+                  boxShadow: "inset 0 1px 3px rgba(255,255,255,0.5)",
+                }}
+              >
+                <div className="w-3 h-3 rounded-full bg-white/60" />
+                <div className="w-3 h-3 rounded-full bg-white/60" />
+                <div className="w-3 h-3 rounded-full bg-white/60" />
+                <span className="ml-2 font-bold text-gray-700 text-sm">clay-shadow.css</span>
+              </div>
+              <div
+                className="p-6 font-mono text-sm leading-loose overflow-x-auto"
+                style={{ backgroundColor: "#1e1e2e", color: "#cdd6f4" }}
+              >
+                <p><span style={{ color: "#89b4fa" }}>.clay-element</span> {"{"}</p>
+                <p className="ml-4"><span style={{ color: "#a6e3a1" }}>{`/* Standard clay depth */`}</span></p>
+                <p className="ml-4">
+                  <span style={{ color: "#cba6f7" }}>box-shadow</span>
+                  <span style={{ color: "#cdd6f4" }}>: </span>
+                  <span style={{ color: "#f9e2af" }}>8px 8px 0px 0px rgba(0,0,0,0.13)</span>,
+                </p>
+                <p className="ml-12">
+                  <span style={{ color: "#f9e2af" }}>inset 0 2px 4px rgba(255,255,255,0.6)</span>;
+                </p>
+                <p className="ml-4"><span style={{ color: "#cba6f7" }}>border-radius</span>: <span style={{ color: "#f9e2af" }}>24px</span>;</p>
+                <p>{"}"}</p>
+                <p className="mt-3"><span style={{ color: "#89b4fa" }}>.clay-element:hover</span> {"{"}</p>
+                <p className="ml-4">
+                  <span style={{ color: "#cba6f7" }}>box-shadow</span>: <span style={{ color: "#f9e2af" }}>12px 12px 0px rgba(0,0,0,0.15)</span>,
+                </p>
+                <p className="ml-12"><span style={{ color: "#f9e2af" }}>inset 0 2px 4px rgba(255,255,255,0.6)</span>;</p>
+                <p className="ml-4"><span style={{ color: "#cba6f7" }}>transform</span>: <span style={{ color: "#f9e2af" }}>scale(1.04)</span>;</p>
+                <p>{"}"}</p>
+                <p className="mt-3"><span style={{ color: "#89b4fa" }}>.clay-element:active</span> {"{"}</p>
+                <p className="ml-4">
+                  <span style={{ color: "#cba6f7" }}>box-shadow</span>: <span style={{ color: "#f9e2af" }}>4px 4px 0px rgba(0,0,0,0.1)</span>,
+                </p>
+                <p className="ml-12"><span style={{ color: "#f9e2af" }}>inset 0 2px 4px rgba(255,255,255,0.5)</span>;</p>
+                <p className="ml-4"><span style={{ color: "#cba6f7" }}>transform</span>: <span style={{ color: "#f9e2af" }}>scale(0.97)</span>;</p>
+                <p>{"}"}</p>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* 6. Feature Cards                                                  */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative px-6 py-20" style={{ zIndex: 1 }}>
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              What Makes Clay, Clay
+            </h2>
+            <p className="text-gray-500 text-lg font-medium max-w-xl mx-auto">
+              Six defining characteristics that separate claymorphism from every other design style.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
+            {features.map((f, i) => (
+              <RevealBlock key={f.title} delay={i * 0.07}>
+                <div
+                  className="rounded-3xl p-6 h-full relative overflow-hidden"
+                  style={{
+                    backgroundColor: f.bg,
+                    boxShadow: "8px 8px 0px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.65)",
+                  }}
+                >
+                  {/* Shine */}
+                  <div
+                    className="absolute inset-x-4 top-3 h-0.5 rounded-full"
+                    style={{ background: "rgba(255,255,255,0.65)" }}
+                  />
+                  <div className="text-3xl mb-3">{f.icon}</div>
+                  <h3 className="font-black text-gray-800 text-lg mb-2">{f.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{f.desc}</p>
+                </div>
+              </RevealBlock>
+            ))}
           </div>
         </div>
-      </ShowcaseSection>
+      </section>
 
-      {/* Interactive Counter */}
-      <ShowcaseSection
-        title="Interactive Counter"
-        subtitle="Playful interactions with press effects"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold text-pink-600 mb-4 text-center"
-        subtitleClassName="text-pink-500 mb-10 text-center"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-gradient-to-br from-purple-100 to-purple-200 rounded-[32px] shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)] text-center">
-            <div className="text-6xl font-bold text-purple-700 mb-6">{count}</div>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setCount(count - 1)}
-                className="w-16 h-16 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white text-2xl font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200"
+      {/* ---------------------------------------------------------------- */}
+      {/* 7. Design Principles — Do / Don't                                 */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative px-6 py-20" style={{ zIndex: 1 }}>
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              Design Principles
+            </h2>
+            <p className="text-gray-500 text-lg font-medium max-w-xl mx-auto">
+              The rules that keep your clay UI looking authentic — and the traps that break the spell.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Do */}
+            <RevealBlock>
+              <div
+                className="rounded-3xl p-8 h-full relative overflow-hidden"
+                style={{
+                  background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)",
+                  boxShadow: "10px 10px 0px rgba(0,0,0,0.1), inset 0 3px 6px rgba(255,255,255,0.65)",
+                }}
               >
-                -
-              </button>
-              <button
-                onClick={() => setCount(0)}
-                className="w-16 h-16 bg-gradient-to-b from-gray-200 to-gray-300 rounded-full text-gray-700 text-xl font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200"
+                <div
+                  className="absolute inset-x-6 top-4 h-1 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.6)" }}
+                />
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center font-black text-white text-lg"
+                    style={{
+                      backgroundColor: "#059669",
+                      boxShadow: "3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 3px rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    +
+                  </div>
+                  <h3 className="font-black text-gray-800 text-xl">Do These</h3>
+                </div>
+                <ul className="flex flex-col gap-3">
+                  {doRules.map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span
+                        className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-black text-white"
+                        style={{
+                          backgroundColor: "#34d399",
+                          boxShadow: "2px 2px 0px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        ✓
+                      </span>
+                      <span className="text-gray-700 text-sm leading-relaxed font-medium">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="rounded-3xl p-8 h-full relative overflow-hidden"
+                style={{
+                  background: "linear-gradient(135deg, #fce7f3 0%, #f8b4d9 100%)",
+                  boxShadow: "10px 10px 0px rgba(0,0,0,0.1), inset 0 3px 6px rgba(255,255,255,0.65)",
+                }}
               >
-                0
-              </button>
-              <button
-                onClick={() => setCount(count + 1)}
-                className="w-16 h-16 bg-gradient-to-b from-green-300 to-green-400 rounded-full text-white text-2xl font-bold shadow-[6px_6px_12px_rgba(0,0,0,0.1),inset_3px_3px_6px_rgba(255,255,255,0.4)] hover:translate-y-1 active:translate-y-2 transition-all duration-200"
-              >
-                +
-              </button>
+                <div
+                  className="absolute inset-x-6 top-4 h-1 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.6)" }}
+                />
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center font-black text-white text-lg"
+                    style={{
+                      backgroundColor: "#e11d48",
+                      boxShadow: "3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 3px rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    -
+                  </div>
+                  <h3 className="font-black text-gray-800 text-xl">Avoid These</h3>
+                </div>
+                <ul className="flex flex-col gap-3">
+                  {dontRules.map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span
+                        className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-black text-white"
+                        style={{
+                          backgroundColor: "#fb7185",
+                          boxShadow: "2px 2px 0px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        x
+                      </span>
+                      <span className="text-gray-700 text-sm leading-relaxed font-medium">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Comparison showcase */}
+          <RevealBlock delay={0.2} className="mt-8">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Wrong example */}
+              <div>
+                <p className="font-bold text-gray-500 text-sm mb-3 flex items-center gap-2">
+                  <span
+                    className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-black"
+                    style={{ backgroundColor: "#fb7185" }}
+                  >
+                    x
+                  </span>
+                  Anti-pattern: sharp, flat, dark
+                </p>
+                <div
+                  className="p-6"
+                  style={{
+                    backgroundColor: "#1e1e2e",
+                    border: "2px solid #444",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <div
+                    className="text-white font-bold text-sm px-4 py-2 cursor-pointer"
+                    style={{
+                      backgroundColor: "#6366f1",
+                      borderRadius: "2px",
+                      display: "inline-block",
+                    }}
+                  >
+                    Sharp Button
+                  </div>
+                </div>
+              </div>
+
+              {/* Right example */}
+              <div>
+                <p className="font-bold text-gray-500 text-sm mb-3 flex items-center gap-2">
+                  <span
+                    className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-black"
+                    style={{ backgroundColor: "#34d399" }}
+                  >
+                    ✓
+                  </span>
+                  Clay pattern: rounded, soft, 3D
+                </p>
+                <div
+                  className="p-6 rounded-3xl"
+                  style={{
+                    backgroundColor: "#fffbeb",
+                    boxShadow: "6px 6px 0px rgba(0,0,0,0.08), inset 0 2px 4px rgba(255,255,255,0.6)",
+                  }}
+                >
+                  <ClayButton label="Clay Button" bg="#f8b4d9" shadow="rgba(248,180,217,0.5)" size="sm" />
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* 8. Footer                                                         */}
+      {/* ---------------------------------------------------------------- */}
+      <footer className="relative px-6 pt-20 pb-10" style={{ zIndex: 1 }}>
+        {/* Footer blob decorations */}
+        <div
+          className="absolute top-8 left-8 w-16 h-16 pointer-events-none"
+          style={{
+            backgroundColor: "#fcd34d",
+            borderRadius: "55% 45% 60% 40% / 45% 55% 45% 55%",
+            boxShadow: "5px 5px 0px rgba(0,0,0,0.1), inset 0 1px 3px rgba(255,255,255,0.5)",
+            opacity: 0.6,
+          }}
+        />
+        <div
+          className="absolute top-12 right-12 w-12 h-12 pointer-events-none"
+          style={{
+            backgroundColor: "#a7f3d0",
+            borderRadius: "40% 60% 45% 55% / 60% 40% 60% 40%",
+            boxShadow: "4px 4px 0px rgba(0,0,0,0.08), inset 0 1px 3px rgba(255,255,255,0.5)",
+            opacity: 0.55,
+          }}
+        />
+        <div
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 w-20 h-14 pointer-events-none"
+          style={{
+            backgroundColor: "#c4b5fd",
+            borderRadius: "60% 40% 50% 50% / 40% 60% 40% 60%",
+            boxShadow: "5px 5px 0px rgba(0,0,0,0.08), inset 0 1px 3px rgba(255,255,255,0.5)",
+            opacity: 0.4,
+          }}
+        />
+
+        <div className="max-w-6xl mx-auto">
+          {/* Top row */}
+          <div
+            className="rounded-3xl p-10 mb-10 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #fef3c7 0%, #fce7f3 50%, #ede9fe 100%)",
+              boxShadow: "10px 10px 0px rgba(0,0,0,0.1), inset 0 3px 6px rgba(255,255,255,0.65)",
+            }}
+          >
+            <div
+              className="absolute inset-x-8 top-5 h-1 rounded-full"
+              style={{ background: "rgba(255,255,255,0.6)" }}
+            />
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <h2 className="text-3xl font-black text-gray-800 mb-2">
+                  Ready to go squishy?
+                </h2>
+                <p className="text-gray-500 font-medium max-w-sm">
+                  Start building clay UIs today. Every element, touchable. Every corner, round.
+                  Every color, a candy.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <ClayButton label="Browse Styles" bg="#f8b4d9" shadow="rgba(248,180,217,0.5)" size="md" />
+                <ClayButton label="Read Docs" bg="#a7f3d0" shadow="rgba(167,243,208,0.5)" size="md" />
+              </div>
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
 
-      {/* Footer */}
-      <footer className="py-8 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-pink-500 text-sm">
-            Claymorphism Showcase · Part of{" "}
-            <Link href="/" className="text-pink-600 hover:underline font-medium">
-              StyleKit
-            </Link>
-          </p>
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-pink-100">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center font-black text-gray-700 text-xs"
+                style={{
+                  background: "linear-gradient(135deg, #f8b4d9, #c4b5fd)",
+                  boxShadow: "3px 3px 0px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.6)",
+                }}
+              >
+                SK
+              </div>
+              <span className="font-bold text-gray-600 text-sm">StyleKit Claymorphism</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {palette.map((c) => (
+                <div
+                  key={c.hex}
+                  className="w-5 h-5 rounded-full"
+                  style={{
+                    backgroundColor: c.hex,
+                    boxShadow: "2px 2px 0px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.5)",
+                  }}
+                  title={c.name}
+                />
+              ))}
+            </div>
+
+            <p className="text-gray-400 text-xs font-medium">
+              Soft. Squishy. Satisfying.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
