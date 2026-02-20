@@ -75,6 +75,18 @@ export async function getSubmission(id: string): Promise<SubmissionRecord | null
   return JSON.parse(content) as SubmissionRecord;
 }
 
+export async function getLatestApprovedSubmissionBySlug(
+  slug: string
+): Promise<SubmissionRecord | null> {
+  const normalizedSlug = slug.trim().toLowerCase();
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  const approved = await listSubmissions("approved");
+  return approved.find((submission) => submission.slug === normalizedSlug) ?? null;
+}
+
 export async function approveSubmission(
   id: string,
   note?: string
