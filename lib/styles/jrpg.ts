@@ -33,6 +33,7 @@ export const jrpg: DesignStyle = {
     "状态栏使用 bg-[#22c55e] 表示 HP，bg-blue-500 表示 MP",
     "卡片面板使用双层边框 ring-1 ring-blue-400/20 border-2 border-blue-800",
     "按钮使用内阴影 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] 模拟凸起",
+    "菜单交互使用硬切反馈（duration-75 到 120）模拟手柄选中节奏",
   ],
 
   dontList: [
@@ -42,6 +43,7 @@ export const jrpg: DesignStyle = {
     "禁止使用圆角过大 rounded-full 的按钮",
     "禁止使用透明/无底色的面板",
     "禁止使用低对比度配色",
+    "禁止使用慢速网页化过渡（duration-300+）稀释游戏菜单手感",
   ],
 
   components: {
@@ -49,38 +51,40 @@ export const jrpg: DesignStyle = {
       name: "按钮",
       description: "RPG 风格的菜单按钮，斜面立体效果",
       code: `// RPG Primary Button
-<button className="px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-900 border-2 border-blue-500 rounded-md text-[#f0f9ff] font-bold tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.5)] hover:from-blue-600 hover:to-blue-800 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] transition-all duration-200">
-  Attack
+<button className="group relative px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-900 border-2 border-blue-500 rounded-sm text-[#f0f9ff] font-bold tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_0_rgba(0,0,0,0.8)] hover:from-blue-600 hover:to-blue-800 hover:border-[#fbbf24] hover:text-[#fbbf24] active:scale-[0.95] active:translate-y-[4px] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.6),0_0_0_rgba(0,0,0,0.8)] transition-all duration-75 ease-linear overflow-hidden">
+  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#fbbf24] opacity-0 group-hover:opacity-100 transition-none">{">"}</span>
+  <span className="pl-4">Attack</span>
 </button>
 
 // RPG Gold Button
-<button className="px-6 py-3 bg-gradient-to-b from-yellow-500 to-yellow-700 border-2 border-yellow-400 rounded-md text-slate-900 font-bold tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_2px_4px_rgba(0,0,0,0.5)] hover:from-yellow-400 hover:to-yellow-600 transition-all duration-200">
+<button className="px-6 py-3 bg-gradient-to-b from-yellow-500 to-yellow-700 border-2 border-yellow-400 rounded-sm text-slate-900 font-bold tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_3px_0_rgba(0,0,0,0.65)] hover:from-yellow-400 hover:to-yellow-600 active:scale-[0.96] active:translate-y-[3px] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.35),0_0_0_rgba(0,0,0,0.6)] transition-all duration-75 ease-linear">
   Confirm
 </button>
 
 // RPG Outline Button
-<button className="px-6 py-3 bg-slate-900/80 border-2 border-blue-400/60 rounded-md text-blue-300 font-bold tracking-wide shadow-[0_2px_4px_rgba(0,0,0,0.3)] hover:border-blue-300 hover:text-blue-200 hover:bg-slate-800/80 transition-all duration-200">
-  Cancel
+<button className="group relative px-6 py-3 bg-slate-900/80 border-2 border-blue-400/60 rounded-sm text-blue-300 font-bold tracking-widest shadow-[0_2px_4px_rgba(0,0,0,0.3)] hover:border-[#fbbf24] hover:text-[#fbbf24] hover:bg-slate-800/80 transition-all duration-75 ease-linear">
+  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#fbbf24] opacity-0 group-hover:opacity-100 transition-none">{">"}</span>
+  <span className="pl-4">Cancel</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "RPG 菜单面板，双层边框装饰",
-      code: `<div className="bg-gradient-to-b from-slate-800 to-slate-900 border-2 border-blue-700 rounded-md p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_12px_rgba(0,0,0,0.5)] ring-1 ring-blue-400/20 relative">
+      code: `<div className="group bg-gradient-to-b from-slate-800 to-slate-900 border-2 border-blue-700 rounded-sm p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_6px_0_rgba(0,0,0,0.8)] ring-1 ring-blue-400/20 hover:border-[#fbbf24] transition-colors duration-75 ease-linear cursor-pointer relative">
   {/* Corner decoration */}
-  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#fbbf24] rounded-tl-sm" />
-  <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#fbbf24] rounded-tr-sm" />
-  <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#fbbf24] rounded-bl-sm" />
-  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#fbbf24] rounded-br-sm" />
+  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#fbbf24] group-hover:border-white transition-colors duration-75" />
+  <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#fbbf24] group-hover:border-white transition-colors duration-75" />
+  <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#fbbf24] group-hover:border-white transition-colors duration-75" />
+  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#fbbf24] group-hover:border-white transition-colors duration-75" />
 
   <div className="relative">
-    <div className="flex items-center gap-2 mb-4 border-b border-blue-700/50 pb-3">
-      <h3 className="text-[#fbbf24] font-bold tracking-wide text-sm uppercase">Character Status</h3>
+    <div className="flex items-center gap-2 mb-4 border-b border-blue-700/50 pb-3 group-hover:border-[#fbbf24]/50 transition-colors duration-75">
+      <h3 className="text-[#fbbf24] font-bold tracking-widest text-sm uppercase group-hover:animate-pulse">Character Status</h3>
     </div>
     <div className="space-y-3">
-      <div className="flex justify-between text-[#f0f9ff] text-sm">
+      <div className="flex justify-between text-[#f0f9ff] text-sm font-bold tracking-wide">
         <span>HP</span>
-        <span>234 / 500</span>
+        <span className="group-hover:text-[#fbbf24] transition-colors duration-75">234 / 500</span>
       </div>
       <div className="w-full h-3 bg-slate-950 rounded-sm border border-slate-600 overflow-hidden">
         <div className="h-full w-[47%] bg-gradient-to-r from-green-500 to-green-400 rounded-sm shadow-[0_0_6px_rgba(34,197,94,0.4)]" />
@@ -161,7 +165,13 @@ SPECIAL EFFECTS:
 - Inset shadows for beveled/raised look
 - Corner ornaments on panels
 - Gradient overlays for depth
-- Stat bar animations`,
+- Stat bar animations
+
+Animation & Interaction Rules:
+- Cursor Snap: 交互反馈优先硬切，使用 duration-75 到 120，模拟方向键选中菜单项。
+- Retro Confirm Press: active 必须有按键下压感（scale + translate-y + inset shadow 切换）。
+- Menu Hover State: hover 时点亮金色边框或高亮条，保持高对比确认反馈。
+- Flashing Prompts: 提示性标签可使用轻量 pulse，避免大面积动画干扰读数。`,
 
   examplePrompts: [
     {
