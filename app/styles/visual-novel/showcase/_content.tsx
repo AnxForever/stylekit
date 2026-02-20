@@ -4,10 +4,33 @@ import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hooks & primitives                                          */
+/*  Global keyframe styles                                              */
 /* ------------------------------------------------------------------ */
 
-function useInView(options: IntersectionObserverInit = {}) {
+const globalCss = `
+@keyframes vnFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes vnBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes vnFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+@keyframes vnShimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+`;
+
+/* ------------------------------------------------------------------ */
+/*  Inline hooks                                                        */
+/* ------------------------------------------------------------------ */
+
+function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -44,7 +67,7 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transform: inView ? "translateY(0)" : "translateY(28px)",
         transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
@@ -54,163 +77,132 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Corner decoration component                                        */
+/*  Static data                                                         */
 /* ------------------------------------------------------------------ */
 
-function CornerDeco({
-  color = "#6366f1",
-  size = 16,
-  position = "tl",
-}: {
-  color?: string;
-  size?: number;
-  position?: "tl" | "tr" | "bl" | "br";
-}) {
-  const styles: Record<string, React.CSSProperties> = {
-    tl: { top: 8, left: 8, borderTop: `1px solid ${color}`, borderLeft: `1px solid ${color}` },
-    tr: { top: 8, right: 8, borderTop: `1px solid ${color}`, borderRight: `1px solid ${color}` },
-    bl: { bottom: 8, left: 8, borderBottom: `1px solid ${color}`, borderLeft: `1px solid ${color}` },
-    br: { bottom: 8, right: 8, borderBottom: `1px solid ${color}`, borderRight: `1px solid ${color}` },
-  };
-  return (
-    <span
-      style={{
-        position: "absolute",
-        width: size,
-        height: size,
-        ...styles[position],
-      }}
-    />
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Static data                                                        */
-/* ------------------------------------------------------------------ */
-
-const characters = [
+const DIALOG_CHARS = [
   {
-    name: "Aria",
-    title: "The Navigator",
+    name: "Sakura",
+    title: "The Dreamer",
     color: "#6366f1",
+    bgColor: "rgba(99,102,241,0.15)",
+    borderColor: "rgba(99,102,241,0.30)",
+    gradFrom: "#6366f1",
+    gradTo: "#4f46e5",
     lines: [
-      "The stars have shifted again. We are not where we were — but perhaps that is exactly where we need to be. Every deviation from the map is an invitation to discover what the map never knew.",
-      "I have sailed these routes for three cycles now. Trust the instruments, trust the wind, and above all — trust the silence between the stars. It speaks louder than any compass.",
-      "There is a port beyond this fog. I have seen it only in dreams, but dreams are the oldest navigational charts in existence. Set the sails. We go forward.",
+      "\"The cherry blossoms are beautiful this time of year... Every petal that falls carries a story of its own.\"",
+      "\"I used to sit under this very tree when I was a child. Father would tell me — the blossoms bloom so briefly because their beauty is worth protecting.\"",
+      "\"Do you ever feel that a moment is so perfect, you almost want to freeze time entirely? That is how I feel right now.\"",
     ],
   },
   {
-    name: "Lena",
-    title: "The Archivist",
-    color: "#ec4899",
-    lines: [
-      "Every document tells two stories: the one written in ink, and the one hidden in the margins. I have spent my life reading margins. You would be surprised what people leave behind when they think no one is watching.",
-      "The archive holds memory that bodies cannot. Empires rise and fall, but the records persist — if someone cares enough to protect them. That has always been my purpose.",
-      "This particular entry predates the war by six decades. Whoever wrote it knew what was coming. That frightens me more than the war itself ever did.",
-    ],
-  },
-  {
-    name: "Ren",
+    name: "Hana",
     title: "The Wanderer",
-    color: "#10b981",
+    color: "#ec4899",
+    bgColor: "rgba(236,72,153,0.15)",
+    borderColor: "rgba(236,72,153,0.30)",
+    gradFrom: "#ec4899",
+    gradTo: "#db2777",
     lines: [
-      "I do not carry a map. Maps are promises made by people who stayed in one place too long. The road changes; the map does not. I prefer to be wrong in real time than right in theory.",
-      "There is a freedom in having no destination. Every town is a chapter, every stranger a sentence. Some chapters end badly. That is still a chapter.",
-      "You ask me where I am going. The honest answer is: away from where I was. The better answer is: toward something I cannot yet name but will recognize the moment I see it.",
+      "\"I have seen a hundred towns just like this one. But this lantern light... there is something here I cannot name.\"",
+      "\"Every journey has a destination only the road knows. We just have to be patient enough to listen to our feet.\"",
+      "\"I do not carry a map. Maps are promises made by people who stayed in one place too long.\"",
+    ],
+  },
+  {
+    name: "Kenji",
+    title: "The Archivist",
+    color: "#10b981",
+    bgColor: "rgba(16,185,129,0.12)",
+    borderColor: "rgba(16,185,129,0.28)",
+    gradFrom: "#10b981",
+    gradTo: "#059669",
+    lines: [
+      "\"Every document tells two stories: the one written in ink, and the one hidden in the margins.\"",
+      "\"The archive holds memory that bodies cannot. Empires rise and fall, but the records persist — if someone cares enough to protect them.\"",
+      "\"This particular entry predates the war by six decades. Whoever wrote it knew what was coming.\"",
     ],
   },
 ];
 
-const choiceBranches = [
-  { label: "Ask Aria about the shifting stars.", consequence: "Aria Route — Navigation Arc" },
-  { label: "Follow Lena into the restricted archive.", consequence: "Lena Route — Knowledge Arc" },
-  { label: "Leave with Ren before dawn.", consequence: "Ren Route — Freedom Arc" },
-  { label: "Stay behind and investigate alone.", consequence: "Solo Route — Mystery Arc" },
-];
-
-const colorPalette = [
-  { french: "Gris Ardoise", name: "Slate Gray", hex: "#4a5568", role: "Primary — main text, dark panels" },
-  { french: "Blanc Nacre", name: "Near White", hex: "#f7fafc", role: "Secondary — background, card fills" },
-  { french: "Indigo Profond", name: "Indigo", hex: "#6366f1", role: "Accent A — primary UI, nameplates" },
-  { french: "Rose Mysterieux", name: "Pink", hex: "#ec4899", role: "Accent B — character highlight, alerts" },
-  { french: "Jade Vivant", name: "Teal", hex: "#10b981", role: "Accent C — success states, third char" },
-];
-
-const saveSlots = [
+const CHAPTERS = [
   {
-    slot: 1,
-    chapter: "Chapter 3 — The Fog Lifts",
-    location: "Northern Harbor, Dusk",
-    timestamp: "2026-02-15  14:32",
-    playtime: "4h 17m",
-    active: true,
+    id: "spring",
+    label: "Spring Encounter",
+    subLabel: "Act I — The Meeting",
+    desc: "Under the cherry blossom tree, a chance meeting changes everything.",
   },
   {
-    slot: 2,
-    chapter: "Chapter 2 — Margins of Memory",
-    location: "The Grand Archive, Midnight",
-    timestamp: "2026-02-14  20:08",
-    playtime: "2h 44m",
-    active: true,
+    id: "summer",
+    label: "Summer Festival",
+    subLabel: "Act II — The Bond",
+    desc: "Lanterns drift upward into the velvet night sky.",
   },
   {
-    slot: 3,
-    chapter: "[Empty Slot]",
-    location: "",
-    timestamp: "",
-    playtime: "",
-    active: false,
+    id: "autumn",
+    label: "Autumn Farewell",
+    subLabel: "Act III — The Parting",
+    desc: "The leaves fall like letters never sent.",
+  },
+  {
+    id: "winter",
+    label: "Winter Promise",
+    subLabel: "Act IV — The Return",
+    desc: "Snow covers everything — even the words we could not say.",
   },
 ];
 
-const doRules = [
+const COLOR_PALETTE = [
+  { name: "Slate", hex: "#4a5568", role: "Primary — text, dark panels", label: "Primary" },
+  { name: "Light", hex: "#f7fafc", role: "Secondary — bg, card fills", label: "Secondary" },
+  { name: "Indigo", hex: "#6366f1", role: "Accent A — primary UI", label: "Accent A" },
+  { name: "Pink", hex: "#ec4899", role: "Accent B — Hana character", label: "Accent B" },
+  { name: "Emerald", hex: "#10b981", role: "Accent C — Kenji character", label: "Accent C" },
+];
+
+const DO_RULES = [
   "Semi-transparent dialog panels: bg-[#1a202c]/85 backdrop-blur-md",
   "L-shaped corner decorations using absolute-positioned spans",
-  "Character nameplates as colored badge strips — -top-3 left-6",
-  "Frosted glass choice buttons: bg-white/50 backdrop-blur-sm",
+  "Character nameplates as colored badge strips — -top-4 left-6",
+  "Frosted glass choice buttons with shimmer on hover",
   "Serif fonts (font-serif) for all in-world dialog text",
-  "Atmospheric gradients for scene backgrounds: from-slate-700 to-slate-900",
+  "Atmospheric gradients for scene backgrounds",
   "Indigo accent (#6366f1) as the primary UI interaction color",
 ];
 
-const dontRules = [
+const DONT_RULES = [
   "Never use flat white or solid opaque panels for dialog boxes",
   "Never omit corner decorations on key interactive panels",
   "Never use sans-serif fonts for in-world character dialog",
   "Never use bright primary colors outside of the defined palette",
-  "Never use thick borders — 1px at 20-40% opacity only",
+  "Never use thick borders — 1px at 20–40% opacity only",
   "Never animate choice buttons with aggressive scaling transforms",
   "Never use drop shadows without specifying rgba with low opacity",
 ];
 
-const bokehDots = [
-  { top: "12%", left: "18%", size: 6, opacity: 0.35, color: "#6366f1" },
-  { top: "28%", left: "72%", size: 4, opacity: 0.25, color: "#ec4899" },
-  { top: "45%", left: "8%", size: 8, opacity: 0.20, color: "#10b981" },
-  { top: "62%", left: "85%", size: 5, opacity: 0.30, color: "#6366f1" },
-  { top: "18%", left: "55%", size: 3, opacity: 0.40, color: "#ec4899" },
-  { top: "78%", left: "32%", size: 7, opacity: 0.18, color: "#10b981" },
-  { top: "35%", left: "90%", size: 4, opacity: 0.28, color: "#6366f1" },
-  { top: "88%", left: "68%", size: 6, opacity: 0.22, color: "#ec4899" },
-  { top: "7%", left: "42%", size: 5, opacity: 0.32, color: "#10b981" },
-  { top: "52%", left: "48%", size: 3, opacity: 0.20, color: "#6366f1" },
-];
+const COMPONENT_TABS = ["Button", "Card", "Input"] as const;
+type ComponentTab = typeof COMPONENT_TABS[number];
 
 /* ------------------------------------------------------------------ */
-/*  Main component                                                     */
+/*  Main component                                                      */
 /* ------------------------------------------------------------------ */
 
-export default function VisualNovelShowcaseContent() {
-  const [activeSpeaker, setActiveSpeaker] = useState(0);
-  const [activeDialog, setActiveDialog] = useState(0);
-  const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
-  const [activeSaveSlot, setActiveSaveSlot] = useState<number | null>(null);
+export default function ShowcaseContent() {
+  const [activeChar, setActiveChar] = useState(0);
+  const [dialogPage, setDialogPage] = useState(0);
+  const [activeChapter, setActiveChapter] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("Button");
 
-  const currentChar = characters[activeSpeaker];
-  const currentLine = currentChar.lines[activeDialog % currentChar.lines.length];
+  const char = DIALOG_CHARS[activeChar];
+  const line = char.lines[dialogPage % char.lines.length];
 
-  function cycleDialog() {
-    setActiveDialog((prev) => prev + 1);
+  function nextDialog() {
+    setDialogPage((p) => p + 1);
+  }
+
+  function switchChar(idx: number) {
+    setActiveChar(idx);
+    setDialogPage(0);
   }
 
   return (
@@ -218,862 +210,474 @@ export default function VisualNovelShowcaseContent() {
       className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #1a202c 0%, #2d3748 50%, #1a202c 100%)" }}
     >
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 1: Fixed Nav                                             */}
-      {/* ---------------------------------------------------------------- */}
+      {/* Global keyframes */}
+      <style>{globalCss}</style>
+
+      {/* ============================================================ */}
+      {/* SECTION 1: Fixed Nav                                         */}
+      {/* ============================================================ */}
       <nav
+        className="fixed top-0 left-0 right-0 z-50 border-b border-[#6366f1]/20"
         style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          background: "rgba(26, 32, 44, 0.90)",
+          background: "rgba(26,32,44,0.90)",
           backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(99, 102, 241, 0.18)",
         }}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-14">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <Link
               href="/"
-              style={{ color: "#a5b4fc", fontSize: 13, fontFamily: "sans-serif", letterSpacing: "0.04em" }}
-              className="hover:text-white transition-colors duration-200"
+              className="font-sans text-[13px] tracking-wider text-[#a5b4fc]/75 hover:text-white transition-colors duration-200"
             >
               StyleKit &rarr;
             </Link>
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: 12 }}>|</span>
-            <span style={{ color: "#f7fafc", fontSize: 13, fontFamily: "sans-serif", letterSpacing: "0.08em" }}>
+            <span className="text-white/15 text-xs">|</span>
+            <span className="font-sans text-[13px] tracking-widest text-[#f7fafc]">
               Visual Novel
             </span>
           </div>
+
           <div className="hidden md:flex items-center gap-8">
-            {["Dialog", "Choices", "Palette", "Components", "Save"].map((label) => (
+            {["hero", "dialog", "chapters", "components", "palette", "rules"].map((id) => (
               <a
-                key={label}
-                href={`#${label.toLowerCase()}`}
-                style={{
-                  color: "rgba(165, 180, 252, 0.75)",
-                  fontSize: 12,
-                  fontFamily: "sans-serif",
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                }}
-                className="hover:text-white transition-colors duration-200"
+                key={id}
+                href={`#${id}`}
+                className="group relative font-sans text-[11px] tracking-[0.1em] uppercase text-[#a5b4fc]/60 hover:text-white transition-colors duration-200"
               >
-                {label}
+                <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">
+                  ▶
+                </span>
+                {id}
               </a>
             ))}
           </div>
-          <div
-            style={{
-              fontSize: 11,
-              color: "rgba(255,255,255,0.35)",
-              fontFamily: "sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
+
+          <div className="font-sans text-[10px] tracking-[0.18em] text-white/30">
             視覚小説
           </div>
         </div>
       </nav>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 2: Hero — Scene                                          */}
-      {/* ---------------------------------------------------------------- */}
+      {/* ============================================================ */}
+      {/* SECTION 2: Hero — ADV Scene                                  */}
+      {/* ============================================================ */}
       <section
+        id="hero"
+        className="relative min-h-screen flex flex-col items-center justify-end overflow-hidden pt-14"
         style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
           background:
-            "linear-gradient(180deg, #1a202c 0%, #2d3748 40%, #374151 70%, #1a202c 100%)",
-          paddingTop: 56,
+            "linear-gradient(180deg, #4a6fa5 0%, #7b9cc7 40%, #c4a882 70%, #e8c19a 100%)",
         }}
       >
-        {/* Atmospheric bokeh dots */}
-        {bokehDots.map((dot, i) => (
+        {/* Atmospheric particles */}
+        {[
+          { top: "10%", left: "15%", size: 5, op: 0.3, color: "#6366f1" },
+          { top: "22%", left: "70%", size: 3, op: 0.2, color: "#ec4899" },
+          { top: "38%", left: "85%", size: 6, op: 0.25, color: "#f7fafc" },
+          { top: "55%", left: "5%", size: 4, op: 0.18, color: "#10b981" },
+          { top: "65%", left: "50%", size: 3, op: 0.15, color: "#6366f1" },
+          { top: "8%", left: "42%", size: 4, op: 0.22, color: "#f7fafc" },
+          { top: "30%", left: "28%", size: 2, op: 0.28, color: "#ec4899" },
+        ].map((p, i) => (
           <span
             key={i}
             style={{
               position: "absolute",
-              top: dot.top,
-              left: dot.left,
-              width: dot.size,
-              height: dot.size,
+              top: p.top,
+              left: p.left,
+              width: p.size,
+              height: p.size,
               borderRadius: "50%",
-              background: dot.color,
-              opacity: dot.opacity,
-              filter: "blur(1.5px)",
+              background: p.color,
+              opacity: p.op,
+              filter: "blur(1px)",
               pointerEvents: "none",
+              animation: `vnFloat ${3 + i * 0.7}s ease-in-out infinite`,
             }}
           />
         ))}
 
-        {/* Horizon glow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "30%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "60%",
-            height: 1,
-            background:
-              "linear-gradient(90deg, transparent, rgba(99,102,241,0.25), transparent)",
-          }}
-        />
-
-        {/* Character silhouette hint (CSS shape) */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "18%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 0,
-            opacity: 0.12,
-            pointerEvents: "none",
-          }}
-        >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "#f7fafc",
-              marginBottom: -2,
-            }}
-          />
-          <div
-            style={{
-              width: 60,
-              height: 110,
-              background: "#f7fafc",
-              borderRadius: "30% 30% 0 0",
-            }}
-          />
+        {/* Character silhouettes */}
+        <div className="absolute bottom-[28%] left-1/2 -translate-x-1/2 flex items-end gap-16 pointer-events-none">
+          {/* Left silhouette */}
+          <div className="flex flex-col items-center opacity-20" style={{ animation: "vnFloat 4s ease-in-out infinite" }}>
+            <div className="w-8 h-8 rounded-full bg-[#1a202c] mb-[-2px]" />
+            <div className="w-14 h-[100px] bg-[#1a202c]" style={{ borderRadius: "30% 30% 0 0" }} />
+          </div>
+          {/* Center main silhouette */}
+          <div className="flex flex-col items-center opacity-30" style={{ animation: "vnFloat 3.5s ease-in-out infinite 0.5s" }}>
+            <div className="w-10 h-10 rounded-full bg-[#1a202c] mb-[-2px]" />
+            <div className="w-18 h-[120px] bg-[#1a202c]" style={{ width: 72, borderRadius: "28% 28% 0 0" }} />
+          </div>
+          {/* Right silhouette */}
+          <div className="flex flex-col items-center opacity-20" style={{ animation: "vnFloat 4.5s ease-in-out infinite 1s" }}>
+            <div className="w-7 h-7 rounded-full bg-[#1a202c] mb-[-2px]" />
+            <div className="w-12 h-[90px] bg-[#1a202c]" style={{ borderRadius: "30% 30% 0 0" }} />
+          </div>
         </div>
 
-        {/* Scene title overlay */}
-        <div className="relative z-10 text-center px-6">
-          <RevealBlock delay={0.1}>
+        {/* Floating title */}
+        <div className="relative z-10 text-center px-6 mb-8" style={{ animation: "vnFadeUp 1s ease-out 0.2s both" }}>
+          <div
+            className="inline-block font-sans text-[10px] tracking-[0.25em] uppercase text-[#1a202c]/60 border border-[#1a202c]/20 rounded px-4 py-1 mb-5"
+          >
+            Chapter I
+          </div>
+          <h1
+            className="font-serif text-[#1a202c]/75 mb-3"
+            style={{ fontSize: "clamp(2.2rem,6vw,4rem)", fontWeight: 400, letterSpacing: "0.03em", lineHeight: 1.2 }}
+          >
+            視覚小説風
+          </h1>
+          <p
+            className="font-serif italic text-[#1a202c]/50 max-w-md mx-auto"
+            style={{ fontSize: "clamp(0.95rem,2vw,1.15rem)", lineHeight: 1.7 }}
+          >
+            ADV visual novel aesthetics — translucent dialog panels, character nameplates,
+            ornate corner frames, and atmospheric scene compositions.
+          </p>
+        </div>
+
+        {/* ADV Dialog panel at bottom — Narrator */}
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 pb-10">
+          <div className="relative mt-6">
+            {/* Narrator nameplate */}
             <div
+              className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
               style={{
-                display: "inline-block",
-                padding: "4px 16px",
-                border: "1px solid rgba(99,102,241,0.30)",
-                borderRadius: 2,
-                marginBottom: 24,
-                fontSize: 11,
-                letterSpacing: "0.22em",
-                color: "rgba(165,180,252,0.75)",
-                fontFamily: "sans-serif",
+                background: "linear-gradient(90deg, #4a5568, #2d3748)",
+                boxShadow: "0 4px 10px rgba(74,85,104,0.4)",
               }}
             >
-              CHAPTER I — VISUAL NOVEL
+              <span className="font-sans font-bold text-white tracking-wide text-sm">Narrator</span>
             </div>
-          </RevealBlock>
-
-          <RevealBlock delay={0.2}>
-            <h1
+            {/* Dialog panel */}
+            <div
+              className="group relative rounded-xl p-8 pt-10 border border-white/20 hover:border-white/35 hover:-translate-y-0.5 transition-all duration-500 ease-out cursor-text"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontSize: "clamp(2.4rem, 6vw, 4.5rem)",
-                fontWeight: 400,
-                color: "#f7fafc",
-                lineHeight: 1.18,
-                letterSpacing: "0.02em",
-                marginBottom: 20,
+                background: "rgba(26,32,44,0.82)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
               }}
             >
-              視覚小説風
-            </h1>
-          </RevealBlock>
-
-          <RevealBlock delay={0.3}>
-            <p
-              style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-                color: "rgba(247,250,252,0.55)",
-                maxWidth: 520,
-                margin: "0 auto 32px",
-                lineHeight: 1.7,
-                fontStyle: "italic",
-              }}
-            >
-              ADV game UI aesthetic — translucent dialog panels, character nameplates,
-              frosted-glass choice branches, and atmospheric scene compositions.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.4}>
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              <a
-                href="#dialog"
-                style={{
-                  display: "inline-block",
-                  padding: "10px 28px",
-                  background: "rgba(99,102,241,0.80)",
-                  borderRadius: 4,
-                  color: "#f7fafc",
-                  fontSize: 13,
-                  fontFamily: "sans-serif",
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  border: "1px solid rgba(99,102,241,0.60)",
-                  backdropFilter: "blur(6px)",
-                }}
+              {/* L-corner decorations */}
+              <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-white/25" />
+              <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-white/25" />
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-white/25" />
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-white/25" />
+              {/* Blink indicator */}
+              <div
+                className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 text-white/60 transition-opacity duration-300"
+                style={{ animation: "vnBlink 1.2s ease-in-out infinite" }}
               >
-                Begin Showcase
-              </a>
-              <a
-                href="#palette"
-                style={{
-                  display: "inline-block",
-                  padding: "10px 28px",
-                  background: "rgba(255,255,255,0.06)",
-                  borderRadius: 4,
-                  color: "rgba(247,250,252,0.70)",
-                  fontSize: 13,
-                  fontFamily: "sans-serif",
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  backdropFilter: "blur(6px)",
-                }}
+                ▼
+              </div>
+              <p
+                className="font-serif text-white/85 leading-relaxed tracking-wide"
+                style={{ fontSize: "clamp(0.95rem,1.8vw,1.1rem)" }}
               >
-                View Palette
-              </a>
+                "The sky burned amber as evening claimed the town. Two figures stood beneath
+                the ancient cherry tree — their meeting, though neither knew it yet, would
+                change the course of everything that followed..."
+              </p>
             </div>
-          </RevealBlock>
+          </div>
         </div>
 
         {/* Scroll cue */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 32,
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 6,
-            opacity: 0.4,
-          }}
-        >
-          <div style={{ width: 1, height: 36, background: "rgba(165,180,252,0.5)" }} />
-          <span
-            style={{
-              fontSize: 10,
-              letterSpacing: "0.16em",
-              color: "rgba(165,180,252,0.6)",
-              fontFamily: "sans-serif",
-            }}
-          >
-            SCROLL
-          </span>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+          <div className="w-px h-8 bg-[#1a202c]/50" />
+          <span className="font-sans text-[9px] tracking-[0.18em] text-[#1a202c]/60">SCROLL</span>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 3: ADV Dialog Box Demo                                   */}
-      {/* ---------------------------------------------------------------- */}
+      {/* ============================================================ */}
+      {/* SECTION 3: Chapter Selection                                 */}
+      {/* ============================================================ */}
       <section
-        id="dialog"
-        style={{ padding: "96px 24px", background: "rgba(26,32,44,0.70)" }}
+        id="chapters"
+        className="py-24 px-6"
+        style={{ background: "rgba(17,24,39,0.92)" }}
       >
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <RevealBlock delay={0}>
             <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 02 — DIALOG SYSTEM
+              <div className="inline-block font-sans text-[10px] tracking-[0.22em] uppercase text-[#a5b4fc]/60 border border-[#6366f1]/25 rounded px-4 py-1 mb-4">
+                Section 01 — Story Branches
               </div>
               <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
+                className="font-serif text-[#f7fafc] font-normal mb-3"
+                style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
-                ADV Dialog Box
+                Chapter Selection
               </h2>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 480,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                }}
-              >
-                The core visual novel interface — bottom-anchored dialog panel with
-                character nameplate, L-shaped corner decorations, and speaker switching.
+              <p className="font-sans text-[14px] text-white/40 max-w-sm mx-auto leading-relaxed">
+                Choose a chapter to follow. Each path leads somewhere different.
               </p>
             </div>
           </RevealBlock>
 
-          {/* Scene preview area */}
           <RevealBlock delay={0.1}>
             <div
+              className="font-serif italic text-center text-white/45 mb-8"
+              style={{ fontSize: "1rem" }}
+            >
+              "The story awaits. Which chapter will you open?"
+            </div>
+          </RevealBlock>
+
+          <div className="flex flex-col gap-3">
+            {CHAPTERS.map((ch, i) => (
+              <RevealBlock key={ch.id} delay={0.15 + i * 0.08}>
+                <button
+                  onClick={() => setActiveChapter(activeChapter === ch.id ? null : ch.id)}
+                  className="group relative w-full px-8 py-4 text-left rounded-lg border border-[#6366f1]/30 hover:bg-[#6366f1]/20 hover:border-[#6366f1]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden"
+                  style={{
+                    background:
+                      activeChapter === ch.id
+                        ? "rgba(99,102,241,0.18)"
+                        : "rgba(26,32,44,0.60)",
+                    backdropFilter: "blur(8px)",
+                    color: "#e2e8f0",
+                  }}
+                >
+                  {/* Shimmer overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                  <div className="flex items-center gap-3 relative z-10">
+                    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 font-sans text-sm">
+                      ▶
+                    </span>
+                    <div className="flex-1">
+                      <div className="font-sans text-lg font-medium">{ch.label}</div>
+                      {activeChapter === ch.id && (
+                        <div className="mt-1 font-sans text-xs tracking-widest text-[#a5b4fc]/60 uppercase">
+                          {ch.subLabel}
+                        </div>
+                      )}
+                      {activeChapter === ch.id && (
+                        <div className="mt-2 font-serif italic text-sm text-white/55 leading-relaxed">
+                          {ch.desc}
+                        </div>
+                      )}
+                    </div>
+                    <span className="font-sans text-xs tracking-widest text-[#6366f1]/50 font-mono">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                </button>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* SECTION 4: Dialog System Demo                                */}
+      {/* ============================================================ */}
+      <section
+        id="dialog"
+        className="py-24 px-6"
+        style={{ background: "rgba(26,32,44,0.85)" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <div className="text-center mb-14">
+              <div className="inline-block font-sans text-[10px] tracking-[0.22em] uppercase text-[#a5b4fc]/60 border border-[#6366f1]/25 rounded px-4 py-1 mb-4">
+                Section 02 — Dialog System
+              </div>
+              <h2
+                className="font-serif text-[#f7fafc] font-normal mb-3"
+                style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
+              >
+                ADV Dialog Box
+              </h2>
+              <p className="font-sans text-[14px] text-white/40 max-w-md mx-auto leading-relaxed">
+                The core ADV interface — bottom-anchored dialog panel with character nameplate,
+                L-shaped corner decorations, and speaker switching.
+              </p>
+            </div>
+          </RevealBlock>
+
+          {/* Interactive dialog demo */}
+          <RevealBlock delay={0.1}>
+            <div
+              className="relative rounded-xl overflow-hidden border border-[#6366f1]/18"
               style={{
-                position: "relative",
-                borderRadius: 12,
-                overflow: "hidden",
-                border: "1px solid rgba(99,102,241,0.18)",
-                background:
-                  "linear-gradient(180deg, #1a202c 0%, #2d3748 60%, #374151 100%)",
-                minHeight: 420,
-                display: "flex",
-                flexDirection: "column",
+                background: "linear-gradient(180deg, #1a202c 0%, #2d3748 60%, #374151 100%)",
+                minHeight: 460,
               }}
             >
-              {/* Outer corner decorations on scene container */}
-              <CornerDeco color="rgba(99,102,241,0.35)" size={20} position="tl" />
-              <CornerDeco color="rgba(99,102,241,0.35)" size={20} position="tr" />
-              <CornerDeco color="rgba(99,102,241,0.35)" size={20} position="bl" />
-              <CornerDeco color="rgba(99,102,241,0.35)" size={20} position="br" />
+              {/* Scene outer corner decorations */}
+              <div className="absolute top-3 left-3 w-5 h-5 border-l border-t border-[#6366f1]/35" />
+              <div className="absolute top-3 right-3 w-5 h-5 border-r border-t border-[#6366f1]/35" />
+              <div className="absolute bottom-3 left-3 w-5 h-5 border-l border-b border-[#6366f1]/35" />
+              <div className="absolute bottom-3 right-3 w-5 h-5 border-r border-b border-[#6366f1]/35" />
 
               {/* Bokeh in scene */}
-              {bokehDots.slice(0, 5).map((dot, i) => (
+              {[
+                { top: "12%", left: "20%", size: 5, op: 0.18, color: "#6366f1" },
+                { top: "28%", left: "75%", size: 4, op: 0.15, color: "#ec4899" },
+                { top: "50%", left: "10%", size: 6, op: 0.12, color: "#10b981" },
+              ].map((d, i) => (
                 <span
                   key={i}
                   style={{
                     position: "absolute",
-                    top: dot.top,
-                    left: dot.left,
-                    width: dot.size + 2,
-                    height: dot.size + 2,
+                    top: d.top,
+                    left: d.left,
+                    width: d.size,
+                    height: d.size,
                     borderRadius: "50%",
-                    background: dot.color,
-                    opacity: dot.opacity * 0.6,
+                    background: d.color,
+                    opacity: d.op,
                     filter: "blur(2px)",
                     pointerEvents: "none",
                   }}
                 />
               ))}
 
-              {/* Character silhouette area */}
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "center",
-                  paddingBottom: 0,
-                  position: "relative",
-                }}
-              >
+              {/* Character silhouette */}
+              <div className="absolute bottom-[33%] left-1/2 -translate-x-1/2 flex flex-col items-center opacity-15 pointer-events-none" style={{ transition: "all 0.4s ease" }}>
                 <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    opacity: 0.15,
-                    marginBottom: 0,
-                    pointerEvents: "none",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      background: currentChar.color,
-                      marginBottom: -2,
-                      transition: "background 0.4s ease",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: 50,
-                      height: 90,
-                      background: currentChar.color,
-                      borderRadius: "24% 24% 0 0",
-                      transition: "background 0.4s ease",
-                    }}
-                  />
-                </div>
+                  className="w-7 h-7 rounded-full mb-[-2px]"
+                  style={{ background: char.color, transition: "background 0.4s ease" }}
+                />
+                <div
+                  className="w-12 h-[85px]"
+                  style={{ background: char.color, borderRadius: "26% 26% 0 0", transition: "background 0.4s ease" }}
+                />
               </div>
 
               {/* Speaker selector tabs */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  padding: "12px 16px 0",
-                  background: "rgba(0,0,0,0.20)",
-                }}
-              >
-                {characters.map((char, i) => (
+              <div className="absolute bottom-[170px] left-0 right-0 flex gap-2 px-6 md:px-8">
+                {DIALOG_CHARS.map((c, i) => (
                   <button
-                    key={char.name}
-                    onClick={() => { setActiveSpeaker(i); setActiveDialog(0); }}
+                    key={c.name}
+                    onClick={() => switchChar(i)}
+                    className="font-sans text-[11px] tracking-widest transition-all duration-250"
                     style={{
-                      padding: "6px 18px",
-                      fontSize: 11,
-                      fontFamily: "sans-serif",
-                      letterSpacing: "0.08em",
+                      padding: "5px 16px",
                       borderRadius: "4px 4px 0 0",
-                      border: `1px solid ${activeSpeaker === i ? char.color : "rgba(255,255,255,0.10)"}`,
-                      borderBottom: activeSpeaker === i ? `2px solid ${char.color}` : "1px solid transparent",
-                      background: activeSpeaker === i ? `${char.color}22` : "rgba(255,255,255,0.04)",
-                      color: activeSpeaker === i ? char.color : "rgba(255,255,255,0.40)",
+                      border: `1px solid ${activeChar === i ? c.color : "rgba(255,255,255,0.10)"}`,
+                      borderBottom: activeChar === i ? `2px solid ${c.color}` : "1px solid transparent",
+                      background: activeChar === i ? `${c.color}22` : "rgba(255,255,255,0.04)",
+                      color: activeChar === i ? c.color : "rgba(255,255,255,0.38)",
                       cursor: "pointer",
-                      transition: "all 0.25s ease",
                     }}
                   >
-                    {char.name}
+                    {c.name}
                   </button>
                 ))}
               </div>
 
-              {/* Dialog box panel */}
+              {/* Dialog panel */}
               <div
+                className="absolute bottom-0 left-0 right-0"
                 style={{
-                  position: "relative",
-                  background: "rgba(26,32,44,0.85)",
-                  backdropFilter: "blur(12px)",
-                  borderTop: "1px solid rgba(99,102,241,0.20)",
+                  background: "rgba(26,32,44,0.88)",
+                  backdropFilter: "blur(16px)",
+                  borderTop: `1px solid ${char.borderColor}`,
                   padding: "32px 28px 24px",
+                  minHeight: 170,
                 }}
               >
-                {/* L-corner decorations on dialog box */}
-                <CornerDeco color={`${currentChar.color}55`} size={14} position="tl" />
-                <CornerDeco color={`${currentChar.color}55`} size={14} position="tr" />
-                <CornerDeco color={`${currentChar.color}55`} size={14} position="bl" />
-                <CornerDeco color={`${currentChar.color}55`} size={14} position="br" />
+                {/* L-corner decorations */}
+                <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#6366f1]/30" />
+                <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#6366f1]/30" />
+                <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#6366f1]/30" />
+                <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#6366f1]/30" />
 
                 {/* Nameplate */}
                 <div
+                  className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
                   style={{
-                    position: "absolute",
-                    top: -14,
-                    left: 24,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "4px 16px",
-                    background: currentChar.color,
-                    borderRadius: 2,
+                    background: `linear-gradient(90deg, ${char.gradFrom}, ${char.gradTo})`,
+                    boxShadow: `0 4px 10px ${char.color}4d`,
                     transition: "background 0.35s ease",
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontFamily: "sans-serif",
-                      fontWeight: 600,
-                      letterSpacing: "0.10em",
-                      color: "#fff",
-                    }}
-                  >
-                    {currentChar.name.toUpperCase()}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontFamily: "sans-serif",
-                      color: "rgba(255,255,255,0.65)",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {currentChar.title}
-                  </span>
+                  <span className="font-sans font-bold text-white tracking-wide text-sm">{char.name}</span>
+                  <span className="font-sans text-[10px] text-white/60 italic ml-2">{char.title}</span>
                 </div>
 
                 {/* Dialog text */}
                 <p
+                  className="font-serif text-white/88 leading-relaxed tracking-wide mb-4"
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    fontSize: "clamp(0.9rem, 1.8vw, 1.05rem)",
-                    color: "rgba(247,250,252,0.88)",
-                    lineHeight: 1.78,
-                    marginBottom: 18,
-                    minHeight: 80,
+                    fontSize: "clamp(0.9rem,1.8vw,1.05rem)",
+                    minHeight: 72,
                     transition: "opacity 0.3s ease",
                   }}
                 >
-                  {currentLine}
+                  {line}
                 </p>
 
-                {/* Controls row */}
                 <div className="flex items-center justify-between">
-                  <div
-                    style={{
-                      fontSize: 10,
-                      fontFamily: "sans-serif",
-                      color: "rgba(255,255,255,0.25)",
-                      letterSpacing: "0.10em",
-                    }}
-                  >
-                    {`${(activeDialog % currentChar.lines.length) + 1} / ${currentChar.lines.length}`}
+                  <div className="font-sans text-[10px] tracking-widest text-white/22">
+                    {(dialogPage % char.lines.length) + 1} / {char.lines.length}
                   </div>
                   <button
-                    onClick={cycleDialog}
+                    onClick={nextDialog}
+                    className="group flex items-center gap-2 font-sans text-[11px] tracking-widest text-[#a5b4fc]/75 hover:text-white transition-colors duration-200"
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
                       padding: "6px 16px",
-                      background: "rgba(99,102,241,0.15)",
-                      border: "1px solid rgba(99,102,241,0.30)",
+                      background: "rgba(99,102,241,0.12)",
+                      border: "1px solid rgba(99,102,241,0.28)",
                       borderRadius: 3,
-                      color: "rgba(165,180,252,0.80)",
-                      fontSize: 11,
-                      fontFamily: "sans-serif",
-                      letterSpacing: "0.08em",
                       cursor: "pointer",
                     }}
                   >
+                    <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">▶</span>
                     Next
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
                   </button>
                 </div>
               </div>
             </div>
           </RevealBlock>
-        </div>
-      </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 4: Choice Branch Buttons                                 */}
-      {/* ---------------------------------------------------------------- */}
-      <section
-        id="choices"
-        style={{ padding: "96px 24px", background: "rgba(17,24,39,0.85)" }}
-      >
-        <div className="max-w-3xl mx-auto">
-          <RevealBlock delay={0}>
-            <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 03 — NARRATIVE BRANCHES
-              </div>
-              <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
-              >
-                Choice Branches
-              </h2>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 460,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                }}
-              >
-                Frosted glass buttons with indigo accent on selection. Each branch
-                reveals its narrative arc label.
-              </p>
-            </div>
-          </RevealBlock>
-
-          {/* Choice prompt text */}
-          <RevealBlock delay={0.1}>
-            <div
-              style={{
-                textAlign: "center",
-                marginBottom: 28,
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontSize: "1rem",
-                color: "rgba(247,250,252,0.55)",
-                fontStyle: "italic",
-              }}
-            >
-              "The door is before you. What do you do?"
-            </div>
-          </RevealBlock>
-
-          {/* Choice buttons */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {choiceBranches.map((choice, i) => (
-              <RevealBlock key={i} delay={0.15 + i * 0.08}>
-                <button
-                  onClick={() => setSelectedChoice(selectedChoice === i ? null : i)}
-                  style={{
-                    width: "100%",
-                    padding: "16px 24px",
-                    background:
-                      selectedChoice === i
-                        ? "rgba(99,102,241,0.18)"
-                        : "rgba(255,255,255,0.05)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: 8,
-                    border: `1px solid ${selectedChoice === i ? "rgba(99,102,241,0.55)" : "rgba(99,102,241,0.15)"}`,
-                    textAlign: "left",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 16,
-                    transition: "all 0.25s ease",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
-                  <CornerDeco
-                    color={selectedChoice === i ? "rgba(99,102,241,0.50)" : "rgba(99,102,241,0.20)"}
-                    size={10}
-                    position="tl"
-                  />
-                  <CornerDeco
-                    color={selectedChoice === i ? "rgba(99,102,241,0.50)" : "rgba(99,102,241,0.20)"}
-                    size={10}
-                    position="br"
-                  />
-                  <div>
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontFamily: "Georgia, 'Times New Roman', serif",
-                        color: selectedChoice === i ? "#a5b4fc" : "rgba(247,250,252,0.78)",
-                        marginBottom: selectedChoice === i ? 6 : 0,
-                        transition: "color 0.25s ease",
-                      }}
-                    >
-                      {String(i + 1).padStart(2, "0")}. {choice.label}
-                    </div>
-                    {selectedChoice === i && (
-                      <div
-                        style={{
-                          fontSize: 11,
-                          fontFamily: "sans-serif",
-                          letterSpacing: "0.10em",
-                          color: "rgba(165,180,252,0.60)",
-                        }}
-                      >
-                        {choice.consequence}
-                      </div>
-                    )}
-                  </div>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
+          {/* Three dialog cards (exact card pattern) */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {DIALOG_CHARS.map((c, idx) => (
+              <RevealBlock key={c.name} delay={0.1 + idx * 0.1}>
+                <div className="relative mt-6">
+                  {/* Character nameplate */}
+                  <div
+                    className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
                     style={{
-                      flexShrink: 0,
-                      color: selectedChoice === i ? "#a5b4fc" : "rgba(99,102,241,0.40)",
-                      transition: "color 0.25s ease, transform 0.25s ease",
-                      transform: selectedChoice === i ? "translateX(2px)" : "none",
+                      background: `linear-gradient(90deg, ${c.gradFrom}, ${c.gradTo})`,
+                      boxShadow: `0 4px 10px ${c.color}4d`,
                     }}
                   >
-                    <path
-                      d="M3 8h10M9 4l4 4-4 4"
-                      stroke="currentColor"
-                      strokeWidth="1.3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Confirm selection */}
-          <RevealBlock delay={0.55}>
-            <div className="text-center mt-8">
-              <button
-                disabled={selectedChoice === null}
-                style={{
-                  padding: "10px 32px",
-                  background:
-                    selectedChoice !== null
-                      ? "rgba(99,102,241,0.80)"
-                      : "rgba(255,255,255,0.06)",
-                  border: `1px solid ${selectedChoice !== null ? "rgba(99,102,241,0.60)" : "rgba(255,255,255,0.10)"}`,
-                  borderRadius: 4,
-                  color: selectedChoice !== null ? "#fff" : "rgba(255,255,255,0.25)",
-                  fontSize: 13,
-                  fontFamily: "sans-serif",
-                  letterSpacing: "0.08em",
-                  cursor: selectedChoice !== null ? "pointer" : "default",
-                  transition: "all 0.25s ease",
-                }}
-              >
-                Confirm Choice
-              </button>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 5: Color System                                          */}
-      {/* ---------------------------------------------------------------- */}
-      <section
-        id="palette"
-        style={{ padding: "96px 24px", background: "rgba(26,32,44,0.90)" }}
-      >
-        <div className="max-w-5xl mx-auto">
-          <RevealBlock delay={0}>
-            <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 04 — COLOR SYSTEM
-              </div>
-              <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
-              >
-                Palette
-              </h2>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 420,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                }}
-              >
-                Five tones form the visual novel world — from deep slate through luminous
-                indigo, pink, and jade.
-              </p>
-            </div>
-          </RevealBlock>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-              gap: 20,
-            }}
-          >
-            {colorPalette.map((color, i) => (
-              <RevealBlock key={color.hex} delay={0.08 * i}>
-                <div
-                  style={{
-                    position: "relative",
-                    background: "rgba(255,255,255,0.05)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: 10,
-                    border: "1px solid rgba(255,255,255,0.10)",
-                    overflow: "hidden",
-                    paddingBottom: 20,
-                  }}
-                >
-                  <CornerDeco color="rgba(99,102,241,0.25)" size={10} position="tl" />
-                  <CornerDeco color="rgba(99,102,241,0.25)" size={10} position="br" />
-
-                  {/* Swatch */}
+                    <span className="font-sans font-bold text-white tracking-wide text-sm">{c.name}</span>
+                  </div>
+                  {/* Dialog panel */}
                   <div
+                    className="group relative rounded-xl p-8 pt-10 border hover:border-[#6366f1]/40 hover:-translate-y-0.5 transition-all duration-500 ease-out cursor-text"
                     style={{
-                      height: 88,
-                      background: color.hex,
-                      marginBottom: 16,
+                      background: "rgba(26,32,44,0.85)",
+                      backdropFilter: "blur(16px)",
+                      border: `1px solid ${c.color}33`,
+                      boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
                     }}
-                  />
-
-                  <div style={{ padding: "0 16px" }}>
+                  >
+                    {/* L-corner decorations */}
+                    <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#6366f1]/30" />
+                    <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#6366f1]/30" />
+                    <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#6366f1]/30" />
+                    <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#6366f1]/30" />
+                    {/* Hover blink indicator */}
                     <div
-                      style={{
-                        fontSize: 11,
-                        fontFamily: "Georgia, 'Times New Roman', serif",
-                        fontStyle: "italic",
-                        color: "rgba(247,250,252,0.45)",
-                        marginBottom: 4,
-                      }}
+                      className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ color: c.color, animation: "vnBlink 1.2s ease-in-out infinite" }}
                     >
-                      {color.french}
+                      ▼
                     </div>
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontFamily: "sans-serif",
-                        fontWeight: 600,
-                        color: "#f7fafc",
-                        marginBottom: 4,
-                        letterSpacing: "0.03em",
-                      }}
+                    <p
+                      className="font-serif text-white/88 leading-relaxed tracking-wide"
+                      style={{ fontSize: "0.9rem" }}
                     >
-                      {color.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontFamily: "monospace",
-                        color: "rgba(165,180,252,0.70)",
-                        marginBottom: 8,
-                      }}
-                    >
-                      {color.hex}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        fontFamily: "sans-serif",
-                        color: "rgba(247,250,252,0.30)",
-                        lineHeight: 1.55,
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {color.role}
-                    </div>
+                      {c.lines[0]}
+                    </p>
                   </div>
                 </div>
               </RevealBlock>
@@ -1082,983 +686,522 @@ export default function VisualNovelShowcaseContent() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 6: Component Showcase                                    */}
-      {/* ---------------------------------------------------------------- */}
+      {/* ============================================================ */}
+      {/* SECTION 5: Component Demo                                    */}
+      {/* ============================================================ */}
       <section
         id="components"
-        style={{ padding: "96px 24px", background: "rgba(17,24,39,0.85)" }}
+        className="py-24 px-6"
+        style={{ background: "rgba(17,24,39,0.92)" }}
       >
         <div className="max-w-5xl mx-auto">
           <RevealBlock delay={0}>
             <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 05 — COMPONENTS
+              <div className="inline-block font-sans text-[10px] tracking-[0.22em] uppercase text-[#a5b4fc]/60 border border-[#6366f1]/25 rounded px-4 py-1 mb-4">
+                Section 03 — Component Library
               </div>
               <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
+                className="font-serif text-[#f7fafc] font-normal mb-3"
+                style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 Component Showcase
               </h2>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 420,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                }}
-              >
-                Buttons, inputs, and character badge components styled to the visual
-                novel aesthetic.
+              <p className="font-sans text-[14px] text-white/40 max-w-md mx-auto leading-relaxed">
+                All interactive elements styled to the visual novel aesthetic.
               </p>
             </div>
           </RevealBlock>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: 32,
-            }}
-          >
-            {/* Button variants */}
-            <RevealBlock delay={0.1}>
-              <div
-                style={{
-                  position: "relative",
-                  background: "rgba(255,255,255,0.04)",
-                  borderRadius: 10,
-                  border: "1px solid rgba(99,102,241,0.18)",
-                  padding: 28,
-                }}
-              >
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="tl" />
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="br" />
-                <div
+          {/* Tab switcher */}
+          <RevealBlock delay={0.08}>
+            <div className="flex items-center gap-0 mb-10 border-b border-[#6366f1]/20">
+              {COMPONENT_TABS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="group relative font-sans text-[12px] tracking-widest uppercase transition-all duration-250"
                   style={{
-                    fontSize: 10,
-                    letterSpacing: "0.16em",
-                    color: "rgba(165,180,252,0.55)",
-                    fontFamily: "sans-serif",
-                    marginBottom: 20,
+                    padding: "10px 28px",
+                    color: activeTab === tab ? "#a5b4fc" : "rgba(255,255,255,0.35)",
+                    borderBottom: activeTab === tab ? "2px solid #6366f1" : "2px solid transparent",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: activeTab === tab ? "2px solid #6366f1" : "2px solid transparent",
+                    cursor: "pointer",
                   }}
                 >
-                  BUTTON VARIANTS
-                </div>
+                  <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">▶</span>
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {/* Choice button */}
-                  <button
-                    style={{
-                      width: "100%",
-                      padding: "12px 20px",
-                      background: "rgba(255,255,255,0.08)",
-                      backdropFilter: "blur(6px)",
-                      border: "1px solid rgba(99,102,241,0.25)",
-                      borderRadius: 6,
-                      color: "rgba(247,250,252,0.80)",
-                      fontSize: 13,
-                      fontFamily: "Georgia, 'Times New Roman', serif",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    Choice Button
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7h10M8 3l4 4-4 4" stroke="rgba(165,180,252,0.60)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+          {/* Tab content */}
+          <RevealBlock delay={0.12}>
+            <div
+              className="relative rounded-xl border border-[#6366f1]/18 p-10"
+              style={{ background: "rgba(26,32,44,0.70)", backdropFilter: "blur(12px)" }}
+            >
+              {/* Corner decorations */}
+              <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#6366f1]/30" />
+              <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#6366f1]/30" />
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#6366f1]/30" />
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#6366f1]/30" />
+
+              {/* Button tab */}
+              {activeTab === "Button" && (
+                <div className="flex flex-col gap-4 max-w-lg">
+                  <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-[#a5b4fc]/50 mb-2">
+                    Choice Button — Primary Interaction
+                  </div>
+
+                  {/* Exact gold-standard button pattern */}
+                  <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#6366f1]/30 hover:bg-[#6366f1]/20 hover:border-[#6366f1]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                    <div className="flex items-center gap-3 relative z-10">
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">▶</span>
+                      <span>"I should go to the rooftop and watch the sunset."</span>
+                    </div>
                   </button>
 
-                  {/* Confirm button */}
-                  <button
-                    style={{
-                      width: "100%",
-                      padding: "12px 20px",
-                      background: "rgba(99,102,241,0.75)",
-                      backdropFilter: "blur(6px)",
-                      border: "1px solid rgba(99,102,241,0.55)",
-                      borderRadius: 6,
-                      color: "#fff",
-                      fontSize: 13,
-                      fontFamily: "sans-serif",
-                      letterSpacing: "0.06em",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Confirm
+                  <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#ec4899]/30 hover:bg-[#ec4899]/20 hover:border-[#ec4899]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                    <div className="flex items-center gap-3 relative z-10">
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#ec4899] transition-all duration-300">▶</span>
+                      <span>"Stay and talk to Hana a little longer."</span>
+                    </div>
                   </button>
 
-                  {/* Cancel button */}
-                  <button
-                    style={{
-                      width: "100%",
-                      padding: "12px 20px",
-                      background: "rgba(236,72,153,0.12)",
-                      backdropFilter: "blur(6px)",
-                      border: "1px solid rgba(236,72,153,0.25)",
-                      borderRadius: 6,
-                      color: "rgba(249,168,212,0.80)",
-                      fontSize: 13,
-                      fontFamily: "sans-serif",
-                      letterSpacing: "0.06em",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Cancel
+                  <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#10b981]/30 hover:bg-[#10b981]/20 hover:border-[#10b981]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                    <div className="flex items-center gap-3 relative z-10">
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#10b981] transition-all duration-300">▶</span>
+                      <span>"Ask Kenji about the old archive records."</span>
+                    </div>
                   </button>
-                </div>
-              </div>
-            </RevealBlock>
 
-            {/* Input field */}
-            <RevealBlock delay={0.2}>
-              <div
-                style={{
-                  position: "relative",
-                  background: "rgba(255,255,255,0.04)",
-                  borderRadius: 10,
-                  border: "1px solid rgba(99,102,241,0.18)",
-                  padding: 28,
-                }}
-              >
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="tl" />
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="br" />
-                <div
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.16em",
-                    color: "rgba(165,180,252,0.55)",
-                    fontFamily: "sans-serif",
-                    marginBottom: 20,
-                  }}
-                >
-                  INPUT FIELDS
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div>
-                    <label
+                  {/* Confirm & Cancel */}
+                  <div className="flex gap-3 mt-2">
+                    <button
+                      className="flex-1 font-sans text-sm tracking-widest text-white rounded transition-all duration-200 hover:-translate-y-0.5 active:translate-x-2"
                       style={{
-                        display: "block",
-                        fontSize: 11,
-                        fontFamily: "sans-serif",
-                        letterSpacing: "0.10em",
-                        color: "rgba(165,180,252,0.60)",
-                        marginBottom: 6,
+                        padding: "10px 0",
+                        background: "rgba(99,102,241,0.80)",
+                        border: "1px solid rgba(99,102,241,0.55)",
+                        cursor: "pointer",
                       }}
                     >
-                      PLAYER NAME
+                      Confirm
+                    </button>
+                    <button
+                      className="flex-1 font-sans text-sm tracking-widest rounded transition-all duration-200 hover:-translate-y-0.5"
+                      style={{
+                        padding: "10px 0",
+                        background: "rgba(236,72,153,0.10)",
+                        border: "1px solid rgba(236,72,153,0.22)",
+                        color: "rgba(249,168,212,0.75)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Card tab */}
+              {activeTab === "Card" && (
+                <div className="max-w-lg">
+                  <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-[#a5b4fc]/50 mb-6">
+                    ADV Dialog Card — with Nameplate
+                  </div>
+
+                  {/* Exact gold-standard card pattern */}
+                  <div className="relative mt-6">
+                    <div
+                      className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
+                      style={{
+                        background: "linear-gradient(90deg, #6366f1, #4f46e5)",
+                        boxShadow: "0 4px 10px rgba(99,102,241,0.3)",
+                      }}
+                    >
+                      <span className="font-sans font-bold text-white tracking-wide">Sakura</span>
+                    </div>
+                    <div
+                      className="group relative rounded-xl p-8 pt-10 border border-[#6366f1]/20 hover:border-[#6366f1]/40 hover:bg-[#1a202c]/90 hover:-translate-y-0.5 transition-all duration-500 ease-out cursor-text"
+                      style={{
+                        background: "rgba(26,32,44,0.85)",
+                        backdropFilter: "blur(16px)",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                      }}
+                    >
+                      <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#6366f1]/30" />
+                      <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#6366f1]/30" />
+                      <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#6366f1]/30" />
+                      <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#6366f1]/30" />
+                      <div
+                        className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:animate-bounce text-[#6366f1] transition-opacity duration-300"
+                      >
+                        ▼
+                      </div>
+                      <p className="font-serif text-white/90 text-xl leading-relaxed tracking-wide">
+                        "The cherry blossoms are beautiful this time of year..."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Input tab */}
+              {activeTab === "Input" && (
+                <div className="max-w-lg flex flex-col gap-6">
+                  <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-[#a5b4fc]/50 mb-2">
+                    Input Fields — Player Data Entry
+                  </div>
+                  <div>
+                    <label className="block font-sans text-[11px] tracking-widest uppercase text-[#a5b4fc]/55 mb-2">
+                      Player Name
                     </label>
                     <input
                       type="text"
                       placeholder="Enter your name..."
+                      className="w-full font-serif text-white/85 rounded outline-none focus:border-[#6366f1]/50 transition-colors duration-200"
                       style={{
-                        width: "100%",
                         padding: "10px 14px",
-                        background: "rgba(26,32,44,0.70)",
+                        background: "rgba(26,32,44,0.75)",
                         backdropFilter: "blur(6px)",
                         border: "1px solid rgba(99,102,241,0.25)",
-                        borderRadius: 4,
-                        color: "rgba(247,250,252,0.85)",
                         fontSize: "0.95rem",
-                        fontFamily: "Georgia, 'Times New Roman', serif",
-                        outline: "none",
                         boxSizing: "border-box",
                       }}
                     />
                   </div>
                   <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 11,
-                        fontFamily: "sans-serif",
-                        letterSpacing: "0.10em",
-                        color: "rgba(165,180,252,0.60)",
-                        marginBottom: 6,
-                      }}
-                    >
-                      CHAPTER NOTE
+                    <label className="block font-sans text-[11px] tracking-widest uppercase text-[#a5b4fc]/55 mb-2">
+                      Chapter Note
                     </label>
                     <textarea
-                      placeholder="Leave a note for this save..."
                       rows={3}
+                      placeholder="Leave a note for this save..."
+                      className="w-full font-serif text-white/75 rounded outline-none resize-none focus:border-[#6366f1]/50 transition-colors duration-200"
                       style={{
-                        width: "100%",
                         padding: "10px 14px",
-                        background: "rgba(26,32,44,0.70)",
+                        background: "rgba(26,32,44,0.75)",
                         backdropFilter: "blur(6px)",
                         border: "1px solid rgba(99,102,241,0.25)",
-                        borderRadius: 4,
-                        color: "rgba(247,250,252,0.75)",
                         fontSize: "0.9rem",
-                        fontFamily: "Georgia, 'Times New Roman', serif",
-                        outline: "none",
-                        resize: "none",
                         lineHeight: 1.65,
                         boxSizing: "border-box",
                       }}
                     />
                   </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Character badges */}
-            <RevealBlock delay={0.3}>
-              <div
-                style={{
-                  position: "relative",
-                  background: "rgba(255,255,255,0.04)",
-                  borderRadius: 10,
-                  border: "1px solid rgba(99,102,241,0.18)",
-                  padding: 28,
-                }}
-              >
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="tl" />
-                <CornerDeco color="rgba(99,102,241,0.30)" size={12} position="br" />
-                <div
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.16em",
-                    color: "rgba(165,180,252,0.55)",
-                    fontFamily: "sans-serif",
-                    marginBottom: 20,
-                  }}
-                >
-                  CHARACTER BADGES
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  {characters.map((char) => (
-                    <div
-                      key={char.name}
+                  <div>
+                    <label className="block font-sans text-[11px] tracking-widest uppercase text-[#a5b4fc]/55 mb-2">
+                      Route Select
+                    </label>
+                    <select
+                      className="w-full font-sans text-white/75 rounded outline-none"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
                         padding: "10px 14px",
-                        background: `${char.color}10`,
-                        border: `1px solid ${char.color}30`,
-                        borderRadius: 6,
-                        position: "relative",
-                        overflow: "hidden",
+                        background: "rgba(26,32,44,0.75)",
+                        backdropFilter: "blur(6px)",
+                        border: "1px solid rgba(99,102,241,0.25)",
+                        fontSize: "0.9rem",
+                        boxSizing: "border-box",
+                        cursor: "pointer",
                       }}
                     >
-                      {/* Color strip left */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: 3,
-                          background: char.color,
-                          borderRadius: "6px 0 0 6px",
-                        }}
-                      />
-                      <div style={{ marginLeft: 8 }}>
-                        <div
-                          style={{
-                            fontSize: 13,
-                            fontFamily: "sans-serif",
-                            fontWeight: 600,
-                            color: char.color,
-                            letterSpacing: "0.06em",
-                          }}
-                        >
-                          {char.name}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 11,
-                            fontFamily: "sans-serif",
-                            color: "rgba(247,250,252,0.40)",
-                            letterSpacing: "0.06em",
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {char.title}
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          marginLeft: "auto",
-                          display: "inline-block",
-                          padding: "2px 10px",
-                          background: `${char.color}22`,
-                          border: `1px solid ${char.color}35`,
-                          borderRadius: 2,
-                          fontSize: 10,
-                          fontFamily: "sans-serif",
-                          letterSpacing: "0.10em",
-                          color: char.color,
-                        }}
-                      >
-                        ROUTE
-                      </div>
-                    </div>
-                  ))}
+                      <option value="">Select a route...</option>
+                      <option value="sakura">Sakura Route</option>
+                      <option value="hana">Hana Route</option>
+                      <option value="kenji">Kenji Route</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-            </RevealBlock>
-          </div>
+              )}
+            </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 7: Do / Don't Rules                                      */}
-      {/* ---------------------------------------------------------------- */}
+      {/* ============================================================ */}
+      {/* SECTION 6: Color Palette                                     */}
+      {/* ============================================================ */}
       <section
-        style={{ padding: "96px 24px", background: "rgba(26,32,44,0.90)" }}
+        id="palette"
+        className="py-24 px-6"
+        style={{ background: "rgba(26,32,44,0.90)" }}
       >
         <div className="max-w-5xl mx-auto">
           <RevealBlock delay={0}>
             <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 06 — DESIGN RULES
+              <div className="inline-block font-sans text-[10px] tracking-[0.22em] uppercase text-[#a5b4fc]/60 border border-[#6366f1]/25 rounded px-4 py-1 mb-4">
+                Section 04 — Color System
               </div>
               <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
+                className="font-serif text-[#f7fafc] font-normal mb-3"
+                style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
+              >
+                Palette
+              </h2>
+              <p className="font-sans text-[14px] text-white/40 max-w-sm mx-auto leading-relaxed">
+                Five tones form the visual novel world — from deep slate through luminous
+                indigo, pink, and emerald.
+              </p>
+            </div>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+            {COLOR_PALETTE.map((c, i) => (
+              <RevealBlock key={c.hex} delay={0.07 * i}>
+                <div
+                  className="group relative rounded-xl border border-white/10 overflow-hidden hover:-translate-y-0.5 transition-all duration-500 ease-out"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                >
+                  {/* Corner decorations */}
+                  <div className="absolute top-2 left-2 w-3 h-3 border-l border-t border-[#6366f1]/25" />
+                  <div className="absolute bottom-2 right-2 w-3 h-3 border-r border-b border-[#6366f1]/25" />
+
+                  {/* Swatch with nameplate badge */}
+                  <div className="relative" style={{ height: 100, background: c.hex }}>
+                    <div
+                      className="absolute bottom-2 left-2 font-sans font-bold text-[9px] tracking-widest uppercase px-2 py-0.5 rounded"
+                      style={{
+                        background: "rgba(26,32,44,0.75)",
+                        color: "rgba(255,255,255,0.75)",
+                        backdropFilter: "blur(4px)",
+                      }}
+                    >
+                      {c.label}
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <div className="font-sans font-semibold text-[13px] text-[#f7fafc] mb-1 tracking-wide">
+                      {c.name}
+                    </div>
+                    <div className="font-mono text-[11px] text-[#a5b4fc]/65 mb-2">
+                      {c.hex}
+                    </div>
+                    <div className="font-sans text-[10px] text-white/28 leading-relaxed">
+                      {c.role}
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* SECTION 7: Design Rules — Do / Don't                        */}
+      {/* ============================================================ */}
+      <section
+        id="rules"
+        className="py-24 px-6"
+        style={{ background: "rgba(17,24,39,0.92)" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock delay={0}>
+            <div className="text-center mb-14">
+              <div className="inline-block font-sans text-[10px] tracking-[0.22em] uppercase text-[#a5b4fc]/60 border border-[#6366f1]/25 rounded px-4 py-1 mb-4">
+                Section 05 — Design Rules
+              </div>
+              <h2
+                className="font-serif text-[#f7fafc] font-normal mb-3"
+                style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 The Tutorial
               </h2>
               <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 420,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                  fontStyle: "italic",
-                }}
+                className="font-serif italic text-white/40 max-w-sm mx-auto leading-relaxed"
+                style={{ fontSize: "0.95rem" }}
               >
-                "Pay attention to these rules — they will serve you well on this journey."
+                "Pay attention — these rules will serve you well on this journey."
               </p>
             </div>
           </RevealBlock>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: 28,
-            }}
-          >
-            {/* Do panel */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* DO panel — wrapped in dialog panel styling */}
             <RevealBlock delay={0.1}>
-              <div
-                style={{
-                  position: "relative",
-                  background: "rgba(16,185,129,0.06)",
-                  border: "1px solid rgba(16,185,129,0.22)",
-                  borderRadius: 10,
-                  padding: 28,
-                }}
-              >
-                <CornerDeco color="rgba(16,185,129,0.40)" size={14} position="tl" />
-                <CornerDeco color="rgba(16,185,129,0.40)" size={14} position="br" />
-
-                {/* Tutorial nameplate */}
+              <div className="relative mt-6">
                 <div
+                  className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
                   style={{
-                    position: "absolute",
-                    top: -13,
-                    left: 20,
-                    display: "inline-block",
-                    padding: "3px 14px",
-                    background: "#10b981",
-                    borderRadius: 2,
-                    fontSize: 11,
-                    fontFamily: "sans-serif",
-                    fontWeight: 600,
-                    letterSpacing: "0.10em",
-                    color: "#fff",
+                    background: "linear-gradient(90deg, #10b981, #059669)",
+                    boxShadow: "0 4px 10px rgba(16,185,129,0.3)",
                   }}
                 >
-                  DO
+                  <span className="font-sans font-bold text-white tracking-wide text-sm">DO</span>
                 </div>
-
                 <div
+                  className="relative rounded-xl p-8 pt-10 border border-[#10b981]/22"
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    fontSize: 13,
-                    color: "rgba(247,250,252,0.55)",
-                    fontStyle: "italic",
-                    marginBottom: 18,
-                    marginTop: 8,
-                    lineHeight: 1.6,
+                    background: "rgba(16,185,129,0.06)",
+                    backdropFilter: "blur(12px)",
                   }}
                 >
-                  "These are the principles that keep the world coherent..."
-                </div>
+                  <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#10b981]/35" />
+                  <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#10b981]/35" />
+                  <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#10b981]/35" />
+                  <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#10b981]/35" />
 
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                  {doRules.map((rule, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        fontSize: 13,
-                        fontFamily: "sans-serif",
-                        color: "rgba(247,250,252,0.70)",
-                        lineHeight: 1.55,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 18,
-                          height: 18,
-                          borderRadius: "50%",
-                          background: "rgba(16,185,129,0.20)",
-                          border: "1px solid rgba(16,185,129,0.40)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                          marginTop: 1,
-                        }}
-                      >
-                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                          <path d="M1.5 4.5l2 2 4-4" stroke="#10b981" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            {/* Don't panel */}
-            <RevealBlock delay={0.2}>
-              <div
-                style={{
-                  position: "relative",
-                  background: "rgba(236,72,153,0.05)",
-                  border: "1px solid rgba(236,72,153,0.20)",
-                  borderRadius: 10,
-                  padding: 28,
-                }}
-              >
-                <CornerDeco color="rgba(236,72,153,0.38)" size={14} position="tl" />
-                <CornerDeco color="rgba(236,72,153,0.38)" size={14} position="br" />
-
-                {/* Tutorial nameplate */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -13,
-                    left: 20,
-                    display: "inline-block",
-                    padding: "3px 14px",
-                    background: "#ec4899",
-                    borderRadius: 2,
-                    fontSize: 11,
-                    fontFamily: "sans-serif",
-                    fontWeight: 600,
-                    letterSpacing: "0.10em",
-                    color: "#fff",
-                  }}
-                >
-                  {"DON'T"}
-                </div>
-
-                <div
-                  style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    fontSize: 13,
-                    color: "rgba(247,250,252,0.55)",
-                    fontStyle: "italic",
-                    marginBottom: 18,
-                    marginTop: 8,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  "...and these are the mistakes that break the immersion."
-                </div>
-
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                  {dontRules.map((rule, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        fontSize: 13,
-                        fontFamily: "sans-serif",
-                        color: "rgba(247,250,252,0.70)",
-                        lineHeight: 1.55,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 18,
-                          height: 18,
-                          borderRadius: "50%",
-                          background: "rgba(236,72,153,0.15)",
-                          border: "1px solid rgba(236,72,153,0.35)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                          marginTop: 1,
-                        }}
-                      >
-                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                          <path d="M2 2l5 5M7 2L2 7" stroke="#ec4899" strokeWidth="1.2" strokeLinecap="round" />
-                        </svg>
-                      </span>
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 8: Save / Load Screen                                    */}
-      {/* ---------------------------------------------------------------- */}
-      <section
-        id="save"
-        style={{ padding: "96px 24px", background: "rgba(17,24,39,0.90)" }}
-      >
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock delay={0}>
-            <div className="text-center mb-14">
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "3px 14px",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 2,
-                  marginBottom: 14,
-                  fontSize: 10,
-                  letterSpacing: "0.20em",
-                  color: "rgba(165,180,252,0.65)",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                SECTION 07 — SAVE SYSTEM
-              </div>
-              <h2
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                  color: "#f7fafc",
-                  fontWeight: 400,
-                  marginBottom: 10,
-                }}
-              >
-                Save / Load
-              </h2>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(247,250,252,0.45)",
-                  fontFamily: "sans-serif",
-                  maxWidth: 420,
-                  margin: "0 auto",
-                  lineHeight: 1.65,
-                }}
-              >
-                Save slot cards with chapter info, timestamps, play time, and
-                decorative corner frames. Click a slot to expand it.
-              </p>
-            </div>
-          </RevealBlock>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {saveSlots.map((slot, i) => {
-              const isExpanded = activeSaveSlot === i;
-              return (
-                <RevealBlock key={i} delay={0.1 + i * 0.1}>
                   <div
-                    style={{
-                      width: "100%",
-                      position: "relative",
-                      background: isExpanded
-                        ? "rgba(99,102,241,0.12)"
-                        : slot.active
-                          ? "rgba(255,255,255,0.04)"
-                          : "rgba(255,255,255,0.02)",
-                      border: `1px solid ${isExpanded ? "rgba(99,102,241,0.45)" : "rgba(99,102,241,0.14)"}`,
-                      borderRadius: 10,
-                      padding: "22px 28px",
-                      transition: "all 0.30s ease",
-                      cursor: slot.active ? "pointer" : "default",
-                    }}
-                    onClick={() => {
-                      if (slot.active) setActiveSaveSlot(isExpanded ? null : i);
-                    }}
+                    className="font-serif italic text-white/45 mb-6 leading-relaxed"
+                    style={{ fontSize: "0.875rem" }}
                   >
-                    <CornerDeco
-                      color={isExpanded ? "rgba(99,102,241,0.55)" : "rgba(99,102,241,0.22)"}
-                      size={14}
-                      position="tl"
-                    />
-                    <CornerDeco
-                      color={isExpanded ? "rgba(99,102,241,0.55)" : "rgba(99,102,241,0.22)"}
-                      size={14}
-                      position="tr"
-                    />
-                    <CornerDeco
-                      color={isExpanded ? "rgba(99,102,241,0.55)" : "rgba(99,102,241,0.22)"}
-                      size={14}
-                      position="bl"
-                    />
-                    <CornerDeco
-                      color={isExpanded ? "rgba(99,102,241,0.55)" : "rgba(99,102,241,0.22)"}
-                      size={14}
-                      position="br"
-                    />
-
-                    <div className="flex items-start justify-between gap-6">
-                      {/* Slot number badge */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 40,
-                          height: 40,
-                          background: slot.active
-                            ? isExpanded
-                              ? "rgba(99,102,241,0.30)"
-                              : "rgba(99,102,241,0.12)"
-                            : "rgba(255,255,255,0.04)",
-                          border: `1px solid ${slot.active ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.08)"}`,
-                          borderRadius: 6,
-                          flexShrink: 0,
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: 14,
-                            fontFamily: "monospace",
-                            fontWeight: 700,
-                            color: slot.active ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.20)",
-                          }}
-                        >
-                          {String(slot.slot).padStart(2, "0")}
-                        </span>
-                      </div>
-
-                      {/* Slot info */}
-                      <div style={{ flex: 1 }}>
-                        <div
-                          style={{
-                            fontSize: 14,
-                            fontFamily: "Georgia, 'Times New Roman', serif",
-                            color: slot.active ? "rgba(247,250,252,0.85)" : "rgba(247,250,252,0.25)",
-                            marginBottom: slot.active ? 6 : 0,
-                          }}
-                        >
-                          {slot.chapter}
-                        </div>
-                        {slot.active && (
-                          <>
-                            <div
-                              style={{
-                                fontSize: 12,
-                                fontFamily: "sans-serif",
-                                color: "rgba(165,180,252,0.55)",
-                                marginBottom: 10,
-                                fontStyle: "italic",
-                              }}
-                            >
-                              {slot.location}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: 10,
-                                    fontFamily: "sans-serif",
-                                    letterSpacing: "0.10em",
-                                    color: "rgba(255,255,255,0.25)",
-                                    marginBottom: 2,
-                                  }}
-                                >
-                                  SAVED
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: 12,
-                                    fontFamily: "monospace",
-                                    color: "rgba(247,250,252,0.55)",
-                                  }}
-                                >
-                                  {slot.timestamp}
-                                </div>
-                              </div>
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: 10,
-                                    fontFamily: "sans-serif",
-                                    letterSpacing: "0.10em",
-                                    color: "rgba(255,255,255,0.25)",
-                                    marginBottom: 2,
-                                  }}
-                                >
-                                  PLAY TIME
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: 12,
-                                    fontFamily: "monospace",
-                                    color: "rgba(247,250,252,0.55)",
-                                  }}
-                                >
-                                  {slot.playtime}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Expanded: Load button */}
-                            {isExpanded && (
-                              <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-                                <button
-                                  onClick={(e) => e.stopPropagation()}
-                                  style={{
-                                    padding: "8px 24px",
-                                    background: "rgba(99,102,241,0.78)",
-                                    border: "1px solid rgba(99,102,241,0.55)",
-                                    borderRadius: 4,
-                                    color: "#fff",
-                                    fontSize: 12,
-                                    fontFamily: "sans-serif",
-                                    letterSpacing: "0.08em",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Load Game
-                                </button>
-                                <button
-                                  onClick={(e) => e.stopPropagation()}
-                                  style={{
-                                    padding: "8px 24px",
-                                    background: "rgba(255,255,255,0.05)",
-                                    border: "1px solid rgba(255,255,255,0.12)",
-                                    borderRadius: 4,
-                                    color: "rgba(247,250,252,0.45)",
-                                    fontSize: 12,
-                                    fontFamily: "sans-serif",
-                                    letterSpacing: "0.08em",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Overwrite
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-
-                      {/* Expand chevron */}
-                      {slot.active && (
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          style={{
-                            flexShrink: 0,
-                            color: isExpanded ? "rgba(165,180,252,0.75)" : "rgba(99,102,241,0.35)",
-                            transform: isExpanded ? "rotate(180deg)" : "none",
-                            transition: "transform 0.25s ease",
-                            marginTop: 4,
-                          }}
-                        >
-                          <path
-                            d="M4 6l4 4 4-4"
-                            stroke="currentColor"
-                            strokeWidth="1.3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
-                    </div>
+                    "These are the principles that keep the world coherent..."
                   </div>
-                </RevealBlock>
-              );
-            })}
+
+                  <ul className="flex flex-col gap-3">
+                    {DO_RULES.map((rule, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span
+                          className="flex-shrink-0 mt-0.5 flex items-center justify-center rounded-full"
+                          style={{
+                            width: 18,
+                            height: 18,
+                            background: "rgba(16,185,129,0.18)",
+                            border: "1px solid rgba(16,185,129,0.38)",
+                          }}
+                        >
+                          <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                            <path d="M1.5 4.5l2 2 4-4" stroke="#10b981" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </span>
+                        <span className="font-sans text-[13px] text-white/68 leading-snug">{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* DON'T panel */}
+            <RevealBlock delay={0.2}>
+              <div className="relative mt-6">
+                <div
+                  className="absolute -top-4 left-6 px-6 py-1.5 rounded-t-md rounded-br-md z-10"
+                  style={{
+                    background: "linear-gradient(90deg, #ec4899, #db2777)",
+                    boxShadow: "0 4px 10px rgba(236,72,153,0.3)",
+                  }}
+                >
+                  <span className="font-sans font-bold text-white tracking-wide text-sm">{"DON'T"}</span>
+                </div>
+                <div
+                  className="relative rounded-xl p-8 pt-10 border border-[#ec4899]/20"
+                  style={{
+                    background: "rgba(236,72,153,0.05)",
+                    backdropFilter: "blur(12px)",
+                  }}
+                >
+                  <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#ec4899]/32" />
+                  <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#ec4899]/32" />
+                  <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#ec4899]/32" />
+                  <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#ec4899]/32" />
+
+                  <div
+                    className="font-serif italic text-white/45 mb-6 leading-relaxed"
+                    style={{ fontSize: "0.875rem" }}
+                  >
+                    "...and these are the mistakes that break the immersion."
+                  </div>
+
+                  <ul className="flex flex-col gap-3">
+                    {DONT_RULES.map((rule, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span
+                          className="flex-shrink-0 mt-0.5 flex items-center justify-center rounded-full"
+                          style={{
+                            width: 18,
+                            height: 18,
+                            background: "rgba(236,72,153,0.14)",
+                            border: "1px solid rgba(236,72,153,0.32)",
+                          }}
+                        >
+                          <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                            <path d="M2 2l5 5M7 2L2 7" stroke="#ec4899" strokeWidth="1.2" strokeLinecap="round" />
+                          </svg>
+                        </span>
+                        <span className="font-sans text-[13px] text-white/68 leading-snug">{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealBlock>
           </div>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Section 9: Footer — Scene Fade                                   */}
-      {/* ---------------------------------------------------------------- */}
+      {/* ============================================================ */}
+      {/* SECTION 8: Footer                                            */}
+      {/* ============================================================ */}
       <footer
+        className="relative py-24 px-6 overflow-hidden text-center"
         style={{
-          position: "relative",
-          padding: "96px 24px 64px",
-          background: "linear-gradient(180deg, rgba(17,24,39,0.90) 0%, #000 100%)",
-          textAlign: "center",
-          overflow: "hidden",
+          background: "linear-gradient(180deg, rgba(17,24,39,0.95) 0%, #000 100%)",
         }}
       >
-        {/* Fade vignette top */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 80,
-            background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.80))",
-            pointerEvents: "none",
-          }}
-        />
+        {/* Ornate corner decorations on footer */}
+        <div className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 border-[#6366f1]/20" />
+        <div className="absolute top-8 right-8 w-8 h-8 border-r-2 border-t-2 border-[#6366f1]/20" />
+        <div className="absolute bottom-8 left-8 w-8 h-8 border-l-2 border-b-2 border-[#6366f1]/20" />
+        <div className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 border-[#6366f1]/20" />
 
         {/* Ornament line */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 16,
-            marginBottom: 40,
-            opacity: 0.35,
-          }}
-        >
-          <div style={{ flex: 1, maxWidth: 120, height: 1, background: "rgba(99,102,241,0.50)" }} />
-          <span style={{ fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.20em", color: "rgba(165,180,252,0.70)" }}>
-            END
-          </span>
-          <div style={{ flex: 1, maxWidth: 120, height: 1, background: "rgba(99,102,241,0.50)" }} />
+        <div className="flex items-center justify-center gap-4 mb-12 opacity-35">
+          <div className="flex-1 max-w-[120px] h-px bg-[#6366f1]/50" />
+          <span className="font-sans text-[10px] tracking-[0.22em] text-[#a5b4fc]/65">FIN</span>
+          <div className="flex-1 max-w-[120px] h-px bg-[#6366f1]/50" />
         </div>
 
         <RevealBlock delay={0}>
           <div
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: "clamp(1.4rem, 3.5vw, 2.2rem)",
-              color: "rgba(247,250,252,0.65)",
-              fontStyle: "italic",
-              marginBottom: 16,
-              letterSpacing: "0.02em",
-            }}
+            className="font-serif italic text-white/55 mb-4"
+            style={{ fontSize: "clamp(1.3rem,3.5vw,2rem)" }}
           >
             To be continued...
           </div>
         </RevealBlock>
 
-        <RevealBlock delay={0.15}>
-          <div
-            style={{
-              fontSize: 11,
-              fontFamily: "sans-serif",
-              letterSpacing: "0.18em",
-              color: "rgba(165,180,252,0.35)",
-              marginBottom: 48,
-            }}
-          >
-            CHAPTER I — FIN
+        <RevealBlock delay={0.1}>
+          <div className="font-sans text-[11px] tracking-[0.20em] text-[#a5b4fc]/30 uppercase mb-12">
+            Chapter I — Visual Novel // Interactive Storytelling // StyleKit
           </div>
         </RevealBlock>
 
-        <RevealBlock delay={0.25}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+        <RevealBlock delay={0.2}>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               href="/"
-              style={{
-                fontSize: 12,
-                fontFamily: "sans-serif",
-                color: "rgba(165,180,252,0.55)",
-                letterSpacing: "0.08em",
-                textDecoration: "none",
-              }}
+              className="group font-sans text-[12px] tracking-widest text-[#a5b4fc]/50 hover:text-white transition-colors duration-200"
             >
-              StyleKit &rarr;
+              <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">▶</span>
+              StyleKit
             </Link>
-            <span style={{ color: "rgba(255,255,255,0.10)", fontSize: 12 }}>|</span>
-            <span
-              style={{
-                fontSize: 12,
-                fontFamily: "sans-serif",
-                color: "rgba(255,255,255,0.18)",
-                letterSpacing: "0.10em",
-              }}
-            >
-              Visual Novel Style
+            <span className="text-white/10 text-sm">|</span>
+            <span className="font-sans text-[12px] tracking-widest text-white/18">
+              Visual Novel
             </span>
-            <span style={{ color: "rgba(255,255,255,0.10)", fontSize: 12 }}>|</span>
-            <span
-              style={{
-                fontSize: 12,
-                fontFamily: "monospace",
-                color: "rgba(165,180,252,0.25)",
-              }}
-            >
+            <span className="text-white/10 text-sm">|</span>
+            <span className="font-mono text-[12px] text-[#a5b4fc]/22">
               #6366f1 / #ec4899 / #10b981
             </span>
           </div>
         </RevealBlock>
 
-        {/* Bottom fade to black */}
+        {/* Bottom fade */}
         <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 60,
-            background: "linear-gradient(180deg, transparent, #000)",
-            pointerEvents: "none",
-          }}
+          className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+          style={{ background: "linear-gradient(180deg, transparent, #000)" }}
         />
       </footer>
     </div>
