@@ -2,11 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { buildStyleCopyIdentity } from "@/lib/styles/style-copy-identity";
 
 interface RulesExporterProps {
   aiRules: string;
   globalCss: string;
   styleName: string;
+  styleSlug: string;
   enhancedRules?: string | null; // Pre-generated from server
 }
 
@@ -16,6 +18,7 @@ export function RulesExporter({
   aiRules,
   globalCss,
   styleName,
+  styleSlug,
   enhancedRules,
 }: RulesExporterProps) {
   const hasEnhanced = Boolean(enhancedRules);
@@ -26,15 +29,19 @@ export function RulesExporter({
   const { t } = useI18n();
 
   const getContent = () => {
+    const identity = buildStyleCopyIdentity({ styleName, styleSlug });
+
     switch (format) {
       case "enhanced":
-        return enhancedRules || aiRules;
+        return `${identity}\n\n${enhancedRules || aiRules}`;
       case "trae":
-        return aiRules;
+        return `${identity}\n\n${aiRules}`;
       case "cursor":
-        return `# ${styleName} Design Style Rules\n\n${aiRules}`;
+        return `${identity}\n\n# ${styleName} Design Style Rules\n\n${aiRules}`;
       case "claude-code":
-        return `# ${styleName} Design Style Guidelines
+        return `${identity}
+
+# ${styleName} Design Style Guidelines
 
 ## Overview
 This document defines the design rules for ${styleName} style. All generated code must strictly follow these guidelines.
@@ -54,7 +61,7 @@ When generating UI components, always:
 3. Apply the correct spacing, typography, and interaction styles
 4. Verify the output matches the style requirements`;
       case "prompt":
-        return `${t("export.promptPrefix")}\n\n${t("export.styleLabel")}${styleName}\n\n${aiRules}\n\n## ${t("export.globalCss")}\n\n\`\`\`css\n${globalCss}\n\`\`\``;
+        return `${identity}\n\n${t("export.promptPrefix")}\n\n${t("export.styleLabel")}${styleName}\n\n${aiRules}\n\n## ${t("export.globalCss")}\n\n\`\`\`css\n${globalCss}\n\`\`\``;
     }
   };
 

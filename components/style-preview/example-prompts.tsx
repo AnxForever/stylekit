@@ -2,21 +2,32 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { buildStyleCopyIdentity } from "@/lib/styles/style-copy-identity";
 import type { ExamplePrompt } from "@/lib/styles";
 
 interface ExamplePromptsProps {
   prompts: ExamplePrompt[];
   styleName: string;
+  styleSlug: string;
   aiRules: string;
 }
 
-export function ExamplePrompts({ prompts, styleName, aiRules }: ExamplePromptsProps) {
+export function ExamplePrompts({
+  prompts,
+  styleName,
+  styleSlug,
+  aiRules,
+}: ExamplePromptsProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { locale, t } = useI18n();
 
   const handleCopy = async (prompt: ExamplePrompt, index: number) => {
+    const identity = buildStyleCopyIdentity({ styleName, styleSlug });
+
     // Copy the prompt along with a simplified version of the AI rules
-    const content = `${prompt.prompt}
+    const content = `${identity}
+
+${prompt.prompt}
 
 ---
 以上是具体需求，以下是 ${styleName} 风格的设计规范，请严格遵守：

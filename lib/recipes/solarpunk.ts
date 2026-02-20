@@ -304,11 +304,11 @@ export const solarpunkRecipes = createStyleRecipes("solarpunk", "Solarpunk", {
         baseClasses: [
           "w-full",
           "h-4",
-          "rounded-sm",
+          "rounded-full",
           "bg-gray-200/60",
           "overflow-hidden",
           "border border-green-300/30",
-          "[&>div]:rounded-sm",
+          "[&>div]:rounded-full",
           "transition-all duration-500",
         ],
       },

@@ -2,25 +2,36 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { buildStyleCopyIdentity } from "@/lib/styles/style-copy-identity";
 
 interface QuickStartGuideProps {
   aiRules: string;
   styleName: string;
+  styleSlug: string;
   onScrollToRules?: () => void;
 }
 
-export function QuickStartGuide({ aiRules, styleName, onScrollToRules }: QuickStartGuideProps) {
+export function QuickStartGuide({
+  aiRules,
+  styleName,
+  styleSlug,
+  onScrollToRules,
+}: QuickStartGuideProps) {
   const [copied, setCopied] = useState(false);
   const { t } = useI18n();
 
   const handleQuickCopy = async () => {
+    const content = `${buildStyleCopyIdentity({ styleName, styleSlug })}
+
+${aiRules}`;
+
     try {
-      await navigator.clipboard.writeText(aiRules);
+      await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       const textArea = document.createElement("textarea");
-      textArea.value = aiRules;
+      textArea.value = content;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand("copy");
