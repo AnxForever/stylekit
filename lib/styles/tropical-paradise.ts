@@ -38,6 +38,9 @@ export const tropicalParadise: DesignStyle = {
     "交互状态明快活泼：hover 时使用亮色变化",
     "背景可使用微妙的暖色渐变 from-[#fffde7] to-[#fff8e1]",
     "保持充足的留白和通透感",
+    "hover 使用波浪漂浮感（轻旋转+上浮+小幅 scale），避免机械位移",
+    "阴影强调热带阳光色彩（teal/coral）而非灰黑阴影",
+    "卡片装饰点在 hover 时可做微幅弹动，模拟海风拂动",
   ],
 
   dontList: [
@@ -48,6 +51,8 @@ export const tropicalParadise: DesignStyle = {
     "禁止使用过于密集的布局",
     "禁止使用冷色调的阴影",
     "禁止使用过于正式的衬线字体",
+    "禁止使用僵硬的短促线性动画破坏度假松弛感",
+    "禁止使用暗灰重阴影替代热带彩色光晕",
   ],
 
   components: {
@@ -55,45 +60,47 @@ export const tropicalParadise: DesignStyle = {
       name: "按钮",
       description: "热带天堂风格按钮，圆润鲜艳",
       code: `<button className="
-  px-8 py-3
+  px-10 py-4
   bg-[#00897b] text-white
   rounded-full font-bold tracking-wide
-  shadow-[0_4px_16px_rgba(0,137,123,0.3)]
-  hover:bg-[#00796b] hover:shadow-[0_6px_20px_rgba(0,137,123,0.4)]
-  hover:-translate-y-0.5
-  active:translate-y-0
-  transition-all duration-300
+  shadow-[0_6px_20px_rgba(0,137,123,0.3)]
+  hover:bg-[#00796b]
+  hover:shadow-[0_10px_30px_rgba(0,137,123,0.4)]
+  hover:-translate-y-1 hover:scale-105
+  active:scale-95
+  active:shadow-[0_2px_10px_rgba(0,137,123,0.3)]
+  transition-all duration-300 ease-in-out
 ">
-  Book Now
+  Book Escape
 </button>`,
     },
     card: {
       name: "卡片",
       description: "热带天堂风格卡片，温暖明快",
       code: `<div className="
-  p-6
+  group p-8
   bg-white
-  border border-[#00897b]/15
-  rounded-2xl
-  shadow-[0_4px_20px_rgba(0,137,123,0.1)]
-  hover:shadow-[0_8px_30px_rgba(0,137,123,0.15)]
-  hover:-translate-y-1
-  transition-all duration-300
-  overflow-hidden
+  border border-[#00897b]/10
+  rounded-[2rem]
+  shadow-[0_8px_30px_rgba(0,137,123,0.08)]
+  hover:shadow-[0_20px_50px_rgba(0,137,123,0.15)]
+  hover:-translate-y-2 hover:rotate-1 hover:scale-[1.02]
+  transition-all duration-500 ease-in-out
+  cursor-pointer
 ">
-  <div className="flex items-center gap-2 mb-3">
-    <span className="inline-block w-2 h-2 rounded-full bg-[#ff6f61]" />
-    <span className="inline-block w-2 h-2 rounded-full bg-[#ffc107]" />
-    <span className="inline-block w-2 h-2 rounded-full bg-[#4caf50]" />
+  <div className="flex items-center gap-3 mb-6">
+    <span className="inline-block w-3 h-3 rounded-full bg-[#ff6f61] group-hover:scale-125 transition-transform duration-300" />
+    <span className="inline-block w-3 h-3 rounded-full bg-[#ffc107] group-hover:scale-125 transition-transform duration-300 delay-75" />
+    <span className="inline-block w-3 h-3 rounded-full bg-[#4caf50] group-hover:scale-125 transition-transform duration-300 delay-150" />
   </div>
-  <h3 className="text-xl font-bold text-[#00897b] mb-2">
+  <h3 className="text-2xl font-bold text-[#00897b] mb-3 group-hover:text-[#ff6f61] transition-colors duration-300">
     Bali Retreat
   </h3>
-  <p className="text-gray-600 text-sm leading-relaxed">
-    Escape to paradise with crystal waters and swaying palms.
+  <p className="text-gray-600 font-medium leading-relaxed mb-5">
+    Escape to paradise with crystal waters and swaying palms. Let the warm breeze carry your worries away.
   </p>
-  <div className="mt-4 pt-3 border-t border-[#00897b]/10">
-    <span className="text-[#ff6f61] font-bold text-sm">From $299/night</span>
+  <div className="pt-4 border-t border-[#00897b]/10">
+    <span className="text-[#ff6f61] font-black text-lg group-hover:tracking-wide transition-all duration-300">From $299/night</span>
   </div>
 </div>`,
     },
@@ -239,7 +246,14 @@ export const tropicalParadise: DesignStyle = {
 - 圆形装饰模糊球 (blur-3xl)
 - 彩色小圆点装饰
 - 渐变背景 from-[#fffde7] to-[#fff8e1]
-- 明快的 hover 上浮动画`,
+- 明快的 hover 上浮动画
+
+## Animation & Interaction Rules
+
+- Wave Drift: hover 使用轻旋转 + 上浮 + 微缩放（如 -translate-y-2 rotate-1 scale-[1.02]），并配合 duration-500 ease-in-out。
+- Tropical Sun Glow: 悬停阴影扩散需采用 teal/coral 等热带色，不用暗灰阴影。
+- Breeze Response: 彩色装饰点在 hover 产生短促微弹动，模拟海风吹拂。
+- Fluid Clicks: active 使用柔和 scale-95 与阴影收敛，营造踩在沙滩上的下压感。`,
 
   examplePrompts: [
     {

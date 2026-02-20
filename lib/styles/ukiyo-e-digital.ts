@@ -32,6 +32,9 @@ export const ukiyoEDigital: DesignStyle = {
     "添加波浪和自然纹样装饰",
     "米白色为背景营造和纸质感",
     "使用粗体文字配合宽字距",
+    "hover 采用木版错位：硬边偏移阴影 + 小幅位移，不用任何模糊",
+    "active 模拟印章按压：取消阴影并切换朱红边框/文字反馈",
+    "交互节奏保持短促硬切（duration-75~100, ease-linear）",
   ],
 
   dontList: [
@@ -39,6 +42,8 @@ export const ukiyoEDigital: DesignStyle = {
     "禁止使用透明度和玻璃效果",
     "禁止使用西式圆角和圆形按钮",
     "禁止使用霓虹色或高饱和度现代色彩",
+    "禁止弹簧式回弹和现代 App 的丝滑动效",
+    "禁止软阴影与 glassmorphism 破坏木版硬朗质感",
   ],
 
   components: {
@@ -46,34 +51,46 @@ export const ukiyoEDigital: DesignStyle = {
       name: "按钮",
       description: "浮世绘数字风按钮",
       code: `<button className="
-  px-8 py-4
+  px-10 py-3
   bg-[#d4553a] text-[#f5f0e1]
-  border-2 border-[#1a3055]
-  rounded-sm font-bold tracking-wider
-  shadow-[3px_3px_0px_#1a3055]
-  hover:shadow-[4px_4px_0px_#1a3055]
-  hover:-translate-y-0.5
-  active:shadow-[1px_1px_0px_#1a3055] active:translate-y-0.5
-  transition-all duration-300
+  border-[3px] border-[#1a3055]
+  rounded-none font-bold tracking-widest uppercase
+  shadow-[4px_4px_0px_#1a3055]
+  hover:shadow-[8px_8px_0px_#1a3055]
+  hover:-translate-y-1 hover:-translate-x-1
+  active:shadow-none
+  active:translate-y-[4px] active:translate-x-[4px]
+  active:border-[#d4553a]
+  transition-all duration-75 ease-linear
 ">
-  Enter
+  Enter Domain
 </button>`,
     },
     card: {
       name: "卡片",
       description: "浮世绘数字风卡片",
       code: `<div className="
-  p-8
+  group p-8
   bg-[#f5f0e1]
-  border-2 border-[#1a3055]
-  rounded-sm
-  shadow-[4px_4px_0px_#1a3055]
+  border-[3px] border-[#1a3055]
+  rounded-none
+  shadow-[6px_6px_0px_#1a3055]
+  hover:shadow-[12px_12px_0px_#d4553a]
+  hover:-translate-y-1.5 hover:-translate-x-1.5
+  transition-all duration-100 ease-linear
+  cursor-pointer
+  relative overflow-hidden
 ">
-  <h3 className="text-2xl font-bold text-[#1a3055] tracking-wider mb-3">
-    The Great Wave
+  <div className="absolute top-4 right-4 w-8 h-8 border-[3px] border-[#d4553a] text-[#d4553a] flex items-center justify-center font-bold opacity-80 group-hover:opacity-100 group-hover:bg-[#d4553a] group-hover:text-[#f5f0e1] transition-colors duration-75">
+    印
+  </div>
+
+  <h3 className="text-3xl font-black text-[#1a3055] tracking-widest mb-4 mt-2 group-hover:text-[#d4553a] transition-colors duration-75">
+    GREAT WAVE
   </h3>
-  <p className="text-[#1a3055]/70">
-    Beneath the shadow of Mount Fuji
+  <div className="w-16 h-1 bg-[#1a3055] mb-5 group-hover:bg-[#d4553a] transition-colors duration-75" />
+  <p className="text-[#1a3055] font-bold leading-relaxed pr-8">
+    Beneath the shadow of the mountain, the digital woodblock breathes. Hard edges, flat colors, and deliberate imperfections.
   </p>
 </div>`,
     },
@@ -87,12 +104,12 @@ export const ukiyoEDigital: DesignStyle = {
     w-full px-6 py-4
     bg-[#f5f0e1]
     border-2 border-[#1a3055]/60
-    rounded-sm
+    rounded-none
     text-[#1a3055] placeholder-[#1a3055]/40
     focus:border-[#d4553a]
     focus:shadow-[2px_2px_0px_#d4553a]
     focus:outline-none
-    transition-all
+    transition-all duration-75 ease-linear
   "
 />`,
     },
@@ -208,7 +225,14 @@ export const ukiyoEDigital: DesignStyle = {
 - 波浪纹 SVG 装饰
 - 硬边阴影模拟版画质感
 - 朱印/印章效果装饰
-- 大面积扁平色块`,
+- 大面积扁平色块
+
+## Animation & Interaction Rules
+
+- Woodblock Offset: hover 必须使用硬边偏移阴影（无 blur）+ 轻微位移，模拟木版错位叠印。
+- Stamp Press: active 瞬间取消阴影与位移，并切换朱红边框/文字反馈，表现印章压印。
+- Zero Fluidity: 使用 duration-75 ease-linear 或 transition-none，拒绝现代丝滑动效。
+- Motif Reveal: 波纹/云纹等传统图案可在 hover 进行不透明度硬切，强化版面层次。`,
 
   examplePrompts: [
     {
