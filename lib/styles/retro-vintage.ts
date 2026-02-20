@@ -33,6 +33,10 @@ export const retroVintage: DesignStyle = {
     "添加装饰性边框元素（角花、分隔线）",
     "使用老式排版风格（大写标题、字间距）",
     "图片添加做旧滤镜 sepia brightness-90",
+    "Antique Stillness: zero `scale` or `translate-y` — old paper lies flat, it does not float or bounce",
+    "Ink & Oxidation: hover slightly darkens background (`hover:bg-[#eedbc2]`) and deepens text (`group-hover:text-[#5c2e0a]`) — simulating paper yellowing and ink settling over decades",
+    "Slow Passage of Time: all transitions use `duration-700 ease-in-out` — historical materials change slowly, never use `duration-150` or faster",
+    "Corner Reveal: decorative corner ornaments use `opacity-30 group-hover:opacity-100 transition-opacity duration-700` — historical details emerge slowly as readers lean in",
   ],
 
   dontList: [
@@ -42,41 +46,41 @@ export const retroVintage: DesignStyle = {
     "禁止使用过于圆润的圆角",
     "禁止使用玻璃态效果",
     "禁止使用动效过多的交互",
+    "禁止使用任何 `scale` 或 `translate-y` 动画（Antique Stillness — 旧纸张不会浮起或弹跳）",
+    "禁止使用 `duration-150` 或更快的过渡（Slow Passage — 氧化是地质过程，不是点击事件）",
+    "禁止 hover 时引入新的饱和颜色（只能加深现有的复古色调，不能替换为现代色）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Retro Vintage 风格的按钮",
-      code: `// Primary Button
-<button className="px-6 py-3 bg-[#8b4513] text-[#f5e6d3] border-2 border-[#5c2e0a] font-serif uppercase tracking-widest text-sm hover:bg-[#5c2e0a] transition-colors duration-200">
-  Discover More
-</button>
-
-// Outlined Button
-<button className="px-6 py-3 bg-transparent text-[#8b4513] border-2 border-[#8b4513] font-serif uppercase tracking-widest text-sm hover:bg-[#8b4513] hover:text-[#f5e6d3] transition-colors duration-200">
-  Read Story
-</button>
-
-// Badge Style
-<button className="px-8 py-4 bg-[#f5e6d3] text-[#8b4513] border-4 border-double border-[#8b4513] font-serif uppercase tracking-[0.3em] text-xs hover:bg-[#8b4513] hover:text-[#f5e6d3] transition-colors duration-300">
-  Est. 1965
+      description: "Retro Vintage 风格按钮，Antique Stillness 零位移 + Slow Passage `duration-700` + Ink & Oxidation 颜色加深",
+      code: `<button className="
+  px-10 py-4
+  bg-[#f5e6d3] text-[#8b4513]
+  border-4 border-double border-[#8b4513]
+  font-serif uppercase tracking-[0.2em] text-sm
+  hover:bg-[#8b4513] hover:text-[#f5e6d3]
+  hover:tracking-[0.25em]
+  active:bg-[#5c2e0a] active:border-[#5c2e0a]
+  transition-all duration-700 ease-in-out
+">
+  Discover History
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Retro Vintage 风格的卡片",
-      code: `<div className="bg-[#f5e6d3] border-2 border-[#8b4513] p-8 relative">
-  {/* Decorative corners */}
-  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#8b4513]" />
-  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#8b4513]" />
-  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#8b4513]" />
-  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#8b4513]" />
-
+      description: "Retro Vintage 风格卡片，Corner Reveal 角落装饰缓慢显现 + Ink & Oxidation 背景氧化加深",
+      code: `<div className="group bg-[#f5e6d3] border-2 border-[#8b4513]/40 p-10 relative hover:bg-[#eedbc2] hover:border-[#8b4513] transition-colors duration-700 ease-in-out cursor-default">
+  {/* Corner decorations — emerge slowly on hover (Corner Reveal) */}
+  <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#8b4513] opacity-30 group-hover:opacity-100 transition-opacity duration-700" />
+  <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#8b4513] opacity-30 group-hover:opacity-100 transition-opacity duration-700" />
+  <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#8b4513] opacity-30 group-hover:opacity-100 transition-opacity duration-700" />
+  <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#8b4513] opacity-30 group-hover:opacity-100 transition-opacity duration-700" />
   <span className="text-xs font-serif uppercase tracking-[0.3em] text-[#8b4513]/60">Chapter One</span>
-  <h3 className="text-2xl font-serif text-[#8b4513] mt-2 mb-4">The Beginning</h3>
-  <p className="text-[#8b4513]/80 leading-relaxed font-serif">
-    A story that spans generations, told through craftsmanship and tradition.
+  <h3 className="text-3xl font-serif text-[#8b4513] mt-4 mb-6">The Grand Archives</h3>
+  <p className="text-[#8b4513]/80 leading-loose font-serif group-hover:text-[#5c2e0a] transition-colors duration-700">
+    A story that spans generations, told through craftsmanship and the slow passage of time.
   </p>
 </div>`,
     },
@@ -144,7 +148,14 @@ COLOR PALETTE:
 TYPOGRAPHY:
 - Headings: font-serif, uppercase option
 - Labels: text-xs uppercase tracking-[0.2em]
-- Body: font-serif, relaxed leading`,
+- Body: font-serif, relaxed leading
+
+## Animation & Interaction Rules
+
+- Antique Stillness: Absolutely zero \`scale\` or \`translate-y\` motion. Old parchment lies flat on the table — it does not float, lift, or bounce. Forbidden: \`hover:-translate-y-*\`, \`hover:scale-*\`.
+- Ink & Oxidation: Hover subtly darkens the background (\`hover:bg-[#eedbc2]\`) and deepens text color (\`group-hover:text-[#5c2e0a]\`). This simulates paper yellowing and ink darkening over time — not a modern color swap.
+- Slow Passage of Time: All transitions must use \`duration-700 ease-in-out\` or longer. Historical materials change slowly. Never use \`duration-150\` or faster.
+- Corner Reveal: Decorative corner ornaments use \`opacity-30 group-hover:opacity-100 transition-opacity duration-700\` — as if readers discover hidden details by leaning in closely.`,
 
   examplePrompts: [
     {

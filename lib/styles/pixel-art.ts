@@ -32,6 +32,9 @@ export const pixelArt: DesignStyle = {
     "使用 8-bit 调色板配色",
     "使用像素字体或等宽字体",
     "按钮按下时阴影消失并位移",
+    "Absolute Zero: use `transition-none` throughout — pixel games run on a state machine, all visual state changes are instantaneous hard cuts",
+    "Palette Swap: hover directly replaces the primary palette color with another 8-bit color (e.g., `hover:bg-[#29adff]` replacing red with blue), no gradients or opacity fades",
+    "Pixel Perfect Drop: active state must be `active:translate-x-[4px] active:translate-y-[4px] active:shadow-none` — displacement amount MUST exactly equal the shadow offset size",
   ],
 
   dontList: [
@@ -40,41 +43,40 @@ export const pixelArt: DesignStyle = {
     "禁止使用柔和阴影",
     "禁止使用过于复杂的颜色",
     "禁止使用细边框",
+    "禁止使用任何 transition-* 除 transition-none（像素游戏是状态机，不是动画引擎）",
+    "禁止在 Palette Swap 中使用 opacity 过渡或中间状态（颜色切换必须是硬切）",
+    "禁止 active 位移量小于 shadow 偏移量（Pixel Perfect Drop 要求完全对齐，否则破坏像素感）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "像素风格按钮，带有硬边阴影和按下效果",
+      description: "像素风格按钮，Palette Swap 硬切配色 + Pixel Perfect Drop 完全对齐位移",
       code: `<button className="
   px-6 py-3
   bg-[#ff004d]
-  border-4 border-[#1a1c2c]
+  border-[4px] border-[#1a1c2c]
   rounded-none
-  text-white font-bold uppercase tracking-wider
+  text-white font-bold uppercase tracking-widest
   shadow-[4px_4px_0_#1a1c2c]
-  hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c]
-  active:translate-x-1 active:translate-y-1 active:shadow-none
-  transition-all duration-100
+  hover:bg-[#29adff]
+  hover:shadow-[4px_4px_0_#ff004d]
+  active:translate-x-[4px] active:translate-y-[4px]
+  active:shadow-none
+  transition-none
 ">
   START
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "像素风格卡片，硬边框和阴影",
-      code: `<div className="
-  p-6
-  bg-white
-  border-4 border-[#1a1c2c]
-  rounded-none
-  shadow-[4px_4px_0_#1a1c2c]
-">
-  <h3 className="text-xl font-bold uppercase text-[#1a1c2c] mb-2">
+      description: "像素风格卡片，Palette Swap 边框颜色切换 + 标题颜色硬切，全程 transition-none",
+      code: `<div className="group p-6 bg-white border-[4px] border-[#1a1c2c] rounded-none shadow-[4px_4px_0_#1a1c2c] hover:border-[#ff004d] hover:shadow-[4px_4px_0_#ff004d] transition-none cursor-pointer">
+  <h3 className="text-2xl font-bold uppercase text-[#1a1c2c] mb-2 group-hover:text-[#ff004d] transition-none">
     LEVEL 1
   </h3>
-  <p className="text-[#5f574f]">
-    Welcome to the pixel world!
+  <p className="text-[#5f574f] font-mono group-hover:text-[#1a1c2c] transition-none">
+    PRESS START TO ENTER THE PIXEL WORLD.
   </p>
 </div>`,
     },
@@ -276,7 +278,14 @@ export const pixelArt: DesignStyle = {
 2. 使用粗边框 border-4
 3. 使用硬边阴影
 4. 配色来自 8-bit 调色板
-5. 整体感觉复古像素化`,
+5. 整体感觉复古像素化
+
+## Animation & Interaction Rules
+
+- Absolute Zero: Every element must use \`transition-none\` — pixel games run on a state machine, not an animation engine. All visual changes are instantaneous hard cuts with no easing.
+- Palette Swap: Hover replaces the primary palette color with another 8-bit color directly (e.g., \`hover:bg-[#29adff]\` replacing red with blue). Never use opacity transitions or intermediate states.
+- Pixel Perfect Drop: Active state must be \`active:translate-x-[4px] active:translate-y-[4px] active:shadow-none\` — the pixel displacement amount MUST exactly equal the shadow offset. Mismatched values break the illusion.
+- Outline Focus: Focus state uses inner color shadow instead of modern ring glow: \`focus:shadow-[inset_0_0_0_3px_#29adff]\`.`,
 
   examplePrompts: [
     {
