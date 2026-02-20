@@ -35,6 +35,8 @@ export const acidGraphics: DesignStyle = {
     "文字全部大写 uppercase tracking-widest",
     "添加扫描线叠加效果",
     "使用 skew/rotate 创造扭曲感",
+    "使用极短或无过渡的生硬动画（duration-75 或 duration-0）",
+    "悬停时加入故障感反馈（如 hover:-skew-x-6、瞬时反差变化）",
   ],
 
   dontList: [
@@ -44,6 +46,7 @@ export const acidGraphics: DesignStyle = {
     "禁止使用柔和阴影（shadow-md、shadow-lg 等）",
     "禁止使用白色或浅色背景",
     "禁止使用渐变（所有颜色必须是纯平面荧光色）",
+    "禁止使用平滑抛光感动效（ease-in-out、缓慢微交互）",
   ],
 
   components: {
@@ -59,8 +62,10 @@ export const acidGraphics: DesignStyle = {
   shadow-[4px_4px_0px_#a020f0]
   hover:translate-x-[2px] hover:translate-y-[2px]
   hover:shadow-[2px_2px_0px_#a020f0]
-  active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
-  transition-all duration-150
+  hover:-skew-x-6
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none active:bg-[#ff6ec7] active:border-[#ff6ec7] active:text-white
+  transition-all duration-75
 ">
   ACTIVATE
 </button>`,
@@ -69,19 +74,21 @@ export const acidGraphics: DesignStyle = {
       name: "卡片",
       description: "Acid Graphics 风格卡片 - 暗底荧光边框硬阴影",
       code: `<div className="
-  p-8
+  group p-8
   bg-[#0a0a0a]
   border-2 border-[#39ff14]
   rounded-none
   shadow-[5px_5px_0px_#a020f0]
-  hover:shadow-[8px_8px_0px_#a020f0]
+  hover:shadow-[8px_8px_0px_#e6ff00]
   hover:border-[#e6ff00]
-  transition-all duration-150
+  hover:-translate-y-1
+  transition-all duration-75
+  cursor-crosshair
 ">
-  <h3 className="text-2xl font-mono font-bold text-[#39ff14] uppercase tracking-widest mb-3">
+  <h3 className="text-2xl font-mono font-bold text-[#39ff14] uppercase tracking-widest mb-3 group-hover:text-[#e6ff00]">
     ACID_ZONE
   </h3>
-  <p className="text-[#39ff14]/50 font-mono text-sm">
+  <p className="text-[#39ff14]/50 font-mono text-sm group-hover:text-[#e6ff00]/70">
     Distorted reality interface module
   </p>
 </div>`,
@@ -244,6 +251,14 @@ export const acidGraphics: DesignStyle = {
 - Hard offset shadows: shadow-[Npx_Npx_0px_color] with fluorescent colors
 - Bold borders: border-2 with fluorescent colors
 - Skewed/rotated elements for distortion feel
+- Scanline/noise overlays for visual interference
+
+## Animation & Interaction Rules
+
+- Hard & glitchy only: use duration-75 or duration-0 for interaction transitions
+- Hover must feel unstable: skew, abrupt offset changes, or harsh color flips
+- Active state must be brutal: collapse shadow instantly and increase press translation
+- Avoid polished micro-interactions; interactions should feel raw and disruptive
 
 ## Color Palette
 
