@@ -1,710 +1,2150 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ArrowLeft, Gamepad2, Trophy, Star, Heart, Zap, Shield, Sword,
-  ChevronDown, ChevronUp, Check, X, AlertTriangle, Info
-} from "lucide-react";
-import {
-  ShowcaseHero,
-  ShowcaseSection,
-  ColorPaletteGrid,
-  type ColorItem,
-} from "@/components/showcase";
 
-// Pixel Art 配色 (PICO-8 palette)
-const colors: ColorItem[] = [
-  { name: "Dark", hex: "#1a1c2c", bg: "bg-[#1a1c2c]" },
-  { name: "Red", hex: "#ff004d", bg: "bg-[#ff004d]" },
-  { name: "Green", hex: "#00e436", bg: "bg-[#00e436]" },
-  { name: "Blue", hex: "#29adff", bg: "bg-[#29adff]" },
-  { name: "Yellow", hex: "#ffec27", bg: "bg-[#ffec27]" },
-  { name: "Pink", hex: "#ff77a8", bg: "bg-[#ff77a8]" },
-  { name: "Orange", hex: "#ffa300", bg: "bg-[#ffa300]" },
-  { name: "Purple", hex: "#7e2553", bg: "bg-[#7e2553]" },
+// ---------------------------------------------------------------------------
+// useInView — disconnects after first intersection (fire-once)
+// ---------------------------------------------------------------------------
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+// ---------------------------------------------------------------------------
+// RevealBlock — fade + slide-up on scroll
+// ---------------------------------------------------------------------------
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Pixel sprite drawn with box-shadow (classic CSS pixel-art technique)
+// Each entry: [col, row, color]
+// ---------------------------------------------------------------------------
+const HEART_PIXELS: [number, number, string][] = [
+  [1, 0, "#ff004d"], [2, 0, "#ff004d"], [4, 0, "#ff004d"], [5, 0, "#ff004d"],
+  [0, 1, "#ff004d"], [1, 1, "#ff004d"], [2, 1, "#ff77a8"], [3, 1, "#ff004d"],
+  [4, 1, "#ff77a8"], [5, 1, "#ff004d"], [6, 1, "#ff004d"],
+  [0, 2, "#ff004d"], [1, 2, "#ff004d"], [2, 2, "#ff004d"], [3, 2, "#ff004d"],
+  [4, 2, "#ff004d"], [5, 2, "#ff004d"], [6, 2, "#ff004d"],
+  [1, 3, "#ff004d"], [2, 3, "#ff004d"], [3, 3, "#ff004d"],
+  [4, 3, "#ff004d"], [5, 3, "#ff004d"],
+  [2, 4, "#ff004d"], [3, 4, "#ff004d"], [4, 4, "#ff004d"],
+  [3, 5, "#ff004d"],
 ];
 
-export default function ShowcaseContent() {
-  const [score, setScore] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
-  const [health, setHealth] = useState(75);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
+const STAR_PIXELS: [number, number, string][] = [
+  [3, 0, "#ffec27"],
+  [2, 1, "#ffec27"], [3, 1, "#ffec27"], [4, 1, "#ffec27"],
+  [0, 2, "#ffec27"], [1, 2, "#ffec27"], [2, 2, "#ffec27"], [3, 2, "#ffec27"],
+  [4, 2, "#ffec27"], [5, 2, "#ffec27"], [6, 2, "#ffec27"],
+  [1, 3, "#ffec27"], [2, 3, "#ffec27"], [3, 3, "#ffec27"],
+  [4, 3, "#ffec27"], [5, 3, "#ffec27"],
+  [2, 4, "#ffec27"], [4, 4, "#ffec27"],
+  [1, 5, "#ffec27"], [5, 5, "#ffec27"],
+];
 
-  const tabs = [
-    { label: "INVENTORY", icon: Shield },
-    { label: "SKILLS", icon: Zap },
-    { label: "QUESTS", icon: Sword },
+const COIN_PIXELS: [number, number, string][] = [
+  [1, 0, "#ffec27"], [2, 0, "#ffec27"], [3, 0, "#ffec27"], [4, 0, "#ffec27"],
+  [0, 1, "#ffec27"], [1, 1, "#ffa300"], [2, 1, "#ffec27"], [3, 1, "#ffa300"],
+  [4, 1, "#ffec27"], [5, 1, "#ffec27"],
+  [0, 2, "#ffec27"], [1, 2, "#ffec27"], [2, 2, "#ffec27"], [3, 2, "#ffec27"],
+  [4, 2, "#ffec27"], [5, 2, "#ffec27"],
+  [0, 3, "#ffec27"], [1, 3, "#ffa300"], [2, 3, "#ffec27"], [3, 3, "#ffa300"],
+  [4, 3, "#ffec27"], [5, 3, "#ffec27"],
+  [1, 4, "#ffec27"], [2, 4, "#ffec27"], [3, 4, "#ffec27"], [4, 4, "#ffec27"],
+];
+
+function PixelSprite({
+  pixels,
+  pixelSize = 6,
+}: {
+  pixels: [number, number, string][];
+  pixelSize?: number;
+}) {
+  const shadow = pixels
+    .map(([col, row, color]) => `${col * pixelSize}px ${row * pixelSize}px 0 ${color}`)
+    .join(", ");
+
+  const maxCol = Math.max(...pixels.map(([c]) => c));
+  const maxRow = Math.max(...pixels.map(([, r]) => r));
+
+  return (
+    <div
+      style={{
+        width: pixelSize,
+        height: pixelSize,
+        boxShadow: shadow,
+        marginRight: (maxCol + 1) * pixelSize,
+        marginBottom: (maxRow + 1) * pixelSize,
+        imageRendering: "pixelated",
+      }}
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Pixel border utility (4-direction hard outline)
+// ---------------------------------------------------------------------------
+const PIXEL_BORDER = "4px solid #1a1c2c";
+const PIXEL_SHADOW = "4px 4px 0 #1a1c2c";
+
+// ---------------------------------------------------------------------------
+// Section wrapper
+// ---------------------------------------------------------------------------
+function Section({
+  title,
+  subtitle,
+  children,
+  dark = false,
+  accentColor = "#ffec27",
+}: {
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+  dark?: boolean;
+  accentColor?: string;
+}) {
+  return (
+    <section
+      style={{
+        backgroundColor: dark ? "#0f0f1e" : "#1a1c2c",
+        padding: "64px 24px",
+      }}
+    >
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <RevealBlock className="text-center mb-12">
+          <h2
+            style={{
+              fontFamily: "'Courier New', monospace",
+              fontSize: "clamp(1.25rem, 4vw, 2rem)",
+              fontWeight: 900,
+              color: accentColor,
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              marginBottom: 8,
+            }}
+          >
+            {title}
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Courier New', monospace",
+              color: "#29adff",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              fontSize: "0.75rem",
+            }}
+          >
+            {subtitle}
+          </p>
+        </RevealBlock>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Pixel Button component
+// ---------------------------------------------------------------------------
+function PixelButton({
+  children,
+  bg = "#ff004d",
+  border = "#1a1c2c",
+  color = "#ffffff",
+  shadowColor = "#1a1c2c",
+  shadowOffset = 4,
+  className = "",
+  style: extraStyle,
+  onClick,
+}: {
+  children: React.ReactNode;
+  bg?: string;
+  border?: string;
+  color?: string;
+  shadowColor?: string;
+  shadowOffset?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}) {
+  const [pressed, setPressed] = useState(false);
+
+  return (
+    <button
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      onMouseLeave={() => setPressed(false)}
+      onTouchStart={() => setPressed(true)}
+      onTouchEnd={() => setPressed(false)}
+      onClick={onClick}
+      className={className}
+      style={{
+        backgroundColor: bg,
+        border: `4px solid ${border}`,
+        borderRadius: 0,
+        color,
+        fontFamily: "'Courier New', monospace",
+        fontWeight: 900,
+        textTransform: "uppercase",
+        letterSpacing: "0.1em",
+        boxShadow: pressed
+          ? "none"
+          : `${shadowOffset}px ${shadowOffset}px 0 ${shadowColor}`,
+        transform: pressed
+          ? `translate(${shadowOffset}px, ${shadowOffset}px)`
+          : "translate(0, 0)",
+        cursor: "pointer",
+        transition: "none",
+        imageRendering: "pixelated",
+        ...extraStyle,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main showcase
+// ---------------------------------------------------------------------------
+export default function PixelArtShowcase() {
+  // --- state 1: score counter ---
+  const [score, setScore] = useState(0);
+  // --- state 2: active game menu item ---
+  const [activeMenu, setActiveMenu] = useState(0);
+  // --- state 3: health bar ---
+  const [health, setHealth] = useState(75);
+  // --- state 4: toggle options ---
+  const [toggleStates, setToggleStates] = useState([true, false, true]);
+  // --- state 5: active tab in component panel ---
+  const [activeTab, setActiveTab] = useState(0);
+  // --- hero blink ---
+  const [blink, setBlink] = useState(true);
+
+  useEffect(() => {
+    const t = setInterval(() => setBlink((b) => !b), 600);
+    return () => clearInterval(t);
+  }, []);
+
+  const menuItems = ["START GAME", "OPTIONS", "HIGH SCORES", "CREDITS"];
+  const tabs = ["BUTTON", "CARD", "INPUT"];
+
+  const palette = [
+    { name: "DARK",   hex: "#1a1c2c" },
+    { name: "RED",    hex: "#ff004d" },
+    { name: "GREEN",  hex: "#00e436" },
+    { name: "BLUE",   hex: "#29adff" },
+    { name: "YELLOW", hex: "#ffec27" },
+    { name: "PINK",   hex: "#ff77a8" },
+    { name: "ORANGE", hex: "#ffa300" },
+    { name: "PURPLE", hex: "#7e2553" },
+    { name: "LIGHT",  hex: "#f4f4f4" },
+    { name: "BROWN",  hex: "#5f574f" },
+    { name: "TAN",    hex: "#c2c3c7" },
+    { name: "TEAL",   hex: "#008751" },
   ];
 
-  const accordionItems = [
-    { title: "HOW TO PLAY?", content: "USE ARROW KEYS TO MOVE. PRESS SPACE TO JUMP. COLLECT COINS AND AVOID ENEMIES!" },
-    { title: "CONTROLS", content: "WASD OR ARROW KEYS FOR MOVEMENT. SPACE FOR ACTION. ESC FOR PAUSE MENU." },
-    { title: "GAME TIPS", content: "COLLECT POWER-UPS FOR EXTRA ABILITIES. SAVE YOUR PROGRESS AT CHECKPOINTS." },
+  const doRules = [
+    "Use rounded-none — zero radius, always",
+    "Use border-4 for all borders",
+    "Hard shadow: 4px 4px 0 color — no blur",
+    "PICO-8 / NES palette only",
+    "Monospace or pixel fonts, uppercase",
+    "Pixel Perfect Drop: active translate equals shadow offset exactly",
+    "Palette Swap: hover hard-cuts to another 8-bit color",
+    "transition-none everywhere — state machine, not animation engine",
+  ];
+
+  const dontRules = [
+    "No rounded corners of any kind",
+    "No gradients — ever",
+    "No soft box-shadow with blur",
+    "No off-palette colors",
+    "No thin borders (border, border-2)",
+    "No transition-* except transition-none",
+    "No opacity transitions on hover",
+    "No mismatched active translate vs shadow offset",
   ];
 
   return (
-    <div className="min-h-screen bg-[#1a1c2c]">
-      {/* Navigation */}
-      <nav className="px-6 py-4 bg-[#1a1c2c] border-b-4 border-[#ff004d]">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#1a1c2c",
+        fontFamily: "'Courier New', monospace",
+        imageRendering: "pixelated",
+      }}
+    >
+      {/* ================================================================
+          SECTION 1 — Fixed navigation bar
+      ================================================================ */}
+      <nav
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          backgroundColor: "#1a1c2c",
+          borderBottom: "4px solid #ff004d",
+          padding: "12px 24px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 960,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Logo */}
           <Link
             href="/styles/pixel-art"
-            className="flex items-center gap-2 text-[#29adff] hover:text-white font-bold uppercase text-sm transition-colors"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              textDecoration: "none",
+            }}
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span>BACK</span>
+            <span
+              style={{
+                display: "inline-block",
+                width: 16,
+                height: 16,
+                backgroundColor: "#ff004d",
+                border: "2px solid #ffec27",
+                boxShadow: "2px 2px 0 #ffec27",
+              }}
+            />
+            <span
+              style={{
+                color: "#ffec27",
+                fontWeight: 900,
+                fontSize: "1rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+              }}
+            >
+              PIXEL ART
+            </span>
           </Link>
-          <span className="font-bold text-xl text-white uppercase tracking-wider">PIXEL ART</span>
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-[#ff004d] border-4 border-white rounded-none text-white font-bold uppercase text-sm shadow-[4px_4px_0_#00e436] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#00e436] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100"
-          >
-            ALL STYLES
-          </Link>
+
+          {/* Nav links */}
+          <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+            {["PLAY", "SCORES", "ABOUT"].map((item) => (
+              <span
+                key={item}
+                style={{
+                  color: "#29adff",
+                  fontSize: "0.7rem",
+                  fontWeight: 900,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  cursor: "pointer",
+                  transition: "none",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLSpanElement).style.color = "#ffffff")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLSpanElement).style.color = "#29adff")
+                }
+              >
+                {item}
+              </span>
+            ))}
+            <Link href="/styles" style={{ textDecoration: "none" }}>
+              <PixelButton
+                bg="#ff004d"
+                border="#ffffff"
+                shadowColor="#00e436"
+                shadowOffset={3}
+                className="px-3 py-1 text-xs"
+                style={{ fontSize: "0.65rem", padding: "6px 12px" } as React.CSSProperties}
+              >
+                ALL STYLES
+              </PixelButton>
+            </Link>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <ShowcaseHero
-        title="PIXEL ART"
-        description="Retro 8-bit game aesthetics with sharp corners, pixel borders, hard-edge shadows, and vibrant PICO-8 colors."
-        className="pt-20 pb-16 px-6 text-center"
-        titleClassName="text-4xl md:text-6xl font-bold uppercase tracking-wider text-[#ffec27] mb-6 animate-pulse"
-        descriptionClassName="text-lg text-[#29adff] max-w-2xl mx-auto mb-10 uppercase"
+      {/* ================================================================
+          SECTION 2 — Hero section
+      ================================================================ */}
+      <section
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1a1c2c",
+          padding: "80px 24px",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}
       >
-        <div className="flex flex-wrap justify-center gap-4">
-          <button className="px-8 py-4 bg-[#ff004d] border-4 border-white rounded-none text-white font-bold uppercase text-xl shadow-[6px_6px_0_#00e436] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#00e436] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all duration-100">
-            START GAME
-          </button>
-          <button className="px-8 py-4 bg-[#29adff] border-4 border-white rounded-none text-white font-bold uppercase text-xl shadow-[6px_6px_0_#ffec27] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#ffec27] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all duration-100">
-            OPTIONS
-          </button>
+        {/* Background pixel grid decoration */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(41,173,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(41,173,255,0.04) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Sprites row */}
+        <div
+          style={{
+            display: "flex",
+            gap: 48,
+            justifyContent: "center",
+            marginBottom: 48,
+          }}
+        >
+          <PixelSprite pixels={HEART_PIXELS} pixelSize={8} />
+          <PixelSprite pixels={STAR_PIXELS} pixelSize={8} />
+          <PixelSprite pixels={COIN_PIXELS} pixelSize={8} />
         </div>
-      </ShowcaseHero>
 
-      {/* Color Palette */}
-      <ShowcaseSection
-        title="COLOR SYSTEM"
-        subtitle="PICO-8 INSPIRED PALETTE"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-4xl mx-auto">
-          <ColorPaletteGrid
-            colors={colors}
-            cardClassName="rounded-none overflow-hidden border-4 border-white shadow-[4px_4px_0_#1a1c2c]"
-            labelClassName="font-bold text-sm text-white uppercase"
-            hexClassName="text-xs text-gray-300 font-mono uppercase"
-          />
+        {/* Title */}
+        <div style={{ position: "relative", zIndex: 1, marginBottom: 16 }}>
+          <h1
+            style={{
+              fontSize: "clamp(2rem, 8vw, 5rem)",
+              fontWeight: 900,
+              color: "#ffec27",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              lineHeight: 1,
+              textShadow: "6px 6px 0 #ff004d",
+            }}
+          >
+            PIXEL ART
+          </h1>
         </div>
-      </ShowcaseSection>
 
-      {/* Buttons */}
-      <ShowcaseSection
-        title="BUTTONS"
-        subtitle="PRESS TO INTERACT"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="p-8 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#ff004d]">
-            <p className="text-sm font-bold text-[#29adff] uppercase tracking-wide mb-6">COLORS</p>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-3 bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                RED
-              </button>
-              <button className="px-6 py-3 bg-[#00e436] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                GREEN
-              </button>
-              <button className="px-6 py-3 bg-[#29adff] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                BLUE
-              </button>
-              <button className="px-6 py-3 bg-[#ffec27] border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                YELLOW
-              </button>
-            </div>
-
-            <p className="text-sm font-bold text-[#29adff] uppercase tracking-wide mb-6 mt-10">SIZES</p>
-            <div className="flex flex-wrap items-center gap-4">
-              <button className="px-4 py-2 text-sm bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[3px_3px_0_#1a1c2c] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                SMALL
-              </button>
-              <button className="px-6 py-3 bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                MEDIUM
-              </button>
-              <button className="px-8 py-4 text-lg bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[6px_6px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#1a1c2c] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all duration-100">
-                LARGE
-              </button>
-            </div>
-          </div>
+        {/* Blinking "INSERT COIN" */}
+        <div
+          style={{
+            fontSize: "0.9rem",
+            color: "#ffffff",
+            textTransform: "uppercase",
+            letterSpacing: "0.2em",
+            marginBottom: 8,
+            opacity: blink ? 1 : 0,
+            transition: "none",
+          }}
+        >
+          INSERT COIN TO CONTINUE
         </div>
-      </ShowcaseSection>
 
-      {/* Cards */}
-      <ShowcaseSection
-        title="CARDS"
-        subtitle="GAME ELEMENTS"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-          <div className="p-6 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-16 h-16 bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none flex items-center justify-center mb-4">
-              <Gamepad2 className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold uppercase text-[#1a1c2c] mb-2">PLAYER 1</h3>
-            <p className="text-[#5f574f] uppercase text-sm">READY TO START</p>
-          </div>
+        <p
+          style={{
+            color: "#29adff",
+            fontSize: "clamp(0.75rem, 2vw, 1rem)",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            maxWidth: 560,
+            marginBottom: 40,
+            lineHeight: 1.7,
+          }}
+        >
+          Retro 8-bit aesthetics. Sharp corners. Pixel borders.
+          Hard shadows. PICO-8 palette. Pure nostalgia.
+        </p>
 
-          <div className="p-6 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-16 h-16 bg-[#00e436] border-4 border-[#1a1c2c] rounded-none flex items-center justify-center mb-4">
-              <Trophy className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold uppercase text-[#1a1c2c] mb-2">HIGH SCORE</h3>
-            <p className="text-[#5f574f] uppercase text-sm">9999 POINTS</p>
-          </div>
-
-          <div className="p-6 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-16 h-16 bg-[#29adff] border-4 border-[#1a1c2c] rounded-none flex items-center justify-center mb-4">
-              <Star className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold uppercase text-[#1a1c2c] mb-2">LEVEL 1</h3>
-            <p className="text-[#5f574f] uppercase text-sm">EASY MODE</p>
-          </div>
+        {/* CTA buttons */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
+          <PixelButton
+            bg="#ff004d"
+            border="#ffffff"
+            shadowColor="#00e436"
+            shadowOffset={6}
+            style={{ fontSize: "1.1rem", padding: "16px 40px" } as React.CSSProperties}
+          >
+            PRESS START
+          </PixelButton>
+          <PixelButton
+            bg="#29adff"
+            border="#ffffff"
+            shadowColor="#ffec27"
+            shadowOffset={6}
+            style={{ fontSize: "1.1rem", padding: "16px 40px" } as React.CSSProperties}
+          >
+            HIGH SCORES
+          </PixelButton>
         </div>
-      </ShowcaseSection>
 
-      {/* Form Elements */}
-      <ShowcaseSection
-        title="INPUT"
-        subtitle="ENTER YOUR NAME"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[8px_8px_0_#ff004d]">
-            <h3 className="text-2xl font-bold uppercase text-[#1a1c2c] mb-6 text-center">NEW GAME</h3>
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="PLAYER NAME..."
-                className="w-full px-4 py-3 bg-white border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] placeholder-[#8b8680] font-mono uppercase focus:outline-none focus:shadow-[inset_0_0_0_2px_#29adff] transition-all"
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <button className="py-3 bg-[#ff004d] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                  EASY
-                </button>
-                <button className="py-3 bg-[#ffec27] border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] font-bold uppercase shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                  HARD
-                </button>
-              </div>
-              <button className="w-full py-4 bg-[#00e436] border-4 border-[#1a1c2c] rounded-none text-white font-bold uppercase text-lg shadow-[6px_6px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#1a1c2c] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all duration-100">
-                START
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Interactive Score Counter */}
-      <ShowcaseSection
-        title="SCORE"
-        subtitle="INTERACTIVE DEMO"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-[#ff004d] border-4 border-white rounded-none shadow-[8px_8px_0_#ffec27] text-center">
-            <p className="text-sm font-bold text-white uppercase tracking-wide mb-2">CURRENT SCORE</p>
-            <div className="text-6xl font-bold text-white mb-6 font-mono">{score.toString().padStart(4, '0')}</div>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setScore(Math.max(0, score - 10))}
-                className="w-16 h-16 bg-white border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] text-3xl font-bold shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100"
+        {/* Score display */}
+        <div
+          style={{
+            marginTop: 48,
+            display: "flex",
+            gap: 40,
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            { label: "SCORE", value: "9999" },
+            { label: "LEVEL", value: "01" },
+            { label: "LIVES", value: "03" },
+          ].map(({ label, value }) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontSize: "0.6rem",
+                  color: "#29adff",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 4,
+                }}
               >
-                -
-              </button>
-              <button
-                onClick={() => setScore(0)}
-                className="w-16 h-16 bg-[#29adff] border-4 border-[#1a1c2c] rounded-none text-white text-xl font-bold shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100"
+                {label}
+              </div>
+              <div
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: 900,
+                  color: "#ffec27",
+                  letterSpacing: "0.1em",
+                  textShadow: "2px 2px 0 #ff004d",
+                }}
               >
-                0
-              </button>
+                {value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================================================================
+          SECTION 3 — Component demos: Button, Card, Input
+      ================================================================ */}
+      <Section
+        title="COMPONENTS"
+        subtitle="CORE UI ELEMENTS"
+        dark={true}
+        accentColor="#ffec27"
+      >
+        {/* Tab switcher */}
+        <RevealBlock>
+          <div
+            style={{
+              display: "flex",
+              borderBottom: "4px solid #29adff",
+              marginBottom: 32,
+            }}
+          >
+            {tabs.map((tab, i) => (
               <button
-                onClick={() => setScore(score + 10)}
-                className="w-16 h-16 bg-white border-4 border-[#1a1c2c] rounded-none text-[#1a1c2c] text-3xl font-bold shadow-[4px_4px_0_#1a1c2c] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_#1a1c2c] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100"
+                key={tab}
+                onClick={() => setActiveTab(i)}
+                style={{
+                  padding: "10px 20px",
+                  fontFamily: "'Courier New', monospace",
+                  fontWeight: 900,
+                  fontSize: "0.75rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  border: "none",
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  transition: "none",
+                  backgroundColor: activeTab === i ? "#29adff" : "transparent",
+                  color: activeTab === i ? "#ffffff" : "#29adff",
+                  borderBottom: activeTab === i ? "4px solid #29adff" : "none",
+                  marginBottom: activeTab === i ? -4 : 0,
+                }}
               >
-                +
+                {tab}
               </button>
-            </div>
+            ))}
           </div>
-        </div>
-      </ShowcaseSection>
+        </RevealBlock>
 
-      {/* Game Menu */}
-      <ShowcaseSection
-        title="MENU"
-        subtitle="GAME OPTIONS"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#00e436]">
-            <div className="space-y-3">
-              <button className="w-full py-4 bg-[#ff004d] border-4 border-white rounded-none text-white font-bold uppercase text-lg shadow-[4px_4px_0_white] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_white] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all duration-100">
-                &gt; START GAME
-              </button>
-              <button className="w-full py-4 bg-[#1a1c2c] border-4 border-[#29adff] rounded-none text-[#29adff] font-bold uppercase text-lg hover:bg-[#29adff] hover:text-white transition-colors">
-                OPTIONS
-              </button>
-              <button className="w-full py-4 bg-[#1a1c2c] border-4 border-[#29adff] rounded-none text-[#29adff] font-bold uppercase text-lg hover:bg-[#29adff] hover:text-white transition-colors">
-                HIGH SCORES
-              </button>
-              <button className="w-full py-4 bg-[#1a1c2c] border-4 border-[#29adff] rounded-none text-[#29adff] font-bold uppercase text-lg hover:bg-[#29adff] hover:text-white transition-colors">
-                CREDITS
-              </button>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Stats Display */}
-      <ShowcaseSection
-        title="STATS"
-        subtitle="PLAYER INFO"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[8px_8px_0_#1a1c2c]">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold text-[#ff004d] mb-2 font-mono">99</div>
-                <div className="text-[#1a1c2c] uppercase text-sm font-bold">LIVES</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-[#00e436] mb-2 font-mono">50</div>
-                <div className="text-[#1a1c2c] uppercase text-sm font-bold">COINS</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-[#29adff] mb-2 font-mono">12</div>
-                <div className="text-[#1a1c2c] uppercase text-sm font-bold">LEVEL</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-[#ffec27] mb-2 font-mono">3</div>
-                <div className="text-[#1a1c2c] uppercase text-sm font-bold">STARS</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Tabs */}
-      <ShowcaseSection
-        title="TABS"
-        subtitle="GAME PANELS"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-6 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#ff004d]">
-            {/* Tab Headers */}
-            <div className="flex border-b-4 border-[#29adff] mb-6">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`flex items-center gap-2 px-4 py-3 font-bold uppercase text-sm transition-all ${
-                    activeTab === index
-                      ? 'bg-[#29adff] text-white -mb-1 border-4 border-[#29adff] border-b-0'
-                      : 'text-[#29adff] hover:bg-[#29adff]/20'
-                  }`}
+        <RevealBlock delay={0.1}>
+          {/* BUTTON panel */}
+          {activeTab === 0 && (
+            <div
+              style={{
+                backgroundColor: "#1a1c2c",
+                border: "4px solid #ffffff",
+                padding: 32,
+                boxShadow: "8px 8px 0 #ff004d",
+              }}
+            >
+              <p
+                style={{
+                  color: "#29adff",
+                  fontSize: "0.65rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 20,
+                }}
+              >
+                PALETTE SWAP — hover hard-cuts color, no transitions
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 32 }}>
+                <PixelButton
+                  bg="#ff004d"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  style={{ padding: "12px 24px", fontSize: "0.8rem" } as React.CSSProperties}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
+                  START
+                </PixelButton>
+                <PixelButton
+                  bg="#00e436"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  style={{ padding: "12px 24px", fontSize: "0.8rem" } as React.CSSProperties}
+                >
+                  PLAY
+                </PixelButton>
+                <PixelButton
+                  bg="#29adff"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  style={{ padding: "12px 24px", fontSize: "0.8rem" } as React.CSSProperties}
+                >
+                  JUMP
+                </PixelButton>
+                <PixelButton
+                  bg="#ffec27"
+                  border="#1a1c2c"
+                  color="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  style={{ padding: "12px 24px", fontSize: "0.8rem" } as React.CSSProperties}
+                >
+                  COIN
+                </PixelButton>
+              </div>
+
+              <p
+                style={{
+                  color: "#29adff",
+                  fontSize: "0.65rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 16,
+                }}
+              >
+                PIXEL PERFECT DROP — active translate === shadow offset
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+                <PixelButton
+                  bg="#ff004d"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  shadowOffset={2}
+                  style={{ padding: "8px 16px", fontSize: "0.65rem" } as React.CSSProperties}
+                >
+                  SMALL
+                </PixelButton>
+                <PixelButton
+                  bg="#ff004d"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  shadowOffset={4}
+                  style={{ padding: "12px 24px", fontSize: "0.8rem" } as React.CSSProperties}
+                >
+                  MEDIUM
+                </PixelButton>
+                <PixelButton
+                  bg="#ff004d"
+                  border="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  shadowOffset={6}
+                  style={{ padding: "16px 40px", fontSize: "1rem" } as React.CSSProperties}
+                >
+                  LARGE
+                </PixelButton>
+              </div>
+
+              {/* Code snippet */}
+              <pre
+                style={{
+                  marginTop: 24,
+                  backgroundColor: "#0f0f1e",
+                  border: "4px solid #29adff",
+                  padding: 16,
+                  fontSize: "0.65rem",
+                  color: "#29adff",
+                  overflowX: "auto",
+                  lineHeight: 1.6,
+                }}
+              >{`<button className="
+  px-6 py-3 bg-[#ff004d]
+  border-[4px] border-[#1a1c2c] rounded-none
+  text-white font-bold uppercase tracking-widest
+  shadow-[4px_4px_0_#1a1c2c]
+  hover:bg-[#29adff] hover:shadow-[4px_4px_0_#ff004d]
+  active:translate-x-[4px] active:translate-y-[4px]
+  active:shadow-none transition-none
+">
+  START
+</button>`}</pre>
+            </div>
+          )}
+
+          {/* CARD panel */}
+          {activeTab === 1 && (
+            <div
+              style={{
+                backgroundColor: "#1a1c2c",
+                border: "4px solid #ffffff",
+                padding: 32,
+                boxShadow: "8px 8px 0 #00e436",
+              }}
+            >
+              <p
+                style={{
+                  color: "#29adff",
+                  fontSize: "0.65rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 20,
+                }}
+              >
+                HOVER SWAPS BORDER + TITLE COLOR — transition-none
+              </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                  gap: 16,
+                  marginBottom: 24,
+                }}
+              >
+                {[
+                  { title: "LEVEL 1", sub: "PRESS START TO ENTER THE PIXEL WORLD.", color: "#ff004d", icon: ">" },
+                  { title: "LEVEL 2", sub: "COLLECT ALL COINS TO UNLOCK THE BOSS.", color: "#00e436", icon: "*" },
+                  { title: "LEVEL 3", sub: "DEFEAT THE FINAL ENEMY. YOU CAN DO IT!", color: "#29adff", icon: "!" },
+                ].map(({ title, sub, color, icon }) => (
+                  <div
+                    key={title}
+                    className="group"
+                    style={{
+                      padding: 24,
+                      backgroundColor: "#f4f4f4",
+                      border: `4px solid #1a1c2c`,
+                      boxShadow: `4px 4px 0 #1a1c2c`,
+                      cursor: "pointer",
+                      transition: "none",
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLDivElement;
+                      el.style.border = `4px solid ${color}`;
+                      el.style.boxShadow = `4px 4px 0 ${color}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLDivElement;
+                      el.style.border = "4px solid #1a1c2c";
+                      el.style.boxShadow = "4px 4px 0 #1a1c2c";
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: color,
+                        border: "4px solid #1a1c2c",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginBottom: 12,
+                        fontSize: "1.2rem",
+                        color: "#ffffff",
+                        fontWeight: 900,
+                      }}
+                    >
+                      {icon}
+                    </div>
+                    <h3
+                      style={{
+                        fontSize: "1.1rem",
+                        fontWeight: 900,
+                        textTransform: "uppercase",
+                        color: "#1a1c2c",
+                        letterSpacing: "0.1em",
+                        marginBottom: 8,
+                      }}
+                    >
+                      {title}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: "0.7rem",
+                        color: "#5f574f",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {sub}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <pre
+                style={{
+                  backgroundColor: "#0f0f1e",
+                  border: "4px solid #29adff",
+                  padding: 16,
+                  fontSize: "0.65rem",
+                  color: "#29adff",
+                  overflowX: "auto",
+                  lineHeight: 1.6,
+                }}
+              >{`<div className="group p-6
+  bg-white border-[4px] border-[#1a1c2c] rounded-none
+  shadow-[4px_4px_0_#1a1c2c]
+  hover:border-[#ff004d] hover:shadow-[4px_4px_0_#ff004d]
+  transition-none cursor-pointer">
+  <h3 className="font-bold uppercase text-[#1a1c2c]
+    group-hover:text-[#ff004d] transition-none">
+    LEVEL 1
+  </h3>
+</div>`}</pre>
+            </div>
+          )}
+
+          {/* INPUT panel */}
+          {activeTab === 2 && (
+            <div
+              style={{
+                backgroundColor: "#1a1c2c",
+                border: "4px solid #ffffff",
+                padding: 32,
+                boxShadow: "8px 8px 0 #ffec27",
+              }}
+            >
+              <p
+                style={{
+                  color: "#29adff",
+                  fontSize: "0.65rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 20,
+                }}
+              >
+                FOCUS: inner color shadow — no ring glow
+              </p>
+              <div
+                style={{
+                  maxWidth: 400,
+                  backgroundColor: "#f4f4f4",
+                  border: "4px solid #1a1c2c",
+                  padding: 24,
+                  boxShadow: "8px 8px 0 #ff004d",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 900,
+                    color: "#1a1c2c",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    textAlign: "center",
+                    marginBottom: 20,
+                  }}
+                >
+                  NEW GAME
+                </h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <input
+                    type="text"
+                    placeholder="PLAYER NAME..."
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      backgroundColor: "#ffffff",
+                      border: PIXEL_BORDER,
+                      borderRadius: 0,
+                      fontFamily: "'Courier New', monospace",
+                      fontWeight: 700,
+                      color: "#1a1c2c",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      outline: "none",
+                      fontSize: "0.8rem",
+                      boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.boxShadow =
+                        "inset 0 0 0 3px #29adff";
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.boxShadow = "none";
+                    }}
+                  />
+                  <select
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      backgroundColor: "#ffffff",
+                      border: PIXEL_BORDER,
+                      borderRadius: 0,
+                      fontFamily: "'Courier New', monospace",
+                      fontWeight: 700,
+                      color: "#1a1c2c",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      outline: "none",
+                      fontSize: "0.8rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <option>EASY MODE</option>
+                    <option>NORMAL MODE</option>
+                    <option>HARD MODE</option>
+                    <option>PIXEL PERFECT</option>
+                  </select>
+                  <PixelButton
+                    bg="#00e436"
+                    border="#1a1c2c"
+                    shadowColor="#1a1c2c"
+                    shadowOffset={6}
+                    style={{ padding: "14px", fontSize: "1rem", width: "100%" } as React.CSSProperties}
+                  >
+                    START GAME
+                  </PixelButton>
+                </div>
+              </div>
+
+              <pre
+                style={{
+                  marginTop: 24,
+                  backgroundColor: "#0f0f1e",
+                  border: "4px solid #29adff",
+                  padding: 16,
+                  fontSize: "0.65rem",
+                  color: "#29adff",
+                  overflowX: "auto",
+                  lineHeight: 1.6,
+                }}
+              >{`<input
+  type="text"
+  placeholder="ENTER NAME..."
+  className="
+    w-full px-4 py-3
+    bg-white border-4 border-[#1a1c2c] rounded-none
+    text-[#1a1c2c] placeholder-[#8b8680]
+    font-mono uppercase
+    focus:outline-none
+    focus:shadow-[inset_0_0_0_3px_#29adff]
+    transition-all
+  "
+/>`}</pre>
+            </div>
+          )}
+        </RevealBlock>
+      </Section>
+
+      {/* ================================================================
+          SECTION 4 — Color palette (NES/PICO-8)
+      ================================================================ */}
+      <Section
+        title="COLOR SYSTEM"
+        subtitle="PICO-8 INSPIRED PALETTE — 12 COLORS"
+        dark={false}
+        accentColor="#ffec27"
+      >
+        <RevealBlock>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+              gap: 12,
+            }}
+          >
+            {palette.map(({ name, hex }, i) => (
+              <RevealBlock key={hex} delay={i * 0.04}>
+                <div
+                  style={{
+                    border: "4px solid #ffffff",
+                    boxShadow: "4px 4px 0 #000000",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 64,
+                      backgroundColor: hex,
+                      imageRendering: "pixelated",
+                    }}
+                  />
+                  <div
+                    style={{
+                      backgroundColor: "#0f0f1e",
+                      padding: "8px 10px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "0.65rem",
+                        fontWeight: 900,
+                        color: "#ffffff",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                      }}
+                    >
+                      {name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "#29adff",
+                        fontFamily: "'Courier New', monospace",
+                        letterSpacing: "0.05em",
+                        marginTop: 2,
+                      }}
+                    >
+                      {hex.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </RevealBlock>
+
+        {/* Pixel art divider */}
+        <RevealBlock delay={0.2} className="mt-12">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 4,
+              flexWrap: "wrap",
+            }}
+          >
+            {palette.map(({ hex }) => (
+              <div
+                key={hex}
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: hex,
+                  border: "2px solid #000000",
+                  imageRendering: "pixelated",
+                }}
+              />
+            ))}
+          </div>
+        </RevealBlock>
+      </Section>
+
+      {/* ================================================================
+          SECTION 5 — Design rules (do / don't)
+      ================================================================ */}
+      <Section
+        title="DESIGN RULES"
+        subtitle="DO'S AND DON'TS OF PIXEL ART UI"
+        dark={true}
+        accentColor="#00e436"
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 24,
+          }}
+        >
+          {/* DO list */}
+          <RevealBlock>
+            <div
+              style={{
+                border: "4px solid #00e436",
+                boxShadow: "6px 6px 0 #00e436",
+                padding: 24,
+                backgroundColor: "#0f0f1e",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 20,
+                }}
+              >
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    backgroundColor: "#00e436",
+                    border: "4px solid #ffffff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    flexShrink: 0,
+                  }}
+                >
+                  +
+                </div>
+                <h3
+                  style={{
+                    fontSize: "1rem",
+                    fontWeight: 900,
+                    color: "#00e436",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  DO
+                </h3>
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                {doRules.map((rule) => (
+                  <li
+                    key={rule}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#00e436",
+                        fontWeight: 900,
+                        fontSize: "0.8rem",
+                        flexShrink: 0,
+                        marginTop: 1,
+                      }}
+                    >
+                      [+]
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        color: "#c2c3c7",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {rule}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+
+          {/* DON'T list */}
+          <RevealBlock delay={0.1}>
+            <div
+              style={{
+                border: "4px solid #ff004d",
+                boxShadow: "6px 6px 0 #ff004d",
+                padding: 24,
+                backgroundColor: "#0f0f1e",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 20,
+                }}
+              >
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    backgroundColor: "#ff004d",
+                    border: "4px solid #ffffff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    flexShrink: 0,
+                  }}
+                >
+                  X
+                </div>
+                <h3
+                  style={{
+                    fontSize: "1rem",
+                    fontWeight: 900,
+                    color: "#ff004d",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  DON'T
+                </h3>
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                {dontRules.map((rule) => (
+                  <li
+                    key={rule}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#ff004d",
+                        fontWeight: 900,
+                        fontSize: "0.8rem",
+                        flexShrink: 0,
+                        marginTop: 1,
+                      }}
+                    >
+                      [X]
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        color: "#c2c3c7",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {rule}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+        </div>
+      </Section>
+
+      {/* ================================================================
+          SECTION 6 — Typography section
+      ================================================================ */}
+      <Section
+        title="TYPOGRAPHY"
+        subtitle="PIXEL FONT SYSTEM — MONOSPACE UPPERCASE"
+        dark={false}
+        accentColor="#ffec27"
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {[
+            { label: "DISPLAY", size: "clamp(2rem, 6vw, 3.5rem)", weight: 900, color: "#ffec27", shadow: "4px 4px 0 #ff004d", sample: "GAME OVER" },
+            { label: "HEADING", size: "clamp(1.4rem, 4vw, 2.2rem)", weight: 900, color: "#ff004d", shadow: "3px 3px 0 #1a1c2c", sample: "HIGH SCORE" },
+            { label: "SUBHEAD", size: "clamp(1rem, 3vw, 1.5rem)", weight: 900, color: "#29adff", shadow: "2px 2px 0 #1a1c2c", sample: "LEVEL SELECT" },
+            { label: "BODY",    size: "0.9rem",                    weight: 700, color: "#c2c3c7", shadow: "none",              sample: "INSERT COIN TO CONTINUE. PRESS START TO PLAY." },
+            { label: "CAPTION", size: "0.7rem",                    weight: 700, color: "#5f574f", shadow: "none",              sample: "© 1985 STYLEKIT GAMES. ALL RIGHTS RESERVED." },
+          ].map(({ label, size, weight, color, shadow, sample }, i) => (
+            <RevealBlock key={label} delay={i * 0.07}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 24,
+                  padding: 20,
+                  backgroundColor: "#0f0f1e",
+                  border: "4px solid #ffffff",
+                  boxShadow: "4px 4px 0 #000000",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.6rem",
+                    color: "#29adff",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    fontWeight: 900,
+                    minWidth: 64,
+                    flexShrink: 0,
+                  }}
+                >
+                  {label}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Courier New', monospace",
+                    fontSize: size,
+                    fontWeight: weight,
+                    color,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    textShadow: shadow,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {sample}
+                </span>
+              </div>
+            </RevealBlock>
+          ))}
+        </div>
+
+        {/* Letter spacing demo */}
+        <RevealBlock delay={0.4} className="mt-8">
+          <div
+            style={{
+              padding: 24,
+              backgroundColor: "#0f0f1e",
+              border: "4px solid #ffec27",
+              boxShadow: "6px 6px 0 #ffec27",
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.6rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                marginBottom: 16,
+              }}
+            >
+              LETTER SPACING SCALE
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                { tracking: "0em",    label: "NORMAL" },
+                { tracking: "0.05em", label: "TIGHT PIXEL" },
+                { tracking: "0.1em",  label: "STANDARD PIXEL" },
+                { tracking: "0.2em",  label: "WIDE PIXEL" },
+                { tracking: "0.4em",  label: "EXTREME PIXEL" },
+              ].map(({ tracking, label }) => (
+                <div key={label} style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "0.6rem", color: "#5f574f", minWidth: 120 }}>
+                    {label} ({tracking})
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Courier New', monospace",
+                      color: "#f4f4f4",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: tracking,
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    PIXEL ART
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </RevealBlock>
+      </Section>
+
+      {/* ================================================================
+          SECTION 7 — Interactive game elements
+          (score counter + health bar — two useState demos)
+      ================================================================ */}
+      <Section
+        title="INTERACTIVE"
+        subtitle="LIVE GAME UI DEMOS"
+        dark={true}
+        accentColor="#ff004d"
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 24,
+          }}
+        >
+          {/* Score counter */}
+          <RevealBlock>
+            <div
+              style={{
+                backgroundColor: "#ff004d",
+                border: "4px solid #ffffff",
+                padding: 32,
+                boxShadow: "8px 8px 0 #ffec27",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.65rem",
+                  color: "#ffffff",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 8,
+                }}
+              >
+                CURRENT SCORE
+              </p>
+              <div
+                style={{
+                  fontSize: "4rem",
+                  fontWeight: 900,
+                  color: "#ffffff",
+                  letterSpacing: "0.1em",
+                  textShadow: "4px 4px 0 #1a1c2c",
+                  marginBottom: 24,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {score.toString().padStart(6, "0")}
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
+                <PixelButton
+                  bg="#ffffff"
+                  border="#1a1c2c"
+                  color="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  shadowOffset={3}
+                  onClick={() => setScore(Math.max(0, score - 100))}
+                  style={{ width: 52, height: 52, fontSize: "1.4rem" } as React.CSSProperties}
+                >
+                  -
+                </PixelButton>
+                <PixelButton
+                  bg="#1a1c2c"
+                  border="#ffffff"
+                  color="#ffffff"
+                  shadowColor="#ffffff"
+                  shadowOffset={3}
+                  onClick={() => setScore(0)}
+                  style={{ width: 52, height: 52, fontSize: "0.6rem" } as React.CSSProperties}
+                >
+                  RST
+                </PixelButton>
+                <PixelButton
+                  bg="#ffffff"
+                  border="#1a1c2c"
+                  color="#1a1c2c"
+                  shadowColor="#1a1c2c"
+                  shadowOffset={3}
+                  onClick={() => setScore(score + 100)}
+                  style={{ width: 52, height: 52, fontSize: "1.4rem" } as React.CSSProperties}
+                >
+                  +
+                </PixelButton>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Health / stats bars */}
+          <RevealBlock delay={0.1}>
+            <div
+              style={{
+                backgroundColor: "#0f0f1e",
+                border: "4px solid #ffffff",
+                padding: 32,
+                boxShadow: "8px 8px 0 #ff004d",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.65rem",
+                  color: "#29adff",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 20,
+                }}
+              >
+                PLAYER STATS
+              </p>
+
+              {[
+                { label: "HP", value: health, max: 100, color: "#ff004d", icon: "♥" },
+                { label: "XP", value: 2450,   max: 5000, color: "#29adff", icon: "★" },
+                { label: "MP", value: 80,      max: 100, color: "#7e2553", icon: "◆" },
+              ].map(({ label, value, max, color, icon }) => (
+                <div key={label} style={{ marginBottom: 20 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: 6,
+                      alignItems: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        fontWeight: 900,
+                        color,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                      }}
+                    >
+                      {icon} {label}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.65rem",
+                        color: "#ffffff",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {value}/{max}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: 20,
+                      backgroundColor: "#1a1c2c",
+                      border: "4px solid #ffffff",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: `${(value / max) * 100}%`,
+                        backgroundColor: color,
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
+                <PixelButton
+                  bg="#ff004d"
+                  border="#ffffff"
+                  color="#ffffff"
+                  shadowColor="#ffffff"
+                  shadowOffset={3}
+                  onClick={() => setHealth(Math.max(0, health - 10))}
+                  style={{ padding: "8px 14px", fontSize: "0.65rem" } as React.CSSProperties}
+                >
+                  DAMAGE
+                </PixelButton>
+                <PixelButton
+                  bg="#00e436"
+                  border="#ffffff"
+                  color="#ffffff"
+                  shadowColor="#ffffff"
+                  shadowOffset={3}
+                  onClick={() => setHealth(Math.min(100, health + 10))}
+                  style={{ padding: "8px 14px", fontSize: "0.65rem" } as React.CSSProperties}
+                >
+                  HEAL
+                </PixelButton>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+
+        {/* Game menu selector */}
+        <RevealBlock delay={0.2} className="mt-8">
+          <div
+            style={{
+              maxWidth: 400,
+              margin: "0 auto",
+              backgroundColor: "#1a1c2c",
+              border: "4px solid #ffffff",
+              padding: 32,
+              boxShadow: "8px 8px 0 #00e436",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.65rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: 16,
+                textAlign: "center",
+              }}
+            >
+              MAIN MENU — CLICK TO SELECT
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {menuItems.map((item, i) => (
+                <button
+                  key={item}
+                  onClick={() => setActiveMenu(i)}
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    backgroundColor: activeMenu === i ? "#ff004d" : "transparent",
+                    border: `4px solid ${activeMenu === i ? "#ffffff" : "#29adff"}`,
+                    borderRadius: 0,
+                    color: activeMenu === i ? "#ffffff" : "#29adff",
+                    fontFamily: "'Courier New', monospace",
+                    fontWeight: 900,
+                    fontSize: "0.85rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "none",
+                    boxShadow: activeMenu === i ? "4px 4px 0 #ffffff" : "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <span>{activeMenu === i ? ">" : " "}</span>
+                  {item}
                 </button>
               ))}
             </div>
-            {/* Tab Content */}
-            <div className="min-h-[120px] p-4 bg-[#0f0f1e] border-4 border-[#29adff]">
-              {activeTab === 0 && (
-                <div className="text-white">
-                  <p className="text-[#ffec27] font-bold mb-3">INVENTORY</p>
-                  <div className="flex gap-2">
-                    {['SWORD', 'SHIELD', 'POTION', 'KEY'].map((item) => (
-                      <span key={item} className="px-3 py-1 bg-[#ff004d] border-2 border-white text-xs font-bold">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {activeTab === 1 && (
-                <div className="text-white">
-                  <p className="text-[#ffec27] font-bold mb-3">SKILLS</p>
-                  <ul className="space-y-1 text-sm">
-                    <li className="flex items-center gap-2"><Zap className="w-4 h-4 text-[#ffec27]" /> FIREBALL LVL 3</li>
-                    <li className="flex items-center gap-2"><Shield className="w-4 h-4 text-[#29adff]" /> DEFENSE LVL 5</li>
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-[#ff004d]" /> HEAL LVL 2</li>
-                  </ul>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div className="text-white">
-                  <p className="text-[#ffec27] font-bold mb-3">ACTIVE QUESTS</p>
-                  <ul className="space-y-1 text-sm">
-                    <li className="text-[#00e436]">[!] DEFEAT THE DRAGON</li>
-                    <li className="text-[#29adff]">[?] FIND THE TREASURE</li>
-                    <li className="text-gray-500 line-through">[X] RESCUE THE PRINCESS</li>
-                  </ul>
-                </div>
-              )}
-            </div>
+            <p
+              style={{
+                marginTop: 16,
+                fontSize: "0.6rem",
+                color: "#5f574f",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                textAlign: "center",
+              }}
+            >
+              SELECTED: {menuItems[activeMenu]}
+            </p>
           </div>
-        </div>
-      </ShowcaseSection>
+        </RevealBlock>
 
-      {/* Alerts */}
-      <ShowcaseSection
-        title="ALERTS"
-        subtitle="GAME MESSAGES"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-3xl mx-auto space-y-4">
-          {/* Success */}
-          <div className="flex items-center gap-4 p-4 bg-[#00e436] border-4 border-[#1a1c2c] shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-10 h-10 bg-white border-4 border-[#1a1c2c] flex items-center justify-center">
-              <Check className="w-5 h-5 text-[#00e436]" />
-            </div>
-            <div>
-              <p className="font-bold text-[#1a1c2c] uppercase">LEVEL UP!</p>
-              <p className="text-[#1a1c2c]/80 text-sm uppercase">YOU REACHED LEVEL 12!</p>
-            </div>
-          </div>
-
-          {/* Warning */}
-          <div className="flex items-center gap-4 p-4 bg-[#ffec27] border-4 border-[#1a1c2c] shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-10 h-10 bg-white border-4 border-[#1a1c2c] flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-[#ffa300]" />
-            </div>
-            <div>
-              <p className="font-bold text-[#1a1c2c] uppercase">LOW HEALTH!</p>
-              <p className="text-[#1a1c2c]/80 text-sm uppercase">FIND A HEALTH POTION!</p>
-            </div>
-          </div>
-
-          {/* Error */}
-          <div className="flex items-center gap-4 p-4 bg-[#ff004d] border-4 border-[#1a1c2c] shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-10 h-10 bg-white border-4 border-[#1a1c2c] flex items-center justify-center">
-              <X className="w-5 h-5 text-[#ff004d]" />
-            </div>
-            <div>
-              <p className="font-bold text-white uppercase">GAME OVER!</p>
-              <p className="text-white/80 text-sm uppercase">TRY AGAIN?</p>
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex items-center gap-4 p-4 bg-[#29adff] border-4 border-[#1a1c2c] shadow-[4px_4px_0_#1a1c2c]">
-            <div className="w-10 h-10 bg-white border-4 border-[#1a1c2c] flex items-center justify-center">
-              <Info className="w-5 h-5 text-[#29adff]" />
-            </div>
-            <div>
-              <p className="font-bold text-white uppercase">NEW QUEST!</p>
-              <p className="text-white/80 text-sm uppercase">CHECK YOUR MAP!</p>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Progress / Health Bar */}
-      <ShowcaseSection
-        title="PROGRESS"
-        subtitle="HEALTH & XP BARS"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-3xl mx-auto">
-          <div className="p-8 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#ff004d]">
-            <div className="space-y-8">
-              {/* Health Bar */}
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-bold text-[#ff004d] uppercase flex items-center gap-2">
-                    <Heart className="w-4 h-4" /> HEALTH
-                  </span>
-                  <span className="text-sm text-white font-mono">{health}/100</span>
-                </div>
-                <div className="h-6 bg-[#1a1c2c] border-4 border-white overflow-hidden">
-                  <div 
-                    className="h-full bg-[#ff004d] transition-all duration-300"
-                    style={{ width: `${health}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* XP Bar */}
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-bold text-[#29adff] uppercase flex items-center gap-2">
-                    <Star className="w-4 h-4" /> EXPERIENCE
-                  </span>
-                  <span className="text-sm text-white font-mono">2450/5000</span>
-                </div>
-                <div className="h-6 bg-[#1a1c2c] border-4 border-white overflow-hidden">
-                  <div className="h-full w-[49%] bg-[#29adff]" />
-                </div>
-              </div>
-
-              {/* Mana Bar */}
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-bold text-[#7e2553] uppercase flex items-center gap-2">
-                    <Zap className="w-4 h-4" /> MANA
-                  </span>
-                  <span className="text-sm text-white font-mono">80/100</span>
-                </div>
-                <div className="h-6 bg-[#1a1c2c] border-4 border-white overflow-hidden">
-                  <div className="h-full w-[80%] bg-[#7e2553]" />
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex gap-3 pt-4">
-                <button 
-                  onClick={() => setHealth(Math.max(0, health - 10))}
-                  className="px-4 py-2 text-sm bg-[#ff004d] border-4 border-white text-white font-bold uppercase shadow-[3px_3px_0_white] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0_white] transition-all"
-                >
-                  DAMAGE
-                </button>
-                <button 
-                  onClick={() => setHealth(Math.min(100, health + 10))}
-                  className="px-4 py-2 text-sm bg-[#00e436] border-4 border-white text-white font-bold uppercase shadow-[3px_3px_0_white] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0_white] transition-all"
-                >
-                  HEAL
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Tags & Badges */}
-      <ShowcaseSection
-        title="BADGES"
-        subtitle="ACHIEVEMENTS"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-white border-4 border-[#1a1c2c] rounded-none shadow-[8px_8px_0_#1a1c2c]">
-            {/* Tags */}
-            <div className="mb-8">
-              <p className="text-sm font-bold text-[#1a1c2c] uppercase mb-4">ITEM TAGS</p>
-              <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-2 bg-[#ff004d] border-4 border-[#1a1c2c] text-white text-sm font-bold uppercase shadow-[2px_2px_0_#1a1c2c]">
-                  RARE
-                </span>
-                <span className="px-4 py-2 bg-[#ffec27] border-4 border-[#1a1c2c] text-[#1a1c2c] text-sm font-bold uppercase shadow-[2px_2px_0_#1a1c2c]">
-                  LEGENDARY
-                </span>
-                <span className="px-4 py-2 bg-[#29adff] border-4 border-[#1a1c2c] text-white text-sm font-bold uppercase shadow-[2px_2px_0_#1a1c2c]">
-                  MAGIC
-                </span>
-                <span className="px-4 py-2 bg-[#00e436] border-4 border-[#1a1c2c] text-white text-sm font-bold uppercase shadow-[2px_2px_0_#1a1c2c]">
-                  COMMON
-                </span>
-              </div>
-            </div>
-
-            {/* Badges */}
-            <div>
-              <p className="text-sm font-bold text-[#1a1c2c] uppercase mb-4">ACHIEVEMENT BADGES</p>
-              <div className="flex flex-wrap gap-4 items-center">
-                <span className="w-10 h-10 bg-[#ff004d] border-4 border-[#1a1c2c] flex items-center justify-center text-white font-bold shadow-[2px_2px_0_#1a1c2c]">
-                  1
-                </span>
-                <span className="px-3 h-10 bg-[#ffec27] border-4 border-[#1a1c2c] flex items-center justify-center text-[#1a1c2c] font-bold uppercase text-sm shadow-[2px_2px_0_#1a1c2c]">
-                  NEW!
-                </span>
-                <span className="px-3 h-10 bg-[#00e436] border-4 border-[#1a1c2c] flex items-center justify-center text-white font-bold uppercase text-sm shadow-[2px_2px_0_#1a1c2c]">
-                  PRO
-                </span>
-                <span className="w-10 h-10 bg-white border-4 border-[#29adff] flex items-center justify-center text-[#29adff] font-bold">
-                  99
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ShowcaseSection>
-
-      {/* Toggle / Options */}
-      <ShowcaseSection
-        title="OPTIONS"
-        subtitle="GAME SETTINGS"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="p-8 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#00e436]">
-            <div className="space-y-4">
+        {/* Options toggles */}
+        <RevealBlock delay={0.3} className="mt-8">
+          <div
+            style={{
+              maxWidth: 400,
+              margin: "0 auto",
+              backgroundColor: "#1a1c2c",
+              border: "4px solid #ffffff",
+              padding: 32,
+              boxShadow: "8px 8px 0 #00e436",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.65rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              GAME OPTIONS
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[
-                { label: "SOUND FX", index: 0 },
-                { label: "MUSIC", index: 1 },
+                { label: "SOUND FX",  index: 0 },
+                { label: "MUSIC",     index: 1 },
                 { label: "VIBRATION", index: 2 },
-              ].map((item) => (
-                <div key={item.index} className="flex items-center justify-between">
-                  <span className="text-white font-bold uppercase">{item.label}</span>
+              ].map(({ label, index }) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: "#ffffff",
+                      fontWeight: 900,
+                      fontSize: "0.8rem",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
+                    {label}
+                  </span>
                   <button
                     onClick={() => {
-                      const newStates = [...toggleStates];
-                      newStates[item.index] = !newStates[item.index];
-                      setToggleStates(newStates);
+                      const next = [...toggleStates];
+                      next[index] = !next[index];
+                      setToggleStates(next);
                     }}
-                    className={`relative w-16 h-8 border-4 border-white transition-all ${
-                      toggleStates[item.index] ? 'bg-[#00e436]' : 'bg-[#ff004d]'
-                    }`}
+                    style={{
+                      position: "relative",
+                      width: 64,
+                      height: 28,
+                      border: "4px solid #ffffff",
+                      borderRadius: 0,
+                      backgroundColor: toggleStates[index] ? "#00e436" : "#ff004d",
+                      cursor: "pointer",
+                      transition: "none",
+                      padding: 0,
+                    }}
                   >
                     <span
-                      className={`absolute top-0 w-6 h-6 bg-white transition-all ${
-                        toggleStates[item.index] ? 'left-8' : 'left-0'
-                      }`}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: toggleStates[index] ? 36 : 0,
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "#ffffff",
+                        transition: "none",
+                      }}
                     />
-                    <span className={`absolute top-1 text-xs font-bold ${
-                      toggleStates[item.index] ? 'left-1 text-white' : 'right-1 text-white'
-                    }`}>
-                      {toggleStates[item.index] ? 'ON' : 'OFF'}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        fontSize: "0.5rem",
+                        fontWeight: 900,
+                        color: "#ffffff",
+                        left: toggleStates[index] ? 4 : "auto",
+                        right: toggleStates[index] ? "auto" : 4,
+                        fontFamily: "'Courier New', monospace",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {toggleStates[index] ? "ON" : "OFF"}
                     </span>
                   </button>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
+        </RevealBlock>
+      </Section>
 
-      {/* Accordion / Help */}
-      <ShowcaseSection
-        title="HELP"
-        subtitle="FAQ"
-        className="py-16 px-6"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
+      {/* ================================================================
+          SECTION 8 — Philosophy / about section
+      ================================================================ */}
+      <Section
+        title="PHILOSOPHY"
+        subtitle="THE PIXEL ART ETHOS"
+        dark={false}
+        accentColor="#29adff"
       >
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-3">
-            {accordionItems.map((item, index) => (
-              <div 
-                key={index}
-                className={`border-4 transition-all ${
-                  openAccordion === index 
-                    ? 'border-[#ffec27] shadow-[4px_4px_0_#ffec27]' 
-                    : 'border-white shadow-[4px_4px_0_#1a1c2c]'
-                } bg-[#1a1c2c]`}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: 20,
+          }}
+        >
+          {[
+            {
+              icon: "■",
+              color: "#ff004d",
+              title: "PIXEL PERFECT",
+              body:
+                "Every element aligns to the pixel grid. No sub-pixel rendering. No anti-aliasing. Hard edges only.",
+            },
+            {
+              icon: "◆",
+              color: "#00e436",
+              title: "STATE MACHINE",
+              body:
+                "UI runs on a state machine, not an animation engine. All transitions are instantaneous hard cuts.",
+            },
+            {
+              icon: "★",
+              color: "#ffec27",
+              title: "LIMITED PALETTE",
+              body:
+                "16 colors maximum. PICO-8 inspired. Every color choice is deliberate, no gradients allowed.",
+            },
+            {
+              icon: "♥",
+              color: "#29adff",
+              title: "NOSTALGIA CODED",
+              body:
+                "Every interaction echoes classic games. The aesthetic is constraint turned into identity.",
+            },
+          ].map(({ icon, color, title, body }, i) => (
+            <RevealBlock key={title} delay={i * 0.08}>
+              <div
+                style={{
+                  padding: 24,
+                  backgroundColor: "#0f0f1e",
+                  border: `4px solid ${color}`,
+                  boxShadow: `4px 4px 0 ${color}`,
+                }}
               >
-                <button
-                  onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
-                  className="w-full flex items-center justify-between p-4 text-left"
+                <div
+                  style={{
+                    fontSize: "2rem",
+                    color,
+                    marginBottom: 12,
+                    textShadow: `2px 2px 0 #000000`,
+                  }}
                 >
-                  <span className="font-bold text-[#ffec27] uppercase">{item.title}</span>
-                  {openAccordion === index ? (
-                    <ChevronUp className="w-5 h-5 text-[#ffec27]" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-white" />
-                  )}
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ${
-                  openAccordion === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                }`}>
-                  <div className="px-4 pb-4 text-[#29adff] text-sm uppercase">
-                    {item.content}
-                  </div>
+                  {icon}
                 </div>
+                <h3
+                  style={{
+                    fontSize: "0.9rem",
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    marginBottom: 10,
+                  }}
+                >
+                  {title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "#c2c3c7",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {body}
+                </p>
               </div>
-            ))}
-          </div>
+            </RevealBlock>
+          ))}
         </div>
-      </ShowcaseSection>
+      </Section>
 
-      {/* Avatars */}
-      <ShowcaseSection
-        title="AVATARS"
-        subtitle="PLAYER SELECT"
-        className="py-16 px-6 bg-[#0f0f1e]"
-        titleClassName="text-3xl font-bold uppercase tracking-wider text-[#ffec27] mb-4 text-center"
-        subtitleClassName="text-[#29adff] mb-10 text-center uppercase text-sm"
+      {/* ================================================================
+          SECTION 9 — Achievement badges / tags
+      ================================================================ */}
+      <Section
+        title="BADGES"
+        subtitle="ACHIEVEMENTS AND ITEM TAGS"
+        dark={true}
+        accentColor="#ffec27"
       >
-        <div className="max-w-4xl mx-auto">
-          <div className="p-8 bg-[#1a1c2c] border-4 border-white rounded-none shadow-[8px_8px_0_#ff004d]">
-            <div className="flex flex-wrap items-end justify-center gap-6">
-              {/* Small */}
-              <div className="text-center">
-                <div className="w-10 h-10 bg-[#ff004d] border-4 border-white flex items-center justify-center text-white font-bold text-sm mb-2">
-                  P1
+        <RevealBlock>
+          <div
+            style={{
+              backgroundColor: "#0f0f1e",
+              border: "4px solid #ffffff",
+              padding: 32,
+              boxShadow: "8px 8px 0 #ff004d",
+              marginBottom: 24,
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.65rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: 16,
+              }}
+            >
+              ITEM RARITY TAGS
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {[
+                { label: "COMMON",    bg: "#5f574f", color: "#ffffff" },
+                { label: "UNCOMMON",  bg: "#00e436", color: "#ffffff" },
+                { label: "RARE",      bg: "#29adff", color: "#ffffff" },
+                { label: "EPIC",      bg: "#7e2553", color: "#ffffff" },
+                { label: "LEGENDARY", bg: "#ffec27", color: "#1a1c2c" },
+                { label: "GODLIKE",   bg: "#ff004d", color: "#ffffff" },
+              ].map(({ label, bg, color }) => (
+                <span
+                  key={label}
+                  style={{
+                    padding: "8px 14px",
+                    backgroundColor: bg,
+                    border: "4px solid #1a1c2c",
+                    color,
+                    fontSize: "0.65rem",
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    boxShadow: "2px 2px 0 #1a1c2c",
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </RevealBlock>
+
+        <RevealBlock delay={0.1}>
+          <div
+            style={{
+              backgroundColor: "#0f0f1e",
+              border: "4px solid #ffffff",
+              padding: 32,
+              boxShadow: "8px 8px 0 #00e436",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.65rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: 16,
+              }}
+            >
+              ACHIEVEMENT BADGES
+            </p>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 16,
+                alignItems: "center",
+              }}
+            >
+              {[
+                { label: "1",    bg: "#ff004d", size: 40 },
+                { label: "★",    bg: "#ffec27", size: 48, color: "#1a1c2c" },
+                { label: "PRO",  bg: "#00e436", size: 40 },
+                { label: "MAX",  bg: "#7e2553", size: 40 },
+                { label: "99",   bg: "#1a1c2c", border: "#29adff", size: 40, color: "#29adff" },
+                { label: "NEW!", bg: "#ffa300", size: 40, color: "#1a1c2c" },
+              ].map(({ label, bg, size, color = "#ffffff", border = "#ffffff" }) => (
+                <div
+                  key={label}
+                  style={{
+                    width: size,
+                    height: size,
+                    backgroundColor: bg,
+                    border: `4px solid ${border}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 900,
+                    fontSize: size > 44 ? "1.1rem" : "0.65rem",
+                    color,
+                    boxShadow: "2px 2px 0 #000000",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {label}
                 </div>
-                <span className="text-xs text-[#29adff] uppercase font-bold">SMALL</span>
-              </div>
-              {/* Medium */}
-              <div className="text-center">
-                <div className="w-14 h-14 bg-[#00e436] border-4 border-white flex items-center justify-center text-white font-bold text-lg mb-2">
-                  P2
-                </div>
-                <span className="text-xs text-[#29adff] uppercase font-bold">MEDIUM</span>
-              </div>
-              {/* Large */}
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#29adff] border-4 border-white flex items-center justify-center text-white font-bold text-2xl mb-2">
-                  P3
-                </div>
-                <span className="text-xs text-[#29adff] uppercase font-bold">LARGE</span>
-              </div>
-              {/* Group */}
-              <div className="text-center">
-                <div className="flex -space-x-2">
-                  <div className="w-12 h-12 bg-[#ff004d] border-4 border-white flex items-center justify-center text-white font-bold">A</div>
-                  <div className="w-12 h-12 bg-[#00e436] border-4 border-white flex items-center justify-center text-white font-bold">B</div>
-                  <div className="w-12 h-12 bg-[#ffec27] border-4 border-white flex items-center justify-center text-[#1a1c2c] font-bold">+2</div>
-                </div>
-                <span className="text-xs text-[#29adff] uppercase font-bold mt-2 block">PARTY</span>
+              ))}
+
+              {/* Group avatars */}
+              <div style={{ display: "flex", marginLeft: 8 }}>
+                {["A", "B", "C"].map((letter, i) => (
+                  <div
+                    key={letter}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      backgroundColor: ["#ff004d", "#00e436", "#ffec27"][i],
+                      border: "4px solid #ffffff",
+                      marginLeft: i === 0 ? 0 : -8,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      color: i === 2 ? "#1a1c2c" : "#ffffff",
+                      fontSize: "0.8rem",
+                      zIndex: 3 - i,
+                      position: "relative",
+                    }}
+                  >
+                    {letter}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-      </ShowcaseSection>
+        </RevealBlock>
+      </Section>
 
-      {/* Footer */}
-      <footer className="py-10 px-6 border-t-4 border-[#ff004d] bg-[#1a1c2c]">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Gamepad2 className="w-6 h-6 text-[#ff004d]" />
-            <span className="text-xl font-bold text-[#ffec27] uppercase tracking-wider">PIXEL ART</span>
-            <Gamepad2 className="w-6 h-6 text-[#ff004d]" />
+      {/* ================================================================
+          SECTION 10 — Footer with pixel art decoration
+      ================================================================ */}
+      <footer
+        style={{
+          backgroundColor: "#1a1c2c",
+          borderTop: "4px solid #ff004d",
+          padding: "48px 24px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 960,
+            margin: "0 auto",
+          }}
+        >
+          {/* Pixel sprite row */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 48,
+              marginBottom: 40,
+              flexWrap: "wrap",
+            }}
+          >
+            <PixelSprite pixels={STAR_PIXELS} pixelSize={6} />
+            <PixelSprite pixels={HEART_PIXELS} pixelSize={6} />
+            <PixelSprite pixels={COIN_PIXELS} pixelSize={6} />
           </div>
-          <p className="text-[#29adff] text-sm uppercase font-bold mb-2">
-            PART OF{" "}
-            <Link href="/" className="text-[#ffec27] hover:text-white transition-colors">
-              STYLEKIT
-            </Link>
-          </p>
-          <p className="text-[#29adff]/60 text-xs uppercase font-bold">
-            8-BIT RETRO GAMING AESTHETICS
-          </p>
+
+          {/* Pixel divider */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 2,
+              marginBottom: 32,
+              flexWrap: "wrap",
+            }}
+          >
+            {["#ff004d", "#ffa300", "#ffec27", "#00e436", "#29adff", "#7e2553", "#ff77a8", "#ff004d"].map(
+              (color, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 24,
+                    height: 8,
+                    backgroundColor: color,
+                    imageRendering: "pixelated",
+                  }}
+                />
+              )
+            )}
+          </div>
+
+          {/* Footer content */}
+          <div
+            style={{
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: "#ff004d",
+                  border: "3px solid #ffec27",
+                  boxShadow: "3px 3px 0 #ffec27",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 900,
+                  color: "#ffec27",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.2em",
+                  textShadow: "3px 3px 0 #ff004d",
+                }}
+              >
+                PIXEL ART
+              </span>
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: "#ff004d",
+                  border: "3px solid #ffec27",
+                  boxShadow: "3px 3px 0 #ffec27",
+                }}
+              />
+            </div>
+
+            <p
+              style={{
+                fontSize: "0.65rem",
+                color: "#29adff",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              PART OF{" "}
+              <Link
+                href="/"
+                style={{
+                  color: "#ffec27",
+                  textDecoration: "none",
+                  fontWeight: 900,
+                }}
+              >
+                STYLEKIT
+              </Link>
+            </p>
+
+            <p
+              style={{
+                fontSize: "0.6rem",
+                color: "#5f574f",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              8-BIT RETRO GAMING AESTHETICS — PICO-8 PALETTE
+            </p>
+
+            <p
+              style={{
+                fontSize: "0.6rem",
+                color: "#5f574f",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              © 2026 STYLEKIT. INSERT COIN TO CONTINUE.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
