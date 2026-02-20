@@ -34,6 +34,10 @@ export const masonryFlow: DesignStyle = {
     "保持列间距一致 gap-4 或 gap-6",
     "添加加载动画和懒加载图片",
     "响应式调整列数 columns-1 sm:columns-2 lg:columns-3",
+    "卡片使用 group 类，图片在 overflow-hidden 内 group-hover:scale-105 duration-700 ease-out（Confined Zoom，永不突破容器）",
+    "卡片悬浮：hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)]（Subtle Elevation，轻盈不打断瀑布流视觉连贯性）",
+    "操作按钮 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300（Overlay Reveal，遮罩抽屉浮现）",
+    "filter 筛选按钮 duration-200 确保即时响应（Action Snappiness）",
   ],
 
   dontList: [
@@ -42,46 +46,56 @@ export const masonryFlow: DesignStyle = {
     "禁止间距不统一",
     "禁止忽略图片加载状态",
     "禁止在小屏幕使用过多列数",
+    "禁止图片放大突破 overflow-hidden 容器（Confined Zoom 必须保持边界）",
+    "禁止卡片使用生硬的深色边框作为 hover 反馈（用阴影和位移代替）",
+    "禁止 hover 位移超过 -translate-y-1（过大的浮起会打断瀑布流视觉连贯性）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "瀑布流风格的简洁按钮",
+      description: "瀑布流风格的简洁按钮，带有 Subtle Elevation 和 Action Snappiness 效果",
       code: `<button className="
   px-5 py-2.5
   bg-zinc-900 text-white
   rounded-lg
   font-medium text-sm
+  shadow-sm
   hover:bg-zinc-700
-  transition-colors
+  hover:-translate-y-0.5
+  hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+  focus:outline-none focus:ring-2 focus:ring-zinc-900/30 focus:ring-offset-2
+  active:scale-[0.98] active:translate-y-0
+  transition-all duration-200
 ">
   Load More
 </button>`,
     },
     card: {
       name: "瀑布流卡片",
-      description: "自适应高度的瀑布流卡片",
+      description: "自适应高度瀑布流卡片，带内放大和覆盖操作浮现",
       code: `<div className="
-  break-inside-avoid
-  mb-4
-  bg-white
-  rounded-xl
-  overflow-hidden
+  group break-inside-avoid mb-6
+  bg-white rounded-2xl overflow-hidden
   shadow-sm
-  hover:shadow-lg
-  transition-shadow
-  group
+  hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+  hover:-translate-y-1
+  transition-all duration-300 ease-out
+  cursor-pointer
 ">
-  <div className="relative overflow-hidden">
+  <div className="relative overflow-hidden bg-zinc-100">
     <img
       src="/placeholder.jpg"
       alt="Card image"
-      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
     />
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <button className="absolute bottom-4 right-4 px-4 py-2 bg-white/90 backdrop-blur text-zinc-900 text-sm font-bold rounded-full translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out hover:bg-white">
+      Save
+    </button>
   </div>
   <div className="p-4">
-    <h3 className="font-semibold text-zinc-900 mb-1">
+    <h3 className="font-semibold text-zinc-900 mb-1 group-hover:text-blue-600 transition-colors">
       Card Title
     </h3>
     <p className="text-zinc-500 text-sm">
@@ -294,6 +308,13 @@ Card:
 Mobile (< 640px): columns-1
 Tablet (640px - 1024px): columns-2
 Desktop (1024px+): columns-3 or columns-4
+
+## Animation & Interaction Rules
+
+- Confined Zoom: 图片缩放必须发生在 overflow-hidden 容器内，推荐 group-hover:scale-105 + duration-700。
+- Subtle Elevation: hover 位移控制在 -translate-y-1，并用弥散阴影而非硬边框表达聚焦。
+- Overlay Reveal: 图片覆盖层和操作按钮使用 opacity + translate 的组合渐显，不改变卡片主尺寸。
+- Action Snappiness: 顶部筛选和分类按钮使用 duration-200，确保快速切换反馈。
 
 ## Self-Check
 

@@ -32,6 +32,10 @@ export const materialDesign: DesignStyle = {
     "保持 8dp 的间距网格",
     "使用 Roboto 字体",
     "添加有意义的微动效",
+    "精确双层海拔阴影：hover 时从 dp2 升至 dp8，shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] → shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)]（Elevation Physics）",
+    "使用 Material 标准缓动曲线 ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms]（Deceleration Curve）",
+    "按钮 active:scale-[0.98]（Pseudo-Ripple，手指下压的涟漪前奏）",
+    "卡片 hover:-translate-y-1 配合海拔阴影升级（Z 轴物理抬升感）",
   ],
 
   dontList: [
@@ -39,72 +43,76 @@ export const materialDesign: DesignStyle = {
     "禁止使用过于柔和的配色",
     "禁止省略交互反馈",
     "禁止打破 8dp 网格系统",
+    "禁止按钮缺少 active:scale-[0.98]（Material Pseudo-Ripple 是触感真实性的核心）",
+    "禁止使用非 Material 标准缓动曲线（必须使用 cubic-bezier(0.4,0,0.2,1)）",
+    "禁止卡片 hover 时阴影不变深（海拔变化是 Material 物理规则，不可省略）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Material 风格按钮",
+      description: "Material 风格按钮，强调海拔反馈与下压触感",
       code: `<button className="
-  px-6 py-3
-  bg-[#6200ee]
-  text-white font-medium uppercase tracking-wider text-sm
-  rounded-full
-  shadow-[0_3px_5px_-1px_rgba(0,0,0,0.2),0_6px_10px_0_rgba(0,0,0,0.14),0_1px_18px_0_rgba(0,0,0,0.12)]
-  hover:shadow-[0_5px_5px_-3px_rgba(0,0,0,0.2),0_8px_10px_1px_rgba(0,0,0,0.14),0_3px_14px_2px_rgba(0,0,0,0.12)]
-  hover:bg-[#7c4dff]
-  active:bg-[#651fff]
-  transition-all duration-200
-  relative overflow-hidden
+  relative px-6 py-2.5
+  bg-[#6200ee] text-white font-medium uppercase tracking-[0.08em] text-sm
+  rounded
+  shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),0_2px_2px_0_rgba(0,0,0,0.14),0_1px_5px_0_rgba(0,0,0,0.12)]
+  hover:shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14),0_1px_10px_0_rgba(0,0,0,0.12)]
+  hover:bg-[#7528e5]
+  active:shadow-[0_5px_5px_-3px_rgba(0,0,0,0.2),0_8px_10px_1px_rgba(0,0,0,0.14),0_3px_14px_2px_rgba(0,0,0,0.12)]
+  active:scale-[0.98]
+  transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+  overflow-hidden
 ">
-  Click Me
+  <span className="relative z-10">Submit</span>
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Material 风格卡片",
+      description: "Material 风格卡片，遵循 Elevation Physics 抬升规则",
       code: `<div className="
-  bg-white
-  rounded-xl
+  bg-white rounded-xl
   shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)]
   hover:shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)]
-  transition-shadow duration-300
-  overflow-hidden
+  hover:-translate-y-1
+  transition-all duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+  overflow-hidden cursor-pointer
 ">
-  <div className="h-40 bg-gradient-to-br from-[#6200ee] to-[#b388ff]" />
-  <div className="p-6">
-    <h3 className="text-xl font-medium text-gray-900 mb-2">
-      Material Card
+  <div className="h-48 bg-gradient-to-br from-[#6200ee] to-[#b388ff]" />
+  <div className="p-4">
+    <h3 className="text-xl font-medium text-black/85 mb-2 leading-tight">
+      Material Surface
     </h3>
-    <p className="text-gray-600">
-      Surfaces that cast shadows based on elevation.
+    <p className="text-black/60 text-sm leading-relaxed">
+      Elements express their material nature through elevation and shadow.
     </p>
   </div>
 </div>`,
     },
     input: {
       name: "输入框",
-      description: "Material 风格输入框",
-      code: `<div className="relative">
+      description: "Material 风格输入框，带浮动标签与标准曲线聚焦反馈",
+      code: `<div className="relative pt-5">
   <input
     type="text"
     placeholder=" "
     className="
-      peer w-full px-4 pt-5 pb-2
-      bg-gray-100
-      border-0 border-b-2 border-gray-300
-      rounded-t-lg
-      text-gray-900
-      focus:outline-none focus:border-[#6200ee]
-      focus:bg-gray-50
-      transition-all
+      peer w-full px-4 py-3
+      bg-gray-50
+      border-b-2 border-gray-400
+      rounded-t-md
+      text-black/85
+      focus:outline-none
+      focus:border-[#6200ee]
+      focus:bg-gray-100
+      transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]
     "
   />
   <label className="
-    absolute left-4 top-4
-    text-gray-500 text-sm
-    transition-all duration-200
-    peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+    absolute left-4 top-8
+    text-black/60 text-base
+    transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+    pointer-events-none
     peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#6200ee]
     peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs
   ">
@@ -219,7 +227,14 @@ export const materialDesign: DesignStyle = {
 ## 间距
 
 - 基于 8dp 网格
-- p-2 (8px), p-4 (16px), p-6 (24px), p-8 (32px)`,
+- p-2 (8px), p-4 (16px), p-6 (24px), p-8 (32px)
+
+## Animation & Interaction Rules
+
+- Elevation Physics: hover 时从低海拔阴影抬升到高海拔阴影，可配合轻微 -translate-y-1 强化 Z 轴感。
+- Pseudo-Ripple: active 状态至少包含 active:scale-[0.98] 或明暗下压反馈，模拟触控涟漪前奏。
+- Deceleration Curve: 交互过渡优先使用 ease-[cubic-bezier(0.4,0,0.2,1)]，时长 200-300ms。
+- Input Float: 输入框聚焦时标签必须平滑上浮并缩小，边框高亮同步过渡。`,
 
   examplePrompts: [
     {
