@@ -34,6 +34,10 @@ export const holyGrailLayout: DesignStyle = {
     "右侧边栏固定宽度 w-64 或 w-72",
     "主内容在源码中先于侧边栏",
     "响应式折叠侧边栏",
+    "所有按钮 active:scale-[0.98] active:translate-y-0 + focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2",
+    "内容卡片 hover:-translate-y-0.5 hover:shadow-md（轻量上浮，不干扰阅读）",
+    "侧边导航 hover 时左边框高亮 hover:border-l-2 hover:border-[#3b82f6]（无垂直位移，保持锚定感）",
+    "所有动画 duration-150 ease-out（生产力工具要求响应利落）",
   ],
 
   dontList: [
@@ -42,32 +46,41 @@ export const holyGrailLayout: DesignStyle = {
     "禁止忽略响应式折叠",
     "禁止侧边栏宽度随内容变化",
     "禁止页头页脚不固定",
+    "禁止卡片大幅位移动画（阅读场景下大幅运动破坏专注）",
+    "禁止动画 duration 超过 200ms（生产力工具应当响应利落）",
+    "禁止按钮缺少 active:scale-[0.98]（无触觉确认）",
+    "禁止侧边导航 hover 时有垂直位移（锚定感要求无移动）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "圣杯布局中的通用按钮",
+      description: "圣杯布局三态按钮：hover:-translate-y-0.5 轻量浮起，active:scale-[0.98] 触觉按压，focus:ring-2 WCAG 焦点环，duration-150 crisp 响应",
       code: `<button className="
   px-4 py-2
   bg-[#3b82f6] text-white
   rounded-lg
   font-medium text-sm
-  hover:bg-[#2563eb]
-  transition-colors
+  hover:bg-[#2563eb] hover:-translate-y-0.5
+  hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+  focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+  active:scale-[0.98] active:bg-[#1d4ed8] active:translate-y-0 active:shadow-none
+  transition-all duration-150 ease-out
 ">
   Action
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "主内容区的内容卡片",
+      description: "主内容区内容卡片：hover:-translate-y-0.5 轻量上浮 + hover:shadow-md（不干扰阅读的最小运动），duration-150 利落响应",
       code: `<div className="
   p-6
   bg-white
   rounded-xl
   shadow-sm
   border border-gray-100
+  hover:-translate-y-0.5 hover:shadow-md
+  transition-all duration-150 ease-out
 ">
   <h3 className="text-lg font-semibold text-[#1e293b] mb-2">
     Content Card
@@ -119,10 +132,10 @@ export const holyGrailLayout: DesignStyle = {
         <a href="#" className="block px-3 py-2 text-sm bg-[#3b82f6]/10 text-[#3b82f6] rounded-lg font-medium">
           Dashboard
         </a>
-        <a href="#" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+        <a href="#" className="block px-3 py-2 text-sm text-gray-600 hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50 rounded-lg transition-all duration-150">
           Projects
         </a>
-        <a href="#" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+        <a href="#" className="block px-3 py-2 text-sm text-gray-600 hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50 rounded-lg transition-all duration-150">
           Settings
         </a>
       </nav>
@@ -264,6 +277,27 @@ export const holyGrailLayout: DesignStyle = {
 大屏幕（>1024px）：完整三列
 中等屏幕（768-1024px）：隐藏右侧边栏
 小屏幕（<768px）：所有列垂直堆叠
+
+## Animation & Interaction Rules
+
+### Content Supremacy (Card Float)
+- Cards in main content: hover:-translate-y-0.5 hover:shadow-md — minimal, non-distracting float
+- NEVER use hover:-translate-y-2 or larger (breaks reading focus)
+- Transition: duration-150 ease-out (crisp productivity tool rhythm)
+
+### Navigation Anchoring (Sidebar Links)
+- Inactive nav items: hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50 — left-border highlight ONLY
+- NEVER add vertical displacement to sidebar nav (anchoring feel requires stability)
+- Active item: bg-[#3b82f6]/10 text-[#3b82f6] — always-visible active state
+
+### Crisp Performance (Duration Standard)
+- All transitions: duration-150 ease-out — productivity tools must feel instant
+- NEVER exceed duration-200 for any interactive element
+
+### Button Physics
+- Hover: hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+- Active: active:scale-[0.98] active:translate-y-0 active:shadow-none — tactile micropress
+- Focus: focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 (WCAG 2.1 AA)
 
 ## 自检
 

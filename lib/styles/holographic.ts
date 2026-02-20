@@ -43,6 +43,10 @@ export const holographic: DesignStyle = {
     "Add prismatic box-shadow with multiple colored glows",
     "Include holographic sticker badges with full spectrum gradients",
     "Use dark purple/navy backgrounds (#0a0a1f, #1a0b2e) to make holographic elements pop",
+    "Spectrum Shift: use bg-[length:200%_auto] on gradient buttons + hover:bg-right for lateral color flow (simulates angle-dependent holographic foil)",
+    "Prismatic Glow: buttons hover to multi-color shadow hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)]",
+    "Buttons must have active:scale-95 + focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]",
+    "Card gradient text uses bg-[length:200%_auto] + group-hover:bg-right for synchronized color shift",
   ],
 
   dontList: [
@@ -51,38 +55,55 @@ export const holographic: DesignStyle = {
     "Don't use muted or desaturated colors",
     "Don't use sharp corners without any glow",
     "Don't use more than 2 non-gradient elements in a row",
+    "Don't use hover:scale-105 alone — always combine with gradient shift (hover:bg-right) and prismatic shadow",
+    "Don't omit active:scale-95 from buttons (no tactile confirmation)",
+    "Don't use focus:ring without focus:ring-offset-[#0a0a1f] (ring invisible on dark cosmic background)",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "全息渐变风格按钮，棱镜光效悬浮反馈",
+      description: "全息渐变按钮：bg-[length:200%_auto] + hover:bg-right 产生横向光谱位移（模拟全息箔随角度变色），棱镜双色光晕，active:scale-95 果冻按压，focus:ring-offset-[#0a0a1f]",
       code: `<button className="
-  px-6 py-3 rounded-xl font-medium text-sm
-  transition-all duration-500 relative overflow-hidden
-  bg-gradient-to-r from-[#ff0080] via-[#7928ca] to-[#00d4ff]
+  px-8 py-3.5 rounded-xl font-bold tracking-wide
   text-white
+  bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff]
+  bg-[length:200%_auto]
   shadow-[0_0_20px_rgba(147,51,234,0.5)]
-  hover:shadow-[0_0_40px_rgba(147,51,234,0.7)]
-  hover:scale-105
+  hover:bg-right
+  hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)]
+  hover:-translate-y-1
+  focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]
+  active:scale-95 active:translate-y-0
+  active:shadow-[0_0_10px_rgba(147,51,234,0.5)]
+  transition-all duration-500 ease-out
 ">
-  Get Started
+  Activate Portal
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "全息风格半透明玻璃卡片，棱镜边框光晕",
+      description: "全息玻璃卡片：group 类触发标题 Spectrum Shift（bg-[length:200%_auto] group-hover:bg-right），hover:-translate-y-2 悬浮配棱镜双色光晕",
       code: `<div className="
+  group
   bg-white/5 backdrop-blur-xl rounded-2xl p-6
   border border-white/10 shadow-xl
-  hover:border-purple-400/30
+  hover:bg-white/10 hover:border-purple-400/40
+  hover:-translate-y-2
   hover:shadow-[0_0_30px_rgba(147,51,234,0.3)]
-  transition-all duration-300
+  transition-all duration-300 ease-out
+  cursor-pointer
 ">
-  <h3 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff] mb-2">
+  <h3 className="
+    text-lg font-bold mb-2
+    text-transparent bg-clip-text
+    bg-gradient-to-r from-[#ff0080] via-[#ffd700] to-[#00d4ff]
+    bg-[length:200%_auto] group-hover:bg-right
+    transition-[background-position] duration-500
+  ">
     Holographic Card
   </h3>
-  <p className="text-white/60 text-sm">
+  <p className="text-white/60 text-sm group-hover:text-white/75 transition-colors duration-300">
     Prismatic glass panel with rainbow border glow
   </p>
 </div>`,
@@ -224,7 +245,34 @@ export const holographic: DesignStyle = {
 - All interactive elements should have prismatic box-shadow on hover
 - Never use light/white backgrounds
 - Never use flat solid colors without gradient treatment
-- Never use muted or desaturated color palettes`,
+- Never use muted or desaturated color palettes
+
+## Animation & Interaction Rules
+
+### Spectrum Shift (Gradient Slide)
+- Apply bg-[length:200%_auto] to all gradient buttons and card headings
+- On hover: hover:bg-right — gradient slides laterally, simulating angle-dependent holographic foil color shift
+- Transition: transition-[background-position] duration-500 (smooth spectrum sweep)
+- NEVER use hover:bg-right without bg-[length:200%_auto] (no movement without oversized gradient)
+
+### Prismatic Glow (Multi-Color Shadow)
+- Button hover: hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)] — dual cyan+magenta glows
+- Card hover: hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] — purple prism glow
+- Resting shadow always present: shadow-[0_0_20px_rgba(147,51,234,0.5)]
+
+### Liquid Glass (Card Float)
+- Always use group class on card containers
+- Cards: hover:-translate-y-2 hover:bg-white/10 hover:border-purple-400/40
+- Card headings use Spectrum Shift synchronized with card hover via group-hover:bg-right
+
+### Jelly Press (Active State)
+- All buttons: active:scale-95 active:translate-y-0 — jelly press confirms interaction
+- Focus: focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]
+- ring-offset-[#0a0a1f] mandatory — ring invisible on dark cosmic background without it
+
+### Duration
+- Button transitions: duration-500 ease-out (slow = luxurious holographic feel)
+- Card transitions: duration-300 ease-out`,
 
   examplePrompts: [
     {

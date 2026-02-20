@@ -34,6 +34,10 @@ export const heroFullscreen: DesignStyle = {
     "提供滚动提示引导用户往下看",
     "视频背景静音自动播放",
     "提供降级方案（图片替代视频）",
+    "主 CTA 按钮 hover:-translate-y-1 + hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]（重力浮起感）",
+    "特性卡片使用 group 类 + hover:-translate-y-2 + hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]",
+    "图标容器 group-hover:scale-110 微交互",
+    "所有按钮 active:scale-[0.98] active:translate-y-0 + focus:ring-2 focus:ring-white/80 focus:ring-offset-2",
   ],
 
   dontList: [
@@ -42,31 +46,42 @@ export const heroFullscreen: DesignStyle = {
     "禁止忽略移动端的适配",
     "禁止内容占据全部空间无留白",
     "禁止视频有声音自动播放",
+    "禁止按钮缺少 active:scale-[0.98]（全屏背景下按钮无触觉确认感极差）",
+    "禁止卡片无 group 类（图标 group-hover:scale-110 微交互依赖 group）",
   ],
 
   components: {
     button: {
       name: "英雄区按钮",
-      description: "全屏英雄区中的 CTA 按钮",
+      description: "全屏英雄区 CTA 按钮：重力浮起（hover:-translate-y-1）+ 阴影爆破，active:scale-[0.98] 触觉按压，focus 环在深色背景下可见",
       code: `<div className="flex flex-col sm:flex-row gap-4">
+  {/* Primary CTA — gravity float + shadow burst */}
   <button className="
     px-8 py-4
     bg-white text-black
     font-semibold text-lg
     rounded-full
-    hover:bg-white/90
-    transition-colors
+    shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+    hover:bg-white/95 hover:-translate-y-1
+    hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+    focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+    active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+    transition-all duration-200 ease-out
   ">
     Get Started
   </button>
+  {/* Ghost CTA */}
   <button className="
     px-8 py-4
     bg-transparent text-white
     font-semibold text-lg
     rounded-full
     border-2 border-white
-    hover:bg-white/10
-    transition-colors
+    hover:bg-white/15 hover:-translate-y-1
+    hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)]
+    focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black/50
+    active:scale-[0.98] active:translate-y-0
+    transition-all duration-200 ease-out
   ">
     Learn More
   </button>
@@ -74,22 +89,31 @@ export const heroFullscreen: DesignStyle = {
     },
     card: {
       name: "特性卡片",
-      description: "英雄区下方的特性展示卡片",
+      description: "英雄区特性卡片：group 类触发图标 group-hover:scale-110 微交互，hover:-translate-y-2 重力上浮配阴影爆破",
       code: `<div className="
+  group
   p-8
   bg-white/10 backdrop-blur-sm
   rounded-2xl
   border border-white/20
+  hover:bg-white/15 hover:border-white/30
+  hover:-translate-y-2
+  hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]
+  transition-all duration-300 ease-out
+  cursor-pointer
 ">
-  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+  <div className="
+    w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4
+    group-hover:scale-110 transition-transform duration-300 ease-out
+  ">
     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   </div>
-  <h3 className="text-xl font-semibold text-white mb-2">
+  <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-white/95 transition-colors duration-200">
     Feature Title
   </h3>
-  <p className="text-white/70">
+  <p className="text-white/70 group-hover:text-white/85 transition-colors duration-200">
     Brief description of the feature.
   </p>
 </div>`,
@@ -374,6 +398,27 @@ Desktop:
 - Full visual impact
 - Side-by-side buttons
 - All animations enabled
+
+## Animation & Interaction Rules
+
+### Gravity Focus (CTA Button)
+- Resting: shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+- Hover: hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] — gravity float with shadow burst
+- Active: active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] — tactile press
+- Focus: focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+
+### Floating Glass (Feature Cards)
+- Always use group class on card container
+- Hover: hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] — dramatic float
+- Icon container: group-hover:scale-110 transition-transform duration-300 ease-out
+
+### Text Reveal on Hover
+- h3: group-hover:text-white/95 transition-colors duration-200
+- p: group-hover:text-white/85 transition-colors duration-200
+
+### Tactile Confirmation
+- All buttons: active:scale-[0.98] — required for perceived responsiveness on dark overlay
+- Duration: 200ms ease-out for all interactive elements
 
 ## Self-Check
 

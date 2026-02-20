@@ -43,6 +43,10 @@ export const impressionistOil: DesignStyle = {
     "添加 radial-gradient 光斑叠加模拟斑驳光影",
     "采用粗体衬线字体 font-serif font-bold 表达艺术感",
     "边角使用 rounded-lg 保持柔和的画布边缘",
+    "按钮 hover:brightness-110 hover:contrast-125（颜料在阳光下闪耀）",
+    "按钮 active:translate-y-[3px]（与 4px 实色阴影配合产生按压陷入感）",
+    "卡片使用 group 类，笔触底划线从 w-16 扩展至 group-hover:w-24（duration-500）",
+    "focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]",
   ],
 
   dontList: [
@@ -52,21 +56,25 @@ export const impressionistOil: DesignStyle = {
     "禁止使用等宽字体（font-mono）",
     "禁止使用大写文字（uppercase）",
     "禁止使用像素级精确的偏移阴影（shadow-[Npx_Npx_0px]）",
+    "禁止按钮缺少 active:translate-y-[3px]（实色阴影不做陷入感 = 按钮失真）",
+    "禁止 focus:ring 缺少 focus:ring-offset-[#f5f0e1]（画布色背景下焦点环需与元素分离）",
+    "禁止动画 duration 低于 300ms（印象派节奏是缓慢流动的）",
   ],
 
   components: {
     button: {
       name: "按钮",
       description:
-        "油画印象派颜料管按钮，使用 linear-gradient 填充和 layered box-shadow 厚涂阴影",
+        "油画印象派颜料管按钮：hover:brightness-110 hover:contrast-125 模拟颜料在阳光下闪耀，active:translate-y-[3px] 与 4px 实色阴影配合产生陷入感，focus:ring-offset-[#f5f0e1] 画布色底",
       code: `<button className="
   px-8 py-3.5
   text-[#2c3e50]
   font-serif font-bold tracking-wide
   rounded-lg
-  hover:brightness-110
-  active:translate-y-[2px]
-  transition-all duration-300
+  hover:brightness-110 hover:contrast-125 hover:-translate-y-0.5
+  focus:outline-none focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
+  active:translate-y-[3px]
+  transition-all duration-300 ease-out
 "
   style={{
     background: "linear-gradient(135deg, #e8a87c 0%, #daa070 100%)",
@@ -79,12 +87,14 @@ export const impressionistOil: DesignStyle = {
     card: {
       name: "卡片",
       description:
-        "画布质感卡片，repeating-linear-gradient 笔触纹理和 radial-gradient 斑驳光斑",
+        "画布质感卡片：group 类触发笔触底划线从 w-16 扩展至 group-hover:w-24（duration-500，Brushstroke Reveal），hover:-translate-y-0.5 + impasto 阴影加深",
       code: `<div className="
+  group
   relative p-8
   bg-[#f5f0e1]
   border border-[#e8a87c]/25
   rounded-lg
+  hover:-translate-y-0.5
   transition-all duration-300
 "
   style={{
@@ -95,6 +105,8 @@ export const impressionistOil: DesignStyle = {
   <h3 className="text-2xl font-serif font-bold text-[#2c3e50] mb-3">
     Impression
   </h3>
+  {/* Brushstroke Reveal underline */}
+  <div className="w-16 h-[3px] bg-[#e8a87c] rounded-full mb-3 group-hover:w-24 transition-all duration-500 ease-out" />
   <p className="text-[#2c3e50]/50 font-serif leading-relaxed">
     Light dances across the canvas at golden hour
   </p>
@@ -280,7 +292,35 @@ Primary:
 
 1. Brushstroke texture: repeating-linear-gradient at 25-40deg angles with 0.02 opacity color stops
 2. Dappled light: multiple radial-gradient(circle Npx at X% Y%, rgba(...,0.05-0.08)) scattered across surfaces
-3. Impasto shadows: layered box-shadow with solid color base layer + blurred spread layer`,
+3. Impasto shadows: layered box-shadow with solid color base layer + blurred spread layer
+
+## Animation & Interaction Rules
+
+### Dancing Light (Button Hover)
+- hover:brightness-110 hover:contrast-125 — simulates sunlight illuminating pigment
+- Combined with hover:-translate-y-0.5 for subtle lift
+- NEVER use flat color hover (defeats the impressionist light-play concept)
+
+### Impasto Depression (Active Press)
+- active:translate-y-[3px] — button sinks into the 4px solid vermillion shadow layer
+- NEVER use active:scale-* alone (scaling doesn't simulate physical impasto depth)
+- The translate must match or nearly match the solid shadow offset (currently 4px)
+
+### Brushstroke Reveal (Card Underline)
+- Card heading underline: w-16 h-[3px] bg-[#e8a87c] rounded-full
+- On group-hover: group-hover:w-24 — brushstroke extends like paint spreading
+- Transition: duration-500 ease-out (slow, painterly rhythm)
+- Always use group class on card container
+
+### Slow Easing Standard
+- Minimum duration: 300ms (impressionist rhythm is slow and flowing)
+- Button transitions: duration-300 ease-out
+- Underline reveals: duration-500 ease-out
+- NEVER use duration < 300ms
+
+### Focus Ring
+- focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
+- ring-offset-[#f5f0e1] mandatory — canvas cream background needs matching offset`,
 
   examplePrompts: [
     {

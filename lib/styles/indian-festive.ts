@@ -38,6 +38,11 @@ export const indianFestive: DesignStyle = {
     "添加金色 box-shadow 光晕效果 shadow-[0_0_20px_rgba(212,175,55,0.3)]",
     "使用渐变背景 bg-gradient-to-r 增强色彩表现力",
     "标题使用粗体和较宽字距 font-bold tracking-wide",
+    "按钮 hover 时金色光晕爆破：hover:shadow-[0_0_35px_rgba(212,175,55,0.8)]",
+    "按钮 hover:-translate-y-1 hover:scale-[1.03]（节日活跃的向上欢腾感）",
+    "按钮 active:scale-95 active:translate-y-0 active:shadow-[0_0_16px_rgba(212,175,55,0.4)]",
+    "卡片使用 group 类，颜色横线从 w-12 扩展至 group-hover:w-full（duration-500，礼带展开）",
+    "focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#fff8e7]",
   ],
 
   dontList: [
@@ -48,12 +53,14 @@ export const indianFestive: DesignStyle = {
     "禁止使用过于科技感的霓虹蓝绿 text-[#00ffff]",
     "禁止省略金色装饰元素",
     "禁止使用单色方案，应当多色叠加",
+    "禁止按钮缺少 active:scale-95（节日按钮必须有欢腾的弹跳感）",
+    "禁止 focus:ring 缺少 focus:ring-offset-[#fff8e7]（象牙白背景上焦点环需与元素分离）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "印度节庆风格按钮，金色边框与暖色光晕",
+      description: "印度节庆按钮：hover 时金色光晕爆破（shadow 35px）+ hover:-translate-y-1 hover:scale-[1.03] 向上欢腾，active:scale-95 弹跳，focus:ring-[#d4af37] focus:ring-offset-[#fff8e7]",
       code: `<button className="
   px-8 py-4
   bg-[#e63946] text-white
@@ -61,25 +68,34 @@ export const indianFestive: DesignStyle = {
   rounded-xl
   border-2 border-[#d4af37]
   shadow-[0_0_16px_rgba(212,175,55,0.4)]
-  hover:shadow-[0_0_28px_rgba(212,175,55,0.6)]
-  hover:scale-105
-  transition-all duration-300
+  hover:shadow-[0_0_35px_rgba(212,175,55,0.8)]
+  hover:-translate-y-1 hover:scale-[1.03]
+  focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#fff8e7]
+  active:scale-95 active:translate-y-0
+  active:shadow-[0_0_16px_rgba(212,175,55,0.4)]
+  transition-all duration-300 ease-out
 ">
   Celebrate
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "印度节庆风格卡片，金色边框与宝石色装饰",
+      description: "印度节庆卡片：group 类触发礼带颜色横线从 w-12 展开至 group-hover:w-full（duration-500，Ceremonial Unfurling），标题 group-hover 朱红切换，悬浮时金色光晕爆破",
       code: `<div className="
+  group
   p-8
   bg-[#fff8e7]
   rounded-xl
   border-2 border-[#d4af37]/50
   shadow-[0_4px_20px_rgba(212,175,55,0.2)]
+  hover:-translate-y-2 hover:scale-[1.02]
+  hover:shadow-[0_15px_40px_rgba(230,57,70,0.2),0_0_30px_rgba(212,175,55,0.3)]
+  transition-all duration-300 ease-out
+  cursor-pointer
 ">
-  <div className="w-12 h-1 bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37] rounded-full mb-4" />
-  <h3 className="text-2xl font-bold text-[#7b2d8e] mb-3">
+  {/* Ceremonial Unfurling color strip */}
+  <div className="w-12 h-1 bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37] rounded-full mb-4 group-hover:w-full transition-all duration-500 ease-out" />
+  <h3 className="text-2xl font-bold text-[#7b2d8e] mb-3 group-hover:text-[#e63946] transition-colors duration-300">
     Festival of Lights
   </h3>
   <p className="text-[#7b2d8e]/70">
@@ -231,7 +247,34 @@ Primary:
 - Gold border and glow effects
 - Multi-color gradient strips
 - Warm layered backgrounds
-- Festive light/lamp motifs`,
+- Festive light/lamp motifs
+
+## Animation & Interaction Rules
+
+### Grand Illumination (Button Glow)
+- Resting: shadow-[0_0_16px_rgba(212,175,55,0.4)] — always-on gold aura
+- Hover: hover:shadow-[0_0_35px_rgba(212,175,55,0.8)] — glow explodes to 35px (diya lamp igniting)
+- NEVER use flat shadow on interactive elements
+
+### Joyful Flourish (Button Motion)
+- hover:-translate-y-1 hover:scale-[1.03] — lift AND grow simultaneously (lamp rising + fireworks ascending)
+- active:scale-95 active:translate-y-0 — joyful bounce-back
+- active:shadow-[0_0_16px_rgba(212,175,55,0.4)] — glow settles back to resting
+
+### Golden Touch (Focus)
+- focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#fff8e7]
+- ring-offset-[#fff8e7] mandatory — gold ring must separate from ivory background
+
+### Ceremonial Unfurling (Card Color Strip)
+- Resting: w-12 h-1 bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37]
+- On group-hover: group-hover:w-full — ribbon unfurls across full card width (gift unwrapping)
+- Transition: duration-500 ease-out
+- Always use group class on card container
+
+### Card Hover
+- hover:-translate-y-2 hover:scale-[1.02] — festive ascension
+- hover:shadow-[0_15px_40px_rgba(230,57,70,0.2),0_0_30px_rgba(212,175,55,0.3)] — dual jewel-tone glow
+- Heading: group-hover:text-[#e63946] transition-colors duration-300 — purple to vermillion shift`,
 
   examplePrompts: [
     {
