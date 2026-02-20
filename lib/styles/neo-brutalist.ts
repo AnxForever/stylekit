@@ -77,10 +77,13 @@ export const neoBrutalist: DesignStyle = {
     "使用纯黑边框 border-black border-2 md:border-4",
     "使用硬边缘阴影 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
     "保持直角 rounded-none",
-    "hover 时阴影消失 + 位移 hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]",
     "使用高对比度配色（黑白为主 + 鲜艳强调色）",
     "标题使用 font-black，正文使用 font-mono",
     "所有样式包含移动端和桌面端响应式值",
+    "按钮 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none，位移量必须等于原始阴影像素值（Physical Crushing，实体完全压平）",
+    "Hover 时瞬间切换高对比背景色（如 hover:bg-[#ffff00]）并增大阴影（Brutal Snap，禁止使用渐变或 opacity 过渡）",
+    "卡片 hover 使用 ease-out duration-150，保持生猛的碰撞感",
+    "按钮 hover 时增大阴影并向左上角偏移：hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]",
   ],
 
   dontList: [
@@ -90,45 +93,46 @@ export const neoBrutalist: DesignStyle = {
     "禁止使用灰色边框 border-gray-*, border-slate-*",
     "禁止使用淡入淡出的半透明效果",
     "禁止使用 rounded-full（装饰圆除外）",
+    "禁止按钮 active 状态位移量小于原始阴影像素值（未完全压平，失去碾压感）",
+    "禁止 hover 背景色切换使用渐变或 opacity 过渡（必须是硬切，duration-150 ease-out）",
+    "禁止按钮 hover 时仅用位移替代阴影消失（hover 应增大阴影强调力量，active 才是完全压平）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Neo-Brutalist 风格的按钮，带有硬边缘阴影和 hover 位移效果",
+      description: "Neo-Brutalist 风格的按钮，Physical Crushing 完全压平 + Brutal Snap 生猛反馈",
       code: `<button className="
-  bg-[#ff006e] text-white font-black
-  px-4 py-2 md:px-6 md:py-3
-  border-2 md:border-4 border-black
-  shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-  md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
-  hover:shadow-none
-  hover:translate-x-[2px] hover:translate-y-[2px]
-  md:hover:translate-x-[4px] md:hover:translate-y-[4px]
-  transition-all duration-200
-  text-sm md:text-base
+  bg-[#ff006e] text-white font-black uppercase text-lg
+  px-8 py-4
+  border-4 border-black
+  shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]
+  hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]
+  hover:-translate-y-1 hover:-translate-x-1
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none
+  transition-all duration-150 ease-out
 ">
-  点击我
+  Click Hard
 </button>`,
       preview: `<button class="bg-[#ff006e] text-white font-black px-6 py-3 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">点击我</button>`,
     },
     card: {
       name: "卡片",
-      description: "带有黑色边框和硬阴影的卡片组件",
+      description: "带有黑色边框和硬阴影的卡片组件，Brutal Snap 亮黄背景闪击 + Physical Crushing 左上偏移",
       code: `<div className="
-  bg-white
-  border-2 md:border-4 border-black
-  shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-  md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
-  hover:shadow-[4px_4px_0px_0px_rgba(255,0,110,1)]
-  md:hover:shadow-[8px_8px_0px_0px_rgba(255,0,110,1)]
-  hover:-translate-y-1 md:hover:-translate-y-2
-  transition-all duration-300
-  p-4 md:p-6
+  group bg-white
+  border-4 border-black
+  shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+  hover:shadow-[12px_12px_0px_0px_rgba(255,0,110,1)]
+  hover:-translate-y-1 hover:-translate-x-1
+  hover:bg-[#ffff00]
+  transition-all duration-150 ease-out
+  p-8 cursor-pointer
 ">
-  <h3 className="font-black text-lg md:text-xl mb-2">卡片标题</h3>
-  <p className="font-mono text-sm md:text-base text-gray-700">
-    卡片内容描述文字
+  <h3 className="font-black text-xl mb-2 group-hover:tracking-wider transition-all duration-150">Neo-Brutalism</h3>
+  <p className="font-mono text-base text-gray-700">
+    Raw, bold, unapologetic design.
   </p>
 </div>`,
     },
@@ -288,13 +292,12 @@ body {
 - 字号：text-sm md:text-base, text-xl md:text-3xl
 - 移动端约为桌面端的 50%
 
-## 交互效果
+## Animation & Interaction Rules
 
-按钮 hover 必须使用：
-shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all
-
-卡片 hover 必须使用：
-shadow 变为彩色 + hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-300
+- Physical Crushing: 按钮 active:translate-x-[Npx] active:translate-y-[Npx] active:shadow-none，N 必须等于原始阴影像素值，实现实体完全压平的碾压感。
+- Brutal Snap: hover 时瞬间切换高对比背景色（如 hover:bg-[#ffff00]），duration-150 ease-out，禁止渐变或 opacity 过渡——必须是硬切。
+- Zero Rounding Easing: 所有过渡 ease-out duration-150，保持生猛的碰撞感，拒绝柔化。
+- Heavy Focus: 卡片 hover 时增大阴影并换为彩色（rgba(255,0,110,1)），同时背景变色，强调物理冲击。
 
 ## 自检
 
@@ -302,7 +305,7 @@ shadow 变为彩色 + hover:-translate-y-1 md:hover:-translate-y-2 transition-al
 1. 没有圆角
 2. 没有模糊阴影
 3. 边框是纯黑
-4. hover 有位移
+4. active 位移量等于阴影像素值
 5. 有 md: 响应式前缀`,
 
   examplePrompts: [

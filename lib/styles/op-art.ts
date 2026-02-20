@@ -36,6 +36,10 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
     "保持大面积留白平衡光学图案的视觉强度",
     "使用 border-2 border-black 强调几何线条",
     "使用 rounded-none 保持锐利的几何边缘",
+    "卡片使用 group 类，hover 时内部同心圆装饰触发旋转：group-hover:animate-[spin_4s_linear_infinite]（Illusion Generation，静止几何变为动态错觉）",
+    "hover 时内容区整体黑白反转：hover:bg-black hover:text-white transition-colors duration-150（Harsh Strobe，极端对撞）",
+    "标题在 group-hover 时施加透视扭曲：group-hover:-skew-x-12 transition-transform duration-150（Warp & Distort，空间错觉）",
+    "active 状态瞬间切换为警示红：active:bg-[#ff3300] active:border-[#ff3300]（Brutal Action，刺目光爆）",
   ],
 
   dontList: [
@@ -46,57 +50,61 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
     "禁止使用衬线字体 font-serif",
     "禁止使用超过两种强调色，保持黑白为主体",
     "禁止使用半透明或模糊效果 opacity-50 backdrop-blur",
+    "禁止 hover 时使用平滑渐变过渡（必须是黑白硬切，duration-100 或 duration-150）",
+    "禁止光学图案在 hover 时保持静止（旋转或动效是制造错觉的来源，静止则丧失 Op Art 精髓）",
+    "禁止 active 状态使用平滑过渡颜色（警示红应为瞬间闪现，非渐变）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "欧普艺术风格按钮",
+      description: "欧普艺术风格按钮，Harsh Strobe 黑白硬切 + Brutal Action 警示红闪爆",
       code: `<button className="
-  relative px-10 py-4
+  group relative px-12 py-4
   bg-black text-white
-  font-sans font-medium uppercase tracking-[0.3em] text-sm
+  font-sans font-black uppercase tracking-[0.4em] text-sm
   rounded-none
-  border-2 border-black
+  border-4 border-black
   hover:bg-white hover:text-black
   active:bg-[#ff3300] active:text-white active:border-[#ff3300]
-  transition-colors duration-200
-  group
+  transition-colors duration-100
+  overflow-hidden
 ">
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,black_4px,black_8px)] opacity-0 group-hover:opacity-10 transition-none" />
   <span className="relative z-10">Perceive</span>
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "欧普艺术风格卡片",
+      description: "欧普艺术风格卡片，Illusion Generation 同心圆旋转 + Harsh Strobe 黑白反转 + Warp & Distort 标题扭曲",
       code: `<div className="
-  relative p-8
+  group relative p-10
   bg-white
-  border-2 border-black
-  rounded-none
-  overflow-hidden
+  border-4 border-black
+  rounded-none overflow-hidden
+  hover:bg-black hover:text-white
+  transition-colors duration-150
+  cursor-crosshair
 ">
-  {/* Op art pattern decoration */}
-  <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
-    <div className="w-48 h-48 -translate-x-12 -translate-y-12">
-      {[...Array(6)].map((_, i) => (
+  {/* Concentric rings — spin on hover (Illusion Generation) */}
+  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-30 group-hover:opacity-100 transition-opacity duration-150">
+    <div className="w-64 h-64 -translate-x-16 -translate-y-16 group-hover:animate-[spin_4s_linear_infinite]">
+      {[...Array(8)].map((_, i) => (
         <div
           key={i}
-          className="absolute inset-0 border-2 border-black rounded-full"
-          style={{
-            margin: \`\${i * 8}px\`,
-          }}
+          className="absolute inset-0 border-[3px] border-black rounded-full group-hover:border-white"
+          style={{ margin: \`\${i * 10}px\` }}
         />
       ))}
     </div>
   </div>
 
   <div className="relative z-10">
-    <div className="w-8 h-2 bg-[#ff3300] mb-4" />
-    <h3 className="text-xl font-sans font-semibold text-black tracking-wider mb-3 uppercase">
+    <div className="w-12 h-2 bg-[#ff3300] mb-6 group-hover:bg-white transition-colors duration-150" />
+    <h3 className="text-xl font-sans font-black text-black tracking-wider mb-3 uppercase group-hover:text-white group-hover:-skew-x-12 transition-all duration-150">
       Optical
     </h3>
-    <p className="text-black/60 font-sans leading-relaxed text-sm">
+    <p className="text-black/60 font-sans leading-relaxed text-sm group-hover:text-white/70 group-hover:tracking-wider transition-all duration-300">
       The eye deceives. Geometry reveals truth hidden in plain sight.
     </p>
   </div>
@@ -290,7 +298,14 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
 - 棋盘格
 - 条纹图案
 - 莫尔条纹
-- 几何线条`,
+- 几何线条
+
+## Animation & Interaction Rules
+
+- Illusion Generation: 卡片使用 group 类，内部同心圆装饰 group-hover:animate-[spin_4s_linear_infinite]，静止几何变为动态错觉，禁止在非 hover 状态旋转（避免视觉污染）。
+- Harsh Strobe: hover 时整体黑白反转 hover:bg-black hover:text-white transition-colors duration-150，必须是硬切，禁止平滑渐变。
+- Warp & Distort: 标题在 group-hover 时施加 skew 扭曲 group-hover:-skew-x-12 transition-transform duration-150，制造空间错觉。
+- Brutal Action: active 状态瞬间切换警示红 active:bg-[#ff3300] active:border-[#ff3300]，无过渡，模拟刺目光爆。`,
 
   examplePrompts: [
     {

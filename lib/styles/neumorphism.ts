@@ -33,6 +33,11 @@ export const neumorphism: DesignStyle = {
     "交互元素按下时从凸起变凹陷",
     "保持元素与背景同色系",
     "响应式阴影大小 md: 前缀增大",
+    "按钮 hover 时减小外阴影（Hover Shadowing，手指靠近遮光效果）：从 shadow-[8px_8px_16px...] 减至 shadow-[4px_4px_8px...]",
+    "按钮 active 必须从外凸转为内凹（Extrude to Intrude）：active:shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff]，禁止使用 translate 位移",
+    "所有过渡使用 duration-300 ease-in-out（Smooth Molding，软塑料柔韧性）",
+    "输入框 focus 时减小内阴影深度（惰性收缩，非增强）：从 inset 6px 减至 inset 2px，暗示输入通道打开",
+    "光源方向始终固定为左上亮、右下暗（Fixed Illuminant）：负 X/Y 偏移 = 白色高光，正 X/Y 偏移 = 暗色阴影",
   ],
 
   dontList: [
@@ -42,29 +47,36 @@ export const neumorphism: DesignStyle = {
     "禁止使用粗边框 border-2 及以上",
     "禁止使用渐变背景 bg-gradient-*",
     "禁止直角 rounded-none",
+    "禁止按钮使用任何 translate 位移（新拟物元素是长在背景上的，不可浮起）",
+    "禁止 hover 时增大阴影（与光影物理规律相悖，手指靠近应使阴影缩小）",
+    "禁止打破光源方向（亮阴影必须在左上 -X/-Y，暗阴影必须在右下 +X/+Y）",
+    "禁止输入框 focus 时增大内阴影（应减小，模拟通道开放而非加压）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Neumorphism 风格按钮，凸起效果，按下时凹陷",
+      description: "Neumorphism 风格按钮，Hover Shadowing 缩小阴影 + Extrude to Intrude 转为内凹",
       code: `<button className="
-  bg-[#e0e5ec] text-gray-700 font-medium
-  px-6 py-3 rounded-xl
-  shadow-[6px_6px_12px_#b8bcc2,-6px_-6px_12px_#ffffff]
+  bg-[#e0e5ec] text-gray-600 font-bold tracking-wide
+  px-8 py-4 rounded-xl
+  shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
   hover:shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]
+  hover:text-gray-800
   active:shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff]
-  transition-all duration-200
+  transition-all duration-300 ease-in-out
 ">
-  按钮文字
+  Squeeze Me
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Neumorphism 风格卡片容器，柔和的凸起效果",
       code: `<div className="
-  bg-[#e0e5ec] rounded-2xl p-6
-  shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+  bg-[#e0e5ec] rounded-2xl p-10
+  shadow-[10px_10px_20px_#b8bcc2,-10px_-10px_20px_#ffffff]
+  hover:shadow-[6px_6px_12px_#b8bcc2,-6px_-6px_12px_#ffffff]
+  transition-shadow duration-300 ease-in-out
 ">
   <h3 className="text-gray-800 font-semibold text-lg mb-2">卡片标题</h3>
   <p className="text-gray-600">卡片内容描述文字</p>
@@ -72,18 +84,18 @@ export const neumorphism: DesignStyle = {
     },
     input: {
       name: "输入框",
-      description: "Neumorphism 风格输入框，凹陷效果表示输入区域",
+      description: "Neumorphism 风格输入框，凹陷效果，focus 时减小内阴影（通道开放感）",
       code: `<input
   type="text"
-  placeholder="请输入..."
+  placeholder="Type gently..."
   className="
-    w-full bg-[#e0e5ec] text-gray-700
-    px-4 py-3 rounded-xl
-    shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff]
-    focus:shadow-[inset_6px_6px_12px_#b8bcc2,inset_-6px_-6px_12px_#ffffff]
+    w-full bg-[#e0e5ec] text-gray-700 font-medium
+    px-6 py-4 rounded-xl
+    shadow-[inset_6px_6px_12px_#b8bcc2,inset_-6px_-6px_12px_#ffffff]
+    focus:shadow-[inset_2px_2px_4px_#b8bcc2,inset_-2px_-2px_4px_#ffffff]
     focus:outline-none
     placeholder:text-gray-400
-    transition-shadow duration-200
+    transition-all duration-300 ease-in-out
   "
 />`,
     },
@@ -238,10 +250,17 @@ export const neumorphism: DesignStyle = {
 
 ## 交互状态
 - 默认: 凸起阴影
-- Hover: 阴影略微缩小
-- Active/Pressed: 变为凹陷阴影
-- Focus: 阴影略微增大或添加强调色
-- Disabled: 阴影减弱，透明度降低`,
+- Hover: 阴影缩小（Hover Shadowing，手指靠近遮光）
+- Active/Pressed: 变为凹陷阴影（Extrude to Intrude，禁止 translate）
+- Focus: 输入框内阴影减小（通道开放感）
+- Disabled: 阴影减弱，透明度降低
+
+## Animation & Interaction Rules
+
+- Extrude to Intrude: 按钮 active 状态必须从外凸转为内凹（active:shadow-[inset_...]），严格禁止任何 translate 位移，元素是从背景材质中生长的。
+- Hover Shadowing: hover 时减小外阴影（从 16px 减至 8px），模拟手指靠近遮挡光源——与常规相反，阴影应缩小不扩大。
+- Smooth Molding: 所有过渡使用 duration-300 ease-in-out，模拟软橡胶/软塑料的柔韧弹性。
+- Fixed Illuminant: 光源方向锁定左上（负 X/Y 偏移 = 白色），右下为暗（正 X/Y 偏移 = #b8bcc2），禁止任何破坏光方向的阴影配置。`,
 
   examplePrompts: [
     {

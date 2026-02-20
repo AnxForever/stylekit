@@ -32,6 +32,11 @@ export const notionStyle: DesignStyle = {
     "保持清晰的文字层级",
     "使用系统字体栈确保可读性",
     "图标使用简洁的线性风格",
+    "卡片使用 group 类，hover 时左侧拖拽手柄 ⋮⋮ 从 opacity-0 变为 opacity-100（Drag Handle Illusion，Notion 标志性 UX 模式）",
+    "悬停背景仅从 #f7f6f3 变为 #efedea（Block Highlighting，极低信噪比反馈）",
+    "active 状态仅加深背景色至 #e3e1db，禁止任何位移或缩放（Micro-click，文档工具的克制触感）",
+    "所有过渡 duration-150，保持效率工具的即时响应感",
+    "按钮使用透明底色 bg-transparent，hover:bg-[#efedea] active:bg-[#e3e1db]（Ultimate Restraint，无浮起无缩放）",
   ],
 
   dontList: [
@@ -40,42 +45,53 @@ export const notionStyle: DesignStyle = {
     "禁止使用重阴影",
     "禁止使用过于鲜艳的颜色",
     "禁止过度装饰",
+    "禁止任何 translate 或 scale 动画（破坏文档工具的阅读稳定性）",
+    "禁止 hover 时出现边框变化或阴影跳变（信噪比过高，干扰用户专注内容）",
+    "禁止按钮使用 hover:-translate-y-* 上浮效果（Notion 是平铺文档，无漂浮感）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Notion 风格按钮，简洁实用",
+      description: "Notion 风格按钮，极度克制的 Block Highlighting + Micro-click 反馈",
       code: `<button className="
   px-3 py-1.5
-  bg-white
-  border border-gray-200
-  rounded-md
-  text-sm font-medium text-gray-700
-  hover:bg-gray-100
+  bg-transparent
+  rounded
+  text-sm font-medium text-[#37352f]
+  hover:bg-[#efedea]
+  active:bg-[#e3e1db]
   transition-colors duration-150
+  flex items-center gap-2
 ">
-  Button
+  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+  </svg>
+  New page
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Notion 风格卡片，简洁的内容容器",
+      description: "Notion 风格卡片，Drag Handle Illusion + Block Highlighting，零位移零缩放",
       code: `<div className="
-  p-4
-  bg-white
-  border border-gray-200
-  rounded-lg
-  shadow-sm
-  hover:shadow-md
-  transition-shadow
+  group p-3 -ml-3
+  rounded-md
+  hover:bg-[#efedea]
+  transition-colors duration-150
+  cursor-pointer flex gap-2
 ">
-  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-    Page Title
-  </h3>
-  <p className="text-gray-600 text-sm">
-    A simple description of the content
-  </p>
+  {/* Drag handle — revealed on hover (Drag Handle Illusion) */}
+  <div className="flex-none pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 select-none">
+    <span className="text-gray-400 text-sm cursor-grab">⋮⋮</span>
+  </div>
+  <div>
+    <h3 className="text-lg font-semibold text-[#37352f] mb-1 group-hover:underline decoration-gray-300 underline-offset-4">
+      Page Title
+    </h3>
+    <p className="text-gray-500 text-sm">
+      A simple description of the content
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -223,9 +239,16 @@ body {
 
 ## 交互
 
-- 悬停: hover:bg-gray-100 或 hover:bg-gray-200
-- 选中: bg-gray-200
-- 聚焦: focus:ring-2 focus:ring-blue-500
+- 悬停: hover:bg-[#efedea]（Block Highlighting，极低信噪比）
+- 选中: bg-[#e3e1db]（Micro-click，仅加深背景）
+- 聚焦: focus:ring-2 focus:ring-blue-500/30
+
+## Animation & Interaction Rules
+
+- Ultimate Restraint: 严格禁止任何 translate 或 scale 动画，文档工具要求绝对的视觉稳定性。
+- Block Highlighting: hover 背景从 #f7f6f3 变为 #efedea（约 5% 亮度变化），transition-colors duration-150，信噪比刻意保持极低。
+- Drag Handle Illusion: 卡片/列表项使用 group 类，左侧 ⋮⋮ 拖拽手柄 opacity-0 group-hover:opacity-100 transition-opacity duration-150，这是 Notion 标志性 UX 模式。
+- Micro-click: active 状态仅加深背景至 #e3e1db，无其他任何视觉变化，体现效率工具的克制感。
 
 ## 自检
 
