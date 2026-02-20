@@ -295,7 +295,6 @@ export default function ShowcaseContent() {
     return () => clearTimeout(t);
   }, []);
 
-  const tabs = ["garden", "recipes", "daily"];
 
   const accordionItems = [
     { title: "What is Cottagecore?", content: "Cottagecore romanticizes rural life: harmony with nature, traditional crafts, foraging, baking, and the simple pleasures of countryside living. It emerged from internet culture in the late 2010s as a yearning for slower, gentler ways." },
@@ -620,7 +619,7 @@ export default function ShowcaseContent() {
           <RevealBlock className="text-center mb-12">
             <p className="text-xs font-serif text-[#5a8f5a] tracking-[0.25em] uppercase mb-3">Visual Identity</p>
             <h2 className="text-3xl md:text-4xl font-serif text-[#8b7355] mb-3">Color Palette</h2>
-            <p className="text-sm font-serif text-[#8b7355]/50 italic">Nature's own palette, warm and welcoming</p>
+            <p className="text-sm font-serif text-[#8b7355]/50 italic">Nature&apos;s own palette, warm and welcoming</p>
           </RevealBlock>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
