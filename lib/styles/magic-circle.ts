@@ -36,6 +36,9 @@ Core principles:
     "Add golden glow radiation from center of elements",
     "Use sacred geometry patterns as subtle backgrounds",
     "Place alchemical symbols at geometric intersection points",
+    "卡片使用 group 类，hover 时内部虚线同心圆环触发旋转：group-hover:rotate-180 transition-all duration-[3000ms] ease-linear（Arcane Rotation，法阵启动）",
+    "按钮 active:scale-95 active:shadow-[inset_0_0_30px_rgba(251,191,36,0.6)]（Energy Convergence，能量聚焦内爆）",
+    "focus:ring-2 focus:ring-[#fbbf24]/50 focus:ring-offset-2 focus:ring-offset-[#0a0920]",
   ],
 
   dontList: [
@@ -44,45 +47,60 @@ Core principles:
     "No pixel art aesthetics",
     "No heavy/thick borders",
     "No informal/handwritten fonts",
+    "禁止按钮缺少 active:scale-95（魔法施放必须有能量聚焦感）",
+    "禁止环形装饰在 group-hover 时静止不动（法阵启动的核心视觉语言）",
+    "禁止 focus:ring 缺少 focus:ring-offset-[#0a0920]（深色背景下焦点环必须有偏移分离）",
   ],
 
   components: {
     button: {
       name: "Button",
-      description: "Hexagon-bordered button with golden glow hover radiation",
+      description:
+        "Hexagon-bordered button with pulsing rune glow and Energy Convergence active state",
       code: `<button className="
-  relative px-6 py-3
-  bg-[#1e1b4b] text-[#fbbf24]
-  font-serif font-semibold tracking-wide
-  border border-[#fbbf24]/30
+  group relative px-10 py-3
+  bg-[#0a0920] text-[#fbbf24]
+  font-serif font-bold tracking-widest uppercase
+  border border-[#fbbf24]/40
   rounded-sm
-  shadow-[0_0_20px_rgba(251,191,36,0.2)]
-  hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]
-  hover:border-[#fbbf24]/60
+  shadow-[0_0_15px_rgba(251,191,36,0.15)]
+  hover:border-[#fbbf24]
+  hover:shadow-[0_0_30px_rgba(251,191,36,0.4),inset_0_0_15px_rgba(251,191,36,0.1)]
+  focus:outline-none focus:ring-2 focus:ring-[#fbbf24]/50 focus:ring-offset-2 focus:ring-offset-[#0a0920]
+  active:scale-95 active:shadow-[inset_0_0_30px_rgba(251,191,36,0.6)]
   transition-all duration-500
+  overflow-hidden
 ">
-  Invoke
+  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.1),transparent_70%)]" />
+  <span className="relative z-10 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">Invoke</span>
 </button>`,
     },
     card: {
       name: "Card",
-      description: "Card with concentric ring border decorations and runic edge marks",
+      description:
+        "Card with rotating concentric rings, sacred seal geometry, and runic glow text",
       code: `<div className="
-  relative p-8
+  group relative p-10
   bg-[#0a0920]
-  border border-[#fbbf24]/15
-  rounded-sm
-  shadow-[0_0_20px_rgba(251,191,36,0.12)]
-  hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]
-  hover:border-[#fbbf24]/30
-  transition-all duration-500
+  border border-[#1e1b4b]
+  rounded-full aspect-square
+  flex flex-col items-center justify-center
+  shadow-[0_0_30px_rgba(30,27,75,0.8)]
+  hover:border-[#fbbf24]/50
+  hover:shadow-[0_0_50px_rgba(251,191,36,0.2)]
+  transition-all duration-1000 ease-in-out
+  cursor-crosshair overflow-hidden
 ">
-  <h3 className="text-2xl font-serif font-bold text-[#fbbf24] mb-3">
-    Arcanum
-  </h3>
-  <p className="text-[#e2e8f0]/50 font-sans">
-    Ancient geometries reveal hidden truths
-  </p>
+  <div className="absolute inset-2 border border-dashed border-[#fbbf24]/20 rounded-full group-hover:rotate-180 group-hover:border-[#fbbf24]/60 transition-all duration-[3000ms] ease-linear" />
+  <div className="absolute inset-6 border border-[#e2e8f0]/10 rounded-full group-hover:-rotate-90 group-hover:border-[#e2e8f0]/30 transition-all duration-[2000ms] ease-linear" style={{ borderStyle: "dotted" }} />
+  <div className="relative z-10 text-center">
+    <h3 className="text-3xl font-serif font-bold text-[#fbbf24] mb-2 tracking-[0.2em] group-hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] transition-all duration-500">
+      ARCANUM
+    </h3>
+    <p className="text-[#e2e8f0]/40 font-mono text-xs tracking-widest uppercase group-hover:text-[#e2e8f0]/80 transition-colors duration-500">
+      Seal of the Ancients
+    </p>
+  </div>
 </div>`,
     },
     input: {
@@ -242,7 +260,14 @@ Primary:
 - Runic inscription borders (dot-dash marks along edges)
 - Hexagram/sacred geometry card layout
 - Alchemical symbols at geometric intersection points
-- Rotating ring animation suggesting arcane machinery`,
+- Rotating ring animation suggesting arcane machinery
+
+## Animation & Interaction Rules
+
+- Arcane Rotation: hover 时环形装饰使用 group-hover:rotate-90 / rotate-180 或线性长时旋转，营造法阵启动。
+- Rune Pulsing: 金色标题、符文描边在交互时可加入 animate-pulse 或发光强化，表现魔力流转。
+- Energy Focus: active 状态优先使用内发光或 active:scale-95，模拟能量向中心收束。
+- Ethereal Delay: 关键过渡使用 duration-700 到 1000，旋转层可使用 2000ms+ 线性节奏。`,
 
   examplePrompts: [
     {

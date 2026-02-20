@@ -40,6 +40,10 @@ export const medievalManuscript: DesignStyle = {
     "全页使用衬线字体 font-serif 保持古典一致性",
     "使用深棕 #3d2b1f 作为正文文字色和辅助边框色",
     "添加角落装饰暗示：伪元素或小图标模拟藤蔓纹样",
+    "按钮 :active 向右下偏移：active:translate-x-[3px] active:translate-y-[3px] active:shadow-[1px_1px_0px_#3d2b1f]（Wax Seal Impact，火漆印章按压感）",
+    "金色边框 hover 时缓慢提亮：hover:border-[#dfbf66] transition-all duration-700 ease-in-out（Gold Leaf Shimmer，烛光映照金箔）",
+    "卡片使用 group 类，角落装饰 group-hover:opacity-100，首字母 group-hover:drop-shadow-[0_0_8px_rgba(201,167,78,0.6)] 金箔浮现",
+    "按钮悬停：hover:shadow-[5px_5px_0px_#3d2b1f]（阴影加重，压印加深预告）",
   ],
 
   dontList: [
@@ -50,57 +54,57 @@ export const medievalManuscript: DesignStyle = {
     "禁止使用纯黑 bg-black 或纯白 bg-white 背景",
     "禁止使用圆角 rounded-xl 以上的现代圆角",
     "禁止使用科技感或未来感的设计元素",
+    "禁止按钮使用 hover:-translate-y-*（羊皮纸是平铺的，无悬浮感）",
+    "禁止按钮缺少 active:translate-x-[3px] active:translate-y-[3px]（Wax Seal Impact 是核心交互特征）",
+    "禁止动画 duration < 300ms（手抄本的庄重感需要缓慢、从容的过渡）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description:
-        "手抄本风格按钮，金色双线边框、深红背景和衬线字体大写文字",
-      code: `<button
-  className="
-    px-8 py-4
-    bg-[#8b1a1a]
-    border-4 border-double border-[#c9a74e]
-    text-[#f0e6d0] font-serif uppercase tracking-widest
-    shadow-[2px_2px_0px_#3d2b1f]
-    hover:bg-[#8b1a1a]/90
-    hover:shadow-[1px_1px_0px_#3d2b1f]
-    hover:translate-x-[1px] hover:translate-y-[1px]
-    transition-all duration-300
-  "
->
+      description: "手抄本风格按钮，火漆压印式点击与金箔提亮反馈",
+      code: `<button className="
+  px-10 py-4
+  bg-[#8b1a1a]
+  text-[#f0e6d0] font-serif uppercase tracking-[0.2em] font-bold
+  border-4 border-double border-[#c9a74e]
+  shadow-[4px_4px_0px_#3d2b1f]
+  hover:bg-[#721515]
+  hover:shadow-[5px_5px_0px_#3d2b1f]
+  hover:border-[#dfbf66]
+  active:translate-x-[3px] active:translate-y-[3px]
+  active:shadow-[1px_1px_0px_#3d2b1f]
+  transition-all duration-300
+">
   Proceed
 </button>`,
     },
     card: {
       name: "卡片",
-      description:
-        "手抄本风格卡片，羊皮纸底色、金色双线边框和装饰性标题排版",
+      description: "手抄本风格卡片，强调金箔浮现与羊皮纸平面庄重感",
       code: `<div className="
-  p-8
+  group p-10
   bg-[#f0e6d0]
-  border-4 border-double border-[#c9a74e]
-  shadow-[3px_3px_0px_#3d2b1f]
-  relative
+  border-4 border-double border-[#3d2b1f]
+  shadow-[6px_6px_0px_rgba(61,43,31,0.8)]
+  hover:border-[#8b1a1a]
+  transition-all duration-700 ease-in-out
+  relative overflow-hidden
 ">
-  {/* Corner decoration hint */}
-  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#c9a74e]/60" />
-  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#c9a74e]/60" />
-  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#c9a74e]/60" />
-  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#c9a74e]/60" />
+  <div className="absolute top-2 left-2 text-[#8b1a1a] opacity-60 group-hover:opacity-100 transition-opacity duration-500 font-serif">+</div>
+  <div className="absolute top-2 right-2 text-[#8b1a1a] opacity-60 group-hover:opacity-100 transition-opacity duration-500 font-serif">+</div>
+  <div className="absolute bottom-2 left-2 text-[#8b1a1a] opacity-60 group-hover:opacity-100 transition-opacity duration-500 font-serif">+</div>
+  <div className="absolute bottom-2 right-2 text-[#8b1a1a] opacity-60 group-hover:opacity-100 transition-opacity duration-500 font-serif">+</div>
 
-  <h3 className="text-2xl font-serif font-bold text-[#8b1a1a] mb-3 tracking-wider uppercase">
-    <span className="text-4xl text-[#c9a74e] mr-1 float-left leading-none">I</span>lluminated
-  </h3>
-  <p className="text-[#3d2b1f]/70 font-serif text-sm leading-relaxed">
-    Written by the hand of the scribe, adorned with gold leaf.
-  </p>
-  <div className="mt-4 pt-3 border-t-2 border-[#c9a74e]/40">
-    <span className="text-xs font-serif text-[#8b1a1a]/60 italic tracking-wider">
-      Anno Domini MXXVI
+  <h3 className="text-3xl font-serif font-bold text-[#3d2b1f] mb-4 tracking-wide uppercase leading-none group-hover:text-[#8b1a1a] transition-colors duration-700">
+    <span className="text-6xl text-[#c9a74e] mr-2 float-left leading-[0.8] drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(201,167,78,0.6)] transition-all duration-700">
+      I
     </span>
-  </div>
+    lluminated
+  </h3>
+  <p className="text-[#3d2b1f] font-serif text-lg leading-relaxed pt-2">
+    Written by the hand of the faithful scribe, where every stroke carries weight.
+  </p>
 </div>`,
     },
     input: {
@@ -295,7 +299,14 @@ Primary:
 2. Double-line borders: border-double border-4 border-[#c9a74e] for ornate framing
 3. Corner flourishes: small border-t/l/r/b decorations at card corners
 4. Parchment texture: radial-gradient overlays simulating skin variation
-5. Gold dividers: border-t-2 border-[#c9a74e] horizontal separators`,
+5. Gold dividers: border-t-2 border-[#c9a74e] horizontal separators
+
+## Animation & Interaction Rules
+
+- Parchment Stillness: 禁止轻浮上浮和弹性缩放，保持羊皮纸平面上的庄重静止。
+- Wax Seal Impact: active 反馈用硬阴影+右下位移，模拟火漆印章下压。
+- Gold Leaf Shimmer: 金色边框与首字母在 hover 时缓慢提亮，建议 duration-700 ease-in-out。
+- Ink Saturation: 红褐文字与装饰线条应渐进加深，避免突兀跳变。`,
 
   examplePrompts: [
     {

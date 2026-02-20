@@ -34,6 +34,10 @@ export const magazineGrid: DesignStyle = {
     "移动端转为单列或简化网格",
     "添加清晰的分类标签和时间戳",
     "考虑广告位的预留空间",
+    "所有文章卡片使用 group 类触发子元素联动",
+    "图片默认 grayscale-[20%]，group-hover:grayscale-0 group-hover:scale-105（Color Awakening，瞬间全彩抓眼球）",
+    "分类标签后加装饰线：w-4 h-px group-hover:w-12 transition-all duration-300 ease-out（Editorial Stretch，排版骨架延伸）",
+    "标题 group-hover:text-red-600 transition-colors duration-200 ease-out（Crisp Typographic Shift，干脆切色）",
   ],
 
   dontList: [
@@ -42,43 +46,49 @@ export const magazineGrid: DesignStyle = {
     "禁止内容过于拥挤无留白",
     "禁止分类标签不一致",
     "禁止忽略图片裁切比例",
+    "禁止对正文段落施加任何位移动画（阅读稳定性优先）",
+    "禁止标题 hover 使用发光或阴影效果（应直接切换颜色，干脆利落）",
   ],
 
   components: {
     button: {
       name: "分类标签",
-      description: "文章分类的标签按钮",
-      code: `<span className="
-  inline-block
-  px-3 py-1
-  text-xs font-semibold uppercase tracking-wider
-  text-red-600
-  bg-red-50
-  rounded
-">
-  Technology
-</span>`,
+      description: "文章分类的标签按钮，带有 Editorial Stretch 装饰线延伸效果",
+      code: `<div className="group flex items-center gap-2">
+  <span className="
+    inline-block
+    px-3 py-1
+    text-xs font-semibold uppercase tracking-wider
+    text-red-600
+    bg-red-50
+    rounded
+  ">
+    Technology
+  </span>
+  <span className="block w-4 h-px bg-red-600 group-hover:w-12 transition-all duration-300 ease-out" />
+</div>`,
     },
     card: {
       name: "杂志文章卡片",
       description: "杂志风格的文章卡片",
-      code: `<article className="group">
+      code: `<article className="group flex flex-col gap-4 cursor-pointer">
   <a href="#" className="block">
-    <div className="relative overflow-hidden rounded-lg mb-4">
+    <div className="relative overflow-hidden rounded-lg">
       <img
         src="/placeholder.jpg"
         alt="Article thumbnail"
-        className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-300"
+        className="w-full aspect-[16/10] object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
       />
       <span className="absolute top-4 left-4 px-3 py-1 text-xs font-semibold uppercase bg-red-600 text-white rounded">
         Featured
       </span>
     </div>
-    <div>
-      <span className="text-xs font-semibold uppercase tracking-wider text-red-600 mb-2 block">
-        Technology
-      </span>
-      <h3 className="text-xl font-bold text-zinc-900 mb-2 group-hover:text-red-600 transition-colors">
+    <div className="flex flex-col mt-1">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-red-600">Technology</span>
+        <span className="w-4 h-px bg-red-600 group-hover:w-12 transition-all duration-300 ease-out" />
+      </div>
+      <h3 className="text-xl font-bold text-zinc-900 mb-2 leading-snug group-hover:text-red-600 transition-colors duration-200 ease-out">
         Article Title Goes Here
       </h3>
       <p className="text-zinc-600 text-sm mb-3 line-clamp-2">
@@ -382,6 +392,13 @@ Use distinct colors per category:
 - Culture: amber
 - Opinion: purple
 - Featured: red
+
+## Animation & Interaction Rules
+
+- Color Awakening: 默认图片可轻微灰度（例如 grayscale-[20%]），hover 时恢复全彩并 scale-105。
+- Editorial Stretch: 分类标签旁装饰线可由 w-4 平滑延展到 w-12，强调排版骨架。
+- Crisp Typographic Shift: 标题 hover 直接切主色（如 red-600），使用 duration-200 ease-out。
+- Readability First: 段落正文禁止位移动画，保证阅读稳定与扫描效率。
 
 ## Self-Check
 
