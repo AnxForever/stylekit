@@ -23,7 +23,8 @@ export const bauhaus: DesignStyle = {
 - 功能主义：设计服务于功能，去除多余装饰
 - 几何形式：圆形、方形、三角形的纯粹运用
 - 原色运用：红、黄、蓝三原色 + 黑白
-- 统一性：艺术与工艺的结合`,
+- 统一性：艺术与工艺的结合
+- 机械精密：交互如精密仪器运转，短促有力`,
 
   doList: [
     "使用原色（红、黄、蓝）+ 黑白",
@@ -32,6 +33,10 @@ export const bauhaus: DesignStyle = {
     "使用无衬线字体",
     "强调网格和对齐",
     "去除不必要的装饰",
+    "使用极短的 duration-150 或 duration-200",
+    "色彩交互为原色之间的硬切换，不用透明度渐变",
+    "利用伪元素做几何色块的滑入/覆盖动画",
+    "几何装饰元素在悬停时 scale 或 rotate",
   ],
 
   dontList: [
@@ -39,45 +44,53 @@ export const bauhaus: DesignStyle = {
     "禁止使用装饰性元素",
     "禁止使用衬线字体",
     "禁止使用非原色的复杂配色",
+    "禁止使用柔和缓慢的 duration-500 以上过渡",
+    "禁止使用 ease-in-out（使用 ease-out）",
+    "禁止使用圆角（rounded-lg 等），仅允许 rounded-full 用于圆形",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "包豪斯风格按钮",
+      description: "包豪斯按钮，色块滑轨机制覆盖",
       code: `<button className="
-  px-8 py-4
-  bg-red-600
-  text-white font-bold uppercase tracking-wider
-  hover:bg-black
-  transition-colors duration-200
+  group relative px-8 py-4
+  bg-red-600 text-white
+  font-bold uppercase tracking-wider
+  border-4 border-black
+  overflow-hidden
+  hover:text-black
+  active:translate-y-1
+  transition-all duration-150
 ">
-  Action
+  <span className="relative z-10">Action</span>
+  <div className="absolute inset-0 bg-yellow-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "包豪斯风格卡片",
+      description: "包豪斯卡片，几何装饰元素可动",
       code: `<div className="
-  relative p-8
+  group relative p-8
   bg-white
   border-4 border-black
+  hover:-translate-y-2
+  hover:shadow-[8px_8px_0px_rgba(0,0,255,1)]
+  transition-all duration-200 ease-out
 ">
-  {/* Geometric decoration */}
-  <div className="absolute -top-6 -left-6 w-12 h-12 bg-yellow-400 rounded-full" />
-  <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-blue-600" />
-
-  <h3 className="text-2xl font-bold text-black uppercase tracking-wider mb-4">
+  <div className="absolute -top-6 -left-6 w-12 h-12 bg-yellow-400 rounded-full border-4 border-black group-hover:scale-125 transition-transform duration-200" />
+  <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-blue-600 border-4 border-black group-hover:rotate-45 transition-transform duration-200" />
+  <h3 className="text-2xl font-black text-black uppercase tracking-wider mb-4 group-hover:text-red-600 transition-colors duration-150">
     Form
   </h3>
-  <p className="text-gray-700">
+  <p className="text-black font-bold">
     Follows function
   </p>
 </div>`,
     },
     input: {
       name: "输入框",
-      description: "包豪斯风格输入框",
+      description: "包豪斯风格输入框，聚焦时原色切换",
       code: `<input
   type="text"
   placeholder="Type here"
@@ -88,22 +101,21 @@ export const bauhaus: DesignStyle = {
     text-black font-medium placeholder-gray-400
     focus:border-red-600
     focus:outline-none
-    transition-colors
+    transition-colors duration-150
   "
 />`,
     },
     hero: {
       name: "Hero 区块",
-      description: "包豪斯风格 Hero",
+      description: "包豪斯 Hero，几何形状组合",
       code: `<section className="
   min-h-screen
   flex items-center
   bg-white
   relative overflow-hidden
 ">
-  {/* Geometric shapes */}
-  <div className="absolute top-20 right-20 w-48 h-48 bg-yellow-400 rounded-full" />
-  <div className="absolute bottom-20 right-40 w-32 h-32 bg-blue-600" />
+  <div className="absolute top-20 right-20 w-48 h-48 bg-yellow-400 rounded-full hover:scale-110 transition-transform duration-200" />
+  <div className="absolute bottom-20 right-40 w-32 h-32 bg-blue-600 hover:rotate-12 transition-transform duration-200" />
   <div className="absolute top-40 right-60 w-0 h-0 border-l-[60px] border-l-transparent border-b-[100px] border-b-red-600 border-r-[60px] border-r-transparent" />
 
   <div className="relative z-10 px-12 max-w-2xl">
@@ -116,13 +128,15 @@ export const bauhaus: DesignStyle = {
       Form follows function. Less is more.
     </p>
     <button className="
-      px-10 py-4
-      bg-black
-      text-white font-bold uppercase tracking-wider
-      hover:bg-red-600
-      transition-colors
+      group relative px-10 py-4
+      bg-black text-white
+      font-bold uppercase tracking-wider
+      overflow-hidden
+      hover:text-black
+      transition-colors duration-150
     ">
-      Explore
+      <span className="relative z-10">Explore</span>
+      <div className="absolute inset-0 bg-red-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
     </button>
   </div>
 </section>`,
@@ -157,6 +171,25 @@ export const bauhaus: DesignStyle = {
   border-bottom: 86px solid var(--bauhaus-red);
 }
 
+/* 色块滑轨覆盖 */
+.bauhaus-slide-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.bauhaus-slide-reveal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bauhaus-yellow);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-out;
+}
+
+.bauhaus-slide-reveal:hover::after {
+  transform: translateX(0);
+}
+
 /* 网格系统 */
 .bauhaus-grid {
   display: grid;
@@ -172,6 +205,8 @@ export const bauhaus: DesignStyle = {
 - 使用装饰性元素
 - 使用衬线字体
 - 使用非原色的复杂配色
+- 使用柔和缓慢的 ease-in-out 或 duration-500 以上
+- 使用圆角（rounded-lg, rounded-xl），仅 rounded-full 用于纯圆形
 
 ## 必须遵守
 
@@ -181,6 +216,14 @@ export const bauhaus: DesignStyle = {
 - 无衬线字体 font-bold, font-black
 - 大写字母 uppercase
 - 几何形状装饰
+
+## Animation & Interaction Rules
+
+- Structural Shifts: 动画展现"结构"，使用硬朗位移或大面积纯色相互覆盖。
+- Mechanical Precision: 过渡时间短促有力 duration-150 或 duration-200，使用 ease-out。
+- Primary Color Swaps: 交互时在红(#ff0000)、黄(#ffcc00)、蓝(#0000ff)、黑、白之间进行高对比度色彩翻转。
+- Geometric Reveals: 利用伪元素（如 absolute inset-0 bg-yellow-400），在悬停时像滑轨一样从 -translate-x-full 滑入 translate-x-0，覆盖原色块。
+- Geometric Animation: 几何装饰元素在悬停时 scale-125 或 rotate-45，体现机械运转感。
 
 ## 配色
 
@@ -205,10 +248,12 @@ export const bauhaus: DesignStyle = {
       descriptionEn: "Modernist design school website",
       prompt: `用 Bauhaus 风格创建一个设计学院官网，要求：
 1. 配色：仅使用红黄蓝 + 黑白
-2. 几何装饰：圆形、方形、三角形
-3. 字体：粗体无衬线 + 大写
-4. 布局：网格对齐
-5. 去除所有装饰性元素`,
+2. 几何装饰：圆形、方形、三角形，悬停时 scale/rotate
+3. 按钮使用色块滑轨覆盖机制（伪元素 translate 动画）
+4. 字体：粗体无衬线 + 大写
+5. 布局：网格对齐
+6. 所有交互 duration-150 到 200，ease-out
+7. 去除所有装饰性元素`,
     },
   ],
 };
