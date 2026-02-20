@@ -10,6 +10,7 @@ import {
   useRef,
 } from "react";
 import { useUser } from "@/lib/auth/use-user";
+import { getAuthClient } from "@/lib/auth/supabase-browser";
 
 interface FavoritesContextType {
   favorites: string[];
@@ -23,6 +24,24 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 const STORAGE_KEY = "stylekit-favorites";
+
+async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
+  const headers = new Headers(init.headers ?? {});
+  const client = getAuthClient();
+  if (client) {
+    const {
+      data: { session },
+    } = await client.auth.getSession();
+    if (session?.access_token) {
+      headers.set("Authorization", `Bearer ${session.access_token}`);
+    }
+  }
+
+  return fetch(input, {
+    ...init,
+    headers,
+  });
+}
 
 function readLocalFavorites(): string[] {
   try {
@@ -58,7 +77,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
           mergedRef.current = true;
           const localSlugs = readLocalFavorites();
           if (localSlugs.length > 0) {
-            await fetch("/api/favorites/merge", {
+            await fetchWithAuth("/api/favorites/merge", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ slugs: localSlugs }),
@@ -66,7 +85,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        const res = await fetch("/api/favorites");
+        const res = await fetchWithAuth("/api/favorites");
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled && data.success && Array.isArray(data.favorites)) {
@@ -105,7 +124,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     });
 
     if (user) {
-      fetch("/api/favorites", {
+      fetchWithAuth("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug }),
@@ -117,7 +136,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     setFavorites((prev) => prev.filter((s) => s !== slug));
 
     if (user) {
-      fetch(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
+      fetchWithAuth(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
         method: "DELETE",
       }).catch(() => {});
     }
@@ -128,14 +147,14 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       const removing = prev.includes(slug);
       if (removing) {
         if (user) {
-          fetch(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
+          fetchWithAuth(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
             method: "DELETE",
           }).catch(() => {});
         }
         return prev.filter((s) => s !== slug);
       }
       if (user) {
-        fetch("/api/favorites", {
+        fetchWithAuth("/api/favorites", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ slug }),

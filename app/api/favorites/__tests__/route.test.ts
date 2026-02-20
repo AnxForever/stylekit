@@ -26,16 +26,28 @@ const mockedGetServerUser = vi.mocked(getServerUser);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedCreateClient = vi.mocked(createClient);
+const originalSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const originalSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 afterEach(() => {
   vi.clearAllMocks();
+  if (originalSupabaseUrl === undefined) {
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  } else {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = originalSupabaseUrl;
+  }
+  if (originalSupabaseAnonKey === undefined) {
+    delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  } else {
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = originalSupabaseAnonKey;
+  }
 });
 
 describe("favorites route", () => {
   it("GET returns 401 when user is not authenticated", async () => {
     mockedGetServerUser.mockResolvedValue(null);
 
-    const response = await GET();
+    const response = await GET(new Request("https://stylekit.top/api/favorites"));
     expect(response.status).toBe(401);
     await expect(response.json()).resolves.toEqual({
       success: false,
@@ -76,7 +88,7 @@ describe("favorites route", () => {
     });
     mockedCreateClient.mockReturnValue({ from } as never);
 
-    const response = await GET();
+    const response = await GET(new Request("https://stylekit.top/api/favorites"));
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
@@ -118,7 +130,7 @@ describe("favorites route", () => {
     });
     mockedCreateClient.mockReturnValue({ from } as never);
 
-    const response = await GET();
+    const response = await GET(new Request("https://stylekit.top/api/favorites"));
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
@@ -177,12 +189,72 @@ describe("favorites route", () => {
 
     mockedCreateClient.mockReturnValue({ from } as never);
 
-    const response = await GET();
+    const response = await GET(new Request("https://stylekit.top/api/favorites"));
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,
       favorites: ["neo-brutalist", "glassmorphism"],
+    });
+  });
+
+  it("GET authenticates with bearer token when cookie auth is missing", async () => {
+    mockedGetServerUser.mockResolvedValue(null);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon-key";
+
+    const from = vi.fn((table: string) => {
+      if (table === "user_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: [{ style_slug: "neo-brutalist" }],
+                error: null,
+              }),
+            })),
+          })),
+        };
+      }
+      if (table === "style_favorites") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: "42P01", message: "relation does not exist" },
+              }),
+            })),
+          })),
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    });
+
+    mockedCreateClient.mockImplementation((_url: string, key: string) => {
+      if (key === "anon-key") {
+        return {
+          auth: {
+            getUser: vi.fn().mockResolvedValue({
+              data: { user: { id: "user-bearer" } },
+            }),
+          },
+        } as never;
+      }
+      return { from } as never;
+    });
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/favorites", {
+        headers: { Authorization: "Bearer token-123" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      favorites: ["neo-brutalist"],
     });
   });
 
@@ -279,6 +351,45 @@ describe("favorites route", () => {
     });
     expect(insertUserFavorites).toHaveBeenCalledWith({
       session_id: "user:user-legacy",
+      style_slug: "neo-brutalist",
+    });
+    await expect(response.json()).resolves.toEqual({ success: true });
+  });
+
+  it("POST authenticates with bearer token when cookie auth is missing", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue(null);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon-key";
+
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    const from = vi.fn().mockReturnValue({ insert });
+
+    mockedCreateClient.mockImplementation((_url: string, key: string) => {
+      if (key === "anon-key") {
+        return {
+          auth: {
+            getUser: vi.fn().mockResolvedValue({
+              data: { user: { id: "user-bearer" } },
+            }),
+          },
+        } as never;
+      }
+      return { from } as never;
+    });
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/favorites", {
+        method: "POST",
+        headers: { Authorization: "Bearer token-123" },
+        body: JSON.stringify({ slug: "neo-brutalist" }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledWith({
+      user_id: "user-bearer",
       style_slug: "neo-brutalist",
     });
     await expect(response.json()).resolves.toEqual({ success: true });

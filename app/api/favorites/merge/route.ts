@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const user = await getServerUser();
+  const user = await getRequestUser(request);
   if (!user) {
     return NextResponse.json(
       { success: false, error: "Authentication required" },
@@ -98,6 +98,45 @@ export async function POST(request: Request) {
 
 function buildLegacyUserSessionId(userId: string): string {
   return `${LEGACY_USER_SESSION_PREFIX}${userId}`;
+}
+
+async function getRequestUser(request: Request) {
+  const cookieUser = await getServerUser();
+  if (cookieUser) {
+    return cookieUser;
+  }
+
+  const token = getBearerToken(request);
+  if (!token) {
+    return null;
+  }
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    return null;
+  }
+
+  const { createClient } = await import("@supabase/supabase-js");
+  const sb = createClient(url, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  const {
+    data: { user },
+  } = await sb.auth.getUser(token);
+  return user ?? null;
+}
+
+function getBearerToken(request: Request): string | null {
+  const auth = request.headers.get("authorization");
+  if (!auth) return null;
+  const [scheme, token] = auth.split(" ");
+  if (!scheme || scheme.toLowerCase() !== "bearer") {
+    return null;
+  }
+  const trimmed = token?.trim();
+  return trimmed ? trimmed : null;
 }
 
 async function upsertFavoritesForUser(
