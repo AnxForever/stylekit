@@ -1,215 +1,730 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import {
-  ChevronDown,
-  Check,
-  X,
-  AlertTriangle,
-  Info,
-  Bell,
-  Search,
-  TrendingUp,
-  TrendingDown,
-  Users,
-  Eye,
-  Share2,
-  BarChart3,
-  Home,
-  FileText,
-  MessageSquare,
-  Layers,
-  ArrowLeft,
-} from "lucide-react";
+
+/* ------------------------------------------------------------------ */
+/*  Inline hooks & primitives                                          */
+/* ------------------------------------------------------------------ */
+
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Static data                                                        */
+/* ------------------------------------------------------------------ */
+
+const kpis = [
+  {
+    label: "Total Revenue",
+    value: "$84.2K",
+    sub: "+12.4% from last month",
+    up: true as boolean | null,
+    icon: "revenue",
+  },
+  {
+    label: "Active Users",
+    value: "3,847",
+    sub: "+8.1% from last month",
+    up: true as boolean | null,
+    icon: "users",
+  },
+  {
+    label: "Conversion",
+    value: "4.6%",
+    sub: "-0.3% from last month",
+    up: false as boolean | null,
+    icon: "conversion",
+  },
+  {
+    label: "Growth Index",
+    value: "92.5",
+    sub: "+5.7% from last month",
+    up: true as boolean | null,
+    icon: "growth",
+  },
+];
+
+const barValues = [42, 58, 35, 70, 53, 67, 80, 48, 72, 55, 63, 78];
+const barMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+const tableRows = [
+  { id: "#7201", customer: "Amara Collins", amount: "$340.00", status: "Completed", date: "Feb 20" },
+  { id: "#7200", customer: "Luca Moretti", amount: "$89.00", status: "Processing", date: "Feb 19" },
+  { id: "#7199", customer: "Hana Yoshida", amount: "$1,240.00", status: "Completed", date: "Feb 19" },
+  { id: "#7198", customer: "Marco Santos", amount: "$220.00", status: "Failed", date: "Feb 18" },
+  { id: "#7197", customer: "Priya Nair", amount: "$75.00", status: "Completed", date: "Feb 17" },
+];
+
+const warmPalette = [
+  { name: "Warm Salmon", hex: "#d4a088", label: "Page background", light: false },
+  { name: "Cream White", hex: "#faf8f5", label: "Card surfaces", light: true },
+  { name: "Warm Teal", hex: "#4a9d9a", label: "Positive metrics", light: false },
+  { name: "Warm Amber", hex: "#e8b86d", label: "Highlights / warnings", light: true },
+  { name: "Terracotta", hex: "#c17767", label: "Alerts / negative", light: false },
+  { name: "Cool Teal", hex: "#6b8e8e", label: "Sidebar & neutral", light: false },
+];
+
+const progressItems = [
+  { label: "Q1 Revenue Target", value: 82, color: "#4a9d9a" },
+  { label: "User Acquisition", value: 61, color: "#e8b86d" },
+  { label: "Churn Rate Reduction", value: 45, color: "#c17767" },
+  { label: "NPS Improvement", value: 90, color: "#4a9d9a" },
+  { label: "Feature Completion", value: 73, color: "#6b8e8e" },
+];
+
+const navItems = [
+  { id: "overview", label: "Overview", path: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+  { id: "analytics", label: "Analytics", path: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" },
+  { id: "users", label: "Users", path: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
+  { id: "reports", label: "Reports", path: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
+  { id: "settings", label: "Settings", path: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Icon helper (inline SVG, no external deps)                         */
+/* ------------------------------------------------------------------ */
+
+function Icon({ path, className = "w-5 h-5" }: { path: string; className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d={path} />
+    </svg>
+  );
+}
+
+function KpiIcon({ type }: { type: string }) {
+  const paths: Record<string, string> = {
+    revenue: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    users: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+    conversion: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
+    growth: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
+  };
+  return <Icon path={paths[type] ?? paths.revenue} className="w-5 h-5" />;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Warm status badge                                                  */
+/* ------------------------------------------------------------------ */
+
+function WarmBadge({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    Completed: "text-[#4a9d9a] bg-[#4a9d9a]/12 border border-[#4a9d9a]/20",
+    Processing: "text-[#b89334] bg-[#e8b86d]/15 border border-[#e8b86d]/30",
+    Failed: "text-[#c17767] bg-[#c17767]/10 border border-[#c17767]/20",
+    Active: "text-[#4a9d9a] bg-[#4a9d9a]/12 border border-[#4a9d9a]/20",
+    Paused: "text-[#b89334] bg-[#e8b86d]/15 border border-[#e8b86d]/30",
+    Error: "text-[#c17767] bg-[#c17767]/10 border border-[#c17767]/20",
+    Draft: "text-[#6b8e8e] bg-[#6b8e8e]/10 border border-[#6b8e8e]/20",
+  };
+  return (
+    <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${map[status] ?? "text-gray-500 bg-gray-100"}`}>
+      {status}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Animated progress bar                                              */
+/* ------------------------------------------------------------------ */
+
+function WarmProgressBar({ value, color, delay = 0 }: { value: number; color: string; delay?: number }) {
+  const { ref, inView } = useInView();
+  return (
+    <div ref={ref} className="h-2.5 bg-[#e8ddd8] rounded-full overflow-hidden">
+      <div
+        className="h-full rounded-full"
+        style={{
+          width: inView ? `${value}%` : "0%",
+          backgroundColor: color,
+          transition: `width 1.1s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        }}
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Live sidebar                                                       */
+/* ------------------------------------------------------------------ */
+
+function WarmSidebar({ activeNav, onNav }: { activeNav: string; onNav: (id: string) => void }) {
+  return (
+    <aside className="hidden md:flex w-60 flex-col shrink-0" style={{ backgroundColor: "#5a7a7a" }}>
+      {/* Brand */}
+      <div className="px-5 py-5 border-b border-white/10">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#d4a088" }}>
+            <span className="text-white font-bold text-sm leading-none">W</span>
+          </div>
+          <span className="font-semibold text-white text-sm">WarmDesk</span>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onNav(item.id)}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm text-left transition-all duration-200"
+            style={{
+              backgroundColor: activeNav === item.id ? "rgba(212,160,136,0.25)" : "transparent",
+              color: activeNav === item.id ? "#faf8f5" : "rgba(250,248,245,0.6)",
+            }}
+            onMouseEnter={(e) => {
+              if (activeNav !== item.id) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(250,248,245,0.08)";
+                (e.currentTarget as HTMLButtonElement).style.color = "#faf8f5";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeNav !== item.id) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgba(250,248,245,0.6)";
+              }
+            }}
+          >
+            {activeNav === item.id && (
+              <span className="absolute left-0 w-1 h-6 rounded-r-full" style={{ backgroundColor: "#d4a088" }} />
+            )}
+            <Icon path={item.path} className="w-4.5 h-4.5 shrink-0" />
+            {item.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* User avatar */}
+      <div className="px-4 py-4 border-t border-white/10 flex items-center gap-3">
+        <div
+          className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
+          style={{ backgroundColor: "#d4a088" }}
+        >
+          AM
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-white/90 truncate">Amara Mills</p>
+          <p className="text-[10px] text-white/45 truncate">admin@warmdesk.io</p>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Live toolbar                                                       */
+/* ------------------------------------------------------------------ */
+
+function WarmToolbar({ page }: { page: string }) {
+  const labels: Record<string, string> = {
+    overview: "Overview",
+    analytics: "Analytics",
+    users: "Users",
+    reports: "Reports",
+    settings: "Settings",
+  };
+  return (
+    <div
+      className="flex items-center justify-between px-5 py-3.5 border-b shrink-0"
+      style={{ backgroundColor: "#faf8f5", borderColor: "#e8ddd8" }}
+    >
+      <h2 className="font-semibold text-sm" style={{ color: "#3d2e28" }}>
+        {labels[page] ?? "Overview"}
+      </h2>
+      <div className="flex items-center gap-3">
+        <div className="relative hidden sm:block">
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
+            style={{ color: "#9c8880" }}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search..."
+            className="pl-9 pr-3 py-1.5 text-xs rounded-xl border focus:outline-none focus:ring-2 w-40 transition-all duration-150"
+            style={{
+              backgroundColor: "white",
+              borderColor: "#e0d5cf",
+              color: "#3d2e28",
+            }}
+          />
+        </div>
+        <button
+          type="button"
+          className="relative p-1.5 rounded-xl transition-all duration-150"
+          style={{ color: "#9c8880" }}
+        >
+          <Icon path="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" className="w-5 h-5" />
+          <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#c17767" }} />
+        </button>
+        <div
+          className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
+          style={{ backgroundColor: "#d4a088" }}
+        >
+          AM
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Live content area                                                  */
+/* ------------------------------------------------------------------ */
+
+function WarmContent() {
+  return (
+    <div className="flex-1 overflow-auto p-4 space-y-4 min-h-0" style={{ backgroundColor: "#f2ede9" }}>
+      {/* KPI row */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+        {kpis.map((kpi) => (
+          <div
+            key={kpi.label}
+            className="group rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "#faf8f5",
+              boxShadow: "0 1px 4px rgba(90,70,60,0.08), 0 0 0 1px rgba(210,185,175,0.25)",
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#9c8880" }}>
+                {kpi.label}
+              </span>
+              <span
+                className="w-7 h-7 rounded-xl flex items-center justify-center"
+                style={{
+                  backgroundColor: kpi.up === true ? "rgba(74,157,154,0.12)" : "rgba(193,119,103,0.12)",
+                  color: kpi.up === true ? "#4a9d9a" : "#c17767",
+                }}
+              >
+                <KpiIcon type={kpi.icon} />
+              </span>
+            </div>
+            <div className="text-xl font-bold mb-0.5" style={{ color: "#3d2e28" }}>
+              {kpi.value}
+            </div>
+            <p className="text-[10px]" style={{ color: kpi.up === true ? "#4a9d9a" : "#c17767" }}>
+              {kpi.sub}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* Bar chart */}
+        <div
+          className="col-span-2 rounded-2xl p-4"
+          style={{
+            backgroundColor: "#faf8f5",
+            boxShadow: "0 1px 4px rgba(90,70,60,0.08), 0 0 0 1px rgba(210,185,175,0.25)",
+          }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold" style={{ color: "#3d2e28" }}>
+              Revenue Trend
+            </span>
+            <div className="flex gap-1">
+              <span
+                className="px-2 py-0.5 text-[10px] rounded-full text-white font-medium"
+                style={{ backgroundColor: "#d4a088" }}
+              >
+                Monthly
+              </span>
+              <span
+                className="px-2 py-0.5 text-[10px] rounded-full font-medium cursor-pointer transition-colors duration-150"
+                style={{ backgroundColor: "#e8ddd8", color: "#9c8880" }}
+              >
+                Weekly
+              </span>
+            </div>
+          </div>
+          <div className="flex items-end gap-1 h-24">
+            {barValues.map((h, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                <div
+                  className="w-full rounded-t transition-colors duration-150 cursor-pointer"
+                  style={{ height: `${h}%`, backgroundColor: "rgba(212,160,136,0.65)" }}
+                  title={`$${(h * 1000).toLocaleString()}`}
+                />
+                <span className="text-[8px] hidden sm:block" style={{ color: "#b8a9a2" }}>
+                  {barMonths[i]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Donut */}
+        <div
+          className="rounded-2xl p-4 flex flex-col"
+          style={{
+            backgroundColor: "#faf8f5",
+            boxShadow: "0 1px 4px rgba(90,70,60,0.08), 0 0 0 1px rgba(210,185,175,0.25)",
+          }}
+        >
+          <span className="text-xs font-semibold mb-2" style={{ color: "#3d2e28" }}>
+            Distribution
+          </span>
+          <div className="flex-1 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-24 h-24">
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#e8ddd8" strokeWidth="13" />
+              <circle
+                cx="50"
+                cy="50"
+                r="36"
+                fill="none"
+                stroke="#4a9d9a"
+                strokeWidth="13"
+                strokeDasharray="113.1 226.2"
+                strokeLinecap="round"
+                transform="rotate(-90 50 50)"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="36"
+                fill="none"
+                stroke="#e8b86d"
+                strokeWidth="13"
+                strokeDasharray="67.9 226.2"
+                strokeDashoffset="-113.1"
+                strokeLinecap="round"
+                transform="rotate(-90 50 50)"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="36"
+                fill="none"
+                stroke="#d4a088"
+                strokeWidth="13"
+                strokeDasharray="45.2 226.2"
+                strokeDashoffset="-181"
+                strokeLinecap="round"
+                transform="rotate(-90 50 50)"
+              />
+              <text x="50" y="46" textAnchor="middle" fontSize="13" fontWeight="700" fill="#3d2e28">
+                68%
+              </text>
+              <text x="50" y="57" textAnchor="middle" fontSize="6.5" fill="#9c8880">
+                Target
+              </text>
+            </svg>
+          </div>
+          <div className="space-y-1.5 mt-1">
+            {[
+              { label: "Direct", color: "#4a9d9a", pct: "50%" },
+              { label: "Organic", color: "#e8b86d", pct: "30%" },
+              { label: "Referral", color: "#d4a088", pct: "20%" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between text-[10px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span style={{ color: "#7a6860" }}>{item.label}</span>
+                </div>
+                <span className="font-semibold" style={{ color: "#3d2e28" }}>
+                  {item.pct}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{
+          backgroundColor: "#faf8f5",
+          boxShadow: "0 1px 4px rgba(90,70,60,0.08), 0 0 0 1px rgba(210,185,175,0.25)",
+        }}
+      >
+        <div
+          className="px-4 py-3 flex items-center justify-between border-b"
+          style={{ borderColor: "#e8ddd8" }}
+        >
+          <span className="text-xs font-semibold" style={{ color: "#3d2e28" }}>
+            Recent Transactions
+          </span>
+          <button
+            type="button"
+            className="px-3 py-1 text-[10px] font-semibold text-white rounded-xl transition-all duration-150 active:scale-[0.97]"
+            style={{ backgroundColor: "#d4a088" }}
+          >
+            Export
+          </button>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr style={{ backgroundColor: "#f5ede8", borderBottom: "1px solid #e8ddd8" }}>
+              {["ID", "Customer", "Amount", "Status"].map((col) => (
+                <th
+                  key={col}
+                  className="px-4 py-2.5 text-left font-semibold uppercase tracking-wider"
+                  style={{ color: "#9c8880" }}
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {tableRows.map((row) => (
+              <tr
+                key={row.id}
+                className="transition-colors duration-150 cursor-pointer border-b last:border-0"
+                style={{ borderColor: "#f0e8e4" }}
+              >
+                <td className="px-4 py-3 font-medium" style={{ color: "#3d2e28" }}>
+                  {row.id}
+                </td>
+                <td className="px-4 py-3" style={{ color: "#7a6860" }}>
+                  {row.customer}
+                </td>
+                <td className="px-4 py-3 font-semibold" style={{ color: "#3d2e28" }}>
+                  {row.amount}
+                </td>
+                <td className="px-4 py-3">
+                  <WarmBadge status={row.status} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeSidebarItem, setActiveSidebarItem] = useState("dashboard");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { ref: heroRef, inView: heroInView } = useInView();
+  const [activeNav, setActiveNav] = useState("overview");
+  const [componentTab, setComponentTab] = useState<"Overview" | "Analytics" | "Settings">("Overview");
+  const [buttonHovered, setButtonHovered] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#d4a088] text-gray-800">
-      {/* Navigation */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+    <div className="min-h-screen text-gray-800" style={{ backgroundColor: "#f2ede9" }}>
+      {/* ============================================================ */}
+      {/* 1. Fixed Nav                                                 */}
+      {/* ============================================================ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-sm"
+        style={{ backgroundColor: "rgba(212,160,136,0.95)", borderColor: "rgba(193,119,103,0.3)" }}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/styles/warm-dashboard"
-                className="flex items-center gap-2 text-[#4a9d9a] hover:text-[#3d8482] transition-colors font-medium"
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-7 h-7 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: "#faf8f5" }}
               >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="hidden md:inline">Back</span>
-              </Link>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#4a9d9a] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">W</span>
-                </div>
-                <span className="font-semibold text-gray-800">Warm Dashboard</span>
+                <span className="font-bold text-sm" style={{ color: "#d4a088" }}>
+                  W
+                </span>
               </div>
+              <span className="font-bold text-white text-sm tracking-tight hidden sm:block">
+                暖色仪表盘
+              </span>
+              <span className="font-bold text-white text-sm tracking-tight sm:hidden">
+                Warm Dashboard
+              </span>
             </div>
-            <nav className="flex items-center gap-4 md:gap-8">
+            <nav className="flex items-center gap-2">
+              {["Colors", "Components", "Dashboard"].map((item) => (
+                <a
+                  key={item}
+                  href={`#section-${item.toLowerCase()}`}
+                  className="hidden md:block px-3 py-1.5 text-sm rounded-xl transition-all duration-150 font-medium"
+                  style={{ color: "rgba(250,248,245,0.85)" }}
+                >
+                  {item}
+                </a>
+              ))}
               <Link
-                href="/styles/warm-dashboard"
-                className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+                href="/"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-xl font-semibold transition-all duration-150 ml-2"
+                style={{ backgroundColor: "rgba(250,248,245,0.2)", color: "white" }}
               >
-                Docs
+                StyleKit
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
-              <Link
-                href="/styles"
-                className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
-              >
-                All Styles
-              </Link>
-              <button className="w-10 h-10 bg-[#faf8f5] rounded-xl flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Design Style</p>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-            Warm
-            <br />
-            <span className="text-[#faf8f5]">Dashboard</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/80 max-w-lg">
-            A warm, professional dashboard design featuring terracotta backgrounds, cream white cards, and soft shadows for a comfortable data visualization experience.
-          </p>
-        </div>
-      </section>
-
-      {/* Color Palette */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Color System</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Palette</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            {[
-              { name: "Terracotta", hex: "#d4a088", bg: "bg-[#d4a088]", text: "text-white" },
-              { name: "Cream", hex: "#faf8f5", bg: "bg-[#faf8f5] border border-gray-200", text: "text-gray-800" },
-              { name: "Teal", hex: "#4a9d9a", bg: "bg-[#4a9d9a]", text: "text-white" },
-              { name: "Gold", hex: "#e8b86d", bg: "bg-[#e8b86d]", text: "text-gray-800" },
-              { name: "Coral", hex: "#c17767", bg: "bg-[#c17767]", text: "text-white" },
-            ].map((color) => (
-              <div key={color.name} className="bg-white rounded-2xl shadow-lg shadow-black/5 overflow-hidden">
-                <div className={`h-24 md:h-32 ${color.bg}`} />
-                <div className="p-3 md:p-4">
-                  <p className="font-medium text-gray-800">{color.name}</p>
-                  <p className="text-sm text-gray-500">{color.hex}</p>
-                </div>
-              </div>
-            ))}
+      {/* ============================================================ */}
+      {/* 2. Hero — Dashboard header layout with KPI cards             */}
+      {/* ============================================================ */}
+      <section className="pt-28 md:pt-36 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+        <div ref={heroRef}>
+          {/* Label */}
+          <div
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)",
+            }}
+          >
+            <span
+              className="inline-block text-xs font-semibold tracking-widest uppercase mb-5 px-3 py-1.5 rounded-full"
+              style={{ backgroundColor: "rgba(74,157,154,0.15)", color: "#4a9d9a" }}
+            >
+              Warm Data Visualization
+            </span>
           </div>
-        </div>
-      </section>
 
-      {/* Typography */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-[#faf8f5] rounded-3xl shadow-xl shadow-black/8 p-6 md:p-10">
-            <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Typography</p>
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Type System</h2>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Headings</p>
-                <h3 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">Bold & Clear</h3>
-                <p className="text-sm text-gray-500">font-bold text-gray-800</p>
-              </div>
-              <div>
-                <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Body Text</p>
-                <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-4">
-                  Body text uses gray-600 for optimal readability on cream backgrounds. Line height is relaxed for comfortable reading.
-                </p>
-                <p className="text-sm text-gray-500">text-gray-600 leading-relaxed</p>
-              </div>
-            </div>
+          {/* Title + sub */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+            <h1 className="text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight">
+              <span
+                className="block"
+                style={{
+                  color: "#3d2e28",
+                  opacity: heroInView ? 1 : 0,
+                  transform: heroInView ? "translateY(0)" : "translateY(40px)",
+                  transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s",
+                }}
+              >
+                暖色仪表盘
+              </span>
+              <span
+                className="block"
+                style={{
+                  color: "#d4a088",
+                  opacity: heroInView ? 1 : 0,
+                  transform: heroInView ? "translateY(0)" : "translateY(40px)",
+                  transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.12s",
+                }}
+              >
+                Warm Dashboard.
+              </span>
+            </h1>
+            <p
+              className="max-w-sm text-sm leading-relaxed"
+              style={{
+                color: "#7a6860",
+                opacity: heroInView ? 1 : 0,
+                transform: heroInView ? "translateY(0)" : "translateY(20px)",
+                transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.3s",
+              }}
+            >
+              Data visualization with soul. Terracotta and cream make numbers feel approachable — large rounded cards, clear metrics, progress bars in warm tones.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Buttons */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Interactive Elements</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Buttons</h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Primary</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-[#4a9d9a] text-white rounded-xl shadow-lg shadow-[#4a9d9a]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all font-medium">
-                  View Report
-                </button>
-                <button className="px-6 py-3 bg-[#c17767] text-white rounded-xl shadow-lg shadow-[#c17767]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all font-medium">
-                  Upgrade Plan
-                </button>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Secondary</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-white text-gray-700 rounded-xl shadow-lg shadow-black/5 hover:shadow-xl hover:-translate-y-0.5 transition-all font-medium">
-                  Export Data
-                </button>
-                <button className="px-6 py-3 bg-[#e8b86d] text-gray-800 rounded-xl shadow-lg shadow-[#e8b86d]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all font-medium">
-                  Highlight
-                </button>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Outline</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-transparent border border-gray-300 text-gray-700 rounded-xl hover:bg-white hover:shadow-lg transition-all font-medium">
-                  Cancel
-                </button>
-                <button className="px-6 py-3 bg-transparent border border-[#4a9d9a] text-[#4a9d9a] rounded-xl hover:bg-[#4a9d9a] hover:text-white transition-all font-medium">
-                  Learn More
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stat Cards */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Data Display</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12">Stat Cards</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { label: "Views", value: "27.6m", change: "+12%", positive: true, icon: Eye },
-              { label: "Followers", value: "219.3k", change: "+8%", positive: true, icon: Users },
-              { label: "Reposts", value: "1.5k", change: "-3%", positive: false, icon: Share2 },
-              { label: "Engagement", value: "4.2%", change: "+15%", positive: true, icon: BarChart3 },
-            ].map((stat, i) => (
+          {/* KPI metric cards — hero dashboard header style */}
+          <div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(40px)",
+              transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.45s",
+            }}
+          >
+            {kpis.map((kpi, i) => (
               <div
-                key={i}
-                className="bg-[#faf8f5] rounded-2xl p-6 shadow-xl shadow-black/8 hover:shadow-2xl hover:-translate-y-1 transition-all"
+                key={kpi.label}
+                className="group rounded-3xl p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1"
+                style={{
+                  backgroundColor: "#faf8f5",
+                  boxShadow: "0 4px 24px rgba(90,70,60,0.10), 0 0 0 1px rgba(210,185,175,0.3)",
+                }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-500 text-sm font-medium">{stat.label}</span>
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.positive ? 'bg-[#4a9d9a]/10' : 'bg-[#c17767]/10'}`}>
-                    <stat.icon className={`w-4 h-4 ${stat.positive ? 'text-[#4a9d9a]' : 'text-[#c17767]'}`} />
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9c8880" }}>
+                    {kpi.label}
+                  </p>
+                  <div
+                    className="w-8 h-8 rounded-2xl flex items-center justify-center"
+                    style={{
+                      backgroundColor: kpi.up === true ? "rgba(74,157,154,0.12)" : "rgba(193,119,103,0.12)",
+                      color: kpi.up === true ? "#4a9d9a" : "#c17767",
+                    }}
+                  >
+                    <KpiIcon type={kpi.icon} />
                   </div>
                 </div>
-                <p className="text-3xl md:text-4xl font-bold text-gray-800 mb-1">{stat.value}</p>
-                <div className="flex items-center gap-1">
-                  {stat.positive ? (
-                    <TrendingUp className="w-4 h-4 text-[#4a9d9a]" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4 text-[#c17767]" />
-                  )}
-                  <span className={`text-sm ${stat.positive ? 'text-[#4a9d9a]' : 'text-[#c17767]'}`}>
-                    {stat.change}
-                  </span>
-                  <span className="text-sm text-gray-400">from last month</span>
+                <div
+                  className="text-3xl font-bold mb-1 transition-transform duration-200 group-hover:scale-[1.03] origin-left"
+                  style={{ color: "#3d2e28" }}
+                >
+                  {kpi.value}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    style={{ color: kpi.up === true ? "#4a9d9a" : "#c17767" }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={kpi.up === true ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"}
+                    />
+                  </svg>
+                  <p className="text-xs font-medium" style={{ color: kpi.up === true ? "#4a9d9a" : "#c17767" }}>
+                    {kpi.sub}
+                  </p>
                 </div>
               </div>
             ))}
@@ -217,378 +732,866 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* Form Elements */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Form Design</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Form Elements</h2>
-          <div className="bg-white rounded-3xl shadow-xl shadow-black/5 p-6 md:p-8 space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">Search</label>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search reports..."
-                  className="w-full pl-12 pr-4 py-3 bg-[#faf8f5] border border-gray-200 rounded-xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4a9d9a]/30 focus:border-[#4a9d9a] transition-all"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">Email</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 bg-[#faf8f5] border border-gray-200 rounded-xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4a9d9a]/30 focus:border-[#4a9d9a] transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">Message</label>
-              <textarea
-                placeholder="Write your message..."
-                rows={4}
-                className="w-full px-4 py-3 bg-[#faf8f5] border border-gray-200 rounded-xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4a9d9a]/30 focus:border-[#4a9d9a] transition-all resize-none"
-              />
-            </div>
-            <button className="w-full px-6 py-3 bg-[#4a9d9a] text-white rounded-xl shadow-lg shadow-[#4a9d9a]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all font-medium">
-              Send Message
-            </button>
+      {/* ============================================================ */}
+      {/* 3. Component demos with tab switcher                         */}
+      {/* ============================================================ */}
+      <section id="section-components" className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-10">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+            Interactive Components
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+              Component <span style={{ color: "#d4a088" }}>Library</span>
+            </h2>
+            <p className="text-sm max-w-sm" style={{ color: "#7a6860" }}>
+              Buttons, metric cards, and inputs — all styled with warm tones and smooth interactions.
+            </p>
           </div>
-        </div>
-      </section>
+        </RevealBlock>
 
-      {/* Sidebar Demo */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Navigation</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12">Sidebar Navigation</h2>
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-black/10 p-6 max-w-xs">
-            <div className="flex items-center gap-2 mb-8">
-              <div className="w-8 h-8 bg-[#4a9d9a] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <span className="font-semibold text-gray-800">Crowz</span>
-            </div>
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-[#d4a088] mx-auto mb-3 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">RG</span>
-              </div>
-              <p className="font-semibold text-gray-800">Robert Grant</p>
-              <p className="text-sm text-gray-500">Marketing Director</p>
-            </div>
-            <nav className="space-y-2">
-              {[
-                { id: "dashboard", label: "Dashboard", icon: Home },
-                { id: "insights", label: "Insights", icon: BarChart3 },
-                { id: "reports", label: "Reports", icon: FileText },
-                { id: "comments", label: "Comments", icon: MessageSquare },
-                { id: "channels", label: "Channels", icon: Layers },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSidebarItem(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                    activeSidebarItem === item.id
-                      ? "bg-[#faf8f5] text-gray-800"
-                      : "text-gray-500 hover:bg-[#faf8f5] hover:text-gray-800"
-                  }`}
-                >
-                  {activeSidebarItem === item.id && (
-                    <span className="w-2 h-2 rounded-full bg-[#c17767]" />
-                  )}
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </section>
-
-      {/* Tabs */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Navigation Elements</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Tabs</h2>
-          <div className="bg-white rounded-3xl shadow-xl shadow-black/5 overflow-hidden">
-            <div className="flex border-b border-gray-200">
-              {["Overview", "Analytics", "Reports"].map((tab, i) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(i)}
-                  className={`px-6 py-4 font-medium transition-colors ${
-                    activeTab === i
-                      ? "bg-white text-[#4a9d9a] border-b-2 border-[#4a9d9a] -mb-px"
-                      : "text-gray-500 hover:text-gray-800"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <div className="p-6 text-gray-600">
-              {activeTab === 0 && "Overview content - A high-level summary of your dashboard metrics and key performance indicators."}
-              {activeTab === 1 && "Analytics content - Detailed breakdown of user behavior, traffic sources, and conversion funnels."}
-              {activeTab === 2 && "Reports content - Generate custom reports with date ranges, filters, and export options."}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Channel Cards */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Channel Stats</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12">Channels</h2>
-          <div className="bg-gradient-to-r from-[#e8f4f4] to-[#f0f7f7] rounded-3xl p-6 md:p-8 shadow-lg shadow-black/5">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-1">Channel Statistics</h3>
-                <p className="text-sm text-gray-500">Your channels performance for 1 week period.</p>
-              </div>
-              <button className="px-4 py-2 bg-[#4a9d9a] text-white rounded-xl font-medium text-sm hover:shadow-lg transition-all">
-                Full Stats
+        {/* Tab switcher */}
+        <RevealBlock className="mb-8" delay={0.05}>
+          <div
+            className="flex items-center gap-1 p-1 rounded-2xl w-fit"
+            style={{ backgroundColor: "#e8ddd8" }}
+          >
+            {(["Overview", "Analytics", "Settings"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setComponentTab(tab)}
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
+                style={{
+                  backgroundColor: componentTab === tab ? "#faf8f5" : "transparent",
+                  color: componentTab === tab ? "#3d2e28" : "#9c8880",
+                  boxShadow: componentTab === tab ? "0 1px 6px rgba(90,70,60,0.12)" : "none",
+                }}
+              >
+                {tab}
               </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { name: "Dribbble", abbr: "Dr", color: "#ea4c89", change: "+2%", positive: true },
-                { name: "Behance", abbr: "Be", color: "#0057ff", change: "-7%", positive: false },
-                { name: "Instagram", abbr: "Ig", color: "#e4405f", change: "+5%", positive: true },
-              ].map((channel) => (
-                <div key={channel.name} className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-sm">
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: channel.color }}
+            ))}
+          </div>
+        </RevealBlock>
+
+        <RevealBlock>
+          {/* Overview tab — Button showcase */}
+          {componentTab === "Overview" && (
+            <div
+              className="rounded-3xl p-8 space-y-10"
+              style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+            >
+              {/* Terracotta primary buttons */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#9c8880" }}>
+                  Terracotta Primary
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "View Dashboard", bg: "#c17767", shadow: "rgba(193,119,103,0.3)" },
+                    { label: "Export Report", bg: "#d4a088", shadow: "rgba(212,160,136,0.35)" },
+                    { label: "Delete Entry", bg: "#b85f50", shadow: "rgba(184,95,80,0.3)" },
+                  ].map((btn) => (
+                    <button
+                      key={btn.label}
+                      type="button"
+                      className="px-5 py-2.5 text-white rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[0.97]"
+                      style={{
+                        backgroundColor: btn.bg,
+                        boxShadow: `0 4px 16px ${btn.shadow}`,
+                        transform: buttonHovered === btn.label ? "translateY(-2px)" : "translateY(0)",
+                      }}
+                      onMouseEnter={() => setButtonHovered(btn.label)}
+                      onMouseLeave={() => setButtonHovered(null)}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Teal secondary buttons */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#9c8880" }}>
+                  Teal Secondary
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Confirm Action", bg: "#4a9d9a", shadow: "rgba(74,157,154,0.25)" },
+                    { label: "Add Record", bg: "#6b8e8e", shadow: "rgba(107,142,142,0.25)" },
+                    { label: "Sync Data", bg: "#3a7d7a", shadow: "rgba(58,125,122,0.25)" },
+                  ].map((btn) => (
+                    <button
+                      key={btn.label}
+                      type="button"
+                      className="px-5 py-2.5 text-white rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[0.97]"
+                      style={{
+                        backgroundColor: btn.bg,
+                        boxShadow: `0 4px 16px ${btn.shadow}`,
+                        transform: buttonHovered === btn.label ? "translateY(-2px)" : "translateY(0)",
+                      }}
+                      onMouseEnter={() => setButtonHovered(btn.label)}
+                      onMouseLeave={() => setButtonHovered(null)}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Outlined buttons */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#9c8880" }}>
+                  Outlined / Ghost
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    className="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[0.97] border-2"
+                    style={{ borderColor: "#d4a088", color: "#c17767", backgroundColor: "transparent" }}
                   >
-                    <span className="text-white text-xs font-bold">{channel.abbr}</span>
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[0.97] border-2"
+                    style={{ borderColor: "#4a9d9a", color: "#4a9d9a", backgroundColor: "transparent" }}
+                  >
+                    Learn More
+                  </button>
+                  <button
+                    type="button"
+                    className="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[0.97]"
+                    style={{ backgroundColor: "rgba(212,160,136,0.12)", color: "#c17767" }}
+                  >
+                    Soft Terracotta
+                  </button>
+                </div>
+              </div>
+
+              {/* Metric card + progress demo */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#9c8880" }}>
+                  Metric Card with Progress
+                </p>
+                <div
+                  className="rounded-2xl p-5 max-w-sm"
+                  style={{
+                    backgroundColor: "white",
+                    boxShadow: "0 2px 12px rgba(90,70,60,0.08), 0 0 0 1px rgba(210,185,175,0.25)",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9c8880" }}>
+                        Q1 Revenue
+                      </p>
+                      <p className="text-2xl font-bold mt-1" style={{ color: "#3d2e28" }}>
+                        $84.2K
+                      </p>
+                    </div>
+                    <div
+                      className="w-10 h-10 rounded-2xl flex items-center justify-center"
+                      style={{ backgroundColor: "rgba(212,160,136,0.15)" }}
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{ color: "#d4a088" }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mb-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs" style={{ color: "#9c8880" }}>Progress to target</span>
+                      <span className="text-xs font-semibold" style={{ color: "#4a9d9a" }}>82%</span>
+                    </div>
+                    <WarmProgressBar value={82} color="#4a9d9a" />
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: "#4a9d9a" }}>+12.4% from last month</p>
+                </div>
+              </div>
+
+              {/* Input */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#9c8880" }}>
+                  Input Fields
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: "#7a6860" }}>
+                      Search Reports
+                    </label>
+                    <div className="relative">
+                      <svg
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+                        style={{ color: "#b8a9a2" }}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <input
+                        type="text"
+                        placeholder="Search reports..."
+                        className="w-full pl-10 pr-4 py-2.5 text-sm rounded-2xl border focus:outline-none transition-all duration-150"
+                        style={{
+                          backgroundColor: "white",
+                          borderColor: "#e0d5cf",
+                          color: "#3d2e28",
+                        }}
+                      />
+                    </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{channel.name}</p>
-                    <p className={`font-semibold ${channel.positive ? 'text-[#4a9d9a]' : 'text-[#c17767]'}`}>
-                      {channel.change}
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: "#7a6860" }}>
+                      Date Range
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Jan 1 — Feb 28, 2025"
+                      className="w-full px-4 py-2.5 text-sm rounded-2xl border focus:outline-none transition-all duration-150"
+                      style={{
+                        backgroundColor: "white",
+                        borderColor: "#e0d5cf",
+                        color: "#3d2e28",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Analytics tab */}
+          {componentTab === "Analytics" && (
+            <div
+              className="rounded-3xl p-8"
+              style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+            >
+              <h3 className="font-bold text-lg mb-6" style={{ color: "#3d2e28" }}>
+                Analytics Overview
+              </h3>
+              {/* Bar chart */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm font-semibold" style={{ color: "#3d2e28" }}>
+                    Monthly Revenue
+                  </p>
+                  <span
+                    className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                    style={{ backgroundColor: "rgba(212,160,136,0.15)", color: "#c17767" }}
+                  >
+                    FY 2025
+                  </span>
+                </div>
+                <div className="flex items-end gap-2 h-44">
+                  {barValues.map((h, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className="w-full rounded-t cursor-pointer transition-all duration-150"
+                        style={{
+                          height: `${h}%`,
+                          backgroundColor: i === barValues.indexOf(Math.max(...barValues)) ? "#d4a088" : "rgba(212,160,136,0.45)",
+                        }}
+                        title={`$${(h * 1000).toLocaleString()}`}
+                      />
+                      <span className="text-[10px]" style={{ color: "#b8a9a2" }}>
+                        {barMonths[i]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Metric row */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { label: "Avg. Session", value: "4m 32s", color: "#4a9d9a" },
+                  { label: "Bounce Rate", value: "38.2%", color: "#c17767" },
+                  { label: "Pages/Visit", value: "3.8", color: "#d4a088" },
+                  { label: "New Visitors", value: "62.5%", color: "#6b8e8e" },
+                ].map((m) => (
+                  <div
+                    key={m.label}
+                    className="rounded-2xl p-4 text-center"
+                    style={{ backgroundColor: "white", border: "1px solid #e8ddd8" }}
+                  >
+                    <p className="text-xl font-bold mb-1" style={{ color: m.color }}>
+                      {m.value}
+                    </p>
+                    <p className="text-xs" style={{ color: "#9c8880" }}>
+                      {m.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Settings tab */}
+          {componentTab === "Settings" && (
+            <div
+              className="rounded-3xl p-8"
+              style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+            >
+              <h3 className="font-bold text-lg mb-6" style={{ color: "#3d2e28" }}>
+                Dashboard Settings
+              </h3>
+              <div className="space-y-5 max-w-lg">
+                {[
+                  { label: "Email Notifications", description: "Receive weekly performance reports", on: true },
+                  { label: "Dark Mode", description: "Switch to a darker color scheme", on: false },
+                  { label: "Auto-refresh Data", description: "Refresh dashboard every 5 minutes", on: true },
+                  { label: "Show Projections", description: "Display trend lines and forecasts", on: false },
+                ].map((setting) => (
+                  <div
+                    key={setting.label}
+                    className="flex items-center justify-between py-4 border-b"
+                    style={{ borderColor: "#e8ddd8" }}
+                  >
+                    <div>
+                      <p className="text-sm font-semibold" style={{ color: "#3d2e28" }}>
+                        {setting.label}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: "#9c8880" }}>
+                        {setting.description}
+                      </p>
+                    </div>
+                    <div
+                      className="w-11 h-6 rounded-full flex items-center px-0.5 transition-all duration-200 cursor-pointer shrink-0"
+                      style={{ backgroundColor: setting.on ? "#4a9d9a" : "#e0d5cf" }}
+                    >
+                      <div
+                        className="w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200"
+                        style={{ transform: setting.on ? "translateX(20px)" : "translateX(0)" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </RevealBlock>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4. Color palette                                             */}
+      {/* ============================================================ */}
+      <section id="section-colors" className="py-20 md:py-28 px-6 md:px-12" style={{ backgroundColor: "#ede8e3" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+              Design Tokens
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+              Color <span style={{ color: "#d4a088" }}>Palette</span>
+            </h2>
+            <p className="mt-3 text-sm max-w-md" style={{ color: "#7a6860" }}>
+              Six warm-toned colors with clear dashboard semantics — salmon background, cream cards, teal for positive, terracotta for alerts.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {warmPalette.map((color, i) => (
+              <RevealBlock key={color.name} delay={i * 0.06}>
+                <div
+                  className="rounded-3xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1"
+                  style={{ boxShadow: "0 2px 12px rgba(90,70,60,0.10)" }}
+                >
+                  <div
+                    className="h-28 flex flex-col justify-end p-3"
+                    style={{ backgroundColor: color.hex }}
+                  >
+                    <span
+                      className="text-[10px] font-mono font-semibold"
+                      style={{ color: color.light ? "rgba(61,46,40,0.7)" : "rgba(250,248,245,0.75)" }}
+                    >
+                      {color.hex}
+                    </span>
+                  </div>
+                  <div className="p-3.5" style={{ backgroundColor: "#faf8f5" }}>
+                    <p className="text-xs font-bold" style={{ color: "#3d2e28" }}>
+                      {color.name}
+                    </p>
+                    <p className="text-[10px] mt-0.5" style={{ color: "#9c8880" }}>
+                      {color.label}
                     </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Dropdown */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-xs mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4 text-center">Select Elements</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center">Dropdown</h2>
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-left flex items-center justify-between hover:border-[#4a9d9a] transition-colors"
-            >
-              <span className="text-gray-700">Select timeframe</span>
-              <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-10 overflow-hidden">
-                {["Last 7 days", "Last 30 days", "Last 90 days", "All time"].map((item) => (
-                  <button
-                    key={item}
-                    className="w-full px-4 py-3 text-left text-gray-700 hover:bg-[#faf8f5] transition-colors"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Progress Bars */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Progress Indicators</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12">Progress Bars</h2>
-          <div className="bg-[#faf8f5] rounded-3xl shadow-xl shadow-black/8 p-6 md:p-8 space-y-6">
-            {[
-              { label: "Project Alpha", value: 75, color: "#4a9d9a" },
-              { label: "Marketing Campaign", value: 45, color: "#e8b86d" },
-              { label: "User Research", value: 90, color: "#c17767" },
-            ].map((item) => (
-              <div key={item.label}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-gray-700">{item.label}</span>
-                  <span className="text-sm text-gray-500">{item.value}%</span>
-                </div>
-                <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{ width: `${item.value}%`, backgroundColor: item.color }}
-                  />
-                </div>
-              </div>
+              </RevealBlock>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Alerts */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Notifications</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Alerts</h2>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-[#4a9d9a]">
-              <Info className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 mb-1">Information</p>
-                <p className="text-sm text-gray-600">This is a general information alert for your dashboard.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-[#4a9d9a]">
-              <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 mb-1">Success</p>
-                <p className="text-sm text-gray-600">Your changes have been saved successfully.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-[#e8b86d]">
-              <AlertTriangle className="w-5 h-5 text-[#e8b86d] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 mb-1">Warning</p>
-                <p className="text-sm text-gray-600">Please review your input before continuing.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-[#c17767]">
-              <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 mb-1">Error</p>
-                <p className="text-sm text-gray-600">Something went wrong. Please try again later.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ============================================================ */}
+      {/* 5. Dashboard components — Progress bars, badges, chart       */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+            Dashboard Elements
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+            Progress &amp; Status <span style={{ color: "#d4a088" }}>Components</span>
+          </h2>
+        </RevealBlock>
 
-      {/* Table */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-white/70 mb-4">Data Display</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 md:mb-12">Table</h2>
-          <div className="bg-[#faf8f5] rounded-3xl shadow-xl shadow-black/8 overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-white border-b border-gray-200">
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ROI</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { name: "Summer Sale 2024", status: "Active", date: "2024.06", roi: "+24%" },
-                  { name: "Product Launch", status: "Completed", date: "2024.05", roi: "+18%" },
-                  { name: "Brand Awareness", status: "Draft", date: "2024.07", roi: "TBD" },
-                ].map((row, i) => (
-                  <tr key={i} className="border-b border-gray-100 last:border-b-0 hover:bg-white transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-800">{row.name}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        row.status === "Active" ? "bg-[#4a9d9a]/10 text-[#4a9d9a]" :
-                        row.status === "Completed" ? "bg-[#e8b86d]/10 text-[#b89334]" :
-                        "bg-gray-100 text-gray-500"
-                      }`}>
-                        {row.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-500">{row.date}</td>
-                    <td className={`px-6 py-4 text-right font-medium ${
-                      row.roi.startsWith("+") ? "text-[#4a9d9a]" : "text-gray-500"
-                    }`}>
-                      {row.roi}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Rules Summary */}
-      <section className="px-6 md:px-12 py-16 md:py-24 bg-[#faf8f5]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">Design Guidelines</p>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12">Core Rules</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="bg-white rounded-2xl p-6 shadow-lg shadow-black/5">
-              <h3 className="font-bold text-xl mb-6 text-[#4a9d9a]">Do</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-                  <span>Use warm terracotta background bg-[#d4a088]</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-                  <span>Cards with cream bg-[#faf8f5] and soft shadows</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-                  <span>Large rounded corners rounded-2xl/3xl</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-                  <span>Teal #4a9d9a for positive data</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-[#4a9d9a] flex-shrink-0 mt-0.5" />
-                  <span>Coral #c17767 for negative/warning</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg shadow-black/5">
-              <h3 className="font-bold text-xl mb-6 text-[#c17767]">Don&apos;t</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-3">
-                  <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-                  <span>No cold backgrounds (blue, purple, gray)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-                  <span>No pure black text text-black</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-                  <span>No sharp corners rounded-none/sm</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-                  <span>No hard edge shadows</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="w-5 h-5 text-[#c17767] flex-shrink-0 mt-0.5" />
-                  <span>No neon/high-saturation colors</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-white/80 backdrop-blur-xl border-t border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-500">StyleKit Warm Dashboard Showcase</p>
-            <Link
-              href="/styles/warm-dashboard"
-              className="text-sm font-medium text-[#4a9d9a] hover:text-[#3d8482] transition-colors"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Progress bars */}
+          <RevealBlock>
+            <div
+              className="rounded-3xl p-8"
+              style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
             >
-              View Full Documentation
-            </Link>
+              <h3 className="font-bold text-base mb-6" style={{ color: "#3d2e28" }}>
+                Project Progress
+              </h3>
+              <div className="space-y-5">
+                {progressItems.map((item, i) => (
+                  <div key={item.label}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium" style={{ color: "#3d2e28" }}>
+                        {item.label}
+                      </span>
+                      <span className="text-sm font-bold" style={{ color: item.color }}>
+                        {item.value}%
+                      </span>
+                    </div>
+                    <WarmProgressBar value={item.value} color={item.color} delay={i * 0.1} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Badges + mini chart */}
+          <div className="space-y-6">
+            {/* Badge states */}
+            <RevealBlock>
+              <div
+                className="rounded-3xl p-6"
+                style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+              >
+                <h3 className="font-bold text-base mb-4" style={{ color: "#3d2e28" }}>
+                  Status Badges
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {["Active", "Completed", "Processing", "Failed", "Paused", "Error", "Draft"].map((s) => (
+                    <WarmBadge key={s} status={s} />
+                  ))}
+                </div>
+                <div className="mt-6 space-y-3">
+                  {tableRows.map((row) => (
+                    <div
+                      key={row.id}
+                      className="flex items-center justify-between py-2.5 border-b last:border-0"
+                      style={{ borderColor: "#f0e8e4" }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-mono font-semibold" style={{ color: "#9c8880" }}>
+                          {row.id}
+                        </span>
+                        <span className="text-sm" style={{ color: "#3d2e28" }}>
+                          {row.customer}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold" style={{ color: "#3d2e28" }}>
+                          {row.amount}
+                        </span>
+                        <WarmBadge status={row.status} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Donut chart placeholder */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="rounded-3xl p-6"
+                style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+              >
+                <h3 className="font-bold text-base mb-4" style={{ color: "#3d2e28" }}>
+                  Revenue Distribution
+                </h3>
+                <div className="flex items-center gap-6">
+                  <svg viewBox="0 0 100 100" className="w-32 h-32 shrink-0">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#e8ddd8" strokeWidth="14" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#d4a088"
+                      strokeWidth="14"
+                      strokeDasharray="119.4 238.8"
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#4a9d9a"
+                      strokeWidth="14"
+                      strokeDasharray="71.6 238.8"
+                      strokeDashoffset="-119.4"
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#e8b86d"
+                      strokeWidth="14"
+                      strokeDasharray="47.8 238.8"
+                      strokeDashoffset="-191"
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <text x="50" y="46" textAnchor="middle" fontSize="14" fontWeight="700" fill="#3d2e28">
+                      68%
+                    </text>
+                    <text x="50" y="58" textAnchor="middle" fontSize="7" fill="#9c8880">
+                      Target
+                    </text>
+                  </svg>
+                  <div className="flex-1 space-y-2.5">
+                    {[
+                      { label: "Direct Sales", color: "#d4a088", pct: "50%" },
+                      { label: "Partnerships", color: "#4a9d9a", pct: "30%" },
+                      { label: "Referrals", color: "#e8b86d", pct: "20%" },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                          <span style={{ color: "#7a6860" }}>{item.label}</span>
+                        </div>
+                        <span className="font-bold" style={{ color: "#3d2e28" }}>{item.pct}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 6. Live Dashboard Demo                                       */}
+      {/* ============================================================ */}
+      <section id="section-dashboard" className="py-20 md:py-28 px-6 md:px-12" style={{ backgroundColor: "#ede8e3" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+              Interactive Preview
+            </p>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+                Live <span style={{ color: "#d4a088" }}>Dashboard Demo</span>
+              </h2>
+              <div className="flex items-center gap-2 text-xs" style={{ color: "#9c8880" }}>
+                <span
+                  className="inline-block w-2 h-2 rounded-full animate-pulse"
+                  style={{ backgroundColor: "#4a9d9a" }}
+                />
+                Interactive — click sidebar items
+              </div>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock>
+            <div
+              className="rounded-3xl overflow-hidden"
+              style={{
+                height: 560,
+                boxShadow: "0 8px 48px rgba(90,70,60,0.18)",
+              }}
+            >
+              <div className="flex h-full">
+                <WarmSidebar activeNav={activeNav} onNav={setActiveNav} />
+                <div className="flex-1 flex flex-col min-w-0">
+                  <WarmToolbar page={activeNav} />
+                  <WarmContent />
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1}>
+            <p className="mt-5 text-center text-xs md:hidden" style={{ color: "#9c8880" }}>
+              Expand to desktop width to see the warm sidebar navigation.
+            </p>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 7. Design principles — do / don't                           */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+        <RevealBlock className="mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+            Design Principles
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+            Do &amp; <span style={{ color: "#d4a088" }}>Don&apos;t</span>
+          </h2>
+          <p className="mt-3 text-sm max-w-md" style={{ color: "#7a6860" }}>
+            Rules that keep the warm palette readable, professional, and data-friendly.
+          </p>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Do */}
+          <RevealBlock>
+            <div
+              className="rounded-3xl p-8 h-full"
+              style={{
+                backgroundColor: "#faf8f5",
+                boxShadow: "0 4px 24px rgba(90,70,60,0.08)",
+                borderTop: "3px solid #4a9d9a",
+              }}
+            >
+              <div className="flex items-center gap-2.5 mb-6">
+                <div
+                  className="w-7 h-7 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: "#4a9d9a" }}
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-lg" style={{ color: "#3d2e28" }}>
+                  Do
+                </h3>
+              </div>
+              <ul className="space-y-3.5">
+                {[
+                  "Use warm salmon bg-[#d4a088] as the page background",
+                  "Cream cards bg-[#faf8f5] with soft warm shadows",
+                  "rounded-2xl or rounded-3xl on all cards and containers",
+                  "Large numeric displays with clear unit labels below",
+                  "Progress bars with warm accent fills (teal, amber, terracotta)",
+                  "Teal #4a9d9a for positive metrics and success states",
+                  "Terracotta #c17767 for alerts, errors, and negative deltas",
+                  "Cool teal #6b8e8e sidebar for navigation — grounded, warm-neutral",
+                  "shadow-sm to shadow-md soft warm shadows throughout",
+                ].map((rule) => (
+                  <li key={rule} className="flex items-start gap-2.5 text-sm" style={{ color: "#5a4a44" }}>
+                    <span className="font-bold mt-0.5 shrink-0" style={{ color: "#4a9d9a" }}>
+                      +
+                    </span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+
+          {/* Don't */}
+          <RevealBlock delay={0.1}>
+            <div
+              className="rounded-3xl p-8 h-full"
+              style={{
+                backgroundColor: "#faf8f5",
+                boxShadow: "0 4px 24px rgba(90,70,60,0.08)",
+                borderTop: "3px solid #c17767",
+              }}
+            >
+              <div className="flex items-center gap-2.5 mb-6">
+                <div
+                  className="w-7 h-7 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: "#c17767" }}
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-lg" style={{ color: "#3d2e28" }}>
+                  Don&apos;t
+                </h3>
+              </div>
+              <ul className="space-y-3.5">
+                {[
+                  "No cold blue-only palettes — breaks the warm visual cohesion",
+                  "No harsh dark backgrounds like #111827 on content areas",
+                  "No angular layouts — avoid sharp corners that feel clinical",
+                  "No heavy decorative elements competing with numeric data",
+                  "No neon or high-saturation colors anywhere in the palette",
+                  "No pure black text — use #3d2e28 warm-dark instead",
+                  "No shadow-none on cards — soft shadows ground the layout",
+                  "No inconsistent radius tokens — pick rounded-2xl or 3xl and stick",
+                  "No cold gray progress bars — use the warm #e8ddd8 track",
+                ].map((rule) => (
+                  <li key={rule} className="flex items-start gap-2.5 text-sm" style={{ color: "#5a4a44" }}>
+                    <span className="font-bold mt-0.5 shrink-0" style={{ color: "#c17767" }}>
+                      -
+                    </span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* Typography tokens section                                    */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-6 md:px-12" style={{ backgroundColor: "#ede8e3" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#d4a088" }}>
+              Type System
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#3d2e28" }}>
+              Typography <span style={{ color: "#d4a088" }}>Scale</span>
+            </h2>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RevealBlock>
+              <div
+                className="rounded-3xl p-8"
+                style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider mb-6" style={{ color: "#9c8880" }}>
+                  Display Sizes
+                </p>
+                <div className="space-y-5">
+                  {[
+                    { size: "text-7xl", label: "Page Hero", sample: "84.2K" },
+                    { size: "text-5xl", label: "KPI Value", sample: "3,847" },
+                    { size: "text-3xl", label: "Card Title", sample: "Revenue" },
+                    { size: "text-xl", label: "Section Head", sample: "Monthly Data" },
+                  ].map((t) => (
+                    <div key={t.label} className="flex items-baseline gap-4">
+                      <span className={`font-bold ${t.size}`} style={{ color: "#3d2e28" }}>
+                        {t.sample}
+                      </span>
+                      <div>
+                        <p className="text-xs font-semibold" style={{ color: "#3d2e28" }}>{t.label}</p>
+                        <code className="text-[10px]" style={{ color: "#d4a088" }}>{t.size} font-bold</code>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.1}>
+              <div
+                className="rounded-3xl p-8"
+                style={{ backgroundColor: "#faf8f5", boxShadow: "0 4px 24px rgba(90,70,60,0.08)" }}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider mb-6" style={{ color: "#9c8880" }}>
+                  Functional Labels
+                </p>
+                <div className="space-y-4">
+                  {[
+                    { token: "text-sm font-semibold", color: "#3d2e28", label: "Table header / panel label", sample: "Total Revenue" },
+                    { token: "text-sm", color: "#7a6860", label: "Body text", sample: "Data updated 2 mins ago" },
+                    { token: "text-xs uppercase tracking-widest", color: "#9c8880", label: "Section label", sample: "DESIGN TOKENS" },
+                    { token: "text-xs font-mono", color: "#d4a088", label: "Code / hex values", sample: "#d4a088" },
+                    { token: "text-[10px]", color: "#b8a9a2", label: "Micro metadata", sample: "Jan · Feb · Mar" },
+                  ].map((t) => (
+                    <div key={t.label} className="py-2 border-b last:border-0" style={{ borderColor: "#f0e8e4" }}>
+                      <p
+                        className={t.token}
+                        style={{ color: t.color }}
+                      >
+                        {t.sample}
+                      </p>
+                      <code className="text-[10px] mt-0.5 block" style={{ color: "#b8a9a2" }}>
+                        {t.token}
+                      </code>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 8. Footer                                                    */}
+      {/* ============================================================ */}
+      <footer
+        className="border-t"
+        style={{ backgroundColor: "#faf8f5", borderColor: "#d4a088" }}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-2.5 mb-3">
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: "#d4a088" }}
+                >
+                  <span className="text-white font-bold text-sm">W</span>
+                </div>
+                <span className="font-bold text-base" style={{ color: "#3d2e28" }}>
+                  暖色仪表盘
+                </span>
+              </div>
+              <p className="text-xs" style={{ color: "#9c8880" }}>
+                StyleKit &middot; Warm Dashboard &middot; Data visualization with human-friendly warmth
+              </p>
+            </div>
+
+            {/* Links */}
+            <div className="flex items-center gap-6">
+              <Link
+                href="/styles/warm-dashboard"
+                className="text-sm font-semibold transition-colors duration-150"
+                style={{ color: "#d4a088" }}
+              >
+                Documentation
+              </Link>
+              <Link
+                href="/styles"
+                className="text-sm transition-colors duration-150"
+                style={{ color: "#9c8880" }}
+              >
+                All Styles
+              </Link>
+              <Link
+                href="/"
+                className="text-sm font-semibold transition-colors duration-150 flex items-center gap-1"
+                style={{ color: "#4a9d9a" }}
+              >
+                StyleKit
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          {/* Palette strip */}
+          <div className="mt-8 pt-8 border-t flex items-center gap-2" style={{ borderColor: "#e8ddd8" }}>
+            {["#d4a088", "#faf8f5", "#4a9d9a", "#e8b86d", "#c17767", "#6b8e8e"].map((hex) => (
+              <div
+                key={hex}
+                className="w-6 h-6 rounded-full border-2 border-white/60 flex-shrink-0"
+                style={{ backgroundColor: hex, boxShadow: "0 1px 4px rgba(90,70,60,0.15)" }}
+                title={hex}
+              />
+            ))}
+            <span className="ml-2 text-xs" style={{ color: "#b8a9a2" }}>
+              Warm Dashboard color system — Professional, approachable, data-driven.
+            </span>
           </div>
         </div>
       </footer>

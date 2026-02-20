@@ -1,596 +1,1663 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Leaf, Sun, Mountain, Check, X, AlertTriangle, Info, ChevronDown, User } from "lucide-react";
+
+/* ------------------------------------------------------------------ */
+/*  Hooks                                                               */
+/* ------------------------------------------------------------------ */
+
+function useInView(options = {}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, ...options },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Inline SVG motifs                                                   */
+/* ------------------------------------------------------------------ */
+
+function LeafMotif({
+  className = "",
+  color = "#8b9d77",
+  size = 48,
+  rotate = 0,
+  opacity = 0.22,
+}: {
+  className?: string;
+  color?: string;
+  size?: number;
+  rotate?: number;
+  opacity?: number;
+}) {
+  return (
+    <svg
+      className={`pointer-events-none ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      style={{ opacity, transform: `rotate(${rotate}deg)` }}
+    >
+      <path
+        d="M24 4 C32 4 44 14 44 26 C44 36 36 44 24 44 C24 44 8 36 8 24 C8 12 16 4 24 4Z"
+        fill={color}
+      />
+      <path
+        d="M24 4 C24 4 24 44 24 44"
+        stroke="#faf6f1"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        opacity={0.5}
+      />
+    </svg>
+  );
+}
+
+function BranchMotif({
+  className = "",
+  color = "#8b9d77",
+  width = 80,
+  opacity = 0.18,
+}: {
+  className?: string;
+  color?: string;
+  width?: number;
+  opacity?: number;
+}) {
+  return (
+    <svg
+      className={`pointer-events-none ${className}`}
+      width={width}
+      height={Math.round(width * 0.7)}
+      viewBox="0 0 80 56"
+      fill="none"
+      style={{ opacity }}
+    >
+      <path
+        d="M4 52 C12 40 22 32 36 28 C50 24 62 26 76 16"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M36 28 C30 18 26 10 28 4"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M52 26 C56 18 60 14 58 6"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20 36 C16 28 14 22 18 16"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function StoneMotif({
+  className = "",
+  color = "#d4a373",
+  size = 36,
+  opacity = 0.2,
+}: {
+  className?: string;
+  color?: string;
+  size?: number;
+  opacity?: number;
+}) {
+  return (
+    <svg
+      className={`pointer-events-none ${className}`}
+      width={size}
+      height={Math.round(size * 0.72)}
+      viewBox="0 0 36 26"
+      fill="none"
+      style={{ opacity }}
+    >
+      <ellipse cx="18" cy="13" rx="17" ry="12" fill={color} />
+      <ellipse cx="18" cy="11" rx="14" ry="9" fill={color} opacity={0.4} />
+    </svg>
+  );
+}
+
+function SeedlingMotif({
+  className = "",
+  size = 40,
+  opacity = 0.2,
+}: {
+  className?: string;
+  size?: number;
+  opacity?: number;
+}) {
+  return (
+    <svg
+      className={`pointer-events-none ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      style={{ opacity }}
+    >
+      <path
+        d="M20 36 L20 18"
+        stroke="#8b9d77"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20 22 C14 20 10 14 12 8 C16 8 20 12 20 18 C20 12 24 8 28 8 C30 14 26 20 20 22Z"
+        fill="#8b9d77"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Static data                                                         */
+/* ------------------------------------------------------------------ */
+
+const colorPalette = [
+  { name: "Earth Brown", hex: "#5c4033", label: "primary", dark: true },
+  { name: "Warm Cream", hex: "#faf6f1", label: "background", dark: false },
+  { name: "Sage Green", hex: "#8b9d77", label: "accent", dark: false },
+  { name: "Warm Tan", hex: "#d4a373", label: "highlight", dark: false },
+  { name: "Sand", hex: "#e9e0d4", label: "surface", dark: false },
+];
+
+const typographyPairs = [
+  {
+    label: "Display — Serif Light",
+    sample: "Rooted in the Earth",
+    className: "text-4xl font-serif font-light leading-tight",
+    token: "font-serif font-light text-4xl",
+    color: "#5c4033",
+  },
+  {
+    label: "Heading — Serif Regular",
+    sample: "Natural Forms",
+    className: "text-2xl font-serif",
+    token: "font-serif text-2xl",
+    color: "#5c4033",
+  },
+  {
+    label: "Subheading — Serif Medium",
+    sample: "Hand-potted, slow-made",
+    className: "text-lg font-serif font-medium",
+    token: "font-serif font-medium text-lg",
+    color: "rgba(92,64,51,0.75)",
+  },
+  {
+    label: "Body — Serif Light",
+    sample:
+      "Every glaze carries the fingerprint of its maker. Each crack in the slip tells a story older than memory.",
+    className: "text-base font-serif font-light leading-relaxed",
+    token: "font-serif font-light text-base",
+    color: "rgba(92,64,51,0.65)",
+  },
+  {
+    label: "Caption — Serif Italic",
+    sample: "Kiln-fired at dawn, 2024",
+    className: "text-sm font-serif italic",
+    token: "font-serif italic text-sm",
+    color: "rgba(92,64,51,0.45)",
+  },
+];
+
+const doRules = [
+  "Earth brown #5c4033 and warm cream #faf6f1 as the base layer",
+  "Organic irregular rounded corners — rounded-[2rem] or blob shapes",
+  "Sage green #8b9d77 as the fresh accent for action states",
+  "Leaf, branch, stone inline SVG motifs — hand-drawn, never clipart",
+  "font-serif font-light for organic, unhurried reading flow",
+  "Soft earthy shadows: 0 4px 20px rgba(92,64,51,0.1)",
+  "Natural texture via subtle color field backgrounds",
+  "hover:bg-[#f0e8df] warm hover states that feel like sunlight",
+  "Asymmetric spacing and slightly uneven layouts — nature abhors a grid",
+];
+
+const dontRules = [
+  "No cold modern blues — they break the earthy warmth",
+  "No sharp geometric corners — this is not a tech product",
+  "No heavy dark drop-shadows — they feel synthetic and harsh",
+  "No neon or highly saturated colors — all hues should feel sun-dried",
+  "No dense uppercase tracking — let the serif breathe lowercase",
+  "No perfectly identical spacing between every element",
+  "No monospace fonts or code-aesthetic elements",
+  "No pure black — use #5c4033 earth brown as your darkest tone",
+];
+
+const journalEntries = [
+  {
+    date: "March 3",
+    title: "Morning in the Clay Studio",
+    body: "The wheel spun slower today. I let the walls grow thicker, uneven at the rim. The imperfection was the point.",
+    tag: "ceramics",
+    tagColor: "#d4a373",
+  },
+  {
+    date: "March 7",
+    title: "Pressing Leaves into Paper",
+    body: "Ferns collected from the low meadow. Each vein a map of water pulled upward against gravity for years.",
+    tag: "botanical",
+    tagColor: "#8b9d77",
+  },
+  {
+    date: "March 14",
+    title: "The Smell of Damp Earth",
+    body: "After rain, the garden releases something ancient. Petrichor — Latin for the stone's blood. It was always water.",
+    tag: "garden",
+    tagColor: "#5c4033",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Small reusable sub-components                                       */
+/* ------------------------------------------------------------------ */
+
+function SageTag({ label, color = "#8b9d77" }: { label: string; color?: string }) {
+  return (
+    <span
+      className="inline-block text-xs font-serif px-3 py-1 rounded-full"
+      style={{
+        color,
+        backgroundColor: `${color}18`,
+        border: `1px solid ${color}30`,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                         */
+/* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [toggleStates, setToggleStates] = useState([true, false]);
-  const [checkboxStates, setCheckboxStates] = useState([true, false, true]);
+  const { ref: heroRef, inView: heroInView } = useInView();
+  const [componentTab, setComponentTab] = useState<"button" | "card" | "input">("button");
+  const [expandedJournal, setExpandedJournal] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#faf6f1] text-stone-800">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-[#faf6f1]/90 backdrop-blur-sm border-b border-stone-200">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
-          <Link
-            href="/styles/natural-organic"
-            className="font-serif text-stone-600 text-sm md:text-base hover:text-[#8b9d77] transition-colors flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden md:inline">Back</span>
-          </Link>
-          <div className="font-serif text-stone-700 text-sm md:text-base tracking-wide">
-            Natural Organic
-          </div>
-          <Link
-            href="/styles"
-            className="font-serif text-stone-500 text-sm hover:text-stone-700 transition-colors"
-          >
-            All Styles
-          </Link>
-        </div>
-      </nav>
+    <div
+      className="min-h-screen font-serif overflow-x-hidden"
+      style={{ backgroundColor: "#faf6f1", color: "#5c4033" }}
+    >
+      {/* ============================================================ */}
+      {/* 1. Fixed Nav                                                  */}
+      {/* ============================================================ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
+        style={{
+          backgroundColor: "rgba(250,246,241,0.94)",
+          borderBottom: "1px solid rgba(92,64,51,0.08)",
+          boxShadow: "0 2px 16px rgba(92,64,51,0.06)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between" style={{ height: 68 }}>
+            {/* Wordmark */}
+            <div className="flex items-center gap-3">
+              <LeafMotif color="#8b9d77" size={22} opacity={0.85} />
+              <span
+                className="font-serif font-light text-base tracking-wide"
+                style={{ color: "#5c4033" }}
+              >
+                Natural Organic
+              </span>
+            </div>
 
-      {/* Hero Section */}
-      <section className="pt-32 md:pt-40 pb-20 px-4 md:px-8 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b9d77]/15 rounded-full text-[#8b9d77] text-sm mb-6">
-            <Leaf className="w-4 h-4" />
-            <span className="font-serif">Organic Design</span>
+            {/* Center nav links — hidden on mobile */}
+            <nav className="hidden md:flex items-center gap-8">
+              {["Components", "Palette", "Typography", "Principles"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="font-serif font-light text-sm transition-colors duration-300"
+                  style={{ color: "rgba(92,64,51,0.5)" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.color = "#5c4033";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.color = "rgba(92,64,51,0.5)";
+                  }}
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+
+            {/* Back to StyleKit */}
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 font-serif font-light text-sm transition-colors duration-300 group"
+              style={{ color: "#8b9d77" }}
+            >
+              <svg
+                className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              StyleKit
+            </Link>
           </div>
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-stone-800">
-            Natural
-            <br />
-            <span className="text-[#8b9d77]">Organic</span>
-          </h1>
-          <p className="text-stone-500 text-base md:text-lg max-w-xl mb-8 leading-relaxed">
-            Warm earth tones, soft organic shapes, and serif typography.
-            Inspired by nature, crafted for calm and focused experiences.
+        </div>
+      </header>
+
+      {/* ============================================================ */}
+      {/* 2. Hero                                                       */}
+      {/* ============================================================ */}
+      <section className="relative min-h-screen flex items-center pt-24 pb-24 px-6 md:px-12 overflow-hidden">
+        {/* Organic background color fields */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 75% 22%, rgba(139,157,119,0.13) 0%, transparent 55%), " +
+              "radial-gradient(ellipse at 15% 80%, rgba(212,163,115,0.11) 0%, transparent 52%), " +
+              "radial-gradient(ellipse at 50% 55%, rgba(233,224,212,0.3) 0%, transparent 60%)",
+          }}
+        />
+
+        {/* Scattered botanical decorations */}
+        <div className="absolute top-28 right-16 hidden lg:block">
+          <BranchMotif color="#8b9d77" width={120} opacity={0.2} />
+        </div>
+        <div className="absolute top-44 right-44 hidden lg:block">
+          <LeafMotif color="#8b9d77" size={52} rotate={-22} opacity={0.15} />
+        </div>
+        <div className="absolute bottom-36 left-8 hidden md:block">
+          <BranchMotif color="#d4a373" width={90} opacity={0.16} />
+        </div>
+        <div className="absolute bottom-48 left-32 hidden md:block">
+          <LeafMotif color="#5c4033" size={36} rotate={35} opacity={0.1} />
+        </div>
+        <div className="absolute top-1/2 left-5 hidden lg:block">
+          <StoneMotif color="#d4a373" size={48} opacity={0.14} />
+        </div>
+        <div className="absolute bottom-24 right-32 hidden lg:block">
+          <SeedlingMotif size={44} opacity={0.18} />
+        </div>
+
+        {/* Content */}
+        <div ref={heroRef} className="relative z-10 max-w-5xl mx-auto w-full">
+          {/* Eyebrow */}
+          <p
+            className="font-serif font-light text-sm tracking-[0.18em] mb-7"
+            style={{
+              color: "rgba(139,157,119,0.9)",
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+            }}
+          >
+            自然有机风 — Natural Organic
           </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="px-6 py-3 bg-stone-800 text-[#faf6f1] rounded-full font-serif hover:bg-stone-700 transition-colors">
-              Get Started
+
+          {/* Main title */}
+          <h1
+            className="font-serif font-light leading-none mb-7"
+            style={{
+              fontSize: "clamp(3.5rem, 9vw, 8rem)",
+              color: "#5c4033",
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(40px)",
+              transition:
+                "opacity 0.85s cubic-bezier(0.16,1,0.3,1) 0.08s, transform 0.85s cubic-bezier(0.16,1,0.3,1) 0.08s",
+            }}
+          >
+            Rooted in the
+            <br />
+            <span style={{ color: "#8b9d77" }}>earth.</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p
+            className="font-serif font-light text-lg leading-relaxed max-w-xl mb-12"
+            style={{
+              color: "rgba(92,64,51,0.55)",
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(24px)",
+              transition:
+                "opacity 0.85s cubic-bezier(0.16,1,0.3,1) 0.22s, transform 0.85s cubic-bezier(0.16,1,0.3,1) 0.22s",
+            }}
+          >
+            Earthy tones, organic shapes, and natural textures. Warm and
+            approachable — like a hand-potted ceramic or a handmade journal
+            left open in afternoon light.
+          </p>
+
+          {/* CTA row */}
+          <div
+            className="flex flex-col sm:flex-row gap-4 mb-20"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transform: heroInView ? "translateY(0)" : "translateY(20px)",
+              transition:
+                "opacity 0.85s cubic-bezier(0.16,1,0.3,1) 0.36s, transform 0.85s cubic-bezier(0.16,1,0.3,1) 0.36s",
+            }}
+          >
+            {/* Primary — earth brown */}
+            <button
+              className="px-10 py-4 font-serif font-light rounded-[2rem] transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+              style={{
+                backgroundColor: "#5c4033",
+                color: "#faf6f1",
+                boxShadow: "0 4px 20px rgba(92,64,51,0.22)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4a3028";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5c4033";
+              }}
+            >
+              Explore the style
             </button>
-            <button className="px-6 py-3 border border-stone-300 text-stone-700 rounded-full font-serif hover:bg-stone-100 transition-colors">
-              Read More
-            </button>
-          </div>
-        </div>
-        {/* Decorative organic shape */}
-        <div className="absolute top-20 right-0 w-64 h-64 md:w-96 md:h-96 bg-[#8b9d77]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 md:w-72 md:h-72 bg-amber-100/50 rounded-full blur-3xl" />
-      </section>
 
-      {/* Color Palette */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Color Palette
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            {[
-              { name: "Warm Linen", hex: "#FAF6F1", bg: "bg-[#faf6f1]", ring: "ring-1 ring-stone-200" },
-              { name: "Earth Stone", hex: "#44403C", bg: "bg-stone-700", ring: "" },
-              { name: "Sage Green", hex: "#8B9D77", bg: "bg-[#8b9d77]", ring: "" },
-              { name: "Warm Sand", hex: "#D4C4A8", bg: "bg-[#d4c4a8]", ring: "" },
-              { name: "Terracotta", hex: "#C4826D", bg: "bg-[#c4826d]", ring: "" },
-            ].map((color) => (
-              <div key={color.name} className="rounded-[1.5rem] overflow-hidden bg-white shadow-sm border border-stone-100">
-                <div className={`h-20 md:h-28 ${color.bg} ${color.ring}`} />
-                <div className="p-3 md:p-4">
-                  <p className="font-serif text-xs md:text-sm text-stone-700">{color.name}</p>
-                  <p className="text-xs text-stone-400">{color.hex}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Buttons */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Buttons
-          </h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-sm text-stone-400 mb-4">Variants</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-stone-800 text-[#faf6f1] rounded-full font-serif hover:bg-stone-700 transition-colors">
-                  Primary
-                </button>
-                <button className="px-6 py-3 border border-stone-300 text-stone-700 rounded-full font-serif hover:bg-stone-100 transition-colors">
-                  Secondary
-                </button>
-                <button className="px-6 py-3 bg-[#8b9d77] text-white rounded-full font-serif hover:bg-[#7a8c67] transition-colors">
-                  Accent
-                </button>
-                <button className="px-6 py-3 bg-[#c4826d] text-white rounded-full font-serif hover:bg-[#b3725e] transition-colors">
-                  Warm
-                </button>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-stone-400 mb-4">With Icons</p>
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-stone-800 text-[#faf6f1] rounded-full font-serif hover:bg-stone-700 transition-colors flex items-center gap-2">
-                  <Leaf className="w-4 h-4" />
-                  Explore
-                </button>
-                <button className="px-6 py-3 border border-stone-300 text-stone-700 rounded-full font-serif hover:bg-stone-100 transition-colors flex items-center gap-2">
-                  <Sun className="w-4 h-4" />
-                  Discover
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Cards */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Cards
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-[#faf6f1] rounded-[2rem] p-6 md:p-8 hover:shadow-lg transition-shadow border border-stone-100 group">
-              <div className="w-12 h-12 rounded-full bg-[#8b9d77]/15 flex items-center justify-center mb-4">
-                <Leaf className="w-6 h-6 text-[#8b9d77]" />
-              </div>
-              <h3 className="font-serif text-lg md:text-xl font-bold text-stone-800 mb-2">
-                Sustainable Design
-              </h3>
-              <p className="text-sm text-stone-500 leading-relaxed">
-                Thoughtful layouts that breathe with natural whitespace and organic flow.
-              </p>
-            </div>
-            <div className="bg-[#faf6f1] rounded-[2rem] p-6 md:p-8 hover:shadow-lg transition-shadow border border-stone-100 group">
-              <div className="w-12 h-12 rounded-full bg-[#c4826d]/15 flex items-center justify-center mb-4">
-                <Sun className="w-6 h-6 text-[#c4826d]" />
-              </div>
-              <h3 className="font-serif text-lg md:text-xl font-bold text-stone-800 mb-2">
-                Warm Palette
-              </h3>
-              <p className="text-sm text-stone-500 leading-relaxed">
-                Earth tones and muted colors that create a sense of comfort and trust.
-              </p>
-            </div>
-            <div className="bg-[#faf6f1] rounded-[2rem] p-6 md:p-8 hover:shadow-lg transition-shadow border border-stone-100 group">
-              <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
-                <Mountain className="w-6 h-6 text-amber-700" />
-              </div>
-              <h3 className="font-serif text-lg md:text-xl font-bold text-stone-800 mb-2">
-                Grounded Typography
-              </h3>
-              <p className="text-sm text-stone-500 leading-relaxed">
-                Serif headings paired with clean body text for readable, elegant content.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Form Elements */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Form Elements
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <label className="font-serif text-sm text-stone-600 mb-2 block">Name</label>
-              <input
-                type="text"
-                placeholder="Your name..."
-                className="w-full bg-white border border-stone-200 rounded-2xl px-5 py-3 text-stone-700 placeholder:text-stone-300 focus:border-[#8b9d77] focus:outline-none focus:ring-2 focus:ring-[#8b9d77]/20 transition-all"
-              />
-            </div>
-            <div>
-              <label className="font-serif text-sm text-stone-600 mb-2 block">Email</label>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="w-full bg-white border border-stone-200 rounded-2xl px-5 py-3 text-stone-700 placeholder:text-stone-300 focus:border-[#8b9d77] focus:outline-none focus:ring-2 focus:ring-[#8b9d77]/20 transition-all"
-              />
-            </div>
-            <div>
-              <label className="font-serif text-sm text-stone-600 mb-2 block">Message</label>
-              <textarea
-                placeholder="Share your thoughts..."
-                rows={4}
-                className="w-full bg-white border border-stone-200 rounded-2xl px-5 py-3 text-stone-700 placeholder:text-stone-300 focus:border-[#8b9d77] focus:outline-none focus:ring-2 focus:ring-[#8b9d77]/20 transition-all resize-none"
-              />
-            </div>
-            <button className="w-full px-6 py-3 bg-stone-800 text-[#faf6f1] rounded-full font-serif hover:bg-stone-700 transition-colors">
-              Send Message
+            {/* Ghost — sage green */}
+            <button
+              className="px-10 py-4 font-serif font-light rounded-[2rem] border transition-all duration-500 hover:scale-[1.01] focus:outline-none"
+              style={{
+                color: "#8b9d77",
+                borderColor: "rgba(139,157,119,0.35)",
+                backgroundColor: "transparent",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                  "rgba(139,157,119,0.08)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+              }}
+            >
+              Read the journal
             </button>
           </div>
+
+          {/* Organic leaf divider */}
+          <div
+            className="flex items-center gap-4"
+            style={{
+              opacity: heroInView ? 1 : 0,
+              transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.6s",
+            }}
+          >
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(92,64,51,0.1)" }} />
+            <LeafMotif color="#8b9d77" size={18} opacity={0.4} />
+            <LeafMotif color="#d4a373" size={14} rotate={60} opacity={0.35} />
+            <LeafMotif color="#8b9d77" size={18} rotate={120} opacity={0.4} />
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(92,64,51,0.1)" }} />
+          </div>
         </div>
       </section>
 
-      {/* Tabs */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Tabs
-          </h2>
-          <div className="bg-[#faf6f1] rounded-[2rem] p-6 md:p-8 border border-stone-100">
-            <div className="flex gap-2 mb-6 border-b border-stone-200 pb-4">
-              {["Overview", "Details", "Reviews"].map((tab, i) => (
+      {/* ============================================================ */}
+      {/* 3. Component demos                                            */}
+      {/* ============================================================ */}
+      <section
+        id="components"
+        className="relative py-24 md:py-32 px-6 md:px-12"
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 85% 50%, rgba(233,224,212,0.35) 0%, transparent 55%)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealBlock className="mb-12">
+            <div className="flex items-center gap-3 mb-3">
+              <BranchMotif color="#8b9d77" width={50} opacity={0.4} />
+              <p
+                className="font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(139,157,119,0.8)" }}
+              >
+                Components
+              </p>
+            </div>
+            <h2
+              className="font-serif font-light leading-tight mb-4"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", color: "#5c4033" }}
+            >
+              Organic building blocks
+            </h2>
+            <p
+              className="font-serif font-light text-base leading-relaxed max-w-md"
+              style={{ color: "rgba(92,64,51,0.55)" }}
+            >
+              Every component shaped like it grew — rounded at the edges,
+              warm in tone, never rigid or synthetic.
+            </p>
+          </RevealBlock>
+
+          {/* Tab switcher — organic pill shape */}
+          <RevealBlock delay={0.08} className="mb-10">
+            <div
+              className="flex items-center gap-1 w-fit p-1.5 rounded-[2rem]"
+              style={{
+                backgroundColor: "#e9e0d4",
+                boxShadow: "inset 0 2px 6px rgba(92,64,51,0.08)",
+              }}
+            >
+              {(["button", "card", "input"] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(i)}
-                  className={`px-5 py-2.5 rounded-full font-serif text-sm transition-all ${
-                    activeTab === i
-                      ? "bg-stone-800 text-[#faf6f1]"
-                      : "text-stone-500 hover:bg-stone-100"
-                  }`}
+                  type="button"
+                  onClick={() => setComponentTab(tab)}
+                  className="px-6 py-2 font-serif font-light text-sm rounded-[1.5rem] transition-all duration-300 focus:outline-none"
+                  style={
+                    componentTab === tab
+                      ? {
+                          backgroundColor: "#faf6f1",
+                          color: "#5c4033",
+                          boxShadow: "0 2px 8px rgba(92,64,51,0.12)",
+                        }
+                      : {
+                          backgroundColor: "transparent",
+                          color: "rgba(92,64,51,0.45)",
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (componentTab !== tab) {
+                      (e.currentTarget as HTMLButtonElement).style.color = "#5c4033";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (componentTab !== tab) {
+                      (e.currentTarget as HTMLButtonElement).style.color = "rgba(92,64,51,0.45)";
+                    }
+                  }}
                 >
-                  {tab}
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
             </div>
-            <div className="text-stone-600 text-sm leading-relaxed">
-              {activeTab === 0 && "A gentle overview with warm, inviting content that feels natural and organic."}
-              {activeTab === 1 && "Detailed information presented in a calm, structured manner with earth-tone accents."}
-              {activeTab === 2 && "Thoughtful reviews from our community, shared with care and authenticity."}
-            </div>
-          </div>
-        </div>
-      </section>
+          </RevealBlock>
 
-      {/* Badges */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Badges
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            <span className="px-4 py-1.5 bg-stone-800 text-[#faf6f1] rounded-full font-serif text-sm">
-              Default
-            </span>
-            <span className="px-4 py-1.5 bg-[#8b9d77] text-white rounded-full font-serif text-sm">
-              Sage
-            </span>
-            <span className="px-4 py-1.5 bg-[#c4826d] text-white rounded-full font-serif text-sm">
-              Terracotta
-            </span>
-            <span className="px-4 py-1.5 bg-[#d4c4a8] text-stone-800 rounded-full font-serif text-sm">
-              Sand
-            </span>
-            <span className="px-4 py-1.5 border border-stone-300 text-stone-600 rounded-full font-serif text-sm">
-              Outline
-            </span>
-          </div>
-        </div>
-      </section>
+          {/* Demo panel */}
+          <RevealBlock delay={0.14}>
+            <div
+              className="relative rounded-[2rem] p-10 md:p-14 overflow-hidden"
+              style={{
+                backgroundColor: "#faf6f1",
+                border: "1px solid rgba(92,64,51,0.07)",
+                boxShadow: "0 4px 28px rgba(92,64,51,0.07)",
+              }}
+            >
+              {/* Corner leaf accents */}
+              <div className="absolute top-6 right-8 pointer-events-none">
+                <LeafMotif color="#8b9d77" size={32} rotate={-30} opacity={0.15} />
+              </div>
+              <div className="absolute bottom-6 left-8 pointer-events-none">
+                <LeafMotif color="#d4a373" size={24} rotate={140} opacity={0.12} />
+              </div>
 
-      {/* Progress */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Progress
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-serif text-stone-600">Growth</span>
-                <span className="text-stone-400">72%</span>
-              </div>
-              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full w-[72%] bg-[#8b9d77] rounded-full transition-all" />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-serif text-stone-600">Warmth</span>
-                <span className="text-stone-400">58%</span>
-              </div>
-              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full w-[58%] bg-[#c4826d] rounded-full transition-all" />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-serif text-stone-600">Balance</span>
-                <span className="text-stone-400">85%</span>
-              </div>
-              <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full w-[85%] bg-stone-700 rounded-full transition-all" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+              {/* ---- Buttons tab ---- */}
+              {componentTab === "button" && (
+                <div className="flex flex-col gap-10">
+                  <div>
+                    <p
+                      className="font-serif font-light text-xs tracking-[0.15em] mb-5"
+                      style={{ color: "rgba(92,64,51,0.4)" }}
+                    >
+                      Primary variants
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {/* Earth brown */}
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] transition-all duration-400 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        style={{
+                          backgroundColor: "#5c4033",
+                          color: "#faf6f1",
+                          boxShadow: "0 4px 16px rgba(92,64,51,0.2)",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4a3028";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5c4033";
+                        }}
+                      >
+                        Earth — primary
+                      </button>
 
-      {/* Alerts */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Alerts
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-5 bg-[#8b9d77]/10 border border-[#8b9d77]/20 rounded-[1.5rem]">
-              <Check className="w-5 h-5 text-[#8b9d77] mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-serif font-bold text-stone-800 mb-1">Success</p>
-                <p className="text-sm text-stone-600">Your changes have been saved naturally.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-5 bg-amber-50 border border-amber-200 rounded-[1.5rem]">
-              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-serif font-bold text-stone-800 mb-1">Warning</p>
-                <p className="text-sm text-stone-600">Please review your input carefully.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-5 bg-[#c4826d]/10 border border-[#c4826d]/20 rounded-[1.5rem]">
-              <X className="w-5 h-5 text-[#c4826d] mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-serif font-bold text-stone-800 mb-1">Error</p>
-                <p className="text-sm text-stone-600">Something needs your attention.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4 p-5 bg-stone-100 border border-stone-200 rounded-[1.5rem]">
-              <Info className="w-5 h-5 text-stone-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-serif font-bold text-stone-800 mb-1">Info</p>
-                <p className="text-sm text-stone-600">Here is some helpful information.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                      {/* Sage green */}
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] transition-all duration-400 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        style={{
+                          backgroundColor: "#8b9d77",
+                          color: "#faf6f1",
+                          boxShadow: "0 4px 16px rgba(139,157,119,0.2)",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#7a8c67";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#8b9d77";
+                        }}
+                      >
+                        Sage — action
+                      </button>
 
-      {/* Controls */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Controls
-          </h2>
-          <div className="space-y-8">
-            <div>
-              <p className="text-sm text-stone-400 mb-4">Toggles</p>
-              <div className="space-y-3">
-                {["Natural mode", "Organic sync"].map((label, i) => (
-                  <label key={label} className="flex items-center justify-between p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
-                    <span className="font-serif text-stone-700">{label}</span>
-                    <button
-                      role="switch"
-                      aria-checked={toggleStates[i]}
-                      aria-label={label}
-                      onClick={() => {
-                        const newStates = [...toggleStates];
-                        newStates[i] = !newStates[i];
-                        setToggleStates(newStates);
+                      {/* Warm tan */}
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] transition-all duration-400 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        style={{
+                          backgroundColor: "#d4a373",
+                          color: "#5c4033",
+                          boxShadow: "0 4px 16px rgba(212,163,115,0.22)",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#c49363";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#d4a373";
+                        }}
+                      >
+                        Tan — highlight
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p
+                      className="font-serif font-light text-xs tracking-[0.15em] mb-5"
+                      style={{ color: "rgba(92,64,51,0.4)" }}
+                    >
+                      Ghost / outline variants
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] border transition-all duration-400 focus:outline-none"
+                        style={{
+                          color: "#5c4033",
+                          borderColor: "rgba(92,64,51,0.25)",
+                          backgroundColor: "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#f0e8df";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+                        }}
+                      >
+                        Ghost earth
+                      </button>
+
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] border transition-all duration-400 focus:outline-none"
+                        style={{
+                          color: "#8b9d77",
+                          borderColor: "rgba(139,157,119,0.3)",
+                          backgroundColor: "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                            "rgba(139,157,119,0.08)";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+                        }}
+                      >
+                        Ghost sage
+                      </button>
+
+                      <button
+                        className="px-8 py-3.5 font-serif font-light rounded-[2rem] transition-all duration-400 focus:outline-none"
+                        style={{
+                          color: "rgba(92,64,51,0.45)",
+                          backgroundColor: "#e9e0d4",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#ddd3c5";
+                          (e.currentTarget as HTMLButtonElement).style.color = "#5c4033";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#e9e0d4";
+                          (e.currentTarget as HTMLButtonElement).style.color = "rgba(92,64,51,0.45)";
+                        }}
+                      >
+                        Sand surface
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- Card tab ---- */}
+              {componentTab === "card" && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Standard — cream card */}
+                  <div
+                    className="group p-8 rounded-[2rem] cursor-pointer transition-all duration-500 hover:-translate-y-1"
+                    style={{
+                      backgroundColor: "#f5f0eb",
+                      border: "1px solid rgba(92,64,51,0.07)",
+                      boxShadow: "0 4px 20px rgba(92,64,51,0.07)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "0 12px 32px rgba(92,64,51,0.12)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "0 4px 20px rgba(92,64,51,0.07)";
+                    }}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <SageTag label="ceramics" />
+                      <LeafMotif color="#8b9d77" size={22} rotate={-15} opacity={0.35} />
+                    </div>
+                    <h3
+                      className="font-serif font-light text-xl mb-3 transition-colors duration-400"
+                      style={{ color: "#5c4033" }}
+                    >
+                      Hand-thrown bowl
+                    </h3>
+                    <p
+                      className="font-serif font-light text-sm leading-relaxed"
+                      style={{ color: "rgba(92,64,51,0.55)" }}
+                    >
+                      Wheel-thrown in stoneware clay, glazed with ash and iron
+                      oxide. Each piece carries a slight asymmetry — proof of hands.
+                    </p>
+                  </div>
+
+                  {/* Dark — earth brown card */}
+                  <div
+                    className="group relative p-8 rounded-[2rem] cursor-pointer overflow-hidden transition-all duration-500 hover:-translate-y-1"
+                    style={{
+                      backgroundColor: "#5c4033",
+                      boxShadow: "0 4px 24px rgba(92,64,51,0.22)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "0 12px 36px rgba(92,64,51,0.3)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "0 4px 24px rgba(92,64,51,0.22)";
+                    }}
+                  >
+                    <div className="absolute top-4 right-6 pointer-events-none">
+                      <LeafMotif color="#d4a373" size={36} rotate={20} opacity={0.25} />
+                    </div>
+                    <div className="mb-4">
+                      <span
+                        className="inline-block text-xs font-serif px-3 py-1 rounded-full"
+                        style={{
+                          color: "#d4a373",
+                          backgroundColor: "rgba(212,163,115,0.15)",
+                          border: "1px solid rgba(212,163,115,0.25)",
+                        }}
+                      >
+                        botanical
+                      </span>
+                    </div>
+                    <h3
+                      className="font-serif font-light text-xl mb-3"
+                      style={{ color: "#faf6f1" }}
+                    >
+                      Pressed fern study
+                    </h3>
+                    <p
+                      className="font-serif font-light text-sm leading-relaxed"
+                      style={{ color: "rgba(250,246,241,0.55)" }}
+                    >
+                      Collected at the woodland edge after autumn rain. Mounted
+                      on laid paper using rice-starch paste — traditional method.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- Input tab ---- */}
+              {componentTab === "input" && (
+                <div className="max-w-lg mx-auto flex flex-col gap-6">
+                  <div>
+                    <label
+                      className="block font-serif font-light text-sm italic mb-2 tracking-wide"
+                      style={{ color: "rgba(92,64,51,0.5)" }}
+                    >
+                      Your name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Write gently here..."
+                      className="w-full px-5 py-4 font-serif font-light text-base rounded-[1.5rem] outline-none transition-all duration-400"
+                      style={{
+                        backgroundColor: "#f5f0eb",
+                        border: "1px solid rgba(92,64,51,0.12)",
+                        color: "#5c4033",
                       }}
-                      className={`w-12 h-7 rounded-full transition-colors relative ${
-                        toggleStates[i] ? "bg-[#8b9d77]" : "bg-stone-300"
-                      }`}
+                      onFocus={(e) => {
+                        (e.currentTarget as HTMLInputElement).style.borderColor =
+                          "rgba(139,157,119,0.45)";
+                        (e.currentTarget as HTMLInputElement).style.boxShadow =
+                          "0 0 0 3px rgba(139,157,119,0.08)";
+                      }}
+                      onBlur={(e) => {
+                        (e.currentTarget as HTMLInputElement).style.borderColor =
+                          "rgba(92,64,51,0.12)";
+                        (e.currentTarget as HTMLInputElement).style.boxShadow = "none";
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block font-serif font-light text-sm italic mb-2 tracking-wide"
+                      style={{ color: "rgba(92,64,51,0.5)" }}
+                    >
+                      Material
+                    </label>
+                    <select
+                      className="w-full px-5 py-4 font-serif font-light text-base rounded-[1.5rem] outline-none transition-all duration-400 appearance-none cursor-pointer"
+                      style={{
+                        backgroundColor: "#f5f0eb",
+                        border: "1px solid rgba(92,64,51,0.12)",
+                        color: "#5c4033",
+                      }}
+                    >
+                      {["Stoneware clay", "Terracotta", "Porcelain", "Handmade paper"].map(
+                        (opt) => (
+                          <option key={opt}>{opt}</option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      className="block font-serif font-light text-sm italic mb-2 tracking-wide"
+                      style={{ color: "rgba(92,64,51,0.5)" }}
+                    >
+                      A note
+                    </label>
+                    <textarea
+                      placeholder="Let the words settle slowly..."
+                      rows={4}
+                      className="w-full px-5 py-4 font-serif font-light text-base rounded-[1.5rem] outline-none transition-all duration-400 resize-none"
+                      style={{
+                        backgroundColor: "#f5f0eb",
+                        border: "1px solid rgba(92,64,51,0.12)",
+                        color: "#5c4033",
+                      }}
+                      onFocus={(e) => {
+                        (e.currentTarget as HTMLTextAreaElement).style.borderColor =
+                          "rgba(139,157,119,0.45)";
+                        (e.currentTarget as HTMLTextAreaElement).style.boxShadow =
+                          "0 0 0 3px rgba(139,157,119,0.08)";
+                      }}
+                      onBlur={(e) => {
+                        (e.currentTarget as HTMLTextAreaElement).style.borderColor =
+                          "rgba(92,64,51,0.12)";
+                        (e.currentTarget as HTMLTextAreaElement).style.boxShadow = "none";
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    className="w-full py-4 font-serif font-light rounded-[2rem] transition-all duration-400 hover:scale-[1.01] active:scale-[0.99] focus:outline-none"
+                    style={{
+                      backgroundColor: "#5c4033",
+                      color: "#faf6f1",
+                      boxShadow: "0 4px 16px rgba(92,64,51,0.18)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4a3028";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5c4033";
+                    }}
+                  >
+                    Send
+                  </button>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4. Color palette — organic blob swatches                     */}
+      {/* ============================================================ */}
+      <section
+        id="palette"
+        className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 20% 40%, rgba(233,224,212,0.42) 0%, transparent 55%)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealBlock className="mb-16">
+            <div className="flex items-center gap-3 mb-3">
+              <StoneMotif color="#d4a373" size={28} opacity={0.5} />
+              <p
+                className="font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(212,163,115,0.9)" }}
+              >
+                Palette
+              </p>
+            </div>
+            <h2
+              className="font-serif font-light leading-tight mb-4"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", color: "#5c4033" }}
+            >
+              Colors of soil and stone
+            </h2>
+            <p
+              className="font-serif font-light text-base leading-relaxed max-w-md"
+              style={{ color: "rgba(92,64,51,0.55)" }}
+            >
+              Five tones drawn from the natural world — earth, cream, sage,
+              tan, and sand. Nothing synthetic, nothing cold.
+            </p>
+          </RevealBlock>
+
+          {/* Organic blob swatches — slightly irregular arrangement */}
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+            {colorPalette.map((swatch, i) => {
+              const blobRadii = [
+                "62% 38% 46% 54% / 55% 48% 52% 45%",
+                "48% 52% 38% 62% / 42% 58% 44% 56%",
+                "55% 45% 60% 40% / 50% 44% 56% 50%",
+                "40% 60% 52% 48% / 58% 42% 48% 52%",
+                "52% 48% 44% 56% / 46% 54% 58% 42%",
+              ];
+              const sizes = [180, 160, 192, 156, 172];
+              const vertOffsets = [0, 14, -8, 18, 4];
+
+              return (
+                <RevealBlock key={swatch.hex} delay={i * 0.07}>
+                  <div
+                    className="flex flex-col items-center gap-4 group cursor-default"
+                    style={{ marginTop: vertOffsets[i] }}
+                  >
+                    <div
+                      className="transition-transform duration-500 group-hover:scale-105 flex items-end justify-end"
+                      style={{
+                        width: sizes[i],
+                        height: Math.round(sizes[i] * 0.9),
+                        backgroundColor: swatch.hex,
+                        borderRadius: blobRadii[i],
+                        boxShadow: "0 6px 24px rgba(92,64,51,0.11)",
+                        border:
+                          swatch.hex === "#faf6f1"
+                            ? "1px solid rgba(92,64,51,0.13)"
+                            : "none",
+                        padding: "14px 18px",
+                      }}
                     >
                       <span
-                        className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform shadow-sm ${
-                          toggleStates[i] ? "translate-x-6" : "translate-x-1"
-                        }`}
-                      />
-                    </button>
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-stone-400 mb-4">Checkboxes</p>
-              <div className="space-y-3">
-                {["Sustainable design", "Warm palette", "Organic shapes"].map((label, i) => (
-                  <label key={label} className="flex items-center gap-3 p-4 bg-[#faf6f1] rounded-2xl cursor-pointer border border-stone-100">
-                    <button
-                      role="checkbox"
-                      aria-checked={checkboxStates[i]}
-                      aria-label={label}
-                      onClick={() => {
-                        const newStates = [...checkboxStates];
-                        newStates[i] = !newStates[i];
-                        setCheckboxStates(newStates);
-                      }}
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
-                        checkboxStates[i]
-                          ? "bg-[#8b9d77] text-white"
-                          : "border-2 border-stone-300"
-                      }`}
-                    >
-                      {checkboxStates[i] && <Check className="w-4 h-4" />}
-                    </button>
-                    <span className="font-serif text-stone-700">{label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Dropdown */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-md mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Dropdown
-          </h2>
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between px-5 py-3 bg-white border border-stone-200 rounded-2xl font-serif text-stone-700 hover:bg-stone-50 transition-colors"
-            >
-              <span>Select a season</span>
-              <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-stone-200 rounded-2xl shadow-lg overflow-hidden z-10">
-                {["Spring", "Summer", "Autumn", "Winter"].map((item) => (
-                  <button
-                    key={item}
-                    className="w-full px-5 py-3 text-left font-serif text-stone-700 hover:bg-[#8b9d77]/10 transition-colors"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Table */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Table
-          </h2>
-          <div className="bg-[#faf6f1] rounded-[2rem] overflow-hidden border border-stone-100">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-stone-200">
-                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Element</th>
-                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Type</th>
-                  <th className="px-6 py-4 text-left font-serif font-bold text-stone-800">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { element: "Leaf", type: "Organic", status: "Active" },
-                  { element: "Stone", type: "Natural", status: "Active" },
-                  { element: "Earth", type: "Grounded", status: "Pending" },
-                ].map((row) => (
-                  <tr key={row.element} className="border-b border-stone-100 last:border-0">
-                    <td className="px-6 py-4 font-serif text-stone-700">{row.element}</td>
-                    <td className="px-6 py-4 text-stone-500">{row.type}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-serif ${
-                        row.status === "Active"
-                          ? "bg-[#8b9d77]/15 text-[#8b9d77]"
-                          : "bg-amber-100 text-amber-700"
-                      }`}>
-                        {row.status}
+                        className="font-serif font-light text-xs tracking-widest"
+                        style={{
+                          color: swatch.dark
+                            ? "rgba(250,246,241,0.65)"
+                            : swatch.hex === "#faf6f1"
+                            ? "rgba(92,64,51,0.35)"
+                            : "rgba(92,64,51,0.45)",
+                        }}
+                      >
+                        {swatch.hex}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <div className="text-center">
+                      <p
+                        className="font-serif font-light text-sm"
+                        style={{ color: "#5c4033" }}
+                      >
+                        {swatch.name}
+                      </p>
+                      <p
+                        className="font-serif font-light text-xs mt-0.5"
+                        style={{ color: "rgba(92,64,51,0.4)" }}
+                      >
+                        {swatch.label}
+                      </p>
+                    </div>
+                  </div>
+                </RevealBlock>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Stats
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { value: "98%", label: "Organic", color: "text-[#8b9d77]" },
-              { value: "2.4k", label: "Elements", color: "text-stone-800" },
-              { value: "156", label: "Patterns", color: "text-[#c4826d]" },
-              { value: "12", label: "Seasons", color: "text-amber-700" },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-white rounded-[1.5rem] p-6 text-center border border-stone-100">
-                <p className={`font-serif text-3xl md:text-4xl font-bold ${stat.color} mb-2`}>
-                  {stat.value}
-                </p>
-                <p className="text-sm text-stone-500">{stat.label}</p>
-              </div>
+      {/* ============================================================ */}
+      {/* 5. Typography — Organic type scale                           */}
+      {/* ============================================================ */}
+      <section
+        id="typography"
+        className="relative py-24 md:py-32 px-6 md:px-12"
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 70% 20%, rgba(139,157,119,0.08) 0%, transparent 55%)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealBlock className="mb-16">
+            <div className="flex items-center gap-3 mb-3">
+              <SeedlingMotif size={28} opacity={0.55} />
+              <p
+                className="font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(139,157,119,0.85)" }}
+              >
+                Typography
+              </p>
+            </div>
+            <h2
+              className="font-serif font-light leading-tight mb-4"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", color: "#5c4033" }}
+            >
+              Words that breathe
+            </h2>
+            <p
+              className="font-serif font-light text-base leading-relaxed max-w-md"
+              style={{ color: "rgba(92,64,51,0.55)" }}
+            >
+              Serif light as the backbone. Every size chosen for natural reading
+              rhythm, not information density.
+            </p>
+          </RevealBlock>
+
+          <div className="space-y-5">
+            {typographyPairs.map((pair, i) => (
+              <RevealBlock key={pair.label} delay={i * 0.06}>
+                <div
+                  className="p-8 md:p-10 rounded-[2rem] flex flex-col md:flex-row md:items-center md:justify-between gap-6 transition-all duration-400 cursor-default"
+                  style={{
+                    backgroundColor: "#faf6f1",
+                    border: "1px solid rgba(92,64,51,0.06)",
+                    boxShadow: "0 2px 12px rgba(92,64,51,0.05)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f0e8df";
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 4px 20px rgba(92,64,51,0.09)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = "#faf6f1";
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 2px 12px rgba(92,64,51,0.05)";
+                  }}
+                >
+                  <div className="flex-1">
+                    <p
+                      className={pair.className}
+                      style={{ color: pair.color }}
+                    >
+                      {pair.sample}
+                    </p>
+                  </div>
+                  <div className="md:text-right flex-shrink-0">
+                    <p
+                      className="font-serif font-light text-xs tracking-[0.12em] mb-1"
+                      style={{ color: "rgba(92,64,51,0.35)" }}
+                    >
+                      {pair.label}
+                    </p>
+                    <code
+                      className="font-serif text-xs"
+                      style={{ color: "#8b9d77" }}
+                    >
+                      {pair.token}
+                    </code>
+                  </div>
+                </div>
+              </RevealBlock>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Avatars */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12 text-stone-800">
-            Avatars
-          </h2>
-          <div className="flex flex-wrap items-end gap-6">
-            <div className="w-16 h-16 rounded-full bg-[#8b9d77]/15 flex items-center justify-center">
-              <User className="w-8 h-8 text-[#8b9d77]" />
-            </div>
-            <div className="w-14 h-14 rounded-full bg-[#c4826d]/15 flex items-center justify-center">
-              <User className="w-7 h-7 text-[#c4826d]" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center">
-              <User className="w-6 h-6 text-stone-500" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-              <User className="w-5 h-5 text-amber-700" />
-            </div>
-            <div className="flex -space-x-3">
-              {["#8b9d77", "#c4826d", "#d4c4a8", "#78716c"].map((color, i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-[#faf6f1]"
-                  style={{ backgroundColor: color }}
-                >
-                  <User className="w-5 h-5 text-white" />
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* ============================================================ */}
+      {/* 6. Design principles — do / don't panels                    */}
+      {/* ============================================================ */}
+      <section
+        id="principles"
+        className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 10% 60%, rgba(212,163,115,0.09) 0%, transparent 50%), " +
+              "radial-gradient(ellipse at 90% 30%, rgba(139,157,119,0.08) 0%, transparent 50%)",
+          }}
+        />
+        <div className="absolute top-16 right-20 hidden lg:block pointer-events-none">
+          <BranchMotif color="#8b9d77" width={70} opacity={0.15} />
         </div>
-      </section>
+        <div className="absolute bottom-20 left-16 hidden lg:block pointer-events-none">
+          <BranchMotif color="#d4a373" width={55} opacity={0.12} />
+        </div>
 
-      {/* Rules Summary */}
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-stone-800 text-[#faf6f1]">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold mb-8 md:mb-12">
-            Core Design Rules
-          </h2>
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealBlock className="mb-16">
+            <div className="flex items-center gap-3 mb-3">
+              <LeafMotif color="#5c4033" size={22} rotate={10} opacity={0.5} />
+              <p
+                className="font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(92,64,51,0.55)" }}
+              >
+                Design principles
+              </p>
+            </div>
+            <h2
+              className="font-serif font-light leading-tight mb-4"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", color: "#5c4033" }}
+            >
+              The maker&apos;s rules
+            </h2>
+            <p
+              className="font-serif font-light text-base leading-relaxed max-w-md"
+              style={{ color: "rgba(92,64,51,0.55)" }}
+            >
+              Notes from the studio — principles that keep this system
+              warm, organic, and honest.
+            </p>
+          </RevealBlock>
+
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-stone-700/50 rounded-[2rem] p-6">
-              <h3 className="font-serif text-lg font-bold text-[#8b9d77] mb-4">Embrace</h3>
-              <ul className="text-sm text-stone-300 space-y-2">
-                <li>+ Warm linen background (#faf6f1)</li>
-                <li>+ Organic rounded shapes (rounded-full, rounded-[2rem])</li>
-                <li>+ Serif headings, clean body text</li>
-                <li>+ Earth tones: stone, sage, terracotta</li>
-                <li>+ Generous whitespace</li>
-                <li>+ Soft, natural transitions</li>
-                <li>+ Subtle shadows and borders</li>
-              </ul>
+            {/* Do — sage green panel */}
+            <RevealBlock delay={0.05}>
+              <div
+                className="relative p-10 rounded-[2rem] overflow-hidden h-full"
+                style={{
+                  backgroundColor: "#faf6f1",
+                  border: "1px solid rgba(139,157,119,0.18)",
+                  boxShadow: "0 4px 24px rgba(139,157,119,0.08)",
+                }}
+              >
+                <div className="absolute top-5 right-6 pointer-events-none">
+                  <LeafMotif color="#8b9d77" size={38} rotate={-25} opacity={0.18} />
+                </div>
+
+                <div className="flex items-center gap-3 mb-8">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: "rgba(139,157,119,0.2)" }}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 20 20"
+                      fill="#8b9d77"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <h3
+                    className="font-serif font-light text-lg"
+                    style={{ color: "#8b9d77" }}
+                  >
+                    Do
+                  </h3>
+                </div>
+
+                <ul className="space-y-4">
+                  {doRules.map((rule, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 font-serif font-light text-sm leading-relaxed"
+                      style={{ color: "rgba(92,64,51,0.65)" }}
+                    >
+                      <span
+                        className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: "#8b9d77", opacity: 0.6 }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't — warm tan panel */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="relative p-10 rounded-[2rem] overflow-hidden h-full"
+                style={{
+                  backgroundColor: "#faf6f1",
+                  border: "1px solid rgba(212,163,115,0.2)",
+                  boxShadow: "0 4px 24px rgba(212,163,115,0.08)",
+                }}
+              >
+                <div className="absolute top-5 right-8 pointer-events-none">
+                  <StoneMotif color="#d4a373" size={36} opacity={0.16} />
+                </div>
+
+                <div className="flex items-center gap-3 mb-8">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: "rgba(212,163,115,0.2)" }}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 20 20"
+                      fill="#d4a373"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <h3
+                    className="font-serif font-light text-lg"
+                    style={{ color: "#d4a373" }}
+                  >
+                    Don&apos;t
+                  </h3>
+                </div>
+
+                <ul className="space-y-4">
+                  {dontRules.map((rule, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 font-serif font-light text-sm leading-relaxed"
+                      style={{ color: "rgba(92,64,51,0.65)" }}
+                    >
+                      <span
+                        className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: "#d4a373", opacity: 0.55 }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Studio quote */}
+          <RevealBlock delay={0.18} className="mt-10">
+            <div
+              className="relative p-10 md:p-14 rounded-[2rem] text-center overflow-hidden"
+              style={{
+                backgroundColor: "#5c4033",
+                boxShadow: "0 8px 32px rgba(92,64,51,0.18)",
+              }}
+            >
+              <div className="absolute top-8 left-10 pointer-events-none">
+                <LeafMotif color="#d4a373" size={40} rotate={-10} opacity={0.2} />
+              </div>
+              <div className="absolute bottom-8 right-12 pointer-events-none">
+                <BranchMotif color="#faf6f1" width={60} opacity={0.08} />
+              </div>
+              <div className="absolute top-6 right-16 pointer-events-none">
+                <LeafMotif color="#8b9d77" size={28} rotate={30} opacity={0.15} />
+              </div>
+
+              <p
+                className="relative z-10 font-serif font-light text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto"
+                style={{ color: "rgba(250,246,241,0.75)" }}
+              >
+                &ldquo;Nothing in nature is perfectly symmetrical. The crack in the
+                glaze, the grain in the paper, the knot in the wood — that is where
+                the warmth lives.&rdquo;
+              </p>
+              <span
+                className="relative z-10 mt-6 block font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(212,163,115,0.6)" }}
+              >
+                — Studio principle
+              </span>
             </div>
-            <div className="bg-stone-700/50 rounded-[2rem] p-6">
-              <h3 className="font-serif text-lg font-bold text-[#c4826d] mb-4">Avoid</h3>
-              <ul className="text-sm text-stone-300 space-y-2">
-                <li>- Neon or electric colors</li>
-                <li>- Sharp corners (border-radius: 0)</li>
-                <li>- Hard black borders</li>
-                <li>- Monospace typography</li>
-                <li>- Heavy shadows</li>
-                <li>- Glitch or tech effects</li>
-                <li>- High contrast dark backgrounds</li>
-              </ul>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 6b. Field journal — interactive expandable cards             */}
+      {/* ============================================================ */}
+      <section className="relative py-24 md:py-32 px-6 md:px-12">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 80%, rgba(233,224,212,0.3) 0%, transparent 55%)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealBlock className="mb-14">
+            <div className="flex items-center gap-3 mb-3">
+              <LeafMotif color="#d4a373" size={20} rotate={45} opacity={0.6} />
+              <p
+                className="font-serif font-light text-xs tracking-[0.2em]"
+                style={{ color: "rgba(212,163,115,0.85)" }}
+              >
+                Field journal
+              </p>
             </div>
+            <h2
+              className="font-serif font-light leading-tight"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", color: "#5c4033" }}
+            >
+              Pages from the studio
+            </h2>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {journalEntries.map((entry, i) => (
+              <RevealBlock key={entry.title} delay={i * 0.07}>
+                <button
+                  type="button"
+                  className="w-full text-left p-8 rounded-[2rem] cursor-pointer transition-all duration-500 focus:outline-none"
+                  style={{
+                    backgroundColor: "#faf6f1",
+                    border: "1px solid rgba(92,64,51,0.07)",
+                    boxShadow:
+                      expandedJournal === i
+                        ? "0 10px 32px rgba(92,64,51,0.12)"
+                        : "0 4px 16px rgba(92,64,51,0.06)",
+                  }}
+                  onClick={() =>
+                    setExpandedJournal(expandedJournal === i ? null : i)
+                  }
+                  onMouseEnter={(e) => {
+                    if (expandedJournal !== i) {
+                      (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#f0e8df";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (expandedJournal !== i) {
+                      (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#faf6f1";
+                    }
+                  }}
+                >
+                  {/* Date + leaf icon */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className="font-serif font-light text-xs tracking-[0.12em]"
+                      style={{ color: "rgba(92,64,51,0.4)" }}
+                    >
+                      {entry.date}
+                    </span>
+                    <div
+                      className="transition-transform duration-500"
+                      style={{ transform: expandedJournal === i ? "rotate(0deg)" : "rotate(-15deg)" }}
+                    >
+                      <LeafMotif
+                        color={entry.tagColor}
+                        size={18}
+                        opacity={0.4}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Tag */}
+                  <div className="mb-3">
+                    <SageTag label={entry.tag} color={entry.tagColor} />
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    className="font-serif font-light text-lg mb-3 transition-colors duration-400"
+                    style={{
+                      color: expandedJournal === i ? "#8b9d77" : "#5c4033",
+                    }}
+                  >
+                    {entry.title}
+                  </h3>
+
+                  {/* Body */}
+                  <p
+                    className="font-serif font-light text-sm leading-relaxed"
+                    style={{ color: "rgba(92,64,51,0.55)" }}
+                  >
+                    {entry.body}
+                  </p>
+
+                  {/* Expanded content */}
+                  {expandedJournal === i && (
+                    <div
+                      className="mt-5 pt-5"
+                      style={{ borderTop: "1px solid rgba(92,64,51,0.08)" }}
+                    >
+                      <p
+                        className="font-serif font-light text-sm italic leading-relaxed"
+                        style={{ color: "rgba(92,64,51,0.4)" }}
+                      >
+                        A practice of presence — returning to materials that
+                        resist shortcuts. The slowness is the method.
+                      </p>
+                      <div className="mt-4 flex items-center gap-2">
+                        <StoneMotif color={entry.tagColor} size={20} opacity={0.35} />
+                        <span
+                          className="font-serif font-light text-xs"
+                          style={{ color: "rgba(92,64,51,0.35)" }}
+                        >
+                          tap to close
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </button>
+              </RevealBlock>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-stone-200 py-8 px-4 md:px-8 bg-[#faf6f1]">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-stone-400">
-            StyleKit / Natural Organic Showcase
-          </p>
-          <Link
-            href="/styles/natural-organic"
-            className="font-serif text-xs text-[#8b9d77] hover:text-stone-700 transition-colors"
+      {/* ============================================================ */}
+      {/* 7. Footer                                                     */}
+      {/* ============================================================ */}
+      <footer
+        className="relative py-16 md:py-20 px-6 md:px-12 overflow-hidden"
+        style={{
+          backgroundColor: "#faf6f1",
+          borderTop: "1px solid rgba(92,64,51,0.08)",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 100%, rgba(212,163,115,0.07) 0%, transparent 60%)",
+          }}
+        />
+
+        {/* Botanical motif accents */}
+        <div className="absolute bottom-8 left-10 pointer-events-none">
+          <BranchMotif color="#8b9d77" width={80} opacity={0.15} />
+        </div>
+        <div className="absolute top-8 right-16 pointer-events-none">
+          <LeafMotif color="#d4a373" size={32} rotate={25} opacity={0.14} />
+        </div>
+        <div className="absolute bottom-12 right-32 hidden md:block pointer-events-none">
+          <LeafMotif color="#8b9d77" size={22} rotate={-40} opacity={0.12} />
+        </div>
+        <div className="absolute top-10 left-1/3 hidden md:block pointer-events-none">
+          <StoneMotif color="#d4a373" size={24} opacity={0.12} />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
+            {/* Wordmark + tagline */}
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <LeafMotif color="#8b9d77" size={24} opacity={0.7} />
+                <span
+                  className="font-serif font-light text-lg tracking-wide"
+                  style={{ color: "#5c4033" }}
+                >
+                  Natural Organic
+                </span>
+              </div>
+              <p
+                className="font-serif font-light text-xs leading-relaxed max-w-xs"
+                style={{ color: "rgba(92,64,51,0.4)" }}
+              >
+                Part of StyleKit — a living collection of design systems
+                inspired by the natural and handmade world.
+              </p>
+            </div>
+
+            {/* Color blob row */}
+            <div className="flex items-center gap-3">
+              {colorPalette.map((c, i) => {
+                const blobs = [
+                  "50% 40% 55% 45% / 45% 55% 40% 50%",
+                  "44% 56% 48% 52% / 52% 48% 56% 44%",
+                  "58% 42% 52% 48% / 46% 54% 44% 56%",
+                  "42% 58% 46% 54% / 54% 46% 58% 42%",
+                  "50% 50% 44% 56% / 48% 52% 50% 50%",
+                ];
+                return (
+                  <div
+                    key={c.hex}
+                    className="transition-transform duration-400 hover:scale-110 cursor-default"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      backgroundColor: c.hex,
+                      borderRadius: blobs[i],
+                      border:
+                        c.hex === "#faf6f1"
+                          ? "1px solid rgba(92,64,51,0.14)"
+                          : "none",
+                      boxShadow: "0 2px 8px rgba(92,64,51,0.1)",
+                    }}
+                    title={c.name}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Nav links */}
+            <nav className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+              <Link
+                href="/styles/natural-organic"
+                className="font-serif font-light text-xs tracking-wide transition-colors duration-400"
+                style={{ color: "rgba(92,64,51,0.38)" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#8b9d77";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(92,64,51,0.38)";
+                }}
+              >
+                Documentation
+              </Link>
+              <Link
+                href="/styles"
+                className="font-serif font-light text-xs tracking-wide transition-colors duration-400"
+                style={{ color: "rgba(92,64,51,0.38)" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#5c4033";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(92,64,51,0.38)";
+                }}
+              >
+                All Styles
+              </Link>
+              <Link
+                href="/"
+                className="font-serif font-light text-xs tracking-wide transition-colors duration-400"
+                style={{ color: "rgba(92,64,51,0.38)" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#5c4033";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(92,64,51,0.38)";
+                }}
+              >
+                Home
+              </Link>
+            </nav>
+          </div>
+
+          {/* Bottom rule */}
+          <div
+            className="mt-12 pt-8 flex items-center justify-between"
+            style={{ borderTop: "1px solid rgba(92,64,51,0.07)" }}
           >
-            View Full Documentation
-          </Link>
+            <p
+              className="font-serif font-light text-xs"
+              style={{ color: "rgba(92,64,51,0.28)" }}
+            >
+              StyleKit &middot; Natural Organic &middot; {new Date().getFullYear()}
+            </p>
+            <div className="flex items-center gap-2">
+              <LeafMotif color="#8b9d77" size={14} rotate={-10} opacity={0.4} />
+              <LeafMotif color="#d4a373" size={10} rotate={50} opacity={0.35} />
+            </div>
+          </div>
         </div>
       </footer>
     </div>
