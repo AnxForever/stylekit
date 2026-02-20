@@ -23,9 +23,11 @@ import { useCommunityFeed } from "@/lib/swr";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
+import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
 
 interface Props {
   style: DesignStyle;
+  styleSource?: RuntimeStyleSource;
   compatibleStyles: DesignStyle[];
   compatibleLayouts: DesignStyle[];
   enhancedRules: string | null;
@@ -36,6 +38,7 @@ interface Props {
 
 export function StyleDetailContent({
   style,
+  styleSource = "static",
   compatibleStyles,
   compatibleLayouts,
   enhancedRules,
@@ -357,18 +360,20 @@ export function StyleDetailContent({
       )}
 
       {/* IDE Config Export */}
-      <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {t("ideExport.section")}
-          </p>
-          <h2 className="text-2xl md:text-3xl mb-4">{t("ideExport.title")}</h2>
-          <p className="text-muted mb-8 max-w-2xl">
-            {t("ideExport.description")}
-          </p>
-          <IdeExportButtons slug={style.slug} />
-        </div>
-      </section>
+      {styleSource === "static" && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("ideExport.section")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">{t("ideExport.title")}</h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("ideExport.description")}
+            </p>
+            <IdeExportButtons slug={style.slug} />
+          </div>
+        </section>
+      )}
 
       {/* Style Pack Export */}
       <section className="border-b border-border">

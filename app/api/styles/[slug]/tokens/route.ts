@@ -1,5 +1,5 @@
-import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { trackStyleUsage } from "@/lib/analytics";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -8,7 +8,8 @@ export async function GET(
 ) {
   const { slug } = await params;
   trackStyleUsage(slug, "api");
-  const tokens = getStyleTokens(slug);
+  const resolved = await resolveStyleBySlug(slug);
+  const tokens = resolved?.tokens;
 
   if (!tokens) {
     return NextResponse.json(
