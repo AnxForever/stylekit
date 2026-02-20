@@ -62,6 +62,26 @@ export async function getSubmissionSupabase(
   return toSubmissionRecord(data);
 }
 
+export async function getLatestApprovedSubmissionBySlugSupabase(
+  slug: string
+): Promise<SubmissionRecord | null> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return null;
+
+  const { data, error } = await sb
+    .from("submissions")
+    .select("*")
+    .eq("slug", slug.trim().toLowerCase())
+    .eq("status", "approved")
+    .order("reviewed_at", { ascending: false, nullsFirst: false })
+    .order("submitted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return toSubmissionRecord(data);
+}
+
 export async function createSubmissionSupabase(
   slug: string,
   formData: Record<string, unknown>,
@@ -145,6 +165,19 @@ export async function rejectSubmissionSupabase(
 
   if (error || !data) return null;
   return toSubmissionRecord(data);
+}
+
+export async function deleteSubmissionSupabase(id: string): Promise<boolean> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return false;
+
+  const { error, count } = await sb
+    .from("submissions")
+    .delete({ count: "exact" })
+    .eq("id", id);
+
+  if (error) return false;
+  return (count ?? 0) > 0;
 }
 
 // Map DB row to application record
