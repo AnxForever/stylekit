@@ -1,1 +1,112 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><path fill="#fff" d="M0 0h1200v630H0z"/><g stroke="#000" stroke-width=".5" opacity=".07"><path d="M100 0v630M300 0v630M500 0v630M700 0v630M900 0v630M1100 0v630M0 90h1200M0 210h1200M0 315h1200M0 420h1200M0 540h1200"/></g><path fill="red" d="M900 0h300v90H900z"/><path fill="#fc0" d="M0 540h100v90H0z"/><path fill="none" stroke="#000" stroke-width="2" d="M100 90h280v200H100z"/><text x="120" y="130" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900">Analytics</text><text x="120" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">Monthly active users have increased</text><text x="120" y="168" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">by 24% compared to last quarter.</text><text x="120" y="181" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">Growth is driven by organic traffic.</text><path d="M120 200h240v1H120z" opacity=".15"/><text x="120" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".4">24% increase</text><text x="340" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".4" text-anchor="end">Q4 2025</text><path d="M120 235h240v3H120z" opacity=".08"/><path d="M120 235h160v3H120z"/><path d="M120 250h240v3H120z" opacity=".08"/><path fill="red" d="M120 250h200v3H120z"/><path d="M120 265h240v3H120z" opacity=".08"/><path d="M120 265h100v3H120z"/><path fill="none" stroke="#000" stroke-width="2" d="M700 90h280v200H700z"/><text x="720" y="130" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900">Revenue</text><text x="720" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">Total revenue for the current period</text><text x="720" y="168" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">has met projected targets.</text><path d="M720 185h240v1H720z" opacity=".15"/><text x="720" y="240" font-family="'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="900">$12.4K</text><text x="720" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2" opacity=".4">MONTHLY RECURRING</text><path fill="none" stroke="#000" stroke-width="2" d="M100 420h280v170H100z"/><text x="120" y="455" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900">Tasks</text><text x="120" y="475" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">Active project deliverables</text><path d="M120 488h240v1H120z" opacity=".15"/><path d="M120 500h8v8h-8z"/><text x="136" y="508" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".6">Design system audit</text><path fill="red" d="M120 520h8v8h-8z"/><text x="136" y="528" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".6">Typography guidelines</text><path fill="none" stroke="#000" stroke-width="1.5" d="M120 540h8v8h-8z"/><text x="136" y="548" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".6">Grid layout specification</text><path fill="none" stroke="#000" stroke-width="1.5" d="M120 560h8v8h-8z"/><text x="136" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".6">Color palette documentation</text><path fill="none" stroke="#000" stroke-width="2" d="M700 420h280v170H700z"/><text x="720" y="455" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="900">Schedule</text><text x="720" y="475" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" opacity=".5">Upcoming project milestones</text><path d="M720 488h240v1H720z" opacity=".15"/><text x="720" y="508" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" opacity=".4">JAN 15</text><path d="M780 500h160v8H780z" opacity=".06"/><path d="M780 500h80v8h-80z"/><text x="720" y="528" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" opacity=".4">FEB 01</text><path d="M780 520h160v8H780z" opacity=".06"/><path fill="red" d="M780 520h120v8H780z"/><text x="720" y="548" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" opacity=".4">MAR 10</text><path d="M780 540h160v8H780z" opacity=".06"/><path d="M780 540h40v8h-40z"/><text x="720" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" opacity=".4">APR 20</text><path d="M780 560h160v8H780z" opacity=".06"/><text x="600" y="355" font-family="'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="900" letter-spacing="-3" text-anchor="middle">SWISS POSTER</text><text x="600" y="380" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" letter-spacing="4" opacity=".4" text-anchor="middle">INTERNATIONAL TYPOGRAPHIC STYLE</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+
+  <!-- Background: pure white -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Dominant red left strip — full height, ~43% of canvas -->
+  <rect x="0" y="0" width="520" height="630" fill="#ff0000"/>
+
+  <!-- Subtle grid lines (underlying structure) -->
+  <line x1="520" y1="0" x2="520" y2="630" stroke="#00000012" stroke-width="1"/>
+  <line x1="0"   y1="210" x2="1200" y2="210" stroke="#00000012" stroke-width="1"/>
+  <line x1="0"   y1="420" x2="1200" y2="420" stroke="#00000012" stroke-width="1"/>
+  <line x1="860" y1="0"   x2="860"  y2="630" stroke="#00000012" stroke-width="1"/>
+
+  <!-- Primary typography: "SWISS" — white on red, flush left inside the strip -->
+  <text
+    x="48" y="248"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#ffffff">SWISS</text>
+
+  <!-- "POSTER" — black on white, right half, anchored to grid -->
+  <text
+    x="556" y="248"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#000000">POST</text>
+
+  <!-- Second line: "ER" continues below, white on red strip left, black on white right -->
+  <text
+    x="48" y="430"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#ffffff">DE</text>
+
+  <text
+    x="372" y="430"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#000000">SIGN</text>
+
+  <!-- Full-width horizontal rule — bold red accent line -->
+  <line x1="0" y1="456" x2="1200" y2="456" stroke="#ff0000" stroke-width="8"/>
+
+  <!-- Secondary horizontal rule — thin black -->
+  <line x1="520" y1="260" x2="1200" y2="260" stroke="#000000" stroke-width="4"/>
+
+  <!-- Vertical accent: thin black rule inside white area -->
+  <line x1="860" y1="260" x2="860" y2="456" stroke="#000000" stroke-width="4"/>
+
+  <!-- Small black circle accent (grid bullet) -->
+  <circle cx="556" cy="260" r="20" fill="#000000"/>
+
+  <!-- Small red circle accent (counter-point) -->
+  <circle cx="860" cy="456" r="12" fill="#ff0000"/>
+
+  <!-- Supporting text block — bottom grid row, white area -->
+  <text
+    x="556" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="18"
+    font-weight="400"
+    letter-spacing="4"
+    fill="#000000">INTERNATIONAL TYPOGRAPHIC STYLE</text>
+
+  <!-- Sub-label: year / origin marker -->
+  <text
+    x="556" y="540"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="400"
+    letter-spacing="3"
+    fill="#ff0000">ZURICH — BASEL — 1950</text>
+
+  <!-- Bottom-right: small grid-aligned descriptor block -->
+  <text
+    x="870" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#000000">FORM FOLLOWS</text>
+
+  <text
+    x="870" y="530"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#000000">FUNCTION</text>
+
+  <!-- Bottom-left strip: small white label on red -->
+  <text
+    x="48" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="13"
+    font-weight="400"
+    letter-spacing="3"
+    fill="#ffffff">GRID  /  TYPE  /  FUNCTION</text>
+
+  <!-- Thin bottom border line — full width, black -->
+  <line x1="0" y1="620" x2="1200" y2="620" stroke="#000000" stroke-width="4"/>
+
+</svg>
