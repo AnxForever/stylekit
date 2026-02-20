@@ -36,6 +36,7 @@ export const islamicGeometric: DesignStyle = {
     "使用微妙的金色阴影 shadow-[0_4px_12px_rgba(201,167,78,0.2)]",
     "利用 rounded-lg 或 rounded-xl 营造拱形感",
     "保持充足留白让几何装饰呼吸",
+    "交互动效保持对称扩张与金色辉光，避免无序位移",
   ],
 
   dontList: [
@@ -46,6 +47,7 @@ export const islamicGeometric: DesignStyle = {
     "禁止使用手写或卡通字体",
     "禁止使用纯黑背景 bg-black（使用深蓝代替）",
     "禁止密集堆叠内容，缺乏结构分隔",
+    "禁止弹跳式 spring 动效，保持庄重稳定",
   ],
 
   components: {
@@ -53,21 +55,21 @@ export const islamicGeometric: DesignStyle = {
       name: "按钮",
       description: "伊斯兰几何风格按钮",
       code: `<button className="
-  relative px-10 py-4
+  group relative px-10 py-4
   bg-[#1a3a5c] text-[#c9a74e]
-  font-sans font-semibold tracking-wider text-sm
+  font-sans font-semibold tracking-widest text-sm
   rounded-lg
-  border-2 border-[#c9a74e]
-  shadow-[0_4px_12px_rgba(201,167,78,0.15)]
-  hover:shadow-[0_6px_20px_rgba(201,167,78,0.25)]
-  hover:bg-[#1a3a5c]/90
-  transition-all duration-300
+  border border-[#c9a74e]/50
+  shadow-[0_4px_15px_rgba(26,58,92,0.5)]
+  hover:bg-[#15304d]
+  hover:border-[#c9a74e]
+  hover:shadow-[0_8px_25px_rgba(201,167,78,0.3)]
+  active:scale-[0.98]
+  transition-all duration-500 ease-out
   overflow-hidden
 ">
-  {/* Corner ornament top-left */}
-  <span className="absolute top-1 left-1 w-3 h-3 border-t border-l border-[#c9a74e]/50" />
-  {/* Corner ornament bottom-right */}
-  <span className="absolute bottom-1 right-1 w-3 h-3 border-b border-r border-[#c9a74e]/50" />
+  <span className="absolute top-1 left-1 w-3 h-3 border-t border-l border-[#c9a74e]/40 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-500" />
+  <span className="absolute bottom-1 right-1 w-3 h-3 border-b border-r border-[#c9a74e]/40 group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform duration-500" />
   <span className="relative z-10">Explore</span>
 </button>`,
     },
@@ -75,34 +77,35 @@ export const islamicGeometric: DesignStyle = {
       name: "卡片",
       description: "伊斯兰几何风格卡片",
       code: `<div className="
-  relative p-8
+  group relative p-10
   bg-[#f5ecd7]
   border-2 border-[#c9a74e]
   rounded-xl
-  shadow-[0_4px_16px_rgba(26,58,92,0.1)]
+  shadow-[0_8px_30px_rgba(26,58,92,0.1)]
+  hover:shadow-[0_15px_40px_rgba(26,58,92,0.15)]
+  hover:-translate-y-1
+  transition-all duration-500 ease-out
   overflow-hidden
 ">
-  {/* Geometric border ornaments */}
-  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#c9a74e]" />
-  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#c9a74e]" />
-  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#c9a74e]" />
-  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#c9a74e]" />
+  <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#c9a74e]/60 group-hover:border-[#c9a74e] group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
+  <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#c9a74e]/60 group-hover:border-[#c9a74e] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
+  <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#c9a74e]/60 group-hover:border-[#c9a74e] group-hover:-translate-x-1 group-hover:translate-y-1 transition-all duration-500" />
+  <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#c9a74e]/60 group-hover:border-[#c9a74e] group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-500" />
 
-  {/* Star pattern decoration */}
-  <div className="flex justify-center mb-4">
-    <div className="w-8 h-8 text-[#c9a74e]">
+  <div className="flex justify-center mb-6">
+    <div className="w-10 h-10 text-[#c9a74e] group-hover:rotate-45 transition-transform duration-700 ease-out">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <polygon points="12,0 15,8 24,8 17,13 19,22 12,17 5,22 7,13 0,8 9,8" />
       </svg>
     </div>
   </div>
 
-  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-[#c9a74e] to-transparent mx-auto mb-4" />
-  <h3 className="text-xl font-sans font-semibold text-[#1a3a5c] text-center mb-3 tracking-wide">
+  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-[#c9a74e] to-transparent mx-auto mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+  <h3 className="text-2xl font-sans font-semibold text-[#1a3a5c] text-center mb-4 tracking-wider group-hover:text-[#214a75] transition-colors duration-300">
     Tessellation
   </h3>
-  <p className="text-[#1a3a5c]/60 text-center font-sans leading-relaxed">
-    Infinite patterns emerging from the unity of simple geometric forms.
+  <p className="text-[#1a3a5c]/70 text-center font-sans leading-relaxed">
+    Infinite patterns emerging from the profound unity of simple geometric forms.
   </p>
 </div>`,
     },
@@ -307,7 +310,14 @@ export const islamicGeometric: DesignStyle = {
 - 星形纹理
 - 角落边框装饰
 - 金色渐变分隔线
-- 拱形容器`,
+- 拱形容器
+
+## Animation & Interaction Rules
+
+- Sacred Symmetry: 交互动效保持严格对称，角落装饰在 hover 时同步轻微外扩。
+- Divine Illumination: 金色边框和分隔线可缓慢增强辉光，避免突兀闪烁。
+- Tessellation Reveal: 几何纹样在 hover/focus 时提升可见度，体现秩序被揭示的层次感。
+- Elegant Easing: 推荐 duration-500 + ease-out，保持庄重且优雅的节奏。`,
 
   examplePrompts: [
     {

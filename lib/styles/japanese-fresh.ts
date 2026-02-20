@@ -37,6 +37,7 @@ Core principles:
     "Use warm neutral border color #d4d4cf instead of harsh gray",
     "Apply asymmetric element placement for wabi-sabi character",
     "Use transition duration-500 for slow, meditative interactions",
+    "Use weightless hover feedback (subtle lift + transparent tint) instead of heavy depth",
   ],
 
   dontList: [
@@ -47,6 +48,7 @@ Core principles:
     "Never use dark or black backgrounds",
     "Never use sharp corners (rounded-none) -- always gentle rounded-lg/xl",
     "Never crowd sections together -- maintain extreme breathing room",
+    "Never use fast, abrupt interaction transitions under 200ms",
   ],
 
   components: {
@@ -56,10 +58,13 @@ Core principles:
       code: `<button className="
   px-10 py-3
   bg-transparent text-[#7a8a9e]
-  font-sans font-light tracking-wide
+  font-sans font-light tracking-widest text-sm
   rounded-lg
   border border-[#d4d4cf]/40
+  hover:-translate-y-0.5
+  hover:bg-[#64b5f6]/5
   hover:border-[#64b5f6]/40 hover:text-[#64b5f6]
+  active:bg-[#64b5f6]/10
   transition-all duration-500 ease-in-out
 ">
   Explore
@@ -69,18 +74,20 @@ Core principles:
       name: "Breath Card",
       description: "Card with 0.5px warm gray border, massive inner whitespace, and botanical accent",
       code: `<div className="
-  p-10 md:p-12
+  group p-10 md:p-12
   bg-white
-  rounded-xl
+  rounded-lg
   border border-[#d4d4cf]/30
-  transition-all duration-500 ease-in-out
+  hover:-translate-y-0.5
+  hover:bg-[#64b5f6]/[0.02]
   hover:border-[#d4d4cf]/50
+  transition-all duration-500 ease-in-out
 ">
-  <h3 className="text-lg font-sans font-extralight text-[#4a5568] mb-4 tracking-wide">
-    Card Title
+  <h3 className="text-lg font-sans font-extralight text-[#4a5568] mb-4 tracking-widest group-hover:text-[#64b5f6] transition-colors duration-500">
+    Morning Light
   </h3>
-  <p className="text-[#b0b8c4] text-sm font-light leading-relaxed">
-    Gentle and simple, like morning light through paper screens
+  <p className="text-[#b0b8c4] text-sm font-light leading-relaxed group-hover:text-[#7a8a9e] transition-colors duration-500">
+    Gentle and simple, like morning light filtering through paper screens.
   </p>
 </div>`,
     },
@@ -233,7 +240,14 @@ Primary:
 - Hairline 0.5px borders at 30% opacity
 - Botanical line-drawing SVG accents (one per section)
 - Bottom-line only input fields with floating labels
-- Linen/paper texture background pattern`,
+- Linen/paper texture background pattern
+
+## Animation & Interaction Rules
+
+- Weightless Float: hover 仅允许极轻上浮（约 0.5px），避免重阴影和大位移。
+- Airy Transitions: 颜色变化采用 duration-500 + ease-in-out，像晨雾中缓慢显现。
+- Subtle Focus: 表单 focus 只调整发丝级边框颜色，不使用粗 ring 或强 glow。
+- Tactile Click: active 态优先微调透明度和背景层，不使用明显缩放。`,
 
   examplePrompts: [
     {
