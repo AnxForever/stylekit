@@ -51,36 +51,38 @@ export const visualNovel: DesignStyle = {
     button: {
       name: "按钮",
       description: "视觉小说选项按钮，毛玻璃分支选择",
-      code: `<button className="
-  w-full px-6 py-4
-  bg-white/50 backdrop-blur-sm
-  text-[#4a5568] font-sans
-  rounded-lg
-  border border-[#6366f1]/25
-  text-left
-  hover:bg-[#6366f1]/10
-  hover:border-[#6366f1]/40
-  transition-all duration-300
-  flex items-center justify-between group
-">
-  <span>Go to the rooftop to watch the sunset</span>
-  <svg className="w-4 h-4 text-[#6366f1]/30 group-hover:text-[#6366f1]/60 group-hover:translate-x-1 transition-all" />
+      code: `<button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#6366f1]/30 hover:bg-[#6366f1]/20 hover:border-[#6366f1]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
+  {/* 选中高光扫过 */}
+  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+  <div className="flex items-center gap-3 relative z-10">
+    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">
+      ▶
+    </span>
+    <span>"I should go to the rooftop and watch the sunset."</span>
+  </div>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "ADV对话面板，带铭牌和装饰边角",
-      code: `<div className="relative">
-  <!-- Character nameplate badge -->
-  <div className="absolute -top-3 left-6 inline-block px-4 py-1 bg-[#6366f1] rounded-sm z-10">
-    <span className="text-white text-xs font-sans font-semibold">Sakura</span>
+      code: `<div className="relative mt-6">
+  {/* 角色名牌 */}
+  <div className="absolute -top-4 left-6 px-6 py-1.5 bg-gradient-to-r from-[#6366f1] to-[#4f46e5] rounded-t-md rounded-br-md shadow-[0_4px_10px_rgba(99,102,241,0.3)] z-10">
+    <span className="text-white font-sans font-bold tracking-wide">Sakura</span>
   </div>
-  <div className="bg-[#1a202c]/85 backdrop-blur-md rounded-lg p-6 pt-8 border border-[#6366f1]/20 relative">
-    <!-- Ornate corner decorations -->
-    <div className="absolute top-2 left-2 w-3 h-3 border-l border-t border-[#6366f1]/30" />
-    <div className="absolute top-2 right-2 w-3 h-3 border-r border-t border-[#6366f1]/30" />
-    <p className="text-white/85 font-serif text-base leading-relaxed">
-      "The cherry blossoms are beautiful this time of year..."
+
+  {/* 对话主面板 */}
+  <div className="group bg-[#1a202c]/85 backdrop-blur-xl rounded-xl p-8 pt-10 border border-[#6366f1]/20 shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:border-[#6366f1]/40 hover:bg-[#1a202c]/90 hover:-translate-y-0.5 transition-all duration-500 ease-out cursor-text">
+    {/* L形装饰边角 */}
+    <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-[#6366f1]/30" />
+    <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-[#6366f1]/30" />
+    <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-[#6366f1]/30" />
+    <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#6366f1]/30" />
+    <div className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:animate-bounce text-[#6366f1] transition-opacity duration-300">
+      ▼
+    </div>
+    <p className="text-white/90 font-serif text-xl leading-relaxed tracking-wide">
+      "The cherry blossoms are beautiful this time of year... Do you think we'll be able to see them together again next spring?"
     </p>
   </div>
 </div>`,
@@ -270,7 +272,13 @@ Primary:
 - Ornate corner decorations: L-shaped border patterns (border-l + border-t) at panel corners
 - Choice button grid: full-width frosted glass buttons with ChevronRight icon and left-aligned text
 - Scene background: sky gradient with character silhouettes (rounded-t-full ellipse shapes)
-- Save screen panel: dark panel with ornate corners, form inputs, and dual action buttons`,
+- Save screen panel: dark panel with ornate corners, form inputs, and dual action buttons
+
+## Animation & Interaction Rules
+- Dialogue Focus: 模拟游戏中的"选择支"。悬停选项按钮时，通过加深背景模糊（\`backdrop-blur\`）并叠加一层非常微弱的白色或主题色渐变（如 \`hover:bg-white/10\`），营造出选项被聚光灯照亮的沉浸感。
+- Cursor Prompt: 悬停时，在文本的左侧利用隐藏元素浮现一个小小的指示符（如 ▶ 或 ✦），并带有轻微的位移动画（\`opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0\`），高度还原视觉小说的 UI 特征。
+- Sprite Breathing: 过渡动画必须极其平滑（\`duration-300 ease-in-out\`）。卡片悬停时，可以有极其微小且缓慢的上浮（\`hover:-translate-y-0.5\`），模拟游戏角色立绘（Sprite）呼吸的动作。
+- Story Text: 点击（\`:active\`）时，选项框可以稍微横向移动（\`active:translate-x-2\`）以示确认，而不是传统的下沉。`,
 
   examplePrompts: [
     {

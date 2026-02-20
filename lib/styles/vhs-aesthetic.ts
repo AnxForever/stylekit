@@ -63,27 +63,30 @@ export const vhsAesthetic: DesignStyle = {
     button: {
       name: "按钮",
       description: "VHS 霓虹按钮，带发光效果和单色字体",
-      code: `// Magenta Primary
-<button className="px-6 py-3 font-mono text-sm uppercase tracking-widest border-2 bg-[#ff00ff]/20 text-[#ff00ff] border-[#ff00ff] shadow-[0_0_15px_rgba(255,0,255,0.4)] hover:shadow-[0_0_30px_rgba(255,0,255,0.6)] hover:bg-[#ff00ff]/30 transition-all duration-200">
-  PLAY
-</button>
-
-// Cyan Secondary
-<button className="px-6 py-3 font-mono text-sm uppercase tracking-widest border-2 bg-[#00ffff]/10 text-[#00ffff] border-[#00ffff]/50 hover:border-[#00ffff] hover:shadow-[0_0_15px_rgba(0,255,255,0.3)] transition-all duration-200">
-  REWIND
+      code: `<button className="group relative px-8 py-3 bg-[#ff00ff]/20 text-[#ff00ff] font-mono font-bold uppercase tracking-widest border-2 border-[#ff00ff] shadow-[2px_0_#00ffff,-2px_0_#ff00ff] hover:bg-[#ff00ff]/40 hover:text-white hover:shadow-[4px_0_#00ffff,-4px_0_#ff00ff] hover:skew-x-2 active:skew-x-0 active:scale-95 active:shadow-none transition-all duration-75 ease-linear overflow-hidden">
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.1)_2px,rgba(255,255,255,0.1)_4px)] opacity-50 group-hover:opacity-100 transition-opacity duration-75" />
+  <span className="relative z-10">PLAY_TAPE</span>
 </button>`,
     },
     card: {
       name: "卡片",
       description: "VHS 风格的深紫色卡片，带品红边框和扫描线叠加",
-      code: `<div className="bg-[#1a0a2e]/80 border border-[#ff00ff]/20 p-6 relative overflow-hidden hover:border-[#ff00ff]/40 hover:shadow-[0_0_20px_rgba(255,0,255,0.15)] transition-all duration-200">
-  {/* Scanline overlay */}
-  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,0,255,0.02)_2px,rgba(255,0,255,0.02)_4px)] pointer-events-none" />
-  <div className="relative">
-    <h3 className="text-white font-mono font-bold uppercase" style={{textShadow: '-2px 0 #ff00ff, 2px 0 #00ffff'}}>
-      TAPE TITLE
+      code: `<div className="group relative bg-[#1a0a2e]/90 border-2 border-[#ff00ff]/40 p-8 shadow-[0_0_15px_rgba(255,0,255,0.2)] hover:border-[#00ffff] hover:shadow-[0_0_25px_rgba(0,255,255,0.4)] transition-all duration-100 ease-linear cursor-crosshair">
+  {/* 扫描线与录像带杂音 */}
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.05)_2px,rgba(0,255,255,0.05)_4px)] pointer-events-none group-hover:opacity-100 opacity-60 transition-opacity duration-100" />
+  <div className="absolute top-1/4 left-0 w-full h-2 bg-white/10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
+
+  <div className="relative z-10">
+    <div className="flex items-center gap-2 mb-4">
+      <div className="w-3 h-3 bg-red-500 rounded-full group-hover:animate-pulse shadow-[0_0_8px_#ef4444]" />
+      <span className="text-red-500 font-mono text-xs uppercase tracking-widest">REC</span>
+    </div>
+    <h3 className="text-white text-3xl font-mono font-bold uppercase mb-2 group-hover:-skew-x-3 transition-transform duration-75" style={{ textShadow: '-2px 0 #ff00ff, 2px 0 #00ffff' }}>
+      NIGHT_DRIVE.AVI
     </h3>
-    <p className="text-[#ff00ff]/50 font-mono text-sm mt-2">Description text</p>
+    <p className="text-[#00ffff]/70 font-mono text-sm group-hover:text-white transition-colors duration-100">
+      &gt; Playback tracking adjusted. Signal acquired.
+    </p>
   </div>
 </div>`,
     },
@@ -220,7 +223,13 @@ SPECIAL EFFECTS:
 - VHS tracking distortion animation
 - Noise/grain texture overlay
 - Blinking REC indicator
-- VHS timestamp badges`,
+- VHS timestamp badges
+
+## Animation & Interaction Rules
+- Tape Tracking Jitter: 彻底抛弃丝滑动画。悬停时，必须通过极短时间的 \`duration-75\` 产生干脆甚至有些生硬的画面反馈（例如瞬间的 \`skew-x-2\` 或 \`translate-x-1\`），模拟老式录像带播放时的画面跳动（Tracking error）。
+- Chroma Split Glow: 霓虹阴影不能只是发光，必须是"错位"的。悬停时，洋红（Magenta）和青色（Cyan）的 \`text-shadow\` 或 \`box-shadow\` 必须向相反方向剧烈拉开距离，模拟磁带色散。
+- Scanline Distortion: 卡片上覆盖的扫描线（Scanline）在容器被悬停时，应加快垂直滚动的速度，或者瞬间改变不透明度（如从 \`opacity-10\` 变为 \`opacity-30\`）。
+- Playback Snap: 点击 (\`:active\`) 状态应该模拟按下了沉重的录像机物理按键。消除所有光晕，并产生生硬的下沉（\`active:scale-95 active:shadow-none\`）。`,
 
   examplePrompts: [
     {

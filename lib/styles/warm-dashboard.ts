@@ -50,64 +50,28 @@ export const warmDashboard: DesignStyle = {
     button: {
       name: "按钮",
       description: "暖色仪表盘风格按钮，柔和圆角配合点缀色",
-      code: `{/* 主按钮 - 青绿色 */}
-<button className="
-  px-5 py-2.5 md:px-6 md:py-3
-  bg-[#4a9d9a] text-white
-  rounded-xl
-  shadow-lg shadow-[#4a9d9a]/25
-  hover:shadow-xl hover:shadow-[#4a9d9a]/30
-  hover:-translate-y-0.5
-  transition-all duration-200
-  font-medium text-sm md:text-base
-">
-  View Report
-</button>
-
-{/* 次按钮 - 奶油白 */}
-<button className="
-  px-5 py-2.5 md:px-6 md:py-3
-  bg-white text-gray-700
-  rounded-xl
-  shadow-lg shadow-black/5
-  hover:shadow-xl hover:-translate-y-0.5
-  transition-all duration-200
-  font-medium text-sm md:text-base
-">
-  Export
-</button>
-
-{/* 强调按钮 - 珊瑚色 */}
-<button className="
-  px-5 py-2.5 md:px-6 md:py-3
-  bg-[#c17767] text-white
-  rounded-xl
-  shadow-lg shadow-[#c17767]/25
-  hover:shadow-xl hover:-translate-y-0.5
-  transition-all duration-200
-  font-medium text-sm md:text-base
-">
-  Upgrade
+      code: `<button className="px-6 py-3 bg-[#4a9d9a] text-white rounded-xl shadow-[0_4px_12px_rgba(74,157,154,0.2)] hover:bg-[#3d8380] hover:shadow-[0_8px_20px_rgba(74,157,154,0.3)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(74,157,154,0.2)] transition-all duration-200 ease-out font-medium">
+  Generate Report
 </button>`,
     },
     card: {
       name: "卡片",
       description: "奶油白卡片，大圆角柔和阴影",
-      code: `<div className="
-  bg-[#faf8f5]
-  rounded-2xl md:rounded-3xl
-  shadow-xl shadow-black/8
-  p-5 md:p-6 lg:p-8
-  hover:shadow-2xl hover:-translate-y-1
-  transition-all duration-300
-">
-  {/* 统计数据 */}
+      code: `<div className="group bg-[#faf8f5] rounded-3xl shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-transparent p-6 md:p-8 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-gray-100 hover:-translate-y-1 transition-all duration-300 ease-out cursor-pointer">
   <div className="flex items-center justify-between mb-4">
-    <span className="text-gray-500 text-sm font-medium">Views</span>
-    <span className="w-2 h-2 rounded-full bg-[#4a9d9a]" />
+    <span className="text-gray-500 text-sm font-medium group-hover:text-gray-700 transition-colors duration-200">Total Revenue</span>
+    <span className="flex h-3 w-3">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4a9d9a] opacity-20 group-hover:opacity-40" />
+      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#4a9d9a]" />
+    </span>
   </div>
-  <p className="text-3xl md:text-4xl font-bold text-gray-800 mb-1">27,6m</p>
-  <p className="text-sm text-gray-400">+12% from last month</p>
+  {/* 数据联动跳动 */}
+  <p className="text-4xl font-bold text-gray-800 mb-2 transform origin-left group-hover:scale-105 group-hover:text-[#4a9d9a] transition-all duration-200 ease-out">
+    $142,300
+  </p>
+  <p className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
+    <span className="text-[#e8b86d] font-semibold">+12%</span> from last month
+  </p>
 </div>`,
     },
     input: {
@@ -379,7 +343,13 @@ body {
 - 尖锐边角
 - 硬边阴影
 - 霓虹色
-- 粗边框`,
+- 粗边框
+
+## Animation & Interaction Rules
+- Micro-Focus: 作为数据密集的仪表盘，卡片交互绝不能引发剧烈的视觉跳跃。悬停时仅允许极轻微的上浮（\`hover:-translate-y-0.5\`），并通过增强阴影（\`shadow-xl\` 变 \`shadow-2xl\`）来聚焦视线。
+- Tinted Diffusion: 抛弃死黑色的阴影。悬停高光操作（如主按钮）时，必须散发出与主色同色系的柔和光晕（如 \`hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)]\`），维持整体的温暖氛围。
+- Data Pulse: 增强数据易读性。当悬停在数据卡片上时，可令内部的关键指标（KPI 数值）快速地微量放大（\`group-hover:scale-105\`）或切换为强调色（青绿或金黄），帮助用户锁定核心信息。
+- Warm Utility: 所有状态过渡需兼顾高效与柔和，推荐使用 \`duration-200 ease-out\`。`,
 
   examplePrompts: [
     {
