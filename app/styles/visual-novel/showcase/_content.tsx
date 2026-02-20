@@ -723,7 +723,6 @@ export default function ShowcaseContent() {
                   style={{
                     padding: "10px 28px",
                     color: activeTab === tab ? "#a5b4fc" : "rgba(255,255,255,0.35)",
-                    borderBottom: activeTab === tab ? "2px solid #6366f1" : "2px solid transparent",
                     background: "transparent",
                     border: "none",
                     borderBottom: activeTab === tab ? "2px solid #6366f1" : "2px solid transparent",
