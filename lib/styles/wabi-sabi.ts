@@ -46,45 +46,28 @@ export const wabiSabi: DesignStyle = {
     button: {
       name: "按钮",
       description: "侘寂风按钮，极简素雅",
-      code: `<button className="
-  px-6 py-2.5
-  bg-transparent
-  text-[#3a3a3a] font-serif text-sm
-  border-b border-[#3a3a3a]/30
-  hover:border-[#3a3a3a]
-  transition-colors duration-500
-">
-  Continue
+      code: `<button className="px-8 py-3 bg-transparent text-[#3a3a3a] font-serif text-sm tracking-[0.2em] border-b border-[#d4cdc5]/50 hover:border-[#3a3a3a] hover:bg-[#3a3a3a]/5 active:bg-[#3a3a3a]/10 transition-all duration-1000 ease-in-out">
+  Enter Silence
 </button>`,
     },
     card: {
       name: "卡片",
       description: "侘寂风卡片，纸张质感",
-      code: `<div className="
-  p-8
-  bg-[#f2ede4]
-  border-l border-[#d4cdc5]/40
-">
-  <h3 className="text-lg font-serif font-light text-[#3a3a3a] mb-4">Title</h3>
-  <p className="text-sm text-[#8a8278] leading-relaxed">Content</p>
+      code: `<div className="group p-12 bg-[#f2ede4] border-l border-[#d4cdc5]/30 hover:border-[#8a9a7b]/40 hover:bg-[#efebe1] transition-all duration-[1500ms] ease-in-out cursor-default">
+  <h3 className="text-xl font-serif font-light text-[#3a3a3a]/70 mb-6 tracking-widest group-hover:text-[#3a3a3a] transition-colors duration-1000">
+    Imperfect Beauty
+  </h3>
+  <p className="text-sm text-[#8a8278] font-serif leading-loose group-hover:text-[#5c564f] transition-colors duration-1000">
+    Nothing lasts, nothing is finished, and nothing is perfect. The aesthetic of the unfinished leaves space for the mind to wander.
+  </p>
 </div>`,
     },
     input: {
       name: "输入框",
       description: "侘寂风输入框，底线",
-      code: `<input
-  type="text"
-  placeholder="..."
-  className="
-    w-full px-0 py-2
-    bg-transparent
-    border-b border-[#d4cdc5]/50
-    text-[#3a3a3a] font-serif
-    placeholder-[#d4cdc5]
-    focus:outline-none focus:border-[#8a9a7b]
-    transition-colors duration-500
-  "
-/>`,
+      code: `<div className="w-full max-w-sm">
+  <input type="text" placeholder="..." className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#d4cdc5]/60 text-[#3a3a3a] font-serif placeholder-[#d4cdc5] focus:outline-none focus:border-[#8a9a7b]/60 transition-colors duration-1000 ease-in-out" />
+</div>`,
     },
   },
 
@@ -110,5 +93,11 @@ export const wabiSabi: DesignStyle = {
 - Slow transitions: duration-500 or longer
 - No bold colors, no heavy shadows, no decorative elements
 - Embrace asymmetry and imperfection
-- Think "zen garden" and "ceramic pottery"`,
+- Think "zen garden" and "ceramic pottery"
+
+## Animation & Interaction Rules
+- Absolute Stillness: 侘寂的核心是静谧。绝对禁止使用任何 \`translate\`（位移）、\`scale\`（缩放）或弹簧动画。元素必须像石头一样静静待在原处。
+- Shadowless Void: 放弃所有营造现代立体感的 \`box-shadow\`。界面的层次仅通过大量留白和非常微弱的边框线来表达。
+- Dust Breathing: 所有交互必须极其极其缓慢。强制使用 \`duration-1000\` 甚至更长的过渡时间（如 \`duration-[1500ms]\`），配合 \`ease-in-out\`。让背景颜色的加深看起来像自然光线缓慢变暗。
+- Ink Fading: 悬停（Hover）时，文本的颜色不要发生突变，而是通过改变透明度（如从 \`opacity-60\` 缓慢过渡到 \`opacity-100\`），模拟墨迹在时间中的显现。`,
 };
