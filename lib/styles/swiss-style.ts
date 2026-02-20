@@ -32,6 +32,10 @@ export const swissStyle: DesignStyle = {
     "使用黑白为主的配色",
     "文字左对齐，避免居中",
     "使用简洁的几何图形",
+    "Rational Restraint: only color and border-color change on interaction — zero translate, scale, or shadow added. The grid must not be disturbed",
+    "Guide Line Extension: left border changes from gray to red `hover:border-[#ff0000]` and background shifts to `hover:bg-[#f0f0f0]` — the structure becomes activated, not decorated",
+    "Hierarchy Focus: category label turns red `group-hover:text-[#ff0000]` on hover — the taxonomic label is highlighted, reinforcing information hierarchy",
+    "Clean Cut Transitions: use `duration-150 ease-out` — Swiss style is precise and efficient, not slow nor instantaneous",
   ],
 
   dontList: [
@@ -39,31 +43,36 @@ export const swissStyle: DesignStyle = {
     "禁止使用衬线字体作为正文",
     "禁止过度装饰或渐变",
     "禁止打破网格系统",
+    "禁止使用任何 `translate`、`scale` 或 `shadow` 变化（Rational Restraint — 网格不可被扰动）",
+    "禁止 hover 时引入新颜色以外的装饰（只允许颜色和边框色变化，不添加阴影或变形）",
+    "禁止使用 `duration-300` 或更长（Swiss Style 精准高效，`duration-150 ease-out` 是上限）",
+    "禁止按钮不带箭头图标（Swiss Style 按钮必须包含方向性，`→` 是排版的一部分）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "瑞士风格按钮",
+      description: "瑞士风格按钮，Guide Line 文字变红 + 箭头图标 `group-hover:translate-x-2 duration-150` + Rational Restraint 零 scale/shadow",
       code: `<button className="
+  group
+  flex items-center gap-3
   px-6 py-3
   bg-black
   text-white text-sm font-medium uppercase tracking-[0.2em]
-  hover:bg-red-600
-  transition-colors duration-200
+  hover:bg-[#ff0000]
+  transition-colors duration-150 ease-out
 ">
   Action
+  <svg className="w-4 h-4 transition-transform duration-150 ease-out group-hover:translate-x-2" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 8h10M9 4l4 4-4 4"/>
+  </svg>
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "瑞士风格卡片",
-      code: `<div className="
-  p-8
-  bg-white
-  border-l-4 border-black
-">
-  <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-500 mb-2">
+      description: "瑞士风格卡片，Guide Line Extension 左边框灰→红 + Hierarchy Focus 类别标签变红 + `duration-150 ease-out` + 零 translate/scale",
+      code: `<div className="group p-8 bg-white border-l-[4px] border-[#cccccc] hover:border-[#ff0000] hover:bg-[#f0f0f0] transition-all duration-150 ease-out cursor-pointer">
+  <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-400 group-hover:text-[#ff0000] transition-colors duration-150 ease-out mb-2">
     Category
   </p>
   <h3 className="text-2xl font-bold text-black mb-4">
@@ -197,7 +206,14 @@ export const swissStyle: DesignStyle = {
 
 - 标题：超大字号、粗体、紧凑行高
 - 标签：小号、大写、宽字距
-- 正文：适中字号、充足行高`,
+- 正文：适中字号、充足行高
+
+## Animation & Interaction Rules
+
+- Rational Restraint: Only color and border-color change on hover — zero \`translate\`, \`scale\`, or new \`shadow\`. The grid is a rational system; its geometry must not be disturbed by interaction. Forbidden: \`hover:-translate-y-*\`, \`hover:scale-*\`, \`hover:shadow-*\`.
+- Guide Line Extension: The left border activates from \`border-[#cccccc]\` to \`hover:border-[#ff0000]\` and background shifts to \`hover:bg-[#f0f0f0]\` — the structural grid line becomes a red typographic accent, making the module feel "selected" on the layout.
+- Hierarchy Focus: The category/label element turns \`group-hover:text-[#ff0000] transition-colors duration-150 ease-out\` — the taxonomic hierarchy is highlighted, reinforcing Swiss style's belief that information structure is the highest design value.
+- Clean Cut Transitions: Use \`duration-150 ease-out\` for color changes. Button arrow icon uses \`group-hover:translate-x-2 transition-transform duration-150 ease-out\` — the arrow is the only permitted movement, indicating directionality as a typographic element.`,
 
   examplePrompts: [
     {

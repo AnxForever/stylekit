@@ -32,6 +32,10 @@ export const stripeStyle: DesignStyle = {
     "保持适中的圆角 rounded-lg 或 rounded-xl",
     "使用流畅的过渡动画",
     "代码块使用深色背景",
+    "Fluid SaaS Motion: button hover uses `hover:-translate-y-0.5 transition-all duration-[300ms] ease-out` — SaaS products feel responsive but never jarring, always smooth and controlled",
+    "Floating Matrix: card hover lifts with `hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[400ms] ease-out` — the card floats up as if becoming interactive",
+    "Liquid Gradient Focus: button uses inset highlight `shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]` — simulates light catching the convex surface of a real button",
+    "Hairline Crispness: active press uses `active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]` — button physically depresses on click, inset shadow replaces outer glow",
   ],
 
   dontList: [
@@ -40,40 +44,45 @@ export const stripeStyle: DesignStyle = {
     "禁止使用粗糙的阴影",
     "禁止忽略网格背景元素",
     "禁止使用不专业的字体",
+    "禁止使用 `hover:scale-*`（Stripe 按钮只上浮，不放大——放大破坏精密感）",
+    "禁止省略 inset 高光阴影（Liquid Gradient Focus 是 Stripe 按钮质感的核心，不可省略）",
+    "禁止使用 `ease-in-out` 或 `ease`（Stripe 动画总是 `ease-out`——出发快、落地轻）",
+    "禁止在 active 状态保留外部阴影（Hairline Crispness 要求 active 时仅用 inset shadow）",
   ],
 
   components: {
     button: {
       name: "按钮",
-      description: "Stripe 风格按钮，专业精致",
+      description: "Stripe 风格按钮，Liquid Gradient Focus 内嵌高光 + Fluid SaaS Motion `duration-[300ms] ease-out` + Hairline Crispness active 下压感",
       code: `<button className="
-  px-6 py-3
+  px-6 py-2.5
   bg-[#635bff]
   rounded-lg
-  text-white font-medium
-  shadow-[0_2px_4px_rgba(99,91,255,0.2),0_4px_8px_rgba(99,91,255,0.2)]
-  hover:shadow-[0_4px_8px_rgba(99,91,255,0.3),0_8px_16px_rgba(99,91,255,0.2)]
+  text-white font-medium text-sm
+  shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]
+  hover:bg-[#5851ea]
+  hover:shadow-[0_4px_10px_rgba(99,91,255,0.5),inset_0_1px_0_rgba(255,255,255,0.2)]
   hover:-translate-y-0.5
-  transition-all duration-200
+  active:scale-[0.98] active:translate-y-0
+  active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+  transition-all duration-[300ms] ease-out
 ">
   Get Started
 </button>`,
     },
     card: {
       name: "卡片",
-      description: "Stripe 风格卡片，精致阴影",
-      code: `<div className="
-  p-6
-  bg-white
-  rounded-xl
-  shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]
-  hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_16px_32px_rgba(0,0,0,0.1)]
-  transition-shadow duration-300
-">
-  <h3 className="text-xl font-semibold text-[#0a2540] mb-2">
+      description: "Stripe 风格卡片，Floating Matrix `hover:-translate-y-1` 上浮 + 图标区域 `group-hover:scale-110 duration-[400ms]` + 深化阴影",
+      code: `<div className="group p-6 bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06),0_4px_20px_rgba(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_10px_rgba(0,0,0,0.04)] transition-all duration-[400ms] ease-out cursor-pointer">
+  <div className="w-10 h-10 bg-[#635bff]/10 rounded-lg flex items-center justify-center mb-4 transition-transform duration-[400ms] ease-out group-hover:scale-110">
+    <svg className="w-5 h-5 text-[#635bff]" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V8a2 2 0 00-2-2H4z"/>
+    </svg>
+  </div>
+  <h3 className="text-lg font-semibold text-[#0a2540] mb-2">
     Payments
   </h3>
-  <p className="text-gray-600">
+  <p className="text-[#425466] text-sm leading-relaxed">
     Accept payments online with a complete platform
   </p>
 </div>`,
@@ -272,7 +281,14 @@ background-size: 40px 40px;
 1. 使用了 Stripe 紫作为主色
 2. 阴影精致多层
 3. 有网格背景元素
-4. 整体感觉专业可信`,
+4. 整体感觉专业可信
+
+## Animation & Interaction Rules
+
+- Fluid SaaS Motion: Button hover uses \`hover:-translate-y-0.5 transition-all duration-[300ms] ease-out\` — SaaS feels responsive but never jarring. Never use \`ease-in-out\` (too slow) or instantaneous cuts.
+- Floating Matrix: Card hover lifts with \`hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[400ms] ease-out\`. The icon area uses \`group-hover:scale-110 transition-transform duration-[400ms]\` — the card becomes interactive, the icon celebrates.
+- Liquid Gradient Focus: Button uses inset highlight \`shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]\` at rest, maintained on hover — simulates convex glass surface catching light. Never use a flat-color button with no shadow.
+- Hairline Crispness: Active press is \`active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]\` — the button physically depresses. The outer glow disappears; only the inset concave shadow remains.`,
 
   examplePrompts: [
     {
