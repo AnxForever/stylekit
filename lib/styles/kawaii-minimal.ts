@@ -35,6 +35,7 @@ export const kawaiiMinimal: DesignStyle = {
     "卡片使用浅色边框 border-pink-200 或无边框",
     "交互使用弹跳缩放 hover:scale-105 active:scale-95",
     "间距宽松 p-6 p-8 gap-6 gap-8",
+    "交互加入果冻式挤压回弹（squash and stretch）增强软糯触感",
   ],
 
   dontList: [
@@ -44,6 +45,7 @@ export const kawaiiMinimal: DesignStyle = {
     "禁止使用高饱和度荧光色",
     "禁止使用粗体黑色边框",
     "禁止信息过密，保持留白",
+    "禁止生硬线性过渡，优先使用带回弹感的缓动曲线",
   ],
 
   components: {
@@ -51,32 +53,32 @@ export const kawaiiMinimal: DesignStyle = {
       name: "可爱按钮",
       description: "圆润柔和的粉彩按钮，带弹跳交互",
       code: `// Primary Kawaii
-<button className="px-6 py-3 bg-pink-300 text-white rounded-full shadow-md hover:bg-pink-400 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 font-medium">
+<button className="px-8 py-4 bg-pink-300 text-white rounded-full shadow-[0_8px_0_#f472b6,0_15px_20px_rgba(244,114,182,0.35)] hover:bg-pink-400 hover:shadow-[0_6px_0_#f472b6,0_10px_15px_rgba(244,114,182,0.35)] hover:translate-y-[2px] hover:scale-x-[1.05] hover:scale-y-[0.97] active:translate-y-[8px] active:shadow-[0_0_0_#f472b6,0_0_0_rgba(244,114,182,0)] active:scale-[0.95] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium">
   Click Me
 </button>
 
 // Pastel Outline
-<button className="px-6 py-3 bg-white border-2 border-pink-200 text-pink-400 rounded-full hover:bg-pink-50 hover:border-pink-300 hover:scale-105 active:scale-95 transition-all duration-200 font-medium">
+<button className="px-6 py-3 bg-white border-2 border-pink-200 text-pink-400 rounded-full hover:bg-pink-50 hover:border-pink-300 hover:scale-x-[1.04] hover:scale-y-[0.98] active:scale-[0.94] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium">
   Explore
 </button>
 
 // Gradient Kawaii
-<button className="px-6 py-3 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 font-medium">
+<button className="px-6 py-3 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-full shadow-md hover:shadow-[0_12px_24px_rgba(244,114,182,0.28)] hover:-translate-y-1 hover:rotate-[1deg] active:scale-[0.93] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium">
   Let's Go
 </button>`,
     },
     card: {
       name: "可爱卡片",
       description: "圆润柔和的卡片，轻盈阴影和粉彩装饰",
-      code: `<div className="bg-white rounded-3xl p-6 shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-pink-100">
-  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center mb-4">
+      code: `<div className="group bg-white rounded-3xl p-8 shadow-[0_10px_30px_rgba(251,207,232,0.4)] border-2 border-pink-100 hover:shadow-[0_20px_40px_rgba(244,114,182,0.3)] hover:-translate-y-3 hover:rotate-[1deg] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer">
+  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 group-hover:-rotate-[12deg] transition-transform duration-300 ease-out">
     <span className="text-white text-lg">*</span>
   </div>
-  <h3 className="text-gray-800 text-lg font-semibold mb-2">
+  <h3 className="text-gray-800 text-xl font-bold mb-3 group-hover:text-pink-400 transition-colors duration-300">
     Sweet Feature
   </h3>
-  <p className="text-gray-500 text-sm leading-relaxed">
-    A delightful experience designed with care and attention to detail.
+  <p className="text-gray-500 text-sm leading-relaxed font-medium">
+    A delightful, marshmallow-soft experience designed with care and gentle playful energy.
   </p>
 </div>`,
     },
@@ -156,7 +158,13 @@ SPECIAL EFFECTS:
 - Bounce animation on hover (scale + shadow increase)
 - Wiggle animation for attention elements
 - Float animation for decorative elements
-- Smooth transitions (200-300ms)`,
+- Smooth transitions (200-300ms)
+
+Animation & Interaction Rules:
+- Jelly Bounce: hover 使用 squash-and-stretch（scale-x 与 scale-y 非等比变化）制造软糖弹性。
+- Cloud Lift: 卡片可轻微上浮并增强粉彩阴影，保持轻盈愉悦的漂浮感。
+- Squishy Press: active 使用更明显按压（0.90-0.95）并收紧阴影，模拟软糯触感。
+- Spring Easing: 优先使用 cubic-bezier(0.34,1.56,0.64,1) 的回弹节奏，避免僵硬线性过渡。`,
 
   examplePrompts: [
     {

@@ -33,6 +33,7 @@ export const inkWash: DesignStyle = {
     "使用衬线字体呼应书法质感 font-serif",
     "水墨感的细边框分隔 border-[#2c2c2c]/20",
     "缓慢过渡动画模拟墨色晕染 transition-all duration-700",
+    "交互反馈以墨色渐深和边界渗透为主，避免明显位移动画",
   ],
 
   dontList: [
@@ -40,6 +41,7 @@ export const inkWash: DesignStyle = {
     "禁止使用厚重阴影，破坏空灵意境",
     "禁止使用粗边框，水墨线条应如毛笔般纤细",
     "禁止使用装饰性动画和弹跳效果，保持静谧",
+    "禁止 spring 或 bounce 交互曲线，避免机械弹性",
   ],
 
   components: {
@@ -47,12 +49,16 @@ export const inkWash: DesignStyle = {
       name: "按钮",
       description: "水墨画风按钮，透明底色配以底部墨线",
       code: `<button className="
-  px-6 py-2.5
+  px-10 py-3
   bg-transparent
-  text-[#2c2c2c] font-serif text-sm tracking-wider
+  text-[#2c2c2c] font-serif text-sm tracking-[0.2em]
   border-b border-[#2c2c2c]/30
-  hover:border-[#2c2c2c]/80
-  transition-all duration-700
+  hover:border-[#2c2c2c]
+  hover:bg-[#2c2c2c]/5
+  hover:shadow-[0_4px_20px_rgba(44,44,44,0.05)]
+  active:bg-[#2c2c2c]/10
+  active:shadow-[inset_0_2px_4px_rgba(44,44,44,0.1)]
+  transition-all duration-1000 ease-in-out
 ">
   Continue
 </button>`,
@@ -61,14 +67,19 @@ export const inkWash: DesignStyle = {
       name: "卡片",
       description: "水墨画风卡片，左侧墨色竖线",
       code: `<div className="
-  p-8
+  group p-10
   bg-[#f8f5f0]
-  border-l-2 border-[#2c2c2c]/20
-  hover:border-[#2c2c2c]/40
-  transition-colors duration-700
+  border-l border-[#2c2c2c]/10
+  hover:border-[#2c2c2c]/60
+  hover:bg-[#f3efe8]
+  transition-all duration-1000 ease-in-out
 ">
-  <h3 className="text-lg font-serif font-light text-[#2c2c2c] mb-4">Title</h3>
-  <p className="text-sm text-[#a89279] leading-relaxed">Content</p>
+  <h3 className="text-xl font-serif font-light text-[#2c2c2c]/80 mb-6 tracking-widest group-hover:text-[#2c2c2c] transition-colors duration-700">
+    山水之间
+  </h3>
+  <p className="text-sm text-[#a89279] font-serif leading-loose group-hover:text-[#6b7b6e] transition-colors duration-1000 ease-in-out">
+    Ink flows where the mind wanders. In the vast white space, the invisible landscape emerges.
+  </p>
 </div>`,
     },
     input: {
@@ -111,5 +122,12 @@ export const inkWash: DesignStyle = {
 - Slow transitions: duration-700 to mimic ink diffusion
 - No bright saturated colors, no heavy shadows, no decorative elements
 - Embrace generous emptiness -- whitespace IS the design
-- Think "ink on xuan paper" and "mountain mist landscape"`,
+- Think "ink on xuan paper" and "mountain mist landscape"
+
+## Animation & Interaction Rules
+
+- Ink Bleed: 悬停时使用颜色渐深和微弱扩散阴影，模拟墨迹晕染，不做明显位移。
+- Calligraphic Press: active 状态优先使用深色内阴影，模拟落笔压纸，不使用机械缩放。
+- Flow of Qi: 交互节奏使用 duration-700 到 1000，配合 ease-in-out 保持空灵呼吸感。
+- Whispering Text: 文本可从低对比缓慢过渡到清晰墨色，避免跳变式强化。`,
 };
