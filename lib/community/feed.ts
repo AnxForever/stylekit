@@ -141,7 +141,7 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
     cover:
       asString(formData.cover) ??
       styleMeta?.cover ??
-      `/styles/${row.slug}.svg`,
+      `/styles/${row.slug}/opengraph-image`,
     author: {
       handle: normalizeHandle(authorMeta.handle ?? asString(row.author_name)),
       avatarUrl: authorMeta.avatarUrl,
@@ -178,7 +178,7 @@ function mapItemFromFile(row: FileSubmissionRow): CommunityFeedItem {
     cover:
       asString(formData.cover) ??
       styleMeta?.cover ??
-      `/styles/${row.slug}.svg`,
+      `/styles/${row.slug}/opengraph-image`,
     author: {
       handle: normalizeHandle(authorMeta.handle ?? row.authorName ?? null),
       avatarUrl: authorMeta.avatarUrl,

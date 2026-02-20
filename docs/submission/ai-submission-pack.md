@@ -127,6 +127,7 @@ Do not include commentary outside fenced blocks.
    - Downloaded ZIP includes `manifest.json`, `cover.svg`, `self-check.md`, scaffold files, and derived outputs.
 6. Open issue form: `.github/ISSUE_TEMPLATE/style_submission.yml`.
 7. Paste `manifest.json`, `cover.svg`, and `self-check.md`.
+8. After maintainer approval, the style becomes available in `/styles/<slug>` and `/api/styles/<slug>`.
 
 ## 8) Mapping notes (manifest -> current backend form)
 
