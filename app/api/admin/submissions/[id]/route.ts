@@ -3,6 +3,11 @@ import { readFile, unlink } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
+import {
+  deleteSubmissionSupabase,
+  getSubmissionSupabase,
+  isSupabaseConfigured,
+} from "@/lib/submit/reviewer-supabase";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
@@ -27,6 +32,18 @@ export async function GET(
       { error: "Invalid submission ID" },
       { status: 400 }
     );
+  }
+
+  if (isSupabaseConfigured()) {
+    const submission = await getSubmissionSupabase(id);
+    if (!submission) {
+      return NextResponse.json(
+        { error: "Submission not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(submission);
   }
 
   const filePath = path.join(SUBMISSIONS_DIR, `${id}.json`);
@@ -77,6 +94,18 @@ export async function DELETE(
       { error: "Invalid submission ID" },
       { status: 400 }
     );
+  }
+
+  if (isSupabaseConfigured()) {
+    const deleted = await deleteSubmissionSupabase(id);
+    if (!deleted) {
+      return NextResponse.json(
+        { error: "Submission not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, id });
   }
 
   const filePath = path.join(SUBMISSIONS_DIR, `${id}.json`);
