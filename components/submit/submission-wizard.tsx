@@ -12,6 +12,7 @@ import type { Locale } from "@/lib/i18n/translations";
 import { pickLocale } from "@/lib/i18n/locale-copy";
 import { submitCopy } from "@/lib/i18n/submit-copy";
 import { stylesMeta } from "@/lib/styles/meta";
+import { parseManifestImportText } from "@/lib/submit/manifest-import";
 import { BasicInfoStep } from "./steps/basic-info-step";
 import { ColorPaletteStep } from "./steps/color-palette-step";
 import { TypographyStep } from "./steps/typography-step";
@@ -279,6 +280,7 @@ export function SubmissionWizard() {
             apply: "应用 Manifest",
             upload: "上传 manifest.json",
             imported: "已导入 Manifest",
+            importedRepaired: "已导入 Manifest（已自动修复格式）",
             invalid: "Manifest 无法解析",
             invalidShape: "Manifest 缺少可识别的 formData 结构",
           }
@@ -289,6 +291,7 @@ export function SubmissionWizard() {
             apply: "Apply Manifest",
             upload: "Upload manifest.json",
             imported: "Manifest imported",
+            importedRepaired: "Manifest imported (auto-fixed formatting)",
             invalid: "Could not parse manifest",
             invalidShape: "Manifest does not contain a recognizable formData shape",
           },
@@ -427,32 +430,56 @@ export function SubmissionWizard() {
     [manifestCopy, submissionPath]
   );
 
-  const applyManifestInput = useCallback(() => {
-    const raw = manifestInput.trim();
-    if (!raw) return;
-    setManifestMsg(null);
-    try {
-      const parsed = JSON.parse(raw);
-      if (!applyManifestPayload(parsed, "manifest.json")) {
-        return;
+  const importManifestText = useCallback(
+    (rawValue: string, sourceLabel: string): boolean => {
+      const parsedResult = parseManifestImportText(rawValue);
+      if (!parsedResult.ok) {
+        setManifestMsg({ type: "error", text: manifestCopy.invalid });
+        return false;
       }
-    } catch {
-      setManifestMsg({ type: "error", text: manifestCopy.invalid });
-    }
-  }, [applyManifestPayload, manifestCopy.invalid, manifestInput]);
+
+      setManifestInput(parsedResult.normalizedText);
+      const applied = applyManifestPayload(parsedResult.data, sourceLabel);
+      if (!applied) {
+        return false;
+      }
+
+      if (parsedResult.repaired) {
+        setManifestMsg({
+          type: "success",
+          text: sourceLabel
+            ? `${manifestCopy.importedRepaired}: ${sourceLabel}`
+            : manifestCopy.importedRepaired,
+        });
+      }
+
+      return true;
+    },
+    [
+      applyManifestPayload,
+      manifestCopy.importedRepaired,
+      manifestCopy.invalid,
+    ]
+  );
+
+  const applyManifestInput = useCallback(() => {
+    if (!manifestInput.trim()) return;
+    setManifestMsg(null);
+    importManifestText(manifestInput, "manifest.json");
+  }, [importManifestText, manifestInput]);
 
   const importManifestFile = useCallback(
     async (file: File) => {
       try {
         const raw = await file.text();
         setManifestInput(raw);
-        const parsed = JSON.parse(raw);
-        applyManifestPayload(parsed, file.name);
+        setManifestMsg(null);
+        importManifestText(raw, file.name);
       } catch {
         setManifestMsg({ type: "error", text: manifestCopy.invalid });
       }
     },
-    [applyManifestPayload, manifestCopy.invalid]
+    [importManifestText, manifestCopy.invalid]
   );
 
   const pct = (() => {
