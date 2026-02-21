@@ -27,8 +27,9 @@ function makeReadChain(result: unknown) {
   const limit = vi.fn().mockResolvedValue(result);
   const order = vi.fn().mockReturnValue({ limit });
   const eq = vi.fn().mockReturnValue({ order });
-  const select = vi.fn().mockReturnValue({ eq });
-  return { select, eq, order, limit };
+  const inFn = vi.fn().mockReturnValue({ order });
+  const select = vi.fn().mockReturnValue({ eq, in: inFn });
+  return { select, eq, in: inFn, order, limit };
 }
 
 afterEach(() => {
@@ -42,22 +43,137 @@ describe("profile routes", () => {
     expect(response.status).toBe(401);
   });
 
-  it("comments endpoint returns user comments", async () => {
+  it("comments endpoint returns merged user comments from user_id and legacy session", async () => {
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
-    const chain = makeReadChain({
-      data: [{ id: "c1", style_slug: "neo-brutalist", content: "great", created_at: "2026-01-01" }],
-      error: null,
-    });
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [
+                {
+                  id: "c-modern",
+                  style_slug: "neo-brutalist",
+                  content: "modern",
+                  created_at: "2026-01-03",
+                },
+              ],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const legacyChain = {
+      select: vi.fn().mockReturnValue({
+        in: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [
+                {
+                  id: "c-legacy",
+                  style_slug: "editorial",
+                  content: "legacy",
+                  created_at: "2026-01-02",
+                },
+              ],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
     mockedCreateClient.mockReturnValue({
-      from: vi.fn().mockReturnValue(chain),
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(legacyChain),
     } as never);
 
     const response = await getComments();
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,
-      comments: [{ id: "c1", style_slug: "neo-brutalist", content: "great", created_at: "2026-01-01" }],
+      comments: [
+        {
+          id: "c-modern",
+          style_slug: "neo-brutalist",
+          content: "modern",
+          created_at: "2026-01-03",
+        },
+        {
+          id: "c-legacy",
+          style_slug: "editorial",
+          content: "legacy",
+          created_at: "2026-01-02",
+        },
+      ],
+    });
+  });
+
+  it("comments endpoint falls back to legacy session when user_id column is missing", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: null,
+              error: {
+                code: "42703",
+                message: "column style_comments.user_id does not exist",
+              },
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const legacyChain = {
+      select: vi.fn().mockReturnValue({
+        in: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [
+                {
+                  id: "c-legacy",
+                  style_slug: "editorial",
+                  content: "legacy",
+                  created_at: "2026-01-02",
+                },
+              ],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(legacyChain),
+    } as never);
+
+    const response = await getComments();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      comments: [
+        {
+          id: "c-legacy",
+          style_slug: "editorial",
+          content: "legacy",
+          created_at: "2026-01-02",
+        },
+      ],
     });
   });
 
