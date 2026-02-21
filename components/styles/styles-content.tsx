@@ -63,12 +63,31 @@ export function StylesContent({
       // 2. 所有state都已稳定
       // 3. 列表已根据filter重新排列
       setTimeout(() => {
-        window.scrollTo(0, y);
+        window.scrollTo({ top: y, behavior: "instant" });
       }, 150);
       // 恢复后清除，避免刷新页面也滚动
       sessionStorage.removeItem("styles-scroll-position");
     }
   }, []);
+
+  // 兜底恢复 filter 状态：当从 showcase 直接跳到 /styles 时（绕过 ScrollBackButton）
+  useEffect(() => {
+    const savedUrl = sessionStorage.getItem("styles-return-url");
+    if (savedUrl) {
+      const current = window.location.search;
+      if (!current) {
+        try {
+          const url = new URL(savedUrl);
+          if (url.search) {
+            sessionStorage.removeItem("styles-return-url");
+            router.replace(url.pathname + url.search, { scroll: false });
+          }
+        } catch {
+          // ignore invalid URL
+        }
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const syncToUrl = useCallback(
     (type: TypeFilter, tags: StyleTag[], fav: boolean, sort: SortOption) => {
