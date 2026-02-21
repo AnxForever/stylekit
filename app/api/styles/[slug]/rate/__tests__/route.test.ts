@@ -121,12 +121,13 @@ describe("styles rating route", () => {
       }),
     };
     const insert = vi.fn().mockResolvedValue({ error: null });
-    const summarySingle = vi.fn().mockResolvedValue({
+    const summaryMaybeSingle = vi.fn().mockResolvedValue({
       data: { average_rating: 4.8, total_ratings: 12 },
+      error: null,
     });
     const summarySelect = {
       eq: vi.fn().mockReturnValue({
-        single: summarySingle,
+        maybeSingle: summaryMaybeSingle,
       }),
     };
 
@@ -226,12 +227,12 @@ describe("styles rating route", () => {
   it("GET returns DB_NOT_READY when rating summary view is missing", async () => {
     mockedIsSupabaseConfigured.mockReturnValue(true);
 
-    const single = vi.fn().mockResolvedValue({
+    const maybeSingle = vi.fn().mockResolvedValue({
       data: null,
       error: { code: "42P01", message: 'relation "style_rating_summary" does not exist' },
     });
     const select = vi.fn().mockReturnValue({
-      eq: vi.fn().mockReturnValue({ single }),
+      eq: vi.fn().mockReturnValue({ maybeSingle }),
     });
     mockedCreateClient.mockReturnValue({
       from: vi.fn().mockReturnValue({ select }),
