@@ -7,6 +7,7 @@ vi.mock("fs", () => ({
 vi.mock("fs/promises", () => ({
   readFile: vi.fn(),
   unlink: vi.fn(),
+  writeFile: vi.fn(),
 }));
 
 vi.mock("@/lib/submit/reviewer", () => ({
@@ -17,6 +18,7 @@ vi.mock("@/lib/submit/reviewer-supabase", () => ({
   isSupabaseConfigured: vi.fn(),
   getSubmissionSupabase: vi.fn(),
   deleteSubmissionSupabase: vi.fn(),
+  updateSubmissionFormDataSupabase: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/admin-api", () => ({
@@ -27,27 +29,36 @@ vi.mock("@/lib/security/request-origin", () => ({
   verifyTrustedOrigin: vi.fn(),
 }));
 
-import { DELETE, GET } from "@/app/api/admin/submissions/[id]/route";
+vi.mock("@/lib/security/json-body", () => ({
+  parseJsonBodyWithLimit: vi.fn(),
+}));
+
+import { DELETE, GET, PATCH } from "@/app/api/admin/submissions/[id]/route";
 import { existsSync } from "fs";
-import { readFile, unlink } from "fs/promises";
+import { readFile, unlink, writeFile } from "fs/promises";
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
 import {
   deleteSubmissionSupabase,
   getSubmissionSupabase,
   isSupabaseConfigured,
+  updateSubmissionFormDataSupabase,
 } from "@/lib/submit/reviewer-supabase";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
 const mockedExistsSync = vi.mocked(existsSync);
 const mockedReadFile = vi.mocked(readFile);
 const mockedUnlink = vi.mocked(unlink);
+const mockedWriteFile = vi.mocked(writeFile);
 const mockedIsValidSubmissionId = vi.mocked(isValidSubmissionId);
 const mockedDeleteSubmissionSupabase = vi.mocked(deleteSubmissionSupabase);
 const mockedGetSubmissionSupabase = vi.mocked(getSubmissionSupabase);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
+const mockedUpdateSubmissionFormDataSupabase = vi.mocked(updateSubmissionFormDataSupabase);
 const mockedCheckAdminApiAccess = vi.mocked(checkAdminApiAccess);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
+const mockedParseJsonBodyWithLimit = vi.mocked(parseJsonBodyWithLimit);
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -222,5 +233,121 @@ describe("DELETE /api/admin/submissions/[id]", () => {
       id: "sub-4",
     });
     expect(mockedDeleteSubmissionSupabase).toHaveBeenCalledWith("sub-4");
+  });
+});
+
+describe("PATCH /api/admin/submissions/[id]", () => {
+  it("rejects untrusted origins", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({
+      ok: false,
+      error: "Cross-origin request denied.",
+      status: 403,
+    });
+
+    const response = await PATCH(
+      new Request("https://stylekit.top/api/admin/submissions/sub-1", { method: "PATCH" }),
+      { params: Promise.resolve({ id: "sub-1" }) },
+    );
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({
+      error: "Cross-origin request denied.",
+    });
+  });
+
+  it("updates submission via supabase when configured", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedCheckAdminApiAccess.mockResolvedValue({
+      allowed: true,
+      actor: { type: "user", id: "admin" },
+    });
+    mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { name: "New Name", description: "Updated by admin" },
+    });
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedGetSubmissionSupabase.mockResolvedValue({
+      id: "sub-5",
+      slug: "test-style",
+      status: "approved",
+      submittedAt: "2026-02-21T00:00:00.000Z",
+      formData: {
+        name: "Old Name",
+        description: "Old",
+        designStyle: { name: "Old Name", description: "Old", extra: "keep" },
+      },
+      designStyle: { name: "Old Name", description: "Old", extra: "keep" },
+      tokens: {},
+    } as never);
+    mockedUpdateSubmissionFormDataSupabase.mockResolvedValue({
+      id: "sub-5",
+      slug: "test-style",
+      status: "approved",
+      submittedAt: "2026-02-21T00:00:00.000Z",
+      formData: {
+        name: "New Name",
+        description: "Updated by admin",
+        designStyle: { name: "New Name", description: "Updated by admin", extra: "keep" },
+      },
+      designStyle: { name: "New Name", description: "Updated by admin", extra: "keep" },
+      tokens: {},
+    } as never);
+
+    const response = await PATCH(
+      new Request("https://stylekit.top/api/admin/submissions/sub-5", {
+        method: "PATCH",
+        body: JSON.stringify({ name: "New Name", description: "Updated by admin" }),
+      }),
+      { params: Promise.resolve({ id: "sub-5" }) },
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedUpdateSubmissionFormDataSupabase).toHaveBeenCalledWith("sub-5", {
+      name: "New Name",
+      description: "Updated by admin",
+      designStyle: {
+        name: "New Name",
+        description: "Updated by admin",
+        extra: "keep",
+      },
+    });
+  });
+
+  it("updates file-based submission when supabase is disabled", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedCheckAdminApiAccess.mockResolvedValue({
+      allowed: true,
+      actor: { type: "user", id: "admin" },
+    });
+    mockedIsValidSubmissionId.mockReturnValue(true);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { nameEn: "Updated Name EN" },
+    });
+    mockedIsSupabaseConfigured.mockReturnValue(false);
+    mockedExistsSync.mockReturnValue(true);
+    mockedReadFile.mockResolvedValue(
+      JSON.stringify({
+        id: "sub-file-1",
+        formData: {
+          name: "旧名称",
+          nameEn: "Old Name EN",
+          designStyle: { name: "旧名称", nameEn: "Old Name EN" },
+        },
+        designStyle: { name: "旧名称", nameEn: "Old Name EN", extra: "keep" },
+      }),
+    );
+
+    const response = await PATCH(
+      new Request("https://stylekit.top/api/admin/submissions/sub-file-1", {
+        method: "PATCH",
+        body: JSON.stringify({ nameEn: "Updated Name EN" }),
+      }),
+      { params: Promise.resolve({ id: "sub-file-1" }) },
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedWriteFile).toHaveBeenCalledTimes(1);
   });
 });
