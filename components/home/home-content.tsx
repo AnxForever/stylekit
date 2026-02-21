@@ -275,7 +275,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                 </Link>
               </div>
 
-              <ul className="mt-3.5 sm:mt-5 grid grid-cols-3 gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
+              <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
                   <li
                     key={item.label}
