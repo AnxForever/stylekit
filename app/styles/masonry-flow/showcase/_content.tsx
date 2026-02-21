@@ -1,41 +1,43 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  useInView — fires once when element enters viewport                */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
+
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
           setInView(true);
-          observer.disconnect();
+          obs.disconnect();
         }
       },
       { threshold: 0.15, ...options }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return { ref, inView };
 }
 
-/* ------------------------------------------------------------------ */
-/*  RevealBlock — fade + slide up on scroll into view                  */
-/* ------------------------------------------------------------------ */
 function RevealBlock({
   children,
-  delay = 0,
   className = "",
+  delay = 0,
 }: {
   children: React.ReactNode;
-  delay?: number;
   className?: string;
+  delay?: number;
 }) {
   const { ref, inView } = useInView();
   return (
@@ -44,8 +46,8 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
       {children}
@@ -54,1260 +56,2090 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Data                                                               */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-const NAV_CATEGORIES = ["All", "Photos", "Art", "Design", "3D", "Motion"] as const;
-type NavCategory = (typeof NAV_CATEGORIES)[number];
+function GridIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="9" rx="1" />
+      <rect x="14" y="3" width="7" height="5" rx="1" />
+      <rect x="14" y="12" width="7" height="9" rx="1" />
+      <rect x="3" y="16" width="7" height="5" rx="1" />
+    </svg>
+  );
+}
 
-type MasonryCardData = {
+function SaveIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17 3H5c-1.1 0-2 .9-2 2v14l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+    </svg>
+  );
+}
+
+function HeartIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+  );
+}
+
+function ShareIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </svg>
+  );
+}
+
+function SearchIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+function PlusIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+function UserIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Color palette from masonry-flow.ts                                 */
+/* ------------------------------------------------------------------ */
+
+const PRIMARY = "#1a1a2e";
+const ACCENT_RED = "#e94560";
+const ACCENT_GREEN = "#16c79a";
+const ACCENT_YELLOW = "#ffd460";
+const ACCENT_PURPLE = "#7579e7";
+
+/* ------------------------------------------------------------------ */
+/*  Masonry card data                                                  */
+/* ------------------------------------------------------------------ */
+
+type FilterCategory = "All" | "Photos" | "Art" | "Design";
+
+interface MasonryCard {
   id: number;
-  title: string;
-  author: string;
-  category: NavCategory;
+  category: FilterCategory;
   aspect: string;
-  gradient: string;
-  accentColor: string;
-  saves: string;
-};
+  bgFrom: string;
+  bgTo: string;
+  title: string;
+  subtitle: string;
+  accent: string;
+}
 
-const CARDS: MasonryCardData[] = [
+const masonryCards: MasonryCard[] = [
   {
     id: 1,
-    title: "Mountain Vista at Dusk",
-    author: "Elena Vasquez",
     category: "Photos",
     aspect: "aspect-[3/4]",
-    gradient: "from-[#e94560] via-rose-700 to-[#1a1a2e]",
-    accentColor: "#e94560",
-    saves: "4.2k",
+    bgFrom: ACCENT_RED,
+    bgTo: "#c23152",
+    title: "Golden Hour",
+    subtitle: "Nature Photography",
+    accent: ACCENT_RED,
   },
   {
     id: 2,
-    title: "Geometric Rhythm Study",
-    author: "Kian Park",
-    category: "Design",
+    category: "Art",
     aspect: "aspect-square",
-    gradient: "from-[#7579e7] via-indigo-600 to-purple-900",
-    accentColor: "#7579e7",
-    saves: "2.8k",
+    bgFrom: ACCENT_PURPLE,
+    bgTo: "#5557c4",
+    title: "Digital Dream",
+    subtitle: "Illustration",
+    accent: ACCENT_PURPLE,
   },
   {
     id: 3,
-    title: "Emerald Forest Path",
-    author: "Mia Chen",
-    category: "Photos",
-    aspect: "aspect-[4/5]",
-    gradient: "from-[#16c79a] via-emerald-600 to-teal-900",
-    accentColor: "#16c79a",
-    saves: "6.1k",
+    category: "Design",
+    aspect: "aspect-[2/3]",
+    bgFrom: ACCENT_GREEN,
+    bgTo: "#0ea57e",
+    title: "Minimal Form",
+    subtitle: "UI Design",
+    accent: ACCENT_GREEN,
   },
   {
     id: 4,
-    title: "Golden Hour Drift",
-    author: "Jonas Beck",
-    category: "Art",
-    aspect: "aspect-[2/3]",
-    gradient: "from-[#ffd460] via-amber-500 to-orange-800",
-    accentColor: "#ffd460",
-    saves: "3.4k",
+    category: "Photos",
+    aspect: "aspect-[4/5]",
+    bgFrom: ACCENT_YELLOW,
+    bgTo: "#e6b800",
+    title: "Urban Layers",
+    subtitle: "Street Photography",
+    accent: ACCENT_YELLOW,
   },
   {
     id: 5,
-    title: "Neon Bloom Sphere",
-    author: "Priya Nair",
-    category: "3D",
-    aspect: "aspect-[4/3]",
-    gradient: "from-cyan-400 via-sky-500 to-blue-800",
-    accentColor: "#22d3ee",
-    saves: "9.7k",
+    category: "Art",
+    aspect: "aspect-[3/5]",
+    bgFrom: PRIMARY,
+    bgTo: "#2d2d4e",
+    title: "Void Walker",
+    subtitle: "Concept Art",
+    accent: ACCENT_PURPLE,
   },
   {
     id: 6,
-    title: "Coastal Fog Light",
-    author: "Soren Holt",
-    category: "Photos",
-    aspect: "aspect-[3/4]",
-    gradient: "from-slate-300 via-sky-400 to-blue-700",
-    accentColor: "#7dd3fc",
-    saves: "1.9k",
+    category: "Design",
+    aspect: "aspect-square",
+    bgFrom: ACCENT_RED,
+    bgTo: ACCENT_PURPLE,
+    title: "Flow State",
+    subtitle: "Brand Identity",
+    accent: ACCENT_RED,
   },
   {
     id: 7,
-    title: "Ink Study No. 7",
-    author: "Yuki Tanaka",
-    category: "Art",
+    category: "Photos",
     aspect: "aspect-[2/3]",
-    gradient: "from-zinc-300 via-zinc-500 to-zinc-900",
-    accentColor: "#a1a1aa",
-    saves: "5.3k",
+    bgFrom: ACCENT_GREEN,
+    bgTo: ACCENT_YELLOW,
+    title: "Morning Mist",
+    subtitle: "Landscape",
+    accent: ACCENT_GREEN,
   },
   {
     id: 8,
-    title: "Motion Blur Festival",
-    author: "Aida Osei",
-    category: "Motion",
-    aspect: "aspect-square",
-    gradient: "from-[#7579e7] via-fuchsia-500 to-pink-800",
-    accentColor: "#e879f9",
-    saves: "7.8k",
+    category: "Art",
+    aspect: "aspect-[3/4]",
+    bgFrom: ACCENT_PURPLE,
+    bgTo: ACCENT_RED,
+    title: "Neon Bloom",
+    subtitle: "Digital Painting",
+    accent: ACCENT_PURPLE,
   },
   {
     id: 9,
-    title: "Paper Cut Landscape",
-    author: "Liam Torres",
     category: "Design",
     aspect: "aspect-[4/5]",
-    gradient: "from-red-400 via-[#e94560] to-rose-900",
-    accentColor: "#e94560",
-    saves: "2.2k",
+    bgFrom: ACCENT_YELLOW,
+    bgTo: ACCENT_GREEN,
+    title: "Grid System",
+    subtitle: "Layout Study",
+    accent: ACCENT_YELLOW,
   },
   {
     id: 10,
-    title: "Sunset Sand Dunes",
-    author: "Amara Jules",
     category: "Photos",
-    aspect: "aspect-[3/4]",
-    gradient: "from-[#ffd460] via-orange-400 to-amber-800",
-    accentColor: "#ffd460",
-    saves: "8.4k",
+    aspect: "aspect-[3/5]",
+    bgFrom: PRIMARY,
+    bgTo: ACCENT_RED,
+    title: "Night Sky",
+    subtitle: "Astrophotography",
+    accent: ACCENT_RED,
   },
   {
     id: 11,
-    title: "Wireframe Metropolis",
-    author: "Cleo Marsh",
-    category: "3D",
-    aspect: "aspect-[5/4]",
-    gradient: "from-slate-200 via-slate-400 to-[#1a1a2e]",
-    accentColor: "#7579e7",
-    saves: "3.0k",
+    category: "Art",
+    aspect: "aspect-square",
+    bgFrom: ACCENT_GREEN,
+    bgTo: ACCENT_PURPLE,
+    title: "Pixel World",
+    subtitle: "Pixel Art",
+    accent: ACCENT_GREEN,
   },
   {
     id: 12,
-    title: "Flora Study — Spring",
-    author: "Ravi Menon",
-    category: "Art",
+    category: "Design",
     aspect: "aspect-[2/3]",
-    gradient: "from-lime-300 via-[#16c79a] to-green-800",
-    accentColor: "#16c79a",
-    saves: "4.9k",
-  },
-];
-
-const COLOR_PALETTE = [
-  {
-    name: "Night Primary",
-    hex: "#1a1a2e",
-    role: "Background, nav, dark surfaces",
-    textColor: "#ffffff",
-  },
-  {
-    name: "Parchment",
-    hex: "#f5f5f5",
-    role: "Page background, light surfaces",
-    textColor: "#1a1a2e",
-  },
-  {
-    name: "Coral Rose",
-    hex: "#e94560",
-    role: "Accent, CTA, active state",
-    textColor: "#ffffff",
-  },
-  {
-    name: "Emerald Mint",
-    hex: "#16c79a",
-    role: "Success, do-state, secondary accent",
-    textColor: "#ffffff",
-  },
-  {
-    name: "Sunshine Amber",
-    hex: "#ffd460",
-    role: "Highlight, warm accent",
-    textColor: "#1a1a2e",
-  },
-  {
-    name: "Lavender Violet",
-    hex: "#7579e7",
-    role: "Art/3D accent, creative tone",
-    textColor: "#ffffff",
-  },
-];
-
-const DO_RULES = [
-  {
-    rule: "CSS columns for natural masonry flow",
-    detail:
-      "Use columns-1 sm:columns-2 lg:columns-3 xl:columns-4 — the browser distributes cards into columns optimally.",
-  },
-  {
-    rule: "break-inside-avoid on every card",
-    detail:
-      "Without this, cards split across column boundaries, breaking image continuity and visual rhythm.",
-  },
-  {
-    rule: "Confined Zoom behind overflow-hidden",
-    detail:
-      "Wrap image in overflow-hidden rounded-2xl, then group-hover:scale-105 on the img. The image zooms; the card edge stays crisp.",
-  },
-  {
-    rule: "Overlay Reveal at duration-300",
-    detail:
-      "Action buttons translate-y-4 opacity-0 base state, group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300.",
-  },
-  {
-    rule: "Subtle Elevation: -translate-y-1 + diffuse shadow",
-    detail:
-      "hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] is enough. The card breathes, not leaps.",
-  },
-  {
-    rule: "Filter buttons at duration-200",
-    detail:
-      "Category pills should feel snappy. 200ms is the right balance between immediate and graceful.",
-  },
-];
-
-const DONT_RULES = [
-  {
-    rule: "Force equal card heights",
-    detail:
-      "min-h or fixed-height on cards destroys the waterfall rhythm. Content height must drive layout.",
-  },
-  {
-    rule: "Let images break overflow-hidden",
-    detail:
-      "Any transform on a card that has overflow-hidden must be applied to the inner image, not the card itself — or you create clipping artifacts.",
-  },
-  {
-    rule: "Hard hover borders",
-    detail:
-      "Adding border-2 border-accent on hover introduces layout shift and visual harshness. Use shadow instead.",
-  },
-  {
-    rule: "Too many columns on mobile",
-    detail:
-      "columns-3 on 375px screens creates cards too narrow for overlay text or action buttons to fit legibly.",
-  },
-  {
-    rule: "Translate more than -translate-y-1 on card hover",
-    detail:
-      "Cards jumping -translate-y-4 or more create an anxious, incoherent grid. One rem of lift is the ceiling.",
-  },
-  {
-    rule: "Inconsistent gap sizes across breakpoints",
-    detail:
-      "gap-2 on mobile and gap-8 on desktop creates an inconsistent rhythm that distracts from content.",
+    bgFrom: ACCENT_YELLOW,
+    bgTo: ACCENT_RED,
+    title: "Type Study",
+    subtitle: "Typography",
+    accent: ACCENT_YELLOW,
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/*  MasonryCard sub-component                                          */
+/*  Component card tabs                                                */
 /* ------------------------------------------------------------------ */
 
-function MasonryCard({ card }: { card: MasonryCardData }) {
-  const [saved, setSaved] = useState(false);
-
-  return (
-    <div className="group break-inside-avoid mb-4 cursor-pointer">
-      {/* Outer wrapper: Subtle Elevation */}
-      <div className="rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out">
-        {/* Image area: Confined Zoom */}
-        <div className="relative overflow-hidden">
-          <div
-            className={`w-full ${card.aspect} bg-gradient-to-br ${card.gradient} group-hover:scale-105 transition-transform duration-700 ease-out`}
-          >
-            {/* Faint grid texture overlay for depth */}
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            {/* Category badge top-left */}
-            <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide bg-black/30 text-white backdrop-blur-sm">
-              {card.category}
-            </span>
-          </div>
-
-          {/* Overlay gradient on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-          {/* Overlay Reveal: action buttons */}
-          <div className="absolute bottom-3 right-3 flex gap-2">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSaved((s) => !s);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-sm text-zinc-900 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white active:scale-95"
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                fill={saved ? "currentColor" : "none"}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                style={{ color: saved ? "#e94560" : "currentColor" }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-              {saved ? "Saved" : "Save"}
-            </button>
-            <button
-              type="button"
-              className="px-3 py-1.5 rounded-full text-xs font-semibold text-white bg-[#e94560] translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-[30ms] hover:bg-[#d13a53] active:scale-95"
-            >
-              View
-            </button>
-          </div>
-        </div>
-
-        {/* Card footer */}
-        <div className="bg-white px-4 py-3 flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-zinc-900 leading-tight group-hover:text-[#e94560] transition-colors duration-200">
-              {card.title}
-            </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">{card.author}</p>
-          </div>
-          <div className="flex items-center gap-1 text-xs text-zinc-400 shrink-0 ml-3">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-              />
-            </svg>
-            {card.saves}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  FilterPill sub-component                                           */
-/* ------------------------------------------------------------------ */
-
-function FilterPill({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 active:scale-95 ${
-        active
-          ? "bg-[#1a1a2e] text-white shadow-sm"
-          : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-400 hover:text-zinc-900"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Hero masonry grid illustration                                     */
-/* ------------------------------------------------------------------ */
-
-function HeroMasonryIllustration({ revealed }: { revealed: boolean }) {
-  // A static decorative masonry block layout using colored divs at varying heights
-  const blocks = [
-    // Column 1
-    { col: 1, h: "h-36", gradient: "from-[#e94560] to-rose-700", delay: 600 },
-    { col: 1, h: "h-24", gradient: "from-[#7579e7] to-indigo-700", delay: 700 },
-    { col: 1, h: "h-44", gradient: "from-[#16c79a] to-teal-700", delay: 800 },
-    // Column 2
-    { col: 2, h: "h-52", gradient: "from-[#ffd460] to-amber-600", delay: 650 },
-    { col: 2, h: "h-32", gradient: "from-cyan-400 to-blue-600", delay: 750 },
-    { col: 2, h: "h-28", gradient: "from-[#e94560] to-pink-700", delay: 850 },
-    // Column 3
-    { col: 3, h: "h-28", gradient: "from-[#16c79a] to-emerald-700", delay: 700 },
-    { col: 3, h: "h-48", gradient: "from-[#7579e7] to-purple-800", delay: 800 },
-    { col: 3, h: "h-20", gradient: "from-[#ffd460] to-orange-600", delay: 900 },
-  ];
-
-  const col1 = blocks.filter((b) => b.col === 1);
-  const col2 = blocks.filter((b) => b.col === 2);
-  const col3 = blocks.filter((b) => b.col === 3);
-
-  const BlockItem = ({ b }: { b: (typeof blocks)[0] }) => (
-    <div
-      className={`w-full ${b.h} rounded-xl bg-gradient-to-br ${b.gradient} flex-shrink-0`}
-      style={{
-        opacity: revealed ? 1 : 0,
-        transform: revealed ? "translateY(0) scale(1)" : "translateY(20px) scale(0.97)",
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${b.delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${b.delay}ms`,
-      }}
-    />
-  );
-
-  return (
-    <div className="flex gap-3 w-full max-w-xs mx-auto md:max-w-sm">
-      {/* Column 1 */}
-      <div className="flex flex-col gap-3 flex-1">
-        {col1.map((b, i) => (
-          <BlockItem key={i} b={b} />
-        ))}
-      </div>
-      {/* Column 2 */}
-      <div className="flex flex-col gap-3 flex-1">
-        {col2.map((b, i) => (
-          <BlockItem key={i} b={b} />
-        ))}
-      </div>
-      {/* Column 3 */}
-      <div className="flex flex-col gap-3 flex-1">
-        {col3.map((b, i) => (
-          <BlockItem key={i} b={b} />
-        ))}
-      </div>
-    </div>
-  );
-}
+type ComponentTab = "photo" | "article" | "product" | "profile";
 
 /* ------------------------------------------------------------------ */
 /*  Main export                                                        */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<NavCategory>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [navScrolled, setNavScrolled] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
+  const [activeTab, setActiveTab] = useState<ComponentTab>("photo");
+  const [savedCards, setSavedCards] = useState<Set<number>>(new Set());
+  const [likedCards, setLikedCards] = useState<Set<number>>(new Set());
 
-  // heroRevealed pattern
+  /* Animation states for Section 6 demo cards */
+  const [zoomHovered, setZoomHovered] = useState(false);
+  const [elevationHovered, setElevationHovered] = useState(false);
+  const [overlayHovered, setOverlayHovered] = useState(false);
+  const [snappyActive, setSnappyActive] = useState<string>("All");
+
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  // Nav scroll shadow
-  useEffect(() => {
-    const handleScroll = () => setNavScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  function toggleSave(id: number) {
+    setSavedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
-  // Filter cards
+  function toggleLike(id: number) {
+    setLikedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   const filteredCards =
-    activeFilter === "All" ? CARDS : CARDS.filter((c) => c.category === activeFilter);
+    activeFilter === "All"
+      ? masonryCards
+      : masonryCards.filter((c) => c.category === activeFilter);
 
-  /* -------- Hero useInView refs -------- */
-  const { ref: heroGridRef, inView: heroGridInView } = useInView();
+  const filterTabs: FilterCategory[] = ["All", "Photos", "Art", "Design"];
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] text-[#1a1a2e] font-sans">
+    <div
+      className="min-h-screen font-sans overflow-x-hidden"
+      style={{ backgroundColor: "#f5f5f5", color: PRIMARY }}
+    >
       <style>{`
-        @keyframes mf-fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
+        @keyframes masonry-fade-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes mf-pulse-ring {
-          0%   { box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
-          70%  { box-shadow: 0 0 0 10px rgba(233,69,96,0); }
-          100% { box-shadow: 0 0 0 0 rgba(233,69,96,0); }
+        @keyframes masonry-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+        .masonry-shimmer {
+          background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
+          background-size: 200% 100%;
+          animation: masonry-shimmer 1.8s infinite;
         }
       `}</style>
 
       {/* ================================================================ */}
-      {/*  SECTION 1: Fixed Navigation                                    */}
+      {/* 1. FIXED STICKY NAV                                              */}
       {/* ================================================================ */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          navScrolled
-            ? "bg-[#1a1a2e]/95 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.15)]"
-            : "bg-[#1a1a2e]"
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b"
+        style={{
+          backgroundColor: "rgba(245,245,245,0.92)",
+          borderColor: "rgba(26,26,46,0.08)",
+          boxShadow: "0 2px 20px rgba(26,26,46,0.06)",
+        }}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              {/* Icon mark */}
-              <div className="w-8 h-8 rounded-lg bg-[#e94560] flex items-center justify-center shrink-0">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M4 6h4v14H4zM10 3h4v17h-4zM16 8h4v12h-4z"
-                  />
-                </svg>
-              </div>
-              <span className="text-white font-bold text-lg tracking-tight">Masonry Flow</span>
-            </div>
-
-            {/* Category pills */}
-            <nav className="hidden md:flex items-center gap-1">
-              {NAV_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveFilter(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    activeFilter === cat
-                      ? "bg-[#e94560] text-white"
-                      : "text-white/60 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </nav>
-
-            {/* Right: back link */}
-            <Link
-              href="/styles/masonry-flow"
-              className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors duration-200"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              <span className="hidden sm:inline">StyleKit</span>
-            </Link>
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div
+            className="flex items-center gap-2.5 px-4 py-2 rounded-lg"
+            style={{ backgroundColor: PRIMARY }}
+          >
+            <GridIcon className="w-4 h-4 text-white" />
+            <span className="text-sm font-semibold text-white tracking-tight">
+              Masonry<span style={{ color: ACCENT_RED }}>Flow</span>
+            </span>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Hero", "Live Demo", "Anatomy", "Components", "Interactions", "Rules"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 rounded-md text-sm transition-colors duration-150 cursor-pointer hover:bg-zinc-100"
+                style={{ color: "rgba(26,26,46,0.55)" }}
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back to StyleKit CTA */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
+            style={{
+              backgroundColor: ACCENT_RED,
+              boxShadow: `0 4px 14px ${ACCENT_RED}55`,
+            }}
+          >
+            <ArrowLeftIcon className="w-3.5 h-3.5" />
+            StyleKit
+          </Link>
         </div>
       </header>
 
       {/* ================================================================ */}
-      {/*  SECTION 2: Hero                                                 */}
+      {/* 2. HERO — masonry grid concept visualization                    */}
       {/* ================================================================ */}
-      <section className="relative min-h-screen bg-[#1a1a2e] flex items-center overflow-hidden pt-16">
-        {/* Background noise/grain */}
+      <section
+        className="relative pt-28 md:pt-36 pb-24 px-5 md:px-10 overflow-hidden"
+        style={{ backgroundColor: PRIMARY }}
+      >
+        {/* Background subtle grid lines */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
           }}
         />
 
-        {/* Soft color blobs */}
+        {/* Accent glow blobs */}
         <div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, rgba(233,69,96,0.12) 0%, transparent 70%)",
-          }}
+          className="absolute top-20 right-10 w-96 h-96 rounded-full pointer-events-none blur-3xl opacity-20"
+          style={{ backgroundColor: ACCENT_RED }}
         />
         <div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, rgba(117,121,231,0.10) 0%, transparent 70%)",
-          }}
+          className="absolute bottom-10 left-20 w-80 h-80 rounded-full pointer-events-none blur-3xl"
+          style={{ backgroundColor: ACCENT_PURPLE, opacity: 0.15 }}
         />
 
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 w-full">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Left: Text content */}
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+            {/* Left: text */}
             <div>
               <div
                 style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-                  transition:
-                    "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0ms",
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+                  transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0s",
                 }}
               >
-                <span className="inline-flex items-center gap-2 text-[#e94560] text-xs font-semibold tracking-widest uppercase mb-6">
-                  <span
-                    className="inline-block w-2 h-2 rounded-full bg-[#e94560]"
-                    style={{ animation: "mf-pulse-ring 2s ease-out infinite" }}
-                  />
-                  Pinterest-Style Layout System
+                <span
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.15em] uppercase mb-7"
+                  style={{
+                    backgroundColor: "rgba(233,69,96,0.18)",
+                    color: ACCENT_RED,
+                    border: `1px solid ${ACCENT_RED}44`,
+                  }}
+                >
+                  <GridIcon className="w-3 h-3" />
+                  Pinterest-style Layout
                 </span>
               </div>
 
-              <h1 className="text-white font-bold leading-[1.0] tracking-tight mb-6">
+              <h1
+                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-white"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+                }}
+              >
+                Content flows
+                <br />
                 <span
-                  className="block text-5xl md:text-6xl lg:text-7xl"
                   style={{
-                    opacity: heroRevealed ? 1 : 0,
-                    transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
-                    transition:
-                      "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 80ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 80ms",
+                    background: `linear-gradient(135deg, ${ACCENT_RED} 0%, ${ACCENT_PURPLE} 60%, ${ACCENT_GREEN} 100%)`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
                   }}
                 >
-                  Masonry
-                </span>
-                <span
-                  className="block text-5xl md:text-6xl lg:text-7xl text-[#e94560]"
-                  style={{
-                    opacity: heroRevealed ? 1 : 0,
-                    transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
-                    transition:
-                      "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 160ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 160ms",
-                  }}
-                >
-                  Flow.
+                  naturally.
                 </span>
               </h1>
 
               <p
-                className="text-white/50 text-base md:text-lg leading-relaxed mb-8 max-w-md"
+                className="text-lg leading-relaxed mb-10 max-w-md"
                 style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                  transition:
-                    "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 280ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 280ms",
+                  color: "rgba(255,255,255,0.55)",
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
                 }}
               >
-                A waterfall card layout where content height drives visual rhythm. Natural columns,
-                maximum space efficiency, and infinite scroll potential.
+                CSS columns technique creates a self-organizing grid where cards
+                of varying heights fill each column top-to-bottom. Zero JavaScript,
+                pure CSS masonry that works in every browser.
               </p>
 
-              {/* Search bar */}
               <div
+                className="flex flex-wrap gap-4"
                 style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                  transition:
-                    "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 380ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 380ms",
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
                 }}
               >
-                <div className="relative max-w-sm">
-                  <svg
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <button
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{
+                    backgroundColor: ACCENT_RED,
+                    boxShadow: `0 4px 16px ${ACCENT_RED}44`,
+                  }}
+                >
+                  <GridIcon className="w-4 h-4" />
+                  See Live Demo
+                </button>
+                <button
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm transition-all duration-200 hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    color: "rgba(255,255,255,0.75)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                  }}
+                >
+                  CSS columns breakdown
+                </button>
+              </div>
+            </div>
+
+            {/* Right: miniature masonry visualization */}
+            <div
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0) scale(1)" : "translateY(24px) scale(0.96)",
+                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s",
+              }}
+            >
+              {/* Mini masonry grid — 4 columns of decorative blocks */}
+              <div
+                className="rounded-2xl p-5 overflow-hidden"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 24px 64px rgba(0,0,0,0.4)",
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-3 h-3 rounded-full bg-red-400 opacity-70" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400 opacity-70" />
+                  <div className="w-3 h-3 rounded-full bg-green-400 opacity-70" />
+                  <div
+                    className="ml-auto text-xs font-mono"
+                    style={{ color: "rgba(255,255,255,0.3)" }}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search the gallery..."
-                    className="w-full pl-12 pr-4 py-3.5 bg-white/8 border border-white/10 rounded-full text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#e94560]/50 focus:bg-white/12 transition-all duration-300"
-                    style={{ background: "rgba(255,255,255,0.06)" }}
-                  />
+                    columns-4
+                  </div>
                 </div>
-                <p className="text-white/25 text-xs mt-2 pl-1">
-                  {searchQuery
-                    ? `Showing results for "${searchQuery}"`
-                    : "Try: Mountain, Flora, Motion..."}
-                </p>
+
+                {/* 4-column mini masonry */}
+                <div className="grid grid-cols-4 gap-2">
+                  {/* Column 1 */}
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded opacity-80" style={{ height: 80, background: `linear-gradient(160deg, ${ACCENT_RED}, #c23152)` }} />
+                    <div className="rounded opacity-70" style={{ height: 48, background: `linear-gradient(160deg, ${ACCENT_GREEN}, #0ea57e)` }} />
+                    <div className="rounded opacity-75" style={{ height: 64, background: `linear-gradient(160deg, ${ACCENT_YELLOW}, #e6b800)` }} />
+                  </div>
+                  {/* Column 2 */}
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded opacity-75" style={{ height: 56, background: `linear-gradient(160deg, ${ACCENT_PURPLE}, #5557c4)` }} />
+                    <div className="rounded opacity-80" style={{ height: 96, background: `linear-gradient(160deg, ${ACCENT_RED}, ${ACCENT_PURPLE})` }} />
+                    <div className="rounded opacity-65" style={{ height: 40, background: `linear-gradient(160deg, ${ACCENT_GREEN}, ${ACCENT_YELLOW})` }} />
+                  </div>
+                  {/* Column 3 */}
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded opacity-70" style={{ height: 64, background: `linear-gradient(160deg, ${ACCENT_GREEN}, ${ACCENT_PURPLE})` }} />
+                    <div className="rounded opacity-75" style={{ height: 40, background: `linear-gradient(160deg, ${ACCENT_YELLOW}, ${ACCENT_RED})` }} />
+                    <div className="rounded opacity-80" style={{ height: 88, background: `linear-gradient(160deg, ${ACCENT_RED}, ${ACCENT_GREEN})` }} />
+                  </div>
+                  {/* Column 4 */}
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded opacity-75" style={{ height: 40, background: `linear-gradient(160deg, ${ACCENT_YELLOW}, ${ACCENT_PURPLE})` }} />
+                    <div className="rounded opacity-80" style={{ height: 80, background: `linear-gradient(160deg, ${ACCENT_PURPLE}, ${ACCENT_RED})` }} />
+                    <div className="rounded opacity-70" style={{ height: 72, background: `linear-gradient(160deg, ${ACCENT_GREEN}, ${ACCENT_RED})` }} />
+                  </div>
+                </div>
+
+                {/* Annotation */}
+                <div className="mt-4 flex items-center justify-between">
+                  <code
+                    className="text-xs font-mono px-2.5 py-1 rounded"
+                    style={{
+                      backgroundColor: "rgba(233,69,96,0.2)",
+                      color: ACCENT_RED,
+                    }}
+                  >
+                    break-inside-avoid
+                  </code>
+                  <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                    varying heights — natural flow
+                  </span>
+                </div>
               </div>
 
               {/* Stats row */}
-              <div
-                className="flex gap-8 mt-10"
-                style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 480ms",
-                }}
-              >
+              <div className="grid grid-cols-3 gap-3 mt-4">
                 {[
-                  { value: "12+", label: "Card types" },
-                  { value: "6", label: "Accent colors" },
-                  { value: "4", label: "Column variants" },
+                  { label: "CSS only", value: "No JS", color: ACCENT_GREEN },
+                  { label: "Column gap", value: "gap-4", color: ACCENT_YELLOW },
+                  { label: "Responsive", value: "1-4 cols", color: ACCENT_PURPLE },
                 ].map((stat) => (
-                  <div key={stat.label}>
-                    <p className="text-white font-bold text-2xl leading-none">{stat.value}</p>
-                    <p className="text-white/40 text-xs mt-1">{stat.label}</p>
+                  <div
+                    key={stat.label}
+                    className="rounded-xl p-3 text-center"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
+                    <div className="text-sm font-bold mb-0.5" style={{ color: stat.color }}>
+                      {stat.value}
+                    </div>
+                    <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      {stat.label}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Right: Masonry illustration */}
-            <div
-              ref={heroGridRef}
-              className="relative"
+      {/* ================================================================ */}
+      {/* 3. LIVE MASONRY DEMO — CSS columns with filters                 */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10" style={{ backgroundColor: "#f5f5f5" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3"
+              style={{ color: ACCENT_RED }}
+            >
+              Live Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: PRIMARY }}>
+              Masonry grid{" "}
+              <span style={{ color: ACCENT_GREEN }}>in action</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-lg max-w-lg leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+              Filter by category and watch the grid reflow. Each card has a different aspect ratio
+              — that is the whole point of masonry. Hover to reveal the overlay actions.
+            </p>
+          </RevealBlock>
+
+          {/* Filter tabs — Action Snappiness: duration-200 */}
+          <RevealBlock delay={0.08} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveFilter(tab)}
+                  className="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200"
+                  style={
+                    activeFilter === tab
+                      ? {
+                          backgroundColor: PRIMARY,
+                          color: "#fff",
+                          boxShadow: `0 4px 12px rgba(26,26,46,0.25)`,
+                        }
+                      : {
+                          backgroundColor: "#fff",
+                          color: "rgba(26,26,46,0.6)",
+                          border: "1px solid rgba(26,26,46,0.1)",
+                        }
+                  }
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Actual CSS columns masonry — break-inside-avoid on every card */}
+          <RevealBlock delay={0.12}>
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
+              {filteredCards.map((card) => (
+                <div
+                  key={card.id}
+                  className="break-inside-avoid mb-4 group cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    backgroundColor: "#fff",
+                    boxShadow: "0 2px 8px rgba(26,26,46,0.06)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 15px 30px rgba(26,26,46,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 2px 8px rgba(26,26,46,0.06)";
+                  }}
+                >
+                  {/* Image container — Confined Zoom: overflow-hidden keeps scale inside */}
+                  <div className={`relative overflow-hidden ${card.aspect}`}>
+                    {/* Colored placeholder block */}
+                    <div
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                      style={{
+                        background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
+                      }}
+                    />
+
+                    {/* Category badge */}
+                    <div className="absolute top-3 left-3 z-10">
+                      <span
+                        className="px-2 py-0.5 rounded text-xs font-medium"
+                        style={{
+                          backgroundColor: "rgba(0,0,0,0.45)",
+                          color: "rgba(255,255,255,0.9)",
+                          backdropFilter: "blur(4px)",
+                        }}
+                      >
+                        {card.category}
+                      </span>
+                    </div>
+
+                    {/* Overlay Reveal: opacity + translate, does NOT change card size */}
+                    <div
+                      className="absolute inset-0 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)",
+                      }}
+                    >
+                      {/* Action buttons — translate + opacity reveal */}
+                      <div className="flex items-center gap-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSave(card.id);
+                          }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95"
+                          style={{
+                            backgroundColor: savedCards.has(card.id)
+                              ? card.accent
+                              : "rgba(255,255,255,0.9)",
+                            color: savedCards.has(card.id) ? "#fff" : PRIMARY,
+                          }}
+                        >
+                          <SaveIcon className="w-3 h-3" />
+                          {savedCards.has(card.id) ? "Saved" : "Save"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleLike(card.id);
+                          }}
+                          className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:scale-110 active:scale-95"
+                          style={{
+                            backgroundColor: likedCards.has(card.id)
+                              ? ACCENT_RED
+                              : "rgba(255,255,255,0.9)",
+                            color: likedCards.has(card.id) ? "#fff" : PRIMARY,
+                          }}
+                        >
+                          <HeartIcon className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:scale-110 active:scale-95"
+                          style={{
+                            backgroundColor: "rgba(255,255,255,0.9)",
+                            color: PRIMARY,
+                          }}
+                        >
+                          <ShareIcon className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card body */}
+                  <div className="p-3">
+                    <h3
+                      className="font-semibold text-sm mb-0.5 leading-snug"
+                      style={{ color: PRIMARY }}
+                    >
+                      {card.title}
+                    </h3>
+                    <p className="text-xs" style={{ color: "rgba(26,26,46,0.45)" }}>
+                      {card.subtitle}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Load more button */}
+          <RevealBlock delay={0.2} className="mt-10 text-center">
+            <button
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-medium text-sm transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                opacity: heroRevealed ? 1 : 0,
-                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 200ms",
+                backgroundColor: PRIMARY,
+                color: "#fff",
+                boxShadow: "0 4px 16px rgba(26,26,46,0.2)",
               }}
             >
-              <HeroMasonryIllustration revealed={heroRevealed} />
-              {/* Glow behind illustration */}
+              <PlusIcon className="w-4 h-4" />
+              Load More
+            </button>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. LAYOUT ANATOMY — CSS columns technique explained              */}
+      {/* ================================================================ */}
+      <section
+        className="py-20 md:py-28 px-5 md:px-10"
+        style={{ backgroundColor: PRIMARY }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3"
+              style={{ color: ACCENT_YELLOW }}
+            >
+              Layout Anatomy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight text-white">
+              How CSS columns{" "}
+              <span style={{ color: ACCENT_YELLOW }}>masonry works</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-lg max-w-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+              No JavaScript. No layout library. Just three CSS properties and a responsive column count.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Left: code breakdown */}
+            <RevealBlock delay={0.08}>
               <div
-                className="absolute inset-0 -z-10 rounded-3xl"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at 50% 50%, rgba(233,69,96,0.08) 0%, transparent 70%)",
-                  filter: "blur(40px)",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom fade to page bg */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-          style={{
-            background: "linear-gradient(to bottom, transparent, #f5f5f5)",
-          }}
-        />
-      </section>
-
-      {/* ================================================================ */}
-      {/*  SECTION 3: Live Masonry Demo                                   */}
-      {/* ================================================================ */}
-      <section className="pt-4 pb-20 px-6 md:px-10 max-w-7xl mx-auto">
-        {/* Section header */}
-        <RevealBlock className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-[#e94560] mb-2">
-                Live Demo
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold">
-                The Gallery
-              </h2>
-              <p className="text-zinc-500 text-sm mt-2">
-                Real CSS columns masonry — varying card heights, hover physics, overlay reveals.
-              </p>
-            </div>
-            <p className="text-xs text-zinc-400 pb-1">
-              {filteredCards.length} pins
-            </p>
-          </div>
-        </RevealBlock>
-
-        {/* Filter tabs */}
-        <RevealBlock delay={80} className="mb-8">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {NAV_CATEGORIES.map((cat) => (
-              <FilterPill
-                key={cat}
-                label={cat}
-                active={activeFilter === cat}
-                onClick={() => setActiveFilter(cat)}
-              />
-            ))}
-          </div>
-        </RevealBlock>
-
-        {/* Masonry grid — CSS columns */}
-        <RevealBlock delay={120}>
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
-            {filteredCards.length > 0 ? (
-              filteredCards.map((card) => <MasonryCard key={card.id} card={card} />)
-            ) : (
-              <div className="col-span-full py-20 text-center text-zinc-400 text-sm">
-                No pins in this category yet.
-              </div>
-            )}
-          </div>
-        </RevealBlock>
-
-        {/* Load More */}
-        <RevealBlock delay={160} className="mt-12 text-center">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#1a1a2e] text-white rounded-full font-semibold text-sm hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(26,26,46,0.25)] active:scale-[0.97] active:translate-y-0 transition-all duration-200"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-            Load More
-          </button>
-          <p className="text-zinc-400 text-xs mt-3">Infinite scroll pattern — load on demand</p>
-        </RevealBlock>
-      </section>
-
-      {/* ================================================================ */}
-      {/*  SECTION 4: Component Showcase                                  */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock className="mb-14">
-            <p className="text-xs font-semibold tracking-widest uppercase text-[#16c79a] mb-2">
-              Component Library
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">
-              Building Blocks
-            </h2>
-            <p className="text-zinc-500 text-sm max-w-md">
-              Every interactive element in Masonry Flow — buttons, pills, card variants.
-            </p>
-          </RevealBlock>
-
-          <div className="space-y-16">
-            {/* Buttons */}
-            <RevealBlock>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 mb-5">
-                Buttons
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a1a2e] text-white rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(26,26,46,0.2)] active:scale-[0.97] transition-all duration-200"
+                className="rounded-2xl overflow-hidden"
+                style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                {/* Code header */}
+                <div
+                  className="flex items-center gap-2 px-5 py-3 border-b"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.04)",
+                    borderColor: "rgba(255,255,255,0.06)",
+                  }}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                  Load More
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#e94560] text-white rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(233,69,96,0.3)] active:scale-[0.97] transition-all duration-200"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                    />
-                  </svg>
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-zinc-200 text-zinc-900 rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:border-zinc-400 hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] active:scale-[0.97] transition-all duration-200"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                    />
-                  </svg>
-                  Share
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#16c79a] text-white rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(22,199,154,0.3)] active:scale-[0.97] transition-all duration-200"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Create Pin
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#7579e7] text-white rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(117,121,231,0.3)] active:scale-[0.97] transition-all duration-200"
-                >
-                  Follow
-                </button>
-              </div>
-            </RevealBlock>
-
-            {/* Filter Pills */}
-            <RevealBlock delay={60}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 mb-5">
-                Filter Pills — Action Snappiness (duration-200)
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {["All", "Photos", "Art", "Design", "3D", "Motion", "Architecture", "Food", "Travel", "Fashion"].map(
-                  (cat, i) => (
-                    <span
-                      key={cat}
-                      className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-                        i === 0
-                          ? "bg-[#1a1a2e] text-white"
-                          : i === 2
-                          ? "bg-[#e94560] text-white"
-                          : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                      }`}
-                    >
-                      {cat}
-                    </span>
-                  )
-                )}
-              </div>
-            </RevealBlock>
-
-            {/* Card Variants */}
-            <RevealBlock delay={80}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 mb-5">
-                Card Aspect Variants
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {[
-                  { label: "3:4 Portrait", aspect: "aspect-[3/4]", gradient: "from-[#e94560] to-rose-800" },
-                  { label: "Square", aspect: "aspect-square", gradient: "from-[#7579e7] to-indigo-800" },
-                  { label: "4:5", aspect: "aspect-[4/5]", gradient: "from-[#16c79a] to-teal-800" },
-                  { label: "2:3 Tall", aspect: "aspect-[2/3]", gradient: "from-[#ffd460] to-amber-700" },
-                  { label: "4:3 Wide", aspect: "aspect-[4/3]", gradient: "from-cyan-400 to-blue-700" },
-                ].map((v) => (
-                  <div key={v.label} className="group cursor-pointer">
-                    <div
-                      className={`w-full ${v.aspect} rounded-xl bg-gradient-to-br ${v.gradient} group-hover:scale-[1.03] transition-transform duration-300 ease-out`}
-                    />
-                    <p className="text-xs text-zinc-500 mt-2 text-center">{v.label}</p>
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-400 opacity-60" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400 opacity-60" />
+                    <div className="w-3 h-3 rounded-full bg-green-400 opacity-60" />
                   </div>
-                ))}
-              </div>
-            </RevealBlock>
+                  <span className="text-xs font-mono ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    masonry-grid.tsx
+                  </span>
+                </div>
 
-            {/* Input */}
-            <RevealBlock delay={100}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 mb-5">
-                Search Input
-              </h3>
-              <div className="max-w-sm relative">
-                <svg
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search pins, boards, people..."
-                  className="w-full pl-11 pr-4 py-3 bg-zinc-100 rounded-full text-zinc-900 text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#e94560]/20 focus:bg-white transition-all duration-200 border border-transparent focus:border-[#e94560]/30"
-                />
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/*  SECTION 5: Color Palette                                       */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 bg-[#f5f5f5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock className="mb-12">
-            <p className="text-xs font-semibold tracking-widest uppercase text-[#ffd460] mb-2">
-              Color System
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">
-              The Palette
-            </h2>
-            <p className="text-zinc-500 text-sm max-w-md">
-              Dark primary grounded by vivid accents. Each color has a specific role in the
-              hierarchy — not decoration, but function.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {COLOR_PALETTE.map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 60}>
-                <div className="group rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out cursor-pointer">
-                  {/* Swatch */}
+                <div className="p-5 space-y-4" style={{ backgroundColor: "rgba(0,0,0,0.2)" }}>
+                  {/* Container */}
                   <div
-                    className="h-28 md:h-36 flex flex-col justify-end p-3"
-                    style={{ backgroundColor: color.hex }}
+                    className="rounded-lg p-4 font-mono text-sm leading-relaxed"
+                    style={{ backgroundColor: "rgba(233,69,96,0.1)", border: `1px solid ${ACCENT_RED}33` }}
                   >
-                    <span
-                      className="text-[10px] font-mono font-bold opacity-60"
-                      style={{ color: color.textColor }}
+                    <div style={{ color: ACCENT_RED }}>{"<div className=\""}</div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_YELLOW }}>columns-2</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* mobile */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_GREEN }}>md:columns-3</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* tablet */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_PURPLE }}>lg:columns-4</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* desktop */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: "rgba(255,255,255,0.7)" }}>gap-4</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* column gap */}</span>
+                    </div>
+                    <div style={{ color: ACCENT_RED }}>{`">`}</div>
+                  </div>
+
+                  {/* Card */}
+                  <div
+                    className="rounded-lg p-4 font-mono text-sm leading-relaxed"
+                    style={{ backgroundColor: "rgba(21,199,154,0.1)", border: `1px solid ${ACCENT_GREEN}33` }}
+                  >
+                    <div style={{ color: ACCENT_GREEN }}>{"<div className=\""}</div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_YELLOW }}>break-inside-avoid</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* key rule */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: "rgba(255,255,255,0.7)" }}>mb-4</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* bottom gap */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_PURPLE }}>group overflow-hidden</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_RED }}>hover:-translate-y-1</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* subtle elevation */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: "rgba(255,255,255,0.7)" }}>transition-all duration-300</span>
+                    </div>
+                    <div style={{ color: ACCENT_GREEN }}>{`">`}</div>
+                  </div>
+
+                  {/* Image */}
+                  <div
+                    className="rounded-lg p-4 font-mono text-sm leading-relaxed"
+                    style={{ backgroundColor: "rgba(117,121,231,0.1)", border: `1px solid ${ACCENT_PURPLE}33` }}
+                  >
+                    <div style={{ color: ACCENT_PURPLE }}>{"<div className=\"relative overflow-hidden\">"}</div>
+                    <div className="pl-4">
+                      <span style={{ color: ACCENT_YELLOW }}>group-hover:scale-105</span>
+                      <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{/* confined zoom */}</span>
+                    </div>
+                    <div className="pl-4">
+                      <span style={{ color: "rgba(255,255,255,0.7)" }}>duration-700 ease-out</span>
+                    </div>
+                    <div style={{ color: ACCENT_PURPLE }}>{"</div>"}</div>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Right: responsive column counts + card structure notes */}
+            <div className="space-y-5">
+              {/* Column count responsive guide */}
+              <RevealBlock delay={0.12}>
+                <div
+                  className="rounded-2xl p-6"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <h3 className="text-base font-semibold text-white mb-5">Responsive column count</h3>
+                  <div className="space-y-3">
+                    {[
+                      { breakpoint: "Mobile", range: "< 640px", color: ACCENT_RED, cls: "columns-1" },
+                      { breakpoint: "Tablet", range: "640–1024px", color: ACCENT_YELLOW, cls: "sm:columns-2" },
+                      { breakpoint: "Desktop", range: "1024–1280px", color: ACCENT_GREEN, cls: "lg:columns-3" },
+                      { breakpoint: "Wide", range: "1280px+", color: ACCENT_PURPLE, cls: "xl:columns-4" },
+                    ].map((row) => (
+                      <div key={row.breakpoint} className="flex items-center gap-3">
+                        <div
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: row.color }}
+                        />
+                        <span className="text-sm w-20 shrink-0" style={{ color: "rgba(255,255,255,0.55)" }}>
+                          {row.breakpoint}
+                        </span>
+                        <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                          {row.range}
+                        </span>
+                        <code
+                          className="ml-auto text-xs font-mono px-2 py-0.5 rounded"
+                          style={{ backgroundColor: `${row.color}22`, color: row.color }}
+                        >
+                          {row.cls}
+                        </code>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+
+              {/* Card structure rules */}
+              <RevealBlock delay={0.16}>
+                <div
+                  className="rounded-2xl p-6"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <h3 className="text-base font-semibold text-white mb-5">Card structure rules</h3>
+                  <div className="space-y-3">
+                    {[
+                      { rule: "break-inside-avoid", note: "Prevents card split across columns", must: true },
+                      { rule: "mb-4 (not gap)", note: "Column gap handled with margin-bottom", must: true },
+                      { rule: "overflow-hidden on container", note: "Required for Confined Zoom", must: true },
+                      { rule: "width: 100% of column", note: "Cards never set explicit width", must: true },
+                      { rule: "height: auto", note: "Let content determine height", must: true },
+                      { rule: "aspect-ratio on images", note: "Prevents layout shift", must: false },
+                    ].map((item) => (
+                      <div key={item.rule} className="flex items-start gap-3">
+                        <div
+                          className="mt-0.5 w-4 h-4 rounded shrink-0 flex items-center justify-center"
+                          style={{
+                            backgroundColor: item.must
+                              ? `${ACCENT_GREEN}22`
+                              : `${ACCENT_YELLOW}22`,
+                            border: `1px solid ${item.must ? ACCENT_GREEN : ACCENT_YELLOW}44`,
+                          }}
+                        >
+                          {item.must ? (
+                            <span style={{ color: ACCENT_GREEN }}><CheckIcon className="w-2.5 h-2.5" /></span>
+                          ) : (
+                            <span className="text-xs" style={{ color: ACCENT_YELLOW }}>~</span>
+                          )}
+                        </div>
+                        <div>
+                          <code className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>
+                            {item.rule}
+                          </code>
+                          <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                            {item.note}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+
+              {/* Key insight callout */}
+              <RevealBlock delay={0.2}>
+                <div
+                  className="rounded-2xl p-5"
+                  style={{
+                    backgroundColor: `${ACCENT_RED}15`,
+                    border: `1px solid ${ACCENT_RED}33`,
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center mt-0.5"
+                      style={{ backgroundColor: `${ACCENT_RED}22` }}
                     >
-                      {color.hex}
-                    </span>
+                      <span style={{ color: ACCENT_RED }}><GridIcon className="w-3.5 h-3.5" /></span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white mb-1">
+                        Why not CSS Grid masonry?
+                      </p>
+                      <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
+                        <code style={{ color: ACCENT_YELLOW }}>grid-template-rows: masonry</code> is a
+                        draft spec requiring browser flags. CSS columns is universally supported
+                        with zero polyfills or JavaScript bridges needed.
+                      </p>
+                    </div>
                   </div>
-                  {/* Label */}
-                  <div className="bg-white p-3">
-                    <p className="text-sm font-semibold text-zinc-900 leading-tight">
-                      {color.name}
-                    </p>
-                    <p className="text-[11px] text-zinc-400 mt-0.5 leading-tight">{color.role}</p>
+                </div>
+              </RevealBlock>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. COMPONENT GALLERY — 4 card type tabs                         */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10" style={{ backgroundColor: "#f5f5f5" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3"
+              style={{ color: ACCENT_PURPLE }}
+            >
+              Component Gallery
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: PRIMARY }}>
+              Card{" "}
+              <span style={{ color: ACCENT_PURPLE }}>varieties</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-lg max-w-lg leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+              Every card type follows the same masonry rules — break-inside-avoid, overflow-hidden
+              for Confined Zoom, and overlay-reveal actions on hover.
+            </p>
+          </RevealBlock>
+
+          {/* Tab buttons — Action Snappiness: duration-200 */}
+          <RevealBlock delay={0.08} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["photo", "article", "product", "profile"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="px-5 py-2.5 rounded-full text-sm font-medium capitalize transition-all duration-200"
+                  style={
+                    activeTab === tab
+                      ? {
+                          backgroundColor: PRIMARY,
+                          color: "#fff",
+                          boxShadow: `0 4px 12px rgba(26,26,46,0.2)`,
+                        }
+                      : {
+                          backgroundColor: "#fff",
+                          color: "rgba(26,26,46,0.6)",
+                          border: "1px solid rgba(26,26,46,0.1)",
+                        }
+                  }
+                >
+                  {tab === "photo"
+                    ? "Photo Cards"
+                    : tab === "article"
+                    ? "Article Cards"
+                    : tab === "product"
+                    ? "Product Cards"
+                    : "Profile Cards"}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo panel */}
+          <RevealBlock delay={0.12}>
+            <div
+              className="rounded-2xl p-8 md:p-10"
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid rgba(26,26,46,0.06)",
+                boxShadow: "0 8px 32px rgba(26,26,46,0.05)",
+              }}
+            >
+              {/* ---- PHOTO CARDS ---- */}
+              {activeTab === "photo" && (
+                <div>
+                  <p
+                    className="text-xs font-semibold tracking-[0.15em] uppercase mb-6"
+                    style={{ color: "rgba(26,26,46,0.4)" }}
+                  >
+                    Photo cards — Confined Zoom + Overlay Reveal
+                  </p>
+                  <div className="columns-2 md:columns-4 gap-4">
+                    {[
+                      { aspect: "aspect-[3/4]", bgFrom: ACCENT_RED, bgTo: "#c23152", label: "Portrait", tag: "Photo" },
+                      { aspect: "aspect-square", bgFrom: ACCENT_PURPLE, bgTo: "#5557c4", label: "Square Shot", tag: "Art" },
+                      { aspect: "aspect-[2/3]", bgFrom: ACCENT_GREEN, bgTo: "#0ea57e", label: "Vertical", tag: "Nature" },
+                      { aspect: "aspect-[4/5]", bgFrom: ACCENT_YELLOW, bgTo: "#e6b800", label: "Landscape", tag: "Travel" },
+                    ].map((c) => (
+                      <div
+                        key={c.label}
+                        className="break-inside-avoid mb-4 group cursor-pointer rounded-xl overflow-hidden"
+                        style={{ boxShadow: "0 2px 8px rgba(26,26,46,0.07)" }}
+                      >
+                        <div className={`relative overflow-hidden ${c.aspect}`}>
+                          <div
+                            className="w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                            style={{ background: `linear-gradient(145deg, ${c.bgFrom}, ${c.bgTo})` }}
+                          />
+                          <div
+                            className="absolute inset-0 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)" }}
+                          >
+                            <div className="translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                              <span
+                                className="px-2 py-0.5 rounded text-xs font-medium text-white"
+                                style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                              >
+                                {c.tag}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-3">
+                          <p className="text-sm font-semibold" style={{ color: PRIMARY }}>
+                            {c.label}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                </div>
+              )}
+
+              {/* ---- ARTICLE CARDS ---- */}
+              {activeTab === "article" && (
+                <div>
+                  <p
+                    className="text-xs font-semibold tracking-[0.15em] uppercase mb-6"
+                    style={{ color: "rgba(26,26,46,0.4)" }}
+                  >
+                    Article cards — text-driven varying heights
+                  </p>
+                  <div className="columns-1 md:columns-3 gap-4">
+                    {[
+                      {
+                        tag: "Design",
+                        tagColor: ACCENT_PURPLE,
+                        title: "The Philosophy of Negative Space in Interface Design",
+                        excerpt:
+                          "White space is not empty space. It is an active component that guides the eye, signals hierarchy, and creates breathing room for content to land.",
+                        readTime: "5 min read",
+                        bgAccent: `${ACCENT_PURPLE}15`,
+                        borderColor: `${ACCENT_PURPLE}33`,
+                      },
+                      {
+                        tag: "CSS",
+                        tagColor: ACCENT_GREEN,
+                        title: "CSS Columns vs Grid Masonry",
+                        excerpt:
+                          "A deep dive into the two approaches for masonry layouts and why CSS columns wins today.",
+                        readTime: "3 min read",
+                        bgAccent: `${ACCENT_GREEN}15`,
+                        borderColor: `${ACCENT_GREEN}33`,
+                      },
+                      {
+                        tag: "UX",
+                        tagColor: ACCENT_RED,
+                        title: "Why Hover Feedback Must Never Be Delayed Beyond 100ms",
+                        excerpt:
+                          "Human perception of immediacy breaks at 100ms. Every hover interaction that misses this threshold teaches users that the UI is sluggish, even if the actual operation is fast. Duration-200 is your ceiling for action snappiness.",
+                        readTime: "4 min read",
+                        bgAccent: `${ACCENT_RED}15`,
+                        borderColor: `${ACCENT_RED}33`,
+                      },
+                    ].map((a) => (
+                      <div
+                        key={a.title}
+                        className="break-inside-avoid mb-4 group cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 p-5"
+                        style={{
+                          backgroundColor: "#fff",
+                          border: `1px solid ${a.borderColor}`,
+                          boxShadow: "0 2px 10px rgba(26,26,46,0.05)",
+                        }}
+                      >
+                        <span
+                          className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3"
+                          style={{ backgroundColor: a.bgAccent, color: a.tagColor }}
+                        >
+                          {a.tag}
+                        </span>
+                        <h3
+                          className="font-semibold text-sm leading-snug mb-2"
+                          style={{ color: PRIMARY }}
+                        >
+                          {a.title}
+                        </h3>
+                        <p
+                          className="text-xs leading-relaxed mb-3"
+                          style={{ color: "rgba(26,26,46,0.5)" }}
+                        >
+                          {a.excerpt}
+                        </p>
+                        <span className="text-xs" style={{ color: "rgba(26,26,46,0.35)" }}>
+                          {a.readTime}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ---- PRODUCT CARDS ---- */}
+              {activeTab === "product" && (
+                <div>
+                  <p
+                    className="text-xs font-semibold tracking-[0.15em] uppercase mb-6"
+                    style={{ color: "rgba(26,26,46,0.4)" }}
+                  >
+                    Product cards — e-commerce masonry style
+                  </p>
+                  <div className="columns-2 md:columns-4 gap-4">
+                    {[
+                      {
+                        name: "Ceramic Mug",
+                        price: "$24",
+                        aspect: "aspect-[3/4]",
+                        bgFrom: ACCENT_YELLOW,
+                        bgTo: "#e6b800",
+                        badge: "New" as string | null,
+                      },
+                      {
+                        name: "Linen Tote",
+                        price: "$48",
+                        aspect: "aspect-square",
+                        bgFrom: ACCENT_GREEN,
+                        bgTo: "#0ea57e",
+                        badge: null as string | null,
+                      },
+                      {
+                        name: "Leather Journal",
+                        price: "$65",
+                        aspect: "aspect-[2/3]",
+                        bgFrom: PRIMARY,
+                        bgTo: "#2d2d4e",
+                        badge: "Sale" as string | null,
+                      },
+                      {
+                        name: "Oak Coasters",
+                        price: "$32",
+                        aspect: "aspect-[4/5]",
+                        bgFrom: ACCENT_PURPLE,
+                        bgTo: "#5557c4",
+                        badge: null as string | null,
+                      },
+                    ].map((p) => (
+                      <div
+                        key={p.name}
+                        className="break-inside-avoid mb-4 group cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                        style={{
+                          backgroundColor: "#fff",
+                          boxShadow: "0 2px 8px rgba(26,26,46,0.07)",
+                        }}
+                      >
+                        <div className={`relative overflow-hidden ${p.aspect}`}>
+                          <div
+                            className="w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                            style={{ background: `linear-gradient(145deg, ${p.bgFrom}, ${p.bgTo})` }}
+                          />
+                          {p.badge && (
+                            <div className="absolute top-2.5 left-2.5">
+                              <span
+                                className="px-2 py-0.5 rounded text-xs font-bold"
+                                style={{
+                                  backgroundColor:
+                                    p.badge === "Sale" ? ACCENT_RED : ACCENT_GREEN,
+                                  color: "#fff",
+                                }}
+                              >
+                                {p.badge}
+                              </span>
+                            </div>
+                          )}
+                          {/* Add to cart — overlay reveal */}
+                          <div className="absolute inset-0 flex items-end justify-center p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button
+                              className="w-full py-2 rounded-lg text-xs font-semibold text-white translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out"
+                              style={{
+                                backgroundColor: "rgba(26,26,46,0.85)",
+                                backdropFilter: "blur(4px)",
+                              }}
+                            >
+                              Add to cart
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-3 flex items-center justify-between">
+                          <span className="text-sm font-semibold" style={{ color: PRIMARY }}>
+                            {p.name}
+                          </span>
+                          <span className="text-sm font-bold" style={{ color: ACCENT_RED }}>
+                            {p.price}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ---- PROFILE CARDS ---- */}
+              {activeTab === "profile" && (
+                <div>
+                  <p
+                    className="text-xs font-semibold tracking-[0.15em] uppercase mb-6"
+                    style={{ color: "rgba(26,26,46,0.4)" }}
+                  >
+                    Profile cards — social / team directory
+                  </p>
+                  <div className="columns-1 sm:columns-2 md:columns-3 gap-4">
+                    {[
+                      {
+                        name: "Yuki Tanaka",
+                        role: "Product Designer",
+                        bio: "Obsessed with the space between pixels. 8 years crafting interfaces that feel inevitable.",
+                        tags: ["UI", "Motion", "Systems"],
+                        avatarColor: ACCENT_RED,
+                        posts: 142,
+                        followers: "8.4k",
+                      },
+                      {
+                        name: "Marcus Lee",
+                        role: "Frontend Engineer",
+                        bio: "CSS architecture and performance engineering. Contributor to open-source animation libraries. CSS columns evangelist.",
+                        tags: ["CSS", "React", "TypeScript"],
+                        avatarColor: ACCENT_PURPLE,
+                        posts: 89,
+                        followers: "3.1k",
+                      },
+                      {
+                        name: "Sofia Chen",
+                        role: "Photographer",
+                        bio: "Documentary work across 40 countries.",
+                        tags: ["Documentary", "Travel"],
+                        avatarColor: ACCENT_GREEN,
+                        posts: 611,
+                        followers: "22k",
+                      },
+                    ].map((prof) => (
+                      <div
+                        key={prof.name}
+                        className="break-inside-avoid mb-4 group cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 p-5"
+                        style={{
+                          backgroundColor: "#fff",
+                          border: "1px solid rgba(26,26,46,0.07)",
+                          boxShadow: "0 2px 10px rgba(26,26,46,0.05)",
+                        }}
+                      >
+                        <div className="flex items-center gap-3 mb-4">
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                            style={{ backgroundColor: prof.avatarColor }}
+                          >
+                            <UserIcon className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm" style={{ color: PRIMARY }}>
+                              {prof.name}
+                            </p>
+                            <p className="text-xs" style={{ color: "rgba(26,26,46,0.45)" }}>
+                              {prof.role}
+                            </p>
+                          </div>
+                        </div>
+                        <p
+                          className="text-xs leading-relaxed mb-4"
+                          style={{ color: "rgba(26,26,46,0.55)" }}
+                        >
+                          {prof.bio}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5 mb-4">
+                          {prof.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-0.5 rounded text-xs font-medium"
+                              style={{
+                                backgroundColor: `${prof.avatarColor}15`,
+                                color: prof.avatarColor,
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <div
+                          className="flex items-center gap-4 pt-3 border-t text-xs"
+                          style={{
+                            borderColor: "rgba(26,26,46,0.07)",
+                            color: "rgba(26,26,46,0.45)",
+                          }}
+                        >
+                          <span>
+                            <strong style={{ color: PRIMARY }}>{prof.posts}</strong> posts
+                          </span>
+                          <span>
+                            <strong style={{ color: PRIMARY }}>{prof.followers}</strong> followers
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. ANIMATION & INTERACTION RULES — 4 interactive demo cards      */}
+      {/* ================================================================ */}
+      <section
+        className="py-20 md:py-28 px-5 md:px-10"
+        style={{ backgroundColor: PRIMARY }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3"
+              style={{ color: ACCENT_GREEN }}
+            >
+              Interactions
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight text-white">
+              Animation{" "}
+              <span style={{ color: ACCENT_GREEN }}>rules demo</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-lg max-w-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Four named interaction patterns from the masonry-flow aiRules. Hover or interact with
+              each card to feel the exact specified behavior.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* Card 1: Confined Zoom */}
+            <RevealBlock delay={0.08}>
+              <div
+                className="rounded-2xl p-7 h-full"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: `${ACCENT_RED}22`, color: ACCENT_RED }}
+                  >
+                    Confined Zoom
+                  </span>
+                </div>
+                <p className="text-xs font-mono mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  group-hover:scale-105 duration-700
+                </p>
+                <p className="text-xs mb-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  Image scales inside overflow-hidden — never breaks container boundary
+                </p>
+
+                {/* Demo */}
+                <div
+                  className="group rounded-xl overflow-hidden cursor-pointer aspect-video relative"
+                  onMouseEnter={() => setZoomHovered(true)}
+                  onMouseLeave={() => setZoomHovered(false)}
+                >
+                  <div
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                    style={{
+                      background: `linear-gradient(145deg, ${ACCENT_RED}, ${ACCENT_PURPLE})`,
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ color: "rgba(255,255,255,0.6)" }}
+                  >
+                    <SearchIcon className="w-8 h-8" />
+                  </div>
+                  {/* Border indicator — shows scale is INSIDE */}
+                  <div
+                    className="absolute inset-0 rounded-xl pointer-events-none"
+                    style={{ border: `2px dashed ${ACCENT_RED}88` }}
+                  />
+                </div>
+                <p className="text-xs mt-3 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  {zoomHovered
+                    ? "Scaling 105% — dashed border never moves"
+                    : "Hover to see scale contained within border"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* Card 2: Subtle Elevation */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="rounded-2xl p-7 h-full"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: `${ACCENT_YELLOW}22`, color: ACCENT_YELLOW }}
+                  >
+                    Subtle Elevation
+                  </span>
+                </div>
+                <p className="text-xs font-mono mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  hover:-translate-y-1 + diffused shadow
+                </p>
+                <p className="text-xs mb-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  Max 4px lift. Soft diffused shadow, never a hard border ring.
+                </p>
+
+                {/* Demo */}
+                <div className="flex items-center justify-center py-4">
+                  <div
+                    className="rounded-xl p-6 cursor-pointer transition-all duration-300 text-center w-48"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.07)",
+                      transform: elevationHovered ? "translateY(-4px)" : "translateY(0)",
+                      boxShadow: elevationHovered
+                        ? "0 15px 30px rgba(0,0,0,0.3), 0 6px 12px rgba(0,0,0,0.15)"
+                        : "0 2px 8px rgba(0,0,0,0.2)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                    }}
+                    onMouseEnter={() => setElevationHovered(true)}
+                    onMouseLeave={() => setElevationHovered(false)}
+                  >
+                    <GridIcon className="w-8 h-8 mx-auto mb-2 text-white opacity-60" />
+                    <p className="text-xs text-white opacity-60">Hover me</p>
+                  </div>
+                </div>
+                <p className="text-xs text-center mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  {elevationHovered
+                    ? "4px lift — shadow grows soft and diffused"
+                    : "Hover to float with diffused shadow"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* Card 3: Overlay Reveal */}
+            <RevealBlock delay={0.16}>
+              <div
+                className="rounded-2xl p-7 h-full"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: `${ACCENT_GREEN}22`, color: ACCENT_GREEN }}
+                  >
+                    Overlay Reveal
+                  </span>
+                </div>
+                <p className="text-xs font-mono mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  opacity + translate — card size unchanged
+                </p>
+                <p className="text-xs mb-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  Overlay and buttons slide in. Card never resizes or shifts layout.
+                </p>
+
+                {/* Demo */}
+                <div
+                  className="relative rounded-xl overflow-hidden aspect-video cursor-pointer"
+                  onMouseEnter={() => setOverlayHovered(true)}
+                  onMouseLeave={() => setOverlayHovered(false)}
+                >
+                  <div
+                    className="w-full h-full"
+                    style={{ background: `linear-gradient(145deg, ${ACCENT_GREEN}, #0ea57e)` }}
+                  />
+                  {/* Overlay — opacity transition */}
+                  <div
+                    className="absolute inset-0 flex flex-col justify-end p-4 transition-opacity duration-300"
+                    style={{
+                      background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
+                      opacity: overlayHovered ? 1 : 0,
+                    }}
+                  >
+                    {/* Action buttons — translate + opacity */}
+                    <div
+                      className="flex gap-2 transition-all duration-300"
+                      style={{
+                        transform: overlayHovered ? "translateY(0)" : "translateY(16px)",
+                        opacity: overlayHovered ? 1 : 0,
+                      }}
+                    >
+                      <button
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white"
+                        style={{
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          backdropFilter: "blur(4px)",
+                        }}
+                      >
+                        <SaveIcon className="w-3 h-3" />
+                        Save
+                      </button>
+                      <button
+                        className="w-7 h-7 rounded-full flex items-center justify-center"
+                        style={{
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          backdropFilter: "blur(4px)",
+                        }}
+                      >
+                        <HeartIcon className="w-3.5 h-3.5 text-white" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs mt-3 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  {overlayHovered
+                    ? "Overlay appeared — card height unchanged"
+                    : "Hover to reveal overlay without resizing card"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* Card 4: Action Snappiness */}
+            <RevealBlock delay={0.2}>
+              <div
+                className="rounded-2xl p-7 h-full"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: `${ACCENT_PURPLE}22`, color: ACCENT_PURPLE }}
+                  >
+                    Action Snappiness
+                  </span>
+                </div>
+                <p className="text-xs font-mono mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  duration-200 on filter/category buttons
+                </p>
+                <p className="text-xs mb-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  Top filters respond in 200ms — feels instant, never laggy.
+                </p>
+
+                {/* Demo */}
+                <div className="space-y-4">
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                    Click to switch — feel the instant 200ms feedback
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {["All", "Photos", "Art", "Design", "Video"].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSnappyActive(cat)}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
+                        style={
+                          snappyActive === cat
+                            ? { backgroundColor: ACCENT_PURPLE, color: "#fff" }
+                            : {
+                                backgroundColor: "rgba(255,255,255,0.07)",
+                                color: "rgba(255,255,255,0.5)",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                              }
+                        }
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                  <div
+                    className="rounded-lg p-3 text-xs font-mono"
+                    style={{
+                      backgroundColor: "rgba(0,0,0,0.25)",
+                      color: ACCENT_PURPLE,
+                      border: `1px solid ${ACCENT_PURPLE}33`,
+                    }}
+                  >
+                    Active: <span className="text-white">{snappyActive}</span>
+                    {"  "}transition:{" "}
+                    <span style={{ color: ACCENT_YELLOW }}>200ms</span>
+                  </div>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    Compare: card hover uses 300ms — only filters use 200ms for snappy feel.
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DESIGN RULES DO / DON'T                                       */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10" style={{ backgroundColor: "#f5f5f5" }}>
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3"
+              style={{ color: ACCENT_RED }}
+            >
+              Design Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: PRIMARY }}>
+              Do and{" "}
+              <span style={{ color: ACCENT_RED }}>Don&apos;t</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-lg max-w-lg leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+              Every rule in the masonry-flow style definition distilled into actionable guidance.
+              These constraints enforce visual consistency across all generated UIs.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            {/* Do list */}
+            <RevealBlock delay={0.08}>
+              <div
+                className="rounded-2xl p-8 h-full"
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid rgba(21,199,154,0.2)",
+                  boxShadow: `0 8px 24px ${ACCENT_GREEN}12`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-7">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${ACCENT_GREEN}18` }}
+                  >
+                    <span style={{ color: ACCENT_GREEN }}><CheckIcon className="w-4 h-4" /></span>
+                  </div>
+                  <h3 className="text-lg font-bold" style={{ color: ACCENT_GREEN }}>
+                    Do
+                  </h3>
+                </div>
+                <ul className="space-y-3.5">
+                  {[
+                    "Use CSS columns: columns-2 md:columns-3 lg:columns-4",
+                    "Apply break-inside-avoid to every masonry card",
+                    "Keep column gap consistent with gap-4",
+                    "Use overflow-hidden on image container for Confined Zoom",
+                    "Set group-hover:scale-105 duration-700 inside overflow-hidden",
+                    "Limit hover lift to -translate-y-1 (4px max)",
+                    "Use diffused shadow for hover feedback — no hard borders",
+                    "Reveal overlays with opacity + translate — never resize card",
+                    "Use duration-200 on filter and category buttons",
+                    "Reduce to columns-1 on mobile (below 640px)",
+                    "Add varying aspect ratios across cards for visual rhythm",
+                    "Use consistent mb-4 between cards within columns",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      className="flex items-start gap-3 text-sm leading-relaxed"
+                      style={{ color: "rgba(26,26,46,0.7)" }}
+                    >
+                      <span
+                        className="mt-1.5 w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: ACCENT_GREEN }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't list */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="rounded-2xl p-8 h-full"
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid rgba(233,69,96,0.2)",
+                  boxShadow: `0 8px 24px ${ACCENT_RED}10`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-7">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${ACCENT_RED}12` }}
+                  >
+                    <span style={{ color: ACCENT_RED }}><XIcon className="w-4 h-4" /></span>
+                  </div>
+                  <h3 className="text-lg font-bold" style={{ color: ACCENT_RED }}>
+                    Don&apos;t
+                  </h3>
+                </div>
+                <ul className="space-y-3.5">
+                  {[
+                    "Force all cards equal height — defeats the purpose entirely",
+                    "Use inconsistent card widths within the masonry grid",
+                    "Use inconsistent column gaps or irregular spacing",
+                    "Let image scale break out of overflow-hidden boundary",
+                    "Exceed -translate-y-1 on hover — disrupts visual flow",
+                    "Use hard border rings as focus feedback (use shadow instead)",
+                    "Resize the card on hover — only overlay reveals, card stays",
+                    "Use duration-300+ on filter buttons (must feel instant)",
+                    "Use more than 2 columns on screens below 640px",
+                    "Skip loading states for real images in production",
+                    "Mix gap-4 and gap-6 inconsistently — pick one globally",
+                    "Use CSS Grid instead — columns is the correct technique",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      className="flex items-start gap-3 text-sm leading-relaxed"
+                      style={{ color: "rgba(26,26,46,0.7)" }}
+                    >
+                      <span
+                        className="mt-1.5 w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: ACCENT_RED }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Summary principle cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              {
+                title: "Confined Zoom",
+                code: "group-hover:scale-105\nduration-700",
+                color: ACCENT_RED,
+                desc: "Always inside overflow-hidden",
+              },
+              {
+                title: "Subtle Elevation",
+                code: "hover:-translate-y-1\ndiffused shadow",
+                color: ACCENT_YELLOW,
+                desc: "Max 4px, no hard borders",
+              },
+              {
+                title: "Overlay Reveal",
+                code: "opacity + translate\ncard size locked",
+                color: ACCENT_GREEN,
+                desc: "Content floats in, card stays",
+              },
+              {
+                title: "Action Snappiness",
+                code: "duration-200\nfilters only",
+                color: ACCENT_PURPLE,
+                desc: "Instant category feedback",
+              },
+            ].map((p, i) => (
+              <RevealBlock key={p.title} delay={i * 0.06}>
+                <div
+                  className="rounded-xl p-5 h-full transition-all duration-300 hover:-translate-y-1 cursor-default"
+                  style={{
+                    backgroundColor: "#fff",
+                    border: `1px solid ${p.color}25`,
+                    boxShadow: `0 4px 16px ${p.color}12`,
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mb-4"
+                    style={{ backgroundColor: `${p.color}18` }}
+                  >
+                    <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: p.color }} />
+                  </div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: PRIMARY }}>
+                    {p.title}
+                  </h4>
+                  <code
+                    className="block text-xs font-mono leading-relaxed mb-2 whitespace-pre"
+                    style={{ color: p.color }}
+                  >
+                    {p.code}
+                  </code>
+                  <p className="text-xs" style={{ color: "rgba(26,26,46,0.45)" }}>
+                    {p.desc}
+                  </p>
                 </div>
               </RevealBlock>
             ))}
           </div>
-
-          {/* Gradient preview row */}
-          <RevealBlock delay={200} className="mt-10">
-            <div className="rounded-2xl overflow-hidden h-16 flex">
-              {COLOR_PALETTE.map((color) => (
-                <div
-                  key={color.hex}
-                  className="flex-1 hover:flex-[2] transition-all duration-500 ease-out cursor-pointer"
-                  style={{ backgroundColor: color.hex }}
-                  title={color.name}
-                />
-              ))}
-            </div>
-            <p className="text-xs text-zinc-400 mt-2 text-center">
-              Hover each band to expand — all 6 palette colors together
-            </p>
-          </RevealBlock>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/*  SECTION 6: Design Rules                                        */}
+      {/* 8. FOOTER                                                        */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock className="mb-14">
-            <p className="text-xs font-semibold tracking-widest uppercase text-[#7579e7] mb-2">
-              Design System
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">
-              Rules of the Grid
-            </h2>
-            <p className="text-zinc-500 text-sm max-w-md">
-              Masonry is deceptively simple. These constraints are what separate a gallery that
-              breathes from one that buckles.
-            </p>
-          </RevealBlock>
+      <footer
+        className="relative overflow-hidden border-t"
+        style={{ backgroundColor: PRIMARY, borderColor: "rgba(255,255,255,0.06)" }}
+      >
+        {/* Accent line */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-32 rounded-full"
+          style={{
+            background: `linear-gradient(90deg, ${ACCENT_RED}, ${ACCENT_PURPLE}, ${ACCENT_GREEN})`,
+          }}
+        />
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* DO column */}
-            <RevealBlock>
-              <div className="bg-[#f0fdf9] border border-[#16c79a]/20 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-7">
-                  <div className="w-8 h-8 rounded-full bg-[#16c79a] flex items-center justify-center shrink-0">
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-lg text-zinc-900">Do</h3>
-                </div>
-                <ul className="space-y-5">
-                  {DO_RULES.map((r) => (
-                    <li key={r.rule} className="flex items-start gap-3">
-                      <span className="mt-1 w-4 h-4 rounded-full bg-[#16c79a]/15 flex items-center justify-center shrink-0">
-                        <span className="text-[#16c79a] text-[10px] font-bold">+</span>
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-zinc-800">{r.rule}</p>
-                        <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{r.detail}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
+        {/* Background accent blobs */}
+        <div
+          className="absolute top-10 right-10 w-64 h-64 rounded-full pointer-events-none blur-3xl"
+          style={{ backgroundColor: ACCENT_PURPLE, opacity: 0.1 }}
+        />
+        <div
+          className="absolute bottom-10 left-10 w-48 h-48 rounded-full pointer-events-none blur-3xl"
+          style={{ backgroundColor: ACCENT_GREEN, opacity: 0.08 }}
+        />
 
-            {/* DON'T column */}
-            <RevealBlock delay={120}>
-              <div className="bg-[#fff5f6] border border-[#e94560]/20 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-7">
-                  <div className="w-8 h-8 rounded-full bg-[#e94560] flex items-center justify-center shrink-0">
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-lg text-zinc-900">Don&apos;t</h3>
-                </div>
-                <ul className="space-y-5">
-                  {DONT_RULES.map((r) => (
-                    <li key={r.rule} className="flex items-start gap-3">
-                      <span className="mt-1 w-4 h-4 rounded-full bg-[#e94560]/12 flex items-center justify-center shrink-0">
-                        <span className="text-[#e94560] text-[10px] font-bold">-</span>
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-zinc-800">{r.rule}</p>
-                        <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{r.detail}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Physics reference cards */}
-          <RevealBlock delay={160} className="mt-12">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 mb-6">
-              Interaction Physics Quick Reference
-            </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                {
-                  name: "Confined Zoom",
-                  code: "group-hover:scale-105\nduration-700 ease-out",
-                  note: "On image inside overflow-hidden",
-                  color: "#e94560",
-                },
-                {
-                  name: "Subtle Elevation",
-                  code: "hover:-translate-y-1\nhover:shadow-[0_15px_30px\nrgba(0,0,0,0.08)]",
-                  note: "On the card wrapper",
-                  color: "#16c79a",
-                },
-                {
-                  name: "Overlay Reveal",
-                  code: "translate-y-4 opacity-0\ngroup-hover:translate-y-0\ngroup-hover:opacity-100\nduration-300",
-                  note: "On overlay action buttons",
-                  color: "#ffd460",
-                },
-                {
-                  name: "Action Snappiness",
-                  code: "transition-all\nduration-200",
-                  note: "On filter pill clicks only",
-                  color: "#7579e7",
-                },
-              ].map((item) => (
+        <div className="max-w-7xl mx-auto px-5 md:px-10 pt-14 pb-10 relative">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-12">
+            {/* Brand */}
+            <div className="max-w-xs">
+              <div className="flex items-center gap-2.5 mb-4">
                 <div
-                  key={item.name}
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl p-5 hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200"
+                  className="w-9 h-9 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: ACCENT_RED }}
                 >
-                  <div
-                    className="w-2 h-2 rounded-full mb-3"
-                    style={{ backgroundColor: item.color }}
-                  />
-                  <p className="text-sm font-semibold text-zinc-900 mb-2">{item.name}</p>
-                  <pre className="text-[10px] text-zinc-500 font-mono leading-relaxed mb-2 whitespace-pre-wrap">
-                    {item.code}
-                  </pre>
-                  <p className="text-[11px] text-zinc-400 italic">{item.note}</p>
+                  <GridIcon className="w-4 h-4 text-white" />
                 </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/*  SECTION 7: CTA + Footer                                        */}
-      {/* ================================================================ */}
-      <footer className="bg-[#1a1a2e]">
-        {/* CTA band */}
-        <div className="border-b border-white/8 py-20 px-6 md:px-10">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
-            <RevealBlock>
-              <p className="text-xs font-semibold tracking-widest uppercase text-[#e94560] mb-3">
-                Get started
+                <span className="text-lg font-bold text-white tracking-tight">
+                  Masonry<span style={{ color: ACCENT_RED }}>Flow</span>
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>
+                Pinterest-style masonry layout using CSS columns. Varying card heights,
+                confined zoom, overlay reveals — all in pure CSS.
               </p>
-              <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight max-w-lg">
-                Build your own
-                <br />
-                <span className="text-[#e94560]">Masonry Flow</span> gallery.
-              </h2>
-            </RevealBlock>
-            <RevealBlock delay={120} className="flex flex-col sm:flex-row gap-3 shrink-0">
-              <Link
-                href="/styles/masonry-flow"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#e94560] text-white rounded-full font-semibold text-sm hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(233,69,96,0.35)] active:scale-[0.97] transition-all duration-200"
-              >
-                View Docs
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+              {/* Accent swatches */}
+              <div className="flex gap-2">
+                {[ACCENT_RED, ACCENT_GREEN, ACCENT_YELLOW, ACCENT_PURPLE].map((color) => (
+                  <div
+                    key={color}
+                    className="w-5 h-5 rounded-full transition-transform duration-200 hover:scale-125 cursor-default"
+                    style={{ backgroundColor: color }}
                   />
-                </svg>
-              </Link>
-              <Link
-                href="/styles"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white/8 text-white/80 rounded-full font-semibold text-sm hover:bg-white/15 hover:text-white active:scale-[0.97] transition-all duration-200 border border-white/10"
-              >
-                Browse All Styles
-              </Link>
-            </RevealBlock>
-          </div>
-        </div>
-
-        {/* Footer bottom bar */}
-        <div className="py-8 px-6 md:px-10">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-md bg-[#e94560] flex items-center justify-center shrink-0">
-                <svg
-                  className="w-3 h-3 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M4 6h4v14H4zM10 3h4v17h-4zM16 8h4v12h-4z"
-                  />
-                </svg>
+                ))}
+                <div
+                  className="w-5 h-5 rounded-full transition-transform duration-200 hover:scale-125 cursor-default"
+                  style={{ backgroundColor: "#fff", opacity: 0.15 }}
+                />
               </div>
-              <span className="text-white/40 text-xs">
-                StyleKit &mdash; Masonry Flow Showcase
-              </span>
             </div>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/styles/masonry-flow"
-                className="text-xs text-white/40 hover:text-white/70 transition-colors duration-200"
-              >
-                Documentation
-              </Link>
-              <Link
-                href="/styles"
-                className="text-xs text-white/40 hover:text-white/70 transition-colors duration-200"
-              >
-                All Styles
-              </Link>
-              <span className="text-xs text-white/20">
-                2026 StyleKit
-              </span>
+
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 text-sm">
+              <div className="flex flex-col gap-3">
+                <span
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)" }}
+                >
+                  Style
+                </span>
+                <Link
+                  href="/styles/masonry-flow"
+                  className="transition-colors duration-200 hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Documentation
+                </Link>
+                <Link
+                  href="/styles/masonry-flow/showcase"
+                  className="transition-colors duration-200 hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Showcase
+                </Link>
+                <Link
+                  href="/styles/masonry-flow/cover"
+                  className="transition-colors duration-200 hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)" }}
+                >
+                  StyleKit
+                </span>
+                <Link
+                  href="/"
+                  className="transition-colors duration-200 hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/styles"
+                  className="transition-colors duration-200 hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)" }}
+                >
+                  Palette
+                </span>
+                {[
+                  { name: "Deep Navy", color: "#1a1a2e" },
+                  { name: "Crimson Red", color: ACCENT_RED },
+                  { name: "Teal Green", color: ACCENT_GREEN },
+                  { name: "Golden Yellow", color: ACCENT_YELLOW },
+                  { name: "Violet Purple", color: ACCENT_PURPLE },
+                ].map((s) => (
+                  <span
+                    key={s.name}
+                    className="flex items-center gap-2 text-xs"
+                    style={{ color: "rgba(255,255,255,0.4)" }}
+                  >
+                    <span
+                      className="w-3 h-3 rounded-full inline-block shrink-0"
+                      style={{
+                        backgroundColor: s.color,
+                        border:
+                          s.color === "#1a1a2e"
+                            ? "1px solid rgba(255,255,255,0.2)"
+                            : "none",
+                      }}
+                    />
+                    {s.name}
+                  </span>
+                ))}
+              </div>
             </div>
+          </div>
+
+          {/* Divider */}
+          <div
+            className="h-px mb-8 rounded-full"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+            }}
+          />
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div
+              className="flex items-center gap-2 text-sm"
+              style={{ color: "rgba(255,255,255,0.35)" }}
+            >
+              <span style={{ color: ACCENT_RED }}><GridIcon className="w-4 h-4" /></span>
+              <span>Masonry Flow for StyleKit</span>
+            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+            >
+              <ArrowLeftIcon className="w-3.5 h-3.5" />
+              Back to StyleKit
+            </Link>
           </div>
         </div>
       </footer>

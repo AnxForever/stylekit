@@ -1,15 +1,16 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hooks & primitives                                          */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
-function useInView() {
+function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -20,11 +21,12 @@ function useInView() {
           obs.disconnect();
         }
       },
-      { threshold: 0.12 },
+      { threshold: 0.15, ...options }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -44,8 +46,8 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
       {children}
@@ -54,695 +56,187 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Static data                                                        */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-const kpis = [
-  {
-    label: "Total Revenue",
-    value: "$48.2K",
-    sub: "vs $42.8K last month",
-    change: "+12.5%",
-    up: true as boolean | null,
-    accent: "#6366f1",
-  },
-  {
-    label: "Active Users",
-    value: "2,420",
-    sub: "vs 2,300 last month",
-    change: "+5.2%",
-    up: true as boolean | null,
-    accent: "#10b981",
-  },
-  {
-    label: "Orders",
-    value: "1,210",
-    sub: "vs 1,236 last month",
-    change: "-2.1%",
-    up: false as boolean | null,
-    accent: "#ef4444",
-  },
-  {
-    label: "Conversion",
-    value: "3.6%",
-    sub: "vs 3.3% last month",
-    change: "+0.3%",
-    up: null as boolean | null,
-    accent: "#f59e0b",
-  },
-];
-
-type NavItem = { id: string; label: string; icon: string };
-
-const navItems: NavItem[] = [
-  { id: "overview", label: "Overview", icon: "home" },
-  { id: "analytics", label: "Analytics", icon: "chart" },
-  { id: "users", label: "Users", icon: "users" },
-  { id: "orders", label: "Orders", icon: "box" },
-  { id: "settings", label: "Settings", icon: "gear" },
-];
-
-const tableRows = [
-  { id: "#4521", customer: "Olivia Martin", amount: "$249.00", status: "Completed", date: "Feb 20" },
-  { id: "#4520", customer: "James Wilson", amount: "$49.00", status: "Processing", date: "Feb 19" },
-  { id: "#4519", customer: "Sofia Davis", amount: "$999.00", status: "Completed", date: "Feb 19" },
-  { id: "#4518", customer: "Noah Brown", amount: "$249.00", status: "Failed", date: "Feb 18" },
-  { id: "#4517", customer: "Emma Thompson", amount: "$49.00", status: "Completed", date: "Feb 17" },
-];
-
-const barValues = [35, 58, 42, 70, 48, 65, 80, 55, 72, 45, 60, 78];
-const barMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-const colorPalette = [
-  { name: "Dark Sidebar", hex: "#111827", light: false },
-  { name: "Content BG", hex: "#f9fafb", light: true },
-  { name: "Indigo", hex: "#6366f1", light: false },
-  { name: "Emerald", hex: "#10b981", light: false },
-  { name: "Amber", hex: "#f59e0b", light: true },
-  { name: "Red", hex: "#ef4444", light: false },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Icon helper                                                        */
-/* ------------------------------------------------------------------ */
-
-function NavIcon({ type }: { type: string }) {
-  const paths: Record<string, React.ReactNode> = {
-    home: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-      />
-    ),
-    chart: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-      />
-    ),
-    users: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-      />
-    ),
-    box: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-      />
-    ),
-    gear: (
-      <>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </>
-    ),
-    search: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    ),
-    bell: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-      />
-    ),
-  };
+function HomeIcon({ className = "" }: { className?: string }) {
   return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      {paths[type] ?? paths.home}
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  );
+}
+
+function ChartBarIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  );
+}
+
+function UsersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  );
+}
+
+function ShoppingBagIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+    </svg>
+  );
+}
+
+function CogIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function BellIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+  );
+}
+
+function SearchIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  );
+}
+
+function TrendUpIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+    </svg>
+  );
+}
+
+function TrendDownIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+function DocumentIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Status badge                                                       */
+/*  Data                                                               */
 /* ------------------------------------------------------------------ */
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    Completed: "text-[#10b981] bg-[#10b981]/10",
-    Processing: "text-[#f59e0b] bg-[#f59e0b]/10",
-    Failed: "text-[#ef4444] bg-[#ef4444]/10",
-  };
-  return (
-    <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${map[status] ?? ""}`}>
-      {status}
-    </span>
-  );
-}
+const kpiCards = [
+  {
+    label: "Revenue",
+    value: "$48,230",
+    change: "+12.5%",
+    direction: "up" as const,
+    icon: <ChartBarIcon className="w-5 h-5" />,
+    color: "#6366f1",
+    iconBg: "bg-indigo-100",
+  },
+  {
+    label: "Orders",
+    value: "1,842",
+    change: "+8.1%",
+    direction: "up" as const,
+    icon: <ShoppingBagIcon className="w-5 h-5" />,
+    color: "#10b981",
+    iconBg: "bg-emerald-100",
+  },
+  {
+    label: "Customers",
+    value: "12,420",
+    change: "-2.3%",
+    direction: "down" as const,
+    icon: <UsersIcon className="w-5 h-5" />,
+    color: "#ef4444",
+    iconBg: "bg-red-100",
+  },
+  {
+    label: "Conversion",
+    value: "3.64%",
+    change: "+0.3%",
+    direction: "neutral" as const,
+    icon: <TrendUpIcon className="w-5 h-5" />,
+    color: "#f59e0b",
+    iconBg: "bg-amber-100",
+  },
+];
+
+const barChartData = [
+  { month: "Aug", value: 62 },
+  { month: "Sep", value: 71 },
+  { month: "Oct", value: 55 },
+  { month: "Nov", value: 84 },
+  { month: "Dec", value: 93 },
+  { month: "Jan", value: 78 },
+  { month: "Feb", value: 100 },
+];
+
+const tableRows = [
+  { id: "#4821", customer: "Alice Chen", product: "Pro Plan", amount: "$299", status: "Paid", date: "Feb 20" },
+  { id: "#4820", customer: "Marcus Webb", product: "Enterprise", amount: "$899", status: "Paid", date: "Feb 20" },
+  { id: "#4819", customer: "Priya Sharma", product: "Starter", amount: "$49", status: "Pending", date: "Feb 19" },
+  { id: "#4818", customer: "Tom Nakamura", product: "Pro Plan", amount: "$299", status: "Failed", date: "Feb 18" },
+  { id: "#4817", customer: "Sara Liu", product: "Enterprise", amount: "$899", status: "Paid", date: "Feb 17" },
+];
+
+const navItems = [
+  { label: "Overview", icon: <HomeIcon className="w-5 h-5" /> },
+  { label: "Analytics", icon: <ChartBarIcon className="w-5 h-5" /> },
+  { label: "Orders", icon: <ShoppingBagIcon className="w-5 h-5" /> },
+  { label: "Customers", icon: <UsersIcon className="w-5 h-5" /> },
+  { label: "Reports", icon: <DocumentIcon className="w-5 h-5" /> },
+  { label: "Settings", icon: <CogIcon className="w-5 h-5" /> },
+];
+
+type GalleryTab = "kpi" | "nav" | "table" | "chart";
+type ViewportMode = "desktop" | "tablet" | "mobile";
 
 /* ------------------------------------------------------------------ */
-/*  Live dashboard sidebar                                             */
+/*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function LiveSidebar({
-  activeNav,
-  onNav,
-  label = "Analytics",
-}: {
-  activeNav: string;
-  onNav: (id: string) => void;
-  label?: string;
-}) {
-  return (
-    <aside className="hidden md:flex w-56 bg-[#111827] text-white flex-col shrink-0 select-none">
-      {/* Brand */}
-      <div className="px-5 py-4 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#6366f1] rounded" />
-          <span className="font-semibold text-sm">{label}</span>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => onNav(item.id)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-left transition-all duration-150 ease-out ${
-              activeNav === item.id
-                ? "bg-white/10 text-white font-medium"
-                : "text-gray-400 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <NavIcon type={item.icon} />
-            {item.label}
-          </button>
-        ))}
-      </nav>
-
-      {/* User */}
-      <div className="px-4 py-3 border-t border-white/10 flex items-center gap-3">
-        <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-xs font-bold shrink-0">
-          A
-        </div>
-        <div className="min-w-0">
-          <p className="text-xs font-medium truncate">Admin User</p>
-          <p className="text-[10px] text-gray-500 truncate">admin@acme.io</p>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Live dashboard toolbar                                             */
-/* ------------------------------------------------------------------ */
-
-function LiveToolbar({ page }: { page: string }) {
-  const labels: Record<string, string> = {
-    overview: "Overview",
-    analytics: "Analytics",
-    users: "Users",
-    orders: "Orders",
-    settings: "Settings",
-  };
-  return (
-    <div className="bg-white border-b border-gray-100 px-5 py-3 flex items-center justify-between shrink-0">
-      <h2 className="font-semibold text-sm text-[#111827]">{labels[page] ?? "Overview"}</h2>
-      <div className="flex items-center gap-3">
-        <div className="relative hidden sm:block">
-          <svg
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#6366f1]/30 w-40 transition-all duration-150"
-          />
-        </div>
-        <button
-          type="button"
-          className="relative p-1.5 text-gray-500 hover:text-[#111827] hover:bg-gray-100 rounded-lg transition-all duration-150"
-        >
-          <NavIcon type="bell" />
-          <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#ef4444] rounded-full" />
-        </button>
-        <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-xs font-bold text-white">
-          A
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Live dashboard content area                                        */
-/* ------------------------------------------------------------------ */
-
-function LiveContent({ page }: { page: string }) {
-  return (
-    <div className="flex-1 overflow-auto bg-[#f9fafb] p-4 space-y-4 min-h-0">
-      {/* KPI row */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-        {kpis.map((kpi) => (
-          <div
-            key={kpi.label}
-            className="group bg-white rounded-lg p-4 border border-gray-100 shadow-sm hover:bg-gray-50 hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider group-hover:text-gray-700 transition-colors duration-150">
-                {kpi.label}
-              </span>
-              <span
-                className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full transition-colors duration-150 ${
-                  kpi.up === true
-                    ? "text-[#10b981] bg-[#10b981]/10 group-hover:bg-[#10b981]/20"
-                    : kpi.up === false
-                    ? "text-[#ef4444] bg-[#ef4444]/10 group-hover:bg-[#ef4444]/20"
-                    : "text-[#f59e0b] bg-[#f59e0b]/10 group-hover:bg-[#f59e0b]/20"
-                }`}
-              >
-                {kpi.change}
-              </span>
-            </div>
-            <div className="text-xl font-bold text-[#111827] group-hover:text-[#4f46e5] group-hover:scale-[1.02] origin-left transition-all duration-150">
-              {kpi.value}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Charts row */}
-      <div className="grid grid-cols-3 gap-3">
-        {/* Bar chart */}
-        <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-[#111827]">Revenue Trend</span>
-            <div className="flex gap-1">
-              <span className="px-2 py-0.5 bg-[#6366f1] text-white text-[10px] rounded-full">Monthly</span>
-              <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150">
-                Weekly
-              </span>
-            </div>
-          </div>
-          <div className="flex items-end gap-1 h-24">
-            {barValues.map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
-                <div
-                  className="w-full rounded-t bg-[#6366f1]/75 hover:bg-[#6366f1] transition-colors duration-150 cursor-pointer"
-                  style={{ height: `${h}%` }}
-                  title={`$${(h * 600).toLocaleString()}`}
-                />
-                <span className="text-[8px] text-gray-400 hidden sm:block">{barMonths[i]}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Donut */}
-        <div className="bg-white rounded-lg p-4 border border-gray-100 shadow-sm flex flex-col">
-          <span className="text-xs font-semibold text-[#111827] mb-2">Distribution</span>
-          <div className="flex-1 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-28 h-28">
-              <circle cx="50" cy="50" r="38" fill="none" stroke="#e5e7eb" strokeWidth="14" />
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                fill="none"
-                stroke="#6366f1"
-                strokeWidth="14"
-                strokeDasharray="119.4 238.8"
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                fill="none"
-                stroke="#10b981"
-                strokeWidth="14"
-                strokeDasharray="71.6 238.8"
-                strokeDashoffset="-119.4"
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                fill="none"
-                stroke="#f59e0b"
-                strokeWidth="14"
-                strokeDasharray="47.8 238.8"
-                strokeDashoffset="-191"
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-              <text x="50" y="46" textAnchor="middle" fontSize="14" fontWeight="700" fill="#111827">
-                73%
-              </text>
-              <text x="50" y="58" textAnchor="middle" fontSize="7" fill="#9ca3af">
-                Growth
-              </text>
-            </svg>
-          </div>
-          <div className="space-y-1.5 mt-2">
-            {[
-              { label: "Direct", color: "#6366f1", pct: "50%" },
-              { label: "Organic", color: "#10b981", pct: "30%" },
-              { label: "Referral", color: "#f59e0b", pct: "20%" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between text-[10px]">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-gray-600">{item.label}</span>
-                </div>
-                <span className="font-semibold text-[#111827]">{item.pct}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-          <span className="text-xs font-semibold text-[#111827]">Recent Orders</span>
-          <button
-            type="button"
-            className="px-3 py-1 bg-[#6366f1] text-white rounded-lg text-[10px] font-medium hover:bg-[#4f46e5] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-          >
-            Export
-          </button>
-        </div>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-gray-50 bg-gray-50/70">
-              <th className="px-4 py-2.5 text-left font-medium text-gray-500 uppercase tracking-wider">Order</th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                Date
-              </th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableRows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
-              >
-                <td className="px-4 py-3 font-medium text-[#111827]">{row.id}</td>
-                <td className="px-4 py-3 text-gray-600">{row.customer}</td>
-                <td className="px-4 py-3 text-gray-400 hidden lg:table-cell">{row.date}</td>
-                <td className="px-4 py-3 font-semibold text-[#111827]">{row.amount}</td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={row.status} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Annotated layout diagram                                           */
-/* ------------------------------------------------------------------ */
-
-function AnnotatedDiagram() {
-  return (
-    <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white">
-      {/* Window chrome */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-200">
-        <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
-        <span className="w-3 h-3 rounded-full bg-[#f59e0b]" />
-        <span className="w-3 h-3 rounded-full bg-[#10b981]" />
-        <span className="ml-3 text-xs text-gray-400 font-mono">dashboard.app</span>
-      </div>
-
-      {/* Layout body */}
-      <div className="flex" style={{ height: 340 }}>
-        {/* Sidebar zone */}
-        <div className="w-36 bg-[#111827] flex flex-col relative shrink-0">
-          {/* Brand */}
-          <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#6366f1] rounded" />
-            <div className="w-12 h-2 bg-white/20 rounded" />
-          </div>
-          {/* Nav items */}
-          <div className="px-2 py-2 space-y-1 flex-1">
-            {[true, false, false, false, false].map((active, i) => (
-              <div
-                key={i}
-                className={`h-7 rounded-lg flex items-center gap-2 px-2 ${active ? "bg-white/10" : ""}`}
-              >
-                <div className={`w-3.5 h-3.5 rounded ${active ? "bg-white/60" : "bg-white/20"}`} />
-                <div className={`h-1.5 rounded flex-1 ${active ? "bg-white/40" : "bg-white/15"}`} />
-              </div>
-            ))}
-          </div>
-          {/* Label */}
-          <div className="absolute -right-px top-1/2 -translate-y-1/2 translate-x-full z-10 pl-3">
-            <div className="flex items-center gap-1.5">
-              <div className="w-10 h-px bg-[#6366f1]" />
-              <span className="text-[10px] font-semibold text-[#6366f1] whitespace-nowrap bg-white px-1.5 py-0.5 rounded border border-[#6366f1]/20">
-                Sidebar w-56
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right section */}
-        <div className="flex-1 flex flex-col bg-[#f9fafb] min-w-0">
-          {/* Toolbar zone */}
-          <div className="h-11 bg-white border-b border-gray-100 flex items-center justify-between px-4 relative shrink-0">
-            <div className="w-20 h-2.5 bg-gray-200 rounded" />
-            <div className="flex items-center gap-2">
-              <div className="w-24 h-6 bg-gray-100 rounded-lg" />
-              <div className="w-6 h-6 bg-[#6366f1] rounded-full" />
-            </div>
-            {/* Label */}
-            <div className="absolute -top-px left-1/2 -translate-x-1/2 -translate-y-full pb-1.5">
-              <span className="text-[10px] font-semibold text-[#111827] bg-white border border-gray-200 px-2 py-0.5 rounded whitespace-nowrap shadow-sm">
-                Toolbar h-14
-              </span>
-            </div>
-          </div>
-
-          {/* Content zone */}
-          <div className="flex-1 p-3 space-y-2 overflow-hidden">
-            {/* KPI cards label */}
-            <div className="relative">
-              <div className="grid grid-cols-4 gap-2">
-                {kpis.map((kpi, i) => (
-                  <div key={i} className="h-12 bg-white rounded-lg border border-gray-100 flex flex-col justify-center px-2.5">
-                    <div className="w-8 h-1.5 bg-gray-200 rounded mb-1" />
-                    <div className="w-12 h-2.5 bg-[#111827] rounded" />
-                  </div>
-                ))}
-              </div>
-              <div className="absolute -right-1 top-1/2 -translate-y-1/2 translate-x-full pl-2">
-                <span className="text-[10px] font-semibold text-[#10b981] bg-white border border-[#10b981]/20 px-1.5 py-0.5 rounded whitespace-nowrap shadow-sm">
-                  KPI Cards grid-cols-4
-                </span>
-              </div>
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-3 gap-2 relative">
-              <div className="col-span-2 h-28 bg-white rounded-lg border border-gray-100 flex flex-col p-2">
-                <div className="w-16 h-1.5 bg-gray-200 rounded mb-2" />
-                <div className="flex items-end gap-0.5 flex-1">
-                  {[35, 58, 42, 70, 48, 65, 80, 55, 72, 45, 60, 78].map((h, i) => (
-                    <div key={i} className="flex-1 bg-[#6366f1]/60 rounded-t" style={{ height: `${h}%` }} />
-                  ))}
-                </div>
-              </div>
-              <div className="h-28 bg-white rounded-lg border border-gray-100 flex items-center justify-center">
-                <svg viewBox="0 0 60 60" className="w-16 h-16">
-                  <circle cx="30" cy="30" r="22" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-                  <circle
-                    cx="30"
-                    cy="30"
-                    r="22"
-                    fill="none"
-                    stroke="#6366f1"
-                    strokeWidth="8"
-                    strokeDasharray="69 138"
-                    transform="rotate(-90 30 30)"
-                  />
-                  <circle
-                    cx="30"
-                    cy="30"
-                    r="22"
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="8"
-                    strokeDasharray="41 138"
-                    strokeDashoffset="-69"
-                    transform="rotate(-90 30 30)"
-                  />
-                </svg>
-              </div>
-              {/* Label */}
-              <div className="absolute -bottom-px left-0 right-0 translate-y-full pt-1.5 flex justify-center">
-                <span className="text-[10px] font-semibold text-[#6366f1] bg-white border border-[#6366f1]/20 px-2 py-0.5 rounded whitespace-nowrap shadow-sm">
-                  Charts: col-span-2 + col-span-1
-                </span>
-              </div>
-            </div>
-
-            {/* Table */}
-            <div className="h-12 bg-white rounded-lg border border-gray-100 flex items-center px-3 gap-3 mt-4">
-              {["Order", "Customer", "Amount", "Status"].map((col) => (
-                <div key={col} className="flex-1 h-1.5 bg-gray-200 rounded" />
-              ))}
-              <span className="text-[9px] font-semibold text-[#111827] bg-gray-100 px-1.5 py-0.5 rounded whitespace-nowrap">
-                Data Table
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Responsive panel                                                   */
-/* ------------------------------------------------------------------ */
-
-type ResponsiveTab = "Desktop" | "Tablet" | "Mobile";
-
-function ResponsivePanel({ mode }: { mode: ResponsiveTab }) {
-  if (mode === "Desktop") {
-    return (
-      <div className="flex rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm" style={{ height: 260 }}>
-        <div className="w-36 bg-[#111827] shrink-0 flex flex-col">
-          <div className="px-3 py-3 border-b border-white/10">
-            <div className="w-16 h-2 bg-white/30 rounded" />
-          </div>
-          <div className="flex-1 px-2 py-2 space-y-1">
-            {[true, false, false, false, false].map((a, i) => (
-              <div key={i} className={`h-6 rounded px-2 flex items-center gap-1.5 ${a ? "bg-white/10" : ""}`}>
-                <div className={`w-3 h-3 rounded ${a ? "bg-white/50" : "bg-white/20"}`} />
-                <div className={`h-1.5 rounded flex-1 ${a ? "bg-white/30" : "bg-white/10"}`} />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex-1 bg-[#f9fafb] flex flex-col p-2 gap-2">
-          <div className="h-7 bg-white rounded border border-gray-100" />
-          <div className="grid grid-cols-4 gap-1.5">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-10 bg-white rounded border border-gray-100" />
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-1.5 flex-1">
-            <div className="col-span-2 bg-white rounded border border-gray-100" />
-            <div className="bg-white rounded border border-gray-100" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (mode === "Tablet") {
-    return (
-      <div className="flex rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm" style={{ height: 260 }}>
-        {/* Collapsed icon sidebar */}
-        <div className="w-12 bg-[#111827] shrink-0 flex flex-col items-center py-3 gap-3">
-          <div className="w-6 h-6 bg-[#6366f1] rounded" />
-          {[true, false, false, false, false].map((a, i) => (
-            <div key={i} className={`w-7 h-7 rounded flex items-center justify-center ${a ? "bg-white/10" : ""}`}>
-              <div className={`w-3.5 h-3.5 rounded ${a ? "bg-white/60" : "bg-white/25"}`} />
-            </div>
-          ))}
-        </div>
-        <div className="flex-1 bg-[#f9fafb] flex flex-col p-2 gap-2">
-          <div className="h-7 bg-white rounded border border-gray-100" />
-          <div className="grid grid-cols-2 gap-1.5">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-10 bg-white rounded border border-gray-100" />
-            ))}
-          </div>
-          <div className="grid grid-cols-2 gap-1.5 flex-1">
-            <div className="bg-white rounded border border-gray-100" />
-            <div className="bg-white rounded border border-gray-100" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Mobile
-  return (
-    <div className="flex flex-col rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm" style={{ height: 260 }}>
-      {/* Top mobile nav */}
-      <div className="h-9 bg-[#111827] flex items-center justify-between px-3 shrink-0">
-        <div className="w-4 h-4 bg-white/30 rounded" />
-        <div className="w-16 h-2 bg-white/30 rounded" />
-        <div className="flex gap-2">
-          <div className="w-4 h-4 bg-white/25 rounded" />
-          <div className="w-4 h-4 bg-white/25 rounded" />
-        </div>
-      </div>
-      <div className="flex-1 bg-[#f9fafb] p-2 space-y-2">
-        <div className="grid grid-cols-1 gap-1.5">
-          {[0, 1].map((i) => (
-            <div key={i} className="h-10 bg-white rounded border border-gray-100" />
-          ))}
-        </div>
-        <div className="h-24 bg-white rounded border border-gray-100" />
-        <div className="h-16 bg-white rounded border border-gray-100" />
-      </div>
-      {/* Bottom tab bar */}
-      <div className="h-10 bg-white border-t border-gray-100 flex items-center justify-around px-2 shrink-0">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div key={i} className={`w-5 h-5 rounded ${i === 0 ? "bg-[#6366f1]" : "bg-gray-200"}`} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Spec card                                                          */
-/* ------------------------------------------------------------------ */
-
-function SpecCard({ title, items }: { title: string; items: { label: string; value: string }[] }) {
-  return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-      <h4 className="text-sm font-semibold text-[#111827] mb-4">{title}</h4>
-      <div className="space-y-3">
-        {items.map((item) => (
-          <div key={item.label} className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">{item.label}</span>
-            <code className="text-xs font-mono bg-gray-100 text-[#6366f1] px-2 py-0.5 rounded">{item.value}</code>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+function statusBadgeClass(status: string): string {
+  if (status === "Paid") return "text-green-600 bg-green-50";
+  if (status === "Pending") return "text-yellow-600 bg-yellow-50";
+  return "text-red-600 bg-red-50";
 }
 
 /* ------------------------------------------------------------------ */
@@ -750,823 +244,1305 @@ function SpecCard({ title, items }: { title: string; items: { label: string; val
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeNav, setActiveNav] = useState("overview");
-  const [responsiveTab, setResponsiveTab] = useState<ResponsiveTab>("Desktop");
-  const [componentTab, setComponentTab] = useState<"KPI Cards" | "Buttons" | "Table" | "Charts">("KPI Cards");
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeNav, setActiveNav] = useState(0);
+  const [galleryTab, setGalleryTab] = useState<GalleryTab>("kpi");
+  const [viewport, setViewport] = useState<ViewportMode>("desktop");
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [buttonPressed, setButtonPressed] = useState(false);
+  const [notifCount, setNotifCount] = useState(3);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 80);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f9fafb] text-[#111827]">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 overflow-x-hidden">
+      <style>{`
+        @keyframes db-pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .db-pulse-dot {
+          animation: db-pulse-dot 2s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* ================================================================ */}
-      {/* 1. Fixed Top Nav                                                 */}
+      {/* 1. FIXED STICKY NAV                                              */}
       {/* ================================================================ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-14">
-            <span className="font-bold text-base text-[#111827] tracking-tight">Dashboard Layout</span>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/styles"
-                className="text-sm text-gray-500 hover:text-[#111827] transition-colors duration-150 flex items-center gap-1"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-                StyleKit
-              </Link>
-            </nav>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors duration-150 ease-out group"
+          >
+            <svg className="w-4 h-4 transition-transform duration-150 ease-out group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Back</span>
+          </Link>
+
+          {/* Brand */}
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+              <ChartBarIcon className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="text-sm font-semibold text-gray-900 tracking-tight hidden sm:block">
+              Dashboard<span className="text-indigo-500">Layout</span>
+            </span>
           </div>
+
+          {/* CTA */}
+          <Link
+            href="/styles"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-gray-900/30 focus:ring-offset-1 transition-all duration-150 ease-out"
+          >
+            <span>View All Styles</span>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       </header>
 
       {/* ================================================================ */}
-      {/* 2. Hero Section — annotated layout diagram                       */}
+      {/* 2. HERO                                                          */}
       {/* ================================================================ */}
-      <section className="pt-28 md:pt-36 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
-        {/* Title block */}
-        <div className="mb-14">
-          <span
-            className="inline-block text-xs font-semibold tracking-widest uppercase text-[#6366f1] mb-5"
+      <section className="relative pt-24 md:pt-32 pb-20 px-5 md:px-10 bg-gray-900 overflow-hidden">
+        {/* Subtle grid background */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        {/* Accent blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative">
+          {/* Eyebrow */}
+          <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            Data-First Layout System
-          </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/70 text-xs font-medium tracking-widest uppercase mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 db-pulse-dot" />
+              Layout System
+            </span>
+          </div>
 
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
-            <h1 className="text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight">
-              <span
-                className="block"
-                style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition:
-                    "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s",
-                }}
-              >
-                仪表盘布局
-              </span>
-              <span
-                className="block text-[#6366f1]"
-                style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition:
-                    "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.12s",
-                }}
-              >
-                Dashboard.
-              </span>
-            </h1>
-
-            <p
-              className="max-w-xs text-sm text-gray-500 leading-relaxed"
+          {/* Headline */}
+          <h1
+            className="text-5xl md:text-7xl lg:text-[80px] font-bold leading-[1.0] tracking-tight mb-6"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+            }}
+          >
+            <span className="text-white">Dashboard</span>
+            <br />
+            <span
               style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition:
-                  "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.35s",
+                background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
               }}
             >
-              Fixed dark sidebar. Persistent toolbar. KPI cards, chart panels, and data tables — all in one crisp SaaS shell.
-            </p>
-          </div>
-        </div>
+              Layout
+            </span>
+          </h1>
 
-        {/* Annotated diagram */}
-        <RevealBlock>
-          <AnnotatedDiagram />
-        </RevealBlock>
+          {/* Sub */}
+          <p
+            className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl mb-12"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
+            }}
+          >
+            Data-driven layout for SaaS admin panels and analytics platforms.
+            Dark sidebar, crisp topbar, KPI grid, charts, and data tables — all snapping into place with precision micro-interactions.
+          </p>
 
-        {/* Zone legend */}
-        <RevealBlock delay={0.1}>
-          <div className="mt-6 flex flex-wrap gap-4">
+          {/* 3-zone anatomy cards */}
+          <div
+            className="grid grid-cols-3 gap-3 max-w-lg"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+            }}
+          >
             {[
-              { label: "Sidebar", color: "#111827", text: "#fff" },
-              { label: "Toolbar", color: "#ffffff", text: "#111827", border: true },
-              { label: "KPI Cards", color: "#10b981", text: "#fff" },
-              { label: "Charts", color: "#6366f1", text: "#fff" },
-              { label: "Data Table", color: "#f59e0b", text: "#111827" },
+              { label: "Sidebar", desc: "w-64 bg-gray-900", color: "bg-gray-700 border-gray-600" },
+              { label: "Topbar", desc: "bg-white border-b", color: "bg-gray-600 border-gray-500" },
+              { label: "Content", desc: "flex-1 bg-gray-50", color: "bg-gray-800 border-gray-700" },
             ].map((zone) => (
-              <div key={zone.label} className="flex items-center gap-2">
-                <span
-                  className={`w-3 h-3 rounded ${zone.border ? "border border-gray-300" : ""}`}
-                  style={{ backgroundColor: zone.color }}
-                />
-                <span className="text-xs text-gray-600">{zone.label}</span>
+              <div
+                key={zone.label}
+                className={`rounded-xl p-4 border ${zone.color} transition-all duration-150 ease-out hover:scale-[1.02] cursor-default`}
+              >
+                <div className="text-white text-sm font-semibold mb-1">{zone.label}</div>
+                <div className="text-gray-400 text-xs font-mono leading-tight">{zone.desc}</div>
               </div>
             ))}
           </div>
-        </RevealBlock>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 3. Live Dashboard Demo                                           */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-10">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
-                Live <span className="text-[#6366f1]">Dashboard Demo</span>
-              </h2>
-              <p className="text-gray-500 text-sm max-w-md">
-                Click sidebar items to navigate. All interactions use{" "}
-                <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono text-[#6366f1]">duration-150 ease-out</code>{" "}
-                for the crisp SaaS feel.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              Interactive
-            </div>
-          </div>
-        </RevealBlock>
-
-        <RevealBlock>
-          <div
-            className="rounded-2xl border border-gray-200 overflow-hidden shadow-md bg-white"
-            style={{ height: 560 }}
-          >
-            <div className="flex h-full">
-              <LiveSidebar activeNav={activeNav} onNav={setActiveNav} label="Acme" />
-              <div className="flex-1 flex flex-col min-w-0">
-                <LiveToolbar page={activeNav} />
-                <LiveContent page={activeNav} />
-              </div>
-            </div>
-          </div>
-        </RevealBlock>
-
-        {/* Nav hint (mobile fallback) */}
-        <RevealBlock delay={0.1}>
-          <p className="mt-4 text-center text-xs text-gray-400 md:hidden">
-            The sidebar is hidden on small screens — expand to desktop width to see the full layout.
-          </p>
-        </RevealBlock>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 4. Layout Specifications                                         */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Layout <span className="text-[#10b981]">Specifications</span>
-          </h2>
-          <p className="text-gray-500 text-sm max-w-md">
-            Sidebar widths, content grid breakpoints, and spacing tokens used throughout this system.
-          </p>
-        </RevealBlock>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <RevealBlock delay={0}>
-            <SpecCard
-              title="Sidebar Widths"
-              items={[
-                { label: "Compact", value: "w-16 (64px)" },
-                { label: "Standard", value: "w-56 (224px)" },
-                { label: "Wide", value: "w-64 (256px)" },
-                { label: "Collapsed (tablet)", value: "w-12 (48px)" },
-                { label: "Hidden (mobile)", value: "hidden md:flex" },
-              ]}
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.05}>
-            <SpecCard
-              title="KPI Grid Patterns"
-              items={[
-                { label: "4-col (desktop)", value: "grid-cols-4" },
-                { label: "2-col (tablet)", value: "grid-cols-2" },
-                { label: "1-col (mobile)", value: "grid-cols-1" },
-                { label: "Gap", value: "gap-4 (16px)" },
-                { label: "Padding", value: "p-6 (24px)" },
-              ]}
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <SpecCard
-              title="Chart Grid"
-              items={[
-                { label: "Main chart", value: "col-span-2" },
-                { label: "Side chart", value: "col-span-1" },
-                { label: "Container", value: "grid-cols-3" },
-                { label: "Gap", value: "gap-4 (16px)" },
-                { label: "Stack (mobile)", value: "grid-cols-1" },
-              ]}
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.05}>
-            <SpecCard
-              title="Toolbar"
-              items={[
-                { label: "Height", value: "h-14 (56px)" },
-                { label: "Background", value: "bg-white" },
-                { label: "Border", value: "border-b border-gray-200" },
-                { label: "Padding", value: "px-6 py-3" },
-                { label: "Sticky", value: "sticky top-0 z-10" },
-              ]}
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <SpecCard
-              title="Micro-Interaction Tokens"
-              items={[
-                { label: "All transitions", value: "duration-150 ease-out" },
-                { label: "KPI hover lift", value: "-translate-y-0.5" },
-                { label: "Button press", value: "active:scale-[0.97]" },
-                { label: "Row hover", value: "hover:bg-gray-50" },
-                { label: "Focus ring", value: "ring-2 ring-[#6366f1]/30" },
-              ]}
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.15}>
-            <SpecCard
-              title="Typography Scale"
-              items={[
-                { label: "KPI value", value: "text-3xl font-bold" },
-                { label: "Panel header", value: "text-sm font-semibold" },
-                { label: "Table header", value: "text-xs uppercase tracking" },
-                { label: "Body text", value: "text-sm text-gray-600" },
-                { label: "Metadata", value: "text-xs text-gray-400" },
-              ]}
-            />
-          </RevealBlock>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* 5. Component Patterns                                            */}
+      {/* 3. LIVE DASHBOARD DEMO                                           */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Component <span className="text-[#6366f1]">Patterns</span>
-          </h2>
-          <p className="text-gray-500 text-sm max-w-md">
-            Dashboard building blocks. All components share the same token set and interaction physics.
-          </p>
-        </RevealBlock>
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-500 block mb-3">
+              Live Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Working dashboard <span className="text-indigo-500">mockup</span>
+            </h2>
+          </RevealBlock>
 
-        {/* Tab switcher */}
-        <div className="flex items-center gap-1 bg-white rounded-xl p-1 mb-10 w-fit border border-gray-200 shadow-sm">
-          {(["KPI Cards", "Buttons", "Table", "Charts"] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setComponentTab(tab)}
-              className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ease-out ${
-                componentTab === tab
-                  ? "bg-[#6366f1] text-white shadow-sm"
-                  : "text-gray-500 hover:text-[#111827] hover:bg-gray-50"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+          <RevealBlock delay={0.05} className="mb-6">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Full interactive dashboard with dark sidebar, KPI cards, bar chart, and data table.
+              Toggle viewport to see responsive behavior.
+            </p>
+          </RevealBlock>
 
-        <RevealBlock>
-          {/* KPI Cards */}
-          {componentTab === "KPI Cards" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {kpis.map((kpi) => (
-                <div
-                  key={kpi.label}
-                  className="group p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer"
+          {/* Viewport toggle */}
+          <RevealBlock delay={0.08} className="mb-6">
+            <div className="flex items-center gap-2">
+              {(["desktop", "tablet", "mobile"] as ViewportMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewport(mode)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all duration-150 ease-out active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
+                    viewport === mode
+                      ? "bg-gray-900 text-white"
+                      : "bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300"
+                  }`}
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">
-                      {kpi.label}
-                    </span>
-                    <span
-                      className={`text-xs font-semibold px-2 py-1 rounded-full transition-colors duration-150 ${
-                        kpi.up === true
-                          ? "text-[#10b981] bg-[#10b981]/10 group-hover:bg-[#10b981]/20"
-                          : kpi.up === false
-                          ? "text-[#ef4444] bg-[#ef4444]/10 group-hover:bg-[#ef4444]/20"
-                          : "text-[#f59e0b] bg-[#f59e0b]/10 group-hover:bg-[#f59e0b]/20"
-                      }`}
-                    >
-                      {kpi.change}
-                    </span>
-                  </div>
-                  <div className="text-3xl font-bold text-[#111827] origin-left group-hover:text-[#4f46e5] group-hover:scale-[1.02] transition-all duration-150">
-                    {kpi.value}
-                  </div>
-                  <p className="mt-1 text-xs text-gray-400 group-hover:text-gray-500 transition-colors duration-150">
-                    {kpi.sub}
-                  </p>
-                </div>
+                  {mode}
+                </button>
               ))}
             </div>
-          )}
+          </RevealBlock>
 
-          {/* Buttons */}
-          {componentTab === "Buttons" && (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-8 space-y-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Primary Actions</p>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-[#6366f1] text-white rounded-lg font-medium text-sm hover:bg-[#4f46e5] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-                  >
-                    Export Data
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-[#10b981] text-white rounded-lg font-medium text-sm hover:bg-[#059669] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#10b981]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-                  >
-                    Add Record
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-[#ef4444] text-white rounded-lg font-medium text-sm hover:bg-[#dc2626] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#ef4444]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-[#f59e0b] text-white rounded-lg font-medium text-sm hover:bg-[#d97706] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-                  >
-                    Archive
-                  </button>
+          {/* Dashboard frame */}
+          <RevealBlock delay={0.12}>
+            <div className="rounded-2xl border border-gray-200 shadow-2xl overflow-hidden bg-gray-50">
+              {/* Browser chrome bar */}
+              <div className="bg-gray-100 border-b border-gray-200 px-4 py-2.5 flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
                 </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Secondary Actions</p>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-white text-[#111827] border border-gray-200 rounded-lg font-medium text-sm hover:bg-gray-50 active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-white text-[#6366f1] border border-[#6366f1]/30 rounded-lg font-medium text-sm hover:bg-[#6366f1]/5 active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    View Report
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-gray-50 text-gray-600 rounded-lg font-medium text-sm hover:bg-gray-100 active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    Filter
-                  </button>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Size Variants</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    className="px-2.5 py-1 bg-[#6366f1] text-white rounded text-xs font-medium hover:bg-[#4f46e5] active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    xs
-                  </button>
-                  <button
-                    type="button"
-                    className="px-3 py-1.5 bg-[#6366f1] text-white rounded-md text-sm font-medium hover:bg-[#4f46e5] active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    sm
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-[#6366f1] text-white rounded-lg text-sm font-medium hover:bg-[#4f46e5] active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    md
-                  </button>
-                  <button
-                    type="button"
-                    className="px-5 py-2.5 bg-[#6366f1] text-white rounded-xl text-base font-medium hover:bg-[#4f46e5] active:scale-[0.97] transition-all duration-150 ease-out"
-                  >
-                    lg
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Table */}
-          {componentTab === "Table" && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-semibold text-[#111827]">Recent Orders</h3>
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <svg
-                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input
-                      type="text"
-                      placeholder="Search orders..."
-                      className="pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#6366f1]/30 w-48 transition-all duration-150"
-                    />
+                <div className="flex-1 max-w-sm mx-auto">
+                  <div className="bg-white rounded-md px-3 py-1 text-xs text-gray-400 border border-gray-200 text-center">
+                    app.dashboard.io/overview
                   </div>
-                  <button
-                    type="button"
-                    className="px-4 py-1.5 bg-[#6366f1] text-white rounded-lg font-medium text-sm hover:bg-[#4f46e5] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:ring-offset-1 transition-all duration-150 ease-out"
-                  >
-                    Export
-                  </button>
                 </div>
               </div>
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50/60">
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Order
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableRows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
-                    >
-                      <td className="px-6 py-4 text-sm font-medium text-[#111827]">{row.id}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{row.customer}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400 hidden md:table-cell">{row.date}</td>
-                      <td className="px-6 py-4 text-sm font-semibold text-[#111827]">{row.amount}</td>
-                      <td className="px-6 py-4">
-                        <StatusBadge status={row.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
 
-          {/* Charts */}
-          {componentTab === "Charts" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* Bar chart */}
-              <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold text-[#111827]">Revenue Trend</h3>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-[#6366f1] text-white text-xs rounded-full font-medium">Monthly</span>
-                    <span className="px-3 py-1 bg-gray-100 text-gray-500 text-xs rounded-full font-medium cursor-pointer hover:bg-gray-200 transition-colors duration-150">
-                      Weekly
+              {/* Dashboard content */}
+              <div
+                className="transition-all duration-300 ease-out overflow-hidden"
+                style={{
+                  maxWidth: viewport === "desktop" ? "100%" : viewport === "tablet" ? "768px" : "375px",
+                  margin: viewport === "desktop" ? "0" : "0 auto",
+                }}
+              >
+                <div className="flex bg-gray-50" style={{ minHeight: "480px" }}>
+                  {/* Sidebar — hidden on mobile */}
+                  {viewport !== "mobile" && (
+                    <aside
+                      className="bg-gray-900 text-white flex-shrink-0 flex flex-col"
+                      style={{ width: viewport === "tablet" ? "200px" : "256px" }}
+                    >
+                      {/* Brand */}
+                      <div className="px-5 py-4 border-b border-white/10">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
+                            <ChartBarIcon className="w-4 h-4 text-white" />
+                          </div>
+                          {viewport !== "tablet" && (
+                            <span className="text-sm font-bold text-white tracking-tight">DataPanel</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Nav items */}
+                      <nav className="flex-1 p-3 space-y-0.5">
+                        {navItems.map((item, i) => (
+                          <button
+                            key={item.label}
+                            onClick={() => setActiveNav(i)}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ease-out group ${
+                              activeNav === i
+                                ? "bg-white/10 text-white font-medium"
+                                : "text-gray-400 hover:text-white hover:bg-white/5"
+                            }`}
+                          >
+                            <span className={`transition-colors duration-150 ${activeNav === i ? "text-indigo-400" : "group-hover:text-gray-200"}`}>
+                              {item.icon}
+                            </span>
+                            {viewport !== "tablet" && <span>{item.label}</span>}
+                          </button>
+                        ))}
+                      </nav>
+
+                      {/* User bottom */}
+                      <div className="p-3 border-t border-white/10">
+                        <div className="flex items-center gap-3 px-2">
+                          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            AC
+                          </div>
+                          {viewport !== "tablet" && (
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-white truncate">Alice Chen</div>
+                              <div className="text-xs text-gray-500 truncate">Admin</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </aside>
+                  )}
+
+                  {/* Main area */}
+                  <div className="flex-1 flex flex-col min-w-0">
+                    {/* Topbar */}
+                    <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
+                      <div className="flex items-center gap-3">
+                        {viewport === "mobile" && (
+                          <div className="w-6 h-6 flex flex-col justify-center gap-1 cursor-pointer">
+                            <div className="w-4 h-0.5 bg-gray-600" />
+                            <div className="w-4 h-0.5 bg-gray-600" />
+                            <div className="w-4 h-0.5 bg-gray-600" />
+                          </div>
+                        )}
+                        <h2 className="text-sm font-semibold text-gray-900">
+                          {navItems[activeNav]?.label ?? "Overview"}
+                        </h2>
+                        <span className="hidden sm:block text-xs text-gray-400">Feb 21, 2026</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* Search */}
+                        {viewport === "desktop" && (
+                          <div className="relative">
+                            <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search..."
+                              readOnly
+                              className="pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all duration-150 w-40"
+                            />
+                          </div>
+                        )}
+                        {/* Bell */}
+                        <button
+                          className="relative p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-all duration-150 ease-out active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-gray-400/30"
+                          onClick={() => setNotifCount(0)}
+                        >
+                          <BellIcon className="w-4 h-4" />
+                          {notifCount > 0 && (
+                            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[8px] font-bold flex items-center justify-center">
+                              {notifCount}
+                            </span>
+                          )}
+                        </button>
+                        {/* Avatar */}
+                        <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+                          AC
+                        </div>
+                      </div>
+                    </header>
+
+                    {/* Content area */}
+                    <main className="flex-1 p-4 overflow-auto">
+                      {/* KPI grid */}
+                      <div
+                        className="grid gap-3 mb-4"
+                        style={{
+                          gridTemplateColumns:
+                            viewport === "mobile"
+                              ? "1fr 1fr"
+                              : viewport === "tablet"
+                              ? "repeat(2, 1fr)"
+                              : "repeat(4, 1fr)",
+                        }}
+                      >
+                        {kpiCards.map((card) => (
+                          <div
+                            key={card.label}
+                            className="group bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-xs font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">
+                                {card.label}
+                              </span>
+                              <div
+                                className={`w-7 h-7 rounded-lg ${card.iconBg} flex items-center justify-center transition-transform duration-150 group-hover:scale-110`}
+                                style={{ color: card.color }}
+                              >
+                                {card.icon}
+                              </div>
+                            </div>
+                            <div className="text-xl font-bold text-gray-900 group-hover:scale-[1.02] group-hover:text-indigo-600 transition-all duration-150 ease-out origin-left">
+                              {card.value}
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                              {card.direction === "up" && <TrendUpIcon className="w-3 h-3 text-green-500" />}
+                              {card.direction === "down" && <TrendDownIcon className="w-3 h-3 text-red-500" />}
+                              <span
+                                className={`text-xs font-medium ${
+                                  card.direction === "up"
+                                    ? "text-green-500"
+                                    : card.direction === "down"
+                                    ? "text-red-500"
+                                    : "text-yellow-500"
+                                }`}
+                              >
+                                {card.change}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Chart area */}
+                      {viewport !== "mobile" && (
+                        <div
+                          className="grid gap-3 mb-4"
+                          style={{ gridTemplateColumns: viewport === "tablet" ? "1fr" : "2fr 1fr" }}
+                        >
+                          {/* Bar chart */}
+                          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-sm font-semibold text-gray-900">Revenue Trend</h3>
+                              <span className="text-xs text-gray-400">Last 7 months</span>
+                            </div>
+                            <div className="flex items-end gap-2 h-24">
+                              {barChartData.map((bar) => (
+                                <div key={bar.month} className="flex-1 flex flex-col items-center gap-1 group">
+                                  <div
+                                    className="w-full rounded-t-md bg-indigo-500 hover:bg-indigo-400 transition-all duration-150 ease-out cursor-default"
+                                    style={{ height: `${bar.value * 0.88}%` }}
+                                    title={`${bar.month}: ${bar.value}%`}
+                                  />
+                                  <span className="text-[9px] text-gray-400">{bar.month}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Donut placeholder */}
+                          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Traffic Sources</h3>
+                            <div className="flex justify-center items-center" style={{ height: "80px" }}>
+                              <svg viewBox="0 0 80 80" className="w-20 h-20">
+                                <circle cx="40" cy="40" r="28" fill="none" stroke="#e5e7eb" strokeWidth="12" />
+                                <circle cx="40" cy="40" r="28" fill="none" stroke="#6366f1" strokeWidth="12" strokeDasharray="70 106" strokeDashoffset="0" strokeLinecap="round" />
+                                <circle cx="40" cy="40" r="28" fill="none" stroke="#10b981" strokeWidth="12" strokeDasharray="45 131" strokeDashoffset="-70" strokeLinecap="round" />
+                                <circle cx="40" cy="40" r="28" fill="none" stroke="#f59e0b" strokeWidth="12" strokeDasharray="30 146" strokeDashoffset="-115" strokeLinecap="round" />
+                              </svg>
+                            </div>
+                            <div className="space-y-1.5 mt-2">
+                              {[
+                                { label: "Organic", pct: "40%", color: "#6366f1" },
+                                { label: "Referral", pct: "26%", color: "#10b981" },
+                                { label: "Direct", pct: "17%", color: "#f59e0b" },
+                              ].map((item) => (
+                                <div key={item.label} className="flex items-center justify-between">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                                    <span className="text-[10px] text-gray-500">{item.label}</span>
+                                  </div>
+                                  <span className="text-[10px] font-medium text-gray-700">{item.pct}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Data table */}
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                          <h3 className="text-sm font-semibold text-gray-900">Recent Orders</h3>
+                          <button className="text-xs text-indigo-500 hover:text-indigo-700 transition-colors duration-150 font-medium">
+                            View all
+                          </button>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="border-b border-gray-100 bg-gray-50">
+                                <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Order</th>
+                                {viewport !== "mobile" && (
+                                  <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Customer</th>
+                                )}
+                                <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Amount</th>
+                                <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {tableRows.map((row, i) => (
+                                <tr
+                                  key={row.id}
+                                  className="border-b border-gray-50 hover:bg-gray-50 transition-colors duration-150 ease-out cursor-default"
+                                  onMouseEnter={() => setHoveredRow(i)}
+                                  onMouseLeave={() => setHoveredRow(null)}
+                                >
+                                  <td className="px-4 py-2.5">
+                                    <span className="font-mono text-gray-600">{row.id}</span>
+                                  </td>
+                                  {viewport !== "mobile" && (
+                                    <td className="px-4 py-2.5 text-gray-700">{row.customer}</td>
+                                  )}
+                                  <td className="px-4 py-2.5 font-medium text-gray-900">{row.amount}</td>
+                                  <td className="px-4 py-2.5">
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${statusBadgeClass(row.status)}`}>
+                                      {row.status}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </main>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* Viewport note */}
+          <RevealBlock delay={0.18} className="mt-4">
+            <p className="text-xs text-gray-400 text-center">
+              {viewport === "desktop" && "Desktop: sidebar w-64 + 4-col KPI grid + chart split (2:1) + full table"}
+              {viewport === "tablet" && "Tablet: narrower sidebar w-48 + 2-col KPI grid + single-column charts"}
+              {viewport === "mobile" && "Mobile: sidebar hidden, 2-col KPI grid, table condensed"}
+            </p>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. LAYOUT ANATOMY                                                */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-emerald-500 block mb-3">
+              Anatomy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Layout <span className="text-emerald-500">zones</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Three zones working in concert. Each zone has a clear role and a defined Tailwind class pattern.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                zone: "Sidebar",
+                classes: "bg-gray-900 w-64",
+                role: "Primary navigation, branding, user identity. Dark and persistent — always visible on desktop.",
+                tokens: ["bg-gray-900", "w-64", "text-white", "flex-shrink-0"],
+                color: "border-indigo-200 bg-indigo-50",
+                badge: "bg-indigo-100 text-indigo-700",
+              },
+              {
+                zone: "Topbar",
+                classes: "bg-white border-b",
+                role: "Contextual actions: search, notifications, user avatar. Sticky at the top of the content column.",
+                tokens: ["bg-white", "border-b border-gray-200", "px-6 py-3", "flex items-center"],
+                color: "border-emerald-200 bg-emerald-50",
+                badge: "bg-emerald-100 text-emerald-700",
+              },
+              {
+                zone: "Content",
+                classes: "flex-1 bg-gray-50",
+                role: "KPI cards, charts, tables, and page-specific data. Scrolls independently of the sidebar.",
+                tokens: ["flex-1", "bg-gray-50", "p-6", "overflow-auto"],
+                color: "border-amber-200 bg-amber-50",
+                badge: "bg-amber-100 text-amber-700",
+              },
+            ].map((zone, i) => (
+              <RevealBlock key={zone.zone} delay={i * 0.08}>
+                <div className={`rounded-2xl p-6 border-2 ${zone.color} h-full`}>
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="text-lg font-bold text-gray-900">{zone.zone}</h3>
+                    <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium ${zone.badge}`}>
+                      {zone.classes}
                     </span>
                   </div>
-                </div>
-                <div className="flex items-end gap-2 h-44">
-                  {barValues.map((h, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5">{zone.role}</p>
+                  <div className="space-y-1.5">
+                    {zone.tokens.map((token) => (
                       <div
-                        className="w-full rounded-t bg-[#6366f1]/75 hover:bg-[#6366f1] transition-colors duration-150 cursor-pointer"
-                        style={{ height: `${h}%` }}
-                        title={`$${(h * 600).toLocaleString()}`}
-                      />
-                      <span className="text-[10px] text-gray-400">{barMonths[i]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Donut */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 className="font-semibold text-[#111827] mb-6">Distribution</h3>
-                <div className="flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-40 h-40">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" strokeWidth="12" />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      fill="none"
-                      stroke="#6366f1"
-                      strokeWidth="12"
-                      strokeDasharray="125.7 251.3"
-                      strokeLinecap="round"
-                      transform="rotate(-90 50 50)"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="12"
-                      strokeDasharray="75.4 251.3"
-                      strokeDashoffset="-125.7"
-                      strokeLinecap="round"
-                      transform="rotate(-90 50 50)"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      fill="none"
-                      stroke="#f59e0b"
-                      strokeWidth="12"
-                      strokeDasharray="50.3 251.3"
-                      strokeDashoffset="-201.1"
-                      strokeLinecap="round"
-                      transform="rotate(-90 50 50)"
-                    />
-                    <text x="50" y="47" textAnchor="middle" fontSize="13" fontWeight="700" fill="#111827">
-                      73%
-                    </text>
-                    <text x="50" y="59" textAnchor="middle" fontSize="7" fill="#9ca3af">
-                      Growth
-                    </text>
-                  </svg>
-                </div>
-                <div className="mt-4 space-y-2.5">
-                  {[
-                    { label: "Direct", color: "#6366f1", pct: "50%" },
-                    { label: "Organic", color: "#10b981", pct: "30%" },
-                    { label: "Referral", color: "#f59e0b", pct: "20%" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                        <span className="text-gray-600">{item.label}</span>
+                        key={token}
+                        className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-mono text-gray-600"
+                      >
+                        {token}
                       </div>
-                      <span className="font-semibold text-[#111827]">{item.pct}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Responsive behavior table */}
+          <RevealBlock delay={0.2}>
+            <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white">
+              <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Responsive Breakpoints</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="text-left px-6 py-3 text-gray-500 font-medium">Breakpoint</th>
+                      <th className="text-left px-6 py-3 text-gray-500 font-medium">Sidebar</th>
+                      <th className="text-left px-6 py-3 text-gray-500 font-medium">KPI Grid</th>
+                      <th className="text-left px-6 py-3 text-gray-500 font-medium">Charts</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { bp: "xl (1280px+)", sidebar: "w-64 visible", kpi: "grid-cols-4", charts: "2fr 1fr split" },
+                      { bp: "lg (1024px)", sidebar: "w-56 visible", kpi: "grid-cols-4", charts: "2fr 1fr split" },
+                      { bp: "md (768px)", sidebar: "w-48 compact", kpi: "grid-cols-2", charts: "single column" },
+                      { bp: "sm (375px)", sidebar: "hidden", kpi: "grid-cols-2", charts: "hidden / tab" },
+                    ].map((row, i) => (
+                      <tr
+                        key={row.bp}
+                        className={`border-b border-gray-50 hover:bg-gray-50 transition-colors duration-150 ${i % 2 === 0 ? "" : "bg-gray-50/50"}`}
+                      >
+                        <td className="px-6 py-3 font-mono text-xs text-gray-600">{row.bp}</td>
+                        <td className="px-6 py-3 text-gray-700">{row.sidebar}</td>
+                        <td className="px-6 py-3 text-gray-700">{row.kpi}</td>
+                        <td className="px-6 py-3 text-gray-700">{row.charts}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-          )}
-        </RevealBlock>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 6. Responsive Behavior                                           */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Responsive <span className="text-[#f59e0b]">Behavior</span>
-          </h2>
-          <p className="text-gray-500 text-sm max-w-md">
-            The dashboard layout adapts at three breakpoints. Sidebar collapses to icons on tablet, hides on mobile.
-          </p>
-        </RevealBlock>
-
-        {/* Tab switcher */}
-        <div className="flex items-center gap-1 bg-white rounded-xl p-1 mb-8 w-fit border border-gray-200 shadow-sm">
-          {(["Desktop", "Tablet", "Mobile"] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setResponsiveTab(tab)}
-              className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-150 ease-out ${
-                responsiveTab === tab
-                  ? "bg-[#f59e0b] text-white shadow-sm"
-                  : "text-gray-500 hover:text-[#111827] hover:bg-gray-50"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          </RevealBlock>
         </div>
-
-        <RevealBlock>
-          <ResponsivePanel mode={responsiveTab} />
-        </RevealBlock>
-
-        {/* Breakpoint table */}
-        <RevealBlock delay={0.1}>
-          <div className="mt-8 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/60">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Breakpoint
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sidebar
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                    KPI Grid
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                    Chart Grid
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    bp: "Desktop (lg+)",
-                    breakpoint: "≥1024px",
-                    sidebar: "w-56 full labels",
-                    kpi: "grid-cols-4",
-                    charts: "2/3 + 1/3",
-                  },
-                  {
-                    bp: "Tablet (md)",
-                    breakpoint: "768–1023px",
-                    sidebar: "w-12 icons only",
-                    kpi: "grid-cols-2",
-                    charts: "grid-cols-2",
-                  },
-                  {
-                    bp: "Mobile (sm)",
-                    breakpoint: "<768px",
-                    sidebar: "hidden + bottom bar",
-                    kpi: "grid-cols-1",
-                    charts: "grid-cols-1",
-                  },
-                ].map((row) => (
-                  <tr key={row.bp} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4">
-                      <span className="font-medium text-[#111827]">{row.bp}</span>
-                      <span className="ml-2 text-xs text-gray-400">{row.breakpoint}</span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{row.sidebar}</td>
-                    <td className="px-6 py-4 text-gray-600 hidden sm:table-cell">
-                      <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono text-[#6366f1]">
-                        {row.kpi}
-                      </code>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600 hidden md:table-cell">{row.charts}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </RevealBlock>
       </section>
 
       {/* ================================================================ */}
-      {/* Color palette                                                    */}
+      {/* 5. COMPONENT GALLERY — 4 tabs                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Color <span className="text-[#6366f1]">Palette</span>
-          </h2>
-          <p className="text-gray-500 text-sm max-w-md">
-            A functional five-token palette. Semantic colors encode data states across every panel.
-          </p>
-        </RevealBlock>
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-500 block mb-3">
+              Components
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Component <span className="text-indigo-500">gallery</span>
+            </h2>
+          </RevealBlock>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {colorPalette.map((color, i) => (
-            <RevealBlock key={color.name} delay={i * 0.05}>
-              <div className="group rounded-xl overflow-hidden bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer">
-                <div
-                  className="h-24 flex items-end p-3"
-                  style={{ backgroundColor: color.hex }}
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              All interactive. Hover to see micro-interactions. Each component enforces the
+              150ms crisp SaaS feel from the aiRules.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.08} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["kpi", "nav", "table", "chart"] as GalleryTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setGalleryTab(tab)}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-medium uppercase tracking-wide transition-all duration-150 ease-out active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
+                    galleryTab === tab
+                      ? "bg-gray-900 text-white"
+                      : "bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300"
+                  }`}
                 >
-                  <span
-                    className="text-[10px] font-mono"
-                    style={{ color: color.light ? "#111827" : "#ffffff", opacity: 0.75 }}
-                  >
-                    {color.hex}
-                  </span>
+                  {tab === "kpi" ? "KPI Cards" : tab === "nav" ? "Nav Items" : tab === "table" ? "Data Tables" : "Charts"}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo panel */}
+          <RevealBlock delay={0.12}>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+
+              {/* ---- KPI CARDS ---- */}
+              {galleryTab === "kpi" && (
+                <div className="p-8 md:p-12">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 mb-8">
+                    KPI Card — group-hover float + number scale + color shift
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {kpiCards.map((card) => (
+                      <div
+                        key={card.label}
+                        className="group p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">
+                            {card.label}
+                          </span>
+                          <div
+                            className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center group-hover:scale-110 transition-transform duration-150`}
+                            style={{ color: card.color }}
+                          >
+                            {card.icon}
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold text-gray-900 group-hover:scale-[1.05] group-hover:text-indigo-600 transition-all duration-150 ease-out origin-left">
+                          {card.value}
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-2">
+                          {card.direction === "up" ? (
+                            <TrendUpIcon className="w-3.5 h-3.5 text-green-500" />
+                          ) : card.direction === "down" ? (
+                            <TrendDownIcon className="w-3.5 h-3.5 text-red-500" />
+                          ) : null}
+                          <span
+                            className={`text-sm font-medium ${
+                              card.direction === "up" ? "text-green-500" : card.direction === "down" ? "text-red-500" : "text-yellow-500"
+                            }`}
+                          >
+                            {card.change}
+                          </span>
+                          <span className="text-xs text-gray-400">vs last month</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-8 p-4 rounded-xl bg-indigo-50 border border-indigo-100">
+                    <p className="text-xs text-indigo-700 font-mono leading-relaxed">
+                      group-hover:scale-[1.05] group-hover:text-indigo-600 &mdash; KPI Focus rule<br />
+                      hover:bg-gray-50 hover:shadow-md hover:-translate-y-0.5 &mdash; Hover Hinting rule<br />
+                      transition-all duration-150 ease-out &mdash; Crisp SaaS Feel rule
+                    </p>
+                  </div>
                 </div>
-                <div className="p-3">
-                  <p className="text-xs font-semibold text-[#111827]">{color.name}</p>
+              )}
+
+              {/* ---- NAV ITEMS ---- */}
+              {galleryTab === "nav" && (
+                <div className="p-8 md:p-12">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 mb-8">
+                    Sidebar nav — active bg-white/10, hover bg-white/5, icon color shift
+                  </p>
+                  <div className="flex gap-8">
+                    {/* Full sidebar mockup */}
+                    <div className="w-64 bg-gray-900 rounded-2xl overflow-hidden flex-shrink-0">
+                      <div className="px-5 py-4 border-b border-white/10">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
+                            <ChartBarIcon className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="text-sm font-bold text-white">DataPanel</span>
+                        </div>
+                      </div>
+                      <nav className="p-3 space-y-0.5">
+                        {navItems.map((item, i) => (
+                          <button
+                            key={item.label}
+                            onClick={() => setActiveNav(i)}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ease-out group ${
+                              activeNav === i
+                                ? "bg-white/10 text-white font-medium"
+                                : "text-gray-400 hover:text-white hover:bg-white/5"
+                            }`}
+                          >
+                            <span className={`transition-colors duration-150 ${activeNav === i ? "text-indigo-400" : "group-hover:text-gray-200"}`}>
+                              {item.icon}
+                            </span>
+                            <span>{item.label}</span>
+                            {activeNav === i && (
+                              <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                            )}
+                          </button>
+                        ))}
+                      </nav>
+                      <div className="p-3 border-t border-white/10">
+                        <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors duration-150 cursor-pointer">
+                          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">AC</div>
+                          <div className="min-w-0">
+                            <div className="text-xs font-medium text-white truncate">Alice Chen</div>
+                            <div className="text-xs text-gray-500 truncate">Admin</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Spec notes */}
+                    <div className="flex-1 space-y-4">
+                      <div className="p-4 rounded-xl bg-white border border-gray-200">
+                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Active State</div>
+                        <code className="block text-xs font-mono text-gray-700 leading-relaxed">
+                          bg-white/10 text-white font-medium<br />
+                          + indigo-400 dot indicator
+                        </code>
+                      </div>
+                      <div className="p-4 rounded-xl bg-white border border-gray-200">
+                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Hover State</div>
+                        <code className="block text-xs font-mono text-gray-700 leading-relaxed">
+                          hover:text-white hover:bg-white/5<br />
+                          group-hover: icon color transition
+                        </code>
+                      </div>
+                      <div className="p-4 rounded-xl bg-white border border-gray-200">
+                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Transition</div>
+                        <code className="block text-xs font-mono text-gray-700 leading-relaxed">
+                          duration-150 ease-out &mdash; crisp, precise
+                        </code>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              )}
+
+              {/* ---- DATA TABLES ---- */}
+              {galleryTab === "table" && (
+                <div className="p-8 md:p-12">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 mb-8">
+                    Data table &mdash; hover:bg-gray-50 per-row hinting, status badge color-coding
+                  </p>
+                  <div className="rounded-xl border border-gray-200 overflow-hidden">
+                    <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50">
+                      <h4 className="text-sm font-semibold text-gray-900">Recent Orders</h4>
+                      <div className="flex items-center gap-2">
+                        <button className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs text-gray-600 hover:bg-gray-50 transition-colors duration-150 ease-out active:scale-[0.97]">
+                          Filter
+                        </button>
+                        <button className="px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs hover:bg-gray-700 transition-colors duration-150 ease-out active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-gray-900/30">
+                          Export
+                        </button>
+                      </div>
+                    </div>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-100">
+                          {["Order", "Customer", "Product", "Amount", "Status", "Date"].map((h) => (
+                            <th key={h} className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                              {h}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tableRows.map((row, i) => (
+                          <tr
+                            key={row.id}
+                            className="border-b border-gray-50 hover:bg-gray-50 transition-colors duration-150 ease-out cursor-default"
+                            onMouseEnter={() => setHoveredRow(i)}
+                            onMouseLeave={() => setHoveredRow(null)}
+                          >
+                            <td className="px-5 py-3.5 font-mono text-xs text-gray-500">{row.id}</td>
+                            <td className="px-5 py-3.5 font-medium text-gray-900">{row.customer}</td>
+                            <td className="px-5 py-3.5 text-gray-600">{row.product}</td>
+                            <td className="px-5 py-3.5 font-semibold text-gray-900">{row.amount}</td>
+                            <td className="px-5 py-3.5">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${statusBadgeClass(row.status)}`}>
+                                {row.status === "Paid" && <CheckIcon className="w-3 h-3" />}
+                                {row.status === "Failed" && <XIcon className="w-3 h-3" />}
+                                {row.status}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3.5 text-xs text-gray-400">{row.date}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="mt-6 p-4 rounded-xl bg-gray-50 border border-gray-200">
+                    <p className="text-xs text-gray-500 font-mono">
+                      Row hover: hover:bg-gray-50 &mdash; Hover Hinting rule<br />
+                      Status: text-green-600 / text-red-500 / text-yellow-500 &mdash; color-coded clarity
+                    </p>
+                  </div>
+                  {/* Suppress unused variable warning */}
+                  <span className="sr-only">{hoveredRow}</span>
+                </div>
+              )}
+
+              {/* ---- CHARTS ---- */}
+              {galleryTab === "chart" && (
+                <div className="p-8 md:p-12">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 mb-8">
+                    Chart components &mdash; bar chart + donut, aspect-ratio constrained
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Bar chart */}
+                    <div className="bg-white rounded-xl border border-gray-200 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-sm font-semibold text-gray-900">Revenue (7mo)</h4>
+                        <span className="text-xs text-emerald-500 font-medium">+14.2% avg</span>
+                      </div>
+                      <div className="flex items-end gap-2" style={{ height: "120px" }}>
+                        {barChartData.map((bar, i) => (
+                          <div key={bar.month} className="flex-1 flex flex-col items-center gap-1.5 group">
+                            <div
+                              className="w-full rounded-t-md bg-indigo-500 group-hover:bg-indigo-400 transition-colors duration-150 ease-out cursor-default"
+                              style={{ height: `${bar.value}%`, transitionDelay: `${i * 20}ms` }}
+                              title={`${bar.month}: ${bar.value}%`}
+                            />
+                            <span className="text-[9px] text-gray-400">{bar.month}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-xs text-gray-400">August &mdash; February</span>
+                        <span className="text-xs font-mono text-gray-500">col-span-2 / aspect-[2/1]</span>
+                      </div>
+                    </div>
+
+                    {/* Donut */}
+                    <div className="bg-white rounded-xl border border-gray-200 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-sm font-semibold text-gray-900">Traffic Sources</h4>
+                        <span className="text-xs text-gray-400 font-mono">aspect-square</span>
+                      </div>
+                      <div className="flex items-center gap-8">
+                        <svg viewBox="0 0 100 100" className="w-28 h-28 flex-shrink-0">
+                          <circle cx="50" cy="50" r="34" fill="none" stroke="#e5e7eb" strokeWidth="14" />
+                          <circle cx="50" cy="50" r="34" fill="none" stroke="#6366f1" strokeWidth="14" strokeDasharray="85 129" strokeDashoffset="0" strokeLinecap="round" />
+                          <circle cx="50" cy="50" r="34" fill="none" stroke="#10b981" strokeWidth="14" strokeDasharray="55 159" strokeDashoffset="-85" strokeLinecap="round" />
+                          <circle cx="50" cy="50" r="34" fill="none" stroke="#f59e0b" strokeWidth="14" strokeDasharray="73 141" strokeDashoffset="-140" strokeLinecap="round" />
+                        </svg>
+                        <div className="flex-1 space-y-3">
+                          {[
+                            { label: "Organic Search", pct: 40, color: "#6366f1" },
+                            { label: "Referral", pct: 26, color: "#10b981" },
+                            { label: "Direct", pct: 34, color: "#f59e0b" },
+                          ].map((src) => (
+                            <div key={src.label} className="group cursor-default">
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: src.color }} />
+                                  <span className="text-xs text-gray-600">{src.label}</span>
+                                </div>
+                                <span className="text-xs font-semibold text-gray-900">{src.pct}%</span>
+                              </div>
+                              <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                                <div
+                                  className="h-full rounded-full transition-all duration-150 ease-out"
+                                  style={{ width: `${src.pct}%`, backgroundColor: src.color }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. ANIMATION & INTERACTION RULES — 4 demo cards                 */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-500 block mb-3">
+              Interaction Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Animation <span className="text-indigo-500">principles</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Four named rules from the aiRules spec &mdash; each demonstrated with a live interactive element.
+              Hover and click to feel the SaaS precision.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* Card 1: Crisp SaaS Feel */}
+            <RevealBlock delay={0.08}>
+              <div className="rounded-2xl p-8 border-2 border-indigo-100 bg-white h-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-600 text-xs font-semibold">Crisp SaaS Feel</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2 leading-relaxed">
+                  All micro-interactions use <code className="text-indigo-600 font-mono">duration-150 ease-out</code> &mdash; fast and precise. No sluggishness, no spring overshoot.
+                </p>
+                <p className="text-xs font-mono text-gray-400 mb-6">duration-150 ease-out everywhere</p>
+                <div className="flex flex-wrap gap-3">
+                  {["Primary", "Secondary", "Tertiary"].map((label, i) => (
+                    <button
+                      key={label}
+                      className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ease-out active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:ring-offset-1 ${
+                        i === 0
+                          ? "bg-indigo-500 text-white hover:bg-indigo-600"
+                          : i === 1
+                          ? "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300"
+                          : "text-gray-500 hover:bg-gray-100"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-4">Click any button &mdash; notice the instant, precise response.</p>
               </div>
             </RevealBlock>
-          ))}
+
+            {/* Card 2: KPI Focus */}
+            <RevealBlock delay={0.12}>
+              <div className="rounded-2xl p-8 border-2 border-emerald-100 bg-white h-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-600 text-xs font-semibold">KPI Focus</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2 leading-relaxed">
+                  KPI card hover causes slight upward float + core number grows via{" "}
+                  <code className="text-emerald-600 font-mono">group-hover:scale-105 group-hover:text-indigo-600</code>
+                </p>
+                <p className="text-xs font-mono text-gray-400 mb-6">hover:-translate-y-0.5 + group-hover:scale-[1.05]</p>
+                <div className="group p-5 bg-white rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md hover:border-indigo-100 hover:-translate-y-0.5 transition-all duration-150 ease-out cursor-pointer">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">
+                      Monthly Revenue
+                    </span>
+                    <span className="text-xs font-medium text-emerald-500 bg-emerald-50 group-hover:bg-emerald-100 px-2 py-1 rounded-full transition-colors duration-150">
+                      +12.5%
+                    </span>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 group-hover:scale-[1.05] group-hover:text-indigo-600 transition-all duration-150 ease-out origin-left">
+                    $48,230
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1 group-hover:text-gray-500 transition-colors duration-150">
+                    vs. $42,890 last month
+                  </p>
+                </div>
+                <p className="text-xs text-gray-400 mt-4">Hover the card &mdash; number scales and turns indigo.</p>
+              </div>
+            </RevealBlock>
+
+            {/* Card 3: Hover Hinting */}
+            <RevealBlock delay={0.16}>
+              <div className="rounded-2xl p-8 border-2 border-amber-100 bg-white h-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-600 text-xs font-semibold">Hover Hinting</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2 leading-relaxed">
+                  Data rows, panels, and actionable cards get explicit bg on hover:{" "}
+                  <code className="text-amber-600 font-mono">hover:bg-gray-50</code>
+                </p>
+                <p className="text-xs font-mono text-gray-400 mb-6">hover:bg-gray-50 on every interactive row</p>
+                <div className="rounded-xl border border-gray-200 overflow-hidden">
+                  {[
+                    { name: "Dashboard Overview", badge: "Active" },
+                    { name: "Revenue Analytics", badge: "Beta" },
+                    { name: "User Management", badge: "" },
+                    { name: "Export Reports", badge: "New" },
+                  ].map((item, i) => (
+                    <div
+                      key={item.name}
+                      className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 ease-out cursor-default ${
+                        i < 3 ? "border-b border-gray-100" : ""
+                      }`}
+                    >
+                      <span className="text-sm text-gray-700">{item.name}</span>
+                      {item.badge && (
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          item.badge === "Active" ? "bg-green-50 text-green-600" :
+                          item.badge === "Beta" ? "bg-indigo-50 text-indigo-600" :
+                          "bg-gray-100 text-gray-600"
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-4">Hover any row &mdash; gray-50 signals interactivity.</p>
+              </div>
+            </RevealBlock>
+
+            {/* Card 4: Action Precision */}
+            <RevealBlock delay={0.2}>
+              <div className="rounded-2xl p-8 border-2 border-gray-200 bg-white h-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Action Precision</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2 leading-relaxed">
+                  Button click has clear press feedback:{" "}
+                  <code className="text-gray-600 font-mono">active:scale-[0.97]</code>{" "}
+                  + visible focus ring for a11y.
+                </p>
+                <p className="text-xs font-mono text-gray-400 mb-6">active:scale-[0.97] + focus:ring-2</p>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onMouseDown={() => setButtonPressed(true)}
+                    onMouseUp={() => setButtonPressed(false)}
+                    onMouseLeave={() => setButtonPressed(false)}
+                    className="w-full px-5 py-3 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-gray-900/30 focus:ring-offset-2 transition-all duration-150 ease-out"
+                  >
+                    {buttonPressed ? "Pressed!" : "Click or Tab + Enter me"}
+                  </button>
+                  <button className="w-full px-5 py-3 rounded-lg bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-600 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:ring-offset-2 transition-all duration-150 ease-out">
+                    Export Data
+                  </button>
+                  <button className="w-full px-5 py-3 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 hover:border-gray-300 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-gray-400/30 focus:ring-offset-1 transition-all duration-150 ease-out">
+                    Cancel
+                  </button>
+                </div>
+                <p className="text-xs text-gray-400 mt-4">
+                  Click &mdash; immediate press feedback. Tab to focus &mdash; visible ring.
+                </p>
+              </div>
+            </RevealBlock>
+          </div>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* Design rules                                                     */}
+      {/* 7. DESIGN RULES DO / DON'T                                       */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
-        <RevealBlock className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">Design Rules</h2>
-          <p className="text-gray-500 text-sm max-w-md">
-            These principles keep the dashboard readable and the data trustworthy at a glance.
-          </p>
-        </RevealBlock>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <RevealBlock>
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-full">
-              <h3 className="font-semibold text-lg mb-6 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#10b981] flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </span>
-                Do
-              </h3>
-              <ul className="space-y-3">
-                {[
-                  "Dark sidebar navigation: bg-[#111827] w-56",
-                  "Toolbar with search, notifications, user avatar",
-                  "4-column KPI grid with large numeric values",
-                  "Color-coded change badges: green up, red down, amber flat",
-                  "2/3 + 1/3 chart layout for visual weight balance",
-                  "Crisp micro-interactions: duration-150 ease-out",
-                  "group-hover scale on KPI numbers for focus hint",
-                  "hover:bg-gray-50 on every interactive row or card",
-                  "active:scale-[0.97] + visible focus ring on buttons",
-                ].map((rule) => (
-                  <li key={rule} className="text-sm text-gray-600 flex items-start gap-2">
-                    <span className="text-[#10b981] mt-0.5 shrink-0 font-semibold">+</span>
-                    {rule}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gray-500 block mb-3">
+              Design Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Do &amp; <span className="text-red-500">Don&apos;t</span>
+            </h2>
           </RevealBlock>
 
-          <RevealBlock delay={0.1}>
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-full">
-              <h3 className="font-semibold text-lg mb-6 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#ef4444] flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </span>
-                Don&apos;t
-              </h3>
-              <ul className="space-y-3">
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              The rules that separate a professional SaaS dashboard from a cluttered mess.
+              Distilled from the style definition.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
+            {/* DO */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-white rounded-2xl border-2 border-green-200 p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
+                    <CheckIcon className="w-4 h-4 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-green-700">Do</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "bg-gray-900 w-64 for the dark sidebar — always",
+                    "bg-white/10 for the active nav item",
+                    "grid grid-cols-4 for KPI cards on desktop",
+                    "Large font-bold numbers for KPI values",
+                    "text-green-500 for growth, text-red-500 for decline",
+                    "aspect-video or aspect-[2/1] for main chart",
+                    "col-span-2 for main chart, single for supplementary",
+                    "duration-150 ease-out on all interactive elements",
+                    "active:scale-[0.97] on every button for press feedback",
+                    "hover:bg-gray-50 on all data rows and panels",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-green-400 shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* DON'T */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-white rounded-2xl border-2 border-red-200 p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
+                    <XIcon className="w-4 h-4 text-red-500" />
+                  </div>
+                  <h3 className="text-lg font-bold text-red-600">Don&apos;t</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "Sidebar and content area with mismatched proportions",
+                    "Inconsistent padding between data panels",
+                    "Skip loading and empty states in data panels",
+                    "Make all KPI cards the same visual size",
+                    "Use decorative elements that compete with data",
+                    "Slow transitions — keep them under 200ms",
+                    "Buttons without active:scale or visible focus ring",
+                    "Plain gray for status — always use semantic colors",
+                    "Dense grids with no visual hierarchy or whitespace",
+                    "Expose raw API or DB values without formatting",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-red-400 shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Color system reference */}
+          <RevealBlock delay={0.18}>
+            <div className="bg-white rounded-2xl border border-gray-200 p-8">
+              <h3 className="text-base font-semibold text-gray-900 mb-6">Color System Reference</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                 {[
-                  "Sidebar wider than 280px — steals too much content space",
-                  "Inconsistent panel gaps — use a single gap-4 token",
-                  "All panels the exact same size — vary for visual hierarchy",
-                  "Decorative elements that compete with numeric data",
-                  "Slow transitions (duration-300+) — feels sluggish in a dashboard",
-                  "Skip loading and empty states — data isn't always ready",
-                  "Use >4 accent colors in one view — status semantics blur",
-                  "Hide the toolbar on scroll — users need persistent context",
-                ].map((rule) => (
-                  <li key={rule} className="text-sm text-gray-600 flex items-start gap-2">
-                    <span className="text-[#ef4444] mt-0.5 shrink-0 font-semibold">-</span>
-                    {rule}
-                  </li>
+                  { name: "Primary", hex: "#111827", label: "Sidebar / Text" },
+                  { name: "Accent", hex: "#6366f1", label: "Indigo — CTA" },
+                  { name: "Success", hex: "#10b981", label: "Growth / Up" },
+                  { name: "Warning", hex: "#f59e0b", label: "Neutral / Stable" },
+                  { name: "Error", hex: "#ef4444", label: "Decline / Down" },
+                ].map((color) => (
+                  <div key={color.name} className="group cursor-default">
+                    <div
+                      className="h-14 rounded-xl mb-3 flex items-end px-3 pb-2 hover:scale-[1.03] transition-transform duration-150 ease-out"
+                      style={{ backgroundColor: color.hex }}
+                    >
+                      <span className="text-xs font-mono text-white opacity-80">{color.hex}</span>
+                    </div>
+                    <div className="text-sm font-semibold text-gray-900">{color.name}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{color.label}</div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* 7. Footer                                                        */}
+      {/* 8. FOOTER                                                        */}
       {/* ================================================================ */}
-      <footer className="border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <p className="text-sm font-semibold text-[#111827] mb-1">Dashboard Layout</p>
-              <p className="text-xs text-gray-400">
-                StyleKit &middot; Data-first layout system for SaaS and analytics products
+      <footer className="bg-gray-900 border-t border-white/10 overflow-hidden relative">
+        {/* Subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+
+        {/* Accent blob */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-5 md:px-10 pt-16 pb-12 relative">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
+            {/* Brand */}
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center">
+                  <ChartBarIcon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold text-white tracking-tight">
+                  Dashboard<span className="text-indigo-400">Layout</span>
+                </span>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed">
+                Data-driven SaaS layout system. Dark sidebar, crisp topbar, KPI cards,
+                charts, and tables &mdash; precision micro-interactions throughout.
               </p>
+              {/* Color swatches */}
+              <div className="flex gap-2 mt-1">
+                {["#111827", "#6366f1", "#10b981", "#f59e0b", "#ef4444"].map((hex) => (
+                  <div
+                    key={hex}
+                    className="w-5 h-5 rounded-full hover:scale-[1.25] transition-transform duration-150 ease-out cursor-default"
+                    style={{ backgroundColor: hex }}
+                    title={hex}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/styles/dashboard-layout"
-                className="text-sm text-[#6366f1] font-medium hover:underline transition-colors duration-150"
-              >
-                Documentation
-              </Link>
-              <Link
-                href="/styles"
-                className="text-sm text-gray-500 hover:text-[#111827] transition-colors duration-150"
-              >
-                All Styles
-              </Link>
+
+            {/* Links grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-500">Style</span>
+                <Link href="/styles/dashboard-layout" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Documentation
+                </Link>
+                <Link href="/styles/dashboard-layout/showcase" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Showcase
+                </Link>
+                <Link href="/styles/dashboard-layout/cover" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-500">StyleKit</span>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Home
+                </Link>
+                <Link href="/styles" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-gray-500">Compatible</span>
+                {["Corporate Clean", "Dark Mode", "Minimalist Flat", "Fluent Design"].map((s) => (
+                  <span key={s} className="text-gray-500 text-xs">{s}</span>
+                ))}
+              </div>
             </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-white/10 mb-8" />
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 db-pulse-dot" />
+              <span>Dashboard Layout &mdash; StyleKit Design System</span>
+            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-150 ease-out"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to StyleKit
+            </Link>
           </div>
         </div>
       </footer>
