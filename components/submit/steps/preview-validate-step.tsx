@@ -3,39 +3,45 @@
 import { useMemo } from "react";
 import { Check, X, AlertTriangle } from "lucide-react";
 
+interface PreviewFormData {
+  name: string;
+  nameEn: string;
+  slug: string;
+  description: string;
+  philosophy: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColors: string[];
+  background: string;
+  foreground: string;
+  muted: string;
+  headingFont: string;
+  bodyFont: string;
+  fontSizeHeading: string;
+  fontSizeBase: string;
+  fontWeightBold: string;
+  fontWeightNormal: string;
+  lineHeightNormal: string;
+  lineHeightTight: string;
+  borderRadius: string;
+  spacingSm: string;
+  spacingMd: string;
+  spacingLg: string;
+  doList: string[];
+  dontList: string[];
+  aiRules: string[];
+  keywords: string[];
+  buttonCode: string;
+  cardCode: string;
+  inputCode: string;
+  navCode: string;
+  heroCode: string;
+  footerCode: string;
+}
+
 interface PreviewValidateStepProps {
-  formData: {
-    name: string;
-    nameEn: string;
-    slug: string;
-    description: string;
-    philosophy: string;
-    primaryColor: string;
-    secondaryColor: string;
-    accentColors: string[];
-    background: string;
-    foreground: string;
-    muted: string;
-    headingFont: string;
-    bodyFont: string;
-    fontSizeHeading: string;
-    fontSizeBase: string;
-    fontWeightBold: string;
-    fontWeightNormal: string;
-    lineHeightNormal: string;
-    lineHeightTight: string;
-    borderRadius: string;
-    spacingSm: string;
-    spacingMd: string;
-    spacingLg: string;
-    doList: string[];
-    dontList: string[];
-    aiRules: string[];
-    keywords: string[];
-    buttonCode: string;
-    cardCode: string;
-    inputCode: string;
-  };
+  formData: PreviewFormData;
+  manifestCoverSvg: string | null;
   isAnimating: boolean;
   onGoToStep?: (step: number) => void;
 }
@@ -52,6 +58,9 @@ const FIELD_TO_STEP: Record<string, number> = {
   "AI Rules": 4,
   "Keywords": 1,
   "Components": 5,
+  "Nav Component": 5,
+  "Hero Component": 5,
+  "Footer Component": 5,
 };
 
 function fieldToStep(field: string): number | undefined {
@@ -67,7 +76,7 @@ interface ValidationIssue {
 
 const HEX_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
-function validateSubmission(formData: PreviewValidateStepProps["formData"]): ValidationIssue[] {
+function validateSubmission(formData: PreviewFormData): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
   if (!formData.name.trim() && !formData.nameEn.trim()) {
@@ -116,58 +125,70 @@ function validateSubmission(formData: PreviewValidateStepProps["formData"]): Val
     issues.push({ severity: "warning", field: "Keywords", message: "Recommend 3+ keywords" });
   }
 
+  // Extended component warnings
+  const extCount = [formData.navCode, formData.heroCode, formData.footerCode].filter((c) => c.trim()).length;
+  if (extCount === 0) {
+    issues.push({ severity: "warning", field: "Nav Component", message: "Nav/Hero/Footer recommended for quality score" });
+  } else if (extCount < 2) {
+    issues.push({ severity: "warning", field: "Nav Component", message: "Recommend at least 2 of Nav/Hero/Footer" });
+  }
+
   return issues;
 }
 
-function computeCompletenessScore(formData: PreviewValidateStepProps["formData"]): number {
+function computeCompletenessScore(formData: PreviewFormData): number {
   let score = 0;
-  const max = 100;
 
-  // Name (10)
-  if (formData.name.trim() || formData.nameEn.trim()) score += 5;
-  if (formData.name.trim() && formData.nameEn.trim()) score += 5;
+  // Name (8)
+  if (formData.name.trim() || formData.nameEn.trim()) score += 4;
+  if (formData.name.trim() && formData.nameEn.trim()) score += 4;
 
-  // Slug (5)
-  if (formData.slug.trim()) score += 5;
+  // Slug (4)
+  if (formData.slug.trim()) score += 4;
 
-  // Description (5)
-  if (formData.description.trim()) score += 5;
+  // Description (4)
+  if (formData.description.trim()) score += 4;
 
-  // Philosophy (5)
-  if (formData.philosophy.trim()) score += 5;
+  // Philosophy (4)
+  if (formData.philosophy.trim()) score += 4;
 
-  // Colors (15)
-  if (HEX_PATTERN.test(formData.primaryColor.trim())) score += 5;
-  if (HEX_PATTERN.test(formData.secondaryColor.trim())) score += 5;
-  if (formData.accentColors.filter((c) => HEX_PATTERN.test(c.trim())).length >= 2) score += 5;
+  // Colors (12)
+  if (HEX_PATTERN.test(formData.primaryColor.trim())) score += 4;
+  if (HEX_PATTERN.test(formData.secondaryColor.trim())) score += 4;
+  if (formData.accentColors.filter((c) => HEX_PATTERN.test(c.trim())).length >= 2) score += 4;
 
-  // Background/Foreground/Muted (5)
-  if (HEX_PATTERN.test(formData.background.trim()) && HEX_PATTERN.test(formData.foreground.trim())) score += 5;
+  // Background/Foreground/Muted (4)
+  if (HEX_PATTERN.test(formData.background.trim()) && HEX_PATTERN.test(formData.foreground.trim())) score += 4;
 
-  // Typography (5)
-  if (formData.headingFont && formData.bodyFont) score += 5;
+  // Typography (4)
+  if (formData.headingFont && formData.bodyFont) score += 4;
 
-  // Do List (10)
+  // Do List (8)
   const doCount = formData.doList.filter((i) => i.trim()).length;
-  score += Math.min(10, doCount * 3.33);
+  score += Math.min(8, Math.round(doCount * 2.67));
 
-  // Don't List (10)
+  // Don't List (8)
   const dontCount = formData.dontList.filter((i) => i.trim()).length;
-  score += Math.min(10, dontCount * 3.33);
+  score += Math.min(8, Math.round(dontCount * 2.67));
 
-  // AI Rules (10)
+  // AI Rules (8)
   const aiCount = formData.aiRules.filter((i) => i.trim()).length;
-  score += Math.min(10, aiCount * 3.33);
+  score += Math.min(8, Math.round(aiCount * 2.67));
 
-  // Keywords (5)
-  score += Math.min(5, formData.keywords.length * 1.67);
+  // Keywords (4)
+  score += Math.min(4, Math.round(formData.keywords.length * 1.33));
 
-  // Components (15)
-  if (formData.buttonCode.trim()) score += 5;
-  if (formData.cardCode.trim()) score += 5;
-  if (formData.inputCode.trim()) score += 5;
+  // Core Components (12) - button/card/input
+  if (formData.buttonCode.trim()) score += 4;
+  if (formData.cardCode.trim()) score += 4;
+  if (formData.inputCode.trim()) score += 4;
 
-  return Math.min(max, Math.round(score));
+  // Extended Components (20) - nav/hero/footer
+  if (formData.navCode.trim()) score += 7;
+  if (formData.heroCode.trim()) score += 7;
+  if (formData.footerCode.trim()) score += 6;
+
+  return Math.min(100, Math.round(score));
 }
 
 function gradeFromScore(score: number): string {
@@ -178,7 +199,7 @@ function gradeFromScore(score: number): string {
   return "F";
 }
 
-export function PreviewValidateStep({ formData, isAnimating, onGoToStep }: PreviewValidateStepProps) {
+export function PreviewValidateStep({ formData, manifestCoverSvg, isAnimating, onGoToStep }: PreviewValidateStepProps) {
   const issues = useMemo(() => validateSubmission(formData), [formData]);
   const errors = issues.filter((i) => i.severity === "error");
   const warnings = issues.filter((i) => i.severity === "warning");
@@ -219,6 +240,32 @@ export function PreviewValidateStep({ formData, isAnimating, onGoToStep }: Previ
               <span className="text-lg font-medium">{errors.length} Error{errors.length !== 1 ? "s" : ""}</span>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Component Coverage */}
+      <div className="border border-border">
+        <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-border">
+          <p className="text-sm font-medium">Component Coverage</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 divide-x divide-border">
+          {([
+            ["Button", formData.buttonCode],
+            ["Card", formData.cardCode],
+            ["Input", formData.inputCode],
+            ["Nav", formData.navCode],
+            ["Hero", formData.heroCode],
+            ["Footer", formData.footerCode],
+          ] as const).map(([label, code]) => (
+            <div key={label} className="p-3 text-center">
+              <p className="text-xs text-muted mb-1">{label}</p>
+              {code.trim() ? (
+                <Check className="w-4 h-4 text-green-600 mx-auto" />
+              ) : (
+                <X className="w-4 h-4 text-zinc-300 mx-auto" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
@@ -267,6 +314,21 @@ export function PreviewValidateStep({ formData, isAnimating, onGoToStep }: Previ
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Cover SVG Preview */}
+      {manifestCoverSvg && (
+        <div className="border border-border">
+          <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-border">
+            <p className="text-sm font-medium">Cover Preview</p>
+          </div>
+          <div className="p-4 flex justify-center">
+            <div
+              className="w-full max-w-lg aspect-[1200/630] border border-border overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: manifestCoverSvg }}
+            />
           </div>
         </div>
       )}
