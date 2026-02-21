@@ -1,7 +1,9 @@
 export const SITE_OWNER_TITLE_TOKEN = "__site_owner__";
 export const EARLY_USER_TITLE_TOKEN = "__early_user__";
+export const EMPEROR_TITLE_TOKEN = "__qin_shi_huang__";
 export const EARLY_USER_SEQ_THRESHOLD = 100;
 export const USER_TITLE_MAX_LENGTH = 24;
+const EMPEROR_SEQ_IDS = new Set([1, 2]);
 
 const MISSING_TABLE_CODES = new Set(["42P01", "42703", "PGRST204", "PGRST205"]);
 
@@ -208,11 +210,15 @@ export function resolveUserTitle(input: ResolveUserTitleInput): string | null {
     return null;
   }
 
+  const seqId = asPositiveInt(input.seqId);
+  if (seqId != null && EMPEROR_SEQ_IDS.has(seqId)) {
+    return EMPEROR_TITLE_TOKEN;
+  }
+
   if (input.rule?.isOwner || input.adminUserIds.has(input.userId)) {
     return SITE_OWNER_TITLE_TOKEN;
   }
 
-  const seqId = asPositiveInt(input.seqId);
   if (seqId != null && seqId <= EARLY_USER_SEQ_THRESHOLD) {
     return EARLY_USER_TITLE_TOKEN;
   }

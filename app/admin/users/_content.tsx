@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useDeferredValue, useState } from "react";
 import Image from "next/image";
 import {
+  EMPEROR_TITLE_TOKEN,
   EARLY_USER_TITLE_TOKEN,
   SITE_OWNER_TITLE_TOKEN,
 } from "@/lib/auth/user-title-policy";
@@ -31,10 +32,26 @@ function formatResolvedTitle(title: string | null): string | null {
   if (title === SITE_OWNER_TITLE_TOKEN) {
     return "Site Owner";
   }
+  if (title === EMPEROR_TITLE_TOKEN) {
+    return "Qin Shi Huang";
+  }
   if (title === EARLY_USER_TITLE_TOKEN) {
     return "Early User";
   }
   return title;
+}
+
+function getTitleBadgeClass(title: string | null): string {
+  if (title === EMPEROR_TITLE_TOKEN) {
+    return "border-amber-300/80 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-200";
+  }
+  if (title === EARLY_USER_TITLE_TOKEN) {
+    return "border-sky-300/80 bg-sky-100 text-sky-800 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-200";
+  }
+  if (title === SITE_OWNER_TITLE_TOKEN) {
+    return "border-violet-300/80 bg-violet-100 text-violet-800 dark:border-violet-700 dark:bg-violet-900/40 dark:text-violet-200";
+  }
+  return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
 }
 
 export function AdminUsersContent() {
@@ -288,6 +305,7 @@ export function AdminUsersContent() {
                 };
                 const titleError = titleErrors[user.userId] ?? "";
                 const resolvedTitleLabel = formatResolvedTitle(user.resolvedTitle);
+                const titleBadgeClass = getTitleBadgeClass(user.resolvedTitle);
 
                 return (
                   <Fragment key={user.userId}>
@@ -322,7 +340,7 @@ export function AdminUsersContent() {
                       </td>
                       <td className="px-4 py-3">
                         {resolvedTitleLabel ? (
-                          <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/30 px-2 py-0.5 text-xs">
+                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${titleBadgeClass}`}>
                             {resolvedTitleLabel}
                           </span>
                         ) : (
