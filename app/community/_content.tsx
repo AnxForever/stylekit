@@ -45,7 +45,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
 
   return (
     <section className="border-b border-border">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-14">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between mb-10">
           <div>
             <p className="text-xs tracking-[0.16em] uppercase text-muted mb-3">
@@ -173,7 +173,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                     </div>
 
                     {item.description && (
-                      <p className="text-sm text-muted line-clamp-2 min-h-[2.5rem]">
+                      <p className="text-sm text-muted line-clamp-2 md:min-h-[2.5rem]">
                         {item.description}
                       </p>
                     )}
