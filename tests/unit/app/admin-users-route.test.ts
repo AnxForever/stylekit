@@ -10,6 +10,10 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import { GET } from "@/app/api/admin/users/route";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+import {
+  EARLY_USER_TITLE_TOKEN,
+  SITE_OWNER_TITLE_TOKEN,
+} from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const mockedCheckAdminApiAccess = vi.mocked(checkAdminApiAccess);
@@ -143,6 +147,26 @@ describe("GET /api/admin/users", () => {
           message: "Could not find the table 'public.style_submissions' in the schema cache",
         },
       },
+      user_seq_ids: {
+        data: [
+          {
+            user_id: USER_TWO_ID,
+            seq_id: 88,
+          },
+        ],
+        error: null,
+      },
+      user_titles: {
+        data: [
+          {
+            user_id: USER_ONE_ID,
+            custom_title: null,
+            is_owner: true,
+            title_enabled: true,
+          },
+        ],
+        error: null,
+      },
     };
 
     const fromMock = vi.fn((tableName: string) => ({
@@ -177,6 +201,8 @@ describe("GET /api/admin/users", () => {
     expect(payload.users[0].favoriteCount).toBe(1);
     expect(payload.users[0].submissionCount).toBe(1);
     expect(payload.users[0].lastActive).toBe("2026-02-21T03:00:00.000Z");
+    expect(payload.users[0].resolvedTitle).toBe(SITE_OWNER_TITLE_TOKEN);
+    expect(payload.users[0].isOwner).toBe(true);
 
     const secondUser = payload.users.find(
       (item: { userId: string }) => item.userId === USER_TWO_ID
@@ -184,6 +210,9 @@ describe("GET /api/admin/users", () => {
     expect(secondUser).toBeTruthy();
     expect(secondUser.commentCount).toBe(0);
     expect(secondUser.favoriteCount).toBe(0);
+    expect(secondUser.seqId).toBe(88);
+    expect(secondUser.resolvedTitle).toBe(EARLY_USER_TITLE_TOKEN);
+    expect(secondUser.isEarlyUser).toBe(true);
 
     const thirdUser = payload.users.find(
       (item: { userId: string }) => item.userId === USER_THREE_ID
