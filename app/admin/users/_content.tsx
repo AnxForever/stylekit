@@ -284,7 +284,7 @@ export function AdminUsersContent() {
                 <th className="text-left px-4 py-3 font-medium">User</th>
                 <th className="text-left px-4 py-3 font-medium">User ID</th>
                 <th className="text-left px-4 py-3 font-medium">Title</th>
-                <th className="text-left px-4 py-3 font-medium">Display ID</th>
+                <th className="text-left px-4 py-3 font-medium">ID</th>
                 <th className="text-right px-4 py-3 font-medium">Comments</th>
                 <th className="text-right px-4 py-3 font-medium">Ratings</th>
                 <th className="text-right px-4 py-3 font-medium">Favorites</th>
@@ -348,20 +348,7 @@ export function AdminUsersContent() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-muted">
-                        {user.displaySeqId ? (
-                          <span className="inline-flex items-center gap-2">
-                            <span>#{user.displaySeqId}</span>
-                            {user.seqId && user.seqId !== user.displaySeqId ? (
-                              <span className="text-[11px] text-muted/80">
-                                (raw #{user.seqId})
-                              </span>
-                            ) : null}
-                          </span>
-                        ) : user.seqId ? (
-                          `#${user.seqId}`
-                        ) : (
-                          "--"
-                        )}
+                        {user.seqId ? `#${user.seqId}` : "--"}
                       </td>
                       <td className="text-right px-4 py-3">{user.commentCount}</td>
                       <td className="text-right px-4 py-3">{user.ratingCount}</td>
