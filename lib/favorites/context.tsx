@@ -23,7 +23,7 @@ interface FavoritesContextType {
 
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
-const STORAGE_KEY = "stylekit-favorites";
+const STORAGE_KEY = "stylekit-favorites-v1";
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {

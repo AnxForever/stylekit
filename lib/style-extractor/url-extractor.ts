@@ -569,12 +569,20 @@ function inferSpacingFromCss(
     return { valueCount, commonValues: [] };
   }
 
-  // Categorize into a 5-step scale based on distribution
-  const xs = sorted.find((v) => v.px <= 4)?.value;
-  const sm = sorted.find((v) => v.px > 4 && v.px <= 10)?.value;
-  const md = sorted.find((v) => v.px > 10 && v.px <= 20)?.value;
-  const lg = sorted.find((v) => v.px > 20 && v.px <= 40)?.value;
-  const xl = sorted.find((v) => v.px > 40)?.value;
+  // Categorize into a 5-step scale based on distribution (single pass)
+  let xs: string | undefined;
+  let sm: string | undefined;
+  let md: string | undefined;
+  let lg: string | undefined;
+  let xl: string | undefined;
+  for (const v of sorted) {
+    if (!xs && v.px <= 4) xs = v.value;
+    else if (!sm && v.px > 4 && v.px <= 10) sm = v.value;
+    else if (!md && v.px > 10 && v.px <= 20) md = v.value;
+    else if (!lg && v.px > 20 && v.px <= 40) lg = v.value;
+    else if (!xl && v.px > 40) xl = v.value;
+    if (xs && sm && md && lg && xl) break;
+  }
 
   return {
     xs,

@@ -160,14 +160,53 @@ export function lintCode(styleSlug: string, code: string): LintResult {
 // Helper Functions
 // ============================================================================
 
+// Pre-computed caches keyed by tokens identity
+const forbiddenClassSetCache = new WeakMap<StyleTokens, Set<string>>();
+const compiledPatternsCache = new WeakMap<StyleTokens, { regex: RegExp; source: string }[]>();
+const reasonPrefixMapCache = new WeakMap<StyleTokens, Map<string, string>>();
+
+function getForbiddenClassSet(tokens: StyleTokens): Set<string> {
+  let set = forbiddenClassSetCache.get(tokens);
+  if (!set) {
+    set = new Set(tokens.forbidden.classes);
+    forbiddenClassSetCache.set(tokens, set);
+  }
+  return set;
+}
+
+function getCompiledPatterns(tokens: StyleTokens): { regex: RegExp; source: string }[] {
+  let patterns = compiledPatternsCache.get(tokens);
+  if (!patterns) {
+    patterns = tokens.forbidden.patterns.map((p) => ({ regex: new RegExp(p), source: p }));
+    compiledPatternsCache.set(tokens, patterns);
+  }
+  return patterns;
+}
+
+function getReasonPrefixMap(tokens: StyleTokens): Map<string, string> {
+  let map = reasonPrefixMapCache.get(tokens);
+  if (!map) {
+    map = new Map<string, string>();
+    for (const [key, value] of Object.entries(tokens.forbidden.reasons)) {
+      const prefix = key.split("-").slice(0, 2).join("-");
+      if (!map.has(prefix)) {
+        map.set(prefix, value);
+      }
+    }
+    reasonPrefixMapCache.set(tokens, map);
+  }
+  return map;
+}
+
 function checkClassAgainstTokens(
   tokens: StyleTokens,
   item: ExtractedClass
 ): Violation | null {
   const cls = item.class;
 
-  // Check exact forbidden matches
-  if (tokens.forbidden.classes.includes(cls)) {
+  // Check exact forbidden matches (Set for O(1))
+  const forbiddenSet = getForbiddenClassSet(tokens);
+  if (forbiddenSet.has(cls)) {
     return {
       class: cls,
       reason: tokens.forbidden.reasons[cls] || "Violates style rules",
@@ -177,15 +216,16 @@ function checkClassAgainstTokens(
     };
   }
 
-  // Check forbidden patterns
-  for (const pattern of tokens.forbidden.patterns) {
-    if (new RegExp(pattern).test(cls)) {
-      const matchedReason = Object.entries(tokens.forbidden.reasons).find(
-        ([key]) => cls.startsWith(key.split("-").slice(0, 2).join("-"))
-      );
+  // Check forbidden patterns (pre-compiled RegExp)
+  const compiledPatterns = getCompiledPatterns(tokens);
+  const reasonPrefixMap = getReasonPrefixMap(tokens);
+  for (const { regex, source } of compiledPatterns) {
+    if (regex.test(cls)) {
+      const prefix = cls.split("-").slice(0, 2).join("-");
+      const matchedReason = reasonPrefixMap.get(prefix);
       return {
         class: cls,
-        reason: matchedReason?.[1] || `Matches forbidden pattern: ${pattern}`,
+        reason: matchedReason || `Matches forbidden pattern: ${source}`,
         severity: "error",
         line: item.line,
         context: item.context,

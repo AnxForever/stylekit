@@ -727,47 +727,44 @@ export async function GET(
       )
     );
 
-    const identityMap = await loadAuthorIdentities(
-      userIds,
-      getUserById,
-      lookupSeqIds
-    );
+    const [identityMap, titleRuleMap] = await Promise.all([
+      loadAuthorIdentities(userIds, getUserById, lookupSeqIds),
+      loadUserTitleRuleMap(
+        userIds.filter((userId) => UUID_RE.test(userId)),
+        async (ids) => {
+          const withIcon = await sb
+            .from("user_titles")
+            .select(
+              "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
+            )
+            .in("user_id", ids);
 
-    const titleRuleMap = await loadUserTitleRuleMap(
-      userIds.filter((userId) => UUID_RE.test(userId)),
-      async (ids) => {
-        const withIcon = await sb
-          .from("user_titles")
-          .select(
-            "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
-          )
-          .in("user_id", ids);
+          if (!withIcon.error) {
+            return {
+              data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+              error: null,
+            };
+          }
 
-        if (!withIcon.error) {
+          if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
+            return {
+              data: null,
+              error: (withIcon.error as DbErrorLike | null) ?? null,
+            };
+          }
+
+          const fallback = await sb
+            .from("user_titles")
+            .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
+            .in("user_id", ids);
+
           return {
-            data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
-            error: null,
+            data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+            error: (fallback.error as DbErrorLike | null) ?? null,
           };
         }
-
-        if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
-          return {
-            data: null,
-            error: (withIcon.error as DbErrorLike | null) ?? null,
-          };
-        }
-
-        const fallback = await sb
-          .from("user_titles")
-          .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
-          .in("user_id", ids);
-
-        return {
-          data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
-          error: (fallback.error as DbErrorLike | null) ?? null,
-        };
-      }
-    );
+      ),
+    ]);
 
     const comments = rows.map((row) => {
       const tableRow = isTableRow(row) ? row : {};
@@ -831,47 +828,44 @@ export async function GET(
     )
   );
 
-  const legacyIdentityMap = await loadAuthorIdentities(
-    legacyUserIds,
-    getUserById,
-    lookupSeqIds
-  );
+  const [legacyIdentityMap, legacyTitleRuleMap] = await Promise.all([
+    loadAuthorIdentities(legacyUserIds, getUserById, lookupSeqIds),
+    loadUserTitleRuleMap(
+      legacyUserIds.filter((userId) => UUID_RE.test(userId)),
+      async (ids) => {
+        const withIcon = await sb
+          .from("user_titles")
+          .select(
+            "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
+          )
+          .in("user_id", ids);
 
-  const legacyTitleRuleMap = await loadUserTitleRuleMap(
-    legacyUserIds.filter((userId) => UUID_RE.test(userId)),
-    async (ids) => {
-      const withIcon = await sb
-        .from("user_titles")
-        .select(
-          "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
-        )
-        .in("user_id", ids);
+        if (!withIcon.error) {
+          return {
+            data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+            error: null,
+          };
+        }
 
-      if (!withIcon.error) {
+        if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
+          return {
+            data: null,
+            error: (withIcon.error as DbErrorLike | null) ?? null,
+          };
+        }
+
+        const fallback = await sb
+          .from("user_titles")
+          .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
+          .in("user_id", ids);
+
         return {
-          data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
-          error: null,
+          data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+          error: (fallback.error as DbErrorLike | null) ?? null,
         };
       }
-
-      if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
-        return {
-          data: null,
-          error: (withIcon.error as DbErrorLike | null) ?? null,
-        };
-      }
-
-      const fallback = await sb
-        .from("user_titles")
-        .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
-        .in("user_id", ids);
-
-      return {
-        data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
-        error: (fallback.error as DbErrorLike | null) ?? null,
-      };
-    }
-  );
+    ),
+  ]);
 
   const comments = legacyRows.map((row) => {
     const tableRow = isTableRow(row) ? row : {};
