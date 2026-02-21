@@ -36,6 +36,7 @@ interface Comment {
   created_at: string;
   author_provider: "github" | "linuxdo" | "unknown";
   author_seq_id: number | null;
+  author_display_seq_id: number | null;
   author_title: string | null;
 }
 
@@ -270,6 +271,7 @@ interface AdminUser {
   submissionCount: number;
   lastActive: string;
   seqId: number | null;
+  displaySeqId: number | null;
   customTitle: string | null;
   isOwner: boolean;
   titleEnabled: boolean;

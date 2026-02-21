@@ -317,7 +317,11 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                       </div>
                       <div className="flex items-center gap-2 flex-wrap mt-1 text-[11px] text-muted">
                         <span>{getProviderLabel(comment.author_provider)}</span>
-                        {comment.author_seq_id ? <span>#{comment.author_seq_id}</span> : null}
+                        {comment.author_display_seq_id ? (
+                          <span>#{comment.author_display_seq_id}</span>
+                        ) : comment.author_seq_id ? (
+                          <span>#{comment.author_seq_id}</span>
+                        ) : null}
                       </div>
                     </div>
                   </div>

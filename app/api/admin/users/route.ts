@@ -7,6 +7,7 @@ import {
   resolveUserTitle,
   type UserTitleRule,
 } from "@/lib/auth/user-title-policy";
+import { buildDisplaySeqIdMap } from "@/lib/auth/user-seq-display";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const LEGACY_USER_SESSION_PREFIX = "user:";
@@ -25,6 +26,7 @@ interface UserInfo {
   submissionCount: number;
   lastActive: string;
   seqId: number | null;
+  displaySeqId: number | null;
   profileTitle: string | null;
   customTitle: string | null;
   isOwner: boolean;
@@ -43,6 +45,7 @@ interface UserPayload {
   submissionCount: number;
   lastActive: string;
   seqId: number | null;
+  displaySeqId: number | null;
   customTitle: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
@@ -139,6 +142,7 @@ export async function GET(request: Request) {
         submissionCount: 0,
         lastActive: "",
         seqId: options?.seqId ?? null,
+        displaySeqId: null,
         profileTitle: options?.profileTitle ?? null,
         customTitle: null,
         isOwner: false,
@@ -173,6 +177,7 @@ export async function GET(request: Request) {
   }
 
   let seqIdMap = new Map<string, number>();
+  let displaySeqIdMap = new Map<string, number>();
   let titleRuleMap = new Map<string, UserTitleRule>();
 
   try {
@@ -260,7 +265,9 @@ export async function GET(request: Request) {
       }
     }
 
-    seqIdMap = buildSeqIdMap(await readTableRows(admin, "user_seq_ids"));
+    const userSeqRows = await readTableRows(admin, "user_seq_ids");
+    seqIdMap = buildSeqIdMap(userSeqRows);
+    displaySeqIdMap = buildDisplaySeqIdMap(userSeqRows);
     titleRuleMap = buildUserTitleRuleMap(await readTableRows(admin, "user_titles"));
   } catch {
     return NextResponse.json(
@@ -275,6 +282,7 @@ export async function GET(request: Request) {
     if (user.seqId == null) {
       user.seqId = seqIdMap.get(user.userId) ?? null;
     }
+    user.displaySeqId = displaySeqIdMap.get(user.userId) ?? null;
 
     const rule = titleRuleMap.get(user.userId) ?? null;
     user.customTitle = rule?.customTitle ?? null;
@@ -497,6 +505,7 @@ function toUserPayload(user: UserInfo): UserPayload {
     submissionCount: user.submissionCount,
     lastActive: user.lastActive,
     seqId: user.seqId,
+    displaySeqId: user.displaySeqId,
     customTitle: user.customTitle,
     isOwner: user.isOwner,
     titleEnabled: user.titleEnabled,
