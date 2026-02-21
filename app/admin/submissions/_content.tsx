@@ -44,6 +44,11 @@ export function SubmissionsReview() {
   const [note, setNote] = useState("");
   const [registeringId, setRegisteringId] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<RegisterResult | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editNameEn, setEditNameEn] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [savingEditId, setSavingEditId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -124,16 +129,92 @@ export function SubmissionsReview() {
       });
 
       const data = await res.json().catch(() => null);
+      const payload = data as
+        | { result?: RegisterResult; details?: RegisterResult; error?: string }
+        | null;
 
       if (!res.ok) {
-        throw new Error(data?.error ?? "Failed to register style.");
+        if (payload?.details) {
+          setRegisterResult(payload.details);
+          setError(payload.error ?? "Auto-registration completed with errors.");
+          return;
+        }
+        throw new Error(payload?.error ?? "Failed to register style.");
       }
 
-      const payload = data as { result?: RegisterResult } | null;
       setRegisterResult(payload?.result ?? (data as RegisterResult));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to register style.");
       setRegisteringId(null);
+    }
+  }
+
+  function beginEdit(submission: Submission) {
+    setEditingId(submission.id);
+    setEditName(submission.formData.name ?? "");
+    setEditNameEn(submission.formData.nameEn ?? "");
+    setEditDescription(submission.formData.description ?? "");
+    setError(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditName("");
+    setEditNameEn("");
+    setEditDescription("");
+  }
+
+  async function handleSaveEdit(submission: Submission) {
+    if (submission.status === "approved") {
+      const confirmed = window.confirm(
+        "This submission is approved and may already be live. Save admin edits anyway?"
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    const updates: Record<string, string> = {};
+    const trimmedName = editName.trim();
+    const trimmedNameEn = editNameEn.trim();
+    const trimmedDescription = editDescription.trim();
+
+    if (trimmedName) {
+      updates.name = trimmedName;
+    }
+    if (trimmedNameEn) {
+      updates.nameEn = trimmedNameEn;
+    }
+    if (trimmedDescription) {
+      updates.description = trimmedDescription;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      setError("Please provide at least one non-empty field.");
+      return;
+    }
+
+    setSavingEditId(submission.id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/submissions/${submission.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to update submission.");
+      }
+
+      detailCache.current.delete(submission.id);
+      cancelEdit();
+      await fetchSubmissions();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update submission.");
+    } finally {
+      setSavingEditId(null);
     }
   }
 
@@ -427,37 +508,89 @@ export function SubmissionsReview() {
               </div>
             )}
 
-            {/* Delete button for pending and rejected submissions */}
-            {(sub.status === "pending" || sub.status === "rejected") && (
-              <div className="mt-4 pt-4 border-t border-border">
-                {confirmDeleteId === sub.id ? (
+            {/* Admin edit */}
+            <div className="mt-4 pt-4 border-t border-border">
+              {editingId === sub.id ? (
+                <div className="space-y-2">
+                  <input
+                    value={editName}
+                    onChange={(event) => setEditName(event.target.value)}
+                    placeholder="Style name"
+                    className="w-full p-2 border border-border rounded-md bg-background text-sm"
+                  />
+                  <input
+                    value={editNameEn}
+                    onChange={(event) => setEditNameEn(event.target.value)}
+                    placeholder="Style name (English)"
+                    className="w-full p-2 border border-border rounded-md bg-background text-sm"
+                  />
+                  <textarea
+                    value={editDescription}
+                    onChange={(event) => setEditDescription(event.target.value)}
+                    placeholder="Style description"
+                    className="w-full p-2 border border-border rounded-md bg-background text-sm resize-none"
+                    rows={3}
+                  />
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-red-600 dark:text-red-400">Are you sure?</span>
                     <button
-                      disabled={deletingId === sub.id}
-                      onClick={() => handleDelete(sub.id)}
-                      className="px-3 py-1 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                      disabled={savingEditId === sub.id}
+                      onClick={() => handleSaveEdit(sub)}
+                      className="px-3 py-1 bg-foreground text-background rounded-md text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                     >
-                      {deletingId === sub.id ? "Deleting..." : "Confirm Delete"}
+                      {savingEditId === sub.id ? "Saving..." : "Save Edit"}
                     </button>
                     <button
-                      disabled={deletingId === sub.id}
-                      onClick={() => setConfirmDeleteId(null)}
+                      disabled={savingEditId === sub.id}
+                      onClick={cancelEdit}
                       className="px-3 py-1 text-sm text-muted hover:text-foreground transition-colors"
                     >
                       Cancel
                     </button>
                   </div>
-                ) : (
+                </div>
+              ) : (
+                <button
+                  onClick={() => beginEdit(sub)}
+                  className="px-3 py-1 border border-border rounded-md text-sm font-medium hover:bg-muted/10 transition-colors"
+                >
+                  Edit Submission
+                </button>
+              )}
+            </div>
+
+            {/* Delete button for all statuses */}
+            <div className="mt-4 pt-4 border-t border-border">
+              {confirmDeleteId === sub.id ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-red-600 dark:text-red-400">
+                    {sub.status === "approved"
+                      ? "Approved style may already be live. Delete anyway?"
+                      : "Are you sure?"}
+                  </span>
                   <button
-                    onClick={() => setConfirmDeleteId(sub.id)}
-                    className="text-red-600 hover:text-red-700 text-sm transition-colors"
+                    disabled={deletingId === sub.id}
+                    onClick={() => handleDelete(sub.id)}
+                    className="px-3 py-1 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                   >
-                    Delete
+                    {deletingId === sub.id ? "Deleting..." : "Confirm Delete"}
                   </button>
-                )}
-              </div>
-            )}
+                  <button
+                    disabled={deletingId === sub.id}
+                    onClick={() => setConfirmDeleteId(null)}
+                    className="px-3 py-1 text-sm text-muted hover:text-foreground transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmDeleteId(sub.id)}
+                  className="text-red-600 hover:text-red-700 text-sm transition-colors"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

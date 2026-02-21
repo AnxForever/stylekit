@@ -300,6 +300,24 @@ export async function deleteSubmissionSupabase(id: string): Promise<boolean> {
   return (count ?? 0) > 0;
 }
 
+export async function updateSubmissionFormDataSupabase(
+  id: string,
+  formData: Record<string, unknown>
+): Promise<SubmissionRecord | null> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return null;
+
+  const { data, error } = await sb
+    .from("submissions")
+    .update({ form_data: formData })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error || !data) return null;
+  return toSubmissionRecord(data);
+}
+
 // Map DB row to application record
 interface DbRow {
   id: string;
