@@ -33,13 +33,13 @@ function formatResolvedTitle(title: string | null): string | null {
     return null;
   }
   if (title === SITE_OWNER_TITLE_TOKEN) {
-    return "Qin Shi Huang";
+    return "秦始皇";
   }
   if (title === EMPEROR_TITLE_TOKEN) {
-    return "Qin Shi Huang";
+    return "秦始皇";
   }
   if (title === EARLY_USER_TITLE_TOKEN) {
-    return "Early User";
+    return "元老用户";
   }
   return title;
 }
@@ -355,7 +355,7 @@ export function AdminUsersContent() {
                 const titleBadgeStyle = buildCustomTitleBadgeStyle(user.titleColor);
                 const draftTitleRaw = draft.customTitle.trim() || user.resolvedTitle;
                 const draftTitleLabel =
-                  formatResolvedTitle(draftTitleRaw) ?? "Title Preview";
+                  formatResolvedTitle(draftTitleRaw) ?? "头衔预览";
                 const draftBadgeClass = getTitleBadgeClass(draftTitleRaw);
                 const draftBadgeStyle = buildCustomTitleBadgeStyle(draft.titleColor);
                 const draftColorValue = normalizeHexColor(draft.titleColor) ?? "#e11d48";
@@ -487,7 +487,7 @@ export function AdminUsersContent() {
                                     )
                                   }
                                 />
-                                Qin Shi Huang
+                                秦始皇
                               </label>
                               <label className="inline-flex items-center gap-2 text-sm">
                                 <input
