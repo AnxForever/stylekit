@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/ai-generator", () => ({
-  generateStyleFromDescription: vi.fn(),
+  generateStyleCandidatesFromDescription: vi.fn(),
   getAvailableStyleSlugs: vi.fn(),
   getMoodKeywords: vi.fn(),
 }));
@@ -23,7 +23,7 @@ vi.mock("@/lib/generator/api-events", () => ({
 
 import { GET, POST } from "@/app/api/generate-style/route";
 import {
-  generateStyleFromDescription,
+  generateStyleCandidatesFromDescription,
   getAvailableStyleSlugs,
   getMoodKeywords,
 } from "@/lib/ai-generator";
@@ -38,7 +38,9 @@ import {
   recordGeneratorApiEvent,
 } from "@/lib/generator/api-events";
 
-const mockedGenerateStyleFromDescription = vi.mocked(generateStyleFromDescription);
+const mockedGenerateStyleCandidatesFromDescription = vi.mocked(
+  generateStyleCandidatesFromDescription
+);
 const mockedGetAvailableStyleSlugs = vi.mocked(getAvailableStyleSlugs);
 const mockedGetMoodKeywords = vi.mocked(getMoodKeywords);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
@@ -185,19 +187,35 @@ describe("POST /api/generate-style", () => {
 
   it("generates style when request is valid", async () => {
     mockAllowedRequest("ip:style-generator-ok");
-    mockedGenerateStyleFromDescription.mockReturnValue({
-      name: "Future Clean Fusion",
-      description: "Generated from: Apple Style, Mecha.",
-      tokens: { colors: { background: { primary: "bg-black", secondary: "bg-zinc-900", accent: [] }, text: { primary: "text-white", secondary: "text-zinc-300", muted: "text-zinc-500" }, button: { primary: "bg-white text-black", secondary: "bg-zinc-900 text-white" } }, typography: { heading: "font-sans", body: "font-sans", mono: "font-mono", sizes: { hero: "text-5xl", h1: "text-4xl", h2: "text-3xl", h3: "text-2xl", body: "text-base", small: "text-sm" } }, spacing: { section: "py-16", container: "max-w-6xl mx-auto", card: "p-6", gap: { sm: "gap-2", md: "gap-4", lg: "gap-8" } }, border: { width: "border", color: "border-zinc-700", radius: "rounded-xl", style: "border-solid" }, shadow: { sm: "shadow-sm", md: "shadow-md", lg: "shadow-lg", none: "shadow-none", hover: "hover:shadow-xl", focus: "focus:ring-2", colored: false }, interaction: { transition: "transition-all duration-300", hoverScale: "hover:scale-105", hoverTranslate: "", active: "active:scale-95" }, forbidden: [], required: [] },
-      sourceStyles: [{ slug: "apple-style", weight: 0.6 }],
-      confidence: 84,
-      reasoning: ["Anchored to Apple Style."],
-      insights: {
-        baseStyle: "apple-style",
-        detectedStyles: ["apple-style"],
-        avoidedStyles: ["neo-brutalist"],
-        matchedKeywords: ["futuristic", "clean"],
-        negativeKeywords: ["brutalist"],
+    mockedGenerateStyleCandidatesFromDescription.mockReturnValue({
+      result: {
+        name: "Future Clean Fusion",
+        description: "Generated from: Apple Style, Mecha.",
+        tokens: { colors: { background: { primary: "bg-black", secondary: "bg-zinc-900", accent: [] }, text: { primary: "text-white", secondary: "text-zinc-300", muted: "text-zinc-500" }, button: { primary: "bg-white text-black", secondary: "bg-zinc-900 text-white" } }, typography: { heading: "font-sans", body: "font-sans", mono: "font-mono", sizes: { hero: "text-5xl", h1: "text-4xl", h2: "text-3xl", h3: "text-2xl", body: "text-base", small: "text-sm" } }, spacing: { section: "py-16", container: "max-w-6xl mx-auto", card: "p-6", gap: { sm: "gap-2", md: "gap-4", lg: "gap-8" } }, border: { width: "border", color: "border-zinc-700", radius: "rounded-xl", style: "border-solid" }, shadow: { sm: "shadow-sm", md: "shadow-md", lg: "shadow-lg", none: "shadow-none", hover: "hover:shadow-xl", focus: "focus:ring-2", colored: false }, interaction: { transition: "transition-all duration-300", hoverScale: "hover:scale-105", hoverTranslate: "", active: "active:scale-95" }, forbidden: [], required: [] },
+        sourceStyles: [{ slug: "apple-style", weight: 0.6 }],
+        confidence: 84,
+        reasoning: ["Anchored to Apple Style."],
+        insights: {
+          baseStyle: "apple-style",
+          detectedStyles: ["apple-style"],
+          avoidedStyles: ["neo-brutalist"],
+          matchedKeywords: ["futuristic", "clean"],
+          negativeKeywords: ["brutalist"],
+        },
+      },
+      candidates: [
+        {
+          name: "Future Clean Fusion",
+          description: "Generated from: Apple Style, Mecha.",
+          tokens: { colors: { background: { primary: "bg-black", secondary: "bg-zinc-900", accent: [] }, text: { primary: "text-white", secondary: "text-zinc-300", muted: "text-zinc-500" }, button: { primary: "bg-white text-black", secondary: "bg-zinc-900 text-white" } }, typography: { heading: "font-sans", body: "font-sans", mono: "font-mono", sizes: { hero: "text-5xl", h1: "text-4xl", h2: "text-3xl", h3: "text-2xl", body: "text-base", small: "text-sm" } }, spacing: { section: "py-16", container: "max-w-6xl mx-auto", card: "p-6", gap: { sm: "gap-2", md: "gap-4", lg: "gap-8" } }, border: { width: "border", color: "border-zinc-700", radius: "rounded-xl", style: "border-solid" }, shadow: { sm: "shadow-sm", md: "shadow-md", lg: "shadow-lg", none: "shadow-none", hover: "hover:shadow-xl", focus: "focus:ring-2", colored: false }, interaction: { transition: "transition-all duration-300", hoverScale: "hover:scale-105", hoverTranslate: "", active: "active:scale-95" }, forbidden: [], required: [] },
+          sourceStyles: [{ slug: "apple-style", weight: 0.6 }],
+          confidence: 84,
+        },
+      ],
+      meta: {
+        variationCount: 1,
+        creativity: 0.55,
+        seed: 123,
       },
     } as never);
 
@@ -215,15 +233,23 @@ describe("POST /api/generate-style", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("x-stylekit-status")).toBe("200");
     expect(response.headers.get("x-stylekit-error-code")).toBeNull();
-    expect(mockedGenerateStyleFromDescription).toHaveBeenCalledWith({
+    expect(mockedGenerateStyleCandidatesFromDescription).toHaveBeenCalledWith({
       description: "neo brutal with editorial typography",
       baseStyle: "neo-brutalist",
+      variationCount: undefined,
+      creativity: undefined,
+      seed: undefined,
     });
     await expect(response.json()).resolves.toEqual(
       expect.objectContaining({
         name: "Future Clean Fusion",
         sourceStyles: [{ slug: "apple-style", weight: 0.6 }],
         confidence: 84,
+        meta: {
+          variationCount: 1,
+          creativity: 0.55,
+          seed: 123,
+        },
         reasoning: ["Anchored to Apple Style."],
         insights: {
           baseStyle: "apple-style",
@@ -243,9 +269,50 @@ describe("POST /api/generate-style", () => {
     );
   });
 
+  it("forwards variation settings to generator", async () => {
+    mockAllowedRequest("ip:style-generator-options");
+    mockedGenerateStyleCandidatesFromDescription.mockReturnValue({
+      result: {
+        name: "Future Clean Fusion",
+        description: "Generated from: Apple Style.",
+        tokens: {} as never,
+        sourceStyles: [{ slug: "apple-style", weight: 1 }],
+        confidence: 80,
+      },
+      candidates: [],
+      meta: {
+        variationCount: 3,
+        creativity: 0.75,
+        seed: 42,
+      },
+    } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/generate-style", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          description: "futuristic, clean",
+          variationCount: 3,
+          creativity: 0.75,
+          seed: 42,
+        }),
+      }) as never
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedGenerateStyleCandidatesFromDescription).toHaveBeenCalledWith({
+      description: "futuristic, clean",
+      baseStyle: undefined,
+      variationCount: 3,
+      creativity: 0.75,
+      seed: 42,
+    });
+  });
+
   it("returns GENERATION_FAILED when generator throws", async () => {
     mockAllowedRequest("ip:style-generator-fail");
-    mockedGenerateStyleFromDescription.mockImplementation(() => {
+    mockedGenerateStyleCandidatesFromDescription.mockImplementation(() => {
       throw new Error("boom");
     });
 

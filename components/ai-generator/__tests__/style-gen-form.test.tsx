@@ -267,6 +267,8 @@ describe("StyleGenForm", () => {
     expect(payload).toEqual({
       description: "clean dashboard",
       baseStyle: "neo-brutalist",
+      variationCount: 3,
+      creativity: 0.6,
     });
   });
 });

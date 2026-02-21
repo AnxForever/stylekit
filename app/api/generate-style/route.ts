@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  generateStyleFromDescription,
+  generateStyleCandidatesFromDescription,
   getAvailableStyleSlugs,
   getMoodKeywords,
 } from "@/lib/ai-generator";
@@ -22,6 +22,9 @@ const DISCOVERY_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=360
 const GENERATE_STYLE_SCHEMA = z.object({
   description: z.string().trim().min(1, "Description is required.").max(500, "Description must be 500 characters or less"),
   baseStyle: z.string().trim().min(1).optional(),
+  variationCount: z.coerce.number().int().min(1).max(4).optional(),
+  creativity: z.coerce.number().min(0).max(1).optional(),
+  seed: z.coerce.number().int().min(0).optional(),
 });
 
 function errorResponse(status: number, code: string, message: string, headers?: HeadersInit) {
@@ -83,7 +86,7 @@ function buildDiscoveryPayload() {
  * POST /api/generate-style
  * Generate a custom style from natural language description
  *
- * Body: { description: string, baseStyle?: string }
+ * Body: { description: string, baseStyle?: string, variationCount?: number, creativity?: number, seed?: number }
  */
 export async function POST(request: NextRequest) {
   const startedAt = Date.now();
@@ -182,10 +185,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { description, baseStyle } = parsed.data;
+    const { description, baseStyle, variationCount, creativity, seed } = parsed.data;
 
-    const result = generateStyleFromDescription({ description, baseStyle });
-    return respondSuccess(result);
+    const generated = generateStyleCandidatesFromDescription({
+      description,
+      baseStyle,
+      variationCount,
+      creativity,
+      seed,
+    });
+    return respondSuccess({
+      ...generated.result,
+      candidates: generated.candidates,
+      meta: generated.meta,
+    });
   } catch (error) {
     return respondError(
       500,
