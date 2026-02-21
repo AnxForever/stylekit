@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { useStyleRating } from "@/lib/swr";
@@ -22,6 +22,25 @@ export function StyleRating({ slug }: StyleRatingProps) {
 
   const average = data?.averageRating ?? 0;
   const total = data?.totalRatings ?? 0;
+  const resolvedUserRating = data?.userRating ?? null;
+
+  useEffect(() => {
+    if (resolvedUserRating == null) {
+      setUserRating(0);
+      return;
+    }
+
+    if (
+      typeof resolvedUserRating === "number" &&
+      resolvedUserRating >= 1 &&
+      resolvedUserRating <= 5
+    ) {
+      setUserRating(resolvedUserRating);
+      return;
+    }
+
+    setUserRating(0);
+  }, [resolvedUserRating, slug]);
 
   async function handleRate(rating: number) {
     if (submitting || !user) return;

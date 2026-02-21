@@ -25,6 +25,7 @@ interface CombosData {
 interface RatingData {
   averageRating: number;
   totalRatings: number;
+  userRating: number | null;
 }
 
 interface Comment {
