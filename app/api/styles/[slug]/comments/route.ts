@@ -20,6 +20,47 @@ const commentSchema = z.object({
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
+const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
+
+interface DbErrorLike {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+}
+
+function classifyDbError(error: DbErrorLike | null | undefined): {
+  status: number;
+  code: string;
+  message: string;
+} {
+  const dbCode = error?.code ?? null;
+  const combinedMessage = `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+  const hasSessionNullViolation =
+    dbCode === "23502" && combinedMessage.includes("session_id");
+
+  if (hasSessionNullViolation) {
+    return {
+      status: 503,
+      code: "DB_SCHEMA_MISMATCH",
+      message:
+        "Comments schema is outdated. Apply Supabase migration 005 (session_id nullable).",
+    };
+  }
+
+  if (dbCode && DB_NOT_READY_CODES.has(dbCode)) {
+    return {
+      status: 503,
+      code: "DB_NOT_READY",
+      message: "Comments database schema is not ready. Run Supabase migrations 002-005.",
+    };
+  }
+
+  return {
+    status: 500,
+    code: "DB_WRITE_FAILED",
+    message: "Failed to save comment.",
+  };
+}
 
 export async function POST(
   request: Request,
@@ -110,12 +151,19 @@ export async function POST(
 
     // Rate limit: max 5 comments per identity per style per day
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await sb
+    const { count, error: countError } = await sb
       .from("style_comments")
       .select("*", { count: "exact", head: true })
       .eq("style_slug", slugParsed.data)
       .eq("user_id", user.id)
       .gte("created_at", oneDayAgo);
+    if (countError) {
+      const classified = classifyDbError(countError as DbErrorLike);
+      return NextResponse.json(
+        { success: false, code: classified.code, error: classified.message },
+        { status: classified.status }
+      );
+    }
 
     if ((count ?? 0) >= 5) {
       return NextResponse.json(
@@ -139,9 +187,10 @@ export async function POST(
       .single();
 
     if (error) {
+      const classified = classifyDbError(error as DbErrorLike);
       return NextResponse.json(
-        { success: false, error: "Failed to save comment" },
-        { status: 500 }
+        { success: false, code: classified.code, error: classified.message },
+        { status: classified.status }
       );
     }
 
@@ -186,12 +235,24 @@ export async function GET(
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { data, count } = await sb
+  const { data, count, error } = await sb
     .from("style_comments")
     .select("id, content, author_name, avatar_url, user_id, created_at", { count: "exact" })
     .eq("style_slug", slugParsed.data)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
+  if (error) {
+    const classified = classifyDbError(error as DbErrorLike);
+    return NextResponse.json(
+      {
+        comments: [],
+        total: 0,
+        code: classified.code,
+        error: classified.message,
+      },
+      { status: classified.status }
+    );
+  }
 
   return NextResponse.json({
     comments: data ?? [],

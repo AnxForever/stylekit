@@ -157,6 +157,57 @@ describe("styles rating route", () => {
     });
   });
 
+  it("POST returns DB_SCHEMA_MISMATCH when legacy session_id not-null constraint blocks writes", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
+    mockedGetRequestClientKey.mockReturnValue("ip:3");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 80,
+      remaining: 79,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { rating: 4 },
+    });
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    const existingSelect = {
+      eq: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          maybeSingle,
+        }),
+      }),
+    };
+    const insert = vi.fn().mockResolvedValue({
+      error: {
+        code: "23502",
+        message: 'null value in column "session_id" violates not-null constraint',
+      },
+    });
+
+    const from = vi
+      .fn()
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue(existingSelect) })
+      .mockReturnValueOnce({ insert });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/rate", { method: "POST" }),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "DB_SCHEMA_MISMATCH",
+      error: "Ratings schema is outdated. Apply Supabase migration 005 (session_id nullable).",
+    });
+  });
+
   it("GET returns defaults when Supabase is disabled", async () => {
     mockedIsSupabaseConfigured.mockReturnValue(false);
 
@@ -169,6 +220,34 @@ describe("styles rating route", () => {
     await expect(response.json()).resolves.toEqual({
       averageRating: 0,
       totalRatings: 0,
+    });
+  });
+
+  it("GET returns DB_NOT_READY when rating summary view is missing", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const single = vi.fn().mockResolvedValue({
+      data: null,
+      error: { code: "42P01", message: 'relation "style_rating_summary" does not exist' },
+    });
+    const select = vi.fn().mockReturnValue({
+      eq: vi.fn().mockReturnValue({ single }),
+    });
+    mockedCreateClient.mockReturnValue({
+      from: vi.fn().mockReturnValue({ select }),
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/rate"),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      averageRating: 0,
+      totalRatings: 0,
+      code: "DB_NOT_READY",
+      error: "Ratings database schema is not ready. Run Supabase migrations 002-005.",
     });
   });
 });
