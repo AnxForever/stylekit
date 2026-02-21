@@ -748,10 +748,10 @@ export default function ZPatternLayoutShowcase() {
               >
                 <div className="p-8 bg-gradient-to-br from-indigo-50 to-slate-50 flex items-center justify-center min-h-[160px]">
                   <div className="flex flex-col items-center gap-3">
-                    <button className="px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-300 hover:bg-indigo-700 hover:shadow-indigo-400 hover:-translate-y-0.5 transition-all duration-200">
+                    <button className="px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-300 hover:bg-indigo-700 hover:shadow-indigo-400 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-95 active:translate-y-[2px] transition-all duration-200 ease-out">
                       Get Started Free
                     </button>
-                    <button className="px-6 py-3 rounded-xl border-2 border-indigo-200 text-indigo-700 text-sm font-semibold hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-200">
+                    <button className="px-6 py-3 rounded-xl border-2 border-indigo-200 text-indigo-700 text-sm font-semibold hover:bg-indigo-50 hover:border-indigo-300 active:scale-95 transition-all duration-200 ease-out">
                       Learn More
                     </button>
                   </div>
@@ -777,13 +777,13 @@ export default function ZPatternLayoutShowcase() {
                 }}
               >
                 <div className="p-8 bg-gradient-to-br from-cyan-50 to-slate-50 flex items-center justify-center min-h-[160px]">
-                  <div className="w-full max-w-[200px] p-4 rounded-xl bg-white border border-slate-200 shadow-md group-hover:shadow-lg transition-shadow">
-                    <div className="w-9 h-9 rounded-lg bg-cyan-100 flex items-center justify-center mb-3">
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-cyan-600">
+                  <div className="w-full max-w-[200px] group/card p-4 rounded-xl bg-white border border-slate-200 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out">
+                    <div className="w-9 h-9 rounded-lg bg-cyan-100 group-hover/card:bg-indigo-500 group-hover/card:scale-110 flex items-center justify-center mb-3 transition-all duration-300 ease-out">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-cyan-600 group-hover/card:text-white transition-colors duration-300">
                         <path d="M3 9h12M9 3v12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                       </svg>
                     </div>
-                    <div className="font-semibold text-slate-900 text-sm mb-1">Feature Title</div>
+                    <div className="font-semibold text-slate-900 text-sm mb-1 group-hover/card:text-indigo-600 transition-colors duration-200">Feature Title</div>
                     <div className="text-xs text-slate-500">
                       Supporting description text that reinforces the feature benefit.
                     </div>

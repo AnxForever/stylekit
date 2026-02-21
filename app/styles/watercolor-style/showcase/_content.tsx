@@ -211,12 +211,13 @@ export default function WatercolorStyleShowcase() {
           background-repeat: repeat;
         }
         .wb-btn { transition: all 0.5s ease-in-out; }
-        .wb-btn:hover { opacity: 0.87; transform: scale(1.03); }
+        .wb-btn:hover { opacity: 0.9; box-shadow: 0 10px 40px rgba(74,111,165,0.35); }
+        .wb-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(74,111,165,0.2), inset 0 2px 4px rgba(74,111,165,0.1); }
         .or1 { border-radius: 2rem 3rem 2rem 3rem / 3rem 2rem 3rem 2rem; }
         .or2 { border-radius: 3rem 2rem 3rem 2rem / 2rem 3rem 2rem 3rem; }
         .or3 { border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%; }
-        .gallery-card { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease; }
-        .gallery-card:hover { transform: translateY(-6px) scale(1.01); }
+        .gallery-card { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.7s ease-in-out; }
+        .gallery-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 15px 50px rgba(74,111,165,0.18); }
         .wc-input-focus:focus {
           box-shadow: 0 0 0 3px rgba(74,111,165,0.14);
           border-color: rgba(74,111,165,0.40) !important;

@@ -46,33 +46,19 @@ export const watercolorStyle: DesignStyle = {
     button: {
       name: "按钮",
       description: "水彩风格按钮，柔和渐变和模糊边缘",
-      code: `<button className="
-  px-8 py-4
-  bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80
-  rounded-full
-  text-white font-serif
-  shadow-lg shadow-[#4a6fa5]/20
-  hover:shadow-xl hover:shadow-[#4a6fa5]/30 hover:-translate-y-0.5
-  transition-all duration-300
-">
+      code: `<button className="px-8 py-4 bg-gradient-to-r from-[#4a6fa5]/80 to-[#85cdca]/80 rounded-full text-white font-serif shadow-lg shadow-[#4a6fa5]/20 hover:shadow-[0_10px_40px_rgba(74,111,165,0.35)] hover:from-[#4a6fa5]/90 hover:to-[#85cdca]/90 active:scale-[0.98] active:shadow-[0_2px_10px_rgba(74,111,165,0.2)] transition-all duration-500 ease-in-out">
   Explore
 </button>`,
     },
     card: {
       name: "卡片",
       description: "水彩画风格卡片",
-      code: `<div className="
-  p-8
-  bg-gradient-to-br from-[#e8a87c]/20 via-white to-[#85cdca]/20
-  rounded-3xl
-  shadow-lg shadow-[#4a6fa5]/10
-  border border-[#4a6fa5]/10
-  backdrop-blur-sm
-">
-  <h3 className="text-xl font-serif text-[#4a6fa5] mb-3">
+      code: `<div className="group p-8 bg-gradient-to-br from-[#e8a87c]/20 via-white to-[#85cdca]/20 rounded-3xl shadow-lg shadow-[#4a6fa5]/10 border border-[#4a6fa5]/10 backdrop-blur-sm hover:from-[#e8a87c]/30 hover:to-[#85cdca]/30 hover:shadow-[0_12px_40px_rgba(74,111,165,0.18)] transition-all duration-500 ease-in-out relative overflow-hidden">
+  <div className="absolute -top-8 -right-8 w-24 h-24 bg-[#85cdca]/30 rounded-full blur-2xl group-hover:scale-150 group-hover:bg-[#85cdca]/40 transition-all duration-700 ease-in-out" />
+  <h3 className="relative z-10 text-xl font-serif text-[#4a6fa5] mb-3 group-hover:text-[#3a5f95] transition-colors duration-500">
     Watercolor Card
   </h3>
-  <p className="text-[#6b7280] leading-relaxed">
+  <p className="relative z-10 text-[#6b7280] leading-relaxed">
     Colors flowing like water on paper
   </p>
 </div>`,
@@ -264,7 +250,14 @@ export const watercolorStyle: DesignStyle = {
 2. 使用柔和的渐变和半透明色
 3. 背景是温暖的纸张色
 4. 文字使用衬线斜体
-5. 整体感觉像水彩画作品`,
+5. 整体感觉像水彩画作品
+
+## 动效与交互规则
+
+- 颜料晕开（Pigment Bloom）：悬停时不做生硬的上浮（translate-y），而是让同色系彩色大阴影向外大幅扩散（如 \`hover:shadow-[0_10px_40px_rgba(74,111,165,0.35)]\`），模拟水彩颜料在湿纸上晕开的效果。
+- 湿纸效果（Damp Paper）：卡片悬停时背景微微提亮或加深（如 from-[#e8a87c]/20 加深至 /30），模拟纸张吸水后的质感变化。
+- 液态缓动（Liquid Slowness）：水彩流动是缓慢的，强制使用 \`duration-500\` 配合 \`ease-in-out\`，禁止使用 \`duration-150\` 或 \`ease-linear\` 等快速缓动。
+- 柔和按压（Soft Press）：点击时 \`active:scale-[0.98]\` 配合内阴影加深，模拟湿润纸面上的轻柔按压感，避免剧烈的弹簧回弹。`,
 
   examplePrompts: [
     {
