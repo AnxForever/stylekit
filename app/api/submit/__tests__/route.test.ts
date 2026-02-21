@@ -12,6 +12,15 @@ vi.mock("@/lib/submit/converter", () => ({
 vi.mock("@/lib/submit/reviewer-supabase", () => ({
   isSupabaseConfigured: vi.fn(),
   createSubmissionSupabase: vi.fn(),
+  hasActiveSubmissionSlugSupabase: vi.fn(),
+}));
+
+vi.mock("@/lib/submit/reviewer", () => ({
+  hasActiveSubmissionSlug: vi.fn(),
+}));
+
+vi.mock("@/lib/styles", () => ({
+  getStyleBySlug: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/supabase-server", () => ({
@@ -38,7 +47,10 @@ import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/convert
 import {
   isSupabaseConfigured,
   createSubmissionSupabase,
+  hasActiveSubmissionSlugSupabase,
 } from "@/lib/submit/reviewer-supabase";
+import { hasActiveSubmissionSlug } from "@/lib/submit/reviewer";
+import { getStyleBySlug } from "@/lib/styles";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import {
   checkRateLimit,
@@ -53,6 +65,9 @@ const mockedConvertToStyleTokens = vi.mocked(convertToStyleTokens);
 const mockedConvertToDesignStyle = vi.mocked(convertToDesignStyle);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedCreateSubmissionSupabase = vi.mocked(createSubmissionSupabase);
+const mockedHasActiveSubmissionSlugSupabase = vi.mocked(hasActiveSubmissionSlugSupabase);
+const mockedHasActiveSubmissionSlug = vi.mocked(hasActiveSubmissionSlug);
+const mockedGetStyleBySlug = vi.mocked(getStyleBySlug);
 const mockedGetServerUser = vi.mocked(getServerUser);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
 const mockedCreateRateLimitHeaders = vi.mocked(createRateLimitHeaders);
@@ -158,6 +173,74 @@ describe("POST /api/submit", () => {
     });
   });
 
+  it("rejects submission when slug matches a built-in style", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:dup-static");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 15,
+      remaining: 14,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx" },
+    } as never);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { slug: "apple-style" },
+    });
+    mockedWizardSchema.safeParse.mockReturnValue({
+      success: true,
+      data: { slug: "apple-style" },
+    } as never);
+    mockedGetStyleBySlug.mockReturnValue({ slug: "apple-style" } as never);
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "This slug is already used by a built-in style.",
+    });
+  });
+
+  it("rejects submission when slug already exists in pending/approved queue", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:dup-community");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 15,
+      remaining: 14,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx" },
+    } as never);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { slug: "aurora-community" },
+    });
+    mockedWizardSchema.safeParse.mockReturnValue({
+      success: true,
+      data: { slug: "aurora-community" },
+    } as never);
+    mockedGetStyleBySlug.mockReturnValue(undefined);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(true);
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "This slug is already pending review or approved.",
+    });
+  });
+
   it("creates submission through Supabase when payload is valid", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetRequestClientKey.mockReturnValue("ip:3");
@@ -176,9 +259,12 @@ describe("POST /api/submit", () => {
       success: true,
       data: { slug: "neo-brutalist" },
     } as never);
+    mockedGetStyleBySlug.mockReturnValue(undefined);
     mockedConvertToStyleTokens.mockReturnValue({ tokens: true } as never);
     mockedConvertToDesignStyle.mockReturnValue({ design: true } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(false);
+    mockedHasActiveSubmissionSlug.mockResolvedValue(false);
     mockedGetServerUser.mockResolvedValue({
       id: "user-1",
       user_metadata: { user_name: "anx" },

@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { StyleGenForm } from "@/components/ai-generator/style-gen-form";
+import { StyleGenForm, type StyleGenerationResponse } from "@/components/ai-generator/style-gen-form";
 import { StyleGenResult } from "@/components/ai-generator/style-gen-result";
-import type { GeneratedStyle } from "@/lib/ai-generator";
 
 export function GenerateStyleContent() {
   const { t } = useI18n();
-  const [result, setResult] = useState<GeneratedStyle | null>(null);
+  const [result, setResult] = useState<StyleGenerationResponse | null>(null);
 
   return (
     <>
