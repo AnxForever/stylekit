@@ -46,8 +46,8 @@ interface SupabaseSubmissionRow {
   status: "pending" | "approved" | "rejected";
   submitted_at: string;
   reviewed_at: string | null;
-  author_name: string | null;
-  user_id: string | null;
+  author_name?: string | null;
+  user_id?: string | null;
   form_data: unknown;
 }
 
@@ -66,6 +66,12 @@ interface AuthorMeta {
   handle: string | null;
   avatarUrl: string | null;
   provider: CommunityProvider;
+}
+
+interface DbErrorLike {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
 }
 
 export interface CommunityStyleAttribution {
@@ -109,6 +115,21 @@ function parseAuthorMeta(formData: Record<string, unknown>): AuthorMeta {
   };
 }
 
+function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
+  return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+}
+
+function isMissingColumnError(
+  error: DbErrorLike | null | undefined,
+  column: string
+): boolean {
+  const code = error?.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+  return readDbErrorMessage(error).includes(column.toLowerCase());
+}
+
 function normalizeHandle(value: string | null): string {
   if (!value) return "anonymous";
   return value.replace(/^@+/, "");
@@ -146,7 +167,7 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
       handle: normalizeHandle(authorMeta.handle ?? asString(row.author_name)),
       avatarUrl: authorMeta.avatarUrl,
       provider: authorMeta.provider,
-      userId: row.user_id,
+      userId: row.user_id ?? null,
     },
   };
 }
@@ -202,30 +223,54 @@ async function listFromSupabase(
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  let listQuery = client
-    .from("submissions")
-    .select(
-      "id, slug, status, submitted_at, reviewed_at, author_name, user_id, form_data",
-      { count: "exact" }
-    )
-    .eq("status", "approved")
-    .order("reviewed_at", { ascending: false, nullsFirst: false })
-    .order("submitted_at", { ascending: false })
-    .range(query.offset, query.offset + query.limit - 1);
+  const runListQuery = async (
+    selectColumns: string
+  ): Promise<{ rows: SupabaseSubmissionRow[]; total: number; error: DbErrorLike | null }> => {
+    let listQuery = client
+      .from("submissions")
+      .select(selectColumns, { count: "exact" })
+      .eq("status", "approved")
+      .order("reviewed_at", { ascending: false, nullsFirst: false })
+      .order("submitted_at", { ascending: false })
+      .range(query.offset, query.offset + query.limit - 1);
 
-  if (query.slug) {
-    listQuery = listQuery.eq("slug", query.slug);
+    if (query.slug) {
+      listQuery = listQuery.eq("slug", query.slug);
+    }
+
+    const { data, count, error } = await listQuery;
+    return {
+      rows: (data ?? []) as unknown as SupabaseSubmissionRow[],
+      total: count ?? 0,
+      error: (error as DbErrorLike | null) ?? null,
+    };
+  };
+
+  const modern = await runListQuery(
+    "id, slug, status, submitted_at, reviewed_at, author_name, user_id, form_data"
+  );
+  if (!modern.error) {
+    return {
+      items: modern.rows.map(mapItemFromSupabase),
+      total: modern.total,
+    };
   }
 
-  const { data, count, error } = await listQuery;
-  if (error) {
-    throw new Error(error.message);
+  const canFallbackLegacySchema =
+    isMissingColumnError(modern.error, "author_name") ||
+    isMissingColumnError(modern.error, "user_id");
+  if (!canFallbackLegacySchema) {
+    throw new Error(modern.error.message ?? "Failed to query community feed");
   }
 
-  const rows = (data ?? []) as SupabaseSubmissionRow[];
+  const legacy = await runListQuery("id, slug, status, submitted_at, reviewed_at, form_data");
+  if (legacy.error) {
+    throw new Error(legacy.error.message ?? "Failed to query community feed");
+  }
+
   return {
-    items: rows.map(mapItemFromSupabase),
-    total: count ?? 0,
+    items: legacy.rows.map(mapItemFromSupabase),
+    total: legacy.total,
   };
 }
 
