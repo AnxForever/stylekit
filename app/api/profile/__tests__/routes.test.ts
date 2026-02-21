@@ -65,6 +65,7 @@ describe("profile routes", () => {
           user_id: "user-9",
           custom_title: "VIP",
           title_color: "#ff5500",
+          title_icon_path: "M0 0 L10 10 Z",
           is_owner: false,
           title_enabled: true,
           updated_at: null,
@@ -85,6 +86,7 @@ describe("profile routes", () => {
       success: true,
       title: "VIP",
       titleColor: "#ff5500",
+      titleIconPath: "M0 0 L10 10 Z",
       seqId: 12,
     });
   });
@@ -113,6 +115,7 @@ describe("profile routes", () => {
       success: true,
       title: EMPEROR_TITLE_TOKEN,
       titleColor: null,
+      titleIconPath: null,
       seqId: 1,
     });
   });
@@ -152,6 +155,7 @@ describe("profile routes", () => {
       success: true,
       title: null,
       titleColor: null,
+      titleIconPath: null,
       seqId: 150,
     });
   });

@@ -152,6 +152,44 @@ export const artDeco: DesignStyle = {
     </button>
   </div>
 </section>`,
+      preview: `<section className="
+  min-h-screen
+  flex items-center justify-center
+  bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
+  relative overflow-hidden
+">
+  <div className="absolute inset-0 opacity-10">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]">
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-0" />
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-[30deg]" />
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-[60deg]" />
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-[90deg]" />
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-[120deg]" />
+      <div className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent origin-left rotate-[150deg]" />
+    </div>
+  </div>
+
+  <div className="relative z-10 text-center px-6">
+    <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto mb-8" />
+    <h1 className="text-5xl md:text-7xl font-serif text-yellow-500 mb-6 tracking-[0.2em]">
+      ART DECO
+    </h1>
+    <p className="text-xl text-gray-400 mb-8 tracking-wider">
+      The Golden Age of Design
+    </p>
+    <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto mb-8" />
+    <button className="
+      px-12 py-4
+      bg-transparent
+      border-2 border-yellow-500
+      text-yellow-500 font-serif uppercase tracking-[0.3em]
+      hover:bg-yellow-500 hover:text-slate-900
+      transition-all duration-300
+    ">
+      Enter
+    </button>
+  </div>
+</section>`,
     },
   },
 

@@ -34,6 +34,7 @@ import {
 } from "@/lib/auth/user-title-policy";
 
 const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+const SVG_PATH_RE = /^[MmLlHhVvCcSsQqTtAaZz0-9eE+.,\-\s]+$/;
 
 function getTitleBadgeClass(title: string): string {
   if (title === EMPEROR_TITLE_TOKEN) {
@@ -94,6 +95,23 @@ function getTitleBadgeAppearance(
       color: pickBadgeTextColor(normalizedColor),
     },
   };
+}
+
+function normalizeTitleIconPath(value: string | null | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > 2048) {
+    return null;
+  }
+
+  if (!SVG_PATH_RE.test(trimmed)) {
+    return null;
+  }
+
+  return trimmed;
 }
 
 function asPositiveInt(value: unknown): number | null {
@@ -229,6 +247,9 @@ export function ProfileContent() {
   const profileTitleBadgeClass = rawProfileTitle
     ? getTitleBadgeAppearance(rawProfileTitle, profileTitleData?.titleColor)
     : { className: "" };
+  const profileTitleIconPath = normalizeTitleIconPath(
+    profileTitleData?.titleIconPath
+  );
   const profileSeqId =
     asPositiveInt(profileTitleData?.seqId) ??
     asPositiveInt(user.user_metadata?.seq_id);
@@ -282,9 +303,19 @@ export function ProfileContent() {
           {profileTitleLabel && (
             <div className="mt-2 flex justify-center sm:justify-start">
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass.className}`}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass.className}`}
                 style={profileTitleBadgeClass.style}
               >
+                {profileTitleIconPath ? (
+                  <svg
+                    viewBox="0 0 40 40"
+                    className="h-3.5 w-3.5 fill-current"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d={profileTitleIconPath} />
+                  </svg>
+                ) : null}
                 {profileTitleLabel}
               </span>
             </div>

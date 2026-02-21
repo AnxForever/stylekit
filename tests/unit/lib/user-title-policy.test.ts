@@ -6,6 +6,7 @@ import {
   isEarlyUser,
   normalizeCustomTitleInput,
   normalizeTitleColorInput,
+  normalizeTitleIconPathInput,
   resolveUserTitle,
 } from "@/lib/auth/user-title-policy";
 
@@ -19,6 +20,7 @@ describe("user title policy", () => {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: "VIP",
         titleColor: null,
+        titleIconPath: null,
         isOwner: true,
         titleEnabled: true,
         updatedAt: null,
@@ -38,6 +40,7 @@ describe("user title policy", () => {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: null,
         titleColor: null,
+        titleIconPath: null,
         isOwner: true,
         titleEnabled: true,
         updatedAt: null,
@@ -90,6 +93,7 @@ describe("user title policy", () => {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: null,
         titleColor: null,
+        titleIconPath: null,
         isOwner: true,
         titleEnabled: false,
         updatedAt: null,
@@ -113,5 +117,14 @@ describe("user title policy", () => {
       value: "#ffaa33",
     });
     expect(normalizeTitleColorInput("pink").ok).toBe(false);
+  });
+
+  it("validates title icon path", () => {
+    expect(normalizeTitleIconPathInput("   ").value).toBeNull();
+    expect(normalizeTitleIconPathInput("M0 0 L10 10 Z")).toEqual({
+      ok: true,
+      value: "M0 0 L10 10 Z",
+    });
+    expect(normalizeTitleIconPathInput("<svg>").ok).toBe(false);
   });
 });

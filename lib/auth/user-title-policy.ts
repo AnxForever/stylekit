@@ -4,6 +4,9 @@ export const EMPEROR_TITLE_TOKEN = "__qin_shi_huang__";
 export const EARLY_USER_SEQ_THRESHOLD = 100;
 export const USER_TITLE_MAX_LENGTH = 24;
 export const USER_TITLE_COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
+export const USER_TITLE_ICON_PATH_MAX_LENGTH = 2048;
+export const USER_TITLE_ICON_PATH_PATTERN =
+  /^[MmLlHhVvCcSsQqTtAaZz0-9eE+.,\-\s]+$/;
 const EMPEROR_SEQ_IDS = new Set([1, 2]);
 
 const MISSING_TABLE_CODES = new Set(["42P01", "42703", "PGRST204", "PGRST205"]);
@@ -18,6 +21,7 @@ export interface UserTitleRule {
   userId: string;
   customTitle: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   updatedAt: string | null;
@@ -83,6 +87,7 @@ function parseRuleRow(row: unknown): UserTitleRule | null {
     userId,
     customTitle: asString(record.custom_title),
     titleColor: normalizeTitleColorValue(record.title_color),
+    titleIconPath: normalizeTitleIconPathValue(record.title_icon_path),
     isOwner: asBoolean(record.is_owner) ?? false,
     titleEnabled: asBoolean(record.title_enabled) ?? true,
     updatedAt: asString(record.updated_at),
@@ -101,6 +106,23 @@ function normalizeTitleColorValue(value: unknown): string | null {
   }
 
   return raw.toLowerCase();
+}
+
+function normalizeTitleIconPathValue(value: unknown): string | null {
+  const raw = asString(value);
+  if (!raw) {
+    return null;
+  }
+
+  if (raw.length > USER_TITLE_ICON_PATH_MAX_LENGTH) {
+    return null;
+  }
+
+  if (!USER_TITLE_ICON_PATH_PATTERN.test(raw)) {
+    return null;
+  }
+
+  return raw;
 }
 
 export function normalizeCustomTitleInput(value: unknown): {
@@ -167,6 +189,48 @@ export function normalizeTitleColorInput(value: unknown): {
   }
 
   return { ok: true, value: trimmed.toLowerCase() };
+}
+
+export function normalizeTitleIconPathInput(value: unknown): {
+  ok: boolean;
+  value: string | null;
+  error?: string;
+} {
+  if (value == null) {
+    return { ok: true, value: null };
+  }
+
+  if (typeof value !== "string") {
+    return {
+      ok: false,
+      value: null,
+      error: "titleIconPath must be a string or null.",
+    };
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return { ok: true, value: null };
+  }
+
+  if (trimmed.length > USER_TITLE_ICON_PATH_MAX_LENGTH) {
+    return {
+      ok: false,
+      value: null,
+      error: `titleIconPath must be at most ${USER_TITLE_ICON_PATH_MAX_LENGTH} characters.`,
+    };
+  }
+
+  if (!USER_TITLE_ICON_PATH_PATTERN.test(trimmed)) {
+    return {
+      ok: false,
+      value: null,
+      error:
+        "titleIconPath contains invalid characters. Use SVG path data only.",
+    };
+  }
+
+  return { ok: true, value: trimmed };
 }
 
 export function isUserTitlesSchemaMissing(
