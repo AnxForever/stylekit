@@ -26,7 +26,7 @@ export function ScrollBackButton({
         const y = parseInt(savedScroll, 10);
         // 延迟一小段时间以确保DOM完全加载
         setTimeout(() => {
-          window.scrollTo(0, y);
+          window.scrollTo({ top: y, behavior: "instant" });
         }, 50);
       }
     }
