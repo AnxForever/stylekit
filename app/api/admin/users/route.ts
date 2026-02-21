@@ -25,7 +25,6 @@ interface UserInfo {
   submissionCount: number;
   lastActive: string;
   seqId: number | null;
-  displaySeqId: number | null;
   profileTitle: string | null;
   customTitle: string | null;
   isOwner: boolean;
@@ -44,7 +43,6 @@ interface UserPayload {
   submissionCount: number;
   lastActive: string;
   seqId: number | null;
-  displaySeqId: number | null;
   customTitle: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
@@ -141,7 +139,6 @@ export async function GET(request: Request) {
         submissionCount: 0,
         lastActive: "",
         seqId: options?.seqId ?? null,
-        displaySeqId: null,
         profileTitle: options?.profileTitle ?? null,
         customTitle: null,
         isOwner: false,
@@ -311,12 +308,6 @@ export async function GET(request: Request) {
     } else {
       user.authorName = "User";
     }
-  }
-
-  // Build a dense, non-destructive display id from effective seq ids.
-  const displaySeqIdMap = buildDisplaySeqIdMapFromUsers(users);
-  for (const user of users) {
-    user.displaySeqId = displaySeqIdMap.get(user.userId) ?? null;
   }
 
   if (search) {
@@ -496,26 +487,6 @@ function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
   return map;
 }
 
-function buildDisplaySeqIdMapFromUsers(users: UserInfo[]): Map<string, number> {
-  const sorted = users
-    .filter((user) => user.seqId != null && user.seqId > 0)
-    .map((user) => ({
-      userId: user.userId,
-      seqId: user.seqId as number,
-    }))
-    .sort((a, b) => {
-      if (a.seqId !== b.seqId) {
-        return a.seqId - b.seqId;
-      }
-      return a.userId.localeCompare(b.userId);
-    });
-
-  const map = new Map<string, number>();
-  sorted.forEach((item, index) => {
-    map.set(item.userId, index + 1);
-  });
-  return map;
-}
 
 function toUserPayload(user: UserInfo): UserPayload {
   return {
@@ -528,7 +499,6 @@ function toUserPayload(user: UserInfo): UserPayload {
     submissionCount: user.submissionCount,
     lastActive: user.lastActive,
     seqId: user.seqId,
-    displaySeqId: user.displaySeqId,
     customTitle: user.customTitle,
     isOwner: user.isOwner,
     titleEnabled: user.titleEnabled,
