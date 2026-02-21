@@ -18,6 +18,16 @@ import {
 import { useAdminUsers, type AdminUser } from "@/lib/swr";
 
 const PAGE_SIZE = 20;
+const PRESET_TITLE_COLORS = [
+  { value: "#d97706", label: "琥珀" },
+  { value: "#dc2626", label: "赤红" },
+  { value: "#7c3aed", label: "皇家紫" },
+  { value: "#2563eb", label: "深蓝" },
+  { value: "#0891b2", label: "青色" },
+  { value: "#16a34a", label: "翠绿" },
+  { value: "#be185d", label: "玫红" },
+  { value: "#475569", label: "石板" },
+] as const;
 
 interface TitleDraft {
   customTitle: string;
@@ -92,6 +102,10 @@ function buildCustomTitleBadgeStyle(titleColor: string | null | undefined): CSSP
     borderColor: normalized,
     color: pickBadgeTextColor(normalized),
   };
+}
+
+function toCompactColorInput(value: string): string {
+  return value.replace(/\s+/g, "");
 }
 
 export function AdminUsersContent() {
@@ -190,6 +204,15 @@ export function AdminUsersContent() {
         isOwner: user.isOwner,
         titleEnabled: user.titleEnabled,
       };
+      const rawColor = draft.titleColor.trim();
+      const normalizedColor = normalizeHexColor(rawColor);
+      if (rawColor && !normalizedColor) {
+        setTitleErrors((prev) => ({
+          ...prev,
+          [user.userId]: "颜色格式错误，请使用 #RRGGBB，例如 #ff5a7a。",
+        }));
+        return;
+      }
 
       setSavingTitleUserId(user.userId);
       setTitleErrors((prev) => ({ ...prev, [user.userId]: "" }));
@@ -199,7 +222,7 @@ export function AdminUsersContent() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             customTitle: draft.customTitle,
-            titleColor: draft.titleColor,
+            titleColor: normalizedColor ?? null,
             isOwner: draft.isOwner,
             titleEnabled: draft.titleEnabled,
           }),
@@ -358,7 +381,11 @@ export function AdminUsersContent() {
                   formatResolvedTitle(draftTitleRaw) ?? "头衔预览";
                 const draftBadgeClass = getTitleBadgeClass(draftTitleRaw);
                 const draftBadgeStyle = buildCustomTitleBadgeStyle(draft.titleColor);
-                const draftColorValue = normalizeHexColor(draft.titleColor) ?? "#e11d48";
+                const normalizedDraftColor = normalizeHexColor(draft.titleColor);
+                const hasDraftColorInput = draft.titleColor.trim().length > 0;
+                const isDraftColorInvalid =
+                  hasDraftColorInput && !normalizedDraftColor;
+                const draftColorValue = normalizedDraftColor ?? "#e11d48";
 
                 return (
                   <Fragment key={user.userId}>
@@ -466,7 +493,7 @@ export function AdminUsersContent() {
                                   onChange={(event) =>
                                     updateDraft(
                                       user.userId,
-                                      { titleColor: event.target.value },
+                                      { titleColor: toCompactColorInput(event.target.value) },
                                       usersById.get(user.userId) ?? user
                                     )
                                   }
@@ -474,6 +501,50 @@ export function AdminUsersContent() {
                                   maxLength={7}
                                   className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background font-mono"
                                 />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleColor: "" },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                  className="shrink-0 px-2.5 py-2 text-xs border border-border rounded-md hover:bg-muted/10 transition-colors"
+                                  title="清除颜色"
+                                >
+                                  清除
+                                </button>
+                              </div>
+                              <div className="md:col-span-2 xl:col-span-2 flex flex-wrap items-center gap-2">
+                                {PRESET_TITLE_COLORS.map((preset) => {
+                                  const isSelected =
+                                    normalizedDraftColor === preset.value;
+                                  return (
+                                    <button
+                                      key={preset.value}
+                                      type="button"
+                                      onClick={() =>
+                                        updateDraft(
+                                          user.userId,
+                                          { titleColor: preset.value },
+                                          usersById.get(user.userId) ?? user
+                                        )
+                                      }
+                                      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] transition-colors ${
+                                        isSelected
+                                          ? "border-foreground/30 bg-muted/20"
+                                          : "border-border hover:bg-muted/10"
+                                      }`}
+                                    >
+                                      <span
+                                        className="inline-block h-3 w-3 rounded-full border border-black/15"
+                                        style={{ backgroundColor: preset.value }}
+                                      />
+                                      {preset.label}
+                                    </button>
+                                  );
+                                })}
                               </div>
                               <label className="inline-flex items-center gap-2 text-sm">
                                 <input
@@ -504,7 +575,7 @@ export function AdminUsersContent() {
                                 Title Enabled
                               </label>
                               <button
-                                disabled={isSavingTitle}
+                                disabled={isSavingTitle || isDraftColorInvalid}
                                 onClick={() => handleSaveTitle(user)}
                                 className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                               >
@@ -553,6 +624,11 @@ export function AdminUsersContent() {
 
                             {titleError ? (
                               <p className="text-xs text-red-500">{titleError}</p>
+                            ) : null}
+                            {isDraftColorInvalid ? (
+                              <p className="text-xs text-amber-600 dark:text-amber-300">
+                                颜色值无效，请输入 `#RRGGBB`，例如 `#ff5a7a`。
+                              </p>
                             ) : null}
                           </div>
                         </td>
