@@ -231,10 +231,7 @@ function CmdKPalette({
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    if (!open) {
-      setQuery("");
-      return;
-    }
+    if (!open) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -625,7 +622,7 @@ export default function AnxBlogTemplate() {
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />
-      <CmdKPalette open={cmdKOpen} onClose={() => setCmdKOpen(false)} />
+      <CmdKPalette key={String(cmdKOpen)} open={cmdKOpen} onClose={() => setCmdKOpen(false)} />
       <LabModal item={selectedLab} onClose={() => setSelectedLab(null)} />
 
       <main

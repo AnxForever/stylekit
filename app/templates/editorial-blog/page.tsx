@@ -403,7 +403,6 @@ export default function EditorialBlogPage() {
   });
 
   const featuredArticle = ARTICLES.find((a) => a.featured);
-  const gridArticles = filteredArticles.filter((a) => !a.featured || activeCategory !== "All" || searchQuery !== "");
 
   // When filtering, show all filtered articles in the grid
   const showFeaturedHero =

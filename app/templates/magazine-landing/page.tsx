@@ -750,11 +750,11 @@ export default function MagazineLandingTemplate() {
             <div className="grid md:grid-cols-3 gap-8 items-start border-t border-b border-zinc-200 py-10">
               <div className="md:col-span-2">
                 <p className="text-xs font-bold uppercase tracking-widest text-red-600 mb-4">
-                  Editor's Note
+                  Editor&apos;s Note
                 </p>
                 <blockquote className="font-serif text-2xl md:text-3xl font-bold text-zinc-900 leading-snug border-l-4 border-red-600 pl-6">
-                  "The value of independent journalism is not neutrality — it is rigor.
-                  We are not trying to be balanced. We are trying to be right."
+                  &ldquo;The value of independent journalism is not neutrality &mdash; it is rigor.
+                  We are not trying to be balanced. We are trying to be right.&rdquo;
                 </blockquote>
                 <p className="mt-5 text-sm text-zinc-500">
                   — Catherine Moore, Editor-in-Chief

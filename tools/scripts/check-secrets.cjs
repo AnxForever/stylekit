@@ -66,6 +66,10 @@ const SECRET_PATTERNS = [
       );
       if (!match?.groups?.value) return false;
       const value = match.groups.value.toLowerCase();
+      // Real credentials (API keys, tokens, passwords) never contain spaces.
+      // Values with spaces are human-readable strings: error messages, labels,
+      // descriptions, placeholder text, etc. — not actual secrets.
+      if (value.includes(" ")) return true;
       return (
         value.includes("example") ||
         value.includes("placeholder") ||
