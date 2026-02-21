@@ -401,12 +401,10 @@ describe("profile routes", () => {
 
     const fallbackChain = {
       select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          order: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue({
-              data: [],
-              error: null,
-            }),
+        order: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue({
+            data: [],
+            error: null,
           }),
         }),
       }),
@@ -438,7 +436,10 @@ describe("profile routes", () => {
   });
 
   it("submissions endpoint falls back to __author.userId when user_id column is missing", async () => {
-    mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-3",
+      user_metadata: { user_name: "owner-a" },
+    } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
 
     const modernChain = {
@@ -459,12 +460,24 @@ describe("profile routes", () => {
 
     const fallbackChain = {
       select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          order: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue({
-              data: [{ id: "s-fallback", slug: "chaos-lab", status: "pending", submitted_at: "2026-02-21" }],
-              error: null,
-            }),
+        order: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue({
+            data: [
+              {
+                id: "s-fallback",
+                slug: "chaos-lab",
+                status: "pending",
+                submitted_at: "2026-02-21",
+                form_data: {
+                  __author: {
+                    userId: "user-3",
+                    handle: "owner-a",
+                    provider: "github",
+                  },
+                },
+              },
+            ],
+            error: null,
           }),
         }),
       }),
@@ -485,6 +498,83 @@ describe("profile routes", () => {
         {
           id: "s-fallback",
           slug: "chaos-lab",
+          status: "pending",
+          submitted_at: "2026-02-21",
+          name: null,
+          name_en: null,
+          description: null,
+        },
+      ],
+    });
+  });
+
+  it("submissions endpoint falls back to legacy __author.handle + provider matching", async () => {
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-legacy",
+      email: "legacy-owner@example.com",
+      user_metadata: {
+        user_name: "legacy-owner",
+        provider: "github",
+      },
+      app_metadata: { provider: "github" },
+    } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: null,
+              error: {
+                code: "42703",
+                message: "column submissions.user_id does not exist",
+              },
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const fallbackChain = {
+      select: vi.fn().mockReturnValue({
+        order: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue({
+            data: [
+              {
+                id: "s-legacy",
+                slug: "maximalism-chaos",
+                status: "pending",
+                submitted_at: "2026-02-21",
+                form_data: {
+                  __author: {
+                    handle: "legacy-owner",
+                    provider: "github",
+                  },
+                },
+              },
+            ],
+            error: null,
+          }),
+        }),
+      }),
+    };
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(fallbackChain),
+    } as never);
+
+    const response = await getSubmissions();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      submissions: [
+        {
+          id: "s-legacy",
+          slug: "maximalism-chaos",
           status: "pending",
           submitted_at: "2026-02-21",
           name: null,
