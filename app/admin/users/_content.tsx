@@ -284,7 +284,7 @@ export function AdminUsersContent() {
                 <th className="text-left px-4 py-3 font-medium">User</th>
                 <th className="text-left px-4 py-3 font-medium">User ID</th>
                 <th className="text-left px-4 py-3 font-medium">Title</th>
-                <th className="text-left px-4 py-3 font-medium">Seq ID</th>
+                <th className="text-left px-4 py-3 font-medium">Display ID</th>
                 <th className="text-right px-4 py-3 font-medium">Comments</th>
                 <th className="text-right px-4 py-3 font-medium">Ratings</th>
                 <th className="text-right px-4 py-3 font-medium">Favorites</th>
