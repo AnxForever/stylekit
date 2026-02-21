@@ -47,39 +47,24 @@ export const zPatternLayout: DesignStyle = {
     button: {
       name: "按钮",
       description: "Z型布局中的 CTA 按钮",
-      code: `<button className="
-  px-8 py-4
-  bg-[#6366f1] text-white
-  rounded-xl
-  font-semibold text-lg
-  shadow-lg shadow-[#6366f1]/25
-  hover:shadow-xl hover:shadow-[#6366f1]/30 hover:-translate-y-0.5
-  transition-all duration-300
-">
-  Get Started
+      code: `<button className="px-10 py-4 bg-[#6366f1] text-white rounded-xl font-bold text-lg shadow-[0_4px_14px_rgba(99,102,241,0.3)] hover:shadow-[0_8px_25px_rgba(99,102,241,0.5)] hover:-translate-y-1 hover:scale-[1.02] active:scale-95 active:translate-y-[2px] transition-all duration-200 ease-out">
+  Start Free Trial
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Z型布局中的特性卡片",
-      code: `<div className="
-  p-8
-  bg-white
-  rounded-2xl
-  shadow-sm
-  border border-gray-100
-  text-center
-  hover:shadow-md
-  transition-shadow
-">
-  <div className="w-14 h-14 bg-[#6366f1]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-    <svg className="w-7 h-7 text-[#6366f1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      code: `<div className="group p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-indigo-100 hover:-translate-y-1.5 transition-all duration-300 ease-out cursor-pointer">
+  <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-indigo-500 group-hover:scale-110 transition-all duration-300 ease-out">
+    <svg className="w-7 h-7 text-indigo-500 group-hover:text-white transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
   </div>
-  <h3 className="text-lg font-semibold text-[#0f172a] mb-2">
-    Feature
+  <h3 className="text-xl font-bold text-[#0f172a] mb-3 group-hover:text-indigo-600 transition-colors duration-200">
+    Seamless Conversion
   </h3>
-  <p className="text-gray-600 text-sm">
-    Brief description of this feature
+  <p className="text-gray-600 leading-relaxed">
+    Every element on this path is engineered to guide the eye and encourage action without overwhelming the reader.
   </p>
 </div>`,
     },
@@ -252,7 +237,14 @@ Z型路径的四个关键点：
 2. 核心内容居中显示
 3. 最终CTA在右下
 4. 视觉路径清晰流畅
-5. 页面简洁不拥挤`,
+5. 页面简洁不拥挤
+
+## 动效与交互规则
+
+- 漏斗聚焦（Funnel Focus）：悬停核心区域（特性卡片、输入框）时，必须通过明显上浮（\`hover:-translate-y-1\`）和阴影扩展（\`hover:shadow-xl\`）牢牢锁住用户视线，强化转化节点的存在感。
+- CTA 磁力（CTA Magnetism）：位于Z路径关键节点的行动按钮，悬停时必须使用弹性放大（\`hover:scale-[1.02]\`）结合品牌色光晕，让按钮产生磁铁般的吸引力。
+- 干脆利落（Crisp Progression）：商业落地页不允许拖沓动效。强制使用 \`duration-200 ease-out\`，确保反馈干脆，不打断用户的Z型扫视节奏。
+- 焦点暗示（Clear Focus）：输入框聚焦时，在光圈外发光的基础上，将背景从灰/透明提亮至纯白，给出清晰的数据输入暗示。`,
 
   examplePrompts: [
     {

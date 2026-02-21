@@ -402,7 +402,7 @@ export default function Y2KShowcase() {
                 </p>
                 <div className="flex flex-col gap-4">
                   <button
-                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:shadow-[0_8px_25px_rgba(255,20,147,0.5)] active:scale-90"
                     style={{
                       background: "linear-gradient(135deg, #ff69b4, #c084fc, #00ffff)",
                       boxShadow: "0 4px 20px rgba(255,105,180,0.4)",
@@ -411,7 +411,7 @@ export default function Y2KShowcase() {
                     Rainbow
                   </button>
                   <button
-                    className="px-7 py-3 rounded-full text-gray-700 font-bold text-sm transition-all duration-300 hover:scale-105"
+                    className="px-7 py-3 rounded-full text-gray-700 font-bold text-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,255,255,0.3),inset_0_4px_8px_rgba(255,255,255,1)] active:scale-90"
                     style={{
                       background: "linear-gradient(135deg, #e8e8e8, #ffffff, #c0c0c0)",
                       border: "1px solid rgba(255,255,255,0.8)",
@@ -421,7 +421,7 @@ export default function Y2KShowcase() {
                     Chrome
                   </button>
                   <button
-                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:shadow-[0_8px_25px_rgba(255,20,147,0.5)] active:scale-90"
                     style={{
                       background: "linear-gradient(135deg, #ff69b4, #ff1493)",
                       boxShadow: "0 4px 15px rgba(255,105,180,0.4)",
@@ -430,7 +430,7 @@ export default function Y2KShowcase() {
                     Hot Pink
                   </button>
                   <button
-                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 hover:scale-105"
+                    className="px-7 py-3 rounded-full text-white font-bold text-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,255,255,0.5)] active:scale-90"
                     style={{
                       background: "linear-gradient(135deg, #00ffff, #00bfff)",
                       boxShadow: "0 4px 15px rgba(0,255,255,0.4)",
@@ -459,14 +459,23 @@ export default function Y2KShowcase() {
                 </p>
                 {/* Y2K card */}
                 <div
-                  className="group p-6 rounded-3xl border border-white/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(255,105,180,0.2)]"
+                  className="group p-6 rounded-3xl border border-white/60 backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(255,105,180,0.3)] relative overflow-hidden"
                   style={{
                     background: "linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,182,193,0.3))",
                     boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
                   }}
                 >
+                  {/* Lava-lamp orbs */}
+                  <div
+                    className="absolute -top-4 -right-4 w-16 h-16 rounded-full blur-md opacity-60 group-hover:scale-150 group-hover:translate-x-2 transition-transform duration-500 ease-out"
+                    style={{ background: "linear-gradient(135deg, #00ffff, #ff69b4)" }}
+                  />
+                  <div
+                    className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full blur-lg opacity-40 group-hover:scale-125 group-hover:-translate-y-4 transition-transform duration-500 ease-out"
+                    style={{ background: "linear-gradient(135deg, #b142fe, #00ffff)" }}
+                  />
                   {/* Traffic light dots */}
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-4 relative z-10">
                     <div
                       className="w-3 h-3 rounded-full group-hover-scale"
                       style={{ background: "linear-gradient(135deg, #00ffff, #c084fc)" }}
@@ -481,7 +490,7 @@ export default function Y2KShowcase() {
                     />
                   </div>
                   <h3
-                    className="text-xl font-bold mb-2"
+                    className="relative z-10 text-xl font-bold mb-2 group-hover:tracking-wider transition-all duration-300"
                     style={{
                       background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
                       WebkitBackgroundClip: "text",
@@ -491,7 +500,7 @@ export default function Y2KShowcase() {
                   >
                     Future is Now
                   </h3>
-                  <p className="text-gray-500 text-sm">Welcome to the new millennium — chrome dreams and holographic skies.</p>
+                  <p className="relative z-10 text-gray-500 text-sm">Welcome to the new millennium — chrome dreams and holographic skies.</p>
                 </div>
               </div>
             </RevealBlock>

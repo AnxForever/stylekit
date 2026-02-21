@@ -637,7 +637,7 @@ export default function ShowcaseContent() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-5 flex-wrap">
                     {/* Primary invoke */}
                     <button
-                      className="group px-9 py-3.5 bg-[#4a1942] border border-[#c9a74e]/50 text-[#c9a74e] font-serif italic tracking-widest hover:border-[#c9a74e] hover:shadow-[0_0_24px_rgba(201,167,78,0.35)] transition-all duration-700"
+                      className="group px-9 py-3.5 bg-[#4a1942] border border-[#c9a74e]/50 text-[#c9a74e] font-serif italic tracking-widest hover:border-[#c9a74e] hover:bg-[#5a1e50] hover:shadow-[0_0_30px_rgba(201,167,78,0.6),inset_0_0_10px_rgba(201,167,78,0.2)] active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] active:translate-y-1 transition-all duration-700 ease-in-out"
                       style={{ textShadow: "0 0 8px rgba(201,167,78,0.4)" }}
                     >
                       Invoke
@@ -674,7 +674,7 @@ export default function ShowcaseContent() {
                 <div className="flex flex-col items-center gap-8">
                   <div className="grid md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
                     {/* Standard dark glass card */}
-                    <div className="group relative p-7 bg-[#0d0b14]/80 backdrop-blur-sm border border-[#c9a74e]/25 hover:border-[#c9a74e]/55 hover:shadow-[0_0_28px_rgba(201,167,78,0.12)] transition-all duration-700 cursor-pointer overflow-hidden">
+                    <div className="group relative p-7 bg-[#0d0b14]/80 backdrop-blur-sm border border-[#c9a74e]/25 hover:border-[#c9a74e]/60 hover:shadow-[0_0_40px_rgba(123,104,174,0.3)] hover:-translate-y-2 transition-all duration-1000 ease-in-out cursor-pointer overflow-hidden">
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{
@@ -705,7 +705,7 @@ export default function ShowcaseContent() {
                     </div>
 
                     {/* Amethyst variant */}
-                    <div className="group relative p-7 bg-[#0d0b14]/80 backdrop-blur-sm border border-[#7b68ae]/25 hover:border-[#7b68ae]/55 hover:shadow-[0_0_28px_rgba(123,104,174,0.15)] transition-all duration-700 cursor-pointer overflow-hidden">
+                    <div className="group relative p-7 bg-[#0d0b14]/80 backdrop-blur-sm border border-[#7b68ae]/25 hover:border-[#7b68ae]/60 hover:shadow-[0_0_40px_rgba(123,104,174,0.2)] hover:-translate-y-2 transition-all duration-1000 ease-in-out cursor-pointer overflow-hidden">
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{
