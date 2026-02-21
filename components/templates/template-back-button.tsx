@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -61,15 +61,17 @@ export function TemplateBackButton({
   variant = "default",
 }: TemplateBackButtonProps) {
   const { t } = useI18n();
+  const router = useRouter();
   const style = variantStyles[variant];
 
   return (
-    <Link
-      href="/templates"
+    <button
+      type="button"
+      onClick={() => router.push("/templates")}
       className={`fixed top-3 right-4 z-[9999] inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}
     >
       <ArrowLeft className="w-4 h-4" />
       <span className="hidden sm:inline">{t("templates.backToList")}</span>
-    </Link>
+    </button>
   );
 }
