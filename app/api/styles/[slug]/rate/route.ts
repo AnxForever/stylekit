@@ -14,6 +14,7 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const RATING_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATING_RATE_LIMIT_MAX_REQUESTS = 80;
 const MAX_BODY_BYTES = 4 * 1024;
+const LEGACY_USER_SESSION_PREFIX = "user:";
 
 const rateSchema = z.object({
   rating: z.number().int().min(1).max(5),
@@ -28,13 +29,29 @@ interface DbErrorLike {
   details?: string | null;
 }
 
+function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
+  return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+}
+
+function buildLegacyUserSessionId(userId: string): string {
+  return `${LEGACY_USER_SESSION_PREFIX}${userId}`;
+}
+
+function isMissingUserIdColumnError(error: DbErrorLike | null | undefined): boolean {
+  const code = error?.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+  return readDbErrorMessage(error).includes("user_id");
+}
+
 function classifyDbError(error: DbErrorLike | null | undefined): {
   status: number;
   code: string;
   message: string;
 } {
   const dbCode = error?.code ?? null;
-  const combinedMessage = `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+  const combinedMessage = readDbErrorMessage(error);
   const hasSessionNullViolation =
     dbCode === "23502" && combinedMessage.includes("session_id");
 
@@ -143,22 +160,42 @@ export async function POST(
     );
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
+    const legacySessionId = buildLegacyUserSessionId(user.id);
+    let useLegacySessionIdentity = false;
 
-    const lookupResult = await sb
+    const lookupByUserId = await sb
       .from("style_ratings")
       .select("id")
       .eq("style_slug", slugParsed.data)
       .eq("user_id", user.id)
       .maybeSingle();
-    const existingLookupError = lookupResult.error as DbErrorLike | null;
-    if (existingLookupError) {
-      const classified = classifyDbError(existingLookupError);
-      return NextResponse.json(
-        { success: false, code: classified.code, error: classified.message },
-        { status: classified.status }
-      );
+    let existing = lookupByUserId.data;
+    if (lookupByUserId.error) {
+      const lookupError = lookupByUserId.error as DbErrorLike;
+      if (isMissingUserIdColumnError(lookupError)) {
+        useLegacySessionIdentity = true;
+        const legacyLookup = await sb
+          .from("style_ratings")
+          .select("id")
+          .eq("style_slug", slugParsed.data)
+          .in("session_id", [legacySessionId, user.id])
+          .maybeSingle();
+        if (legacyLookup.error) {
+          const classified = classifyDbError(legacyLookup.error as DbErrorLike);
+          return NextResponse.json(
+            { success: false, code: classified.code, error: classified.message },
+            { status: classified.status }
+          );
+        }
+        existing = legacyLookup.data;
+      } else {
+        const classified = classifyDbError(lookupError);
+        return NextResponse.json(
+          { success: false, code: classified.code, error: classified.message },
+          { status: classified.status }
+        );
+      }
     }
-    const existing = lookupResult.data;
 
     if (existing) {
       // Update existing rating
@@ -176,15 +213,23 @@ export async function POST(
       }
     } else {
       // Insert new rating
+      const payload = useLegacySessionIdentity
+        ? {
+            style_slug: slugParsed.data,
+            rating: parsed.data.rating,
+            session_id: legacySessionId,
+            ip_address: ip,
+          }
+        : {
+            style_slug: slugParsed.data,
+            rating: parsed.data.rating,
+            session_id: null,
+            user_id: user.id,
+            ip_address: ip,
+          };
       const { error } = await sb
         .from("style_ratings")
-        .insert({
-          style_slug: slugParsed.data,
-          rating: parsed.data.rating,
-          session_id: null,
-          user_id: user.id,
-          ip_address: ip,
-        });
+        .insert(payload);
 
       if (error) {
         const classified = classifyDbError(error as DbErrorLike);
@@ -200,11 +245,15 @@ export async function POST(
       .from("style_rating_summary")
       .select("*")
       .eq("style_slug", slugParsed.data)
-      .single();
+      .maybeSingle();
     if (summaryError) {
       const classified = classifyDbError(summaryError as DbErrorLike);
       return NextResponse.json(
-        { success: false, code: classified.code, error: classified.message },
+        {
+          success: false,
+          code: classified.code,
+          error: classified.message,
+        },
         { status: classified.status }
       );
     }
@@ -250,7 +299,7 @@ export async function GET(
     .from("style_rating_summary")
     .select("*")
     .eq("style_slug", slugParsed.data)
-    .single();
+    .maybeSingle();
   if (error) {
     const classified = classifyDbError(error as DbErrorLike);
     return NextResponse.json(

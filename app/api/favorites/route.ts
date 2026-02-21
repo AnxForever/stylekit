@@ -370,7 +370,7 @@ function isMissingUserIdColumnError(error: unknown): boolean {
   }
 
   const code = "code" in error && typeof error.code === "string" ? error.code : null;
-  if (code !== "42703") {
+  if (code !== "42703" && code !== "PGRST204") {
     return false;
   }
 
@@ -384,7 +384,13 @@ function isSkippableFavoritesSchemaError(error: unknown): boolean {
   }
 
   const code = "code" in error && typeof error.code === "string" ? error.code : null;
-  if (code === "42P01" || code === "PGRST205" || code === "42703" || code === "23502") {
+  if (
+    code === "42P01" ||
+    code === "PGRST205" ||
+    code === "PGRST204" ||
+    code === "42703" ||
+    code === "23502"
+  ) {
     return true;
   }
 
