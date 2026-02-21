@@ -346,11 +346,25 @@ describe("styles comments route", () => {
       error: null,
     });
 
+    const seqInFn = vi.fn().mockResolvedValue({
+      data: [{ user_id: legacyUserId, seq_id: 12 }],
+      error: null,
+    });
+    const seqSelect = vi.fn().mockReturnValue({ in: seqInFn });
+
+    const titleInFn = vi.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    });
+    const titleSelect = vi.fn().mockReturnValue({ in: titleInFn });
+
     mockedCreateClient.mockReturnValue({
       from: vi
         .fn()
         .mockReturnValueOnce({ select: modernSelect })
-        .mockReturnValueOnce({ select: legacySelect }),
+        .mockReturnValueOnce({ select: legacySelect })
+        .mockReturnValueOnce({ select: seqSelect })
+        .mockReturnValueOnce({ select: titleSelect }),
       auth: {
         admin: {
           getUserById,

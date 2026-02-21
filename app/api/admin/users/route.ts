@@ -276,9 +276,9 @@ export async function GET(request: Request) {
   let users = Array.from(usersMap.values());
 
   for (const user of users) {
-    if (user.seqId == null) {
-      user.seqId = seqIdMap.get(user.userId) ?? null;
-    }
+    // Always prefer user_seq_ids table (dense, renumbered) over stale
+    // metadata values that may still hold pre-renumber IDs (e.g. 51).
+    user.seqId = seqIdMap.get(user.userId) ?? user.seqId ?? null;
 
     const rule = titleRuleMap.get(user.userId) ?? null;
     user.customTitle = rule?.customTitle ?? null;

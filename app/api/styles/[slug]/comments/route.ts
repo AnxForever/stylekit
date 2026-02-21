@@ -341,9 +341,9 @@ async function loadAuthorIdentities(
       }
 
       const dbSeqId = seqIdMap.get(userId);
-      if (dbSeqId != null) {
-        map.set(userId, { ...current, seqId: dbSeqId });
-      }
+      // Always prefer DB value; if user has no row in user_seq_ids,
+      // clear stale metadata seq_id that may hold pre-renumber values.
+      map.set(userId, { ...current, seqId: dbSeqId ?? null });
     }
   }
 
