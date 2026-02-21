@@ -287,7 +287,7 @@ export function useAdminUsers(query: AdminUsersQuery = {}) {
   params.set("offset", String(query.offset ?? 0));
   if (query.search?.trim()) params.set("search", query.search.trim());
 
-  return useSWR<AdminUsersData>(`/api/admin/users?${params.toString()}`, undefined, {
+  return useSWR<AdminUsersData>(`/api/admin/users?${params.toString()}`, {
     refreshInterval: 10000,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
