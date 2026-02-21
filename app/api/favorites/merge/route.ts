@@ -140,6 +140,7 @@ function getBearerToken(request: Request): string | null {
 }
 
 async function upsertFavoritesForUser(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sb: any,
   tableName: string,
   userId: string,
