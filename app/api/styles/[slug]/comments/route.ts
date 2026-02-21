@@ -15,6 +15,10 @@ import {
   resolveUserTitle,
   type UserTitleRule,
 } from "@/lib/auth/user-title-policy";
+import {
+  buildDisplaySeqIdMap,
+  resolveDisplaySeqId,
+} from "@/lib/auth/user-seq-display";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COMMENTS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
@@ -57,6 +61,7 @@ interface CommentOutput {
   created_at: string;
   author_provider: AuthorProvider;
   author_seq_id: number | null;
+  author_display_seq_id: number | null;
   author_title: string | null;
 }
 
@@ -289,6 +294,21 @@ async function lookupSeqIdMap(
   return result;
 }
 
+async function loadDisplaySeqIdMap(
+  lookup: () => Promise<SeqLookupResult>
+): Promise<Map<string, number>> {
+  try {
+    const { data, error } = await lookup();
+    if (error || !Array.isArray(data)) {
+      return new Map();
+    }
+
+    return buildDisplaySeqIdMap(data);
+  } catch {
+    return new Map();
+  }
+}
+
 async function loadAuthorIdentities(
   userIds: string[],
   getUserById: GetUserByIdFn | undefined,
@@ -353,6 +373,7 @@ function toCommentOutput(
   options?: {
     adminUserIds: Set<string>;
     titleRuleMap: Map<string, UserTitleRule>;
+    displaySeqIdMap: Map<string, number>;
   }
 ): CommentOutput {
   const row = isTableRow(rawRow) ? rawRow : {};
@@ -371,6 +392,11 @@ function toCommentOutput(
           fallbackCustomTitle: identity?.profileTitle ?? null,
         })
       : null;
+  const resolvedDisplaySeqId = resolveDisplaySeqId(
+    resolvedUserId,
+    identity?.seqId ?? null,
+    options?.displaySeqIdMap ?? new Map<string, number>()
+  );
 
   return {
     id: asString(row.id) ?? "",
@@ -384,6 +410,7 @@ function toCommentOutput(
     created_at: asString(row.created_at) ?? new Date(0).toISOString(),
     author_provider: identity?.provider ?? "unknown",
     author_seq_id: identity?.seqId ?? null,
+    author_display_seq_id: resolvedDisplaySeqId,
     author_title: resolvedTitle,
   };
 }
@@ -506,6 +533,19 @@ export async function POST(
         };
       }
     );
+    const displaySeqIdMap =
+      identity.seqId != null
+        ? await loadDisplaySeqIdMap(async () => {
+            const { data, error } = await sb
+              .from("user_seq_ids")
+              .select("user_id, seq_id");
+
+            return {
+              data: Array.isArray(data) ? (data as unknown[]) : null,
+              error: (error as DbErrorLike | null) ?? null,
+            };
+          })
+        : new Map<string, number>();
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
@@ -576,6 +616,7 @@ export async function POST(
         comment: toCommentOutput(modernInsertResult.data, identity, user.id, {
           adminUserIds,
           titleRuleMap,
+          displaySeqIdMap,
         }),
       });
     }
@@ -614,6 +655,7 @@ export async function POST(
       comment: toCommentOutput(legacyInsertResult.data, identity, user.id, {
         adminUserIds,
         titleRuleMap,
+        displaySeqIdMap,
       }),
     });
   } catch {
@@ -715,6 +757,19 @@ export async function GET(
         };
       }
     );
+    const displaySeqIdMap =
+      userIds.length > 0
+        ? await loadDisplaySeqIdMap(async () => {
+            const { data, error } = await sb
+              .from("user_seq_ids")
+              .select("user_id, seq_id");
+
+            return {
+              data: Array.isArray(data) ? (data as unknown[]) : null,
+              error: (error as DbErrorLike | null) ?? null,
+            };
+          })
+        : new Map<string, number>();
 
     const comments = rows.map((row) => {
       const tableRow = isTableRow(row) ? row : {};
@@ -723,6 +778,7 @@ export async function GET(
       return toCommentOutput(tableRow, identity, userId, {
         adminUserIds,
         titleRuleMap,
+        displaySeqIdMap,
       });
     });
 
@@ -798,6 +854,19 @@ export async function GET(
       };
     }
   );
+  const legacyDisplaySeqIdMap =
+    legacyUserIds.length > 0
+      ? await loadDisplaySeqIdMap(async () => {
+          const { data, error } = await sb
+            .from("user_seq_ids")
+            .select("user_id, seq_id");
+
+          return {
+            data: Array.isArray(data) ? (data as unknown[]) : null,
+            error: (error as DbErrorLike | null) ?? null,
+          };
+        })
+      : new Map<string, number>();
 
   const comments = legacyRows.map((row) => {
     const tableRow = isTableRow(row) ? row : {};
@@ -806,6 +875,7 @@ export async function GET(
     return toCommentOutput(tableRow, identity, userId, {
       adminUserIds,
       titleRuleMap: legacyTitleRuleMap,
+      displaySeqIdMap: legacyDisplaySeqIdMap,
     });
   });
 

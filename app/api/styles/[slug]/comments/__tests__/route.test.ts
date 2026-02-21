@@ -186,6 +186,7 @@ describe("styles comments route", () => {
         created_at: "2026-01-01",
         author_provider: "unknown",
         author_seq_id: null,
+        author_display_seq_id: null,
         author_title: null,
       },
     });
@@ -375,6 +376,7 @@ describe("styles comments route", () => {
           created_at: "2026-02-21T00:00:00.000Z",
           author_provider: "linuxdo",
           author_seq_id: 12,
+          author_display_seq_id: 12,
           author_title: "站主",
         },
       ],
@@ -456,6 +458,7 @@ describe("styles comments route", () => {
     const payload = await response.json();
     expect(payload.comments[0].author_title).toBe("VIP");
     expect(payload.comments[0].author_seq_id).toBe(50);
+    expect(payload.comments[0].author_display_seq_id).toBe(50);
 
     const titleDisabledIn = vi.fn().mockResolvedValue({
       data: [
