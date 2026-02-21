@@ -7,6 +7,9 @@ interface ComponentsStepProps {
     buttonCode: string;
     cardCode: string;
     inputCode: string;
+    navCode: string;
+    heroCode: string;
+    footerCode: string;
   };
   updateField: (field: string, value: unknown) => void;
   getVisibleError: (field: string, step: number) => string;
@@ -17,6 +20,9 @@ interface ComponentsStepProps {
       buttonCode: string;
       cardCode: string;
       inputCode: string;
+      navCode: string;
+      heroCode: string;
+      footerCode: string;
     };
     placeholders: {
       input: string;
@@ -88,6 +94,62 @@ export function ComponentsStep({
   placeholder="${text.placeholders.input}"
   className="w-full px-4 py-3 border-4 border-black bg-white font-mono focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 />`}
+          rows={6}
+          className="w-full px-4 py-3 border border-border bg-background focus:border-foreground outline-none transition-colors resize-none font-mono text-sm"
+        />
+      </div>
+
+      {/* Optional extended components */}
+      <div className="pt-4 border-t border-border">
+        <p className="text-xs text-muted mb-4">Optional (recommended for higher quality score)</p>
+      </div>
+
+      <div>
+        <label className="block text-sm mb-2">{text.fields.navCode}</label>
+        <textarea
+          value={formData.navCode}
+          onChange={(e) => updateField("navCode", e.target.value)}
+          placeholder={`<nav className="flex items-center justify-between px-6 py-4 bg-black text-white border-b-4 border-[#ff006e]">
+  <span className="font-black text-xl">BRAND</span>
+  <div className="flex gap-6 font-mono text-sm uppercase">
+    <a href="#" className="hover:text-[#ff006e]">Home</a>
+    <a href="#" className="hover:text-[#ff006e]">About</a>
+    <a href="#" className="hover:text-[#ff006e]">Contact</a>
+  </div>
+</nav>`}
+          rows={6}
+          className="w-full px-4 py-3 border border-border bg-background focus:border-foreground outline-none transition-colors resize-none font-mono text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm mb-2">{text.fields.heroCode}</label>
+        <textarea
+          value={formData.heroCode}
+          onChange={(e) => updateField("heroCode", e.target.value)}
+          placeholder={`<section className="py-20 px-6 bg-[#ff006e] text-white text-center">
+  <h1 className="text-6xl font-black uppercase mb-4">Bold Statement</h1>
+  <p className="text-xl font-mono max-w-2xl mx-auto mb-8">A short tagline that captures the style essence.</p>
+  <button className="px-8 py-4 bg-black text-white font-black text-lg border-4 border-white hover:bg-white hover:text-black transition-all">
+    Get Started
+  </button>
+</section>`}
+          rows={6}
+          className="w-full px-4 py-3 border border-border bg-background focus:border-foreground outline-none transition-colors resize-none font-mono text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm mb-2">{text.fields.footerCode}</label>
+        <textarea
+          value={formData.footerCode}
+          onChange={(e) => updateField("footerCode", e.target.value)}
+          placeholder={`<footer className="px-6 py-8 bg-black text-white border-t-4 border-[#ff006e]">
+  <div className="flex justify-between items-center">
+    <span className="font-black">BRAND</span>
+    <span className="font-mono text-sm text-gray-400">Built with StyleKit</span>
+  </div>
+</footer>`}
           rows={6}
           className="w-full px-4 py-3 border border-border bg-background focus:border-foreground outline-none transition-colors resize-none font-mono text-sm"
         />
