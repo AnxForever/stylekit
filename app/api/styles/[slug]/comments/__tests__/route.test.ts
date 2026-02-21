@@ -177,6 +177,66 @@ describe("styles comments route", () => {
     });
   });
 
+  it("POST returns DB_SCHEMA_MISMATCH when legacy session_id not-null constraint blocks writes", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:3");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 40,
+      remaining: 39,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { content: "Great style" },
+    });
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-2",
+      user_metadata: { user_name: "demo" },
+    } as never);
+
+    const countQuery = {
+      gte: vi.fn().mockResolvedValue({ count: 0, error: null }),
+    };
+    const countSelect = {
+      eq: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue(countQuery),
+      }),
+    };
+
+    const insertSingle = vi.fn().mockResolvedValue({
+      data: null,
+      error: {
+        code: "23502",
+        message: 'null value in column "session_id" violates not-null constraint',
+      },
+    });
+    const insertSelect = vi.fn().mockReturnValue({ single: insertSingle });
+    const insert = vi.fn().mockReturnValue({ select: insertSelect });
+
+    const from = vi
+      .fn()
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue(countSelect) })
+      .mockReturnValueOnce({ insert });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/comments", {
+        method: "POST",
+      }),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "DB_SCHEMA_MISMATCH",
+      error: "Comments schema is outdated. Apply Supabase migration 005 (session_id nullable).",
+    });
+  });
+
   it("GET returns empty payload when Supabase is disabled", async () => {
     mockedIsSupabaseConfigured.mockReturnValue(false);
 
@@ -189,6 +249,36 @@ describe("styles comments route", () => {
     await expect(response.json()).resolves.toEqual({
       comments: [],
       total: 0,
+    });
+  });
+
+  it("GET returns DB_NOT_READY when comments table is missing", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const range = vi.fn().mockResolvedValue({
+      data: null,
+      count: null,
+      error: { code: "42P01", message: 'relation "style_comments" does not exist' },
+    });
+    const order = vi.fn().mockReturnValue({ range });
+    const eq = vi.fn().mockReturnValue({ order });
+    const select = vi.fn().mockReturnValue({ eq });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi.fn().mockReturnValue({ select }),
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/comments"),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      comments: [],
+      total: 0,
+      code: "DB_NOT_READY",
+      error: "Comments database schema is not ready. Run Supabase migrations 002-005.",
     });
   });
 });

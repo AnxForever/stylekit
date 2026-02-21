@@ -20,6 +20,47 @@ const rateSchema = z.object({
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
+const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
+
+interface DbErrorLike {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+}
+
+function classifyDbError(error: DbErrorLike | null | undefined): {
+  status: number;
+  code: string;
+  message: string;
+} {
+  const dbCode = error?.code ?? null;
+  const combinedMessage = `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+  const hasSessionNullViolation =
+    dbCode === "23502" && combinedMessage.includes("session_id");
+
+  if (hasSessionNullViolation) {
+    return {
+      status: 503,
+      code: "DB_SCHEMA_MISMATCH",
+      message:
+        "Ratings schema is outdated. Apply Supabase migration 005 (session_id nullable).",
+    };
+  }
+
+  if (dbCode && DB_NOT_READY_CODES.has(dbCode)) {
+    return {
+      status: 503,
+      code: "DB_NOT_READY",
+      message: "Ratings database schema is not ready. Run Supabase migrations 002-005.",
+    };
+  }
+
+  return {
+    status: 500,
+    code: "DB_WRITE_FAILED",
+    message: "Failed to save rating.",
+  };
+}
 
 export async function POST(
   request: Request,
@@ -103,13 +144,21 @@ export async function POST(
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
-    // Check if user already rated this style
-    const { data: existing } = await sb
+    const lookupResult = await sb
       .from("style_ratings")
       .select("id")
       .eq("style_slug", slugParsed.data)
       .eq("user_id", user.id)
       .maybeSingle();
+    const existingLookupError = lookupResult.error as DbErrorLike | null;
+    if (existingLookupError) {
+      const classified = classifyDbError(existingLookupError);
+      return NextResponse.json(
+        { success: false, code: classified.code, error: classified.message },
+        { status: classified.status }
+      );
+    }
+    const existing = lookupResult.data;
 
     if (existing) {
       // Update existing rating
@@ -119,9 +168,10 @@ export async function POST(
         .eq("id", existing.id);
 
       if (error) {
+        const classified = classifyDbError(error as DbErrorLike);
         return NextResponse.json(
-          { success: false, error: "Failed to update rating" },
-          { status: 500 }
+          { success: false, code: classified.code, error: classified.message },
+          { status: classified.status }
         );
       }
     } else {
@@ -137,19 +187,27 @@ export async function POST(
         });
 
       if (error) {
+        const classified = classifyDbError(error as DbErrorLike);
         return NextResponse.json(
-          { success: false, error: "Failed to save rating" },
-          { status: 500 }
+          { success: false, code: classified.code, error: classified.message },
+          { status: classified.status }
         );
       }
     }
 
     // Return updated average
-    const { data: summary } = await sb
+    const { data: summary, error: summaryError } = await sb
       .from("style_rating_summary")
       .select("*")
       .eq("style_slug", slugParsed.data)
       .single();
+    if (summaryError) {
+      const classified = classifyDbError(summaryError as DbErrorLike);
+      return NextResponse.json(
+        { success: false, code: classified.code, error: classified.message },
+        { status: classified.status }
+      );
+    }
 
     return NextResponse.json({
       success: true,
@@ -188,11 +246,23 @@ export async function GET(
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { data } = await sb
+  const { data, error } = await sb
     .from("style_rating_summary")
     .select("*")
     .eq("style_slug", slugParsed.data)
     .single();
+  if (error) {
+    const classified = classifyDbError(error as DbErrorLike);
+    return NextResponse.json(
+      {
+        averageRating: 0,
+        totalRatings: 0,
+        code: classified.code,
+        error: classified.message,
+      },
+      { status: classified.status }
+    );
+  }
 
   return NextResponse.json({
     averageRating: data?.average_rating ?? 0,
