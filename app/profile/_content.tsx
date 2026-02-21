@@ -563,9 +563,19 @@ export function ProfileContent() {
             </span>
             {profileTitleLabel ? (
               <span
-                className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
                 style={profileTitleBadgeClass.style}
               >
+                {profileTitleIconPath ? (
+                  <svg
+                    viewBox="0 0 40 40"
+                    className="h-3.5 w-3.5 fill-current"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d={profileTitleIconPath} />
+                  </svg>
+                ) : null}
                 {profileTitleLabel}
               </span>
             ) : (
