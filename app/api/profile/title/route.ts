@@ -54,6 +54,22 @@ function isSkippableSeqLookupError(error: DbErrorLike | null | undefined): boole
   );
 }
 
+function isMissingTitleIconColumnError(
+  error: DbErrorLike | null | undefined
+): boolean {
+  if (!error) {
+    return false;
+  }
+
+  const code = error.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+
+  const message = `${error.message ?? ""} ${error.details ?? ""}`.toLowerCase();
+  return message.includes("title_icon_path");
+}
+
 async function loadTitleRuleForUser(
   userId: string
 ): Promise<UserTitleRule | null> {
@@ -69,14 +85,33 @@ async function loadTitleRuleForUser(
   );
 
   const titleRuleMap = await loadUserTitleRuleMap([userId], async (ids) => {
-    const { data, error } = await sb
+    const withIcon = await sb
+      .from("user_titles")
+      .select("user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by")
+      .in("user_id", ids);
+
+    if (!withIcon.error) {
+      return {
+        data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+        error: null,
+      };
+    }
+
+    if (!isMissingTitleIconColumnError(withIcon.error as DbErrorLike | null)) {
+      return {
+        data: null,
+        error: (withIcon.error as DbErrorLike | null) ?? null,
+      };
+    }
+
+    const fallback = await sb
       .from("user_titles")
       .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
       .in("user_id", ids);
 
     return {
-      data: Array.isArray(data) ? (data as unknown[]) : null,
-      error: (error as DbErrorLike | null) ?? null,
+      data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+      error: (fallback.error as DbErrorLike | null) ?? null,
     };
   });
 
@@ -156,11 +191,14 @@ export async function GET() {
   });
   const resolvedTitleColor =
     resolvedTitle && rule?.titleColor ? rule.titleColor : null;
+  const resolvedTitleIconPath =
+    resolvedTitle && rule?.titleIconPath ? rule.titleIconPath : null;
 
   return NextResponse.json({
     success: true,
     title: resolvedTitle,
     titleColor: resolvedTitleColor,
+    titleIconPath: resolvedTitleIconPath,
     seqId: seqId ?? null,
   });
 }

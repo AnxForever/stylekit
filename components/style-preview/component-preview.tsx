@@ -66,11 +66,18 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
 
       {/* Preview Area */}
       <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: previewHtml,
-          }}
-        />
+        {/* 
+          Create a containing block for position: fixed preview snippets
+          (common in nav examples). Without this, fixed elements attach to the
+          viewport and the preview pane can appear blank.
+        */}
+        <div className="relative isolate w-full min-h-[200px] transform-gpu">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: previewHtml,
+            }}
+          />
+        </div>
       </div>
 
       {/* Code */}
