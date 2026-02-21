@@ -423,7 +423,17 @@ describe("profile routes", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,
-      submissions: [{ id: "s1", slug: "neo-brutalist", status: "pending", submitted_at: "2026-01-01" }],
+      submissions: [
+        {
+          id: "s1",
+          slug: "neo-brutalist",
+          status: "pending",
+          submitted_at: "2026-01-01",
+          name: null,
+          name_en: null,
+          description: null,
+        },
+      ],
     });
   });
 
@@ -471,7 +481,17 @@ describe("profile routes", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,
-      submissions: [{ id: "s-fallback", slug: "chaos-lab", status: "pending", submitted_at: "2026-02-21" }],
+      submissions: [
+        {
+          id: "s-fallback",
+          slug: "chaos-lab",
+          status: "pending",
+          submitted_at: "2026-02-21",
+          name: null,
+          name_en: null,
+          description: null,
+        },
+      ],
     });
   });
 });

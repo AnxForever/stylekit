@@ -131,6 +131,9 @@ interface ProfileSubmission {
   slug: string;
   status: "pending" | "approved" | "rejected";
   submitted_at: string;
+  name: string | null;
+  name_en: string | null;
+  description: string | null;
 }
 
 interface ProfileSubmissionsData {
