@@ -8,6 +8,12 @@
 import type { SubmissionRecord } from "./reviewer";
 import { createClient } from "@supabase/supabase-js";
 
+interface DbErrorLike {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+}
+
 function getSupabaseAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -128,21 +134,67 @@ export async function createSubmissionSupabase(
     ? { ...formData, __author: authorMeta, tokens, designStyle }
     : { ...formData, tokens, designStyle };
 
-  const { data, error } = await sb
+  const basePayload = {
+    slug,
+    form_data: enrichedFormData,
+    status: "pending" as const,
+    ip_address: ipAddress,
+  };
+
+  const modernPayload = {
+    ...basePayload,
+    user_id: userId ?? null,
+    author_name: authorName ?? null,
+  };
+
+  let insertResult = await sb
     .from("submissions")
-    .insert({
-      slug,
-      form_data: enrichedFormData,
-      status: "pending",
-      ip_address: ipAddress,
-      user_id: userId ?? null,
-      author_name: authorName ?? null,
-    })
+    .insert(modernPayload)
     .select("id, slug")
     .single();
 
-  if (error) throw new Error(`Insert failed: ${error.message}`);
+  if (shouldRetryLegacySubmissionInsert(insertResult.error as DbErrorLike | null)) {
+    insertResult = await sb
+      .from("submissions")
+      .insert(basePayload)
+      .select("id, slug")
+      .single();
+  }
+
+  if (insertResult.error) {
+    throw buildDbInsertError(insertResult.error as DbErrorLike);
+  }
+
+  const data = insertResult.data;
   return { id: data.id, slug: data.slug };
+}
+
+function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
+  return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+}
+
+function isMissingColumnError(
+  error: DbErrorLike | null | undefined,
+  column: string
+): boolean {
+  const code = error?.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+  return readDbErrorMessage(error).includes(column.toLowerCase());
+}
+
+function shouldRetryLegacySubmissionInsert(error: DbErrorLike | null | undefined): boolean {
+  return isMissingColumnError(error, "user_id") || isMissingColumnError(error, "author_name");
+}
+
+function buildDbInsertError(error: DbErrorLike): Error & DbErrorLike {
+  const wrapped = new Error(
+    `Insert failed: ${error.message ?? "Supabase insert returned an unknown error"}`
+  ) as Error & DbErrorLike;
+  wrapped.code = error.code ?? null;
+  wrapped.details = error.details ?? null;
+  return wrapped;
 }
 
 export async function approveSubmissionSupabase(
