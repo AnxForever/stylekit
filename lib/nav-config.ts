@@ -32,6 +32,7 @@ export const mainNav: NavItem[] = [
   { href: "/templates", labelKey: "nav.templates" },
   { href: "/community", labelKey: "nav.community" },
   { href: "/generate", labelKey: "nav.generator" },
+  { href: "/assets", labelKey: "nav.assets" },
 ];
 
 // Tools dropdown menu (temporarily disabled — items not yet validated)
