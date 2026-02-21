@@ -5,6 +5,7 @@ import {
   SITE_OWNER_TITLE_TOKEN,
   isEarlyUser,
   normalizeCustomTitleInput,
+  normalizeTitleColorInput,
   resolveUserTitle,
 } from "@/lib/auth/user-title-policy";
 
@@ -17,6 +18,7 @@ describe("user title policy", () => {
       rule: {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: "VIP",
+        titleColor: null,
         isOwner: true,
         titleEnabled: true,
         updatedAt: null,
@@ -35,6 +37,7 @@ describe("user title policy", () => {
       rule: {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: null,
+        titleColor: null,
         isOwner: true,
         titleEnabled: true,
         updatedAt: null,
@@ -86,6 +89,7 @@ describe("user title policy", () => {
       rule: {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: null,
+        titleColor: null,
         isOwner: true,
         titleEnabled: false,
         updatedAt: null,
@@ -100,5 +104,14 @@ describe("user title policy", () => {
     expect(normalizeCustomTitleInput("   ").value).toBeNull();
     expect(normalizeCustomTitleInput("VIP")).toEqual({ ok: true, value: "VIP" });
     expect(normalizeCustomTitleInput("x".repeat(30)).ok).toBe(false);
+  });
+
+  it("validates title color", () => {
+    expect(normalizeTitleColorInput("   ").value).toBeNull();
+    expect(normalizeTitleColorInput("#FFAA33")).toEqual({
+      ok: true,
+      value: "#ffaa33",
+    });
+    expect(normalizeTitleColorInput("pink").ok).toBe(false);
   });
 });

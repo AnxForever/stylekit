@@ -3,6 +3,7 @@ export const EARLY_USER_TITLE_TOKEN = "__early_user__";
 export const EMPEROR_TITLE_TOKEN = "__qin_shi_huang__";
 export const EARLY_USER_SEQ_THRESHOLD = 100;
 export const USER_TITLE_MAX_LENGTH = 24;
+export const USER_TITLE_COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
 const EMPEROR_SEQ_IDS = new Set([1, 2]);
 
 const MISSING_TABLE_CODES = new Set(["42P01", "42703", "PGRST204", "PGRST205"]);
@@ -16,6 +17,7 @@ export interface DbErrorLike {
 export interface UserTitleRule {
   userId: string;
   customTitle: string | null;
+  titleColor: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   updatedAt: string | null;
@@ -80,11 +82,25 @@ function parseRuleRow(row: unknown): UserTitleRule | null {
   return {
     userId,
     customTitle: asString(record.custom_title),
+    titleColor: normalizeTitleColorValue(record.title_color),
     isOwner: asBoolean(record.is_owner) ?? false,
     titleEnabled: asBoolean(record.title_enabled) ?? true,
     updatedAt: asString(record.updated_at),
     updatedBy: asString(record.updated_by),
   };
+}
+
+function normalizeTitleColorValue(value: unknown): string | null {
+  const raw = asString(value);
+  if (!raw) {
+    return null;
+  }
+
+  if (!USER_TITLE_COLOR_PATTERN.test(raw)) {
+    return null;
+  }
+
+  return raw.toLowerCase();
 }
 
 export function normalizeCustomTitleInput(value: unknown): {
@@ -118,6 +134,39 @@ export function normalizeCustomTitleInput(value: unknown): {
   }
 
   return { ok: true, value: trimmed };
+}
+
+export function normalizeTitleColorInput(value: unknown): {
+  ok: boolean;
+  value: string | null;
+  error?: string;
+} {
+  if (value == null) {
+    return { ok: true, value: null };
+  }
+
+  if (typeof value !== "string") {
+    return {
+      ok: false,
+      value: null,
+      error: "titleColor must be a string or null.",
+    };
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return { ok: true, value: null };
+  }
+
+  if (!USER_TITLE_COLOR_PATTERN.test(trimmed)) {
+    return {
+      ok: false,
+      value: null,
+      error: "titleColor must be a valid hex color like #ff5a7a.",
+    };
+  }
+
+  return { ok: true, value: trimmed.toLowerCase() };
 }
 
 export function isUserTitlesSchemaMissing(

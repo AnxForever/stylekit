@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useCallback, useDeferredValue, useState } from "react";
+import { Fragment, useCallback, useDeferredValue, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import {
   EMPEROR_TITLE_TOKEN,
@@ -21,9 +21,12 @@ const PAGE_SIZE = 20;
 
 interface TitleDraft {
   customTitle: string;
+  titleColor: string;
   isOwner: boolean;
   titleEnabled: boolean;
 }
+
+const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 
 function formatResolvedTitle(title: string | null): string | null {
   if (!title) {
@@ -52,6 +55,43 @@ function getTitleBadgeClass(title: string | null): string {
     return "border-violet-300/80 bg-violet-100 text-violet-800 dark:border-violet-700 dark:bg-violet-900/40 dark:text-violet-200";
   }
   return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
+}
+
+function normalizeHexColor(value: string | null | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!HEX_COLOR_RE.test(trimmed)) {
+    return null;
+  }
+  return trimmed.toLowerCase();
+}
+
+function pickBadgeTextColor(hex: string): string {
+  const normalized = normalizeHexColor(hex);
+  if (!normalized) {
+    return "#111827";
+  }
+
+  const red = Number.parseInt(normalized.slice(1, 3), 16);
+  const green = Number.parseInt(normalized.slice(3, 5), 16);
+  const blue = Number.parseInt(normalized.slice(5, 7), 16);
+  const luminance = (red * 299 + green * 587 + blue * 114) / 1000;
+  return luminance >= 155 ? "#111827" : "#f8fafc";
+}
+
+function buildCustomTitleBadgeStyle(titleColor: string | null | undefined): CSSProperties | undefined {
+  const normalized = normalizeHexColor(titleColor);
+  if (!normalized) {
+    return undefined;
+  }
+
+  return {
+    backgroundColor: normalized,
+    borderColor: normalized,
+    color: pickBadgeTextColor(normalized),
+  };
 }
 
 export function AdminUsersContent() {
@@ -94,6 +134,7 @@ export function AdminUsersContent() {
         ...prev,
         [user.userId]: {
           customTitle: user.customTitle ?? "",
+          titleColor: user.titleColor ?? "",
           isOwner: user.isOwner,
           titleEnabled: user.titleEnabled,
         },
@@ -119,11 +160,12 @@ export function AdminUsersContent() {
     (
       userId: string,
       patch: Partial<TitleDraft>,
-      fallback: Pick<AdminUser, "customTitle" | "isOwner" | "titleEnabled">
+      fallback: Pick<AdminUser, "customTitle" | "titleColor" | "isOwner" | "titleEnabled">
     ) => {
       setTitleDrafts((prev) => {
         const current = prev[userId] ?? {
           customTitle: fallback.customTitle ?? "",
+          titleColor: fallback.titleColor ?? "",
           isOwner: fallback.isOwner,
           titleEnabled: fallback.titleEnabled,
         };
@@ -144,6 +186,7 @@ export function AdminUsersContent() {
     async (user: AdminUser) => {
       const draft = titleDrafts[user.userId] ?? {
         customTitle: user.customTitle ?? "",
+        titleColor: user.titleColor ?? "",
         isOwner: user.isOwner,
         titleEnabled: user.titleEnabled,
       };
@@ -156,6 +199,7 @@ export function AdminUsersContent() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             customTitle: draft.customTitle,
+            titleColor: draft.titleColor,
             isOwner: draft.isOwner,
             titleEnabled: draft.titleEnabled,
           }),
@@ -197,6 +241,7 @@ export function AdminUsersContent() {
           ...prev,
           [user.userId]: {
             customTitle: "",
+            titleColor: "",
             isOwner: false,
             titleEnabled: true,
           },
@@ -300,12 +345,20 @@ export function AdminUsersContent() {
                 const isSavingTitle = savingTitleUserId === user.userId;
                 const draft = titleDrafts[user.userId] ?? {
                   customTitle: user.customTitle ?? "",
+                  titleColor: user.titleColor ?? "",
                   isOwner: user.isOwner,
                   titleEnabled: user.titleEnabled,
                 };
                 const titleError = titleErrors[user.userId] ?? "";
                 const resolvedTitleLabel = formatResolvedTitle(user.resolvedTitle);
                 const titleBadgeClass = getTitleBadgeClass(user.resolvedTitle);
+                const titleBadgeStyle = buildCustomTitleBadgeStyle(user.titleColor);
+                const draftTitleRaw = draft.customTitle.trim() || user.resolvedTitle;
+                const draftTitleLabel =
+                  formatResolvedTitle(draftTitleRaw) ?? "Title Preview";
+                const draftBadgeClass = getTitleBadgeClass(draftTitleRaw);
+                const draftBadgeStyle = buildCustomTitleBadgeStyle(draft.titleColor);
+                const draftColorValue = normalizeHexColor(draft.titleColor) ?? "#e11d48";
 
                 return (
                   <Fragment key={user.userId}>
@@ -340,7 +393,10 @@ export function AdminUsersContent() {
                       </td>
                       <td className="px-4 py-3">
                         {resolvedTitleLabel ? (
-                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${titleBadgeClass}`}>
+                          <span
+                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${titleBadgeClass}`}
+                            style={titleBadgeStyle}
+                          >
                             {resolvedTitleLabel}
                           </span>
                         ) : (
@@ -377,7 +433,7 @@ export function AdminUsersContent() {
                       <tr className="border-b border-border">
                         <td colSpan={10} className="px-4 py-3 bg-muted/5">
                           <div className="space-y-3">
-                            <div className="grid gap-3 md:grid-cols-[1fr_auto_auto_auto_auto] items-center">
+                            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1.6fr_1fr_auto_auto_auto_auto] items-center">
                               <input
                                 value={draft.customTitle}
                                 onChange={(event) =>
@@ -391,6 +447,34 @@ export function AdminUsersContent() {
                                 maxLength={24}
                                 className="px-3 py-2 text-sm border border-border rounded-md bg-background"
                               />
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={draftColorValue}
+                                  onChange={(event) =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleColor: event.target.value },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                  className="h-9 w-11 rounded border border-border bg-background"
+                                  title="Title color"
+                                />
+                                <input
+                                  value={draft.titleColor}
+                                  onChange={(event) =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleColor: event.target.value },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                  placeholder="#ff5a7a"
+                                  maxLength={7}
+                                  className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background font-mono"
+                                />
+                              </div>
                               <label className="inline-flex items-center gap-2 text-sm">
                                 <input
                                   type="checkbox"
@@ -433,6 +517,15 @@ export function AdminUsersContent() {
                               >
                                 Clear Rule
                               </button>
+                            </div>
+
+                            <div>
+                              <span
+                                className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${draftBadgeClass}`}
+                                style={draftBadgeStyle}
+                              >
+                                {draftTitleLabel}
+                              </span>
                             </div>
 
                             <div className="flex items-center gap-3">
