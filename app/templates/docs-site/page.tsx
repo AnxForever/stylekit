@@ -825,11 +825,11 @@ export default function DocsSiteTemplate() {
         </div>
       </nav>
 
-      <div className="pt-14 max-w-[90rem] mx-auto flex">
+      <div className="pt-14 max-w-[90rem] mx-auto flex min-h-[calc(100vh-3.5rem)]">
         {/* Sidebar */}
         <aside
-          className={`fixed lg:sticky top-14 h-[calc(100vh-3.5rem)] w-[280px] shrink-0 bg-gray-50 border-r border-gray-200 overflow-y-auto z-30 transition-transform duration-200 lg:translate-x-0 ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          className={`max-lg:fixed max-lg:z-30 max-lg:transition-transform max-lg:duration-200 lg:sticky top-14 h-[calc(100vh-3.5rem)] w-[280px] shrink-0 bg-gray-50 border-r border-gray-200 overflow-y-auto ${
+            sidebarOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full"
           }`}
         >
           {/* Mobile search */}
