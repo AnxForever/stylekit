@@ -59,6 +59,7 @@ interface CommentOutput {
   author_seq_id: number | null;
   author_title: string | null;
   author_title_color: string | null;
+  author_title_icon_path: string | null;
 }
 
 interface AuthLookupResult {
@@ -377,6 +378,8 @@ function toCommentOutput(
       : null;
   const resolvedTitleColor =
     resolvedTitle && resolvedRule?.titleColor ? resolvedRule.titleColor : null;
+  const resolvedTitleIconPath =
+    resolvedTitle && resolvedRule?.titleIconPath ? resolvedRule.titleIconPath : null;
 
   return {
     id: asString(row.id) ?? "",
@@ -392,6 +395,7 @@ function toCommentOutput(
     author_seq_id: identity?.seqId ?? null,
     author_title: resolvedTitle,
     author_title_color: resolvedTitleColor,
+    author_title_icon_path: resolvedTitleIconPath,
   };
 }
 
@@ -502,14 +506,35 @@ export async function POST(
     const titleRuleMap = await loadUserTitleRuleMap(
       UUID_RE.test(user.id) ? [user.id] : [],
       async (userIds) => {
-        const { data, error } = await sb
+        const withIcon = await sb
+          .from("user_titles")
+          .select(
+            "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
+          )
+          .in("user_id", userIds);
+
+        if (!withIcon.error) {
+          return {
+            data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+            error: null,
+          };
+        }
+
+        if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
+          return {
+            data: null,
+            error: (withIcon.error as DbErrorLike | null) ?? null,
+          };
+        }
+
+        const fallback = await sb
           .from("user_titles")
           .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
           .in("user_id", userIds);
 
         return {
-          data: Array.isArray(data) ? (data as unknown[]) : null,
-          error: (error as DbErrorLike | null) ?? null,
+          data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+          error: (fallback.error as DbErrorLike | null) ?? null,
         };
       }
     );
@@ -711,14 +736,35 @@ export async function GET(
     const titleRuleMap = await loadUserTitleRuleMap(
       userIds.filter((userId) => UUID_RE.test(userId)),
       async (ids) => {
-        const { data, error } = await sb
+        const withIcon = await sb
+          .from("user_titles")
+          .select(
+            "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
+          )
+          .in("user_id", ids);
+
+        if (!withIcon.error) {
+          return {
+            data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+            error: null,
+          };
+        }
+
+        if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
+          return {
+            data: null,
+            error: (withIcon.error as DbErrorLike | null) ?? null,
+          };
+        }
+
+        const fallback = await sb
           .from("user_titles")
           .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
           .in("user_id", ids);
 
         return {
-          data: Array.isArray(data) ? (data as unknown[]) : null,
-          error: (error as DbErrorLike | null) ?? null,
+          data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+          error: (fallback.error as DbErrorLike | null) ?? null,
         };
       }
     );
@@ -794,14 +840,35 @@ export async function GET(
   const legacyTitleRuleMap = await loadUserTitleRuleMap(
     legacyUserIds.filter((userId) => UUID_RE.test(userId)),
     async (ids) => {
-      const { data, error } = await sb
+      const withIcon = await sb
+        .from("user_titles")
+        .select(
+          "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by"
+        )
+        .in("user_id", ids);
+
+      if (!withIcon.error) {
+        return {
+          data: Array.isArray(withIcon.data) ? (withIcon.data as unknown[]) : null,
+          error: null,
+        };
+      }
+
+      if (!isMissingColumnError(withIcon.error as DbErrorLike | null, "title_icon_path")) {
+        return {
+          data: null,
+          error: (withIcon.error as DbErrorLike | null) ?? null,
+        };
+      }
+
+      const fallback = await sb
         .from("user_titles")
         .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
         .in("user_id", ids);
 
       return {
-        data: Array.isArray(data) ? (data as unknown[]) : null,
-        error: (error as DbErrorLike | null) ?? null,
+        data: Array.isArray(fallback.data) ? (fallback.data as unknown[]) : null,
+        error: (fallback.error as DbErrorLike | null) ?? null,
       };
     }
   );

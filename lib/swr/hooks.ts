@@ -39,6 +39,7 @@ interface Comment {
   author_seq_id: number | null;
   author_title: string | null;
   author_title_color: string | null;
+  author_title_icon_path: string | null;
 }
 
 interface CommentsData {
@@ -153,6 +154,7 @@ interface ProfileTitleData {
   success: boolean;
   title: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   seqId: number | null;
 }
 

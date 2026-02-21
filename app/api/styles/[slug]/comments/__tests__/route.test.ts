@@ -188,6 +188,7 @@ describe("styles comments route", () => {
         author_seq_id: null,
         author_title: null,
         author_title_color: null,
+        author_title_icon_path: null,
       },
     });
   });
@@ -392,6 +393,7 @@ describe("styles comments route", () => {
           author_seq_id: 12,
           author_title: "站主",
           author_title_color: null,
+          author_title_icon_path: null,
         },
       ],
       total: 1,
@@ -425,6 +427,7 @@ describe("styles comments route", () => {
           user_id: userId,
           custom_title: "VIP",
           title_color: "#ff5500",
+          title_icon_path: "M0 0 L10 10 Z",
           is_owner: false,
           title_enabled: true,
         },
@@ -487,6 +490,7 @@ describe("styles comments route", () => {
     expect(payload.comments[0].author_title).toBe("VIP");
     expect(payload.comments[0].author_seq_id).toBe(11);
     expect(payload.comments[0].author_title_color).toBe("#ff5500");
+    expect(payload.comments[0].author_title_icon_path).toBe("M0 0 L10 10 Z");
 
     const titleDisabledIn = vi.fn().mockResolvedValue({
       data: [
@@ -538,5 +542,6 @@ describe("styles comments route", () => {
     const fallbackPayload = await fallbackResponse.json();
     expect(fallbackPayload.comments[0].author_title).toBe(EARLY_USER_TITLE_TOKEN);
     expect(fallbackPayload.comments[0].author_title_color).toBeNull();
+    expect(fallbackPayload.comments[0].author_title_icon_path).toBeNull();
   });
 });

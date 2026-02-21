@@ -18,6 +18,7 @@ interface StyleCommentsProps {
 }
 
 const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+const SVG_PATH_RE = /^[MmLlHhVvCcSsQqTtAaZz0-9eE+.,\-\s]+$/;
 
 function getTitleBadgeClass(title: string | null): string {
   if (title === EMPEROR_TITLE_TOKEN) {
@@ -76,6 +77,23 @@ function getTitleBadgeAppearance(
       color: pickBadgeTextColor(normalizedColor),
     },
   };
+}
+
+function normalizeTitleIconPath(value: string | null | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > 2048) {
+    return null;
+  }
+
+  if (!SVG_PATH_RE.test(trimmed)) {
+    return null;
+  }
+
+  return trimmed;
 }
 
 export function StyleComments({ slug }: StyleCommentsProps) {
@@ -330,6 +348,9 @@ export function StyleComments({ slug }: StyleCommentsProps) {
               rawTitle,
               comment.author_title_color
             );
+            const iconPath = normalizeTitleIconPath(
+              comment.author_title_icon_path
+            );
 
             return (
               <div
@@ -359,9 +380,19 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                         </span>
                         {commentTitle ? (
                           <span
-                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-none ${titleBadge.className}`}
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-none ${titleBadge.className}`}
                             style={titleBadge.style}
                           >
+                            {iconPath ? (
+                              <svg
+                                viewBox="0 0 40 40"
+                                className="h-3 w-3 fill-current"
+                                aria-hidden="true"
+                                focusable="false"
+                              >
+                                <path d={iconPath} />
+                              </svg>
+                            ) : null}
                             {commentTitle}
                           </span>
                         ) : null}

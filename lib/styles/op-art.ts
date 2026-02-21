@@ -109,6 +109,38 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
     </p>
   </div>
 </div>`,
+      preview: `<div className="
+  group relative p-10
+  bg-white
+  border-4 border-black
+  rounded-none overflow-hidden
+  hover:bg-black hover:text-white
+  transition-colors duration-150
+  cursor-crosshair
+">
+  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-30 group-hover:opacity-100 transition-opacity duration-150">
+    <div className="w-64 h-64 -translate-x-16 -translate-y-16 group-hover:animate-[spin_4s_linear_infinite]">
+      <div className="absolute inset-0 border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[10px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[20px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[30px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[40px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[50px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[60px] border-[3px] border-black rounded-full group-hover:border-white" />
+      <div className="absolute inset-[70px] border-[3px] border-black rounded-full group-hover:border-white" />
+    </div>
+  </div>
+
+  <div className="relative z-10">
+    <div className="w-12 h-2 bg-[#ff3300] mb-6 group-hover:bg-white transition-colors duration-150" />
+    <h3 className="text-xl font-sans font-black text-black tracking-wider mb-3 uppercase group-hover:text-white group-hover:-skew-x-12 transition-all duration-150">
+      Optical
+    </h3>
+    <p className="text-black/60 font-sans leading-relaxed text-sm group-hover:text-white/70 group-hover:tracking-wider transition-all duration-300">
+      The eye deceives. Geometry reveals truth hidden in plain sight.
+    </p>
+  </div>
+</div>`,
     },
     input: {
       name: "输入框",
@@ -162,6 +194,59 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
       />
     ))}
   </div>
+
+  <div className="relative z-10 text-center px-6 max-w-3xl">
+    <h1 className="text-6xl md:text-8xl font-sans font-bold text-black mb-6 tracking-tight uppercase">
+      OP ART
+    </h1>
+    <div className="flex justify-center gap-2 mb-6">
+      <span className="w-4 h-4 bg-[#ff3300] inline-block" />
+      <span className="w-4 h-4 bg-[#0066ff] inline-block" />
+      <span className="w-4 h-4 bg-[#ffcc00] inline-block" />
+    </div>
+    <p className="text-lg text-black/50 mb-10 tracking-[0.2em] uppercase font-sans font-medium">
+      Where perception becomes the medium
+    </p>
+    <div className="flex gap-4 justify-center">
+      <button className="
+        px-12 py-4
+        bg-black text-white
+        font-sans font-medium uppercase tracking-[0.3em]
+        rounded-none border-2 border-black
+        hover:bg-white hover:text-black
+        transition-colors duration-200
+      ">
+        Enter
+      </button>
+      <button className="
+        px-12 py-4
+        bg-white text-black
+        font-sans font-medium uppercase tracking-[0.3em]
+        rounded-none border-2 border-black
+        hover:bg-black hover:text-white
+        transition-colors duration-200
+      ">
+        Study
+      </button>
+    </div>
+  </div>
+</section>`,
+      preview: `<section className="
+  min-h-screen
+  flex items-center justify-center
+  bg-white
+  relative overflow-hidden
+">
+  <div className="absolute inset-0 flex items-center justify-center opacity-10">
+    <div className="absolute w-[80px] h-[80px] border-2 border-black rounded-full" />
+    <div className="absolute w-[160px] h-[160px] border-2 border-black rounded-full" />
+    <div className="absolute w-[240px] h-[240px] border-2 border-black rounded-full" />
+    <div className="absolute w-[320px] h-[320px] border-2 border-black rounded-full" />
+    <div className="absolute w-[400px] h-[400px] border-2 border-black rounded-full" />
+    <div className="absolute w-[480px] h-[480px] border-2 border-black rounded-full" />
+  </div>
+
+  <div className="absolute left-0 top-0 w-1/4 h-full bg-[repeating-linear-gradient(90deg,#000000_0px,#000000_12px,#ffffff_12px,#ffffff_24px)]" />
 
   <div className="relative z-10 text-center px-6 max-w-3xl">
     <h1 className="text-6xl md:text-8xl font-sans font-bold text-black mb-6 tracking-tight uppercase">
