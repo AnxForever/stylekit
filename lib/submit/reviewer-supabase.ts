@@ -82,6 +82,28 @@ export async function getLatestApprovedSubmissionBySlugSupabase(
   return toSubmissionRecord(data);
 }
 
+export async function hasActiveSubmissionSlugSupabase(
+  slug: string
+): Promise<boolean> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return false;
+
+  const normalizedSlug = slug.trim().toLowerCase();
+  if (!normalizedSlug) return false;
+
+  const { count, error } = await sb
+    .from("submissions")
+    .select("id", { head: true, count: "exact" })
+    .eq("slug", normalizedSlug)
+    .in("status", ["pending", "approved"]);
+
+  if (error) {
+    throw new Error(`Supabase query failed: ${error.message}`);
+  }
+
+  return (count ?? 0) > 0;
+}
+
 export async function createSubmissionSupabase(
   slug: string,
   formData: Record<string, unknown>,

@@ -3,9 +3,10 @@ import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-const { useI18nMock, exportBlendedTokensMock } = vi.hoisted(() => ({
+const { useI18nMock, exportBlendedTokensMock, useUserMock } = vi.hoisted(() => ({
   useI18nMock: vi.fn(),
   exportBlendedTokensMock: vi.fn(() => "{}"),
+  useUserMock: vi.fn(),
 }));
 
 vi.mock("@/lib/i18n/context", () => ({
@@ -14,6 +15,10 @@ vi.mock("@/lib/i18n/context", () => ({
 
 vi.mock("@/lib/styles/blend-engine", () => ({
   exportBlendedTokens: exportBlendedTokensMock,
+}));
+
+vi.mock("@/lib/auth/use-user", () => ({
+  useUser: useUserMock,
 }));
 
 vi.mock("@/lib/styles/index", () => ({
@@ -128,6 +133,13 @@ describe("StyleGenResult", () => {
       locale: "en",
       setLocale: vi.fn(),
     });
+    useUserMock.mockReturnValue({
+      user: { id: "user-1" },
+      loading: false,
+      signInWithGitHub: vi.fn(),
+      signInWithLinuxDo: vi.fn(),
+      signOut: vi.fn(),
+    });
   });
 
   it("renders reasoning and detection signals", () => {
@@ -153,5 +165,29 @@ describe("StyleGenResult", () => {
 
     expect(screen.getByLabelText("Apple Style influence 65%")).toHaveStyle({ width: "65%" });
     expect(screen.getByLabelText("Neo Brutalist influence 2%")).toHaveStyle({ width: "4%" });
+  });
+
+  it("shows candidate selector when multiple generated variations exist", () => {
+    render(
+      <StyleGenResult
+        result={{
+          ...sampleResult,
+          candidates: [
+            sampleResult,
+            {
+              ...sampleResult,
+              name: "Alternative Blend",
+              description: "More expressive with stronger contrast.",
+              confidence: 58,
+            },
+          ],
+        }}
+      />
+    );
+
+    expect(screen.getByText("aiGen.candidates")).toBeInTheDocument();
+    expect(screen.getByText("aiGen.candidate 1")).toBeInTheDocument();
+    expect(screen.getByText("aiGen.candidate 2")).toBeInTheDocument();
+    expect(screen.getByText("More expressive with stronger contrast.")).toBeInTheDocument();
   });
 });

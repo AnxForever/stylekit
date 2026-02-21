@@ -4,9 +4,12 @@ import { existsSync } from "fs";
 import path from "path";
 import { wizardFormSchema } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
+import { getStyleBySlug } from "@/lib/styles";
+import { hasActiveSubmissionSlug } from "@/lib/submit/reviewer";
 import {
   isSupabaseConfigured,
   createSubmissionSupabase,
+  hasActiveSubmissionSlugSupabase,
 } from "@/lib/submit/reviewer-supabase";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import {
@@ -86,6 +89,25 @@ export async function POST(request: Request) {
     }
 
     const data = parsed.data;
+    const normalizedSlug = data.slug.trim().toLowerCase();
+    if (getStyleBySlug(normalizedSlug)) {
+      return NextResponse.json(
+        { success: false, error: "This slug is already used by a built-in style." },
+        { status: 409 }
+      );
+    }
+
+    const useSupabase = isSupabaseConfigured();
+    const hasConflict = useSupabase
+      ? await hasActiveSubmissionSlugSupabase(normalizedSlug)
+      : await hasActiveSubmissionSlug(normalizedSlug);
+    if (hasConflict) {
+      return NextResponse.json(
+        { success: false, error: "This slug is already pending review or approved." },
+        { status: 409 }
+      );
+    }
+
     const tokens = convertToStyleTokens(data);
     const designStyle = convertToDesignStyle(data);
     const authorName = user.user_metadata?.user_name ?? user.user_metadata?.full_name ?? "user";
@@ -102,10 +124,10 @@ export async function POST(request: Request) {
     };
 
     // Use Supabase when configured, otherwise fall back to file system
-    if (isSupabaseConfigured()) {
+    if (useSupabase) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
       const result = await createSubmissionSupabase(
-        data.slug,
+        normalizedSlug,
         formDataWithAuthor as unknown as Record<string, unknown>,
         tokens as unknown as Record<string, unknown>,
         designStyle as unknown as Record<string, unknown>,
@@ -124,11 +146,11 @@ export async function POST(request: Request) {
 
     // File-based fallback
     const timestamp = Date.now();
-    const id = `${timestamp}-${data.slug}`;
+    const id = `${timestamp}-${normalizedSlug}`;
 
     const submission = {
       id,
-      slug: data.slug,
+      slug: normalizedSlug,
       submittedAt: new Date(timestamp).toISOString(),
       status: "pending" as const,
       userId: user.id,
@@ -148,7 +170,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       id,
-      slug: data.slug,
+      slug: normalizedSlug,
     });
   } catch {
     return NextResponse.json(

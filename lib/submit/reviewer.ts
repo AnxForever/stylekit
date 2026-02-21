@@ -87,6 +87,20 @@ export async function getLatestApprovedSubmissionBySlug(
   return approved.find((submission) => submission.slug === normalizedSlug) ?? null;
 }
 
+export async function hasActiveSubmissionSlug(slug: string): Promise<boolean> {
+  const normalizedSlug = slug.trim().toLowerCase();
+  if (!normalizedSlug) {
+    return false;
+  }
+
+  const records = await listSubmissions();
+  return records.some(
+    (submission) =>
+      submission.slug === normalizedSlug &&
+      (submission.status === "pending" || submission.status === "approved")
+  );
+}
+
 export async function approveSubmission(
   id: string,
   note?: string
