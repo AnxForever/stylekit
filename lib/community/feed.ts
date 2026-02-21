@@ -106,6 +106,14 @@ function asProvider(value: unknown): CommunityProvider {
   return "unknown";
 }
 
+function toInlineSvgDataUri(value: unknown): string | null {
+  const svg = asString(value);
+  if (!svg) return null;
+  if (svg.startsWith("data:image/svg+xml")) return svg;
+  if (!svg.includes("<svg")) return null;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function parseAuthorMeta(formData: Record<string, unknown>): AuthorMeta {
   const meta = asRecord(formData.__author);
   return {
@@ -139,6 +147,8 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
   const formData = asRecord(row.form_data);
   const authorMeta = parseAuthorMeta(formData);
   const styleMeta = getStyleMetaBySlug(row.slug);
+  const assets = asRecord(formData.__assets);
+  const legacyAssets = asRecord(formData.assets);
 
   return {
     id: row.id,
@@ -160,6 +170,8 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
       styleMeta?.description ??
       null,
     cover:
+      toInlineSvgDataUri(assets.coverSvg) ??
+      toInlineSvgDataUri(legacyAssets.coverSvg) ??
       asString(formData.cover) ??
       styleMeta?.cover ??
       `/styles/${row.slug}/opengraph-image`,
@@ -176,6 +188,8 @@ function mapItemFromFile(row: FileSubmissionRow): CommunityFeedItem {
   const formData = asRecord(row.formData);
   const authorMeta = parseAuthorMeta(formData);
   const styleMeta = getStyleMetaBySlug(row.slug);
+  const assets = asRecord(formData.__assets);
+  const legacyAssets = asRecord(formData.assets);
 
   return {
     id: row.id,
@@ -197,6 +211,8 @@ function mapItemFromFile(row: FileSubmissionRow): CommunityFeedItem {
       styleMeta?.description ??
       null,
     cover:
+      toInlineSvgDataUri(assets.coverSvg) ??
+      toInlineSvgDataUri(legacyAssets.coverSvg) ??
       asString(formData.cover) ??
       styleMeta?.cover ??
       `/styles/${row.slug}/opengraph-image`,

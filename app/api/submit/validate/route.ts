@@ -14,6 +14,11 @@ import {
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 60;
 const MAX_BODY_BYTES = 256 * 1024;
+const MIN_MEANINGFUL_AI_RULES = 3;
+const MIN_COMPONENT_SNIPPET_LENGTH = 24;
+const REQUIRED_COMPONENT_FIELDS = ["buttonCode", "cardCode", "inputCode"] as const;
+const EXTENDED_COMPONENT_FIELDS = ["navCode", "heroCode", "footerCode"] as const;
+const MIN_EXTENDED_COMPONENTS_FOR_MANIFEST = 2;
 
 function pickManifestCandidate(payload: unknown): unknown {
   if (
@@ -25,6 +30,10 @@ function pickManifestCandidate(payload: unknown): unknown {
     return (payload as { manifest: unknown }).manifest;
   }
   return payload;
+}
+
+function hasMeaningfulComponentSnippet(value: unknown): boolean {
+  return typeof value === "string" && value.trim().length >= MIN_COMPONENT_SNIPPET_LENGTH;
 }
 
 export async function POST(request: Request) {
@@ -82,8 +91,31 @@ export async function POST(request: Request) {
   if (!validation.data.assets.coverSvg.includes("<svg")) {
     warnings.push("coverSvg does not appear to contain an <svg> root element.");
   }
-  if (validation.data.formData.aiRules.filter((value) => value.trim()).length === 0) {
-    warnings.push("aiRules is empty. Add style guidance for better generation quality.");
+  const meaningfulAiRules = validation.data.formData.aiRules.filter(
+    (value) => value.trim().length > 0
+  ).length;
+  if (meaningfulAiRules < MIN_MEANINGFUL_AI_RULES) {
+    warnings.push(
+      `aiRules has ${meaningfulAiRules} non-empty entries; recommend at least ${MIN_MEANINGFUL_AI_RULES}.`
+    );
+  }
+
+  const missingCoreComponents = REQUIRED_COMPONENT_FIELDS.filter(
+    (field) => !hasMeaningfulComponentSnippet(validation.data.formData[field])
+  );
+  if (missingCoreComponents.length > 0) {
+    warnings.push(
+      `Missing core component snippets (${MIN_COMPONENT_SNIPPET_LENGTH}+ chars): ${missingCoreComponents.join(", ")}.`
+    );
+  }
+
+  const providedExtendedComponents = EXTENDED_COMPONENT_FIELDS.filter((field) =>
+    hasMeaningfulComponentSnippet(validation.data.formData[field])
+  );
+  if (providedExtendedComponents.length < MIN_EXTENDED_COMPONENTS_FOR_MANIFEST) {
+    warnings.push(
+      `Recommend at least ${MIN_EXTENDED_COMPONENTS_FOR_MANIFEST} extended components from navCode/heroCode/footerCode for stronger preview coverage.`
+    );
   }
 
   return NextResponse.json({

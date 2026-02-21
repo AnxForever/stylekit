@@ -13,7 +13,16 @@ const selfCheckSchema = z.object({
     .array(z.enum(["manifest.json", "cover.svg", "self-check.md"]))
     .min(1),
   componentCoverage: z
-    .array(z.enum(["buttonCode", "cardCode", "inputCode"]))
+    .array(
+      z.enum([
+        "buttonCode",
+        "cardCode",
+        "inputCode",
+        "navCode",
+        "heroCode",
+        "footerCode",
+      ])
+    )
     .min(1),
   notes: z.string(),
 });
@@ -183,6 +192,30 @@ export function validateManifestDetailed(input: unknown): ManifestDetailedResult
     field: "inputCode",
     ok: inputCode.length > 0,
     detail: inputCode.length > 0 ? "present" : "not provided",
+  });
+
+  // navCode (optional but recommended)
+  const navCode = typeof formData.navCode === "string" ? formData.navCode.trim() : "";
+  fields.push({
+    field: "navCode",
+    ok: navCode.length > 0,
+    detail: navCode.length > 0 ? "present" : "not provided",
+  });
+
+  // heroCode (optional but recommended)
+  const heroCode = typeof formData.heroCode === "string" ? formData.heroCode.trim() : "";
+  fields.push({
+    field: "heroCode",
+    ok: heroCode.length > 0,
+    detail: heroCode.length > 0 ? "present" : "not provided",
+  });
+
+  // footerCode (optional but recommended)
+  const footerCode = typeof formData.footerCode === "string" ? formData.footerCode.trim() : "";
+  fields.push({
+    field: "footerCode",
+    ok: footerCode.length > 0,
+    detail: footerCode.length > 0 ? "present" : "not provided",
   });
 
   // coverSvg
