@@ -149,7 +149,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                         src={item.cover}
                         alt={item.title}
                         fill
-                        unoptimized
+                        loading="lazy"
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                       />
@@ -186,7 +186,6 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                             alt={item.author.handle}
                             width={20}
                             height={20}
-                            unoptimized
                             className="w-5 h-5 rounded-full"
                           />
                         ) : (

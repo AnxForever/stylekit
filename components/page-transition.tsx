@@ -1,33 +1,33 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface PageTransitionProps {
   children: React.ReactNode;
 }
 
 /**
- * 页面过渡动画包装器
- * 使用 CSS 动画实现淡入效果，无需额外依赖
+ * Page transition wrapper.
+ * Animates a fade-in only on the initial mount. Subsequent soft navigations
+ * are instant to avoid a visible opacity flash on every route change.
  */
 export function PageTransition({ children }: PageTransitionProps) {
-  const pathname = usePathname();
+  const hasMounted = useRef(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Reset and trigger animation on route change
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- valid animation trigger pattern
-    setIsVisible(false);
+    if (hasMounted.current) return;
+    // First mount: animate in on next frame
     const timer = requestAnimationFrame(() => {
+      hasMounted.current = true;
       setIsVisible(true);
     });
     return () => cancelAnimationFrame(timer);
-  }, [pathname]);
+  }, []);
 
   return (
     <div
-      className={`transition-all duration-300 ease-out ${
+      className={`transition-all duration-200 ease-out ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
     >
