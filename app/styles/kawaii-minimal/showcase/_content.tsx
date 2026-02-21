@@ -501,7 +501,7 @@ export default function ShowcaseContent() {
                         className="absolute -top-2 -right-1 kawaii-bounce-in-anim"
                         style={{ color: "#fff" }}
                       >
-                        <HeartIcon className="w-5 h-5 drop-shadow-sm" style={{ color: swatch.hex === "#FFF7ED" ? "#F9A8D4" : "#fff" } as React.CSSProperties} />
+                        <HeartIcon className={`w-5 h-5 drop-shadow-sm ${swatch.hex === "#FFF7ED" ? "text-[#F9A8D4]" : "text-white"}`} />
                       </div>
                     )}
                   </div>
