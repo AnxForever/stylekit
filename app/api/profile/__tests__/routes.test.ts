@@ -321,6 +321,57 @@ describe("profile routes", () => {
     });
   });
 
+  it("ratings endpoint falls back to legacy session ratings and keeps latest per style", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "user-2" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: null,
+              error: {
+                code: "42703",
+                message: "column style_ratings.user_id does not exist",
+              },
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const legacyChain = {
+      select: vi.fn().mockReturnValue({
+        in: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [
+                { id: "r-old", style_slug: "editorial", rating: 3, created_at: "2026-01-02" },
+                { id: "r-new", style_slug: "editorial", rating: 5, created_at: "2026-01-03" },
+              ],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(legacyChain),
+    } as never);
+
+    const response = await getRatings();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      ratings: [{ id: "r-new", style_slug: "editorial", rating: 5, created_at: "2026-01-03" }],
+    });
+  });
+
   it("submissions endpoint requires authentication", async () => {
     mockedGetServerUser.mockResolvedValue(null);
     const response = await getSubmissions();
