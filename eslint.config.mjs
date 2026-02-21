@@ -29,6 +29,8 @@ const eslintConfig = defineConfig([
     ".github/**",
     // Standalone portfolio demo (Vite app, not part of Next.js).
     "editorial-brutalist-portfolio/**",
+    // Auto-generated showcase content files (JSX from recipe code).
+    "app/styles/*/showcase/**",
   ]),
 ]);
 
