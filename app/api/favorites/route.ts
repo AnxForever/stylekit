@@ -241,6 +241,7 @@ function buildLegacyUserSessionId(userId: string): string {
 }
 
 async function readFavoriteSlugsForUser(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sb: any,
   tableName: string,
   userId: string
@@ -287,6 +288,7 @@ async function readFavoriteSlugsForUser(
 }
 
 async function insertFavoriteForUser(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sb: any,
   tableName: string,
   userId: string,
@@ -324,6 +326,7 @@ async function insertFavoriteForUser(
 }
 
 async function deleteFavoriteForUser(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sb: any,
   tableName: string,
   userId: string,
