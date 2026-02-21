@@ -823,10 +823,10 @@ export default function ShowcaseContent() {
                   </div>
                   <div className="p-6 bg-white space-y-3">
                     {[
-                      { icon: "ℹ", label: "Info", title: "Your trial expires in 7 days.", bg: "#eff6ff", border: "#bfdbfe", color: "#1e40af" },
-                      { icon: "✓", label: "Success", title: "Deployment completed successfully.", bg: "#f0fdf4", border: "#bbf7d0", color: "#15803d" },
-                      { icon: "⚠", label: "Warning", title: "API usage is above 80% of your quota.", bg: "#fffbeb", border: "#fde68a", color: "#b45309" },
-                      { icon: "✕", label: "Error", title: "Failed to connect to database.", bg: "#fef2f2", border: "#fecaca", color: "#b91c1c" },
+                      { icon: "\u2139", label: "Info", title: "Your trial expires in 7 days.", bg: "#eff6ff", border: "#bfdbfe", color: "#1e40af" },
+                      { icon: "\u2713", label: "Success", title: "Deployment completed successfully.", bg: "#f0fdf4", border: "#bbf7d0", color: "#15803d" },
+                      { icon: "\u26A0", label: "Warning", title: "API usage is above 80% of your quota.", bg: "#fffbeb", border: "#fde68a", color: "#b45309" },
+                      { icon: "\u2715", label: "Error", title: "Failed to connect to database.", bg: "#fef2f2", border: "#fecaca", color: "#b91c1c" },
                     ].map((a) => (
                       <div
                         key={a.label}

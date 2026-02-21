@@ -149,7 +149,7 @@ const ERA_DATA: Record<
       "Heavy-duty border treatments",
       "Minimal ornament, maximum integrity",
     ],
-    motif: "★",
+    motif: "\u2605",
   },
   "1960s": {
     decade: "The Sixties",

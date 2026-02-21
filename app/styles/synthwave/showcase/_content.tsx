@@ -674,7 +674,7 @@ export default function SynthwaveShowcase() {
                         }`}
                       >
                         {currentTrack === i && isPlaying ? (
-                          <span className="text-[#ff00ff] text-[10px]">▶</span>
+                          <span className="text-[#ff00ff] text-[10px]">&#9654;</span>
                         ) : (
                           <span>{String(i + 1).padStart(2, "0")}</span>
                         )}
@@ -1229,7 +1229,7 @@ export default function SynthwaveShowcase() {
                         className="mt-1 w-4 h-4 shrink-0 flex items-center justify-center border border-[#00ffff]/60 text-[#00ffff] text-[10px] font-bold"
                         style={{ boxShadow: "0 0 6px rgba(0,255,255,0.4)" }}
                       >
-                        ✓
+                        &#10003;
                       </span>
                       <span className="leading-relaxed">{item}</span>
                     </li>
@@ -1258,7 +1258,7 @@ export default function SynthwaveShowcase() {
                         className="mt-1 w-4 h-4 shrink-0 flex items-center justify-center border border-[#ff1493]/60 text-[#ff1493] text-[10px] font-bold"
                         style={{ boxShadow: "0 0 6px rgba(255,20,147,0.4)" }}
                       >
-                        ✗
+                        &#10007;
                       </span>
                       <span className="leading-relaxed">{item}</span>
                     </li>

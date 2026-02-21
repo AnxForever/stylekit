@@ -143,11 +143,11 @@ export default function Y2KShowcase() {
         <div className="bubble-4 absolute top-[60%] right-[20%] w-32 h-32 rounded-full bg-gradient-to-br from-lime-300/25 to-cyan-200/15 blur-2xl" />
 
         {/* Star decorations */}
-        <span className="blink-star absolute top-[14%] left-[28%] text-pink-300/60 text-2xl select-none">✦</span>
-        <span className="blink-star absolute top-[22%] right-[22%] text-cyan-300/60 text-xl select-none" style={{ animationDelay: "0.8s" }}>★</span>
-        <span className="blink-star absolute bottom-[35%] left-[42%] text-purple-300/50 text-3xl select-none" style={{ animationDelay: "1.4s" }}>✸</span>
-        <span className="blink-star absolute top-[50%] left-[10%] text-pink-200/40 text-lg select-none" style={{ animationDelay: "0.4s" }}>✦</span>
-        <span className="blink-star absolute bottom-[12%] right-[30%] text-cyan-200/50 text-2xl select-none" style={{ animationDelay: "2s" }}>★</span>
+        <span className="blink-star absolute top-[14%] left-[28%] text-pink-300/60 text-2xl select-none">&#10022;</span>
+        <span className="blink-star absolute top-[22%] right-[22%] text-cyan-300/60 text-xl select-none" style={{ animationDelay: "0.8s" }}>&#9733;</span>
+        <span className="blink-star absolute bottom-[35%] left-[42%] text-purple-300/50 text-3xl select-none" style={{ animationDelay: "1.4s" }}>&#10040;</span>
+        <span className="blink-star absolute top-[50%] left-[10%] text-pink-200/40 text-lg select-none" style={{ animationDelay: "0.4s" }}>&#10022;</span>
+        <span className="blink-star absolute bottom-[12%] right-[30%] text-cyan-200/50 text-2xl select-none" style={{ animationDelay: "2s" }}>&#9733;</span>
       </div>
 
       {/* ================================================================== */}
@@ -181,14 +181,14 @@ export default function Y2KShowcase() {
 
           {/* Center logo */}
           <div className="flex items-center gap-2">
-            <span className="text-pink-400 text-lg blink-star">✦</span>
+            <span className="text-pink-400 text-lg blink-star">&#10022;</span>
             <span
               className="font-black text-2xl chrome-text tracking-widest"
               style={{ fontFamily: "'Courier New', monospace" }}
             >
               Y2K
             </span>
-            <span className="text-cyan-400 text-lg blink-star" style={{ animationDelay: "0.5s" }}>✦</span>
+            <span className="text-cyan-400 text-lg blink-star" style={{ animationDelay: "0.5s" }}>&#10022;</span>
           </div>
 
           {/* Nav links */}
@@ -231,15 +231,15 @@ export default function Y2KShowcase() {
               className="flex items-center gap-6 px-6 text-white text-xs font-bold tracking-[0.25em] uppercase"
               style={{ fontFamily: "'Courier New', monospace" }}
             >
-              <span>✦ Y2K AESTHETIC</span>
-              <span>★ MILLENNIUM VIBES</span>
-              <span>✸ CHROME &amp; PINK</span>
-              <span>✦ FUTURE IS NOW</span>
-              <span>★ YEAR 2000</span>
-              <span>✸ BUBBLE UI</span>
-              <span>✦ HOLOGRAPHIC</span>
-              <span>★ IRIDESCENT</span>
-              <span>✸ METALLIC</span>
+              <span>&#10022; Y2K AESTHETIC</span>
+              <span>&#9733; MILLENNIUM VIBES</span>
+              <span>&#10040; CHROME &amp; PINK</span>
+              <span>&#10022; FUTURE IS NOW</span>
+              <span>&#9733; YEAR 2000</span>
+              <span>&#10040; BUBBLE UI</span>
+              <span>&#10022; HOLOGRAPHIC</span>
+              <span>&#9733; IRIDESCENT</span>
+              <span>&#10040; METALLIC</span>
             </span>
           ))}
         </div>
@@ -257,14 +257,14 @@ export default function Y2KShowcase() {
                 background: "linear-gradient(135deg, rgba(255,255,255,0.7), rgba(192,192,192,0.4))",
               }}
             >
-              <span className="text-pink-500 blink-star">✦</span>
+              <span className="text-pink-500 blink-star">&#10022;</span>
               <span
                 className="text-xs font-bold tracking-[0.3em] uppercase text-gray-600"
                 style={{ fontFamily: "'Courier New', monospace" }}
               >
                 Est. Year 2000
               </span>
-              <span className="text-cyan-500 blink-star" style={{ animationDelay: "0.6s" }}>✦</span>
+              <span className="text-cyan-500 blink-star" style={{ animationDelay: "0.6s" }}>&#10022;</span>
             </div>
           </RevealBlock>
 
@@ -570,7 +570,7 @@ export default function Y2KShowcase() {
                       fontFamily: "'Courier New', monospace",
                     }}
                   >
-                    Join Now ✦
+                    Join Now &#10022;
                   </button>
                 </div>
               </div>
@@ -713,7 +713,7 @@ export default function Y2KShowcase() {
                     "Use translucent effects: bg-white/30 backdrop-blur",
                     "Apply rainbow gradient text effects",
                     "Use rounded-full for that futuristic shape language",
-                    "Add star and sparkle decorations ✦ ★ ✸",
+                    "Add star and sparkle decorations \u2726 \u2605 \u2738",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span
@@ -1086,7 +1086,7 @@ export default function Y2KShowcase() {
                       &#128101; Friend List
                     </h4>
                     <p className="text-gray-600 text-sm" style={{ fontFamily: "'Courier New', monospace" }}>
-                      2,847 friends online. 42 new requests! You are very popular ✦
+                      2,847 friends online. 42 new requests! You are very popular &#10022;
                     </p>
                   </div>
                 )}
@@ -1526,7 +1526,7 @@ export default function Y2KShowcase() {
                     className="text-xs text-gray-500 mt-0.5"
                     style={{ fontFamily: "'Courier New', monospace" }}
                   >
-                    This page is best viewed in 800x600 resolution ✦ IE 6.0
+                    This page is best viewed in 800x600 resolution &#10022; IE 6.0
                   </p>
                 </div>
               </div>
@@ -1535,7 +1535,7 @@ export default function Y2KShowcase() {
                   className="text-xs font-bold text-pink-500 tracking-widest"
                   style={{ fontFamily: "'Courier New', monospace" }}
                 >
-                  ★ NETSCAPE COMPATIBLE ★
+                  &#9733; NETSCAPE COMPATIBLE &#9733;
                 </span>
               </div>
             </div>
@@ -1572,14 +1572,14 @@ export default function Y2KShowcase() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-pink-400 blink-star">✦</span>
+                <span className="text-pink-400 blink-star">&#10022;</span>
                 <span
                   className="font-black text-2xl chrome-text"
                   style={{ fontFamily: "'Courier New', monospace" }}
                 >
                   Y2K
                 </span>
-                <span className="text-cyan-400 blink-star" style={{ animationDelay: "0.5s" }}>✦</span>
+                <span className="text-cyan-400 blink-star" style={{ animationDelay: "0.5s" }}>&#10022;</span>
               </div>
               <p
                 className="text-sm text-gray-500 leading-relaxed"
@@ -1651,7 +1651,7 @@ export default function Y2KShowcase() {
           {/* Copyright */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <span className="text-pink-300/60 blink-star">✦</span>
+              <span className="text-pink-300/60 blink-star">&#10022;</span>
               <span className="text-gray-400 text-xs" style={{ fontFamily: "'Courier New', monospace" }}>
                 Part of the{" "}
                 <Link href="/" className="text-pink-500 hover:text-pink-600 transition-colors font-medium">
@@ -1659,7 +1659,7 @@ export default function Y2KShowcase() {
                 </Link>{" "}
                 Design System Collection
               </span>
-              <span className="text-cyan-300/60 blink-star" style={{ animationDelay: "0.7s" }}>✦</span>
+              <span className="text-cyan-300/60 blink-star" style={{ animationDelay: "0.7s" }}>&#10022;</span>
             </div>
             <p
               className="text-gray-300 text-xs"

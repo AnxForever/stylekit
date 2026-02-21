@@ -1289,7 +1289,7 @@ export default function PixelArtShowcase() {
             { label: "HEADING", size: "clamp(1.4rem, 4vw, 2.2rem)", weight: 900, color: "#ff004d", shadow: "3px 3px 0 #1a1c2c", sample: "HIGH SCORE" },
             { label: "SUBHEAD", size: "clamp(1rem, 3vw, 1.5rem)", weight: 900, color: "#29adff", shadow: "2px 2px 0 #1a1c2c", sample: "LEVEL SELECT" },
             { label: "BODY",    size: "0.9rem",                    weight: 700, color: "#c2c3c7", shadow: "none",              sample: "INSERT COIN TO CONTINUE. PRESS START TO PLAY." },
-            { label: "CAPTION", size: "0.7rem",                    weight: 700, color: "#5f574f", shadow: "none",              sample: "© 1985 STYLEKIT GAMES. ALL RIGHTS RESERVED." },
+            { label: "CAPTION", size: "0.7rem",                    weight: 700, color: "#5f574f", shadow: "none",              sample: "\u00A9 1985 STYLEKIT GAMES. ALL RIGHTS RESERVED." },
           ].map(({ label, size, weight, color, shadow, sample }, i) => (
             <RevealBlock key={label} delay={i * 0.07}>
               <div
@@ -1502,8 +1502,8 @@ export default function PixelArtShowcase() {
               </p>
 
               {[
-                { label: "HP", value: health, max: 100, color: "#ff004d", icon: "♥" },
-                { label: "XP", value: 2450,   max: 5000, color: "#29adff", icon: "★" },
+                { label: "HP", value: health, max: 100, color: "#ff004d", icon: "\u2665" },
+                { label: "XP", value: 2450,   max: 5000, color: "#29adff", icon: "\u2605" },
                 { label: "MP", value: 80,      max: 100, color: "#7e2553", icon: "◆" },
               ].map(({ label, value, max, color, icon }) => (
                 <div key={label} style={{ marginBottom: 20 }}>
@@ -1788,14 +1788,14 @@ export default function PixelArtShowcase() {
                 "UI runs on a state machine, not an animation engine. All transitions are instantaneous hard cuts.",
             },
             {
-              icon: "★",
+              icon: "\u2605",
               color: "#ffec27",
               title: "LIMITED PALETTE",
               body:
                 "16 colors maximum. PICO-8 inspired. Every color choice is deliberate, no gradients allowed.",
             },
             {
-              icon: "♥",
+              icon: "\u2665",
               color: "#29adff",
               title: "NOSTALGIA CODED",
               body:
@@ -1940,7 +1940,7 @@ export default function PixelArtShowcase() {
             >
               {[
                 { label: "1",    bg: "#ff004d", size: 40 },
-                { label: "★",    bg: "#ffec27", size: 48, color: "#1a1c2c" },
+                { label: "\u2605",    bg: "#ffec27", size: 48, color: "#1a1c2c" },
                 { label: "PRO",  bg: "#00e436", size: 40 },
                 { label: "MAX",  bg: "#7e2553", size: 40 },
                 { label: "99",   bg: "#1a1c2c", border: "#29adff", size: 40, color: "#29adff" },
@@ -2142,7 +2142,7 @@ export default function PixelArtShowcase() {
                 letterSpacing: "0.1em",
               }}
             >
-              © 2026 STYLEKIT. INSERT COIN TO CONTINUE.
+              &copy; 2026 STYLEKIT. INSERT COIN TO CONTINUE.
             </p>
           </div>
         </div>

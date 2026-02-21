@@ -1610,7 +1610,7 @@ export default function GlitchArtShowcase() {
                           opacity: j === panel.lines.length - 1 ? 1 : 0.7,
                         }}
                       >
-                        {j === panel.lines.length - 1 ? "▶ " : "  "}
+                        {j === panel.lines.length - 1 ? "\u25B6 " : "  "}
                         {line}
                       </p>
                     ))}
