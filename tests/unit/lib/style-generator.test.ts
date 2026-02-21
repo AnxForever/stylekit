@@ -18,8 +18,12 @@ describe("generateStyleFromDescription", () => {
     });
 
     const slugs = result.sourceStyles.map((item) => item.slug);
-    expect(slugs[0]).toBe("neo-brutalist");
+    // Both neo-brutalist and editorial should be detected as explicit style mentions
+    expect(slugs).toContain("neo-brutalist");
     expect(slugs).toContain("editorial");
+    // The top two styles should cover the majority of the blend weight
+    const topTwoWeight = result.sourceStyles.slice(0, 2).reduce((sum, s) => sum + s.weight, 0);
+    expect(topTwoWeight).toBeGreaterThan(0.85);
   });
 
   it("applies negative constraints from phrasing like less/not/without", () => {

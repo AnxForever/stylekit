@@ -7,8 +7,17 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { hasStyleTokens } from "@/lib/styles/tokens-registry";
 import type { GeneratedStyle } from "@/lib/ai-generator";
 
+export interface StyleGenerationResponse extends GeneratedStyle {
+  candidates?: GeneratedStyle[];
+  meta?: {
+    variationCount: number;
+    creativity: number;
+    seed: number;
+  };
+}
+
 interface StyleGenFormProps {
-  onGenerate: (result: GeneratedStyle) => void;
+  onGenerate: (result: StyleGenerationResponse) => void;
 }
 
 interface StyleCatalogResponse {
@@ -91,6 +100,8 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
   const { t } = useI18n();
   const [description, setDescription] = useState("");
   const [baseStyle, setBaseStyle] = useState("");
+  const [variationCount, setVariationCount] = useState(3);
+  const [creativity, setCreativity] = useState(60);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [catalog, setCatalog] = useState<StyleCatalogResponse | null>(null);
@@ -220,6 +231,8 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
         body: JSON.stringify({
           description: description.trim(),
           baseStyle: baseStyle || undefined,
+          variationCount,
+          creativity: creativity / 100,
         }),
       });
 
@@ -228,8 +241,20 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
         throw new Error(data.error || "Generation failed");
       }
 
-      const result: GeneratedStyle = await res.json();
-      onGenerate(result);
+      const payload: unknown = await res.json();
+      if (!payload || typeof payload !== "object") {
+        throw new Error("Generation response is invalid");
+      }
+
+      const result = payload as StyleGenerationResponse;
+      const candidates =
+        Array.isArray(result.candidates) && result.candidates.length > 0
+          ? result.candidates
+          : [result];
+      onGenerate({
+        ...result,
+        candidates,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Generation failed");
     } finally {
@@ -346,6 +371,51 @@ export function StyleGenForm({ onGenerate }: StyleGenFormProps) {
             {t("aiGen.catalogSource")}: {catalogSourceText}
           </p>
         )}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="variation-count" className="block text-sm font-medium">
+          {t("aiGen.variationCountLabel")}
+        </label>
+        <select
+          id="variation-count"
+          value={variationCount}
+          onChange={(event) => setVariationCount(Number(event.target.value))}
+          className="w-full px-4 py-2.5 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
+        >
+          {[1, 2, 3, 4].map((count) => (
+            <option key={count} value={count}>
+              {count}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-muted">
+          {t("aiGen.variationCountHint")}
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <label htmlFor="creativity-level" className="block text-sm font-medium">
+            {t("aiGen.creativityLabel")}
+          </label>
+          <span className="text-xs text-muted">
+            {creativity}%
+          </span>
+        </div>
+        <input
+          id="creativity-level"
+          type="range"
+          min={0}
+          max={100}
+          step={5}
+          value={creativity}
+          onChange={(event) => setCreativity(Number(event.target.value))}
+          className="w-full accent-foreground"
+        />
+        <p className="text-xs text-muted">
+          {t("aiGen.creativityHint")}
+        </p>
       </div>
 
       {/* Error */}
