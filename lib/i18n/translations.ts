@@ -409,6 +409,7 @@ const en = {
     "styleComments.providerLinuxDo": "Linux DO",
     "styleComments.providerUnknown": "Unknown",
     "styleComments.titleSiteOwner": "Site Owner",
+    "styleComments.titleEarlyUser": "Early User",
 
     // Submit
     "submit.signInRequired": "Sign in first to submit to the community.",
@@ -1477,6 +1478,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "styleComments.providerLinuxDo": "Linux DO",
   "styleComments.providerUnknown": "\u672a\u77e5",
   "styleComments.titleSiteOwner": "\u7ad9\u4e3b",
+  "styleComments.titleEarlyUser": "\u5143\u8001\u7528\u6237",
 
   // Submit
   "submit.signInRequired": "\u8bf7\u5148\u767b\u5f55\u540e\u518d\u6295\u7a3f\u5230\u793e\u533a\u3002",

@@ -269,6 +269,12 @@ interface AdminUser {
   favoriteCount: number;
   submissionCount: number;
   lastActive: string;
+  seqId: number | null;
+  customTitle: string | null;
+  isOwner: boolean;
+  titleEnabled: boolean;
+  isEarlyUser: boolean;
+  resolvedTitle: string | null;
 }
 
 interface AdminUsersData {

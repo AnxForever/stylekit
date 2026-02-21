@@ -10,13 +10,17 @@ import {
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import { getAdminUserIds } from "@/lib/auth/admin-policy";
+import {
+  loadUserTitleRuleMap,
+  resolveUserTitle,
+  type UserTitleRule,
+} from "@/lib/auth/user-title-policy";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COMMENTS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const COMMENTS_RATE_LIMIT_MAX_REQUESTS = 40;
 const MAX_BODY_BYTES = 8 * 1024;
 const LEGACY_USER_SESSION_PREFIX = "user:";
-const SITE_OWNER_TITLE_TOKEN = "__site_owner__";
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -41,7 +45,7 @@ interface AuthorIdentity {
   avatarUrl: string | null;
   provider: AuthorProvider;
   seqId: number | null;
-  title: string | null;
+  profileTitle: string | null;
 }
 
 interface CommentOutput {
@@ -220,28 +224,10 @@ function defaultAuthorName(userId: string | null): string {
   return "User";
 }
 
-function resolveAuthorTitle(
-  userId: string,
-  userMetadata: Record<string, unknown>,
-  adminUserIds: Set<string>
-): string | null {
-  const customTitle = asString(userMetadata.user_title) ?? asString(userMetadata.title);
-  if (customTitle) {
-    return customTitle;
-  }
-
-  if (adminUserIds.has(userId)) {
-    return SITE_OWNER_TITLE_TOKEN;
-  }
-
-  return null;
-}
-
 function buildIdentityFromAuthData(
   userId: string,
   userMetadataRaw: unknown,
-  appMetadataRaw: unknown,
-  adminUserIds: Set<string>
+  appMetadataRaw: unknown
 ): AuthorIdentity {
   const userMetadata = asRecord(userMetadataRaw);
   const appMetadata = asRecord(appMetadataRaw);
@@ -255,18 +241,18 @@ function buildIdentityFromAuthData(
     avatarUrl: asString(userMetadata.avatar_url),
     provider: normalizeProvider(userMetadata.provider ?? appMetadata.provider),
     seqId: asPositiveInt(userMetadata.seq_id),
-    title: resolveAuthorTitle(userId, userMetadata, adminUserIds),
+    profileTitle: asString(userMetadata.user_title) ?? asString(userMetadata.title),
   };
 }
 
-function baseIdentity(userId: string, adminUserIds: Set<string>): AuthorIdentity {
+function baseIdentity(userId: string): AuthorIdentity {
   return {
     userId,
     displayName: null,
     avatarUrl: null,
     provider: "unknown",
     seqId: null,
-    title: adminUserIds.has(userId) ? SITE_OWNER_TITLE_TOKEN : null,
+    profileTitle: null,
   };
 }
 
@@ -306,8 +292,7 @@ async function lookupSeqIdMap(
 async function loadAuthorIdentities(
   userIds: string[],
   getUserById: GetUserByIdFn | undefined,
-  lookupSeqIds: SeqLookupFn,
-  adminUserIds: Set<string>
+  lookupSeqIds: SeqLookupFn
 ): Promise<Map<string, AuthorIdentity>> {
   const map = new Map<string, AuthorIdentity>();
   if (userIds.length === 0) {
@@ -316,7 +301,7 @@ async function loadAuthorIdentities(
 
   await Promise.all(
     userIds.map(async (userId) => {
-      let identity = baseIdentity(userId, adminUserIds);
+      let identity = baseIdentity(userId);
 
       if (getUserById && UUID_RE.test(userId)) {
         try {
@@ -327,8 +312,7 @@ async function loadAuthorIdentities(
             identity = buildIdentityFromAuthData(
               userId,
               rawUser.user_metadata,
-              rawUser.app_metadata,
-              adminUserIds
+              rawUser.app_metadata
             );
           }
         } catch {
@@ -365,10 +349,28 @@ async function loadAuthorIdentities(
 function toCommentOutput(
   rawRow: unknown,
   identity: AuthorIdentity | null,
-  fallbackUserId: string | null = null
+  fallbackUserId: string | null = null,
+  options?: {
+    adminUserIds: Set<string>;
+    titleRuleMap: Map<string, UserTitleRule>;
+  }
 ): CommentOutput {
   const row = isTableRow(rawRow) ? rawRow : {};
   const resolvedUserId = resolveRowUserId(row) ?? fallbackUserId;
+  const resolvedRule =
+    resolvedUserId && options
+      ? options.titleRuleMap.get(resolvedUserId) ?? null
+      : null;
+  const resolvedTitle =
+    resolvedUserId && options
+      ? resolveUserTitle({
+          userId: resolvedUserId,
+          seqId: identity?.seqId ?? null,
+          adminUserIds: options.adminUserIds,
+          rule: resolvedRule,
+          fallbackCustomTitle: identity?.profileTitle ?? null,
+        })
+      : null;
 
   return {
     id: asString(row.id) ?? "",
@@ -382,7 +384,7 @@ function toCommentOutput(
     created_at: asString(row.created_at) ?? new Date(0).toISOString(),
     author_provider: identity?.provider ?? "unknown",
     author_seq_id: identity?.seqId ?? null,
-    author_title: identity?.title ?? null,
+    author_title: resolvedTitle,
   };
 }
 
@@ -469,8 +471,7 @@ export async function POST(
     let identity = buildIdentityFromAuthData(
       user.id,
       user.user_metadata,
-      user.app_metadata,
-      adminUserIds
+      user.app_metadata
     );
 
     if (identity.seqId == null && UUID_RE.test(user.id)) {
@@ -490,6 +491,21 @@ export async function POST(
         identity = { ...identity, seqId };
       }
     }
+
+    const titleRuleMap = await loadUserTitleRuleMap(
+      UUID_RE.test(user.id) ? [user.id] : [],
+      async (userIds) => {
+        const { data, error } = await sb
+          .from("user_titles")
+          .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+          .in("user_id", userIds);
+
+        return {
+          data: Array.isArray(data) ? (data as unknown[]) : null,
+          error: (error as DbErrorLike | null) ?? null,
+        };
+      }
+    );
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
@@ -557,7 +573,10 @@ export async function POST(
     if (!modernInsertResult.error) {
       return NextResponse.json({
         success: true,
-        comment: toCommentOutput(modernInsertResult.data, identity, user.id),
+        comment: toCommentOutput(modernInsertResult.data, identity, user.id, {
+          adminUserIds,
+          titleRuleMap,
+        }),
       });
     }
 
@@ -592,7 +611,10 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      comment: toCommentOutput(legacyInsertResult.data, identity, user.id),
+      comment: toCommentOutput(legacyInsertResult.data, identity, user.id, {
+        adminUserIds,
+        titleRuleMap,
+      }),
     });
   } catch {
     return NextResponse.json(
@@ -676,15 +698,32 @@ export async function GET(
     const identityMap = await loadAuthorIdentities(
       userIds,
       getUserById,
-      lookupSeqIds,
-      adminUserIds
+      lookupSeqIds
+    );
+
+    const titleRuleMap = await loadUserTitleRuleMap(
+      userIds.filter((userId) => UUID_RE.test(userId)),
+      async (ids) => {
+        const { data, error } = await sb
+          .from("user_titles")
+          .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+          .in("user_id", ids);
+
+        return {
+          data: Array.isArray(data) ? (data as unknown[]) : null,
+          error: (error as DbErrorLike | null) ?? null,
+        };
+      }
     );
 
     const comments = rows.map((row) => {
       const tableRow = isTableRow(row) ? row : {};
       const userId = resolveRowUserId(tableRow);
       const identity = userId ? identityMap.get(userId) ?? null : null;
-      return toCommentOutput(tableRow, identity, userId);
+      return toCommentOutput(tableRow, identity, userId, {
+        adminUserIds,
+        titleRuleMap,
+      });
     });
 
     return NextResponse.json({
@@ -742,15 +781,32 @@ export async function GET(
   const legacyIdentityMap = await loadAuthorIdentities(
     legacyUserIds,
     getUserById,
-    lookupSeqIds,
-    adminUserIds
+    lookupSeqIds
+  );
+
+  const legacyTitleRuleMap = await loadUserTitleRuleMap(
+    legacyUserIds.filter((userId) => UUID_RE.test(userId)),
+    async (ids) => {
+      const { data, error } = await sb
+        .from("user_titles")
+        .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+        .in("user_id", ids);
+
+      return {
+        data: Array.isArray(data) ? (data as unknown[]) : null,
+        error: (error as DbErrorLike | null) ?? null,
+      };
+    }
   );
 
   const comments = legacyRows.map((row) => {
     const tableRow = isTableRow(row) ? row : {};
     const userId = resolveRowUserId(tableRow);
     const identity = userId ? legacyIdentityMap.get(userId) ?? null : null;
-    return toCommentOutput(tableRow, identity, userId);
+    return toCommentOutput(tableRow, identity, userId, {
+      adminUserIds,
+      titleRuleMap: legacyTitleRuleMap,
+    });
   });
 
   return NextResponse.json({

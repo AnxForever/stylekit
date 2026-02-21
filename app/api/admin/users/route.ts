@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+import { getAdminUserIds } from "@/lib/auth/admin-policy";
+import {
+  buildUserTitleRuleMap,
+  isEarlyUser,
+  resolveUserTitle,
+  type UserTitleRule,
+} from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const LEGACY_USER_SESSION_PREFIX = "user:";
@@ -17,6 +24,30 @@ interface UserInfo {
   favoriteCount: number;
   submissionCount: number;
   lastActive: string;
+  seqId: number | null;
+  profileTitle: string | null;
+  customTitle: string | null;
+  isOwner: boolean;
+  titleEnabled: boolean;
+  isEarlyUser: boolean;
+  resolvedTitle: string | null;
+}
+
+interface UserPayload {
+  userId: string;
+  authorName: string;
+  avatarUrl: string | null;
+  commentCount: number;
+  ratingCount: number;
+  favoriteCount: number;
+  submissionCount: number;
+  lastActive: string;
+  seqId: number | null;
+  customTitle: string | null;
+  isOwner: boolean;
+  titleEnabled: boolean;
+  isEarlyUser: boolean;
+  resolvedTitle: string | null;
 }
 
 interface DbErrorLike {
@@ -85,28 +116,52 @@ export async function GET(request: Request) {
 
   const usersMap = new Map<string, UserInfo>();
   const userEmailMap = new Map<string, string>();
+  const adminUserIds = new Set(getAdminUserIds());
 
-  function ensureUser(userId: string, authorName?: string, avatarUrl?: string | null): UserInfo {
+  function ensureUser(
+    userId: string,
+    options?: {
+      authorName?: string;
+      avatarUrl?: string | null;
+      seqId?: number | null;
+      profileTitle?: string | null;
+    }
+  ): UserInfo {
     let user = usersMap.get(userId);
     if (!user) {
       user = {
         userId,
-        authorName: authorName || "",
-        avatarUrl: avatarUrl ?? null,
+        authorName: options?.authorName || "",
+        avatarUrl: options?.avatarUrl ?? null,
         commentCount: 0,
         ratingCount: 0,
         favoriteCount: 0,
         submissionCount: 0,
         lastActive: "",
+        seqId: options?.seqId ?? null,
+        profileTitle: options?.profileTitle ?? null,
+        customTitle: null,
+        isOwner: false,
+        titleEnabled: true,
+        isEarlyUser: false,
+        resolvedTitle: null,
       };
       usersMap.set(userId, user);
     }
-    if (authorName && !user.authorName) {
-      user.authorName = authorName;
+
+    if (options?.authorName && !user.authorName) {
+      user.authorName = options.authorName;
     }
-    if (avatarUrl && !user.avatarUrl) {
-      user.avatarUrl = avatarUrl;
+    if (options?.avatarUrl && !user.avatarUrl) {
+      user.avatarUrl = options.avatarUrl;
     }
+    if (user.seqId == null && options?.seqId != null) {
+      user.seqId = options.seqId;
+    }
+    if (!user.profileTitle && options?.profileTitle) {
+      user.profileTitle = options.profileTitle;
+    }
+
     return user;
   }
 
@@ -117,12 +172,22 @@ export async function GET(request: Request) {
     }
   }
 
+  let seqIdMap = new Map<string, number>();
+  let titleRuleMap = new Map<string, UserTitleRule>();
+
   try {
     const authUsers = await readAllAuthUsers(admin);
     for (const authUser of authUsers) {
       const authorName = resolveAuthorName(authUser);
       const avatarUrl = resolveAvatarUrl(authUser.userMetadata);
-      const user = ensureUser(authUser.id, authorName, avatarUrl);
+      const seqId = resolveMetadataSeqId(authUser.userMetadata);
+      const profileTitle = resolveMetadataProfileTitle(authUser.userMetadata);
+      const user = ensureUser(authUser.id, {
+        authorName,
+        avatarUrl,
+        seqId,
+        profileTitle,
+      });
       if (authUser.email) {
         userEmailMap.set(authUser.id, authUser.email.toLowerCase());
       }
@@ -134,11 +199,10 @@ export async function GET(request: Request) {
       for (const row of commentsRows) {
         const userId = resolveRowUserId(row);
         if (!userId) continue;
-        const user = ensureUser(
-          userId,
-          getStringField(row, "author_name") ?? undefined,
-          getStringField(row, "avatar_url")
-        );
+        const user = ensureUser(userId, {
+          authorName: getStringField(row, "author_name") ?? undefined,
+          avatarUrl: getStringField(row, "avatar_url"),
+        });
         user.commentCount++;
         updateLastActive(user, resolveRowTimestamp(row));
       }
@@ -188,14 +252,16 @@ export async function GET(request: Request) {
         const userId = resolveRowUserId(row);
         if (!userId) continue;
 
-        const user = ensureUser(
-          userId,
-          getStringField(row, "author_name") ?? undefined
-        );
+        const user = ensureUser(userId, {
+          authorName: getStringField(row, "author_name") ?? undefined,
+        });
         user.submissionCount++;
         updateLastActive(user, resolveRowTimestamp(row));
       }
     }
+
+    seqIdMap = buildSeqIdMap(await readTableRows(admin, "user_seq_ids"));
+    titleRuleMap = buildUserTitleRuleMap(await readTableRows(admin, "user_titles"));
   } catch {
     return NextResponse.json(
       { error: "Failed to load users." },
@@ -204,7 +270,25 @@ export async function GET(request: Request) {
   }
 
   let users = Array.from(usersMap.values());
+
   for (const user of users) {
+    if (user.seqId == null) {
+      user.seqId = seqIdMap.get(user.userId) ?? null;
+    }
+
+    const rule = titleRuleMap.get(user.userId) ?? null;
+    user.customTitle = rule?.customTitle ?? null;
+    user.isOwner = rule?.isOwner ?? false;
+    user.titleEnabled = rule?.titleEnabled ?? true;
+    user.isEarlyUser = isEarlyUser(user.seqId);
+    user.resolvedTitle = resolveUserTitle({
+      userId: user.userId,
+      seqId: user.seqId,
+      adminUserIds,
+      rule,
+      fallbackCustomTitle: user.profileTitle,
+    });
+
     if (user.authorName) {
       continue;
     }
@@ -230,6 +314,7 @@ export async function GET(request: Request) {
       (u) =>
         u.authorName.toLowerCase().includes(search) ||
         u.userId.toLowerCase().includes(search) ||
+        (u.resolvedTitle ?? "").toLowerCase().includes(search) ||
         (userEmailMap.get(u.userId) ?? "").includes(search)
     );
   }
@@ -242,7 +327,7 @@ export async function GET(request: Request) {
   });
 
   const total = users.length;
-  const paged = users.slice(offset, offset + limit);
+  const paged = users.slice(offset, offset + limit).map(toUserPayload);
 
   return NextResponse.json({ users: paged, total, limit, offset });
 }
@@ -345,6 +430,18 @@ function resolveAvatarUrl(metadata: Record<string, unknown> | null): string | nu
   );
 }
 
+function resolveMetadataSeqId(metadata: Record<string, unknown> | null): number | null {
+  if (!metadata) {
+    return null;
+  }
+
+  return normalizePositiveInt(metadata.seq_id);
+}
+
+function resolveMetadataProfileTitle(metadata: Record<string, unknown> | null): string | null {
+  return readMetadataString(metadata, "user_title") ?? readMetadataString(metadata, "title");
+}
+
 function readMetadataString(
   metadata: Record<string, unknown> | null,
   key: string
@@ -369,6 +466,43 @@ async function readTableRows(
   }
   const rows = Array.isArray(data) ? data : [];
   return rows.filter((row): row is TableRow => !!row && typeof row === "object");
+}
+
+function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
+  const map = new Map<string, number>();
+  if (!rows) {
+    return map;
+  }
+
+  for (const row of rows) {
+    const userId = getStringField(row, "user_id");
+    const seqId = normalizePositiveInt(row.seq_id);
+    if (!userId || !UUID_RE.test(userId) || seqId == null) {
+      continue;
+    }
+    map.set(userId, seqId);
+  }
+
+  return map;
+}
+
+function toUserPayload(user: UserInfo): UserPayload {
+  return {
+    userId: user.userId,
+    authorName: user.authorName,
+    avatarUrl: user.avatarUrl,
+    commentCount: user.commentCount,
+    ratingCount: user.ratingCount,
+    favoriteCount: user.favoriteCount,
+    submissionCount: user.submissionCount,
+    lastActive: user.lastActive,
+    seqId: user.seqId,
+    customTitle: user.customTitle,
+    isOwner: user.isOwner,
+    titleEnabled: user.titleEnabled,
+    isEarlyUser: user.isEarlyUser,
+    resolvedTitle: user.resolvedTitle,
+  };
 }
 
 function resolveRowUserId(row: TableRow): string | null {
@@ -412,6 +546,21 @@ function getStringField(row: TableRow, key: string): string | null {
   }
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function normalizePositiveInt(value: unknown): number | null {
+  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isInteger(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
 }
 
 function isSkippableSchemaError(error: DbErrorLike): boolean {

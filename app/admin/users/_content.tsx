@@ -1,24 +1,50 @@
 "use client";
 
-import { Fragment, useCallback, useState, useDeferredValue } from "react";
+import { Fragment, useCallback, useDeferredValue, useState } from "react";
 import Image from "next/image";
 import {
+  EARLY_USER_TITLE_TOKEN,
+  SITE_OWNER_TITLE_TOKEN,
+} from "@/lib/auth/user-title-policy";
+import {
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   RefreshCw,
   Trash2,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
-import { useAdminUsers } from "@/lib/swr";
+import { useAdminUsers, type AdminUser } from "@/lib/swr";
 
 const PAGE_SIZE = 20;
+
+interface TitleDraft {
+  customTitle: string;
+  isOwner: boolean;
+  titleEnabled: boolean;
+}
+
+function formatResolvedTitle(title: string | null): string | null {
+  if (!title) {
+    return null;
+  }
+  if (title === SITE_OWNER_TITLE_TOKEN) {
+    return "Site Owner";
+  }
+  if (title === EARLY_USER_TITLE_TOKEN) {
+    return "Early User";
+  }
+  return title;
+}
 
 export function AdminUsersContent() {
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [savingTitleUserId, setSavingTitleUserId] = useState<string | null>(null);
+  const [titleDrafts, setTitleDrafts] = useState<Record<string, TitleDraft>>({});
+  const [titleErrors, setTitleErrors] = useState<Record<string, string>>({});
 
   const deferredSearch = useDeferredValue(search);
 
@@ -31,6 +57,8 @@ export function AdminUsersContent() {
   const users = data?.users ?? [];
   const total = data?.total ?? 0;
 
+  const usersById = new Map(users.map((user) => [user.userId, user]));
+
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value);
@@ -39,9 +67,133 @@ export function AdminUsersContent() {
     []
   );
 
-  const handleToggleExpand = useCallback((userId: string) => {
-    setExpandedUserId((prev) => (prev === userId ? null : userId));
+  const ensureDraft = useCallback((user: AdminUser) => {
+    setTitleDrafts((prev) => {
+      if (prev[user.userId]) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [user.userId]: {
+          customTitle: user.customTitle ?? "",
+          isOwner: user.isOwner,
+          titleEnabled: user.titleEnabled,
+        },
+      };
+    });
   }, []);
+
+  const handleToggleExpand = useCallback(
+    (user: AdminUser) => {
+      setExpandedUserId((prev) => {
+        if (prev === user.userId) {
+          return null;
+        }
+        ensureDraft(user);
+        return user.userId;
+      });
+      setTitleErrors((prev) => ({ ...prev, [user.userId]: "" }));
+    },
+    [ensureDraft]
+  );
+
+  const updateDraft = useCallback(
+    (
+      userId: string,
+      patch: Partial<TitleDraft>,
+      fallback: Pick<AdminUser, "customTitle" | "isOwner" | "titleEnabled">
+    ) => {
+      setTitleDrafts((prev) => {
+        const current = prev[userId] ?? {
+          customTitle: fallback.customTitle ?? "",
+          isOwner: fallback.isOwner,
+          titleEnabled: fallback.titleEnabled,
+        };
+
+        return {
+          ...prev,
+          [userId]: {
+            ...current,
+            ...patch,
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const handleSaveTitle = useCallback(
+    async (user: AdminUser) => {
+      const draft = titleDrafts[user.userId] ?? {
+        customTitle: user.customTitle ?? "",
+        isOwner: user.isOwner,
+        titleEnabled: user.titleEnabled,
+      };
+
+      setSavingTitleUserId(user.userId);
+      setTitleErrors((prev) => ({ ...prev, [user.userId]: "" }));
+      try {
+        const res = await fetch(`/api/admin/user-titles/${user.userId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customTitle: draft.customTitle,
+            isOwner: draft.isOwner,
+            titleEnabled: draft.titleEnabled,
+          }),
+        });
+
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          throw new Error(body?.error ?? "Failed to save title.");
+        }
+
+        await mutate();
+      } catch (saveError) {
+        const message =
+          saveError instanceof Error ? saveError.message : "Failed to save title.";
+        setTitleErrors((prev) => ({ ...prev, [user.userId]: message }));
+      } finally {
+        setSavingTitleUserId(null);
+      }
+    },
+    [mutate, titleDrafts]
+  );
+
+  const handleClearTitleRule = useCallback(
+    async (user: AdminUser) => {
+      setSavingTitleUserId(user.userId);
+      setTitleErrors((prev) => ({ ...prev, [user.userId]: "" }));
+      try {
+        const res = await fetch(`/api/admin/user-titles/${user.userId}`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          throw new Error(body?.error ?? "Failed to clear title rule.");
+        }
+
+        await mutate();
+        setTitleDrafts((prev) => ({
+          ...prev,
+          [user.userId]: {
+            customTitle: "",
+            isOwner: false,
+            titleEnabled: true,
+          },
+        }));
+      } catch (clearError) {
+        const message =
+          clearError instanceof Error ? clearError.message : "Failed to clear title rule.";
+        setTitleErrors((prev) => ({ ...prev, [user.userId]: message }));
+      } finally {
+        setSavingTitleUserId(null);
+      }
+    },
+    [mutate]
+  );
 
   const handleDeleteContent = useCallback(
     async (userId: string, type: "comments" | "ratings") => {
@@ -78,13 +230,12 @@ export function AdminUsersContent() {
 
   return (
     <div>
-      {/* Search */}
       <div className="flex items-center gap-3 mb-6">
         <input
           type="text"
           value={search}
           onChange={handleSearchChange}
-          placeholder="Search by name or user ID..."
+          placeholder="Search by name, user ID, or title..."
           className="flex-1 px-4 py-2 border border-border rounded-md bg-background text-sm"
         />
         <button
@@ -96,22 +247,18 @@ export function AdminUsersContent() {
         </button>
       </div>
 
-      {/* Error */}
       {error && (
         <p className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
           Failed to load users.
         </p>
       )}
 
-      {/* Loading */}
       {isLoading && <p className="text-muted">Loading users...</p>}
 
-      {/* Empty */}
       {!isLoading && !error && users.length === 0 && (
         <p className="text-muted">No users found.</p>
       )}
 
-      {/* Table */}
       {!isLoading && users.length > 0 && (
         <div className="border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
@@ -119,6 +266,8 @@ export function AdminUsersContent() {
               <tr className="border-b border-border bg-muted/5">
                 <th className="text-left px-4 py-3 font-medium">User</th>
                 <th className="text-left px-4 py-3 font-medium">User ID</th>
+                <th className="text-left px-4 py-3 font-medium">Title</th>
+                <th className="text-left px-4 py-3 font-medium">Seq ID</th>
                 <th className="text-right px-4 py-3 font-medium">Comments</th>
                 <th className="text-right px-4 py-3 font-medium">Ratings</th>
                 <th className="text-right px-4 py-3 font-medium">Favorites</th>
@@ -131,6 +280,14 @@ export function AdminUsersContent() {
               {users.map((user) => {
                 const isExpanded = expandedUserId === user.userId;
                 const isDeleting = deletingUserId === user.userId;
+                const isSavingTitle = savingTitleUserId === user.userId;
+                const draft = titleDrafts[user.userId] ?? {
+                  customTitle: user.customTitle ?? "",
+                  isOwner: user.isOwner,
+                  titleEnabled: user.titleEnabled,
+                };
+                const titleError = titleErrors[user.userId] ?? "";
+                const resolvedTitleLabel = formatResolvedTitle(user.resolvedTitle);
 
                 return (
                   <Fragment key={user.userId}>
@@ -163,6 +320,18 @@ export function AdminUsersContent() {
                             : user.userId}
                         </code>
                       </td>
+                      <td className="px-4 py-3">
+                        {resolvedTitleLabel ? (
+                          <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/30 px-2 py-0.5 text-xs">
+                            {resolvedTitleLabel}
+                          </span>
+                        ) : (
+                          <span className="text-muted">--</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-muted">
+                        {user.seqId ? `#${user.seqId}` : "--"}
+                      </td>
                       <td className="text-right px-4 py-3">{user.commentCount}</td>
                       <td className="text-right px-4 py-3">{user.ratingCount}</td>
                       <td className="text-right px-4 py-3">{user.favoriteCount}</td>
@@ -174,7 +343,7 @@ export function AdminUsersContent() {
                       </td>
                       <td className="px-4 py-3">
                         <button
-                          onClick={() => handleToggleExpand(user.userId)}
+                          onClick={() => handleToggleExpand(user)}
                           className="p-1 rounded hover:bg-muted/10 transition-colors"
                           title={isExpanded ? "Collapse" : "Expand"}
                         >
@@ -188,28 +357,92 @@ export function AdminUsersContent() {
                     </tr>
                     {isExpanded && (
                       <tr className="border-b border-border">
-                        <td colSpan={8} className="px-4 py-3 bg-muted/5">
-                          <div className="flex items-center gap-3">
-                            <button
-                              disabled={isDeleting}
-                              onClick={() =>
-                                handleDeleteContent(user.userId, "comments")
-                              }
-                              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              Delete Comments
-                            </button>
-                            <button
-                              disabled={isDeleting}
-                              onClick={() =>
-                                handleDeleteContent(user.userId, "ratings")
-                              }
-                              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              Delete Ratings
-                            </button>
+                        <td colSpan={10} className="px-4 py-3 bg-muted/5">
+                          <div className="space-y-3">
+                            <div className="grid gap-3 md:grid-cols-[1fr_auto_auto_auto_auto] items-center">
+                              <input
+                                value={draft.customTitle}
+                                onChange={(event) =>
+                                  updateDraft(
+                                    user.userId,
+                                    { customTitle: event.target.value },
+                                    usersById.get(user.userId) ?? user
+                                  )
+                                }
+                                placeholder="Custom title (optional, max 24 chars)"
+                                maxLength={24}
+                                className="px-3 py-2 text-sm border border-border rounded-md bg-background"
+                              />
+                              <label className="inline-flex items-center gap-2 text-sm">
+                                <input
+                                  type="checkbox"
+                                  checked={draft.isOwner}
+                                  onChange={(event) =>
+                                    updateDraft(
+                                      user.userId,
+                                      { isOwner: event.target.checked },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                />
+                                Site Owner
+                              </label>
+                              <label className="inline-flex items-center gap-2 text-sm">
+                                <input
+                                  type="checkbox"
+                                  checked={draft.titleEnabled}
+                                  onChange={(event) =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleEnabled: event.target.checked },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                />
+                                Title Enabled
+                              </label>
+                              <button
+                                disabled={isSavingTitle}
+                                onClick={() => handleSaveTitle(user)}
+                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                              >
+                                {isSavingTitle ? "Saving..." : "Save Title"}
+                              </button>
+                              <button
+                                disabled={isSavingTitle}
+                                onClick={() => handleClearTitleRule(user)}
+                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                              >
+                                Clear Rule
+                              </button>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <button
+                                disabled={isDeleting}
+                                onClick={() =>
+                                  handleDeleteContent(user.userId, "comments")
+                                }
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                Delete Comments
+                              </button>
+                              <button
+                                disabled={isDeleting}
+                                onClick={() =>
+                                  handleDeleteContent(user.userId, "ratings")
+                                }
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                Delete Ratings
+                              </button>
+                            </div>
+
+                            {titleError ? (
+                              <p className="text-xs text-red-500">{titleError}</p>
+                            ) : null}
                           </div>
                         </td>
                       </tr>
@@ -222,7 +455,6 @@ export function AdminUsersContent() {
         </div>
       )}
 
-      {/* Pagination */}
       {total > PAGE_SIZE && (
         <div className="flex items-center justify-between mt-4">
           <p className="text-sm text-muted">

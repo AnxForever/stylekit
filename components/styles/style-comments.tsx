@@ -7,12 +7,14 @@ import { MessageSquare, Send } from "lucide-react";
 import { useStyleComments, type Comment } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  EARLY_USER_TITLE_TOKEN,
+  SITE_OWNER_TITLE_TOKEN,
+} from "@/lib/auth/user-title-policy";
 
 interface StyleCommentsProps {
   slug: string;
 }
-
-const SITE_OWNER_TITLE_TOKEN = "__site_owner__";
 
 export function StyleComments({ slug }: StyleCommentsProps) {
   const { t, locale } = useI18n();
@@ -46,6 +48,10 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
     if (title === SITE_OWNER_TITLE_TOKEN) {
       return t("styleComments.titleSiteOwner");
+    }
+
+    if (title === EARLY_USER_TITLE_TOKEN) {
+      return t("styleComments.titleEarlyUser");
     }
 
     return title;

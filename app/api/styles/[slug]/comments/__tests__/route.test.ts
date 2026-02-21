@@ -41,6 +41,7 @@ import {
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import { getAdminUserIds } from "@/lib/auth/admin-policy";
+import { EARLY_USER_TITLE_TOKEN } from "@/lib/auth/user-title-policy";
 import { createClient } from "@supabase/supabase-js";
 
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
@@ -379,5 +380,118 @@ describe("styles comments route", () => {
       ],
       total: 1,
     });
+  });
+
+  it("GET applies configured title rules from user_titles table", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const userId = "11111111-1111-4111-8111-111111111111";
+    const range = vi.fn().mockResolvedValue({
+      data: [
+        {
+          id: "c-1",
+          content: "hello",
+          author_name: "someone",
+          user_id: userId,
+          created_at: "2026-02-21T00:00:00.000Z",
+        },
+      ],
+      count: 1,
+      error: null,
+    });
+    const order = vi.fn().mockReturnValue({ range });
+    const eq = vi.fn().mockReturnValue({ order });
+    const styleSelect = vi.fn().mockReturnValue({ eq });
+
+    const titleIn = vi.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: userId,
+          custom_title: "VIP",
+          is_owner: false,
+          title_enabled: true,
+        },
+      ],
+      error: null,
+    });
+    const titleSelect = vi.fn().mockReturnValue({ in: titleIn });
+
+    const getUserById = vi.fn().mockResolvedValue({
+      data: {
+        user: {
+          user_metadata: {
+            user_name: "someone",
+            avatar_url: "https://img.example/u.png",
+            provider: "github",
+            seq_id: 50,
+          },
+        },
+      },
+      error: null,
+    });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi.fn((tableName: string) => {
+        if (tableName === "style_comments") {
+          return { select: styleSelect };
+        }
+        if (tableName === "user_titles") {
+          return { select: titleSelect };
+        }
+        return { select: vi.fn().mockReturnValue({ in: vi.fn() }) };
+      }),
+      auth: {
+        admin: {
+          getUserById,
+        },
+      },
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/comments?limit=10"),
+      { params: params("neo-brutalist") }
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.comments[0].author_title).toBe("VIP");
+    expect(payload.comments[0].author_seq_id).toBe(50);
+
+    const titleDisabledIn = vi.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: userId,
+          custom_title: null,
+          is_owner: false,
+          title_enabled: true,
+        },
+      ],
+      error: null,
+    });
+    const styleSelectSecond = vi.fn().mockReturnValue({ eq });
+    const titleSelectSecond = vi.fn().mockReturnValue({ in: titleDisabledIn });
+    mockedCreateClient.mockReturnValueOnce({
+      from: vi.fn((tableName: string) => {
+        if (tableName === "style_comments") {
+          return { select: styleSelectSecond };
+        }
+        if (tableName === "user_titles") {
+          return { select: titleSelectSecond };
+        }
+        return { select: vi.fn().mockReturnValue({ in: vi.fn() }) };
+      }),
+      auth: {
+        admin: {
+          getUserById,
+        },
+      },
+    } as never);
+
+    const fallbackResponse = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/comments?limit=10"),
+      { params: params("neo-brutalist") }
+    );
+    const fallbackPayload = await fallbackResponse.json();
+    expect(fallbackPayload.comments[0].author_title).toBe(EARLY_USER_TITLE_TOKEN);
   });
 });
