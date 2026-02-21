@@ -12,9 +12,16 @@ vi.mock("@supabase/supabase-js", () => ({
   createClient: vi.fn(),
 }));
 
+vi.mock("@/lib/auth/admin-policy", () => ({
+  getAdminUserIds: vi.fn(),
+}));
+
 import { GET as getComments } from "@/app/api/profile/comments/route";
 import { GET as getRatings } from "@/app/api/profile/ratings/route";
 import { GET as getSubmissions } from "@/app/api/profile/submissions/route";
+import { GET as getTitle } from "@/app/api/profile/title/route";
+import { getAdminUserIds } from "@/lib/auth/admin-policy";
+import { EMPEROR_TITLE_TOKEN } from "@/lib/auth/user-title-policy";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 import { createClient } from "@supabase/supabase-js";
@@ -22,6 +29,7 @@ import { createClient } from "@supabase/supabase-js";
 const mockedGetServerUser = vi.mocked(getServerUser);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedCreateClient = vi.mocked(createClient);
+const mockedGetAdminUserIds = vi.mocked(getAdminUserIds);
 
 function makeReadChain(result: unknown) {
   const limit = vi.fn().mockResolvedValue(result);
@@ -37,6 +45,75 @@ afterEach(() => {
 });
 
 describe("profile routes", () => {
+  it("title endpoint requires authentication", async () => {
+    mockedGetServerUser.mockResolvedValue(null);
+    const response = await getTitle();
+    expect(response.status).toBe(401);
+  });
+
+  it("title endpoint resolves custom title rule", async () => {
+    mockedGetAdminUserIds.mockReturnValue([]);
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-9",
+      user_metadata: { seq_id: 12, user_title: "元老用户" },
+    } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const inFn = vi.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: "user-9",
+          custom_title: "VIP",
+          is_owner: false,
+          title_enabled: true,
+          updated_at: null,
+          updated_by: null,
+        },
+      ],
+      error: null,
+    });
+    const select = vi.fn().mockReturnValue({ in: inFn });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi.fn().mockReturnValue({ select }),
+    } as never);
+
+    const response = await getTitle();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      title: "VIP",
+      seqId: 12,
+    });
+  });
+
+  it("title endpoint resolves built-in emperor token from seq id", async () => {
+    mockedGetAdminUserIds.mockReturnValue([]);
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { seq_id: 1 },
+    } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const inFn = vi.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    });
+    const select = vi.fn().mockReturnValue({ in: inFn });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi.fn().mockReturnValue({ select }),
+    } as never);
+
+    const response = await getTitle();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      title: EMPEROR_TITLE_TOKEN,
+      seqId: 1,
+    });
+  });
+
   it("comments endpoint requires authentication", async () => {
     mockedGetServerUser.mockResolvedValue(null);
     const response = await getComments();

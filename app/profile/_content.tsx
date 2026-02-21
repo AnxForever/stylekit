@@ -25,7 +25,29 @@ import {
   useProfileComments,
   useProfileSubmissions,
   useProfileRatings,
+  useProfileTitle,
 } from "@/lib/swr";
+import {
+  EMPEROR_TITLE_TOKEN,
+  EARLY_USER_TITLE_TOKEN,
+  SITE_OWNER_TITLE_TOKEN,
+} from "@/lib/auth/user-title-policy";
+
+function getTitleBadgeClass(title: string): string {
+  if (title === EMPEROR_TITLE_TOKEN) {
+    return "border-amber-300/80 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-200";
+  }
+
+  if (title === EARLY_USER_TITLE_TOKEN) {
+    return "border-sky-300/80 bg-sky-100 text-sky-800 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-200";
+  }
+
+  if (title === SITE_OWNER_TITLE_TOKEN) {
+    return "border-violet-300/80 bg-violet-100 text-violet-800 dark:border-violet-700 dark:bg-violet-900/40 dark:text-violet-200";
+  }
+
+  return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
+}
 
 export function ProfileContent() {
   const { user, loading } = useUser();
@@ -35,6 +57,7 @@ export function ProfileContent() {
   const { data: commentsData } = useProfileComments(user?.id);
   const { data: ratingsData } = useProfileRatings(user?.id);
   const { data: submissionsData } = useProfileSubmissions(user?.id);
+  const { data: profileTitleData } = useProfileTitle(user?.id);
 
   if (loading) {
     return (
@@ -118,6 +141,32 @@ export function ProfileContent() {
   const providerLabel = isLinuxDo
     ? t("profile.providerLinuxDo")
     : t("profile.providerGitHub");
+  const rawProfileTitle =
+    profileTitleData?.title ??
+    (typeof user.user_metadata?.user_title === "string"
+      ? user.user_metadata.user_title
+      : typeof user.user_metadata?.title === "string"
+        ? user.user_metadata.title
+        : null);
+
+  const profileTitleLabel = (() => {
+    if (!rawProfileTitle) {
+      return null;
+    }
+    if (rawProfileTitle === EMPEROR_TITLE_TOKEN) {
+      return t("styleComments.titleEmperor");
+    }
+    if (rawProfileTitle === SITE_OWNER_TITLE_TOKEN) {
+      return t("styleComments.titleSiteOwner");
+    }
+    if (rawProfileTitle === EARLY_USER_TITLE_TOKEN) {
+      return t("styleComments.titleEarlyUser");
+    }
+    return rawProfileTitle;
+  })();
+  const profileTitleBadgeClass = rawProfileTitle
+    ? getTitleBadgeClass(rawProfileTitle)
+    : "";
 
   const comments = commentsData?.comments ?? [];
   const ratings = ratingsData?.ratings ?? [];
@@ -165,6 +214,13 @@ export function ProfileContent() {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             {userName}
           </h1>
+          {profileTitleLabel && (
+            <div className="mt-2 flex justify-center sm:justify-start">
+              <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass}`}>
+                {profileTitleLabel}
+              </span>
+            </div>
+          )}
           {fullName && fullName !== userName && (
             <p className="text-lg text-muted-foreground mt-1">{fullName}</p>
           )}
@@ -401,6 +457,20 @@ export function ProfileContent() {
             <span className="text-sm font-mono text-foreground">
               #{user.user_metadata?.seq_id ?? user.id.slice(0, 8)}
             </span>
+          </div>
+          <div className="flex justify-between px-4 py-3">
+            <span className="text-sm text-muted-foreground">
+              {t("profile.userTitle")}
+            </span>
+            {profileTitleLabel ? (
+              <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass}`}>
+                {profileTitleLabel}
+              </span>
+            ) : (
+              <span className="text-sm text-muted-foreground">
+                {t("profile.userTitleNone")}
+              </span>
+            )}
           </div>
           <div className="flex justify-between px-4 py-3">
             <span className="text-sm text-muted-foreground">
