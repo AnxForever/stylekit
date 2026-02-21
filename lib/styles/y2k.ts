@@ -45,42 +45,27 @@ export const y2k: DesignStyle = {
     button: {
       name: "按钮",
       description: "Y2K风格按钮，金属光泽",
-      code: `<button className="
-  px-8 py-4
-  bg-gradient-to-b from-gray-200 via-white to-gray-300
-  rounded-full
-  text-gray-700 font-bold
-  border border-white/50
-  shadow-[0_4px_15px_rgba(0,0,0,0.1),inset_0_2px_3px_rgba(255,255,255,0.8)]
-  hover:shadow-[0_6px_20px_rgba(0,0,0,0.15),inset_0_2px_3px_rgba(255,255,255,0.9)]
-  hover:scale-105
-  transition-all duration-300
-">
-  Click Me
+      code: `<button className="px-10 py-4 bg-gradient-to-b from-gray-100 via-white to-gray-300 rounded-full text-[#ff1493] font-black uppercase tracking-widest border-2 border-white shadow-[0_5px_15px_rgba(0,255,255,0.4),inset_0_2px_4px_rgba(255,255,255,1)] hover:shadow-[0_10px_25px_rgba(255,20,147,0.5),inset_0_4px_8px_rgba(255,255,255,1)] hover:-translate-y-1 hover:scale-105 active:scale-90 active:shadow-[0_2px_5px_rgba(0,255,255,0.4)] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+  Cyber Love
 </button>`,
     },
     card: {
       name: "卡片",
       description: "Y2K风格卡片，透明气泡感",
-      code: `<div className="
-  p-8
-  bg-gradient-to-br from-white/60 to-pink-100/40
-  backdrop-blur-md
-  rounded-3xl
-  border border-white/60
-  shadow-[0_8px_32px_rgba(0,0,0,0.1)]
-">
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-pink-400" />
-    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-pink-400 to-purple-400" />
-    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400" />
+      code: `<div className="group p-8 bg-gradient-to-br from-white/70 to-[#ff69b4]/20 backdrop-blur-xl rounded-[2.5rem] border-2 border-white shadow-[0_10px_30px_rgba(0,255,255,0.2)] hover:shadow-[0_15px_40px_rgba(255,105,180,0.3)] hover:-translate-y-2 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] relative overflow-hidden">
+  <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-tr from-[#00ffff] to-[#ff69b4] blur-md opacity-60 group-hover:scale-150 group-hover:translate-x-2 transition-transform duration-500 ease-out" />
+  <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-gradient-to-tr from-[#b142fe] to-[#00ffff] blur-lg opacity-40 group-hover:scale-125 group-hover:-translate-y-4 transition-transform duration-500 ease-out" />
+  <div className="relative z-10">
+    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-4 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] group-hover:rotate-12 transition-transform">
+      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-[#ff69b4] to-[#00ffff]" />
+    </div>
+    <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff69b4] via-[#b142fe] to-[#00ffff] mb-3 group-hover:tracking-wider transition-all duration-300">
+      FUTURE IS NOW
+    </h3>
+    <p className="text-gray-700 font-bold leading-relaxed">
+      Welcome to the new millennium. Glossy buttons, iridescent glows, absolute digital optimism.
+    </p>
   </div>
-  <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 mb-3">
-    Future is Now
-  </h3>
-  <p className="text-gray-600">
-    Welcome to the new millennium
-  </p>
 </div>`,
     },
     input: {
@@ -217,7 +202,14 @@ export const y2k: DesignStyle = {
 - 星星/闪光装饰
 - 气泡球体
 - 彩虹渐变
-- 透明塑料质感`,
+- 透明塑料质感
+
+## 动效与交互规则
+
+- 液态金属（Chrome Liquid）：交互必须传达"液态金属"或"塑料果冻"质感。悬停时金属渐变通过高亮内阴影增强（如 \`hover:shadow-[inset_0_4px_8px_rgba(255,255,255,1)]\`），模拟光泽在金属表面滑过的 3D 反光感。
+- 气泡弹跳（Bubble Pop）：Y2K 充满乐观和玩具感。必须使用弹性自定义缓动 \`ease-[cubic-bezier(0.34,1.56,0.64,1)]\`，悬停时夸张放大（\`hover:scale-105\` 或 \`hover:-translate-y-1\`），点击时如果冻般挤压（\`active:scale-90\`）。
+- 镭射炫光（CD Glare）：阴影颜色必须使用高饱和度青色（#00ffff）和粉色（#ff69b4）的混合光晕，模拟 CD 光盘的镭射反光。禁止使用黑色阴影。
+- 熔岩灯效果：卡片内的圆形气泡装饰在悬停时产生非对称移动或拉伸，就像熔岩灯中的液滴上升。`,
 
   examplePrompts: [
     {

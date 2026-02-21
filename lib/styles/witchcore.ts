@@ -55,7 +55,7 @@ export const witchcore: DesignStyle = {
       name: "按钮",
       description: "巫术核心风格的符文按钮",
       code: `// Rune Primary
-<button className="px-8 py-3 bg-[#4a1942] border border-[#c9a74e]/50 text-[#c9a74e] font-serif uppercase tracking-widest shadow-[0_0_15px_rgba(201,167,78,0.2)] hover:shadow-[0_0_25px_rgba(201,167,78,0.4)] hover:border-[#c9a74e] transition-all duration-500">
+<button className="px-10 py-3 bg-[#4a1942] border border-[#c9a74e]/50 text-[#c9a74e] font-serif uppercase tracking-[0.3em] shadow-[0_0_15px_rgba(201,167,78,0.2)] hover:shadow-[0_0_30px_rgba(201,167,78,0.6),inset_0_0_10px_rgba(201,167,78,0.2)] hover:border-[#c9a74e] hover:bg-[#5a1e50] active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] active:translate-y-1 transition-all duration-700 ease-in-out">
   Invoke
 </button>
 
@@ -72,19 +72,14 @@ export const witchcore: DesignStyle = {
     card: {
       name: "卡片",
       description: "巫术核心风格的塔罗卡片",
-      code: `<div className="bg-[#0d0b14]/90 border border-[#c9a74e]/30 p-8 shadow-[0_4px_20px_rgba(13,11,20,0.8)] hover:shadow-[0_0_25px_rgba(201,167,78,0.15)] hover:border-[#c9a74e]/50 transition-all duration-500 relative overflow-hidden">
-  {/* Stardust overlay */}
-  <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(201,167,78,0.05)_0%,transparent_50%),radial-gradient(circle_at_80%_70%,rgba(123,104,174,0.05)_0%,transparent_50%)] pointer-events-none" />
-
-  <div className="relative">
-    <div className="flex items-center gap-3 mb-4">
-      <div className="w-1.5 h-1.5 bg-[#c9a74e] shadow-[0_0_8px_rgba(201,167,78,0.6)]" />
-      <span className="text-[#c9a74e]/60 font-serif text-xs uppercase tracking-[0.2em]">The Moon</span>
-    </div>
-    <h3 className="text-[#c9a74e] font-serif text-xl tracking-wider mb-3" style={{textShadow: "0 0 10px rgba(201,167,78,0.3)"}}>
+      code: `<div className="group p-10 bg-[#0d0b14]/95 border border-[#c9a74e]/30 shadow-[0_4px_20px_rgba(13,11,20,0.9)] hover:shadow-[0_0_40px_rgba(123,104,174,0.3)] hover:-translate-y-2 hover:border-[#c9a74e]/60 transition-all duration-1000 ease-in-out cursor-default relative overflow-hidden">
+  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(123,104,174,0.1),transparent_50%)] opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
+  <div className="relative z-10 flex flex-col items-center text-center">
+    <div className="w-2 h-2 bg-[#c9a74e] rounded-full shadow-[0_0_10px_rgba(201,167,78,0.8)] mb-6 group-hover:scale-150 group-hover:shadow-[0_0_20px_rgba(201,167,78,1)] transition-all duration-700" />
+    <h3 className="text-[#c9a74e] font-serif text-2xl tracking-[0.2em] mb-4 uppercase group-hover:drop-shadow-[0_0_8px_rgba(201,167,78,0.5)] transition-all duration-700" style={{textShadow: "0 0 10px rgba(201,167,78,0.3)"}}>
       Lunar Divination
     </h3>
-    <p className="text-[#7b68ae]/70 font-serif leading-relaxed">
+    <p className="text-[#7b68ae]/80 font-serif leading-relaxed group-hover:text-[#7b68ae] transition-colors duration-700">
       The veils between worlds grow thin under the waning crescent.
     </p>
   </div>
@@ -169,7 +164,13 @@ SPECIAL EFFECTS:
 - Stardust particle overlays
 - Rune glow pulsing animation
 - Moon phase symbols as decorative elements
-- Radial gradient for mystical light sources`,
+- Radial gradient for mystical light sources
+
+ANIMATION & INTERACTION RULES:
+- Ritual Levitation: Cards and primary elements must NOT bounce quickly. Use extremely slow upfloat (hover:-translate-y-2) with duration-1000 ease-in-out. Simulate the feeling of ritual levitation, not a spring.
+- Occult Glow: On hover, the gold rune glow (text-shadow or box-shadow using #c9a74e) must expand and pulse as if imbued with magic. Use drop-shadow CSS filter on headings for text glow enhancement.
+- Shadow Engulf: On dark backgrounds (#0d0b14), hover should expand a deep purple/amethyst outer glow outward, simulating dark matter or mystical fog spreading.
+- Talisman Press: On :active, cancel the glow and add a deep inset shadow (active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]) plus slight downward translate (active:translate-y-1), simulating pressing a heavy talisman or ritual object.`,
 
   examplePrompts: [
     {

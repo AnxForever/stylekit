@@ -49,36 +49,20 @@ export const watercolorArt: DesignStyle = {
     button: {
       name: "按钮",
       description: "水彩颜料池化按钮，使用径向渐变模拟颜料从中心扩散的效果",
-      code: `<button className="
-  px-8 py-3.5
-  bg-[#d4a0a0] text-[#5a3e3e]
-  font-serif font-medium tracking-wide
-  rounded-2xl
-  shadow-[0_4px_20px_rgba(212,160,160,0.25),inset_0_1px_0_rgba(255,255,255,0.15)]
-  hover:scale-[1.02]
-  hover:shadow-[0_6px_28px_rgba(212,160,160,0.30)]
-  transition-all duration-500
-">
-  Paint
+      code: `<button className="px-10 py-4 bg-[#d4a0a0] text-[#5a3e3e] font-serif font-medium tracking-widest rounded-3xl shadow-[0_4px_20px_rgba(212,160,160,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:bg-[#c99595] hover:shadow-[0_10px_40px_rgba(212,160,160,0.5),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] active:shadow-[0_2px_10px_rgba(212,160,160,0.3),inset_0_2px_4px_rgba(90,62,62,0.1)] transition-all duration-500 ease-in-out">
+  Wet-on-Wet
 </button>`,
     },
     card: {
       name: "卡片",
       description: "纸张质感卡片，有机圆角和水彩渗透边缘阴影",
-      code: `<div className="
-  p-8
-  bg-[#faf6f0]/80
-  border border-[#d4a0a0]/15
-  rounded-3xl
-  shadow-[0_2px_20px_rgba(212,160,160,0.10)]
-  hover:shadow-[0_8px_32px_rgba(212,160,160,0.18)]
-  transition-all duration-500
-">
-  <h3 className="text-2xl font-serif font-semibold text-[#5a3e3e] mb-3">
-    Wet-on-Wet
+      code: `<div className="group p-10 bg-[#faf6f0]/80 backdrop-blur-sm border border-[#d4a0a0]/20 rounded-[2rem] shadow-[0_4px_24px_rgba(212,160,160,0.15)] hover:bg-[#faf6f0]/95 hover:shadow-[0_15px_50px_rgba(212,160,160,0.25)] transition-all duration-700 ease-in-out cursor-default relative overflow-hidden">
+  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#d4a0a0]/20 rounded-full blur-3xl group-hover:scale-150 group-hover:bg-[#d4a0a0]/30 transition-all duration-700 ease-in-out" />
+  <h3 className="relative z-10 text-2xl font-serif font-semibold text-[#5a3e3e] mb-4 group-hover:text-[#8a5e5e] transition-colors duration-500">
+    Color Bleed
   </h3>
-  <p className="text-[#5a3e3e]/45 font-serif leading-relaxed">
-    Pigments flow and merge on damp paper
+  <p className="relative z-10 text-[#5a3e3e]/60 font-serif leading-relaxed text-lg">
+    Pigments flow and merge on damp paper, avoiding sharp boundaries.
   </p>
 </div>`,
     },
@@ -230,7 +214,14 @@ Primary:
 - Radial gradient buttons simulating pigment pooling
 - Watercolor wash section backgrounds (multiple radial-gradients)
 - Botanical watercolor accent decorations (leaf/flower shapes)
-- Organic blob-like border-radius values`,
+- Organic blob-like border-radius values
+
+## Animation & Interaction Rules
+
+- Pigment Bloom: Abandon hard 3D translate on hover. The core interaction simulates "watercolor bleeding." Use a large, soft, same-palette colored shadow that spreads outward on hover (e.g., \`hover:shadow-[0_10px_40px_rgba(212,160,160,0.5)]\`), like pigment dissolving on wet paper. Never use \`hover:scale\` or \`hover:-translate-y\`.
+- Damp Paper Effect: On card hover, shift background opacity or tint slightly (e.g., \`bg-[#faf6f0]/80\` → \`bg-[#faf6f0]/95\`), simulating paper absorbing moisture.
+- Liquid Slowness: Watercolor flows slowly. Enforce long transitions: \`duration-500\` or \`duration-700\` with \`ease-in-out\`.
+- Soft Press: On \`:active\`, do not use aggressive scale-down. Add a subtle inset shadow (\`active:shadow-[inset_0_2px_4px_rgba(90,62,62,0.1)]\`) to simulate a brush pressing gently on damp paper surface.`,
 
   examplePrompts: [
     {

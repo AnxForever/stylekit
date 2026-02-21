@@ -689,7 +689,7 @@ export default function ShowcaseContent() {
                     <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
                       {/* Primary: pigment pooling radial-gradient */}
                       <button
-                        className="px-9 py-3.5 text-[#5a3e3e] font-serif font-medium tracking-wide rounded-2xl hover:scale-[1.02] transition-all duration-500"
+                        className="px-9 py-3.5 text-[#5a3e3e] font-serif font-medium tracking-wide rounded-2xl hover:shadow-[0_10px_40px_rgba(212,160,160,0.5),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] active:shadow-[0_2px_10px_rgba(212,160,160,0.3),inset_0_2px_4px_rgba(90,62,62,0.1)] transition-all duration-500 ease-in-out"
                         style={{
                           background: "radial-gradient(ellipse at 40% 35%, #e8c4c4, #d4a0a0 55%, #c89090 100%)",
                           boxShadow: "0 4px 20px rgba(212,160,160,0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -698,12 +698,12 @@ export default function ShowcaseContent() {
                         Paint with rose
                       </button>
                       {/* Secondary */}
-                      <button className="px-9 py-3.5 bg-transparent text-[#d4a0a0] font-serif font-medium tracking-wide rounded-2xl border border-[#d4a0a0]/25 hover:bg-[#d4a0a0]/08 hover:shadow-[0_4px_20px_rgba(212,160,160,0.15)] transition-all duration-500">
+                      <button className="px-9 py-3.5 bg-transparent text-[#d4a0a0] font-serif font-medium tracking-wide rounded-2xl border border-[#d4a0a0]/25 hover:bg-[#d4a0a0]/08 hover:shadow-[0_4px_20px_rgba(212,160,160,0.15)] active:scale-[0.98] transition-all duration-500 ease-in-out">
                         Secondary wash
                       </button>
                       {/* Cerulean variant */}
                       <button
-                        className="px-9 py-3.5 text-[#3d6f8a] font-serif font-medium tracking-wide rounded-2xl hover:scale-[1.02] transition-all duration-500"
+                        className="px-9 py-3.5 text-[#3d6f8a] font-serif font-medium tracking-wide rounded-2xl hover:shadow-[0_10px_40px_rgba(123,184,212,0.4),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] active:shadow-[0_2px_10px_rgba(123,184,212,0.25),inset_0_2px_4px_rgba(45,90,120,0.1)] transition-all duration-500 ease-in-out"
                         style={{
                           background: "radial-gradient(ellipse at 40% 35%, #a8d4e8, #7bb8d4 55%, #6aa8c4 100%)",
                           boxShadow: "0 4px 20px rgba(123,184,212,0.22), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -713,24 +713,25 @@ export default function ShowcaseContent() {
                       </button>
                     </div>
                     <p className="text-xs font-serif text-[#5a3e3e]/28 text-center max-w-xs leading-relaxed">
-                      Pigment pooling via radial-gradient. Organic blob shape for hero CTA. Hover scale 1.02 at 500ms.
+                      Pigment Bloom: shadow expands outward on hover, simulating pigment bleeding on damp paper. Soft Press: inset shadow on active. No scale transforms.
                     </p>
                   </div>
                 )}
 
                 {componentTab === "card" && (
                   <div className="w-full max-w-sm">
-                    <div className="group p-8 bg-[#faf6f0]/80 border border-[#d4a0a0]/15 rounded-3xl shadow-[0_2px_20px_rgba(212,160,160,0.10)] hover:shadow-[0_8px_32px_rgba(212,160,160,0.18)] transition-all duration-500 cursor-pointer">
-                      <span className="text-xs font-serif text-[#d4a0a0]/55 tracking-wide">Botanical</span>
-                      <h3 className="text-2xl font-serif font-semibold text-[#5a3e3e] mb-3 mt-1 group-hover:text-[#d4a0a0] transition-colors duration-500">
+                    <div className="group p-8 bg-[#faf6f0]/80 border border-[#d4a0a0]/15 rounded-3xl shadow-[0_2px_20px_rgba(212,160,160,0.10)] hover:bg-[#faf6f0]/95 hover:shadow-[0_15px_50px_rgba(212,160,160,0.25)] transition-all duration-700 ease-in-out cursor-pointer relative overflow-hidden">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#d4a0a0]/20 rounded-full blur-3xl group-hover:scale-150 group-hover:bg-[#d4a0a0]/30 transition-all duration-700 ease-in-out" />
+                      <span className="relative z-10 text-xs font-serif text-[#d4a0a0]/55 tracking-wide">Botanical</span>
+                      <h3 className="relative z-10 text-2xl font-serif font-semibold text-[#5a3e3e] mb-3 mt-1 group-hover:text-[#8a5e5e] transition-colors duration-500">
                         Morning Bloom
                       </h3>
-                      <p className="text-[#5a3e3e]/45 font-serif leading-relaxed">
+                      <p className="relative z-10 text-[#5a3e3e]/45 font-serif leading-relaxed">
                         Petals unfold in washes of rose and sage, bleeding softly at their edges like breath on cool glass.
                       </p>
                     </div>
                     <p className="text-xs font-serif text-[#5a3e3e]/28 mt-5 text-center leading-relaxed">
-                      Paper texture feel. Border at 15% opacity. Shadow transitions from 0.10 to 0.18 on hover.
+                      Damp Paper: bg lightens on hover. Pigment Bloom orb expands. Text transitions to deeper rose. duration-700 ease-in-out.
                     </p>
                   </div>
                 )}
