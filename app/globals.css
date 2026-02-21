@@ -98,10 +98,6 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
 
 /* View Transitions */
 @view-transition {
