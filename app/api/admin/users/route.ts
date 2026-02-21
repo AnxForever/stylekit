@@ -7,7 +7,6 @@ import {
   resolveUserTitle,
   type UserTitleRule,
 } from "@/lib/auth/user-title-policy";
-import { buildDisplaySeqIdMap } from "@/lib/auth/user-seq-display";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const LEGACY_USER_SESSION_PREFIX = "user:";
@@ -177,7 +176,6 @@ export async function GET(request: Request) {
   }
 
   let seqIdMap = new Map<string, number>();
-  let displaySeqIdMap = new Map<string, number>();
   let titleRuleMap = new Map<string, UserTitleRule>();
 
   try {
@@ -267,7 +265,6 @@ export async function GET(request: Request) {
 
     const userSeqRows = await readTableRows(admin, "user_seq_ids");
     seqIdMap = buildSeqIdMap(userSeqRows);
-    displaySeqIdMap = buildDisplaySeqIdMap(userSeqRows);
     titleRuleMap = buildUserTitleRuleMap(await readTableRows(admin, "user_titles"));
   } catch {
     return NextResponse.json(
@@ -282,7 +279,6 @@ export async function GET(request: Request) {
     if (user.seqId == null) {
       user.seqId = seqIdMap.get(user.userId) ?? null;
     }
-    user.displaySeqId = displaySeqIdMap.get(user.userId) ?? null;
 
     const rule = titleRuleMap.get(user.userId) ?? null;
     user.customTitle = rule?.customTitle ?? null;
@@ -315,6 +311,12 @@ export async function GET(request: Request) {
     } else {
       user.authorName = "User";
     }
+  }
+
+  // Build a dense, non-destructive display id from effective seq ids.
+  const displaySeqIdMap = buildDisplaySeqIdMapFromUsers(users);
+  for (const user of users) {
+    user.displaySeqId = displaySeqIdMap.get(user.userId) ?? null;
   }
 
   if (search) {
@@ -491,6 +493,27 @@ function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
     map.set(userId, seqId);
   }
 
+  return map;
+}
+
+function buildDisplaySeqIdMapFromUsers(users: UserInfo[]): Map<string, number> {
+  const sorted = users
+    .filter((user) => user.seqId != null && user.seqId > 0)
+    .map((user) => ({
+      userId: user.userId,
+      seqId: user.seqId as number,
+    }))
+    .sort((a, b) => {
+      if (a.seqId !== b.seqId) {
+        return a.seqId - b.seqId;
+      }
+      return a.userId.localeCompare(b.userId);
+    });
+
+  const map = new Map<string, number>();
+  sorted.forEach((item, index) => {
+    map.set(item.userId, index + 1);
+  });
   return map;
 }
 
