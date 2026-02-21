@@ -286,6 +286,7 @@ describe("POST /api/submit", () => {
       {
         slug: "neo-brutalist",
         __author: {
+          userId: "user-1",
           handle: "anx",
           avatarUrl: null,
           provider: "github",

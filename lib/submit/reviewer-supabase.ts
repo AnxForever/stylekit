@@ -153,10 +153,17 @@ export async function createSubmissionSupabase(
     .select("id, slug")
     .single();
 
-  if (shouldRetryLegacySubmissionInsert(insertResult.error as DbErrorLike | null)) {
+  const retryPayload = buildSubmissionRetryPayload(
+    insertResult.error as DbErrorLike | null,
+    basePayload,
+    userId ?? null,
+    authorName ?? null
+  );
+
+  if (retryPayload) {
     insertResult = await sb
       .from("submissions")
-      .insert(basePayload)
+      .insert(retryPayload)
       .select("id, slug")
       .single();
   }
@@ -186,6 +193,45 @@ function isMissingColumnError(
 
 function shouldRetryLegacySubmissionInsert(error: DbErrorLike | null | undefined): boolean {
   return isMissingColumnError(error, "user_id") || isMissingColumnError(error, "author_name");
+}
+
+function buildSubmissionRetryPayload(
+  error: DbErrorLike | null | undefined,
+  basePayload: {
+    slug: string;
+    form_data: Record<string, unknown>;
+    status: "pending";
+    ip_address?: string | null;
+  },
+  userId: string | null,
+  authorName: string | null
+): Record<string, unknown> | null {
+  if (!shouldRetryLegacySubmissionInsert(error)) {
+    return null;
+  }
+
+  const missingUserId = isMissingColumnError(error, "user_id");
+  const missingAuthorName = isMissingColumnError(error, "author_name");
+
+  if (missingUserId && missingAuthorName) {
+    return basePayload;
+  }
+
+  if (missingAuthorName) {
+    return {
+      ...basePayload,
+      user_id: userId,
+    };
+  }
+
+  if (missingUserId) {
+    return {
+      ...basePayload,
+      author_name: authorName,
+    };
+  }
+
+  return basePayload;
 }
 
 function buildDbInsertError(error: DbErrorLike): Error & DbErrorLike {
