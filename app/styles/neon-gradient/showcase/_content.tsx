@@ -2,41 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Zap,
-  Shield,
-  Users,
-  Rocket,
-  Star,
-  Sparkles,
-  Check,
-  X,
-  ChevronDown,
-  Globe,
-  Lock,
-  Cpu,
-  Flame,
-  Layers,
-  Eye,
-  TrendingUp,
-  MessageCircle,
-  Heart,
-  Share2,
-  Bell,
-  Settings,
-  BarChart2,
-  Code2,
-  Package,
-  GitBranch,
-} from "lucide-react";
 
-// ---------------------------------------------------------------------------
-// useInView hook — fires once when element enters viewport
-// ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/*  Inline hook — ZERO @/components/showcase imports                   */
+/* ------------------------------------------------------------------ */
+
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -52,12 +26,10 @@ function useInView(options = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
-// ---------------------------------------------------------------------------
-// RevealBlock — scroll-reveal wrapper (NO style prop on the component)
-// ---------------------------------------------------------------------------
 function RevealBlock({
   children,
   className = "",
@@ -83,503 +55,554 @@ function RevealBlock({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Data — gradient theme definitions
-// ---------------------------------------------------------------------------
-const GRADIENT_THEMES = [
-  {
-    id: "purple-pink",
-    name: "Purple Storm",
-    from: "from-purple-500",
-    to: "to-pink-500",
-    border: "border-yellow-400",
-    shadow: "rgba(168,85,247,0.5)",
-    shadowHover: "rgba(168,85,247,0.8)",
-    label: "from-purple-500 to-pink-500",
-  },
-  {
-    id: "cyan-lime",
-    name: "Cyan Surge",
-    from: "from-cyan-400",
-    to: "to-lime-400",
-    border: "border-pink-400",
-    shadow: "rgba(34,211,238,0.5)",
-    shadowHover: "rgba(34,211,238,0.8)",
-    label: "from-cyan-400 to-lime-400",
-  },
-  {
-    id: "amber-rose",
-    name: "Amber Blaze",
-    from: "from-amber-400",
-    to: "to-rose-500",
-    border: "border-cyan-400",
-    shadow: "rgba(251,191,36,0.5)",
-    shadowHover: "rgba(251,191,36,0.8)",
-    label: "from-amber-400 to-rose-500",
-  },
-  {
-    id: "lime-cyan",
-    name: "Lime Wave",
-    from: "from-lime-400",
-    to: "to-cyan-500",
-    border: "border-purple-400",
-    shadow: "rgba(163,230,53,0.5)",
-    shadowHover: "rgba(163,230,53,0.8)",
-    label: "from-lime-400 to-cyan-500",
-  },
-  {
-    id: "rose-amber",
-    name: "Rose Fire",
-    from: "from-rose-500",
-    to: "to-amber-400",
-    border: "border-lime-400",
-    shadow: "rgba(251,113,133,0.5)",
-    shadowHover: "rgba(251,113,133,0.8)",
-    label: "from-rose-500 to-amber-400",
-  },
-] as const;
+/* ------------------------------------------------------------------ */
+/*  Inline SVG icons — no lucide-react                                 */
+/* ------------------------------------------------------------------ */
 
-const PALETTE_COLORS = [
-  { name: "Purple", hex: "#a855f7", role: "Primary", tw: "bg-purple-500", glow: "rgba(168,85,247,0.7)" },
-  { name: "Deep Dark", hex: "#0f0a1e", role: "Background", tw: "bg-[#0f0a1e]", glow: "rgba(15,10,30,0.7)" },
-  { name: "Pink", hex: "#f472b6", role: "Accent", tw: "bg-pink-400", glow: "rgba(244,114,182,0.7)" },
-  { name: "Cyan", hex: "#22d3ee", role: "Highlight", tw: "bg-cyan-400", glow: "rgba(34,211,238,0.7)" },
-  { name: "Lime", hex: "#a3e635", role: "Energy", tw: "bg-lime-400", glow: "rgba(163,230,53,0.7)" },
-  { name: "Amber", hex: "#fbbf24", role: "Warmth", tw: "bg-amber-400", glow: "rgba(251,191,36,0.7)" },
-  { name: "Rose", hex: "#fb7185", role: "Impact", tw: "bg-rose-400", glow: "rgba(251,113,133,0.7)" },
+function ZapIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
+
+function StarIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+
+function SparklesIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 0l1.5 9.5 9.5 1.5-9.5 1.5L12 24l-1.5-11.5L1 12l10.5-1.5L12 0z" />
+    </svg>
+  );
+}
+
+function RocketIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+    </svg>
+  );
+}
+
+function ShieldIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+function UsersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function CpuIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <rect x="9" y="9" width="6" height="6" />
+      <path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 15h2M20 15h2M2 9h2M20 9h2" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+function TrendingUpIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  );
+}
+
+function LayersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </svg>
+  );
+}
+
+function CodeIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const palette = [
+  { name: "Neon Purple", hex: "#a855f7", label: "Primary", glow: "rgba(168,85,247,0.5)" },
+  { name: "Deep Space", hex: "#0f0a1e", label: "Background", glow: "rgba(15,10,30,0.8)" },
+  { name: "Electric Pink", hex: "#f472b6", label: "Accent 1", glow: "rgba(244,114,182,0.5)" },
+  { name: "Cyan Arc", hex: "#22d3ee", label: "Accent 2", glow: "rgba(34,211,238,0.5)" },
+  { name: "Volt Green", hex: "#a3e635", label: "Accent 3", glow: "rgba(163,230,53,0.5)" },
+  { name: "Solar Yellow", hex: "#fbbf24", label: "Accent 4", glow: "rgba(251,191,36,0.5)" },
 ];
 
-const GRADIENT_COMBOS = [
-  { name: "Purple Storm", classes: "from-purple-500 to-pink-500", desc: "Bold identity gradient" },
-  { name: "Ocean Energy", classes: "from-cyan-400 to-lime-400", desc: "Tech-forward pairing" },
-  { name: "Sunset Blaze", classes: "from-amber-400 to-rose-500", desc: "Warm impact gradient" },
-  { name: "Electric Lime", classes: "from-lime-400 to-cyan-500", desc: "High-contrast energy" },
-  { name: "Neon Fusion", classes: "from-purple-500 via-pink-500 to-amber-400", desc: "Full-spectrum blend" },
-  { name: "Rose Inferno", classes: "from-rose-500 via-pink-500 to-purple-600", desc: "Deep warm spectrum" },
-];
+type ComponentTab = "buttons" | "cards" | "inputs" | "badges";
 
-const FEATURE_CARDS = [
-  {
-    icon: Zap,
-    title: "Instant Performance",
-    desc: "Sub-millisecond response times with GPU-accelerated gradient rendering across all surfaces.",
-    from: "from-purple-500",
-    to: "to-pink-500",
-    border: "border-yellow-400",
-    shadow: "rgba(168,85,247,0.4)",
-  },
-  {
-    icon: Shield,
-    title: "Secure by Design",
-    desc: "End-to-end encryption baked into every layer. Enterprise-grade security with a neon edge.",
-    from: "from-cyan-400",
-    to: "to-lime-400",
-    border: "border-pink-400",
-    shadow: "rgba(34,211,238,0.4)",
-  },
-  {
-    icon: Globe,
-    title: "Global Reach",
-    desc: "Deploy to 200+ regions with zero-config edge distribution and gradient-perfect fidelity.",
-    from: "from-amber-400",
-    to: "to-rose-500",
-    border: "border-cyan-400",
-    shadow: "rgba(251,191,36,0.4)",
-  },
-  {
-    icon: Cpu,
-    title: "AI-Powered Core",
-    desc: "Machine learning inference at the edge, wrapped in gradients that make your models look good.",
-    from: "from-lime-400",
-    to: "to-cyan-500",
-    border: "border-purple-400",
-    shadow: "rgba(163,230,53,0.4)",
-  },
-  {
-    icon: Layers,
-    title: "Stack Agnostic",
-    desc: "Works with any framework. Gradient tokens export to Tailwind, CSS variables, and design tokens.",
-    from: "from-rose-500",
-    to: "to-amber-400",
-    border: "border-lime-400",
-    shadow: "rgba(251,113,133,0.4)",
-  },
-  {
-    icon: GitBranch,
-    title: "Version Everything",
-    desc: "Git-native versioning with gradient diffs. Every color change is tracked and reversible.",
-    from: "from-purple-500",
-    via: "via-cyan-500",
-    to: "to-pink-500",
-    border: "border-amber-400",
-    shadow: "rgba(168,85,247,0.4)",
-  },
-];
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
 
-const STAT_ROWS = [
-  { label: "Downloads", value: 87, from: "from-purple-500", to: "to-pink-500", glow: "rgba(168,85,247,0.6)" },
-  { label: "Active Users", value: 64, from: "from-cyan-400", to: "to-lime-400", glow: "rgba(34,211,238,0.6)" },
-  { label: "Components", value: 91, from: "from-amber-400", to: "to-rose-500", glow: "rgba(251,191,36,0.6)" },
-  { label: "Stars", value: 73, from: "from-lime-400", to: "to-cyan-500", glow: "rgba(163,230,53,0.6)" },
-];
-
-const DO_LIST = [
-  "Dark bg `bg-[#0f0a1e]` on all pages",
-  "Card gradient fills with `from-*` and `to-*`",
-  "Thick borders `border-4` with high-contrast colors",
-  "`rounded-2xl` on all gradient cards",
-  "Multiple gradient combos: purple-pink, cyan-lime, amber-rose",
-  "`hover:scale-[1.02] hover:brightness-110` on gradient cards",
-  "Neon text-shadow on headings for depth",
-  "Gradient text: `bg-clip-text text-transparent`",
-];
-
-const DONT_LIST = [
-  "Light backgrounds — everything must be dark",
-  "Single flat colors — every surface should gradient",
-  "Subtle or muted effects — go bold",
-  "Monochrome palettes",
-  "Thin borders — use `border-4` minimum",
-  "Low-contrast color pairings",
-  "Flat buttons without glow shadows",
-  "White cards on dark backgrounds",
-];
-
-const COMPONENT_TABS = ["Buttons", "Cards", "Inputs"] as const;
-type ComponentTab = (typeof COMPONENT_TABS)[number];
-
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
 export default function ShowcaseContent() {
-  // Hero
-  const { ref: heroRef, inView: heroInView } = useInView();
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
 
-  // Section refs
-  const { ref: componentsRef, inView: componentsInView } = useInView();
-  const { ref: paletteRef, inView: paletteInView } = useInView();
-  const { ref: combosRef, inView: combosInView } = useInView();
-  const { ref: featuresRef, inView: featuresInView } = useInView();
-  const { ref: statsRef, inView: statsInView } = useInView();
-  const { ref: principlesRef, inView: principlesInView } = useInView();
-  const { ref: ctaRef, inView: ctaInView } = useInView();
+  // aiRule 1: Fluid Luminescence — gradient flow demo
+  const [luminFlowing, setLuminFlowing] = useState(false);
 
-  // Component demo state
-  const [activeComponentTab, setActiveComponentTab] = useState<ComponentTab>("Buttons");
-  const [activeTheme, setActiveTheme] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [inputFocused, setInputFocused] = useState<string | null>(null);
-  const [subscribed, setSubscribed] = useState(false);
+  // aiRule 2: Chromatic Glow — dual-layer shadow selector
+  const [glowColor, setGlowColor] = useState<"purple" | "cyan" | "pink" | "yellow">("purple");
 
-  const theme = GRADIENT_THEMES[activeTheme];
+  // aiRule 3: Electric Activation — button activation states
+  const [electricActive, setElectricActive] = useState(false);
+  const [electricCount, setElectricCount] = useState(0);
+
+  // aiRule 4: Smooth High-Tech — duration comparison
+  const [speedMode, setSpeedMode] = useState<"fast" | "smooth" | null>(null);
+  const [hoverDuration, setHoverDuration] = useState<"300" | "500">("500");
+
+  // card hover states
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const glowMap = {
+    purple: { near: "#a855f7", far: "rgba(168,85,247,0.35)", border: "border-purple-500", label: "Purple" },
+    cyan: { near: "#22d3ee", far: "rgba(34,211,238,0.35)", border: "border-cyan-400", label: "Cyan" },
+    pink: { near: "#f472b6", far: "rgba(244,114,182,0.35)", border: "border-pink-400", label: "Pink" },
+    yellow: { near: "#fbbf24", far: "rgba(251,191,36,0.35)", border: "border-yellow-400", label: "Yellow" },
+  };
 
   return (
-    <div className="min-h-screen bg-[#0f0a1e] text-white relative overflow-x-hidden">
-
-      {/* Injected keyframe animations */}
+    <div className="min-h-screen bg-[#0f0a1e] font-sans text-white overflow-x-hidden">
       <style>{`
         @keyframes neon-float {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-16px); }
+          50% { transform: translateY(-10px); }
         }
         @keyframes neon-pulse-glow {
-          0%, 100% { opacity: 0.6; }
+          0%, 100% { opacity: 0.7; }
           50% { opacity: 1; }
         }
         @keyframes neon-spin-slow {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        @keyframes neon-blob-drift {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(40px, -30px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.95); }
+        @keyframes neon-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
         }
+        @keyframes neon-gradient-flow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes electric-flash {
+          0%, 100% { box-shadow: 0 0 20px #a855f7, 0 0 40px rgba(168,85,247,0.4); }
+          50% { box-shadow: 0 0 40px #22d3ee, 0 0 80px rgba(34,211,238,0.5), inset 0 0 30px rgba(255,255,255,0.2); }
+        }
+        .neon-float-anim { animation: neon-float 4s ease-in-out infinite; }
+        .neon-pulse-anim { animation: neon-pulse-glow 2.5s ease-in-out infinite; }
+        .neon-spin-anim { animation: neon-spin-slow 8s linear infinite; }
+        .neon-bounce-anim { animation: neon-bounce 3s ease-in-out infinite; }
+        .neon-gradient-flow-anim {
+          background-size: 200% 200%;
+          animation: neon-gradient-flow 3s ease infinite;
+        }
+        .electric-active-anim { animation: electric-flash 0.4s ease-in-out; }
       `}</style>
 
-      {/* Ambient background blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-20"
-          style={{
-            background: "radial-gradient(circle, #a855f7, transparent)",
-            animation: "neon-blob-drift 18s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute top-1/3 -right-32 w-80 h-80 rounded-full opacity-15"
-          style={{
-            background: "radial-gradient(circle, #22d3ee, transparent)",
-            animation: "neon-blob-drift 22s ease-in-out infinite reverse",
-          }}
-        />
-        <div
-          className="absolute -bottom-20 left-1/3 w-72 h-72 rounded-full opacity-10"
-          style={{
-            background: "radial-gradient(circle, #f472b6, transparent)",
-            animation: "neon-blob-drift 15s ease-in-out infinite 4s",
-          }}
-        />
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* 1. NAVIGATION                                                        */}
-      {/* ------------------------------------------------------------------ */}
-      <header
-        className="fixed top-0 left-0 right-0 z-50 bg-[#0f0a1e]/85 backdrop-blur-xl"
-        style={{
-          borderBottom: "1px solid",
-          borderImage: "linear-gradient(to right, #a855f7, #f472b6, #22d3ee) 1",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo + back */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/styles/neon-gradient"
-                className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors duration-300"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span className="hidden md:inline text-sm font-medium">Back</span>
-              </Link>
-              <span
-                className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
-                style={{ textShadow: "0 0 20px rgba(168,85,247,0.5)" }}
-              >
-                Neon Gradient
-              </span>
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f0a1e]/80 backdrop-blur-xl border-b border-purple-500/20">
+        <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(251,191,36,0.4)]">
+              <SparklesIcon className="w-4 h-4 text-white" />
             </div>
-
-            {/* Nav links */}
-            <nav className="hidden md:flex items-center gap-8">
-              {[
-                { label: "Components", anchor: "#components" },
-                { label: "Palette", anchor: "#palette" },
-                { label: "Gradients", anchor: "#combos" },
-                { label: "Principles", anchor: "#principles" },
-              ].map(({ label, anchor }) => (
-                <a
-                  key={label}
-                  href={anchor}
-                  className="text-sm text-white/60 hover:text-white transition-colors duration-300"
-                >
-                  {label}
-                </a>
-              ))}
-            </nav>
-
-            {/* CTA */}
-            <Link
-              href="/"
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold rounded-xl border-2 border-yellow-400 hover:brightness-110 hover:scale-105 transition-all duration-300"
-              style={{ boxShadow: "0 0 15px rgba(168,85,247,0.4)" }}
-            >
-              StyleKit →
-            </Link>
+            <span className="font-bold text-white text-lg tracking-tight">
+              Neon<span className="text-purple-400">Gradient</span>
+            </span>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Components", "Interactions", "App Demo", "Rules"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-all duration-300"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back to StyleKit */}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <ArrowRightIcon className="w-3.5 h-3.5 rotate-180" />
+            <span>StyleKit</span>
+          </Link>
         </div>
       </header>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* 2. HERO                                                              */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 md:px-12 pt-20 pb-16">
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section className="relative pt-32 md:pt-40 pb-28 px-5 md:px-10 overflow-hidden">
+        {/* Radial glow backgrounds */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-900/20 rounded-full blur-3xl" />
+          <div className="absolute top-20 right-10 w-64 h-64 bg-pink-900/15 rounded-full blur-2xl" />
+          <div className="absolute bottom-20 left-10 w-48 h-48 bg-cyan-900/15 rounded-full blur-2xl" />
+        </div>
 
-        {/* Floating gradient card blobs — decorative */}
-        <div
-          className="absolute top-32 left-8 md:left-24 w-36 h-36 rounded-2xl border-4 border-yellow-400 rotate-12 opacity-60"
-          style={{
-            background: "linear-gradient(135deg, #a855f7, #f472b6)",
-            boxShadow: "0 0 40px rgba(168,85,247,0.4)",
-            animation: "neon-float 6s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute top-48 right-8 md:right-24 w-28 h-28 rounded-2xl border-4 border-pink-400 -rotate-6 opacity-50"
-          style={{
-            background: "linear-gradient(135deg, #22d3ee, #a3e635)",
-            boxShadow: "0 0 30px rgba(34,211,238,0.4)",
-            animation: "neon-float 8s ease-in-out infinite 2s",
-          }}
-        />
-        <div
-          className="absolute bottom-32 left-1/4 w-24 h-24 rounded-2xl border-4 border-cyan-400 rotate-3 opacity-40"
-          style={{
-            background: "linear-gradient(135deg, #fbbf24, #fb7185)",
-            boxShadow: "0 0 25px rgba(251,191,36,0.4)",
-            animation: "neon-float 7s ease-in-out infinite 1s",
-          }}
-        />
+        {/* Floating decoration icons */}
+        <div className="absolute top-28 left-12 text-yellow-400 pointer-events-none hidden md:block neon-pulse-anim">
+          <StarIcon className="w-6 h-6" />
+        </div>
+        <div className="absolute top-48 right-16 text-pink-400 pointer-events-none hidden md:block neon-float-anim">
+          <RocketIcon className="w-8 h-8" />
+        </div>
+        <div className="absolute bottom-36 left-1/4 text-cyan-400 pointer-events-none hidden md:block neon-bounce-anim">
+          <SparklesIcon className="w-5 h-5" />
+        </div>
+        <div className="absolute top-36 right-1/3 text-purple-400 pointer-events-none hidden md:block neon-spin-anim">
+          <StarIcon className="w-4 h-4" />
+        </div>
+        <div className="absolute bottom-48 right-12 text-yellow-300 pointer-events-none hidden md:block neon-pulse-anim">
+          <ZapIcon className="w-5 h-5" />
+        </div>
 
-        {/* Hero content */}
-        <div className="relative max-w-5xl mx-auto text-center z-10" ref={heroRef}>
-          {/* Badge */}
-          <div
-            style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-            }}
-          >
-            <div className="flex justify-center mb-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left — text */}
+            <div>
+              {/* Badge */}
               <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-purple-500/50 bg-purple-500/10 text-xs font-semibold text-purple-300"
-                style={{ animation: "neon-pulse-glow 3s ease-in-out infinite" }}
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+                  transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0s",
+                }}
               >
-                <Star className="w-3 h-3 fill-current" />
-                霓虹渐变 Design System
-                <Star className="w-3 h-3 fill-current" />
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-dashed border-yellow-400 text-yellow-400 text-sm font-medium mb-7">
+                  <StarIcon className="w-4 h-4" />
+                  霓虹渐变 — Neon Gradient
+                  <StarIcon className="w-4 h-4" />
+                </span>
+              </div>
+
+              {/* Title */}
+              <h1
+                className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.0] tracking-tight mb-6"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+                }}
+              >
+                <span className="text-purple-400">Bold.</span>{" "}
+                <span className="text-cyan-400">Bright.</span>
+                <br />
+                <span
+                  style={{
+                    background: "linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #22d3ee 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  Electric.
+                </span>
+              </h1>
+
+              {/* Sub */}
+              <p
+                className="text-white/70 text-lg md:text-xl leading-relaxed max-w-lg mb-10"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
+                }}
+              >
+                深色背景上的鲜艳渐变卡片，配合粗彩色边框和霓虹发光效果。适合科技产品、SaaS 着陆页、年轻化品牌。
+              </p>
+
+              {/* CTA buttons */}
+              <div
+                className="flex flex-col sm:flex-row gap-4"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+                }}
+              >
+                <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-cyan-400 via-pink-500 to-cyan-400 bg-[length:200%_auto] bg-left text-white font-bold rounded-xl border-4 border-white/20 shadow-[0_0_18px_rgba(236,72,153,0.45)] hover:bg-right hover:shadow-[0_0_24px_#ec4899,0_0_42px_rgba(34,211,238,0.45)] hover:-translate-y-1 active:scale-[0.98] active:shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] transition-all duration-500 ease-out">
+                  <SparklesIcon className="w-4 h-4" />
+                  开始免费试用
+                </button>
+                <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-white font-bold rounded-xl border-4 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.25)] hover:bg-cyan-400/10 hover:shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_36px_rgba(168,85,247,0.35)] transition-all duration-500 ease-out">
+                  <ArrowRightIcon className="w-4 h-4" />
+                  观看演示
+                </button>
+              </div>
+
+              {/* Stats */}
+              <div
+                className="grid grid-cols-3 gap-4 mt-10"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
+                }}
+              >
+                {[
+                  { value: "50k+", label: "用户", color: "#a855f7" },
+                  { value: "99.9%", label: "稳定性", color: "#22d3ee" },
+                  { value: "4.9", label: "评分", color: "#f472b6" },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="bg-white/5 rounded-xl p-4 text-center border border-white/10 hover:-translate-y-1 hover:border-white/20 transition-all duration-300 cursor-default"
+                  >
+                    <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>
+                      {stat.value}
+                    </div>
+                    <div className="text-xs text-white/50 font-medium">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* Main heading */}
-          <div
-            style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
-            }}
-          >
-            <h1
-              className="text-5xl md:text-7xl lg:text-9xl font-black leading-tight mb-6"
-              style={{ textShadow: "0 0 40px rgba(168,85,247,0.5), 0 0 80px rgba(244,114,182,0.3)" }}
+            {/* Right — floating gradient cards */}
+            <div
+              className="relative h-80 hidden lg:block"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s",
+              }}
             >
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400">
-                Neon
-              </span>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-lime-400 to-amber-400">
-                Gradient
-              </span>
-            </h1>
-          </div>
+              {/* Purple-pink card */}
+              <div className="absolute top-0 left-0 w-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl border-4 border-yellow-400 p-5 shadow-[0_0_30px_rgba(168,85,247,0.5)] transform rotate-[-8deg] z-10 neon-float-anim">
+                <ZapIcon className="w-10 h-10 text-white mb-3" />
+                <p className="text-white font-bold text-lg">极速响应</p>
+                <p className="text-white/70 text-xs mt-1">50ms 延迟</p>
+              </div>
 
-          {/* Tagline */}
-          <div
-            style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
-            }}
-          >
-            <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Dark backgrounds. Vivid gradient fills. Thick colored borders. Every surface is a gradient opportunity.
-              Bold, modern, future-forward energy.
-            </p>
-          </div>
+              {/* Cyan-green card */}
+              <div className="absolute top-20 right-0 w-48 bg-gradient-to-br from-green-400 to-cyan-400 rounded-2xl border-4 border-pink-400 p-5 shadow-[0_0_30px_rgba(34,211,238,0.5)] transform rotate-[5deg] z-20" style={{ animation: "neon-float 5s ease-in-out infinite 1s" }}>
+                <ShieldIcon className="w-10 h-10 text-white mb-3" />
+                <p className="text-white font-bold text-lg">安全加密</p>
+                <p className="text-white/70 text-xs mt-1">AES-256</p>
+              </div>
 
-          {/* CTA buttons */}
-          <div
-            style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
-            }}
-          >
-            <div className="flex flex-wrap justify-center gap-4 mb-16">
-              <button
-                className="px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white font-bold rounded-2xl border-4 border-yellow-400 hover:scale-[1.05] hover:brightness-110 transition-all duration-300 flex items-center gap-2"
-                style={{ boxShadow: "0 0 30px rgba(168,85,247,0.5)" }}
-              >
-                <Sparkles className="w-5 h-5" />
-                Get Started Free
-              </button>
-              <button
-                className="px-8 py-4 bg-transparent text-white font-bold rounded-2xl border-4 border-cyan-400 hover:bg-cyan-400/10 hover:scale-[1.05] transition-all duration-300 flex items-center gap-2"
-                style={{ boxShadow: "0 0 20px rgba(34,211,238,0.3)" }}
-              >
-                View Components
-              </button>
-            </div>
-          </div>
-
-          {/* Stat chips */}
-          <div
-            style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
-            }}
-          >
-            <div className="flex flex-wrap justify-center gap-6">
-              {[
-                { value: "50K+", label: "Downloads", color: "text-purple-400" },
-                { value: "200+", label: "Components", color: "text-cyan-400" },
-                { value: "7", label: "Neon Colors", color: "text-pink-400" },
-                { value: "100%", label: "Dark Mode", color: "text-amber-400" },
-              ].map(({ value, label, color }) => (
-                <div key={label} className="text-center">
-                  <div className={`text-2xl md:text-3xl font-black ${color}`}>{value}</div>
-                  <div className="text-xs text-white/40 mt-1">{label}</div>
-                </div>
-              ))}
+              {/* Pink-rose card */}
+              <div className="absolute bottom-0 left-1/4 w-52 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl border-4 border-cyan-400 p-5 shadow-[0_0_30px_rgba(236,72,153,0.5)] transform rotate-[3deg] z-30" style={{ animation: "neon-float 6s ease-in-out infinite 0.5s" }}>
+                <UsersIcon className="w-10 h-10 text-white mb-3" />
+                <p className="text-white font-bold text-lg">团队协作</p>
+                <p className="text-white/70 text-xs mt-1">无限成员</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* 3. COMPONENT DEMOS                                                   */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="components" className="px-6 md:px-12 py-16 md:py-24" ref={componentsRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">Interactive Library</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-4"
-              style={{ textShadow: "0 0 20px rgba(168,85,247,0.3)" }}
-            >
-              Components
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 block mb-3">
+              Palette
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Neon <span className="text-cyan-400">color system</span>
             </h2>
-            <p className="text-white/50 mb-10 max-w-lg">
-              Switch themes to see gradient variants applied across every component type.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              深紫主色配合五彩霓虹强调色——每个颜色都在深色画布上以最大饱和度发光，不用于浅色背景。
             </p>
           </RevealBlock>
 
-          {/* Theme switcher */}
+          {/* Swatches — Chromatic Glow on hover */}
           <RevealBlock delay={0.1}>
-            <div className="flex flex-wrap gap-3 mb-10">
-              {GRADIENT_THEMES.map((t, i) => (
-                <button
-                  key={t.id}
-                  onClick={() => setActiveTheme(i)}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
-                    activeTheme === i
-                      ? `bg-gradient-to-r ${t.from} ${t.to} text-white border-2 ${t.border}`
-                      : "bg-white/5 text-white/50 border-2 border-white/10 hover:bg-white/10 hover:text-white"
-                  }`}
-                  style={
-                    activeTheme === i
-                      ? { boxShadow: `0 0 20px ${t.shadow}` }
-                      : undefined
-                  }
+            <div className="flex flex-wrap gap-8 md:gap-12 justify-center mb-16">
+              {palette.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="flex flex-col items-center gap-3 cursor-pointer"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
                 >
-                  {t.name}
-                </button>
+                  <div
+                    style={{
+                      transform: hoveredSwatch === i ? "translateY(-8px) scale(1.1)" : "translateY(0) scale(1)",
+                      transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)",
+                    }}
+                  >
+                    <div
+                      className="w-20 h-20 md:w-24 md:h-24 rounded-full"
+                      style={{
+                        backgroundColor: swatch.hex,
+                        border: swatch.hex === "#0f0a1e" ? "3px solid #a855f7" : "none",
+                        boxShadow: hoveredSwatch === i
+                          ? `0 0 24px ${swatch.glow}, 0 0 48px ${swatch.glow}`
+                          : `0 0 12px ${swatch.glow}`,
+                        transition: "box-shadow 0.35s ease",
+                      }}
+                    />
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-white">{swatch.name}</div>
+                    <div className="text-xs text-white/40 font-mono mt-0.5">{swatch.hex}</div>
+                    <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-white/60 bg-white/5 border border-white/10">
+                      {swatch.label}
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
           </RevealBlock>
 
-          {/* Component tabs */}
-          <RevealBlock delay={0.15}>
-            <div className="flex gap-1 p-1 bg-white/5 border-2 border-white/10 rounded-xl w-fit mb-10">
-              {COMPONENT_TABS.map((tab) => (
+          {/* Gradient combinations */}
+          <RevealBlock delay={0.2}>
+            <div className="bg-white/5 rounded-3xl p-8 border border-purple-500/20">
+              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-6">
+                渐变组合 — Gradient combinations
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { from: "#a855f7", via: "#ec4899", to: "#f43f5e", label: "紫粉红", border: "border-yellow-400" },
+                  { from: "#22d3ee", via: "#14b8a6", to: "#4ade80", label: "青绿", border: "border-pink-400" },
+                  { from: "#22d3ee", to: "#a855f7", label: "青紫", border: "border-yellow-400" },
+                  { from: "#fbbf24", via: "#4ade80", to: "#22d3ee", label: "黄绿青", border: "border-pink-400" },
+                ].map((g) => (
+                  <div key={g.label} className="group cursor-pointer">
+                    <div
+                      className="h-14 rounded-xl mb-2 border-2 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+                      style={{
+                        background: g.via
+                          ? `linear-gradient(135deg, ${g.from}, ${g.via}, ${g.to})`
+                          : `linear-gradient(135deg, ${g.from}, ${g.to})`,
+                        borderColor: "transparent",
+                      }}
+                    />
+                    <div className="text-xs text-white/40 text-center">{g.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY                                             */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-pink-400 block mb-3">
+              Components
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Neon <span className="text-purple-400">building blocks</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              渐变填充、粗彩色边框、发光阴影——每个组件都充满霓虹能量。
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["buttons", "cards", "inputs", "badges"] as ComponentTab[]).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveComponentTab(tab)}
-                  className={`px-5 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                    activeComponentTab === tab
-                      ? `bg-gradient-to-r ${theme.from} ${theme.to} text-white`
-                      : "text-white/50 hover:text-white"
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium capitalize transition-all duration-300 hover:-translate-y-0.5 ${
+                    activeTab === tab
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                      : "bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10"
                   }`}
-                  style={
-                    activeComponentTab === tab
-                      ? { boxShadow: `0 0 15px ${theme.shadow}` }
-                      : undefined
-                  }
                 >
                   {tab}
                 </button>
@@ -587,941 +610,907 @@ export default function ShowcaseContent() {
             </div>
           </RevealBlock>
 
-          {/* BUTTONS panel */}
-          {activeComponentTab === "Buttons" && (
-            <RevealBlock delay={0.2}>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Gradient fill */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Gradient Fill</p>
-                  <button
-                    className={`w-full px-6 py-3 bg-gradient-to-r ${theme.from} ${theme.to} text-white font-bold rounded-xl border-4 ${theme.border} hover:scale-[1.02] hover:brightness-110 transition-all duration-300`}
-                    style={{ boxShadow: `0 0 20px ${theme.shadow}` }}
-                  >
-                    Primary Action
-                  </button>
-                </div>
+          <RevealBlock delay={0.15}>
+            <div className="bg-white/5 rounded-3xl p-8 md:p-12 border border-purple-500/20">
 
-                {/* Gradient outline */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Outline</p>
-                  <button
-                    className={`w-full px-6 py-3 bg-transparent font-bold rounded-xl border-4 ${theme.border} hover:bg-white/5 hover:scale-[1.02] transition-all duration-300`}
-                    style={{
-                      color: "white",
-                      boxShadow: `0 0 15px ${theme.shadow}`,
-                    }}
-                  >
-                    Outline Button
-                  </button>
-                </div>
-
-                {/* Ghost */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Ghost</p>
-                  <button className="w-full px-6 py-3 bg-white/5 text-white/80 font-bold rounded-xl border-2 border-white/20 hover:bg-white/10 hover:text-white hover:scale-[1.02] transition-all duration-300">
-                    Ghost Button
-                  </button>
-                </div>
-
-                {/* Icon + label */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Icon + Label</p>
-                  <button
-                    className={`w-full px-6 py-3 bg-gradient-to-r ${theme.from} ${theme.to} text-white font-bold rounded-xl border-4 ${theme.border} hover:scale-[1.02] hover:brightness-110 transition-all duration-300 flex items-center justify-center gap-2`}
-                    style={{ boxShadow: `0 0 20px ${theme.shadow}` }}
-                  >
-                    <Zap className="w-4 h-4" />
-                    Deploy Now
-                  </button>
-                </div>
-
-                {/* Destructive */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Destructive</p>
-                  <button
-                    className="w-full px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold rounded-xl border-4 border-amber-400 hover:scale-[1.02] hover:brightness-110 transition-all duration-300 flex items-center justify-center gap-2"
-                    style={{ boxShadow: "0 0 20px rgba(251,113,133,0.5)" }}
-                  >
-                    <X className="w-4 h-4" />
-                    Delete
-                  </button>
-                </div>
-
-                {/* Success */}
-                <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                  <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Success</p>
-                  <button
-                    className="w-full px-6 py-3 bg-gradient-to-r from-lime-400 to-cyan-400 text-black font-bold rounded-xl border-4 border-purple-400 hover:scale-[1.02] hover:brightness-110 transition-all duration-300 flex items-center justify-center gap-2"
-                    style={{ boxShadow: "0 0 20px rgba(163,230,53,0.5)" }}
-                  >
-                    <Check className="w-4 h-4" />
-                    Confirm
-                  </button>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-
-          {/* CARDS panel */}
-          {activeComponentTab === "Cards" && (
-            <RevealBlock delay={0.2}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {FEATURE_CARDS.map(({ icon: Icon, title, desc, from, to, border, shadow, via }) => (
-                  <div
-                    key={title}
-                    className={`bg-gradient-to-br ${from} ${via ?? ""} ${to} rounded-2xl border-4 ${border} p-6 hover:scale-[1.02] hover:brightness-110 transition-all duration-300 cursor-pointer`}
-                    style={{ boxShadow: `0 0 30px ${shadow}` }}
-                  >
-                    <div className="w-12 h-12 bg-black/20 rounded-xl flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-white" />
+              {/* --- BUTTONS TAB --- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-10">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      Primary — 流体霓虹 Fluid Luminescence
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-cyan-400 via-pink-500 to-cyan-400 bg-[length:200%_auto] bg-left text-white font-bold rounded-xl border-4 border-white/20 shadow-[0_0_18px_rgba(236,72,153,0.45)] hover:bg-right hover:shadow-[0_0_24px_#ec4899,0_0_42px_rgba(34,211,238,0.45)] hover:-translate-y-1 active:shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] transition-all duration-500 ease-out">
+                        <SparklesIcon className="w-4 h-4" />
+                        开始试用
+                      </button>
+                      <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 bg-[length:200%_auto] bg-left text-white font-bold rounded-xl border-4 border-yellow-400 shadow-[0_0_18px_rgba(168,85,247,0.45)] hover:bg-right hover:shadow-[0_0_24px_#a855f7,0_0_48px_rgba(244,114,182,0.4)] hover:-translate-y-1 transition-all duration-500 ease-out">
+                        <ZapIcon className="w-4 h-4" />
+                        立即购买
+                      </button>
                     </div>
-                    <h3 className="text-lg font-black text-white mb-2">{title}</h3>
-                    <p className="text-white/75 text-sm leading-relaxed">{desc}</p>
                   </div>
-                ))}
+
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      Outline — 电流描边 Electric Border
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="px-7 py-3.5 bg-transparent text-white font-bold rounded-xl border-4 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.25)] hover:bg-cyan-400/10 hover:shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_36px_rgba(168,85,247,0.35)] transition-all duration-500 ease-out">
+                        电流青色
+                      </button>
+                      <button className="px-7 py-3.5 bg-transparent text-white font-bold rounded-xl border-4 border-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.25)] hover:bg-purple-500/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.5),0_0_36px_rgba(244,114,182,0.35)] transition-all duration-500 ease-out">
+                        电流紫色
+                      </button>
+                      <button className="px-7 py-3.5 bg-transparent text-white font-bold rounded-xl border-4 border-pink-400 shadow-[0_0_12px_rgba(244,114,182,0.25)] hover:bg-pink-400/10 hover:shadow-[0_0_20px_rgba(244,114,182,0.5)] transition-all duration-500 ease-out">
+                        电流粉色
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      Sizes
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { size: "SM", px: "px-4 py-2 text-xs rounded-lg border-2" },
+                        { size: "MD", px: "px-6 py-3 text-sm rounded-xl border-4" },
+                        { size: "LG", px: "px-9 py-4 text-base rounded-xl border-4" },
+                      ].map(({ size, px }) => (
+                        <button
+                          key={size}
+                          className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold border-yellow-400 shadow-[0_0_16px_rgba(168,85,247,0.4)] hover:shadow-[0_0_28px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 transition-all duration-300 ${px}`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* --- CARDS TAB --- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {[
+                    {
+                      title: "极速响应",
+                      desc: "全球 CDN 加速，50ms 极速响应，让用户体验飞速提升。",
+                      grad: "from-purple-500 via-pink-500 to-rose-500",
+                      border: "border-yellow-400",
+                      glow: "rgba(168,85,247,0.4)",
+                      icon: <ZapIcon className="w-6 h-6 text-white" />,
+                    },
+                    {
+                      title: "安全加密",
+                      desc: "AES-256 端到端加密，企业级安全保障，守护每一比特数据。",
+                      grad: "from-green-400 via-cyan-400 to-teal-500",
+                      border: "border-pink-400",
+                      glow: "rgba(34,211,238,0.4)",
+                      icon: <ShieldIcon className="w-6 h-6 text-white" />,
+                    },
+                    {
+                      title: "团队协作",
+                      desc: "实时多人协作，角色权限管理，让团队效率翻倍。",
+                      grad: "from-pink-500 to-rose-500",
+                      border: "border-cyan-400",
+                      glow: "rgba(244,114,182,0.4)",
+                      icon: <UsersIcon className="w-6 h-6 text-white" />,
+                    },
+                    {
+                      title: "智能分析",
+                      desc: "AI 驱动的数据分析，实时洞察，让决策快人一步。",
+                      grad: "from-yellow-400 via-green-400 to-cyan-400",
+                      border: "border-purple-500",
+                      glow: "rgba(251,191,36,0.4)",
+                      icon: <TrendingUpIcon className="w-6 h-6 text-white" />,
+                    },
+                  ].map((card, i) => (
+                    <div
+                      key={card.title}
+                      className={`group relative overflow-hidden bg-gradient-to-br ${card.grad} bg-[length:200%_200%] bg-left rounded-2xl border-4 ${card.border} p-6 cursor-pointer transition-all duration-500 ease-out hover:bg-right hover:-translate-y-2`}
+                      style={{
+                        boxShadow: hoveredCard === i
+                          ? `0 0 30px ${card.glow}, 0 0 60px ${card.glow}`
+                          : `0 0 20px ${card.glow}`,
+                      }}
+                      onMouseEnter={() => setHoveredCard(i)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                    >
+                      <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(255,255,255,0.25)] group-hover:scale-110 group-hover:animate-pulse transition-all duration-500">
+                        {card.icon}
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
+                      <p className="text-white/85 text-sm leading-relaxed">{card.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* --- INPUTS TAB --- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium text-white/70 mb-2">邮箱地址</label>
+                      <input
+                        type="email"
+                        placeholder="输入你的邮箱..."
+                        className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-white/70 mb-2">密码</label>
+                      <input
+                        type="password"
+                        placeholder="输入密码..."
+                        className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-pink-400 focus:shadow-[0_0_20px_rgba(244,114,182,0.3)] transition-all duration-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-white/70 mb-2">消息</label>
+                      <textarea
+                        rows={3}
+                        placeholder="分享你的想法..."
+                        className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-300 resize-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-5">
+                    {/* Email subscribe with inline button */}
+                    <div>
+                      <label className="block text-sm font-medium text-white/70 mb-2">订阅霓虹通讯</label>
+                      <div className="relative">
+                        <input
+                          type="email"
+                          placeholder="your@email.com"
+                          className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-300"
+                        />
+                        <button className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg text-white font-medium text-sm hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300">
+                          订阅
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-white/70 mb-2">选择套餐</label>
+                      <select className="w-full px-5 py-4 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white focus:outline-none focus:border-cyan-400 transition-all duration-300">
+                        <option className="bg-[#0f0a1e]">免费版</option>
+                        <option className="bg-[#0f0a1e]">专业版</option>
+                        <option className="bg-[#0f0a1e]">企业版</option>
+                      </select>
+                    </div>
+                    <button className="w-full py-4 rounded-xl text-white font-bold bg-gradient-to-r from-purple-500 to-pink-500 border-4 border-yellow-400 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6),0_0_50px_rgba(244,114,182,0.3)] hover:-translate-y-0.5 transition-all duration-300">
+                      提交注册
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* --- BADGES TAB --- */}
+              {activeTab === "badges" && (
+                <div className="space-y-8">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      霓虹状态标签
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "Neon", bg: "rgba(168,85,247,0.15)", border: "#a855f7", text: "#a855f7" },
+                        { label: "Electric", bg: "rgba(34,211,238,0.15)", border: "#22d3ee", text: "#22d3ee" },
+                        { label: "Voltage", bg: "rgba(244,114,182,0.15)", border: "#f472b6", text: "#f472b6" },
+                        { label: "Plasma", bg: "rgba(163,230,53,0.15)", border: "#a3e635", text: "#a3e635" },
+                        { label: "Solar", bg: "rgba(251,191,36,0.15)", border: "#fbbf24", text: "#fbbf24" },
+                        { label: "Gamma", bg: "rgba(168,85,247,0.1)", border: "#f472b6", text: "#f472b6" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="px-4 py-1.5 rounded-full text-sm font-medium border-2 hover:-translate-y-0.5 hover:shadow-[0_0_12px_currentColor] transition-all duration-300 cursor-default"
+                          style={{ backgroundColor: b.bg, borderColor: b.border, color: b.text }}
+                        >
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      状态指示器
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "系统在线", dot: "#a3e635", bg: "rgba(163,230,53,0.1)" },
+                        { label: "处理中", dot: "#fbbf24", bg: "rgba(251,191,36,0.1)" },
+                        { label: "已部署", dot: "#22d3ee", bg: "rgba(34,211,238,0.1)" },
+                        { label: "已暂停", dot: "#f472b6", bg: "rgba(244,114,182,0.1)" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white border border-white/10 cursor-default"
+                          style={{ backgroundColor: b.bg }}
+                        >
+                          <span className="w-2 h-2 rounded-full neon-pulse-anim" style={{ backgroundColor: b.dot }} />
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-5">
+                      计数徽章
+                    </p>
+                    <div className="flex flex-wrap gap-6 items-center">
+                      {[
+                        { label: "功能", count: 12, color: "#a855f7" },
+                        { label: "集成", count: 48, color: "#22d3ee" },
+                        { label: "模板", count: 85, color: "#f472b6" },
+                        { label: "客户", count: "50k", color: "#fbbf24" },
+                      ].map((b) => (
+                        <div key={b.label} className="flex items-center gap-2">
+                          <span className="text-sm text-white/60 font-medium">{b.label}</span>
+                          <span
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white hover:scale-110 transition-transform duration-300 cursor-default"
+                            style={{
+                              backgroundColor: b.color,
+                              boxShadow: `0 0 10px ${b.color}80`,
+                            }}
+                          >
+                            {b.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. AIRULES INTERACTIVE DEMOS                                     */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-cyan-400 block mb-3">
+              Interactions
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Animation <span className="text-pink-400">rules demo</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              四条霓虹渐变核心交互规则——每个 Demo 都可以亲手交互感受。
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* ---- aiRule 1: Fluid Luminescence ---- */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-white/5 rounded-3xl p-8 border border-purple-500/30 h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-semibold">
+                    Rule 1
+                  </span>
+                  <span className="text-white font-bold">Fluid Luminescence</span>
+                </div>
+                <p className="text-xs text-white/40 mb-2 leading-relaxed">
+                  渐变背景使用 bg-[length:200%_auto]，hover 切换 bg-position，制造灯管内色流滑动感。
+                </p>
+                <p className="text-xs text-white/30 font-mono mb-6">
+                  bg-[length:200%_auto] bg-left hover:bg-right duration-500
+                </p>
+
+                {/* Interactive demo */}
+                <div className="space-y-4">
+                  <button
+                    className="w-full py-4 font-bold text-white rounded-xl border-4 border-white/20 transition-all duration-500 ease-out"
+                    style={{
+                      background: "linear-gradient(to right, #22d3ee, #ec4899, #22d3ee)",
+                      backgroundSize: "200% auto",
+                      backgroundPosition: luminFlowing ? "right center" : "left center",
+                      boxShadow: luminFlowing
+                        ? "0 0 24px #ec4899, 0 0 42px rgba(34,211,238,0.45)"
+                        : "0 0 12px rgba(34,211,238,0.3)",
+                    }}
+                    onMouseEnter={() => setLuminFlowing(true)}
+                    onMouseLeave={() => setLuminFlowing(false)}
+                  >
+                    {luminFlowing ? "色流滑动中..." : "Hover 激活色流"}
+                  </button>
+                  <div className="flex items-center gap-3 text-xs text-white/40">
+                    <div
+                      className="w-3 h-3 rounded-full transition-all duration-300"
+                      style={{ backgroundColor: luminFlowing ? "#ec4899" : "#22d3ee", boxShadow: `0 0 8px ${luminFlowing ? "#ec4899" : "#22d3ee"}` }}
+                    />
+                    {luminFlowing ? "bg-position: right — 粉色端激活" : "bg-position: left — 青色端待机"}
+                  </div>
+                </div>
               </div>
             </RevealBlock>
-          )}
 
-          {/* INPUTS panel */}
-          {activeComponentTab === "Inputs" && (
-            <RevealBlock delay={0.2}>
-              <div className="max-w-xl space-y-5">
-                {[
-                  { id: "text", label: "Username", type: "text", placeholder: "@neon_creator", focusColor: "#a855f7", focusGlow: "rgba(168,85,247,0.4)" },
-                  { id: "email", label: "Email Address", type: "email", placeholder: "you@neon.dev", focusColor: "#22d3ee", focusGlow: "rgba(34,211,238,0.4)" },
-                  { id: "search", label: "Search", type: "search", placeholder: "Search components...", focusColor: "#f472b6", focusGlow: "rgba(244,114,182,0.4)" },
-                  { id: "password", label: "Password", type: "password", placeholder: "••••••••", focusColor: "#fbbf24", focusGlow: "rgba(251,191,36,0.4)" },
-                ].map(({ id, label, type, placeholder, focusColor, focusGlow }) => (
-                  <div key={id}>
-                    <label className="block text-xs tracking-widest uppercase mb-2" style={{ color: focusColor }}>
-                      {label}
-                    </label>
-                    <input
-                      type={type}
-                      placeholder={placeholder}
-                      onFocus={() => setInputFocused(id)}
-                      onBlur={() => setInputFocused(null)}
-                      className="w-full px-5 py-3 bg-white/5 border-2 rounded-xl text-white placeholder:text-white/30 focus:outline-none transition-all duration-300"
+            {/* ---- aiRule 2: Chromatic Glow ---- */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-white/5 rounded-3xl p-8 border border-cyan-500/30 h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-semibold">
+                    Rule 2
+                  </span>
+                  <span className="text-white font-bold">Chromatic Glow</span>
+                </div>
+                <p className="text-xs text-white/40 mb-2 leading-relaxed">
+                  悬停光晕使用至少双层阴影（近层高饱和 + 远层扩散）模拟霓虹色散，非单色放大。
+                </p>
+                <p className="text-xs text-white/30 font-mono mb-6">
+                  shadow: near-high-sat + far-diffuse
+                </p>
+
+                {/* Color selector */}
+                <div className="flex gap-2 mb-4">
+                  {(["purple", "cyan", "pink", "yellow"] as const).map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setGlowColor(c)}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-medium border-2 transition-all duration-300 ${glowColor === c ? "text-white" : "text-white/40 border-white/10"}`}
                       style={{
-                        borderColor: inputFocused === id ? focusColor : "rgba(255,255,255,0.15)",
-                        boxShadow: inputFocused === id ? `0 0 20px ${focusGlow}` : "none",
+                        backgroundColor: glowColor === c ? glowMap[c].near + "30" : "transparent",
+                        borderColor: glowColor === c ? glowMap[c].near : undefined,
+                        boxShadow: glowColor === c ? `0 0 10px ${glowMap[c].near}60` : undefined,
+                      }}
+                    >
+                      {glowMap[c].label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Demo card */}
+                <div
+                  className="p-5 rounded-xl border-4 text-center transition-all duration-500 cursor-pointer"
+                  style={{
+                    borderColor: glowMap[glowColor].near,
+                    backgroundColor: glowMap[glowColor].near + "15",
+                    boxShadow: `0 0 20px ${glowMap[glowColor].near}, 0 0 60px ${glowMap[glowColor].far}`,
+                  }}
+                >
+                  <div className="text-sm text-white/70 mb-1">双层色散效果</div>
+                  <div className="font-bold text-white">
+                    近层: <span style={{ color: glowMap[glowColor].near }}>{glowMap[glowColor].near}</span>
+                  </div>
+                  <div className="text-xs text-white/40 mt-1">
+                    远层: {glowMap[glowColor].far}
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- aiRule 3: Electric Activation ---- */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-white/5 rounded-3xl p-8 border border-pink-500/30 h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-pink-500/20 border border-pink-500/40 text-pink-300 text-xs font-semibold">
+                    Rule 3
+                  </span>
+                  <span className="text-white font-bold">Electric Activation</span>
+                </div>
+                <p className="text-xs text-white/40 mb-2 leading-relaxed">
+                  :active 采用强内发光或瞬时高亮，不做明显压缩，呈现"通电"反馈。
+                </p>
+                <p className="text-xs text-white/30 font-mono mb-6">
+                  active:shadow-[inset_0_0_20px_rgba(255,255,255,0.8)]
+                </p>
+
+                {/* Demo button */}
+                <div className="text-center space-y-4">
+                  <button
+                    className="w-full py-5 font-black text-white text-lg rounded-xl border-4 transition-all duration-300 ease-out"
+                    style={{
+                      background: "linear-gradient(135deg, #a855f7, #ec4899)",
+                      borderColor: "#fbbf24",
+                      boxShadow: electricActive
+                        ? "0 0 40px #22d3ee, 0 0 80px rgba(34,211,238,0.5), inset 0 0 30px rgba(255,255,255,0.2)"
+                        : "0 0 20px rgba(168,85,247,0.5), 0 0 40px rgba(244,114,182,0.3)",
+                    }}
+                    onMouseDown={() => {
+                      setElectricActive(true);
+                      setElectricCount(prev => prev + 1);
+                    }}
+                    onMouseUp={() => setElectricActive(false)}
+                    onMouseLeave={() => setElectricActive(false)}
+                  >
+                    {electricActive ? "CHARGING..." : "按住通电"}
+                  </button>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="text-xs text-white/40">
+                      已触发 <span className="text-yellow-400 font-bold">{electricCount}</span> 次通电
+                    </div>
+                    <div
+                      className="w-2 h-2 rounded-full transition-all duration-100"
+                      style={{
+                        backgroundColor: electricActive ? "#22d3ee" : "#a855f7",
+                        boxShadow: electricActive ? "0 0 8px #22d3ee" : "0 0 4px #a855f7",
                       }}
                     />
                   </div>
-                ))}
-
-                <div>
-                  <label className="block text-xs tracking-widest uppercase text-purple-400 mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    placeholder="Describe your neon vision..."
-                    rows={4}
-                    onFocus={() => setInputFocused("textarea")}
-                    onBlur={() => setInputFocused(null)}
-                    className="w-full px-5 py-3 bg-white/5 border-2 rounded-xl text-white placeholder:text-white/30 focus:outline-none transition-all duration-300 resize-none"
-                    style={{
-                      borderColor: inputFocused === "textarea" ? "#a855f7" : "rgba(255,255,255,0.15)",
-                      boxShadow: inputFocused === "textarea" ? "0 0 20px rgba(168,85,247,0.4)" : "none",
-                    }}
-                  />
                 </div>
-
-                <button
-                  className={`w-full px-6 py-4 bg-gradient-to-r ${theme.from} ${theme.to} text-white font-black rounded-xl border-4 ${theme.border} hover:scale-[1.02] hover:brightness-110 transition-all duration-300`}
-                  style={{ boxShadow: `0 0 25px ${theme.shadow}` }}
-                >
-                  Send Message
-                </button>
               </div>
             </RevealBlock>
-          )}
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* 4. COLOR PALETTE                                                     */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="palette" className="px-6 md:px-12 py-16 md:py-24" ref={paletteRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-cyan-400 mb-3">Color System</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-4"
-              style={{ textShadow: "0 0 20px rgba(34,211,238,0.3)" }}
-            >
-              Neon Palette
-            </h2>
-            <p className="text-white/50 mb-12 max-w-lg">
-              Seven vivid colors engineered to glow on dark backgrounds. Every pairing produces a distinct gradient personality.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-12">
-              {PALETTE_COLORS.map(({ name, hex, role, tw, glow }) => (
-                <div
-                  key={hex}
-                  className="group rounded-2xl border-4 border-white/10 overflow-hidden hover:border-white/30 hover:scale-105 transition-all duration-300 cursor-pointer"
-                  style={{ "--hover-glow": glow } as React.CSSProperties}
-                >
-                  <div
-                    className={`h-20 md:h-28 ${tw} transition-all duration-500`}
-                    style={{ boxShadow: `inset 0 -8px 20px rgba(0,0,0,0.4)` }}
-                  />
-                  <div className="p-3 bg-white/5">
-                    <p className="text-xs font-black text-white">{name}</p>
-                    <p className="text-[10px] font-mono text-white/40 mt-0.5">{hex}</p>
-                    <p className="text-[10px] uppercase tracking-wider text-white/30 mt-1">{role}</p>
-                  </div>
+            {/* ---- aiRule 4: Smooth High-Tech ---- */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-white/5 rounded-3xl p-8 border border-yellow-500/30 h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-xs font-semibold">
+                    Rule 4
+                  </span>
+                  <span className="text-white font-bold">Smooth High-Tech</span>
                 </div>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Gradient pair swatches */}
-          <RevealBlock delay={0.2}>
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: "Primary Pair", gradient: "linear-gradient(135deg, #a855f7, #f472b6)", text: "#a855f7 → #f472b6" },
-                { label: "Energy Pair", gradient: "linear-gradient(135deg, #22d3ee, #a3e635)", text: "#22d3ee → #a3e635" },
-                { label: "Warm Pair", gradient: "linear-gradient(135deg, #fbbf24, #fb7185)", text: "#fbbf24 → #fb7185" },
-                { label: "Full Spectrum", gradient: "linear-gradient(135deg, #a855f7, #22d3ee, #fbbf24)", text: "#a855f7 → #22d3ee → #fbbf24" },
-              ].map(({ label, gradient, text }) => (
-                <div key={label} className="rounded-2xl overflow-hidden border-4 border-white/10">
-                  <div className="h-20" style={{ background: gradient }} />
-                  <div className="p-3 bg-white/5">
-                    <p className="text-xs font-bold text-white">{label}</p>
-                    <p className="text-[10px] font-mono text-white/40 mt-1">{text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* 5. GRADIENT COMBOS                                                   */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="combos" className="px-6 md:px-12 py-16 md:py-24" ref={combosRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-pink-400 mb-3">Gradient Recipes</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-4"
-              style={{ textShadow: "0 0 20px rgba(244,114,182,0.3)" }}
-            >
-              Gradient Combos
-            </h2>
-            <p className="text-white/50 mb-12 max-w-lg">
-              Six proven gradient combinations. Each one is a distinct visual energy. Mix freely across surfaces.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {GRADIENT_COMBOS.map(({ name, classes, desc }, i) => (
-                <div
-                  key={name}
-                  className={`relative rounded-2xl border-4 overflow-hidden cursor-pointer group hover:scale-[1.02] transition-all duration-300`}
-                  style={{
-                    borderColor: [
-                      "#fbbf24", "#f472b6", "#22d3ee", "#a855f7", "#a3e635", "#fb7185",
-                    ][i % 6],
-                  }}
-                >
-                  <div className={`h-32 bg-gradient-to-r ${classes} group-hover:brightness-110 transition-all duration-300`} />
-                  <div className="p-4 bg-white/5">
-                    <p className="font-black text-white mb-1">{name}</p>
-                    <p className="text-xs text-white/50 mb-2">{desc}</p>
-                    <code className="text-[10px] font-mono text-white/30">{classes}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Full-width showcase */}
-          <RevealBlock delay={0.2} className="mt-8">
-            <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500 h-48">
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #a855f7 0%, #f472b6 25%, #22d3ee 50%, #a3e635 75%, #fbbf24 100%)",
-                  backgroundSize: "200% 200%",
-                  animation: "neon-blob-drift 12s ease-in-out infinite",
-                }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <p
-                  className="text-2xl md:text-4xl font-black text-white"
-                  style={{ textShadow: "0 0 30px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.8)" }}
-                >
-                  Full Neon Spectrum
+                <p className="text-xs text-white/40 mb-2 leading-relaxed">
+                  动画以 duration-300 到 500 + ease-out 为主，保持丝滑科技感。过快显得廉价，过慢显得迟钝。
                 </p>
+                <p className="text-xs text-white/30 font-mono mb-6">
+                  duration-300 ~ 500 + ease-out
+                </p>
+
+                {/* Duration selector */}
+                <div className="flex gap-2 mb-6">
+                  {(["300", "500"] as const).map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => setHoverDuration(d)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all duration-300 ${hoverDuration === d ? "text-white border-yellow-400 bg-yellow-400/20 shadow-[0_0_10px_rgba(251,191,36,0.3)]" : "text-white/40 border-white/10"}`}
+                    >
+                      {d}ms {d === "500" ? "(推荐)" : ""}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Comparison cards */}
+                <div className="space-y-3">
+                  {[
+                    { label: `当前选择: ${hoverDuration}ms ease-out`, dur: parseInt(hoverDuration), color: "#fbbf24" },
+                    { label: "对比: 100ms linear (廉价感)", dur: 100, color: "#f43f5e" },
+                  ].map((item) => (
+                    <div key={item.label}>
+                      <div className="text-xs text-white/40 mb-1">{item.label}</div>
+                      <button
+                        className="w-full py-2.5 rounded-xl border-4 text-white text-sm font-bold hover:-translate-y-0.5"
+                        style={{
+                          background: "linear-gradient(135deg, #a855f7, #22d3ee)",
+                          borderColor: item.color,
+                          boxShadow: `0 0 12px ${item.color}40`,
+                          transition: `all ${item.dur}ms ${item.dur > 200 ? "ease-out" : "linear"}`,
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 30px ${item.color}, 0 0 60px ${item.color}50`;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 12px ${item.color}40`;
+                        }}
+                      >
+                        Hover 感受{" "}
+                        <span style={{ color: item.color }}>{item.dur}ms</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </RevealBlock>
+            </RevealBlock>
+          </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* FEATURE CARDS (extra section)                                        */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-12 py-16 md:py-24" ref={featuresRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-amber-400 mb-3">Platform Features</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-4"
-              style={{ textShadow: "0 0 20px rgba(251,191,36,0.3)" }}
-            >
-              Built for Bold
+      {/* ================================================================ */}
+      {/* 6. APP UI DEMO — SaaS Dashboard                                  */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 block mb-3">
+              App Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Neon <span className="text-cyan-400">SaaS dashboard</span>
             </h2>
-            <p className="text-white/50 mb-12 max-w-lg">
-              Six core capabilities, each rendered in its own gradient. Because flat is not an option.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              真实的 SaaS 控制台——渐变卡片、发光数据、霓虹图表，展示风格在实际产品中的应用。
             </p>
           </RevealBlock>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {FEATURE_CARDS.map(({ icon: Icon, title, desc, from, to, border, shadow, via }, i) => (
-              <RevealBlock key={title} delay={0.05 * i}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Stat cards column */}
+            <RevealBlock delay={0.1} className="space-y-5">
+              {[
+                {
+                  label: "月活用户",
+                  value: "128,400",
+                  change: "+24%",
+                  grad: "from-purple-500 to-pink-500",
+                  border: "border-yellow-400",
+                  glow: "rgba(168,85,247,0.4)",
+                  icon: <UsersIcon className="w-6 h-6 text-white" />,
+                },
+                {
+                  label: "API 调用",
+                  value: "2.4M",
+                  change: "+18%",
+                  grad: "from-cyan-400 to-teal-500",
+                  border: "border-pink-400",
+                  glow: "rgba(34,211,238,0.4)",
+                  icon: <GlobeIcon className="w-6 h-6 text-white" />,
+                },
+                {
+                  label: "平均响应",
+                  value: "42ms",
+                  change: "-12%",
+                  grad: "from-green-400 to-cyan-400",
+                  border: "border-purple-500",
+                  glow: "rgba(163,230,53,0.4)",
+                  icon: <ZapIcon className="w-6 h-6 text-white" />,
+                },
+              ].map((stat) => (
                 <div
-                  className={`h-full bg-gradient-to-br ${from} ${via ?? ""} ${to} rounded-2xl border-4 ${border} p-6 hover:scale-[1.02] hover:brightness-110 transition-all duration-300 cursor-pointer`}
-                  style={{ boxShadow: `0 0 30px ${shadow}` }}
+                  key={stat.label}
+                  className={`group relative overflow-hidden bg-gradient-to-br ${stat.grad} rounded-2xl border-4 ${stat.border} p-5 cursor-pointer transition-all duration-500 ease-out hover:-translate-y-1 hover:bg-right`}
+                  style={{ boxShadow: `0 0 20px ${stat.glow}` }}
                 >
-                  <div className="w-12 h-12 bg-black/25 rounded-xl flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-all duration-300">
+                    {stat.icon}
                   </div>
-                  <h3 className="text-lg font-black text-white mb-2">{title}</h3>
-                  <p className="text-white/75 text-sm leading-relaxed">{desc}</p>
+                  <div className="text-sm text-white/80 mb-1">{stat.label}</div>
+                  <div className="text-2xl font-black text-white">{stat.value}</div>
+                  <div className="mt-2 text-xs font-semibold text-white/80">
+                    <span className="bg-white/20 px-2 py-0.5 rounded-full">{stat.change} 本月</span>
+                  </div>
+                </div>
+              ))}
+            </RevealBlock>
+
+            {/* Main chart + table */}
+            <RevealBlock delay={0.18} className="md:col-span-2">
+              <div className="bg-white/5 rounded-3xl border border-purple-500/20 overflow-hidden h-full">
+                {/* Chart header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                  <div>
+                    <h3 className="text-white font-bold">收入趋势</h3>
+                    <p className="text-xs text-white/40 mt-0.5">最近 7 天</p>
+                  </div>
+                  <div className="flex gap-2">
+                    {["7D", "30D", "90D"].map((p) => (
+                      <button
+                        key={p}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${p === "7D" ? "bg-purple-500/30 text-purple-300 border border-purple-500/40" : "text-white/40 hover:text-white hover:bg-white/5"}`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bar chart */}
+                <div className="px-6 py-6">
+                  <div className="flex items-end gap-3 h-32 mb-3">
+                    {[
+                      { day: "Mon", val: 60, color: "#a855f7" },
+                      { day: "Tue", val: 80, color: "#22d3ee" },
+                      { day: "Wed", val: 55, color: "#f472b6" },
+                      { day: "Thu", val: 95, color: "#a855f7" },
+                      { day: "Fri", val: 70, color: "#22d3ee" },
+                      { day: "Sat", val: 85, color: "#fbbf24" },
+                      { day: "Sun", val: 100, color: "#a3e635" },
+                    ].map((bar) => (
+                      <div key={bar.day} className="flex-1 flex flex-col items-center gap-2 group">
+                        <div
+                          className="w-full rounded-lg transition-all duration-300 group-hover:brightness-125 cursor-pointer"
+                          style={{
+                            height: `${bar.val}%`,
+                            background: `linear-gradient(to top, ${bar.color}, ${bar.color}80)`,
+                            boxShadow: `0 0 8px ${bar.color}60`,
+                          }}
+                        />
+                        <span className="text-[10px] text-white/40">{bar.day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent activity */}
+                <div className="border-t border-white/10 px-6 py-4">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-3">
+                    最新交易
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { name: "CloudSync Pro", amount: "+¥299", status: "成功", color: "#a3e635", icon: <LayersIcon className="w-4 h-4" /> },
+                      { name: "API Unlimited", amount: "+¥899", status: "处理中", color: "#fbbf24", icon: <CodeIcon className="w-4 h-4" /> },
+                      { name: "Team Enterprise", amount: "+¥2,499", status: "成功", color: "#a3e635", icon: <CpuIcon className="w-4 h-4" /> },
+                    ].map((tx) => (
+                      <div key={tx.name} className="flex items-center justify-between py-2 hover:bg-white/5 rounded-lg px-2 transition-colors duration-200 cursor-default group">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                            {tx.icon}
+                          </div>
+                          <span className="text-sm text-white/80">{tx.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs px-2 py-0.5 rounded-full border" style={{ color: tx.color, borderColor: tx.color + "40", backgroundColor: tx.color + "15" }}>
+                            {tx.status}
+                          </span>
+                          <span className="text-sm font-bold text-white">{tx.amount}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DO / DONT RULES                                               */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-yellow-400 block mb-3">
+              Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Design <span className="text-purple-400">philosophy</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              深色画布 + 鲜艳渐变 + 粗彩色边框 + 发光效果——这是霓虹渐变的四大支柱，缺一不可。
+            </p>
+          </RevealBlock>
+
+          {/* 3 principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+            {[
+              {
+                icon: <CpuIcon className="w-8 h-8" />,
+                title: "深色画布",
+                tagline: "霓虹需要黑暗才能发光",
+                desc: "bg-[#0f0a1e] 或 bg-slate-900 是唯一起点。在浅色背景上，霓虹色失去所有冲击力——就像白天看霓虹灯牌。",
+                bullets: ["bg-[#0f0a1e] 深紫黑色", "bg-slate-900 深灰蓝", "添加径向渐变光晕点缀"],
+                grad: "from-purple-500 to-pink-500",
+                border: "border-yellow-400",
+                glow: "rgba(168,85,247,0.3)",
+              },
+              {
+                icon: <ZapIcon className="w-8 h-8" />,
+                title: "渐变填充",
+                tagline: "高饱和度，绝不妥协",
+                desc: "卡片使用 bg-gradient-to-br 渐变填充，而非纯色。饱和度必须拉满——from-purple-500 不是 from-purple-200。",
+                bullets: ["紫粉: from-purple-500 to-pink-500", "青绿: from-cyan-400 to-green-400", "pink-rose: from-pink-500 to-rose-500"],
+                grad: "from-cyan-400 to-green-400",
+                border: "border-pink-400",
+                glow: "rgba(34,211,238,0.3)",
+              },
+              {
+                icon: <SparklesIcon className="w-8 h-8" />,
+                title: "粗彩色边框 + 发光",
+                tagline: "border-4 是最低标准",
+                desc: "边框必须是 border-4，颜色使用对比色（紫粉卡片配黄色边框），并搭配 shadow 模拟霓虹灯光晕。",
+                bullets: ["border-4 border-yellow-400", "shadow-[0_0_30px_rgba(...)]", "双层阴影: near + far"],
+                grad: "from-yellow-400 to-orange-500",
+                border: "border-purple-500",
+                glow: "rgba(251,191,36,0.3)",
+              },
+            ].map((principle, i) => (
+              <RevealBlock key={principle.title} delay={i * 0.1}>
+                <div
+                  className={`group relative overflow-hidden bg-gradient-to-br ${principle.grad} rounded-2xl border-4 ${principle.border} p-7 h-full cursor-default transition-all duration-500 ease-out hover:-translate-y-2`}
+                  style={{ boxShadow: `0 0 20px ${principle.glow}` }}
+                >
+                  <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-5 text-white group-hover:scale-110 group-hover:animate-pulse transition-all duration-300">
+                    {principle.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-1">{principle.title}</h3>
+                  <p className="text-sm font-semibold text-white/70 mb-4">{principle.tagline}</p>
+                  <p className="text-white/80 text-sm leading-relaxed mb-5">{principle.desc}</p>
+                  <ul className="space-y-2">
+                    {principle.bullets.map((b) => (
+                      <li key={b} className="flex items-start gap-2 text-xs text-white/80 font-mono">
+                        <span className="mt-1 w-2 h-2 rounded-full shrink-0 bg-white/60" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </RevealBlock>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* STATS / PROGRESS BARS                                                */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-12 py-16 md:py-24" ref={statsRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-lime-400 mb-3">Platform Stats</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-12"
-              style={{ textShadow: "0 0 20px rgba(163,230,53,0.3)" }}
-            >
-              By the Numbers
-            </h2>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Progress bars */}
+          {/* Do / Don't */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <RevealBlock delay={0.1}>
-              <div className="bg-white/5 border-4 border-purple-500/30 rounded-2xl p-6 md:p-8 space-y-6">
-                <p className="text-xs tracking-widest uppercase text-purple-400 mb-6">Growth Metrics</p>
-                {STAT_ROWS.map(({ label, value, from, to, glow }) => (
-                  <div key={label}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-bold text-white">{label}</span>
-                      <span className="text-xs text-white/50">{value}%</span>
-                    </div>
-                    <div className="h-4 bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full bg-gradient-to-r ${from} ${to} rounded-full transition-all duration-1000`}
-                        style={{
-                          width: statsInView ? `${value}%` : "0%",
-                          boxShadow: `0 0 15px ${glow}`,
-                          transitionDelay: "0.3s",
-                        }}
-                      />
-                    </div>
+              <div className="bg-white/5 rounded-3xl p-8 border border-green-500/30 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center">
+                    <CheckIcon className="w-4 h-4 text-green-400" />
                   </div>
-                ))}
+                  <h3 className="text-lg font-bold text-green-400">Do</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "使用深色背景 bg-[#0f0a1e] 或 bg-slate-900",
+                    "卡片使用渐变填充 bg-gradient-to-br from-purple-500",
+                    "添加粗彩色边框 border-4 border-yellow-400",
+                    "使用圆角 rounded-2xl 或 rounded-3xl",
+                    "添加发光阴影 shadow-[0_0_30px_rgba(168,85,247,0.5)]",
+                    "标题使用渐变文字或纯白色",
+                    "按钮使用渐变背景 + 发光效果",
+                    "动画 duration-300 到 500 + ease-out",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/70 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-green-400 shrink-0 shadow-[0_0_6px_#4ade80]" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </RevealBlock>
 
-            {/* Metric cards */}
-            <RevealBlock delay={0.2}>
-              <div className="grid grid-cols-2 gap-4">
+            <RevealBlock delay={0.18}>
+              <div className="bg-white/5 rounded-3xl p-8 border border-red-500/30 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                    <XIcon className="w-4 h-4 text-red-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-red-400">Don&apos;t</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "禁止使用浅色背景",
+                    "禁止使用低饱和度颜色（避免 purple-200）",
+                    "禁止使用细边框 border 或 border-2",
+                    "禁止使用灰色调卡片",
+                    "禁止省略发光效果",
+                    "禁止使用 emoji（用 SVG 图标替代）",
+                    "禁止动画过短 duration-100 或 linear",
+                    "禁止单层阴影（必须 near + far 双层）",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/70 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-red-400 shrink-0 shadow-[0_0_6px_#f87171]" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 8. FOOTER                                                        */}
+      {/* ================================================================ */}
+      <footer className="relative bg-[#0a0618] border-t border-purple-500/20 overflow-hidden">
+        {/* Top glow line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+
+        {/* Floating decorations */}
+        <div className="absolute top-12 left-12 text-purple-500/30 pointer-events-none neon-pulse-anim">
+          <StarIcon className="w-5 h-5" />
+        </div>
+        <div className="absolute top-20 right-20 text-cyan-500/20 pointer-events-none neon-float-anim">
+          <RocketIcon className="w-6 h-6" />
+        </div>
+        <div className="absolute bottom-16 left-1/4 text-pink-500/20 pointer-events-none neon-bounce-anim">
+          <SparklesIcon className="w-4 h-4" />
+        </div>
+        <div className="absolute bottom-10 right-1/3 text-yellow-500/20 pointer-events-none neon-spin-anim">
+          <StarIcon className="w-4 h-4" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-5 md:px-10 pt-16 pb-12">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
+            {/* Brand */}
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(251,191,36,0.4)]">
+                  <SparklesIcon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-xl font-bold text-white tracking-tight">
+                  Neon<span className="text-purple-400">Gradient</span>
+                </span>
+              </div>
+              <p className="text-sm text-white/40 leading-relaxed">
+                深色背景上的鲜艳渐变卡片，配合粗彩色边框和霓虹发光效果。适合科技产品、SaaS 着陆页、年轻化品牌。
+              </p>
+              {/* Palette dots */}
+              <div className="flex gap-2">
                 {[
-                  { icon: TrendingUp, value: "248%", label: "YoY Growth", from: "from-purple-500", to: "to-pink-500", border: "border-yellow-400", shadow: "rgba(168,85,247,0.4)" },
-                  { icon: Users, value: "12.4K", label: "Active Devs", from: "from-cyan-400", to: "to-lime-400", border: "border-pink-400", shadow: "rgba(34,211,238,0.4)" },
-                  { icon: Package, value: "340+", label: "Components", from: "from-amber-400", to: "to-rose-500", border: "border-cyan-400", shadow: "rgba(251,191,36,0.4)" },
-                  { icon: Star, value: "9.8K", label: "GitHub Stars", from: "from-lime-400", to: "to-cyan-500", border: "border-purple-400", shadow: "rgba(163,230,53,0.4)" },
-                ].map(({ icon: Icon, value, label, from, to, border, shadow }) => (
+                  { color: "#a855f7", glow: "rgba(168,85,247,0.5)" },
+                  { color: "#f472b6", glow: "rgba(244,114,182,0.5)" },
+                  { color: "#22d3ee", glow: "rgba(34,211,238,0.5)" },
+                  { color: "#a3e635", glow: "rgba(163,230,53,0.5)" },
+                  { color: "#fbbf24", glow: "rgba(251,191,36,0.5)" },
+                ].map((s, i) => (
                   <div
-                    key={label}
-                    className={`bg-gradient-to-br ${from} ${to} rounded-2xl border-4 ${border} p-5 hover:scale-[1.02] hover:brightness-110 transition-all duration-300`}
-                    style={{ boxShadow: `0 0 25px ${shadow}` }}
-                  >
-                    <Icon className="w-6 h-6 text-white/80 mb-3" />
-                    <p className="text-2xl font-black text-white">{value}</p>
-                    <p className="text-xs text-white/70 mt-1">{label}</p>
-                  </div>
+                    key={i}
+                    className="w-5 h-5 rounded-full hover:scale-125 transition-transform duration-300 cursor-default"
+                    style={{ backgroundColor: s.color, boxShadow: `0 0 8px ${s.glow}` }}
+                  />
                 ))}
               </div>
-            </RevealBlock>
-          </div>
-
-          {/* Social proof cards */}
-          <RevealBlock delay={0.3} className="mt-8">
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  user: "alex_designs",
-                  handle: "@alex_designs",
-                  text: "Neon Gradient is the only design system that actually makes my SaaS look alive. The gradient cards are insane.",
-                  likes: 847,
-                  from: "from-purple-500/20",
-                  to: "to-pink-500/20",
-                  border: "border-purple-500/40",
-                },
-                {
-                  user: "byte_kai",
-                  handle: "@byte_kai",
-                  text: "Finally a dark-first system with real color. Not just white on dark grey — actual NEON.",
-                  likes: 1204,
-                  from: "from-cyan-400/20",
-                  to: "to-lime-400/20",
-                  border: "border-cyan-400/40",
-                },
-                {
-                  user: "neon_studio",
-                  handle: "@neon_studio",
-                  text: "Shipped our gaming platform in 3 days using Neon Gradient. The gradient combos are perfect for us.",
-                  likes: 563,
-                  from: "from-amber-400/20",
-                  to: "to-rose-500/20",
-                  border: "border-amber-400/40",
-                },
-              ].map(({ user, handle, text, likes, from, to, border }) => (
-                <div
-                  key={user}
-                  className={`bg-gradient-to-br ${from} ${to} border-2 ${border} rounded-2xl p-5`}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-black text-white">
-                      {user[0].toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">{user}</p>
-                      <p className="text-xs text-white/40">{handle}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-white/70 leading-relaxed mb-4">{text}</p>
-                  <div className="flex items-center gap-4 text-xs text-white/40">
-                    <button className="flex items-center gap-1 hover:text-pink-400 transition-colors">
-                      <Heart className="w-3 h-3" /> {likes}
-                    </button>
-                    <button className="flex items-center gap-1 hover:text-cyan-400 transition-colors">
-                      <MessageCircle className="w-3 h-3" /> Reply
-                    </button>
-                    <button className="flex items-center gap-1 hover:text-lime-400 transition-colors">
-                      <Share2 className="w-3 h-3" /> Share
-                    </button>
-                  </div>
-                </div>
-              ))}
             </div>
-          </RevealBlock>
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* DROPDOWN + BADGES demo section                                        */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-12 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-rose-400 mb-3">UI Elements</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-12"
-              style={{ textShadow: "0 0 20px rgba(251,113,133,0.3)" }}
-            >
-              UI Atoms
-            </h2>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            {/* Dropdown */}
-            <RevealBlock delay={0.05}>
-              <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Dropdown</p>
-                <div className="relative">
-                  <button
-                    onClick={() => setIsDropdownOpen((p) => !p)}
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-purple-500/50 rounded-xl text-left flex items-center justify-between hover:border-purple-400 transition-colors duration-300"
-                  >
-                    <span className="text-white/70 text-sm">Select gradient theme</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-purple-400 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/30">Style</span>
+                <Link href="/styles/neon-gradient" className="text-white/50 hover:text-purple-400 transition-colors duration-200">
+                  Documentation
+                </Link>
+                <Link href="/styles/neon-gradient/showcase" className="text-white/50 hover:text-purple-400 transition-colors duration-200">
+                  Showcase
+                </Link>
+                <Link href="/styles/neon-gradient/cover" className="text-white/50 hover:text-purple-400 transition-colors duration-200">
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/30">StyleKit</span>
+                <Link href="/" className="text-white/50 hover:text-cyan-400 transition-colors duration-200">
+                  Home
+                </Link>
+                <Link href="/styles" className="text-white/50 hover:text-cyan-400 transition-colors duration-200">
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/30">Colors</span>
+                {palette.slice(0, 4).map((s) => (
+                  <span key={s.name} className="flex items-center gap-2 text-white/40 text-xs">
+                    <span
+                      className="w-3 h-3 rounded-full inline-block"
+                      style={{ backgroundColor: s.hex, boxShadow: `0 0 4px ${s.glow}` }}
                     />
-                  </button>
-                  {isDropdownOpen && (
-                    <div
-                      className="absolute top-full left-0 right-0 mt-2 bg-[#1a1035] border-2 border-purple-500/50 rounded-xl overflow-hidden z-20"
-                      style={{ boxShadow: "0 0 30px rgba(168,85,247,0.3)" }}
-                    >
-                      {GRADIENT_THEMES.map((t, i) => (
-                        <button
-                          key={t.id}
-                          className="w-full px-4 py-3 text-left text-sm text-white/70 hover:bg-purple-500/20 hover:text-white flex items-center gap-3 transition-colors duration-200"
-                          onClick={() => { setActiveTheme(i); setIsDropdownOpen(false); }}
-                        >
-                          <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${t.from} ${t.to} flex-shrink-0`} />
-                          {t.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Badges */}
-            <RevealBlock delay={0.1}>
-              <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Badges</p>
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-black rounded-full">New</span>
-                    <span className="px-3 py-1 bg-gradient-to-r from-cyan-400 to-lime-400 text-black text-xs font-black rounded-full">Active</span>
-                    <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-rose-500 text-white text-xs font-black rounded-full">Hot</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 border-2 border-dashed border-yellow-400 text-yellow-400 text-xs font-bold rounded-full">Beta</span>
-                    <span className="px-3 py-1 border-2 border-dashed border-pink-400 text-pink-400 text-xs font-bold rounded-full">Pro</span>
-                    <span className="px-3 py-1 border-2 border-dashed border-cyan-400 text-cyan-400 text-xs font-bold rounded-full">Enterprise</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-lime-400/20 to-cyan-400/20 border border-lime-400/40 text-lime-400 text-xs font-medium rounded-full">
-                      <Check className="w-3 h-3" /> Verified
-                    </span>
-                    <span className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-rose-500/20 to-pink-500/20 border border-rose-400/40 text-rose-400 text-xs font-medium rounded-full">
-                      <Flame className="w-3 h-3" /> Trending
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Notifications */}
-            <RevealBlock delay={0.15}>
-              <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Alerts</p>
-                <div className="space-y-3">
-                  {[
-                    { icon: Bell, color: "cyan-400", borderColor: "#22d3ee", bg: "rgba(34,211,238,0.1)", label: "Update available", sub: "Version 3.0 is ready." },
-                    { icon: Check, color: "lime-400", borderColor: "#a3e635", bg: "rgba(163,230,53,0.1)", label: "Deploy successful", sub: "All checks passed." },
-                    { icon: Zap, color: "amber-400", borderColor: "#fbbf24", bg: "rgba(251,191,36,0.1)", label: "Rate limit warning", sub: "80% of quota used." },
-                    { icon: X, color: "rose-400", borderColor: "#fb7185", bg: "rgba(251,113,133,0.1)", label: "Build failed", sub: "Check error logs." },
-                  ].map(({ icon: Icon, color, borderColor, bg, label, sub }) => (
-                    <div
-                      key={label}
-                      className="flex items-start gap-3 p-3 rounded-xl"
-                      style={{ background: bg, borderLeft: `4px solid ${borderColor}` }}
-                    >
-                      <Icon className={`w-4 h-4 text-${color} flex-shrink-0 mt-0.5`} />
-                      <div>
-                        <p className="text-xs font-bold text-white">{label}</p>
-                        <p className="text-[10px] text-white/50">{sub}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Toggle switches */}
-            <RevealBlock delay={0.2}>
-              <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                <p className="text-xs tracking-widest uppercase text-white/40 mb-4">Settings Toggles</p>
-                <div className="space-y-4">
-                  {[
-                    { label: "Neon glow effects", defaultOn: true, color: "purple" },
-                    { label: "Gradient animations", defaultOn: true, color: "cyan" },
-                    { label: "Thick borders", defaultOn: false, color: "pink" },
-                    { label: "Dark mode only", defaultOn: true, color: "amber" },
-                  ].map(({ label, defaultOn, color }) => (
-                    <SettingsToggle key={label} label={label} defaultOn={defaultOn} color={color} />
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Code snippet */}
-            <RevealBlock delay={0.25} className="md:col-span-2">
-              <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs tracking-widest uppercase text-white/40">Code Sample</p>
-                  <div className="flex gap-2">
-                    <Code2 className="w-4 h-4 text-purple-400" />
-                    <span className="text-xs text-white/30">neon-card.tsx</span>
-                  </div>
-                </div>
-                <pre className="text-xs font-mono text-white/70 overflow-x-auto leading-relaxed">
-                  <span className="text-pink-400">{"<div"}</span>
-                  {"\n  "}
-                  <span className="text-yellow-400">{"className"}</span>
-                  <span className="text-white/50">{"="}</span>
-                  <span className="text-lime-400">{'"bg-gradient-to-br from-purple-500 to-pink-500'}</span>
-                  {"\n           "}
-                  <span className="text-lime-400">{' rounded-2xl border-4 border-yellow-400'}</span>
-                  {"\n           "}
-                  <span className="text-lime-400">{' hover:scale-[1.02] hover:brightness-110"'}</span>
-                  {"\n  "}
-                  <span className="text-yellow-400">{"style"}</span>
-                  <span className="text-white/50">{"={{ "}</span>
-                  <span className="text-cyan-400">{"boxShadow"}</span>
-                  <span className="text-white/50">{": "}</span>
-                  <span className="text-lime-400">{'"0 0 30px rgba(168,85,247,0.5)"'}</span>
-                  <span className="text-white/50">{" }}"}</span>
-                  {"\n"}
-                  <span className="text-pink-400">{">"}</span>
-                  {"\n  "}<span className="text-white/50">{"..."}</span>
-                  {"\n"}
-                  <span className="text-pink-400">{"</div>"}</span>
-                </pre>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* 6. DESIGN PRINCIPLES                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="principles" className="px-6 md:px-12 py-16 md:py-24" ref={principlesRef}>
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock delay={0}>
-            <p className="text-xs tracking-widest uppercase text-purple-400 mb-3">Design Rules</p>
-            <h2
-              className="text-3xl md:text-5xl font-black text-white mb-4"
-              style={{ textShadow: "0 0 20px rgba(168,85,247,0.3)" }}
-            >
-              Principles
-            </h2>
-            <p className="text-white/50 mb-12 max-w-lg">
-              The rules that keep Neon Gradient vivid, bold, and future-forward. Follow them and every surface glows.
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
-            {/* DO panel */}
-            <RevealBlock delay={0.1}>
-              <div
-                className="bg-gradient-to-br from-cyan-400/10 to-lime-400/10 border-4 border-cyan-400/40 rounded-2xl p-6 md:p-8 h-full"
-                style={{ boxShadow: "0 0 30px rgba(34,211,238,0.15)" }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-lime-400 rounded-xl flex items-center justify-center"
-                    style={{ boxShadow: "0 0 15px rgba(34,211,238,0.5)" }}
-                  >
-                    <Check className="w-5 h-5 text-black" />
-                  </div>
-                  <h3
-                    className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400"
-                    style={{ textShadow: "none" }}
-                  >
-                    Do This
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {DO_LIST.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-white/70 leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            {/* DON'T panel */}
-            <RevealBlock delay={0.15}>
-              <div
-                className="bg-gradient-to-br from-rose-500/10 to-pink-500/10 border-4 border-rose-500/40 rounded-2xl p-6 md:p-8 h-full"
-                style={{ boxShadow: "0 0 30px rgba(251,113,133,0.15)" }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-500 rounded-xl flex items-center justify-center"
-                    style={{ boxShadow: "0 0 15px rgba(251,113,133,0.5)" }}
-                  >
-                    <X className="w-5 h-5 text-white" />
-                  </div>
-                  <h3
-                    className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-pink-400"
-                    style={{ textShadow: "none" }}
-                  >
-                    Avoid This
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {DONT_LIST.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <X className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-white/60 leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Principles grid */}
-          <RevealBlock delay={0.2}>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                {
-                  icon: Layers,
-                  title: "Gradient Everything",
-                  desc: "Every card surface, button, and accent should use a gradient fill. Flat color is forbidden.",
-                  from: "from-purple-500",
-                  to: "to-pink-500",
-                  border: "border-yellow-400",
-                  shadow: "rgba(168,85,247,0.4)",
-                },
-                {
-                  icon: Eye,
-                  title: "Dark Canvas First",
-                  desc: "bg-[#0f0a1e] or bg-slate-900 as the base. Neon only glows on darkness.",
-                  from: "from-cyan-400",
-                  to: "to-lime-400",
-                  border: "border-pink-400",
-                  shadow: "rgba(34,211,238,0.4)",
-                },
-                {
-                  icon: Zap,
-                  title: "Thick Borders",
-                  desc: "border-4 minimum with high-contrast colors. Thin borders disappear on dark backgrounds.",
-                  from: "from-amber-400",
-                  to: "to-rose-500",
-                  border: "border-cyan-400",
-                  shadow: "rgba(251,191,36,0.4)",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Glow Shadows",
-                  desc: "box-shadow with rgba glow on every interactive surface. Make lights pop.",
-                  from: "from-lime-400",
-                  to: "to-cyan-500",
-                  border: "border-purple-400",
-                  shadow: "rgba(163,230,53,0.4)",
-                },
-              ].map(({ icon: Icon, title, desc, from, to, border, shadow }) => (
-                <div
-                  key={title}
-                  className={`bg-gradient-to-br ${from} ${to} rounded-2xl border-4 ${border} p-5 hover:scale-[1.02] hover:brightness-110 transition-all duration-300`}
-                  style={{ boxShadow: `0 0 25px ${shadow}` }}
-                >
-                  <Icon className="w-7 h-7 text-white/90 mb-3" />
-                  <h4 className="font-black text-white mb-2">{title}</h4>
-                  <p className="text-xs text-white/70 leading-relaxed">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* CTA / NEWSLETTER                                                     */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="px-6 md:px-12 py-16 md:py-24" ref={ctaRef}>
-        <div className="max-w-3xl mx-auto text-center">
-          <RevealBlock delay={0}>
-            <div
-              className="relative rounded-3xl overflow-hidden border-4 border-purple-500 p-10 md:p-16"
-              style={{ boxShadow: "0 0 60px rgba(168,85,247,0.3), 0 0 120px rgba(168,85,247,0.1)" }}
-            >
-              {/* Background gradient */}
-              <div
-                className="absolute inset-0 opacity-25"
-                style={{
-                  background: "linear-gradient(135deg, #a855f7, #f472b6, #22d3ee, #a855f7)",
-                  backgroundSize: "300% 300%",
-                  animation: "neon-blob-drift 15s ease-in-out infinite",
-                }}
-              />
-              <div className="absolute inset-0 bg-[#0f0a1e]/70" />
-
-              <div className="relative z-10">
-                <p className="text-xs tracking-widest uppercase text-purple-400 mb-4">
-                  Join the movement
-                </p>
-                <h2
-                  className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 mb-4"
-                  style={{ textShadow: "none" }}
-                >
-                  Go Neon Today
-                </h2>
-                <p className="text-white/50 mb-8 max-w-md mx-auto leading-relaxed">
-                  Ship with bold gradients, glowing surfaces, and the confidence that flat design will never be your problem.
-                </p>
-
-                {subscribed ? (
-                  <div
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-lime-400/20 border-2 border-lime-400/50 text-lime-300 font-bold"
-                    style={{ boxShadow: "0 0 20px rgba(163,230,53,0.3)" }}
-                  >
-                    <Check className="w-4 h-4" />
-                    Subscribed. Stay neon.
-                  </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
-                    <input
-                      type="email"
-                      placeholder="you@neon.dev"
-                      className="flex-1 px-4 py-3 bg-white/5 border-2 border-purple-500/50 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300 text-sm"
-                    />
-                    <button
-                      onClick={() => setSubscribed(true)}
-                      className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-xl border-2 border-yellow-400 hover:brightness-110 hover:scale-105 transition-all duration-300 whitespace-nowrap"
-                      style={{ boxShadow: "0 0 20px rgba(168,85,247,0.5)" }}
-                    >
-                      Subscribe
-                    </button>
-                  </div>
-                )}
+                    {s.name}
+                  </span>
+                ))}
               </div>
             </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* 7. FOOTER                                                            */}
-      {/* ------------------------------------------------------------------ */}
-      <footer className="bg-[#080412] relative overflow-hidden">
-        {/* Gradient divider line */}
-        <div
-          className="h-1 w-full"
-          style={{ background: "linear-gradient(to right, #a855f7, #f472b6, #22d3ee, #a3e635, #fbbf24)" }}
-        />
-
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-
-          {/* Large gradient brand text */}
-          <div className="text-center mb-12">
-            <h3
-              className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 via-cyan-400 to-lime-400"
-              style={{ textShadow: "none" }}
-            >
-              Neon Gradient
-            </h3>
-            <p className="text-white/30 text-sm mt-3">Dark backgrounds. Vivid gradients. Future-forward energy.</p>
           </div>
 
-          {/* Nav links */}
-          <div className="flex flex-wrap justify-center gap-8 mb-10 text-sm text-white/40">
-            {["Components", "Palette", "Gradients", "Principles", "Docs"].map((label) => (
-              <a key={label} href="#" className="hover:text-white transition-colors duration-300">
-                {label}
-              </a>
-            ))}
-          </div>
+          {/* Neon divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent mb-8" />
 
           {/* Bottom row */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/10">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center"
-                style={{ boxShadow: "0 0 15px rgba(168,85,247,0.5)" }}
-              >
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-bold text-white/60">StyleKit · Neon Gradient</span>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-white/30">
+              <span>Built with</span>
+              <ZapIcon className="w-4 h-4 text-yellow-400 neon-pulse-anim" />
+              <span>for StyleKit</span>
             </div>
-
-            <div className="flex items-center gap-6">
-              {[
-                { icon: Settings, color: "hover:text-purple-400" },
-                { icon: Bell, color: "hover:text-cyan-400" },
-                { icon: BarChart2, color: "hover:text-pink-400" },
-                { icon: Code2, color: "hover:text-lime-400" },
-              ].map(({ icon: Icon, color }, i) => (
-                <button key={i} className={`text-white/30 ${color} transition-colors duration-300`}>
-                  <Icon className="w-5 h-5" />
-                </button>
-              ))}
-            </div>
-
             <Link
-              href="/styles/neon-gradient"
-              className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 hover:brightness-125 transition-all duration-300"
+              href="/"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:shadow-[0_0_20px_rgba(168,85,247,0.5),0_0_40px_rgba(244,114,182,0.3)] hover:-translate-y-0.5 transition-all duration-300"
             >
-              View Documentation →
+              <SparklesIcon className="w-3.5 h-3.5" />
+              Back to StyleKit
+              <ArrowRightIcon className="w-3.5 h-3.5" />
             </Link>
-          </div>
-
-          <div className="mt-6 text-center">
-            <p className="text-[10px] text-white/15 tracking-widest uppercase">
-              StyleKit · Neon Gradient Design System · Dark Edition
-            </p>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// SettingsToggle — small interactive toggle component
-// ---------------------------------------------------------------------------
-function SettingsToggle({
-  label,
-  defaultOn,
-  color,
-}: {
-  label: string;
-  defaultOn: boolean;
-  color: string;
-}) {
-  const [on, setOn] = useState(defaultOn);
-
-  const colorMap: Record<string, { track: string; glow: string }> = {
-    purple: { track: "bg-gradient-to-r from-purple-500 to-pink-500", glow: "rgba(168,85,247,0.5)" },
-    cyan: { track: "bg-gradient-to-r from-cyan-400 to-lime-400", glow: "rgba(34,211,238,0.5)" },
-    pink: { track: "bg-gradient-to-r from-pink-500 to-rose-500", glow: "rgba(244,114,182,0.5)" },
-    amber: { track: "bg-gradient-to-r from-amber-400 to-rose-500", glow: "rgba(251,191,36,0.5)" },
-  };
-
-  const { track, glow } = colorMap[color] ?? colorMap["purple"];
-
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-sm text-white/70">{label}</span>
-      <button
-        role="switch"
-        aria-checked={on}
-        onClick={() => setOn((p) => !p)}
-        className={`relative w-11 h-6 rounded-full border-2 transition-all duration-300 focus:outline-none ${
-          on ? `${track} border-transparent` : "bg-white/10 border-white/20"
-        }`}
-        style={on ? { boxShadow: `0 0 10px ${glow}` } : undefined}
-      >
-        <div
-          className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-300 ${
-            on ? "translate-x-5" : "translate-x-0.5"
-          }`}
-        />
-      </button>
     </div>
   );
 }

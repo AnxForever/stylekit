@@ -1,1162 +1,715 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
-// ─────────────────────────────────────────────────────────────
-// Hooks
-// ─────────────────────────────────────────────────────────────
+/* ------------------------------------------------------------------ */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
+/* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
       { threshold: 0.15, ...options }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
-function useScrollY() {
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const handler = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-  return scrollY;
-}
-
-function useCountdown(targetDate: Date) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  useEffect(() => {
-    const tick = () => {
-      const now = Date.now();
-      const diff = Math.max(0, targetDate.getTime() - now);
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff % 86400000) / 3600000);
-      const minutes = Math.floor((diff % 3600000) / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
-      setTimeLeft({ days, hours, minutes, seconds });
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
-  return timeLeft;
-}
-
-// ─────────────────────────────────────────────────────────────
-// RevealBlock
-// ─────────────────────────────────────────────────────────────
-
-function RevealBlock({ children, className = "", delay = 0 }: {
-  children: React.ReactNode; className?: string; delay?: number;
+function RevealBlock({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
 }) {
   const { ref, inView } = useInView();
   return (
-    <div ref={ref} className={className} style={{
-      opacity: inView ? 1 : 0,
-      transform: inView ? "translateY(0)" : "translateY(28px)",
-      transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
-    }}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(32px)",
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      }}
+    >
       {children}
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────
-// Data
-// ─────────────────────────────────────────────────────────────
+/* ------------------------------------------------------------------ */
+/*  Inline SVG icons                                                   */
+/* ------------------------------------------------------------------ */
 
-const ACCENTS = ["#ff6b6b", "#4ecdc4", "#ffe66d", "#6c5ce7"] as const;
-const ACCENT_NAMES = ["Coral Red", "Turquoise", "Canary", "Deep Violet"] as const;
+function ArrowDownIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  );
+}
 
-type HeroVariant = "dark" | "light" | "gradient" | "split";
+function PlayIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
 
-const HERO_VARIANTS: { key: HeroVariant; label: string; description: string }[] = [
-  { key: "dark",     label: "Dark Overlay",    description: "Classic dark overlay on a rich image — maximum text contrast" },
-  { key: "light",    label: "Light Hero",      description: "White canvas with bold black type — clean and confident" },
-  { key: "gradient", label: "Gradient Wash",   description: "Vivid gradient fill — no photo required" },
-  { key: "split",    label: "Split Screen",    description: "Left: content, Right: image — modern editorial balance" },
-];
+function ShieldIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  );
+}
 
-type BgTreatment = "solid" | "gradient" | "overlay";
+function ZapIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
 
-const BG_TREATMENTS: { key: BgTreatment; label: string; description: string; preview: string }[] = [
+function GlobeIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function LayersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+function StarIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+
+function MenuIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
+const ACCENT_COLORS = ["#ff6b6b", "#4ecdc4", "#ffe66d", "#6c5ce7"] as const;
+
+const overlayVariants = [
   {
-    key: "solid",
-    label: "Solid Dark",
-    description: "Pure black or near-black fills the viewport. Clean, confident. Works for brand-led pages.",
-    preview: "#0a0a0a",
+    name: "Dark Solid",
+    tailwind: "bg-black/50",
+    style: { background: "rgba(0,0,0,0.5)" } as React.CSSProperties,
+    desc: "50% black. Safe default for any image complexity.",
   },
   {
-    key: "gradient",
-    label: "Multi-stop Gradient",
-    description: "A sweep of color conveys energy without needing photography. Use 2–3 stops maximum.",
-    preview: "linear-gradient(135deg, #6c5ce7 0%, #ff6b6b 50%, #ffe66d 100%)",
+    name: "Gradient Vignette",
+    tailwind: "bg-gradient-to-t from-black/80 via-transparent to-black/30",
+    style: {
+      background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.3) 100%)",
+    } as React.CSSProperties,
+    desc: "Darkens edges, keeps mid-frame bright. Great for nature imagery.",
   },
   {
-    key: "overlay",
-    label: "Image Overlay",
-    description: "A full-bleed image sits under a semi-transparent gradient, protecting type legibility.",
-    preview: "linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.3)), url('https://picsum.photos/seed/hf_bg_ex/800/400') center/cover",
+    name: "Color Tint",
+    tailwind: "bg-[#6c5ce7]/70 mix-blend-multiply",
+    style: { background: "rgba(108,92,231,0.7)" } as React.CSSProperties,
+    desc: "Brand color multiply overlay. Bold and memorable.",
+  },
+  {
+    name: "Radial Center",
+    tailwind: "bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.75)_100%)]",
+    style: {
+      background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)",
+    } as React.CSSProperties,
+    desc: "Spotlight focus on center content. Cinematic feel.",
   },
 ];
 
-type CtaVariant = "primary" | "ghost" | "outline" | "icon" | "pill" | "large";
-
-const CTA_VARIANTS: { key: CtaVariant; label: string }[] = [
-  { key: "primary", label: "Primary" },
-  { key: "ghost",   label: "Ghost" },
-  { key: "outline", label: "Outline" },
-  { key: "icon",    label: "With Icon" },
-  { key: "pill",    label: "Pill" },
-  { key: "large",   label: "Large Hero" },
+const layerStack = [
+  { z: 1, name: "Background image / video", code: "absolute inset-0 object-cover", color: "#ff6b6b" },
+  { z: 2, name: "Overlay layer", code: "absolute inset-0 gradient or solid", color: "#4ecdc4" },
+  { z: 3, name: "Content (z-10)", code: "relative z-10 flex items-center justify-center", color: "#ffe66d" },
+  { z: 4, name: "Navigation (z-50)", code: "absolute top-0 left-0 right-0 z-50", color: "#6c5ce7" },
+  { z: 5, name: "Scroll indicator", code: "absolute bottom-8 left-1/2 -translate-x-1/2", color: "#ff6b6b" },
 ];
 
-const doList = [
-  { rule: "Use h-screen or min-h-screen", note: "Ensures the section always fills the viewport, regardless of content." },
-  { rule: "object-cover on background images", note: "Keeps images at correct aspect ratio while filling the container." },
-  { rule: "Gradient or tinted overlay", note: "Protects text legibility on busy photography." },
-  { rule: "Absolute-positioned navigation", note: "Nav floats above the hero, becomes solid on scroll." },
-  { rule: "Scroll indicator at bottom", note: "Guides users who may not scroll organically." },
-  { rule: "hover:-translate-y-1 on primary CTA", note: "Gravity float creates a premium lifted feel on interaction." },
-  { rule: "group + group-hover on feature cards", note: "Enables icon micro-scale and text brightness shift together." },
-  { rule: "active:scale-[0.98] on all buttons", note: "Tactile press confirmation — critical on dark overlays." },
+const backgroundOptions = [
+  {
+    name: "Static Image",
+    icon: <GlobeIcon className="w-5 h-5" />,
+    pros: ["Universal browser support", "Fast initial load", "Easy to optimize with next/image"],
+    cons: ["No motion or depth", "Feels static for high-energy brands"],
+    snippet: `<img src="/hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />`,
+    color: "#4ecdc4",
+  },
+  {
+    name: "Video Background",
+    icon: <PlayIcon className="w-5 h-5" />,
+    pros: ["Maximum visual impact", "Conveys brand personality", "Creates immersion"],
+    cons: ["autoPlay + sound is absolutely banned", "Performance hit on mobile", "Needs fallback image"],
+    snippet: `<video autoPlay muted loop playsInline poster="/fallback.jpg"\n  className="absolute inset-0 w-full h-full object-cover" />`,
+    color: "#ff6b6b",
+  },
+  {
+    name: "CSS Gradient",
+    icon: <LayersIcon className="w-5 h-5" />,
+    pros: ["Zero network overhead", "Perfectly crisp at all DPIs", "Fully animatable"],
+    cons: ["No photographic depth", "Can feel abstract without strong copy"],
+    snippet: `<div className="absolute inset-0 bg-gradient-to-br\n  from-slate-900 via-purple-900 to-slate-900" />`,
+    color: "#6c5ce7",
+  },
 ];
 
-const dontList = [
-  { rule: "Text directly on busy images", note: "Guaranteed contrast failure — always add an overlay layer." },
-  { rule: "Autoplay video with sound", note: "Browsers block it anyway. Users find it intrusive. Always mute." },
-  { rule: "Skip mobile breakpoints", note: "Full-screen heroes often break hard on narrow viewports without md: variants." },
-  { rule: "Fill every pixel with content", note: "White space is oxygen. Leave room to breathe at the edges." },
-  { rule: "Omit active:scale-[0.98]", note: "Buttons on dark backgrounds feel unresponsive without tactile feedback." },
-  { rule: "Card without group class", note: "group-hover:scale-110 on icon requires group on the parent — not the icon." },
-  { rule: "Low-quality or stretched images", note: "Full-viewport displays flaws at 100% zoom. Source 1920+ px wide." },
-];
+type ComponentKey = "hero" | "nav" | "button" | "card" | "email";
 
-const TYPE_SCALE = [
-  { size: "text-8xl md:text-9xl", label: "Display / 6xl–7xl", usage: "Main hero headline — single line preferred", sample: "Impact." },
-  { size: "text-5xl md:text-7xl", label: "Hero / 4xl–6xl",    usage: "Section headings beneath the fold",          sample: "Command." },
-  { size: "text-3xl md:text-5xl", label: "Title / 2xl–4xl",   usage: "Sub-section or feature headings",            sample: "Explore." },
-  { size: "text-xl md:text-2xl",  label: "Subhead / xl–2xl",  usage: "Supporting copy under the main headline",    sample: "Launch something extraordinary." },
-  { size: "text-base",            label: "Body / base",       usage: "Descriptive paragraph text",                 sample: "Full-viewport layouts create total visual immersion." },
-  { size: "text-xs tracking-[0.3em] uppercase", label: "Eyebrow / xs", usage: "Category labels and kickers", sample: "New Arrival" },
-];
+const componentSnippets: Record<ComponentKey, { label: string; code: string }> = {
+  hero: {
+    label: "Full Hero Section",
+    code: `<section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  {/* Background */}
+  <div className="absolute inset-0">
+    <img src="/hero-bg.jpg" alt="" className="w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-black/50" />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+  </div>
 
-// ─────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────
-
-function HeroVariantDark() {
-  return (
-    <div className="relative w-full h-72 md:h-96 overflow-hidden rounded-sm">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="https://picsum.photos/seed/hf_dark/1200/600"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />
-      <nav className="absolute top-0 left-0 right-0 px-6 py-4 flex items-center justify-between z-10">
-        <span className="text-white font-bold tracking-[0.2em] uppercase text-sm">
-          HERO<span style={{ color: ACCENTS[0] }}>.</span>FS
-        </span>
-        <div className="hidden md:flex items-center gap-6">
-          <span className="text-white/70 text-xs tracking-widest uppercase">Features</span>
-          <span className="text-white/70 text-xs tracking-widest uppercase">Pricing</span>
-          <span className="text-white/70 text-xs tracking-widest uppercase">About</span>
-        </div>
-        <button
-          type="button"
-          className="text-xs tracking-widest uppercase px-4 py-2 border border-white/40 text-white/80 rounded-sm hover:bg-white/10 hover:border-white hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-        >
-          Sign Up
-        </button>
-      </nav>
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pt-12">
-        <span className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: ACCENTS[1] }}>
-          Dark Overlay
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold text-white leading-none mb-4">
-          Command Every
-          <br />
-          <span style={{ color: ACCENTS[0] }}>Viewport.</span>
-        </h2>
-        <p className="text-white/60 max-w-sm text-sm mb-6">
-          Rich imagery beneath a gradient shield — contrast protected.
-        </p>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold text-white rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-            style={{ backgroundColor: ACCENTS[0] }}
-          >
-            Get Started
-          </button>
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold text-white border-2 border-white bg-transparent rounded-sm hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-          >
-            Learn More
-          </button>
-        </div>
-      </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 bounce-arrow">
-        <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
-      </div>
+  {/* Navigation */}
+  <nav className="absolute top-0 left-0 right-0 z-50 px-6 py-6 flex items-center justify-between">
+    <a href="/" className="text-white text-2xl font-bold">Logo</a>
+    <div className="hidden md:flex items-center gap-8">
+      <a href="#" className="text-white/80 hover:text-white transition-colors">Features</a>
+      <button className="px-6 py-2 bg-white text-black rounded-full font-medium
+        hover:bg-white/90 hover:-translate-y-0.5
+        active:scale-[0.98] transition-all duration-200 ease-out">
+        Sign Up
+      </button>
     </div>
-  );
-}
+  </nav>
 
-function HeroVariantLight() {
-  return (
-    <div className="relative w-full h-72 md:h-96 bg-white overflow-hidden rounded-sm">
-      {/* Minimal grid background */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{ backgroundImage: "linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)", backgroundSize: "40px 40px" }}
-      />
-      <nav className="absolute top-0 left-0 right-0 px-6 py-4 flex items-center justify-between z-10">
-        <span className="text-black font-bold tracking-[0.2em] uppercase text-sm">
-          HERO<span style={{ color: ACCENTS[0] }}>.</span>FS
-        </span>
-        <div className="hidden md:flex items-center gap-6">
-          <span className="text-black/50 text-xs tracking-widest uppercase">Features</span>
-          <span className="text-black/50 text-xs tracking-widest uppercase">Pricing</span>
-          <span className="text-black/50 text-xs tracking-widest uppercase">About</span>
-        </div>
-        <button
-          type="button"
-          className="text-xs tracking-widest uppercase px-4 py-2 bg-black text-white rounded-sm hover:bg-black/80 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-black/30 focus:ring-offset-2 focus:ring-offset-white focus:outline-none"
-        >
-          Sign Up
-        </button>
-      </nav>
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pt-12">
-        <span className="text-xs tracking-[0.3em] uppercase mb-4 text-black/40">
-          Light Hero
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold text-black leading-none mb-4">
-          Clean Canvas.
-          <br />
-          Bold <span style={{ color: ACCENTS[3] }}>Statement.</span>
-        </h2>
-        <p className="text-black/50 max-w-sm text-sm mb-6">
-          White space as weapon — maximum authority on a light ground.
-        </p>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold text-white bg-black rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.25)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-black/40 focus:ring-offset-2 focus:ring-offset-white focus:outline-none"
-          >
-            Get Started
-          </button>
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold text-black border-2 border-black bg-transparent rounded-sm hover:bg-black/5 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.15)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-black/30 focus:ring-offset-2 focus:ring-offset-white focus:outline-none"
-          >
-            Learn More
-          </button>
-        </div>
-      </div>
+  {/* Content */}
+  <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+    <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm
+      rounded-full text-white/90 text-sm font-medium mb-6">
+      Announcing our product
+    </span>
+    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+      Build Something Amazing
+    </h1>
+    <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+      The platform that creates incredible experiences users will love.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <button className="
+        px-8 py-4 bg-white text-black font-semibold text-lg rounded-full
+        shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+        hover:bg-white/95 hover:-translate-y-1
+        hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+        focus:outline-none focus:ring-2 focus:ring-white/80
+        focus:ring-offset-2 focus:ring-offset-black/50
+        active:scale-[0.98] active:translate-y-0
+        active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+        transition-all duration-200 ease-out
+      ">Get Started Free</button>
+      <button className="
+        px-8 py-4 bg-transparent text-white font-semibold text-lg
+        rounded-full border-2 border-white
+        hover:bg-white/15 hover:-translate-y-1
+        hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)]
+        focus:outline-none focus:ring-2 focus:ring-white/60
+        focus:ring-offset-2 focus:ring-offset-black/50
+        active:scale-[0.98] active:translate-y-0
+        transition-all duration-200 ease-out
+      ">Watch Demo</button>
     </div>
-  );
-}
+  </div>
 
-function HeroVariantGradient() {
-  return (
-    <div
-      className="relative w-full h-72 md:h-96 overflow-hidden rounded-sm"
-      style={{ background: "linear-gradient(135deg, #6c5ce7 0%, #ff6b6b 55%, #ffe66d 100%)" }}
-    >
-      <div className="absolute inset-0 bg-black/10" />
-      <nav className="absolute top-0 left-0 right-0 px-6 py-4 flex items-center justify-between z-10">
-        <span className="text-white font-bold tracking-[0.2em] uppercase text-sm">
-          HERO<span className="text-white/60">.</span>FS
-        </span>
-        <div className="hidden md:flex items-center gap-6">
-          <span className="text-white/80 text-xs tracking-widest uppercase">Features</span>
-          <span className="text-white/80 text-xs tracking-widest uppercase">Pricing</span>
-          <span className="text-white/80 text-xs tracking-widest uppercase">About</span>
-        </div>
-        <button
-          type="button"
-          className="text-xs tracking-widest uppercase px-4 py-2 bg-white text-black rounded-sm hover:bg-white/90 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-        >
-          Sign Up
-        </button>
-      </nav>
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pt-12">
-        <span className="text-xs tracking-[0.3em] uppercase text-white/70 mb-4">
-          Gradient Wash
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold text-white leading-none mb-4 drop-shadow-lg">
-          Vivid Without
-          <br />
-          Photography.
-        </h2>
-        <p className="text-white/80 max-w-sm text-sm mb-6">
-          Multi-stop gradient replaces the image — energy built from color alone.
-        </p>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold bg-white text-black rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-          >
-            Get Started
-          </button>
-          <button
-            type="button"
-            className="px-6 py-3 text-sm font-bold text-white border-2 border-white bg-transparent rounded-sm hover:bg-white/15 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-          >
-            Learn More
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+  {/* Scroll indicator */}
+  <div className="absolute bottom-8 left-1/2 -translate-x-1/2
+    flex flex-col items-center gap-2 text-white/70 animate-bounce">
+    <span className="text-sm">Scroll to explore</span>
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  </div>
+</section>`,
+  },
+  nav: {
+    label: "Transparent Navigation",
+    code: `<nav className="
+  absolute top-0 left-0 right-0 z-50
+  px-6 py-4
+  flex items-center justify-between
+">
+  <a href="/" className="text-white text-2xl font-bold">Logo</a>
+  <div className="hidden md:flex items-center gap-8">
+    <a href="#" className="text-white/80 hover:text-white transition-colors">Features</a>
+    <a href="#" className="text-white/80 hover:text-white transition-colors">Pricing</a>
+    <a href="#" className="text-white/80 hover:text-white transition-colors">About</a>
+    <button className="px-6 py-2 bg-white text-black rounded-full font-medium
+      hover:bg-white/90 hover:-translate-y-0.5
+      active:scale-[0.98] active:translate-y-0
+      transition-all duration-200 ease-out
+      focus:outline-none focus:ring-2 focus:ring-white/80">
+      Sign Up
+    </button>
+  </div>
+  <button className="md:hidden text-white">
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+</nav>`,
+  },
+  button: {
+    label: "Hero CTA Buttons",
+    code: `{/* Primary CTA — Gravity Float + Shadow Burst */}
+<button className="
+  px-8 py-4
+  bg-white text-black
+  font-semibold text-lg
+  rounded-full
+  shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+  hover:bg-white/95 hover:-translate-y-1
+  hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+  focus:outline-none focus:ring-2 focus:ring-white/80
+  focus:ring-offset-2 focus:ring-offset-black/50
+  active:scale-[0.98] active:translate-y-0
+  active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+  transition-all duration-200 ease-out
+">
+  Get Started
+</button>
 
-function HeroVariantSplit() {
-  return (
-    <div className="relative w-full h-72 md:h-96 bg-[#0a0a0a] overflow-hidden rounded-sm flex">
-      {/* Left: content */}
-      <div className="relative z-10 flex flex-col justify-center px-8 w-full md:w-1/2">
-        <span className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: ACCENTS[2] }}>
-          Split Screen
-        </span>
-        <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-          Divide the
-          <br />
-          <span style={{ color: ACCENTS[2] }}>Fold.</span>
-        </h2>
-        <p className="text-white/50 text-sm mb-6 max-w-xs">
-          Content left, image right — editorial balance for modern landing pages.
-        </p>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            className="px-5 py-2.5 text-xs font-bold text-black rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-            style={{ backgroundColor: ACCENTS[2] }}
-          >
-            Get Started
-          </button>
-          <button
-            type="button"
-            className="px-5 py-2.5 text-xs font-bold text-white border border-white/30 bg-transparent rounded-sm hover:border-white hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-          >
-            Learn More
-          </button>
-        </div>
-      </div>
-      {/* Right: image */}
-      <div className="hidden md:block absolute right-0 top-0 bottom-0 w-1/2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://picsum.photos/seed/hf_split/600/500"
-          alt=""
-          aria-hidden="true"
-          className="w-full h-full object-cover"
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to right, #0a0a0a 0%, transparent 30%)" }}
-        />
-      </div>
-    </div>
-  );
-}
+{/* Ghost CTA */}
+<button className="
+  px-8 py-4
+  bg-transparent text-white
+  font-semibold text-lg
+  rounded-full
+  border-2 border-white
+  hover:bg-white/15 hover:-translate-y-1
+  hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)]
+  focus:outline-none focus:ring-2 focus:ring-white/60
+  focus:ring-offset-2 focus:ring-offset-black/50
+  active:scale-[0.98] active:translate-y-0
+  transition-all duration-200 ease-out
+">
+  Learn More
+</button>`,
+  },
+  card: {
+    label: "Glassmorphism Feature Card",
+    code: `<div className="
+  group
+  p-8
+  bg-white/10 backdrop-blur-sm
+  rounded-2xl
+  border border-white/20
+  hover:bg-white/15 hover:border-white/30
+  hover:-translate-y-2
+  hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]
+  transition-all duration-300 ease-out
+  cursor-pointer
+">
+  <div className="
+    w-12 h-12 bg-white/20 rounded-xl
+    flex items-center justify-center mb-4
+    group-hover:scale-110
+    transition-transform duration-300 ease-out
+  ">
+    <svg className="w-6 h-6 text-white" fill="none"
+      stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round"
+        strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  </div>
+  <h3 className="text-xl font-semibold text-white mb-2
+    group-hover:text-white/95 transition-colors duration-200">
+    Feature Title
+  </h3>
+  <p className="text-white/70
+    group-hover:text-white/85 transition-colors duration-200">
+    Brief description of this feature.
+  </p>
+</div>`,
+  },
+  email: {
+    label: "Email Subscribe Form",
+    code: `<form className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+  <input
+    type="email"
+    placeholder="Enter your email"
+    className="
+      flex-1 px-6 py-4
+      bg-white/10 backdrop-blur-sm
+      border border-white/30
+      rounded-full
+      text-white placeholder-white/60
+      focus:outline-none focus:ring-2 focus:ring-white/50
+      transition-colors duration-200
+    "
+  />
+  <button className="
+    px-8 py-4
+    bg-white text-black
+    font-semibold
+    rounded-full
+    hover:bg-white/90 hover:-translate-y-0.5
+    hover:shadow-[0_6px_16px_rgba(0,0,0,0.3)]
+    active:scale-[0.98] active:translate-y-0
+    transition-all duration-200 ease-out
+    whitespace-nowrap
+  ">
+    Subscribe
+  </button>
+</form>`,
+  },
+};
 
-// ─────────────────────────────────────────────────────────────
-// Main Component
-// ─────────────────────────────────────────────────────────────
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
 
-export default function HeroFullscreenShowcase() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeVariant, setActiveVariant] = useState<HeroVariant>("dark");
-  const [activeBg, setActiveBg] = useState<BgTreatment>("solid");
-  const [activeCtaVariant, setActiveCtaVariant] = useState<CtaVariant>("primary");
-  const scrollY = useScrollY();
-  const navScrolled = scrollY > 50;
+export default function ShowcaseContent() {
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeOverlay, setActiveOverlay] = useState(0);
+  const [activeBgOption, setActiveBgOption] = useState(0);
+  const [activeComponentTab, setActiveComponentTab] = useState<ComponentKey>("hero");
+  const [copiedKey, setCopiedKey] = useState<ComponentKey | null>(null);
 
-  // Countdown: 30 days from a fixed future date for demo
-  const targetDate = new Date("2026-04-01T00:00:00Z");
-  const countdown = useCountdown(targetDate);
+  // Animation & Interaction Rules demo states
+  const [gravityHovered, setGravityHovered] = useState(false);
+  const [floatingCardHovered, setFloatingCardHovered] = useState(false);
+  const [textRevealHovered, setTextRevealHovered] = useState(false);
+  const [tactilePressed, setTactilePressed] = useState(false);
+  const [ghostTactilePressed, setGhostTactilePressed] = useState(false);
+
+  // Feature cards hover state (for floating glass demo)
+  const [hoveredFeatureCard, setHoveredFeatureCard] = useState<number | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  return (
-    <div className="bg-[#0a0a0a] text-white">
-      <style>{`
-        @keyframes bounce-arrow {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(10px); }
-        }
-        .bounce-arrow { animation: bounce-arrow 1.8s ease-in-out infinite; }
+  function handleCopy(key: ComponentKey) {
+    navigator.clipboard.writeText(componentSnippets[key].code).then(() => {
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    });
+  }
 
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden">
+      <style>{`
+        @keyframes hf-kenburns {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.07); }
+        }
+        @keyframes hf-scroll-bounce {
+          0%, 100% { transform: translateY(0) translateX(-50%); }
+          50% { transform: translateY(8px) translateX(-50%); }
+        }
         @keyframes hf-marquee {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        .hf-marquee-track { animation: hf-marquee 30s linear infinite; }
-
-        @keyframes hf-pulse-ring {
-          0% { transform: scale(1); opacity: 0.6; }
-          100% { transform: scale(1.5); opacity: 0; }
+        @keyframes hf-pulse-dot {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.3); }
         }
-        .pulse-ring { animation: hf-pulse-ring 2s ease-out infinite; }
-
-        @keyframes hf-scroll-line {
-          0% { transform: scaleY(0); transform-origin: top; }
-          50% { transform: scaleY(1); transform-origin: top; }
-          51% { transform: scaleY(1); transform-origin: bottom; }
-          100% { transform: scaleY(0); transform-origin: bottom; }
-        }
-        .scroll-line { animation: hf-scroll-line 2s ease-in-out infinite; }
+        .hf-kenburns { animation: hf-kenburns 20s ease-out forwards; }
+        .hf-scroll-bounce { animation: hf-scroll-bounce 2s ease-in-out infinite; }
+        .hf-marquee-track { animation: hf-marquee 28s linear infinite; }
+        .hf-pulse-dot { animation: hf-pulse-dot 1.6s ease-in-out infinite; }
       `}</style>
 
-      {/* ─── 1. FIXED NAV — transparent → solid on scroll ─── */}
-      <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
-        style={{
-          backgroundColor: navScrolled ? "rgba(0,0,0,0.85)" : "transparent",
-          backdropFilter: navScrolled ? "blur(16px)" : "none",
-          borderBottom: navScrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
-          <Link
-            href="/styles/hero-fullscreen/showcase"
-            className="text-white font-bold tracking-[0.2em] uppercase text-sm focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none rounded"
-          >
-            HERO<span style={{ color: ACCENTS[0] }}>.</span>FS
-          </Link>
+      {/* ================================================================ */}
+      {/* SECTION 1 — FIXED NAVIGATION                                     */}
+      {/* ================================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+              <LayersIcon className="w-3.5 h-3.5 text-white/80" />
+            </div>
+            <span className="text-sm font-semibold tracking-tight text-white">
+              Fullscreen<span className="text-white/30">Hero</span>
+            </span>
+          </div>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {(["Variants", "Typography", "CTAs", "Backgrounds", "Rules"] as const).map((label) => (
+          {/* Center navigation */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Hero", "Overlays", "Layers", "Backgrounds", "Animations", "Components", "Philosophy"].map((item) => (
               <span
-                key={label}
-                className="text-white/50 hover:text-white text-xs tracking-[0.15em] uppercase cursor-pointer transition-colors duration-200"
+                key={item}
+                className="px-3 py-1.5 rounded-full text-xs text-white/40 hover:text-white hover:bg-white/8 cursor-pointer transition-all duration-200"
               >
-                {label}
+                {item}
               </span>
             ))}
           </nav>
 
+          {/* StyleKit back link */}
           <Link
-            href="/styles"
-            className="text-xs tracking-[0.15em] uppercase px-4 py-2 rounded-sm border border-white/20 text-white/60 hover:text-white hover:border-white hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
+            href="/"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/20 text-white/70 text-sm font-medium
+              hover:bg-white/10 hover:text-white hover:-translate-y-0.5
+              hover:shadow-[0_4px_12px_rgba(255,255,255,0.08)]
+              active:scale-[0.97] active:translate-y-0
+              transition-all duration-200 ease-out"
           >
-            All Styles
+            <span>&#8592;</span>
+            <span>StyleKit</span>
           </Link>
         </div>
-
-        {/* Scroll progress bar */}
-        {navScrolled && (
-          <div className="absolute bottom-0 left-0 h-px bg-white/10 w-full">
-            <div
-              className="h-full transition-all duration-100"
-              style={{
-                width: `${Math.min(100, (scrollY / 3000) * 100)}%`,
-                backgroundColor: ACCENTS[1],
-              }}
-            />
-          </div>
-        )}
       </header>
 
-      {/* ─── MAIN HERO — full viewport ─── */}
+      {/* ================================================================ */}
+      {/* SECTION 2 — FULL VIEWPORT HERO DEMO                             */}
+      {/* ================================================================ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://picsum.photos/seed/hf_main_hero/1920/1080"
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-            style={{
-              transform: heroRevealed ? "scale(1.03)" : "scale(1.14)",
-              transition: "transform 2.8s cubic-bezier(0.16,1,0.3,1)",
-            }}
-          />
+        {/* Simulated immersive background — layered gradients mimicking photo */}
+        <div className="absolute inset-0 hf-kenburns">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-zinc-900 to-black" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_20%_20%,rgba(108,92,231,0.28),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_85%_65%,rgba(78,205,196,0.18),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_55%_85%,rgba(255,107,107,0.12),transparent)]" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+        {/* Grain texture */}
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundSize: "128px",
+          }}
+        />
+        {/* Gradient overlay — bottom + top darkening */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40" />
 
-        {/* Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          {/* Eyebrow */}
+        {/* Transparent navigation inside hero */}
+        <nav className="absolute top-0 left-0 right-0 z-50 px-6 pt-20 pb-4 flex items-center justify-between">
+          <span className="text-white text-lg font-bold tracking-tight">Horizon</span>
+          <div className="hidden md:flex items-center gap-8">
+            {["Features", "Pricing", "About"].map((item) => (
+              <a key={item} href="#" className="text-white/65 hover:text-white transition-colors duration-200 text-sm">
+                {item}
+              </a>
+            ))}
+            <button
+              className="px-5 py-2 bg-white text-black rounded-full text-sm font-semibold
+                shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+                hover:bg-white/95 hover:-translate-y-1
+                hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+                focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+                active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                transition-all duration-200 ease-out"
+            >
+              Sign Up
+            </button>
+          </div>
+          <button className="md:hidden text-white/70">
+            <MenuIcon className="w-5 h-5" />
+          </button>
+        </nav>
+
+        {/* Hero content */}
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          {/* Badge */}
           <div
-            className="inline-flex items-center gap-3 mb-10"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            <span className="block w-10 h-px" style={{ backgroundColor: ACCENTS[1] }} />
-            <span className="text-xs tracking-[0.35em] uppercase font-medium" style={{ color: ACCENTS[1] }}>
-              Hero Fullscreen Showcase
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/75 text-xs font-medium tracking-[0.1em] uppercase border border-white/15 mb-8">
+              <span
+                className="w-1.5 h-1.5 rounded-full hf-pulse-dot"
+                style={{ backgroundColor: "#4ecdc4", boxShadow: "0 0 6px rgba(78,205,196,0.8)" }}
+              />
+              Fullscreen Hero Layout — StyleKit
             </span>
-            <span className="block w-10 h-px" style={{ backgroundColor: ACCENTS[1] }} />
           </div>
 
           {/* Headline */}
-          <h1 className="leading-none tracking-tight mb-8">
+          <h1
+            className="text-5xl md:text-7xl lg:text-[84px] font-bold text-white leading-[1.0] tracking-tight mb-6"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.1s",
+            }}
+          >
+            Capture Every
+            <br />
             <span
-              className="block text-6xl md:text-8xl lg:text-9xl font-bold text-white"
               style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(48px)",
-                transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s",
+                background: "linear-gradient(135deg, #ffffff 0%, #a8edea 45%, #6c5ce7 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
               }}
             >
-              Command
-            </span>
-            <span
-              className="block text-6xl md:text-8xl lg:text-9xl font-bold"
-              style={{
-                color: ACCENTS[0],
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(48px)",
-                transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.38s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.38s",
-              }}
-            >
-              Every Viewport.
+              First Second.
             </span>
           </h1>
 
           {/* Subheadline */}
           <p
-            className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto mb-12 leading-relaxed"
+            className="text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-10"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
-              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.52s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.52s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.2s",
             }}
           >
-            Full-viewport sections that dominate the fold. Oversized typography, deep overlays, total attention capture.
+            The fullscreen hero layout creates an immersive first impression with full-viewport
+            imagery, precise overlay control, and cinematic visual hierarchy.
           </p>
 
-          {/* CTA cluster */}
+          {/* CTA buttons — Gravity Focus pattern (aiRule 1) */}
           <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-14"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.66s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.66s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.3s",
             }}
           >
+            {/* Primary CTA — Gravity Focus */}
             <button
-              type="button"
-              className="px-10 py-4 font-bold text-base tracking-wide text-white rounded-sm shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-              style={{ backgroundColor: ACCENTS[0] }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold text-base
+                shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+                hover:bg-white/95 hover:-translate-y-1
+                hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+                focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+                active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                transition-all duration-200 ease-out"
             >
-              Get Started
+              Get Started Free
             </button>
+            {/* Ghost CTA */}
             <button
-              type="button"
-              className="px-10 py-4 font-bold text-base tracking-wide text-white rounded-sm border-2 border-white bg-transparent hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-transparent text-white font-semibold text-base
+                border-2 border-white/70
+                hover:bg-white/15 hover:-translate-y-1
+                hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)]
+                focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black/50
+                active:scale-[0.98] active:translate-y-0
+                transition-all duration-200 ease-out"
             >
+              <PlayIcon className="w-4 h-4" />
               Watch Demo
             </button>
           </div>
-        </div>
 
-        {/* Animated scroll indicator */}
-        <div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40"
-          style={{
-            opacity: heroRevealed ? 1 : 0,
-            transition: "opacity 0.9s ease 1.1s",
-          }}
-        >
-          <span className="text-[10px] tracking-[0.35em] uppercase">Scroll</span>
-          {/* Mouse icon */}
-          <div className="w-5 h-8 rounded-full border border-white/30 flex justify-center pt-1.5">
-            <div className="w-px h-2 rounded-full bg-white/50 scroll-line" />
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 2. HERO VARIANTS — tab switcher ─── */}
-      <section className="min-h-screen flex flex-col justify-center py-24 px-6 bg-[#0d0d0d]">
-        <div className="max-w-7xl mx-auto w-full">
-          <RevealBlock className="mb-12 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[3] }}>
-              Section 01
-            </p>
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-5">
-              Hero Variants
-            </h2>
-            <p className="text-white/45 max-w-xl mx-auto text-lg leading-relaxed">
-              Four distinct visual strategies. Each commands the viewport differently.
-            </p>
-          </RevealBlock>
-
-          {/* Tab bar */}
-          <RevealBlock delay={0.1} className="flex flex-wrap justify-center gap-2 mb-10">
-            {HERO_VARIANTS.map((v) => (
-              <button
-                key={v.key}
-                type="button"
-                onClick={() => setActiveVariant(v.key)}
-                className="px-5 py-2.5 text-xs tracking-[0.18em] uppercase font-semibold rounded-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{
-                  backgroundColor: activeVariant === v.key ? ACCENTS[3] : "transparent",
-                  color: activeVariant === v.key ? "#fff" : "rgba(255,255,255,0.4)",
-                  border: `1px solid ${activeVariant === v.key ? ACCENTS[3] : "rgba(255,255,255,0.12)"}`,
-                }}
-              >
-                {v.label}
-              </button>
-            ))}
-          </RevealBlock>
-
-          {/* Description */}
-          <RevealBlock delay={0.12} className="text-center mb-8">
-            <p className="text-white/50 text-sm">
-              {HERO_VARIANTS.find((v) => v.key === activeVariant)?.description}
-            </p>
-          </RevealBlock>
-
-          {/* Variant preview */}
-          <RevealBlock delay={0.15}>
-            {activeVariant === "dark"     && <HeroVariantDark />}
-            {activeVariant === "light"    && <HeroVariantLight />}
-            {activeVariant === "gradient" && <HeroVariantGradient />}
-            {activeVariant === "split"    && <HeroVariantSplit />}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── 3. TYPOGRAPHY HIERARCHY ─── */}
-      <section className="min-h-screen flex flex-col justify-center py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto w-full">
-          <RevealBlock className="mb-16">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[0] }}>
-              Section 02
-            </p>
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-5">
-              Type Scale
-            </h2>
-            <p className="text-white/45 max-w-2xl text-lg leading-relaxed">
-              Full-screen heroes live or die by their type hierarchy. Each tier has one job — do not mix them up.
-            </p>
-          </RevealBlock>
-
-          <div className="space-y-2">
-            {TYPE_SCALE.map((tier, i) => (
-              <RevealBlock key={tier.label} delay={i * 0.07}>
-                <div className="group flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8 border-b border-white/5 py-8 hover:-translate-y-1 hover:bg-white/[0.02] px-4 -mx-4 transition-all duration-300 ease-out">
-                  <div className="md:w-48 shrink-0">
-                    <p className="text-white/30 text-xs tracking-[0.2em] uppercase">{tier.label}</p>
-                    <p className="text-white/20 text-[10px] mt-1 font-mono">{tier.usage}</p>
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <span
-                      className={`${tier.size} font-bold text-white leading-none block group-hover:text-white/90 transition-colors duration-200`}
-                      style={{ color: i === 0 ? ACCENTS[0] : undefined }}
-                    >
-                      {tier.sample}
-                    </span>
-                  </div>
-                  <div className="md:w-32 shrink-0 flex items-center justify-end">
-                    <span className="text-white/15 font-mono text-[10px] group-hover:text-white/30 transition-colors duration-200">
-                      0{i + 1}
-                    </span>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Combined headline demo */}
-          <RevealBlock delay={0.5} className="mt-20 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-8">Complete hierarchy in action</p>
-            <div
-              className="relative rounded-sm overflow-hidden py-20 px-8"
-              style={{ background: "linear-gradient(135deg, #0f0f1a, #0a0a0a)" }}
-            >
-              <span className="block text-xs tracking-[0.35em] uppercase mb-4" style={{ color: ACCENTS[1] }}>
-                New Arrival
-              </span>
-              <h3 className="text-5xl md:text-8xl font-bold text-white leading-none mb-4">
-                Impact.
-              </h3>
-              <p className="text-xl md:text-2xl text-white/60 mb-6 max-w-xl mx-auto leading-relaxed">
-                Launch something extraordinary.
-              </p>
-              <p className="text-base text-white/40 max-w-lg mx-auto leading-relaxed mb-10">
-                Full-viewport layouts create total visual immersion. Every pixel is intentional.
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <button
-                  type="button"
-                  className="px-8 py-3 font-bold text-sm text-white rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                  style={{ backgroundColor: ACCENTS[0] }}
-                >
-                  Get Started
-                </button>
-                <button
-                  type="button"
-                  className="px-8 py-3 font-bold text-sm text-white border border-white/30 bg-transparent rounded-sm hover:border-white hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                >
-                  Learn More
-                </button>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── 4. CTA BUTTON VARIANTS ─── */}
-      <section
-        className="min-h-screen flex flex-col justify-center py-24 px-6"
-        style={{ background: "linear-gradient(160deg, #0f0f1a 0%, #0a0a0a 60%, #0a0a10 100%)" }}
-      >
-        <div className="max-w-5xl mx-auto w-full">
-          <RevealBlock className="mb-12 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[2] }}>
-              Section 03
-            </p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-5">
-              CTA Variants
-            </h2>
-            <p className="text-white/45 max-w-xl mx-auto text-lg leading-relaxed">
-              Every button in a fullscreen hero must feel substantial. The gravity float and shadow burst are non-negotiable.
-            </p>
-          </RevealBlock>
-
-          {/* Tab bar for CTA */}
-          <RevealBlock delay={0.1} className="flex flex-wrap justify-center gap-2 mb-14">
-            {CTA_VARIANTS.map((v) => (
-              <button
-                key={v.key}
-                type="button"
-                onClick={() => setActiveCtaVariant(v.key)}
-                className="px-4 py-2 text-xs tracking-[0.15em] uppercase font-semibold rounded-sm transition-all duration-200 ease-out active:scale-[0.98] focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{
-                  backgroundColor: activeCtaVariant === v.key ? ACCENTS[2] : "transparent",
-                  color: activeCtaVariant === v.key ? "#000" : "rgba(255,255,255,0.35)",
-                  border: `1px solid ${activeCtaVariant === v.key ? ACCENTS[2] : "rgba(255,255,255,0.10)"}`,
-                }}
-              >
-                {v.label}
-              </button>
-            ))}
-          </RevealBlock>
-
-          {/* Preview area */}
-          <RevealBlock delay={0.15}>
-            <div
-              className="rounded-sm border border-white/8 py-20 px-8 flex items-center justify-center"
-              style={{ background: "rgba(255,255,255,0.02)" }}
-            >
-              {activeCtaVariant === "primary" && (
-                <button
-                  type="button"
-                  className="px-10 py-4 font-bold text-base tracking-wide text-white rounded-sm shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                  style={{ backgroundColor: ACCENTS[0] }}
-                >
-                  Get Started Free
-                </button>
-              )}
-              {activeCtaVariant === "ghost" && (
-                <button
-                  type="button"
-                  className="px-10 py-4 font-bold text-base tracking-wide text-white/60 rounded-sm bg-transparent hover:text-white hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                >
-                  Ghost Button
-                </button>
-              )}
-              {activeCtaVariant === "outline" && (
-                <button
-                  type="button"
-                  className="px-10 py-4 font-bold text-base tracking-wide text-white rounded-sm border-2 border-white bg-transparent hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                >
-                  Outline CTA
-                </button>
-              )}
-              {activeCtaVariant === "icon" && (
-                <button
-                  type="button"
-                  className="group px-10 py-4 font-bold text-base tracking-wide text-black rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none inline-flex items-center gap-3"
-                  style={{ backgroundColor: ACCENTS[1] }}
-                >
-                  Explore Now
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    className="group-hover:scale-110 transition-transform duration-200"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </button>
-              )}
-              {activeCtaVariant === "pill" && (
-                <button
-                  type="button"
-                  className="px-10 py-4 font-bold text-base tracking-wide text-white rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                  style={{ backgroundColor: ACCENTS[3] }}
-                >
-                  Pill Shape CTA
-                </button>
-              )}
-              {activeCtaVariant === "large" && (
-                <button
-                  type="button"
-                  className="px-16 py-6 font-bold text-xl tracking-widest text-white uppercase rounded-sm shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                  style={{ backgroundColor: ACCENTS[0] }}
-                >
-                  Launch Now
-                </button>
-              )}
-            </div>
-          </RevealBlock>
-
-          {/* All variants grid */}
-          <RevealBlock delay={0.2} className="mt-16">
-            <p className="text-xs tracking-[0.3em] uppercase text-white/25 text-center mb-8">
-              All variants side by side
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <button
-                type="button"
-                className="px-8 py-3 font-bold text-sm text-white rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{ backgroundColor: ACCENTS[0] }}
-              >
-                Primary
-              </button>
-              <button
-                type="button"
-                className="px-8 py-3 font-bold text-sm text-white border-2 border-white rounded-sm bg-transparent hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-              >
-                Outline
-              </button>
-              <button
-                type="button"
-                className="px-8 py-3 font-bold text-sm text-white/50 rounded-sm bg-transparent hover:text-white hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.4)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-              >
-                Ghost
-              </button>
-              <button
-                type="button"
-                className="group px-8 py-3 font-bold text-sm text-black rounded-sm inline-flex items-center gap-2 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{ backgroundColor: ACCENTS[1] }}
-              >
-                With Icon
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="group-hover:scale-110 transition-transform duration-200"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="px-8 py-3 font-bold text-sm text-white rounded-full hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{ backgroundColor: ACCENTS[3] }}
-              >
-                Pill CTA
-              </button>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── 5. BACKGROUND TREATMENTS ─── */}
-      <section className="min-h-screen flex flex-col justify-center py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto w-full">
-          <RevealBlock className="mb-12 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[1] }}>
-              Section 04
-            </p>
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-5">
-              Background Treatments
-            </h2>
-            <p className="text-white/45 max-w-xl mx-auto text-lg leading-relaxed">
-              Three foundational approaches to filling the viewport. Choose based on brand, content, and context.
-            </p>
-          </RevealBlock>
-
-          {/* Treatment tabs */}
-          <RevealBlock delay={0.1} className="flex justify-center gap-2 mb-10">
-            {BG_TREATMENTS.map((t) => (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() => setActiveBg(t.key)}
-                className="px-5 py-2 text-xs tracking-[0.18em] uppercase font-semibold rounded-sm transition-all duration-200 ease-out active:scale-[0.98] active:translate-y-0 focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{
-                  backgroundColor: activeBg === t.key ? ACCENTS[1] : "transparent",
-                  color: activeBg === t.key ? "#000" : "rgba(255,255,255,0.4)",
-                  border: `1px solid ${activeBg === t.key ? ACCENTS[1] : "rgba(255,255,255,0.12)"}`,
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </RevealBlock>
-
-          <RevealBlock delay={0.15}>
-            {BG_TREATMENTS.filter((t) => t.key === activeBg).map((treatment) => (
-              <div key={treatment.key}>
-                <div
-                  className="w-full h-64 md:h-80 rounded-sm mb-6 overflow-hidden relative flex items-center justify-center"
-                  style={{ background: treatment.preview }}
-                >
-                  {treatment.key === "overlay" && (
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: "linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.3))" }}
-                    />
-                  )}
-                  <div className="relative z-10 text-center px-6">
-                    <h3 className="text-4xl md:text-6xl font-bold text-white mb-3">{treatment.label}</h3>
-                    <p className="text-white/70 text-sm max-w-sm mx-auto">{treatment.description}</p>
-                  </div>
-                </div>
-                <div className="bg-white/3 rounded-sm p-6 border border-white/8">
-                  <p className="text-white/60 text-sm leading-relaxed">
-                    <span className="text-white/90 font-semibold">When to use: </span>
-                    {treatment.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </RevealBlock>
-
-          {/* All three previews at once */}
-          <RevealBlock delay={0.25} className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {BG_TREATMENTS.map((t, i) => (
-              <div key={t.key} className="group">
-                <div
-                  className="relative h-48 rounded-sm overflow-hidden mb-3 hover:-translate-y-2 transition-transform duration-300 ease-out cursor-pointer"
-                  style={{ background: t.preview }}
-                  onClick={() => setActiveBg(t.key)}
-                >
-                  {t.key === "overlay" && (
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: "linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.3))" }}
-                    />
-                  )}
-                  <div className="absolute inset-0 flex items-end p-4">
-                    <div>
-                      <p
-                        className="text-xs tracking-[0.25em] uppercase font-semibold mb-1"
-                        style={{ color: ACCENTS[i] }}
-                      >
-                        0{i + 1}
-                      </p>
-                      <h4 className="text-white font-bold text-lg leading-tight">{t.label}</h4>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-white/35 text-xs leading-relaxed">{t.description}</p>
-              </div>
-            ))}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── EVENT HERO with Countdown Timer ─── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://picsum.photos/seed/hf_event/1920/1080"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90" />
-
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <RevealBlock>
-            <span className="text-xs tracking-[0.4em] uppercase font-semibold" style={{ color: ACCENTS[0] }}>
-              Live Demo — Event Hero with Countdown
-            </span>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1} className="mt-6 mb-4">
-            <h2 className="text-5xl md:text-8xl font-bold text-white leading-none">
-              Launch Day.
-            </h2>
-          </RevealBlock>
-
-          <RevealBlock delay={0.2} className="mb-10">
-            <p className="text-white/60 text-xl max-w-xl mx-auto">
-              April 1, 2026 &mdash; The next chapter begins.
-            </p>
-          </RevealBlock>
-
-          {/* Countdown */}
-          <RevealBlock delay={0.3} className="mb-12">
-            <div className="flex items-center justify-center gap-4 md:gap-8">
-              {[
-                { value: countdown.days,    label: "Days" },
-                { value: countdown.hours,   label: "Hours" },
-                { value: countdown.minutes, label: "Min" },
-                { value: countdown.seconds, label: "Sec" },
-              ].map(({ value, label }, i) => (
-                <div key={label} className="flex flex-col items-center">
-                  <div
-                    className="relative w-16 h-16 md:w-24 md:h-24 rounded-sm flex items-center justify-center mb-2"
-                    style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
-                  >
-                    {/* Pulse ring on seconds */}
-                    {label === "Sec" && (
-                      <span
-                        className="pulse-ring absolute inset-0 rounded-sm border"
-                        style={{ borderColor: ACCENTS[i % 4] }}
-                      />
-                    )}
-                    <span className="text-2xl md:text-4xl font-bold tabular-nums" style={{ color: ACCENTS[i % 4] }}>
-                      {String(value).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">{label}</span>
-                </div>
+          {/* Social proof row */}
+          <div
+            className="flex items-center justify-center gap-4"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(12px)",
+              transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.42s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.42s",
+            }}
+          >
+            <div className="flex -space-x-2.5">
+              {ACCENT_COLORS.map((c) => (
+                <div key={c} className="w-8 h-8 rounded-full border-2 border-black/80" style={{ backgroundColor: c }} />
               ))}
             </div>
-          </RevealBlock>
-
-          <RevealBlock delay={0.4}>
-            <button
-              type="button"
-              className="px-12 py-5 font-bold text-lg text-white rounded-sm shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-              style={{ backgroundColor: ACCENTS[0] }}
-            >
-              Register Now
-            </button>
-          </RevealBlock>
-
-          {/* Speaker strip */}
-          <RevealBlock delay={0.5} className="mt-16">
-            <p className="text-white/25 text-xs tracking-[0.3em] uppercase mb-6">Speakers</p>
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <div key={n} className="group flex flex-col items-center gap-2">
-                  <div
-                    className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-white/40 group-hover:scale-110 transition-all duration-300 ease-out"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`https://picsum.photos/seed/speaker${n}/100/100`}
-                      alt=""
-                      aria-hidden="true"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="text-white/30 text-[9px] tracking-widest uppercase group-hover:text-white/60 transition-colors duration-200">
-                    Speaker {n}
-                  </span>
-                </div>
-              ))}
+            <div className="flex items-center gap-1.5 text-white/50 text-sm">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <StarIcon key={i} className="w-3 h-3 text-[#ffe66d]" />
+                ))}
+              </div>
+              <span>4.9 — 12,000+ teams</span>
             </div>
-          </RevealBlock>
+          </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 bounce-arrow">
-          <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
+        <div className="hf-scroll-bounce absolute bottom-8 left-1/2 flex flex-col items-center gap-2 text-white/40" aria-hidden="true">
+          <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
+          <ArrowDownIcon className="w-5 h-5" />
         </div>
       </section>
 
-      {/* ─── ACCENT PALETTE ─── */}
-      <section className="py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-12 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[3] }}>
-              Design System
-            </p>
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-5">
-              Accent Palette
-            </h2>
-            <p className="text-white/45 max-w-xl mx-auto text-lg">
-              Four bold accents built for contrast on dark surfaces.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="flex flex-col gap-px rounded-sm overflow-hidden">
-              {ACCENTS.map((color, i) => (
-                <div
-                  key={color}
-                  className="group flex items-center justify-between px-8 py-8 cursor-default hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out"
-                  style={{ backgroundColor: color }}
-                >
-                  <div className="flex items-center gap-6">
-                    <span className="text-xl md:text-2xl font-bold text-black/80">{ACCENT_NAMES[i]}</span>
-                  </div>
-                  <span className="font-mono text-xs text-black/50 uppercase tracking-widest">{color}</span>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-
-          <RevealBlock delay={0.2} className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {ACCENTS.map((color, i) => (
-              <div key={color} className="group flex flex-col gap-3">
-                <div
-                  className="h-20 rounded-sm hover:-translate-y-2 transition-transform duration-300 ease-out"
-                  style={{ backgroundColor: color }}
-                />
-                <div>
-                  <p className="text-white font-semibold text-sm">{ACCENT_NAMES[i]}</p>
-                  <p className="text-white/35 font-mono text-xs">{color}</p>
-                </div>
-              </div>
-            ))}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── MARQUEE STRIP ─── */}
-      <div className="overflow-hidden py-5 border-y border-white/8 bg-[#0d0d0d]">
+      {/* ================================================================ */}
+      {/* MARQUEE STRIP                                                    */}
+      {/* ================================================================ */}
+      <div className="overflow-hidden py-4 border-y border-white/8 bg-white/[0.02]">
         <div className="flex hf-marquee-track w-[200%]">
           {[0, 1].map((idx) => (
-            <div key={idx} className="flex-1 flex items-center justify-around gap-10 px-10">
+            <div key={idx} className="flex-1 flex items-center gap-10 px-10">
               {[
-                "Full Viewport",
-                "Scroll Snap",
-                "Gravity Hover",
-                "Overlay Depth",
-                "Premium Motion",
-                "Dark Canvas",
-                "Active Press",
-                "Group Hover",
-                "Focus Ring",
+                "Full Viewport", "Gravity Float", "Overlay Depth", "Tactile Press",
+                "Group Hover", "Focus Ring", "Scroll Indicator", "Ken Burns",
+                "Dark Canvas", "Text Readability", "Mobile First", "Shadow Burst",
               ].map((label) => (
                 <span
                   key={`${idx}-${label}`}
@@ -1170,52 +723,818 @@ export default function HeroFullscreenShowcase() {
         </div>
       </div>
 
-      {/* ─── 6. DESIGN RULES — Do / Don't ─── */}
-      <section className="min-h-screen flex flex-col justify-center py-24 px-6 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto w-full">
-          <RevealBlock className="mb-16 text-center">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: ACCENTS[0] }}>
-              Section 05
-            </p>
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-5">
-              Design Rules
+      {/* ================================================================ */}
+      {/* SECTION 3 — OVERLAY VARIANTS                                    */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#4ecdc4" }}>
+              Overlays
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Overlay <span className="text-white/30">variants</span>
             </h2>
-            <p className="text-white/45 max-w-xl mx-auto text-lg leading-relaxed">
-              Fullscreen heroes demand discipline. These rules separate a commanding first impression from a broken one.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Every fullscreen hero image needs an overlay to guarantee text readability. Choose based
+              on image complexity and brand tone.
             </p>
           </RevealBlock>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Do list */}
-            <RevealBlock delay={0.1}>
-              <div className="bg-white/[0.025] border border-white/8 rounded-sm p-8 h-full">
-                <div className="flex items-center gap-3 mb-8">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${ACCENTS[1]}20` }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ACCENTS[1]} strokeWidth="2.5" aria-hidden="true">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
+          {/* Switcher */}
+          <RevealBlock delay={0.1} className="mb-7">
+            <div className="flex flex-wrap gap-2">
+              {overlayVariants.map((v, i) => (
+                <button
+                  key={v.name}
+                  onClick={() => setActiveOverlay(i)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                    activeOverlay === i
+                      ? "bg-white text-black border-white"
+                      : "bg-white/5 border-white/15 text-white/55 hover:border-white/30 hover:text-white/80"
+                  }`}
+                >
+                  {v.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <div className="rounded-2xl overflow-hidden border border-white/10">
+              {/* Live preview */}
+              <div className="relative h-52 md:h-64">
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-zinc-800 to-slate-900" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_30%_40%,rgba(108,92,231,0.5),transparent)]" />
+                <div className="absolute inset-0 transition-all duration-500" style={overlayVariants[activeOverlay].style} />
+                <div className="absolute inset-0 flex items-center justify-center text-center px-8">
+                  <div>
+                    <p className="text-xs text-white/50 mb-2 tracking-widest uppercase">Active overlay</p>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Hero Headline Text</h3>
+                    <p className="text-white/65 text-sm max-w-sm">Body text remains readable against any overlay variant.</p>
                   </div>
-                  <h3 className="text-lg font-bold" style={{ color: ACCENTS[1] }}>
-                    Do
-                  </h3>
                 </div>
-                <div className="space-y-6">
-                  {doList.map((item, i) => (
-                    <div key={item.rule} className="group flex gap-4">
-                      <span
-                        className="text-[10px] tracking-widest font-mono mt-0.5 shrink-0"
-                        style={{ color: ACCENTS[1], opacity: 0.5 }}
+              </div>
+              {/* Info */}
+              <div className="bg-white/[0.04] border-t border-white/10 p-6">
+                <div className="flex flex-col md:flex-row items-start gap-6">
+                  <div className="flex-1">
+                    <p className="text-xs text-white/35 uppercase tracking-[0.15em] mb-1.5">Tailwind class</p>
+                    <code className="text-sm font-mono" style={{ color: "#4ecdc4" }}>
+                      {overlayVariants[activeOverlay].tailwind}
+                    </code>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-white/35 uppercase tracking-[0.15em] mb-1.5">Best for</p>
+                    <p className="text-sm text-white/55">{overlayVariants[activeOverlay].desc}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 4 — LAYER STACK                                         */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#ffe66d" }}>
+              Structure
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Layer <span className="text-white/30">stack</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              A fullscreen hero is built from five z-indexed layers. Getting this order wrong is the
+              most common mistake — nav disappears or overlay covers content.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1}>
+            <div className="space-y-3 max-w-2xl">
+              {[...layerStack].reverse().map((layer, i) => (
+                <div
+                  key={layer.z}
+                  className="group flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/20 transition-all duration-200 cursor-default"
+                  style={{ marginLeft: `${(layerStack.length - 1 - i) * 14}px` }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-black shrink-0 transition-transform duration-200 group-hover:scale-110"
+                    style={{ backgroundColor: layer.color }}
+                  >
+                    z{layer.z}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white/85">{layer.name}</p>
+                    <code className="text-xs font-mono text-white/30">{layer.code}</code>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Critical rule callout */}
+          <RevealBlock delay={0.28} className="mt-10 max-w-2xl">
+            <div className="flex items-start gap-4 p-5 rounded-xl bg-[#ffe66d]/10 border border-[#ffe66d]/25">
+              <ShieldIcon className="w-5 h-5 text-[#ffe66d] shrink-0 mt-0.5" />
+              <p className="text-sm text-white/65 leading-relaxed">
+                <span className="font-semibold text-[#ffe66d]">Critical:</span> Content must use{" "}
+                <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-white/75 text-xs">relative z-10</code>
+                not{" "}
+                <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-white/75 text-xs">absolute</code>
+                — so it participates in normal flow and stacks correctly above the overlay. Navigation uses
+                <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-white/75 text-xs">z-50</code>
+                to stay on top of everything.
+              </p>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 5 — BACKGROUND OPTIONS                                  */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#ff6b6b" }}>
+              Background
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Background <span className="text-white/30">options</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Three valid approaches — each with real-world trade-offs. Pick based on brand,
+              bandwidth, and device targets.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1} className="mb-6">
+            <div className="flex gap-2 flex-wrap">
+              {backgroundOptions.map((bg, i) => (
+                <button
+                  key={bg.name}
+                  onClick={() => setActiveBgOption(i)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border ${
+                    activeBgOption === i
+                      ? "text-black border-transparent"
+                      : "bg-white/[0.04] border-white/12 text-white/55 hover:border-white/25 hover:text-white/75"
+                  }`}
+                  style={activeBgOption === i ? { backgroundColor: bg.color, borderColor: bg.color } : {}}
+                >
+                  <span className="w-4 h-4 shrink-0">{bg.icon}</span>
+                  {bg.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6">
+                <p className="text-xs text-white/35 uppercase tracking-[0.15em] mb-4">Advantages</p>
+                <ul className="space-y-2.5">
+                  {backgroundOptions[activeBgOption].pros.map((p) => (
+                    <li key={p} className="flex items-start gap-2.5 text-sm text-white/65">
+                      <CheckIcon className="w-4 h-4 text-[#4ecdc4] shrink-0 mt-0.5" />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6">
+                <p className="text-xs text-white/35 uppercase tracking-[0.15em] mb-4">Trade-offs</p>
+                <ul className="space-y-2.5">
+                  {backgroundOptions[activeBgOption].cons.map((c) => (
+                    <li key={c} className="flex items-start gap-2.5 text-sm text-white/65">
+                      <XIcon className="w-4 h-4 text-[#ff6b6b] shrink-0 mt-0.5" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6">
+                <p className="text-xs text-white/35 uppercase tracking-[0.15em] mb-4">Code snippet</p>
+                <code
+                  className="text-xs font-mono leading-relaxed whitespace-pre-wrap break-all"
+                  style={{ color: backgroundOptions[activeBgOption].color }}
+                >
+                  {backgroundOptions[activeBgOption].snippet}
+                </code>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 6 — ANIMATION & INTERACTION RULES (aiRules demos)       */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#6c5ce7" }}>
+              Interactions
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Animation &amp; Interaction <span className="text-white/30">Rules</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Four named aiRules from the style definition. Every demo below is interactive —
+              hover or press to feel the exact behavior on a dark overlay surface.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* ── Rule 1: Gravity Focus (CTA Button) ── */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full flex flex-col">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold text-black"
+                    style={{ backgroundColor: "#4ecdc4" }}
+                  >
+                    Gravity Focus
+                  </span>
+                  <span className="text-xs text-white/30">CTA Button — aiRule 1</span>
+                </div>
+
+                <div className="mt-3 mb-6 font-mono text-xs text-white/30 space-y-0.5 leading-relaxed">
+                  <p>Resting: shadow-[0_4px_14px_rgba(0,0,0,0.3)]</p>
+                  <p>Hover: hover:-translate-y-1</p>
+                  <p>Hover: hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]</p>
+                  <p>Active: active:scale-[0.98] active:translate-y-0</p>
+                  <p>Active: active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]</p>
+                  <p>Focus: focus:ring-2 focus:ring-white/80</p>
+                  <p>Focus: focus:ring-offset-2 focus:ring-offset-black/50</p>
+                </div>
+
+                <div className="flex-1 flex items-center justify-center py-6 bg-gradient-to-br from-slate-800 to-zinc-900 rounded-xl border border-white/8">
+                  <button
+                    className="px-8 py-4 bg-white text-black font-semibold rounded-full
+                      shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+                      hover:bg-white/95 hover:-translate-y-1
+                      hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+                      focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+                      active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                      transition-all duration-200 ease-out"
+                    onMouseEnter={() => setGravityHovered(true)}
+                    onMouseLeave={() => setGravityHovered(false)}
+                  >
+                    Get Started
+                  </button>
+                </div>
+
+                <p className="text-xs text-white/30 text-center mt-3 leading-relaxed">
+                  {gravityHovered
+                    ? "Shadow explodes outward — button lifted off surface. Gravity float confirmed."
+                    : "Hover the button to see gravity float + shadow burst."}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ── Rule 2: Floating Glass (Feature Cards) ── */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full flex flex-col">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+                    style={{ backgroundColor: "#6c5ce7" }}
+                  >
+                    Floating Glass
+                  </span>
+                  <span className="text-xs text-white/30">Feature Cards — aiRule 2</span>
+                </div>
+
+                <div className="mt-3 mb-6 font-mono text-xs text-white/30 space-y-0.5 leading-relaxed">
+                  <p>Required: group class on card container</p>
+                  <p>Hover: hover:-translate-y-2</p>
+                  <p>Hover: hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]</p>
+                  <p>Icon: group-hover:scale-110</p>
+                  <p>Icon: transition-transform duration-300 ease-out</p>
+                </div>
+
+                <div
+                  className="flex-1 flex items-center justify-center py-6 bg-gradient-to-br from-slate-800 to-zinc-900 rounded-xl border border-white/8"
+                  onMouseEnter={() => setFloatingCardHovered(true)}
+                  onMouseLeave={() => setFloatingCardHovered(false)}
+                >
+                  {/* Live glassmorphism card */}
+                  <div
+                    className="group p-6 backdrop-blur-sm rounded-2xl border w-48 cursor-pointer transition-all duration-300 ease-out"
+                    style={{
+                      background: floatingCardHovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.10)",
+                      borderColor: floatingCardHovered ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.2)",
+                      transform: floatingCardHovered ? "translateY(-8px)" : "translateY(0)",
+                      boxShadow: floatingCardHovered
+                        ? "0 16px 40px rgba(0,0,0,0.5)"
+                        : "0 4px 12px rgba(0,0,0,0.15)",
+                    }}
+                  >
+                    <div
+                      className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3 transition-transform duration-300 ease-out"
+                      style={{ transform: floatingCardHovered ? "scale(1.1)" : "scale(1)" }}
+                    >
+                      <ZapIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h4
+                      className="text-sm font-semibold mb-1 transition-colors duration-200"
+                      style={{ color: floatingCardHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.90)" }}
+                    >
+                      Feature Title
+                    </h4>
+                    <p
+                      className="text-xs transition-colors duration-200"
+                      style={{ color: floatingCardHovered ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.70)" }}
+                    >
+                      Brief feature description text.
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-white/30 text-center mt-3 leading-relaxed">
+                  {floatingCardHovered
+                    ? "Card floated 8px up. Icon scaled 110%. Text revealed to 95%/85%. group class drives all."
+                    : "Hover the card — group class triggers icon scale + text reveal simultaneously."}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ── Rule 3: Text Reveal on Hover ── */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full flex flex-col">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold text-black"
+                    style={{ backgroundColor: "#ffe66d" }}
+                  >
+                    Text Reveal
+                  </span>
+                  <span className="text-xs text-white/30">Card Typography — aiRule 3</span>
+                </div>
+
+                <div className="mt-3 mb-6 font-mono text-xs text-white/30 space-y-0.5 leading-relaxed">
+                  <p>h3 resting: text-white/90</p>
+                  <p>h3 hover:  group-hover:text-white/95</p>
+                  <p>p resting: text-white/70</p>
+                  <p>p hover:   group-hover:text-white/85</p>
+                  <p>Both: transition-colors duration-200</p>
+                </div>
+
+                <div
+                  className="flex-1 flex items-center justify-center py-6 bg-gradient-to-br from-slate-800 to-zinc-900 rounded-xl border border-white/8 cursor-pointer"
+                  onMouseEnter={() => setTextRevealHovered(true)}
+                  onMouseLeave={() => setTextRevealHovered(false)}
+                >
+                  <div
+                    className="group p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 w-48 transition-all duration-300 ease-out"
+                    style={{
+                      background: textRevealHovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.10)",
+                      transform: textRevealHovered ? "translateY(-8px)" : "translateY(0)",
+                      boxShadow: textRevealHovered ? "0 16px_40px rgba(0,0,0,0.5)" : "none",
+                    }}
+                  >
+                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+                      <ShieldIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h4
+                      className="text-sm font-semibold mb-1 transition-colors duration-200"
+                      style={{ color: textRevealHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.90)" }}
+                    >
+                      Secure by Default
+                    </h4>
+                    <p
+                      className="text-xs leading-relaxed transition-colors duration-200"
+                      style={{ color: textRevealHovered ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.70)" }}
+                    >
+                      End-to-end encryption on every request.
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-white/30 text-center mt-3 leading-relaxed">
+                  {textRevealHovered
+                    ? "h3 is now at 95% opacity. p is at 85%. Subtle but perceptible on dark glass."
+                    : "Hover to see h3 + p brighten from 90%/70% to 95%/85%."}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ── Rule 4: Tactile Confirmation ── */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full flex flex-col">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+                    style={{ backgroundColor: "#ff6b6b" }}
+                  >
+                    Tactile Confirmation
+                  </span>
+                  <span className="text-xs text-white/30">All Buttons — aiRule 4</span>
+                </div>
+
+                <div className="mt-3 mb-6 font-mono text-xs text-white/30 space-y-0.5 leading-relaxed">
+                  <p>All buttons: active:scale-[0.98]</p>
+                  <p>Primary CTA: active:translate-y-0</p>
+                  <p>Primary CTA: active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]</p>
+                  <p>Ghost CTA: active:translate-y-0</p>
+                  <p>Duration: 200ms ease-out everywhere</p>
+                  <p>Reason: dark overlay kills haptic cues</p>
+                </div>
+
+                <div className="flex-1 flex items-center justify-center py-6 bg-gradient-to-br from-slate-800 to-zinc-900 rounded-xl border border-white/8">
+                  <div className="flex flex-col items-center gap-4">
+                    <button
+                      className="px-7 py-3.5 bg-white text-black font-semibold rounded-full
+                        shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+                        hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]
+                        active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                        focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+                        transition-all duration-200 ease-out"
+                      onMouseDown={() => setTactilePressed(true)}
+                      onMouseUp={() => setTactilePressed(false)}
+                      onMouseLeave={() => setTactilePressed(false)}
+                    >
+                      Primary — Press &amp; Hold
+                    </button>
+                    <button
+                      className="px-7 py-3.5 bg-transparent text-white font-semibold rounded-full border-2 border-white/60
+                        hover:bg-white/15 hover:-translate-y-1
+                        hover:shadow-[0_8px_28px_rgba(0,0,0,0.3)]
+                        active:scale-[0.98] active:translate-y-0
+                        focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black/50
+                        transition-all duration-200 ease-out"
+                      onMouseDown={() => setGhostTactilePressed(true)}
+                      onMouseUp={() => setGhostTactilePressed(false)}
+                      onMouseLeave={() => setGhostTactilePressed(false)}
+                    >
+                      Ghost — Press &amp; Hold
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-xs text-white/30 text-center mt-3 leading-relaxed">
+                  {(tactilePressed || ghostTactilePressed)
+                    ? "Compressed 2% + shadow collapsed. Physical press confirmed. Release to restore."
+                    : "Hold either button — active:scale-[0.98] simulates physical depression on dark overlay."}
+                </p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 7 — FEATURE CARDS (Floating Glass live demo)            */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#4ecdc4" }}>
+              Feature Cards
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Glassmorphism <span className="text-white/30">feature grid</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Feature cards in a fullscreen hero use the Floating Glass pattern — glass surface,
+              dramatic lift, icon micro-scale all driven by the parent{" "}
+              <code className="px-1 py-0.5 rounded bg-white/10 text-white/70 text-sm">group</code> class.
+            </p>
+          </RevealBlock>
+
+          {/* Simulated hero backdrop */}
+          <RevealBlock delay={0.1}>
+            <div className="relative rounded-2xl overflow-hidden border border-white/10">
+              {/* Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-zinc-900 to-black" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_70%_at_20%_30%,rgba(108,92,231,0.3),transparent)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+              <div className="relative z-10 p-8 md:p-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { icon: <ZapIcon className="w-6 h-6 text-white" />, title: "Blazing Fast", desc: "Sub-100ms response times globally.", color: "#ff6b6b" },
+                    { icon: <ShieldIcon className="w-6 h-6 text-white" />, title: "Secure by Default", desc: "E2E encryption on every request.", color: "#4ecdc4" },
+                    { icon: <GlobeIcon className="w-6 h-6 text-white" />, title: "Global CDN", desc: "200+ edge nodes worldwide.", color: "#ffe66d" },
+                    { icon: <LayersIcon className="w-6 h-6 text-white" />, title: "Auto-Scaling", desc: "Handles any traffic spike instantly.", color: "#6c5ce7" },
+                  ].map((card, i) => (
+                    <div
+                      key={card.title}
+                      className="group p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 cursor-pointer transition-all duration-300 ease-out"
+                      style={{
+                        transform: hoveredFeatureCard === i ? "translateY(-8px)" : "translateY(0)",
+                        boxShadow: hoveredFeatureCard === i ? "0 16px 40px rgba(0,0,0,0.5)" : "none",
+                        background: hoveredFeatureCard === i ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.10)",
+                        borderColor: hoveredFeatureCard === i ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.2)",
+                      }}
+                      onMouseEnter={() => setHoveredFeatureCard(i)}
+                      onMouseLeave={() => setHoveredFeatureCard(null)}
+                    >
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 ease-out"
+                        style={{
+                          backgroundColor: `${card.color}30`,
+                          transform: hoveredFeatureCard === i ? "scale(1.1)" : "scale(1)",
+                        }}
                       >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
+                        {card.icon}
+                      </div>
+                      <h3
+                        className="text-base font-semibold mb-1.5 transition-colors duration-200"
+                        style={{ color: hoveredFeatureCard === i ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.90)" }}
+                      >
+                        {card.title}
+                      </h3>
+                      <p
+                        className="text-sm leading-relaxed transition-colors duration-200"
+                        style={{ color: hoveredFeatureCard === i ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.70)" }}
+                      >
+                        {card.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 8 — COMPONENT CODE GALLERY                             */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#ff6b6b" }}>
+              Components
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Ready-to-use <span className="text-white/30">snippets</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              All five official components from the style definition. Copy the code and
+              drop it directly into your hero section.
+            </p>
+          </RevealBlock>
+
+          {/* Tab bar */}
+          <RevealBlock delay={0.1} className="mb-6">
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(componentSnippets) as ComponentKey[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveComponentTab(key)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all duration-200 border ${
+                    activeComponentTab === key
+                      ? "bg-white/15 border-white/30 text-white"
+                      : "bg-white/[0.04] border-white/10 text-white/45 hover:border-white/20 hover:text-white/65"
+                  }`}
+                >
+                  {componentSnippets[key].label}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Code block */}
+          <RevealBlock delay={0.15}>
+            <div className="rounded-2xl border border-white/10 overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-3 bg-white/[0.04] border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#ff6b6b]/60" />
+                  <div className="w-3 h-3 rounded-full bg-[#ffe66d]/60" />
+                  <div className="w-3 h-3 rounded-full bg-[#4ecdc4]/60" />
+                </div>
+                <span className="text-xs text-white/25 font-mono">{activeComponentTab}.tsx</span>
+                <button
+                  onClick={() => handleCopy(activeComponentTab)}
+                  className="text-xs text-white/35 hover:text-white/70 transition-colors duration-200 px-3 py-1 rounded-lg hover:bg-white/8"
+                >
+                  {copiedKey === activeComponentTab ? "Copied!" : "Copy code"}
+                </button>
+              </div>
+              {/* Code */}
+              <div className="overflow-auto max-h-96 bg-[#0d0d0d]">
+                <pre className="p-6 text-xs font-mono leading-relaxed text-white/55 whitespace-pre-wrap">
+                  <code>{componentSnippets[activeComponentTab].code}</code>
+                </pre>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 9 — DESIGN PHILOSOPHY (Do / Don't)                     */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#ffe66d" }}>
+              Philosophy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Do <span className="text-white/30">&amp; Don&apos;t</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Fullscreen Hero is a high-impact pattern — misuse destroys credibility instantly.
+              These rules are drawn directly from the style definition.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Do */}
+            <RevealBlock delay={0.1}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="w-9 h-9 rounded-full bg-[#4ecdc4]/15 flex items-center justify-center">
+                    <CheckIcon className="w-4 h-4 text-[#4ecdc4]" />
+                  </div>
+                  <h3 className="text-base font-bold text-white">Do</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "Use h-screen or min-h-screen — never fixed pixel heights",
+                    "object-cover on all background images — never object-contain",
+                    "Always add gradient or solid overlay — text on raw imagery is forbidden",
+                    "Center content with relative z-10 and max-width constraint",
+                    "Add scroll indicator — users need visual affordance to scroll",
+                    "Mute video autoplay — sound on autoplay is a UX failure",
+                    "Provide image fallback poster for video backgrounds",
+                    "Primary CTA: hover:-translate-y-1 + shadow burst (Gravity Focus)",
+                    "Feature cards: group class + hover:-translate-y-2 (Floating Glass)",
+                    "Icon container: group-hover:scale-110 transition-transform",
+                    "All buttons: active:scale-[0.98] — tactile confirmation required",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/55 leading-relaxed">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#4ecdc4] shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="w-9 h-9 rounded-full bg-[#ff6b6b]/15 flex items-center justify-center">
+                    <XIcon className="w-4 h-4 text-[#ff6b6b]" />
+                  </div>
+                  <h3 className="text-base font-bold text-white">Don&apos;t</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "No text directly on busy backgrounds without overlay",
+                    "No low-quality or pixel-stretched images",
+                    "No ignoring mobile — always test at 375px viewport width",
+                    "No content filling the entire viewport with no breathing room",
+                    "No autoplaying video with sound — ever, without exception",
+                    "No omitting active:scale-[0.98] — dark overlay removes haptic cues",
+                    "No cards without group class — icon micro-animation breaks",
+                    "No z-index lower than z-10 for the content layer",
+                    "No fixed pixel heights for the hero container",
+                    "No omitting the scroll indicator — it is a primary UX affordance",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/55 leading-relaxed">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#ff6b6b] shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Three principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                icon: <LayersIcon className="w-7 h-7" />,
+                title: "First Impression",
+                tagline: "You have under 2 seconds",
+                desc: "Fullscreen heroes get one job: grab attention before the visitor decides to leave. Every pixel fights for that outcome. No waste. No decoration for its own sake.",
+                color: "#4ecdc4",
+              },
+              {
+                icon: <ShieldIcon className="w-7 h-7" />,
+                title: "Readable Always",
+                tagline: "Contrast is non-negotiable",
+                desc: "Any image that fails WCAG AA without an overlay is the wrong image choice. The overlay is not cosmetic — it is load-bearing infrastructure for usability.",
+                color: "#ffe66d",
+              },
+              {
+                icon: <ZapIcon className="w-7 h-7" />,
+                title: "Cinematic Motion",
+                tagline: "Subtle is the operative word",
+                desc: "Ken Burns slow zoom, smooth entry animations, gentle scroll indicators. Anything that vibrates or flashes without purpose is strictly forbidden in this layout.",
+                color: "#6c5ce7",
+              },
+            ].map((p, i) => (
+              <RevealBlock key={p.title} delay={i * 0.08}>
+                <div className="group bg-white/[0.04] border border-white/10 rounded-2xl p-7 h-full hover:-translate-y-1 hover:border-white/20 transition-all duration-300 ease-out cursor-default">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border transition-transform duration-300 ease-out group-hover:scale-110"
+                    style={{ backgroundColor: `${p.color}20`, borderColor: `${p.color}40`, color: p.color }}
+                  >
+                    {p.icon}
+                  </div>
+                  <h4 className="text-white font-semibold text-base mb-1">{p.title}</h4>
+                  <p className="text-xs font-medium mb-3" style={{ color: p.color }}>
+                    {p.tagline}
+                  </p>
+                  <p className="text-white/45 text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* SECTION 10 — RESPONSIVE + COMPATIBLE STYLES                    */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style={{ color: "#6c5ce7" }}>
+              Scale &amp; Pairings
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Responsive rules <span className="text-white/30">&amp; compatible styles</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-white/45 text-lg max-w-lg leading-relaxed">
+              Fullscreen Hero is a layout — it pairs with a visual style for complete identity.
+              It also must adapt gracefully across viewport sizes.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Responsive breakpoints */}
+            <RevealBlock delay={0.1}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full">
+                <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/35 mb-6">Responsive breakpoints</p>
+                <div className="space-y-5">
+                  {[
+                    {
+                      bp: "Mobile (< 768px)",
+                      color: "#ff6b6b",
+                      rules: ["text-5xl headline — down from 7xl+", "Stacked CTA buttons: flex-col", "Hide or pause video — show poster", "Simpler overlay: solid preferred", "Hamburger menu in nav"],
+                    },
+                    {
+                      bp: "Tablet (768px – 1280px)",
+                      color: "#4ecdc4",
+                      rules: ["text-6xl headline", "Side-by-side CTAs: sm:flex-row", "Video shown if bandwidth allows", "Full navigation visible", "Feature cards 2-column"],
+                    },
+                    {
+                      bp: "Desktop (> 1280px)",
+                      color: "#6c5ce7",
+                      rules: ["text-7xl to 8xl headline", "All animations fully active", "Ken Burns on background", "Full gradient overlay complexity", "Feature cards 3–4 column"],
+                    },
+                  ].map((bp, i) => (
+                    <div key={bp.bp} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: bp.color }} />
                       <div>
-                        <p className="text-white font-semibold text-sm mb-1 group-hover:text-white/90 transition-colors duration-200">
-                          {item.rule}
-                        </p>
-                        <p className="text-white/35 text-xs leading-relaxed">{item.note}</p>
+                        <p className="text-xs font-semibold text-white/75 mb-1.5">{bp.bp}</p>
+                        <ul className="space-y-1">
+                          {bp.rules.map((r) => (
+                            <li key={r} className="text-xs text-white/40 leading-relaxed">{r}</li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   ))}
@@ -1223,232 +1542,147 @@ export default function HeroFullscreenShowcase() {
               </div>
             </RevealBlock>
 
-            {/* Don't list */}
-            <RevealBlock delay={0.2}>
-              <div className="bg-white/[0.025] border border-white/8 rounded-sm p-8 h-full">
-                <div className="flex items-center gap-3 mb-8">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${ACCENTS[0]}20` }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ACCENTS[0]} strokeWidth="2.5" aria-hidden="true">
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-bold" style={{ color: ACCENTS[0] }}>
-                    Don&apos;t
-                  </h3>
-                </div>
-                <div className="space-y-6">
-                  {dontList.map((item, i) => (
-                    <div key={item.rule} className="group flex gap-4">
-                      <span
-                        className="text-[10px] tracking-widest font-mono mt-0.5 shrink-0"
-                        style={{ color: ACCENTS[0], opacity: 0.5 }}
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div>
-                        <p className="text-white font-semibold text-sm mb-1 group-hover:text-white/90 transition-colors duration-200">
-                          {item.rule}
+            {/* Compatible styles */}
+            <RevealBlock delay={0.15}>
+              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 h-full">
+                <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/35 mb-6">Compatible visual styles</p>
+                <div className="space-y-3">
+                  {[
+                    { name: "Glassmorphism", slug: "glassmorphism", color: "#4ecdc4", desc: "Frosted glass cards float directly over the hero image" },
+                    { name: "Modern Gradient", slug: "modern-gradient", color: "#6c5ce7", desc: "Gradient fills become the background itself — no photo needed" },
+                    { name: "Cyberpunk Neon", slug: "cyberpunk-neon", color: "#ff6b6b", desc: "Neon glow typography on the deep dark canvas" },
+                    { name: "Minimalist Flat", slug: "minimalist-flat", color: "#ffe66d", desc: "Clean bold type over subtle gradient backgrounds" },
+                    { name: "Dark Mode", slug: "dark-mode", color: "#a29bfe", desc: "Natural fit — dark overlays are already dark mode" },
+                  ].map((style) => (
+                    <Link
+                      key={style.slug}
+                      href={`/styles/${style.slug}`}
+                      className="group flex items-center gap-4 p-3 rounded-xl border border-white/8 hover:border-white/20 hover:bg-white/[0.04] transition-all duration-200"
+                    >
+                      <div
+                        className="w-8 h-8 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-110"
+                        style={{ backgroundColor: `${style.color}25`, border: `1px solid ${style.color}40` }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white/75 group-hover:text-white/90 transition-colors duration-200">
+                          {style.name}
                         </p>
-                        <p className="text-white/35 text-xs leading-relaxed">{item.note}</p>
+                        <p className="text-xs text-white/30 leading-relaxed truncate">{style.desc}</p>
                       </div>
-                    </div>
+                      <ArrowRightIcon className="w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors duration-200 shrink-0" />
+                    </Link>
                   ))}
                 </div>
               </div>
             </RevealBlock>
           </div>
+        </div>
+      </section>
 
-          {/* Interaction physics grid */}
-          <RevealBlock delay={0.3} className="mt-16">
-            <p className="text-xs tracking-[0.3em] uppercase text-white/25 text-center mb-10">
-              Interaction physics — non-negotiable rules
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-sm overflow-hidden">
-              {[
-                {
-                  rule: "Gravity Float",
-                  code: "hover:-translate-y-1\nhover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]\ntransition-all duration-200 ease-out",
-                  note: "Primary CTA lifts upward with a shadow burst.",
-                  accent: ACCENTS[0],
-                },
-                {
-                  rule: "Card Float",
-                  code: "hover:-translate-y-2\ntransition-transform duration-300 ease-out",
-                  note: "Feature cards rise 8px — more dramatic than button float.",
-                  accent: ACCENTS[1],
-                },
-                {
-                  rule: "Icon Micro-Scale",
-                  code: "group-hover:scale-110\ntransition-transform duration-200",
-                  note: "Icon pulses when parent hovered — requires group on container.",
-                  accent: ACCENTS[2],
-                },
-                {
-                  rule: "Tactile Press",
-                  code: "active:scale-[0.98]\nactive:translate-y-0\nactive:shadow-[0_2px_8px_...]",
-                  note: "All buttons compress on click. Mandatory on dark overlays.",
-                  accent: ACCENTS[3],
-                },
-                {
-                  rule: "Focus Ring",
-                  code: "focus:ring-2 focus:ring-white/80\nfocus:ring-offset-2\nfocus:ring-offset-black",
-                  note: "White ring visible on all dark backgrounds — accessibility.",
-                  accent: ACCENTS[0],
-                },
-                {
-                  rule: "Scroll Snap",
-                  code: "scroll-snap-type: y mandatory\nscroll-snap-align: start",
-                  note: "Locks scroll to section boundaries for cinematic pacing.",
-                  accent: ACCENTS[1],
-                },
-              ].map((item, i) => (
-                <div
-                  key={item.rule}
-                  className="group bg-[#0a0a0a] p-7 hover:-translate-y-1 transition-transform duration-300 ease-out cursor-default"
-                >
-                  <div
-                    className="text-xs tracking-[0.25em] uppercase font-bold mb-4"
-                    style={{ color: item.accent }}
-                  >
-                    {item.rule}
-                  </div>
-                  <pre className="text-xs font-mono text-white/30 mb-4 whitespace-pre-wrap leading-relaxed">
-                    {item.code}
-                  </pre>
-                  <p className="text-white/50 text-xs leading-relaxed">{item.note}</p>
+      {/* ================================================================ */}
+      {/* FOOTER                                                          */}
+      {/* ================================================================ */}
+      <footer className="relative border-t border-white/10 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
+        <div className="max-w-6xl mx-auto px-5 md:px-10 pt-16 pb-12">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
+            {/* Brand */}
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center">
+                  <LayersIcon className="w-4 h-4 text-white/70" />
                 </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── SUBSCRIBE HERO ─── */}
-      <section
-        className="relative min-h-[70vh] flex items-center justify-center overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #0f0f1a 0%, #0a0a0a 100%)" }}
-      >
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: "radial-gradient(circle at 50% 50%, #6c5ce7 0%, transparent 60%)" }}
-        />
-        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center">
-          <RevealBlock>
-            <span className="text-xs tracking-[0.4em] uppercase font-semibold mb-4 block" style={{ color: ACCENTS[3] }}>
-              Stay Ahead
-            </span>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-              Get Early Access.
-            </h2>
-            <p className="text-white/50 text-lg mb-10 max-w-md mx-auto">
-              Be the first to know when new styles drop. No spam — just signal.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock delay={0.15}>
-            <form
-              className="flex flex-col sm:flex-row gap-3 w-full max-w-md mx-auto"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="flex-1 px-5 py-4 bg-white/8 border border-white/20 rounded-sm text-white placeholder:text-white/30 text-sm transition-colors duration-200 hover:border-white/35 focus:border-white/70 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black"
-              />
-              <button
-                type="submit"
-                className="px-7 py-4 font-bold text-sm text-white whitespace-nowrap rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] active:scale-[0.98] active:translate-y-0 transition-all duration-200 ease-out focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
-                style={{ backgroundColor: ACCENTS[3] }}
-              >
-                Subscribe
-              </button>
-            </form>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ─── 7. FOOTER ─── */}
-      <footer className="bg-[#0a0a0a] border-t border-white/8 py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock>
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 mb-12 pb-12 border-b border-white/8">
-              {/* Brand */}
-              <div>
-                <p className="text-white font-bold tracking-[0.25em] uppercase text-lg mb-2">
-                  HERO<span style={{ color: ACCENTS[0] }}>.</span>FS
-                </p>
-                <p className="text-white/25 text-xs tracking-widest">
-                  StyleKit &mdash; Hero Fullscreen Layout Showcase
-                </p>
+                <span className="text-xl font-bold text-white tracking-tight">
+                  Fullscreen<span className="text-white/25">Hero</span>
+                </span>
               </div>
-
-              {/* Accent dots */}
-              <div className="flex items-center gap-3">
-                {ACCENTS.map((color) => (
+              <p className="text-sm text-white/30 leading-relaxed">
+                Full-viewport imagery, precise overlay control, and cinematic hierarchy.
+                The layout built for dominating the fold.
+              </p>
+              {/* Accent palette dots */}
+              <div className="flex gap-2">
+                {["#ffffff", ...ACCENT_COLORS].map((c) => (
                   <div
-                    key={color}
-                    className="w-3 h-3 rounded-full hover:-translate-y-2 transition-transform duration-300 ease-out"
-                    style={{ backgroundColor: color }}
+                    key={c}
+                    className="w-4 h-4 rounded-full transition-transform duration-200 hover:scale-125 cursor-default"
+                    style={{
+                      backgroundColor: c,
+                      border: c === "#ffffff" ? "1px solid rgba(255,255,255,0.25)" : "none",
+                    }}
                   />
                 ))}
               </div>
+            </div>
 
-              {/* Links */}
-              <div className="flex items-center gap-6">
-                <Link
-                  href="/styles/hero-fullscreen"
-                  className="text-white/35 hover:text-white text-xs tracking-[0.2em] uppercase transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none rounded"
-                >
-                  Docs
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/20">Style</span>
+                <Link href="/styles/hero-fullscreen" className="text-white/35 hover:text-white/75 transition-colors duration-200">
+                  Documentation
                 </Link>
-                <Link
-                  href="/styles"
-                  className="text-white/35 hover:text-white text-xs tracking-[0.2em] uppercase transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black focus:outline-none rounded"
-                >
-                  All Styles &rarr;
+                <Link href="/styles/hero-fullscreen/showcase" className="text-white/35 hover:text-white/75 transition-colors duration-200">
+                  Showcase
+                </Link>
+                <Link href="/styles/hero-fullscreen/cover" className="text-white/35 hover:text-white/75 transition-colors duration-200">
+                  Cover
                 </Link>
               </div>
-            </div>
-
-            {/* Sections index */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { label: "Nav Behavior",        note: "Transparent to solid on scroll, progress bar" },
-                { label: "Hero Variants",        note: "Dark, Light, Gradient, Split — tab switcher" },
-                { label: "Type Hierarchy",       note: "6 tiers from Display to Eyebrow" },
-                { label: "CTA Variants",         note: "Primary, Outline, Ghost, Icon, Pill, Large" },
-                { label: "BG Treatments",        note: "Solid, Gradient, Image Overlay" },
-                { label: "Event Hero",           note: "Countdown timer + speaker strip" },
-                { label: "Design Rules",         note: "Do / Don't + Interaction Physics" },
-                { label: "Subscribe Hero",       note: "Inline email capture on dark canvas" },
-              ].map((sec) => (
-                <div key={sec.label} className="flex flex-col gap-1">
-                  <p className="text-white/60 text-xs font-semibold tracking-wide">{sec.label}</p>
-                  <p className="text-white/20 text-[10px] leading-relaxed">{sec.note}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-white/15 text-[10px] tracking-[0.25em] uppercase">
-                StyleKit &copy; 2026 &mdash; Fullscreen Hero Layout
-              </p>
-              <div className="flex items-center gap-2">
-                {ACCENTS.map((color, i) => (
-                  <span
-                    key={color}
-                    className="text-[10px] font-mono tracking-widest"
-                    style={{ color, opacity: 0.5 }}
-                  >
-                    {ACCENT_NAMES[i]}
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/20">StyleKit</span>
+                <Link href="/" className="text-white/35 hover:text-white/75 transition-colors duration-200">
+                  Home
+                </Link>
+                <Link href="/styles" className="text-white/35 hover:text-white/75 transition-colors duration-200">
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/20">Accents</span>
+                {[
+                  { name: "White (primary)", hex: "#ffffff" },
+                  { name: "Coral Red", hex: "#ff6b6b" },
+                  { name: "Turquoise", hex: "#4ecdc4" },
+                  { name: "Canary", hex: "#ffe66d" },
+                  { name: "Deep Violet", hex: "#6c5ce7" },
+                ].map((s) => (
+                  <span key={s.name} className="flex items-center gap-2 text-white/25 text-xs">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{
+                        backgroundColor: s.hex,
+                        border: s.hex === "#ffffff" ? "1px solid rgba(255,255,255,0.25)" : "none",
+                      }}
+                    />
+                    {s.name}
                   </span>
                 ))}
               </div>
             </div>
-          </RevealBlock>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-white/8 to-transparent mb-8" />
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-white/20 tracking-wide">
+              Fullscreen Hero &mdash; part of the StyleKit design system
+            </p>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/15 text-white/45 text-sm font-medium
+                hover:bg-white/8 hover:text-white hover:border-white/25
+                hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,255,255,0.05)]
+                active:scale-[0.97] active:translate-y-0
+                transition-all duration-200 ease-out"
+            >
+              &#8592; Back to StyleKit
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

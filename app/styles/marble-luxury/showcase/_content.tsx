@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  InView hook + RevealBlock primitive                                */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -20,11 +21,12 @@ function useInView(options = {}) {
           obs.disconnect();
         }
       },
-      { threshold: 0.15, ...options },
+      { threshold: 0.15, ...options }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -45,7 +47,7 @@ function RevealBlock({
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transition: `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
       {children}
@@ -54,200 +56,18 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Marble vein SVG pattern (inline)                                   */
-/* ------------------------------------------------------------------ */
-
-function MarbleVeinPattern({ opacity = 0.06 }: { opacity?: number }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 w-full h-full"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        <filter id="marble-blur">
-          <feTurbulence type="fractalNoise" baseFrequency="0.018 0.04" numOctaves="5" seed="3" result="noise" />
-          <feColorMatrix type="saturate" values="0" in="noise" result="grey" />
-          <feComposite in="grey" in2="SourceGraphic" operator="in" />
-        </filter>
-        <linearGradient id="vein1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#8a7968" stopOpacity="0" />
-          <stop offset="40%" stopColor="#8a7968" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#8a7968" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="vein2" x1="10%" y1="0%" x2="90%" y2="100%">
-          <stop offset="0%" stopColor="#c9a96e" stopOpacity="0" />
-          <stop offset="50%" stopColor="#c9a96e" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#c9a96e" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="vein3" x1="80%" y1="0%" x2="20%" y2="100%">
-          <stop offset="0%" stopColor="#8a7968" stopOpacity="0" />
-          <stop offset="60%" stopColor="#8a7968" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#8a7968" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {/* Main diagonal veins */}
-      <path
-        d="M-100 200 Q 150 80 300 250 Q 480 420 700 180 Q 900 -20 1100 150 Q 1300 320 1500 100"
-        fill="none"
-        stroke="url(#vein1)"
-        strokeWidth="1.5"
-        opacity={opacity * 12}
-      />
-      <path
-        d="M-50 350 Q 200 200 420 380 Q 600 540 820 320 Q 980 140 1200 300 Q 1380 440 1600 200"
-        fill="none"
-        stroke="url(#vein1)"
-        strokeWidth="0.8"
-        opacity={opacity * 8}
-      />
-      <path
-        d="M100 -50 Q 200 200 350 150 Q 500 100 600 350 Q 700 580 900 420 Q 1060 280 1200 500"
-        fill="none"
-        stroke="url(#vein2)"
-        strokeWidth="1"
-        opacity={opacity * 6}
-      />
-      <path
-        d="M0 500 Q 250 350 500 480 Q 700 600 900 400 Q 1100 220 1400 400"
-        fill="none"
-        stroke="url(#vein3)"
-        strokeWidth="0.6"
-        opacity={opacity * 7}
-      />
-      <path
-        d="M200 0 Q 280 300 450 200 Q 600 100 750 400 Q 880 650 1100 450 Q 1300 280 1500 500"
-        fill="none"
-        stroke="url(#vein1)"
-        strokeWidth="0.4"
-        opacity={opacity * 5}
-      />
-      {/* Hairline accent veins */}
-      <path
-        d="M-200 100 Q 100 280 350 100 Q 560 -60 800 200 Q 1000 420 1300 160 Q 1500 0 1700 200"
-        fill="none"
-        stroke="#8a7968"
-        strokeWidth="0.3"
-        opacity={opacity * 4}
-      />
-      <path
-        d="M300 600 Q 500 400 750 550 Q 950 680 1200 500 Q 1400 340 1600 600"
-        fill="none"
-        stroke="#c9a96e"
-        strokeWidth="0.4"
-        opacity={opacity * 3}
-      />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Thin gold divider                                                  */
-/* ------------------------------------------------------------------ */
-
-function GoldDivider({ className = "" }: { className?: string }) {
-  return <div className={`h-[1px] bg-[#c9a96e] ${className}`} />;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Static data                                                        */
+/*  Color palette data                                                 */
 /* ------------------------------------------------------------------ */
 
 const palette = [
-  { name: "Onyx Black", hex: "#1a1a1a", label: "Primary text, nav", light: false },
-  { name: "Marble White", hex: "#f8f6f3", label: "Main background", light: true },
-  { name: "Antique Gold", hex: "#c9a96e", label: "Accents, borders", light: false },
-  { name: "Warm Grey", hex: "#8a7968", label: "Secondary text", light: false },
-  { name: "Light Marble", hex: "#e8e0d6", label: "Surfaces, cards", light: true },
+  { name: "Onyx", hex: "#1a1a1a", label: "Primary Text" },
+  { name: "Marble White", hex: "#f8f6f3", label: "Background" },
+  { name: "Antique Gold", hex: "#c9a96e", label: "Accent" },
+  { name: "Warm Taupe", hex: "#8a7968", label: "Secondary Text" },
+  { name: "Light Marble", hex: "#e8e0d6", label: "Surface" },
 ];
 
-const typographyRows = [
-  {
-    label: "Display",
-    sample: "Permanence",
-    className: "font-serif text-5xl font-light tracking-tight text-[#1a1a1a]",
-    spec: "font-serif / 5xl / light / tracking-tight",
-  },
-  {
-    label: "Heading",
-    sample: "Crafted in Silence",
-    className: "font-serif text-3xl font-normal tracking-wide text-[#1a1a1a]",
-    spec: "font-serif / 3xl / normal / tracking-wide",
-  },
-  {
-    label: "Subheading",
-    sample: "The Weight of Stone",
-    className: "font-serif text-xl font-normal tracking-widest text-[#8a7968]",
-    spec: "font-serif / xl / normal / tracking-widest",
-  },
-  {
-    label: "Body",
-    sample: "Marble endures where lesser materials dissolve into memory.",
-    className: "font-serif text-base font-light leading-relaxed text-[#1a1a1a]",
-    spec: "font-serif / base / light / leading-relaxed",
-  },
-  {
-    label: "Caption",
-    sample: "Rome, 80 AD — The Colosseum",
-    className: "font-serif text-sm font-light tracking-widest uppercase text-[#8a7968]",
-    spec: "font-serif / sm / light / tracking-widest / uppercase",
-  },
-];
-
-const principles = [
-  {
-    type: "do" as const,
-    rules: [
-      "Main background: bg-[#f8f6f3] — warm marble white, never pure white",
-      "Serif typeface, font-light or font-normal only — restraint is wealth",
-      "Gold dividers: h-[1px] bg-[#c9a96e] — drawn, not sprayed",
-      "Generous negative space: py-24 or py-32 for all major sections",
-      "Hover transitions: color shift to gold only — no scale, no bounce",
-      "Borders: border-[#c9a96e] at 1px — a suggestion, not a wall",
-      "Card surfaces: bg-[#e8e0d6] or bg-[#f8f6f3] with minimal shadow",
-      "Text color: text-[#1a1a1a] deep black — absolute legibility",
-      "Inline SVG marble vein patterns overlaid at low opacity",
-    ],
-  },
-  {
-    type: "dont" as const,
-    rules: [
-      "No font-bold or font-semibold — weight is noise in this language",
-      "No saturated colors — green, blue, red are vulgar intrusions",
-      "No rounded-xl or pill shapes — prefer rounded-none or rounded-sm",
-      "No playful keyframe animations — motion must be minimal and slow",
-      "No drop shadows with large blur — a surface should know its place",
-      "No gradient backgrounds on primary surfaces — marble is solid",
-      "No tight letter-spacing — luxury breathes at tracking-wide or wider",
-      "No multiple font families — one serif, one silence",
-    ],
-  },
-];
-
-const products = [
-  {
-    name: "Carrara Collection",
-    origin: "Tuscany, Italy",
-    desc: "White-grey marble quarried since antiquity. Michelangelo's preferred medium.",
-    year: "Est. 1497",
-  },
-  {
-    name: "Nero Marquina",
-    origin: "Markina, Spain",
-    desc: "Absolute black ground with brilliant white veining. Uncompromising contrast.",
-    year: "Est. 1832",
-  },
-  {
-    name: "Calacatta Gold",
-    origin: "Apuan Alps, Italy",
-    desc: "Bold gold veining on luminous white. The rarest of the Italian marbles.",
-    year: "Est. 1610",
-  },
-];
-
-const componentTabs = ["Button", "Card", "Input"] as const;
-type ComponentTab = (typeof componentTabs)[number];
+type ComponentTab = "buttons" | "cards" | "inputs" | "typography";
 
 /* ------------------------------------------------------------------ */
 /*  Main export                                                        */
@@ -255,188 +75,548 @@ type ComponentTab = (typeof componentTabs)[number];
 
 export default function ShowcaseContent() {
   const [heroVisible, setHeroVisible] = useState(false);
-  const [activeComponentTab, setActiveComponentTab] = useState<ComponentTab>("Button");
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+
+  // aiRule 1 — Monumental Weight: track hover states for shadow layer demo
+  const [monumentalHovered, setMonumentalHovered] = useState<number | null>(null);
+
+  // aiRule 2 — Foil Stamping Shift: toggle gold shimmer
+  const [foilActive, setFoilActive] = useState(false);
+  const [foilHoveredBtn, setFoilHoveredBtn] = useState<number | null>(null);
+
+  // aiRule 3 — Cold & Rigid: track press state
+  const [rigidPressed, setRigidPressed] = useState<number | null>(null);
+
+  // aiRule 4 — Polish Gleam: card brightness demo
+  const [gleamHovered, setGleamHovered] = useState<number | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroVisible(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f8f6f3] text-[#1a1a1a] relative overflow-x-hidden">
-      {/* ============================================================= */}
-      {/* 1. Fixed Navigation                                            */}
-      {/* ============================================================= */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#f8f6f3]/95 backdrop-blur-sm border-b border-[#c9a96e]">
-        <div className="max-w-7xl mx-auto px-8 md:px-16">
-          <div className="flex items-center justify-between h-16">
-            {/* Brand */}
-            <div className="flex items-center gap-4">
-              <div className="h-5 w-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-sm font-normal tracking-[0.25em] uppercase text-[#1a1a1a]">
-                Marble Luxury
-              </span>
-            </div>
+    <div
+      className="min-h-screen font-serif overflow-x-hidden"
+      style={{ backgroundColor: "#f8f6f3", color: "#1a1a1a" }}
+    >
+      <style>{`
+        @keyframes ml-gold-flow {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        .ml-gold-shimmer {
+          background: linear-gradient(90deg, #c9a96e 0%, #f1dbc1 40%, #c9a96e 60%, #8a7968 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: ml-gold-flow 3s linear infinite;
+        }
+        .ml-gold-shimmer-hover {
+          background: linear-gradient(90deg, #8a7968 0%, #c9a96e 30%, #f1dbc1 50%, #c9a96e 70%, #8a7968 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          transition: background-position 0.7s ease-out;
+        }
+        .ml-gold-shimmer-hover:hover {
+          animation: ml-gold-flow 1.5s linear infinite;
+        }
+        .ml-underline-center {
+          position: relative;
+          display: inline-block;
+        }
+        .ml-underline-center::after {
+          content: "";
+          position: absolute;
+          bottom: -2px;
+          left: 50%;
+          width: 0;
+          height: 1px;
+          background: #c9a96e;
+          transition: all 0.5s ease-in-out;
+          transform: translateX(-50%);
+        }
+        .ml-underline-center:hover::after {
+          width: 100%;
+          left: 0;
+          transform: translateX(0);
+        }
+        .ml-marble-texture {
+          background-color: #f8f6f3;
+          background-image:
+            radial-gradient(ellipse at 20% 50%, rgba(138,121,104,0.035) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(201,169,110,0.025) 0%, transparent 40%),
+            radial-gradient(ellipse at 50% 80%, rgba(138,121,104,0.03) 0%, transparent 45%),
+            radial-gradient(ellipse at 65% 35%, rgba(232,224,214,0.04) 0%, transparent 30%);
+        }
+        .ml-gold-line {
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, #c9a96e 20%, #c9a96e 80%, transparent 100%);
+          opacity: 0.3;
+        }
+        .ml-gold-line-full {
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, #c9a96e 30%, #f1dbc1 50%, #c9a96e 70%, transparent 100%);
+          opacity: 0.4;
+        }
+      `}</style>
 
-            {/* Nav links */}
-            <nav className="hidden md:flex items-center gap-10">
-              {["Collection", "Philosophy", "Typography", "Palette"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="font-serif text-xs tracking-[0.2em] uppercase text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500"
-                >
-                  {item}
-                </a>
-              ))}
-            </nav>
-
-            {/* Back link */}
-            <Link
-              href="/"
-              className="font-serif text-xs tracking-[0.2em] uppercase text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500 flex items-center gap-2"
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm"
+        style={{
+          backgroundColor: "rgba(248,246,243,0.92)",
+          borderBottom: "1px solid rgba(201,169,110,0.18)",
+          boxShadow: "0 2px 20px rgba(0,0,0,0.04)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-8 md:px-16 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div
+              style={{
+                width: "1px",
+                height: "28px",
+                background: "linear-gradient(180deg, transparent, #c9a96e, transparent)",
+              }}
+            />
+            <span
+              className="text-sm tracking-[0.3em] uppercase"
+              style={{ color: "#1a1a1a" }}
             >
-              <span className="text-[#c9a96e]">&#8592;</span>
-              StyleKit
-            </Link>
+              Marble<span style={{ color: "#c9a96e" }}>&nbsp;Luxury</span>
+            </span>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-8">
+            {["Palette", "Components", "Philosophy", "Rules"].map((item) => (
+              <span
+                key={item}
+                className="ml-underline-center text-xs tracking-[0.2em] uppercase cursor-pointer transition-colors duration-500"
+                style={{ color: "#8a7968" }}
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="text-xs tracking-[0.2em] uppercase transition-all duration-500"
+            style={{ color: "#8a7968" }}
+          >
+            <span className="ml-underline-center">
+              &larr;&nbsp;StyleKit
+            </span>
+          </Link>
         </div>
       </header>
 
-      {/* ============================================================= */}
-      {/* 2. Hero Section                                                */}
-      {/* ============================================================= */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        {/* Marble vein background */}
-        <div className="absolute inset-0 bg-[#f8f6f3]">
-          <MarbleVeinPattern opacity={0.05} />
-        </div>
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section
+        className="relative min-h-screen flex items-center justify-center overflow-hidden ml-marble-texture"
+        style={{ paddingTop: "64px" }}
+      >
+        {/* Marble texture radial overlays */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse at 15% 40%, rgba(138,121,104,0.04) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(201,169,110,0.03) 0%, transparent 45%), radial-gradient(ellipse at 55% 85%, rgba(138,121,104,0.04) 0%, transparent 50%)",
+          }}
+        />
 
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-16 py-32 w-full">
-          <div className="max-w-4xl">
-            {/* Overline */}
-            <div
-              className="flex items-center gap-6 mb-16"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.1s",
-              }}
-            >
-              <div className="w-12 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">
-                大理石奢华 — Marble Luxury
+        {/* Inset gold frame */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            inset: "40px",
+            border: "1px solid rgba(201,169,110,0.12)",
+          }}
+        />
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            inset: "48px",
+            border: "1px solid rgba(201,169,110,0.06)",
+          }}
+        />
+
+        {/* Gold corner marks */}
+        {[
+          { top: "40px", left: "40px", bt: true, bl: true, br: false, bb: false },
+          { top: "40px", right: "40px", bt: true, bl: false, br: true, bb: false },
+          { bottom: "40px", left: "40px", bt: false, bl: true, br: false, bb: true },
+          { bottom: "40px", right: "40px", bt: false, bl: false, br: true, bb: true },
+        ].map((pos, i) => (
+          <div
+            key={i}
+            className="absolute pointer-events-none"
+            style={{
+              top: pos.top,
+              left: pos.left,
+              right: pos.right,
+              bottom: pos.bottom,
+              width: "20px",
+              height: "20px",
+              borderTop: pos.bt ? "1px solid rgba(201,169,110,0.4)" : "none",
+              borderBottom: pos.bb ? "1px solid rgba(201,169,110,0.4)" : "none",
+              borderLeft: pos.bl ? "1px solid rgba(201,169,110,0.4)" : "none",
+              borderRight: pos.br ? "1px solid rgba(201,169,110,0.4)" : "none",
+            }}
+          />
+        ))}
+
+        {/* Hero content */}
+        <div className="relative z-10 text-center px-8 md:px-16 max-w-4xl mx-auto">
+          {/* Eyebrow */}
+          <div
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0s",
+            }}
+          >
+            <div className="flex items-center justify-center gap-6 mb-8">
+              <div className="ml-gold-line" style={{ width: "48px" }} />
+              <span
+                className="text-xs tracking-[0.4em] uppercase"
+                style={{ color: "#c9a96e" }}
+              >
+                Established mmxxiv
               </span>
-            </div>
-
-            {/* Main title */}
-            <h1
-              className="font-serif text-6xl md:text-8xl lg:text-[9rem] font-light leading-none tracking-tight text-[#1a1a1a] mb-12"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? "translateY(0)" : "translateY(40px)",
-                transition: "opacity 1.1s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 1.1s cubic-bezier(0.16,1,0.3,1) 0.25s",
-              }}
-            >
-              Silence
-              <br />
-              <span className="text-[#8a7968]">in Stone.</span>
-            </h1>
-
-            {/* Gold rule */}
-            <div
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transition: "opacity 1.2s cubic-bezier(0.16,1,0.3,1) 0.5s",
-              }}
-            >
-              <GoldDivider className="w-full max-w-sm mb-12" />
-            </div>
-
-            {/* Subtitle */}
-            <p
-              className="font-serif text-lg font-light leading-relaxed text-[#8a7968] max-w-xl"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.65s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.65s",
-              }}
-            >
-              Ancient Rome's power material. Marble's grey veins on warm white, paired with antique gold.
-              Maximum luxury through minimum decoration.
-            </p>
-
-            {/* CTA */}
-            <div
-              className="mt-16 flex items-center gap-8"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? "translateY(0)" : "translateY(16px)",
-                transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.85s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.85s",
-              }}
-            >
-              <a
-                href="#collection"
-                className="group font-serif text-xs tracking-[0.3em] uppercase border border-[#c9a96e] text-[#1a1a1a] px-10 py-4 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-              >
-                View Collection
-              </a>
-              <a
-                href="#philosophy"
-                className="font-serif text-xs tracking-[0.3em] uppercase text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500"
-              >
-                Our Philosophy
-              </a>
+              <div className="ml-gold-line" style={{ width: "48px" }} />
             </div>
           </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
-          style={{
-            opacity: heroVisible ? 1 : 0,
-            transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 1.2s",
-          }}
-        >
-          <span className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968]">Scroll</span>
-          <div className="w-[1px] h-10 bg-gradient-to-b from-[#c9a96e] to-transparent" />
+          {/* Title */}
+          <h1
+            className="leading-tight mb-6"
+            style={{
+              fontSize: "clamp(3rem, 7vw, 6rem)",
+              fontWeight: 300,
+              letterSpacing: "0.06em",
+              color: "#1a1a1a",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(32px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.12s",
+            }}
+          >
+            Marble &amp;{" "}
+            <span className="ml-gold-shimmer">Gold</span>
+          </h1>
+
+          {/* Sub */}
+          <p
+            className="leading-relaxed mb-12 mx-auto"
+            style={{
+              maxWidth: "480px",
+              fontSize: "1.1rem",
+              color: "#8a7968",
+              letterSpacing: "0.04em",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.22s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.22s",
+            }}
+          >
+            Where timeless craftsmanship meets restrained luxury.
+            Every detail considered. Every surface refined.
+          </p>
+
+          {/* CTAs */}
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.32s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.32s",
+            }}
+          >
+            <button
+              className="group px-12 py-4 transition-all duration-700"
+              style={{
+                backgroundColor: "#1a1a1a",
+                color: "#f8f6f3",
+                border: "1px solid rgba(201,169,110,0.4)",
+                letterSpacing: "0.2em",
+                fontSize: "0.75rem",
+                boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(201,169,110,0.7)";
+                e.currentTarget.style.boxShadow = "0 18px 40px rgba(0,0,0,0.32)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(201,169,110,0.4)";
+                e.currentTarget.style.boxShadow = "0 10px 28px rgba(0,0,0,0.22)";
+              }}
+            >
+              <span className="ml-gold-shimmer-hover tracking-[0.2em] uppercase text-xs">
+                Explore Collection
+              </span>
+            </button>
+            <button
+              className="px-12 py-4 transition-all duration-700"
+              style={{
+                backgroundColor: "transparent",
+                color: "#1a1a1a",
+                border: "1px solid rgba(26,26,26,0.2)",
+                letterSpacing: "0.2em",
+                fontSize: "0.75rem",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(201,169,110,0.4)";
+                e.currentTarget.style.color = "#8a7968";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(26,26,26,0.2)";
+                e.currentTarget.style.color = "#1a1a1a";
+              }}
+            >
+              <span className="tracking-[0.2em] uppercase text-xs">View Catalogue</span>
+            </button>
+          </div>
+
+          {/* Stats row */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-px"
+            style={{
+              border: "1px solid rgba(201,169,110,0.12)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.42s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.42s",
+              backgroundColor: "rgba(201,169,110,0.08)",
+            }}
+          >
+            {[
+              { value: "1924", label: "Founded" },
+              { value: "86+", label: "Artisans" },
+              { value: "32", label: "Collections" },
+              { value: "4.97", label: "Rating" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="text-center py-8 px-4 transition-all duration-700"
+                style={{ backgroundColor: "#f8f6f3" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "#f0ece6";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "#f8f6f3";
+                }}
+              >
+                <div
+                  className="mb-1"
+                  style={{ fontSize: "1.8rem", fontWeight: 300, color: "#1a1a1a", letterSpacing: "0.06em" }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  style={{ fontSize: "0.65rem", color: "#c9a96e", letterSpacing: "0.3em", textTransform: "uppercase" }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ============================================================= */}
-      {/* 3. Component Demos                                             */}
-      {/* ============================================================= */}
-      <section id="collection" className="py-32 px-8 md:px-16">
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-28 md:py-36 px-8 md:px-16 ml-marble-texture">
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">Components</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              The Vocabulary of Restraint
+          <RevealBlock className="mb-3">
+            <span
+              className="block text-xs tracking-[0.4em] uppercase mb-5"
+              style={{ color: "#c9a96e" }}
+            >
+              Color System
+            </span>
+            <h2
+              className="leading-tight mb-4"
+              style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+            >
+              The Marble Palette
             </h2>
-            <GoldDivider className="w-24 mb-8" />
-            <p className="font-serif text-base font-light leading-relaxed text-[#8a7968] max-w-xl">
-              Every element speaks in the same measured tone. Gold accents, marble surfaces, and absolute silence between elements.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-16">
+            <div className="ml-gold-line-full" style={{ maxWidth: "320px" }} />
+          </RevealBlock>
+
+          <RevealBlock delay={0.1} className="mb-16">
+            <p
+              className="leading-relaxed"
+              style={{ maxWidth: "500px", color: "#8a7968", letterSpacing: "0.04em", lineHeight: "1.8" }}
+            >
+              Five tones drawn from Italian marble quarries — warm white stone,
+              deep onyx, antique gold leaf, weathered taupe, and sun-bleached
+              light marble. Restraint in every selection.
             </p>
           </RevealBlock>
 
-          {/* Tab switcher */}
-          <RevealBlock className="mb-16">
-            <div className="flex items-center border-b border-[#e8e0d6]">
-              {componentTabs.map((tab) => (
+          {/* Swatches */}
+          <RevealBlock delay={0.15}>
+            <div className="flex flex-wrap gap-8 md:gap-12 justify-start mb-16">
+              {palette.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="flex flex-col items-center gap-4 cursor-default"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  <div
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      backgroundColor: swatch.hex,
+                      border:
+                        swatch.hex === "#f8f6f3"
+                          ? "1px solid rgba(201,169,110,0.2)"
+                          : swatch.hex === "#e8e0d6"
+                          ? "1px solid rgba(201,169,110,0.15)"
+                          : "none",
+                      boxShadow:
+                        hoveredSwatch === i
+                          ? "0 20px 40px rgba(0,0,0,0.12)"
+                          : "0 4px 16px rgba(0,0,0,0.06)",
+                      transform:
+                        hoveredSwatch === i ? "translateY(-6px)" : "translateY(0)",
+                      transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease",
+                    }}
+                  />
+                  <div className="text-center">
+                    <div
+                      style={{ fontSize: "0.8rem", letterSpacing: "0.1em", color: "#1a1a1a", marginBottom: "4px" }}
+                    >
+                      {swatch.name}
+                    </div>
+                    <div
+                      style={{ fontSize: "0.65rem", fontFamily: "monospace", color: "#8a7968", marginBottom: "6px" }}
+                    >
+                      {swatch.hex}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.6rem",
+                        letterSpacing: "0.2em",
+                        color: "#c9a96e",
+                        textTransform: "uppercase",
+                        borderBottom: "1px solid rgba(201,169,110,0.25)",
+                        paddingBottom: "2px",
+                      }}
+                    >
+                      {swatch.label}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Gradient combos */}
+          <RevealBlock delay={0.2}>
+            <div
+              className="p-10 md:p-14"
+              style={{
+                backgroundColor: "#f8f6f3",
+                border: "1px solid rgba(201,169,110,0.14)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
+              }}
+            >
+              <p
+                className="text-xs tracking-[0.3em] uppercase mb-8"
+                style={{ color: "#c9a96e" }}
+              >
+                Gradient Expressions
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {[
+                  { label: "Stone to Gold", from: "#e8e0d6", to: "#c9a96e" },
+                  { label: "Onyx to Taupe", from: "#1a1a1a", to: "#8a7968" },
+                  { label: "Gold to Marble", from: "#c9a96e", to: "#f8f6f3" },
+                ].map((g) => (
+                  <div key={g.label} className="group cursor-default">
+                    <div
+                      className="h-14 mb-3 transition-all duration-700"
+                      style={{
+                        background: `linear-gradient(135deg, ${g.from}, ${g.to})`,
+                        border: "1px solid rgba(201,169,110,0.12)",
+                      }}
+                    />
+                    <div
+                      style={{ fontSize: "0.7rem", color: "#8a7968", letterSpacing: "0.15em", textTransform: "uppercase" }}
+                    >
+                      {g.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY                                             */}
+      {/* ================================================================ */}
+      <section
+        className="py-28 md:py-36 px-8 md:px-16"
+        style={{ backgroundColor: "#f0ece6" }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="block text-xs tracking-[0.4em] uppercase mb-5"
+              style={{ color: "#c9a96e" }}
+            >
+              Components
+            </span>
+            <h2
+              className="leading-tight mb-6"
+              style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+            >
+              Refined Building Blocks
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p
+              className="leading-relaxed"
+              style={{ maxWidth: "480px", color: "#8a7968", letterSpacing: "0.04em", lineHeight: "1.8" }}
+            >
+              Each component embodies the marble-luxury principle: generous
+              whitespace, fine gold borders, serif typography, and slow
+              unhurried transitions.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-0" style={{ borderBottom: "1px solid rgba(201,169,110,0.2)" }}>
+              {(["buttons", "cards", "inputs", "typography"] as ComponentTab[]).map((tab) => (
                 <button
                   key={tab}
-                  type="button"
-                  onClick={() => setActiveComponentTab(tab)}
-                  className={`font-serif text-xs tracking-[0.25em] uppercase px-8 py-4 border-b-[1px] transition-colors duration-500 ${
-                    activeComponentTab === tab
-                      ? "border-[#c9a96e] text-[#1a1a1a]"
-                      : "border-transparent text-[#8a7968] hover:text-[#c9a96e]"
-                  }`}
+                  onClick={() => setActiveTab(tab)}
+                  className="px-8 py-4 text-xs tracking-[0.2em] uppercase transition-all duration-500 capitalize"
+                  style={{
+                    color: activeTab === tab ? "#1a1a1a" : "#8a7968",
+                    borderBottom: activeTab === tab ? "1px solid #c9a96e" : "1px solid transparent",
+                    backgroundColor: "transparent",
+                    marginBottom: "-1px",
+                  }}
                 >
                   {tab}
                 </button>
@@ -444,488 +624,986 @@ export default function ShowcaseContent() {
             </div>
           </RevealBlock>
 
-          {/* Tab content */}
-          <RevealBlock>
-            {/* --- BUTTON tab --- */}
-            {activeComponentTab === "Button" && (
-              <div className="space-y-16">
-                {/* Primary button */}
-                <div>
-                  <p className="font-serif text-xs tracking-[0.3em] uppercase text-[#8a7968] mb-8">Primary Action</p>
-                  <div className="flex flex-wrap items-start gap-8">
-                    <button
-                      type="button"
-                      className="group font-serif text-xs tracking-[0.3em] uppercase border border-[#c9a96e] text-[#1a1a1a] px-12 py-4 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-                    >
-                      Reserve Now
-                    </button>
-                    <button
-                      type="button"
-                      className="group font-serif text-xs tracking-[0.3em] uppercase border border-[#1a1a1a] text-[#1a1a1a] px-12 py-4 hover:border-[#c9a96e] hover:text-[#c9a96e] transition-colors duration-500"
-                    >
-                      Inquire
-                    </button>
-                    <button
-                      type="button"
-                      className="group font-serif text-xs tracking-[0.3em] uppercase bg-[#1a1a1a] text-[#f8f6f3] px-12 py-4 hover:bg-[#c9a96e] transition-colors duration-500"
-                    >
-                      Acquire
-                    </button>
+          {/* Demo panel */}
+          <RevealBlock delay={0.15}>
+            <div
+              className="p-10 md:p-16"
+              style={{
+                backgroundColor: "#f8f6f3",
+                border: "1px solid rgba(201,169,110,0.14)",
+                boxShadow: "0 4px 32px rgba(0,0,0,0.05)",
+              }}
+            >
+
+              {/* ---- BUTTONS ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-14">
+                  <div>
+                    <p className="text-xs tracking-[0.3em] uppercase mb-8" style={{ color: "#c9a96e" }}>
+                      Primary — Onyx with Gold Border
+                    </p>
+                    <div className="flex flex-wrap gap-6 items-center">
+                      <button
+                        className="px-12 py-4 transition-all duration-700"
+                        style={{
+                          backgroundColor: "#1a1a1a",
+                          color: "#f8f6f3",
+                          border: "1px solid rgba(201,169,110,0.4)",
+                          letterSpacing: "0.18em",
+                          fontSize: "0.72rem",
+                          boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = "rgba(201,169,110,0.7)";
+                          e.currentTarget.style.boxShadow = "0 18px 40px rgba(0,0,0,0.32)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = "rgba(201,169,110,0.4)";
+                          e.currentTarget.style.boxShadow = "0 10px 28px rgba(0,0,0,0.22)";
+                        }}
+                      >
+                        <span className="ml-gold-shimmer-hover tracking-[0.18em] uppercase text-xs">
+                          Reserve Now
+                        </span>
+                      </button>
+                      <button
+                        className="px-12 py-4 transition-all duration-700"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "#1a1a1a",
+                          border: "1px solid rgba(201,169,110,0.35)",
+                          letterSpacing: "0.18em",
+                          fontSize: "0.72rem",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "#1a1a1a";
+                          e.currentTarget.style.color = "#f8f6f3";
+                          e.currentTarget.style.borderColor = "rgba(201,169,110,0.5)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "#1a1a1a";
+                          e.currentTarget.style.borderColor = "rgba(201,169,110,0.35)";
+                        }}
+                      >
+                        <span className="tracking-[0.18em] uppercase text-xs">View Catalogue</span>
+                      </button>
+                      <button
+                        className="transition-all duration-700"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "#8a7968",
+                          border: "none",
+                          letterSpacing: "0.18em",
+                          fontSize: "0.72rem",
+                          padding: "16px 0",
+                        }}
+                      >
+                        <span className="ml-underline-center tracking-[0.18em] uppercase text-xs">
+                          Learn More &rarr;
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs tracking-[0.3em] uppercase mb-8" style={{ color: "#c9a96e" }}>
+                      States — Active uses inset shadow (Cold &amp; Rigid)
+                    </p>
+                    <div className="flex flex-wrap gap-6 items-center">
+                      {[
+                        { state: "Default", bg: "#1a1a1a", shadow: "0 10px 28px rgba(0,0,0,0.22)", color: "#f8f6f3", opacity: 1 },
+                        { state: "Hover", bg: "#1a1a1a", shadow: "0 18px 40px rgba(0,0,0,0.32)", color: "#f8f6f3", opacity: 1 },
+                        { state: "Active", bg: "#0d0d0d", shadow: "inset 0 6px 12px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.15)", color: "#f8f6f3", opacity: 1 },
+                        { state: "Disabled", bg: "transparent", shadow: "none", color: "rgba(26,26,26,0.3)", opacity: 0.5 },
+                      ].map((s) => (
+                        <button
+                          key={s.state}
+                          className="px-8 py-3 transition-all duration-700"
+                          style={{
+                            backgroundColor: s.bg,
+                            color: s.color,
+                            border: s.state === "Disabled" ? "1px solid rgba(201,169,110,0.1)" : "1px solid rgba(201,169,110,0.4)",
+                            letterSpacing: "0.14em",
+                            fontSize: "0.68rem",
+                            boxShadow: s.shadow,
+                            cursor: s.state === "Disabled" ? "not-allowed" : "pointer",
+                            opacity: s.opacity,
+                          }}
+                        >
+                          <span className="tracking-[0.14em] uppercase text-xs">{s.state}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+              )}
 
-                {/* Ghost / minimal */}
-                <div>
-                  <p className="font-serif text-xs tracking-[0.3em] uppercase text-[#8a7968] mb-8">Minimal Variants</p>
-                  <div className="flex flex-wrap items-start gap-8">
-                    <button
-                      type="button"
-                      className="group font-serif text-xs tracking-[0.3em] uppercase text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500 flex items-center gap-3"
+              {/* ---- CARDS ---- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {[
+                    {
+                      eyebrow: "Carrara Collection",
+                      title: "Bianco Statuario",
+                      desc: "Quarried from the mountains of Tuscany, each slab carries the unique grey veining of Carrara marble.",
+                      detail: "From EUR 2,400 / m\u00b2",
+                    },
+                    {
+                      eyebrow: "Nero Collection",
+                      title: "Marquina Black",
+                      desc: "Deep onyx with striking gold veins, this Belgian marble commands attention in any haute interior.",
+                      detail: "From EUR 3,100 / m\u00b2",
+                    },
+                    {
+                      eyebrow: "Gold Series",
+                      title: "Giallo Siena",
+                      desc: "The warm amber tones and rich fossilized patterns of Siena limestone, quarried since the Roman era.",
+                      detail: "From EUR 1,850 / m\u00b2",
+                    },
+                    {
+                      eyebrow: "Rosa Collection",
+                      title: "Portoro Classico",
+                      desc: "Midnight black marble with golden veins — a symbol of Genoese luxury since the 14th century.",
+                      detail: "From EUR 4,200 / m\u00b2",
+                    },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="group relative overflow-hidden p-10 md:p-12 cursor-default transition-all duration-700"
+                      style={{
+                        backgroundColor: "#f8f6f3",
+                        border: "1px solid rgba(201,169,110,0.18)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,169,110,0.4)";
+                        (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 40px rgba(0,0,0,0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,169,110,0.18)";
+                        (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)";
+                      }}
                     >
-                      Discover more
-                      <span className="block w-8 h-[1px] bg-[#c9a96e] group-hover:w-12 transition-all duration-500" />
-                    </button>
-                    <button
-                      type="button"
-                      className="group font-serif text-xs tracking-[0.3em] uppercase text-[#1a1a1a] hover:text-[#c9a96e] transition-colors duration-500 underline underline-offset-4 decoration-[#e8e0d6] hover:decoration-[#c9a96e]"
-                    >
-                      View catalogue
-                    </button>
-                  </div>
-                </div>
-
-                {/* Size scale */}
-                <div>
-                  <p className="font-serif text-xs tracking-[0.3em] uppercase text-[#8a7968] mb-8">Scale</p>
-                  <div className="flex flex-wrap items-center gap-6">
-                    <button
-                      type="button"
-                      className="font-serif text-[10px] tracking-[0.25em] uppercase border border-[#c9a96e] text-[#1a1a1a] px-6 py-2.5 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-                    >
-                      Small
-                    </button>
-                    <button
-                      type="button"
-                      className="font-serif text-xs tracking-[0.3em] uppercase border border-[#c9a96e] text-[#1a1a1a] px-10 py-4 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-                    >
-                      Medium
-                    </button>
-                    <button
-                      type="button"
-                      className="font-serif text-sm tracking-[0.3em] uppercase border border-[#c9a96e] text-[#1a1a1a] px-14 py-5 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-                    >
-                      Large
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* --- CARD tab --- */}
-            {activeComponentTab === "Card" && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {products.map((product, i) => (
-                  <div
-                    key={product.name}
-                    className="group bg-[#e8e0d6] relative overflow-hidden"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    {/* Marble texture overlay */}
-                    <div className="relative h-52 bg-[#e8e0d6] overflow-hidden">
-                      <MarbleVeinPattern opacity={0.08} />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="font-serif text-4xl font-light text-[#8a7968] mb-2">M</div>
-                          <div className="w-8 h-[1px] bg-[#c9a96e] mx-auto" />
+                      {/* Marble shimmer overlay */}
+                      <div
+                        className="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-700 group-hover:opacity-70"
+                        style={{
+                          background:
+                            "radial-gradient(ellipse at top left, rgba(201,169,110,0.07), transparent 60%)",
+                        }}
+                      />
+                      <div className="relative z-10">
+                        <span
+                          className="block text-xs tracking-[0.3em] uppercase mb-5"
+                          style={{ color: "#c9a96e" }}
+                        >
+                          {card.eyebrow}
+                        </span>
+                        <h3
+                          className="mb-3 leading-snug ml-gold-shimmer-hover transition-all duration-700"
+                          style={{ fontSize: "1.35rem", fontWeight: 300, letterSpacing: "0.06em" }}
+                        >
+                          {card.title}
+                        </h3>
+                        <p
+                          className="leading-relaxed mb-8"
+                          style={{ fontSize: "0.875rem", color: "#8a7968", lineHeight: "1.8", letterSpacing: "0.02em" }}
+                        >
+                          {card.desc}
+                        </p>
+                        <div
+                          className="pt-6"
+                          style={{ borderTop: "1px solid rgba(201,169,110,0.2)" }}
+                        >
+                          <span
+                            className="text-xs tracking-[0.2em] uppercase"
+                            style={{ color: "#8a7968" }}
+                          >
+                            {card.detail} &rarr;
+                          </span>
                         </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              )}
 
-                    {/* Card content */}
-                    <div className="p-8 border-t border-[#c9a96e]">
-                      <p className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-3">
-                        {product.year}
+              {/* ---- INPUTS ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  <div className="space-y-10">
+                    {[
+                      { label: "Full Name", placeholder: "Your name", type: "text" },
+                      { label: "Email Address", placeholder: "correspondence@atelier.com", type: "email" },
+                      { label: "Telephone", placeholder: "+1 (000) 000-0000", type: "tel" },
+                    ].map((field) => (
+                      <div key={field.label}>
+                        <label
+                          className="block text-xs tracking-[0.3em] uppercase mb-3"
+                          style={{ color: "#c9a96e" }}
+                        >
+                          {field.label}
+                        </label>
+                        <input
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          className="w-full py-4 bg-transparent transition-all duration-500"
+                          style={{
+                            border: "none",
+                            borderBottom: "1px solid rgba(26,26,26,0.18)",
+                            color: "#1a1a1a",
+                            fontSize: "0.9rem",
+                            letterSpacing: "0.04em",
+                            outline: "none",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderBottomColor = "#c9a96e";
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderBottomColor = "rgba(26,26,26,0.18)";
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-10">
+                    <div>
+                      <label
+                        className="block text-xs tracking-[0.3em] uppercase mb-3"
+                        style={{ color: "#c9a96e" }}
+                      >
+                        Enquiry Type
+                      </label>
+                      <select
+                        className="w-full py-4 bg-transparent transition-all duration-500"
+                        style={{
+                          border: "none",
+                          borderBottom: "1px solid rgba(26,26,26,0.18)",
+                          color: "#1a1a1a",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.04em",
+                          outline: "none",
+                          appearance: "none",
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderBottomColor = "#c9a96e";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderBottomColor = "rgba(26,26,26,0.18)";
+                        }}
+                      >
+                        <option>Residential Project</option>
+                        <option>Commercial Project</option>
+                        <option>Hospitality</option>
+                        <option>General Enquiry</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label
+                        className="block text-xs tracking-[0.3em] uppercase mb-3"
+                        style={{ color: "#c9a96e" }}
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        rows={4}
+                        placeholder="Describe your vision..."
+                        className="w-full py-4 bg-transparent resize-none transition-all duration-500"
+                        style={{
+                          border: "none",
+                          borderBottom: "1px solid rgba(26,26,26,0.18)",
+                          color: "#1a1a1a",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.04em",
+                          outline: "none",
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderBottomColor = "#c9a96e";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderBottomColor = "rgba(26,26,26,0.18)";
+                        }}
+                      />
+                    </div>
+                    <button
+                      className="w-full py-4 transition-all duration-700"
+                      style={{
+                        backgroundColor: "#1a1a1a",
+                        color: "#f8f6f3",
+                        border: "1px solid rgba(201,169,110,0.4)",
+                        letterSpacing: "0.2em",
+                        fontSize: "0.72rem",
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.18)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = "0 16px 36px rgba(0,0,0,0.28)";
+                        e.currentTarget.style.borderColor = "rgba(201,169,110,0.65)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.18)";
+                        e.currentTarget.style.borderColor = "rgba(201,169,110,0.4)";
+                      }}
+                    >
+                      <span className="tracking-[0.2em] uppercase text-xs">Submit Enquiry</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- TYPOGRAPHY ---- */}
+              {activeTab === "typography" && (
+                <div className="space-y-12">
+                  {[
+                    { label: "Display — Light 300", sample: "Atelier Prestige", size: "3rem", weight: 300, spacing: "0.06em", color: "#1a1a1a" },
+                    { label: "Heading — Normal 400", sample: "Marble & Gold Collection", size: "2rem", weight: 400, spacing: "0.05em", color: "#1a1a1a" },
+                    { label: "Subheading — Light 300", sample: "Crafted for the discerning", size: "1.4rem", weight: 300, spacing: "0.06em", color: "#1a1a1a" },
+                    { label: "Body — Normal, Wide Leading", sample: "Where timeless craftsmanship meets restrained luxury. Every surface is considered, every material hand-selected from the finest quarries across Italy and Belgium.", size: "1rem", weight: 400, spacing: "0.04em", color: "#8a7968" },
+                    { label: "Caption — Tracking 0.3em", sample: "Carrara, Tuscany — Est. 1924", size: "0.72rem", weight: 400, spacing: "0.3em", color: "#c9a96e" },
+                  ].map((typo) => (
+                    <div key={typo.label} style={{ borderBottom: "1px solid rgba(201,169,110,0.12)", paddingBottom: "32px" }}>
+                      <p className="text-xs tracking-[0.25em] uppercase mb-4" style={{ color: "#8a7968" }}>
+                        {typo.label}
                       </p>
-                      <h3 className="font-serif text-xl font-normal text-[#1a1a1a] mb-2 group-hover:text-[#c9a96e] transition-colors duration-500">
-                        {product.name}
-                      </h3>
-                      <p className="font-serif text-xs tracking-[0.2em] uppercase text-[#8a7968] mb-4">
-                        {product.origin}
-                      </p>
-                      <p className="font-serif text-sm font-light leading-relaxed text-[#8a7968]">
-                        {product.desc}
-                      </p>
-                      <div className="mt-8 flex items-center gap-3">
-                        <div className="w-6 h-[1px] bg-[#c9a96e]" />
-                        <span className="font-serif text-[10px] tracking-[0.25em] uppercase text-[#c9a96e] group-hover:tracking-[0.35em] transition-all duration-500">
-                          Explore
-                        </span>
+                      <div
+                        style={{
+                          fontSize: typo.size,
+                          fontWeight: typo.weight,
+                          letterSpacing: typo.spacing,
+                          color: typo.color,
+                          lineHeight: 1.5,
+                          fontFamily: "Georgia, 'Times New Roman', serif",
+                        }}
+                      >
+                        {typo.sample}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* --- INPUT tab --- */}
-            {activeComponentTab === "Input" && (
-              <div className="max-w-xl space-y-10">
-                {/* Standard input */}
-                <div>
-                  <label className="block font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-4">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full bg-transparent border-b border-[#c9a96e] pb-3 font-serif text-sm font-light text-[#1a1a1a] placeholder-[#8a7968]/50 focus:outline-none focus:border-[#1a1a1a] transition-colors duration-500"
-                  />
+                  ))}
                 </div>
-
-                {/* Email input */}
-                <div>
-                  <label className="block font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-4">
-                    Correspondence
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="your@address.com"
-                    className="w-full bg-transparent border-b border-[#c9a96e] pb-3 font-serif text-sm font-light text-[#1a1a1a] placeholder-[#8a7968]/50 focus:outline-none focus:border-[#1a1a1a] transition-colors duration-500"
-                  />
-                </div>
-
-                {/* Select */}
-                <div>
-                  <label className="block font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-4">
-                    Collection
-                  </label>
-                  <select className="w-full bg-transparent border-b border-[#c9a96e] pb-3 font-serif text-sm font-light text-[#1a1a1a] focus:outline-none focus:border-[#1a1a1a] transition-colors duration-500 appearance-none">
-                    <option>Carrara White</option>
-                    <option>Nero Marquina</option>
-                    <option>Calacatta Gold</option>
-                    <option>Statuario</option>
-                  </select>
-                </div>
-
-                {/* Textarea */}
-                <div>
-                  <label className="block font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-4">
-                    Message
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder="Describe your commission..."
-                    className="w-full bg-transparent border border-[#c9a96e] p-4 font-serif text-sm font-light text-[#1a1a1a] placeholder-[#8a7968]/50 focus:outline-none focus:border-[#1a1a1a] transition-colors duration-500 resize-none"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  className="w-full font-serif text-xs tracking-[0.3em] uppercase border border-[#c9a96e] text-[#1a1a1a] py-4 hover:bg-[#c9a96e] hover:text-[#f8f6f3] transition-colors duration-500"
-                >
-                  Submit Enquiry
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 4. Color Palette                                               */}
-      {/* ============================================================= */}
-      <section id="palette" className="py-32 px-8 md:px-16">
+      {/* ================================================================ */}
+      {/* 5. AI RULES INTERACTIVE DEMO                                     */}
+      {/* ================================================================ */}
+      <section className="py-28 md:py-36 px-8 md:px-16 ml-marble-texture">
         <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">Palette</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              Five Colours of Stone
+          <RevealBlock className="mb-3">
+            <span
+              className="block text-xs tracking-[0.4em] uppercase mb-5"
+              style={{ color: "#c9a96e" }}
+            >
+              Interaction Rules
+            </span>
+            <h2
+              className="leading-tight mb-6"
+              style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+            >
+              Four Named Principles
             </h2>
-            <GoldDivider className="w-24 mb-8" />
-            <p className="font-serif text-base font-light leading-relaxed text-[#8a7968] max-w-xl">
-              The palette was quarried, not invented. Each tone exists in nature — the black of obsidian,
-              the warm white of Carrara, the gold of mineral deposit.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-4">
+            <div className="ml-gold-line-full" style={{ maxWidth: "280px" }} />
+          </RevealBlock>
+
+          <RevealBlock delay={0.08} className="mb-16">
+            <p
+              className="leading-relaxed"
+              style={{ maxWidth: "520px", color: "#8a7968", letterSpacing: "0.04em", lineHeight: "1.8" }}
+            >
+              Interact with each demo below to feel the marble-luxury interaction
+              grammar — weight, shimmer, rigidity, and gleam — all in motion.
             </p>
           </RevealBlock>
 
-          {/* Color swatches */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-0 border border-[#c9a96e]">
-            {palette.map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 0.07}>
-                <div
-                  className="group relative overflow-hidden cursor-default"
-                  style={{ backgroundColor: color.hex }}
-                >
-                  {/* Swatch body */}
-                  <div className="relative h-48 md:h-64 flex items-end p-6 border-r border-[#c9a96e] last:border-r-0">
-                    <MarbleVeinPattern opacity={color.light ? 0.05 : 0.03} />
-                    <div className="relative z-10">
-                      <p
-                        className="font-serif text-[10px] tracking-[0.2em] uppercase mb-1"
-                        style={{ color: color.light ? "#8a7968" : "#c9a96e" }}
-                      >
-                        {color.hex}
-                      </p>
-                    </div>
-                  </div>
-                  {/* Label */}
-                  <div
-                    className="p-6 border-t border-r border-[#c9a96e] last:border-r-0"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            {/* Rule 1 — Monumental Weight */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.14)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="inline-block text-xs tracking-[0.25em] uppercase px-3 py-1"
                     style={{
-                      backgroundColor: color.light ? "#f8f6f3" : "#1a1a1a",
+                      color: "#c9a96e",
+                      border: "1px solid rgba(201,169,110,0.3)",
                     }}
                   >
-                    <p
-                      className="font-serif text-sm font-normal mb-1"
-                      style={{ color: color.light ? "#1a1a1a" : "#f8f6f3" }}
+                    Rule 01
+                  </span>
+                </div>
+                <h3
+                  className="mb-2 mt-4"
+                  style={{ fontSize: "1.4rem", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+                >
+                  Monumental Weight
+                </h3>
+                <p
+                  className="leading-relaxed mb-8 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", lineHeight: "1.8" }}
+                >
+                  Elements remain positionally stable. No hover displacement or
+                  scale. Weight is expressed through layered shadow transitions.
+                  Hover each card below.
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { label: "Bianco", depth: "Light shadow" },
+                    { label: "Nero", depth: "Deep shadow" },
+                    { label: "Oro", depth: "Warm glow" },
+                    { label: "Rosa", depth: "Soft shadow" },
+                  ].map((item, i) => (
+                    <div
+                      key={item.label}
+                      className="p-6 cursor-default transition-all duration-700"
+                      style={{
+                        backgroundColor: "#f8f6f3",
+                        border: "1px solid rgba(201,169,110,0.15)",
+                        boxShadow:
+                          monumentalHovered === i
+                            ? "0 20px 50px rgba(0,0,0,0.14), 0 4px 12px rgba(201,169,110,0.08)"
+                            : "0 2px 12px rgba(0,0,0,0.04)",
+                        // NO transform — no scale, no translate
+                      }}
+                      onMouseEnter={() => setMonumentalHovered(i)}
+                      onMouseLeave={() => setMonumentalHovered(null)}
                     >
-                      {color.name}
-                    </p>
-                    <p
-                      className="font-serif text-[10px] tracking-[0.2em] uppercase"
-                      style={{ color: color.light ? "#8a7968" : "#8a7968" }}
+                      <div
+                        className="text-sm mb-1"
+                        style={{ color: "#1a1a1a", letterSpacing: "0.1em" }}
+                      >
+                        {item.label}
+                      </div>
+                      <div
+                        className="text-xs tracking-[0.1em]"
+                        style={{ color: monumentalHovered === i ? "#c9a96e" : "#8a7968", transition: "color 0.7s ease" }}
+                      >
+                        {monumentalHovered === i ? "Shadow deepened" : item.depth}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p
+                  className="mt-6 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", fontStyle: "italic" }}
+                >
+                  {monumentalHovered !== null
+                    ? "Shadow layering conveys mass — no displacement"
+                    : "Hover any tile to see shadow deepening without movement"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 2 — Foil Stamping Shift */}
+            <RevealBlock delay={0.14}>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.14)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="inline-block text-xs tracking-[0.25em] uppercase px-3 py-1"
+                    style={{
+                      color: "#c9a96e",
+                      border: "1px solid rgba(201,169,110,0.3)",
+                    }}
+                  >
+                    Rule 02
+                  </span>
+                </div>
+                <h3
+                  className="mb-2 mt-4"
+                  style={{ fontSize: "1.4rem", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+                >
+                  Foil Stamping Shift
+                </h3>
+                <p
+                  className="leading-relaxed mb-8 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", lineHeight: "1.8" }}
+                >
+                  Gold text performs a slow background-position shift on hover,
+                  simulating light catching polished metal foil. Toggle the demo
+                  or hover individual titles.
+                </p>
+
+                {/* Toggle */}
+                <div className="flex items-center gap-4 mb-8">
+                  <button
+                    onClick={() => setFoilActive(!foilActive)}
+                    className="px-8 py-3 transition-all duration-700 text-xs tracking-[0.2em] uppercase"
+                    style={{
+                      backgroundColor: foilActive ? "#1a1a1a" : "transparent",
+                      color: foilActive ? "#f8f6f3" : "#1a1a1a",
+                      border: "1px solid rgba(201,169,110,0.4)",
+                      boxShadow: foilActive ? "0 8px 20px rgba(0,0,0,0.2)" : "none",
+                    }}
+                  >
+                    {foilActive ? "Foil ON" : "Foil OFF"}
+                  </button>
+                  <span
+                    className="text-xs tracking-[0.1em]"
+                    style={{ color: "#8a7968" }}
+                  >
+                    Toggle global gold shimmer
+                  </span>
+                </div>
+
+                <div className="space-y-5">
+                  {[
+                    { title: "Atelier Milano", sub: "Hover to see foil shift" },
+                    { title: "Maison de Luxe", sub: "Gold catches the light" },
+                    { title: "Collection Prestige", sub: "Metal foil simulation" },
+                  ].map((item, i) => (
+                    <div
+                      key={item.title}
+                      className="py-4 cursor-default"
+                      style={{ borderBottom: "1px solid rgba(201,169,110,0.12)" }}
+                      onMouseEnter={() => setFoilHoveredBtn(i)}
+                      onMouseLeave={() => setFoilHoveredBtn(null)}
                     >
-                      {color.label}
-                    </p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 5. Typography                                                  */}
-      {/* ============================================================= */}
-      <section id="typography" className="py-32 px-8 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">Typography</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              The Sermon of the Serif
-            </h2>
-            <GoldDivider className="w-24 mb-8" />
-            <p className="font-serif text-base font-light leading-relaxed text-[#8a7968] max-w-xl">
-              A single serif family in three weights: light, normal, and silence. Letter-spacing replaces hierarchy.
-              Whitespace does the work that colour refuses.
-            </p>
-          </RevealBlock>
-
-          {/* Typography rows */}
-          <div className="space-y-0 border-t border-[#c9a96e]">
-            {typographyRows.map((row, i) => (
-              <RevealBlock key={row.label} delay={i * 0.06}>
-                <div className="group py-10 border-b border-[#c9a96e] grid grid-cols-1 md:grid-cols-[120px_1fr_240px] gap-6 items-center hover:bg-[#e8e0d6]/30 transition-colors duration-500 px-4">
-                  <div>
-                    <p className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] group-hover:text-[#c9a96e] transition-colors duration-500">
-                      {row.label}
-                    </p>
-                  </div>
-                  <div className="min-w-0">
-                    <p className={row.className}>{row.sample}</p>
-                  </div>
-                  <div className="hidden md:block">
-                    <code className="font-mono text-[10px] text-[#8a7968] leading-relaxed block">
-                      {row.spec}
-                    </code>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Letter-spacing demonstration */}
-          <RevealBlock delay={0.1} className="mt-24">
-            <p className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] mb-12">
-              Letter-Spacing Scale
-            </p>
-            <div className="space-y-8">
-              {[
-                { label: "tracking-tight", cls: "tracking-tight", text: "Permanence in stone and memory" },
-                { label: "tracking-normal", cls: "tracking-normal", text: "Permanence in stone and memory" },
-                { label: "tracking-wide", cls: "tracking-wide", text: "Permanence in stone and memory" },
-                { label: "tracking-wider", cls: "tracking-wider", text: "Permanence in stone" },
-                { label: "tracking-widest", cls: "tracking-widest", text: "Permanence in stone" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-baseline gap-8">
-                  <code className="font-mono text-[10px] text-[#8a7968] w-36 shrink-0">{item.label}</code>
-                  <p className={`font-serif text-xl font-light text-[#1a1a1a] ${item.cls}`}>
-                    {item.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 6. Design Principles                                           */}
-      {/* ============================================================= */}
-      <section id="philosophy" className="py-32 px-8 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">
-                Design Principles
-              </span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              Laws of the Material
-            </h2>
-            <GoldDivider className="w-24 mb-8" />
-            <p className="font-serif text-base font-light leading-relaxed text-[#8a7968] max-w-xl">
-              Marble luxury is a philosophy of omission. Each rule below is a subtraction —
-              a stone carver's discipline applied to the screen.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-[#c9a96e]">
-            {/* Do panel */}
-            <RevealBlock delay={0}>
-              <div className="p-12 border-r border-[#c9a96e] h-full bg-[#f8f6f3] relative overflow-hidden">
-                <MarbleVeinPattern opacity={0.03} />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-10">
-                    <div className="w-6 h-[1px] bg-[#c9a96e]" />
-                    <span className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#c9a96e]">
-                      The Canon
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-2xl font-light text-[#1a1a1a] mb-10">Observe</h3>
-                  <ul className="space-y-6">
-                    {principles[0].rules.map((rule, i) => (
-                      <li key={i} className="flex items-start gap-4">
-                        <div className="mt-2 w-4 h-[1px] bg-[#c9a96e] shrink-0" />
-                        <p className="font-serif text-sm font-light leading-relaxed text-[#8a7968]">{rule}</p>
-                      </li>
-                    ))}
-                  </ul>
+                      <div
+                        className={foilActive || foilHoveredBtn === i ? "ml-gold-shimmer" : ""}
+                        style={{
+                          fontSize: "1.1rem",
+                          fontWeight: 300,
+                          letterSpacing: "0.08em",
+                          color: foilActive || foilHoveredBtn === i ? undefined : "#1a1a1a",
+                          transition: "color 0.7s ease",
+                        }}
+                      >
+                        {item.title}
+                      </div>
+                      <div
+                        className="text-xs mt-1 tracking-[0.1em]"
+                        style={{ color: foilHoveredBtn === i ? "#c9a96e" : "#8a7968", transition: "color 0.7s ease" }}
+                      >
+                        {foilHoveredBtn === i ? "Foil shift active" : item.sub}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </RevealBlock>
 
-            {/* Don't panel */}
+            {/* Rule 3 — Cold & Rigid */}
+            <RevealBlock delay={0.18}>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.14)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="inline-block text-xs tracking-[0.25em] uppercase px-3 py-1"
+                    style={{
+                      color: "#c9a96e",
+                      border: "1px solid rgba(201,169,110,0.3)",
+                    }}
+                  >
+                    Rule 03
+                  </span>
+                </div>
+                <h3
+                  className="mb-2 mt-4"
+                  style={{ fontSize: "1.4rem", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+                >
+                  Cold &amp; Rigid
+                </h3>
+                <p
+                  className="leading-relaxed mb-8 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", lineHeight: "1.8" }}
+                >
+                  Active states avoid elastic deformation. A subtle inset shadow
+                  communicates the cold hardness of pressed marble — like pressing
+                  your palm against stone. Click and hold each button.
+                </p>
+                <div className="space-y-6">
+                  {[
+                    { label: "Reserve", variant: "primary" },
+                    { label: "Enquire", variant: "outline" },
+                    { label: "Download Brochure", variant: "ghost" },
+                  ].map((btn, i) => (
+                    <div key={btn.label}>
+                      <button
+                        className="px-10 py-4 text-xs tracking-[0.2em] uppercase select-none"
+                        style={{
+                          backgroundColor:
+                            btn.variant === "primary"
+                              ? rigidPressed === i
+                                ? "#0d0d0d"
+                                : "#1a1a1a"
+                              : "transparent",
+                          color:
+                            btn.variant === "primary"
+                              ? "#f8f6f3"
+                              : rigidPressed === i
+                              ? "#8a7968"
+                              : "#1a1a1a",
+                          border:
+                            btn.variant === "ghost"
+                              ? "none"
+                              : "1px solid rgba(201,169,110,0.4)",
+                          boxShadow:
+                            rigidPressed === i
+                              ? btn.variant === "primary"
+                                ? "inset 0 6px 12px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.15)"
+                                : "inset 0 3px 8px rgba(0,0,0,0.15)"
+                              : btn.variant === "primary"
+                              ? "0 10px 28px rgba(0,0,0,0.22)"
+                              : "none",
+                          transition: "all 0.15s ease",
+                          cursor: "pointer",
+                          letterSpacing: "0.2em",
+                        }}
+                        onMouseDown={() => setRigidPressed(i)}
+                        onMouseUp={() => setRigidPressed(null)}
+                        onMouseLeave={() => setRigidPressed(null)}
+                      >
+                        {btn.label}
+                      </button>
+                      <p
+                        className="mt-2 text-xs tracking-[0.1em]"
+                        style={{ color: rigidPressed === i ? "#c9a96e" : "#8a7968" }}
+                      >
+                        {rigidPressed === i
+                          ? "Inset shadow — cold stone press"
+                          : "Click and hold to feel the rigidity"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 4 — Polish Gleam */}
+            <RevealBlock delay={0.22}>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.14)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="mb-2">
+                  <span
+                    className="inline-block text-xs tracking-[0.25em] uppercase px-3 py-1"
+                    style={{
+                      color: "#c9a96e",
+                      border: "1px solid rgba(201,169,110,0.3)",
+                    }}
+                  >
+                    Rule 04
+                  </span>
+                </div>
+                <h3
+                  className="mb-2 mt-4"
+                  style={{ fontSize: "1.4rem", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+                >
+                  Polish Gleam
+                </h3>
+                <p
+                  className="leading-relaxed mb-8 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", lineHeight: "1.8" }}
+                >
+                  Cards perform low-frequency, low-amplitude brightness and
+                  shadow changes (duration 700ms). This replicates the subtle
+                  light shift on a polished marble surface as you approach it.
+                </p>
+                <div className="grid grid-cols-1 gap-5">
+                  {[
+                    { name: "Nero Marquina", origin: "Belgium", finish: "Polished" },
+                    { name: "Bianco Carrara", origin: "Italy", finish: "Honed" },
+                    { name: "Giallo Siena", origin: "Italy", finish: "Polished" },
+                  ].map((stone, i) => (
+                    <div
+                      key={stone.name}
+                      className="flex items-center justify-between p-6 cursor-default"
+                      style={{
+                        backgroundColor:
+                          gleamHovered === i
+                            ? "#f2ede6"
+                            : "#f8f6f3",
+                        border: "1px solid rgba(201,169,110,0.15)",
+                        boxShadow:
+                          gleamHovered === i
+                            ? "0 12px 32px rgba(201,169,110,0.12), 0 2px 8px rgba(0,0,0,0.06)"
+                            : "0 2px 10px rgba(0,0,0,0.04)",
+                        transition: "all 0.7s ease",
+                      }}
+                      onMouseEnter={() => setGleamHovered(i)}
+                      onMouseLeave={() => setGleamHovered(null)}
+                    >
+                      <div>
+                        <div
+                          className="text-sm mb-1"
+                          style={{ color: "#1a1a1a", letterSpacing: "0.08em" }}
+                        >
+                          {stone.name}
+                        </div>
+                        <div
+                          className="text-xs tracking-[0.15em]"
+                          style={{ color: "#8a7968" }}
+                        >
+                          {stone.origin}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div
+                          className="text-xs tracking-[0.2em] uppercase"
+                          style={{ color: gleamHovered === i ? "#c9a96e" : "#8a7968", transition: "color 0.7s ease" }}
+                        >
+                          {stone.finish}
+                        </div>
+                        {gleamHovered === i && (
+                          <div
+                            className="text-xs tracking-[0.1em] mt-1"
+                            style={{ color: "#c9a96e", opacity: 0.7 }}
+                          >
+                            Gleam active
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p
+                  className="mt-6 text-xs tracking-[0.1em]"
+                  style={{ color: "#8a7968", fontStyle: "italic" }}
+                >
+                  {gleamHovered !== null
+                    ? "Warmth and shadow deepen — 700ms duration"
+                    : "Hover each stone tile to reveal the polished gleam"}
+                </p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. DO / DON'T + PHILOSOPHY                                       */}
+      {/* ================================================================ */}
+      <section
+        className="py-28 md:py-36 px-8 md:px-16"
+        style={{ backgroundColor: "#f0ece6" }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span
+              className="block text-xs tracking-[0.4em] uppercase mb-5"
+              style={{ color: "#c9a96e" }}
+            >
+              Design Philosophy
+            </span>
+            <h2
+              className="leading-tight mb-6"
+              style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, letterSpacing: "0.06em", color: "#1a1a1a" }}
+            >
+              The Art of Restraint
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-16">
+            <p
+              className="leading-relaxed"
+              style={{ maxWidth: "520px", color: "#8a7968", letterSpacing: "0.04em", lineHeight: "1.8" }}
+            >
+              Restraint is the highest expression of luxury. Less gold means more
+              gold. More space means more presence. The marble-luxury vocabulary
+              is built on what is withheld, not what is shown.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {/* Do */}
             <RevealBlock delay={0.1}>
-              <div className="p-12 h-full bg-[#1a1a1a] relative overflow-hidden">
-                <MarbleVeinPattern opacity={0.04} />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-10">
-                    <div className="w-6 h-[1px] bg-[#c9a96e]" />
-                    <span className="font-serif text-[10px] tracking-[0.3em] uppercase text-[#c9a96e]">
-                      The Prohibition
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-2xl font-light text-[#f8f6f3] mb-10">Forbid</h3>
-                  <ul className="space-y-6">
-                    {principles[1].rules.map((rule, i) => (
-                      <li key={i} className="flex items-start gap-4">
-                        <div className="mt-2 w-4 h-[1px] bg-[#8a7968] shrink-0" />
-                        <p className="font-serif text-sm font-light leading-relaxed text-[#8a7968]">{rule}</p>
-                      </li>
-                    ))}
-                  </ul>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.18)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="flex items-center gap-4 mb-8">
+                  <div
+                    style={{
+                      width: "1px",
+                      height: "32px",
+                      backgroundColor: "#c9a96e",
+                    }}
+                  />
+                  <h3
+                    className="text-sm tracking-[0.3em] uppercase"
+                    style={{ color: "#1a1a1a" }}
+                  >
+                    Do
+                  </h3>
                 </div>
+                <ul className="space-y-5">
+                  {[
+                    "Use warm marble white bg-[#f8f6f3] — never pure bg-white",
+                    "Use onyx text-[#1a1a1a] for all primary text",
+                    "Limit gold #c9a96e to borders, separators, and minimal accents",
+                    "Apply py-20+ section spacing and p-12 card padding",
+                    "Use font-serif with tracking-[0.2em]+ on all labels",
+                    "Use fine 1px borders: border-[#c9a96e]/20",
+                    "Keep transitions at duration-500 or longer, ease-in-out",
+                    "Use very subtle shadows: shadow-[0_2px_20px_rgba(0,0,0,0.04)]",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      className="flex items-start gap-4 text-sm leading-relaxed"
+                      style={{ color: "#8a7968", letterSpacing: "0.03em" }}
+                    >
+                      <span
+                        style={{
+                          marginTop: "8px",
+                          width: "20px",
+                          height: "1px",
+                          backgroundColor: "#c9a96e",
+                          flexShrink: 0,
+                        }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.15}>
+              <div
+                className="p-10 md:p-12 h-full"
+                style={{
+                  backgroundColor: "#f8f6f3",
+                  border: "1px solid rgba(201,169,110,0.18)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div className="flex items-center gap-4 mb-8">
+                  <div
+                    style={{
+                      width: "1px",
+                      height: "32px",
+                      backgroundColor: "rgba(201,169,110,0.35)",
+                    }}
+                  />
+                  <h3
+                    className="text-sm tracking-[0.3em] uppercase"
+                    style={{ color: "#8a7968" }}
+                  >
+                    Never
+                  </h3>
+                </div>
+                <ul className="space-y-5">
+                  {[
+                    "High-saturation neon or fluorescent colors",
+                    "Thick borders — border-4 and above",
+                    "Hard offset shadows: shadow-[Npx_Npx_0px]",
+                    "Bold aggressive typography: font-black uppercase",
+                    "Dense information layouts with small spacing",
+                    "Cartoon, hand-drawn, or rough visual elements",
+                    "Pure white bg-white — use warmer #f8f6f3 instead",
+                    "Elastic spring animations — marble does not bounce",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      className="flex items-start gap-4 text-sm leading-relaxed"
+                      style={{ color: "#8a7968", letterSpacing: "0.03em", opacity: 0.7 }}
+                    >
+                      <span
+                        style={{
+                          marginTop: "8px",
+                          width: "16px",
+                          height: "1px",
+                          backgroundColor: "rgba(138,121,104,0.4)",
+                          flexShrink: 0,
+                        }}
+                      />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </RevealBlock>
           </div>
-        </div>
-      </section>
 
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 7. Quote / Manifesto interlude                                 */}
-      {/* ============================================================= */}
-      <section className="py-32 px-8 md:px-16 relative overflow-hidden bg-[#1a1a1a]">
-        <MarbleVeinPattern opacity={0.05} />
-        <div className="relative z-10 max-w-7xl mx-auto text-center">
-          <RevealBlock>
-            <div className="w-8 h-[1px] bg-[#c9a96e] mx-auto mb-16" />
-            <blockquote className="font-serif text-3xl md:text-5xl lg:text-6xl font-light leading-tight text-[#f8f6f3] tracking-tight max-w-4xl mx-auto mb-16">
-              "The marble not yet carved can hold the form of every thought the greatest artist has."
-            </blockquote>
-            <GoldDivider className="w-24 mx-auto mb-10" />
-            <cite className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968] not-italic">
-              Michelangelo Buonarroti — 1505
-            </cite>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 8. Feature grid / Brand pillars                               */}
-      {/* ============================================================= */}
-      <section className="py-32 px-8 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">Essence</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              Three Pillars
-            </h2>
-            <GoldDivider className="w-24" />
-          </RevealBlock>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-[#c9a96e]">
+          {/* 3 principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 number: "I",
-                title: "Permanence",
-                body:
-                  "Marble does not age as other materials age. It deepens. Each year of contact with air and light reveals new complexity within the stone's layers. Design should aspire to this quality.",
+                title: "Material Suggestion",
+                body: "Radial-gradient overlays create the illusion of stone veining and color depth without imagery. The texture lives in the math.",
               },
               {
                 number: "II",
-                title: "Restraint",
-                body:
-                  "The Roman sculptor knew that every strike of the chisel was irrevocable. This knowledge produces a natural economy. Remove until nothing remains that is not essential.",
+                title: "Gold Restraint",
+                body: "Antique gold #c9a96e appears only as fine lines, subtle borders, and accent text. Its rarity is what makes it precious.",
               },
               {
                 number: "III",
-                title: "Silence",
-                body:
-                  "Luxury announces itself in the space between elements. Whitespace is not empty — it is the held breath before the aria, the pause that makes the word meaningful.",
+                title: "Extreme Whitespace",
+                body: "Generous padding and margins are not empty — they are breathing room that allows each element its full authority.",
               },
-            ].map((pillar, i) => (
-              <RevealBlock key={pillar.number} delay={i * 0.08}>
-                <div className="group p-12 border-r border-[#c9a96e] last:border-r-0 h-full relative overflow-hidden hover:bg-[#e8e0d6]/40 transition-colors duration-700">
-                  <MarbleVeinPattern opacity={0.025} />
-                  <div className="relative z-10">
-                    <p className="font-serif text-6xl font-light text-[#e8e0d6] mb-8 group-hover:text-[#c9a96e]/30 transition-colors duration-500">
-                      {pillar.number}
-                    </p>
-                    <div className="w-8 h-[1px] bg-[#c9a96e] mb-8" />
-                    <h3 className="font-serif text-xl font-normal text-[#1a1a1a] mb-6 tracking-wide group-hover:text-[#c9a96e] transition-colors duration-500">
-                      {pillar.title}
-                    </h3>
-                    <p className="font-serif text-sm font-light leading-relaxed text-[#8a7968]">
-                      {pillar.body}
-                    </p>
+            ].map((principle, i) => (
+              <RevealBlock key={principle.number} delay={i * 0.08}>
+                <div
+                  className="p-10 h-full cursor-default transition-all duration-700"
+                  style={{
+                    backgroundColor: "#f8f6f3",
+                    border: "1px solid rgba(201,169,110,0.14)",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,169,110,0.32)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 36px rgba(0,0,0,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,169,110,0.14)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.05)";
+                  }}
+                >
+                  <div
+                    className="mb-6"
+                    style={{ fontSize: "2rem", fontWeight: 300, color: "#c9a96e", letterSpacing: "0.1em" }}
+                  >
+                    {principle.number}
                   </div>
+                  <div className="ml-gold-line mb-6" style={{ width: "40px" }} />
+                  <h4
+                    className="mb-4"
+                    style={{ fontSize: "1rem", fontWeight: 400, letterSpacing: "0.1em", color: "#1a1a1a" }}
+                  >
+                    {principle.title}
+                  </h4>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "#8a7968", letterSpacing: "0.03em", lineHeight: "1.8" }}
+                  >
+                    {principle.body}
+                  </p>
                 </div>
               </RevealBlock>
             ))}
@@ -933,162 +1611,162 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* Full-width gold divider */}
-      <GoldDivider />
+      {/* ================================================================ */}
+      {/* 7. FOOTER                                                        */}
+      {/* ================================================================ */}
+      <footer
+        className="relative overflow-hidden ml-marble-texture"
+        style={{ borderTop: "1px solid rgba(201,169,110,0.18)" }}
+      >
+        {/* Top gold accent line */}
+        <div className="ml-gold-line-full" />
 
-      {/* ============================================================= */}
-      {/* 9. Token reference table                                       */}
-      {/* ============================================================= */}
-      <section className="py-32 px-8 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-20">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-8 h-[1px] bg-[#c9a96e]" />
-              <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">Tokens</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-[#1a1a1a] tracking-tight mb-6">
-              The Technical Canon
-            </h2>
-            <GoldDivider className="w-24 mb-8" />
-            <p className="font-serif text-base font-light leading-relaxed text-[#8a7968] max-w-xl">
-              Every decision codified. These tokens are the grammar of the marble-luxury language.
-            </p>
-          </RevealBlock>
-
-          <RevealBlock>
-            <div className="border border-[#c9a96e] overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[#c9a96e] bg-[#e8e0d6]">
-                    <th className="px-8 py-5 text-left font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] font-normal">
-                      Token
-                    </th>
-                    <th className="px-8 py-5 text-left font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] font-normal hidden md:table-cell">
-                      Value
-                    </th>
-                    <th className="px-8 py-5 text-left font-serif text-[10px] tracking-[0.3em] uppercase text-[#8a7968] font-normal hidden lg:table-cell">
-                      Usage
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { token: "Background", value: "bg-[#f8f6f3]", usage: "All primary surfaces, hero, cards" },
-                    { token: "Primary text", value: "text-[#1a1a1a]", usage: "Body copy, headings, nav" },
-                    { token: "Gold accent", value: "border-[#c9a96e]", usage: "Dividers, borders, hover states" },
-                    { token: "Secondary text", value: "text-[#8a7968]", usage: "Captions, labels, metadata" },
-                    { token: "Card surface", value: "bg-[#e8e0d6]", usage: "Component backgrounds" },
-                    { token: "Font family", value: "font-serif", usage: "All text — no exceptions" },
-                    { token: "Font weight", value: "font-light / font-normal", usage: "Light for body, normal for heads" },
-                    { token: "Section spacing", value: "py-32", usage: "Major section padding" },
-                    { token: "Container padding", value: "px-8 md:px-16", usage: "All page sections" },
-                    { token: "Divider", value: "h-[1px] bg-[#c9a96e]", usage: "All horizontal rules" },
-                    { token: "Hover transition", value: "transition-colors duration-500", usage: "All interactive elements" },
-                    { token: "Letter-spacing", value: "tracking-[0.3em] uppercase", usage: "All labels and overlines" },
-                    { token: "Border radius", value: "rounded-none or rounded-sm", usage: "No pill shapes" },
-                  ].map((row, i) => (
-                    <tr
-                      key={row.token}
-                      className={`border-b border-[#c9a96e] last:border-b-0 hover:bg-[#e8e0d6]/30 transition-colors duration-500 ${
-                        i % 2 === 0 ? "bg-[#f8f6f3]" : "bg-[#faf8f5]"
-                      }`}
-                    >
-                      <td className="px-8 py-5 font-serif text-sm font-normal text-[#1a1a1a]">{row.token}</td>
-                      <td className="px-8 py-5 hidden md:table-cell">
-                        <code className="font-mono text-xs text-[#8a7968] bg-[#e8e0d6] px-3 py-1">
-                          {row.value}
-                        </code>
-                      </td>
-                      <td className="px-8 py-5 font-serif text-sm font-light text-[#8a7968] hidden lg:table-cell">
-                        {row.usage}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* Full-width gold divider */}
-      <GoldDivider />
-
-      {/* ============================================================= */}
-      {/* 10. Footer                                                     */}
-      {/* ============================================================= */}
-      <footer className="bg-[#f8f6f3] relative overflow-hidden">
-        <MarbleVeinPattern opacity={0.035} />
-        <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-16 py-24">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
-            {/* Brand column */}
-            <div>
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-8 h-[1px] bg-[#c9a96e]" />
-                <span className="font-serif text-xs tracking-[0.35em] uppercase text-[#8a7968]">
-                  StyleKit
+        <div className="max-w-7xl mx-auto px-8 md:px-16 pt-20 pb-14">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-14 mb-16">
+            {/* Brand */}
+            <div style={{ maxWidth: "320px" }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  style={{
+                    width: "1px",
+                    height: "32px",
+                    background: "linear-gradient(180deg, transparent, #c9a96e, transparent)",
+                  }}
+                />
+                <span
+                  className="text-sm tracking-[0.3em] uppercase"
+                  style={{ color: "#1a1a1a" }}
+                >
+                  Marble <span style={{ color: "#c9a96e" }}>Luxury</span>
                 </span>
               </div>
-              <h3 className="font-serif text-2xl font-light text-[#1a1a1a] mb-4">Marble Luxury</h3>
-              <p className="font-serif text-sm font-light leading-relaxed text-[#8a7968]">
-                A design system built on the philosophy of ancient Rome's most enduring material.
-                Silence, permanence, and absolute restraint.
+              <p
+                className="text-sm leading-relaxed mb-8"
+                style={{ color: "#8a7968", letterSpacing: "0.04em", lineHeight: "1.8" }}
+              >
+                A design language drawn from the timeless beauty of Italian
+                marble — restraint, quality, and enduring elegance.
               </p>
+              {/* Palette dots */}
+              <div className="flex gap-3">
+                {palette.map((s) => (
+                  <div
+                    key={s.name}
+                    title={s.name}
+                    style={{
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: s.hex,
+                      border: "1px solid rgba(201,169,110,0.2)",
+                    }}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Navigation column */}
-            <div>
-              <p className="font-serif text-[10px] tracking-[0.35em] uppercase text-[#8a7968] mb-8">Navigation</p>
-              <ul className="space-y-5">
-                {[
-                  { label: "Collection", href: "#collection" },
-                  { label: "Philosophy", href: "#philosophy" },
-                  { label: "Typography", href: "#typography" },
-                  { label: "Palette", href: "#palette" },
-                  { label: "All Styles", href: "/" },
-                ].map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="font-serif text-sm font-light text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500 flex items-center gap-3"
-                    >
-                      <span className="w-4 h-[1px] bg-[#c9a96e]" />
-                      {link.label}
-                    </a>
-                  </li>
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 text-sm">
+              <div className="flex flex-col gap-4">
+                <span
+                  className="text-xs tracking-[0.3em] uppercase mb-1"
+                  style={{ color: "#c9a96e" }}
+                >
+                  Style
+                </span>
+                <Link
+                  href="/styles/marble-luxury"
+                  className="ml-underline-center transition-colors duration-500"
+                  style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                >
+                  Documentation
+                </Link>
+                <Link
+                  href="/styles/marble-luxury/showcase"
+                  className="ml-underline-center transition-colors duration-500"
+                  style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                >
+                  Showcase
+                </Link>
+                <Link
+                  href="/styles/marble-luxury/cover"
+                  className="ml-underline-center transition-colors duration-500"
+                  style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                >
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <span
+                  className="text-xs tracking-[0.3em] uppercase mb-1"
+                  style={{ color: "#c9a96e" }}
+                >
+                  StyleKit
+                </span>
+                <Link
+                  href="/"
+                  className="ml-underline-center transition-colors duration-500"
+                  style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/styles"
+                  className="ml-underline-center transition-colors duration-500"
+                  style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                >
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <span
+                  className="text-xs tracking-[0.3em] uppercase mb-1"
+                  style={{ color: "#c9a96e" }}
+                >
+                  Palette
+                </span>
+                {palette.map((s) => (
+                  <span
+                    key={s.name}
+                    className="flex items-center gap-2 text-xs"
+                    style={{ color: "#8a7968", letterSpacing: "0.06em" }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: s.hex,
+                        border: "1px solid rgba(201,169,110,0.2)",
+                        flexShrink: 0,
+                      }}
+                    />
+                    {s.name}
+                  </span>
                 ))}
-              </ul>
-            </div>
-
-            {/* Philosophy column */}
-            <div>
-              <p className="font-serif text-[10px] tracking-[0.35em] uppercase text-[#8a7968] mb-8">
-                The Three Laws
-              </p>
-              <ul className="space-y-5">
-                {["Permanence over trend", "Restraint over ornament", "Silence over noise"].map((law) => (
-                  <li key={law} className="flex items-start gap-4">
-                    <div className="mt-2 w-4 h-[1px] bg-[#c9a96e] shrink-0" />
-                    <p className="font-serif text-sm font-light text-[#8a7968]">{law}</p>
-                  </li>
-                ))}
-              </ul>
+              </div>
             </div>
           </div>
 
-          {/* Bottom rule */}
-          <GoldDivider className="mb-10" />
+          {/* Divider */}
+          <div className="ml-gold-line-full mb-10" />
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <p className="font-serif text-xs font-light tracking-[0.15em] text-[#8a7968]">
-              StyleKit &mdash; Marble Luxury &mdash; 大理石奢华
-            </p>
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+            <div
+              className="text-xs tracking-[0.2em]"
+              style={{ color: "#8a7968" }}
+            >
+              Marble Luxury &mdash; a StyleKit design system
+            </div>
             <Link
               href="/"
-              className="font-serif text-xs tracking-[0.25em] uppercase text-[#8a7968] hover:text-[#c9a96e] transition-colors duration-500 flex items-center gap-3"
+              className="text-xs tracking-[0.2em] uppercase transition-all duration-500"
+              style={{ color: "#8a7968" }}
             >
-              <span className="text-[#c9a96e]">&#8592;</span>
-              Return to StyleKit
+              <span className="ml-underline-center">
+                &larr;&nbsp;Back to StyleKit
+              </span>
             </Link>
           </div>
         </div>

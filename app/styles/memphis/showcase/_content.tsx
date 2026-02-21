@@ -3,9 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
+/* ------------------------------------------------------------------ */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
+/* ------------------------------------------------------------------ */
+
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -21,6 +26,7 @@ function useInView(options = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -40,7 +46,7 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transform: inView ? "translateY(0)" : "translateY(32px)",
         transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
@@ -49,1170 +55,2921 @@ function RevealBlock({
   );
 }
 
-// Memphis geometric SVG background shapes
-function GeometricBackground() {
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Large circles */}
-      <div className="absolute top-16 left-[8%] w-28 h-28 bg-red-500 rounded-full border-4 border-black opacity-60" />
-      <div className="absolute top-36 right-[12%] w-20 h-20 bg-purple-500 rounded-full border-4 border-black opacity-50" />
-      <div className="absolute bottom-48 left-[22%] w-16 h-16 bg-green-400 rounded-full border-4 border-black opacity-60" />
-      <div className="absolute top-[60%] right-[6%] w-24 h-24 bg-pink-400 rounded-full border-4 border-black opacity-40" />
+/* ------------------------------------------------------------------ */
+/*  Memphis color constants                                             */
+/* ------------------------------------------------------------------ */
 
-      {/* Rotated squares */}
-      <div className="absolute top-[30%] left-[4%] w-16 h-16 bg-blue-500 border-4 border-black rotate-12 opacity-50" />
-      <div className="absolute bottom-36 right-[18%] w-20 h-20 bg-orange-400 border-4 border-black -rotate-6 opacity-50" />
-      <div className="absolute top-[70%] left-[55%] w-12 h-12 bg-cyan-400 border-4 border-black rotate-45 opacity-60" />
+const C = {
+  red: "#ff6b6b",
+  yellow: "#feca57",
+  cyan: "#48dbfb",
+  pink: "#ff9ff3",
+  green: "#1dd1a1",
+  purple: "#5f27cd",
+  black: "#000000",
+};
 
-      {/* Triangles via border trick */}
-      <div className="absolute top-44 right-[7%] w-0 h-0 border-l-[35px] border-l-transparent border-b-[60px] border-b-green-400 border-r-[35px] border-r-transparent opacity-50" />
-      <div className="absolute bottom-[55%] left-[7%] w-0 h-0 border-l-[28px] border-l-transparent border-b-[48px] border-b-pink-500 border-r-[28px] border-r-transparent rotate-45 opacity-40" />
-      <div className="absolute bottom-20 left-[40%] w-0 h-0 border-l-[22px] border-l-transparent border-b-[40px] border-b-yellow-400 border-r-[22px] border-r-transparent opacity-60" />
+/* ------------------------------------------------------------------ */
+/*  Inline SVG geometric accents                                        */
+/* ------------------------------------------------------------------ */
 
-      {/* Zigzag dots column */}
-      <div className="absolute top-[50%] right-[4%] flex flex-col gap-2">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className={`w-3 h-3 bg-black rounded-full ${i % 2 === 0 ? "ml-3" : ""}`}
-          />
-        ))}
-      </div>
-      <div className="absolute bottom-[30%] left-[2%] flex flex-col gap-2">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 bg-red-500 rounded-full ${i % 2 === 0 ? "ml-4" : ""}`}
-          />
-        ))}
-      </div>
-
-      {/* SVG squiggles */}
-      <svg
-        className="absolute top-[20%] left-[45%] opacity-30"
-        width="120"
-        height="40"
-        viewBox="0 0 120 40"
-        fill="none"
-      >
-        <path
-          d="M0 20 Q15 0 30 20 T60 20 T90 20 T120 20"
-          stroke="#000"
-          strokeWidth="4"
-          fill="none"
-        />
-      </svg>
-      <svg
-        className="absolute bottom-[20%] right-[30%] opacity-30"
-        width="100"
-        height="30"
-        viewBox="0 0 100 30"
-        fill="none"
-      >
-        <path
-          d="M0 15 Q12 0 25 15 T50 15 T75 15 T100 15"
-          stroke="#ff6b6b"
-          strokeWidth="4"
-          fill="none"
-        />
-      </svg>
-    </div>
-  );
-}
-
-// Section header with Memphis decoration
-function SectionHeader({
-  title,
-  subtitle,
-  accentColor = "bg-yellow-400",
+function CircleDecor({
+  size = 24,
+  color = C.red,
+  className = "",
 }: {
-  title: string;
-  subtitle?: string;
-  accentColor?: string;
+  size?: number;
+  color?: string;
+  className?: string;
 }) {
   return (
-    <div className="text-center mb-12">
-      <div className="inline-block relative">
-        <h2 className="text-4xl md:text-5xl font-black text-black uppercase tracking-tight">
-          {title}
-        </h2>
-        <div
-          className={`absolute -bottom-2 left-0 right-0 h-3 ${accentColor} border-2 border-black -z-10`}
-        />
-      </div>
-      {subtitle && (
-        <p className="mt-4 text-black/60 font-bold uppercase tracking-widest text-sm">
-          {subtitle}
-        </p>
-      )}
-    </div>
+    <span
+      className={className}
+      style={{
+        display: "inline-block",
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        backgroundColor: color,
+        border: "2px solid #000",
+        flexShrink: 0,
+      }}
+    />
   );
 }
 
-const memphisColors = [
-  { name: "Memphis Red", hex: "#ff6b6b", bg: "bg-[#ff6b6b]", label: "Primary" },
-  { name: "Memphis Yellow", hex: "#feca57", bg: "bg-[#feca57]", label: "Secondary" },
-  { name: "Memphis Cyan", hex: "#48dbfb", bg: "bg-[#48dbfb]", label: "Accent 1" },
-  { name: "Memphis Pink", hex: "#ff9ff3", bg: "bg-[#ff9ff3]", label: "Accent 2" },
-  { name: "Memphis Green", hex: "#1dd1a1", bg: "bg-[#1dd1a1]", label: "Accent 3" },
-  { name: "Memphis Purple", hex: "#5f27cd", bg: "bg-[#5f27cd]", label: "Accent 4" },
-  { name: "Memphis Orange", hex: "#ff9f43", bg: "bg-[#ff9f43]", label: "Warm" },
-  { name: "Memphis Black", hex: "#2d3436", bg: "bg-[#2d3436]", label: "Base" },
+function TriangleDecor({
+  size = 20,
+  color = C.cyan,
+  className = "",
+}: {
+  size?: number;
+  color?: string;
+  className?: string;
+}) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <polygon
+        points="10,2 18,18 2,18"
+        fill={color}
+        stroke="#000"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function DiamondDecor({
+  size = 20,
+  color = C.pink,
+  className = "",
+}: {
+  size?: number;
+  color?: string;
+  className?: string;
+}) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="3"
+        y="3"
+        width="14"
+        height="14"
+        fill={color}
+        stroke="#000"
+        strokeWidth="2"
+        transform="rotate(45 10 10)"
+      />
+    </svg>
+  );
+}
+
+function StarDecor({
+  size = 22,
+  color = C.yellow,
+  className = "",
+}: {
+  size?: number;
+  color?: string;
+  className?: string;
+}) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 22 22"
+      fill="none"
+      aria-hidden="true"
+    >
+      <polygon
+        points="11,2 13.5,8.5 20,9.5 15,14 16.5,21 11,17.5 5.5,21 7,14 2,9.5 8.5,8.5"
+        fill={color}
+        stroke="#000"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function WaveLine({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="120"
+      height="24"
+      viewBox="0 0 120 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M0 12 Q15 4 30 12 T60 12 T90 12 T120 12"
+        stroke="#000"
+        strokeWidth="2.5"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const paletteSwatches = [
+  { name: "Hot Red", hex: C.red, label: "Primary" },
+  { name: "Pop Yellow", hex: C.yellow, label: "Secondary" },
+  { name: "Cyber Cyan", hex: C.cyan, label: "Accent 1" },
+  { name: "Neon Pink", hex: C.pink, label: "Accent 2" },
+  { name: "Retro Green", hex: C.green, label: "Accent 3" },
+  { name: "Deep Purple", hex: C.purple, label: "Accent 4" },
 ];
 
-export default function MemphisShowcase() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(65);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(0);
-  const [copiedColor, setCopiedColor] = useState<string | null>(null);
+type ComponentTab = "buttons" | "cards" | "inputs" | "badges";
 
-  const { ref: heroRef, inView: heroInView } = useInView();
+const projectCards = [
+  {
+    title: "Brand Identity",
+    desc: "Loud, bold, geometric. Let your brand shout from every pixel.",
+    bg: C.yellow,
+    accent: C.red,
+    geo: "circle",
+    rotationClass: "-rotate-1",
+  },
+  {
+    title: "Event Poster",
+    desc: "Clashing colors and pattern chaos make every event unmissable.",
+    bg: C.cyan,
+    accent: C.purple,
+    geo: "triangle",
+    rotationClass: "rotate-1",
+  },
+  {
+    title: "App UI",
+    desc: "Playful interfaces that make users smile on every interaction.",
+    bg: C.pink,
+    accent: C.green,
+    geo: "diamond",
+    rotationClass: "-rotate-1",
+  },
+  {
+    title: "Editorial Layout",
+    desc: "Break the grid. Asymmetry and tension is the Memphis signature.",
+    bg: C.green,
+    accent: C.red,
+    geo: "star",
+    rotationClass: "rotate-2",
+  },
+];
 
-  const tabs = [
-    { label: "SHAPES", content: "circles" },
-    { label: "PATTERNS", content: "patterns" },
-    { label: "MOTIFS", content: "motifs" },
-  ] as const;
+const patternStripes = `repeating-linear-gradient(
+  45deg,
+  transparent,
+  transparent 8px,
+  rgba(0,0,0,0.12) 8px,
+  rgba(0,0,0,0.12) 10px
+)`;
 
-  const accordionItems = [
-    {
-      title: "WHAT IS MEMPHIS?",
-      content:
-        "Memphis Design is a postmodern design movement founded in Milan in 1981 by Ettore Sottsass. It challenged the clean lines of modernism with bold colors, asymmetric shapes, and pattern-rich surfaces that feel joyful and irreverent.",
-    },
-    {
-      title: "KEY VISUAL ELEMENTS",
-      content:
-        "Bright clashing colors, squiggles and zigzags, geometric shapes (circles, triangles, squares), terrazzo-like dot patterns, thick outlines, and playfully asymmetric compositions define the visual language.",
-    },
-    {
-      title: "MODERN RELEVANCE",
-      content:
-        "Memphis has made a dramatic comeback in digital interfaces, graphic design, and interior decor — inspiring a generation of designers to embrace joy, color, and visual abundance over restraint.",
-    },
-  ];
+const patternDots = `radial-gradient(#000 1.5px, transparent 1.5px)`;
 
-  function handleCopyColor(hex: string) {
-    navigator.clipboard.writeText(hex).catch(() => {});
-    setCopiedColor(hex);
-    setTimeout(() => setCopiedColor(null), 1500);
-  }
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
+
+export default function ShowcaseContent() {
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+  const [pressedBtn, setPressedBtn] = useState<string | null>(null);
+
+  // Playful Chaos — card hover state tracking
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  // Pop Swap demo state
+  const [popSwapHovered, setPopSwapHovered] = useState(false);
+
+  // Toy Button Physics — track which button is active
+  const [toyBtnActive, setToyBtnActive] = useState(false);
+
+  // Snappy Motion comparison
+  const [snappyMode, setSnappyMode] = useState<"snappy" | "slow" | null>(null);
+
+  // Playful Chaos demo grid
+  const [chaosHovered, setChaosHovered] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white text-black relative">
-      {/* Memphis decorative background */}
-      <GeometricBackground />
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: "#fffbe6", fontFamily: "system-ui, sans-serif" }}
+    >
+      <style>{`
+        @keyframes memphis-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes memphis-spin-rev {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(-360deg); }
+        }
+        @keyframes memphis-bounce {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes memphis-shake {
+          0%, 100% { transform: rotate(0deg); }
+          20% { transform: rotate(-5deg); }
+          40% { transform: rotate(5deg); }
+          60% { transform: rotate(-3deg); }
+          80% { transform: rotate(3deg); }
+        }
+        @keyframes memphis-strobe {
+          0%, 49% { background-color: ${C.yellow}; }
+          50%, 100% { background-color: ${C.pink}; }
+        }
+        @keyframes memphis-march {
+          from { background-position: 0 0; }
+          to { background-position: 20px 20px; }
+        }
+        .memphis-spin-slow { animation: memphis-spin 8s linear infinite; }
+        .memphis-spin-rev-slow { animation: memphis-spin-rev 12s linear infinite; }
+        .memphis-bounce-anim { animation: memphis-bounce 1.4s ease-in-out infinite; }
+        .memphis-shake-anim { animation: memphis-shake 0.5s ease-in-out; }
+        .memphis-march-anim { animation: memphis-march 1s linear infinite; }
 
-      {/* ================================================================
-          SECTION 1 — FIXED NAVIGATION BAR
-      ================================================================ */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-yellow-400 border-b-4 border-black">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-          {/* Back link */}
-          <Link
-            href="/styles/memphis"
-            className="group flex items-center gap-2 text-black font-black uppercase text-sm hover:text-red-600 transition-colors duration-150"
-          >
-            <svg
-              className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-150"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            <span>Back to Docs</span>
-          </Link>
+        /* Snappy motion helper */
+        .duration-snappy { transition-duration: 150ms !important; transition-timing-function: ease-out !important; }
+        .duration-slow { transition-duration: 800ms !important; transition-timing-function: ease !important; }
+      `}</style>
 
-          {/* Brand mark */}
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 bg-red-500 rounded-full border-2 border-black" />
-            <span className="font-black text-xl text-black uppercase tracking-widest hidden sm:block">
-              MEMPHIS
-            </span>
-            <div className="w-4 h-4 bg-cyan-400 border-2 border-black rotate-45" />
-            <div className="w-0 h-0 border-l-[10px] border-l-transparent border-b-[17px] border-b-pink-500 border-r-[10px] border-r-transparent" />
-          </div>
-
-          {/* All styles link */}
-          <Link
-            href="/styles"
-            className="px-4 py-2 bg-white border-4 border-black text-black text-sm font-black uppercase shadow-[4px_4px_0px_#000] hover:bg-pink-400 hover:shadow-[6px_6px_0px_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150"
-          >
-            All Styles
-          </Link>
-        </div>
-      </nav>
-
-      {/* ================================================================
-          SECTION 2 — HERO WITH GEOMETRIC PATTERN BACKGROUND
-      ================================================================ */}
-      <section className="relative z-10 min-h-screen flex items-center justify-center pt-20 pb-16 px-6 overflow-hidden">
-        {/* Dense pattern background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage:
-                "radial-gradient(#000 2px, transparent 2px)",
-              backgroundSize: "30px 30px",
-            }}
-          />
-          {/* Large accent shapes */}
-          <div className="absolute -top-12 -left-12 w-64 h-64 bg-yellow-300 rounded-full border-8 border-black opacity-70" />
-          <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-pink-300 border-8 border-black rotate-12 opacity-60" />
-          <div className="absolute top-1/3 -right-16 w-48 h-48 bg-cyan-300 rounded-full border-8 border-black opacity-50" />
-        </div>
-
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          backgroundColor: C.yellow,
+          borderBottom: "4px solid #000",
+          boxShadow: "0 4px 0 #000",
+        }}
+      >
         <div
-          ref={heroRef}
-          className="relative z-10 text-center max-w-4xl mx-auto"
           style={{
-            opacity: heroInView ? 1 : 0,
-            transform: heroInView ? "translateY(0)" : "translateY(40px)",
-            transition:
-              "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+            maxWidth: 1152,
+            margin: "0 auto",
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 64,
           }}
         >
-          {/* Decorative row */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-8 h-8 bg-red-500 rounded-full border-4 border-black" />
-            <div className="w-7 h-7 bg-cyan-400 border-4 border-black rotate-45" />
-            <div className="w-6 h-6 bg-pink-500 rounded-full border-4 border-black" />
-            <div className="w-0 h-0 border-l-[14px] border-l-transparent border-b-[24px] border-b-green-400 border-r-[14px] border-r-transparent" />
-            <div className="w-7 h-7 bg-yellow-400 border-4 border-black" />
-          </div>
-
-          {/* Main title */}
-          <h1
-            className="text-7xl sm:text-8xl md:text-[10rem] font-black text-black uppercase leading-none mb-4"
+          {/* Logo */}
+          <div
             style={{
-              textShadow: "6px 6px 0 #ff6b6b, 12px 12px 0 #48dbfb",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "6px 14px",
+              backgroundColor: C.red,
+              border: "3px solid #000",
+              boxShadow: "3px 3px 0 #000",
             }}
           >
-            MEMPHIS
+            <CircleDecor size={14} color={C.cyan} />
+            <span style={{ fontWeight: 900, color: "#fff", fontSize: 15, letterSpacing: 1 }}>
+              MEMPHIS
+            </span>
+          </div>
+
+          {/* Nav items */}
+          <nav style={{ display: "flex", gap: 4, alignItems: "center" }} className="hidden md:flex">
+            {["Palette", "Components", "Animations", "App Demo", "Philosophy"].map((item) => (
+              <span
+                key={item}
+                style={{
+                  padding: "6px 14px",
+                  fontWeight: 700,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  border: "2px solid transparent",
+                  transition: "all 150ms ease-out",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.backgroundColor = "#000";
+                  el.style.color = C.yellow;
+                  el.style.border = "2px solid #000";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.backgroundColor = "transparent";
+                  el.style.color = "#000";
+                  el.style.border = "2px solid transparent";
+                }}
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "8px 18px",
+              backgroundColor: C.purple,
+              border: "3px solid #000",
+              boxShadow: "4px 4px 0 #000",
+              color: "#fff",
+              fontWeight: 900,
+              fontSize: 13,
+              textDecoration: "none",
+              transition: "all 150ms ease-out",
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.backgroundColor = C.pink;
+              el.style.boxShadow = "6px 6px 0 #000";
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.backgroundColor = C.purple;
+              el.style.boxShadow = "4px 4px 0 #000";
+            }}
+          >
+            <span>&#8592;</span>
+            <span>StyleKit</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section
+        style={{
+          position: "relative",
+          paddingTop: 100,
+          paddingBottom: 80,
+          paddingLeft: 20,
+          paddingRight: 20,
+          overflow: "hidden",
+          background: `linear-gradient(135deg, ${C.yellow} 0%, ${C.pink} 50%, ${C.cyan} 100%)`,
+          borderBottom: "4px solid #000",
+        }}
+      >
+        {/* Scattered geometric background decorations */}
+        <div style={{ position: "absolute", top: 24, left: 40 }}>
+          <CircleDecor size={52} color={C.red} className="memphis-bounce-anim" />
+        </div>
+        <div style={{ position: "absolute", top: 80, right: 60 }}>
+          <DiamondDecor size={48} color={C.purple} className="memphis-spin-slow" />
+        </div>
+        <div style={{ position: "absolute", bottom: 40, left: 120 }}>
+          <TriangleDecor size={44} color={C.green} className="memphis-spin-rev-slow" />
+        </div>
+        <div style={{ position: "absolute", bottom: 60, right: 100 }}>
+          <StarDecor size={50} color={C.yellow} className="memphis-bounce-anim" />
+        </div>
+        <div style={{ position: "absolute", top: 160, left: "35%" }}>
+          <CircleDecor size={20} color={C.cyan} />
+        </div>
+        <div style={{ position: "absolute", top: 40, left: "55%" }}>
+          <TriangleDecor size={28} color={C.red} />
+        </div>
+        <div style={{ position: "absolute", bottom: 20, left: "65%" }}>
+          <DiamondDecor size={26} color={C.yellow} />
+        </div>
+
+        {/* Dot pattern overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: patternDots,
+            backgroundSize: "20px 20px",
+            opacity: 0.06,
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Hero content */}
+        <div
+          style={{
+            maxWidth: 1152,
+            margin: "0 auto",
+            textAlign: "center",
+            position: "relative",
+          }}
+        >
+          {/* Eyebrow badge */}
+          <div
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0s",
+              marginBottom: 24,
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 18px",
+                backgroundColor: "#000",
+                color: C.yellow,
+                fontWeight: 900,
+                fontSize: 12,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                border: "3px solid #000",
+                boxShadow: "4px 4px 0 " + C.red,
+              }}
+            >
+              <CircleDecor size={8} color={C.red} />
+              孟菲斯设计风格 — Memphis
+              <CircleDecor size={8} color={C.cyan} />
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1
+            style={{
+              fontSize: "clamp(52px, 9vw, 108px)",
+              fontWeight: 900,
+              lineHeight: 1,
+              letterSpacing: "-2px",
+              color: "#000",
+              marginBottom: 16,
+              textShadow: `5px 5px 0 ${C.red}, 10px 10px 0 ${C.cyan}`,
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+            }}
+          >
+            BREAK
+            <br />
+            THE RULES.
           </h1>
 
-          <p className="text-sm font-black text-black/50 uppercase tracking-[0.5em] mb-3">
-            Design Movement Since 1981
+          {/* Sub */}
+          <p
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: "#000",
+              maxWidth: 520,
+              margin: "0 auto 32px",
+              lineHeight: 1.5,
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
+            }}
+          >
+            80s Italian design rebellion. Bold geometry, clashing colors,
+            irregular shapes — design should be fun, loud, and unapologetic.
           </p>
 
-          <p className="text-lg md:text-xl font-bold text-black/70 max-w-2xl mx-auto mb-10">
-            Chaos is beautiful. Bold colors, geometric madness, and playful
-            patterns define a design philosophy that says{" "}
-            <strong className="text-red-500">rules are made to be broken.</strong>
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <button className="group relative px-10 py-5 bg-yellow-400 border-4 border-black text-black font-black uppercase text-lg shadow-[8px_8px_0px_#000] hover:bg-pink-400 hover:shadow-[10px_10px_0px_#000] hover:-translate-y-1 hover:-rotate-1 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all duration-150 ease-out">
-              <span className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full border-2 border-black group-hover:scale-125 transition-transform duration-150" />
-              <span className="absolute -bottom-3 -left-3 w-5 h-5 bg-cyan-400 border-2 border-black group-hover:-translate-x-2 group-hover:rotate-45 transition-all duration-150" />
-              Explore Now
+          {/* CTA buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              justifyContent: "center",
+              flexWrap: "wrap",
+              marginBottom: 60,
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+            }}
+          >
+            {/* Primary — Toy Button Physics */}
+            <button
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "14px 32px",
+                backgroundColor: C.yellow,
+                border: "4px solid #000",
+                boxShadow: pressedBtn === "hero-primary" ? "0 0 0 #000" : "6px 6px 0 #000",
+                fontWeight: 900,
+                fontSize: 16,
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transform: pressedBtn === "hero-primary" ? "translate(6px, 6px)" : "translate(0,0)",
+                transition: "all 150ms ease-out",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = C.pink;
+                (e.currentTarget as HTMLElement).style.boxShadow = "8px 8px 0 #000";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = C.yellow;
+                if (pressedBtn !== "hero-primary") {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #000";
+                }
+              }}
+              onMouseDown={() => setPressedBtn("hero-primary")}
+              onMouseUp={() => setPressedBtn(null)}
+            >
+              <CircleDecor size={10} color={C.red} />
+              Explore Memphis
             </button>
-            <button className="group relative px-10 py-5 bg-cyan-400 border-4 border-black text-black font-black uppercase text-lg shadow-[8px_8px_0px_#000] hover:bg-yellow-400 hover:shadow-[10px_10px_0px_#000] active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all duration-150 ease-out">
-              <span className="absolute -top-3 -right-3 w-0 h-0 border-l-[12px] border-l-transparent border-b-[20px] border-b-green-500 border-r-[12px] border-r-transparent group-hover:rotate-180 transition-transform duration-150" />
-              View Palette
+
+            {/* Secondary */}
+            <button
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "14px 32px",
+                backgroundColor: "#fff",
+                border: "4px solid #000",
+                boxShadow: "6px 6px 0 #000",
+                fontWeight: 900,
+                fontSize: 16,
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "all 150ms ease-out",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = C.cyan;
+                (e.currentTarget as HTMLElement).style.boxShadow = "8px 8px 0 #000";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "#fff";
+                (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #000";
+              }}
+            >
+              <TriangleDecor size={14} color={C.purple} />
+              View Components
             </button>
           </div>
 
-          {/* Hero squiggle divider */}
-          <div className="mt-16">
-            <svg
-              className="w-full max-w-lg mx-auto"
-              height="20"
-              viewBox="0 0 400 20"
-              fill="none"
-            >
-              <path
-                d="M0 10 Q20 0 40 10 T80 10 T120 10 T160 10 T200 10 T240 10 T280 10 T320 10 T360 10 T400 10"
-                stroke="#000"
-                strokeWidth="3"
-                fill="none"
-              />
-            </svg>
+          {/* Stats row */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 12,
+              maxWidth: 800,
+              margin: "0 auto",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
+            }}
+          >
+            {[
+              { value: "1980s", label: "Italian Origin", bg: C.red },
+              { value: "∞", label: "Color Combos", bg: C.purple },
+              { value: "100%", label: "Fun Guaranteed", bg: C.green },
+              { value: "0", label: "Boring Allowed", bg: C.cyan },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                style={{
+                  backgroundColor: stat.bg,
+                  border: "3px solid #000",
+                  boxShadow: "4px 4px 0 #000",
+                  padding: "16px 8px",
+                  textAlign: "center",
+                  cursor: "default",
+                  transition: "all 150ms ease-out",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #000";
+                  (e.currentTarget as HTMLElement).style.transform = "translate(-1px, -1px)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #000";
+                  (e.currentTarget as HTMLElement).style.transform = "translate(0, 0)";
+                }}
+              >
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", textShadow: "2px 2px 0 rgba(0,0,0,0.3)" }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ================================================================
-          SECTION 3 — COMPONENT DEMOS (BUTTON, CARD, INPUT)
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="Components"
-              subtitle="Bold, thick-bordered, and unapologetically colorful"
-              accentColor="bg-pink-400"
-            />
-          </RevealBlock>
-
-          {/* BUTTONS */}
-          <RevealBlock delay={0.1} className="mb-12">
-            <div className="relative p-8 bg-pink-300 border-4 border-black shadow-[8px_8px_0px_#000]">
-              {/* Corner decorations */}
-              <div className="absolute -top-5 -left-5 w-10 h-10 bg-yellow-400 rounded-full border-4 border-black" />
-              <div className="absolute -top-3 -right-3 w-0 h-0 border-l-[15px] border-l-transparent border-b-[26px] border-b-cyan-400 border-r-[15px] border-r-transparent" />
-
-              <p className="text-sm font-black text-black uppercase tracking-widest mb-8">
-                Button Variants
-              </p>
-
-              <div className="flex flex-wrap gap-5">
-                {/* Primary — full Memphis spec */}
-                <button className="group relative px-8 py-4 bg-yellow-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:bg-pink-400 hover:shadow-[8px_8px_0px_#000] hover:-translate-y-1 hover:-rotate-2 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
-                  <span className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 rounded-full border-2 border-black group-hover:scale-125 transition-transform duration-150" />
-                  <span className="absolute -bottom-2 -left-2 w-4 h-4 bg-cyan-400 border-2 border-black group-hover:-translate-x-2 group-hover:rotate-45 transition-all duration-150" />
-                  Primary
-                </button>
-
-                {/* Secondary */}
-                <button className="group relative px-8 py-4 bg-cyan-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:bg-yellow-400 hover:shadow-[8px_8px_0px_#000] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
-                  <span className="absolute -top-3 -right-3 w-5 h-5 bg-purple-500 border-2 border-black rotate-45 group-hover:rotate-90 transition-transform duration-150" />
-                  Secondary
-                </button>
-
-                {/* Danger */}
-                <button className="group relative px-8 py-4 bg-red-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:bg-red-500 hover:shadow-[8px_8px_0px_#000] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
-                  Danger
-                </button>
-
-                {/* Success */}
-                <button className="group relative px-8 py-4 bg-green-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:bg-green-500 hover:shadow-[8px_8px_0px_#000] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
-                  <span className="absolute -bottom-3 -right-3 w-6 h-6 bg-yellow-400 rounded-full border-2 border-black group-hover:translate-x-1 group-hover:-translate-y-2 transition-transform duration-150" />
-                  Success
-                </button>
-              </div>
-
-              {/* Size variants */}
-              <p className="text-sm font-black text-black uppercase tracking-widest mt-10 mb-6">
-                Sizes
-              </p>
-              <div className="flex flex-wrap items-center gap-4">
-                <button className="px-4 py-2 text-xs bg-purple-400 border-4 border-black text-black font-black uppercase shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none transition-all duration-150">
-                  Small
-                </button>
-                <button className="px-6 py-3 text-sm bg-purple-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none transition-all duration-150">
-                  Medium
-                </button>
-                <button className="px-10 py-5 text-lg bg-purple-400 border-4 border-black text-black font-black uppercase shadow-[8px_8px_0px_#000] hover:shadow-[4px_4px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none transition-all duration-150">
-                  Large
-                </button>
-              </div>
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section style={{ padding: "80px 20px", backgroundColor: "#fff", borderBottom: "4px solid #000" }}>
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-4">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <WaveLine />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.red,
+                }}
+              >
+                Palette
+              </span>
             </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#000",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.yellow}`,
+              }}
+            >
+              SIX BOLD COLORS
+            </h2>
           </RevealBlock>
 
-          {/* CARDS */}
-          <RevealBlock delay={0.15} className="mb-12">
-            <p className="text-sm font-black text-black uppercase tracking-widest mb-6">
-              Card Components
+          <RevealBlock delay={0.05} className="mb-12">
+            <p style={{ fontSize: 17, fontWeight: 600, color: "#333", maxWidth: 500, lineHeight: 1.6 }}>
+              High-saturation clashing hues straight from the 1980s Italian design scene.
+              Every color fights for attention — and that is the point.
             </p>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "ENERGY",
-                  desc: "Bold design that commands attention and radiates visual power.",
-                  bg: "bg-pink-300",
-                  dotColor: "bg-yellow-400",
-                  triColor: "border-b-cyan-400",
-                },
-                {
-                  title: "SHAPES",
-                  desc: "Geometric elements that bring chaos and joy in equal measure.",
-                  bg: "bg-yellow-300",
-                  dotColor: "bg-red-500",
-                  triColor: "border-b-pink-500",
-                },
-                {
-                  title: "PATTERNS",
-                  desc: "Squiggles, dots, and zigzags layered into visual excitement.",
-                  bg: "bg-cyan-300",
-                  dotColor: "bg-purple-500",
-                  triColor: "border-b-green-400",
-                },
-              ].map((card, i) => (
+          </RevealBlock>
+
+          {/* Swatch row */}
+          <RevealBlock delay={0.1}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 16,
+                marginBottom: 48,
+              }}
+            >
+              {paletteSwatches.map((swatch, i) => (
                 <div
-                  key={i}
-                  className={`group relative p-7 ${card.bg} border-4 border-black shadow-[8px_8px_0px_#000] hover:shadow-[12px_12px_0px_#000] hover:-translate-y-2 hover:-rotate-1 transition-all duration-200 ease-out cursor-pointer`}
+                  key={swatch.name}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
                 >
-                  {/* Playful Chaos: each shape moves in its own direction */}
                   <div
-                    className={`absolute -top-4 -left-4 w-10 h-10 ${card.dotColor} rounded-full border-2 border-black group-hover:translate-x-4 group-hover:-translate-y-2 transition-transform duration-200 ease-out`}
+                    style={{
+                      width: 88,
+                      height: 88,
+                      backgroundColor: swatch.hex,
+                      border: "4px solid #000",
+                      boxShadow:
+                        hoveredSwatch === i
+                          ? "8px 8px 0 #000"
+                          : "4px 4px 0 #000",
+                      transform:
+                        hoveredSwatch === i
+                          ? "translate(-2px, -2px)"
+                          : "translate(0, 0)",
+                      transition: "all 150ms ease-out",
+                    }}
                   />
-                  <div
-                    className={`absolute -bottom-3 -right-3 w-0 h-0 border-l-[20px] border-l-transparent border-b-[30px] ${card.triColor} border-r-[20px] border-r-transparent group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:rotate-12 transition-all duration-200 ease-out`}
-                  />
-                  <div className="w-14 h-14 bg-black border-4 border-black flex items-center justify-center mb-5 group-hover:rotate-12 transition-transform duration-200 ease-out">
-                    <div className="w-6 h-6 bg-white rounded-sm" />
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: "#000" }}>
+                      {swatch.name}
+                    </div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "#555", fontFamily: "monospace", marginTop: 2 }}>
+                      {swatch.hex}
+                    </div>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        marginTop: 4,
+                        padding: "2px 8px",
+                        backgroundColor: swatch.hex,
+                        border: "2px solid #000",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#000",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {swatch.label}
+                    </span>
                   </div>
-                  <h3 className="text-2xl font-black text-black uppercase mb-3 group-hover:text-white transition-colors duration-150">
-                    {card.title}
-                  </h3>
-                  <p className="text-black/70 font-medium mb-4 group-hover:bg-yellow-400 group-hover:text-black transition-colors duration-150 px-1">
-                    {card.desc}
-                  </p>
-                  <span className="text-sm font-black uppercase underline text-black hover:text-red-600 transition-colors duration-150">
-                    Learn More
-                  </span>
                 </div>
               ))}
             </div>
           </RevealBlock>
 
-          {/* INPUT */}
+          {/* Pattern sampler */}
           <RevealBlock delay={0.2}>
-            <div className="relative p-8 bg-white border-4 border-black shadow-[8px_8px_0px_#000] max-w-xl">
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full border-2 border-black" />
-              <div className="absolute -bottom-3 -left-3 w-0 h-0 border-l-[16px] border-l-transparent border-b-[28px] border-b-pink-400 border-r-[16px] border-r-transparent" />
-
-              <p className="text-sm font-black text-black uppercase tracking-widest mb-6">
-                Input Fields
+            <div
+              style={{
+                border: "4px solid #000",
+                boxShadow: "8px 8px 0 #000",
+                padding: 32,
+                backgroundColor: "#fffbe6",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "#555",
+                  marginBottom: 20,
+                }}
+              >
+                Memphis pattern library
               </p>
-
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-sm font-black text-black uppercase mb-2">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Type here..."
-                    className="w-full px-6 py-4 bg-white border-4 border-black text-black font-bold placeholder-gray-400 shadow-[4px_4px_0px_#48dbfb] focus:shadow-[4px_4px_0px_#ff6b6b] focus:outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-black text-black uppercase mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="hello@memphis.design"
-                    className="w-full px-6 py-4 bg-yellow-50 border-4 border-black text-black font-bold placeholder-gray-400 shadow-[4px_4px_0px_#feca57] focus:shadow-[4px_4px_0px_#ff9ff3] focus:outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-black text-black uppercase mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Say something bold..."
-                    className="w-full px-6 py-4 bg-pink-50 border-4 border-black text-black font-bold placeholder-gray-400 shadow-[4px_4px_0px_#1dd1a1] focus:shadow-[4px_4px_0px_#5f27cd] focus:outline-none transition-all resize-none"
-                  />
-                </div>
-                <button className="w-full py-4 bg-green-400 border-4 border-black text-black font-black uppercase shadow-[6px_6px_0px_#000] hover:bg-yellow-400 hover:shadow-[8px_8px_0px_#000] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150">
-                  Submit
-                </button>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 16,
+                }}
+              >
+                {[
+                  {
+                    label: "Diagonal Stripes",
+                    bg: patternStripes,
+                    bgColor: C.yellow,
+                  },
+                  {
+                    label: "Dot Grid",
+                    bg: patternDots,
+                    bgColor: C.cyan,
+                    bgSize: "16px 16px",
+                  },
+                  {
+                    label: "Color Block",
+                    bg: `linear-gradient(90deg, ${C.red} 33%, ${C.yellow} 33%, ${C.yellow} 66%, ${C.purple} 66%)`,
+                    bgColor: "transparent",
+                  },
+                ].map((p) => (
+                  <div key={p.label}>
+                    <div
+                      style={{
+                        height: 72,
+                        backgroundColor: p.bgColor,
+                        backgroundImage: p.bg,
+                        backgroundSize: p.bgSize ?? "auto",
+                        border: "3px solid #000",
+                        boxShadow: "3px 3px 0 #000",
+                        marginBottom: 8,
+                        transition: "all 150ms ease-out",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 #000";
+                        (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #000";
+                        (e.currentTarget as HTMLElement).style.transform = "translate(0,0)";
+                      }}
+                    />
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#555", textAlign: "center" }}>
+                      {p.label}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ================================================================
-          SECTION 4 — PATTERN / SHAPE SHOWCASE
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-yellow-300 border-y-4 border-black overflow-hidden">
-        {/* Pattern overlay */}
-        <div
-          className="absolute inset-0 opacity-20 pointer-events-none"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, transparent, transparent 14px, #000 14px, #000 16px)",
-          }}
-        />
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
+      {/* ================================================================ */}
+      <section
+        style={{
+          padding: "80px 20px",
+          backgroundColor: C.cyan,
+          borderBottom: "4px solid #000",
+          backgroundImage: patternStripes,
+        }}
+      >
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-4">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <TriangleDecor size={22} color={C.red} />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "#000",
+                }}
+              >
+                Components
+              </span>
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#000",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.red}`,
+              }}
+            >
+              BUILDING BLOCKS
+            </h2>
+          </RevealBlock>
 
-        <div className="relative max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="Shapes & Patterns"
-              subtitle="The geometric vocabulary of Memphis design"
-              accentColor="bg-red-500"
-            />
+          <RevealBlock delay={0.05} className="mb-8">
+            <p style={{ fontSize: 17, fontWeight: 600, color: "#000", maxWidth: 500, lineHeight: 1.6 }}>
+              Each component is thick-bordered, hard-shadowed, and ready to clash.
+              Pop Swap color transitions on every hover state.
+            </p>
           </RevealBlock>
 
           {/* Tabs */}
-          <RevealBlock delay={0.1} className="mb-8">
-            <div className="flex flex-wrap gap-3">
-              {tabs.map((tab, i) => (
+          <RevealBlock delay={0.1} className="mb-6">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {(["buttons", "cards", "inputs", "badges"] as ComponentTab[]).map((tab) => (
                 <button
-                  key={i}
-                  onClick={() => setActiveTab(i)}
-                  className={`px-6 py-3 font-black uppercase text-sm border-4 border-black transition-all duration-150 ${
-                    activeTab === i
-                      ? "bg-black text-white shadow-[4px_4px_0px_#ff6b6b]"
-                      : "bg-white text-black shadow-[4px_4px_0px_#000] hover:bg-yellow-400"
-                  }`}
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    padding: "10px 22px",
+                    fontWeight: 900,
+                    fontSize: 13,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    cursor: "pointer",
+                    border: "3px solid #000",
+                    boxShadow: activeTab === tab ? "0 0 0 #000" : "4px 4px 0 #000",
+                    transform: activeTab === tab ? "translate(4px, 4px)" : "translate(0, 0)",
+                    backgroundColor: activeTab === tab ? "#000" : C.yellow,
+                    color: activeTab === tab ? C.yellow : "#000",
+                    transition: "all 150ms ease-out",
+                  }}
                 >
-                  {tab.label}
+                  {tab}
                 </button>
               ))}
             </div>
           </RevealBlock>
 
-          {/* Tab content panels */}
+          {/* Demo panel */}
           <RevealBlock delay={0.15}>
-            <div className="p-8 bg-white border-4 border-black shadow-[8px_8px_0px_#000] min-h-[260px]">
-              {activeTab === 0 && (
-                <div>
-                  <p className="font-black text-black uppercase mb-6 tracking-widest text-sm">
-                    Geometric Circles
-                  </p>
-                  <div className="flex flex-wrap gap-6 items-end">
-                    <div className="w-8 h-8 bg-red-500 rounded-full border-4 border-black" />
-                    <div className="w-14 h-14 bg-yellow-400 rounded-full border-4 border-black" />
-                    <div className="w-20 h-20 bg-cyan-400 rounded-full border-4 border-black" />
-                    <div className="w-28 h-28 bg-pink-400 rounded-full border-4 border-black" />
-                    <div className="w-16 h-16 bg-green-400 rounded-full border-4 border-black" />
-                    <div className="w-10 h-10 bg-purple-500 rounded-full border-4 border-black" />
-                  </div>
-                  <p className="mt-6 text-black/60 font-medium">
-                    Circles of varying sizes create rhythm and visual movement across compositions.
-                  </p>
-                </div>
-              )}
-              {activeTab === 1 && (
-                <div>
-                  <p className="font-black text-black uppercase mb-6 tracking-widest text-sm">
-                    Surface Patterns
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <div
-                        className="w-full h-20 border-4 border-black mb-2"
-                        style={{
-                          backgroundImage: "radial-gradient(#000 2px, transparent 2px)",
-                          backgroundSize: "12px 12px",
-                        }}
-                      />
-                      <p className="text-xs font-black uppercase">Dots</p>
-                    </div>
-                    <div>
-                      <div
-                        className="w-full h-20 border-4 border-black mb-2"
-                        style={{
-                          backgroundImage:
-                            "repeating-linear-gradient(45deg, transparent, transparent 8px, #ff6b6b 8px, #ff6b6b 10px)",
-                        }}
-                      />
-                      <p className="text-xs font-black uppercase">Stripes</p>
-                    </div>
-                    <div>
-                      <div
-                        className="w-full h-20 border-4 border-black mb-2 bg-yellow-200"
-                        style={{
-                          backgroundImage:
-                            "repeating-linear-gradient(0deg, #000 0px, #000 2px, transparent 2px, transparent 16px), repeating-linear-gradient(90deg, #000 0px, #000 2px, transparent 2px, transparent 16px)",
-                        }}
-                      />
-                      <p className="text-xs font-black uppercase">Grid</p>
-                    </div>
-                    <div>
-                      <div
-                        className="w-full h-20 border-4 border-black mb-2 bg-cyan-200 flex flex-wrap content-start gap-0"
-                        style={{
-                          backgroundImage:
-                            "repeating-linear-gradient(-45deg, transparent, transparent 6px, #5f27cd 6px, #5f27cd 8px)",
-                        }}
-                      />
-                      <p className="text-xs font-black uppercase">Diagonal</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {activeTab === 2 && (
-                <div>
-                  <p className="font-black text-black uppercase mb-6 tracking-widest text-sm">
-                    Memphis Motifs
-                  </p>
-                  <div className="flex flex-wrap gap-8 items-center">
-                    {/* Triangle */}
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-0 h-0 border-l-[30px] border-l-transparent border-b-[52px] border-b-green-400 border-r-[30px] border-r-transparent" />
-                      <p className="text-xs font-black uppercase">Triangle</p>
-                    </div>
-                    {/* Diamond */}
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 bg-yellow-400 border-4 border-black rotate-45" />
-                      <p className="text-xs font-black uppercase">Diamond</p>
-                    </div>
-                    {/* Star points */}
-                    <div className="flex flex-col items-center gap-2">
-                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                        <polygon
-                          points="24,2 29,17 44,17 32,27 37,42 24,33 11,42 16,27 4,17 19,17"
-                          fill="#ff9ff3"
-                          stroke="#000"
-                          strokeWidth="3"
-                        />
-                      </svg>
-                      <p className="text-xs font-black uppercase">Star</p>
-                    </div>
-                    {/* Squiggle */}
-                    <div className="flex flex-col items-center gap-2">
-                      <svg width="80" height="32" viewBox="0 0 80 32" fill="none">
-                        <path
-                          d="M0 16 Q10 0 20 16 T40 16 T60 16 T80 16"
-                          stroke="#ff6b6b"
-                          strokeWidth="5"
-                          strokeLinecap="round"
-                          fill="none"
-                        />
-                      </svg>
-                      <p className="text-xs font-black uppercase">Squiggle</p>
-                    </div>
-                    {/* Zigzag */}
-                    <div className="flex flex-col items-center gap-2">
-                      <svg width="80" height="32" viewBox="0 0 80 32" fill="none">
-                        <polyline
-                          points="0,28 16,4 32,28 48,4 64,28 80,4"
-                          stroke="#48dbfb"
-                          strokeWidth="5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          fill="none"
-                        />
-                      </svg>
-                      <p className="text-xs font-black uppercase">Zigzag</p>
+            <div
+              style={{
+                backgroundColor: "#fff",
+                border: "4px solid #000",
+                boxShadow: "8px 8px 0 #000",
+                padding: "40px 40px",
+              }}
+            >
+              {/* ---- BUTTONS TAB ---- */}
+              {activeTab === "buttons" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+                  {/* Primary buttons */}
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        color: "#555",
+                        marginBottom: 16,
+                      }}
+                    >
+                      Primary — Toy Button Physics + Pop Swap
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+                      {[
+                        { label: "Click Me!", bg: C.yellow, hoverBg: C.pink, shadowColor: "#000" },
+                        { label: "Go Bold!", bg: C.red, hoverBg: C.cyan, shadowColor: "#000" },
+                        { label: "Memphis!", bg: C.purple, hoverBg: C.green, shadowColor: "#000" },
+                      ].map(({ label, bg, hoverBg }) => {
+                        const id = `btn-${label}`;
+                        return (
+                          <button
+                            key={label}
+                            style={{
+                              position: "relative",
+                              padding: "14px 28px",
+                              backgroundColor: pressedBtn === id ? hoverBg : bg,
+                              border: "4px solid #000",
+                              boxShadow:
+                                pressedBtn === id
+                                  ? "0 0 0 #000"
+                                  : "6px 6px 0 #000",
+                              fontWeight: 900,
+                              fontSize: 15,
+                              textTransform: "uppercase",
+                              color: "#000",
+                              cursor: "pointer",
+                              transform:
+                                pressedBtn === id
+                                  ? "translate(6px, 6px)"
+                                  : "translate(0, 0)",
+                              transition: "all 150ms ease-out",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (pressedBtn !== id) {
+                                (e.currentTarget as HTMLElement).style.backgroundColor = hoverBg;
+                                (e.currentTarget as HTMLElement).style.boxShadow = "8px 8px 0 #000";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (pressedBtn !== id) {
+                                (e.currentTarget as HTMLElement).style.backgroundColor = bg;
+                                (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #000";
+                              }
+                            }}
+                            onMouseDown={() => setPressedBtn(id)}
+                            onMouseUp={() => setPressedBtn(null)}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </RevealBlock>
 
-          {/* Decorative pattern row */}
-          <RevealBlock delay={0.2} className="mt-12">
-            <div className="flex items-center gap-0 overflow-hidden border-4 border-black">
-              {["bg-red-500", "bg-yellow-400", "bg-cyan-400", "bg-pink-400", "bg-green-400", "bg-purple-500", "bg-orange-400", "bg-blue-500"].map(
-                (color, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 h-16 ${color} flex items-center justify-center`}
-                  >
-                    {i % 2 === 0 ? (
-                      <div className="w-6 h-6 bg-black rounded-full" />
-                    ) : (
-                      <div className="w-0 h-0 border-l-[12px] border-l-transparent border-b-[20px] border-b-black border-r-[12px] border-r-transparent" />
-                    )}
+                  {/* Outline + icon buttons */}
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        color: "#555",
+                        marginBottom: 16,
+                      }}
+                    >
+                      With geometric accents
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+                      <button
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "12px 24px",
+                          backgroundColor: C.cyan,
+                          border: "4px solid #000",
+                          boxShadow: "6px 6px 0 #000",
+                          fontWeight: 900,
+                          fontSize: 14,
+                          textTransform: "uppercase",
+                          cursor: "pointer",
+                          transition: "all 150ms ease-out",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.backgroundColor = C.pink;
+                          el.style.boxShadow = "8px 8px 0 #000";
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.backgroundColor = C.cyan;
+                          el.style.boxShadow = "6px 6px 0 #000";
+                        }}
+                      >
+                        <CircleDecor size={12} color={C.red} />
+                        Circle
+                      </button>
+
+                      <button
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "12px 24px",
+                          backgroundColor: C.green,
+                          border: "4px solid #000",
+                          boxShadow: "6px 6px 0 #000",
+                          fontWeight: 900,
+                          fontSize: 14,
+                          textTransform: "uppercase",
+                          cursor: "pointer",
+                          transition: "all 150ms ease-out",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.backgroundColor = C.yellow;
+                          el.style.boxShadow = "8px 8px 0 #000";
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.backgroundColor = C.green;
+                          el.style.boxShadow = "6px 6px 0 #000";
+                        }}
+                      >
+                        <TriangleDecor size={14} color={C.purple} />
+                        Triangle
+                      </button>
+
+                      <button
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "12px 24px",
+                          backgroundColor: "#000",
+                          border: "4px solid #000",
+                          boxShadow: `6px 6px 0 ${C.yellow}`,
+                          fontWeight: 900,
+                          fontSize: 14,
+                          textTransform: "uppercase",
+                          color: "#fff",
+                          cursor: "pointer",
+                          transition: "all 150ms ease-out",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.boxShadow = `8px 8px 0 ${C.red}`;
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.boxShadow = `6px 6px 0 ${C.yellow}`;
+                        }}
+                      >
+                        <StarDecor size={14} color={C.yellow} />
+                        Star
+                      </button>
+                    </div>
                   </div>
-                )
+
+                  {/* Size variants */}
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        color: "#555",
+                        marginBottom: 16,
+                      }}
+                    >
+                      Size variants
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+                      {[
+                        { size: "SM", padding: "8px 16px", fontSize: 11, shadow: "3px 3px 0 #000" },
+                        { size: "MD", padding: "12px 24px", fontSize: 14, shadow: "5px 5px 0 #000" },
+                        { size: "LG", padding: "18px 36px", fontSize: 17, shadow: "7px 7px 0 #000" },
+                      ].map(({ size, padding, fontSize, shadow }) => (
+                        <button
+                          key={size}
+                          style={{
+                            padding,
+                            backgroundColor: C.yellow,
+                            border: "4px solid #000",
+                            boxShadow: shadow,
+                            fontWeight: 900,
+                            fontSize,
+                            textTransform: "uppercase",
+                            cursor: "pointer",
+                            transition: "all 150ms ease-out",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.backgroundColor = C.pink;
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.backgroundColor = C.yellow;
+                          }}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- CARDS TAB ---- */}
+              {activeTab === "cards" && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                    gap: 20,
+                  }}
+                >
+                  {projectCards.map((card, i) => (
+                    <div
+                      key={card.title}
+                      className={`group ${card.rotationClass}`}
+                      style={{
+                        position: "relative",
+                        padding: 28,
+                        backgroundColor: card.bg,
+                        border: "4px solid #000",
+                        boxShadow:
+                          hoveredCard === i
+                            ? "12px 12px 0 #000"
+                            : "8px 8px 0 #000",
+                        transform:
+                          hoveredCard === i
+                            ? "translate(-2px, -2px)"
+                            : "translate(0, 0)",
+                        cursor: "pointer",
+                        transition: "all 200ms ease-out",
+                      }}
+                      onMouseEnter={() => setHoveredCard(i)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                    >
+                      {/* Playful Chaos — each shape moves independently */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: -16,
+                          left: -16,
+                          transition: "transform 200ms ease-out",
+                          transform:
+                            hoveredCard === i
+                              ? "translate(16px, -8px)"
+                              : "translate(0, 0)",
+                        }}
+                      >
+                        <CircleDecor size={32} color={card.accent} />
+                      </div>
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: -12,
+                          right: -12,
+                          transition: "transform 200ms ease-out",
+                          transform:
+                            hoveredCard === i
+                              ? "translate(-8px, 8px) rotate(20deg)"
+                              : "translate(0, 0) rotate(0deg)",
+                        }}
+                      >
+                        <TriangleDecor size={28} color="#000" />
+                      </div>
+
+                      <h4
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 900,
+                          color: "#000",
+                          marginBottom: 8,
+                          marginTop: 12,
+                          textTransform: "uppercase",
+                          letterSpacing: "-0.5px",
+                          transition: "color 150ms ease-out",
+                        }}
+                      >
+                        {card.title}
+                      </h4>
+                      <p
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#000",
+                          lineHeight: 1.5,
+                          opacity: 0.8,
+                        }}
+                      >
+                        {card.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- INPUTS TAB ---- */}
+              {activeTab === "inputs" && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: 24,
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 12,
+                          fontWeight: 900,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "#000",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Type loudly..."
+                        style={{
+                          width: "100%",
+                          padding: "12px 18px",
+                          backgroundColor: "#fff",
+                          border: "4px solid #000",
+                          boxShadow: `4px 4px 0 ${C.cyan}`,
+                          fontWeight: 700,
+                          fontSize: 14,
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.red}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.cyan}`;
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 12,
+                          fontWeight: 900,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "#000",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="hello@memphis.design"
+                        style={{
+                          width: "100%",
+                          padding: "12px 18px",
+                          backgroundColor: "#fff",
+                          border: "4px solid #000",
+                          boxShadow: `4px 4px 0 ${C.yellow}`,
+                          fontWeight: 700,
+                          fontSize: 14,
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.red}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.yellow}`;
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 12,
+                          fontWeight: 900,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "#000",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Say it BOLDLY..."
+                        style={{
+                          width: "100%",
+                          padding: "12px 18px",
+                          backgroundColor: "#fff",
+                          border: "4px solid #000",
+                          boxShadow: `4px 4px 0 ${C.pink}`,
+                          fontWeight: 700,
+                          fontSize: 14,
+                          outline: "none",
+                          resize: "none",
+                          boxSizing: "border-box",
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.red}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${C.pink}`;
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 12,
+                          fontWeight: 900,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "#000",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Style
+                      </label>
+                      <select
+                        style={{
+                          width: "100%",
+                          padding: "12px 18px",
+                          backgroundColor: "#fff",
+                          border: "4px solid #000",
+                          boxShadow: `4px 4px 0 ${C.green}`,
+                          fontWeight: 700,
+                          fontSize: 14,
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <option>Loud & Bold</option>
+                        <option>Pop Art</option>
+                        <option>Retro Clash</option>
+                        <option>Full Chaos</option>
+                      </select>
+                    </div>
+                    <button
+                      style={{
+                        padding: "14px 24px",
+                        backgroundColor: C.yellow,
+                        border: "4px solid #000",
+                        boxShadow: "6px 6px 0 #000",
+                        fontWeight: 900,
+                        fontSize: 15,
+                        textTransform: "uppercase",
+                        cursor: "pointer",
+                        transition: "all 150ms ease-out",
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.backgroundColor = C.pink;
+                        el.style.boxShadow = "8px 8px 0 #000";
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.backgroundColor = C.yellow;
+                        el.style.boxShadow = "6px 6px 0 #000";
+                      }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- BADGES TAB ---- */}
+              {activeTab === "badges" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        color: "#555",
+                        marginBottom: 14,
+                      }}
+                    >
+                      Memphis badges — thick borders, hard shadows
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                      {[
+                        { label: "Memphis", bg: C.yellow },
+                        { label: "Bold", bg: C.red, color: "#fff" },
+                        { label: "Retro", bg: C.purple, color: "#fff" },
+                        { label: "Geo", bg: C.cyan },
+                        { label: "Pop", bg: C.pink },
+                        { label: "80s", bg: C.green },
+                        { label: "Clash", bg: "#000", color: C.yellow },
+                        { label: "Fun!", bg: C.red, color: "#fff" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          style={{
+                            padding: "6px 14px",
+                            backgroundColor: b.bg,
+                            border: "3px solid #000",
+                            boxShadow: "3px 3px 0 #000",
+                            fontWeight: 900,
+                            fontSize: 12,
+                            textTransform: "uppercase",
+                            color: b.color ?? "#000",
+                            letterSpacing: "0.05em",
+                            cursor: "default",
+                            transition: "all 150ms ease-out",
+                            display: "inline-block",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)";
+                            (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 #000";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.transform = "translate(0,0)";
+                            (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #000";
+                          }}
+                        >
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        color: "#555",
+                        marginBottom: 14,
+                      }}
+                    >
+                      Status badges with icons
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                      {[
+                        { label: "Active", bg: C.green, icon: <CircleDecor size={10} color="#fff" /> },
+                        { label: "Bold Move", bg: C.yellow, icon: <StarDecor size={12} color={C.red} /> },
+                        { label: "In Progress", bg: C.cyan, icon: <TriangleDecor size={12} color={C.purple} /> },
+                        { label: "Chaos Mode", bg: "#000", color: C.yellow, icon: <DiamondDecor size={12} color={C.pink} /> },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 6,
+                            padding: "8px 16px",
+                            backgroundColor: b.bg,
+                            border: "3px solid #000",
+                            boxShadow: "3px 3px 0 #000",
+                            fontWeight: 900,
+                            fontSize: 12,
+                            textTransform: "uppercase",
+                            color: b.color ?? "#000",
+                            cursor: "default",
+                          }}
+                        >
+                          {b.icon}
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ================================================================
-          SECTION 5 — DESIGN RULES (DO / DON'T)
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="Design Rules"
-              subtitle="The do's and don'ts of Memphis style"
-              accentColor="bg-cyan-400"
-            />
+      {/* ================================================================ */}
+      {/* 5. ANIMATION & INTERACTION RULES — 4 named aiRules demos         */}
+      {/* ================================================================ */}
+      <section style={{ padding: "80px 20px", backgroundColor: "#fff", borderBottom: "4px solid #000" }}>
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-4">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <DiamondDecor size={22} color={C.yellow} />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.purple,
+                }}
+              >
+                Animation &amp; Interaction Rules
+              </span>
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#000",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.cyan}`,
+              }}
+            >
+              4 NAMED RULES
+            </h2>
           </RevealBlock>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* DO list */}
-            <RevealBlock delay={0.1}>
-              <div className="relative p-8 bg-green-300 border-4 border-black shadow-[8px_8px_0px_#000] h-full">
-                <div className="absolute -top-5 -left-5 w-12 h-12 bg-green-500 rounded-full border-4 border-black flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+          <RevealBlock delay={0.05} className="mb-12">
+            <p style={{ fontSize: 17, fontWeight: 600, color: "#333", maxWidth: 540, lineHeight: 1.6 }}>
+              Hover and click each demo to feel the named interaction pattern.
+              These four rules are the soul of Memphis interaction design.
+            </p>
+          </RevealBlock>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+              gap: 24,
+            }}
+          >
+            {/* ---- Rule 1: Playful Chaos ---- */}
+            <RevealBlock delay={0.08}>
+              <div
+                style={{
+                  backgroundColor: C.yellow,
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 #000",
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "4px 12px",
+                    backgroundColor: "#000",
+                    color: C.yellow,
+                    fontWeight: 900,
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  Playful Chaos
                 </div>
-                <h3 className="text-2xl font-black text-black uppercase mb-6 ml-4">
-                  DO These Things
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Use vivid, clashing color combinations",
-                    "Add geometric decorations (circles, triangles, squiggles)",
-                    "Apply thick borders — border-4 minimum",
-                    "Embrace irregular, asymmetric layouts",
-                    "Use dot, stripe, and wave patterns",
-                    "Use heavy, bold sans-serif fonts",
-                    "Make hover states pop with instant color swaps",
-                    "Give buttons a toy physics feel on active state",
-                    "Move each decoration independently on hover (Playful Chaos)",
-                  ].map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1 flex-shrink-0 w-5 h-5 bg-green-500 rounded-full border-2 border-black flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+                <p
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 11,
+                    color: "#555",
+                    marginBottom: 20,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  group-hover:translate-x-4 group-hover:-translate-y-2<br />
+                  group-hover:-translate-x-2 group-hover:rotate-12<br />
+                  Each shape moves independently — no uniform direction.
+                </p>
+
+                {/* Interactive demo card */}
+                <div
+                  style={{
+                    position: "relative",
+                    padding: "28px 20px 20px",
+                    backgroundColor: C.pink,
+                    border: "4px solid #000",
+                    boxShadow: chaosHovered ? "12px 12px 0 #000" : "8px 8px 0 #000",
+                    transform: chaosHovered ? "translate(-2px, -2px)" : "translate(0, 0)",
+                    cursor: "pointer",
+                    transition: "all 200ms ease-out",
+                  }}
+                  onMouseEnter={() => setChaosHovered(true)}
+                  onMouseLeave={() => setChaosHovered(false)}
+                >
+                  {/* Circle — moves right+up */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: -18,
+                      left: -18,
+                      transition: "transform 200ms ease-out",
+                      transform: chaosHovered
+                        ? "translate(16px, -8px)"
+                        : "translate(0, 0)",
+                    }}
+                  >
+                    <CircleDecor size={36} color={C.yellow} />
+                  </div>
+                  {/* Triangle — moves left+down, rotates */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: -14,
+                      right: -14,
+                      transition: "transform 200ms ease-out",
+                      transform: chaosHovered
+                        ? "translate(-8px, 8px) rotate(20deg)"
+                        : "translate(0, 0) rotate(0deg)",
+                    }}
+                  >
+                    <TriangleDecor size={34} color={C.cyan} />
+                  </div>
+
+                  <h4
+                    style={{
+                      fontWeight: 900,
+                      fontSize: 17,
+                      textTransform: "uppercase",
+                      marginBottom: 6,
+                      transition: "color 150ms ease-out",
+                      color: chaosHovered ? "#fff" : "#000",
+                    }}
+                  >
+                    MEMPHIS
+                  </h4>
+                  <p
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 13,
+                      color: "#000",
+                      opacity: 0.8,
+                    }}
+                  >
+                    {chaosHovered ? "Shapes flying everywhere!" : "Hover — watch the shapes escape"}
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 2: Toy Button Physics ---- */}
+            <RevealBlock delay={0.12}>
+              <div
+                style={{
+                  backgroundColor: C.cyan,
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 #000",
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "4px 12px",
+                    backgroundColor: "#000",
+                    color: C.cyan,
+                    fontWeight: 900,
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  Toy Button Physics
+                </div>
+                <p
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 11,
+                    color: "#555",
+                    marginBottom: 20,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  active:translate-x-[6px] active:translate-y-[6px]<br />
+                  active:shadow-none<br />
+                  Button fully bottoms out — like pressing a toy key.
+                </p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+                  <button
+                    style={{
+                      padding: "14px 28px",
+                      backgroundColor: toyBtnActive ? C.yellow : C.yellow,
+                      border: "4px solid #000",
+                      boxShadow: toyBtnActive ? "0 0 0 #000" : "6px 6px 0 #000",
+                      fontWeight: 900,
+                      fontSize: 16,
+                      textTransform: "uppercase",
+                      color: "#000",
+                      cursor: "pointer",
+                      transform: toyBtnActive ? "translate(6px, 6px)" : "translate(0, 0)",
+                      transition: "all 150ms ease-out",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!toyBtnActive) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = C.pink;
+                        (e.currentTarget as HTMLElement).style.boxShadow = "8px 8px 0 #000";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!toyBtnActive) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = C.yellow;
+                        (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #000";
+                      }
+                    }}
+                    onMouseDown={() => setToyBtnActive(true)}
+                    onMouseUp={() => setToyBtnActive(false)}
+                  >
+                    PRESS ME!
+                  </button>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: "#333" }}>
+                    {toyBtnActive
+                      ? "Bottomed out — shadow gone, pressed into the page"
+                      : "Click and hold to feel the toy physics"}
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 3: Pop Swap ---- */}
+            <RevealBlock delay={0.16}>
+              <div
+                style={{
+                  backgroundColor: C.red,
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 #000",
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "4px 12px",
+                    backgroundColor: "#000",
+                    color: C.red,
+                    fontWeight: 900,
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  Pop Swap
+                </div>
+                <p
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.8)",
+                    marginBottom: 20,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  hover:bg-pink-400<br />
+                  transition-colors duration-150<br />
+                  Instant color reversal — no gradients, just BOOM.
+                </p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div
+                    style={{
+                      padding: "20px 24px",
+                      backgroundColor: popSwapHovered ? C.yellow : "#000",
+                      border: "4px solid " + (popSwapHovered ? "#000" : C.yellow),
+                      cursor: "pointer",
+                      transition: "background-color 150ms ease-out, border-color 150ms ease-out",
+                    }}
+                    onMouseEnter={() => setPopSwapHovered(true)}
+                    onMouseLeave={() => setPopSwapHovered(false)}
+                  >
+                    <span
+                      style={{
+                        fontWeight: 900,
+                        fontSize: 20,
+                        textTransform: "uppercase",
+                        color: popSwapHovered ? "#000" : C.yellow,
+                        transition: "color 150ms ease-out",
+                        letterSpacing: "-0.5px",
+                      }}
+                    >
+                      {popSwapHovered ? "POP!" : "HOVER ME"}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>
+                    {popSwapHovered
+                      ? "Instant swap — no fade, just BANG"
+                      : "Hover to trigger the pop color swap"}
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 4: Snappy Motion ---- */}
+            <RevealBlock delay={0.2}>
+              <div
+                style={{
+                  backgroundColor: C.purple,
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 #000",
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "4px 12px",
+                    backgroundColor: "#000",
+                    color: C.purple,
+                    fontWeight: 900,
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  Snappy Motion
+                </div>
+                <p
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.8)",
+                    marginBottom: 20,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  duration-150 ease-out<br />
+                  All animations — no exceptions.<br />
+                  Pop toy snap — vs slow/sluggish.
+                </p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {/* Snappy row */}
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <span style={{ fontSize: 11, fontWeight: 700, color: C.yellow, textTransform: "uppercase" }}>
+                        Snappy (150ms)
                       </span>
-                      <span className="text-black font-medium leading-snug">{rule}</span>
+                      <button
+                        style={{
+                          padding: "4px 12px",
+                          backgroundColor: C.yellow,
+                          border: "2px solid #000",
+                          fontWeight: 900,
+                          fontSize: 11,
+                          cursor: "pointer",
+                          textTransform: "uppercase",
+                        }}
+                        onClick={() =>
+                          setSnappyMode(snappyMode === "snappy" ? null : "snappy")
+                        }
+                      >
+                        GO
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        position: "relative",
+                        height: 36,
+                        backgroundColor: "rgba(0,0,0,0.3)",
+                        border: "2px solid #000",
+                        borderRadius: 0,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: 4,
+                          width: 28,
+                          height: 28,
+                          backgroundColor: C.yellow,
+                          border: "2px solid #000",
+                          transform: `translateY(-50%) translateX(${snappyMode === "snappy" ? "120px" : "0px"})`,
+                          transition:
+                            snappyMode === "snappy"
+                              ? "transform 150ms ease-out"
+                              : "none",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Slow row */}
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.6)", textTransform: "uppercase" }}>
+                        Slow (800ms)
+                      </span>
+                      <button
+                        style={{
+                          padding: "4px 12px",
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          border: "2px solid #000",
+                          fontWeight: 900,
+                          fontSize: 11,
+                          cursor: "pointer",
+                          textTransform: "uppercase",
+                          color: "#fff",
+                        }}
+                        onClick={() =>
+                          setSnappyMode(snappyMode === "slow" ? null : "slow")
+                        }
+                      >
+                        GO
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        position: "relative",
+                        height: 36,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        border: "2px solid rgba(0,0,0,0.4)",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: 4,
+                          width: 28,
+                          height: 28,
+                          backgroundColor: "rgba(255,255,255,0.4)",
+                          border: "2px solid rgba(0,0,0,0.3)",
+                          transform: `translateY(-50%) translateX(${snappyMode === "slow" ? "120px" : "0px"})`,
+                          transition:
+                            snappyMode === "slow"
+                              ? "transform 800ms ease"
+                              : "none",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. MEMPHIS APP UI DEMO — Creative Studio Kanban                  */}
+      {/* ================================================================ */}
+      <section
+        style={{
+          padding: "80px 20px",
+          backgroundColor: C.yellow,
+          borderBottom: "4px solid #000",
+          backgroundImage: patternDots,
+          backgroundSize: "18px 18px",
+        }}
+      >
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-4">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <StarDecor size={22} color={C.red} />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "#000",
+                }}
+              >
+                App Demo
+              </span>
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#000",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.red}`,
+              }}
+            >
+              STUDIO KANBAN
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p style={{ fontSize: 17, fontWeight: 600, color: "#000", maxWidth: 500, lineHeight: 1.6 }}>
+              A mock creative studio project board — hard borders, pop colors,
+              geometric cards. Playful Chaos on every card hover.
+            </p>
+          </RevealBlock>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
+            {[
+              {
+                col: "Backlog",
+                colBg: C.purple,
+                tasks: [
+                  { title: "Brand Moodboard", tag: "Design", tagBg: C.pink },
+                  { title: "Color System", tag: "System", tagBg: C.cyan },
+                ],
+              },
+              {
+                col: "In Progress",
+                colBg: C.red,
+                tasks: [
+                  { title: "Logo Concepts", tag: "Branding", tagBg: C.yellow },
+                  { title: "Pattern Library", tag: "Assets", tagBg: C.green },
+                  { title: "Hero Animation", tag: "Motion", tagBg: C.purple, color: "#fff" },
+                ],
+              },
+              {
+                col: "Review",
+                colBg: C.cyan,
+                tasks: [
+                  { title: "Typography Scale", tag: "Type", tagBg: C.red, color: "#fff" },
+                  { title: "Component Set", tag: "UI", tagBg: C.yellow },
+                ],
+              },
+              {
+                col: "Done!",
+                colBg: C.green,
+                tasks: [
+                  { title: "Memphis Research", tag: "Research", tagBg: C.purple, color: "#fff" },
+                  { title: "Grid System", tag: "Layout", tagBg: C.pink },
+                  { title: "Style Guide", tag: "Docs", tagBg: C.yellow },
+                ],
+              },
+            ].map((column) => (
+              <RevealBlock key={column.col} delay={0.08}>
+                <div>
+                  {/* Column header */}
+                  <div
+                    style={{
+                      padding: "10px 16px",
+                      backgroundColor: column.colBg,
+                      border: "4px solid #000",
+                      borderBottom: "none",
+                      fontWeight: 900,
+                      fontSize: 14,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      color: column.colBg === C.purple || column.colBg === C.red ? "#fff" : "#000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {column.col}
+                    <span
+                      style={{
+                        width: 22,
+                        height: 22,
+                        backgroundColor: "#000",
+                        color: column.colBg,
+                        borderRadius: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        fontWeight: 900,
+                      }}
+                    >
+                      {column.tasks.length}
+                    </span>
+                  </div>
+
+                  {/* Task list */}
+                  <div
+                    style={{
+                      backgroundColor: "#fff",
+                      border: "4px solid #000",
+                      padding: 12,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                      minHeight: 120,
+                    }}
+                  >
+                    {column.tasks.map((task, ti) => (
+                      <div
+                        key={task.title}
+                        style={{
+                          padding: "12px 14px",
+                          backgroundColor: "#fffbe6",
+                          border: "3px solid #000",
+                          boxShadow: "3px 3px 0 #000",
+                          cursor: "pointer",
+                          transition: "all 150ms ease-out",
+                          position: "relative",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.boxShadow = "5px 5px 0 #000";
+                          el.style.transform = "translate(-1px, -1px)";
+                          el.style.backgroundColor = column.tasks[ti % column.tasks.length]?.tagBg ?? C.yellow;
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.boxShadow = "3px 3px 0 #000";
+                          el.style.transform = "translate(0, 0)";
+                          el.style.backgroundColor = "#fffbe6";
+                        }}
+                      >
+                        <div style={{ fontWeight: 800, fontSize: 13, color: "#000", marginBottom: 6 }}>
+                          {task.title}
+                        </div>
+                        <span
+                          style={{
+                            padding: "2px 8px",
+                            backgroundColor: task.tagBg,
+                            border: "2px solid #000",
+                            fontSize: 10,
+                            fontWeight: 900,
+                            textTransform: "uppercase",
+                            color: task.color ?? "#000",
+                          }}
+                        >
+                          {task.tag}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DESIGN PHILOSOPHY — Do / Don&apos;t + principle cards         */}
+      {/* ================================================================ */}
+      <section style={{ padding: "80px 20px", backgroundColor: "#fffbe6", borderBottom: "4px solid #000" }}>
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-4">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <WaveLine />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.green,
+                }}
+              >
+                Philosophy
+              </span>
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#000",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.green}`,
+              }}
+            >
+              DESIGN PRINCIPLES
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p style={{ fontSize: 17, fontWeight: 600, color: "#333", maxWidth: 520, lineHeight: 1.6 }}>
+              Three core ideas that define Memphis. Rebellion without chaos. Decoration without excess.
+              Fun without apology.
+            </p>
+          </RevealBlock>
+
+          {/* 3 principle cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 24,
+              marginBottom: 40,
+            }}
+          >
+            {[
+              {
+                bg: C.red,
+                title: "Anti-Minimalism",
+                tagline: "More is more.",
+                desc: "Memphis openly rejected the 'less is more' dogma. Every surface is an opportunity for decoration, geometry, and color. Empty space is wasted space.",
+                rules: ["border-4 border-black always", "shadow-[6px_6px_0px_#000]", "geometric decorations required"],
+                geo: <CircleDecor size={40} color={C.yellow} />,
+                textColor: "#fff",
+              },
+              {
+                bg: C.purple,
+                title: "Geometric Freedom",
+                tagline: "Circles, triangles, diamonds.",
+                desc: "The Memphis vocabulary is built from simple primitive shapes. Mix them, rotate them, clash them. Combine circle + triangle + square in the same component.",
+                rules: ["rounded-full circles", "CSS triangle borders", "rotate-45 diamonds"],
+                geo: <TriangleDecor size={40} color={C.cyan} />,
+                textColor: "#fff",
+              },
+              {
+                bg: C.green,
+                title: "Deliberate Clash",
+                tagline: "Color against color.",
+                desc: "Harmonious color combinations are the enemy. Place red next to cyan, yellow on purple, pink on green. The tension IS the aesthetic.",
+                rules: ["bg-yellow-400 on bg-pink-300", "text contrast — visible not comfortable", "never monochromatic"],
+                geo: <DiamondDecor size={40} color={C.red} />,
+                textColor: "#000",
+              },
+            ].map((principle, i) => (
+              <RevealBlock key={principle.title} delay={i * 0.08}>
+                <div
+                  style={{
+                    backgroundColor: principle.bg,
+                    border: "4px solid #000",
+                    boxShadow: "8px 8px 0 #000",
+                    padding: 28,
+                    height: "100%",
+                    boxSizing: "border-box",
+                    position: "relative",
+                    transition: "all 150ms ease-out",
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.boxShadow = "12px 12px 0 #000";
+                    el.style.transform = "translate(-2px, -2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.boxShadow = "8px 8px 0 #000";
+                    el.style.transform = "translate(0, 0)";
+                  }}
+                >
+                  <div style={{ marginBottom: 16 }}>{principle.geo}</div>
+                  <h3
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 900,
+                      color: principle.textColor,
+                      textTransform: "uppercase",
+                      letterSpacing: "-0.5px",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {principle.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 800,
+                      color: principle.textColor,
+                      opacity: 0.8,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {principle.tagline}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: principle.textColor,
+                      lineHeight: 1.6,
+                      opacity: 0.85,
+                      marginBottom: 16,
+                    }}
+                  >
+                    {principle.desc}
+                  </p>
+                  <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {principle.rules.map((rule) => (
+                      <li
+                        key={rule}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 8,
+                          fontSize: 11,
+                          fontWeight: 700,
+                          color: principle.textColor,
+                          fontFamily: "monospace",
+                        }}
+                      >
+                        <span
+                          style={{
+                            marginTop: 2,
+                            width: 8,
+                            height: 8,
+                            backgroundColor: "#000",
+                            flexShrink: 0,
+                            display: "inline-block",
+                          }}
+                        />
+                        {rule}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Do / Don&apos;t lists */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: 24,
+            }}
+          >
+            <RevealBlock delay={0.1}>
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 " + C.green,
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      backgroundColor: C.green,
+                      border: "3px solid #000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      fontSize: 18,
+                    }}
+                  >
+                    &#10003;
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 900, color: "#000", textTransform: "uppercase" }}>
+                    Do
+                  </h3>
+                </div>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    "Use border-4 border-black always",
+                    "Apply shadow-[6px_6px_0px_#000] to all cards",
+                    "Clash colors — red + cyan, yellow + purple",
+                    "Add circular, triangular, diamond decorations",
+                    "Use font-black font-bold — maximum weight",
+                    "Group hover: each shape moves its own direction",
+                    "active:translate-x-[6px] active:shadow-none",
+                    "transition-colors duration-150 for Pop Swap",
+                    "duration-150 ease-out for all animations",
+                    "hover:bg-pink-400 hover:shadow-[8px_8px_0px_#000]",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      <span
+                        style={{
+                          marginTop: 4,
+                          width: 8,
+                          height: 8,
+                          backgroundColor: C.green,
+                          border: "2px solid #000",
+                          flexShrink: 0,
+                          display: "inline-block",
+                        }}
+                      />
+                      {rule}
                     </li>
                   ))}
                 </ul>
               </div>
             </RevealBlock>
 
-            {/* DON'T list */}
-            <RevealBlock delay={0.2}>
-              <div className="relative p-8 bg-red-200 border-4 border-black shadow-[8px_8px_0px_#000] h-full">
-                <div className="absolute -top-5 -left-5 w-12 h-12 bg-red-500 rounded-full border-4 border-black flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+            <RevealBlock delay={0.16}>
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  border: "4px solid #000",
+                  boxShadow: "8px 8px 0 " + C.red,
+                  padding: 28,
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      backgroundColor: C.red,
+                      border: "3px solid #000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      fontSize: 18,
+                      color: "#fff",
+                    }}
+                  >
+                    &#10007;
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 900, color: "#000", textTransform: "uppercase" }}>
+                    Don&apos;t
+                  </h3>
                 </div>
-                <h3 className="text-2xl font-black text-black uppercase mb-6 ml-4">
-                  NEVER Do These
-                </h3>
-                <ul className="space-y-4">
+                <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {[
-                    "Use monochrome or muted color schemes",
-                    "Create overly symmetric, rigid layouts",
-                    "Use thin borders or hairline rules",
-                    "Omit geometric decorative elements entirely",
-                    "Keep decorations static on hover — it kills the soul",
-                    "Keep the shadow on button active state (press it flat!)",
-                    "Shrink shadow on hover — hover should GROW the shadow",
-                    "Use gradients — flat solid colors only in Memphis",
-                  ].map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1 flex-shrink-0 w-5 h-5 bg-red-500 rounded-full border-2 border-black flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </span>
-                      <span className="text-black font-medium leading-snug">{rule}</span>
+                    "No single monotone color palettes",
+                    "No thin borders — border-1 or border-2 is too weak",
+                    "No symmetric, rigid grid-aligned layouts",
+                    "No geometric decorations that stay static on hover",
+                    "No shadow on active/pressed buttons",
+                    "No button hover that shrinks the shadow",
+                    "No gradients as primary fill — use solid colors",
+                    "No soft rounded corners — Memphis is angular",
+                    "No slow animations — 150ms max, stay snappy",
+                    "No cold corporate blues or neutral grays as accents",
+                  ].map((rule) => (
+                    <li
+                      key={rule}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      <span
+                        style={{
+                          marginTop: 4,
+                          width: 8,
+                          height: 8,
+                          backgroundColor: C.red,
+                          border: "2px solid #000",
+                          flexShrink: 0,
+                          display: "inline-block",
+                        }}
+                      />
+                      {rule}
                     </li>
                   ))}
                 </ul>
               </div>
             </RevealBlock>
           </div>
-
-          {/* Accordion: additional philosophy */}
-          <RevealBlock delay={0.3} className="mt-12">
-            <div className="space-y-3">
-              {accordionItems.map((item, i) => (
-                <div
-                  key={i}
-                  className={`border-4 border-black transition-all duration-200 ${
-                    openAccordion === i
-                      ? "bg-yellow-300 shadow-[6px_6px_0px_#000]"
-                      : "bg-white shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000]"
-                  }`}
-                >
-                  <button
-                    onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
-                    className="w-full flex items-center justify-between p-5 text-left"
-                  >
-                    <span className="font-black text-black uppercase text-sm tracking-wide">
-                      {item.title}
-                    </span>
-                    <svg
-                      className={`w-5 h-5 text-black transition-transform duration-200 ${openAccordion === i ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openAccordion === i ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <div className="px-5 pb-5 text-black/80 font-medium leading-relaxed">
-                      {item.content}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
         </div>
       </section>
 
-      {/* ================================================================
-          SECTION 6 — COLOR PALETTE
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-cyan-200 border-y-4 border-black">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="Color Palette"
-              subtitle="Flat, bold, unapologetic — click to copy"
-              accentColor="bg-purple-500"
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              {memphisColors.map((color) => (
-                <button
-                  key={color.hex}
-                  onClick={() => handleCopyColor(color.hex)}
-                  className="group relative border-4 border-black shadow-[6px_6px_0px_#000] hover:shadow-[8px_8px_0px_#000] hover:-translate-y-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 text-left overflow-hidden"
-                >
-                  <div className={`${color.bg} h-24 w-full border-b-4 border-black`} />
-                  <div className="p-3 bg-white">
-                    <p className="font-black text-sm text-black uppercase">{color.name}</p>
-                    <p className="text-xs font-mono text-black/60 mt-0.5">{color.hex}</p>
-                    <p className="text-xs font-bold text-black/40 uppercase">{color.label}</p>
-                  </div>
-                  {/* Copy feedback */}
-                  {copiedColor === color.hex && (
-                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                      <span className="text-white font-black uppercase text-sm">Copied!</span>
-                    </div>
-                  )}
-                  {/* Hover decoration */}
-                  <div className="absolute top-2 right-2 w-4 h-4 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
-                </button>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Progress bars showing color usage */}
-          <RevealBlock delay={0.2} className="mt-12">
-            <div className="p-8 bg-white border-4 border-black shadow-[8px_8px_0px_#000]">
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full border-2 border-black hidden" />
-              <p className="font-black text-black uppercase text-sm tracking-widest mb-6">
-                Color Balance Meter
-              </p>
-              <div className="space-y-5">
-                {[
-                  { label: "Primary Red", pct: progress, color: "bg-red-500" },
-                  { label: "Yellow Accent", pct: 80, color: "bg-yellow-400" },
-                  { label: "Cyan Pop", pct: 60, color: "bg-cyan-400" },
-                  { label: "Pink Energy", pct: 45, color: "bg-pink-400" },
-                ].map((bar) => (
-                  <div key={bar.label}>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-xs font-black text-black uppercase">{bar.label}</span>
-                      <span className="text-xs font-black text-black">{bar.pct}%</span>
-                    </div>
-                    <div className="h-6 bg-gray-100 border-4 border-black overflow-hidden">
-                      <div
-                        className={`h-full ${bar.color} transition-all duration-500`}
-                        style={{ width: `${bar.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setProgress(Math.max(10, progress - 10))}
-                    className="px-5 py-2 bg-red-400 border-4 border-black text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none transition-all duration-150"
-                  >
-                    -10%
-                  </button>
-                  <button
-                    onClick={() => setProgress(Math.min(100, progress + 10))}
-                    className="px-5 py-2 bg-green-400 border-4 border-black text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none transition-all duration-150"
-                  >
-                    +10%
-                  </button>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ================================================================
-          SECTION 7 — INTERACTIVE PATTERN PLAYGROUND
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="Pattern Playground"
-              subtitle="Memphis in motion — hover to trigger playful chaos"
-              accentColor="bg-green-400"
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {/* Typography scale */}
-              <div className="relative p-8 bg-pink-200 border-4 border-black shadow-[8px_8px_0px_#000]">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-yellow-400 rounded-full border-2 border-black" />
-                <p className="text-xs font-black text-black uppercase tracking-widest mb-6">
-                  Typography Scale
-                </p>
-                <div className="space-y-3">
-                  <p className="text-5xl font-black text-black uppercase leading-none">Aa</p>
-                  <p className="text-3xl font-black text-black uppercase">Bold Heading</p>
-                  <p className="text-xl font-bold text-black">Sub-Headline Text</p>
-                  <p className="text-base font-medium text-black/70">
-                    Body copy that remains readable while the design runs wild around it.
-                  </p>
-                  <p className="text-xs font-black text-black/50 uppercase tracking-widest">
-                    Caption / Label
-                  </p>
-                </div>
-              </div>
-
-              {/* Notification / Alert demos */}
-              <div className="space-y-4">
-                <RevealBlock delay={0.15}>
-                  <div className="flex items-center gap-4 p-4 bg-green-300 border-4 border-black shadow-[4px_4px_0px_#000]">
-                    <div className="flex-shrink-0 w-10 h-10 bg-green-500 border-4 border-black flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-black text-black uppercase text-sm">SUCCESS!</p>
-                      <p className="text-black/70 font-medium text-sm">Action completed.</p>
-                    </div>
-                  </div>
-                </RevealBlock>
-
-                <RevealBlock delay={0.2}>
-                  <div className="flex items-center gap-4 p-4 bg-yellow-300 border-4 border-black shadow-[4px_4px_0px_#000]">
-                    <div className="flex-shrink-0 w-10 h-10 bg-orange-500 border-4 border-black flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-black text-black uppercase text-sm">WARNING!</p>
-                      <p className="text-black/70 font-medium text-sm">Check your input.</p>
-                    </div>
-                  </div>
-                </RevealBlock>
-
-                <RevealBlock delay={0.25}>
-                  <div className="flex items-center gap-4 p-4 bg-red-300 border-4 border-black shadow-[4px_4px_0px_#000]">
-                    <div className="flex-shrink-0 w-10 h-10 bg-red-500 border-4 border-black flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-black text-black uppercase text-sm">ERROR!</p>
-                      <p className="text-black/70 font-medium text-sm">Something went wrong.</p>
-                    </div>
-                  </div>
-                </RevealBlock>
-
-                <RevealBlock delay={0.3}>
-                  <div className="flex items-center gap-4 p-4 bg-cyan-300 border-4 border-black shadow-[4px_4px_0px_#000]">
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 border-4 border-black flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-black text-black uppercase text-sm">INFO!</p>
-                      <p className="text-black/70 font-medium text-sm">Useful information here.</p>
-                    </div>
-                  </div>
-                </RevealBlock>
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Tags and badges */}
-          <RevealBlock delay={0.15}>
-            <div className="relative p-8 bg-purple-200 border-4 border-black shadow-[8px_8px_0px_#000]">
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-cyan-400 border-2 border-black rotate-45" />
-              <p className="text-xs font-black text-black uppercase tracking-widest mb-6">
-                Tags and Badges
-              </p>
-              <div className="flex flex-wrap gap-3 mb-8">
-                {[
-                  { label: "DESIGN", bg: "bg-yellow-400" },
-                  { label: "RETRO", bg: "bg-red-400" },
-                  { label: "ART", bg: "bg-cyan-400" },
-                  { label: "FUN", bg: "bg-green-400" },
-                  { label: "BOLD", bg: "bg-purple-400" },
-                  { label: "1980s", bg: "bg-pink-400" },
-                  { label: "POP", bg: "bg-orange-400" },
-                ].map((tag) => (
-                  <span
-                    key={tag.label}
-                    className={`px-4 py-2 ${tag.bg} border-4 border-black text-black text-xs font-black uppercase shadow-[3px_3px_0px_#000] hover:shadow-[5px_5px_0px_#000] hover:-translate-y-0.5 transition-all duration-150 cursor-default`}
-                  >
-                    {tag.label}
-                  </span>
-                ))}
-              </div>
-              <div className="flex flex-wrap items-center gap-5">
-                <span className="w-10 h-10 bg-red-500 rounded-full border-4 border-black flex items-center justify-center text-white font-black text-sm">
-                  5
-                </span>
-                <span className="px-3 h-8 bg-yellow-400 border-4 border-black flex items-center text-black font-black text-xs uppercase">
-                  NEW
-                </span>
-                <span className="px-3 h-8 bg-green-400 border-4 border-black flex items-center text-black font-black text-xs uppercase">
-                  PRO
-                </span>
-                <span className="px-3 h-8 bg-cyan-400 border-4 border-black flex items-center text-black font-black text-xs uppercase">
-                  HOT
-                </span>
-                <span className="w-10 h-10 bg-white border-4 border-black flex items-center justify-center text-black font-black text-sm">
-                  99
-                </span>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ================================================================
-          SECTION 8 — STATS / NUMBERS DISPLAY
-      ================================================================ */}
-      <section className="relative z-10 py-20 px-6 bg-red-100 border-y-4 border-black">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock>
-            <SectionHeader
-              title="By The Numbers"
-              subtitle="Memphis by the data"
-              accentColor="bg-red-500"
-            />
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              {[
-                { label: "FOUNDED", value: "1981", bg: "bg-pink-300", dot: "bg-yellow-400" },
-                { label: "MEMBERS", value: "20+", bg: "bg-yellow-300", dot: "bg-red-500" },
-                { label: "YEARS", value: "40+", bg: "bg-cyan-300", dot: "bg-purple-500" },
-                { label: "IMPACT", value: "100%", bg: "bg-green-300", dot: "bg-pink-500" },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className={`group relative p-6 ${stat.bg} border-4 border-black shadow-[6px_6px_0px_#000] hover:shadow-[10px_10px_0px_#000] hover:-translate-y-1 transition-all duration-150`}
-                >
-                  <div
-                    className={`absolute -top-4 -right-4 w-8 h-8 ${stat.dot} rounded-full border-2 border-black group-hover:scale-125 transition-transform duration-150`}
-                  />
-                  <p className="text-4xl md:text-5xl font-black text-black">{stat.value}</p>
-                  <p className="text-xs font-black text-black/60 uppercase mt-2 tracking-widest">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Philosophy quote */}
-          <RevealBlock delay={0.2} className="mt-12">
-            <div className="relative p-10 bg-black border-4 border-black shadow-[8px_8px_0px_#ff6b6b]">
-              <div className="absolute -top-5 -left-5 w-12 h-12 bg-yellow-400 rounded-full border-4 border-black flex items-center justify-center">
-                <span className="text-2xl font-black text-black">"</span>
-              </div>
-              <blockquote className="text-2xl md:text-3xl font-black text-white uppercase leading-snug">
-                Design should be fun. Rules exist to be broken. Color is not a luxury — it is a right.
-              </blockquote>
-              <p className="mt-6 text-sm font-bold text-white/50 uppercase tracking-widest">
-                — Ettore Sottsass, Memphis Group Founder
-              </p>
-              {/* Decorative corner shapes */}
-              <div className="absolute bottom-4 right-6 flex gap-3">
-                <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white" />
-                <div className="w-4 h-4 bg-yellow-400 border-2 border-white rotate-45" />
-                <div className="w-4 h-4 bg-cyan-400 rounded-full border-2 border-white" />
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ================================================================
-          SECTION 9 — FOOTER
-      ================================================================ */}
-      <footer className="relative z-10 bg-yellow-400 border-t-4 border-black py-14 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Top row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
-            {/* Brand */}
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-red-500 rounded-full border-4 border-black" />
-              <span className="text-3xl font-black text-black uppercase tracking-widest">
-                MEMPHIS
+      {/* ================================================================ */}
+      {/* 8. FEATURE HIGHLIGHTS                                            */}
+      {/* ================================================================ */}
+      <section
+        style={{
+          padding: "80px 20px",
+          backgroundColor: "#000",
+          borderBottom: "4px solid #000",
+        }}
+      >
+        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
+          <RevealBlock className="mb-12">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <CircleDecor size={20} color={C.pink} />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.pink,
+                }}
+              >
+                Features
               </span>
-              <div className="w-8 h-8 bg-cyan-400 border-4 border-black rotate-45" />
-              <div className="w-0 h-0 border-l-[14px] border-l-transparent border-b-[24px] border-b-pink-500 border-r-[14px] border-r-transparent" />
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                fontWeight: 900,
+                color: "#fff",
+                lineHeight: 1.05,
+                letterSpacing: "-1px",
+                textShadow: `3px 3px 0 ${C.yellow}`,
+              }}
+            >
+              MADE WITH REBELLION
+            </h2>
+          </RevealBlock>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+              gap: 20,
+            }}
+          >
+            {[
+              {
+                geo: <CircleDecor size={32} color={C.red} />,
+                title: "Bold Borders",
+                desc: "border-4 border-black on every element. No exceptions. Thin borders are for minimalists.",
+                bg: C.yellow,
+              },
+              {
+                geo: <TriangleDecor size={32} color={C.purple} />,
+                title: "Hard Shadows",
+                desc: "shadow-[6px_6px_0px_#000] — offset, no blur, full black. Like the element was stamped on the page.",
+                bg: C.cyan,
+              },
+              {
+                geo: <DiamondDecor size={32} color={C.cyan} />,
+                title: "Clashing Colors",
+                desc: "Yellow on pink on purple on green. Every combination that breaks the color wheel rule is a Memphis opportunity.",
+                bg: C.pink,
+              },
+              {
+                geo: <StarDecor size={32} color={C.yellow} />,
+                title: "Geometric Chaos",
+                desc: "Circles, triangles, and diamonds scattered asymmetrically. Each one moves in its own direction on hover.",
+                bg: C.red,
+              },
+              {
+                geo: <CircleDecor size={32} color={C.green} />,
+                title: "Toy Physics",
+                desc: "Buttons press down 6px and lose their shadow. The page becomes a tactile toy — every click has weight.",
+                bg: C.purple,
+              },
+              {
+                geo: <WaveLine className="memphis-march-anim" />,
+                title: "Pattern Texture",
+                desc: "Dots, diagonal stripes, and wave lines fill every background. Empty surfaces are Memphis violations.",
+                bg: C.green,
+              },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.06}>
+                <div
+                  style={{
+                    backgroundColor: feature.bg,
+                    border: "4px solid #000",
+                    boxShadow: "6px 6px 0 #000",
+                    padding: 24,
+                    height: "100%",
+                    boxSizing: "border-box",
+                    transition: "all 150ms ease-out",
+                    cursor: "default",
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.boxShadow = "10px 10px 0 #000";
+                    el.style.transform = "translate(-2px, -2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.boxShadow = "6px 6px 0 #000";
+                    el.style.transform = "translate(0, 0)";
+                  }}
+                >
+                  <div style={{ marginBottom: 14 }}>{feature.geo}</div>
+                  <h4
+                    style={{
+                      fontSize: 17,
+                      fontWeight: 900,
+                      color: "#000",
+                      textTransform: "uppercase",
+                      letterSpacing: "-0.3px",
+                      marginBottom: 8,
+                    }}
+                  >
+                    {feature.title}
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#000",
+                      lineHeight: 1.6,
+                      opacity: 0.85,
+                    }}
+                  >
+                    {feature.desc}
+                  </p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* FOOTER                                                           */}
+      {/* ================================================================ */}
+      <footer
+        style={{
+          backgroundColor: C.red,
+          border: "none",
+          borderTop: "4px solid #000",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Stripe accent */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 8,
+            backgroundImage: `repeating-linear-gradient(90deg, ${C.yellow} 0px, ${C.yellow} 24px, #000 24px, #000 26px, ${C.cyan} 26px, ${C.cyan} 50px, #000 50px, #000 52px)`,
+          }}
+        />
+
+        {/* Corner decorations */}
+        <div style={{ position: "absolute", top: 24, left: 24 }} className="memphis-bounce-anim">
+          <CircleDecor size={40} color={C.yellow} />
+        </div>
+        <div style={{ position: "absolute", top: 24, right: 40 }} className="memphis-spin-slow">
+          <DiamondDecor size={36} color={C.purple} />
+        </div>
+        <div style={{ position: "absolute", bottom: 32, left: 80 }} className="memphis-spin-rev-slow">
+          <TriangleDecor size={32} color={C.cyan} />
+        </div>
+        <div style={{ position: "absolute", bottom: 24, right: 60 }} className="memphis-bounce-anim">
+          <StarDecor size={38} color={C.yellow} />
+        </div>
+
+        <div
+          style={{
+            maxWidth: 1152,
+            margin: "0 auto",
+            padding: "56px 20px 40px",
+          }}
+        >
+          {/* Top row */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 32,
+              marginBottom: 40,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "10px 20px",
+                  backgroundColor: "#000",
+                  border: "3px solid #000",
+                  boxShadow: `4px 4px 0 ${C.yellow}`,
+                }}
+              >
+                <CircleDecor size={14} color={C.yellow} />
+                <span style={{ fontWeight: 900, color: "#fff", fontSize: 18, letterSpacing: 2, textTransform: "uppercase" }}>
+                  Memphis
+                </span>
+              </div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", maxWidth: 360, lineHeight: 1.5 }}>
+                80s Italian design rebellion. Bold, geometric, loud, and completely unapologetic.
+              </p>
+            </div>
+
+            {/* Color dot strip */}
+            <div style={{ display: "flex", gap: 6 }}>
+              {Object.values(C)
+                .filter((v) => v !== "#000000")
+                .map((color, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 28,
+                      height: 28,
+                      backgroundColor: color,
+                      border: "3px solid #000",
+                      transition: "all 150ms ease-out",
+                      cursor: "default",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #000";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                    }}
+                  />
+                ))}
             </div>
 
             {/* Nav links */}
-            <div className="flex flex-wrap gap-4">
-              {[
-                { label: "All Styles", href: "/styles" },
-                { label: "Memphis Docs", href: "/styles/memphis" },
-                { label: "Components", href: "/styles/memphis#components" },
-              ].map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="px-5 py-2 bg-black text-white font-black uppercase text-sm border-2 border-black shadow-[4px_4px_0px_#000] hover:bg-white hover:text-black hover:shadow-[6px_6px_0px_#000] transition-all duration-150"
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 32 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 900,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "#000",
+                    marginBottom: 4,
+                  }}
                 >
-                  {link.label}
-                </Link>
-              ))}
+                  Style
+                </span>
+                {[
+                  { label: "Documentation", href: "/styles/memphis" },
+                  { label: "Showcase", href: "/styles/memphis/showcase" },
+                  { label: "Cover", href: "/styles/memphis/cover" },
+                ].map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#fff",
+                      textDecoration: "none",
+                      transition: "color 150ms ease-out",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = C.yellow;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = "#fff";
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 900,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "#000",
+                    marginBottom: 4,
+                  }}
+                >
+                  StyleKit
+                </span>
+                {[
+                  { label: "Home", href: "/" },
+                  { label: "All Styles", href: "/styles" },
+                ].map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#fff",
+                      textDecoration: "none",
+                      transition: "color 150ms ease-out",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = C.yellow;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = "#fff";
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Squiggle divider */}
-          <svg
-            className="w-full mb-8"
-            height="16"
-            viewBox="0 0 800 16"
-            fill="none"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 T450 8 T500 8 T550 8 T600 8 T650 8 T700 8 T750 8 T800 8"
-              stroke="#000"
-              strokeWidth="3"
-              fill="none"
-            />
-          </svg>
+          {/* Divider */}
+          <div
+            style={{
+              height: 4,
+              backgroundColor: "#000",
+              marginBottom: 24,
+            }}
+          />
 
           {/* Bottom row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <p className="text-black font-bold text-sm">
-              Part of the{" "}
-              <Link
-                href="/"
-                className="underline font-black hover:text-red-600 transition-colors duration-150"
-              >
-                StyleKit
-              </Link>{" "}
-              Design System Collection
-            </p>
-
-            {/* Color dots row */}
-            <div className="flex items-center gap-2">
-              {[
-                "bg-red-500",
-                "bg-yellow-400",
-                "bg-cyan-400",
-                "bg-pink-400",
-                "bg-green-400",
-                "bg-purple-500",
-              ].map((c, i) => (
-                <div
-                  key={i}
-                  className={`w-5 h-5 ${c} rounded-full border-2 border-black`}
-                />
-              ))}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>
+              Made with rebellion for StyleKit
             </div>
-
-            <p className="text-black/60 font-bold text-xs uppercase tracking-widest">
-              Design Should Be Fun!
-            </p>
+            <Link
+              href="/"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 22px",
+                backgroundColor: C.yellow,
+                border: "3px solid #000",
+                boxShadow: "4px 4px 0 #000",
+                fontWeight: 900,
+                fontSize: 13,
+                textTransform: "uppercase",
+                color: "#000",
+                textDecoration: "none",
+                transition: "all 150ms ease-out",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.backgroundColor = C.pink;
+                el.style.boxShadow = "6px 6px 0 #000";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.backgroundColor = C.yellow;
+                el.style.boxShadow = "4px 4px 0 #000";
+              }}
+            >
+              &#8592; Back to StyleKit
+            </Link>
           </div>
         </div>
       </footer>

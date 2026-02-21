@@ -3,12 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
-// ---------------------------------------------------------------------------
-// useInView — fires once when element enters viewport
-// ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
+/* ------------------------------------------------------------------ */
+
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -24,12 +26,10 @@ function useInView(options = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
-// ---------------------------------------------------------------------------
-// RevealBlock — fade + slide up on scroll into view
-// ---------------------------------------------------------------------------
 function RevealBlock({
   children,
   className = "",
@@ -47,7 +47,7 @@ function RevealBlock({
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
       {children}
@@ -55,672 +55,1616 @@ function RevealBlock({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Apple logo SVG (simplified)
-// ---------------------------------------------------------------------------
-function AppleLogo({ className = "" }: { className?: string }) {
+/* ------------------------------------------------------------------ */
+/*  Apple color tokens                                                 */
+/* ------------------------------------------------------------------ */
+
+const APPLE_BLACK = "#000000";
+const APPLE_WHITE = "#ffffff";
+const APPLE_GRAY = "#f5f5f7";
+const APPLE_BLUE = "#0071e3";
+const APPLE_BLUE_HOVER = "#0077ed";
+const APPLE_GREEN = "#34c759";
+const APPLE_RED = "#ff3b30";
+
+/* ------------------------------------------------------------------ */
+/*  Inline SVG icons (Apple-style line art)                           */
+/* ------------------------------------------------------------------ */
+
+function AppleLogoIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 814 1000"
       className={className}
+      style={style}
+      viewBox="0 0 17 21"
       fill="currentColor"
       aria-hidden="true"
     >
-      <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 382.8-.6 341.4-.6 270.1c0-183.3 191.1-218.8 259.4-218.8 48.5 0 140.9 41.9 206.6 41.9 61.4 0 168.8-44.5 245.2-44.5 30.4 0 132.2 2.6 199.6 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z" />
+      <path d="M8.5 0C5.5 0 3.5 2 3.5 5c0 2 1 3.5 2.5 4.5-1.5 1-2.5 3-2.5 5.5 0 3.5 2.5 6 6 6s6-2.5 6-6c0-2.5-1-4.5-2.5-5.5 1.5-1 2.5-2.5 2.5-4.5 0-3-2-5-5-5z" />
     </svg>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Icon helpers
-// ---------------------------------------------------------------------------
-function IconChip({ className = "" }: { className?: string }) {
+function ChevronRightIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
     </svg>
   );
 }
 
-function IconCamera({ className = "" }: { className?: string }) {
+function CheckIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
 }
 
-function IconBattery({ className = "" }: { className?: string }) {
+function XIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
 }
 
-function IconShield({ className = "" }: { className?: string }) {
+function SearchIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
     </svg>
   );
 }
 
-function IconDisplay({ className = "" }: { className?: string }) {
+function ShieldIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   );
 }
 
-function IconWifi({ className = "" }: { className?: string }) {
+function LayersIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <polygon points="12 2 22 8.5 12 15 2 8.5 12 2" />
+      <polyline points="2 15.5 12 22 22 15.5" />
+      <polyline points="2 11.5 12 18 22 11.5" />
     </svg>
   );
 }
 
-function IconSearch({ className = "" }: { className?: string }) {
+function ZapIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
   );
 }
 
-function IconBag({ className = "" }: { className?: string }) {
+function SunIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
     </svg>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main showcase component
-// ---------------------------------------------------------------------------
-export default function AppleStyleShowcase() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
-  const [inputValue, setInputValue] = useState("");
-  const [inputFocused, setInputFocused] = useState(false);
+function CameraIcon({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg
+      className={className}
+      style={style}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data — aiRules named rules                                        */
+/* ------------------------------------------------------------------ */
+
+const aiRuleCards = [
+  {
+    name: "Spring Physics",
+    slug: "spring",
+    description:
+      "No linear transitions. Every interaction uses silky deceleration curves — duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] — so elements feel like precision hardware, not software.",
+    code: 'transition-all duration-500\nease-[cubic-bezier(0.25,0.1,0.25,1)]',
+    accent: APPLE_BLUE,
+    demoLabel: "Hover the button",
+    doneLabel: "Feel the deceleration",
+  },
+  {
+    name: "Haptic Touch",
+    slug: "haptic",
+    description:
+      "All interactive surfaces respond with physical press damping. active:scale-[0.96] simulates the resistance of machined aluminum — there is weight behind every tap.",
+    code: 'active:scale-[0.96]\nactive:scale-[0.98]',
+    accent: APPLE_GREEN,
+    demoLabel: "Press the button",
+    doneLabel: "Feel the resistance",
+  },
+  {
+    name: "Contextual Depth",
+    slug: "depth",
+    description:
+      "On hover, inner images scale-105 via group-hover — creating parallax depth. The card lifts; the image grows inside it. Two layers, one motion, infinite polish.",
+    code: 'group-hover:scale-105\nhover:-translate-y-1',
+    accent: APPLE_BLUE,
+    demoLabel: "Hover the card",
+    doneLabel: "Two-layer parallax",
+  },
+  {
+    name: "Subtle Blurs",
+    slug: "blur",
+    description:
+      "Frosted glass panels use backdrop-blur-xl with bg-white/80. Transitions between blur levels are smooth — opacity and backdrop filter animate together for a native macOS feel.",
+    code: 'bg-white/80\nbackdrop-blur-xl',
+    accent: APPLE_BLUE,
+    demoLabel: "Toggle the panel",
+    doneLabel: "Glass morphism active",
+  },
+];
+
+const colorSwatches = [
+  { name: "Black", hex: APPLE_BLACK, label: "Primary", textClass: "text-white" },
+  { name: "Apple Gray", hex: APPLE_GRAY, label: "Secondary", textClass: "text-gray-400" },
+  { name: "Apple Blue", hex: APPLE_BLUE, label: "Accent #1", textClass: "text-white" },
+  { name: "Apple Green", hex: APPLE_GREEN, label: "Accent #2", textClass: "text-white" },
+  { name: "Apple Red", hex: APPLE_RED, label: "Accent #3", textClass: "text-white" },
+  { name: "White", hex: APPLE_WHITE, label: "Background", textClass: "text-gray-400" },
+];
+
+type ComponentTab = "buttons" | "cards" | "inputs" | "nav";
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
+
+export default function ShowcaseContent() {
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+  const [activeRuleIdx, setActiveRuleIdx] = useState<number>(0);
+  const [blurPanelActive, setBlurPanelActive] = useState(false);
+  const [springBallPos, setSpringBallPos] = useState<"left" | "right">("left");
+  const [hapticPressed, setHapticPressed] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const productColors = [
-    { name: "Black Titanium", hex: "#1c1c1e" },
-    { name: "White Titanium", hex: "#e8e3db" },
-    { name: "Natural Titanium", hex: "#9b8e7d" },
-    { name: "Desert Titanium", hex: "#c4a882" },
-  ];
-
-  const features = [
-    {
-      icon: <IconChip className="w-8 h-8" />,
-      title: "A18 Pro chip",
-      desc: "The most powerful chip ever in a smartphone. Built for Apple Intelligence and the next generation of apps.",
-    },
-    {
-      icon: <IconCamera className="w-8 h-8" />,
-      title: "48MP Fusion camera",
-      desc: "Stunning detail in every shot. The most versatile camera system ever on iPhone. Capture the world as you see it.",
-    },
-    {
-      icon: <IconBattery className="w-8 h-8" />,
-      title: "All-day battery",
-      desc: "Up to 33 hours of video playback. Power that keeps pace with your life, from morning to night.",
-    },
-    {
-      icon: <IconShield className="w-8 h-8" />,
-      title: "Titanium design",
-      desc: "Grade 5 titanium. Stronger than steel, lighter in hand. Aerospace-grade precision at every edge.",
-    },
-    {
-      icon: <IconDisplay className="w-8 h-8" />,
-      title: "Super Retina XDR",
-      desc: "6.3-inch always-on ProMotion display. Up to 2000 nits peak brightness. Every pixel, perfected.",
-    },
-    {
-      icon: <IconWifi className="w-8 h-8" />,
-      title: "Wi-Fi 7",
-      desc: "The fastest wireless connectivity on iPhone. Download at up to 5.8 Gbps. Latency so low you will feel the difference.",
-    },
-  ];
-
-  const tabContent = [
-    {
-      label: "Overview",
-      content:
-        "iPhone 16 Pro. Built for Apple Intelligence. The most advanced iPhone ever made redefines what a smartphone can be. Every detail considered. Every decision intentional.",
-    },
-    {
-      label: "Tech Specs",
-      content:
-        "A18 Pro chip with 6-core CPU and 6-core GPU · 6.3-inch Super Retina XDR ProMotion display · Pro camera system with 48MP Fusion · 4K 120fps Dolby Vision video · USB 3 · Wi-Fi 7 · Face ID",
-    },
-    {
-      label: "Compare",
-      content:
-        "iPhone 16 Pro starts at $999. iPhone 16 Pro Max starts at $1,199. Both feature the same A18 Pro chip, Pro camera system, and the same commitment to extraordinary design.",
-    },
-  ];
-
-  const principles = [
-    {
-      do: true,
-      rule: "Generous whitespace",
-      detail: "Let content breathe. Padding is not waste — it is intent. Every gap communicates hierarchy.",
-    },
-    {
-      do: false,
-      rule: "Decorative gradients",
-      detail: "Avoid ornamentation for its own sake. Every element must earn its place on screen.",
-    },
-    {
-      do: true,
-      rule: "Spring physics easing",
-      detail: "cubic-bezier(0.25,0.1,0.25,1) on every transition. Motion that feels alive, never mechanical.",
-    },
-    {
-      do: false,
-      rule: "Harsh drop shadows",
-      detail: "Shadows should be whispers, not statements. Soft, diffuse, and intentional — never loud.",
-    },
-    {
-      do: true,
-      rule: "Haptic touch feedback",
-      detail: "active:scale-[0.96] or active:scale-[0.98] on every interactive surface. Physics you can feel.",
-    },
-    {
-      do: false,
-      rule: "Competing visual hierarchies",
-      detail: "One focal point per section. Guide the eye, never scatter it. Clarity over decoration.",
-    },
-    {
-      do: true,
-      rule: "SF Pro system font",
-      detail: "-apple-system, BlinkMacSystemFont. The typeface is the product. Precision tracking and weight.",
-    },
-    {
-      do: false,
-      rule: "More than three accent colors",
-      detail: "Black and white form the foundation. One accent color per context. Restraint is a superpower.",
-    },
-  ];
-
-  const productLineup = [
-    {
-      name: "iPhone 16",
-      tagline: "A magical new way to interact.",
-      price: "From $799",
-      accent: "#34c759",
-      light: "#e8f5e9",
-    },
-    {
-      name: "iPhone 16 Pro",
-      tagline: "Built for Apple Intelligence.",
-      price: "From $999",
-      accent: "#0071e3",
-      light: "#e3f0ff",
-      featured: true,
-    },
-    {
-      name: "iPhone 16 Pro Max",
-      tagline: "The biggest pro display ever.",
-      price: "From $1,199",
-      accent: "#ff3b30",
-      light: "#ffeee8",
-    },
-  ];
-
   return (
     <div
-      className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f]"
-      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif' }}
+      className="min-h-screen overflow-x-hidden"
+      style={{
+        backgroundColor: APPLE_WHITE,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+        color: APPLE_BLACK,
+      }}
     >
-      {/* ------------------------------------------------------------------
-          1. Nav — translucent frosted glass Apple nav bar
-      ------------------------------------------------------------------ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
-        <div className="max-w-[980px] mx-auto px-6 flex items-center justify-between h-12">
-          <Link href="/styles/apple-style" aria-label="Apple Style home">
-            <AppleLogo className="w-4 h-5 text-[#1d1d1f] hover:text-gray-500 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]" />
-          </Link>
+      <style>{`
+        @keyframes apple-fade-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes apple-shimmer {
+          0%, 100% { opacity: 0.4; }
+          50%       { opacity: 1; }
+        }
+        @keyframes apple-orbit {
+          from { transform: rotate(0deg) translateX(28px) rotate(0deg); }
+          to   { transform: rotate(360deg) translateX(28px) rotate(-360deg); }
+        }
+        @keyframes apple-pulse-ring {
+          0%   { transform: scale(1);   opacity: 0.6; }
+          100% { transform: scale(1.6); opacity: 0; }
+        }
+        .apple-spring {
+          transition: all 0.5s cubic-bezier(0.25,0.1,0.25,1);
+        }
+        .apple-spring-fast {
+          transition: all 0.3s cubic-bezier(0.25,0.1,0.25,1);
+        }
+      `}</style>
 
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          backgroundColor: "rgba(255,255,255,0.82)",
+          backdropFilter: "saturate(180%) blur(20px)",
+          WebkitBackdropFilter: "saturate(180%) blur(20px)",
+          borderBottom: "1px solid rgba(0,0,0,0.08)",
+        }}
+      >
+        <div className="max-w-[980px] mx-auto px-5 md:px-6 flex items-center justify-between h-12">
+          {/* Apple logo + wordmark */}
+          <div className="flex items-center gap-2">
+            <AppleLogoIcon className="w-4 h-4 text-black" />
+            <span className="text-sm font-medium tracking-tight text-black">
+              Apple Style
+            </span>
+          </div>
+
+          {/* Center section nav */}
           <nav className="hidden md:flex items-center gap-7">
-            {["Store", "Mac", "iPad", "iPhone", "Watch", "Vision"].map((item) => (
-              <span
+            {["Palette", "Components", "AI Rules", "Philosophy"].map((item) => (
+              <a
                 key={item}
-                className="text-xs text-[#1d1d1f]/80 hover:text-[#1d1d1f] cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
+                href={`#${item.toLowerCase().replace(" ", "-")}`}
+                className="text-xs text-black apple-spring hover:text-[#6e6e73] cursor-pointer"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
-          <div className="flex items-center gap-5">
-            <button
-              className="text-[#1d1d1f]/80 hover:text-[#1d1d1f] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.96]"
-              aria-label="Search"
-            >
-              <IconSearch className="w-4 h-4" />
-            </button>
-            <button
-              className="text-[#1d1d1f]/80 hover:text-[#1d1d1f] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.96]"
-              aria-label="Shopping bag"
-            >
-              <IconBag className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Back to StyleKit */}
+          <Link
+            href="/styles/apple-style"
+            className="flex items-center gap-1 text-xs apple-spring"
+            style={{ color: APPLE_BLUE }}
+          >
+            <span>&#8592;</span>
+            <span className="hover:underline">apple-style</span>
+          </Link>
         </div>
       </header>
 
-      {/* ------------------------------------------------------------------
-          2. Hero — product announcement style, dark background
-      ------------------------------------------------------------------ */}
-      <section className="relative bg-black min-h-screen flex flex-col items-center justify-center text-center px-6 pt-12 pb-24 overflow-hidden">
-        {/* Subtle blue radial glow — not a decorative gradient, a product highlight */}
+      {/* ================================================================ */}
+      {/* 2. HERO — Black Apple-style product reveal                       */}
+      {/* ================================================================ */}
+      <section
+        className="relative flex flex-col items-center justify-center text-center px-6 overflow-hidden"
+        style={{
+          backgroundColor: APPLE_BLACK,
+          minHeight: "100svh",
+          paddingTop: "80px",
+          paddingBottom: "80px",
+        }}
+      >
+        {/* Subtle radial glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 70% 50% at 50% 65%, rgba(0,113,227,0.10) 0%, transparent 70%)",
+              "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,113,227,0.08) 0%, transparent 70%)",
           }}
         />
 
         {/* Eyebrow */}
         <div
           style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0ms",
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? "translateY(0)" : "translateY(12px)",
+            transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0s",
           }}
         >
-          <p className="text-sm font-semibold text-[#0071e3] tracking-wide mb-3 uppercase">
-            Introducing
-          </p>
+          <span
+            className="inline-block text-xs font-medium tracking-[0.18em] uppercase mb-6"
+            style={{ color: APPLE_BLUE }}
+          >
+            Apple Style — StyleKit Showcase
+          </span>
         </div>
 
-        {/* Main title */}
-        <div
+        {/* Main headline */}
+        <h1
+          className="font-semibold tracking-tight leading-none mb-5"
           style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 120ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 120ms",
+            fontSize: "clamp(48px, 9vw, 96px)",
+            color: APPLE_WHITE,
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s",
           }}
         >
-          <h1 className="text-6xl md:text-8xl font-semibold tracking-tight text-white mb-3 max-w-[900px]">
-            iPhone 16 Pro.
-          </h1>
-        </div>
+          Designed with
+          <br />
+          <span style={{ color: APPLE_BLUE }}>precision.</span>
+        </h1>
 
-        {/* Subtitle */}
-        <div
+        {/* Subhead */}
+        <p
+          className="max-w-xl text-center leading-relaxed mb-10"
           style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 220ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 220ms",
+            fontSize: "clamp(17px, 2.5vw, 21px)",
+            color: "#6e6e73",
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s",
           }}
         >
-          <p className="text-3xl md:text-5xl font-semibold tracking-tight text-[#86868b] mb-10">
-            Hello, Apple Intelligence.
-          </p>
-        </div>
+          Radical simplicity. Generous whitespace. Hardware-grade polish.
+          The design language of the world&apos;s most admired products — brought to your UI.
+        </p>
 
         {/* CTAs */}
         <div
-          className="flex flex-wrap justify-center gap-5"
+          className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
           style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 340ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) 340ms",
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
           }}
         >
-          <button className="bg-[#0071e3] rounded-full px-7 py-3 text-white text-sm font-medium hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,113,227,0.4)] active:scale-[0.96] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-            Buy
-          </button>
-          <button className="text-[#0071e3] text-sm font-medium hover:underline active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-            Learn more {">"}
-          </button>
+          <a
+            href="#components"
+            className="inline-flex items-center gap-1.5 px-6 py-3 rounded-full font-medium text-sm text-white apple-spring hover:shadow-[0_6px_20px_rgba(0,113,227,0.4)] hover:-translate-y-0.5 active:scale-[0.96]"
+            style={{ backgroundColor: APPLE_BLUE }}
+          >
+            Explore components
+            <ChevronRightIcon className="w-4 h-4" />
+          </a>
+          <a
+            href="#philosophy"
+            className="inline-flex items-center gap-1.5 px-6 py-3 rounded-full font-medium text-sm apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              color: APPLE_WHITE,
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}
+          >
+            Design philosophy
+          </a>
         </div>
 
-        {/* Abstract titanium phone visual */}
+        {/* Hero product mock — iPhone-style mockup */}
         <div
-          className="mt-20 relative"
+          className="w-full max-w-3xl mx-auto"
           style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0) scale(1)" : "translateY(32px) scale(0.96)",
-            transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 460ms, transform 1s cubic-bezier(0.16,1,0.3,1) 460ms",
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? "translateY(0)" : "translateY(32px)",
+            transition: "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.45s",
           }}
         >
-          <div className="relative w-56 h-56 md:w-72 md:h-72 mx-auto">
-            {/* Phone body */}
+          <div
+            className="relative mx-auto rounded-[40px] overflow-hidden"
+            style={{
+              maxWidth: "320px",
+              aspectRatio: "9/19",
+              backgroundColor: "#1c1c1e",
+              border: "8px solid #2c2c2e",
+              boxShadow: "0 60px 120px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05) inset",
+            }}
+          >
+            {/* Status bar */}
             <div
-              className="absolute inset-0 rounded-[40px] border border-white/10"
-              style={{
-                background: "linear-gradient(135deg, #3a3a3c 0%, #1c1c1e 40%, #2c2c2e 70%, #48484a 100%)",
-                boxShadow: "0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)",
-              }}
-            />
-            {/* Dynamic Island */}
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-black/60 rounded-full" />
-            {/* Screen */}
-            <div
-              className="absolute inset-8 rounded-[28px]"
-              style={{
-                background: "linear-gradient(160deg, #1a1a2e 0%, #0f0f1a 50%, #1a1a2e 100%)",
-                boxShadow: "inset 0 2px 4px rgba(0,113,227,0.15)",
-              }}
-            />
-            {/* Apple Intelligence glyph */}
-            <div className="absolute inset-0 flex items-center justify-center">
+              className="flex items-center justify-between px-6 pt-3 pb-1"
+              style={{ color: APPLE_WHITE, fontSize: "11px", fontWeight: 600 }}
+            >
+              <span>9:41</span>
               <div
-                className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: "linear-gradient(135deg, #0071e3 0%, #34c759 100%)",
-                  boxShadow: "0 8px 24px rgba(0,113,227,0.4)",
-                }}
-              >
-                <AppleLogo className="w-10 h-12 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          3. Product lineup — 3 cards
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <p className="text-sm font-semibold text-[#0071e3] tracking-wide text-center mb-2 uppercase">
-              The lineup.
-            </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              Choose your iPhone.
-            </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Every model. Every size. Every need. There is an iPhone built exactly for you.
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {productLineup.map((product, i) => (
-              <RevealBlock key={product.name} delay={i * 0.08}>
-                <div
-                  className={`group relative bg-[#f5f5f7] rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] active:scale-[0.98] ${
-                    product.featured
-                      ? "shadow-[0_4px_12px_rgba(0,0,0,0.04)] ring-1 ring-[#0071e3]/20"
-                      : "shadow-[0_4px_12px_rgba(0,0,0,0.04)]"
-                  }`}
-                >
-                  {product.featured && (
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-[#0071e3] text-white text-xs font-medium px-3 py-1 rounded-full">
-                        Most popular
-                      </span>
-                    </div>
-                  )}
-                  {/* Card image area */}
-                  <div
-                    className="h-52 transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105 flex items-center justify-center"
-                    style={{ background: `linear-gradient(145deg, ${product.light}, ${product.accent}22)` }}
-                  >
-                    <div
-                      className="w-20 h-32 rounded-[18px] border border-white/60 flex items-center justify-center"
-                      style={{
-                        background: "linear-gradient(160deg, #2c2c2e 0%, #1c1c1e 100%)",
-                        boxShadow: `0 16px 40px ${product.accent}33`,
-                      }}
-                    >
-                      <div
-                        className="w-6 h-6 rounded-lg"
-                        style={{ background: product.accent }}
-                      />
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold tracking-tight mb-1">{product.name}</h3>
-                    <p className="text-sm text-[#86868b] mb-4">{product.tagline}</p>
-                    <p className="text-base font-semibold mb-5">{product.price}</p>
-                    <div className="flex gap-3">
-                      <button
-                        className="flex-1 rounded-full py-2 text-sm font-medium text-white transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-0.5 active:scale-[0.96]"
-                        style={{ background: product.accent, boxShadow: `0 4px 12px ${product.accent}40` }}
-                      >
-                        Buy
-                      </button>
-                      <button className="flex-1 rounded-full py-2 text-sm font-medium border border-gray-200 text-[#1d1d1f] hover:border-gray-400 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.96]">
-                        Learn more
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Titanium color picker */}
-          <RevealBlock delay={0.12} className="mt-16">
-            <div className="bg-[#f5f5f7] rounded-3xl p-8 md:p-12">
-              <div className="flex flex-col md:flex-row items-center gap-10">
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-2">Finish</p>
-                  <h3
-                    className="text-2xl font-semibold tracking-tight mb-2 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-                  >
-                    {productColors[selectedColor].name}
-                  </h3>
-                  <p className="text-sm text-[#86868b] mb-6">
-                    Grade 5 titanium. Precision-machined to extraordinary tolerances.
-                  </p>
-                  <div className="flex gap-3">
-                    {productColors.map((color, i) => (
-                      <button
-                        key={color.name}
-                        onClick={() => setSelectedColor(i)}
-                        aria-label={color.name}
-                        className={`w-8 h-8 rounded-full border-2 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.96] ${
-                          selectedColor === i
-                            ? "border-[#0071e3] scale-110"
-                            : "border-gray-200 hover:border-gray-400"
-                        }`}
-                        style={{ background: color.hex }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <div
-                    className="w-32 h-48 rounded-[24px] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-                    style={{
-                      background: `linear-gradient(145deg, ${productColors[selectedColor].hex}cc, ${productColors[selectedColor].hex})`,
-                      boxShadow: `0 24px 48px ${productColors[selectedColor].hex}44`,
-                    }}
-                  />
+                className="absolute top-2 left-1/2 -translate-x-1/2 rounded-full"
+                style={{ width: "120px", height: "34px", backgroundColor: "#000" }}
+              />
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-2.5 border border-white/60 rounded-sm relative">
+                  <div className="absolute inset-[2px] right-[4px] bg-white/80 rounded-sm" />
+                  <div className="absolute right-[-3px] top-1/2 -translate-y-1/2 w-1 h-1.5 bg-white/60 rounded-r-sm" />
                 </div>
               </div>
             </div>
-          </RevealBlock>
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------------------
-          4. Feature grid — icon + title + description
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-[#f5f5f7]">
-        <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              Pro. In every way.
-            </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Six breakthrough capabilities. One extraordinary device. Redefining what pro truly means.
-            </p>
-          </RevealBlock>
+            {/* App UI mockup body */}
+            <div className="px-5 pt-6 pb-4">
+              <p className="text-xs font-semibold mb-1" style={{ color: "#6e6e73" }}>
+                Good morning
+              </p>
+              <h3 className="text-xl font-semibold mb-5" style={{ color: APPLE_WHITE }}>
+                iPhone 15 Pro
+              </h3>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((feature, i) => (
-              <RevealBlock key={feature.title} delay={i * 0.07}>
-                <div className="group bg-white rounded-3xl p-8 shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] cursor-default h-full">
-                  <div className="w-14 h-14 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mb-5 text-[#0071e3] transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-lg font-semibold tracking-tight mb-2">{feature.title}</h3>
-                  <p className="text-[#86868b] text-sm leading-relaxed">{feature.desc}</p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          5. Component demos — Button, Card, Input in Apple design language
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              Components.
-            </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Every element distilled to its essence. Form follows function, always.
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Button demo */}
-            <RevealBlock delay={0}>
-              <div className="bg-[#f5f5f7] rounded-3xl p-8 flex flex-col h-full">
-                <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-6">Button</p>
-                <div className="flex-1 flex flex-col items-center justify-center gap-4 py-4">
-                  <button className="w-full px-6 py-3 bg-[#0071e3] rounded-full text-white text-sm font-medium shadow-[0_4px_14px_rgba(0,113,227,0.3)] hover:shadow-[0_6px_20px_rgba(0,113,227,0.4)] hover:-translate-y-0.5 hover:bg-[#0077ed] active:scale-[0.96] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                    Buy now
-                  </button>
-                  <button className="w-full px-6 py-3 bg-white rounded-full text-[#1d1d1f] text-sm font-medium border border-gray-200 hover:border-gray-400 hover:-translate-y-0.5 active:scale-[0.96] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                    Learn more
-                  </button>
-                  <button className="text-[#0071e3] text-sm font-medium hover:underline active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                    Shop all iPhone {">"}
-                  </button>
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-200/60">
-                  <p className="text-xs text-[#86868b] leading-relaxed">
-                    Pill-shaped with spring physics. Blue primary, white secondary, inline text link.
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Card demo */}
-            <RevealBlock delay={0.08}>
-              <div className="bg-[#f5f5f7] rounded-3xl p-8 flex flex-col h-full">
-                <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-6">Card</p>
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="group w-full bg-white rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] cursor-pointer text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-[#f5f5f7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                      <AppleLogo className="w-8 h-10 text-[#1d1d1f]" />
-                    </div>
-                    <h3 className="text-base font-semibold tracking-tight mb-1">MacBook Pro</h3>
-                    <p className="text-xs text-[#86868b] mb-3 group-hover:text-[#515154] transition-colors duration-500">
-                      Supercharged by M4 Pro.
-                    </p>
-                    <p className="text-sm font-semibold">From $1,999</p>
-                  </div>
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-200/60">
-                  <p className="text-xs text-[#86868b] leading-relaxed">
-                    White background, rounded-2xl, micro-lift shadow on hover, group-hover scale icon.
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Input demo */}
-            <RevealBlock delay={0.16}>
-              <div className="bg-[#f5f5f7] rounded-3xl p-8 flex flex-col h-full">
-                <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-6">Input</p>
-                <div className="flex-1 flex flex-col justify-center gap-4">
-                  {/* Search input */}
+              {/* Status cards */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {[
+                  { label: "Storage", value: "128 GB", color: APPLE_BLUE },
+                  { label: "Battery", value: "94%", color: APPLE_GREEN },
+                ].map((item) => (
                   <div
-                    className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
-                      inputFocused
-                        ? "bg-white ring-2 ring-[#0071e3] shadow-[0_4px_12px_rgba(0,113,227,0.12)]"
-                        : "bg-white/80 ring-1 ring-gray-200/60"
-                    }`}
+                    key={item.label}
+                    className="rounded-2xl p-3"
+                    style={{ backgroundColor: "#2c2c2e" }}
                   >
-                    <IconSearch className={`w-4 h-4 flex-shrink-0 transition-colors duration-500 ${inputFocused ? "text-[#0071e3]" : "text-[#86868b]"}`} />
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onFocus={() => setInputFocused(true)}
-                      onBlur={() => setInputFocused(false)}
-                      placeholder="Search apple.com"
-                      className="flex-1 bg-transparent text-sm text-[#1d1d1f] placeholder-[#86868b] focus:outline-none"
-                    />
-                    {inputValue && (
-                      <button
-                        onClick={() => setInputValue("")}
-                        className="flex-shrink-0 w-4 h-4 rounded-full bg-[#86868b] flex items-center justify-center active:scale-[0.96] transition-all duration-300"
-                        aria-label="Clear"
-                      >
-                        <span className="text-white text-xs leading-none">×</span>
-                      </button>
-                    )}
+                    <p className="text-[10px] mb-1" style={{ color: "#6e6e73" }}>{item.label}</p>
+                    <p className="text-base font-semibold" style={{ color: item.color }}>{item.value}</p>
                   </div>
-
-                  {/* Text area */}
-                  <textarea
-                    rows={3}
-                    placeholder="Leave a message..."
-                    className="w-full px-4 py-3 bg-white/80 ring-1 ring-gray-200/60 rounded-xl text-sm text-[#1d1d1f] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] focus:bg-white transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] resize-none"
-                  />
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-200/60">
-                  <p className="text-xs text-[#86868b] leading-relaxed">
-                    Apple gray background, ring-2 blue focus state. Subtle, purposeful, accessible.
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Tab switcher */}
-          <RevealBlock delay={0.1} className="mt-8">
-            <div className="bg-[#f5f5f7] rounded-3xl overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <div className="flex border-b border-gray-200/60">
-                {tabContent.map((tab, i) => (
-                  <button
-                    key={tab.label}
-                    onClick={() => setActiveTab(i)}
-                    className={`flex-1 py-4 text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.98] ${
-                      activeTab === i
-                        ? "text-[#1d1d1f] border-b-2 border-[#0071e3] bg-white"
-                        : "text-[#86868b] hover:text-[#1d1d1f]"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
                 ))}
               </div>
-              <div className="p-8 md:p-10 min-h-[100px]">
-                <p
-                  key={activeTab}
-                  className="text-[#1d1d1f] text-base leading-relaxed"
-                  style={{ animation: "appleTabFadeIn 0.4s cubic-bezier(0.16,1,0.3,1)" }}
+
+              {/* Feature row */}
+              <div
+                className="rounded-2xl p-3 mb-3 flex items-center gap-3"
+                style={{ backgroundColor: "#2c2c2e" }}
+              >
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: APPLE_BLUE }}
                 >
-                  {tabContent[activeTab].content}
+                  <CameraIcon className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium" style={{ color: APPLE_WHITE }}>48MP Main</p>
+                  <p className="text-[10px]" style={{ color: "#6e6e73" }}>Pro Camera System</p>
+                </div>
+                <ChevronRightIcon className="w-3 h-3 ml-auto" style={{ color: "#6e6e73" } as React.CSSProperties} />
+              </div>
+
+              {/* CTA button */}
+              <button
+                className="w-full py-3 rounded-full text-sm font-medium text-white apple-spring active:scale-[0.96]"
+                style={{ backgroundColor: APPLE_BLUE }}
+              >
+                Buy now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll hint */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          style={{
+            opacity: heroVisible ? 0.4 : 0,
+            transition: "opacity 1s ease 1.2s",
+          }}
+        >
+          <div
+            className="w-px h-10"
+            style={{
+              background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent)",
+              animation: "apple-shimmer 2.5s ease-in-out infinite",
+            }}
+          />
+          <span className="text-[10px] tracking-widest uppercase" style={{ color: "#6e6e73" }}>
+            Scroll
+          </span>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section id="palette" className="py-24 md:py-32 px-6">
+        <div className="max-w-[980px] mx-auto">
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              Color System
+            </span>
+            <h2
+              className="font-semibold tracking-tight leading-none"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              Restrained. Purposeful.
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-16">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              Black, white, Apple Gray, and three precise accent hues. No gradients.
+              No superfluous color. Every tone earns its place.
+            </p>
+          </RevealBlock>
+
+          {/* Swatch grid */}
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-16">
+              {colorSwatches.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="flex flex-col gap-3 cursor-default group"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  <div
+                    className="rounded-2xl aspect-square flex flex-col items-center justify-end p-3 apple-spring"
+                    style={{
+                      backgroundColor: swatch.hex,
+                      border: swatch.hex === APPLE_WHITE || swatch.hex === APPLE_GRAY
+                        ? "1px solid rgba(0,0,0,0.08)"
+                        : "none",
+                      transform: hoveredSwatch === i ? "translateY(-6px) scale(1.04)" : "translateY(0) scale(1)",
+                      boxShadow: hoveredSwatch === i
+                        ? `0 16px 40px ${swatch.hex === APPLE_BLACK ? "rgba(0,0,0,0.3)" : swatch.hex}44`
+                        : "0 4px 12px rgba(0,0,0,0.06)",
+                    }}
+                  >
+                    <span
+                      className="text-[10px] font-mono font-medium tracking-wide"
+                      style={{ color: swatch.textClass === "text-white" ? APPLE_WHITE : "#6e6e73" }}
+                    >
+                      {swatch.hex}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: APPLE_BLACK }}>{swatch.name}</p>
+                    <p className="text-xs" style={{ color: "#6e6e73" }}>{swatch.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Typography specimen */}
+          <RevealBlock delay={0.15}>
+            <div
+              className="rounded-3xl p-8 md:p-12"
+              style={{
+                backgroundColor: APPLE_GRAY,
+              }}
+            >
+              <p className="text-xs font-semibold tracking-[0.18em] uppercase mb-8" style={{ color: "#6e6e73" }}>
+                SF Pro Typography Specimen
+              </p>
+              <div className="space-y-4">
+                <p
+                  className="font-semibold tracking-tight leading-none"
+                  style={{ fontSize: "clamp(40px, 7vw, 72px)", color: APPLE_BLACK }}
+                >
+                  The detail is the design.
+                </p>
+                <p className="text-xl font-normal leading-relaxed max-w-2xl" style={{ color: "#6e6e73" }}>
+                  Typography is the soul of every Apple interface. Weight and spacing create meaning before a single word is read.
+                </p>
+                <div className="flex flex-wrap gap-4 pt-2">
+                  {[
+                    { weight: "100", label: "Ultralight" },
+                    { weight: "300", label: "Light" },
+                    { weight: "400", label: "Regular" },
+                    { weight: "500", label: "Medium" },
+                    { weight: "600", label: "Semibold" },
+                    { weight: "700", label: "Bold" },
+                  ].map((w) => (
+                    <div key={w.label} className="flex flex-col gap-1">
+                      <span
+                        className="text-2xl"
+                        style={{ fontWeight: w.weight, color: APPLE_BLACK }}
+                      >
+                        Aa
+                      </span>
+                      <span className="text-[10px]" style={{ color: "#6e6e73" }}>{w.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
+      {/* ================================================================ */}
+      <section id="components" className="py-24 md:py-32 px-6">
+        <div className="max-w-[980px] mx-auto">
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              Components
+            </span>
+            <h2
+              className="font-semibold tracking-tight"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              Building blocks.
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-10">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              Every element — from pill buttons to frosted cards — carries the same
+              obsessive attention to spacing, radius, and shadow depth.
+            </p>
+          </RevealBlock>
+
+          {/* Tab selector */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["buttons", "cards", "inputs", "nav"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="px-5 py-2 rounded-full text-sm font-medium capitalize apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                  style={{
+                    backgroundColor: activeTab === tab ? APPLE_BLACK : APPLE_GRAY,
+                    color: activeTab === tab ? APPLE_WHITE : APPLE_BLACK,
+                    boxShadow: activeTab === tab ? "0 4px 12px rgba(0,0,0,0.2)" : "none",
+                  }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo panel */}
+          <RevealBlock delay={0.14}>
+            <div
+              className="rounded-3xl p-8 md:p-12"
+              style={{
+                backgroundColor: APPLE_GRAY,
+                minHeight: "360px",
+              }}
+            >
+              {/* ---- BUTTONS TAB ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-12">
+                  {/* Primary Apple blue */}
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase mb-6" style={{ color: "#6e6e73" }}>
+                      Primary — Apple Blue
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium text-white apple-spring hover:shadow-[0_6px_20px_rgba(0,113,227,0.4)] hover:-translate-y-0.5 hover:bg-[#0077ed] active:scale-[0.96]"
+                        style={{ backgroundColor: APPLE_BLUE }}
+                      >
+                        Buy now
+                      </button>
+                      <button
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                        style={{
+                          backgroundColor: APPLE_WHITE,
+                          color: APPLE_BLUE,
+                          boxShadow: "0 4px_12px rgba(0,0,0,0.08)",
+                        }}
+                      >
+                        Learn more
+                        <ChevronRightIcon className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        className="px-6 py-3 rounded-full text-sm font-medium apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: APPLE_BLUE,
+                          border: `1px solid ${APPLE_BLUE}`,
+                        }}
+                      >
+                        See specs
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* System colors */}
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase mb-6" style={{ color: "#6e6e73" }}>
+                      System colors — green &amp; red
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium text-white apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                        style={{ backgroundColor: APPLE_GREEN }}
+                      >
+                        <CheckIcon className="w-4 h-4" />
+                        Confirm
+                      </button>
+                      <button
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium text-white apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                        style={{ backgroundColor: APPLE_RED }}
+                      >
+                        <XIcon className="w-4 h-4" />
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Sizes */}
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase mb-6" style={{ color: "#6e6e73" }}>
+                      Size variants
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { label: "Small", cls: "px-4 py-1.5 text-xs" },
+                        { label: "Medium", cls: "px-6 py-3 text-sm" },
+                        { label: "Large", cls: "px-8 py-4 text-base" },
+                      ].map(({ label, cls }) => (
+                        <button
+                          key={label}
+                          className={`rounded-full font-medium text-white apple-spring hover:-translate-y-0.5 active:scale-[0.96] ${cls}`}
+                          style={{ backgroundColor: APPLE_BLUE }}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- CARDS TAB ---- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {[
+                    {
+                      title: "iPhone 15 Pro",
+                      subtitle: "Titanium. So strong. So light. So Pro.",
+                      price: "From $999",
+                      iconBg: "#1c1c1e",
+                      icon: <CameraIcon className="w-8 h-8 text-white" />,
+                    },
+                    {
+                      title: "MacBook Air",
+                      subtitle: "Supercharged by M3. Up to 18 hours battery.",
+                      price: "From $1,099",
+                      iconBg: APPLE_BLUE,
+                      icon: <LayersIcon className="w-8 h-8 text-white" />,
+                    },
+                    {
+                      title: "AirPods Pro",
+                      subtitle: "Adaptive Audio. Now playing everywhere.",
+                      price: "From $249",
+                      iconBg: APPLE_GREEN,
+                      icon: <ZapIcon className="w-8 h-8 text-white" />,
+                    },
+                    {
+                      title: "Apple Watch",
+                      subtitle: "A healthy leap ahead.",
+                      price: "From $399",
+                      iconBg: "#1c1c1e",
+                      icon: <SunIcon className="w-8 h-8 text-white" />,
+                    },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="group bg-white rounded-3xl p-8 cursor-pointer apple-spring hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] text-center overflow-hidden"
+                      style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.04)" }}
+                    >
+                      <div
+                        className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center apple-spring group-hover:scale-105"
+                        style={{ backgroundColor: card.iconBg }}
+                      >
+                        {card.icon}
+                      </div>
+                      <h4 className="text-xl font-semibold mb-2 tracking-tight" style={{ color: APPLE_BLACK }}>
+                        {card.title}
+                      </h4>
+                      <p className="text-sm leading-relaxed mb-4 apple-spring group-hover:text-gray-700" style={{ color: "#6e6e73" }}>
+                        {card.subtitle}
+                      </p>
+                      <p className="text-base font-medium" style={{ color: APPLE_BLACK }}>
+                        {card.price}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- INPUTS TAB ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: APPLE_BLACK }}>
+                        Search
+                      </label>
+                      <div className="relative">
+                        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#6e6e73" } as React.CSSProperties} />
+                        <input
+                          type="text"
+                          placeholder="Search"
+                          className="w-full pl-10 pr-4 py-3 rounded-xl text-sm apple-spring-fast focus:outline-none focus:ring-2"
+                          style={{
+                            backgroundColor: APPLE_WHITE,
+                            color: APPLE_BLACK,
+                            border: "1px solid rgba(0,0,0,0.12)",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.boxShadow = `0 0 0 3px rgba(0,113,227,0.25)`;
+                            e.currentTarget.style.borderColor = APPLE_BLUE;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.boxShadow = "none";
+                            e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: APPLE_BLACK }}>
+                        Apple ID
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="name@icloud.com"
+                        className="w-full px-4 py-3 rounded-xl text-sm apple-spring-fast focus:outline-none"
+                        style={{
+                          backgroundColor: APPLE_WHITE,
+                          color: APPLE_BLACK,
+                          border: "1px solid rgba(0,0,0,0.12)",
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.boxShadow = `0 0 0 3px rgba(0,113,227,0.25)`;
+                          e.currentTarget.style.borderColor = APPLE_BLUE;
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.boxShadow = "none";
+                          e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: APPLE_BLACK }}>
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+                        className="w-full px-4 py-3 rounded-xl text-sm apple-spring-fast focus:outline-none"
+                        style={{
+                          backgroundColor: APPLE_WHITE,
+                          color: APPLE_BLACK,
+                          border: "1px solid rgba(0,0,0,0.12)",
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.boxShadow = `0 0 0 3px rgba(0,113,227,0.25)`;
+                          e.currentTarget.style.borderColor = APPLE_BLUE;
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.boxShadow = "none";
+                          e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: APPLE_BLACK }}>
+                        Model
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none apple-spring-fast"
+                        style={{
+                          backgroundColor: APPLE_WHITE,
+                          color: APPLE_BLACK,
+                          border: "1px solid rgba(0,0,0,0.12)",
+                        }}
+                      >
+                        <option>iPhone 15 Pro Max</option>
+                        <option>iPhone 15 Pro</option>
+                        <option>iPhone 15</option>
+                        <option>iPhone 15 Plus</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-5 h-5 rounded-[4px] border-2 flex items-center justify-center cursor-pointer apple-spring-fast hover:scale-105"
+                        style={{ borderColor: APPLE_BLUE, backgroundColor: APPLE_BLUE }}
+                      >
+                        <CheckIcon className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-sm" style={{ color: APPLE_BLACK }}>
+                        Apple One subscription
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-5 h-5 rounded-[4px] border-2 cursor-pointer apple-spring-fast hover:scale-105"
+                        style={{ borderColor: "rgba(0,0,0,0.2)" }}
+                      />
+                      <span className="text-sm" style={{ color: APPLE_BLACK }}>
+                        AppleCare+ coverage
+                      </span>
+                    </div>
+                    <button
+                      className="w-full py-3.5 rounded-full text-sm font-medium text-white apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                      style={{ backgroundColor: APPLE_BLUE }}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- NAV TAB ---- */}
+              {activeTab === "nav" && (
+                <div className="space-y-6">
+                  <p className="text-xs font-semibold tracking-[0.15em] uppercase mb-6" style={{ color: "#6e6e73" }}>
+                    Apple.com-style navigation bar
+                  </p>
+                  {/* Nav demo */}
+                  <div
+                    className="rounded-2xl overflow-hidden"
+                    style={{ border: "1px solid rgba(0,0,0,0.08)" }}
+                  >
+                    <nav
+                      className="px-6 py-3 flex items-center justify-between"
+                      style={{
+                        backgroundColor: "rgba(255,255,255,0.82)",
+                        backdropFilter: "saturate(180%) blur(20px)",
+                        WebkitBackdropFilter: "saturate(180%) blur(20px)",
+                        borderBottom: "1px solid rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <AppleLogoIcon className="w-4 h-4 text-black" />
+                      <div className="flex items-center gap-7">
+                        {["Store", "Mac", "iPhone", "Watch", "Vision"].map((item) => (
+                          <span
+                            key={item}
+                            className="text-xs apple-spring hover:text-[#6e6e73] cursor-pointer"
+                            style={{ color: APPLE_BLACK }}
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                      <SearchIcon className="w-4 h-4 text-black cursor-pointer apple-spring hover:text-[#6e6e73]" />
+                    </nav>
+                    {/* Hero demo area below nav */}
+                    <div
+                      className="flex flex-col items-center justify-center py-16 px-8 text-center"
+                      style={{ backgroundColor: APPLE_BLACK }}
+                    >
+                      <span className="text-xs mb-2 font-medium" style={{ color: APPLE_BLUE }}>
+                        New
+                      </span>
+                      <h3
+                        className="font-semibold tracking-tight mb-2"
+                        style={{ fontSize: "32px", color: APPLE_WHITE }}
+                      >
+                        iPhone 15 Pro
+                      </h3>
+                      <p className="text-sm mb-5" style={{ color: "#6e6e73" }}>
+                        Titanium. So strong. So light. So Pro.
+                      </p>
+                      <div className="flex gap-4">
+                        <a className="text-sm font-medium apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                          Learn more &rsaquo;
+                        </a>
+                        <a className="text-sm font-medium apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                          Buy &rsaquo;
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs leading-relaxed" style={{ color: "#6e6e73" }}>
+                    The nav uses <code className="px-1 py-0.5 rounded text-[10px]" style={{ backgroundColor: APPLE_GRAY }}>backdrop-blur-xl</code> +{" "}
+                    <code className="px-1 py-0.5 rounded text-[10px]" style={{ backgroundColor: APPLE_GRAY }}>bg-white/80</code> to create
+                    a frosted glass effect identical to apple.com.
+                  </p>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. AI RULES INTERACTIVE DEMO                                     */}
+      {/* ================================================================ */}
+      <section id="ai-rules" className="py-24 md:py-32 px-6" style={{ backgroundColor: APPLE_GRAY }}>
+        <div className="max-w-[980px] mx-auto">
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              AI Rules
+            </span>
+            <h2
+              className="font-semibold tracking-tight"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              Four laws. Zero exceptions.
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              The AI generation rules for Apple Style enforce four named interaction
+              principles. Each card below lets you experience the rule directly.
+            </p>
+          </RevealBlock>
+
+          {/* Rule selector pills */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {aiRuleCards.map((rule, i) => (
+                <button
+                  key={rule.slug}
+                  onClick={() => setActiveRuleIdx(i)}
+                  className="px-5 py-2 rounded-full text-sm font-medium apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                  style={{
+                    backgroundColor: activeRuleIdx === i ? APPLE_BLACK : APPLE_WHITE,
+                    color: activeRuleIdx === i ? APPLE_WHITE : APPLE_BLACK,
+                    boxShadow: activeRuleIdx === i ? "0 4px 12px rgba(0,0,0,0.2)" : "0 1px 4px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  {rule.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Active rule panel */}
+          <RevealBlock delay={0.14}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Explanation */}
+              <div
+                className="rounded-3xl p-8 md:p-10 flex flex-col justify-between"
+                style={{
+                  backgroundColor: APPLE_WHITE,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div>
+                  <div
+                    className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-5"
+                    style={{ backgroundColor: `${aiRuleCards[activeRuleIdx].accent}18`, color: aiRuleCards[activeRuleIdx].accent }}
+                  >
+                    Rule {activeRuleIdx + 1} of 4
+                  </div>
+                  <h3 className="text-2xl font-semibold tracking-tight mb-4" style={{ color: APPLE_BLACK }}>
+                    {aiRuleCards[activeRuleIdx].name}
+                  </h3>
+                  <p className="text-base leading-relaxed mb-6" style={{ color: "#6e6e73" }}>
+                    {aiRuleCards[activeRuleIdx].description}
+                  </p>
+                  <div
+                    className="rounded-xl p-4 font-mono text-xs leading-relaxed"
+                    style={{ backgroundColor: APPLE_GRAY, color: "#1d1d1f" }}
+                  >
+                    <pre style={{ whiteSpace: "pre-wrap" }}>{aiRuleCards[activeRuleIdx].code}</pre>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interactive demo */}
+              <div
+                className="rounded-3xl p-8 md:p-10 flex flex-col items-center justify-center gap-6"
+                style={{
+                  backgroundColor: APPLE_WHITE,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                }}
+              >
+                {/* Spring Physics demo */}
+                {activeRuleIdx === 0 && (
+                  <div className="flex flex-col items-center gap-6 w-full">
+                    <p className="text-sm font-medium text-center" style={{ color: "#6e6e73" }}>
+                      Hover the button to feel deceleration easing
+                    </p>
+                    <button
+                      className="px-8 py-4 rounded-full font-medium text-white text-sm"
+                      style={{
+                        backgroundColor: APPLE_BLUE,
+                        transition: "all 0.5s cubic-bezier(0.25,0.1,0.25,1)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = APPLE_BLUE_HOVER;
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,113,227,0.4)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = APPLE_BLUE;
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    >
+                      Buy now — hover me
+                    </button>
+                    <div className="w-full">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs" style={{ color: "#6e6e73" }}>Linear (default)</span>
+                        <button
+                          className="text-xs px-3 py-1 rounded-full apple-spring"
+                          style={{ backgroundColor: APPLE_GRAY, color: "#6e6e73" }}
+                          onClick={() => setSpringBallPos(p => p === "left" ? "right" : "left")}
+                        >
+                          Animate
+                        </button>
+                      </div>
+                      <div
+                        className="relative h-9 rounded-full overflow-hidden mb-3"
+                        style={{ backgroundColor: APPLE_GRAY }}
+                      >
+                        <div
+                          className="absolute top-1/2 -translate-y-1/2 left-2 w-6 h-6 rounded-full"
+                          style={{
+                            backgroundColor: "#6e6e73",
+                            transform: `translateY(-50%) translateX(${springBallPos === "right" ? "120px" : "0"})`,
+                            transition: springBallPos === "right" ? "transform 0.7s linear" : "none",
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs" style={{ color: APPLE_BLUE }}>Apple cubic-bezier(0.25,0.1,0.25,1)</span>
+                      </div>
+                      <div
+                        className="relative h-9 rounded-full overflow-hidden"
+                        style={{ backgroundColor: `${APPLE_BLUE}12` }}
+                      >
+                        <div
+                          className="absolute top-1/2 -translate-y-1/2 left-2 w-6 h-6 rounded-full"
+                          style={{
+                            backgroundColor: APPLE_BLUE,
+                            transform: `translateY(-50%) translateX(${springBallPos === "right" ? "120px" : "0"})`,
+                            transition: springBallPos === "right" ? "transform 0.7s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Haptic Touch demo */}
+                {activeRuleIdx === 1 && (
+                  <div className="flex flex-col items-center gap-6 w-full">
+                    <p className="text-sm font-medium text-center" style={{ color: "#6e6e73" }}>
+                      Press and hold the button to feel damping
+                    </p>
+                    <div className="relative">
+                      {hapticPressed && (
+                        <div
+                          className="absolute inset-0 rounded-full"
+                          style={{
+                            border: `2px solid ${APPLE_GREEN}`,
+                            animation: "apple-pulse-ring 0.6s ease-out forwards",
+                          }}
+                        />
+                      )}
+                      <button
+                        className="relative px-8 py-4 rounded-full font-medium text-white text-sm"
+                        style={{
+                          backgroundColor: APPLE_GREEN,
+                          transform: hapticPressed ? "scale(0.94)" : "scale(1)",
+                          boxShadow: hapticPressed
+                            ? "0 2px 6px rgba(52,199,89,0.2)"
+                            : "0 8px 20px rgba(52,199,89,0.35)",
+                          transition: "all 0.15s cubic-bezier(0.25,0.1,0.25,1)",
+                        }}
+                        onMouseDown={() => setHapticPressed(true)}
+                        onMouseUp={() => setHapticPressed(false)}
+                        onMouseLeave={() => setHapticPressed(false)}
+                        onTouchStart={() => setHapticPressed(true)}
+                        onTouchEnd={() => setHapticPressed(false)}
+                      >
+                        {hapticPressed ? "Pressed — feel the weight" : "Press and hold"}
+                      </button>
+                    </div>
+                    <p className="text-xs text-center" style={{ color: "#6e6e73" }}>
+                      active:scale-[0.96] — machined aluminum resistance
+                    </p>
+                  </div>
+                )}
+
+                {/* Contextual Depth demo */}
+                {activeRuleIdx === 2 && (
+                  <div className="flex flex-col items-center gap-4 w-full">
+                    <p className="text-sm font-medium text-center" style={{ color: "#6e6e73" }}>
+                      Hover the card — notice two-layer parallax
+                    </p>
+                    <div
+                      className="group w-48 rounded-3xl cursor-pointer apple-spring hover:-translate-y-2 hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)]"
+                      style={{
+                        backgroundColor: APPLE_GRAY,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <div className="p-6 text-center">
+                        <div
+                          className="w-24 h-24 mx-auto mb-4 rounded-2xl flex items-center justify-center apple-spring group-hover:scale-105"
+                          style={{ backgroundColor: APPLE_BLACK }}
+                        >
+                          <CameraIcon className="w-10 h-10 text-white" />
+                        </div>
+                        <h4 className="text-sm font-semibold tracking-tight" style={{ color: APPLE_BLACK }}>
+                          iPhone 15 Pro
+                        </h4>
+                        <p className="text-xs mt-1 apple-spring group-hover:text-gray-600" style={{ color: "#6e6e73" }}>
+                          Titanium
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-center" style={{ color: "#6e6e73" }}>
+                      Card lifts — icon grows via group-hover:scale-105
+                    </p>
+                  </div>
+                )}
+
+                {/* Subtle Blurs demo */}
+                {activeRuleIdx === 3 && (
+                  <div className="flex flex-col items-center gap-5 w-full">
+                    <p className="text-sm font-medium text-center" style={{ color: "#6e6e73" }}>
+                      Toggle the frosted glass panel
+                    </p>
+                    <div className="relative w-full max-w-xs h-36 rounded-2xl overflow-hidden">
+                      {/* Background */}
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background: `linear-gradient(135deg, ${APPLE_BLUE} 0%, #1c1c1e 100%)`,
+                        }}
+                      >
+                        <div className="p-4 text-white text-sm font-medium opacity-60">
+                          Content behind glass
+                        </div>
+                      </div>
+                      {/* Glass panel */}
+                      <div
+                        className="absolute inset-x-4 bottom-4 rounded-xl p-4"
+                        style={{
+                          backgroundColor: blurPanelActive ? "rgba(255,255,255,0.82)" : "rgba(255,255,255,0)",
+                          backdropFilter: blurPanelActive ? "saturate(180%) blur(20px)" : "blur(0px)",
+                          WebkitBackdropFilter: blurPanelActive ? "saturate(180%) blur(20px)" : "blur(0px)",
+                          border: blurPanelActive ? "1px solid rgba(255,255,255,0.3)" : "1px solid transparent",
+                          transition: "all 0.5s cubic-bezier(0.25,0.1,0.25,1)",
+                        }}
+                      >
+                        {blurPanelActive && (
+                          <p className="text-xs font-medium" style={{ color: APPLE_BLACK }}>
+                            Frosted glass — native macOS feel
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setBlurPanelActive(p => !p)}
+                      className="px-6 py-3 rounded-full text-sm font-medium text-white apple-spring hover:-translate-y-0.5 active:scale-[0.96]"
+                      style={{ backgroundColor: blurPanelActive ? APPLE_BLACK : APPLE_BLUE }}
+                    >
+                      {blurPanelActive ? "Hide glass panel" : "Show glass panel"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. PRODUCT SHOWCASE — Apple store-style grid                     */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-6" style={{ backgroundColor: APPLE_WHITE }}>
+        <div className="max-w-[980px] mx-auto">
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              Product Grid
+            </span>
+            <h2
+              className="font-semibold tracking-tight"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              The lineup.
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              Apple Store layout in practice. Generous whitespace, tight typographic
+              hierarchy, and restrained single-accent hover states.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Hero product — large */}
+            <RevealBlock delay={0.08}>
+              <div
+                className="group rounded-3xl overflow-hidden cursor-pointer apple-spring hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(0,0,0,0.1)] active:scale-[0.98]"
+                style={{
+                  backgroundColor: APPLE_BLACK,
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                  gridRow: "span 2",
+                }}
+              >
+                <div className="p-8 md:p-10 flex flex-col h-full min-h-[360px]">
+                  <div className="flex items-center justify-between mb-auto">
+                    <span
+                      className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                      style={{ backgroundColor: APPLE_BLUE, color: APPLE_WHITE }}
+                    >
+                      New
+                    </span>
+                    <ChevronRightIcon className="w-5 h-5 apple-spring group-hover:translate-x-1" style={{ color: "#6e6e73" } as React.CSSProperties} />
+                  </div>
+
+                  {/* Product icon */}
+                  <div className="flex-1 flex items-center justify-center py-8">
+                    <div
+                      className="w-32 h-32 rounded-[32px] flex items-center justify-center apple-spring group-hover:scale-105"
+                      style={{ backgroundColor: "#1c1c1e" }}
+                    >
+                      <CameraIcon className="w-16 h-16" style={{ color: APPLE_BLUE }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs mb-2" style={{ color: "#6e6e73" }}>iPhone 15 Pro</p>
+                    <h3
+                      className="font-semibold tracking-tight mb-2"
+                      style={{ fontSize: "28px", color: APPLE_WHITE }}
+                    >
+                      Titanium.
+                      <br />
+                      So strong.
+                    </h3>
+                    <a className="text-sm font-medium apple-spring" style={{ color: APPLE_BLUE }}>
+                      Learn more &rsaquo;
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Secondary products */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="group rounded-3xl overflow-hidden cursor-pointer apple-spring hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] active:scale-[0.98] p-8"
+                style={{
+                  backgroundColor: APPLE_GRAY,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-medium" style={{ color: "#6e6e73" }}>MacBook Air</span>
+                  <ChevronRightIcon className="w-4 h-4 apple-spring group-hover:translate-x-1" style={{ color: "#6e6e73" } as React.CSSProperties} />
+                </div>
+                <div className="flex items-center justify-center mb-6">
+                  <div
+                    className="w-24 h-24 rounded-2xl flex items-center justify-center apple-spring group-hover:scale-105"
+                    style={{ backgroundColor: APPLE_WHITE }}
+                  >
+                    <LayersIcon className="w-12 h-12" style={{ color: APPLE_BLUE }} />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-semibold tracking-tight mb-1" style={{ color: APPLE_BLACK }}>
+                  Supercharged by M3.
+                </h3>
+                <p className="text-sm" style={{ color: "#6e6e73" }}>From $1,099</p>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.16}>
+              <div
+                className="group rounded-3xl overflow-hidden cursor-pointer apple-spring hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] active:scale-[0.98] p-8"
+                style={{
+                  backgroundColor: "#1c1c1e",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-medium" style={{ color: "#6e6e73" }}>Apple Watch Ultra 2</span>
+                  <ChevronRightIcon className="w-4 h-4 apple-spring group-hover:translate-x-1" style={{ color: "#6e6e73" } as React.CSSProperties} />
+                </div>
+                <div className="flex items-center justify-center mb-6">
+                  <div
+                    className="w-24 h-24 rounded-2xl flex items-center justify-center apple-spring group-hover:scale-105"
+                    style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+                  >
+                    <SunIcon className="w-12 h-12" style={{ color: APPLE_GREEN }} />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-semibold tracking-tight mb-1" style={{ color: APPLE_WHITE }}>
+                  A healthy leap ahead.
+                </h3>
+                <p className="text-sm" style={{ color: "#6e6e73" }}>From $399</p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DESIGN RULES — Do / Don't                                     */}
+      {/* ================================================================ */}
+      <section id="philosophy" className="py-24 md:py-32 px-6" style={{ backgroundColor: APPLE_GRAY }}>
+        <div className="max-w-[980px] mx-auto">
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              Design Rules
+            </span>
+            <h2
+              className="font-semibold tracking-tight"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              Discipline is the design.
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              Apple style is not about what you add — it is about what you remove.
+              Restraint at every decision. Every pixel must earn its place.
+            </p>
+          </RevealBlock>
+
+          {/* Do / Don't grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+            {/* Do */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="rounded-3xl p-8 h-full"
+                style={{
+                  backgroundColor: APPLE_WHITE,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-7">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${APPLE_GREEN}18` }}
+                  >
+                    <CheckIcon className="w-4 h-4" style={{ color: APPLE_GREEN } as React.CSSProperties} />
+                  </div>
+                  <h3 className="text-lg font-semibold" style={{ color: APPLE_BLACK }}>Do</h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Use large amounts of whitespace — let content breathe",
+                    "Use Apple Gray #f5f5f7 as the background",
+                    "Use Apple Blue #0071e3 as the accent color",
+                    "Use refined corners — rounded-xl or rounded-2xl",
+                    "Use subtle shadows (4px, 8% opacity maximum)",
+                    "Use -apple-system SF Pro typography",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: "#1d1d1f" }}>
+                      <CheckIcon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: APPLE_GREEN } as React.CSSProperties} />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.14}>
+              <div
+                className="rounded-3xl p-8 h-full"
+                style={{
+                  backgroundColor: APPLE_WHITE,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-7">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${APPLE_RED}12` }}
+                  >
+                    <XIcon className="w-4 h-4" style={{ color: APPLE_RED } as React.CSSProperties} />
+                  </div>
+                  <h3 className="text-lg font-semibold" style={{ color: APPLE_BLACK }}>Don&apos;t</h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Do not use gradient backgrounds",
+                    "Do not use more than 3 colors",
+                    "Do not use heavy shadows (shadow-xl, shadow-2xl)",
+                    "Do not crowd elements together",
+                    "Do not use decorative or flashy animations",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: "#1d1d1f" }}>
+                      <XIcon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: APPLE_RED } as React.CSSProperties} />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Philosophy quote */}
+          <RevealBlock delay={0.18}>
+            <div
+              className="rounded-3xl p-10 md:p-14 text-center"
+              style={{
+                backgroundColor: APPLE_BLACK,
+              }}
+            >
+              <p
+                className="font-semibold tracking-tight leading-tight mb-6"
+                style={{ fontSize: "clamp(24px, 4vw, 36px)", color: APPLE_WHITE }}
+              >
+                &ldquo;Apple Style is a design language born from radical simplicity — generous whitespace,
+                refined details, and a restrained palette that communicates quality and trust.&rdquo;
+              </p>
+              <div className="flex flex-col items-center gap-2">
+                <div
+                  className="w-8 h-px"
+                  style={{ backgroundColor: APPLE_BLUE }}
+                />
+                <p className="text-xs tracking-[0.18em] uppercase" style={{ color: "#6e6e73" }}>
+                  Apple Style — Design Philosophy
                 </p>
               </div>
             </div>
@@ -728,383 +1672,215 @@ export default function AppleStyleShowcase() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------
-          6. Nav bar showcase — full demo of Apple nav
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-[#f5f5f7]">
+      {/* ================================================================ */}
+      {/* 8. FEATURES GRID — 6 principle cards                            */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-6" style={{ backgroundColor: APPLE_WHITE }}>
         <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              Navigation.
+          <RevealBlock className="mb-5">
+            <span
+              className="text-xs font-semibold tracking-[0.2em] uppercase block mb-4"
+              style={{ color: APPLE_BLUE }}
+            >
+              Principles
+            </span>
+            <h2
+              className="font-semibold tracking-tight"
+              style={{ fontSize: "clamp(36px, 6vw, 56px)", color: APPLE_BLACK }}
+            >
+              Craft in every layer.
             </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Translucent. Adaptive. Always in reach. The Apple nav bar is a masterclass in restraint.
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-lg leading-relaxed max-w-lg" style={{ color: "#6e6e73" }}>
+              Six principles that define what makes Apple Style unmistakable at a glance.
             </p>
           </RevealBlock>
 
-          <RevealBlock delay={0.08}>
-            <div className="rounded-3xl overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.06)] border border-gray-100">
-              {/* Simulated browser bar */}
-              <div className="bg-[#e5e5ea] px-4 py-2.5 flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-                </div>
-                <div className="flex-1 mx-4 bg-white/70 backdrop-blur rounded-lg px-3 py-1.5 text-xs text-[#86868b] text-center">
-                  apple.com
-                </div>
-              </div>
-
-              {/* The nav itself */}
-              <div className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 px-6">
-                <div className="max-w-[980px] mx-auto flex items-center justify-between h-12">
-                  <AppleLogo className="w-4 h-5 text-[#1d1d1f]" />
-                  <div className="hidden md:flex items-center gap-7">
-                    {["Store", "Mac", "iPad", "iPhone", "Watch", "Vision", "Entertainment", "Accessories", "Support"].map((item) => (
-                      <span key={item} className="text-xs text-[#1d1d1f]/80 cursor-pointer hover:text-[#1d1d1f] transition-colors duration-300">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-5">
-                    <IconSearch className="w-4 h-4 text-[#1d1d1f]/80" />
-                    <IconBag className="w-4 h-4 text-[#1d1d1f]/80" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Page content preview behind nav */}
-              <div className="bg-white px-6 py-12 text-center">
-                <p className="text-xs text-[#86868b] uppercase tracking-wider mb-2">Introducing</p>
-                <h3 className="text-3xl font-semibold tracking-tight text-[#1d1d1f]">MacBook Air.</h3>
-                <p className="text-lg text-[#86868b] mt-1">Impossibly thin. Impossibly capable.</p>
-                <div className="flex justify-center gap-4 mt-6">
-                  <button className="bg-[#0071e3] rounded-full px-5 py-2 text-white text-sm font-medium hover:-translate-y-0.5 active:scale-[0.96] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                    Buy
-                  </button>
-                  <button className="text-[#0071e3] text-sm font-medium hover:underline">
-                    Learn more {">"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-
-          <RevealBlock delay={0.16} className="mt-8">
-            <div className="grid md:grid-cols-3 gap-4">
-              {[
-                {
-                  label: "bg-white/80",
-                  desc: "80% opacity white — reveals page content scrolling behind, maintaining context.",
-                },
-                {
-                  label: "backdrop-blur-xl",
-                  desc: "24px Gaussian blur. Content beneath is blurred, not obscured. Depth through translucency.",
-                },
-                {
-                  label: "border-b border-gray-200/50",
-                  desc: "Half-opacity 1px separator. Visible enough to define, subtle enough to recede.",
-                },
-              ].map((item) => (
-                <div key={item.label} className="bg-white rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-                  <p className="text-sm font-mono font-medium text-[#0071e3] mb-2">{item.label}</p>
-                  <p className="text-xs text-[#86868b] leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          7. Color palette
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              The palette.
-            </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Five colors. Each chosen with precision. Each carrying meaning. Nothing is arbitrary.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {[
-              { name: "Black", hex: "#000000", desc: "Primary text & dark hero backgrounds", light: false },
-              { name: "Apple Gray", hex: "#f5f5f7", desc: "Section backgrounds & card fills", light: true, border: true },
-              { name: "Apple Blue", hex: "#0071e3", desc: "Accent — CTAs, links, focus rings", light: false },
-              { name: "Apple Green", hex: "#34c759", desc: "Success states, positive feedback", light: false },
-              { name: "Apple Red", hex: "#ff3b30", desc: "Destructive actions, error states", light: false },
-            ].map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 0.06}>
-                <div className="group bg-[#f5f5f7] rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] cursor-default">
+              {
+                icon: <LayersIcon className="w-7 h-7" />,
+                title: "Radical Simplicity",
+                desc: "Every element stripped to its essential form. No decoration that does not also serve a function.",
+                accent: APPLE_BLACK,
+              },
+              {
+                icon: <SunIcon className="w-7 h-7" />,
+                title: "Generous Whitespace",
+                desc: "Content that breathes. py-20 minimum. Negative space is not emptiness — it is structure.",
+                accent: APPLE_BLUE,
+              },
+              {
+                icon: <ShieldIcon className="w-7 h-7" />,
+                title: "Refined Corners",
+                desc: "rounded-xl and rounded-2xl. The specific radius of trust — precise, not arbitrary.",
+                accent: APPLE_BLACK,
+              },
+              {
+                icon: <ZapIcon className="w-7 h-7" />,
+                title: "Spring Interactions",
+                desc: "cubic-bezier(0.25,0.1,0.25,1) on every transition. Hardware-grade precision in every hover.",
+                accent: APPLE_BLUE,
+              },
+              {
+                icon: <CameraIcon className="w-7 h-7" />,
+                title: "Subtle Shadows",
+                desc: "0 4px 12px rgba(0,0,0,0.08). Shadows that suggest elevation without shouting it.",
+                accent: APPLE_BLACK,
+              },
+              {
+                icon: <SearchIcon className="w-7 h-7" />,
+                title: "Restrained Palette",
+                desc: "Black, white, Apple Gray, and one accent. Color used as signal — never as decoration.",
+                accent: APPLE_BLUE,
+              },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.07}>
+                <div
+                  className="group rounded-3xl p-7 h-full cursor-default apple-spring hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] active:scale-[0.98]"
+                  style={{
+                    backgroundColor: APPLE_GRAY,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  }}
+                >
                   <div
-                    className="h-28 transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105"
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 apple-spring group-hover:scale-105"
                     style={{
-                      background: color.hex,
-                      border: color.border ? "1px solid #e5e5e5" : "none",
+                      backgroundColor: feature.accent === APPLE_BLUE ? `${APPLE_BLUE}14` : "rgba(0,0,0,0.06)",
+                      color: feature.accent,
                     }}
-                  />
-                  <div className="p-4">
-                    <p className="text-sm font-semibold text-[#1d1d1f] mb-0.5">{color.name}</p>
-                    <p className="text-xs text-[#86868b] mb-1.5 leading-snug">{color.desc}</p>
-                    <p className="text-xs text-[#86868b] font-mono">{color.hex}</p>
+                  >
+                    {feature.icon}
                   </div>
+                  <h4 className="text-base font-semibold mb-2 tracking-tight" style={{ color: APPLE_BLACK }}>
+                    {feature.title}
+                  </h4>
+                  <p className="text-sm leading-relaxed" style={{ color: "#6e6e73" }}>
+                    {feature.desc}
+                  </p>
                 </div>
               </RevealBlock>
             ))}
           </div>
-
-          {/* Typography specimen */}
-          <RevealBlock delay={0.1}>
-            <div className="bg-[#f5f5f7] rounded-3xl p-8 md:p-12">
-              <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-8">
-                Typography — SF Pro Display
-              </p>
-              <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8 border-b border-gray-200/60 pb-6">
-                  <p className="text-xs text-[#86868b] w-28 flex-shrink-0">Large Title</p>
-                  <p className="text-5xl font-semibold tracking-tight text-[#1d1d1f]">iPhone 16 Pro.</p>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8 border-b border-gray-200/60 pb-6">
-                  <p className="text-xs text-[#86868b] w-28 flex-shrink-0">Title 1</p>
-                  <p className="text-3xl font-semibold tracking-tight text-[#1d1d1f]">Hello, Apple Intelligence.</p>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8 border-b border-gray-200/60 pb-6">
-                  <p className="text-xs text-[#86868b] w-28 flex-shrink-0">Body</p>
-                  <p className="text-base text-[#1d1d1f] leading-relaxed max-w-lg">
-                    The most powerful chip ever in a smartphone. Built for Apple Intelligence and the next generation of transformative applications.
-                  </p>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8">
-                  <p className="text-xs text-[#86868b] w-28 flex-shrink-0">Caption</p>
-                  <p className="text-xs text-[#86868b] leading-relaxed max-w-lg">
-                    1. All battery claims depend on network configuration and many other factors; actual results will vary.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------
-          8. Design rules — do / don't
-      ------------------------------------------------------------------ */}
-      <section className="py-24 px-6 bg-[#f5f5f7]">
-        <div className="max-w-[980px] mx-auto">
-          <RevealBlock delay={0}>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-center mb-4">
-              Design principles.
-            </h2>
-            <p className="text-lg text-[#86868b] text-center max-w-xl mx-auto mb-16">
-              Restraint is a discipline. These rules define the Apple aesthetic — what to do and what to ruthlessly eliminate.
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {principles.map((p, i) => (
-              <RevealBlock key={p.rule} delay={i * 0.06}>
-                <div
-                  className={`rounded-3xl p-8 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-0.5 ${
-                    p.do
-                      ? "bg-[#f0fdf4] border border-[#34c759]/20"
-                      : "bg-[#fff1f0] border border-[#ff3b30]/20"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 ${
-                        p.do ? "bg-[#34c759]" : "bg-[#ff3b30]"
-                      }`}
-                    >
-                      {p.do ? "+" : "−"}
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-[#86868b] mb-0.5">
-                        {p.do ? "Do" : "Don't"}
-                      </p>
-                      <h3 className="text-base font-semibold tracking-tight">{p.rule}</h3>
-                    </div>
-                  </div>
-                  <p className="text-sm text-[#86868b] leading-relaxed pl-10">{p.detail}</p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Spacing guide */}
-          <RevealBlock delay={0.1} className="mt-8">
-            <div className="bg-white rounded-3xl p-8 md:p-12 shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <p className="text-xs font-semibold text-[#86868b] uppercase tracking-wider mb-8">
-                Spacing system
+      {/* ================================================================ */}
+      {/* 9. FOOTER                                                        */}
+      {/* ================================================================ */}
+      <footer
+        style={{
+          backgroundColor: APPLE_GRAY,
+          borderTop: "1px solid rgba(0,0,0,0.08)",
+        }}
+      >
+        <div className="max-w-[980px] mx-auto px-6 pt-12 pb-8">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-10">
+            {/* Brand */}
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-2">
+                <AppleLogoIcon className="w-5 h-5 text-black" />
+                <span className="text-base font-semibold tracking-tight" style={{ color: APPLE_BLACK }}>
+                  Apple Style
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: "#6e6e73" }}>
+                The design language of the world&apos;s most admired products.
+                Radical simplicity. Hardware-grade polish.
               </p>
-              <div className="flex flex-wrap gap-4 items-end">
-                {[
-                  { token: "py-3", px: 12, label: "sm" },
-                  { token: "py-4", px: 16, label: "md" },
-                  { token: "py-6", px: 24, label: "lg" },
-                  { token: "py-8", px: 32, label: "xl" },
-                  { token: "py-12", px: 48, label: "2xl" },
-                  { token: "py-16", px: 64, label: "3xl" },
-                  { token: "py-20", px: 80, label: "4xl" },
-                  { token: "py-24", px: 96, label: "5xl" },
-                ].map((s) => (
-                  <div key={s.token} className="flex flex-col items-center gap-2">
-                    <div
-                      className="bg-[#0071e3]/10 rounded-lg w-10 flex items-end justify-center"
-                      style={{ height: `${s.px * 1.2}px` }}
-                    >
-                      <div
-                        className="w-10 bg-[#0071e3]/30 rounded-lg"
-                        style={{ height: `${s.px * 0.6}px` }}
-                      />
-                    </div>
-                    <p className="text-xs font-mono text-[#86868b]">{s.px}px</p>
-                    <p className="text-xs text-[#86868b]">{s.label}</p>
-                  </div>
+              {/* Color dots */}
+              <div className="flex items-center gap-2">
+                {[APPLE_BLACK, APPLE_BLUE, APPLE_GREEN, APPLE_RED].map((color) => (
+                  <div
+                    key={color}
+                    className="w-4 h-4 rounded-full apple-spring hover:scale-125"
+                    style={{ backgroundColor: color }}
+                  />
                 ))}
               </div>
             </div>
-          </RevealBlock>
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------------------
-          9. Dark CTA — "Think different" moment
-      ------------------------------------------------------------------ */}
-      <section className="py-32 px-6 bg-black">
-        <div className="max-w-[980px] mx-auto text-center">
-          <RevealBlock delay={0}>
-            <AppleLogo className="w-12 h-14 mx-auto text-white mb-10 opacity-80" />
-          </RevealBlock>
-          <RevealBlock delay={0.1}>
-            <h2 className="text-5xl md:text-7xl font-semibold tracking-tight text-white mb-6">
-              Think different.
-            </h2>
-          </RevealBlock>
-          <RevealBlock delay={0.2}>
-            <p className="text-xl text-[#86868b] mb-12 max-w-lg mx-auto leading-relaxed">
-              The best products are the ones that get out of the way. They fit into life. They amplify it. They disappear into function.
-            </p>
-          </RevealBlock>
-          <RevealBlock delay={0.3}>
-            <div className="flex flex-wrap justify-center gap-5">
-              <button className="bg-white rounded-full px-8 py-4 text-black text-base font-medium hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(255,255,255,0.2)] active:scale-[0.96] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                Shop iPhone
-              </button>
-              <button className="text-[#2997ff] text-base font-medium hover:underline active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                Watch the film {">"}
-              </button>
-            </div>
-          </RevealBlock>
-
-          {/* Animated stat row */}
-          <RevealBlock delay={0.4} className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { value: "2B+", label: "Active Apple devices" },
-              { value: "A18 Pro", label: "Most powerful chip" },
-              { value: "48MP", label: "Fusion camera" },
-              { value: "33hr", label: "Battery life" },
-            ].map((stat) => (
-              <div key={stat.value} className="text-center">
-                <p className="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-2">{stat.value}</p>
-                <p className="text-sm text-[#86868b]">{stat.label}</p>
-              </div>
-            ))}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          10. Footer
-      ------------------------------------------------------------------ */}
-      <footer className="bg-[#1d1d1f] text-[#86868b] pt-12 pb-8 px-6">
-        <div className="max-w-[980px] mx-auto">
-          <p className="text-xs border-b border-white/10 pb-8 mb-8 leading-relaxed">
-            1. All battery claims depend on network configuration and many other factors; actual results will vary. See{" "}
-            <span className="underline cursor-pointer">apple.com/batteries</span> for more information.
-            2. Testing conducted by Apple in October 2024 using production iPhone 16 Pro units and software.
-          </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-10">
-            {[
-              {
-                heading: "Shop and Learn",
-                links: ["Store", "Mac", "iPad", "iPhone", "Watch", "Vision Pro", "AirPods", "Apple TV"],
-              },
-              {
-                heading: "Services",
-                links: ["Apple Music", "Apple TV+", "Apple Arcade", "iCloud+", "Apple One", "Apple Fitness+"],
-              },
-              {
-                heading: "Account",
-                links: ["Manage Your Apple ID", "Apple Store Account", "iCloud.com"],
-              },
-              {
-                heading: "Apple Store",
-                links: ["Find a Store", "Genius Bar", "Today at Apple", "Group Reservations", "Apple Camp", "Refurbished"],
-              },
-              {
-                heading: "For Business",
-                links: ["Apple and Business", "Shop for Business", "For Education", "Apple Financial Services", "Enterprise"],
-              },
-            ].map((col) => (
-              <div key={col.heading}>
-                <p className="text-xs font-semibold text-white/90 mb-3">{col.heading}</p>
-                <ul className="space-y-2">
-                  {col.links.map((link) => (
-                    <li key={link}>
-                      <span className="text-xs hover:text-white cursor-pointer transition-colors duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-                        {link}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-start gap-4">
-            <p className="text-xs">
-              Copyright {"\u00A9"} 2026 Apple Inc. All rights reserved.{" "}
-              <span className="text-[#515154]">
-                {" · "}StyleKit Apple Style Showcase
-              </span>
-            </p>
-            <div className="flex gap-4 flex-wrap">
-              {["Privacy Policy", "Terms of Use", "Sales and Refunds", "Legal", "Site Map"].map((item) => (
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
                 <span
-                  key={item}
-                  className="text-xs hover:text-white cursor-pointer transition-colors duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "#6e6e73" }}
                 >
-                  {item}
+                  Style
                 </span>
-              ))}
+                <Link href="/styles/apple-style" className="apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                  Documentation
+                </Link>
+                <Link href="/styles/apple-style/showcase" className="apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                  Showcase
+                </Link>
+                <Link href="/styles/apple-style/cover" className="apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "#6e6e73" }}
+                >
+                  StyleKit
+                </span>
+                <Link href="/" className="apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                  Home
+                </Link>
+                <Link href="/styles" className="apple-spring hover:underline" style={{ color: APPLE_BLUE }}>
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span
+                  className="text-xs font-semibold tracking-[0.15em] uppercase"
+                  style={{ color: "#6e6e73" }}
+                >
+                  Palette
+                </span>
+                {colorSwatches.map((s) => (
+                  <span key={s.name} className="flex items-center gap-2 text-xs" style={{ color: "#6e6e73" }}>
+                    <span
+                      className="w-3 h-3 rounded-full inline-block shrink-0"
+                      style={{
+                        backgroundColor: s.hex,
+                        border:
+                          s.hex === APPLE_WHITE || s.hex === APPLE_GRAY
+                            ? "1px solid rgba(0,0,0,0.1)"
+                            : "none",
+                      }}
+                    />
+                    {s.name} — {s.hex}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/5 flex justify-center">
+          {/* Divider */}
+          <div style={{ height: "1px", backgroundColor: "rgba(0,0,0,0.08)" }} className="mb-6" />
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs" style={{ color: "#6e6e73" }}>
+              Copyright &copy; 2025 StyleKit. All rights reserved.
+            </p>
             <Link
-              href="/styles/apple-style"
-              className="text-xs text-[#515154] hover:text-[#86868b] transition-colors duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
+              href="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white apple-spring hover:shadow-[0_6px_20px_rgba(0,113,227,0.3)] hover:-translate-y-0.5 active:scale-[0.96]"
+              style={{ backgroundColor: APPLE_BLUE }}
             >
-              {"<"} Back to Apple Style docs
+              <span>&#8592;</span>
+              Back to StyleKit
             </Link>
           </div>
         </div>
       </footer>
-
-      {/* Keyframe for tab content fade */}
-      <style>{`
-        @keyframes appleTabFadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

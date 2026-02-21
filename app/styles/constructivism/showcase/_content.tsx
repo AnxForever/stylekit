@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  useInView hook                                                      */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -25,12 +26,9 @@ function useInView(options = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
-
-/* ------------------------------------------------------------------ */
-/*  RevealBlock                                                         */
-/* ------------------------------------------------------------------ */
 
 function RevealBlock({
   children,
@@ -58,375 +56,598 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  SVG motifs                                                          */
+/*  Constructivism color tokens                                         */
 /* ------------------------------------------------------------------ */
 
-function SovietStar({ size = 40, color = "#cc0000" }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-      <polygon
-        points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35"
-        fill={color}
-      />
-    </svg>
-  );
-}
-
-function ArrowRight({ size = 32, color = "#cc0000" }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill={color}>
-      <polygon points="0,20 60,20 60,0 100,50 60,100 60,80 0,80" />
-    </svg>
-  );
-}
-
-function DiagonalStripe({ color = "#cc0000" }: { color?: string }) {
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full"
-      preserveAspectRatio="none"
-      viewBox="0 0 100 100"
-    >
-      <polygon points="0,0 45,0 100,100 55,100" fill={color} />
-    </svg>
-  );
-}
-
-function GeometricAccent() {
-  return (
-    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-      <rect x="0" y="0" width="80" height="80" fill="#cc0000" />
-      <rect x="40" y="40" width="80" height="80" fill="#1a1a1a" opacity="0.9" />
-      <rect x="20" y="20" width="40" height="40" fill="#d4a843" />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Static data                                                         */
-/* ------------------------------------------------------------------ */
-
-const colorPalette = [
-  { name: "SOVIET RED", hex: "#cc0000", light: false },
-  { name: "AGED PAPER", hex: "#f2e8d5", light: true },
-  { name: "INK BLACK", hex: "#1a1a1a", light: false },
-  { name: "PROP. GOLD", hex: "#d4a843", light: false },
-  { name: "IRON BROWN", hex: "#8b4513", light: false },
-];
-
-const principles = {
-  do: [
-    "Red-black high contrast on aged paper backgrounds",
-    "Diagonal bands and tilted elements for dynamism",
-    "Ultra-bold font-black uppercase headers at 6xl+",
-    "Sharp rectangular corners — geometric hard edges only",
-    "Hard offset shadows like woodblock stamp prints",
-    "Thick red borders — 4px minimum for authority",
-    "Star and arrow SVG motifs as structural elements",
-    "Stark asymmetric layouts: red column vs paper column",
-    "Letter-spacing extremes for typographic aggression",
-    "Stacked geometric blocks with deliberate misalignment",
-  ],
-  dont: [
-    "Soft gradients or rounded corners — this is not bauhaus",
-    "Pastel or muted colors — everything shouts its purpose",
-    "Centered symmetric layouts — diagonal energy only",
-    "Decorative or script fonts — type is a weapon",
-    "Drop shadows with blur — only hard offsets allowed",
-    "Subtle hover effects — make interactions obvious",
-    "Whitespace-only composition — fill the field with form",
-    "Complementary harmonies — red vs black is the palette",
-  ],
-};
-
-const typeScales = [
-  { label: "MANIFESTO TITLE", size: "text-7xl", weight: "font-black", tracking: "tracking-tight", sample: "FORWARD" },
-  { label: "SECTION HEADER", size: "text-4xl", weight: "font-black", tracking: "tracking-wide", sample: "WORKERS UNITE" },
-  { label: "SUBHEADING", size: "text-xl", weight: "font-bold", tracking: "tracking-widest", sample: "REVOLUTIONARY ART" },
-  { label: "BODY UPPERCASE", size: "text-base", weight: "font-semibold", tracking: "tracking-wider", sample: "ART SERVES SOCIETY" },
-  { label: "CAPTION", size: "text-xs", weight: "font-medium", tracking: "tracking-[0.3em]", sample: "AVANT GARDE 1920" },
-];
+const RED = "#cc0000";
+const BLACK = "#1a1a1a";
+const PAPER = "#f2e8d5";
+const GOLD = "#d4a843";
+const BROWN = "#8b4513";
 
 /* ------------------------------------------------------------------ */
 /*  Main export                                                         */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [componentTab, setComponentTab] = useState<"Buttons" | "Cards" | "Inputs">("Buttons");
   const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<"buttons" | "cards" | "inputs" | "hero">("buttons");
+
+  /* aiRule 1 — Block Invasion demo */
+  const [invasionTarget, setInvasionTarget] = useState<number | null>(null);
+
+  /* aiRule 2 — Diagonal Aggression demo */
+  const [aggressionHovered, setAggressionHovered] = useState(false);
+
+  /* aiRule 3 — Soviet Reversal demo */
+  const [reversalActive, setReversalActive] = useState(false);
+  const [reversalHeld, setReversalHeld] = useState(false);
+
+  /* aiRule 4 — Line Snap demo */
+  const [snapCards, setSnapCards] = useState([false, false, false]);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  return (
-    <div className="min-h-screen bg-[#f2e8d5] text-[#1a1a1a] overflow-x-hidden">
+  function toggleSnapCard(i: number) {
+    setSnapCards((prev) => {
+      const next = [...prev];
+      next[i] = !next[i];
+      return next;
+    });
+  }
 
-      {/* ============================================================ */}
-      {/* 1. FIXED NAV                                                  */}
-      {/* ============================================================ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1a1a] border-b-4 border-[#cc0000]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 flex items-center justify-center">
-                <SovietStar size={28} color="#cc0000" />
-              </div>
-              <span className="font-black text-sm uppercase tracking-[0.25em] text-[#f2e8d5]">
-                Constructivism
+  const paletteSwatches = [
+    { name: "Soviet Red", hex: RED, role: "Primary" },
+    { name: "Pure Black", hex: BLACK, role: "Structural" },
+    { name: "Aged Paper", hex: PAPER, role: "Background" },
+    { name: "Gold Star", hex: GOLD, role: "Accent" },
+    { name: "Earth Brown", hex: BROWN, role: "Accent" },
+  ];
+
+  const doItems = [
+    "bg-[#cc0000] text-[#1a1a1a] — soviet red + black high contrast",
+    "-rotate-6 rotate-3 skew-x-3 — diagonal composition",
+    "font-black text-6xl uppercase — maximum typographic weight",
+    "rounded-none — zero softness, pure geometric hard edge",
+    "shadow-[4px_4px_0_#1a1a1a] — woodblock print shadow",
+    "border-4 border-[#1a1a1a] — thick structural borders",
+    "Extreme weight contrast — giant headline vs small body text",
+    "transform rotate — dynamic diagonal construction",
+  ];
+
+  const dontItems = [
+    "rounded-lg rounded-xl rounded-full — absolutely forbidden",
+    "bg-gradient-to-r — no soft gradients whatsoever",
+    "shadow-sm shadow-md — no soft diffuse shadows",
+    "More than three colors — strict red/black/paper system",
+    "font-light font-normal — no weak typographic weight",
+    "Large white-space — suppresses urgency and tension",
+    "Curves and organic shapes — constructivism is geometric only",
+    "ease-in-out transitions — too fluid, use ease-linear",
+  ];
+
+  return (
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ backgroundColor: PAPER, fontFamily: "sans-serif", color: BLACK }}
+    >
+      <style>{`
+        @keyframes cstv-march {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100vw); }
+        }
+        @keyframes cstv-pulse-red {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+        @keyframes cstv-stamp {
+          0% { transform: scale(1.4) rotate(-8deg); opacity: 0; }
+          60% { transform: scale(0.95) rotate(2deg); opacity: 1; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .cstv-stripes {
+          background-image: repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 10px,
+            ${RED} 10px,
+            ${RED} 12px
+          );
+        }
+        .cstv-diagonal-divider {
+          height: 4px;
+          background: ${BLACK};
+          transform: rotate(-1.5deg);
+        }
+      `}</style>
+
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                      */}
+      {/* ================================================================ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          backgroundColor: BLACK,
+          borderBottom: `4px solid ${RED}`,
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 flex items-center justify-center"
+              style={{ backgroundColor: RED }}
+            >
+              <span
+                className="font-black text-xs uppercase"
+                style={{ color: PAPER, letterSpacing: "0.1em" }}
+              >
+                C
               </span>
             </div>
-            <nav className="flex items-center gap-6">
-              <span className="hidden md:block text-xs uppercase tracking-widest text-[#cc0000] font-bold">
-                Russian Avant-Garde 1920s
-              </span>
-              <Link
-                href="/"
-                className="text-xs font-black uppercase tracking-widest text-[#f2e8d5] hover:text-[#cc0000] transition-colors duration-150 flex items-center gap-2"
-              >
-                StyleKit
-                <ArrowRight size={12} color="currentColor" />
-              </Link>
-            </nav>
+            <span
+              className="font-black uppercase tracking-[0.25em] text-sm"
+              style={{ color: PAPER }}
+            >
+              Constructivism
+            </span>
+            <div
+              className="hidden md:block w-px h-5"
+              style={{ backgroundColor: RED }}
+            />
+            <span
+              className="hidden md:block text-xs uppercase tracking-[0.2em]"
+              style={{ color: GOLD }}
+            >
+              StyleKit
+            </span>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Components", "Rules Demo", "Philosophy", "Do/Don't"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1 text-xs font-black uppercase tracking-wider cursor-pointer transition-all duration-75 ease-linear"
+                style={{ color: PAPER, letterSpacing: "0.15em" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = RED;
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = PAPER;
+                }}
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="group relative flex items-center gap-2 px-5 py-2 overflow-hidden font-black uppercase text-xs tracking-wider transition-all duration-75 ease-linear hover:translate-x-[3px] hover:translate-y-[3px]"
+            style={{
+              color: PAPER,
+              backgroundColor: RED,
+              border: `2px solid ${RED}`,
+              boxShadow: `3px 3px 0 ${PAPER}`,
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `1px 1px 0 ${PAPER}`; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `3px 3px 0 ${PAPER}`; }}
+          >
+            <div
+              className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+              style={{ backgroundColor: BLACK }}
+            />
+            <span className="relative z-10">← StyleKit</span>
+          </Link>
         </div>
       </header>
 
-      {/* ============================================================ */}
-      {/* 2. HERO — Propaganda poster layout                            */}
-      {/* ============================================================ */}
-      <section className="pt-14 min-h-screen relative overflow-hidden">
-        {/* Background structure */}
-        <div className="absolute inset-0 bg-[#f2e8d5]" />
-
-        {/* Full-height split: aged paper left / red right via diagonal */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute right-0 top-0 w-1/2 h-full bg-[#cc0000]" />
-          {/* Diagonal cut */}
-          <div
-            className="absolute top-0 h-full"
-            style={{
-              left: "35%",
-              width: "20%",
-              background: "linear-gradient(105deg, #f2e8d5 50%, #cc0000 50%)",
-            }}
-          />
-        </div>
-
-        {/* Diagonal red band overlay */}
+      {/* ================================================================ */}
+      {/* 2. HERO                                                           */}
+      {/* ================================================================ */}
+      <section
+        className="relative pt-14 min-h-screen flex items-center overflow-hidden"
+        style={{ backgroundColor: PAPER }}
+      >
+        {/* Diagonal red slab — far right */}
         <div
-          className="absolute top-0 left-0 w-full h-full pointer-events-none"
-          style={{ zIndex: 1 }}
-        >
+          className="absolute top-0 right-0 w-2/5 h-full -skew-x-6"
+          style={{ backgroundColor: RED, transformOrigin: "top right" }}
+        />
+        {/* Black geometric corner */}
+        <div
+          className="absolute bottom-0 left-0 w-56 h-56 rotate-45 -translate-x-28 translate-y-28"
+          style={{ backgroundColor: BLACK }}
+        />
+        {/* Thin diagonal stripe band */}
+        <div className="absolute top-0 left-0 right-0 h-2 cstv-stripes opacity-40" />
+
+        {/* Hero content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-16 w-full">
           <div
-            className="absolute bg-[#1a1a1a]"
             style={{
-              top: "55%",
-              left: "-10%",
-              width: "120%",
-              height: "8px",
-              transform: "rotate(-6deg)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(40px)",
+              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
-          />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pt-16 pb-24 md:pt-24 md:pb-32">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-center min-h-[80vh]">
-
-            {/* Left: Typography + manifesto */}
-            <div className="relative pr-0 md:pr-16">
-              {/* Star decoration */}
-              <div
-                className="mb-6"
-                style={{
-                  opacity: heroVisible ? 1 : 0,
-                  transform: heroVisible ? "rotate(0deg) scale(1)" : "rotate(-30deg) scale(0.5)",
-                  transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
-                }}
-              >
-                <SovietStar size={52} color="#cc0000" />
-              </div>
-
-              {/* Massive headline */}
-              <div
-                style={{
-                  opacity: heroVisible ? 1 : 0,
-                  transform: heroVisible ? "translateX(0) skewX(0deg)" : "translateX(-60px) skewX(-3deg)",
-                  transition: "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.1s",
-                }}
-              >
-                <h1 className="font-black uppercase leading-none text-[#1a1a1a]">
-                  <span className="block text-7xl md:text-9xl tracking-tight">
-                    构成
-                  </span>
-                  <span
-                    className="block text-5xl md:text-7xl tracking-widest mt-1"
-                    style={{ color: "#cc0000" }}
-                  >
-                    CONSTRUCTIVISM
-                  </span>
-                </h1>
-              </div>
-
-              {/* Divider bar */}
-              <div
-                className="my-6 h-2 bg-[#1a1a1a]"
-                style={{
-                  opacity: heroVisible ? 1 : 0,
-                  transform: heroVisible ? "scaleX(1)" : "scaleX(0)",
-                  transformOrigin: "left",
-                  transition: "opacity 0.5s 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
-                  width: "80%",
-                }}
-              />
-
-              {/* Tagline */}
-              <div
-                style={{
-                  opacity: heroVisible ? 1 : 0,
-                  transform: heroVisible ? "translateY(0)" : "translateY(20px)",
-                  transition: "opacity 0.6s 0.45s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.45s",
-                }}
-              >
-                <p className="text-sm md:text-base font-bold uppercase tracking-[0.2em] text-[#1a1a1a] max-w-sm leading-relaxed">
-                  Russian avant-garde 1920s. Art serves society. Bold geometric propaganda posters. Every element shouts its purpose.
-                </p>
-              </div>
-
-              {/* Arrow motif row */}
-              <div
-                className="flex items-center gap-3 mt-8"
-                style={{
-                  opacity: heroVisible ? 1 : 0,
-                  transition: "opacity 0.6s 0.6s",
-                }}
-              >
-                <ArrowRight size={28} color="#cc0000" />
-                <ArrowRight size={20} color="#1a1a1a" />
-                <ArrowRight size={14} color="#d4a843" />
-                <span className="font-black uppercase tracking-widest text-xs text-[#8b4513] ml-2">
-                  Forward to the future
-                </span>
-              </div>
-            </div>
-
-            {/* Right: Propaganda poster card */}
+          >
             <div
-              className="relative flex justify-center md:justify-end mt-12 md:mt-0"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? "rotate(0deg)" : "rotate(8deg) scale(0.9)",
-                transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s",
-              }}
+              className="inline-block px-4 py-1 mb-6 font-black uppercase text-xs tracking-[0.3em]"
+              style={{ backgroundColor: BLACK, color: GOLD }}
             >
-              {/* Poster frame */}
-              <div
-                className="relative bg-[#cc0000] border-4 border-[#1a1a1a]"
-                style={{
-                  width: 280,
-                  height: 380,
-                  boxShadow: "8px 8px 0 #1a1a1a",
-                  transform: "rotate(-2deg)",
-                }}
-              >
-                {/* Poster content */}
-                <div className="absolute inset-0 p-6 flex flex-col justify-between overflow-hidden">
-                  {/* Top stars row */}
-                  <div className="flex items-center gap-2">
-                    <SovietStar size={20} color="#f2e8d5" />
-                    <div className="flex-1 h-0.5 bg-[#f2e8d5] opacity-60" />
-                    <SovietStar size={20} color="#d4a843" />
-                  </div>
-
-                  {/* Big typography */}
-                  <div className="text-center">
-                    <div className="font-black text-6xl uppercase text-[#f2e8d5] leading-none tracking-tight mb-2">
-                      АРТ
-                    </div>
-                    <div className="h-1 bg-[#f2e8d5] mb-2" />
-                    <div className="font-black text-2xl uppercase text-[#d4a843] tracking-widest">
-                      SERVES
-                    </div>
-                    <div className="font-black text-4xl uppercase text-[#f2e8d5] leading-none mt-1 tracking-tight">
-                      SOCIETY
-                    </div>
-                  </div>
-
-                  {/* Geometric block */}
-                  <div className="relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-full bg-[#1a1a1a] opacity-30" style={{ transform: "skewX(-8deg) translateX(-10px)" }} />
-                    <div className="relative px-3 py-2 border-2 border-[#f2e8d5]">
-                      <div className="text-center">
-                        <span className="font-black text-xs uppercase tracking-[0.3em] text-[#f2e8d5]">
-                          1920 — AVANT GARDE
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom arrow */}
-                  <div className="flex items-center justify-center">
-                    <ArrowRight size={36} color="#f2e8d5" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Shadow stack effect */}
-              <div
-                className="absolute bg-[#8b4513] border-4 border-[#1a1a1a]"
-                style={{
-                  width: 280,
-                  height: 380,
-                  top: 12,
-                  left: 12,
-                  zIndex: -1,
-                  transform: "rotate(-2deg)",
-                }}
-              />
+              Soviet Constructivism — 1920s
             </div>
           </div>
-        </div>
 
-        {/* Bottom geometric bar */}
-        <div className="relative z-10 h-4 bg-[#1a1a1a]" />
-        <div className="relative z-10 h-2 bg-[#cc0000]" />
-        <div className="relative z-10 h-1 bg-[#d4a843]" />
+          <div
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0) rotate(0deg)" : "translateY(60px) rotate(-2deg)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+            }}
+          >
+            <h1
+              className="font-black uppercase leading-none mb-2"
+              style={{
+                fontSize: "clamp(3.5rem, 10vw, 9rem)",
+                color: BLACK,
+                letterSpacing: "-0.02em",
+                transform: "rotate(-2deg)",
+              }}
+            >
+              CONSTRUCT
+            </h1>
+            <h2
+              className="font-black uppercase leading-none mb-8"
+              style={{
+                fontSize: "clamp(2rem, 6vw, 5rem)",
+                color: RED,
+                letterSpacing: "0.2em",
+              }}
+            >
+              THE FUTURE
+            </h2>
+          </div>
+
+          <div
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(30px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s",
+            }}
+          >
+            <div
+              className="w-24 h-1 mb-6"
+              style={{ backgroundColor: RED, transform: "rotate(-1deg)" }}
+            />
+            <p
+              className="font-black uppercase text-sm tracking-widest mb-10 max-w-md"
+              style={{ color: BLACK, opacity: 0.75, lineHeight: "1.8" }}
+            >
+              Art must serve the revolution. Design is a weapon of progress and collective transformation.
+            </p>
+          </div>
+
+          <div
+            className="flex flex-col sm:flex-row gap-4"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
+            }}
+          >
+            {/* Primary CTA */}
+            <button
+              className="group relative px-10 py-4 overflow-hidden font-black uppercase tracking-[0.3em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]"
+              style={{
+                backgroundColor: RED,
+                color: PAPER,
+                border: `4px solid ${BLACK}`,
+                boxShadow: `6px 6px 0 ${BLACK}`,
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${BLACK}`;
+              }}
+              onMouseDown={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                (e.currentTarget as HTMLElement).style.backgroundColor = BLACK;
+                (e.currentTarget as HTMLElement).style.color = RED;
+              }}
+              onMouseUp={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+                (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                (e.currentTarget as HTMLElement).style.color = PAPER;
+              }}
+            >
+              <div
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                style={{ backgroundColor: BLACK }}
+              />
+              <span className="relative z-10">BEGIN THE WORK</span>
+            </button>
+
+            {/* Secondary CTA */}
+            <button
+              className="group relative px-10 py-4 overflow-hidden font-black uppercase tracking-[0.3em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]"
+              style={{
+                backgroundColor: "transparent",
+                color: BLACK,
+                border: `4px solid ${BLACK}`,
+                boxShadow: `6px 6px 0 ${RED}`,
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${RED}`;
+              }}
+              onMouseDown={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                (e.currentTarget as HTMLElement).style.color = PAPER;
+              }}
+              onMouseUp={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`;
+                (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                (e.currentTarget as HTMLElement).style.color = BLACK;
+              }}
+            >
+              <div
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                style={{ backgroundColor: RED }}
+              />
+              <span className="relative z-10">VIEW MANIFESTO</span>
+            </button>
+          </div>
+
+          {/* Hero stats row */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 max-w-3xl"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.55s",
+            }}
+          >
+            {[
+              { value: "1920s", label: "ORIGIN ERA" },
+              { value: "3", label: "COLOR LIMIT" },
+              { value: "0deg", label: "ALLOWED CURVES" },
+              { value: "100ms", label: "MAX TRANSITION" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="p-4 transition-all duration-75 ease-linear"
+                style={{
+                  border: `4px solid ${BLACK}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `4px 4px 0 ${BLACK}`,
+                }}
+              >
+                <div
+                  className="font-black text-2xl uppercase"
+                  style={{ color: RED }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  className="font-black text-xs uppercase tracking-[0.15em] mt-1"
+                  style={{ color: BLACK, opacity: 0.6 }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 3. COMPONENT DEMOS — Tab switcher                             */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#f2e8d5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <SovietStar size={36} color="#cc0000" />
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#1a1a1a]">
-                  Components
-                </h2>
-              </div>
-              <div className="h-1 bg-[#cc0000] w-48" />
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                  */}
+      {/* ================================================================ */}
+      <section
+        className="py-24 px-5 md:px-10"
+        style={{ backgroundColor: BLACK }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-12">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-1" style={{ backgroundColor: RED }} />
+              <span
+                className="font-black uppercase tracking-[0.3em] text-xs"
+                style={{ color: RED }}
+              >
+                Color System
+              </span>
+            </div>
+            <h2
+              className="font-black uppercase leading-none"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: PAPER }}
+            >
+              THREE-COLOR
+              <br />
+              <span style={{ color: RED }}>DOCTRINE</span>
+            </h2>
+            <p
+              className="mt-6 font-black uppercase text-xs tracking-widest max-w-xl"
+              style={{ color: PAPER, opacity: 0.6, lineHeight: "1.9" }}
+            >
+              Soviet red, pure black, aged paper. Every deviation is counter-revolutionary. Gold and brown enter only as minimal accents of print heritage.
+            </p>
+          </RevealBlock>
+
+          {/* Swatches */}
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+              {paletteSwatches.map((swatch) => (
+                <div
+                  key={swatch.name}
+                  className="group cursor-default transition-all duration-75 ease-linear"
+                  style={{
+                    border: `4px solid ${swatch.hex === PAPER ? RED : PAPER}`,
+                    boxShadow: `4px 4px 0 ${RED}`,
+                  }}
+                >
+                  <div
+                    className="h-28 w-full"
+                    style={{ backgroundColor: swatch.hex }}
+                  />
+                  <div
+                    className="p-3"
+                    style={{
+                      backgroundColor: PAPER,
+                      borderTop: `3px solid ${swatch.hex === PAPER ? BLACK : swatch.hex}`,
+                    }}
+                  >
+                    <div
+                      className="font-black uppercase text-xs tracking-wider"
+                      style={{ color: BLACK }}
+                    >
+                      {swatch.name}
+                    </div>
+                    <div
+                      className="font-black uppercase text-xs mt-1 opacity-60"
+                      style={{ color: BLACK, fontFamily: "monospace" }}
+                    >
+                      {swatch.hex}
+                    </div>
+                    <div
+                      className="inline-block mt-2 px-2 py-0.5 font-black uppercase text-[9px] tracking-wider"
+                      style={{
+                        backgroundColor: swatch.hex === PAPER ? BLACK : swatch.hex,
+                        color: PAPER,
+                      }}
+                    >
+                      {swatch.role}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </RevealBlock>
 
-          {/* Tab switcher */}
-          <RevealBlock delay={0.05}>
-            <div className="flex items-stretch gap-0 mb-12 border-4 border-[#1a1a1a] w-fit" style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
-              {(["Buttons", "Cards", "Inputs"] as const).map((tab, i) => (
+          {/* Three-color usage diagram */}
+          <RevealBlock delay={0.2}>
+            <div
+              className="p-8"
+              style={{
+                border: `4px solid ${RED}`,
+                backgroundColor: PAPER,
+                boxShadow: `6px 6px 0 ${RED}`,
+              }}
+            >
+              <div
+                className="font-black uppercase text-xs tracking-[0.3em] mb-6"
+                style={{ color: RED }}
+              >
+                Strict Usage Protocol
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    color: RED,
+                    name: "Soviet Red",
+                    usage: ["Primary CTAs", "Section headers", "Diagonal slabs", "Alert borders"],
+                    textColor: PAPER,
+                  },
+                  {
+                    color: BLACK,
+                    name: "Pure Black",
+                    usage: ["All borders border-4", "Hard shadows", "Body text", "Structural frames"],
+                    textColor: PAPER,
+                  },
+                  {
+                    color: PAPER,
+                    name: "Aged Paper",
+                    usage: ["Page background", "Card surface", "Text on dark", "Form fields"],
+                    textColor: BLACK,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.name}
+                    className="p-5"
+                    style={{
+                      backgroundColor: item.color,
+                      border: `3px solid ${BLACK}`,
+                    }}
+                  >
+                    <div
+                      className="font-black uppercase tracking-wider text-sm mb-4"
+                      style={{ color: item.textColor }}
+                    >
+                      {item.name}
+                    </div>
+                    <ul className="space-y-2">
+                      {item.usage.map((u) => (
+                        <li
+                          key={u}
+                          className="font-black uppercase text-[10px] tracking-wider flex items-center gap-2"
+                          style={{ color: item.textColor, opacity: 0.85 }}
+                        >
+                          <span
+                            className="w-3 h-3 inline-block shrink-0"
+                            style={{ backgroundColor: item.textColor }}
+                          />
+                          {u}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY                                             */}
+      {/* ================================================================ */}
+      <section
+        className="py-24 px-5 md:px-10"
+        style={{ backgroundColor: PAPER }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-12">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-1" style={{ backgroundColor: BLACK }} />
+              <span
+                className="font-black uppercase tracking-[0.3em] text-xs"
+                style={{ color: BLACK }}
+              >
+                Components
+              </span>
+            </div>
+            <h2
+              className="font-black uppercase leading-none"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: BLACK }}
+            >
+              BUILDING
+              <br />
+              <span style={{ color: RED }}>BLOCKS</span>
+            </h2>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.05} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["buttons", "cards", "inputs", "hero"] as const).map((tab) => (
                 <button
                   key={tab}
-                  type="button"
-                  onClick={() => setComponentTab(tab)}
-                  className={`px-6 py-3 font-black uppercase tracking-widest text-sm transition-all duration-150 ${
-                    i > 0 ? "border-l-4 border-[#1a1a1a]" : ""
-                  } ${
-                    componentTab === tab
-                      ? "bg-[#cc0000] text-[#f2e8d5]"
-                      : "bg-[#f2e8d5] text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-[#f2e8d5]"
-                  }`}
+                  onClick={() => setActiveTab(tab)}
+                  className="font-black uppercase text-xs tracking-[0.2em] px-5 py-2.5 transition-all duration-75 ease-linear"
+                  style={{
+                    backgroundColor: activeTab === tab ? RED : "transparent",
+                    color: activeTab === tab ? PAPER : BLACK,
+                    border: `3px solid ${activeTab === tab ? RED : BLACK}`,
+                    boxShadow: activeTab === tab ? `3px 3px 0 ${BLACK}` : "none",
+                  }}
                 >
                   {tab}
                 </button>
@@ -434,965 +655,1182 @@ export default function ShowcaseContent() {
             </div>
           </RevealBlock>
 
-          {/* Buttons panel */}
-          {componentTab === "Buttons" && (
-            <RevealBlock>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Primary red fill */}
-                <div className="border-4 border-[#1a1a1a] bg-[#f2e8d5] p-8" style={{ boxShadow: "6px 6px 0 #1a1a1a" }}>
-                  <div className="text-xs font-black uppercase tracking-widest text-[#8b4513] mb-6">
-                    Primary — Soviet Red Fill
-                  </div>
-                  <div className="space-y-4">
-                    <button
-                      type="button"
-                      className="group w-full font-black uppercase tracking-widest text-sm text-[#f2e8d5] bg-[#cc0000] border-4 border-[#1a1a1a] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #1a1a1a" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #1a1a1a";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #1a1a1a";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      <span className="flex items-center justify-center gap-3">
-                        <ArrowRight size={16} color="#f2e8d5" />
-                        Forward March
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#f2e8d5] bg-[#1a1a1a] border-4 border-[#cc0000] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #cc0000" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      <span className="flex items-center justify-center gap-3">
-                        <SovietStar size={16} color="#cc0000" />
-                        Agitate Now
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#1a1a1a] bg-[#d4a843] border-4 border-[#1a1a1a] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #8b4513" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #8b4513";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #8b4513";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      Propaganda Gold
-                    </button>
-                  </div>
-                </div>
+          {/* Demo panel */}
+          <RevealBlock delay={0.1}>
+            <div
+              className="p-8 md:p-12"
+              style={{
+                border: `4px solid ${BLACK}`,
+                backgroundColor: PAPER,
+                boxShadow: `6px 6px 0 ${BLACK}`,
+              }}
+            >
 
-                {/* Outline variants */}
-                <div className="border-4 border-[#cc0000] bg-[#1a1a1a] p-8" style={{ boxShadow: "6px 6px 0 #cc0000" }}>
-                  <div className="text-xs font-black uppercase tracking-widest text-[#d4a843] mb-6">
-                    Outline — Black Paper Variant
-                  </div>
-                  <div className="space-y-4">
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#cc0000] bg-transparent border-4 border-[#cc0000] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #cc0000" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#f2e8d5";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #cc0000";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      Red Outline
-                    </button>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#f2e8d5] bg-transparent border-4 border-[#f2e8d5] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #f2e8d5" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#f2e8d5";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#1a1a1a";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #f2e8d5";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#f2e8d5";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #f2e8d5";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      Paper Outline
-                    </button>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#d4a843] bg-transparent border-4 border-[#d4a843] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #d4a843" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#d4a843";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#1a1a1a";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #d4a843";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px, 2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
-                        (e.currentTarget as HTMLButtonElement).style.color = "#d4a843";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #d4a843";
-                        (e.currentTarget as HTMLButtonElement).style.transform = "translate(0, 0)";
-                      }}
-                    >
-                      Gold Outline
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-
-          {/* Cards panel */}
-          {componentTab === "Cards" && (
-            <RevealBlock>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Red card */}
-                <div
-                  className="group relative bg-[#cc0000] border-4 border-[#1a1a1a] p-6 transition-all duration-150 cursor-pointer"
-                  style={{ boxShadow: "6px 6px 0 #1a1a1a" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #1a1a1a";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translate(3px, 3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #1a1a1a";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0)";
-                  }}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <SovietStar size={32} color="#f2e8d5" />
-                    <div className="text-right">
-                      <div className="font-black text-xs uppercase tracking-widest text-[#f2e8d5] opacity-70">
-                        Sector
-                      </div>
-                      <div className="font-black text-2xl text-[#f2e8d5]">01</div>
-                    </div>
-                  </div>
-                  <div className="h-0.5 bg-[#f2e8d5] opacity-40 mb-4" />
-                  <h3 className="font-black text-xl uppercase tracking-wide text-[#f2e8d5] mb-2">
-                    Workers Unite
-                  </h3>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#f2e8d5] opacity-70 leading-relaxed">
-                    The collective strength of organized labor shapes the future of all society.
-                  </p>
-                  <div className="mt-6 flex items-center gap-2">
-                    <ArrowRight size={16} color="#f2e8d5" />
-                    <span className="font-black text-xs uppercase tracking-widest text-[#f2e8d5]">
-                      Read Manifesto
-                    </span>
-                  </div>
-                </div>
-
-                {/* Black/rotated border card */}
-                <div
-                  className="group relative bg-[#f2e8d5] border-4 border-[#1a1a1a] p-6 transition-all duration-150 cursor-pointer"
-                  style={{
-                    boxShadow: "6px 6px 0 #cc0000",
-                    transform: "rotate(0deg)",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #cc0000";
-                    (e.currentTarget as HTMLDivElement).style.transform = "rotate(-1deg) translate(3px, 3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #cc0000";
-                    (e.currentTarget as HTMLDivElement).style.transform = "rotate(0deg) translate(0, 0)";
-                  }}
-                >
-                  <div className="absolute top-3 right-3">
-                    <div className="w-8 h-8 bg-[#cc0000] border-2 border-[#1a1a1a]" />
-                  </div>
-                  <div className="text-xs font-black uppercase tracking-widest text-[#8b4513] mb-4">
-                    Industrial Progress
-                  </div>
-                  <h3 className="font-black text-3xl uppercase tracking-tight text-[#1a1a1a] leading-none mb-3">
-                    BUILD<br />THE<br />FUTURE
-                  </h3>
-                  <div className="h-1 bg-[#cc0000] w-3/4 mb-4" />
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#1a1a1a] opacity-70 leading-relaxed">
-                    Geometric precision in service of the collective mission.
-                  </p>
-                  <div className="mt-6 inline-flex items-center gap-2 bg-[#1a1a1a] px-3 py-2">
-                    <span className="font-black text-xs uppercase tracking-widest text-[#f2e8d5]">
-                      Engage
-                    </span>
-                    <ArrowRight size={12} color="#f2e8d5" />
-                  </div>
-                </div>
-
-                {/* Gold accent card */}
-                <div
-                  className="group relative bg-[#1a1a1a] border-4 border-[#d4a843] p-6 transition-all duration-150 cursor-pointer"
-                  style={{ boxShadow: "6px 6px 0 #d4a843" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #d4a843";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translate(3px, 3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #d4a843";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0)";
-                  }}
-                >
-                  <div className="mb-4 overflow-hidden">
-                    <GeometricAccent />
-                  </div>
-                  <h3 className="font-black text-xl uppercase tracking-wide text-[#d4a843] mb-2">
-                    Avant Garde
-                  </h3>
-                  <div className="h-0.5 bg-[#d4a843] opacity-40 mb-3" />
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#f2e8d5] opacity-60 leading-relaxed">
-                    Art is not decoration. Art is construction.
-                  </p>
-                  <div className="mt-6 flex items-center gap-2">
-                    <SovietStar size={16} color="#d4a843" />
-                    <span className="font-black text-xs uppercase tracking-widest text-[#d4a843]">
-                      1920
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-
-          {/* Inputs panel */}
-          {componentTab === "Inputs" && (
-            <RevealBlock>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Inputs on paper */}
-                <div className="border-4 border-[#1a1a1a] bg-[#f2e8d5] p-8" style={{ boxShadow: "6px 6px 0 #1a1a1a" }}>
-                  <div className="text-xs font-black uppercase tracking-widest text-[#8b4513] mb-6">
-                    Inputs — Aged Paper Ground
-                  </div>
-                  <div className="space-y-5">
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#1a1a1a] mb-2">
-                        Name of Worker
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter your name"
-                        className="w-full bg-[#f2e8d5] border-4 border-[#1a1a1a] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#1a1a1a] placeholder:text-[#1a1a1a]/30 rounded-none outline-none focus:border-[#cc0000] transition-colors duration-150"
-                        style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#1a1a1a] mb-2">
-                        Factory Sector
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Sector designation"
-                        className="w-full bg-[#f2e8d5] border-4 border-[#cc0000] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#1a1a1a] placeholder:text-[#cc0000]/30 rounded-none outline-none focus:border-[#1a1a1a] transition-colors duration-150"
-                        style={{ boxShadow: "3px 3px 0 #cc0000" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#1a1a1a] mb-2">
-                        Message to the Collective
-                      </label>
-                      <textarea
-                        placeholder="State your manifesto..."
-                        rows={3}
-                        className="w-full bg-[#f2e8d5] border-4 border-[#1a1a1a] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#1a1a1a] placeholder:text-[#1a1a1a]/30 rounded-none outline-none focus:border-[#cc0000] transition-colors duration-150 resize-none"
-                        style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#f2e8d5] bg-[#cc0000] border-4 border-[#1a1a1a] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #1a1a1a" }}
-                    >
-                      Submit Report
-                    </button>
-                  </div>
-                </div>
-
-                {/* Inputs on black */}
-                <div className="border-4 border-[#cc0000] bg-[#1a1a1a] p-8" style={{ boxShadow: "6px 6px 0 #cc0000" }}>
-                  <div className="text-xs font-black uppercase tracking-widest text-[#d4a843] mb-6">
-                    Inputs — Ink Black Ground
-                  </div>
-                  <div className="space-y-5">
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#f2e8d5] mb-2">
-                        Identification
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Worker ID"
-                        className="w-full bg-[#1a1a1a] border-4 border-[#f2e8d5] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#f2e8d5] placeholder:text-[#f2e8d5]/30 rounded-none outline-none focus:border-[#cc0000] transition-colors duration-150"
-                        style={{ boxShadow: "3px 3px 0 #f2e8d5" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#f2e8d5] mb-2">
-                        Division
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Collective division"
-                        className="w-full bg-[#1a1a1a] border-4 border-[#cc0000] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#f2e8d5] placeholder:text-[#cc0000]/40 rounded-none outline-none focus:border-[#d4a843] transition-colors duration-150"
-                        style={{ boxShadow: "3px 3px 0 #cc0000" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-black text-xs uppercase tracking-widest text-[#f2e8d5] mb-2">
-                        Directive
-                      </label>
-                      <textarea
-                        placeholder="Issue directive..."
-                        rows={3}
-                        className="w-full bg-[#1a1a1a] border-4 border-[#d4a843] px-4 py-3 font-bold text-sm uppercase tracking-wider text-[#f2e8d5] placeholder:text-[#d4a843]/30 rounded-none outline-none focus:border-[#cc0000] transition-colors duration-150 resize-none"
-                        style={{ boxShadow: "3px 3px 0 #d4a843" }}
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="w-full font-black uppercase tracking-widest text-sm text-[#1a1a1a] bg-[#d4a843] border-4 border-[#d4a843] px-6 py-4 rounded-none transition-all duration-150"
-                      style={{ boxShadow: "4px 4px 0 #d4a843" }}
-                    >
-                      Transmit
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 4. COLOR PALETTE                                              */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="h-8 w-2 bg-[#cc0000]" />
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#f2e8d5]">
-                  Color Palette
-                </h2>
-              </div>
-              <p className="font-bold uppercase tracking-widest text-xs text-[#f2e8d5] opacity-40 ml-6">
-                Five tokens. No compromise. No pastels.
-              </p>
-            </div>
-          </RevealBlock>
-
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-0 border-4 border-[#f2e8d5]" style={{ boxShadow: "6px 6px 0 #cc0000" }}>
-            {colorPalette.map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 0.06}>
-                <div
-                  className="group relative flex flex-col justify-end cursor-pointer transition-all duration-150"
-                  style={{
-                    backgroundColor: color.hex,
-                    height: 200,
-                    borderRight: i < colorPalette.length - 1 ? "4px solid #1a1a1a" : undefined,
-                  }}
-                >
-                  {/* Hover overlay */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-150 bg-white"
-                  />
-                  {/* Geometric accent on hover */}
-                  <div
-                    className="absolute top-4 right-4 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-150 border-2"
-                    style={{
-                      borderColor: color.light ? "#1a1a1a" : "#f2e8d5",
-                    }}
-                  />
-                  {/* Content */}
-                  <div
-                    className="p-4 border-t-4"
-                    style={{
-                      borderColor: color.light ? "#1a1a1a" : "rgba(255,255,255,0.3)",
-                    }}
-                  >
-                    <div
-                      className="font-black text-[10px] uppercase tracking-widest mb-1"
-                      style={{ color: color.light ? "#1a1a1a" : "#f2e8d5" }}
-                    >
-                      {color.name}
-                    </div>
-                    <div
-                      className="font-mono text-xs font-bold"
-                      style={{ color: color.light ? "#1a1a1a80" : "#f2e8d580" }}
-                    >
-                      {color.hex}
-                    </div>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Color usage grid */}
-          <RevealBlock delay={0.15}>
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { role: "Primary Action", color: "#cc0000", name: "Soviet Red", usage: "Buttons, stars, borders, emphasis" },
-                { role: "Primary Surface", color: "#f2e8d5", name: "Aged Paper", usage: "Background, paper ground, light text areas" },
-                { role: "Typography", color: "#1a1a1a", name: "Ink Black", usage: "All body text, outlines, hard shadows" },
-              ].map((item) => (
-                <div
-                  key={item.role}
-                  className="border-4 border-[#f2e8d5] p-4 flex items-start gap-4"
-                  style={{ boxShadow: "4px 4px 0 #cc0000" }}
-                >
-                  <div className="w-12 h-12 border-4 border-[#f2e8d5] shrink-0" style={{ backgroundColor: item.color }} />
+              {/* ---- BUTTONS ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-12">
                   <div>
-                    <div className="font-black text-xs uppercase tracking-widest text-[#d4a843] mb-1">{item.role}</div>
-                    <div className="font-black text-sm uppercase text-[#f2e8d5] mb-1">{item.name}</div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-[#f2e8d5] opacity-50">{item.usage}</div>
+                    <p
+                      className="font-black uppercase tracking-[0.2em] text-xs mb-6"
+                      style={{ color: BLACK, opacity: 0.5 }}
+                    >
+                      Primary — Red Invasion + Diagonal Shift
+                    </p>
+                    <div className="flex flex-wrap gap-5 items-center">
+                      <button
+                        className="group relative px-8 py-3 overflow-hidden font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]"
+                        style={{
+                          backgroundColor: RED,
+                          color: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          boxShadow: `6px 6px 0 ${BLACK}`,
+                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${BLACK}`; }}
+                        onMouseDown={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                          (e.currentTarget as HTMLElement).style.backgroundColor = BLACK;
+                          (e.currentTarget as HTMLElement).style.color = RED;
+                        }}
+                        onMouseUp={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+                          (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                          (e.currentTarget as HTMLElement).style.color = PAPER;
+                        }}
+                      >
+                        <div
+                          className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                          style={{ backgroundColor: BLACK }}
+                        />
+                        <span className="relative z-10">ACTION</span>
+                      </button>
+
+                      <button
+                        className="group relative px-8 py-3 overflow-hidden font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px] -rotate-1"
+                        style={{
+                          backgroundColor: BLACK,
+                          color: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          boxShadow: `6px 6px 0 ${RED}`,
+                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${RED}`; }}
+                        onMouseDown={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                          (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                          (e.currentTarget as HTMLElement).style.color = BLACK;
+                        }}
+                        onMouseUp={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`;
+                          (e.currentTarget as HTMLElement).style.backgroundColor = BLACK;
+                          (e.currentTarget as HTMLElement).style.color = PAPER;
+                        }}
+                      >
+                        <div
+                          className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                          style={{ backgroundColor: RED }}
+                        />
+                        <span className="relative z-10">MOBILIZE</span>
+                      </button>
+
+                      <button
+                        className="group relative px-8 py-3 overflow-hidden font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: RED,
+                          border: `4px solid ${RED}`,
+                          boxShadow: `6px 6px 0 ${RED}`,
+                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${RED}`; }}
+                        onMouseDown={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                          (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                          (e.currentTarget as HTMLElement).style.color = PAPER;
+                        }}
+                        onMouseUp={(e) => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`;
+                          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                          (e.currentTarget as HTMLElement).style.color = RED;
+                        }}
+                      >
+                        <div
+                          className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                          style={{ backgroundColor: RED }}
+                        />
+                        <span className="relative z-10">RESIST</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p
+                      className="font-black uppercase tracking-[0.2em] text-xs mb-6"
+                      style={{ color: BLACK, opacity: 0.5 }}
+                    >
+                      Size variants — all with diagonal shift + hard shadow
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-end">
+                      {[
+                        { label: "SM", px: "px-5 py-2", text: "text-xs" },
+                        { label: "MD", px: "px-8 py-3", text: "text-sm" },
+                        { label: "LG", px: "px-12 py-4", text: "text-base" },
+                      ].map(({ label, px, text }) => (
+                        <button
+                          key={label}
+                          className={`group relative ${px} overflow-hidden font-black uppercase tracking-[0.2em] ${text} transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]`}
+                          style={{
+                            backgroundColor: RED,
+                            color: PAPER,
+                            border: `4px solid ${BLACK}`,
+                            boxShadow: `6px 6px 0 ${BLACK}`,
+                          }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${BLACK}`; }}
+                          onMouseDown={(e) => {
+                            (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                            (e.currentTarget as HTMLElement).style.backgroundColor = BLACK;
+                            (e.currentTarget as HTMLElement).style.color = RED;
+                          }}
+                          onMouseUp={(e) => {
+                            (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+                            (e.currentTarget as HTMLElement).style.backgroundColor = RED;
+                            (e.currentTarget as HTMLElement).style.color = PAPER;
+                          }}
+                        >
+                          <div
+                            className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                            style={{ backgroundColor: BLACK }}
+                          />
+                          <span className="relative z-10">{label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* ---- CARDS ---- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {[
+                    {
+                      title: "MANIFESTO",
+                      label: "DOCTRINE",
+                      body: "Art must serve the revolution. Design is a weapon of progress and collective transformation of society.",
+                      bannerBg: RED,
+                    },
+                    {
+                      title: "WORKERS",
+                      label: "SOCIAL",
+                      body: "The worker is the foundation of the new world. Geometric forms reflect mechanical clarity and collective strength.",
+                      bannerBg: BLACK,
+                    },
+                    {
+                      title: "INDUSTRY",
+                      label: "PROGRESS",
+                      body: "Iron and fire shape the future. Diagonal compositions mirror the energy of machines in perpetual motion.",
+                      bannerBg: RED,
+                    },
+                    {
+                      title: "GEOMETRY",
+                      label: "FORM",
+                      body: "Only pure geometric forms carry the revolutionary spirit. No curves. No organic shapes. Only hard-edged truth.",
+                      bannerBg: BLACK,
+                    },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="group overflow-hidden transition-all duration-75 ease-linear"
+                      style={{
+                        border: `4px solid ${BLACK}`,
+                        boxShadow: `6px 6px 0 ${BLACK}`,
+                        backgroundColor: PAPER,
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+                        (e.currentTarget as HTMLElement).style.transform = "translate(4px, 4px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${BLACK}`;
+                        (e.currentTarget as HTMLElement).style.transform = "";
+                      }}
+                    >
+                      {/* Banner */}
+                      <div
+                        className="px-6 py-3 transition-colors duration-75 ease-linear"
+                        style={{ backgroundColor: card.bannerBg }}
+                      >
+                        <h3
+                          className="font-black uppercase tracking-[0.2em] text-lg"
+                          style={{ color: PAPER }}
+                        >
+                          {card.title}
+                        </h3>
+                      </div>
+                      <div className="p-6">
+                        {/* Diagonal accent line */}
+                        <div
+                          className="w-full h-1 mb-4 transition-transform duration-75 ease-linear"
+                          style={{
+                            backgroundColor: BLACK,
+                            transform: "rotate(-2deg)",
+                          }}
+                        />
+                        <div
+                          className="inline-block px-2 py-0.5 mb-3 font-black uppercase text-[10px] tracking-[0.2em]"
+                          style={{ backgroundColor: RED, color: PAPER }}
+                        >
+                          {card.label}
+                        </div>
+                        <p
+                          className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                          style={{ color: BLACK }}
+                        >
+                          {card.body}
+                        </p>
+                        <div className="flex gap-2 mt-4">
+                          <span className="w-4 h-4 inline-block" style={{ backgroundColor: RED }} />
+                          <span className="w-4 h-4 inline-block" style={{ backgroundColor: BLACK }} />
+                          <span className="w-4 h-4 inline-block" style={{ backgroundColor: GOLD }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- INPUTS ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
+                    <div>
+                      <label
+                        className="block font-black uppercase text-xs tracking-[0.2em] mb-2"
+                        style={{ color: BLACK }}
+                      >
+                        Worker ID
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="INPUT TEXT..."
+                        className="w-full px-5 py-3 font-black uppercase tracking-wider text-sm focus:outline-none transition-all duration-75 ease-linear"
+                        style={{
+                          backgroundColor: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          color: BLACK,
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${RED}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RED}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${BLACK}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="block font-black uppercase text-xs tracking-[0.2em] mb-2"
+                        style={{ color: BLACK }}
+                      >
+                        Collective
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="UNIT NAME..."
+                        className="w-full px-5 py-3 font-black uppercase tracking-wider text-sm focus:outline-none transition-all duration-75 ease-linear"
+                        style={{
+                          backgroundColor: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          color: BLACK,
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${RED}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RED}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${BLACK}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="block font-black uppercase text-xs tracking-[0.2em] mb-2"
+                        style={{ color: BLACK }}
+                      >
+                        Manifesto
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="STATE YOUR PURPOSE..."
+                        className="w-full px-5 py-3 font-black uppercase tracking-wider text-sm focus:outline-none transition-all duration-75 ease-linear resize-none"
+                        style={{
+                          backgroundColor: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          color: BLACK,
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${RED}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RED}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${BLACK}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <label
+                        className="block font-black uppercase text-xs tracking-[0.2em] mb-2"
+                        style={{ color: BLACK }}
+                      >
+                        Role
+                      </label>
+                      <select
+                        className="w-full px-5 py-3 font-black uppercase tracking-wider text-sm focus:outline-none transition-all duration-75 ease-linear"
+                        style={{
+                          backgroundColor: PAPER,
+                          border: `4px solid ${BLACK}`,
+                          color: BLACK,
+                        }}
+                        onFocus={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${RED}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RED}`;
+                        }}
+                        onBlur={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `4px solid ${BLACK}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                        }}
+                      >
+                        <option>ARTIST</option>
+                        <option>DESIGNER</option>
+                        <option>ARCHITECT</option>
+                        <option>ENGINEER</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-5 h-5 shrink-0 flex items-center justify-center"
+                        style={{ border: `3px solid ${RED}`, backgroundColor: RED }}
+                      >
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke={PAPER} strokeWidth="3.5">
+                          <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <label
+                        className="font-black uppercase text-xs tracking-wider"
+                        style={{ color: BLACK }}
+                      >
+                        Pledge allegiance to the collective
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-5 h-5 shrink-0"
+                        style={{ border: `3px solid ${BLACK}` }}
+                      />
+                      <label
+                        className="font-black uppercase text-xs tracking-wider"
+                        style={{ color: BLACK, opacity: 0.5 }}
+                      >
+                        Request individual deviation
+                      </label>
+                    </div>
+                    <button
+                      className="group relative w-full py-4 overflow-hidden font-black uppercase tracking-[0.3em] text-sm transition-all duration-75 ease-linear hover:translate-x-[3px] hover:translate-y-[3px]"
+                      style={{
+                        backgroundColor: RED,
+                        color: PAPER,
+                        border: `4px solid ${BLACK}`,
+                        boxShadow: `5px 5px 0 ${BLACK}`,
+                      }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `5px 5px 0 ${BLACK}`; }}
+                    >
+                      <div
+                        className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                        style={{ backgroundColor: BLACK }}
+                      />
+                      <span className="relative z-10">SUBMIT DECLARATION</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- HERO COMPONENT ---- */}
+              {activeTab === "hero" && (
+                <div
+                  className="relative min-h-64 flex items-center overflow-hidden"
+                  style={{ backgroundColor: PAPER }}
+                >
+                  <div
+                    className="absolute top-0 right-0 w-1/3 h-full -skew-x-12 translate-x-16"
+                    style={{ backgroundColor: RED }}
+                  />
+                  <div
+                    className="absolute bottom-0 left-0 w-40 h-40 rotate-45 -translate-x-20 translate-y-20"
+                    style={{ backgroundColor: BLACK }}
+                  />
+                  <div className="relative z-10 px-10">
+                    <div className="w-20 h-1 mb-4" style={{ backgroundColor: RED }} />
+                    <h3
+                      className="font-black uppercase leading-none mb-2"
+                      style={{ fontSize: "3rem", color: BLACK, transform: "rotate(-1deg)" }}
+                    >
+                      CONSTRUCT
+                    </h3>
+                    <h4
+                      className="font-black uppercase mb-5"
+                      style={{ fontSize: "1.5rem", color: RED, letterSpacing: "0.2em" }}
+                    >
+                      THE FUTURE
+                    </h4>
+                    <p
+                      className="font-black uppercase text-xs tracking-widest mb-6 max-w-xs"
+                      style={{ color: BLACK, opacity: 0.7, lineHeight: "1.8" }}
+                    >
+                      Art into life. Design as revolution.
+                    </p>
+                    <button
+                      className="group relative px-8 py-3 overflow-hidden font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear hover:translate-x-[4px] hover:translate-y-[4px]"
+                      style={{
+                        backgroundColor: BLACK,
+                        color: PAPER,
+                        border: `4px solid ${BLACK}`,
+                        boxShadow: `6px 6px 0 ${RED}`,
+                      }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${RED}`; }}
+                    >
+                      <div
+                        className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                        style={{ backgroundColor: RED }}
+                      />
+                      <span className="relative z-10">BEGIN</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 5. TYPOGRAPHY                                                 */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#f2e8d5] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <SovietStar size={36} color="#1a1a1a" />
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#1a1a1a]">
-                  Typography
-                </h2>
-              </div>
-              <div className="h-1 bg-[#1a1a1a] w-48 ml-12" />
+      {/* ================================================================ */}
+      {/* 5. AI RULES INTERACTIVE DEMO                                     */}
+      {/* ================================================================ */}
+      <section
+        className="py-24 px-5 md:px-10"
+        style={{ backgroundColor: BLACK }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-14">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-1" style={{ backgroundColor: RED }} />
+              <span
+                className="font-black uppercase tracking-[0.3em] text-xs"
+                style={{ color: RED }}
+              >
+                Interaction Rules
+              </span>
             </div>
+            <h2
+              className="font-black uppercase leading-none"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: PAPER }}
+            >
+              FOUR LAWS OF
+              <br />
+              <span style={{ color: RED }}>MECHANICAL MOTION</span>
+            </h2>
+            <p
+              className="mt-6 font-black uppercase text-xs tracking-widest max-w-xl"
+              style={{ color: PAPER, opacity: 0.55, lineHeight: "1.9" }}
+            >
+              Every interaction follows strict mechanical principles. No fluidity. No organic easing. Pure linear machine movement — duration-75 and duration-100 only.
+            </p>
           </RevealBlock>
 
-          {/* Type scale showcase */}
-          <div className="space-y-0 border-4 border-[#1a1a1a] overflow-hidden" style={{ boxShadow: "6px 6px 0 #cc0000" }}>
-            {typeScales.map((scale, i) => (
-              <RevealBlock key={scale.label} delay={i * 0.07}>
-                <div
-                  className={`group flex items-center gap-6 px-6 py-5 transition-all duration-150 cursor-default ${
-                    i % 2 === 0 ? "bg-[#f2e8d5]" : "bg-[#1a1a1a]"
-                  } ${i > 0 ? "border-t-4 border-[#1a1a1a]" : ""}`}
-                >
-                  {/* Label */}
-                  <div className="w-36 shrink-0">
-                    <div
-                      className={`font-black text-[10px] uppercase tracking-widest ${
-                        i % 2 === 0 ? "text-[#8b4513]" : "text-[#d4a843]"
-                      }`}
-                    >
-                      {scale.label}
-                    </div>
-                    <div
-                      className={`font-mono text-[9px] ${
-                        i % 2 === 0 ? "text-[#1a1a1a]/40" : "text-[#f2e8d5]/40"
-                      }`}
-                    >
-                      {scale.size} / {scale.weight}
-                    </div>
-                  </div>
-                  {/* Sample text */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* ---- Rule 1: Block Invasion ---- */}
+            <RevealBlock delay={0.05}>
+              <div
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${RED}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${RED}`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
                   <div
-                    className={`${scale.size} ${scale.weight} ${scale.tracking} leading-none transition-colors duration-150 ${
-                      i % 2 === 0
-                        ? "text-[#1a1a1a] group-hover:text-[#cc0000]"
-                        : "text-[#f2e8d5] group-hover:text-[#cc0000]"
-                    }`}
+                    className="px-3 py-1 font-black uppercase text-xs tracking-wider"
+                    style={{ backgroundColor: RED, color: PAPER }}
                   >
-                    {scale.sample}
+                    Rule 01
                   </div>
+                  <span
+                    className="font-black uppercase tracking-wider text-sm"
+                    style={{ color: BLACK }}
+                  >
+                    Block Invasion
+                  </span>
                 </div>
-              </RevealBlock>
-            ))}
+                <p
+                  className="font-black uppercase text-xs tracking-wider leading-relaxed mb-6"
+                  style={{ color: BLACK, opacity: 0.6 }}
+                >
+                  On hover, a color block sweeps from left to right — absolute inset-0, -translate-x-full to translate-x-0, duration-100 ease-linear. Text stays on top via z-10.
+                </p>
+
+                <div className="space-y-4">
+                  {[
+                    { label: "RED INVASION", bg: RED, invader: BLACK, text: PAPER },
+                    { label: "BLACK INVASION", bg: BLACK, invader: RED, text: PAPER },
+                    { label: "PAPER INVASION", bg: PAPER, invader: RED, text: BLACK },
+                  ].map((btn, i) => (
+                    <button
+                      key={btn.label}
+                      className="relative w-full py-3 overflow-hidden font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear"
+                      style={{
+                        backgroundColor: btn.bg,
+                        color: btn.text,
+                        border: `4px solid ${BLACK}`,
+                        boxShadow: invasionTarget === i ? `2px 2px 0 ${BLACK}` : `6px 6px 0 ${BLACK}`,
+                        transform: invasionTarget === i ? "translate(4px, 4px)" : "",
+                      }}
+                      onMouseEnter={() => setInvasionTarget(i)}
+                      onMouseLeave={() => setInvasionTarget(null)}
+                    >
+                      <div
+                        className="absolute inset-0 transition-transform duration-100 ease-linear"
+                        style={{
+                          backgroundColor: btn.invader,
+                          transform: invasionTarget === i ? "translateX(0)" : "translateX(-100%)",
+                        }}
+                      />
+                      <span className="relative z-10">{btn.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <p
+                  className="mt-5 font-black uppercase text-[10px] tracking-widest"
+                  style={{ color: RED }}
+                >
+                  {invasionTarget !== null
+                    ? `Block ${["red", "black", "paper"][invasionTarget]} is invading — duration-100 ease-linear`
+                    : "Hover any button to trigger the invasion"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 2: Diagonal Aggression ---- */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${RED}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${RED}`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className="px-3 py-1 font-black uppercase text-xs tracking-wider"
+                    style={{ backgroundColor: RED, color: PAPER }}
+                  >
+                    Rule 02
+                  </div>
+                  <span
+                    className="font-black uppercase tracking-wider text-sm"
+                    style={{ color: BLACK }}
+                  >
+                    Diagonal Aggression
+                  </span>
+                </div>
+                <p
+                  className="font-black uppercase text-xs tracking-wider leading-relaxed mb-6"
+                  style={{ color: BLACK, opacity: 0.6 }}
+                >
+                  On hover, elements shift diagonally — X and Y move simultaneously (translate-x-[4px] translate-y-[4px]). Shadow shrinks from 6px to 2px, simulating a woodblock pressing down.
+                </p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { title: "POSTER A", label: "1920" },
+                    { title: "POSTER B", label: "1925" },
+                    { title: "POSTER C", label: "1928" },
+                    { title: "POSTER D", label: "1932" },
+                  ].map((item) => (
+                    <div
+                      key={item.title}
+                      className="p-4 cursor-pointer transition-all duration-75 ease-linear"
+                      style={{
+                        border: `3px solid ${BLACK}`,
+                        backgroundColor: PAPER,
+                        boxShadow: `5px 5px 0 ${BLACK}`,
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.boxShadow = `2px 2px 0 ${BLACK}`;
+                        el.style.transform = "translate(4px, 4px)";
+                        el.style.backgroundColor = RED;
+                        const title = el.querySelector(".item-title") as HTMLElement;
+                        const lab = el.querySelector(".item-label") as HTMLElement;
+                        if (title) title.style.color = PAPER;
+                        if (lab) { lab.style.backgroundColor = PAPER; lab.style.color = RED; }
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.boxShadow = `5px 5px 0 ${BLACK}`;
+                        el.style.transform = "";
+                        el.style.backgroundColor = PAPER;
+                        const title = el.querySelector(".item-title") as HTMLElement;
+                        const lab = el.querySelector(".item-label") as HTMLElement;
+                        if (title) title.style.color = BLACK;
+                        if (lab) { lab.style.backgroundColor = RED; lab.style.color = PAPER; }
+                      }}
+                    >
+                      <div
+                        className="item-title font-black uppercase text-sm tracking-wider mb-2"
+                        style={{ color: BLACK }}
+                      >
+                        {item.title}
+                      </div>
+                      <div
+                        className="item-label inline-block px-2 py-0.5 font-black uppercase text-[10px] tracking-wider"
+                        style={{ backgroundColor: RED, color: PAPER }}
+                      >
+                        {item.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  className="mt-5 cursor-pointer transition-all duration-75 ease-linear px-4 py-2 font-black uppercase text-xs tracking-wider"
+                  style={{
+                    border: `3px solid ${BLACK}`,
+                    backgroundColor: aggressionHovered ? RED : PAPER,
+                    color: aggressionHovered ? PAPER : BLACK,
+                    boxShadow: aggressionHovered ? `2px 2px 0 ${BLACK}` : `4px 4px 0 ${BLACK}`,
+                    transform: aggressionHovered ? "translate(4px, 4px)" : "",
+                  }}
+                  onMouseEnter={() => setAggressionHovered(true)}
+                  onMouseLeave={() => setAggressionHovered(false)}
+                >
+                  {aggressionHovered ? "PRESSING DOWN — shadow shrinks" : "Hover to see diagonal shift"}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 3: Soviet Reversal ---- */}
+            <RevealBlock delay={0.15}>
+              <div
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${RED}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${RED}`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className="px-3 py-1 font-black uppercase text-xs tracking-wider"
+                    style={{ backgroundColor: RED, color: PAPER }}
+                  >
+                    Rule 03
+                  </div>
+                  <span
+                    className="font-black uppercase tracking-wider text-sm"
+                    style={{ color: BLACK }}
+                  >
+                    Soviet Reversal
+                  </span>
+                </div>
+                <p
+                  className="font-black uppercase text-xs tracking-wider leading-relaxed mb-6"
+                  style={{ color: BLACK, opacity: 0.6 }}
+                >
+                  On active (click/press), colors flip completely — red becomes black, black becomes red. Shadow collapses to zero. The stamp presses down; everything inverts.
+                </p>
+
+                <div className="space-y-5">
+                  <button
+                    className="w-full py-5 font-black uppercase tracking-[0.3em] text-lg transition-all duration-75 ease-linear"
+                    style={{
+                      backgroundColor: reversalHeld ? BLACK : RED,
+                      color: reversalHeld ? RED : PAPER,
+                      border: `4px solid ${BLACK}`,
+                      boxShadow: reversalHeld ? "none" : `6px 6px 0 ${BLACK}`,
+                      transform: reversalHeld ? "translate(6px, 6px)" : "",
+                    }}
+                    onMouseDown={() => setReversalHeld(true)}
+                    onMouseUp={() => setReversalHeld(false)}
+                    onMouseLeave={() => setReversalHeld(false)}
+                    onTouchStart={() => setReversalHeld(true)}
+                    onTouchEnd={() => setReversalHeld(false)}
+                  >
+                    {reversalHeld ? "COLORS INVERTED" : "CLICK AND HOLD"}
+                  </button>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p
+                        className="font-black uppercase text-[10px] tracking-wider mb-2"
+                        style={{ color: BLACK, opacity: 0.5 }}
+                      >
+                        Rest state
+                      </p>
+                      <div
+                        className="py-3 text-center font-black uppercase text-xs tracking-wider"
+                        style={{
+                          backgroundColor: RED,
+                          color: PAPER,
+                          border: `3px solid ${BLACK}`,
+                          boxShadow: `4px 4px 0 ${BLACK}`,
+                        }}
+                      >
+                        bg-red / text-paper
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        className="font-black uppercase text-[10px] tracking-wider mb-2"
+                        style={{ color: RED }}
+                      >
+                        Active state
+                      </p>
+                      <div
+                        className="py-3 text-center font-black uppercase text-xs tracking-wider"
+                        style={{
+                          backgroundColor: BLACK,
+                          color: RED,
+                          border: `3px solid ${BLACK}`,
+                          boxShadow: "none",
+                          transform: "translate(4px, 4px)",
+                        }}
+                      >
+                        bg-black / text-red
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    className="w-full py-4 font-black uppercase tracking-[0.2em] text-sm transition-all duration-75 ease-linear"
+                    style={{
+                      backgroundColor: reversalActive ? RED : BLACK,
+                      color: reversalActive ? BLACK : PAPER,
+                      border: `4px solid ${BLACK}`,
+                      boxShadow: reversalActive ? "none" : `4px 4px 0 ${RED}`,
+                      transform: reversalActive ? "translate(4px, 4px)" : "",
+                    }}
+                    onClick={() => setReversalActive((p) => !p)}
+                  >
+                    {reversalActive ? "REVERSED — CLICK TO RESTORE" : "TOGGLE SOVIET REVERSAL"}
+                  </button>
+                </div>
+
+                <p
+                  className="mt-5 font-black uppercase text-[10px] tracking-widest"
+                  style={{ color: reversalHeld || reversalActive ? RED : BLACK, opacity: reversalHeld || reversalActive ? 1 : 0.5 }}
+                >
+                  {reversalHeld || reversalActive ? "Inversion active — shadow:none, colors swapped" : "Press and hold the button above"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ---- Rule 4: Line Snap ---- */}
+            <RevealBlock delay={0.2}>
+              <div
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${RED}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${RED}`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className="px-3 py-1 font-black uppercase text-xs tracking-wider"
+                    style={{ backgroundColor: RED, color: PAPER }}
+                  >
+                    Rule 04
+                  </div>
+                  <span
+                    className="font-black uppercase tracking-wider text-sm"
+                    style={{ color: BLACK }}
+                  >
+                    Line Snap
+                  </span>
+                </div>
+                <p
+                  className="font-black uppercase text-xs tracking-wider leading-relaxed mb-6"
+                  style={{ color: BLACK, opacity: 0.6 }}
+                >
+                  Inside cards, the diagonal accent line sits at -rotate-2. On hover, it snaps to rotate-0 — a mechanical correction, like revolution imposing geometric order.
+                </p>
+
+                <div className="space-y-4">
+                  {[
+                    { title: "MANIFESTO I", body: "Hover to snap the diagonal line to horizontal." },
+                    { title: "MANIFESTO II", body: "The tilted line represents organic chaos — hover corrects it." },
+                    { title: "MANIFESTO III", body: "Revolution straightens what was crooked. Geometric order." },
+                  ].map((item, i) => (
+                    <div
+                      key={item.title}
+                      className="cursor-pointer transition-all duration-75 ease-linear overflow-hidden"
+                      style={{
+                        border: `3px solid ${BLACK}`,
+                        backgroundColor: snapCards[i] ? RED : PAPER,
+                        boxShadow: snapCards[i] ? `2px 2px 0 ${BLACK}` : `4px 4px 0 ${BLACK}`,
+                        transform: snapCards[i] ? "translate(2px, 2px)" : "",
+                      }}
+                      onMouseEnter={() => toggleSnapCard(i)}
+                      onMouseLeave={() => toggleSnapCard(i)}
+                    >
+                      <div className="p-4">
+                        <div
+                          className="font-black uppercase tracking-wider text-sm mb-2 transition-colors duration-75 ease-linear"
+                          style={{ color: snapCards[i] ? PAPER : BLACK }}
+                        >
+                          {item.title}
+                        </div>
+                        <div
+                          className="w-full h-1 mb-3 transition-transform duration-75 ease-linear"
+                          style={{
+                            backgroundColor: snapCards[i] ? PAPER : BLACK,
+                            transform: snapCards[i] ? "rotate(0deg)" : "rotate(-2deg)",
+                          }}
+                        />
+                        <p
+                          className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                          style={{ color: snapCards[i] ? PAPER : BLACK, opacity: 0.75 }}
+                        >
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <p
+                  className="mt-5 font-black uppercase text-[10px] tracking-widest"
+                  style={{ color: RED }}
+                >
+                  {snapCards.some(Boolean)
+                    ? "Line snapped to rotate-0 — geometric order restored"
+                    : "Hover each card to snap the diagonal line"}
+                </p>
+              </div>
+            </RevealBlock>
           </div>
 
-          {/* Letter spacing extremes */}
-          <RevealBlock delay={0.2}>
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Tight tracking */}
-              <div className="border-4 border-[#cc0000] bg-[#cc0000] p-6" style={{ boxShadow: "6px 6px 0 #1a1a1a" }}>
-                <div className="text-xs font-black uppercase tracking-[0.3em] text-[#f2e8d5] opacity-60 mb-3">
-                  Tight — Tracking Tight
-                </div>
-                <div className="font-black text-5xl md:text-6xl uppercase tracking-tight text-[#f2e8d5] leading-none">
-                  MANIFESTO
-                </div>
-                <div className="mt-3 text-xs font-mono text-[#f2e8d5] opacity-50">
-                  tracking-tight / -0.025em
-                </div>
-              </div>
-              {/* Wide tracking */}
-              <div className="border-4 border-[#1a1a1a] bg-[#f2e8d5] p-6" style={{ boxShadow: "6px 6px 0 #cc0000" }}>
-                <div className="text-xs font-black uppercase tracking-[0.3em] text-[#8b4513] mb-3">
-                  Wide — Tracking Widest
-                </div>
-                <div className="font-black text-2xl md:text-3xl uppercase tracking-[0.3em] text-[#1a1a1a] leading-tight">
-                  REVOLUTION
-                </div>
-                <div className="mt-3 text-xs font-mono text-[#1a1a1a] opacity-40">
-                  tracking-[0.3em] / extreme wide
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Diagonal headline demonstration */}
-          <RevealBlock delay={0.25}>
-            <div className="mt-10 border-4 border-[#1a1a1a] bg-[#1a1a1a] p-8 relative overflow-hidden" style={{ boxShadow: "6px 6px 0 #cc0000", minHeight: 160 }}>
-              <div className="text-xs font-black uppercase tracking-widest text-[#d4a843] mb-4">
-                Diagonal Energy — Rotate & Skew
-              </div>
+          {/* Mechanical timing reference */}
+          <RevealBlock delay={0.3} className="mt-8">
+            <div
+              className="p-8"
+              style={{
+                border: `4px solid ${PAPER}`,
+                backgroundColor: PAPER,
+                boxShadow: `6px 6px 0 ${RED}`,
+              }}
+            >
               <div
-                className="font-black text-4xl md:text-5xl uppercase text-[#cc0000] leading-none"
-                style={{ transform: "rotate(-3deg) skewX(-2deg)", display: "inline-block" }}
+                className="font-black uppercase tracking-[0.3em] text-xs mb-6"
+                style={{ color: BLACK }}
               >
-                ART SERVES
+                Mechanical Easing Doctrine
               </div>
-              <div
-                className="font-black text-4xl md:text-5xl uppercase text-[#f2e8d5] leading-none ml-8"
-                style={{ transform: "rotate(2deg) skewX(1deg)", display: "inline-block" }}
-              >
-                SOCIETY
-              </div>
-              {/* Background geometric shapes */}
-              <div className="absolute -right-10 -bottom-10 opacity-10">
-                <GeometricAccent />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                  className="p-5"
+                  style={{ border: `3px solid ${BLACK}`, backgroundColor: RED }}
+                >
+                  <div className="font-black uppercase text-2xl mb-1" style={{ color: PAPER }}>75ms</div>
+                  <div className="font-black uppercase text-xs tracking-wider" style={{ color: PAPER, opacity: 0.8 }}>Standard interactions</div>
+                  <div className="mt-3 font-mono text-[10px]" style={{ color: PAPER, opacity: 0.7 }}>duration-75 ease-linear</div>
+                </div>
+                <div
+                  className="p-5"
+                  style={{ border: `3px solid ${BLACK}`, backgroundColor: BLACK }}
+                >
+                  <div className="font-black uppercase text-2xl mb-1" style={{ color: RED }}>100ms</div>
+                  <div className="font-black uppercase text-xs tracking-wider" style={{ color: PAPER, opacity: 0.8 }}>Block invasion sweep</div>
+                  <div className="mt-3 font-mono text-[10px]" style={{ color: PAPER, opacity: 0.7 }}>duration-100 ease-linear</div>
+                </div>
+                <div
+                  className="p-5"
+                  style={{ border: `3px solid ${BLACK}`, backgroundColor: PAPER }}
+                >
+                  <div className="font-black uppercase text-2xl mb-1 line-through opacity-40" style={{ color: RED }}>300ms+</div>
+                  <div className="font-black uppercase text-xs tracking-wider" style={{ color: BLACK, opacity: 0.5 }}>Forbidden — too fluid</div>
+                  <div className="mt-3 font-mono text-[10px]" style={{ color: BLACK, opacity: 0.4 }}>ease-in-out BANNED</div>
+                </div>
               </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 6. DESIGN PRINCIPLES — Do / Don't propaganda panels           */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#cc0000]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex gap-1">
-                  <SovietStar size={28} color="#f2e8d5" />
-                  <SovietStar size={28} color="#d4a843" />
-                  <SovietStar size={28} color="#f2e8d5" />
-                </div>
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#f2e8d5]">
-                  Principles
-                </h2>
-              </div>
-              <div className="h-1 bg-[#1a1a1a] w-56 ml-24" />
-              <p className="font-bold uppercase tracking-[0.2em] text-xs text-[#f2e8d5] opacity-60 mt-3 ml-24">
-                Constructivist discipline enforced. No exceptions.
-              </p>
+      {/* ================================================================ */}
+      {/* 6. DO / DON'T RULES                                             */}
+      {/* ================================================================ */}
+      <section
+        className="py-24 px-5 md:px-10"
+        style={{ backgroundColor: PAPER }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-14">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-1" style={{ backgroundColor: BLACK }} />
+              <span
+                className="font-black uppercase tracking-[0.3em] text-xs"
+                style={{ color: BLACK }}
+              >
+                Design Doctrine
+              </span>
             </div>
+            <h2
+              className="font-black uppercase leading-none"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: BLACK }}
+            >
+              LAWS &amp;
+              <br />
+              <span style={{ color: RED }}>PROHIBITIONS</span>
+            </h2>
+            <p
+              className="mt-6 font-black uppercase text-xs tracking-widest max-w-xl"
+              style={{ color: BLACK, opacity: 0.55, lineHeight: "1.9" }}
+            >
+              Constructivism is disciplined. Every decision is a political act. These rules are non-negotiable mandates from the collective.
+            </p>
           </RevealBlock>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* DO panel */}
-            <RevealBlock>
-              <div className="border-4 border-[#f2e8d5] bg-[#f2e8d5] overflow-hidden" style={{ boxShadow: "8px 8px 0 #1a1a1a" }}>
-                {/* Header */}
-                <div className="bg-[#1a1a1a] px-6 py-4 flex items-center gap-4">
-                  <div className="w-8 h-8 bg-[#f2e8d5] border-4 border-[#f2e8d5] flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="square">
-                      <polyline points="20 6 9 17 4 12" />
+            {/* DO */}
+            <RevealBlock delay={0.08}>
+              <div
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${BLACK}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${BLACK}`,
+                }}
+              >
+                <div className="flex items-center gap-4 mb-8">
+                  <div
+                    className="w-12 h-12 flex items-center justify-center"
+                    style={{ backgroundColor: BLACK, color: PAPER }}
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke={PAPER} strokeWidth="3.5">
+                      <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="font-black text-2xl uppercase tracking-widest text-[#f2e8d5]">
-                    DO
+                  <h3
+                    className="font-black uppercase tracking-[0.2em] text-xl"
+                    style={{ color: BLACK }}
+                  >
+                    MANDATES
                   </h3>
-                  <div className="ml-auto">
-                    <ArrowRight size={24} color="#cc0000" />
-                  </div>
                 </div>
-                {/* Rules */}
-                <div className="p-6 space-y-0">
-                  {principles.do.map((rule, i) => (
-                    <div
-                      key={rule}
-                      className={`flex items-start gap-4 py-3 ${
-                        i < principles.do.length - 1 ? "border-b-2 border-[#1a1a1a]/10" : ""
-                      }`}
-                    >
-                      <div className="shrink-0 mt-0.5">
-                        <SovietStar size={14} color="#cc0000" />
-                      </div>
-                      <span className="font-bold text-sm uppercase tracking-wider text-[#1a1a1a] leading-tight">
+                <ul className="space-y-4">
+                  {doItems.map((rule, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span
+                        className="mt-1.5 w-3 h-3 shrink-0"
+                        style={{ backgroundColor: BLACK }}
+                      />
+                      <span
+                        className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                        style={{ color: BLACK }}
+                      >
                         {rule}
                       </span>
-                    </div>
+                    </li>
                   ))}
-                </div>
-              </div>
-            </RevealBlock>
+                </ul>
 
-            {/* DON'T panel */}
-            <RevealBlock delay={0.1}>
-              <div className="border-4 border-[#1a1a1a] bg-[#1a1a1a] overflow-hidden" style={{ boxShadow: "8px 8px 0 #f2e8d5" }}>
-                {/* Header */}
-                <div className="bg-[#cc0000] px-6 py-4 flex items-center gap-4">
-                  <div className="w-8 h-8 bg-[#1a1a1a] border-4 border-[#1a1a1a] flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#cc0000" strokeWidth="3" strokeLinecap="square">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </div>
-                  <h3 className="font-black text-2xl uppercase tracking-widest text-[#f2e8d5]">
-                    DON&apos;T
-                  </h3>
-                  <div className="ml-auto opacity-60">
-                    <ArrowRight size={24} color="#1a1a1a" />
-                  </div>
-                </div>
-                {/* Rules */}
-                <div className="p-6 space-y-0">
-                  {principles.dont.map((rule, i) => (
-                    <div
-                      key={rule}
-                      className={`flex items-start gap-4 py-3 ${
-                        i < principles.dont.length - 1 ? "border-b-2 border-[#f2e8d5]/10" : ""
-                      }`}
-                    >
-                      <div className="shrink-0 mt-0.5 w-4 h-4 flex items-center justify-center">
-                        <div className="w-3 h-0.5 bg-[#cc0000]" />
-                      </div>
-                      <span className="font-bold text-sm uppercase tracking-wider text-[#f2e8d5] opacity-80 leading-tight">
-                        {rule}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Central manifesto block */}
-          <RevealBlock delay={0.2}>
-            <div className="mt-10 border-4 border-[#1a1a1a] bg-[#1a1a1a] p-8 relative overflow-hidden" style={{ boxShadow: "8px 8px 0 #f2e8d5" }}>
-              <div className="relative z-10 text-center">
-                <div className="flex items-center justify-center gap-6 mb-4">
-                  <div className="flex-1 h-0.5 bg-[#f2e8d5] opacity-20" />
-                  <SovietStar size={40} color="#cc0000" />
-                  <div className="flex-1 h-0.5 bg-[#f2e8d5] opacity-20" />
-                </div>
-                <p className="font-black text-lg md:text-2xl uppercase tracking-wider text-[#f2e8d5] leading-tight max-w-2xl mx-auto">
-                  &ldquo;Art is not a mirror held up to reality but a hammer with which to shape it.&rdquo;
-                </p>
-                <div className="mt-4 font-bold text-xs uppercase tracking-[0.3em] text-[#d4a843]">
-                  Constructivist Principle — 1920
-                </div>
-              </div>
-              {/* Background shapes */}
-              <div className="absolute -left-8 -top-8 opacity-10 rotate-12">
-                <GeometricAccent />
-              </div>
-              <div className="absolute -right-8 -bottom-8 opacity-10 -rotate-12">
-                <GeometricAccent />
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 7. VISUAL COMPOSITIONS — Diagonal & geometric demonstrations  */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#f2e8d5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-8 h-8 bg-[#cc0000] border-4 border-[#1a1a1a]" />
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#1a1a1a]">
-                  Compositions
-                </h2>
-              </div>
-              <div className="h-1 bg-[#cc0000] w-40 ml-12" />
-            </div>
-          </RevealBlock>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Diagonal band composition */}
-            <RevealBlock>
-              <div
-                className="relative border-4 border-[#1a1a1a] overflow-hidden"
-                style={{ height: 300, boxShadow: "6px 6px 0 #1a1a1a" }}
-              >
-                <div className="absolute inset-0 bg-[#f2e8d5]" />
-                {/* Diagonal red band */}
                 <div
-                  className="absolute bg-[#cc0000]"
+                  className="mt-8 p-5"
                   style={{
-                    top: -30,
-                    left: -30,
-                    width: "140%",
-                    height: "45%",
-                    transform: "rotate(-12deg)",
-                    transformOrigin: "top left",
+                    border: `3px solid ${BLACK}`,
+                    backgroundColor: BLACK,
+                    transform: "rotate(-1deg)",
                   }}
-                />
-                {/* Content */}
-                <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                  <div className="text-white">
-                    <SovietStar size={28} color="#f2e8d5" />
+                >
+                  <div
+                    className="font-black uppercase text-3xl leading-none"
+                    style={{ color: RED }}
+                  >
+                    CORRECT
                   </div>
-                  <div>
-                    <div className="font-black text-3xl uppercase tracking-tight text-[#1a1a1a] leading-none">
-                      DIAGONAL
-                    </div>
-                    <div className="font-black text-xl uppercase tracking-widest text-[#cc0000] mt-1">
-                      DYNAMISM
-                    </div>
-                    <div className="mt-2 h-0.5 bg-[#1a1a1a] w-2/3" />
-                    <div className="mt-2 text-xs font-bold uppercase tracking-widest text-[#8b4513]">
-                      rotate-[-12deg] band
-                    </div>
+                  <div
+                    className="font-black uppercase text-xs tracking-[0.3em] mt-2"
+                    style={{ color: PAPER, opacity: 0.7 }}
+                  >
+                    Zero curves. Hard edges. Maximum weight.
                   </div>
                 </div>
               </div>
             </RevealBlock>
 
-            {/* Geometric collision */}
-            <RevealBlock delay={0.07}>
-              <div
-                className="relative border-4 border-[#1a1a1a] bg-[#1a1a1a] overflow-hidden"
-                style={{ height: 300, boxShadow: "6px 6px 0 #cc0000" }}
-              >
-                {/* Overlapping rectangles */}
-                <div className="absolute top-0 left-0 w-3/4 h-3/4 bg-[#cc0000]" />
-                <div className="absolute bottom-0 right-0 w-3/4 h-3/4 bg-[#d4a843]" />
-                <div
-                  className="absolute"
-                  style={{
-                    top: "25%",
-                    left: "25%",
-                    width: "50%",
-                    height: "50%",
-                    backgroundColor: "#1a1a1a",
-                    border: "4px solid #f2e8d5",
-                  }}
-                />
-                {/* Text overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="font-black text-2xl uppercase tracking-wider text-[#f2e8d5] leading-tight" style={{ textShadow: "2px 2px 0 #1a1a1a" }}>
-                      GEOMETRIC
-                    </div>
-                    <div className="font-black text-lg uppercase tracking-widest text-[#f2e8d5]">
-                      COLLISION
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Hard shadow stack */}
+            {/* DON'T */}
             <RevealBlock delay={0.14}>
               <div
-                className="relative border-4 border-[#1a1a1a] bg-[#cc0000] overflow-visible"
-                style={{ height: 300, boxShadow: "none", margin: "8px" }}
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${RED}`,
+                  backgroundColor: PAPER,
+                  boxShadow: `6px 6px 0 ${RED}`,
+                }}
               >
-                {/* Shadow layers */}
-                <div
-                  className="absolute bg-[#8b4513] border-4 border-[#1a1a1a]"
-                  style={{
-                    inset: 0,
-                    transform: "translate(12px, 12px)",
-                    zIndex: -2,
-                  }}
-                />
-                <div
-                  className="absolute bg-[#d4a843] border-4 border-[#1a1a1a]"
-                  style={{
-                    inset: 0,
-                    transform: "translate(6px, 6px)",
-                    zIndex: -1,
-                  }}
-                />
-                {/* Content */}
-                <div className="relative z-10 p-6 flex flex-col justify-between h-full">
-                  <div className="flex items-center gap-2">
-                    <ArrowRight size={20} color="#f2e8d5" />
-                    <ArrowRight size={20} color="#f2e8d5" />
+                <div className="flex items-center gap-4 mb-8">
+                  <div
+                    className="w-12 h-12 flex items-center justify-center"
+                    style={{ backgroundColor: RED, color: PAPER }}
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke={PAPER} strokeWidth="3.5">
+                      <path strokeLinecap="square" strokeLinejoin="miter" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </div>
-                  <div>
-                    <div className="font-black text-3xl uppercase tracking-tight text-[#f2e8d5] leading-none">
-                      HARD
-                    </div>
-                    <div className="font-black text-3xl uppercase tracking-tight text-[#f2e8d5] leading-none">
-                      OFFSET
-                    </div>
-                    <div className="font-black text-xl uppercase tracking-wider text-[#f2e8d5] mt-1">
-                      SHADOWS
-                    </div>
-                    <div className="mt-3 text-xs font-bold uppercase tracking-widest text-[#f2e8d5] opacity-60">
-                      Woodblock print energy
-                    </div>
+                  <h3
+                    className="font-black uppercase tracking-[0.2em] text-xl"
+                    style={{ color: RED }}
+                  >
+                    PROHIBITIONS
+                  </h3>
+                </div>
+                <ul className="space-y-4">
+                  {dontItems.map((rule, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span
+                        className="mt-1.5 w-3 h-3 shrink-0"
+                        style={{ backgroundColor: RED }}
+                      />
+                      <span
+                        className="font-black uppercase text-xs tracking-wider leading-relaxed line-through"
+                        style={{ color: BLACK, opacity: 0.65 }}
+                      >
+                        {rule}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div
+                  className="mt-8 p-5 relative overflow-hidden"
+                  style={{
+                    border: `3px solid ${RED}`,
+                    backgroundColor: PAPER,
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-0 right-0 h-1 cstv-stripes"
+                    style={{ opacity: 0.4 }}
+                  />
+                  <div
+                    className="font-black uppercase text-xs tracking-[0.2em] line-through"
+                    style={{ color: RED }}
+                  >
+                    rounded-xl shadow-md bg-gradient-to-r font-light ease-in-out
+                  </div>
+                  <div
+                    className="font-black uppercase text-xs tracking-widest mt-2"
+                    style={{ color: BLACK, opacity: 0.5 }}
+                  >
+                    ALL OF THESE ARE PROHIBITED
                   </div>
                 </div>
               </div>
             </RevealBlock>
           </div>
 
-          {/* Full-width diagonal split banner */}
-          <RevealBlock delay={0.15}>
-            <div
-              className="mt-8 border-4 border-[#1a1a1a] relative overflow-hidden"
-              style={{ height: 140, boxShadow: "6px 6px 0 #cc0000" }}
-            >
-              {/* Left half */}
-              <div className="absolute inset-0 bg-[#1a1a1a]" />
-              {/* Right half via diagonal */}
-              <div
-                className="absolute top-0 right-0 h-full bg-[#cc0000]"
-                style={{ width: "55%", clipPath: "polygon(12% 0, 100% 0, 100% 100%, 0% 100%)" }}
-              />
-              {/* Content */}
-              <div className="absolute inset-0 flex items-center justify-between px-10">
-                <div className="flex items-center gap-4">
-                  <SovietStar size={32} color="#cc0000" />
-                  <div>
-                    <div className="font-black text-lg uppercase tracking-widest text-[#f2e8d5] leading-none">
-                      Full Width
-                    </div>
-                    <div className="font-black text-xs uppercase tracking-[0.3em] text-[#d4a843]">
-                      Diagonal Split Layout
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-black text-lg uppercase tracking-widest text-[#f2e8d5] leading-none">
-                    Red vs Black
-                  </div>
-                  <div className="font-black text-xs uppercase tracking-[0.3em] text-[#f2e8d5] opacity-60">
-                    No gradient. Hard edge.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Tilted cards row */}
-          <RevealBlock delay={0.2}>
-            <div className="mt-10">
-              <div className="text-xs font-black uppercase tracking-widest text-[#8b4513] mb-6">
-                Tilted / Rotated Elements
-              </div>
-              <div className="flex flex-wrap gap-6 items-end justify-start">
-                {[
-                  { label: "Skew -3", transform: "skewX(-3deg)", bg: "#cc0000", text: "#f2e8d5" },
-                  { label: "Rotate 2", transform: "rotate(2deg)", bg: "#1a1a1a", text: "#f2e8d5" },
-                  { label: "Skew 3", transform: "skewX(3deg)", bg: "#d4a843", text: "#1a1a1a" },
-                  { label: "Rotate -3", transform: "rotate(-3deg)", bg: "#8b4513", text: "#f2e8d5" },
-                  { label: "Skew -6", transform: "skewX(-6deg)", bg: "#cc0000", text: "#f2e8d5" },
-                ].map((item, i) => (
-                  <div
-                    key={item.label}
-                    className="border-4 border-[#1a1a1a] px-5 py-4 font-black uppercase tracking-widest text-sm"
-                    style={{
-                      backgroundColor: item.bg,
-                      color: item.text,
-                      transform: item.transform,
-                      boxShadow: "4px 4px 0 #1a1a1a",
-                      zIndex: i,
-                    }}
-                  >
-                    {item.label}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 8. STATS / PROPAGANDA NUMBERS                                 */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#1a1a1a] relative overflow-hidden">
-        {/* Background diagonals */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-5">
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="absolute bg-[#cc0000]"
-              style={{
-                top: `${i * 25}%`,
-                left: "-10%",
-                width: "120%",
-                height: "4px",
-                transform: `rotate(-8deg) translateY(${i * 20}px)`,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
-          <RevealBlock>
-            <div className="mb-12 text-center">
-              <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#f2e8d5]">
-                The Collective
-              </h2>
-              <div className="flex items-center justify-center gap-3 mt-3">
-                <div className="h-0.5 w-16 bg-[#cc0000]" />
-                <SovietStar size={20} color="#cc0000" />
-                <div className="h-0.5 w-16 bg-[#cc0000]" />
-              </div>
-            </div>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-4 border-[#f2e8d5]" style={{ boxShadow: "8px 8px 0 #cc0000" }}>
+          {/* 3 Principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             {[
-              { stat: "1920", label: "Year Founded", sub: "Russian Avant-Garde" },
-              { stat: "5", label: "Core Colors", sub: "Red, Black, Gold, Paper, Brown" },
-              { stat: "0°", label: "Rounded Corners", sub: "Sharp geometry only" },
-              { stat: "4px", label: "Min Border Width", sub: "Authority demands weight" },
-            ].map((item, i) => (
-              <RevealBlock key={item.stat} delay={i * 0.07}>
+              {
+                icon: "▲",
+                title: "DIAGONAL COMPOSITION",
+                tagline: "Everything tilts toward revolution",
+                body: "Diagonal lines create tension and urgency. Skewed blocks, rotated headlines, tilted accent lines — the world is in motion, not at rest.",
+                bg: BLACK,
+                titleColor: RED,
+                taglineColor: PAPER,
+                bodyColor: PAPER,
+              },
+              {
+                icon: "■",
+                title: "GEOMETRIC PURITY",
+                tagline: "Only hard forms speak truth",
+                body: "Squares, rectangles, triangles. No curves permitted. Geometry embodies the precision of the machine and the clarity of collective purpose.",
+                bg: RED,
+                titleColor: PAPER,
+                taglineColor: GOLD,
+                bodyColor: PAPER,
+              },
+              {
+                icon: "●",
+                title: "TYPOGRAPHIC FORCE",
+                tagline: "Letters as visual weapons",
+                body: "Font-black, uppercase, extreme tracking. Giant headlines contrast with tiny body text. Every glyph is a hammer strike, not a whisper.",
+                bg: PAPER,
+                titleColor: BLACK,
+                taglineColor: RED,
+                bodyColor: BLACK,
+              },
+            ].map((principle, i) => (
+              <RevealBlock key={principle.title} delay={i * 0.1}>
                 <div
-                  className={`group p-6 md:p-8 text-center border-[#f2e8d5] transition-all duration-150 cursor-default ${
-                    i > 0 ? "border-l-4" : ""
-                  } ${i % 2 === 0 ? "bg-[#1a1a1a] hover:bg-[#cc0000]" : "bg-[#cc0000] hover:bg-[#1a1a1a]"}`}
+                  className="p-8 h-full transition-all duration-75 ease-linear cursor-default"
+                  style={{
+                    backgroundColor: principle.bg,
+                    border: `4px solid ${BLACK}`,
+                    boxShadow: `6px 6px 0 ${RED}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${RED}`;
+                    (e.currentTarget as HTMLElement).style.transform = "translate(4px, 4px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 ${RED}`;
+                    (e.currentTarget as HTMLElement).style.transform = "";
+                  }}
                 >
-                  <div className="font-black text-4xl md:text-5xl uppercase text-[#f2e8d5] leading-none mb-2 transition-colors duration-150">
-                    {item.stat}
+                  <div
+                    className="text-4xl font-black mb-4"
+                    style={{ color: principle.titleColor }}
+                  >
+                    {principle.icon}
                   </div>
-                  <div className="font-black text-xs uppercase tracking-widest text-[#d4a843] mb-1">
-                    {item.label}
-                  </div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#f2e8d5] opacity-50 group-hover:opacity-80 transition-opacity duration-150">
-                    {item.sub}
-                  </div>
+                  <h3
+                    className="font-black uppercase tracking-wider text-lg mb-1"
+                    style={{ color: principle.titleColor }}
+                  >
+                    {principle.title}
+                  </h3>
+                  <p
+                    className="font-black uppercase text-xs tracking-wider mb-4"
+                    style={{ color: principle.taglineColor }}
+                  >
+                    {principle.tagline}
+                  </p>
+                  <div
+                    className="w-full h-1 mb-4 -rotate-1"
+                    style={{ backgroundColor: principle.titleColor, opacity: 0.4 }}
+                  />
+                  <p
+                    className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                    style={{ color: principle.bodyColor, opacity: 0.8 }}
+                  >
+                    {principle.body}
+                  </p>
                 </div>
               </RevealBlock>
             ))}
@@ -1400,280 +1838,335 @@ export default function ShowcaseContent() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 9. INTERACTIVE PROPAGANDA POSTER BUILDER                      */}
-      {/* ============================================================ */}
-      <section className="py-20 md:py-28 bg-[#f2e8d5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <RevealBlock>
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <ArrowRight size={36} color="#cc0000" />
-                <h2 className="font-black text-4xl md:text-5xl uppercase tracking-tight text-[#1a1a1a]">
-                  Poster Gallery
-                </h2>
-              </div>
-              <div className="h-1 bg-[#1a1a1a] w-48 ml-12" />
+      {/* ================================================================ */}
+      {/* 7. PHILOSOPHY                                                    */}
+      {/* ================================================================ */}
+      <section
+        className="py-24 px-5 md:px-10"
+        style={{ backgroundColor: RED }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-14">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-1" style={{ backgroundColor: PAPER }} />
+              <span
+                className="font-black uppercase tracking-[0.3em] text-xs"
+                style={{ color: PAPER, opacity: 0.8 }}
+              >
+                Philosophy
+              </span>
             </div>
+            <h2
+              className="font-black uppercase leading-none"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: PAPER }}
+            >
+              ART FOR
+              <br />
+              <span style={{ color: BLACK }}>THE MASSES</span>
+            </h2>
           </RevealBlock>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Poster 1 — Classic red */}
-            <RevealBlock>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-14">
+            <RevealBlock delay={0.05}>
               <div
-                className="group relative border-4 border-[#1a1a1a] bg-[#cc0000] overflow-hidden transition-all duration-150 cursor-pointer"
-                style={{ height: 360, boxShadow: "6px 6px 0 #1a1a1a" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #1a1a1a";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(3px, 3px) rotate(-1deg)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #1a1a1a";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0) rotate(0deg)";
+                className="p-8 h-full"
+                style={{
+                  border: `4px solid ${BLACK}`,
+                  backgroundColor: BLACK,
+                  boxShadow: `8px 8px 0 ${PAPER}`,
                 }}
               >
-                {/* Diagonal black band */}
                 <div
-                  className="absolute bg-[#1a1a1a]"
-                  style={{
-                    top: "40%",
-                    left: "-10%",
-                    width: "120%",
-                    height: "6px",
-                    transform: "rotate(-8deg)",
-                  }}
-                />
-                <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <SovietStar size={32} color="#f2e8d5" />
-                    <span className="font-black text-xs uppercase tracking-[0.3em] text-[#f2e8d5] opacity-60">
-                      No.01
-                    </span>
-                  </div>
-                  <div>
-                    <div className="font-black text-5xl uppercase text-[#f2e8d5] leading-none tracking-tight">
-                      WORKERS
-                    </div>
-                    <div className="font-black text-5xl uppercase text-[#1a1a1a] leading-none tracking-tight">
-                      OF THE
-                    </div>
-                    <div className="font-black text-5xl uppercase text-[#f2e8d5] leading-none tracking-tight">
-                      WORLD
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 border-t-2 border-[#f2e8d5] pt-3">
-                    <ArrowRight size={20} color="#f2e8d5" />
-                    <span className="font-black text-xs uppercase tracking-widest text-[#f2e8d5]">Unite!</span>
-                  </div>
+                  className="font-black text-6xl leading-none mb-6 -rotate-2 inline-block"
+                  style={{ color: RED }}
+                >
+                  &ldquo;
                 </div>
+                <p
+                  className="font-black uppercase text-lg tracking-wider leading-relaxed"
+                  style={{ color: PAPER }}
+                >
+                  Constructivism maintains that design is a weapon of progress and collective transformation.
+                </p>
+                <div
+                  className="mt-6 w-full h-1 -rotate-1"
+                  style={{ backgroundColor: RED }}
+                />
+                <p
+                  className="mt-4 font-black uppercase text-xs tracking-[0.3em]"
+                  style={{ color: GOLD }}
+                >
+                  — Rodchenko, 1921
+                </p>
               </div>
             </RevealBlock>
 
-            {/* Poster 2 — Black with gold */}
-            <RevealBlock delay={0.07}>
-              <div
-                className="group relative border-4 border-[#d4a843] bg-[#1a1a1a] overflow-hidden transition-all duration-150 cursor-pointer"
-                style={{ height: 360, boxShadow: "6px 6px 0 #d4a843" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #d4a843";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(3px, 3px) rotate(1deg)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #d4a843";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0) rotate(0deg)";
-                }}
-              >
-                <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <SovietStar key={i} size={16} color="#d4a843" />
-                      ))}
+            <RevealBlock delay={0.1}>
+              <div className="space-y-6">
+                {[
+                  {
+                    year: "1910s",
+                    text: "Russian avant-garde artists reject pure aestheticism. Art must function. The canvas becomes a poster, the poster becomes a tool.",
+                  },
+                  {
+                    year: "1920s",
+                    text: "Peak Constructivism. El Lissitzky, Rodchenko, Popova define the vocabulary: diagonals, geometric blocks, red-black-paper.",
+                  },
+                  {
+                    year: "Today",
+                    text: "The style reaches web design. Hard edges, hard shadows, mechanical transitions — a century later, still the most urgent visual language.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.year}
+                    className="flex gap-5"
+                    style={{ borderLeft: `4px solid ${PAPER}`, paddingLeft: "1.25rem" }}
+                  >
+                    <div className="shrink-0">
+                      <div
+                        className="font-black uppercase text-sm tracking-wider"
+                        style={{ color: PAPER }}
+                      >
+                        {item.year}
+                      </div>
                     </div>
-                    <div className="font-black text-5xl uppercase text-[#d4a843] leading-none tracking-tight">
-                      BUILD
-                    </div>
-                    <div className="font-black text-5xl uppercase text-[#cc0000] leading-none tracking-tight">
-                      THE
-                    </div>
-                    <div className="font-black text-5xl uppercase text-[#f2e8d5] leading-none tracking-tight">
-                      FUTURE
+                    <div
+                      className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                      style={{ color: PAPER, opacity: 0.75 }}
+                    >
+                      {item.text}
                     </div>
                   </div>
-                  <div>
-                    <div className="h-1 bg-[#d4a843] mb-3" />
-                    <span className="font-black text-xs uppercase tracking-[0.3em] text-[#d4a843]">
-                      Avant-Garde 1920 — Moscow
-                    </span>
-                  </div>
-                </div>
-                {/* Geometric background shapes */}
-                <div className="absolute -right-6 top-4 opacity-20">
-                  <div className="w-24 h-24 border-4 border-[#d4a843]" style={{ transform: "rotate(30deg)" }} />
-                </div>
+                ))}
               </div>
             </RevealBlock>
+          </div>
 
-            {/* Poster 3 — Paper with red diagonal */}
-            <RevealBlock delay={0.14}>
-              <div
-                className="group relative border-4 border-[#1a1a1a] bg-[#f2e8d5] overflow-hidden transition-all duration-150 cursor-pointer"
-                style={{ height: 360, boxShadow: "6px 6px 0 #cc0000" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "3px 3px 0 #cc0000";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(3px, 3px) rotate(-0.5deg)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0 #cc0000";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0) rotate(0deg)";
-                }}
-              >
-                {/* Red diagonal block */}
+          {/* Feature highlights — 6 cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {[
+              {
+                icon: "◆",
+                title: "Zero Curves",
+                desc: "Every border-radius is zero. The square rules. The rectangle serves. Organic forms are counter-revolutionary.",
+              },
+              {
+                icon: "▮",
+                title: "Hard Shadows",
+                desc: "shadow-[4px_4px_0_#1a1a1a] mimics the woodblock press. No blur. No diffusion. Hard-edged like a stamp.",
+              },
+              {
+                icon: "↗",
+                title: "Diagonal Force",
+                desc: "Skewed slabs, rotated headlines, tilted lines. Static horizontals denote stagnation — diagonals mean progress.",
+              },
+              {
+                icon: "█",
+                title: "Three Colors",
+                desc: "Soviet red, pure black, aged paper. Every additional color dilutes the revolutionary message. Discipline is power.",
+              },
+              {
+                icon: "▬",
+                title: "Weight Contrast",
+                desc: "font-black for headlines. Extreme size contrast between title and body. Typography as architecture, not decoration.",
+              },
+              {
+                icon: "⚙",
+                title: "Mechanical Time",
+                desc: "duration-75 ease-linear. The machine does not ease-in-out. It starts and stops with the precision of industrial rhythm.",
+              },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.06}>
                 <div
-                  className="absolute bg-[#cc0000]"
+                  className="p-6 h-full transition-all duration-75 ease-linear cursor-default"
                   style={{
-                    bottom: 0,
-                    right: 0,
-                    width: "55%",
-                    height: "65%",
-                    clipPath: "polygon(30% 0, 100% 0, 100% 100%, 0% 100%)",
+                    border: `3px solid ${PAPER}`,
+                    backgroundColor: "transparent",
+                    boxShadow: `4px 4px 0 ${BLACK}`,
                   }}
-                />
-                <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="border-4 border-[#1a1a1a] inline-block px-3 py-1 bg-[#1a1a1a]">
-                      <span className="font-black text-xs uppercase tracking-[0.3em] text-[#f2e8d5]">Manifesto</span>
-                    </div>
-                  </div>
-                  <div className="relative z-10">
-                    <div className="font-black text-4xl uppercase text-[#1a1a1a] leading-none tracking-tight">
-                      ART
-                    </div>
-                    <div className="font-black text-4xl uppercase text-[#f2e8d5] leading-none tracking-tight">
-                      SERVES
-                    </div>
-                    <div className="font-black text-4xl uppercase text-[#f2e8d5] leading-none tracking-tight">
-                      SOCIETY
-                    </div>
-                    <div className="mt-4 flex items-center gap-2">
-                      <ArrowRight size={18} color="#f2e8d5" />
-                      <span className="font-black text-[10px] uppercase tracking-[0.3em] text-[#f2e8d5]">
-                        Rodchenko, 1923
-                      </span>
-                    </div>
-                  </div>
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = BLACK;
+                    (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 ${BLACK}`;
+                    (e.currentTarget as HTMLElement).style.transform = "translate(2px, 2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                    (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${BLACK}`;
+                    (e.currentTarget as HTMLElement).style.transform = "";
+                  }}
+                >
+                  <div className="font-black text-3xl mb-3" style={{ color: PAPER }}>{feature.icon}</div>
+                  <h4 className="font-black uppercase tracking-wider text-sm mb-2" style={{ color: PAPER }}>{feature.title}</h4>
+                  <p className="font-black uppercase text-xs tracking-wider leading-relaxed" style={{ color: PAPER, opacity: 0.65 }}>{feature.desc}</p>
                 </div>
-              </div>
-            </RevealBlock>
+              </RevealBlock>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 7. FOOTER                                                     */}
-      {/* ============================================================ */}
-      <footer className="bg-[#1a1a1a] border-t-8 border-[#cc0000]">
-        {/* Top bar */}
-        <div className="bg-[#cc0000] py-2 px-6">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {[...Array(5)].map((_, i) => (
-                <SovietStar key={i} size={14} color="#f2e8d5" />
-              ))}
-            </div>
-            <span className="font-black text-[10px] uppercase tracking-[0.3em] text-[#f2e8d5] opacity-70">
-              Art Serves the Collective
-            </span>
-            <div className="flex items-center gap-2">
-              {[...Array(5)].map((_, i) => (
-                <SovietStar key={i} size={14} color="#f2e8d5" />
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* ================================================================ */}
+      {/* 8. FOOTER                                                        */}
+      {/* ================================================================ */}
+      <footer
+        className="relative overflow-hidden"
+        style={{ backgroundColor: BLACK, borderTop: `4px solid ${RED}` }}
+      >
+        <div
+          className="absolute top-0 left-0 right-0 h-1 cstv-stripes"
+          style={{ opacity: 0.3 }}
+        />
+        <div
+          className="absolute bottom-0 right-0 w-64 h-64 rotate-45 translate-x-32 translate-y-32"
+          style={{ backgroundColor: RED, opacity: 0.15 }}
+        />
 
-        {/* Main footer content */}
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 pt-16 pb-12 relative z-10">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-14">
             {/* Brand */}
-            <div>
+            <div className="max-w-xs">
               <div className="flex items-center gap-3 mb-4">
-                <SovietStar size={32} color="#cc0000" />
-                <div>
-                  <div className="font-black text-lg uppercase tracking-widest text-[#f2e8d5]">
-                    Constructivism
-                  </div>
-                  <div className="font-bold text-[10px] uppercase tracking-[0.3em] text-[#d4a843]">
-                    StyleKit Design System
-                  </div>
+                <div
+                  className="w-10 h-10 flex items-center justify-center font-black text-lg"
+                  style={{ backgroundColor: RED, color: PAPER }}
+                >
+                  C
                 </div>
+                <span
+                  className="font-black uppercase tracking-[0.2em] text-lg"
+                  style={{ color: PAPER }}
+                >
+                  Constructivism
+                </span>
               </div>
-              <div className="h-0.5 bg-[#cc0000] w-full mb-4" />
-              <p className="text-xs font-bold uppercase tracking-wider text-[#f2e8d5] opacity-50 leading-relaxed">
-                Russian Avant-Garde design principles. Bold geometry. Red-black contrast. Every element declares its purpose.
+              <div className="w-full h-1 mb-4 -rotate-1" style={{ backgroundColor: RED }} />
+              <p
+                className="font-black uppercase text-xs tracking-wider leading-relaxed"
+                style={{ color: PAPER, opacity: 0.5 }}
+              >
+                Soviet avant-garde design for the modern web. Hard edges, maximum contrast, mechanical interactions.
               </p>
+              <div className="flex gap-2 mt-5">
+                {[RED, BLACK, PAPER, GOLD, BROWN].map((color) => (
+                  <div
+                    key={color}
+                    className="w-6 h-6 transition-all duration-75 ease-linear"
+                    style={{
+                      backgroundColor: color,
+                      border: color === BLACK ? `2px solid ${RED}` : `2px solid ${BLACK}`,
+                    }}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Style tokens */}
-            <div>
-              <div className="font-black text-xs uppercase tracking-widest text-[#d4a843] mb-4">
-                Core Tokens
-              </div>
-              {[
-                { token: "Primary", value: "#cc0000 Soviet Red" },
-                { token: "Surface", value: "#f2e8d5 Aged Paper" },
-                { token: "Ink", value: "#1a1a1a Black" },
-                { token: "Gold", value: "#d4a843 Propaganda" },
-                { token: "Brown", value: "#8b4513 Iron" },
-              ].map((item) => (
-                <div key={item.token} className="flex items-center justify-between py-1.5 border-b border-[#f2e8d5]/10">
-                  <span className="font-black text-xs uppercase tracking-wider text-[#f2e8d5] opacity-60">
-                    {item.token}
-                  </span>
-                  <span className="font-mono text-xs text-[#d4a843]">{item.value}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation */}
-            <div>
-              <div className="font-black text-xs uppercase tracking-widest text-[#d4a843] mb-4">
-                Navigate
-              </div>
-              <div className="space-y-2">
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
+              <div className="flex flex-col gap-3">
+                <span className="font-black uppercase tracking-[0.2em] text-xs mb-2" style={{ color: RED }}>
+                  Style
+                </span>
                 {[
-                  { label: "All Styles", href: "/" },
-                  { label: "Constructivism Docs", href: "/styles/constructivism" },
-                  { label: "StyleKit Home", href: "/" },
+                  { label: "Documentation", href: "/styles/constructivism" },
+                  { label: "Showcase", href: "/styles/constructivism/showcase" },
+                  { label: "Cover", href: "/styles/constructivism/cover" },
                 ].map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="flex items-center gap-3 group py-2 border-b border-[#f2e8d5]/10 transition-colors duration-150 hover:border-[#cc0000]"
+                    className="font-black uppercase text-xs tracking-wider transition-colors duration-75 ease-linear"
+                    style={{ color: PAPER, opacity: 0.55 }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = RED;
+                      (e.currentTarget as HTMLElement).style.opacity = "1";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = PAPER;
+                      (e.currentTarget as HTMLElement).style.opacity = "0.55";
+                    }}
                   >
-                    <ArrowRight size={12} color="#cc0000" />
-                    <span className="font-black text-xs uppercase tracking-widest text-[#f2e8d5] opacity-60 group-hover:opacity-100 transition-opacity duration-150">
-                      {link.label}
-                    </span>
+                    {link.label}
                   </Link>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <span className="font-black uppercase tracking-[0.2em] text-xs mb-2" style={{ color: RED }}>
+                  StyleKit
+                </span>
+                {[
+                  { label: "Home", href: "/" },
+                  { label: "All Styles", href: "/styles" },
+                ].map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="font-black uppercase text-xs tracking-wider transition-colors duration-75 ease-linear"
+                    style={{ color: PAPER, opacity: 0.55 }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = RED;
+                      (e.currentTarget as HTMLElement).style.opacity = "1";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = PAPER;
+                      (e.currentTarget as HTMLElement).style.opacity = "0.55";
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <span className="font-black uppercase tracking-[0.2em] text-xs mb-2" style={{ color: RED }}>
+                  Palette
+                </span>
+                {paletteSwatches.map((s) => (
+                  <span
+                    key={s.name}
+                    className="flex items-center gap-2 font-black uppercase text-xs tracking-wider"
+                    style={{ color: PAPER, opacity: 0.5 }}
+                  >
+                    <span
+                      className="w-3 h-3 inline-block shrink-0"
+                      style={{
+                        backgroundColor: s.hex,
+                        border: s.hex === PAPER ? `1px solid ${RED}` : "none",
+                      }}
+                    />
+                    {s.name}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Bottom bar */}
-          <div className="border-t-4 border-[#cc0000] pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <SovietStar size={20} color="#cc0000" />
-              <span className="font-black text-xs uppercase tracking-widest text-[#f2e8d5] opacity-40">
-                StyleKit &middot; Constructivism Style &middot; 1920 — Present
-              </span>
+          <div className="w-full h-px mb-8" style={{ backgroundColor: RED, opacity: 0.4 }} />
+
+          <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+            <div
+              className="font-black uppercase text-xs tracking-widest"
+              style={{ color: PAPER, opacity: 0.4 }}
+            >
+              Constructivism — StyleKit — Art Serves The Collective
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-[#cc0000] border-2 border-[#cc0000]" />
-              <div className="w-4 h-4 bg-[#f2e8d5] border-2 border-[#f2e8d5]" />
-              <div className="w-4 h-4 bg-[#d4a843] border-2 border-[#d4a843]" />
-            </div>
+            <Link
+              href="/"
+              className="group relative flex items-center gap-2 px-6 py-3 overflow-hidden font-black uppercase text-xs tracking-[0.2em] transition-all duration-75 ease-linear hover:translate-x-[3px] hover:translate-y-[3px]"
+              style={{
+                color: PAPER,
+                border: `3px solid ${RED}`,
+                boxShadow: `4px 4px 0 ${RED}`,
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `1px 1px 0 ${RED}`; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RED}`; }}
+            >
+              <div
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-100 ease-linear"
+                style={{ backgroundColor: RED }}
+              />
+              <span className="relative z-10">← Back to StyleKit</span>
+            </Link>
           </div>
         </div>
       </footer>
