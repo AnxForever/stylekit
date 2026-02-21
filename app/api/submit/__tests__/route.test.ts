@@ -79,6 +79,36 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+function mockValidSupabaseSubmissionPayload(slug: string = "neo-brutalist"): void {
+  mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+  mockedGetRequestClientKey.mockReturnValue("ip:test");
+  mockedCheckRateLimit.mockReturnValue({
+    allowed: true,
+    limit: 15,
+    remaining: 14,
+    resetAt: Date.now() + 1_000,
+    retryAfterSec: 0,
+  });
+  mockedParseJsonBodyWithLimit.mockResolvedValue({
+    ok: true,
+    data: { slug },
+  });
+  mockedWizardSchema.safeParse.mockReturnValue({
+    success: true,
+    data: { slug },
+  } as never);
+  mockedGetStyleBySlug.mockReturnValue(undefined);
+  mockedConvertToStyleTokens.mockReturnValue({ tokens: true } as never);
+  mockedConvertToDesignStyle.mockReturnValue({ design: true } as never);
+  mockedIsSupabaseConfigured.mockReturnValue(true);
+  mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(false);
+  mockedHasActiveSubmissionSlug.mockResolvedValue(false);
+  mockedGetServerUser.mockResolvedValue({
+    id: "user-1",
+    user_metadata: { user_name: "anx" },
+  } as never);
+}
+
 describe("POST /api/submit", () => {
   it("rejects untrusted origins", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({
@@ -242,33 +272,7 @@ describe("POST /api/submit", () => {
   });
 
   it("creates submission through Supabase when payload is valid", async () => {
-    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
-    mockedGetRequestClientKey.mockReturnValue("ip:3");
-    mockedCheckRateLimit.mockReturnValue({
-      allowed: true,
-      limit: 15,
-      remaining: 14,
-      resetAt: Date.now() + 1_000,
-      retryAfterSec: 0,
-    });
-    mockedParseJsonBodyWithLimit.mockResolvedValue({
-      ok: true,
-      data: { slug: "neo-brutalist" },
-    });
-    mockedWizardSchema.safeParse.mockReturnValue({
-      success: true,
-      data: { slug: "neo-brutalist" },
-    } as never);
-    mockedGetStyleBySlug.mockReturnValue(undefined);
-    mockedConvertToStyleTokens.mockReturnValue({ tokens: true } as never);
-    mockedConvertToDesignStyle.mockReturnValue({ design: true } as never);
-    mockedIsSupabaseConfigured.mockReturnValue(true);
-    mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(false);
-    mockedHasActiveSubmissionSlug.mockResolvedValue(false);
-    mockedGetServerUser.mockResolvedValue({
-      id: "user-1",
-      user_metadata: { user_name: "anx" },
-    } as never);
+    mockValidSupabaseSubmissionPayload("neo-brutalist");
     mockedCreateSubmissionSupabase.mockResolvedValue({
       id: "sub_1",
       slug: "neo-brutalist",
@@ -299,6 +303,64 @@ describe("POST /api/submit", () => {
       success: true,
       id: "sub_1",
       slug: "neo-brutalist",
+    });
+  });
+
+  it("normalizes forwarded IPv4 address with port before Supabase insert", async () => {
+    mockValidSupabaseSubmissionPayload("chaos-lab");
+    mockedCreateSubmissionSupabase.mockResolvedValue({
+      id: "sub_2",
+      slug: "chaos-lab",
+    } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/submit", {
+        method: "POST",
+        headers: {
+          "x-forwarded-for": "127.0.0.1:7897, 10.0.0.2",
+        },
+      })
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedCreateSubmissionSupabase.mock.calls.at(-1)?.[4]).toBe("127.0.0.1");
+  });
+
+  it("drops invalid forwarded IP values instead of crashing on inet insert", async () => {
+    mockValidSupabaseSubmissionPayload("chaos-lab");
+    mockedCreateSubmissionSupabase.mockResolvedValue({
+      id: "sub_3",
+      slug: "chaos-lab",
+    } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/submit", {
+        method: "POST",
+        headers: {
+          "x-forwarded-for": "unknown",
+        },
+      })
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedCreateSubmissionSupabase.mock.calls.at(-1)?.[4]).toBeNull();
+  });
+
+  it("returns schema mismatch diagnostics when submissions table is outdated", async () => {
+    mockValidSupabaseSubmissionPayload("chaos-lab");
+    mockedCreateSubmissionSupabase.mockRejectedValue(
+      Object.assign(new Error("Insert failed: column user_id does not exist"), {
+        code: "42703",
+      }) as never
+    );
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "DB_SCHEMA_MISMATCH",
+      error: "Submissions schema is outdated. Apply Supabase migration 003 (user binding).",
     });
   });
 });

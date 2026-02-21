@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
+import { isIP } from "node:net";
 import path from "path";
 import { wizardFormSchema } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
@@ -24,6 +25,94 @@ const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 15;
 const MAX_BODY_BYTES = 128 * 1024;
+const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
+
+interface DbErrorLike {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+}
+
+function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
+  return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+}
+
+function isMissingColumnError(
+  error: DbErrorLike | null | undefined,
+  column: string
+): boolean {
+  const code = error?.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+  return readDbErrorMessage(error).includes(column.toLowerCase());
+}
+
+function normalizeIpAddress(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+
+  const first = raw.split(",")[0]?.trim();
+  if (!first) return null;
+
+  let candidate = first.replace(/^"(.+)"$/, "$1").trim();
+  if (!candidate) return null;
+
+  if (candidate.startsWith("[") && candidate.includes("]")) {
+    const end = candidate.indexOf("]");
+    const ipv6 = candidate.slice(1, end).trim();
+    if (isIP(ipv6)) {
+      return ipv6;
+    }
+    return null;
+  }
+
+  const ipv4WithPort = candidate.match(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/);
+  if (ipv4WithPort) {
+    candidate = ipv4WithPort[1];
+  }
+
+  return isIP(candidate) ? candidate : null;
+}
+
+function getClientIpAddress(request: Request): string | null {
+  return (
+    normalizeIpAddress(request.headers.get("cf-connecting-ip")) ||
+    normalizeIpAddress(request.headers.get("x-real-ip")) ||
+    normalizeIpAddress(request.headers.get("x-forwarded-for")) ||
+    null
+  );
+}
+
+function classifySubmissionError(error: unknown): {
+  status: number;
+  code: string;
+  message: string;
+} {
+  const dbError = (error && typeof error === "object" ? error : {}) as DbErrorLike;
+  const dbCode = dbError.code ?? null;
+
+  if (isMissingColumnError(dbError, "user_id") || isMissingColumnError(dbError, "author_name")) {
+    return {
+      status: 503,
+      code: "DB_SCHEMA_MISMATCH",
+      message: "Submissions schema is outdated. Apply Supabase migration 003 (user binding).",
+    };
+  }
+
+  if (dbCode && DB_NOT_READY_CODES.has(dbCode)) {
+    return {
+      status: 503,
+      code: "DB_NOT_READY",
+      message: "Submissions database schema is not ready. Run Supabase migrations 001-005.",
+    };
+  }
+
+  return {
+    status: 500,
+    code: "SUBMISSION_WRITE_FAILED",
+    message: "Failed to submit style.",
+  };
+}
 
 export async function POST(request: Request) {
   const originCheck = verifyTrustedOrigin(request);
@@ -125,7 +214,7 @@ export async function POST(request: Request) {
 
     // Use Supabase when configured, otherwise fall back to file system
     if (useSupabase) {
-      const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
+      const ip = getClientIpAddress(request);
       const result = await createSubmissionSupabase(
         normalizedSlug,
         formDataWithAuthor as unknown as Record<string, unknown>,
@@ -172,10 +261,15 @@ export async function POST(request: Request) {
       id,
       slug: normalizedSlug,
     });
-  } catch {
+  } catch (error) {
+    const classified = classifySubmissionError(error);
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 }
+      {
+        success: false,
+        code: classified.code,
+        error: classified.message,
+      },
+      { status: classified.status }
     );
   }
 }
