@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
   Copy,
   Check,
@@ -8,60 +9,194 @@ import {
   ChevronDown,
   ChevronUp,
   Gauge,
+  Sparkles,
+  Send,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { exportBlendedTokens } from "@/lib/styles/blend-engine";
 import { styles } from "@/lib/styles/index";
 import type { GeneratedStyle } from "@/lib/ai-generator";
+import { useUser } from "@/lib/auth/use-user";
+import {
+  buildSubmissionFormFromGeneratedStyle,
+} from "@/lib/ai-generator/submission";
 
 interface StyleGenResultProps {
-  result: GeneratedStyle;
+  result: GeneratedStyle & { candidates?: GeneratedStyle[] };
 }
 
 export function StyleGenResult({ result }: StyleGenResultProps) {
   const { t } = useI18n();
+  const { user, loading: userLoading } = useUser();
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
   const [showTokens, setShowTokens] = useState(false);
+  const [activeCandidateIndex, setActiveCandidateIndex] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{
+    success: boolean;
+    slug?: string;
+    id?: string;
+    error?: string;
+  } | null>(null);
+
+  const candidates = useMemo(
+    () =>
+      Array.isArray(result.candidates) && result.candidates.length > 0
+        ? result.candidates
+        : [result],
+    [result]
+  );
+  const activeResult = candidates[activeCandidateIndex] ?? candidates[0];
+
+  useEffect(() => {
+    setActiveCandidateIndex(0);
+    setSubmitResult(null);
+  }, [result]);
 
   const getStyleLabel = (slug: string) =>
     styles.find((style) => style.slug === slug)?.nameEn || slug;
 
   async function handleCopy(format: "css" | "json" | "tailwind") {
-    const exported = exportBlendedTokens(result.tokens, format);
+    const exported = exportBlendedTokens(activeResult.tokens, format);
     await navigator.clipboard.writeText(exported);
     setCopiedFormat(format);
     setTimeout(() => setCopiedFormat(null), 2000);
   }
 
   function handleDownload() {
-    const json = exportBlendedTokens(result.tokens, "json");
+    const json = exportBlendedTokens(activeResult.tokens, "json");
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${result.name.toLowerCase().replace(/\s+/g, "-")}-tokens.json`;
+    a.download = `${activeResult.name.toLowerCase().replace(/\s+/g, "-")}-tokens.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
+  async function fetchExistingStyleSlugs(): Promise<Set<string>> {
+    try {
+      const response = await fetch("/api/styles", { cache: "no-store" });
+      if (!response.ok) {
+        return new Set();
+      }
+
+      const payload = (await response.json()) as {
+        styles?: Array<{ slug?: string }>;
+      };
+      const slugs = payload.styles
+        ?.map((item) => item.slug?.trim().toLowerCase())
+        .filter((slug): slug is string => Boolean(slug));
+      return new Set(slugs ?? []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  async function handleSubmitCommunity() {
+    if (!user) {
+      setSubmitResult({
+        success: false,
+        error: t("submit.signInToSubmit"),
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmitResult(null);
+    try {
+      const existingSlugs = await fetchExistingStyleSlugs();
+      const payload = buildSubmissionFormFromGeneratedStyle(activeResult, {
+        existingSlugs,
+      });
+
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const body = (await response.json().catch(() => null)) as
+        | { id?: string; slug?: string; error?: string }
+        | null;
+      if (!response.ok) {
+        setSubmitResult({
+          success: false,
+          error: body?.error ?? `HTTP ${response.status}`,
+        });
+        return;
+      }
+
+      setSubmitResult({
+        success: true,
+        slug: body?.slug ?? payload.slug,
+        id: body?.id,
+      });
+    } catch (error) {
+      setSubmitResult({
+        success: false,
+        error: (error as Error).message,
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   const confidenceColor =
-    result.confidence >= 50
+    activeResult.confidence >= 50
       ? "text-green-600 dark:text-green-400"
-      : result.confidence >= 25
+      : activeResult.confidence >= 25
         ? "text-yellow-600 dark:text-yellow-400"
         : "text-red-600 dark:text-red-400";
 
   return (
     <div className="space-y-6">
+      {candidates.length > 1 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
+            {t("aiGen.candidates")}
+          </p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {candidates.map((candidate, index) => (
+              <button
+                key={`${candidate.name}-${index}`}
+                type="button"
+                onClick={() => {
+                  setActiveCandidateIndex(index);
+                  setSubmitResult(null);
+                }}
+                className={`rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                  activeCandidateIndex === index
+                    ? "border-foreground bg-foreground/5"
+                    : "border-border hover:border-foreground/40"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-medium">
+                    {t("aiGen.candidate")} {index + 1}
+                  </span>
+                  <span className="text-muted">
+                    {Math.round(candidate.confidence)}%
+                  </span>
+                </div>
+                <p className="mt-1 line-clamp-2 text-[11px] text-muted">
+                  {candidate.description}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold">{result.name}</h3>
-          <p className="text-sm text-muted mt-1">{result.description}</p>
+          <h3 className="text-lg font-bold">{activeResult.name}</h3>
+          <p className="text-sm text-muted mt-1">{activeResult.description}</p>
         </div>
         <div className={`flex items-center gap-1.5 text-sm font-medium ${confidenceColor}`}>
           <Gauge className="w-4 h-4" />
-          {Math.round(result.confidence)}%
+          {Math.round(activeResult.confidence)}%
         </div>
       </div>
 
@@ -73,20 +208,20 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
           </p>
         </div>
         <div
-          className={`p-6 ${result.tokens.colors.background.primary}`}
+          className={`p-6 ${activeResult.tokens.colors.background.primary}`}
         >
           <div className="space-y-4">
             {/* Card preview */}
             <div
-              className={`${result.tokens.colors.background.secondary} ${result.tokens.border.width} ${result.tokens.border.color} ${result.tokens.border.radius} ${result.tokens.shadow.md} ${result.tokens.spacing.card}`}
+              className={`${activeResult.tokens.colors.background.secondary} ${activeResult.tokens.border.width} ${activeResult.tokens.border.color} ${activeResult.tokens.border.radius} ${activeResult.tokens.shadow.md} ${activeResult.tokens.spacing.card}`}
             >
               <h4
-                className={`${result.tokens.typography.heading} ${result.tokens.typography.sizes.h3} ${result.tokens.colors.text.primary} mb-2`}
+                className={`${activeResult.tokens.typography.heading} ${activeResult.tokens.typography.sizes.h3} ${activeResult.tokens.colors.text.primary} mb-2`}
               >
                 Sample Card
               </h4>
               <p
-                className={`${result.tokens.typography.body} ${result.tokens.typography.sizes.body} ${result.tokens.colors.text.secondary}`}
+                className={`${activeResult.tokens.typography.body} ${activeResult.tokens.typography.sizes.body} ${activeResult.tokens.colors.text.secondary}`}
               >
                 This card demonstrates the generated style tokens applied to a real component.
               </p>
@@ -95,12 +230,12 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             {/* Button preview */}
             <div className="flex gap-3">
               <button
-                className={`px-4 py-2 ${result.tokens.colors.button.primary} ${result.tokens.border.radius} ${result.tokens.typography.sizes.body} font-medium ${result.tokens.interaction.transition}`}
+                className={`px-4 py-2 ${activeResult.tokens.colors.button.primary} ${activeResult.tokens.border.radius} ${activeResult.tokens.typography.sizes.body} font-medium ${activeResult.tokens.interaction.transition}`}
               >
                 Primary
               </button>
               <button
-                className={`px-4 py-2 ${result.tokens.colors.button.secondary} ${result.tokens.border.radius} ${result.tokens.typography.sizes.body} font-medium ${result.tokens.interaction.transition}`}
+                className={`px-4 py-2 ${activeResult.tokens.colors.button.secondary} ${activeResult.tokens.border.radius} ${activeResult.tokens.typography.sizes.body} font-medium ${activeResult.tokens.interaction.transition}`}
               >
                 Secondary
               </button>
@@ -111,7 +246,7 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
               type="text"
               placeholder="Sample input field..."
               readOnly
-              className={`w-full px-3 py-2 ${result.tokens.colors.background.primary} ${result.tokens.border.width} ${result.tokens.border.color} ${result.tokens.border.radius} ${result.tokens.typography.sizes.body} ${result.tokens.colors.text.primary} placeholder:${result.tokens.colors.text.muted}`}
+              className={`w-full px-3 py-2 ${activeResult.tokens.colors.background.primary} ${activeResult.tokens.border.width} ${activeResult.tokens.border.color} ${activeResult.tokens.border.radius} ${activeResult.tokens.typography.sizes.body} ${activeResult.tokens.colors.text.primary} placeholder:${activeResult.tokens.colors.text.muted}`}
             />
           </div>
         </div>
@@ -123,7 +258,7 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
           {t("aiGen.sourceStyles")}
         </p>
         <div className="space-y-2">
-          {result.sourceStyles.map(({ slug, weight }) => {
+          {activeResult.sourceStyles.map(({ slug, weight }) => {
             const percentage = Math.round(weight * 100);
             return (
               <div
@@ -150,13 +285,13 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
       </div>
 
       {/* Reasoning */}
-      {result.reasoning && result.reasoning.length > 0 && (
+      {activeResult.reasoning && activeResult.reasoning.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
             {t("aiGen.reasoning")}
           </p>
           <ul className="space-y-1.5 rounded-lg border border-border bg-muted/10 p-3">
-            {result.reasoning.map((hint, index) => (
+            {activeResult.reasoning.map((hint, index) => (
               <li key={`${hint}-${index}`} className="text-xs text-muted leading-relaxed">
                 {hint}
               </li>
@@ -166,7 +301,7 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
       )}
 
       {/* Signals */}
-      {result.insights && (
+      {activeResult.insights && (
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
             {t("aiGen.signals")}
@@ -175,13 +310,13 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted">{t("aiGen.signalBase")}:</span>
               <span className="font-medium">
-                {result.insights.baseStyle ? getStyleLabel(result.insights.baseStyle) : "-"}
+                {activeResult.insights.baseStyle ? getStyleLabel(activeResult.insights.baseStyle) : "-"}
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted">{t("aiGen.signalKeywords")}:</span>
-              {result.insights.matchedKeywords.length > 0 ? (
-                result.insights.matchedKeywords.slice(0, 6).map((keyword) => (
+              {activeResult.insights.matchedKeywords.length > 0 ? (
+                activeResult.insights.matchedKeywords.slice(0, 6).map((keyword) => (
                   <span
                     key={`kw-${keyword}`}
                     className="rounded-full border border-border px-2 py-0.5"
@@ -195,8 +330,8 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted">{t("aiGen.signalNegativeKeywords")}:</span>
-              {result.insights.negativeKeywords.length > 0 ? (
-                result.insights.negativeKeywords.slice(0, 6).map((keyword) => (
+              {activeResult.insights.negativeKeywords.length > 0 ? (
+                activeResult.insights.negativeKeywords.slice(0, 6).map((keyword) => (
                   <span
                     key={`nkw-${keyword}`}
                     className="rounded-full border border-red-300/70 px-2 py-0.5 text-red-600 dark:text-red-400"
@@ -210,8 +345,8 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted">{t("aiGen.signalDetectedStyles")}:</span>
-              {result.insights.detectedStyles.length > 0 ? (
-                result.insights.detectedStyles.slice(0, 4).map((slug) => (
+              {activeResult.insights.detectedStyles.length > 0 ? (
+                activeResult.insights.detectedStyles.slice(0, 4).map((slug) => (
                   <span
                     key={`detected-${slug}`}
                     className="rounded-full border border-border px-2 py-0.5"
@@ -225,8 +360,8 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted">{t("aiGen.signalAvoidedStyles")}:</span>
-              {result.insights.avoidedStyles.length > 0 ? (
-                result.insights.avoidedStyles.slice(0, 4).map((slug) => (
+              {activeResult.insights.avoidedStyles.length > 0 ? (
+                activeResult.insights.avoidedStyles.slice(0, 4).map((slug) => (
                   <span
                     key={`avoided-${slug}`}
                     className="rounded-full border border-red-300/70 px-2 py-0.5 text-red-600 dark:text-red-400"
@@ -260,7 +395,7 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
         {showTokens && (
           <div className="border-t border-border p-4">
             <pre className="text-xs overflow-x-auto whitespace-pre-wrap font-mono text-muted">
-              {JSON.stringify(result.tokens, null, 2)}
+              {JSON.stringify(activeResult.tokens, null, 2)}
             </pre>
           </div>
         )}
@@ -297,6 +432,61 @@ export function StyleGenResult({ result }: StyleGenResultProps) {
             <Download className="w-3.5 h-3.5" />
             {t("aiGen.download")}
           </button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted">
+          {t("aiGen.submit")}
+        </p>
+        <div className="rounded-lg border border-border bg-muted/5 p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-sm font-medium flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                {t("aiGen.submit")}
+              </p>
+              <p className="text-xs text-muted">
+                {t("aiGen.submitHint")}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleSubmitCommunity}
+              disabled={!user || userLoading || submitting || submitResult?.success === true}
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-3 py-2 text-xs font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Send className="w-3.5 h-3.5" />
+              {submitting
+                ? t("aiGen.submitting")
+                : submitResult?.success
+                  ? t("aiGen.submitted")
+                  : t("aiGen.submitNow")}
+            </button>
+          </div>
+
+          {!user && !userLoading && (
+            <p className="mt-3 text-xs text-muted">
+              {t("aiGen.submitRequiresLogin")}{" "}
+              <Link href="/login" className="underline hover:text-foreground">
+                {t("auth.signIn")}
+              </Link>
+            </p>
+          )}
+
+          {submitResult?.success && (
+            <div className="mt-3 rounded-lg border border-green-200 bg-green-50 p-2 text-xs text-green-700 dark:border-green-900/60 dark:bg-green-950/30 dark:text-green-300">
+              {t("aiGen.submitSuccess")}
+              {submitResult.id ? ` #${submitResult.id}` : ""}
+              {submitResult.slug ? ` (${t("aiGen.submitSlug")}: ${submitResult.slug})` : ""}
+            </div>
+          )}
+
+          {submitResult && !submitResult.success && (
+            <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+              {t("aiGen.submitFailurePrefix")} {submitResult.error}
+            </div>
+          )}
         </div>
       </div>
     </div>
