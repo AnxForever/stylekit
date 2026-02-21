@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hook: useInView                                              */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -20,18 +21,14 @@ function useInView(options = {}) {
           obs.disconnect();
         }
       },
-      { threshold: 0.15, ...options },
+      { threshold: 0.15, ...options }
     );
     obs.observe(el);
     return () => obs.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return { ref, inView };
 }
-
-/* ------------------------------------------------------------------ */
-/*  Inline component: RevealBlock                                       */
-/* ------------------------------------------------------------------ */
 
 function RevealBlock({
   children,
@@ -59,1335 +56,1455 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Static data                                                         */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-type AccentKey = "pink" | "lime" | "cyan" | "orange";
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
 
-const ACCENTS: Record<AccentKey, { hex: string; bg: string; label: string; shadow: string }> = {
-  pink:   { hex: "#ff006e", bg: "bg-[#ff006e]", label: "Pink",   shadow: "shadow-[6px_6px_0px_0px_#ff006e]" },
-  lime:   { hex: "#ccff00", bg: "bg-[#ccff00]", label: "Lime",   shadow: "shadow-[6px_6px_0px_0px_#ccff00]" },
-  cyan:   { hex: "#00d9ff", bg: "bg-[#00d9ff]", label: "Cyan",   shadow: "shadow-[6px_6px_0px_0px_#00d9ff]" },
-  orange: { hex: "#ff9500", bg: "bg-[#ff9500]", label: "Orange", shadow: "shadow-[6px_6px_0px_0px_#ff9500]" },
-};
+function BoltIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
 
-const ACCENT_KEYS: AccentKey[] = ["pink", "lime", "cyan", "orange"];
+function GridIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+    </svg>
+  );
+}
 
-const PALETTE = [
-  { name: "BLACK",  hex: "#000000", bg: "bg-black",       text: "text-white", border: "border-white" },
-  { name: "WHITE",  hex: "#ffffff", bg: "bg-white",       text: "text-black", border: "border-black" },
-  { name: "PINK",   hex: "#ff006e", bg: "bg-[#ff006e]",   text: "text-white", border: "border-black" },
-  { name: "LIME",   hex: "#ccff00", bg: "bg-[#ccff00]",   text: "text-black", border: "border-black" },
-  { name: "CYAN",   hex: "#00d9ff", bg: "bg-[#00d9ff]",   text: "text-black", border: "border-black" },
-  { name: "ORANGE", hex: "#ff9500", bg: "bg-[#ff9500]",   text: "text-white", border: "border-black" },
-];
+function TerminalIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
+    </svg>
+  );
+}
 
-const DO_RULES = [
-  { code: "border-black border-2 md:border-4", desc: "Pure black borders — define every edge explicitly." },
-  { code: "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]", desc: "Hard-edge offset shadow — zero blur, zero softness." },
-  { code: "rounded-none", desc: "No border radius anywhere — sharp corners only." },
-  { code: "font-black uppercase tracking-tight", desc: "Heavy weight titles that read as graphic elements." },
-  { code: "font-mono", desc: "Monospace body — honest, technical, raw." },
-  { code: "hover:bg-[#ccff00] duration-150 ease-out", desc: "Brutal Snap — instant hard color cut, not a fade." },
-  { code: "active:translate-x-[6px] active:translate-y-[6px] active:shadow-none", desc: "Physical Crushing — active = shadow offset as displacement." },
-];
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
 
-const DONT_RULES = [
-  { code: "rounded-lg / rounded-md", desc: "Rounded corners make elements feel soft. Forbidden." },
-  { code: "shadow-lg / drop-shadow(blur)", desc: "Blurry shadows imply material, not architecture. Forbidden." },
-  { code: "bg-gradient-to-r", desc: "Gradients are decorative. Brutalism is flat. Forbidden." },
-  { code: "border-gray-300", desc: "Gray borders are timid. Black borders or nothing. Forbidden." },
-  { code: "opacity-50 / transition-opacity", desc: "Fade effects are dishonest. Hard cuts only. Forbidden." },
-  { code: "active:translate-x-[2px] (shadow 6px)", desc: "Displacement must equal shadow pixels. Never less." },
-  { code: "hover:bg transition-all duration-500", desc: "Gradual hover bg transition. Must be hard cut (duration-150 max)." },
-];
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
 
-const FONT_ROWS = [
-  { role: "Display",   class: "font-black text-[clamp(52px,10vw,120px)] leading-none tracking-tighter uppercase", sample: "NEO-BRUTAL" },
-  { role: "H1",        class: "font-black text-5xl md:text-7xl leading-none tracking-tight uppercase",            sample: "BOLD FUNCTION" },
-  { role: "H2",        class: "font-black text-4xl md:text-5xl leading-tight uppercase",                          sample: "RAW STRUCTURE" },
-  { role: "H3",        class: "font-black text-2xl md:text-3xl uppercase",                                        sample: "HARD EDGE" },
-  { role: "Body",      class: "font-mono text-base leading-relaxed",                                              sample: "Everything has a reason. Nothing is decoration." },
-  { role: "Caption",   class: "font-mono text-sm text-black/50 uppercase tracking-widest",                        sample: "METADATA / LABEL / TIMESTAMP" },
-];
+function PlusIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+function StarIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
 
 /* ------------------------------------------------------------------ */
-/*  Main export                                                         */
+/*  Data                                                               */
 /* ------------------------------------------------------------------ */
 
-export default function NeoBrutalistShowcase() {
-  /* Global accent switcher */
-  const [accent, setAccent] = useState<AccentKey>("lime");
+const accentColors = [
+  { name: "Hot Pink", hex: "#ff006e", label: "CTA / Hover", tailwind: "bg-[#ff006e]" },
+  { name: "Acid Green", hex: "#ccff00", label: "Success / Accent", tailwind: "bg-[#ccff00]" },
+  { name: "Electric Blue", hex: "#00d9ff", label: "Links / Info", tailwind: "bg-[#00d9ff]" },
+  { name: "Vivid Orange", hex: "#ff9500", label: "Tags / Warnings", tailwind: "bg-[#ff9500]" },
+  { name: "Pure Black", hex: "#000000", label: "Borders / Text", tailwind: "bg-black" },
+  { name: "Pure White", hex: "#ffffff", label: "Background", tailwind: "bg-white border-2 border-black" },
+];
 
-  /* Variant selector: Classic vs Playful */
-  type Variant = "classic" | "playful";
-  const [variant, setVariant] = useState<Variant>("classic");
+const featureCards = [
+  {
+    title: "ZERO BORDER RADIUS",
+    desc: "Every element is a hard rectangle. No rounded corners ever. The grid is the grid.",
+    accent: "#ff006e",
+    tag: "CORE RULE",
+  },
+  {
+    title: "HARD SHADOW",
+    desc: "4-8px offset, zero blur, pure black. Shadows define depth through displacement not diffusion.",
+    accent: "#ccff00",
+    tag: "VISUAL",
+  },
+  {
+    title: "BLACK BORDER",
+    desc: "2px mobile, 4px desktop. Pure black, no grays, no slates. The border IS the structure.",
+    accent: "#00d9ff",
+    tag: "CORE RULE",
+  },
+  {
+    title: "BRUTAL CONTRAST",
+    desc: "High contrast isn't optional. Black on white. White on black. Neon on black. Never subtle.",
+    accent: "#ff9500",
+    tag: "VISUAL",
+  },
+];
 
-  /* Component demo tab */
-  type DemoTab = "buttons" | "cards" | "inputs";
-  const [demoTab, setDemoTab] = useState<DemoTab>("buttons");
+const doItems = [
+  "border-4 border-black — thick pure black borders",
+  "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] — hard offset shadow",
+  "rounded-none — zero border radius always",
+  "font-black for headings, font-mono for body",
+  "hover:bg-[#ffff00] — hard instant color snap",
+  "active:translate-x-[Npx] active:shadow-none — crushing press",
+  "hover:-translate-y-1 hover:shadow-[10px_10px] — lift before crush",
+  "transition-all duration-150 ease-out — fast, brutal timing",
+];
 
-  /* Input values for form demo */
-  const [inputName, setInputName] = useState("");
-  const [inputEmail, setInputEmail] = useState("");
-  const [formSubmitted, setFormSubmitted] = useState(false);
+const dontItems = [
+  "rounded-lg, rounded-md — NO rounded corners ever",
+  "shadow-lg, shadow-xl — NO blurred diffuse shadows",
+  "bg-gradient-* — NO gradients of any kind",
+  "border-gray-*, border-slate-* — NO gray borders",
+  "Fade-in opacity transitions on hover backgrounds",
+  "active translate smaller than shadow offset (incomplete crush)",
+  "hover shadow disappear instead of enlarge (wrong order)",
+  "Soft spring easing — use ease-out duration-150 only",
+];
 
-  /* Dropdown open state */
-  const [dropOpen, setDropOpen] = useState(false);
-  const [dropValue, setDropValue] = useState("Choose a style");
+type ComponentTab = "buttons" | "cards" | "inputs" | "badges";
 
-  /* InView references */
-  const { ref: heroRef,    inView: heroInView    } = useInView();
-  const { ref: demoRef,    inView: demoInView    } = useInView();
-  const { ref: variantRef, inView: variantInView } = useInView();
-  const { ref: colorRef,   inView: colorInView   } = useInView();
-  const { ref: typeRef,    inView: typeInView    } = useInView();
-  const { ref: rulesRef,   inView: rulesInView   } = useInView();
-  const { ref: footerRef,  inView: footerInView  } = useInView();
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
 
-  const currentAccent = ACCENTS[accent];
+export default function ShowcaseContent() {
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+  const [snapHovered, setSnapHovered] = useState(false);
+  const [crushHovered, setCrushHovered] = useState(false);
+  const [heavyHovered, setHeavyHovered] = useState(false);
+  const [roundingDemo, setRoundingDemo] = useState<"brutal" | "soft">("brutal");
+  const [inputValue, setInputValue] = useState("");
+  const [todoItems, setTodoItems] = useState([
+    { text: "Ship the product", done: true },
+    { text: "Fix the build", done: false },
+    { text: "Review PRs", done: false },
+    { text: "Write docs", done: true },
+  ]);
+  const [counterValue, setCounterValue] = useState(0);
+  const [notifVisible, setNotifVisible] = useState(false);
 
-  /* Form submit */
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-  };
+  // suppress unused warning — crushHovered used in rule 1 demo label
+  void crushHovered;
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  function toggleTodo(i: number) {
+    setTodoItems((prev) => {
+      const next = [...prev];
+      next[i] = { ...next[i], done: !next[i].done };
+      return next;
+    });
+  }
+
+  function showNotif() {
+    setNotifVisible(true);
+    setTimeout(() => setNotifVisible(false), 2500);
+  }
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white font-mono text-black overflow-x-hidden">
+      <style>{`
+        @keyframes brutal-march {
+          0% { background-position: 0 0; }
+          100% { background-position: 32px 0; }
+        }
+        @keyframes brutal-stamp {
+          0% { transform: scale(1.4) rotate(-6deg); opacity: 0; }
+          60% { transform: scale(0.96) rotate(1deg); opacity: 1; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .brutal-march-anim {
+          animation: brutal-march 0.6s linear infinite;
+          background-image: repeating-linear-gradient(
+            90deg,
+            black 0px,
+            black 8px,
+            transparent 8px,
+            transparent 16px
+          );
+          background-size: 32px 4px;
+          background-repeat: repeat-x;
+          background-position: bottom;
+        }
+        .brutal-stamp-anim {
+          animation: brutal-stamp 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+      `}</style>
 
-      {/* ============================================================== */}
-      {/* SECTION 1 — FIXED NAV                                          */}
-      {/* ============================================================== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b-4 border-black">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-14 md:h-16">
-
-            {/* Logo */}
-            <div className="flex items-center gap-3 md:gap-5">
-              <span
-                className="font-black text-white text-base md:text-lg uppercase tracking-tighter px-3 py-1 border-2 md:border-4 border-white"
-                style={{ boxShadow: `4px 4px 0px 0px ${currentAccent.hex}` }}
-              >
-                NEO-BRUTALIST
-              </span>
-              <span className="hidden md:block font-mono text-xs text-white/40 uppercase tracking-widest">
-                新野兽派
-              </span>
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b-4 border-black">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between h-14 md:h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-0 border-2 border-black">
+            <div className="bg-black text-white font-black text-sm md:text-base px-3 py-2 uppercase tracking-widest">
+              NEO
             </div>
-
-            {/* Nav links */}
-            <nav className="hidden md:flex items-center gap-1">
-              {[
-                { label: "Components", href: "#components" },
-                { label: "Variants",   href: "#variants"   },
-                { label: "Colors",     href: "#colors"     },
-                { label: "Typography", href: "#typography" },
-                { label: "Rules",      href: "#rules"      },
-              ].map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="font-mono text-xs text-white uppercase tracking-widest px-3 py-2 hover:bg-white hover:text-black transition-colors duration-150 ease-out"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-
-            {/* Back link */}
-            <Link
-              href="/styles"
-              className="font-black text-xs md:text-sm px-3 md:px-5 py-2 md:py-2.5 border-2 md:border-4 border-white text-white uppercase tracking-wide hover:bg-white hover:text-black active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150 ease-out"
-            >
-              ← StyleKit
-            </Link>
+            <div className="bg-[#ff006e] text-white font-black text-sm md:text-base px-3 py-2 uppercase tracking-widest">
+              BRUTAL
+            </div>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-0 border-2 border-black divide-x-2 divide-black">
+            {["Palette", "Components", "Animation", "App Demo", "Rules"].map((item) => (
+              <span
+                key={item}
+                className="px-4 py-2 text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-black text-white font-black text-xs md:text-sm uppercase tracking-wider border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-[6px_6px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out"
+          >
+            <span>&#8592;</span>
+            <span>StyleKit</span>
+          </Link>
         </div>
       </header>
 
-      {/* ============================================================== */}
-      {/* SECTION 2 — HERO                                               */}
-      {/* ============================================================== */}
-      <section
-        ref={heroRef}
-        className="min-h-screen flex flex-col justify-center pt-14 md:pt-16 bg-[#ccff00] border-b-4 border-black relative overflow-hidden"
-      >
-        {/* Decorative shapes */}
-        <div className="absolute top-20 right-8 md:right-20 w-16 md:w-32 h-16 md:h-32 bg-black border-4 border-black" />
-        <div className="absolute bottom-16 right-24 md:right-60 w-10 md:w-20 h-10 md:h-20 bg-black rounded-full" />
-        <div
-          className="absolute top-1/3 right-8 md:right-24 w-12 md:w-24 h-40 md:h-80 border-4 border-black"
-          style={{ backgroundColor: currentAccent.hex }}
-        />
-        <div className="absolute bottom-8 left-8 w-8 md:w-16 h-8 md:h-16 bg-black border-4 border-black" />
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section className="relative pt-24 md:pt-28 pb-0 overflow-hidden border-b-4 border-black bg-[#ccff00]">
+        {/* Marching ants top stripe */}
+        <div className="absolute top-[56px] md:top-[64px] left-0 right-0 h-1 brutal-march-anim" />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full py-16 md:py-24 relative z-10">
-
-          {/* Tag */}
+        {/* Hero content */}
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-12 md:pt-20 pb-0 relative">
+          {/* Eyebrow */}
           <div
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0.05s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateX(0)" : "translateX(-16px)",
+              transition: "opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-4 py-2 border-2 border-black bg-black text-[#ccff00]">
-              Raw / Honest / Direct
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-black text-[#ccff00] font-black text-xs uppercase tracking-[0.3em] mb-6 border-2 border-black">
+              <BoltIcon className="w-3 h-3" />
+              Design System Showcase
             </span>
           </div>
 
-          {/* Massive headline */}
+          {/* Title */}
           <h1
-            className="mt-4 md:mt-6 font-black text-[clamp(60px,14vw,180px)] leading-none tracking-tighter uppercase text-black"
+            className="font-black text-5xl md:text-7xl lg:text-[96px] leading-none tracking-tighter mb-6 text-black uppercase"
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(48px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.08s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.08s",
             }}
           >
-            NEO-
+            RAW.
             <br />
-            BRUTAL
+            BOLD.
             <br />
-            <span
-              style={{
-                WebkitTextStroke: "4px #000",
-                color: "transparent",
-              }}
-            >
-              IST
+            <span className="text-black" style={{ WebkitTextStroke: "4px black", color: "transparent" }}>
+              BRUTAL.
             </span>
           </h1>
 
-          {/* Subtitle + CTA */}
-          <div
-            className="mt-8 md:mt-12 flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+          {/* Sub */}
+          <p
+            className="font-mono text-base md:text-xl max-w-2xl mb-8 text-black leading-relaxed"
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(32px)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s",
+            }}
+          >
+            Neo-Brutalist design: thick black borders, hard-edge shadows, zero
+            border-radius, maximum contrast. Function over form. Unapologetic.
+          </p>
+
+          {/* CTAs */}
+          <div
+            className="flex flex-col sm:flex-row gap-4 mb-12"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(12px)",
               transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.26s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.26s",
             }}
           >
-            <p className="font-mono text-base md:text-lg leading-relaxed text-black max-w-md">
-              From brutalist architecture. Raw, unadorned functional aesthetics.
-              Bold black borders, hard-edge shadows, no rounded corners, high contrast.
-              Honest expression — bold and direct.
-            </p>
-
-            {/* Accent switcher + CTA */}
-            <div className="flex flex-col gap-4">
-              {/* Accent color switcher */}
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest mb-2 text-black/60">
-                  Accent color
-                </p>
-                <div className="flex gap-2">
-                  {ACCENT_KEYS.map((key) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setAccent(key)}
-                      aria-label={`Switch to ${ACCENTS[key].label} accent`}
-                      className={`w-10 h-10 md:w-12 md:h-12 border-2 md:border-4 border-black transition-all duration-150 ease-out ${ACCENTS[key].bg} ${
-                        accent === key
-                          ? "shadow-none translate-x-[2px] translate-y-[2px]"
-                          : "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="font-mono text-xs text-black/60 mt-1">
-                  Current: {currentAccent.label} {currentAccent.hex}
-                </p>
-              </div>
-
-              {/* CTA button */}
-              <button
-                type="button"
-                className="font-black text-sm md:text-base uppercase tracking-wide px-6 md:px-8 py-3 md:py-4 bg-black text-white border-2 md:border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
-                style={{ boxShadow: `6px 6px 0px 0px ${currentAccent.hex}` }}
-              >
-                Explore the System
-              </button>
-            </div>
+            <button className="inline-flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-black text-white font-black uppercase tracking-wider text-sm md:text-base border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,0,110,1)] hover:shadow-[10px_10px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+              <BoltIcon className="w-4 h-4 text-[#ff006e]" />
+              Explore Style
+            </button>
+            <button className="inline-flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-white text-black font-black uppercase tracking-wider text-sm md:text-base border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-[#00d9ff] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+              <GridIcon className="w-4 h-4" />
+              View Components
+            </button>
           </div>
 
           {/* Stats row */}
           <div
-            className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+            className="grid grid-cols-2 md:grid-cols-4 border-t-4 border-black"
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.4s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(8px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.36s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.36s",
             }}
           >
             {[
-              { value: "0px",    label: "Border Radius" },
-              { value: "4px",    label: "Border Width" },
-              { value: "6px",    label: "Shadow Offset" },
-              { value: "0ms",    label: "Blur Amount" },
+              { value: "0px", label: "BORDER RADIUS", accent: "#ff006e" },
+              { value: "4px", label: "BORDER WIDTH", accent: "#ccff00" },
+              { value: "8px", label: "SHADOW OFFSET", accent: "#00d9ff" },
+              { value: "150ms", label: "TRANSITION", accent: "#ff9500" },
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="bg-black text-white border-2 md:border-4 border-black p-4 md:p-6 text-center"
-                style={{ boxShadow: `4px 4px 0px 0px ${currentAccent.hex}` }}
+                className="p-5 md:p-8 border-r-4 border-black last:border-r-0 group cursor-default hover:bg-black transition-colors duration-150"
               >
-                <p className="font-black text-3xl md:text-5xl leading-none">{stat.value}</p>
-                <p className="font-mono text-xs mt-1 uppercase tracking-wider text-white/60">{stat.label}</p>
+                <div
+                  className="text-3xl md:text-4xl font-black mb-1 group-hover:text-white transition-colors duration-150"
+                  style={{ color: stat.accent }}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-xs font-black uppercase tracking-widest text-black group-hover:text-white transition-colors duration-150">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ============================================================== */}
-      {/* SECTION 3 — COMPONENT DEMOS                                    */}
-      {/* ============================================================== */}
-      <section
-        id="components"
-        ref={demoRef}
-        className="py-20 md:py-28 border-b-4 border-black"
-        style={{
-          opacity: demoInView ? 1 : 0,
-          transform: demoInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {/* Section header */}
-          <div className="mb-10 md:mb-14">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-3 py-1.5 border-2 border-black bg-white">
-              Interactive demos
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-[#ff006e] block mb-4">
+              // Color System
             </span>
-            <h2 className="mt-4 font-black text-4xl md:text-6xl uppercase tracking-tight">
-              Components
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-black leading-none mb-2">
+              PALETTE
             </h2>
-            <p className="mt-2 font-mono text-sm text-black/50 max-w-md">
-              All components follow Physical Crushing (active) and Brutal Snap (hover). Click to feel the press.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="font-mono text-base md:text-lg text-black max-w-xl leading-relaxed">
+              Black and white as the structural foundation. Four high-energy accent colors for emphasis.
+              No pastels. No gradients. No neutral grays.
             </p>
-          </div>
+          </RevealBlock>
 
-          {/* Tab strip */}
-          <div className="flex flex-wrap gap-2 mb-10 border-b-4 border-black pb-4">
-            {(["buttons", "cards", "inputs"] as DemoTab[]).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setDemoTab(tab)}
-                className={`px-5 md:px-7 py-2.5 md:py-3 border-2 md:border-4 border-black font-black text-xs md:text-sm uppercase tracking-wide transition-all duration-150 ease-out ${
-                  demoTab === tab
-                    ? "bg-black text-white shadow-none translate-x-[3px] translate-y-[3px]"
-                    : "bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab: Buttons */}
-          {demoTab === "buttons" && (
-            <div className="space-y-12">
-              {/* Primary — Physical Crushing */}
-              <RevealBlock>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Primary — Physical Crushing (active translate = shadow offset)
-                  </p>
-                  <div className="flex flex-wrap gap-4 md:gap-6 items-end">
-                    <div className="flex flex-col items-start gap-2">
-                      <button
-                        type="button"
-                        className="font-black text-base uppercase tracking-wide px-6 py-3 bg-black text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
-                        style={{ boxShadow: `6px 6px 0px 0px ${currentAccent.hex}` }}
-                      >
-                        Primary
-                      </button>
-                      <span className="font-mono text-xs text-black/40">hover:lift active:crush</span>
+          {/* Swatches */}
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-4 border-black mb-8">
+              {accentColors.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="group cursor-pointer border-r-4 border-black last:border-r-0"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  <div
+                    className="h-24 md:h-32"
+                    style={{
+                      backgroundColor: swatch.hex,
+                      transform: hoveredSwatch === i ? "scaleY(1.04)" : "scaleY(1)",
+                      transformOrigin: "bottom",
+                      transition: "transform 0.15s ease-out",
+                      borderBottom: "4px solid black",
+                    }}
+                  />
+                  <div className="p-3 bg-white">
+                    <div className="font-black text-xs uppercase">{swatch.name}</div>
+                    <div className="font-mono text-xs text-black/60">{swatch.hex}</div>
+                    <div
+                      className="mt-1 text-[10px] font-black uppercase px-1.5 py-0.5 border-2 border-black inline-block"
+                      style={{
+                        backgroundColor: swatch.hex === "#ffffff" ? "#000" : swatch.hex,
+                        color: swatch.hex === "#ffffff" || swatch.hex === "#ccff00" ? "#000" : "#fff",
+                      }}
+                    >
+                      {swatch.label}
                     </div>
-                    <div className="flex flex-col items-start gap-2">
-                      <button
-                        type="button"
-                        className="font-black text-base uppercase tracking-wide px-6 py-3 bg-white text-black border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
-                      >
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Contrast demos */}
+          <RevealBlock delay={0.15}>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-4 border-black">
+              {[
+                { bg: "#000000", text: "#ff006e", label: "PINK ON BLACK" },
+                { bg: "#ccff00", text: "#000000", label: "BLACK ON GREEN" },
+                { bg: "#ff006e", text: "#ffffff", label: "WHITE ON PINK" },
+                { bg: "#ffffff", text: "#000000", label: "BLACK ON WHITE" },
+              ].map((combo) => (
+                <div
+                  key={combo.label}
+                  className="p-6 md:p-8 border-r-4 border-black last:border-r-0 flex flex-col gap-2"
+                  style={{ backgroundColor: combo.bg }}
+                >
+                  <div
+                    className="font-black text-2xl md:text-3xl uppercase leading-none"
+                    style={{ color: combo.text }}
+                  >
+                    Aa
+                  </div>
+                  <div
+                    className="font-mono text-[10px] uppercase tracking-widest font-bold"
+                    style={{ color: combo.text, opacity: 0.8 }}
+                  >
+                    {combo.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-[#00d9ff] block mb-4">
+              // Components
+            </span>
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-black leading-none">
+              BUILDING<br />BLOCKS
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="font-mono text-base md:text-lg text-black max-w-xl leading-relaxed">
+              Every component follows the same rule: black border, hard shadow, zero rounding.
+              Hover increases shadow. Active crushes it flat.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.1} className="mb-0">
+            <div className="flex border-4 border-black border-b-0">
+              {(["buttons", "cards", "inputs", "badges"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 px-4 py-3 text-xs font-black uppercase tracking-widest border-r-4 border-black last:border-r-0 transition-colors duration-150 ${
+                    activeTab === tab
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-[#ccff00]"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo panel */}
+          <RevealBlock delay={0.15}>
+            <div className="border-4 border-black p-8 md:p-12">
+
+              {/* ---- BUTTONS TAB ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-12">
+                  {/* Primary buttons */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-6 border-b-2 border-black pb-2">
+                      Primary &#8212; Physical Crushing active state
+                    </p>
+                    <div className="flex flex-wrap gap-5 items-start">
+                      <button className="px-6 py-3 md:px-8 md:py-4 bg-[#ff006e] text-white font-black uppercase tracking-wider text-sm md:text-base border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+                        Click Hard
+                      </button>
+                      <button className="px-6 py-3 md:px-8 md:py-4 bg-[#ccff00] text-black font-black uppercase tracking-wider text-sm md:text-base border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+                        Go Bold
+                      </button>
+                      <button className="px-6 py-3 md:px-8 md:py-4 bg-[#00d9ff] text-black font-black uppercase tracking-wider text-sm md:text-base border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+                        Strike Now
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Outline / ghost */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-6 border-b-2 border-black pb-2">
+                      Outline &amp; Ghost
+                    </p>
+                    <div className="flex flex-wrap gap-5 items-start">
+                      <button className="px-6 py-3 md:px-8 md:py-4 bg-white text-black font-black uppercase tracking-wider text-sm border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-[#ffff00] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
                         Outlined
                       </button>
-                      <span className="font-mono text-xs text-black/40">Brutal Snap on hover</span>
-                    </div>
-                    <div className="flex flex-col items-start gap-2">
-                      <button
-                        type="button"
-                        className={`font-black text-base uppercase tracking-wide px-6 py-3 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out text-black ${currentAccent.bg}`}
-                      >
-                        Accent
+                      <button className="px-6 py-3 md:px-8 md:py-4 bg-transparent text-black font-black uppercase tracking-wider text-sm border-4 border-black hover:bg-black hover:text-white active:bg-[#ff006e] active:border-[#ff006e] transition-all duration-150 ease-out">
+                        Ghost
                       </button>
-                      <span className="font-mono text-xs text-black/40">{currentAccent.hex}</span>
-                    </div>
-                    <div className="flex flex-col items-start gap-2">
-                      <button
-                        type="button"
-                        disabled
-                        className="font-black text-base uppercase tracking-wide px-6 py-3 bg-white text-black/30 border-4 border-black/30 cursor-not-allowed"
-                      >
-                        Disabled
+                      <button className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-black text-[#ccff00] font-black uppercase tracking-wider text-sm border-4 border-black shadow-[6px_6px_0px_0px_rgba(204,255,0,1)] hover:shadow-[10px_10px_0px_0px_rgba(204,255,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out">
+                        <BoltIcon className="w-4 h-4" />
+                        Dark CTA
                       </button>
-                      <span className="font-mono text-xs text-black/40">no hover / no crush</span>
                     </div>
                   </div>
-                </div>
-              </RevealBlock>
 
-              {/* Accent-filled variants */}
-              <RevealBlock delay={0.06}>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Accent-filled — Brutal Snap hover
-                  </p>
-                  <div className="flex flex-wrap gap-3 md:gap-4">
-                    {ACCENT_KEYS.map((key) => (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setAccent(key)}
-                        className={`font-black text-sm uppercase tracking-wide px-5 py-2.5 border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out ${ACCENTS[key].bg} ${key === "pink" || key === "orange" ? "text-white" : "text-black"}`}
-                      >
-                        {ACCENTS[key].label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-
-              {/* Circle button + sizes */}
-              <RevealBlock delay={0.12}>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Circle decorative + size scale
-                  </p>
-                  <div className="flex flex-wrap gap-5 items-end">
-                    <button
-                      type="button"
-                      className="w-16 h-16 border-4 border-black bg-black text-white rounded-full font-black text-xs uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out"
-                      style={{ boxShadow: `4px 4px 0px 0px ${currentAccent.hex}` }}
-                    >
-                      Go
-                    </button>
-                    {[
-                      { label: "SM",  px: "px-4",   py: "py-2",   text: "text-xs" },
-                      { label: "MD",  px: "px-6",   py: "py-3",   text: "text-sm" },
-                      { label: "LG",  px: "px-8",   py: "py-4",   text: "text-base" },
-                      { label: "XL",  px: "px-10",  py: "py-5",   text: "text-lg" },
-                    ].map((sz) => (
-                      <button
-                        key={sz.label}
-                        type="button"
-                        className={`font-black uppercase tracking-wide ${sz.px} ${sz.py} ${sz.text} bg-white text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out`}
-                      >
-                        {sz.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-
-              {/* Interaction spec */}
-              <RevealBlock delay={0.18}>
-                <div className="bg-black text-white border-4 border-black p-5 md:p-7 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-                  style={{ boxShadow: `8px 8px 0px 0px ${currentAccent.hex}` }}
-                >
-                  <p className="font-black text-sm uppercase tracking-widest mb-4" style={{ color: currentAccent.hex }}>
-                    Animation spec — Physical Crushing + Brutal Snap
-                  </p>
-                  <div className="font-mono text-sm space-y-2">
-                    <p><span style={{ color: currentAccent.hex }}>hover:</span>  -translate-x-[3px] -translate-y-[3px]  shadow-[9px_9px_0px_0px_rgba(0,0,0,1)]</p>
-                    <p><span className="text-white/60">active:</span> translate-x-[6px]  translate-y-[6px]   shadow-none</p>
-                    <p><span className="text-white/60">timing:</span> duration-150 ease-out  (brutal collision feel)</p>
-                    <p className="text-white/40 text-xs pt-2">
-                      NOTE: active displacement = shadow pixel count (6px). Never less.
+                  {/* Sizes */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-6 border-b-2 border-black pb-2">
+                      Size scale
                     </p>
-                  </div>
-                </div>
-              </RevealBlock>
-            </div>
-          )}
-
-          {/* Tab: Cards */}
-          {demoTab === "cards" && (
-            <div className="space-y-12">
-              {/* Brutal Snap on hover */}
-              <RevealBlock>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Cards — Brutal Snap yellow bg on hover, colored shadow on hover
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-                    {[
-                      { title: "STRUCTURE",   body: "Raw exposed form. No ornamentation. Every element declared its purpose plainly.", tag: "Form" },
-                      { title: "FUNCTION",    body: "Nothing exists as decoration. Black borders mark territory. Hard shadows declare weight.", tag: "Logic" },
-                      { title: "HONESTY",     body: "No rounded corners, no blur. Brutalism refuses to flatter. It insists on the truth.", tag: "Intent" },
-                    ].map((card) => (
-                      <div
-                        key={card.title}
-                        className="group bg-white border-2 md:border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-[#ccff00] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all duration-150 ease-out cursor-pointer p-5 md:p-7"
-                      >
-                        <span className="inline-block font-mono text-xs uppercase tracking-widest px-2 py-1 border-2 border-black bg-black text-white mb-4 group-hover:bg-white group-hover:text-black transition-colors duration-150">
-                          {card.tag}
-                        </span>
-                        <h3 className="font-black text-2xl md:text-3xl uppercase leading-tight mb-3">
-                          {card.title}
-                        </h3>
-                        <p className="font-mono text-sm text-black/60 group-hover:text-black/80 leading-relaxed">
-                          {card.body}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-
-              {/* Colored shadow cards */}
-              <RevealBlock delay={0.08}>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Heavy Focus — hover increases shadow + switches to accent color shadow
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {ACCENT_KEYS.map((key) => (
-                      <div
-                        key={key}
-                        className={`group ${ACCENTS[key].bg} border-2 md:border-4 border-black p-4 md:p-6 cursor-pointer transition-all duration-150 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px]`}
-                        style={{
-                          boxShadow: `4px 4px 0px 0px rgba(0,0,0,1)`,
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLDivElement).style.boxShadow = `8px 8px 0px 0px ${ACCENTS[key].hex}`;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLDivElement).style.boxShadow = `4px 4px 0px 0px rgba(0,0,0,1)`;
-                        }}
-                      >
-                        <p className="font-black text-lg md:text-xl uppercase leading-tight">{ACCENTS[key].label}</p>
-                        <p className="font-mono text-xs mt-1 text-black/60">{ACCENTS[key].hex}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-
-              {/* Card with internal structure */}
-              <RevealBlock delay={0.14}>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-5">
-                    Data card — internal ruled sections
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {[
-                      {
-                        title: "Design Token",
-                        items: [
-                          { key: "border-width", val: "4px" },
-                          { key: "shadow-offset", val: "6px" },
-                          { key: "border-radius", val: "0px" },
-                          { key: "transition", val: "150ms ease-out" },
-                        ],
-                        accent: "#ccff00",
-                      },
-                      {
-                        title: "Typography Token",
-                        items: [
-                          { key: "heading", val: "font-black" },
-                          { key: "body", val: "font-mono" },
-                          { key: "transform", val: "uppercase" },
-                          { key: "tracking", val: "tracking-tight" },
-                        ],
-                        accent: "#ff006e",
-                      },
-                    ].map((card) => (
-                      <div
-                        key={card.title}
-                        className="border-4 border-black overflow-hidden group hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all duration-150 ease-out"
-                        style={{ boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)" }}
-                      >
-                        <div
-                          className="px-5 py-3 border-b-4 border-black"
-                          style={{ backgroundColor: card.accent }}
+                    <div className="flex flex-wrap gap-5 items-start">
+                      {[
+                        { size: "XS", px: "px-3 py-1.5", text: "text-[10px]", border: "border-2", shadow: "shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]", hoverShadow: "hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]", activeTrans: "active:translate-x-[3px] active:translate-y-[3px]" },
+                        { size: "SM", px: "px-4 py-2", text: "text-xs", border: "border-2", shadow: "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]", hoverShadow: "hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)]", activeTrans: "active:translate-x-[4px] active:translate-y-[4px]" },
+                        { size: "MD", px: "px-6 py-3", text: "text-sm", border: "border-4", shadow: "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]", hoverShadow: "hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]", activeTrans: "active:translate-x-[6px] active:translate-y-[6px]" },
+                        { size: "LG", px: "px-8 py-4", text: "text-base", border: "border-4", shadow: "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]", hoverShadow: "hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]", activeTrans: "active:translate-x-[8px] active:translate-y-[8px]" },
+                      ].map(({ size, px, text, border, shadow, hoverShadow, activeTrans }) => (
+                        <button
+                          key={size}
+                          className={`bg-[#ff006e] text-white font-black uppercase tracking-wider border-black hover:-translate-y-1 hover:-translate-x-1 active:shadow-none transition-all duration-150 ease-out ${px} ${text} ${border} ${shadow} ${hoverShadow} ${activeTrans}`}
                         >
-                          <p className="font-black text-sm uppercase tracking-widest">{card.title}</p>
-                        </div>
-                        {card.items.map((item, i) => (
-                          <div
-                            key={item.key}
-                            className={`flex items-center justify-between px-5 py-3 ${i < card.items.length - 1 ? "border-b-2 border-black" : ""} group-hover:bg-white`}
-                          >
-                            <span className="font-mono text-xs text-black/50">{item.key}</span>
-                            <span className="font-black text-sm">{item.val}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
+                          {size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </RevealBlock>
-            </div>
-          )}
+              )}
 
-          {/* Tab: Inputs */}
-          {demoTab === "inputs" && (
-            <div className="space-y-10 max-w-xl">
-              <RevealBlock>
-                {formSubmitted ? (
-                  <div
-                    className="border-4 border-black p-6 bg-[#ccff00]"
-                    style={{ boxShadow: "6px 6px 0px 0px rgba(0,0,0,1)" }}
-                  >
-                    <p className="font-black text-xl uppercase mb-2">Submitted.</p>
-                    <p className="font-mono text-sm text-black/60 mb-4">
-                      Brutalist forms don&apos;t flatter. They just work.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => { setFormSubmitted(false); setInputName(""); setInputEmail(""); }}
-                      className="font-black text-sm uppercase tracking-wide px-5 py-2.5 bg-black text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none transition-all duration-150 ease-out"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                ) : (
-                  <form
-                    onSubmit={handleFormSubmit}
-                    className="space-y-6"
-                  >
-                    {/* Name input */}
-                    <div>
-                      <label className="block font-black text-sm uppercase tracking-widest mb-2">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        value={inputName}
-                        onChange={(e) => setInputName(e.target.value)}
-                        placeholder="Enter your name"
-                        className="w-full px-4 py-3 bg-white border-4 border-black font-mono text-base placeholder:text-black/30 focus:outline-none focus:border-black focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-[3px] focus:-translate-y-[3px] transition-all duration-150 ease-out"
-                        style={{ borderColor: "#000" }}
-                        onFocus={(e) => { e.currentTarget.style.boxShadow = `6px 6px 0px 0px ${currentAccent.hex}`; }}
-                        onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
-                      />
-                    </div>
-
-                    {/* Email input */}
-                    <div>
-                      <label className="block font-black text-sm uppercase tracking-widest mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={inputEmail}
-                        onChange={(e) => setInputEmail(e.target.value)}
-                        placeholder="you@example.com"
-                        className="w-full px-4 py-3 bg-white border-4 border-black font-mono text-base placeholder:text-black/30 focus:outline-none transition-all duration-150 ease-out focus:-translate-x-[3px] focus:-translate-y-[3px]"
-                        onFocus={(e) => { e.currentTarget.style.boxShadow = `6px 6px 0px 0px ${currentAccent.hex}`; }}
-                        onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
-                      />
-                    </div>
-
-                    {/* Custom dropdown */}
-                    <div className="relative">
-                      <label className="block font-black text-sm uppercase tracking-widest mb-2">
-                        Style preference
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setDropOpen((v) => !v)}
-                        className="w-full flex items-center justify-between px-4 py-3 bg-white border-4 border-black font-black text-sm uppercase tracking-wide shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out"
-                      >
-                        <span>{dropValue}</span>
-                        <span className="font-mono text-lg">{dropOpen ? "^" : "v"}</span>
-                      </button>
-                      {dropOpen && (
-                        <div className="absolute top-full left-0 right-0 z-20 border-4 border-black border-t-0 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                          {["Raw Brutalism", "Functional Honesty", "Maximum Contrast", "Hard Shadow Only", "Monochrome Strict"].map((item, i) => {
-                            const bgs = ["hover:bg-[#ccff00]", "hover:bg-[#ff006e] hover:text-white", "hover:bg-[#00d9ff]", "hover:bg-[#ff9500] hover:text-white", "hover:bg-black hover:text-white"];
-                            return (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => { setDropValue(item); setDropOpen(false); }}
-                                className={`w-full px-4 py-3 text-left font-black text-sm uppercase tracking-wide border-b-2 border-black last:border-0 transition-colors duration-100 ${bgs[i]}`}
-                              >
-                                {item}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Submit */}
-                    <button
-                      type="submit"
-                      className="w-full font-black text-base uppercase tracking-wide py-4 bg-black text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
-                      style={{ boxShadow: `6px 6px 0px 0px ${currentAccent.hex}` }}
-                    >
-                      Submit — No Nonsense
-                    </button>
-                  </form>
-                )}
-              </RevealBlock>
-
-              {/* Input spec note */}
-              <RevealBlock delay={0.1}>
-                <div className="border-2 border-black p-4 bg-white">
-                  <p className="font-mono text-xs text-black/50 uppercase tracking-widest mb-2">Input rules</p>
-                  <ul className="font-mono text-xs text-black/60 space-y-1">
-                    <li>border-4 border-black — always black, never gray</li>
-                    <li>focus: shadow offset = accent color (Brutal Snap)</li>
-                    <li>focus: slight translate lift (-3px) for physical feedback</li>
-                    <li>placeholder: font-mono, 30% opacity</li>
-                    <li>no rounded corners, no blur on focus ring</li>
-                  </ul>
-                </div>
-              </RevealBlock>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 4 — VARIANT SHOWCASE                                   */}
-      {/* ============================================================== */}
-      <section
-        id="variants"
-        ref={variantRef}
-        className="py-20 md:py-28 bg-black border-b-4 border-black"
-        style={{
-          opacity: variantInView ? 1 : 0,
-          transform: variantInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {/* Header */}
-          <div className="mb-10 md:mb-14">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-3 py-1.5 border-2 border-white text-white">
-              Variant selector
-            </span>
-            <h2 className="mt-4 font-black text-4xl md:text-6xl uppercase tracking-tight text-white">
-              Variants
-            </h2>
-            <p className="mt-2 font-mono text-sm text-white/40 max-w-md">
-              Switch between Classic (pure black/white + vivid accents) and Playful (rotated cards, multi-color).
-            </p>
-          </div>
-
-          {/* Variant selector */}
-          <div className="flex gap-3 mb-10">
-            {(["classic", "playful"] as Variant[]).map((v) => (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setVariant(v)}
-                className={`font-black text-sm uppercase tracking-wide px-6 py-3 border-4 transition-all duration-150 ease-out ${
-                  variant === v
-                    ? "bg-[#ccff00] text-black border-[#ccff00] shadow-none translate-x-[3px] translate-y-[3px]"
-                    : "bg-black text-white border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                }`}
-              >
-                {v === "classic" ? "Classic" : "Playful"}
-              </button>
-            ))}
-          </div>
-
-          {/* Classic variant */}
-          {variant === "classic" && (
-            <RevealBlock>
-              <div className="space-y-6">
-                <p className="font-mono text-xs uppercase tracking-widest text-white/40">
-                  Classic — pure black/white structure with vivid accent highlights
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {[
-                    { title: "MINIMAL",  body: "Black border. White fill. Hard shadow. Nothing else.", accent: "#ccff00" },
-                    { title: "VIVID",    body: "One accent color. One purpose. Maximum signal.", accent: "#ff006e" },
-                    { title: "DIRECT",   body: "No gradients. No radius. No apologetics.", accent: "#00d9ff" },
-                  ].map((card) => (
+              {/* ---- CARDS TAB ---- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {featureCards.map((card) => (
                     <div
                       key={card.title}
-                      className="bg-white text-black border-4 border-white p-6 md:p-8 group hover:-translate-x-[3px] hover:-translate-y-[3px] transition-all duration-150 ease-out cursor-pointer"
-                      style={{ boxShadow: `6px 6px 0px 0px ${card.accent}` }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = `10px 10px 0px 0px ${card.accent}`;
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = `6px 6px 0px 0px ${card.accent}`;
-                      }}
+                      className="group border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ffff00] transition-all duration-150 ease-out p-6 md:p-8 cursor-pointer"
                     >
                       <div
-                        className="w-10 h-10 border-4 border-black mb-5"
-                        style={{ backgroundColor: card.accent }}
-                      />
-                      <h3 className="font-black text-2xl uppercase mb-3">{card.title}</h3>
-                      <p className="font-mono text-sm text-black/60">{card.body}</p>
+                        className="inline-block px-3 py-1 text-[10px] font-black uppercase tracking-widest mb-4 border-2 border-black"
+                        style={{ backgroundColor: card.accent, color: card.accent === "#ccff00" ? "#000" : "#fff" }}
+                      >
+                        {card.tag}
+                      </div>
+                      <h3 className="font-black text-lg md:text-xl uppercase tracking-tight mb-3 group-hover:tracking-wider transition-all duration-150">
+                        {card.title}
+                      </h3>
+                      <p className="font-mono text-sm text-black/70 leading-relaxed">
+                        {card.desc}
+                      </p>
                     </div>
                   ))}
                 </div>
+              )}
 
-                {/* Rule bar */}
-                <div className="border-4 border-white p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <p className="font-black text-white text-sm uppercase tracking-widest mb-1">Classic rule</p>
-                    <p className="font-mono text-xs text-white/40">bg-white + bg-black + one vivid accent. Shadow always black. No mixing.</p>
+              {/* ---- INPUTS TAB ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest mb-2">Username</label>
+                      <input
+                        type="text"
+                        placeholder="type something..."
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border-2 md:border-4 border-black bg-white font-mono text-sm md:text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest mb-2">Email</label>
+                      <input
+                        type="email"
+                        placeholder="you@example.com"
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border-2 md:border-4 border-black bg-white font-mono text-sm md:text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] md:focus:shadow-[8px_8px_0px_0px_rgba(255,0,110,1)] transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest mb-2">Message</label>
+                      <textarea
+                        rows={4}
+                        placeholder="Write something brutal..."
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border-2 md:border-4 border-black bg-white font-mono text-sm md:text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow resize-none"
+                      />
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <div className="w-10 h-10 bg-black border-4 border-white" />
-                    <div className="w-10 h-10 bg-white border-4 border-white" />
-                    <div className="w-10 h-10 border-4 border-white" style={{ backgroundColor: currentAccent.hex }} />
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-
-          {/* Playful variant */}
-          {variant === "playful" && (
-            <RevealBlock>
-              <div className="space-y-6">
-                <p className="font-mono text-xs uppercase tracking-widest text-white/40">
-                  Playful — rotated cards, multi-color fills, stacked shadows
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-                  {[
-                    { title: "PINK",   rot: "-rotate-2",  bg: "bg-[#ff006e]", text: "text-white" },
-                    { title: "LIME",   rot: "rotate-2",   bg: "bg-[#ccff00]", text: "text-black" },
-                    { title: "CYAN",   rot: "-rotate-1",  bg: "bg-[#00d9ff]", text: "text-black" },
-                    { title: "ORANGE", rot: "rotate-1",   bg: "bg-[#ff9500]", text: "text-white" },
-                    { title: "BLACK",  rot: "-rotate-2",  bg: "bg-black",     text: "text-white" },
-                    { title: "WHITE",  rot: "rotate-1",   bg: "bg-white",     text: "text-black" },
-                    { title: "BOLD",   rot: "rotate-2",   bg: "bg-[#ccff00]", text: "text-black" },
-                    { title: "RAW",    rot: "-rotate-1",  bg: "bg-[#ff006e]", text: "text-white" },
-                  ].map((card, i) => (
-                    <div
-                      key={card.title + i}
-                      className={`${card.bg} ${card.text} ${card.rot} border-4 border-white p-5 md:p-6 cursor-pointer hover:-rotate-0 hover:-translate-y-2 transition-all duration-150 ease-out`}
-                      style={{ boxShadow: "5px 5px 0px 0px rgba(255,255,255,1)" }}
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest mb-2">Select Option</label>
+                      <select className="w-full px-3 py-2 md:px-4 md:py-3 border-2 md:border-4 border-black bg-white font-mono text-sm md:text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow">
+                        <option>Classic</option>
+                        <option>Soft</option>
+                        <option>Playful</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-4 border-black bg-[#ff006e] flex items-center justify-center cursor-pointer">
+                        <CheckIcon className="w-3 h-3 text-white" />
+                      </div>
+                      <label className="font-mono text-sm cursor-pointer">Enable brutal mode</label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-4 border-black bg-white cursor-pointer" />
+                      <label className="font-mono text-sm cursor-pointer">Round corners (forbidden)</label>
+                    </div>
+                    <button
+                      onClick={showNotif}
+                      className="w-full py-3 md:py-4 bg-black text-white font-black uppercase tracking-widest text-sm border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,0,110,1)] hover:shadow-[10px_10px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
                     >
-                      <p className="font-black text-xl md:text-2xl uppercase">{card.title}</p>
-                      <p className="font-mono text-xs mt-2 opacity-60">Card {String(i + 1).padStart(2, "0")}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-4 border-white p-5 md:p-6">
-                  <p className="font-black text-white text-sm uppercase tracking-widest mb-1">Playful rule</p>
-                  <p className="font-mono text-xs text-white/40">
-                    Rotations: ±1deg to ±2deg max. Multiple accent fills allowed. hover:rotate-0 snaps flat. Still no blur, no radius.
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 5 — COLOR SYSTEM                                       */}
-      {/* ============================================================== */}
-      <section
-        id="colors"
-        ref={colorRef}
-        className="py-20 md:py-28 border-b-4 border-black"
-        style={{
-          opacity: colorInView ? 1 : 0,
-          transform: colorInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="mb-10 md:mb-14">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-3 py-1.5 border-2 border-black">
-              Color system
-            </span>
-            <h2 className="mt-4 font-black text-4xl md:text-6xl uppercase tracking-tight">
-              Brutalist Palette
-            </h2>
-            <p className="mt-2 font-mono text-sm text-black/50 max-w-md">
-              Two structural colors (black, white) + four vivid accents. Thick black borders. Hard shadows. Uppercase labels.
-            </p>
-          </div>
-
-          {/* Large color blocks */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 mb-10">
-            {PALETTE.map((c, i) => (
-              <RevealBlock key={c.name} delay={i * 0.06}>
-                <div
-                  className={`${c.bg} ${c.border} border-2 md:border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out cursor-pointer`}
-                >
-                  {/* Swatch */}
-                  <div className="h-24 md:h-36" />
-                  {/* Label */}
-                  <div className={`border-t-2 md:border-t-4 ${c.border} p-3 md:p-4`}>
-                    <p className={`${c.text} font-black text-sm md:text-base uppercase tracking-tight`}>{c.name}</p>
-                    <p className={`${c.text} font-mono text-xs mt-0.5 opacity-60`}>{c.hex}</p>
+                      Submit
+                    </button>
                   </div>
                 </div>
-              </RevealBlock>
-            ))}
-          </div>
+              )}
 
-          {/* Usage rules */}
-          <RevealBlock delay={0.15}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="border-4 border-black p-5 md:p-7 bg-black text-white">
-                <p className="font-black text-sm uppercase tracking-widest text-[#ccff00] mb-4">Structural colors</p>
-                <div className="space-y-3">
-                  {[
-                    { swatch: "bg-black border-white", label: "BLACK #000000", desc: "Default background for dark sections, borders always" },
-                    { swatch: "bg-white border-black", label: "WHITE #ffffff", desc: "Default page background, card fills, button fills" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-start gap-4">
-                      <div className={`w-10 h-10 shrink-0 border-2 ${item.swatch}`} />
-                      <div>
-                        <p className="font-black text-sm">{item.label}</p>
-                        <p className="font-mono text-xs text-white/50">{item.desc}</p>
-                      </div>
+              {/* ---- BADGES TAB ---- */}
+              {activeTab === "badges" && (
+                <div className="space-y-10">
+                  {/* Solid tags */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-5 border-b-2 border-black pb-2">
+                      Solid accent tags
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "BRUTAL", bg: "#ff006e", text: "#fff" },
+                        { label: "BOLD", bg: "#ccff00", text: "#000" },
+                        { label: "RAW", bg: "#00d9ff", text: "#000" },
+                        { label: "SHARP", bg: "#ff9500", text: "#000" },
+                        { label: "HARD", bg: "#000000", text: "#fff" },
+                        { label: "ZERO RADIUS", bg: "#ffffff", text: "#000" },
+                        { label: "FUNCTION", bg: "#ff006e", text: "#fff" },
+                        { label: "CONTRAST", bg: "#ccff00", text: "#000" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="px-3 py-1.5 text-xs font-black uppercase tracking-widest border-2 border-black hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-150 ease-out cursor-default"
+                          style={{ backgroundColor: b.bg, color: b.text }}
+                        >
+                          {b.label}
+                        </span>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="border-4 border-black p-5 md:p-7 bg-white">
-                <p className="font-black text-sm uppercase tracking-widest text-black/40 mb-4">Vivid accents</p>
-                <div className="space-y-3">
-                  {[
-                    { bg: "bg-[#ff006e]", label: "PINK #ff006e",   desc: "Primary CTAs, hero accents, danger states" },
-                    { bg: "bg-[#ccff00]", label: "LIME #ccff00",   desc: "Hero backgrounds, highlights, success states" },
-                    { bg: "bg-[#00d9ff]", label: "CYAN #00d9ff",   desc: "Info states, secondary accents, focus rings" },
-                    { bg: "bg-[#ff9500]", label: "ORANGE #ff9500", desc: "Warnings, hot tags, energy states" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-start gap-4">
-                      <div className={`w-10 h-10 shrink-0 border-2 border-black ${item.bg}`} />
-                      <div>
-                        <p className="font-black text-sm">{item.label}</p>
-                        <p className="font-mono text-xs text-black/40">{item.desc}</p>
-                      </div>
+                  </div>
+
+                  {/* Status badges */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-5 border-b-2 border-black pb-2">
+                      Status indicators
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "SHIPPED", icon: "check", bg: "#ccff00", text: "#000" },
+                        { label: "IN PROGRESS", icon: "bolt", bg: "#00d9ff", text: "#000" },
+                        { label: "BLOCKED", icon: "x", bg: "#ff006e", text: "#fff" },
+                        { label: "PLANNED", icon: "terminal", bg: "#000", text: "#fff" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-black uppercase tracking-widest border-2 border-black hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-150 ease-out cursor-default"
+                          style={{ backgroundColor: b.bg, color: b.text }}
+                        >
+                          {b.icon === "check" && <CheckIcon className="w-3 h-3" />}
+                          {b.icon === "bolt" && <BoltIcon className="w-3 h-3" />}
+                          {b.icon === "x" && <XIcon className="w-3 h-3" />}
+                          {b.icon === "terminal" && <TerminalIcon className="w-3 h-3" />}
+                          {b.label}
+                        </span>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Count badges */}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] uppercase text-black/50 mb-5 border-b-2 border-black pb-2">
+                      Count badges
+                    </p>
+                    <div className="flex flex-wrap gap-5 items-center">
+                      {[
+                        { label: "Bugs", count: 12, color: "#ff006e", textColor: "#fff" },
+                        { label: "PRs", count: 4, color: "#00d9ff", textColor: "#000" },
+                        { label: "Issues", count: 28, color: "#ff9500", textColor: "#000" },
+                        { label: "Stars", count: 91, color: "#ccff00", textColor: "#000" },
+                      ].map((b) => (
+                        <div key={b.label} className="flex items-center gap-2">
+                          <span className="font-black text-sm uppercase">{b.label}</span>
+                          <span
+                            className="w-8 h-8 border-2 border-black flex items-center justify-center text-xs font-black hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-150 ease-out cursor-default"
+                            style={{ backgroundColor: b.color, color: b.textColor }}
+                          >
+                            {b.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ============================================================== */}
-      {/* SECTION 6 — TYPOGRAPHY SHOWCASE                                */}
-      {/* ============================================================== */}
-      <section
-        id="typography"
-        ref={typeRef}
-        className="py-20 md:py-28 bg-[#ccff00] border-b-4 border-black"
-        style={{
-          opacity: typeInView ? 1 : 0,
-          transform: typeInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="mb-10 md:mb-14">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-3 py-1.5 border-2 border-black bg-black text-[#ccff00]">
-              Type system
+      {/* ================================================================ */}
+      {/* 5. ANIMATION & INTERACTION RULES                                 */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-black text-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-[#ccff00] block mb-4">
+              // Animation &amp; Interaction Rules
             </span>
-            <h2 className="mt-4 font-black text-4xl md:text-6xl uppercase tracking-tight">
-              Typography
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-white leading-none">
+              FOUR<br />LAWS
             </h2>
-            <p className="mt-2 font-mono text-sm text-black/60 max-w-md">
-              Text as graphic element. font-black for headers — reads like architecture. font-mono for body — honest and technical.
-            </p>
-          </div>
-
-          {/* Type scale rows */}
-          <div className="space-y-0 border-4 border-black overflow-hidden">
-            {FONT_ROWS.map((row, i) => (
-              <RevealBlock key={row.role} delay={i * 0.05}>
-                <div className={`flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8 px-4 md:px-7 py-6 md:py-8 ${i < FONT_ROWS.length - 1 ? "border-b-4 border-black" : ""} group hover:bg-black hover:text-white transition-colors duration-150 ease-out`}>
-                  {/* Role label */}
-                  <div className="md:w-28 shrink-0">
-                    <span className="font-mono text-xs uppercase tracking-widest text-black/40 group-hover:text-white/40">
-                      {row.role}
-                    </span>
-                  </div>
-                  {/* Sample text */}
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <p className={`${row.class} truncate`}>{row.sample}</p>
-                  </div>
-                  {/* Class label */}
-                  <div className="md:w-48 shrink-0">
-                    <span className="font-mono text-xs text-black/30 group-hover:text-white/30 break-all leading-relaxed">
-                      {row.class.split(" ").slice(0, 3).join(" ")}
-                    </span>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Text as graphic element demo */}
-          <RevealBlock delay={0.2}>
-            <div className="mt-10 border-4 border-black bg-black text-white p-6 md:p-10 overflow-hidden relative">
-              <div className="relative z-10">
-                <p className="font-mono text-xs uppercase tracking-widest text-white/40 mb-5">
-                  Text as graphic — uppercase font-black at extreme scale
-                </p>
-                <div className="font-black text-[clamp(80px,18vw,220px)] leading-none tracking-tighter uppercase select-none"
-                  style={{ color: "transparent", WebkitTextStroke: `3px ${currentAccent.hex}` }}
-                >
-                  RAW
-                </div>
-                <div className="font-black text-[clamp(80px,18vw,220px)] leading-none tracking-tighter uppercase select-none -mt-6"
-                  style={{ color: currentAccent.hex }}
-                >
-                  FORM
-                </div>
-              </div>
-              <p className="font-mono text-xs text-white/30 mt-4">
-                In neo-brutalism, type IS layout. Letters define space as structures do.
-              </p>
-            </div>
           </RevealBlock>
-        </div>
-      </section>
 
-      {/* ============================================================== */}
-      {/* SECTION 7 — DESIGN RULES — DO / DON'T                         */}
-      {/* ============================================================== */}
-      <section
-        id="rules"
-        ref={rulesRef}
-        className="py-20 md:py-28 border-b-4 border-black"
-        style={{
-          opacity: rulesInView ? 1 : 0,
-          transform: rulesInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="mb-10 md:mb-14">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.25em] px-3 py-1.5 border-2 border-black">
-              System rules
-            </span>
-            <h2 className="mt-4 font-black text-4xl md:text-6xl uppercase tracking-tight">
-              Do / Don&apos;t
-            </h2>
-            <p className="mt-2 font-mono text-sm text-black/50 max-w-md">
-              Actual brutalist components vs wrong examples side by side. The rules are the design.
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="font-mono text-base md:text-lg text-white/70 max-w-xl leading-relaxed">
+              Neo-Brutalist interactions are defined by four named rules. Each has an interactive demo
+              below. Hover and click to feel the difference.
             </p>
-          </div>
+          </RevealBlock>
 
-          {/* Rules grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
-            {/* DO column */}
-            <RevealBlock delay={0.04}>
-              <div className="border-4 border-black overflow-hidden h-full" style={{ boxShadow: "6px 6px 0px 0px #ccff00" }}>
-                <div className="bg-[#ccff00] border-b-4 border-black px-6 py-4">
-                  <h3 className="font-black text-xl uppercase tracking-wide">DO — Must have</h3>
-                </div>
-                <ul className="divide-y-4 divide-black">
-                  {DO_RULES.map((rule, i) => (
-                    <li key={rule.code} className="flex gap-4 px-5 md:px-6 py-4 md:py-5 group hover:bg-[#ccff00] transition-colors duration-100 ease-out cursor-default">
-                      <span className="font-black text-xs text-black/30 group-hover:text-black shrink-0 w-6 pt-0.5">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div>
-                        <p className="font-mono text-xs md:text-sm text-black mb-1 break-all leading-relaxed">{rule.code}</p>
-                        <p className="font-mono text-xs text-black/50">{rule.desc}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {/* DON'T column */}
+            {/* Rule 1: Physical Crushing */}
             <RevealBlock delay={0.08}>
-              <div className="border-4 border-black overflow-hidden h-full" style={{ boxShadow: "6px 6px 0px 0px #ff006e" }}>
-                <div className="bg-[#ff006e] border-b-4 border-black px-6 py-4">
-                  <h3 className="font-black text-xl uppercase tracking-wide text-white">DON&apos;T — Forbidden</h3>
+              <div className="border-4 border-white bg-black p-6 md:p-8 h-full">
+                <div className="mb-3">
+                  <span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-[#ff006e] text-white border-2 border-white">
+                    Rule 01 &#8212; Physical Crushing
+                  </span>
                 </div>
-                <ul className="divide-y-4 divide-black">
-                  {DONT_RULES.map((rule, i) => (
-                    <li key={rule.code} className="flex gap-4 px-5 md:px-6 py-4 md:py-5 group hover:bg-[#ff006e] hover:text-white transition-colors duration-100 ease-out cursor-default">
-                      <span className="font-black text-xs text-black/30 group-hover:text-white shrink-0 w-6 pt-0.5">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div>
-                        <p className="font-mono text-xs md:text-sm text-black group-hover:text-white mb-1 break-all leading-relaxed">{rule.code}</p>
-                        <p className="font-mono text-xs text-black/50 group-hover:text-white/70">{rule.desc}</p>
+                <p className="font-mono text-xs text-white/60 mb-1 leading-relaxed">
+                  active:translate-x-[Npx] active:translate-y-[Npx] active:shadow-none
+                </p>
+                <p className="font-mono text-xs text-[#ff006e] mb-6 leading-relaxed">
+                  N MUST equal the original shadow pixel value. Complete flattening &#8212; entity crushed into the surface.
+                </p>
+                <div className="flex items-center justify-center py-6 bg-white/5 border-2 border-white/20">
+                  <div className="text-center">
+                    <button
+                      onMouseEnter={() => setCrushHovered(true)}
+                      onMouseLeave={() => setCrushHovered(false)}
+                      className="px-8 py-4 bg-[#ff006e] text-white font-black uppercase tracking-wider text-base border-4 border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-[12px_12px_0px_0px_rgba(255,255,255,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all duration-150 ease-out mb-4 block"
+                    >
+                      CRUSH ME
+                    </button>
+                    <p className="text-[10px] font-mono text-white/40 uppercase">
+                      shadow-8px &#8594; active translate is exactly 8px
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 2: Brutal Snap */}
+            <RevealBlock delay={0.12}>
+              <div className="border-4 border-white bg-black p-6 md:p-8 h-full">
+                <div className="mb-3">
+                  <span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-[#ccff00] text-black border-2 border-white">
+                    Rule 02 &#8212; Brutal Snap
+                  </span>
+                </div>
+                <p className="font-mono text-xs text-white/60 mb-1 leading-relaxed">
+                  hover:bg-[#ffff00] duration-150 ease-out
+                </p>
+                <p className="font-mono text-xs text-[#ccff00] mb-6 leading-relaxed">
+                  Instant hard-cut background switch on hover. NO gradients, NO opacity fade. Sharp instantaneous snap.
+                </p>
+                <div className="flex items-center justify-center py-6 bg-white/5 border-2 border-white/20">
+                  <div className="text-center">
+                    <button
+                      className="px-8 py-4 bg-white text-black font-black uppercase tracking-wider text-base border-4 border-white shadow-[8px_8px_0px_0px_rgba(204,255,0,1)] hover:bg-[#ccff00] hover:shadow-[12px_12px_0px_0px_rgba(204,255,0,1)] hover:-translate-y-1 hover:-translate-x-1 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all duration-150 ease-out mb-4 block"
+                      onMouseEnter={() => setSnapHovered(true)}
+                      onMouseLeave={() => setSnapHovered(false)}
+                    >
+                      {snapHovered ? "SNAPPED!" : "HOVER ME"}
+                    </button>
+                    <p className="text-[10px] font-mono text-white/40 uppercase">
+                      Background snaps from white to acid green &#8212; no fade
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 3: Zero Rounding Easing */}
+            <RevealBlock delay={0.16}>
+              <div className="border-4 border-white bg-black p-6 md:p-8 h-full">
+                <div className="mb-3">
+                  <span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-[#00d9ff] text-black border-2 border-white">
+                    Rule 03 &#8212; Zero Rounding Easing
+                  </span>
+                </div>
+                <p className="font-mono text-xs text-white/60 mb-1 leading-relaxed">
+                  transition-all duration-150 ease-out
+                </p>
+                <p className="font-mono text-xs text-[#00d9ff] mb-6 leading-relaxed">
+                  All transitions: ease-out, 150ms. Brutal collision feel. No spring overshoot, no elastic settling.
+                </p>
+                <div className="py-6 bg-white/5 border-2 border-white/20 px-4">
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-mono text-white/50 uppercase">Brutal ease-out 150ms</span>
+                      <button
+                        className="text-[10px] px-3 py-1.5 border-2 border-[#00d9ff] text-[#00d9ff] font-black uppercase hover:bg-[#00d9ff] hover:text-black transition-colors duration-150"
+                        onClick={() => setRoundingDemo(roundingDemo === "brutal" ? "soft" : "brutal")}
+                      >
+                        Animate
+                      </button>
+                    </div>
+                    <div className="relative h-8 bg-white/10 border-2 border-white/20 overflow-hidden">
+                      <div
+                        className="absolute top-0 bottom-0 left-0 w-8 bg-[#00d9ff] border-r-2 border-white"
+                        style={{
+                          transform: `translateX(${roundingDemo === "soft" ? "120px" : "0px"})`,
+                          transition: "transform 0.8s ease-out",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-mono text-white/50 uppercase">Soft spring (forbidden here)</span>
+                    </div>
+                    <div className="relative h-8 bg-white/10 border-2 border-white/20 overflow-hidden">
+                      <div
+                        className="absolute top-0 bottom-0 left-0 w-8 bg-white/30 border-r-2 border-white/30"
+                        style={{
+                          transform: `translateX(${roundingDemo === "soft" ? "120px" : "0px"})`,
+                          transition: "transform 0.8s cubic-bezier(0.34,1.56,0.64,1)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] font-mono text-white/40 uppercase mt-3 text-center">
+                    Click animate &#8212; notice the snap vs the bounce
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 4: Heavy Focus */}
+            <RevealBlock delay={0.2}>
+              <div className="border-4 border-white bg-black p-6 md:p-8 h-full">
+                <div className="mb-3">
+                  <span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-[#ff9500] text-black border-2 border-white">
+                    Rule 04 &#8212; Heavy Focus
+                  </span>
+                </div>
+                <p className="font-mono text-xs text-white/60 mb-1 leading-relaxed">
+                  hover:shadow-[12px_12px_0px_0px_rgba(255,0,110,1)] hover:bg-[#ffff00]
+                </p>
+                <p className="font-mono text-xs text-[#ff9500] mb-6 leading-relaxed">
+                  Cards on hover: shadow grows AND switches to colored rgba(255,0,110,1). Background snaps. Physical impact.
+                </p>
+                <div className="flex items-center justify-center py-6 bg-white/5 border-2 border-white/20">
+                  <div className="text-center w-full px-4">
+                    <div
+                      className="border-4 border-white bg-white text-black shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-[14px_14px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ccff00] transition-all duration-150 ease-out p-5 cursor-pointer mb-4 text-left"
+                      onMouseEnter={() => setHeavyHovered(true)}
+                      onMouseLeave={() => setHeavyHovered(false)}
+                    >
+                      <div className="font-black text-sm uppercase mb-1">Project Card</div>
+                      <div className="font-mono text-xs text-black/60">
+                        {heavyHovered ? "Shadow is now pink, BG is acid green" : "Hover &#8212; shadow goes pink + BG snaps"}
                       </div>
-                    </li>
+                    </div>
+                    <p className="text-[10px] font-mono text-white/40 uppercase">
+                      Shadow color switches from white to #ff006e on hover
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. APP UI DEMO — Task Manager                                    */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-[#ccff00]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-black block mb-4">
+              // App Demo
+            </span>
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-black leading-none">
+              BRUTAL<br />TASK APP
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="font-mono text-base md:text-lg text-black max-w-xl leading-relaxed">
+              A mock productivity app rendered in full Neo-Brutalist fidelity.
+              Every rule applied in context: thick borders, hard shadows, brutal hover states.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black">
+            {/* Sidebar */}
+            <RevealBlock delay={0.1} className="md:col-span-1">
+              <div className="border-r-4 border-black h-full bg-black text-white">
+                {/* Nav header */}
+                <div className="border-b-4 border-white p-5 md:p-6">
+                  <div className="font-black text-base md:text-lg uppercase tracking-widest text-[#ccff00]">
+                    BRUTALWORK
+                  </div>
+                  <div className="font-mono text-xs text-white/50 mt-1">v1.0.0 &#8212; no softness</div>
+                </div>
+                {/* Nav items */}
+                <nav className="p-0">
+                  {[
+                    { label: "INBOX", count: 4, active: true, color: "#ff006e" },
+                    { label: "TODAY", count: 2, active: false, color: "#ccff00" },
+                    { label: "UPCOMING", count: 7, active: false, color: "#00d9ff" },
+                    { label: "ARCHIVE", count: 0, active: false, color: "#ff9500" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className={`flex items-center justify-between px-5 py-4 border-b-2 border-white/20 cursor-pointer transition-colors duration-150 ${item.active ? "bg-white/10" : "hover:bg-white/5"}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-2 h-2 border-2"
+                          style={{ borderColor: item.color, backgroundColor: item.active ? item.color : "transparent" }}
+                        />
+                        <span className="font-black text-xs uppercase tracking-widest">{item.label}</span>
+                      </div>
+                      {item.count > 0 && (
+                        <span
+                          className="w-6 h-6 border-2 border-white flex items-center justify-center text-[10px] font-black"
+                          style={{ backgroundColor: item.color, color: item.color === "#ccff00" ? "#000" : "#fff" }}
+                        >
+                          {item.count}
+                        </span>
+                      )}
+                    </div>
                   ))}
-                </ul>
+                </nav>
+                {/* User section */}
+                <div className="p-5 border-t-4 border-white/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 border-2 border-white bg-[#ff006e] flex items-center justify-center font-black text-xs text-white">
+                      JD
+                    </div>
+                    <div>
+                      <div className="font-black text-xs uppercase">Jane Doe</div>
+                      <div className="font-mono text-[10px] text-white/40">Pro Plan</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Main content */}
+            <RevealBlock delay={0.15} className="md:col-span-2">
+              <div className="bg-white h-full">
+                {/* Toolbar */}
+                <div className="border-b-4 border-black p-4 md:p-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-black text-lg md:text-xl uppercase">INBOX</h3>
+                    <p className="font-mono text-xs text-black/50">{todoItems.filter((t) => !t.done).length} tasks remaining</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setTodoItems((prev) => [
+                        { text: `New task #${prev.length + 1}`, done: false },
+                        ...prev,
+                      ]);
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-3 bg-[#ff006e] text-white font-black uppercase tracking-wider text-xs border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out"
+                  >
+                    <PlusIcon className="w-3 h-3 md:w-4 md:h-4" />
+                    Add Task
+                  </button>
+                </div>
+
+                {/* Todo list */}
+                <div className="divide-y-4 divide-black">
+                  {todoItems.map((item, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-4 px-4 py-4 md:px-6 md:py-5 group cursor-pointer transition-colors duration-150 ${item.done ? "bg-black/5" : "hover:bg-[#ccff00]/30"}`}
+                      onClick={() => toggleTodo(i)}
+                    >
+                      <div
+                        className="w-5 h-5 md:w-6 md:h-6 border-4 border-black shrink-0 flex items-center justify-center transition-colors duration-150"
+                        style={{ backgroundColor: item.done ? "#ff006e" : "transparent" }}
+                      >
+                        {item.done && <CheckIcon className="w-3 h-3 text-white" />}
+                      </div>
+                      <span
+                        className={`font-mono text-sm md:text-base flex-1 transition-all duration-150 ${item.done ? "line-through text-black/30" : "text-black"}`}
+                      >
+                        {item.text}
+                      </span>
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTodoItems((prev) => prev.filter((_, j) => j !== i));
+                        }}
+                        className="inline-block cursor-pointer"
+                      >
+                        <XIcon className="w-4 h-4 text-black/20 group-hover:text-[#ff006e] transition-colors duration-150 shrink-0" />
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer stats */}
+                <div className="border-t-4 border-black grid grid-cols-3 divide-x-4 divide-black">
+                  {[
+                    { label: "Total", value: todoItems.length, accent: "#000" },
+                    { label: "Done", value: todoItems.filter((t) => t.done).length, accent: "#ccff00" },
+                    { label: "Left", value: todoItems.filter((t) => !t.done).length, accent: "#ff006e" },
+                  ].map((stat) => (
+                    <div key={stat.label} className="px-4 py-4 md:px-6 md:py-5 text-center">
+                      <div
+                        className="text-2xl md:text-3xl font-black"
+                        style={{ color: stat.accent === "#000" ? "black" : stat.accent }}
+                      >
+                        {stat.value}
+                      </div>
+                      <div className="font-mono text-[10px] uppercase text-black/50">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </RevealBlock>
           </div>
+        </div>
+      </section>
 
-          {/* Live comparison: right vs wrong */}
-          <RevealBlock delay={0.16}>
-            <div className="border-4 border-black p-5 md:p-8 bg-white">
-              <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-6">
-                Live comparison — correct vs incorrect implementation
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-
-                {/* Correct */}
-                <div>
-                  <p className="font-black text-sm uppercase text-[#ccff00] bg-black px-3 py-1 inline-block mb-4">
-                    Correct
-                  </p>
-                  <div className="space-y-4">
-                    {/* Correct button */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Button</p>
-                      <button
-                        type="button"
-                        className="font-black text-sm uppercase tracking-wide px-5 py-2.5 bg-[#ff006e] text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[9px_9px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 ease-out"
-                      >
-                        Get Started
-                      </button>
-                    </div>
-                    {/* Correct card */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Card</p>
-                      <div className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 bg-white group hover:bg-[#ccff00] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-150 ease-out">
-                        <p className="font-black text-base uppercase">Hard Edge Card</p>
-                        <p className="font-mono text-xs text-black/50 mt-1">border-4 border-black, shadow-[4px_4px_0px_0px], rounded-none</p>
-                      </div>
-                    </div>
-                    {/* Correct input */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Input</p>
-                      <input
-                        type="text"
-                        readOnly
-                        defaultValue="Correct input field"
-                        className="w-full px-4 py-2.5 border-4 border-black font-mono text-sm bg-white focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Wrong */}
-                <div>
-                  <p className="font-black text-sm uppercase text-white bg-[#ff006e] px-3 py-1 inline-block mb-4">
-                    Wrong
-                  </p>
-                  <div className="space-y-4">
-                    {/* Wrong button — rounded, soft shadow, gradient */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Button</p>
-                      <button
-                        type="button"
-                        className="font-semibold text-sm px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg shadow-lg hover:opacity-80 transition-opacity duration-300"
-                      >
-                        Get Started
-                      </button>
-                      <p className="font-mono text-xs text-[#ff006e] mt-1">rounded-lg, shadow-lg, gradient, opacity hover</p>
-                    </div>
-                    {/* Wrong card */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Card</p>
-                      <div className="rounded-xl shadow-xl p-4 bg-white border border-gray-200">
-                        <p className="font-semibold text-base text-gray-700">Soft Card</p>
-                        <p className="text-xs text-gray-400 mt-1">rounded-xl, shadow-xl, border-gray-200 — all forbidden</p>
-                      </div>
-                    </div>
-                    {/* Wrong input */}
-                    <div>
-                      <p className="font-mono text-xs text-black/40 mb-2">Input</p>
-                      <input
-                        type="text"
-                        readOnly
-                        defaultValue="Wrong input field"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                      />
-                      <p className="font-mono text-xs text-[#ff006e] mt-1">rounded-md, border-gray, focus:ring blur — all forbidden</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* ================================================================ */}
+      {/* 7. TYPOGRAPHY SYSTEM                                             */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-[#ff9500] block mb-4">
+              // Typography
+            </span>
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-black leading-none">
+              TYPE<br />SYSTEM
+            </h2>
           </RevealBlock>
 
-          {/* Animation spec summary */}
-          <RevealBlock delay={0.22}>
-            <div
-              className="mt-8 border-4 border-black bg-black text-white p-5 md:p-7"
-              style={{ boxShadow: `6px 6px 0px 0px ${currentAccent.hex}` }}
-            >
-              <p className="font-black text-sm uppercase tracking-widest mb-5" style={{ color: currentAccent.hex }}>
-                Animation taxonomy
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="font-mono text-base md:text-lg text-black max-w-xl leading-relaxed">
+              font-black for headings. font-mono for body. No serif. No light weights.
+              Tracking is tight for headings, wide for labels.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-4 border-black mb-8">
+            {/* Font specimens */}
+            <RevealBlock delay={0.1} className="border-r-4 border-black p-6 md:p-10">
+              <p className="text-xs font-black uppercase tracking-widest text-black/40 mb-6 border-b-2 border-black pb-2">
+                Heading &#8212; font-black
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="space-y-3">
                 {[
-                  {
-                    name: "Physical Crushing",
-                    rule: "active: translate = shadow offset, shadow-none",
-                    detail: "6px shadow → active:translate-x-[6px] translate-y-[6px]. Never less than shadow value.",
-                  },
-                  {
-                    name: "Brutal Snap",
-                    rule: "hover: instant hard bg color switch",
-                    detail: "hover:bg-[#ccff00] duration-150 ease-out. No opacity transition. No gradual fade.",
-                  },
-                  {
-                    name: "Heavy Focus",
-                    rule: "card hover: shadow grows + color changes",
-                    detail: "shadow-[4px] → shadow-[8px] + colored shadow. Background snaps. Hard cut.",
-                  },
-                ].map((anim) => (
-                  <div key={anim.name} className="border-2 border-white/20 p-4">
-                    <p className="font-black text-sm mb-2" style={{ color: currentAccent.hex }}>{anim.name}</p>
-                    <p className="font-mono text-xs text-white/70 mb-2">{anim.rule}</p>
-                    <p className="font-mono text-xs text-white/40 leading-relaxed">{anim.detail}</p>
+                  { sizeClass: "text-5xl md:text-6xl", label: "H1 &#8212; 60px", text: "BRUTAL" },
+                  { sizeClass: "text-3xl md:text-4xl", label: "H2 &#8212; 36px", text: "DESIGN" },
+                  { sizeClass: "text-2xl md:text-3xl", label: "H3 &#8212; 28px", text: "Systems" },
+                  { sizeClass: "text-xl md:text-2xl", label: "H4 &#8212; 24px", text: "Components" },
+                  { sizeClass: "text-lg", label: "H5 &#8212; 18px", text: "Interactive" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-baseline gap-4">
+                    <span className={`font-black uppercase leading-none tracking-tight ${item.sizeClass}`}>
+                      {item.text}
+                    </span>
+                    <span
+                      className="font-mono text-[10px] text-black/30 shrink-0"
+                      dangerouslySetInnerHTML={{ __html: item.label }}
+                    />
                   </div>
                 ))}
               </div>
+            </RevealBlock>
+
+            {/* Mono specimens */}
+            <RevealBlock delay={0.12} className="p-6 md:p-10">
+              <p className="text-xs font-black uppercase tracking-widest text-black/40 mb-6 border-b-2 border-black pb-2">
+                Body &#8212; font-mono
+              </p>
+              <div className="space-y-5">
+                <div>
+                  <p className="font-mono text-xl leading-relaxed text-black">
+                    Boldly built on raw function. Every pixel serves purpose.
+                  </p>
+                  <span className="font-mono text-[10px] text-black/30">text-xl / leading-relaxed</span>
+                </div>
+                <div>
+                  <p className="font-mono text-base leading-relaxed text-black">
+                    Neo-Brutalism refuses the ornamental. The border IS the structure.
+                    The shadow IS the depth. Nothing is decorative.
+                  </p>
+                  <span className="font-mono text-[10px] text-black/30">text-base / leading-relaxed</span>
+                </div>
+                <div>
+                  <p className="font-mono text-sm leading-relaxed text-black/70">
+                    Inspired by Bauhaus functionalism and architectural brutalism.
+                    Form follows function absolutely.
+                  </p>
+                  <span className="font-mono text-[10px] text-black/30">text-sm / muted</span>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <span className="tracking-[0.3em] text-[10px] font-black">UPPERCASE LABEL</span>
+                  <span className="font-mono bg-black text-white px-2 py-0.5 text-xs">Inline code</span>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+
+          {/* Counter interactive demo */}
+          <RevealBlock delay={0.2}>
+            <div className="border-4 border-black p-6 md:p-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <h3 className="font-black text-xl uppercase mb-2">Interactive Counter</h3>
+                <p className="font-mono text-sm text-black/60 leading-relaxed">
+                  Physical Crushing on the decrement button. Brutal Snap color on increment.
+                  Zero easing &#8212; instant feedback.
+                </p>
+              </div>
+              <div className="flex items-center gap-0 border-4 border-black">
+                <button
+                  onClick={() => setCounterValue((v) => v - 1)}
+                  className="w-12 h-12 md:w-16 md:h-16 bg-white text-black font-black text-2xl border-r-4 border-black hover:bg-[#ff006e] hover:text-white active:scale-90 transition-all duration-150 ease-out flex items-center justify-center"
+                >
+                  &#8722;
+                </button>
+                <div
+                  className="w-16 h-12 md:w-24 md:h-16 flex items-center justify-center font-black text-2xl md:text-3xl transition-colors duration-150"
+                  style={{
+                    backgroundColor: counterValue > 0 ? "#ccff00" : counterValue < 0 ? "#ff006e" : "#fff",
+                    color: counterValue < 0 ? "#fff" : "#000",
+                  }}
+                >
+                  {counterValue}
+                </div>
+                <button
+                  onClick={() => setCounterValue((v) => v + 1)}
+                  className="w-12 h-12 md:w-16 md:h-16 bg-white text-black font-black text-2xl border-l-4 border-black hover:bg-[#ccff00] hover:text-black active:scale-90 transition-all duration-150 ease-out flex items-center justify-center"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ============================================================== */}
-      {/* SECTION 8 — FOOTER                                             */}
-      {/* ============================================================== */}
-      <footer
-        ref={footerRef}
-        className="bg-black border-t-4 border-black"
-        style={{
-          opacity: footerInView ? 1 : 0,
-          transform: footerInView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-        }}
-      >
-        {/* Accent bar */}
+      {/* ================================================================ */}
+      {/* 8. DESIGN RULES — DO / DON'T                                     */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-white">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-[#ff006e] block mb-4">
+              // Philosophy
+            </span>
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-black leading-none">
+              DESIGN<br />RULES
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="font-mono text-base md:text-lg text-black max-w-xl leading-relaxed">
+              Three core principles from architectural Brutalism applied to the web.
+              Honesty of structure. Primacy of function. Refusal of ornament.
+            </p>
+          </RevealBlock>
+
+          {/* Principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black mb-8">
+            {[
+              {
+                number: "01",
+                title: "HONESTY",
+                desc: "Do not hide structure. The border shows the boundary. The shadow shows the depth. No faking. Every visual element must communicate something real.",
+                accent: "#ff006e",
+              },
+              {
+                number: "02",
+                title: "FUNCTION",
+                desc: "Every pixel earns its place. If it doesn't communicate information or aid interaction, remove it. No decorative gradients. No cosmetic shadows.",
+                accent: "#ccff00",
+              },
+              {
+                number: "03",
+                title: "CONTRAST",
+                desc: "Maximum legibility through maximum contrast. Black on white. White on black. Neon accents on dark fields. Nothing murky. Nothing ambiguous.",
+                accent: "#00d9ff",
+              },
+            ].map((p, i) => (
+              <RevealBlock key={p.number} delay={i * 0.08}>
+                <div className="border-r-4 border-black last:border-r-0 p-6 md:p-8 hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-150 ease-out cursor-default bg-white group">
+                  <div
+                    className="font-black text-5xl md:text-6xl leading-none mb-4 group-hover:tracking-wider transition-all duration-150"
+                    style={{ color: p.accent }}
+                  >
+                    {p.number}
+                  </div>
+                  <h3 className="font-black text-xl md:text-2xl uppercase tracking-tight mb-4">{p.title}</h3>
+                  <p className="font-mono text-sm text-black/70 leading-relaxed">{p.desc}</p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Do / Don't */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-4 border-black">
+            <RevealBlock delay={0.1} className="border-r-4 border-black p-6 md:p-10">
+              <div className="flex items-center gap-3 mb-6 border-b-4 border-black pb-4">
+                <div className="w-8 h-8 bg-[#ccff00] border-4 border-black flex items-center justify-center">
+                  <CheckIcon className="w-4 h-4 text-black" />
+                </div>
+                <h3 className="font-black text-lg uppercase tracking-widest text-black">DO</h3>
+              </div>
+              <ul className="space-y-3">
+                {doItems.map((rule) => (
+                  <li key={rule} className="flex items-start gap-3 font-mono text-sm text-black leading-relaxed">
+                    <span className="mt-1.5 w-2 h-2 bg-[#ccff00] border-2 border-black shrink-0" />
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </RevealBlock>
+
+            <RevealBlock delay={0.15} className="p-6 md:p-10">
+              <div className="flex items-center gap-3 mb-6 border-b-4 border-black pb-4">
+                <div className="w-8 h-8 bg-[#ff006e] border-4 border-black flex items-center justify-center">
+                  <XIcon className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="font-black text-lg uppercase tracking-widest text-black">DON&apos;T</h3>
+              </div>
+              <ul className="space-y-3">
+                {dontItems.map((rule) => (
+                  <li key={rule} className="flex items-start gap-3 font-mono text-sm text-black leading-relaxed">
+                    <span className="mt-1.5 w-2 h-2 bg-[#ff006e] border-2 border-black shrink-0" />
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 9. FEATURES GRID                                                 */}
+      {/* ================================================================ */}
+      <section className="py-16 md:py-24 px-4 md:px-8 border-b-4 border-black bg-[#ff006e]">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-2">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-white block mb-4">
+              // Why Neo-Brutalism
+            </span>
+            <h2 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-white leading-none">
+              BUILT<br />DIFFERENT
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="font-mono text-base md:text-lg text-white/80 max-w-xl leading-relaxed">
+              Six reasons why the most memorable digital products embrace raw, unapologetic design.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0 border-4 border-black border-b-0">
+            {[
+              {
+                icon: <BoltIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "INSTANTLY RECOGNIZABLE",
+                desc: "Neo-Brutalism is unmistakable. Users remember it because it refuses to blend in.",
+                accent: "#ccff00",
+              },
+              {
+                icon: <GridIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "STRUCTURE EXPOSED",
+                desc: "Grid lines, borders, and shadows reveal the underlying system. Nothing is hidden.",
+                accent: "#00d9ff",
+              },
+              {
+                icon: <TerminalIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "DEVELOPER NATIVE",
+                desc: "No blur, no gradients, no filters. Pure CSS properties. Brutal to build, fast to ship.",
+                accent: "#ff9500",
+              },
+              {
+                icon: <StarIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "HIGH CONTRAST",
+                desc: "Maximum accessibility through maximum contrast. WCAG AAA by default.",
+                accent: "#ccff00",
+              },
+              {
+                icon: <ArrowRightIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "HONEST AFFORDANCE",
+                desc: "Buttons look like buttons. Cards look like cards. No skeuomorphic confusion.",
+                accent: "#00d9ff",
+              },
+              {
+                icon: <CheckIcon className="w-6 h-6 md:w-8 md:h-8" />,
+                title: "ZERO DECORATION",
+                desc: "No element exists for aesthetics alone. Every visual choice is functional.",
+                accent: "#ff9500",
+              },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.06}>
+                <div className="border-b-4 border-r-4 border-black p-6 md:p-8 bg-white group hover:bg-black transition-colors duration-150 ease-out cursor-default">
+                  <div
+                    className="w-12 h-12 md:w-14 md:h-14 border-4 border-black flex items-center justify-center mb-5"
+                    style={{ backgroundColor: feature.accent, color: "#000" }}
+                  >
+                    {feature.icon}
+                  </div>
+                  <h4 className="font-black text-sm md:text-base uppercase tracking-tight mb-3 group-hover:text-white transition-colors duration-150">
+                    {feature.title}
+                  </h4>
+                  <p className="font-mono text-xs md:text-sm text-black/70 leading-relaxed group-hover:text-white/60 transition-colors duration-150">
+                    {feature.desc}
+                  </p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* FOOTER                                                           */}
+      {/* ================================================================ */}
+      <footer className="bg-black text-white border-t-0">
+        {/* Top color stripe */}
         <div className="flex h-3">
-          {ACCENT_KEYS.map((key) => (
-            <div key={key} className={`flex-1 ${ACCENTS[key].bg}`} />
+          {["#ff006e", "#ccff00", "#00d9ff", "#ff9500"].map((color) => (
+            <div key={color} className="flex-1" style={{ backgroundColor: color }} />
           ))}
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20">
+        {/* Notification toast */}
+        {notifVisible && (
+          <div className="fixed bottom-6 right-6 z-50 bg-[#ccff00] text-black border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-6 py-4 font-black uppercase tracking-wider text-sm brutal-stamp-anim flex items-center gap-3">
+            <CheckIcon className="w-5 h-5 text-black" />
+            FORM SUBMITTED
+          </div>
+        )}
 
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-10 md:pb-14">
           {/* Top row */}
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-12 md:mb-16">
-
-            {/* Brand block */}
-            <div>
-              <div
-                className="inline-block border-4 border-white px-4 py-2 mb-4"
-                style={{ boxShadow: `6px 6px 0px 0px ${currentAccent.hex}` }}
-              >
-                <span className="font-black text-white text-lg uppercase tracking-tighter">
-                  NEO-BRUTALIST
-                </span>
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12 border-b-4 border-white/20 pb-12">
+            {/* Brand */}
+            <div className="flex flex-col gap-5 max-w-sm">
+              <div className="flex items-center gap-0 border-2 border-white">
+                <div className="bg-white text-black font-black text-base px-3 py-2 uppercase tracking-widest">NEO</div>
+                <div className="bg-[#ff006e] text-white font-black text-base px-3 py-2 uppercase tracking-widest">BRUTAL</div>
               </div>
-              <p className="font-mono text-sm text-white/40 max-w-xs leading-relaxed mt-2">
-                Raw. Honest. Unadorned. No rounded corners. No gradients.
-                No apologies. Just structure.
+              <p className="font-mono text-sm text-white/60 leading-relaxed">
+                Raw, unapologetic design. Black borders, hard shadows,
+                zero radius. Inspired by architectural brutalism.
               </p>
-              <p className="font-mono text-xs text-white/20 mt-3 uppercase tracking-widest">
-                新野兽派 — 真实 · 直接 · 诚实
-              </p>
-            </div>
-
-            {/* Color swatches */}
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-white/30 mb-4">Accent palette</p>
-              <div className="flex gap-3">
-                {ACCENT_KEYS.map((key) => (
+              <div className="flex gap-2">
+                {["#ff006e", "#ccff00", "#00d9ff", "#ff9500"].map((color) => (
                   <div
-                    key={key}
-                    className={`w-12 h-12 md:w-16 md:h-16 border-4 border-white ${ACCENTS[key].bg} cursor-pointer hover:-translate-y-1 transition-transform duration-150`}
-                    onClick={() => setAccent(key)}
-                    title={`Switch to ${ACCENTS[key].label}`}
+                    key={color}
+                    className="w-5 h-5 border-2 border-white hover:-translate-y-0.5 hover:scale-110 transition-transform duration-150 cursor-default"
+                    style={{ backgroundColor: color }}
                   />
                 ))}
               </div>
             </div>
 
             {/* Links */}
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-white/30 mb-4">Navigation</p>
-              <div className="flex flex-col gap-2">
-                {[
-                  { label: "← All Styles", href: "/styles" },
-                  { label: "Neo-Brutalist Docs", href: "/styles/neo-brutalist" },
-                  { label: "Components", href: "#components" },
-                  { label: "Variants", href: "#variants" },
-                  { label: "Typography", href: "#typography" },
-                  { label: "Rules", href: "#rules" },
-                ].map((link) => (
-                  link.href.startsWith("/") ? (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="font-mono text-sm text-white/50 hover:text-white hover:bg-white hover:text-black px-2 py-0.5 transition-colors duration-150 ease-out w-fit"
-                    >
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      className="font-mono text-sm text-white/50 hover:text-white hover:bg-white hover:text-black px-2 py-0.5 transition-colors duration-150 ease-out w-fit"
-                    >
-                      {link.label}
-                    </a>
-                  )
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-black tracking-[0.2em] uppercase text-white/40">Style</span>
+                <Link href="/styles/neo-brutalist" className="font-mono text-white/70 hover:text-[#ff006e] transition-colors duration-150">
+                  Documentation
+                </Link>
+                <Link href="/styles/neo-brutalist/showcase" className="font-mono text-white/70 hover:text-[#ff006e] transition-colors duration-150">
+                  Showcase
+                </Link>
+                <Link href="/styles/neo-brutalist/cover" className="font-mono text-white/70 hover:text-[#ff006e] transition-colors duration-150">
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-black tracking-[0.2em] uppercase text-white/40">StyleKit</span>
+                <Link href="/" className="font-mono text-white/70 hover:text-[#ccff00] transition-colors duration-150">
+                  Home
+                </Link>
+                <Link href="/styles" className="font-mono text-white/70 hover:text-[#ccff00] transition-colors duration-150">
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-black tracking-[0.2em] uppercase text-white/40">Palette</span>
+                {accentColors.slice(0, 4).map((s) => (
+                  <span key={s.name} className="flex items-center gap-2 font-mono text-xs text-white/50">
+                    <span className="w-3 h-3 border border-white/30 inline-block" style={{ backgroundColor: s.hex }} />
+                    {s.name}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Feature summary chips */}
-          <div className="border-t-4 border-white/10 pt-8 mb-8">
-            <p className="font-mono text-xs uppercase tracking-widest text-white/30 mb-4">Design principles</p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "rounded-none",
-                "border-4 border-black",
-                "shadow-[6px_6px_0px]",
-                "font-black uppercase",
-                "font-mono body",
-                "Brutal Snap hover",
-                "Physical Crushing active",
-                "Heavy Focus card",
-                "No gradients",
-                "No blur",
-                "High contrast",
-                "Hard cuts only",
-              ].map((chip) => (
-                <span
-                  key={chip}
-                  className="inline-block font-mono text-xs px-3 py-1.5 border-2 border-white/20 text-white/50"
-                >
-                  {chip}
-                </span>
-              ))}
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 font-mono text-sm text-white/40">
+              <TerminalIcon className="w-4 h-4" />
+              <span>Built with zero softness for StyleKit</span>
             </div>
-          </div>
-
-          {/* Bottom strip */}
-          <div className="border-t-4 border-white/10 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <p className="font-mono text-xs text-white/20 uppercase tracking-widest">
-              StyleKit — Neo-Brutalist Showcase — 新野兽派
-            </p>
-            <div className="flex items-center gap-3">
-              {ACCENT_KEYS.map((key) => (
-                <div
-                  key={key}
-                  className={`w-4 h-4 border-2 border-white/30 ${ACCENTS[key].bg}`}
-                />
-              ))}
-            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-3 bg-white text-black font-black uppercase tracking-wider text-xs border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-150 ease-out"
+            >
+              <ArrowRightIcon className="w-4 h-4 rotate-180" />
+              Back to StyleKit
+            </Link>
           </div>
         </div>
       </footer>

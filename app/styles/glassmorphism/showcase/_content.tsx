@@ -1,15 +1,16 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline Hooks                                                        */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -25,6 +26,7 @@ function useInView(options = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -54,1361 +56,1445 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Data                                                                */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-const glassCards = [
-  {
-    type: "Profile",
-    name: "Aria Chen",
-    role: "Product Designer",
-    stat1: "248",
-    stat1Label: "Projects",
-    stat2: "4.9",
-    stat2Label: "Rating",
-    accent: "#667eea",
-    tag: "Available",
-  },
-  {
-    type: "Stats",
-    name: "Weekly Overview",
-    role: "Dashboard Metrics",
-    stat1: "12.4k",
-    stat1Label: "Active Users",
-    stat2: "98.2%",
-    stat2Label: "Uptime",
-    accent: "#f093fb",
-    tag: "Live",
-  },
-  {
-    type: "Notification",
-    name: "Design Review",
-    role: "Tomorrow at 10:00 AM",
-    stat1: "3",
-    stat1Label: "Attendees",
-    stat2: "45m",
-    stat2Label: "Duration",
-    accent: "#f5576c",
-    tag: "Upcoming",
-  },
+function DiamondIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2L2 9l10 13L22 9z" />
+    </svg>
+  );
+}
+
+function LayersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+    </svg>
+  );
+}
+
+function BlurIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" opacity="0.2" />
+      <circle cx="12" cy="12" r="6" opacity="0.4" />
+      <circle cx="12" cy="12" r="3" opacity="0.8" />
+    </svg>
+  );
+}
+
+function GlintIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 0l1.2 7.8L21 12l-7.8 1.2L12 21l-1.2-7.8L3 12l7.8-1.2z" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const paletteSwatches = [
+  { name: "Glass White", hex: "rgba(255,255,255,0.25)", display: "#FFFFFF40", label: "Primary glass layer" },
+  { name: "Subtle Glass", hex: "rgba(255,255,255,0.18)", display: "#FFFFFF2E", label: "Secondary glass layer" },
+  { name: "Violet Depth", hex: "#667eea", display: "#667eea", label: "Accent gradient start" },
+  { name: "Royal Purple", hex: "#764ba2", display: "#764ba2", label: "Accent gradient mid" },
+  { name: "Pink Mist", hex: "#f093fb", display: "#f093fb", label: "Accent gradient end" },
+  { name: "Crimson Glow", hex: "#f5576c", display: "#f5576c", label: "Highlight accent" },
 ];
 
-const colorOrbs = [
-  { name: "Indigo", hex: "#667eea", gradient: "from-[#667eea] to-[#764ba2]" },
-  { name: "Purple", hex: "#764ba2", gradient: "from-[#764ba2] to-[#667eea]" },
-  { name: "Pink", hex: "#f093fb", gradient: "from-[#f093fb] to-[#f5576c]" },
-  { name: "Rose", hex: "#f5576c", gradient: "from-[#f5576c] to-[#f093fb]" },
-  { name: "Violet", hex: "#a78bfa", gradient: "from-[#a78bfa] to-[#667eea]" },
-  { name: "Fuchsia", hex: "#e879f9", gradient: "from-[#e879f9] to-[#764ba2]" },
+const gradientPresets = [
+  { name: "Purple Pink", from: "#667eea", via: "#764ba2", to: "#f093fb" },
+  { name: "Blue Purple", from: "#4facfe", via: "#6a85f5", to: "#764ba2" },
+  { name: "Cyan Blue", from: "#43e97b", via: "#38f9d7", to: "#667eea" },
+  { name: "Sunset", from: "#f5576c", via: "#f093fb", to: "#f5576c" },
 ];
 
 const layerData = [
   {
     id: 0,
     label: "Background Gradient",
-    description:
-      "The colorful gradient that glass will blur and distort. Without this layer, there is nothing to show through the glass. The richer the gradient, the more alive the glass looks.",
+    description: "Rich multi-stop gradient forms the colorful foundation. Without this layer, there is nothing for the blur to sample — the glass effect collapses.",
     code: "bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]",
   },
   {
     id: 1,
     label: "Blur Layer",
-    description:
-      "backdrop-blur-xl freezes a blurred snapshot of the gradient behind the panel. This is the frosted effect. Without backdrop-blur, you just have a semi-transparent tint, not true glass.",
+    description: "backdrop-blur-xl creates the frosted snapshot of the gradient beneath the panel surface. This is the defining characteristic — without it, you have tint, not glass.",
     code: "backdrop-blur-xl backdrop-saturate-150",
   },
   {
     id: 2,
     label: "Glass Panel",
-    description:
-      "Semi-transparent white fill (bg-white/20) with a thin white border at 30% opacity creates the glass surface. The border acts as the bright edge of the glass pane.",
+    description: "Semi-transparent white fill (bg-white/20) with a luminous border at 30% opacity creates the glass surface. The border simulates the bright edge of a pane of glass.",
     code: "bg-white/20 border border-white/30 rounded-2xl",
   },
   {
     id: 3,
-    label: "Content",
-    description:
-      "White or near-white text sits on top of the glass. High contrast against both the blurred background and the glass tint. Use text-white for primary, text-white/70 for secondary.",
-    code: "text-white text-white/80 text-white/60",
+    label: "Content Layer",
+    description: "White and near-white text with varying opacity levels creates visual hierarchy. High contrast ensures legibility on the blurred frosted surface.",
+    code: "text-white / text-white/80 / text-white/60",
   },
 ];
 
-const doRules = [
-  "Always place colorful gradients behind glass elements",
-  "Use bg-white/20 with backdrop-blur-xl for the core glass effect",
-  "Add border-white/30 to create the glass edge highlight",
-  "Keep text white or near-white on frosted surfaces",
-  "Layer multiple glass panels at different opacities for depth",
-  "Use rounded-2xl or rounded-3xl for modern glass shapes",
-];
-
-const dontRules = [
-  "Never use glass on a flat solid-color background — it needs gradient",
-  "Never use dark or muted text inside glass panels",
-  "Never stack too many blur layers — performance degrades fast",
-  "Never omit the border — borderless glass looks flat and lifeless",
-  "Never use opacity-100 fills — the whole point is transparency",
-  "Never skip the gradient orbs — they make the glass glow with color",
-];
-
-const featureCards = [
-  {
-    title: "Frosted Effect",
-    description:
-      "backdrop-blur-xl creates the signature frosted glass look by blurring the gradient layers behind the panel surface. The result is a translucent shimmer.",
-    accent: "#667eea",
-    iconPath:
-      "M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15M14.25 3.104c.251.023.501.05.75.082M19.8 15l-1.56.975A2.25 2.25 0 0116.3 16.5H7.7a2.25 2.25 0 01-1.94-1.425L4.2 15M19.8 15h.95a2.25 2.25 0 012.25 2.25v.75a2.25 2.25 0 01-2.25 2.25H3.25A2.25 2.25 0 011 18v-.75A2.25 2.25 0 013.25 15h.95",
-  },
-  {
-    title: "Gradient Backdrop",
-    description:
-      "Rich multi-stop gradients using indigo, purple, and pink create the vibrant backdrop that makes glass glow with color and visual energy.",
-    accent: "#764ba2",
-    iconPath:
-      "M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z",
-  },
-  {
-    title: "Layered Depth",
-    description:
-      "Multiple glass panels stacked at varying opacities create a sense of physical depth — foreground, midground, background — that makes the UI feel three-dimensional.",
-    accent: "#f093fb",
-    iconPath:
-      "M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3",
-  },
-  {
-    title: "Smooth Blur",
-    description:
-      "blur-3xl on background orbs combined with backdrop-blur-xl on panels ensures a seamless, soft frosted transition with no harsh edges between glass and backdrop.",
-    accent: "#f5576c",
-    iconPath:
-      "M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z",
-  },
-];
+type ComponentTab = "buttons" | "cards" | "inputs" | "nav";
 
 /* ------------------------------------------------------------------ */
-/*  Main Component                                                      */
+/*  Main export                                                        */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+  const [activeBg, setActiveBg] = useState(0);
   const [activeLayer, setActiveLayer] = useState(0);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
-  const [glassIntensity, setGlassIntensity] = useState<1 | 2 | 3>(2);
+
+  // aiRule 1: Optical Glint — trigger sweep manually
+  const [glintActive, setGlintActive] = useState(false);
+  const [glintTriggered, setGlintTriggered] = useState(false);
+
+  // aiRule 2: Floating Depth — compare cards with float toggle
+  const [floatEnabled, setFloatEnabled] = useState(true);
+  const [hoveredFloat, setHoveredFloat] = useState<number | null>(null);
+
+  // aiRule 3: Edge Illumination — toggle border brightness levels
+  const [edgeLevel, setEdgeLevel] = useState<"low" | "mid" | "high">("low");
+
+  // aiRule 4: Smooth Translucency — live opacity slider
+  const [glassOpacity, setGlassOpacity] = useState(20);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const intensityConfig = {
-    1: {
-      bg: "bg-white/10",
-      border: "border-white/20",
-      blur: "backdrop-blur-md",
-      label: "Light",
-      desc: "bg-white/10 backdrop-blur-md border-white/20",
-    },
-    2: {
-      bg: "bg-white/20",
-      border: "border-white/30",
-      blur: "backdrop-blur-xl",
-      label: "Medium",
-      desc: "bg-white/20 backdrop-blur-xl border-white/30",
-    },
-    3: {
-      bg: "bg-white/30",
-      border: "border-white/40",
-      blur: "backdrop-blur-2xl",
-      label: "Heavy",
-      desc: "bg-white/30 backdrop-blur-2xl border-white/40",
-    },
-  } as const;
+  function triggerGlint() {
+    if (glintActive) return;
+    setGlintActive(true);
+    setGlintTriggered(true);
+    setTimeout(() => setGlintActive(false), 900);
+  }
 
-  const currentIntensity = intensityConfig[glassIntensity];
+  const edgeBorderOpacity = { low: "rgba(255,255,255,0.2)", mid: "rgba(255,255,255,0.45)", high: "rgba(255,255,255,0.72)" };
+  const edgeGlowShadow = { low: "none", mid: "0 0 12px 1px rgba(255,255,255,0.22)", high: "0 0 28px 5px rgba(255,255,255,0.42)" };
+
+  const currentGradient = gradientPresets[activeBg];
 
   return (
-    <div className="min-h-screen bg-[#0f0820] text-white overflow-x-hidden">
+    <div
+      className="min-h-screen font-sans overflow-x-hidden"
+      style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" }}
+    >
+      <style>{`
+        @keyframes glass-float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          33% { transform: translateY(-10px) rotate(1deg); }
+          66% { transform: translateY(-6px) rotate(-1deg); }
+        }
+        @keyframes glass-orb-drift {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(20px, -30px) scale(1.05); }
+          66% { transform: translate(-15px, 10px) scale(0.97); }
+        }
+        @keyframes glass-pulse-glow {
+          0%, 100% { opacity: 0.45; }
+          50% { opacity: 0.85; }
+        }
+        @keyframes glass-shimmer {
+          0% { transform: translateX(-160%) skewX(-24deg); }
+          100% { transform: translateX(160%) skewX(-24deg); }
+        }
+        .glass-shimmer-anim {
+          animation: glass-shimmer 0.82s ease-out forwards;
+        }
+        .glass-float-anim {
+          animation: glass-float 6s ease-in-out infinite;
+        }
+        .glass-orb-anim { animation: glass-orb-drift 8s ease-in-out infinite; }
+        .glass-orb-anim-2 { animation: glass-orb-drift 11s ease-in-out infinite 2s; }
+        .glass-orb-anim-3 { animation: glass-orb-drift 9s ease-in-out infinite 4s; }
+        .glass-pulse-anim { animation: glass-pulse-glow 3s ease-in-out infinite; }
+        .glass-transition { transition: all 0.3s ease-out; }
+      `}</style>
 
-      {/* ===== 1. Fixed Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50">
-        {/* Gradient base */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#667eea] to-[#764ba2]" />
-        {/* Glass overlay */}
-        <div className="absolute inset-0 bg-white/20 backdrop-blur-xl border-b border-white/20" />
-
-        <div className="relative max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-16">
-            {/* Back link */}
-            <Link
-              href="/styles"
-              className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors duration-300"
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              StyleKit
-            </Link>
-
-            {/* Logo */}
-            <span className="text-base font-semibold text-white tracking-wide">
-              Glassmorphism
+      {/* ============================================================ */}
+      {/* 1. FIXED NAV                                                 */}
+      {/* ============================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/15 backdrop-blur-md border border-white/25">
+            <DiamondIcon className="w-4 h-4 text-white/90" />
+            <span className="text-sm font-semibold text-white tracking-tight">
+              Glass<span className="text-white/65">morphism</span>
             </span>
-
-            {/* Nav pills */}
-            <nav className="flex items-center gap-2">
-              <Link
-                href="/styles/glassmorphism"
-                className="px-4 py-1.5 text-xs font-medium text-white/80 hover:text-white bg-white/15 hover:bg-white/25 border border-white/20 rounded-full backdrop-blur-sm transition-all duration-300"
-              >
-                Docs
-              </Link>
-              <Link
-                href="/styles"
-                className="px-4 py-1.5 text-xs font-medium text-white/80 hover:text-white bg-white/15 hover:bg-white/25 border border-white/20 rounded-full backdrop-blur-sm transition-all duration-300"
-              >
-                Styles
-              </Link>
-            </nav>
           </div>
+
+          {/* Center nav links */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Components", "AI Rules", "Do / Don't", "Philosophy"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 rounded-lg text-sm text-white/65 hover:text-white hover:bg-white/10 cursor-pointer glass-transition"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back to StyleKit */}
+          <Link
+            href="/"
+            className="group relative flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md border border-white/25 text-white text-sm font-medium overflow-hidden hover:bg-white/25 hover:border-white/40 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)] glass-transition"
+          >
+            <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+            <span className="relative z-10">← StyleKit</span>
+          </Link>
         </div>
       </header>
 
-      {/* ===== 2. Hero ===== */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Full-screen gradient backdrop */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]" />
-
-        {/* Floating blurred orbs — glass needs a rich backdrop */}
+      {/* ============================================================ */}
+      {/* 2. HERO                                                      */}
+      {/* ============================================================ */}
+      <section className="relative pt-28 md:pt-36 pb-28 px-5 md:px-10 overflow-hidden">
+        {/* Background orbs */}
         <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "8%",
-            left: "4%",
-            width: "360px",
-            height: "360px",
-            background: "radial-gradient(ellipse, rgba(255,255,255,0.15), transparent 70%)",
-            filter: "blur(48px)",
-          }}
+          className="absolute top-10 right-[-80px] w-[500px] h-[500px] rounded-full pointer-events-none glass-orb-anim"
+          style={{ background: "radial-gradient(circle, rgba(240,147,251,0.35) 0%, transparent 70%)" }}
         />
         <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "6%",
-            right: "4%",
-            width: "300px",
-            height: "300px",
-            background: "radial-gradient(ellipse, rgba(240,147,251,0.45), transparent 65%)",
-            filter: "blur(52px)",
-          }}
+          className="absolute top-[200px] left-[-100px] w-[400px] h-[400px] rounded-full pointer-events-none glass-orb-anim-2"
+          style={{ background: "radial-gradient(circle, rgba(102,126,234,0.4) 0%, transparent 70%)" }}
         />
         <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "42%",
-            right: "8%",
-            width: "220px",
-            height: "220px",
-            background: "radial-gradient(ellipse, rgba(102,126,234,0.5), transparent 68%)",
-            filter: "blur(40px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "18%",
-            right: "24%",
-            width: "180px",
-            height: "180px",
-            background: "radial-gradient(ellipse, rgba(245,87,108,0.35), transparent 70%)",
-            filter: "blur(36px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "22%",
-            left: "14%",
-            width: "240px",
-            height: "240px",
-            background: "radial-gradient(ellipse, rgba(118,75,162,0.5), transparent 65%)",
-            filter: "blur(48px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "60%",
-            left: "40%",
-            width: "140px",
-            height: "140px",
-            background: "radial-gradient(ellipse, rgba(232,121,249,0.4), transparent 70%)",
-            filter: "blur(30px)",
-          }}
+          className="absolute bottom-10 right-1/3 w-[350px] h-[350px] rounded-full pointer-events-none glass-orb-anim-3"
+          style={{ background: "radial-gradient(circle, rgba(245,87,108,0.28) 0%, transparent 70%)" }}
         />
 
-        {/* Hero content */}
-        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-          {/* Overline */}
-          <p
-            className="text-sm font-medium text-white/60 tracking-[0.2em] uppercase mb-8"
+        {/* Floating glass decoration panels */}
+        <div
+          className="absolute top-24 right-16 w-28 h-28 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl pointer-events-none hidden md:block glass-float-anim"
+          style={{ animationDelay: "0.5s" }}
+        />
+        <div
+          className="absolute top-52 left-8 w-20 h-20 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl pointer-events-none hidden md:block glass-float-anim"
+          style={{ animationDelay: "1.5s" }}
+        />
+        <div
+          className="absolute bottom-32 right-8 w-16 h-16 bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl pointer-events-none hidden md:block glass-float-anim"
+          style={{ animationDelay: "2.8s" }}
+        />
+
+        <div className="max-w-6xl mx-auto text-center relative">
+          {/* Eyebrow */}
+          <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-              transition:
-                "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            iOS / macOS Inspired Design
-          </p>
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white/90 text-xs font-semibold tracking-[0.16em] uppercase mb-8">
+              <DiamondIcon className="w-3 h-3" />
+              玻璃拟态 — Glassmorphism
+              <DiamondIcon className="w-3 h-3" />
+            </span>
+          </div>
 
           {/* Title */}
           <h1
-            className="font-bold leading-none tracking-tight mb-4 text-white"
+            className="text-5xl md:text-7xl lg:text-[88px] font-bold leading-[1.0] tracking-tight mb-6 text-white"
             style={{
-              fontSize: "clamp(3.2rem, 10vw, 8rem)",
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition:
-                "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s",
-              textShadow: "0 2px 40px rgba(102,126,234,0.5)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
             }}
           >
-            GLASSMORPHISM
+            See Through.
+            <br />
+            <span
+              style={{
+                background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.65) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Layers Deep.
+            </span>
           </h1>
 
-          {/* Subtitle */}
+          {/* Sub */}
           <p
-            className="text-base md:text-lg text-white/60 mb-10 leading-relaxed max-w-xl mx-auto"
+            className="text-white/70 text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-12"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
-              transition:
-                "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
             }}
           >
-            Semi-transparent panels with backdrop-blur and colorful gradients. Depth through glass, not shadow.
+            Half-transparent panels, backdrop blur, and luminous edges create a modern
+            depth that feels like frosted glass catching light.
           </p>
 
-          {/* Hero glass card */}
+          {/* CTA buttons with glint */}
           <div
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed
-                ? "translateY(0) scale(1)"
-                : "translateY(32px) scale(0.97)",
-              transition:
-                "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.38s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.38s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
             }}
           >
-            <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg p-8 flex flex-col sm:flex-row items-center gap-6 justify-between">
-              <div className="text-left">
-                <p className="text-xs text-white/50 uppercase tracking-widest mb-1">
-                  Design Language
-                </p>
-                <p className="text-white font-semibold text-xl">Frosted Glass UI</p>
-                <p className="text-white/60 text-sm mt-1">Depth through transparency</p>
-              </div>
-              <div className="flex gap-5">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-white">20%</p>
-                  <p className="text-xs text-white/50 mt-0.5">White fill</p>
-                </div>
-                <div className="w-px bg-white/20" />
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-white">XL</p>
-                  <p className="text-xs text-white/50 mt-0.5">Blur level</p>
-                </div>
-                <div className="w-px bg-white/20" />
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-white">30%</p>
-                  <p className="text-xs text-white/50 mt-0.5">Border</p>
-                </div>
-              </div>
-            </div>
+            <button className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/25 text-white font-medium shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:bg-white/25 hover:border-white/45 hover:shadow-[0_10px_26px_rgba(0,0,0,0.16)] hover:-translate-y-0.5 active:scale-[0.98] glass-transition overflow-hidden">
+              <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/35 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+              <DiamondIcon className="relative z-10 w-4 h-4" />
+              <span className="relative z-10">Explore Glass</span>
+            </button>
+            <button className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white/80 font-medium hover:bg-white/15 hover:text-white hover:-translate-y-0.5 glass-transition overflow-hidden">
+              <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+              <LayersIcon className="relative z-10 w-4 h-4" />
+              <span className="relative z-10">View Layers</span>
+            </button>
           </div>
 
-          {/* CTA buttons */}
+          {/* Stats / property cards */}
           <div
-            className="flex flex-col sm:flex-row gap-3 justify-center mt-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition:
-                "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.52s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.52s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
             }}
           >
-            <button className="px-8 py-3 bg-white/25 backdrop-blur-sm border border-white/40 rounded-xl text-white text-sm font-semibold hover:bg-white/35 hover:border-white/60 hover:shadow-lg transition-all duration-300">
-              Explore Components
-            </button>
-            <button className="px-8 py-3 bg-transparent border border-white/25 rounded-xl text-white/70 text-sm font-medium hover:bg-white/10 hover:text-white transition-all duration-300">
-              Read Docs
-            </button>
+            {[
+              { value: "backdrop-blur", label: "Core Effect" },
+              { value: "bg-white/20", label: "Glass Base" },
+              { value: "border/25", label: "Edge Glow" },
+              { value: "shadow-xl", label: "Depth Layer" },
+            ].map((stat, i) => (
+              <div
+                key={stat.label}
+                className="group relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 text-center overflow-hidden hover:bg-white/15 hover:border-white/35 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(0,0,0,0.15)] glass-transition cursor-default"
+                style={{ transitionDelay: `${i * 0.04}s` }}
+              >
+                <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                <div className="relative text-sm font-bold mb-1 font-mono text-white">{stat.value}</div>
+                <div className="relative text-xs text-white/55 font-medium">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ===== 3. Glass Cards Demo ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        {/* Dark gradient — glass orbs give color */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1b5e] to-[#1a0533]" />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "15%",
-            left: "8%",
-            width: "420px",
-            height: "420px",
-            background:
-              "radial-gradient(ellipse, rgba(102,126,234,0.35), transparent 65%)",
-            filter: "blur(64px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "8%",
-            right: "8%",
-            width: "380px",
-            height: "380px",
-            background:
-              "radial-gradient(ellipse, rgba(240,147,251,0.3), transparent 65%)",
-            filter: "blur(64px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "50%",
-            right: "28%",
-            width: "260px",
-            height: "260px",
-            background:
-              "radial-gradient(ellipse, rgba(245,87,108,0.22), transparent 65%)",
-            filter: "blur(52px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-[0.2em] mb-3">
-              Glass Cards
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Frosted Panels
+      {/* ============================================================ */}
+      {/* 3. BACKGROUND GRADIENT SWITCHER                             */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              Foundation
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Gradient <span className="text-white/65">backgrounds</span>
             </h2>
-            <p className="text-white/50 max-w-md mx-auto leading-relaxed">
-              Each card is a glass panel sitting above the gradient backdrop. Click to expand. Hover to feel the lift.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Glassmorphism requires a rich gradient background. The glass effect only emerges
+              when there is something vibrant behind it to blur and refract.
             </p>
           </RevealBlock>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {glassCards.map((card, i) => (
-              <div key={card.type}>
-                <RevealBlock delay={i * 0.1}>
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-3">
+              {gradientPresets.map((bg, i) => (
+                <button
+                  key={bg.name}
+                  onClick={() => setActiveBg(i)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium glass-transition border ${
+                    activeBg === i
+                      ? "bg-white/25 border-white/45 text-white"
+                      : "bg-white/10 border-white/20 text-white/65 hover:bg-white/15 hover:text-white"
+                  }`}
+                >
+                  {bg.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <div
+              className="relative rounded-3xl overflow-hidden p-10 md:p-16 min-h-[320px] flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${currentGradient.from} 0%, ${currentGradient.via} 50%, ${currentGradient.to} 100%)`,
+                transition: "background 0.8s ease-out",
+              }}
+            >
+              {/* Orb decorations inside */}
+              <div
+                className="absolute top-8 right-12 w-32 h-32 rounded-full glass-pulse-anim"
+                style={{ background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)" }}
+              />
+              <div
+                className="absolute bottom-6 left-8 w-24 h-24 rounded-full glass-pulse-anim"
+                style={{ background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)", animationDelay: "1.5s" }}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-2xl">
+                {["Small Panel", "Main Content", "Side Panel"].map((label, i) => (
                   <div
-                    className={`relative bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg p-6 cursor-pointer transition-all duration-300 hover:bg-white/30 hover:border-white/50 hover:shadow-xl hover:-translate-y-1 ${
-                      activeCard === i
-                        ? "bg-white/30 border-white/50 shadow-xl -translate-y-1"
-                        : ""
-                    }`}
-                    onClick={() => setActiveCard(activeCard === i ? null : i)}
+                    key={label}
+                    className="group relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-6 overflow-hidden hover:bg-white/20 hover:border-white/40 hover:-translate-y-1 glass-transition"
                   >
-                    {/* Header row */}
-                    <div className="flex items-center justify-between mb-5">
-                      <span
-                        className="text-xs font-semibold px-3 py-1 rounded-full border"
-                        style={{
-                          backgroundColor: `${card.accent}30`,
-                          borderColor: `${card.accent}50`,
-                          color: "white",
-                        }}
-                      >
-                        {card.tag}
-                      </span>
-                      <span className="text-xs text-white/40 uppercase tracking-wider">
-                        {card.type}
-                      </span>
-                    </div>
+                    <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                    <div className="relative text-white font-semibold text-sm mb-2">{label}</div>
+                    <div className="relative text-white/55 text-xs">Glass panel {i + 1}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
 
-                    {/* Identity row */}
-                    <div className="flex items-center gap-3 mb-5">
+      {/* ============================================================ */}
+      {/* 4. COLOR PALETTE                                             */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              Palette
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Glass <span className="text-white/65">color system</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Two transparent glass layers and four gradient accent colors compose the entire
+              palette. With glassmorphism, the transparency is the color.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-10">
+              {paletteSwatches.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="group relative cursor-default"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  <div
+                    className="h-24 rounded-2xl mb-3 border border-white/20 overflow-hidden relative"
+                    style={{
+                      backgroundColor: swatch.hex,
+                      transform: hoveredSwatch === i ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
+                      boxShadow: hoveredSwatch === i ? "0 16px 32px rgba(0,0,0,0.25)" : "0 4px 12px rgba(0,0,0,0.12)",
+                      transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease",
+                    }}
+                  >
+                    {/* Shimmer sweep on hover */}
+                    {hoveredSwatch === i && (
                       <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                        className="absolute inset-0 glass-shimmer-anim"
                         style={{
-                          background: `linear-gradient(135deg, ${card.accent}, #764ba2)`,
+                          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%)",
+                          transform: "skewX(-24deg)",
                         }}
-                      >
-                        {card.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-white font-semibold text-sm">
-                          {card.name}
-                        </p>
-                        <p className="text-white/50 text-xs">{card.role}</p>
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="h-px bg-white/15 mb-5" />
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-white/10 rounded-xl p-3 border border-white/10">
-                        <p className="text-xl font-bold text-white">{card.stat1}</p>
-                        <p className="text-xs text-white/50 mt-0.5">{card.stat1Label}</p>
-                      </div>
-                      <div className="bg-white/10 rounded-xl p-3 border border-white/10">
-                        <p className="text-xl font-bold text-white">{card.stat2}</p>
-                        <p className="text-xs text-white/50 mt-0.5">{card.stat2Label}</p>
-                      </div>
-                    </div>
-
-                    {/* Expanded detail on click */}
-                    {activeCard === i && (
-                      <div className="mt-4 pt-4 border-t border-white/15">
-                        <p className="text-xs text-white/60 leading-relaxed">
-                          Glass recipe: <span className="font-mono text-white/80">bg-white/20 backdrop-blur-xl border-white/30</span>. Hover → <span className="font-mono text-white/80">bg-white/30 border-white/50</span>.
-                        </p>
-                      </div>
+                      />
+                    )}
+                    {/* Checkerboard for transparent swatches */}
+                    {swatch.name.includes("Glass") && (
+                      <div
+                        className="absolute inset-0 opacity-25"
+                        style={{
+                          backgroundImage: "repeating-conic-gradient(#aaa 0% 25%, #fff 0% 50%)",
+                          backgroundSize: "16px 16px",
+                        }}
+                      />
                     )}
                   </div>
-                </RevealBlock>
+                  <div className="text-sm font-semibold text-white">{swatch.name}</div>
+                  <div className="text-xs text-white/45 font-mono mt-0.5">{swatch.display}</div>
+                  <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-white/65 bg-white/10 border border-white/15">
+                    {swatch.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Gradient combinations */}
+          <RevealBlock delay={0.2}>
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8">
+              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-6">
+                Recommended gradient combinations
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { name: "Purple Pink", gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" },
+                  { name: "Blue Purple", gradient: "linear-gradient(135deg, #4facfe 0%, #6a85f5 50%, #764ba2 100%)" },
+                  { name: "Sunset Rose", gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+                ].map((g) => (
+                  <div key={g.name} className="group cursor-default">
+                    <div
+                      className="h-16 rounded-xl mb-2 border border-white/10 group-hover:-translate-y-1 group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)] glass-transition"
+                      style={{ background: g.gradient }}
+                    />
+                    <div className="text-xs text-white/55 text-center">{g.name}</div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ===== 4. Component Showcase ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        {/* Gradient backdrop — essential for glass components */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]" />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: "0%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "640px",
-            height: "320px",
-            background:
-              "radial-gradient(ellipse, rgba(255,255,255,0.12), transparent 70%)",
-            filter: "blur(64px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "5%",
-            left: "5%",
-            width: "300px",
-            height: "300px",
-            background:
-              "radial-gradient(ellipse, rgba(245,87,108,0.25), transparent 65%)",
-            filter: "blur(56px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/60 uppercase tracking-[0.2em] mb-3">
+      {/* ============================================================ */}
+      {/* 5. COMPONENT GALLERY                                         */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
               Components
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Glass UI Kit
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Glass <span className="text-white/65">building blocks</span>
             </h2>
-            <p className="text-white/60 max-w-md mx-auto leading-relaxed">
-              Buttons, inputs, and badges — all living on the gradient backdrop, all frosted glass.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Every component is a glass panel. Half-transparent, blurred, bordered with
+              luminous edges. Hover triggers an optical glint sweep across the surface.
             </p>
           </RevealBlock>
 
-          {/* Glass Intensity Switcher */}
-          <RevealBlock delay={0.08} className="flex justify-center gap-2 mb-10">
-            {([1, 2, 3] as const).map((level) => (
-              <button
-                key={level}
-                onClick={() => setGlassIntensity(level)}
-                className={`px-5 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                  glassIntensity === level
-                    ? "bg-white/30 border-white/50 text-white"
-                    : "bg-white/10 border-white/20 text-white/60 hover:bg-white/20 hover:text-white"
-                }`}
-              >
-                {intensityConfig[level].label}
-              </button>
-            ))}
+          {/* Tab pills */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(["buttons", "cards", "inputs", "nav"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium capitalize glass-transition border ${
+                    activeTab === tab
+                      ? "bg-white/25 border-white/45 text-white shadow-[0_4px_16px_rgba(255,255,255,0.1)]"
+                      : "bg-white/10 border-white/20 text-white/65 hover:bg-white/15 hover:text-white"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </RevealBlock>
 
-          {/* Live Demo Panel — changes with intensity */}
-          <RevealBlock delay={0.14}>
-            <div
-              className={`${currentIntensity.bg} ${currentIntensity.blur} ${currentIntensity.border} border rounded-2xl shadow-lg p-8 md:p-12 transition-all duration-500`}
-            >
-              {/* Buttons */}
-              <div className="mb-10">
-                <p className="text-xs text-white/50 uppercase tracking-widest mb-5">
-                  Buttons
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <button className="px-6 py-2.5 bg-white/25 backdrop-blur-sm border border-white/40 rounded-xl text-white text-sm font-semibold hover:bg-white/35 hover:border-white/60 hover:shadow-lg transition-all duration-300">
-                    Primary Glass
-                  </button>
-                  <button className="px-6 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white/80 text-sm font-medium hover:bg-white/20 hover:text-white hover:border-white/35 transition-all duration-300">
-                    Secondary
-                  </button>
-                  <button className="px-6 py-2.5 bg-transparent border border-white/25 rounded-xl text-white/70 text-sm font-medium hover:bg-white/10 hover:text-white transition-all duration-300">
-                    Ghost
-                  </button>
-                  <button
-                    className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-300"
-                    style={{ background: "linear-gradient(135deg, #667eea, #764ba2)" }}
-                  >
-                    Solid Accent
-                  </button>
-                </div>
-              </div>
+          {/* Panel */}
+          <RevealBlock delay={0.15}>
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 md:p-12">
 
-              {/* Input */}
-              <div className="mb-10">
-                <p className="text-xs text-white/50 uppercase tracking-widest mb-5">
-                  Input Field
-                </p>
-                <div className="max-w-sm">
-                  <label className="block text-sm text-white/70 mb-2 font-medium">
-                    Search components
-                  </label>
-                  <div className="relative">
-                    <svg
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                      />
-                    </svg>
-                    <input
-                      type="text"
-                      placeholder="Type to search..."
-                      className="w-full pl-10 pr-4 py-3 bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/40 text-sm focus:bg-white/25 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300"
-                    />
+              {/* BUTTONS TAB */}
+              {activeTab === "buttons" && (
+                <div className="space-y-10">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-5">
+                      Primary — Glass button with optical glint
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="group relative px-6 py-3 bg-white/20 backdrop-blur-md border border-white/25 rounded-xl text-white font-medium shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:bg-white/25 hover:border-white/45 hover:shadow-[0_10px_26px_rgba(0,0,0,0.16)] hover:-translate-y-0.5 active:scale-[0.98] glass-transition overflow-hidden">
+                        <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/35 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                        <span className="relative z-10 flex items-center gap-2"><DiamondIcon className="w-4 h-4" />Primary Glass</span>
+                      </button>
+                      <button className="group relative px-6 py-3 bg-white/10 backdrop-blur-md border border-white/18 rounded-xl text-white/80 font-medium hover:bg-white/15 hover:border-white/30 hover:text-white hover:-translate-y-0.5 glass-transition overflow-hidden">
+                        <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                        <span className="relative z-10 flex items-center gap-2"><LayersIcon className="w-4 h-4" />Subtle Glass</span>
+                      </button>
+                      <button className="group relative px-6 py-3 rounded-xl text-white font-medium overflow-hidden hover:-translate-y-0.5 glass-transition" style={{ background: "linear-gradient(135deg, rgba(102,126,234,0.7), rgba(240,147,251,0.7))", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.25)" }}>
+                        <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                        <span className="relative z-10 flex items-center gap-2"><GlintIcon className="w-4 h-4" />Gradient Glass</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-5">Size variants</p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { size: "sm", cls: "px-4 py-2 text-xs rounded-lg" },
+                        { size: "md", cls: "px-6 py-3 text-sm rounded-xl" },
+                        { size: "lg", cls: "px-9 py-4 text-base rounded-xl" },
+                      ].map(({ size, cls }) => (
+                        <button
+                          key={size}
+                          className={`group relative bg-white/20 backdrop-blur-md border border-white/25 text-white font-medium hover:bg-white/25 hover:border-white/40 hover:-translate-y-0.5 glass-transition overflow-hidden ${cls}`}
+                        >
+                          <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                          <span className="relative z-10">{size.toUpperCase()}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-5">State variants</p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="group relative px-6 py-3 bg-white/20 backdrop-blur-md border border-white/25 rounded-xl text-white font-medium glass-transition overflow-hidden">
+                        <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                        <span className="relative z-10">Default</span>
+                      </button>
+                      <button className="px-6 py-3 bg-white/28 backdrop-blur-md border border-white/48 rounded-xl text-white font-medium shadow-[0_10px_26px_rgba(0,0,0,0.16)]" style={{ transform: "translateY(-2px)" }}>
+                        Hovered
+                      </button>
+                      <button className="px-6 py-3 bg-white/8 backdrop-blur-md border border-white/12 rounded-xl text-white/38 font-medium cursor-not-allowed">
+                        Disabled
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Badge chips */}
-              <div>
-                <p className="text-xs text-white/50 uppercase tracking-widest mb-5">
-                  Badge Chips
-                </p>
-                <div className="flex flex-wrap gap-2">
+              {/* CARDS TAB */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[
-                    { label: "Glassmorphism", color: "#667eea" },
-                    { label: "iOS Design", color: "#764ba2" },
-                    { label: "Frosted Glass", color: "#f093fb" },
-                    { label: "Backdrop Blur", color: "#f5576c" },
-                    { label: "Semi-transparent", color: "#a78bfa" },
-                    { label: "Layered UI", color: "#e879f9" },
-                  ].map((badge) => (
-                    <span
-                      key={badge.label}
-                      className="px-3 py-1 text-xs font-medium rounded-full border text-white"
-                      style={{
-                        backgroundColor: `${badge.color}25`,
-                        borderColor: `${badge.color}45`,
-                      }}
+                    { title: "Weather Widget", desc: "Current weather with glassmorphic panels layered over a vibrant sky gradient.", icon: <BlurIcon className="w-6 h-6" />, accent: "#667eea" },
+                    { title: "Music Player", desc: "Album art as background, controls floated in frosted glass overlays.", icon: <DiamondIcon className="w-6 h-6" />, accent: "#f093fb" },
+                    { title: "Auth Card", desc: "Login form floating transparently over a gradient mesh background.", icon: <LayersIcon className="w-6 h-6" />, accent: "#764ba2" },
+                    { title: "Dashboard", desc: "Stats and metrics in glass panels arranged with visible depth layers.", icon: <GlintIcon className="w-6 h-6" />, accent: "#f5576c" },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="group relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-7 overflow-hidden cursor-default hover:bg-white/20 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_20px_48px_rgba(0,0,0,0.2)] glass-transition"
                     >
-                      {badge.label}
-                    </span>
+                      <span className="absolute inset-0 -translate-x-[150%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[150%] transition-transform duration-1000 ease-out" />
+                      <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white/15 border border-white/20" style={{ color: card.accent }}>{card.icon}</div>
+                      <h4 className="relative text-white text-lg font-semibold mb-2">{card.title}</h4>
+                      <p className="relative text-white/60 text-sm leading-relaxed">{card.desc}</p>
+                    </div>
                   ))}
                 </div>
-              </div>
-            </div>
-          </RevealBlock>
+              )}
 
-          {/* Intensity annotation */}
-          <RevealBlock delay={0.22} className="text-center mt-6">
-            <p className="text-white/40 text-xs font-mono">
-              {currentIntensity.desc}
-            </p>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ===== 5. Color System ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        {/* Dark background so color orbs pop */}
-        <div className="absolute inset-0 bg-[#0f0820]" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 50%, rgba(102,126,234,0.07) 0%, transparent 60%)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-[0.2em] mb-3">
-              Palette
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Color System
-            </h2>
-            <p className="text-white/50 max-w-md mx-auto leading-relaxed">
-              Six gradient colors that power every glass surface. The richer the backdrop, the more alive the glass looks when the blur filter samples it.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {colorOrbs.map((orb, i) => (
-              <div key={orb.name}>
-                <RevealBlock delay={i * 0.07}>
-                  <div className="flex flex-col items-center gap-4 group cursor-default">
-                    {/* Orb with glass overlay */}
-                    <div className="relative">
-                      <div
-                        className={`w-28 h-28 rounded-full bg-gradient-to-br ${orb.gradient} transition-all duration-500 group-hover:scale-110`}
-                        style={{
-                          boxShadow: `0 8px 32px ${orb.hex}60, 0 0 60px ${orb.hex}20`,
-                        }}
-                      />
-                      {/* Glass highlight overlay on orb */}
-                      <div className="absolute inset-3 rounded-full bg-white/15 backdrop-blur-sm border border-white/25" />
+              {/* INPUTS TAB */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium text-white/75 mb-2">Username</label>
+                      <input type="text" placeholder="Enter username..." className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-white/38 focus:outline-none focus:border-white/40 focus:bg-white/15 glass-transition" />
                     </div>
-
-                    {/* Glass label chip */}
-                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 text-center transition-all duration-300 group-hover:bg-white/15">
-                      <p className="text-white text-sm font-semibold">{orb.name}</p>
-                      <p className="text-white/50 text-xs font-mono">{orb.hex}</p>
+                    <div>
+                      <label className="block text-sm font-medium text-white/75 mb-2">Password</label>
+                      <input type="password" placeholder="••••••••" className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-white/38 focus:outline-none focus:border-white/40 focus:bg-white/15 glass-transition" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-white/75 mb-2">Message</label>
+                      <textarea rows={3} placeholder="Write something..." className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-white/38 focus:outline-none focus:border-white/40 focus:bg-white/15 glass-transition resize-none" />
                     </div>
                   </div>
-                </RevealBlock>
-              </div>
-            ))}
-          </div>
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium text-white/75 mb-2">Select theme</label>
+                      <select className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:border-white/40 glass-transition">
+                        <option className="text-gray-800">Purple Pink</option>
+                        <option className="text-gray-800">Blue Purple</option>
+                        <option className="text-gray-800">Cyan Blue</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-md bg-white/20 border border-white/30 flex items-center justify-center cursor-pointer">
+                        <CheckIcon className="w-3 h-3 text-white" />
+                      </div>
+                      <label className="text-sm text-white/65">Enable backdrop blur</label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-md bg-white/10 border border-white/20 cursor-pointer" />
+                      <label className="text-sm text-white/65">Reduce glass opacity</label>
+                    </div>
+                    <button className="group relative w-full py-3.5 rounded-xl bg-white/20 backdrop-blur-md border border-white/25 text-white font-medium hover:bg-white/25 hover:border-white/40 glass-transition overflow-hidden">
+                      <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                      <span className="relative z-10">Submit</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
-          {/* Color-through-glass demo strip */}
-          <RevealBlock delay={0.3} className="mt-16">
-            <div className="relative rounded-2xl overflow-hidden">
-              {/* Gradient strip */}
-              <div className="h-16 w-full bg-gradient-to-r from-[#667eea] via-[#764ba2] via-[#f093fb] to-[#f5576c]" />
-              {/* Glass strip sitting on top */}
-              <div className="absolute inset-0 bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center">
-                <p className="text-white text-sm font-semibold tracking-wide">
-                  bg-white/20 backdrop-blur-xl — gradient showing through glass
-                </p>
-              </div>
+              {/* NAV TAB */}
+              {activeTab === "nav" && (
+                <div className="space-y-8">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-5">Fixed navigation bar</p>
+                    <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea, #764ba2, #f093fb)" }}>
+                      <div className="px-6 py-4 bg-white/10 backdrop-blur-xl border-b border-white/10 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <DiamondIcon className="w-4 h-4 text-white" />
+                          <span className="text-white font-bold text-base">Logo</span>
+                        </div>
+                        <div className="hidden sm:flex gap-5">
+                          {["Home", "About", "Work"].map((item) => (
+                            <span key={item} className="text-white/75 hover:text-white cursor-pointer glass-transition text-sm">{item}</span>
+                          ))}
+                        </div>
+                        <button className="group relative px-4 py-2 bg-white/20 backdrop-blur-md border border-white/25 rounded-lg text-white text-sm font-medium overflow-hidden hover:bg-white/25 hover:border-white/40 glass-transition">
+                          <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                          <span className="relative z-10">Get Started</span>
+                        </button>
+                      </div>
+                      <div className="p-12 flex items-center justify-center text-white/40 text-sm">Page content appears here</div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-5">Breadcrumb navigation</p>
+                    <div className="flex items-center gap-2 px-5 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl w-fit">
+                      {["Home", "Styles", "Glassmorphism"].map((crumb, i) => (
+                        <div key={crumb} className="flex items-center gap-2">
+                          {i > 0 && <span className="text-white/28">/</span>}
+                          <span className={`text-sm ${i === 2 ? "text-white font-medium" : "text-white/55 hover:text-white cursor-pointer glass-transition"}`}>{crumb}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ===== 6. Layer Depth Demo ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        {/* Gradient backdrop — critical for this section */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f5576c]" />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: "25%",
-            left: "3%",
-            width: "320px",
-            height: "320px",
-            background:
-              "radial-gradient(ellipse, rgba(255,255,255,0.1), transparent 70%)",
-            filter: "blur(52px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: "10%",
-            right: "5%",
-            width: "280px",
-            height: "280px",
-            background:
-              "radial-gradient(ellipse, rgba(245,87,108,0.3), transparent 65%)",
-            filter: "blur(48px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/60 uppercase tracking-[0.2em] mb-3">
-              Architecture
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Layer Depth
+      {/* ============================================================ */}
+      {/* 6. AI RULES INTERACTIVE DEMOS — ALL 4 RULES                 */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              AI Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Interaction <span className="text-white/65">rules demo</span>
             </h2>
-            <p className="text-white/70 max-w-md mx-auto leading-relaxed">
-              Glassmorphism is built from four stacked layers. Click each tab to understand what each layer contributes to the final effect.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Four named interaction rules define how glassmorphism elements behave.
+              Interact with each demo to feel the optical physics in action.
             </p>
           </RevealBlock>
 
-          {/* Layer Tabs */}
-          <RevealBlock delay={0.08} className="flex flex-wrap justify-center gap-2 mb-10">
-            {layerData.map((layer) => (
-              <button
-                key={layer.id}
-                onClick={() => setActiveLayer(layer.id)}
-                className={`px-5 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                  activeLayer === layer.id
-                    ? "bg-white/30 border-white/50 text-white"
-                    : "bg-white/10 border-white/20 text-white/60 hover:bg-white/20 hover:text-white"
-                }`}
-              >
-                {layer.id + 1}. {layer.label}
-              </button>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* ---- RULE 1: Optical Glint ---- */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/22 text-white/90 text-xs font-semibold mb-3">
+                    Rule 1: Optical Glint
+                  </span>
+                  <p className="text-xs text-white/48 leading-relaxed mb-2">
+                    A tilted gradient highlight sweeps once across the glass surface, simulating
+                    light refraction through a real pane of glass. Never loops — single pass only.
+                  </p>
+                  <code className="block text-[10px] font-mono text-white/35 leading-relaxed">
+                    -translate-x-[140%] skew-x-[-24deg]<br />
+                    group-hover:translate-x-[140%] duration-700
+                  </code>
+                </div>
+                <div className="flex flex-col items-center gap-4 mt-6">
+                  <button
+                    onClick={triggerGlint}
+                    className="relative px-8 py-4 bg-white/20 backdrop-blur-md border border-white/25 rounded-xl text-white font-medium shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:bg-white/25 hover:border-white/40 hover:-translate-y-0.5 glass-transition overflow-hidden"
+                  >
+                    <span
+                      className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/45 to-transparent ${glintActive ? "glass-shimmer-anim" : ""}`}
+                      style={{
+                        transform: glintActive ? undefined : "translateX(-160%) skewX(-24deg)",
+                      }}
+                    />
+                    <span className="relative z-10 flex items-center gap-2">
+                      <GlintIcon className="w-4 h-4" />
+                      {glintTriggered ? "Click again!" : "Click to trigger glint"}
+                    </span>
+                  </button>
+                  <p className="text-xs text-white/38 text-center">
+                    {glintActive
+                      ? "Glint sweeping — single pass, no loop"
+                      : "Click the button to see the Optical Glint animation"}
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- RULE 2: Floating Depth ---- */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/22 text-white/90 text-xs font-semibold mb-3">
+                    Rule 2: Floating Depth
+                  </span>
+                  <p className="text-xs text-white/48 leading-relaxed mb-2">
+                    Hover lifts the element with a slight translateY and expands the shadow,
+                    simulating the panel floating closer to the viewer through the glass layers.
+                  </p>
+                  <code className="block text-[10px] font-mono text-white/35 leading-relaxed">
+                    hover:-translate-y-0.5 to hover:-translate-y-2<br />
+                    shadow expands proportionally with lift
+                  </code>
+                </div>
+                <div className="flex items-center gap-3 mt-4 mb-4">
+                  <button
+                    onClick={() => setFloatEnabled((p) => !p)}
+                    className={`px-4 py-2 rounded-lg text-xs font-medium glass-transition border ${
+                      floatEnabled
+                        ? "bg-white/25 border-white/40 text-white"
+                        : "bg-white/10 border-white/20 text-white/55"
+                    }`}
+                  >
+                    Float: {floatEnabled ? "ON" : "OFF"}
+                  </button>
+                  <span className="text-xs text-white/38">Toggle to compare</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="relative bg-white/15 backdrop-blur-md border border-white/20 rounded-xl p-4 text-center overflow-hidden"
+                      style={{
+                        transform: floatEnabled && hoveredFloat === i ? `translateY(-${(i + 1) * 2}px)` : "translateY(0)",
+                        boxShadow: floatEnabled && hoveredFloat === i ? `0 ${(i + 1) * 8}px ${(i + 1) * 16}px rgba(0,0,0,${0.15 + i * 0.05})` : "none",
+                        transition: "transform 0.3s ease-out, box-shadow 0.3s ease-out",
+                        cursor: floatEnabled ? "pointer" : "default",
+                      }}
+                      onMouseEnter={() => floatEnabled && setHoveredFloat(i)}
+                      onMouseLeave={() => setHoveredFloat(null)}
+                    >
+                      {floatEnabled && hoveredFloat === i && (
+                        <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent glass-shimmer-anim" />
+                      )}
+                      <div className="relative text-white text-xs font-medium">Panel {i + 1}</div>
+                      <div className="relative text-white/45 text-[10px] mt-1">-{(i + 1) * 2}px lift</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-white/35 text-center mt-3">
+                  {floatEnabled ? "Hover each panel to see depth lift" : "Enable float to see the effect"}
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ---- RULE 3: Edge Illumination ---- */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/22 text-white/90 text-xs font-semibold mb-3">
+                    Rule 3: Edge Illumination
+                  </span>
+                  <p className="text-xs text-white/48 leading-relaxed mb-2">
+                    Border opacity increases from white/20 to white/70+ on interaction, simulating
+                    a glass edge catching direct light. Paired with a white glow shadow.
+                  </p>
+                  <code className="block text-[10px] font-mono text-white/35 leading-relaxed">
+                    border-white/20 → border-white/45 → white/72<br />
+                    box-shadow glow expands with border brightness
+                  </code>
+                </div>
+                <div className="flex gap-2 mt-5 mb-5">
+                  {(["low", "mid", "high"] as const).map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => setEdgeLevel(level)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-medium glass-transition border capitalize ${
+                        edgeLevel === level
+                          ? "bg-white/25 border-white/45 text-white"
+                          : "bg-white/10 border-white/20 text-white/55 hover:bg-white/15"
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+                <div
+                  className="relative bg-white/15 backdrop-blur-xl rounded-xl p-6 text-center"
+                  style={{
+                    border: `1px solid ${edgeBorderOpacity[edgeLevel]}`,
+                    boxShadow: edgeGlowShadow[edgeLevel],
+                    transition: "border-color 0.4s ease-out, box-shadow 0.4s ease-out",
+                  }}
+                >
+                  <div className="text-white font-semibold mb-1">Glass Panel</div>
+                  <div className="text-white/55 text-xs">
+                    Border opacity: {edgeLevel === "low" ? "20%" : edgeLevel === "mid" ? "45%" : "72%"}
+                  </div>
+                  <div className="text-white/38 text-xs mt-1">
+                    Glow: {edgeLevel === "low" ? "none" : edgeLevel === "mid" ? "subtle" : "strong"}
+                  </div>
+                </div>
+                <p className="text-xs text-white/35 text-center mt-3">
+                  Switch levels to see border brightness change
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ---- RULE 4: Smooth Translucency ---- */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/22 text-white/90 text-xs font-semibold mb-3">
+                    Rule 4: Smooth Translucency
+                  </span>
+                  <p className="text-xs text-white/48 leading-relaxed mb-2">
+                    All transitions use duration-300 with ease-out for silky optical changes.
+                    Opacity shifts feel like light passing through — never abrupt.
+                  </p>
+                  <code className="block text-[10px] font-mono text-white/35 leading-relaxed">
+                    transition-all duration-300 ease-out<br />
+                    bg-white/{"{opacity}"} — drag slider to see live
+                  </code>
+                </div>
+                <div className="mt-5 mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-white/55">Glass opacity</span>
+                    <span className="text-xs text-white font-mono">{glassOpacity}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={5}
+                    max={45}
+                    value={glassOpacity}
+                    onChange={(e) => setGlassOpacity(Number(e.target.value))}
+                    className="w-full cursor-pointer"
+                    style={{ accentColor: "rgba(255,255,255,0.7)" }}
+                  />
+                  <div className="flex justify-between text-[10px] text-white/28 mt-1">
+                    <span>5% (too thin)</span>
+                    <span>20% (ideal)</span>
+                    <span>45% (opaque)</span>
+                  </div>
+                </div>
+                <div
+                  className="relative rounded-xl p-5 border border-white/20 text-center backdrop-blur-xl"
+                  style={{
+                    backgroundColor: `rgba(255,255,255,${glassOpacity / 100})`,
+                    transition: "background-color 0.3s ease-out",
+                  }}
+                >
+                  <div className="text-white font-semibold mb-1">Live Glass Preview</div>
+                  <div className="text-white/65 text-xs">
+                    {glassOpacity < 12
+                      ? "Too transparent — content hard to read"
+                      : glassOpacity > 35
+                      ? "Too opaque — losing the glass effect"
+                      : "Ideal range — balanced depth and readability"}
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 7. LAYER DEPTH INTERACTIVE DEMO                             */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              Architecture
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Layer <span className="text-white/65">depth system</span>
+            </h2>
           </RevealBlock>
 
-          {/* Layer Visual + Description */}
-          <RevealBlock delay={0.14}>
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Glassmorphism is built from four stacked layers. Click each tab to see
+              what each layer contributes to the final frosted glass effect.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {layerData.map((layer) => (
+                <button
+                  key={layer.id}
+                  onClick={() => setActiveLayer(layer.id)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium glass-transition border ${
+                    activeLayer === layer.id
+                      ? "bg-white/25 border-white/45 text-white"
+                      : "bg-white/10 border-white/20 text-white/65 hover:bg-white/15 hover:text-white"
+                  }`}
+                >
+                  {layer.id + 1}. {layer.label}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
             <div className="grid md:grid-cols-2 gap-8 items-center">
               {/* Visual preview */}
-              <div className="relative h-64 rounded-2xl overflow-hidden border border-white/20">
-                {/* Base gradient always present */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f5576c]" />
-
-                {/* Layer 0 label */}
+              <div className="relative h-72 rounded-2xl overflow-hidden border border-white/20">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]" />
                 {activeLayer === 0 && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <p className="text-white font-bold text-lg drop-shadow-lg">
-                        Gradient Background
-                      </p>
-                      <p className="text-white/70 text-sm mt-1">The colorful foundation</p>
+                      <p className="text-white font-bold text-lg drop-shadow-lg">Gradient Background</p>
+                      <p className="text-white/65 text-sm mt-1">The colorful foundation</p>
                     </div>
                   </div>
                 )}
-
-                {/* Layer 1+ adds blur */}
-                {activeLayer >= 1 && (
-                  <div className="absolute inset-0 bg-white/10 backdrop-blur-xl" />
-                )}
+                {activeLayer >= 1 && <div className="absolute inset-0 bg-white/10 backdrop-blur-xl" />}
                 {activeLayer === 1 && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                       <p className="text-white font-bold text-lg">+ Blur Layer</p>
-                      <p className="text-white/70 text-sm mt-1">backdrop-blur-xl applied</p>
+                      <p className="text-white/65 text-sm mt-1">backdrop-blur-xl applied</p>
                     </div>
                   </div>
                 )}
-
-                {/* Layer 2+ adds glass panel */}
-                {activeLayer >= 2 && (
-                  <div className="absolute inset-8 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl" />
-                )}
+                {activeLayer >= 2 && <div className="absolute inset-8 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl" />}
                 {activeLayer === 2 && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                       <p className="text-white font-bold text-lg">+ Glass Panel</p>
-                      <p className="text-white/70 text-sm mt-1">bg-white/20 border-white/30</p>
+                      <p className="text-white/65 text-sm mt-1">bg-white/20 border-white/30</p>
                     </div>
                   </div>
                 )}
-
-                {/* Layer 3 adds content */}
                 {activeLayer >= 3 && (
-                  <div className="absolute inset-8 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl flex flex-col items-center justify-center gap-2 p-5">
+                  <div className="absolute inset-8 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl flex flex-col items-center justify-center gap-3 p-5">
                     <p className="text-white font-bold text-base">Content Layer</p>
-                    <p className="text-white/70 text-xs text-center">
-                      White text reads clearly on frosted glass
-                    </p>
-                    <div className="flex gap-2 mt-1">
-                      <span className="px-3 py-1 text-xs bg-white/20 border border-white/25 rounded-full text-white">
-                        Badge
-                      </span>
-                      <span className="px-3 py-1 text-xs bg-white/20 border border-white/25 rounded-full text-white">
-                        Tag
-                      </span>
+                    <p className="text-white/65 text-xs text-center">White text reads clearly on frosted glass</p>
+                    <div className="flex gap-2">
+                      <span className="px-3 py-1 text-xs bg-white/20 border border-white/25 rounded-full text-white">Badge</span>
+                      <span className="px-3 py-1 text-xs bg-white/20 border border-white/25 rounded-full text-white">Tag</span>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Description panel */}
-              <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+              <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-7">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white font-bold text-sm">
                     {activeLayer + 1}
                   </div>
-                  <h3 className="text-white font-semibold text-lg">
-                    {layerData[activeLayer].label}
-                  </h3>
+                  <h3 className="text-white font-semibold text-lg">{layerData[activeLayer].label}</h3>
                 </div>
-                <p className="text-white/70 text-sm leading-relaxed mb-5">
-                  {layerData[activeLayer].description}
-                </p>
+                <p className="text-white/65 text-sm leading-relaxed mb-5">{layerData[activeLayer].description}</p>
                 <div className="bg-black/20 rounded-xl p-3 border border-white/10">
-                  <code className="text-xs text-white/70 font-mono leading-relaxed break-all">
-                    {layerData[activeLayer].code}
+                  <code className="text-xs text-white/65 font-mono leading-relaxed break-all">{layerData[activeLayer].code}</code>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 8. REAL-WORLD APP DEMO                                       */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              App Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Glass <span className="text-white/65">in the wild</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Three real-world patterns showing glassmorphism applied to login,
+              weather, and analytics UI. All panels use backdrop-blur over the gradient.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Login Card */}
+            <RevealBlock delay={0.1}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38 mb-5">Login</div>
+                <div className="text-xl font-bold text-white mb-1">Welcome back</div>
+                <div className="text-white/55 text-sm mb-6">Sign into your account</div>
+                <div className="space-y-3 mb-5">
+                  <input type="email" placeholder="Email address" readOnly className="w-full px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white/85 placeholder-white/35 text-sm focus:outline-none" />
+                  <input type="password" placeholder="Password" readOnly className="w-full px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white/85 placeholder-white/35 text-sm focus:outline-none" />
+                </div>
+                <button className="group relative w-full py-3 bg-white/20 backdrop-blur-md border border-white/25 rounded-xl text-white font-medium hover:bg-white/25 hover:border-white/40 glass-transition overflow-hidden">
+                  <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+                  <span className="relative z-10">Sign In</span>
+                </button>
+                <div className="text-center mt-4 text-xs text-white/35">
+                  No account? <span className="text-white/65 cursor-pointer hover:text-white glass-transition">Register</span>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Weather Widget */}
+            <RevealBlock delay={0.15}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38 mb-5">Weather</div>
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <div className="text-5xl font-bold text-white">24°</div>
+                    <div className="text-white/65 text-sm mt-1">Partly Cloudy</div>
+                    <div className="text-white/45 text-xs mt-0.5">San Francisco, CA</div>
+                  </div>
+                  <div className="w-16 h-16 bg-white/15 border border-white/20 rounded-2xl flex items-center justify-center">
+                    <BlurIcon className="w-8 h-8 text-white/75" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {["Mon", "Tue", "Wed"].map((day, i) => (
+                    <div key={day} className="bg-white/10 border border-white/15 rounded-xl p-3 text-center">
+                      <div className="text-white/45 text-xs mb-1">{day}</div>
+                      <div className="text-white text-sm font-semibold">{19 + i * 2}°</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 flex gap-3">
+                  {[{ label: "Humidity", val: "68%" }, { label: "Wind", val: "12km/h" }].map((stat) => (
+                    <div key={stat.label} className="flex-1 bg-white/10 border border-white/15 rounded-xl p-3 text-center">
+                      <div className="text-white/45 text-xs">{stat.label}</div>
+                      <div className="text-white text-sm font-semibold mt-0.5">{stat.val}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Dashboard Analytics */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38 mb-5">Analytics</div>
+                <div className="text-xl font-bold text-white mb-1">Dashboard</div>
+                <div className="text-white/55 text-sm mb-6">Last 30 days</div>
+                <div className="space-y-4">
+                  {[
+                    { label: "Total Users", val: "12,840", pct: 75, color: "#667eea" },
+                    { label: "Revenue", val: "$48,200", pct: 60, color: "#f093fb" },
+                    { label: "Conversions", val: "3.8%", pct: 38, color: "#764ba2" },
+                    { label: "Retention", val: "91%", pct: 91, color: "#f5576c" },
+                  ].map((metric) => (
+                    <div key={metric.label}>
+                      <div className="flex justify-between mb-1.5">
+                        <span className="text-white/65 text-xs">{metric.label}</span>
+                        <span className="text-white text-xs font-semibold">{metric.val}</span>
+                      </div>
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${metric.pct}%`, backgroundColor: metric.color, opacity: 0.9 }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 9. DO / DON'T RULES                                          */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Do <span className="text-white/65">&amp; Don&apos;t</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Glassmorphism has strict requirements. Breaking these rules destroys the
+              illusion — the effect collapses into muddy, unreadable transparency.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RevealBlock delay={0.1}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+                    <CheckIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white">Do</h3>
+                  <DiamondIcon className="w-4 h-4 text-white/28 ml-auto" />
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "Use semi-transparent backgrounds bg-white/10 to bg-white/30",
+                    "Always add backdrop-blur-md or backdrop-blur-xl",
+                    "Use subtle borders border border-white/20",
+                    "Add soft diffuse shadows shadow-lg or shadow-xl",
+                    "Use gradient backgrounds as the base layer bg-gradient-to-br",
+                    "Use moderate rounded corners rounded-xl or rounded-2xl",
+                    "Ensure high contrast text for readability on frosted surfaces",
+                    "Add optical glint sweep on interaction — single pass, no loop",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/65 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-white/40 shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.15}>
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                    <XIcon className="w-4 h-4 text-white/70" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white">Don&apos;t</h3>
+                  <LayersIcon className="w-4 h-4 text-white/18 ml-auto" />
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "Never use glass on pure white or solid color backgrounds",
+                    "Never omit backdrop-blur — it is the core effect",
+                    "Never make panels so transparent content becomes unreadable",
+                    "Never use hard-edge shadows shadow-[Xpx_Xpx_0px]",
+                    "Never use opaque backgrounds bg-white or bg-black",
+                    "Never use sharp corners rounded-none",
+                    "Never use low-contrast text on low-contrast glass",
+                    "Never loop the glint animation — single sweep only, no flicker",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-white/55 leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-white/22 shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 10. DESIGN PHILOSOPHY                                        */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/55 block mb-3">
+              Philosophy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Design <span className="text-white/65">principles</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white/60 text-lg max-w-lg leading-relaxed">
+              Four core principles from iOS and macOS design language define how glassmorphism
+              creates spatial depth without physical weight.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-14">
+            {[
+              {
+                icon: <LayersIcon className="w-7 h-7" />,
+                title: "Hierarchy through transparency",
+                tagline: "Depth without opacity",
+                desc: "Layers are distinguished by their transparency level. Front panels use bg-white/20, back panels bg-white/10. The closer a panel is to the viewer, the more defined its glass properties.",
+                code: "bg-white/10 → bg-white/20 → bg-white/30",
+                accent: "#667eea",
+              },
+              {
+                icon: <BlurIcon className="w-7 h-7" />,
+                title: "Modern high-tech atmosphere",
+                tagline: "Blur creates premium",
+                desc: "backdrop-blur-md and backdrop-blur-xl signal quality and modernity. The blurred background beneath each panel implies depth and the sense that you are floating above rich content.",
+                code: "backdrop-blur-md, backdrop-blur-xl",
+                accent: "#764ba2",
+              },
+              {
+                icon: <DiamondIcon className="w-7 h-7" />,
+                title: "Visual lightness",
+                tagline: "Transparency reduces weight",
+                desc: "Semi-transparent elements feel lighter than their opaque counterparts. The eye perceives them as floating rather than sitting — creating an airy, modern interface feel.",
+                code: "shadow-[0_8px_32px_rgba(0,0,0,0.1)]",
+                accent: "#f093fb",
+              },
+              {
+                icon: <GlintIcon className="w-7 h-7" />,
+                title: "Spatial depth",
+                tagline: "Soft shadows add dimension",
+                desc: "Soft diffuse shadows without hard edges create the final dimension. The shadow tells the eye that the panel exists above the background — it is floating in three-dimensional space.",
+                code: "shadow-lg, shadow-xl, shadow-2xl",
+                accent: "#f5576c",
+              },
+            ].map((principle, i) => (
+              <RevealBlock key={principle.title} delay={i * 0.08}>
+                <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 h-full overflow-hidden hover:bg-white/15 hover:border-white/30 hover:-translate-y-1 glass-transition cursor-default">
+                  <span className="absolute inset-0 -translate-x-[150%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/15 to-transparent group-hover:translate-x-[150%] transition-transform duration-1000 ease-out" />
+                  <div
+                    className="relative w-14 h-14 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center mb-5"
+                    style={{ color: principle.accent }}
+                  >
+                    {principle.icon}
+                  </div>
+                  <h3 className="relative text-xl font-bold text-white mb-1">{principle.title}</h3>
+                  <p className="relative text-sm font-medium mb-4 text-white/55">{principle.tagline}</p>
+                  <p className="relative text-white/52 text-sm leading-relaxed mb-5">{principle.desc}</p>
+                  <code className="relative block text-xs font-mono text-white/38 bg-black/15 border border-white/10 rounded-lg px-3 py-2">
+                    {principle.code}
                   </code>
                 </div>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ===== 7. Do / Don't Rules ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1b5e] to-[#1a0533]" />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: "8%",
-            right: "8%",
-            width: "380px",
-            height: "380px",
-            background:
-              "radial-gradient(ellipse, rgba(240,147,251,0.15), transparent 65%)",
-            filter: "blur(64px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: "8%",
-            left: "8%",
-            width: "320px",
-            height: "320px",
-            background:
-              "radial-gradient(ellipse, rgba(102,126,234,0.18), transparent 65%)",
-            filter: "blur(58px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-[0.2em] mb-3">
-              Guidelines
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Do / Don&apos;t
-            </h2>
-            <p className="text-white/50 max-w-md mx-auto leading-relaxed">
-              Glass done right is stunning. Glass done wrong is a blurry mess with no depth or legibility.
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* DO */}
-            <RevealBlock delay={0.06}>
-              <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-full bg-green-400/20 border border-green-400/40 flex items-center justify-center flex-shrink-0">
-                    <svg
-                      className="w-4 h-4 text-green-300"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-green-300 font-semibold text-lg">Do</h3>
-                </div>
-                <ul className="space-y-3">
-                  {doRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400/60 mt-2 flex-shrink-0" />
-                      <span className="text-sm text-white/70 leading-relaxed">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Correct example */}
-                <div className="mt-6 p-4 bg-white/20 border border-white/30 rounded-xl backdrop-blur-xl">
-                  <p className="text-xs text-white/50 uppercase tracking-wider mb-1">
-                    Correct Usage
-                  </p>
-                  <p className="text-white text-sm font-medium">Glass on gradient</p>
-                  <p className="text-white/60 text-xs mt-0.5 font-mono">
-                    bg-white/20 backdrop-blur-xl border-white/30
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* DON'T */}
-            <RevealBlock delay={0.12}>
-              <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-full bg-red-400/20 border border-red-400/40 flex items-center justify-center flex-shrink-0">
-                    <svg
-                      className="w-4 h-4 text-red-300"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-red-300 font-semibold text-lg">Don&apos;t</h3>
-                </div>
-                <ul className="space-y-3">
-                  {dontRules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400/60 mt-2 flex-shrink-0" />
-                      <span className="text-sm text-white/70 leading-relaxed">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Counter-example */}
-                <div className="mt-6 p-4 bg-gray-800 border border-gray-700 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-                    Incorrect Usage
-                  </p>
-                  <p className="text-gray-200 text-sm font-medium">Opaque on flat solid</p>
-                  <p className="text-gray-400 text-xs mt-0.5">
-                    No gradient backdrop — blur has nothing to sample
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 8. Feature Cards ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        {/* Gradient backdrop */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]" />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "0%",
-            right: "0%",
-            width: "520px",
-            height: "520px",
-            background:
-              "radial-gradient(ellipse, rgba(245,87,108,0.3), transparent 65%)",
-            filter: "blur(72px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "0%",
-            left: "0%",
-            width: "420px",
-            height: "420px",
-            background:
-              "radial-gradient(ellipse, rgba(102,126,234,0.3), transparent 65%)",
-            filter: "blur(72px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/60 uppercase tracking-[0.2em] mb-3">
-              Features
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Core Principles
-            </h2>
-            <p className="text-white/70 max-w-md mx-auto leading-relaxed">
-              Four technical pillars that make glassmorphism work as a coherent visual language across any interface.
-            </p>
-          </RevealBlock>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            {featureCards.map((card, i) => (
-              <div key={card.title}>
-                <RevealBlock delay={i * 0.09}>
-                  <div className="group bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg p-7 hover:bg-white/30 hover:border-white/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    {/* Icon */}
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-white/25"
-                      style={{ backgroundColor: `${card.accent}30` }}
-                    >
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d={card.iconPath}
-                        />
-                      </svg>
-                    </div>
-
-                    <h3 className="text-white font-semibold text-lg mb-2">
-                      {card.title}
-                    </h3>
-                    <p className="text-white/65 text-sm leading-relaxed">
-                      {card.description}
-                    </p>
-
-                    {/* Accent underline */}
-                    <div
-                      className="mt-5 h-0.5 rounded-full opacity-40 group-hover:opacity-70 transition-opacity duration-300"
-                      style={{
-                        background: `linear-gradient(to right, ${card.accent}, transparent)`,
-                      }}
-                    />
-                  </div>
-                </RevealBlock>
-              </div>
+              </RevealBlock>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ===== 9. Typography & Notification Stack ===== */}
-      <section className="relative py-28 md:py-36 px-6 md:px-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1b5e] to-[#1a0533]" />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: "18%",
-            left: "18%",
-            width: "460px",
-            height: "460px",
-            background:
-              "radial-gradient(ellipse, rgba(167,139,250,0.14), transparent 65%)",
-            filter: "blur(72px)",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: "8%",
-            right: "12%",
-            width: "360px",
-            height: "360px",
-            background:
-              "radial-gradient(ellipse, rgba(240,147,251,0.11), transparent 65%)",
-            filter: "blur(68px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <RevealBlock className="text-center mb-14">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-[0.2em] mb-3">
-              Typography
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Text on Glass
-            </h2>
-            <p className="text-white/50 max-w-md mx-auto leading-relaxed">
-              Legibility on frosted surfaces requires careful opacity levels. White text at varying opacities creates a clear visual hierarchy.
-            </p>
+          {/* Layer structure diagram */}
+          <RevealBlock delay={0.25}>
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8">
+              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/45 mb-6">
+                Layer architecture — required stacking order
+              </p>
+              <div className="space-y-3">
+                {[
+                  { layer: "1. Bottom", desc: "Gradient or image background (required — glass needs something rich to blur)", code: "bg-gradient-to-br", depth: 100 },
+                  { layer: "2. Middle", desc: "Glass container — backdrop-blur + bg-white/10 to /30 + border-white/20", code: "backdrop-blur-xl", depth: 70 },
+                  { layer: "3. Top", desc: "Content elements — text-white, icons, inputs, buttons", code: "text-white", depth: 45 },
+                ].map((l) => (
+                  <div key={l.layer} className="flex items-center gap-4 p-4 bg-white/8 border border-white/10 rounded-xl">
+                    <div className="w-3 h-3 rounded-full bg-white shrink-0" style={{ opacity: l.depth / 100 }} />
+                    <div className="flex-1">
+                      <div className="text-white text-sm font-semibold">{l.layer}</div>
+                      <div className="text-white/45 text-xs mt-0.5">{l.desc}</div>
+                    </div>
+                    <code className="text-xs font-mono text-white/35 hidden sm:block">{l.code}</code>
+                  </div>
+                ))}
+              </div>
+            </div>
           </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Type scale on glass */}
-            <RevealBlock delay={0.06}>
-              <div className="bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl p-8">
-                <p className="text-xs text-white/40 uppercase tracking-widest mb-6">
-                  Type Scale
-                </p>
-                <div className="space-y-5">
-                  {[
-                    {
-                      size: "text-3xl",
-                      weight: "font-bold",
-                      opacity: "text-white",
-                      label: "Display — text-white",
-                    },
-                    {
-                      size: "text-xl",
-                      weight: "font-semibold",
-                      opacity: "text-white/90",
-                      label: "Heading — text-white/90",
-                    },
-                    {
-                      size: "text-base",
-                      weight: "font-medium",
-                      opacity: "text-white/80",
-                      label: "Subheading — text-white/80",
-                    },
-                    {
-                      size: "text-sm",
-                      weight: "font-normal",
-                      opacity: "text-white/70",
-                      label: "Body — text-white/70",
-                    },
-                    {
-                      size: "text-xs",
-                      weight: "font-normal",
-                      opacity: "text-white/50",
-                      label: "Caption — text-white/50",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex items-center justify-between gap-4 pb-4 border-b border-white/8 last:border-0 last:pb-0"
-                    >
-                      <span
-                        className={`${item.size} ${item.weight} ${item.opacity} leading-none`}
-                      >
-                        Aa
-                      </span>
-                      <span className="text-xs text-white/35 text-right">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Notification stack — layered glass depth */}
-            <RevealBlock delay={0.12}>
-              <div>
-                <p className="text-xs text-white/40 uppercase tracking-widest mb-6">
-                  Notification Stack — Layered Glass
-                </p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      title: "New message from Aria",
-                      time: "now",
-                      bg: "bg-white/25",
-                      blur: "backdrop-blur-2xl",
-                      color: "#667eea",
-                    },
-                    {
-                      title: "Your build succeeded",
-                      time: "2m ago",
-                      bg: "bg-white/18",
-                      blur: "backdrop-blur-xl",
-                      color: "#f093fb",
-                    },
-                    {
-                      title: "Weekly report ready",
-                      time: "1h ago",
-                      bg: "bg-white/12",
-                      blur: "backdrop-blur-lg",
-                      color: "#a78bfa",
-                    },
-                    {
-                      title: "System update available",
-                      time: "3h ago",
-                      bg: "bg-white/8",
-                      blur: "backdrop-blur-md",
-                      color: "#e879f9",
-                    },
-                  ].map((notif, i) => (
-                    <div
-                      key={i}
-                      className={`${notif.bg} ${notif.blur} border border-white/20 rounded-2xl px-5 py-4 flex items-center justify-between transition-all duration-300 hover:bg-white/30 cursor-default`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{
-                            background: notif.color,
-                            boxShadow: `0 0 8px ${notif.color}80`,
-                          }}
-                        />
-                        <p className="text-white text-sm font-medium">
-                          {notif.title}
-                        </p>
-                      </div>
-                      <span className="text-white/40 text-xs flex-shrink-0">
-                        {notif.time}
-                      </span>
-                    </div>
-                  ))}
-                  <p className="text-xs text-white/30 mt-4 text-center">
-                    Decreasing bg opacity creates foreground-to-background depth
-                  </p>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
-      <footer className="relative overflow-hidden">
-        {/* Gradient base */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#667eea] to-[#764ba2]" />
-        {/* Glass strip */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-xl border-t border-white/20" />
+      {/* ============================================================ */}
+      {/* 11. FOOTER                                                   */}
+      {/* ============================================================ */}
+      <footer className="relative border-t border-white/10 overflow-hidden">
+        {/* Orb decoration */}
+        <div
+          className="absolute top-0 right-1/4 w-64 h-64 rounded-full pointer-events-none opacity-28"
+          style={{ background: "radial-gradient(circle, rgba(240,147,251,0.5) 0%, transparent 70%)" }}
+        />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="max-w-6xl mx-auto px-5 md:px-10 pt-16 pb-12">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
             {/* Brand */}
-            <div className="text-center md:text-left">
-              <p className="text-white font-semibold text-base tracking-wide mb-1">
-                Glassmorphism
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center">
+                  <DiamondIcon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-xl font-bold text-white tracking-tight">
+                  Glass<span className="text-white/55">morphism</span>
+                </span>
+              </div>
+              <p className="text-sm text-white/45 leading-relaxed">
+                Half-transparent frosted glass panels, backdrop blur, and luminous
+                borders creating modern depth inspired by iOS and macOS design.
               </p>
-              <p className="text-white/50 text-xs">
-                Part of StyleKit — a living collection of design systems
-              </p>
+              <div className="flex gap-2 items-center">
+                {["rgba(255,255,255,0.25)", "#667eea", "#764ba2", "#f093fb", "#f5576c"].map((c, i) => (
+                  <div
+                    key={i}
+                    className="w-5 h-5 rounded-full border border-white/20 hover:scale-125 glass-transition cursor-default"
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Color dots */}
-            <div className="flex items-center gap-2">
-              {colorOrbs.map((orb) => (
-                <div
-                  key={orb.name}
-                  className={`w-5 h-5 rounded-full bg-gradient-to-br ${orb.gradient}`}
-                  style={{ boxShadow: `0 2px 8px ${orb.hex}50` }}
-                />
-              ))}
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38">Style</span>
+                <Link href="/styles/glassmorphism" className="text-white/55 hover:text-white glass-transition">Documentation</Link>
+                <Link href="/styles/glassmorphism/showcase" className="text-white/55 hover:text-white glass-transition">Showcase</Link>
+                <Link href="/styles/glassmorphism/cover" className="text-white/55 hover:text-white glass-transition">Cover</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38">StyleKit</span>
+                <Link href="/" className="text-white/55 hover:text-white glass-transition">Home</Link>
+                <Link href="/styles" className="text-white/55 hover:text-white glass-transition">All Styles</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/38">Core Values</span>
+                {["backdrop-blur", "bg-white/20", "border-white/25", "shadow-xl"].map((v) => (
+                  <span key={v} className="text-white/35 text-xs font-mono">{v}</span>
+                ))}
+              </div>
             </div>
-
-            {/* Nav */}
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/styles/glassmorphism"
-                className="text-xs text-white/50 hover:text-white transition-colors duration-300"
-              >
-                Docs
-              </Link>
-              <Link
-                href="/styles"
-                className="text-xs text-white/50 hover:text-white transition-colors duration-300"
-              >
-                All Styles
-              </Link>
-              <Link
-                href="/"
-                className="text-xs text-white/50 hover:text-white transition-colors duration-300"
-              >
-                Home
-              </Link>
-            </nav>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/15 text-center">
-            <p className="text-white/40 text-xs">&copy; 2025 StyleKit</p>
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8 rounded-full" />
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-white/38">
+              <DiamondIcon className="w-3 h-3 text-white/38" />
+              <span>Glassmorphism showcase for StyleKit</span>
+            </div>
+            <Link
+              href="/"
+              className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 text-white/75 text-sm font-medium overflow-hidden hover:bg-white/20 hover:text-white hover:border-white/35 hover:-translate-y-0.5 glass-transition"
+            >
+              <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
+              <span className="relative z-10 flex items-center gap-2">
+                <ArrowRightIcon className="w-3 h-3 rotate-180" />
+                Back to StyleKit
+              </span>
+            </Link>
           </div>
         </div>
       </footer>

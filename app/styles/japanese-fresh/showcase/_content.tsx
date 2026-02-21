@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
-// ---------------------------------------------------------------------------
-// Inline useInView hook
-// ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
+/* ------------------------------------------------------------------ */
+
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -29,9 +30,6 @@ function useInView(options = {}) {
   return { ref, inView };
 }
 
-// ---------------------------------------------------------------------------
-// RevealBlock — scroll-triggered fade+lift
-// ---------------------------------------------------------------------------
 function RevealBlock({
   children,
   className = "",
@@ -48,7 +46,7 @@ function RevealBlock({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transform: inView ? "translateY(0)" : "translateY(32px)",
         transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
       }}
     >
@@ -57,40 +55,46 @@ function RevealBlock({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Botanical SVG accents — inline, zero imports
-// ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/*  Botanical SVG accents — inline line drawings, one per section      */
+/* ------------------------------------------------------------------ */
+
 function BotanicalBranch({ className = "" }: { className?: string }) {
   return (
     <svg
+      className={className}
       viewBox="0 0 100 200"
       fill="none"
       stroke="#a0aec0"
       strokeWidth="0.8"
-      className={`pointer-events-none opacity-[0.12] ${className}`}
+      aria-hidden="true"
     >
-      <path d="M50 198 C50 165, 53 130, 56 95 C58 70, 54 45, 57 18" />
-      <path d="M56 95 C68 88, 78 78, 83 68 C74 78, 64 87, 56 95" />
-      <path d="M55 62 C43 54, 33 42, 27 32 C35 43, 45 54, 55 62" />
-      <path d="M57 125 C69 118, 78 109, 84 99 C76 110, 67 119, 57 125" />
-      <path d="M54 148 C42 142, 33 132, 27 122 C33 133, 42 143, 54 148" />
+      <path d="M50 200 C50 160, 55 120, 58 80 C60 60, 55 40, 58 20" />
+      <path d="M58 80 C70 75, 80 65, 85 58 C78 68, 68 76, 58 80" />
+      <path d="M56 50 C44 42, 36 32, 30 24 C38 34, 46 44, 56 50" />
+      <path d="M57 95 C68 92, 78 84, 82 78" />
+      <path d="M55 110 C42 106, 32 96, 26 88" />
     </svg>
   );
 }
 
-function BotanicalSprig({ className = "" }: { className?: string }) {
+function BotanicalWillow({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 80 130"
+      className={className}
+      viewBox="0 0 100 200"
       fill="none"
       stroke="#a0aec0"
       strokeWidth="0.7"
-      className={`pointer-events-none opacity-[0.12] ${className}`}
+      aria-hidden="true"
     >
-      <path d="M40 128 C40 100, 42 72, 44 44 C45 30, 43 14, 44 2" />
-      <path d="M44 55 C55 50, 63 42, 67 34 C61 42, 53 50, 44 55" />
-      <path d="M43 82 C32 77, 24 68, 20 59 C26 68, 33 77, 43 82" />
-      <path d="M44 30 C52 25, 58 18, 62 10 C57 18, 51 25, 44 30" />
+      <path d="M50 0 C50 40, 50 80, 50 140" />
+      <path d="M50 30 C62 50, 72 80, 68 120" />
+      <path d="M50 30 C38 50, 28 80, 32 120" />
+      <path d="M50 60 C66 80, 78 110, 76 148" />
+      <path d="M50 60 C34 80, 22 110, 24 148" />
+      <path d="M50 90 C60 108, 65 132, 62 160" />
+      <path d="M50 90 C40 108, 35 132, 38 160" />
     </svg>
   );
 }
@@ -98,890 +102,622 @@ function BotanicalSprig({ className = "" }: { className?: string }) {
 function BotanicalLeaf({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 60 80"
+      className={className}
+      viewBox="0 0 80 120"
       fill="none"
       stroke="#a0aec0"
       strokeWidth="0.7"
-      className={`pointer-events-none opacity-[0.10] ${className}`}
+      aria-hidden="true"
     >
-      <path d="M30 78 C30 55, 20 35, 10 18 C20 10, 38 8, 50 18 C60 28, 55 50, 30 78 Z" />
-      <path d="M30 78 C30 55, 30 35, 30 18" />
-      <path d="M20 45 C25 40, 30 38, 35 40" />
-      <path d="M16 32 C22 28, 28 27, 33 28" />
+      <path d="M40 115 C40 85, 30 55, 18 32 C28 18, 52 18, 62 32 C72 46, 65 78, 40 115 Z" />
+      <path d="M40 115 C40 85, 40 55, 40 32" />
+      <path d="M28 60 C33 54, 40 52, 47 55" />
+      <path d="M22 44 C28 39, 35 37, 42 40" />
     </svg>
   );
 }
 
-function SakuraPetal({ className = "" }: { className?: string }) {
+function BotanicalReed({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 40 40"
+      className={className}
+      viewBox="0 0 80 200"
       fill="none"
-      stroke="#ffb7c5"
-      strokeWidth="0.6"
-      className={`pointer-events-none opacity-[0.18] ${className}`}
+      stroke="#a0aec0"
+      strokeWidth="0.7"
+      aria-hidden="true"
     >
-      <path d="M20 2 C24 8, 26 14, 20 20 C14 14, 16 8, 20 2 Z" />
-      <path d="M38 20 C32 24, 26 26, 20 20 C26 14, 32 16, 38 20 Z" />
-      <path d="M20 38 C16 32, 14 26, 20 20 C26 26, 24 32, 20 38 Z" />
-      <path d="M2 20 C8 16, 14 14, 20 20 C14 26, 8 24, 2 20 Z" />
-      <circle cx="20" cy="20" r="1.5" fill="#ffb7c5" opacity="0.4" />
+      <path d="M30 200 C32 160, 34 120, 36 80 C38 50, 36 25, 34 5" />
+      <path d="M50 200 C48 155, 46 115, 44 75 C42 45, 44 20, 46 2" />
+      <path d="M15 200 C18 170, 22 140, 25 110 C28 85, 26 60, 24 35" />
+      <ellipse cx="34" cy="5" rx="5" ry="12" />
+      <ellipse cx="46" cy="2" rx="5" ry="12" />
+      <ellipse cx="24" cy="35" rx="4" ry="10" />
     </svg>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Tab type
-// ---------------------------------------------------------------------------
-type DemoTab = "button" | "card" | "input";
+function BotanicalFern({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 120 160"
+      fill="none"
+      stroke="#a0aec0"
+      strokeWidth="0.7"
+      aria-hidden="true"
+    >
+      <path d="M60 155 C60 120, 58 85, 56 50 C54 25, 56 10, 58 2" />
+      <path d="M56 50 C42 42, 28 32, 18 20 C32 28, 46 40, 56 50" />
+      <path d="M57 32 C70 24, 84 14, 94 4 C80 12, 68 22, 57 32" />
+      <path d="M57 72 C42 64, 28 54, 18 42" />
+      <path d="M57 90 C72 82, 86 74, 96 62" />
+      <path d="M57 110 C42 104, 28 96, 20 84" />
+    </svg>
+  );
+}
 
-// ---------------------------------------------------------------------------
-// Main showcase component
-// ---------------------------------------------------------------------------
-export default function JapaneseFreshShowcase() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<DemoTab>("button");
+function BotanicalCircle({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 120 120"
+      fill="none"
+      stroke="#a0aec0"
+      strokeWidth="0.6"
+      aria-hidden="true"
+    >
+      <circle cx="60" cy="60" r="50" />
+      <path d="M60 10 C60 35, 58 50, 55 60 C52 72, 50 88, 60 110" />
+      <path d="M10 60 C35 60, 50 58, 60 55 C72 52, 88 50, 110 60" />
+      <path d="M25 25 C38 38, 50 50, 60 60" />
+      <path d="M95 25 C82 38, 70 50, 60 60" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const paletteData = [
+  { name: "Sky Blue", nameJa: "空色", hex: "#64b5f6", role: "Primary" },
+  { name: "Rice White", nameJa: "白米", hex: "#fafaf8", role: "Background", outlined: true },
+  { name: "Mint", nameJa: "薄荷", hex: "#98d8c8", role: "Accent" },
+  { name: "Gentle Pink", nameJa: "桜色", hex: "#ffb7c5", role: "Accent" },
+  { name: "Powder Blue", nameJa: "水色", hex: "#b8d4e3", role: "Accent" },
+  { name: "Muted Text", nameJa: "灰青", hex: "#b0b8c4", role: "Secondary" },
+  { name: "Warm Border", nameJa: "縁", hex: "#d4d4cf", role: "Hairline", outlined: true },
+];
+
+const philosophyCards = [
+  {
+    kanji: "間",
+    label: "Ma",
+    desc: "The space between things. Silence between notes. Whitespace between sections. The pause is as important as the word — it gives everything else room to breathe.",
+    color: "#64b5f6",
+  },
+  {
+    kanji: "侘",
+    label: "Wabi",
+    desc: "Beauty in imperfection. A slightly off-center composition. Asymmetric placement. Deliberate restraint over relentless polish. The irregular is what is real.",
+    color: "#98d8c8",
+  },
+  {
+    kanji: "寂",
+    label: "Sabi",
+    desc: "The beauty of time passing. Organic forms over rigid grids. Hairline borders that barely exist. Quiet inevitability. Things worn gently by experience.",
+    color: "#ffb7c5",
+  },
+  {
+    kanji: "清",
+    label: "Sei",
+    desc: "Purity without coldness. The feeling of light through shoji screens. Clean lines that invite the eye to rest rather than to seek. Stillness that is not emptiness.",
+    color: "#b8d4e3",
+  },
+];
+
+const journalEntries = [
+  {
+    date: "Feb 21",
+    dateJa: "二月廿一日",
+    title: "Morning light",
+    excerpt: "The kind of quiet that only exists before the rest of the world wakes.",
+    mood: "#64b5f6",
+  },
+  {
+    date: "Feb 20",
+    dateJa: "二月二十日",
+    title: "After the rain",
+    excerpt: "The city smells of wet concrete and something faintly green.",
+    mood: "#98d8c8",
+  },
+  {
+    date: "Feb 19",
+    dateJa: "二月十九日",
+    title: "Afternoon tea",
+    excerpt: "Nothing more meditative than watching steam rise from a ceramic cup.",
+    mood: "#b8d4e3",
+  },
+  {
+    date: "Feb 18",
+    dateJa: "二月十八日",
+    title: "Paper windows",
+    excerpt: "Light arrives softened, like a thought you cannot quite name.",
+    mood: "#ffb7c5",
+  },
+];
+
+type ComponentTab = "buttons" | "cards" | "inputs" | "typography";
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
+
+export default function ShowcaseContent() {
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([false, true, false]);
+
+  // Animation & Interaction rule demo states
+  const [floatHovered, setFloatHovered] = useState(false);
+  const [airyActive, setAiryActive] = useState(false);
+  const [subtleFocused, setSubtleFocused] = useState(false);
+  const [tactilePressed, setTactilePressed] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const tabs: { id: DemoTab; label: string; labelJa: string }[] = [
-    { id: "button", label: "Button", labelJa: "ボタン" },
-    { id: "card", label: "Card", labelJa: "カード" },
-    { id: "input", label: "Input", labelJa: "入力" },
-  ];
-
-  const palette = [
-    { name: "Sky", nameJa: "空", hex: "#64b5f6", bg: "#64b5f6", season: "summer" },
-    { name: "Rice", nameJa: "米", hex: "#fafaf8", bg: "#fafaf8", border: true, season: "all year" },
-    { name: "Mint", nameJa: "薄荷", hex: "#98d8c8", bg: "#98d8c8", season: "spring" },
-    { name: "Petal", nameJa: "花びら", hex: "#ffb7c5", bg: "#ffb7c5", season: "spring" },
-    { name: "Powder", nameJa: "粉末", hex: "#b8d4e3", bg: "#b8d4e3", season: "winter" },
-    { name: "Stone", nameJa: "石", hex: "#4a5568", bg: "#4a5568", season: "autumn" },
-    { name: "Warm Mist", nameJa: "霞", hex: "#b0b8c4", bg: "#b0b8c4", season: "spring" },
-    { name: "Hairline", nameJa: "縁", hex: "#d4d4cf", bg: "#d4d4cf", season: "all year" },
-  ];
-
-  const typographySamples = [
-    { size: "text-6xl md:text-7xl", weight: "font-extralight", label: "Display — extralight", sample: "日系清新", tracking: "tracking-wide" },
-    { size: "text-4xl md:text-5xl", weight: "font-extralight", label: "Heading 1 — extralight", sample: "Morning Light", tracking: "tracking-wide" },
-    { size: "text-2xl md:text-3xl", weight: "font-light", label: "Heading 2 — light", sample: "桜の季節", tracking: "tracking-widest" },
-    { size: "text-lg md:text-xl", weight: "font-light", label: "Heading 3 — light", sample: "Wabi-sabi aesthetics", tracking: "tracking-wide" },
-    { size: "text-base", weight: "font-light", label: "Body — light", sample: "Design is not about what you add, but what you allow to breathe. Ma (間) — the space between things — is the primary material.", tracking: "tracking-wide" },
-    { size: "text-sm", weight: "font-light", label: "Caption — light", sample: "hairline borders · botanical accents · meditative slowness", tracking: "tracking-widest" },
-  ];
-
-  const featureCards = [
-    {
-      kanji: "間",
-      title: "ma — negative space",
-      desc: "In Japanese aesthetics, Ma (間) refers to the intentional pause — the emptiness between things that gives them definition and breath. Whitespace is not waste; it is the primary design material.",
-      accentColor: "#64b5f6",
-      borderColor: "#64b5f6",
-      colSpan: "md:col-span-7",
-      offset: "",
-    },
-    {
-      kanji: "侘",
-      title: "wabi — simplicity",
-      desc: "Finding beauty in imperfection. Asymmetric placement, slight irregularities — these are features, not flaws.",
-      accentColor: "#98d8c8",
-      borderColor: "#98d8c8",
-      colSpan: "md:col-span-5",
-      offset: "md:mt-8",
-    },
-    {
-      kanji: "寂",
-      title: "sabi — quiet beauty",
-      desc: "The beauty that comes with time and restraint. Slow transitions, gentle colors, hairline borders — nothing forced.",
-      accentColor: "#ffb7c5",
-      borderColor: "#ffb7c5",
-      colSpan: "md:col-span-5",
-      offset: "",
-    },
-    {
-      kanji: "清",
-      title: "sei — purity",
-      desc: "Like morning light through shoji screens — clean, cool, unhurried. Every element earns its place. Nothing decorates for decoration's sake; each mark carries intention and quietude.",
-      accentColor: "#b8d4e3",
-      borderColor: "#b8d4e3",
-      colSpan: "md:col-span-7",
-      offset: "md:mt-8",
-    },
-  ];
+  function toggleItem(i: number) {
+    setCheckedItems((prev) => {
+      const next = [...prev];
+      next[i] = !next[i];
+      return next;
+    });
+  }
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] text-[#4a5568]">
+    <div className="min-h-screen bg-[#fafaf8] text-[#4a5568] overflow-x-hidden">
       <style>{`
-        .jf-underline {
-          position: relative;
-          display: inline-block;
+        @keyframes jf-sway {
+          0%, 100% { transform: rotate(0deg) translateY(0px); }
+          33%  { transform: rotate(1.5deg) translateY(-3px); }
+          66%  { transform: rotate(-1deg) translateY(2px); }
         }
-        .jf-underline::after {
-          content: '';
-          position: absolute;
-          width: 100%;
-          height: 1px;
-          bottom: -2px;
-          left: 0;
-          background-color: #64b5f6;
-          transform: scaleX(0);
-          transform-origin: right center;
-          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .jf-underline:hover::after {
-          transform: scaleX(1);
-          transform-origin: left center;
+        @keyframes jf-drift {
+          0%, 100% { transform: translateY(0px); }
+          50%  { transform: translateY(-6px); }
         }
         @keyframes jf-breathe {
-          0%, 100% { opacity: 0.12; }
-          50% { opacity: 0.20; }
+          0%, 100% { opacity: 0.07; }
+          50%  { opacity: 0.13; }
         }
-        .jf-breathe {
-          animation: jf-breathe 6s ease-in-out infinite;
+        @keyframes jf-petal {
+          0%   { transform: translateY(-8px) rotate(0deg); opacity: 0; }
+          15%  { opacity: 0.18; }
+          85%  { opacity: 0.12; }
+          100% { transform: translateY(70px) rotate(200deg); opacity: 0; }
         }
-        @keyframes jf-petal-fall {
-          0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-          20% { opacity: 0.18; }
-          80% { opacity: 0.14; }
-          100% { transform: translateY(60px) rotate(180deg); opacity: 0; }
-        }
-        .jf-petal-fall {
-          animation: jf-petal-fall 8s ease-in-out infinite;
-        }
-        @keyframes jf-float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-4px); }
-        }
-        .jf-float {
-          animation: jf-float 5s ease-in-out infinite;
-        }
+        .jf-sway   { animation: jf-sway 9s ease-in-out infinite; }
+        .jf-drift  { animation: jf-drift 6s ease-in-out infinite; }
+        .jf-breathe{ animation: jf-breathe 5s ease-in-out infinite; }
+        .jf-petal  { animation: jf-petal 10s ease-in-out infinite; }
       `}</style>
 
       {/* ================================================================ */}
-      {/* 1. Navigation                                                      */}
+      {/* 1. NAVIGATION                                                    */}
       {/* ================================================================ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafaf8]/90 backdrop-blur-sm border-b border-[#d4d4cf]/30">
-        <div className="max-w-6xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-14 md:h-16">
-            <Link
-              href="/styles"
-              className="font-light text-sm text-[#b0b8c4] tracking-widest jf-underline"
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          backgroundColor: "rgba(250,250,248,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "0.5px solid rgba(212,212,207,0.4)",
+        }}
+      >
+        <div className="max-w-5xl mx-auto px-6 md:px-10 flex items-center justify-between h-14">
+          {/* Logo mark */}
+          <div className="flex items-center gap-2.5">
+            <svg
+              viewBox="0 0 28 48"
+              width="14"
+              height="24"
+              fill="none"
+              stroke="#b0b8c4"
+              strokeWidth="0.8"
+              aria-hidden="true"
             >
-              StyleKit
-            </Link>
-
-            <div className="flex items-center gap-3">
-              <span className="font-extralight text-base text-[#4a5568] tracking-widest">
-                日系清新風
-              </span>
-              <span className="hidden md:inline font-light text-xs text-[#d4d4cf] tracking-widest">
-                · japanese fresh
-              </span>
-            </div>
-
-            <Link
-              href="/styles/japanese-fresh"
-              className="font-light text-xs text-[#b0b8c4] tracking-widest jf-underline"
-            >
-              docs
-            </Link>
+              <path d="M14 46 C14 36, 15 24, 16 14 C17 7, 15 2, 16 0" />
+              <path d="M16 14 C21 12, 26 8, 28 4 C24 8, 19 12, 16 14" />
+              <path d="M15 26 C10 24, 5 19, 2 14 C6 19, 11 24, 15 26" />
+            </svg>
+            <span className="font-light text-sm text-[#7a8a9e] tracking-[0.12em]">
+              日系清新風
+            </span>
           </div>
+
+          {/* Nav items */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Philosophy", "Components", "Animations", "App"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 font-light text-xs text-[#b0b8c4] tracking-widest rounded-md cursor-pointer transition-colors duration-500 hover:text-[#64b5f6]"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-4 py-1.5 font-light text-xs text-[#7a8a9e] tracking-widest rounded-lg transition-all duration-500 hover:text-[#64b5f6] hover:-translate-y-px"
+            style={{ border: "0.5px solid rgba(212,212,207,0.5)" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(100,181,246,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,212,207,0.5)";
+            }}
+          >
+            <span>&#8592;</span>
+            <span>StyleKit</span>
+          </Link>
         </div>
       </header>
 
       {/* ================================================================ */}
-      {/* 2. Hero — full-screen Ma whitespace                               */}
+      {/* 2. HERO — Ma (間) full-screen breathing room                     */}
       {/* ================================================================ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-12 pt-16 overflow-hidden">
-        {/* Botanical — absolute left/bottom */}
-        <div className="absolute left-6 md:left-16 bottom-16 w-20 h-44 jf-breathe">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-14">
+        {/* Botanical left */}
+        <div
+          className="jf-sway absolute left-6 md:left-16 bottom-20 w-16 h-36"
+          style={{ opacity: 0.1, pointerEvents: "none" }}
+        >
           <BotanicalBranch className="w-full h-full" />
         </div>
 
-        {/* Botanical — absolute right/upper */}
+        {/* Botanical right */}
         <div
-          className="absolute right-8 md:right-20 top-32 w-14 h-28 jf-breathe"
-          style={{ animationDelay: "3s" }}
+          className="jf-drift absolute right-8 md:right-20 top-32 w-10 h-24"
+          style={{ opacity: 0.09, pointerEvents: "none", animationDelay: "2s" }}
         >
-          <BotanicalSprig className="w-full h-full" />
+          <BotanicalLeaf className="w-full h-full" />
         </div>
 
-        {/* Sakura petals — decorative floaters */}
+        {/* Floating petals */}
+        {[
+          { left: "22%", top: "18%", delay: "0s", size: 28 },
+          { left: "60%", top: "14%", delay: "3.5s", size: 20 },
+          { left: "78%", top: "38%", delay: "6s", size: 24 },
+        ].map((p, i) => (
+          <div
+            key={i}
+            className="jf-petal absolute pointer-events-none hidden md:block"
+            style={{ left: p.left, top: p.top, animationDelay: p.delay }}
+          >
+            <svg
+              width={p.size}
+              height={p.size}
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="#ffb7c5"
+              strokeWidth="0.6"
+              aria-hidden="true"
+            >
+              <path d="M20 2 C24 8, 26 14, 20 20 C14 14, 16 8, 20 2 Z" />
+              <path d="M38 20 C32 24, 26 26, 20 20 C26 14, 32 16, 38 20 Z" />
+              <path d="M20 38 C16 32, 14 26, 20 20 C26 26, 24 32, 20 38 Z" />
+              <path d="M2 20 C8 16, 14 14, 20 20 C14 26, 8 24, 2 20 Z" />
+            </svg>
+          </div>
+        ))}
+
+        {/* Linen texture */}
         <div
-          className="absolute left-1/4 top-24 w-10 h-10 jf-petal-fall"
-          style={{ animationDelay: "0s" }}
-        >
-          <SakuraPetal className="w-full h-full" />
-        </div>
-        <div
-          className="absolute right-1/3 top-16 w-8 h-8 jf-petal-fall"
-          style={{ animationDelay: "3s" }}
-        >
-          <SakuraPetal className="w-full h-full" />
-        </div>
-        <div
-          className="absolute left-2/3 top-36 w-6 h-6 jf-petal-fall"
-          style={{ animationDelay: "5.5s" }}
-        >
-          <SakuraPetal className="w-full h-full" />
-        </div>
+          className="jf-breathe absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='6' height='6' fill='%23fafaf8'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23e8e8e4' opacity='0.12'/%3E%3Crect x='3' y='3' width='1' height='1' fill='%23e8e8e4' opacity='0.08'/%3E%3C/svg%3E\")",
+          }}
+        />
 
         {/* Hero content */}
-        <div className="text-center max-w-2xl mx-auto relative z-10">
-          {/* Japanese label */}
+        <div className="relative z-10 text-center px-8 max-w-xl">
+          {/* Eyebrow */}
           <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-              transition: "opacity 1.0s cubic-bezier(0.16,1,0.3,1) 0s, transform 1.0s cubic-bezier(0.16,1,0.3,1) 0s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(12px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0s",
+              marginBottom: "2.5rem",
             }}
           >
-            <p className="font-light text-xs text-[#b0b8c4] tracking-[0.4em] mb-8">
-              間 · ma · the beauty of empty space
-            </p>
+            <span className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4]">
+              japanese fresh &nbsp;&middot;&nbsp; 日系清新風
+            </span>
           </div>
 
-          {/* Main title */}
+          {/* Kanji */}
           <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 1.0s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 1.0s cubic-bezier(0.16,1,0.3,1) 0.15s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.08s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.08s",
+              display: "flex",
+              justifyContent: "center",
+              gap: "1.5rem",
+              marginBottom: "2rem",
             }}
           >
-            <h1 className="font-extralight text-5xl md:text-7xl text-[#4a5568] tracking-wide leading-tight mb-4">
-              Japanese Fresh
-            </h1>
-          </div>
-
-          {/* Kanji row */}
-          <div
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1.0s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 1.0s cubic-bezier(0.16,1,0.3,1) 0.25s",
-            }}
-          >
-            <div className="flex items-center justify-center gap-6 mb-6">
-              {["侘", "寂", "間", "清"].map((k, i) => (
-                <span
-                  key={i}
-                  className="font-extralight text-2xl jf-float"
-                  style={{
-                    color: ["#64b5f6", "#98d8c8", "#ffb7c5", "#b8d4e3"][i],
-                    animationDelay: `${i * 0.8}s`,
-                    opacity: 0.6,
-                  }}
-                >
-                  {k}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Subtitle */}
-          <div
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 1.0s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 1.0s cubic-bezier(0.16,1,0.3,1) 0.35s",
-            }}
-          >
-            <p className="font-light text-sm text-[#b0b8c4] tracking-widest mb-16 leading-loose">
-              wabi-sabi · hairline borders · meditative slowness
-            </p>
-          </div>
-
-          {/* CTA buttons */}
-          <div
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1.0s cubic-bezier(0.16,1,0.3,1) 0.5s, transform 1.0s cubic-bezier(0.16,1,0.3,1) 0.5s",
-            }}
-          >
-            <div className="flex flex-wrap items-center justify-center gap-5">
-              <button
-                type="button"
-                className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#b0b8c4] rounded-lg border border-[#d4d4cf]/40 hover:-translate-y-0.5 hover:bg-[#64b5f6]/5 hover:border-[#64b5f6]/40 hover:text-[#64b5f6] transition-all duration-500"
+            {[
+              { k: "間", c: "#64b5f6" },
+              { k: "侘", c: "#98d8c8" },
+              { k: "寂", c: "#ffb7c5" },
+              { k: "清", c: "#b8d4e3" },
+            ].map(({ k, c }, i) => (
+              <span
+                key={k}
+                className="font-extralight text-2xl tracking-wide jf-drift"
+                style={{ color: c, opacity: 0.55, animationDelay: `${i * 0.7}s` }}
               >
-                explore gently
-              </button>
-              <button
-                type="button"
-                className="px-10 py-3 bg-[#64b5f6]/90 font-light tracking-widest text-sm text-white rounded-lg border border-[#64b5f6]/30 hover:-translate-y-0.5 hover:bg-[#64b5f6] transition-all duration-500"
-              >
-                begin
-              </button>
-            </div>
+                {k}
+              </span>
+            ))}
+          </div>
+
+          {/* Title */}
+          <h1
+            className="font-extralight text-5xl md:text-6xl text-[#4a5568] tracking-wide leading-tight"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.14s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.14s",
+              marginBottom: "1.5rem",
+            }}
+          >
+            the beauty of
+            <br />
+            <span className="text-[#64b5f6]">empty space</span>
+          </h1>
+
+          {/* Hairline */}
+          <div
+            style={{
+              width: "2.5rem",
+              height: "0.5px",
+              backgroundColor: "#d4d4cf",
+              opacity: heroVisible ? 0.5 : 0,
+              margin: "0 auto 2rem",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s",
+            }}
+          />
+
+          {/* Sub */}
+          <p
+            className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s",
+              marginBottom: "3.5rem",
+            }}
+          >
+            Ma (間) · wabi-sabi · hairline borders · botanical accents
+            <br />
+            meditative slowness · extreme whitespace
+          </p>
+
+          {/* CTAs */}
+          <div
+            className="flex flex-wrap gap-4 justify-center"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(12px)",
+              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
+            }}
+          >
+            <button
+              className="px-10 py-3 font-light text-sm text-[#7a8a9e] tracking-widest rounded-lg transition-all duration-500 hover:-translate-y-0.5 hover:text-[#64b5f6] hover:bg-[#64b5f6]/5"
+              style={{ border: "0.5px solid rgba(212,212,207,0.5)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(100,181,246,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,212,207,0.5)";
+              }}
+              onMouseDown={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.7"; }}
+              onMouseUp={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+            >
+              explore
+            </button>
+            <button
+              className="px-10 py-3 font-light text-sm text-white tracking-widest rounded-lg transition-all duration-500 hover:-translate-y-0.5 hover:opacity-90"
+              style={{
+                backgroundColor: "rgba(100,181,246,0.75)",
+                border: "0.5px solid rgba(100,181,246,0.35)",
+              }}
+              onMouseDown={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.75"; }}
+              onMouseUp={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+            >
+              begin
+            </button>
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll cue */}
         <div
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
           style={{
-            opacity: heroRevealed ? 0.4 : 0,
+            opacity: heroVisible ? 0.35 : 0,
             transition: "opacity 1.2s cubic-bezier(0.16,1,0.3,1) 1s",
           }}
         >
-          <span className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4]">
-            scroll
-          </span>
-          <div className="w-px h-10 bg-[#d4d4cf]/50" />
+          <span className="font-light text-[9px] tracking-[0.45em] text-[#b0b8c4]">scroll</span>
+          <div className="w-px h-10" style={{ backgroundColor: "rgba(212,212,207,0.5)" }} />
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* 3. Component Demos — tab switcher                                 */}
+      {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-32 md:py-40 px-6 md:px-12">
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-4">
-              コンポーネント
-            </p>
-            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-6">
-              component demo
-            </h2>
-            <p className="font-light text-sm text-[#b0b8c4] tracking-wide mb-16 max-w-xs leading-loose">
-              each component breathes with ma-based spacing and weightless interactions
-            </p>
-          </RevealBlock>
-
-          {/* Tab row */}
-          <RevealBlock delay={0.1}>
-            <div className="flex items-end gap-0 border-b border-[#d4d4cf]/30 mb-12">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className="relative px-6 py-3 font-light text-sm tracking-widest transition-all duration-500"
-                  style={{ color: activeTab === tab.id ? "#4a5568" : "#b0b8c4" }}
-                >
-                  <span>{tab.label}</span>
-                  <span
-                    className="ml-2 font-light text-[10px] tracking-wider"
-                    style={{ color: activeTab === tab.id ? "#b0b8c4" : "#d4d4cf" }}
-                  >
-                    {tab.labelJa}
-                  </span>
-                  <span
-                    className="absolute bottom-0 left-0 right-0 h-px bg-[#64b5f6] transition-all duration-500"
-                    style={{ opacity: activeTab === tab.id ? 1 : 0 }}
-                  />
-                </button>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Tab panel */}
-          <RevealBlock delay={0.2}>
-            {/* Button demos */}
-            {activeTab === "button" && (
-              <div className="p-10 md:p-12 bg-white rounded-lg border border-[#d4d4cf]/30 transition-all duration-500">
-                <p className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4] mb-8">
-                  whisper button variants
-                </p>
-                <div className="flex flex-wrap gap-5 mb-10">
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#b0b8c4] rounded-lg border border-[#d4d4cf]/40 hover:-translate-y-0.5 hover:bg-[#64b5f6]/5 hover:border-[#64b5f6]/40 hover:text-[#64b5f6] transition-all duration-500"
-                  >
-                    whisper
-                  </button>
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-[#64b5f6]/90 font-light tracking-widest text-sm text-white rounded-lg border border-[#64b5f6]/30 hover:-translate-y-0.5 hover:bg-[#64b5f6] transition-all duration-500"
-                  >
-                    sky blue
-                  </button>
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#98d8c8] rounded-lg border border-[#98d8c8]/40 hover:-translate-y-0.5 hover:bg-[#98d8c8]/5 hover:border-[#98d8c8]/60 transition-all duration-500"
-                  >
-                    mint
-                  </button>
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#ffb7c5] rounded-lg border border-[#ffb7c5]/40 hover:-translate-y-0.5 hover:bg-[#ffb7c5]/5 hover:border-[#ffb7c5]/60 transition-all duration-500"
-                  >
-                    petal
-                  </button>
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#b8d4e3] rounded-lg border border-[#b8d4e3]/40 hover:-translate-y-0.5 hover:bg-[#b8d4e3]/5 hover:border-[#b8d4e3]/60 transition-all duration-500"
-                  >
-                    powder
-                  </button>
-                </div>
-                <div className="pt-8 border-t border-[#d4d4cf]/20">
-                  <p className="font-light text-xs text-[#b0b8c4] tracking-widest leading-relaxed">
-                    pattern — px-10 py-3 · font-light tracking-widest · border border-[#d4d4cf]/40 · duration-500 · hover:-translate-y-0.5
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Card demos */}
-            {activeTab === "card" && (
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "空気 — air",
-                    desc: "Design that breathes. Every element exists with intention, surrounded by generous space that gives it meaning and rest.",
-                    accent: "#64b5f6",
-                  },
-                  {
-                    title: "静寂 — silence",
-                    desc: "The absence of noise is itself a sound. Whitespace speaks where words cannot reach.",
-                    accent: "#98d8c8",
-                  },
-                  {
-                    title: "儚さ — transience",
-                    desc: "Like cherry blossoms, beauty is heightened by its fragility. Impermanence makes each moment precious.",
-                    accent: "#ffb7c5",
-                  },
-                  {
-                    title: "間 — interval",
-                    desc: "The pause between notes is the music. Ma teaches us that space is not empty — it holds everything.",
-                    accent: "#b8d4e3",
-                  },
-                ].map((card, i) => (
-                  <div
-                    key={i}
-                    className="group p-10 md:p-12 bg-white rounded-lg border border-[#d4d4cf]/30 hover:-translate-y-0.5 hover:bg-[#64b5f6]/[0.02] hover:border-[#d4d4cf]/50 transition-all duration-500 cursor-pointer"
-                    style={i % 2 !== 0 ? { marginTop: "1.5rem" } : {}}
-                    onMouseEnter={() => setHoveredCard(i)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                  >
-                    <h3
-                      className="font-extralight text-lg tracking-wide mb-4 transition-colors duration-500"
-                      style={{ color: hoveredCard === i ? card.accent : "#4a5568" }}
-                    >
-                      {card.title}
-                    </h3>
-                    <p className="font-light text-sm text-[#b0b8c4] leading-relaxed">
-                      {card.desc}
-                    </p>
-                    <div
-                      className="mt-6 h-px transition-all duration-500"
-                      style={{ backgroundColor: card.accent, opacity: hoveredCard === i ? 0.3 : 0.15 }}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Input demos */}
-            {activeTab === "input" && (
-              <div className="p-10 md:p-12 bg-white rounded-lg border border-[#d4d4cf]/30">
-                <p className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4] mb-10">
-                  bottom-line inputs · floating labels
-                </p>
-                <div className="max-w-sm space-y-10">
-                  <div className="relative pt-5">
-                    <input
-                      type="text"
-                      id="demo-name"
-                      placeholder=" "
-                      className="w-full pb-3 pt-0 bg-transparent border-0 border-b border-[#d4d4cf]/60 text-[#4a5568] font-light focus:border-[#64b5f6] focus:outline-none transition-all duration-500 peer"
-                    />
-                    <label
-                      htmlFor="demo-name"
-                      className="absolute top-0 left-0 text-xs font-light text-[#b0b8c4] tracking-widest peer-focus:text-[#64b5f6] peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs transition-all duration-500"
-                    >
-                      your name
-                    </label>
-                  </div>
-
-                  <div className="relative pt-5">
-                    <input
-                      type="email"
-                      id="demo-email"
-                      placeholder=" "
-                      className="w-full pb-3 pt-0 bg-transparent border-0 border-b border-[#d4d4cf]/60 text-[#4a5568] font-light focus:border-[#98d8c8] focus:outline-none transition-all duration-500 peer"
-                    />
-                    <label
-                      htmlFor="demo-email"
-                      className="absolute top-0 left-0 text-xs font-light text-[#b0b8c4] tracking-widest peer-focus:text-[#98d8c8] peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs transition-all duration-500"
-                    >
-                      your email
-                    </label>
-                  </div>
-
-                  <div className="relative pt-5">
-                    <textarea
-                      id="demo-note"
-                      placeholder=" "
-                      rows={3}
-                      className="w-full pb-3 pt-0 bg-transparent border-0 border-b border-[#d4d4cf]/60 text-[#4a5568] font-light focus:border-[#ffb7c5] focus:outline-none transition-all duration-500 peer resize-none"
-                    />
-                    <label
-                      htmlFor="demo-note"
-                      className="absolute top-0 left-0 text-xs font-light text-[#b0b8c4] tracking-widest peer-focus:text-[#ffb7c5] peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs transition-all duration-500"
-                    >
-                      a quiet thought
-                    </label>
-                  </div>
-
-                  <button
-                    type="button"
-                    className="px-10 py-3 bg-transparent font-light tracking-widest text-sm text-[#b0b8c4] rounded-lg border border-[#d4d4cf]/40 hover:-translate-y-0.5 hover:bg-[#64b5f6]/5 hover:border-[#64b5f6]/40 hover:text-[#64b5f6] transition-all duration-500"
-                  >
-                    send gently
-                  </button>
-                </div>
-              </div>
-            )}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* Botanical divider */}
-      <div className="relative max-w-4xl mx-auto px-6 md:px-12 flex items-center gap-8">
-        <div className="flex-1 h-px bg-[#d4d4cf]/25" />
-        <BotanicalLeaf className="w-8 h-10 flex-shrink-0" />
-        <div className="flex-1 h-px bg-[#d4d4cf]/25" />
-      </div>
-
-      {/* ================================================================ */}
-      {/* 4. Color Palette — seasonal inspiration                           */}
-      {/* ================================================================ */}
-      <section className="py-32 md:py-40 px-6 md:px-12 relative overflow-hidden">
-        {/* Botanical accent — right */}
-        <div className="absolute right-4 md:right-12 top-20 w-16 h-36 jf-breathe" style={{ animationDelay: "1.5s" }}>
-          <BotanicalSprig className="w-full h-full" />
+      <section className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden">
+        {/* Botanical accent */}
+        <div
+          className="jf-drift absolute right-8 md:right-16 top-20 w-12 h-28 pointer-events-none"
+          style={{ opacity: 0.09, animationDelay: "1s" }}
+        >
+          <BotanicalLeaf className="w-full h-full" />
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-4">
-              カラーパレット
-            </p>
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              palette / 色
+            </span>
             <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
-              color palette
+              warm neutral palette
             </h2>
-            <p className="font-light text-sm text-[#b0b8c4] tracking-wide mb-16 max-w-xs leading-loose">
-              tones drawn from dawn light, rice paper, cherry blossoms, and spring botanicals
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              Seven tones anchored in rice white and sky blue. Borders use warm #d4d4cf
+              at 30–40% opacity — never harsh. Text stays in muted #b0b8c4 to keep the
+              eye at rest.
             </p>
           </RevealBlock>
 
-          {/* Wabi-sabi offset palette grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10">
-            {palette.map((color, i) => (
-              <RevealBlock
-                key={color.hex}
-                delay={i * 0.06}
-                className={i % 3 === 1 ? "md:mt-6" : ""}
-              >
-                <div className="group flex flex-col gap-3">
+          {/* Swatches */}
+          <RevealBlock delay={0.1} className="mb-16">
+            <div className="flex flex-wrap gap-8 md:gap-12">
+              {paletteData.map((swatch, i) => (
+                <div
+                  key={swatch.hex}
+                  className="flex flex-col items-center gap-3 cursor-default"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
                   <div
-                    className="w-full aspect-square rounded-lg transition-all duration-500 group-hover:-translate-y-0.5"
+                    className="w-20 h-20 md:w-24 md:h-24 rounded-full transition-all duration-500"
                     style={{
-                      backgroundColor: color.bg,
-                      border: color.border ? "1px solid #d4d4cf" : "none",
+                      backgroundColor: swatch.hex,
+                      border: swatch.outlined ? "0.5px solid rgba(212,212,207,0.6)" : "none",
+                      transform: hoveredSwatch === i ? "translateY(-6px)" : "translateY(0)",
                     }}
                   />
-                  <div>
-                    <p className="font-light text-sm text-[#4a5568] tracking-wide">
-                      {color.name}
-                    </p>
-                    <p className="font-light text-xs text-[#b0b8c4] tracking-widest mt-0.5">
-                      {color.nameJa}
-                    </p>
-                    <p className="font-light text-[10px] text-[#b0b8c4] tracking-wider mt-1 font-mono">
-                      {color.hex}
-                    </p>
-                    <p className="font-light text-[9px] text-[#d4d4cf] tracking-wider mt-0.5">
-                      {color.season}
-                    </p>
+                  <div className="text-center">
+                    <div className="font-light text-xs text-[#7a8a9e] tracking-wide mb-0.5">
+                      {swatch.name}
+                    </div>
+                    <div className="font-light text-[10px] text-[#b0b8c4] font-mono tracking-wide mb-0.5">
+                      {swatch.hex}
+                    </div>
+                    <div className="font-light text-[9px] text-[#c8d0d8] tracking-widest">
+                      {swatch.role}
+                    </div>
                   </div>
                 </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Seasonal gradient strip */}
-          <RevealBlock delay={0.3} className="mt-20">
-            <p className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4] mb-6">
-              seasonal gradient · 四季のグラデーション
-            </p>
-            <div className="h-2 rounded-full" style={{
-              background: "linear-gradient(to right, #ffb7c5, #98d8c8, #64b5f6, #b8d4e3, #d4d4cf)",
-            }} />
-            <div className="flex justify-between mt-3">
-              {["spring 春", "summer 夏", "autumn 秋", "winter 冬"].map((season) => (
-                <span key={season} className="font-light text-[9px] text-[#d4d4cf] tracking-wider">
-                  {season}
-                </span>
               ))}
             </div>
           </RevealBlock>
-        </div>
-      </section>
 
-      {/* Hairline divider */}
-      <div className="max-w-2xl mx-auto px-6 md:px-12">
-        <div className="h-px bg-[#d4d4cf]/20" />
-      </div>
-
-      {/* ================================================================ */}
-      {/* 5. Design Rules — Ma (do) vs 禁 (don't)                          */}
-      {/* ================================================================ */}
-      <section className="py-32 md:py-40 px-6 md:px-12 relative overflow-hidden">
-        {/* Botanical accent — left bottom */}
-        <div
-          className="absolute left-4 md:left-10 bottom-20 w-16 h-40 jf-breathe"
-          style={{ animationDelay: "2s" }}
-        >
-          <BotanicalBranch className="w-full h-full" />
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-4">
-              デザイン哲学
+          {/* Gradient tonal strip */}
+          <RevealBlock delay={0.2}>
+            <div
+              className="h-px mb-6"
+              style={{ backgroundColor: "rgba(212,212,207,0.3)" }}
+            />
+            <p className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8] mb-5">
+              tonal transitions
             </p>
-            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-16">
-              design philosophy
-            </h2>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-12 md:gap-20">
-            {/* Ma — do */}
-            <RevealBlock delay={0.1}>
-              <div className="border border-[#64b5f6]/20 rounded-lg p-10 md:p-12">
-                <div className="flex items-baseline gap-4 mb-10">
-                  <span className="font-extralight text-3xl text-[#64b5f6] tracking-wide">間</span>
-                  <span className="font-light text-xs text-[#b0b8c4] tracking-[0.4em]">ma · embrace</span>
-                </div>
-                <ul className="space-y-5">
-                  {[
-                    "extreme whitespace — py-32 or more",
-                    "hairline borders only — border/30",
-                    "font-extralight or font-light",
-                    "botanical svg accents, inline",
-                    "slow transitions — duration-500",
-                    "asymmetric, wabi-sabi placement",
-                    "bottom-line inputs with floating labels",
-                    "rounded corners — rounded-lg minimum",
-                    "meditative scroll animations",
-                  ].map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1.5 w-px h-3 bg-[#64b5f6]/40 flex-shrink-0" />
-                      <span className="font-light text-sm text-[#4a5568]/80 tracking-wide leading-relaxed">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            {/* 禁 — don't */}
-            <RevealBlock delay={0.2} className="md:mt-12">
-              <div className="border border-[#d4d4cf]/30 rounded-lg p-10 md:p-12">
-                <div className="flex items-baseline gap-4 mb-10">
-                  <span className="font-extralight text-3xl text-[#b0b8c4] tracking-wide">禁</span>
-                  <span className="font-light text-xs text-[#b0b8c4] tracking-[0.4em]">kin · avoid</span>
-                </div>
-                <ul className="space-y-5">
-                  {[
-                    "font-bold or font-semibold — ever",
-                    "uppercase text — breaks the calm",
-                    "border-2 or thicker — too heavy",
-                    "visible shadows — breaks flatness",
-                    "dark backgrounds — light only",
-                    "rounded-none or sharp corners",
-                    "transitions under 200ms — too fast",
-                    "saturated or high-contrast colors",
-                    "dense information — breathe more",
-                  ].map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-2 w-2 h-px bg-[#d4d4cf]/50 flex-shrink-0" />
-                      <span className="font-light text-sm text-[#b0b8c4] tracking-wide leading-relaxed line-through decoration-[#d4d4cf]/50">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* Hairline divider */}
-      <div className="max-w-2xl mx-auto px-6 md:px-12">
-        <div className="h-px bg-[#d4d4cf]/20" />
-      </div>
-
-      {/* ================================================================ */}
-      {/* 6. Typography                                                     */}
-      {/* ================================================================ */}
-      <section className="py-32 md:py-40 px-6 md:px-12 relative overflow-hidden">
-        {/* Botanical accent — right */}
-        <div
-          className="absolute right-6 md:right-16 bottom-24 w-14 h-32 jf-breathe"
-          style={{ animationDelay: "3.5s" }}
-        >
-          <BotanicalLeaf className="w-full h-full" />
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-4">
-              タイポグラフィ
-            </p>
-            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-6">
-              typography
-            </h2>
-            <p className="font-light text-sm text-[#b0b8c4] tracking-wide mb-16 max-w-xs leading-loose">
-              only extralight and light weights — heavier weights break the meditative calm
-            </p>
-          </RevealBlock>
-
-          {/* Type scale */}
-          <div className="space-y-14">
-            {typographySamples.map((sample, i) => (
-              <RevealBlock key={i} delay={i * 0.08}>
-                <div className="group flex flex-col md:flex-row md:items-baseline gap-4 md:gap-12 py-8 border-b border-[#d4d4cf]/20 hover:border-[#64b5f6]/20 transition-all duration-500">
-                  <div className="md:w-40 flex-shrink-0">
-                    <p className="font-light text-[10px] text-[#b0b8c4] tracking-widest leading-loose">
-                      {sample.label}
-                    </p>
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p
-                      className={`${sample.size} ${sample.weight} ${sample.tracking} text-[#4a5568] leading-tight group-hover:text-[#64b5f6] transition-colors duration-500`}
-                    >
-                      {sample.sample}
-                    </p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Japanese character specimens */}
-          <RevealBlock delay={0.5} className="mt-20">
-            <p className="font-light text-[10px] tracking-[0.4em] text-[#b0b8c4] mb-10">
-              character specimens · 文字見本
-            </p>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+            <div className="flex gap-3 flex-wrap">
               {[
-                { char: "桜", label: "sakura", color: "#ffb7c5" },
-                { char: "風", label: "wind", color: "#64b5f6" },
-                { char: "水", label: "water", color: "#98d8c8" },
-                { char: "月", label: "moon", color: "#b8d4e3" },
-                { char: "花", label: "flower", color: "#ffb7c5" },
-                { char: "山", label: "mountain", color: "#b0b8c4" },
-              ].map((item, i) => (
-                <RevealBlock key={i} delay={0.5 + i * 0.06}>
-                  <div className="group flex flex-col items-center gap-3 p-6 rounded-lg border border-[#d4d4cf]/20 hover:border-[#d4d4cf]/40 hover:-translate-y-0.5 transition-all duration-500">
-                    <span
-                      className="font-extralight text-4xl tracking-wide transition-colors duration-500"
-                      style={{ color: item.color, opacity: 0.7 }}
-                    >
-                      {item.char}
-                    </span>
-                    <span className="font-light text-[9px] text-[#d4d4cf] tracking-[0.3em]">
-                      {item.label}
-                    </span>
-                  </div>
-                </RevealBlock>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Hiragana strip */}
-          <RevealBlock delay={0.7} className="mt-14">
-            <div className="flex flex-wrap gap-3 items-center">
-              <span className="font-light text-[10px] text-[#d4d4cf] tracking-widest mr-4">
-                hiragana ·
-              </span>
-              {["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す"].map((h, i) => (
-                <span
-                  key={i}
-                  className="font-extralight text-lg text-[#d4d4cf]/60 hover:text-[#64b5f6]/50 transition-colors duration-500"
-                >
-                  {h}
-                </span>
+                { from: "#64b5f6", to: "#b8d4e3", label: "sky \u2192 powder" },
+                { from: "#98d8c8", to: "#64b5f6", label: "mint \u2192 sky" },
+                { from: "#ffb7c5", to: "#b8d4e3", label: "pink \u2192 powder" },
+                { from: "#fafaf8", to: "#b8d4e3", label: "rice \u2192 powder" },
+              ].map((g) => (
+                <div key={g.label} className="flex-1" style={{ minWidth: "120px" }}>
+                  <div
+                    className="h-8 rounded-md mb-2 transition-all duration-500 hover:-translate-y-0.5"
+                    style={{ background: `linear-gradient(135deg, ${g.from}, ${g.to})` }}
+                  />
+                  <div className="font-light text-[9px] text-[#c8d0d8] tracking-wide">{g.label}</div>
+                </div>
               ))}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* Hairline divider with dot */}
-      <div className="relative max-w-4xl mx-auto px-6 md:px-12 flex items-center gap-6">
-        <div className="flex-1 h-px bg-[#d4d4cf]/20" />
-        <div className="w-1 h-1 rounded-full bg-[#d4d4cf]/40 flex-shrink-0" />
-        <div className="flex-1 h-px bg-[#d4d4cf]/20" />
-      </div>
-
       {/* ================================================================ */}
-      {/* 7. Wabi-sabi Feature Cards                                        */}
+      {/* 4. MA PHILOSOPHY — kanji cards                                  */}
       {/* ================================================================ */}
-      <section className="py-32 md:py-40 px-6 md:px-12 relative overflow-hidden">
+      <section
+        className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden"
+        style={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+      >
+        {/* Botanical accent */}
         <div
-          className="absolute right-0 top-32 w-12 h-28 jf-breathe"
-          style={{ animationDelay: "4s" }}
+          className="jf-sway absolute left-4 md:left-10 top-1/3 w-10 h-24 pointer-events-none"
+          style={{ opacity: 0.09 }}
         >
-          <BotanicalLeaf className="w-full h-full" />
+          <BotanicalWillow className="w-full h-full" />
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-4">
-              特徴
-            </p>
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              philosophy / 美学
+            </span>
             <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
-              core attributes
+              ma &middot; wabi &middot; sabi &middot; sei
             </h2>
-            <p className="font-light text-sm text-[#b0b8c4] tracking-wide mb-16 max-w-sm leading-loose">
-              four principles that give japanese-fresh its meditative, airy character
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              Four ancient aesthetics that shape every decision. Intentional emptiness,
+              imperfect beauty, the passage of time, and luminous purity.
             </p>
           </RevealBlock>
 
-          <div className="grid md:grid-cols-12 gap-6">
-            {featureCards.map((card, i) => (
-              <RevealBlock
-                key={i}
-                delay={0.05 + i * 0.07}
-                className={`${card.colSpan} ${card.offset}`}
-              >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {philosophyCards.map((card, i) => (
+              <RevealBlock key={card.kanji} delay={i * 0.09}>
                 <div
-                  className="group p-10 md:p-12 bg-white rounded-lg border hover:-translate-y-0.5 transition-all duration-500 h-full"
-                  style={{
-                    borderColor: `${card.borderColor}25`,
+                  className="p-10 md:p-12 bg-white rounded-lg transition-all duration-500 cursor-default h-full"
+                  style={{ border: "0.5px solid rgba(212,212,207,0.35)" }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform = "translateY(-0.5px)";
+                    el.style.backgroundColor = `${card.color}04`;
+                    el.style.borderColor = `${card.color}30`;
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform = "translateY(0)";
+                    el.style.backgroundColor = "white";
+                    el.style.borderColor = "rgba(212,212,207,0.35)";
                   }}
                 >
                   <div
-                    className="w-10 h-10 rounded-lg border flex items-center justify-center mb-8"
-                    style={{ borderColor: `${card.accentColor}30` }}
+                    className="font-extralight text-5xl mb-3 leading-none"
+                    style={{ color: card.color, opacity: 0.45 }}
                   >
-                    <span
-                      className="font-extralight text-xs tracking-widest"
-                      style={{ color: card.accentColor }}
-                    >
-                      {card.kanji}
-                    </span>
+                    {card.kanji}
                   </div>
-                  <h3
-                    className="font-extralight text-xl tracking-wide mb-4 transition-colors duration-500"
-                    style={{ color: "#4a5568" }}
+                  <div
+                    className="font-light text-[10px] tracking-[0.25em] mb-5"
+                    style={{ color: card.color }}
                   >
-                    <span className={`group-hover:text-[${card.accentColor}] transition-colors duration-500`} style={{ color: "inherit" }}>
-                      {card.title}
-                    </span>
-                  </h3>
+                    {card.label}
+                  </div>
+                  <div
+                    className="h-px mb-5"
+                    style={{ backgroundColor: "rgba(212,212,207,0.35)" }}
+                  />
                   <p className="font-light text-sm text-[#b0b8c4] leading-loose tracking-wide">
                     {card.desc}
                   </p>
@@ -993,140 +729,1060 @@ export default function JapaneseFreshShowcase() {
       </section>
 
       {/* ================================================================ */}
-      {/* Sakura showcase strip                                             */}
+      {/* 5. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-24 px-6 md:px-12 bg-white/60 border-y border-[#d4d4cf]/20 relative overflow-hidden">
-        {/* Sakura petals — decorative */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[
-            { left: "10%", top: "20%", delay: "0s", size: "w-6 h-6" },
-            { left: "25%", top: "60%", delay: "1.5s", size: "w-8 h-8" },
-            { left: "50%", top: "30%", delay: "3s", size: "w-5 h-5" },
-            { left: "70%", top: "70%", delay: "0.7s", size: "w-7 h-7" },
-            { left: "88%", top: "25%", delay: "2.2s", size: "w-6 h-6" },
-          ].map((p, i) => (
-            <div
-              key={i}
-              className={`absolute jf-petal-fall ${p.size}`}
-              style={{ left: p.left, top: p.top, animationDelay: p.delay }}
-            >
-              <SakuraPetal className="w-full h-full" />
-            </div>
-          ))}
+      <section className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden">
+        {/* Botanical accent */}
+        <div
+          className="jf-drift absolute right-6 md:right-14 bottom-16 w-12 h-32 pointer-events-none"
+          style={{ opacity: 0.09, animationDelay: "1.5s" }}
+        >
+          <BotanicalFern className="w-full h-full" />
         </div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <RevealBlock>
-            <p className="font-light text-[10px] tracking-[0.5em] text-[#b0b8c4] mb-6">
-              桜 · sakura
-            </p>
-            <p className="font-extralight text-2xl md:text-3xl text-[#4a5568] tracking-wide leading-loose mb-6">
-              cherry blossoms fall gently
-            </p>
-            <p className="font-light text-sm text-[#b0b8c4] tracking-widest leading-loose max-w-sm mx-auto">
-              the most beautiful things in life are also the most fleeting.
-              ma teaches us to be present with what is.
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-10">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              components / 部品
+            </span>
+            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
+              quiet building blocks
+            </h2>
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              Hairline borders only. Font-extralight or font-light throughout.
+              No shadows — elements float in their whitespace by their own presence.
             </p>
           </RevealBlock>
 
-          <RevealBlock delay={0.2} className="mt-12">
-            <div className="flex items-center justify-center gap-6">
-              {["#ffb7c5", "#64b5f6", "#98d8c8", "#b8d4e3", "#ffb7c5"].map((c, i) => (
-                <div
-                  key={i}
-                  className="w-1 h-1 rounded-full jf-breathe"
-                  style={{ backgroundColor: c, animationDelay: `${i * 0.4}s` }}
-                />
+          {/* Tab nav */}
+          <RevealBlock delay={0.08} className="mb-8">
+            <div className="flex gap-2 flex-wrap">
+              {(["buttons", "cards", "inputs", "typography"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="px-5 py-2 font-light text-xs tracking-widest rounded-lg capitalize transition-all duration-500"
+                  style={{
+                    color: activeTab === tab ? "#64b5f6" : "#b0b8c4",
+                    border: activeTab === tab
+                      ? "0.5px solid rgba(100,181,246,0.4)"
+                      : "0.5px solid rgba(212,212,207,0.4)",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  {tab}
+                </button>
               ))}
+            </div>
+          </RevealBlock>
+
+          {/* Panel */}
+          <RevealBlock delay={0.14}>
+            <div
+              className="p-8 md:p-12 bg-white rounded-lg"
+              style={{ border: "0.5px solid rgba(212,212,207,0.35)" }}
+            >
+              {/* ---- BUTTONS ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-10">
+                  <div>
+                    <p className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8] mb-6">
+                      whisper buttons — hairline border, weightless hover
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {[
+                        { label: "explore", color: "#64b5f6" },
+                        { label: "discover", color: "#98d8c8" },
+                        { label: "reflect", color: "#ffb7c5" },
+                        { label: "begin", color: "#b8d4e3" },
+                      ].map((btn) => (
+                        <button
+                          key={btn.label}
+                          className="px-8 py-2.5 font-light text-sm text-[#7a8a9e] tracking-widest rounded-lg transition-all duration-500"
+                          style={{ border: "0.5px solid rgba(212,212,207,0.5)", backgroundColor: "transparent" }}
+                          onMouseEnter={(e) => {
+                            const el = e.currentTarget as HTMLElement;
+                            el.style.color = btn.color;
+                            el.style.borderColor = `${btn.color}50`;
+                            el.style.backgroundColor = `${btn.color}06`;
+                            el.style.transform = "translateY(-0.5px)";
+                          }}
+                          onMouseLeave={(e) => {
+                            const el = e.currentTarget as HTMLElement;
+                            el.style.color = "#7a8a9e";
+                            el.style.borderColor = "rgba(212,212,207,0.5)";
+                            el.style.backgroundColor = "transparent";
+                            el.style.transform = "translateY(0)";
+                          }}
+                          onMouseDown={(e) => {
+                            const el = e.currentTarget as HTMLElement;
+                            el.style.opacity = "0.75";
+                            el.style.backgroundColor = `${btn.color}10`;
+                          }}
+                          onMouseUp={(e) => {
+                            const el = e.currentTarget as HTMLElement;
+                            el.style.opacity = "1";
+                          }}
+                        >
+                          {btn.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="h-px"
+                    style={{ backgroundColor: "rgba(212,212,207,0.3)" }}
+                  />
+                  <div>
+                    <p className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8] mb-6">
+                      filled — translucent tint, gentle weight
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {[
+                        { label: "morning", bg: "rgba(100,181,246,0.14)", color: "#64b5f6" },
+                        { label: "garden", bg: "rgba(152,216,200,0.14)", color: "#98d8c8" },
+                        { label: "sakura", bg: "rgba(255,183,197,0.18)", color: "#ffb7c5" },
+                      ].map((btn) => (
+                        <button
+                          key={btn.label}
+                          className="px-8 py-2.5 font-light text-sm tracking-widest rounded-lg transition-all duration-500"
+                          style={{
+                            backgroundColor: btn.bg,
+                            color: btn.color,
+                            border: `0.5px solid ${btn.color}35`,
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.transform = "translateY(-0.5px)";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                          }}
+                          onMouseDown={(e) => {
+                            (e.currentTarget as HTMLElement).style.opacity = "0.75";
+                          }}
+                          onMouseUp={(e) => {
+                            (e.currentTarget as HTMLElement).style.opacity = "1";
+                          }}
+                        >
+                          {btn.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- CARDS ---- */}
+              {activeTab === "cards" && (
+                <div className="grid md:grid-cols-2 gap-5">
+                  {[
+                    { title: "Morning Light", titleJa: "朝の光", desc: "Light through shoji screens. Unhurried. Weightless.", accent: "#64b5f6" },
+                    { title: "Garden Quiet", titleJa: "庭の静寂", desc: "A single maple leaf mid-fall. Time slowing down.", accent: "#98d8c8" },
+                    { title: "Paper Fold", titleJa: "紙の折り目", desc: "Washi pressed flat, its grain still visible in light.", accent: "#ffb7c5" },
+                    { title: "Distant Rain", titleJa: "遠雨", desc: "The sound heard from inside warmth. Present, far.", accent: "#b8d4e3" },
+                  ].map((card, i) => (
+                    <div
+                      key={card.title}
+                      className="p-8 bg-white rounded-lg transition-all duration-500 cursor-default"
+                      style={{ border: "0.5px solid rgba(212,212,207,0.35)" }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transform = "translateY(-0.5px)";
+                        el.style.borderColor = `${card.accent}35`;
+                        el.style.backgroundColor = `${card.accent}03`;
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transform = "translateY(0)";
+                        el.style.borderColor = "rgba(212,212,207,0.35)";
+                        el.style.backgroundColor = "white";
+                      }}
+                    >
+                      <div
+                        className="w-6 h-px mb-5"
+                        style={{ backgroundColor: card.accent, opacity: 0.5 }}
+                      />
+                      <h4
+                        className="font-extralight text-base text-[#4a5568] tracking-wide mb-1 transition-colors duration-500"
+                        style={{ color: hoveredCard === i ? card.accent : "#4a5568" }}
+                      >
+                        {card.title}
+                      </h4>
+                      <div className="font-light text-[9px] text-[#c8d0d8] tracking-widest mb-3">
+                        {card.titleJa}
+                      </div>
+                      <p className="font-light text-xs text-[#b0b8c4] leading-loose tracking-wide">
+                        {card.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- INPUTS ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid md:grid-cols-2 gap-10">
+                  <div className="space-y-10">
+                    <p className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8]">
+                      bottom-line only &middot; floating labels &middot; no surrounding frame
+                    </p>
+                    {[
+                      { id: "inp-name", label: "your name", type: "text", color: "#64b5f6" },
+                      { id: "inp-email", label: "email address", type: "email", color: "#98d8c8" },
+                      { id: "inp-thought", label: "a quiet thought", type: "text", color: "#ffb7c5" },
+                    ].map((field) => (
+                      <div key={field.id} className="relative pt-1">
+                        <input
+                          type={field.type}
+                          id={field.id}
+                          placeholder=" "
+                          onFocus={() => setFocusedField(field.id)}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full pb-2.5 pt-0 bg-transparent font-light text-sm text-[#4a5568] tracking-wide focus:outline-none transition-all duration-500"
+                          style={{
+                            border: "none",
+                            borderBottom: focusedField === field.id
+                              ? `0.5px solid ${field.color}`
+                              : "0.5px solid rgba(212,212,207,0.7)",
+                          }}
+                        />
+                        <label
+                          htmlFor={field.id}
+                          className="absolute top-0 left-0 font-light text-[10px] tracking-widest pointer-events-none transition-colors duration-500"
+                          style={{ color: focusedField === field.id ? field.color : "#c8d0d8" }}
+                        >
+                          {field.label}
+                        </label>
+                      </div>
+                    ))}
+                    <button
+                      className="font-light text-xs text-[#7a8a9e] tracking-widest px-8 py-2.5 rounded-lg transition-all duration-500"
+                      style={{ border: "0.5px solid rgba(212,212,207,0.5)", backgroundColor: "transparent" }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.color = "#64b5f6";
+                        el.style.borderColor = "rgba(100,181,246,0.4)";
+                        el.style.transform = "translateY(-0.5px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.color = "#7a8a9e";
+                        el.style.borderColor = "rgba(212,212,207,0.5)";
+                        el.style.transform = "translateY(0)";
+                      }}
+                    >
+                      send quietly
+                    </button>
+                  </div>
+                  <div className="space-y-6">
+                    <p className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8]">
+                      checkboxes &middot; hairline border, no heavy ring
+                    </p>
+                    {["receive morning notes", "seasonal updates", "wabi-sabi digest"].map(
+                      (item, i) => (
+                        <label
+                          key={item}
+                          className="flex items-center gap-4 cursor-pointer"
+                        >
+                          <button
+                            onClick={() => toggleItem(i)}
+                            className="flex items-center justify-center rounded transition-all duration-500 flex-shrink-0"
+                            style={{
+                              width: "1.25rem",
+                              height: "1.25rem",
+                              border: checkedItems[i]
+                                ? "0.5px solid rgba(100,181,246,0.5)"
+                                : "0.5px solid rgba(212,212,207,0.6)",
+                              backgroundColor: checkedItems[i] ? "rgba(100,181,246,0.1)" : "transparent",
+                              borderRadius: "0.2rem",
+                            }}
+                          >
+                            {checkedItems[i] && (
+                              <svg viewBox="0 0 12 12" width="8" height="8" fill="none" stroke="#64b5f6" strokeWidth="1.5">
+                                <path d="M1.5 6l3 3 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            )}
+                          </button>
+                          <span className="font-light text-sm text-[#7a8a9e] tracking-wide">{item}</span>
+                        </label>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ---- TYPOGRAPHY ---- */}
+              {activeTab === "typography" && (
+                <div className="space-y-8">
+                  {[
+                    { sample: "日系清新", size: "2.75rem", weight: 200, label: "Display extralight", tracking: "0.06em" },
+                    { sample: "Morning Light", size: "2rem", weight: 200, label: "Heading 1 extralight", tracking: "0.05em" },
+                    { sample: "桜の季節 — cherry season", size: "1.375rem", weight: 300, label: "Heading 2 light", tracking: "0.07em" },
+                    { sample: "Wabi-sabi aesthetics and the beauty of imperfection", size: "1rem", weight: 300, label: "Body light", tracking: "0.04em" },
+                    { sample: "hairline borders · botanical accents · meditative slowness", size: "0.8rem", weight: 300, label: "Caption light", tracking: "0.1em" },
+                    { sample: "palette · border · hairline · 間 · 侘寂", size: "0.65rem", weight: 300, label: "Label light", tracking: "0.22em" },
+                  ].map((t, i) => (
+                    <div
+                      key={t.label}
+                      className="pb-6"
+                      style={{ borderBottom: "0.5px solid rgba(212,212,207,0.25)" }}
+                    >
+                      <p
+                        style={{
+                          fontSize: t.size,
+                          fontWeight: t.weight,
+                          letterSpacing: t.tracking,
+                          color: "#4a5568",
+                          lineHeight: 1.4,
+                          marginBottom: "0.375rem",
+                        }}
+                      >
+                        {t.sample}
+                      </p>
+                      <span className="font-light text-[9px] text-[#c8d0d8] tracking-widest font-mono">
+                        {t.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* Hairline divider with botanical center */}
-      <div className="relative max-w-4xl mx-auto px-6 md:px-12 flex items-center gap-8 py-2">
-        <div className="flex-1 h-px bg-[#d4d4cf]/20" />
-        <BotanicalLeaf className="w-8 h-10 flex-shrink-0" />
-        <div className="flex-1 h-px bg-[#d4d4cf]/20" />
-      </div>
-
       {/* ================================================================ */}
-      {/* 8. Footer                                                         */}
+      {/* 6. ANIMATION & INTERACTION RULES — 4 named aiRules as demos     */}
       {/* ================================================================ */}
-      <footer className="py-20 md:py-28 px-6 md:px-12 relative overflow-hidden">
-        {/* Small botanical center accent */}
+      <section
+        className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden"
+        style={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+      >
+        {/* Botanical accent */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 top-4 w-10 h-20 jf-breathe"
-          style={{ animationDelay: "1s", opacity: 0.08 }}
+          className="jf-sway absolute left-6 md:left-14 bottom-12 w-10 h-24 pointer-events-none"
+          style={{ opacity: 0.08, animationDelay: "0.5s" }}
         >
-          <BotanicalSprig className="w-full h-full opacity-100" />
+          <BotanicalCircle className="w-full h-full" />
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="h-px bg-[#d4d4cf]/20 mb-16" />
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              interactions / 動き
+            </span>
+            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
+              animation &amp; interaction rules
+            </h2>
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              Four named rules govern every motion. Meditative, never jarring.
+              Hover or click each demo to feel the Japanese Fresh interaction language.
+            </p>
+          </RevealBlock>
 
-          <div className="grid md:grid-cols-3 gap-12 md:gap-20 mb-20">
-            <RevealBlock delay={0}>
-              <p className="font-light text-[10px] tracking-[0.4em] text-[#d4d4cf] mb-6">
-                philosophy
-              </p>
-              <p className="font-light text-sm text-[#b0b8c4] leading-loose tracking-wide">
-                japanese fresh embodies Ma and wabi-sabi. design is not about what you add, but what you allow to breathe.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* Rule 1: Weightless Float */}
+            <RevealBlock delay={0.08}>
+              <div
+                className="p-8 md:p-10 bg-white rounded-lg h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <div
+                  className="inline-block font-light text-[9px] tracking-[0.2em] rounded mb-3 px-2.5 py-1"
+                  style={{
+                    color: "#64b5f6",
+                    border: "0.5px solid rgba(100,181,246,0.35)",
+                  }}
+                >
+                  Weightless Float
+                </div>
+                <p className="font-light text-[9px] tracking-wide text-[#c8d0d8] leading-loose mb-6 font-mono">
+                  hover 仅允许极轻上浮（约 0.5px）<br />
+                  避免重阴影和大位移
+                </p>
+
+                {/* Demo */}
+                <div
+                  className="rounded-lg p-5 cursor-pointer transition-all duration-500"
+                  style={{
+                    border: "0.5px solid rgba(212,212,207,0.4)",
+                    backgroundColor: floatHovered ? "rgba(100,181,246,0.03)" : "transparent",
+                    transform: floatHovered ? "translateY(-0.5px)" : "translateY(0)",
+                    borderColor: floatHovered ? "rgba(100,181,246,0.3)" : "rgba(212,212,207,0.4)",
+                  }}
+                  onMouseEnter={() => setFloatHovered(true)}
+                  onMouseLeave={() => setFloatHovered(false)}
+                >
+                  <p
+                    className="font-light text-xs tracking-wide transition-colors duration-500"
+                    style={{ color: floatHovered ? "#64b5f6" : "#7a8a9e" }}
+                  >
+                    {floatHovered ? "floating — only 0.5px of lift, no shadow" : "hover this element"}
+                  </p>
+                  <p className="font-light text-[9px] text-[#c8d0d8] tracking-wide mt-2 font-mono">
+                    hover:–translate-y-0.5 &middot; duration-500
+                  </p>
+                </div>
+              </div>
             </RevealBlock>
 
-            <RevealBlock delay={0.1}>
-              <p className="font-light text-[10px] tracking-[0.4em] text-[#d4d4cf] mb-6">
-                principles
-              </p>
-              <ul className="space-y-3">
-                {["間 — ma", "侘 — wabi", "寂 — sabi", "清 — sei"].map((p, i) => (
-                  <li key={i} className="font-light text-sm text-[#b0b8c4] tracking-wide">
-                    {p}
-                  </li>
-                ))}
-              </ul>
+            {/* Rule 2: Airy Transitions */}
+            <RevealBlock delay={0.12}>
+              <div
+                className="p-8 md:p-10 bg-white rounded-lg h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <div
+                  className="inline-block font-light text-[9px] tracking-[0.2em] rounded mb-3 px-2.5 py-1"
+                  style={{
+                    color: "#98d8c8",
+                    border: "0.5px solid rgba(152,216,200,0.35)",
+                  }}
+                >
+                  Airy Transitions
+                </div>
+                <p className="font-light text-[9px] tracking-wide text-[#c8d0d8] leading-loose mb-6 font-mono">
+                  颜色变化采用 duration-500 + ease-in-out<br />
+                  像晨雾中缓慢显现
+                </p>
+
+                {/* Demo */}
+                <button
+                  onClick={() => setAiryActive((v) => !v)}
+                  className="w-full rounded-lg p-4 font-light text-xs tracking-widest text-left transition-all duration-500"
+                  style={{
+                    color: airyActive ? "#98d8c8" : "#b0b8c4",
+                    border: `0.5px solid ${airyActive ? "rgba(152,216,200,0.4)" : "rgba(212,212,207,0.4)"}`,
+                    backgroundColor: airyActive ? "rgba(152,216,200,0.06)" : "transparent",
+                  }}
+                >
+                  {airyActive
+                    ? "color has arrived — like morning mist clearing"
+                    : "click — watch the slow color shift unfold"}
+                </button>
+                <p className="font-light text-[9px] text-[#c8d0d8] tracking-wide mt-3 font-mono">
+                  transition: all 500ms ease-in-out
+                </p>
+              </div>
             </RevealBlock>
 
+            {/* Rule 3: Subtle Focus */}
+            <RevealBlock delay={0.16}>
+              <div
+                className="p-8 md:p-10 bg-white rounded-lg h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <div
+                  className="inline-block font-light text-[9px] tracking-[0.2em] rounded mb-3 px-2.5 py-1"
+                  style={{
+                    color: "#ffb7c5",
+                    border: "0.5px solid rgba(255,183,197,0.35)",
+                  }}
+                >
+                  Subtle Focus
+                </div>
+                <p className="font-light text-[9px] tracking-wide text-[#c8d0d8] leading-loose mb-6 font-mono">
+                  focus 只调整发丝级边框颜色<br />
+                  不使用粗 ring 或强 glow
+                </p>
+
+                {/* Demo — bottom-line input */}
+                <div className="relative pt-1">
+                  <input
+                    type="text"
+                    placeholder=" "
+                    onFocus={() => setSubtleFocused(true)}
+                    onBlur={() => setSubtleFocused(false)}
+                    className="w-full pb-2.5 pt-0 bg-transparent font-light text-xs text-[#4a5568] tracking-wide focus:outline-none transition-all duration-500"
+                    style={{
+                      border: "none",
+                      borderBottom: subtleFocused
+                        ? "0.5px solid #ffb7c5"
+                        : "0.5px solid rgba(212,212,207,0.6)",
+                    }}
+                  />
+                  <label
+                    className="absolute top-0 left-0 font-light text-[9px] tracking-widest pointer-events-none transition-colors duration-500"
+                    style={{ color: subtleFocused ? "#ffb7c5" : "#c8d0d8" }}
+                  >
+                    {subtleFocused ? "focused — hairline only, no ring, no glow" : "click to focus this input"}
+                  </label>
+                </div>
+                <p className="font-light text-[9px] text-[#c8d0d8] tracking-wide mt-4 font-mono">
+                  border-b: 0.5px &middot; no ring &middot; no box-shadow
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* Rule 4: Tactile Click */}
             <RevealBlock delay={0.2}>
-              <p className="font-light text-[10px] tracking-[0.4em] text-[#d4d4cf] mb-6">
-                stylekit
-              </p>
-              <Link
-                href="/styles"
-                className="font-light text-sm text-[#b0b8c4] tracking-widest jf-underline hover:text-[#64b5f6] transition-colors duration-500 block mb-3"
+              <div
+                className="p-8 md:p-10 bg-white rounded-lg h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
               >
-                all styles
-              </Link>
-              <Link
-                href="/styles/japanese-fresh"
-                className="font-light text-sm text-[#b0b8c4] tracking-widest jf-underline hover:text-[#64b5f6] transition-colors duration-500 block"
-              >
-                documentation
-              </Link>
+                <div
+                  className="inline-block font-light text-[9px] tracking-[0.2em] rounded mb-3 px-2.5 py-1"
+                  style={{
+                    color: "#b8d4e3",
+                    border: "0.5px solid rgba(184,212,227,0.35)",
+                  }}
+                >
+                  Tactile Click
+                </div>
+                <p className="font-light text-[9px] tracking-wide text-[#c8d0d8] leading-loose mb-6 font-mono">
+                  active 态优先微调透明度和背景层<br />
+                  不使用明显缩放
+                </p>
+
+                {/* Demo */}
+                <button
+                  className="w-full rounded-lg p-4 font-light text-xs tracking-widest text-left transition-all duration-500"
+                  style={{
+                    color: "#7a8a9e",
+                    border: `0.5px solid ${tactilePressed ? "rgba(184,212,227,0.5)" : "rgba(212,212,207,0.4)"}`,
+                    backgroundColor: tactilePressed ? "rgba(184,212,227,0.12)" : "transparent",
+                    opacity: tactilePressed ? 0.75 : 1,
+                  }}
+                  onMouseDown={() => setTactilePressed(true)}
+                  onMouseUp={() => setTactilePressed(false)}
+                  onMouseLeave={() => setTactilePressed(false)}
+                >
+                  {tactilePressed ? "pressed — opacity shift + bg tint" : "press and hold this button"}
+                </button>
+                <p className="font-light text-[9px] text-[#c8d0d8] tracking-wide mt-3 font-mono">
+                  active: opacity 0.75 + bg tint &middot; no scale transform
+                </p>
+              </div>
             </RevealBlock>
           </div>
+        </div>
+      </section>
 
-          <RevealBlock delay={0.3}>
-            <div className="h-px bg-[#d4d4cf]/15 mb-10" />
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <p className="font-extralight text-[10px] tracking-[0.6em] text-[#d4d4cf]">
-                日系清新風 · japanese fresh
-              </p>
-              <div className="flex items-center gap-4">
-                {["#ffb7c5", "#98d8c8", "#64b5f6", "#b8d4e3"].map((c, i) => (
+      {/* ================================================================ */}
+      {/* 7. JOURNAL APP DEMO                                              */}
+      {/* ================================================================ */}
+      <section className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden">
+        {/* Botanical accent */}
+        <div
+          className="jf-drift absolute right-4 md:right-12 top-20 w-8 h-20 pointer-events-none"
+          style={{ opacity: 0.08, animationDelay: "0.8s" }}
+        >
+          <BotanicalReed className="w-full h-full" />
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              app demo / アプリ
+            </span>
+            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
+              quiet journal
+            </h2>
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              A mock journal interface demonstrating the full system in context —
+              extreme whitespace, hairline borders, botanical accents, bottom-line inputs.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {/* Sidebar */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="bg-white rounded-lg p-7 h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)" }}
+              >
+                <div className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8] mb-7">
+                  entries / 記録
+                </div>
+                <div>
+                  {journalEntries.map((entry, i) => (
+                    <div
+                      key={entry.date}
+                      className="cursor-pointer transition-all duration-500"
+                      style={{
+                        paddingTop: i === 0 ? 0 : "1.25rem",
+                        paddingBottom: "1.25rem",
+                        borderBottom: i < journalEntries.length - 1
+                          ? "0.5px solid rgba(212,212,207,0.25)"
+                          : "none",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.paddingLeft = "0.375rem";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.paddingLeft = "0";
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div
+                          className="rounded-full flex-shrink-0"
+                          style={{ width: "0.3rem", height: "0.3rem", backgroundColor: entry.mood, opacity: 0.6 }}
+                        />
+                        <span className="font-light text-[9px] text-[#c8d0d8] tracking-widest">
+                          {entry.date}
+                        </span>
+                      </div>
+                      <p className="font-light text-xs text-[#4a5568] tracking-wide mb-1">
+                        {entry.title}
+                      </p>
+                      <p className="font-light text-[10px] text-[#b0b8c4] leading-relaxed tracking-wide line-clamp-2">
+                        {entry.excerpt}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Main entry view */}
+            <RevealBlock delay={0.15} className="md:col-span-2">
+              <div
+                className="bg-white rounded-lg p-8 md:p-10 h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)" }}
+              >
+                {/* Entry header */}
+                <div className="flex items-start justify-between mb-8">
+                  <div>
+                    <div className="font-light text-[9px] tracking-[0.35em] text-[#c8d0d8] mb-2">
+                      {journalEntries[0].dateJa}
+                    </div>
+                    <h3 className="font-extralight text-2xl text-[#4a5568] tracking-wide">
+                      {journalEntries[0].title}
+                    </h3>
+                  </div>
                   <div
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full jf-breathe"
-                    style={{ backgroundColor: c, opacity: 0.5, animationDelay: `${i * 0.5}s` }}
+                    className="w-2 h-2 rounded-full mt-1 flex-shrink-0"
+                    style={{ backgroundColor: "#64b5f6", opacity: 0.4 }}
+                  />
+                </div>
+
+                {/* Hairline */}
+                <div
+                  className="h-px mb-7"
+                  style={{ backgroundColor: "rgba(212,212,207,0.3)" }}
+                />
+
+                {/* Body */}
+                <p className="font-light text-sm text-[#7a8a9e] leading-loose tracking-wide mb-5">
+                  {journalEntries[0].excerpt}
+                </p>
+                <p className="font-light text-sm text-[#b0b8c4] leading-loose tracking-wide mb-8">
+                  There is a kind of light that exists only once a day, for a few minutes,
+                  before the world fully commits to being awake. It does not announce itself.
+                  You have to already be looking. The light will not wait for you to find it.
+                  It arrives and departs on its own schedule, indifferent and perfect.
+                </p>
+
+                {/* Hairline */}
+                <div
+                  className="h-px mb-7"
+                  style={{ backgroundColor: "rgba(212,212,207,0.3)" }}
+                />
+
+                {/* Bottom-line input */}
+                <div className="relative pt-1">
+                  <input
+                    type="text"
+                    placeholder=" "
+                    onFocus={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderBottomColor = "#64b5f6";
+                      const lbl = (e.currentTarget as HTMLElement).nextElementSibling as HTMLElement | null;
+                      if (lbl) lbl.style.color = "#64b5f6";
+                    }}
+                    onBlur={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderBottomColor = "rgba(212,212,207,0.6)";
+                      const lbl = (e.currentTarget as HTMLElement).nextElementSibling as HTMLElement | null;
+                      if (lbl) lbl.style.color = "#c8d0d8";
+                    }}
+                    className="w-full pb-2.5 pt-0 bg-transparent font-light text-sm text-[#4a5568] tracking-wide focus:outline-none transition-all duration-500"
+                    style={{ border: "none", borderBottom: "0.5px solid rgba(212,212,207,0.6)" }}
+                  />
+                  <label
+                    className="absolute top-0 left-0 font-light text-[9px] tracking-widest pointer-events-none transition-colors duration-500"
+                    style={{ color: "#c8d0d8" }}
+                  >
+                    add a note
+                  </label>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 8. DO / DON&apos;T PRINCIPLES                                       */}
+      {/* ================================================================ */}
+      <section
+        className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden"
+        style={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+      >
+        {/* Botanical accent */}
+        <div
+          className="jf-sway absolute right-6 md:right-14 bottom-16 w-10 h-24 pointer-events-none"
+          style={{ opacity: 0.08 }}
+        >
+          <BotanicalBranch className="w-full h-full" />
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              principles / 原則
+            </span>
+            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
+              do and do not
+            </h2>
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              Every restraint is intentional. The rules exist to preserve the meditative
+              quality that defines Japanese Fresh.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Do */}
+            <RevealBlock delay={0.1}>
+              <div
+                className="bg-white rounded-lg p-8 md:p-10 h-full"
+                style={{ border: "0.5px solid rgba(152,216,200,0.35)", boxSizing: "border-box" }}
+              >
+                <div className="flex items-center gap-3 mb-8">
+                  <div
+                    className="flex items-center justify-center rounded-full flex-shrink-0"
+                    style={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      backgroundColor: "rgba(152,216,200,0.12)",
+                      border: "0.5px solid rgba(152,216,200,0.4)",
+                    }}
+                  >
+                    <svg viewBox="0 0 12 12" width="8" height="8" fill="none" stroke="#98d8c8" strokeWidth="1.5">
+                      <path d="M1.5 6l3 3 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="font-light text-xs tracking-[0.2em] text-[#98d8c8]">do</span>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Use extreme whitespace (py-32, py-40) — Ma is the primary tool",
+                    "Hairline borders only (0.5px, rgba at 30–40% opacity)",
+                    "Include one delicate botanical SVG accent per section",
+                    "Use font-extralight / font-light exclusively throughout",
+                    "Bottom-line only inputs with floating labels",
+                    "Warm neutral border color #d4d4cf instead of harsh gray",
+                    "Asymmetric placement for wabi-sabi character",
+                    "transition duration-500 for meditative interactions",
+                    "Weightless hover — 0.5px lift, transparent tint, no shadow",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span
+                        className="mt-2 flex-shrink-0 rounded-full"
+                        style={{ width: "0.25rem", height: "0.25rem", backgroundColor: "#98d8c8", opacity: 0.6 }}
+                      />
+                      <span className="font-light text-xs text-[#7a8a9e] tracking-wide leading-loose">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            {/* Don't */}
+            <RevealBlock delay={0.16}>
+              <div
+                className="bg-white rounded-lg p-8 md:p-10 h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <div className="flex items-center gap-3 mb-8">
+                  <div
+                    className="flex items-center justify-center rounded-full flex-shrink-0"
+                    style={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      backgroundColor: "rgba(255,183,197,0.1)",
+                      border: "0.5px solid rgba(255,183,197,0.35)",
+                    }}
+                  >
+                    <svg viewBox="0 0 12 12" width="8" height="8" fill="none" stroke="#ffb7c5" strokeWidth="1.5">
+                      <path d="M2 2l8 8M10 2l-8 8" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <span className="font-light text-xs tracking-[0.2em] text-[#ffb7c5]">do not</span>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    "Never use bold or heavy font weights (font-bold, font-semibold)",
+                    "Never use uppercase text — too aggressive for this aesthetic",
+                    "Never use border-2 or thicker — only hairline borders exist here",
+                    "Never use visible shadows (shadow-lg, shadow-xl) — elements float",
+                    "Never use dark or black backgrounds",
+                    "Never use sharp corners (rounded-none) — always gentle",
+                    "Never crowd sections — maintain extreme breathing room between",
+                    "Never use fast, abrupt transitions under 200ms",
+                    "Never use neon or high-saturation colors anywhere",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3">
+                      <span
+                        className="mt-2 flex-shrink-0 rounded-full"
+                        style={{ width: "0.25rem", height: "0.25rem", backgroundColor: "#ffb7c5", opacity: 0.5 }}
+                      />
+                      <span className="font-light text-xs text-[#b0b8c4] tracking-wide leading-loose line-through decoration-[#d4d4cf]/50">
+                        {rule}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 9. CSS TOKENS REFERENCE                                          */}
+      {/* ================================================================ */}
+      <section className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden">
+        {/* Botanical accent */}
+        <div
+          className="jf-drift absolute left-6 md:left-16 top-24 w-8 h-18 pointer-events-none"
+          style={{ opacity: 0.08, animationDelay: "2s" }}
+        >
+          <BotanicalLeaf className="w-full h-full" />
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          <RevealBlock className="mb-14">
+            <span className="block font-light text-[10px] tracking-[0.45em] text-[#b0b8c4] mb-5">
+              css tokens / 変数
+            </span>
+            <h2 className="font-extralight text-3xl md:text-4xl text-[#4a5568] tracking-wide mb-4">
+              global css variables
+            </h2>
+            <p className="font-light text-sm text-[#b0b8c4] tracking-wide leading-loose max-w-sm">
+              All design tokens exposed as CSS custom properties for full system consistency.
+              Reference them in any component.
+            </p>
+          </RevealBlock>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <RevealBlock delay={0.1}>
+              <div
+                className="bg-white rounded-lg p-8 h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <p className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8] mb-5">
+                  :root tokens
+                </p>
+                <pre
+                  className="font-mono"
+                  style={{
+                    fontSize: "0.7rem",
+                    fontWeight: 300,
+                    color: "#7a8a9e",
+                    lineHeight: 2.2,
+                    letterSpacing: "0.03em",
+                    margin: 0,
+                    whiteSpace: "pre",
+                    overflowX: "auto",
+                  }}
+                >
+{`:root {
+  --jf-sky:     #64b5f6;
+  --jf-rice:    #fafaf8;
+  --jf-mint:    #98d8c8;
+  --jf-pink:    #ffb7c5;
+  --jf-powder:  #b8d4e3;
+  --jf-text:    #4a5568;
+  --jf-muted:   #b0b8c4;
+  --jf-border:  #d4d4cf;
+}`}
+                </pre>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.14}>
+              <div
+                className="bg-white rounded-lg p-8 h-full"
+                style={{ border: "0.5px solid rgba(212,212,207,0.35)", boxSizing: "border-box" }}
+              >
+                <p className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8] mb-5">
+                  utility classes
+                </p>
+                <div className="space-y-5">
+                  {[
+                    { name: ".jf-linen", desc: "Subtle washi paper texture background overlay" },
+                    { name: ".jf-divider", desc: "0.5px hairline divider at 40% opacity" },
+                    { name: ".jf-input-underline", desc: "Bottom-border only input, no radius, no frame" },
+                    { name: ".jf-ma-section", desc: "py-32 section spacing — the Ma principle" },
+                    { name: ".jf-botanical", desc: "Botanical SVG opacity + stroke color preset" },
+                  ].map((cls) => (
+                    <div key={cls.name}>
+                      <code
+                        className="block font-mono mb-1 transition-colors duration-500"
+                        style={{ fontSize: "0.7rem", fontWeight: 300, color: "#64b5f6", letterSpacing: "0.04em" }}
+                      >
+                        {cls.name}
+                      </code>
+                      <p
+                        className="font-light leading-loose tracking-wide"
+                        style={{ fontSize: "0.7rem", color: "#b0b8c4" }}
+                      >
+                        {cls.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* FOOTER                                                           */}
+      {/* ================================================================ */}
+      <footer
+        className="relative overflow-hidden"
+        style={{ backgroundColor: "rgba(255,255,255,0.6)", borderTop: "0.5px solid rgba(212,212,207,0.3)" }}
+      >
+        {/* Botanical footer accent */}
+        <div
+          className="jf-sway absolute right-10 md:right-20 top-8 w-8 h-18 pointer-events-none"
+          style={{ opacity: 0.07, animationDelay: "1s" }}
+        >
+          <BotanicalBranch className="w-full h-full" />
+        </div>
+
+        <div className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-10">
+          {/* Top */}
+          <div className="flex flex-wrap items-start justify-between gap-10 mb-14">
+            {/* Brand */}
+            <div style={{ maxWidth: "240px" }}>
+              <div className="flex items-center gap-2 mb-4">
+                <svg
+                  viewBox="0 0 20 36"
+                  width="10"
+                  height="18"
+                  fill="none"
+                  stroke="#b0b8c4"
+                  strokeWidth="0.8"
+                  aria-hidden="true"
+                >
+                  <path d="M10 34 C10 26, 10.5 18, 11 10 C11.5 5, 10.5 1, 11 0" />
+                  <path d="M11 10 C15 8, 18 5, 20 2 C17 5, 14 8, 11 10" />
+                  <path d="M10.5 20 C7 18, 4 14, 2 10 C4 14, 7 18, 10.5 20" />
+                </svg>
+                <span className="font-light text-sm text-[#7a8a9e] tracking-[0.1em]">
+                  japanese fresh
+                </span>
+              </div>
+              <p className="font-light text-xs text-[#b0b8c4] leading-loose tracking-wide mb-4">
+                Ma philosophy, wabi-sabi beauty, hairline borders
+                and botanical accents. Design that breathes.
+              </p>
+              <div className="flex gap-2">
+                {["#64b5f6", "#98d8c8", "#ffb7c5", "#b8d4e3", "#d4d4cf"].map((c) => (
+                  <div
+                    key={c}
+                    className="rounded-full transition-all duration-500 hover:scale-110 cursor-default"
+                    style={{
+                      width: "0.875rem",
+                      height: "0.875rem",
+                      backgroundColor: c,
+                      border: c === "#d4d4cf" ? "0.5px solid rgba(212,212,207,0.6)" : "none",
+                    }}
                   />
                 ))}
               </div>
-              <p className="font-light text-xs text-[#d4d4cf] tracking-widest">
-                間 · wabi-sabi · 桜
-              </p>
             </div>
-          </RevealBlock>
+
+            {/* Links */}
+            <div className="flex flex-wrap gap-10">
+              <div className="flex flex-col gap-3">
+                <span className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8]">style</span>
+                {[
+                  { label: "documentation", href: "/styles/japanese-fresh" },
+                  { label: "showcase", href: "/styles/japanese-fresh/showcase" },
+                  { label: "cover", href: "/styles/japanese-fresh/cover" },
+                ].map((l) => (
+                  <Link
+                    key={l.label}
+                    href={l.href}
+                    className="font-light text-xs text-[#b0b8c4] tracking-wide transition-colors duration-500 hover:text-[#64b5f6]"
+                    style={{ textDecoration: "none" }}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8]">stylekit</span>
+                {[
+                  { label: "home", href: "/" },
+                  { label: "all styles", href: "/styles" },
+                ].map((l) => (
+                  <Link
+                    key={l.label}
+                    href={l.href}
+                    className="font-light text-xs text-[#b0b8c4] tracking-wide transition-colors duration-500 hover:text-[#64b5f6]"
+                    style={{ textDecoration: "none" }}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="font-light text-[9px] tracking-[0.3em] text-[#c8d0d8]">philosophy</span>
+                {["間 — ma", "侘 — wabi", "寂 — sabi", "清 — sei"].map((p) => (
+                  <span key={p} className="font-light text-xs text-[#c8d0d8] tracking-wide">{p}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Hairline */}
+          <div
+            className="h-px mb-8"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(212,212,207,0.4) 40%, rgba(212,212,207,0.4) 60%, transparent 100%)",
+            }}
+          />
+
+          {/* Bottom row */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <span className="font-light text-[9px] tracking-[0.25em] text-[#c8d0d8]">
+              日系清新風 &mdash; japanese fresh &mdash; for stylekit
+            </span>
+            <div className="flex items-center gap-3">
+              {["#64b5f6", "#98d8c8", "#ffb7c5", "#b8d4e3"].map((c, i) => (
+                <div
+                  key={c}
+                  className="rounded-full jf-breathe"
+                  style={{
+                    width: "0.3rem",
+                    height: "0.3rem",
+                    backgroundColor: c,
+                    opacity: 0.5,
+                    animationDelay: `${i * 0.5}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 font-light text-[10px] tracking-widest text-[#7a8a9e] px-4 py-1.5 rounded-lg transition-all duration-500 hover:text-[#64b5f6] hover:-translate-y-px"
+              style={{ border: "0.5px solid rgba(212,212,207,0.4)", textDecoration: "none" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(100,181,246,0.35)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,212,207,0.4)";
+              }}
+            >
+              <span>&#8592;</span>
+              <span>back to stylekit</span>
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

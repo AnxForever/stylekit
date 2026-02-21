@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hooks                                                        */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -20,11 +21,12 @@ function useInView(options = {}) {
           obs.disconnect();
         }
       },
-      { threshold: 0.15, ...options },
+      { threshold: 0.15, ...options }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -54,1157 +56,1259 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Static data                                                         */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-type Article = {
+function SearchIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  );
+}
+
+function ClockIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+    </svg>
+  );
+}
+
+function GridIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Color palette data                                                 */
+/* ------------------------------------------------------------------ */
+
+const palette = [
+  { name: "Ink Black",     hex: "#1a1a1a", label: "Primary"  },
+  { name: "Paper White",   hex: "#fafafa", label: "Secondary" },
+  { name: "Editorial Red", hex: "#e63946", label: "Accent 1"  },
+  { name: "Teal Press",    hex: "#2a9d8f", label: "Accent 2"  },
+  { name: "Amber Ink",     hex: "#e9c46a", label: "Accent 3"  },
+  { name: "Midnight",      hex: "#264653", label: "Accent 4"  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Article / category data                                            */
+/* ------------------------------------------------------------------ */
+
+type Category = "Technology" | "Business" | "Culture" | "Opinion" | "Science";
+
+const categoryColors: Record<Category, { text: string; bg: string }> = {
+  Technology: { text: "#2a9d8f", bg: "#f0faf9" },
+  Business:   { text: "#e63946", bg: "#fef2f2" },
+  Culture:    { text: "#e9c46a", bg: "#fffbeb" },
+  Opinion:    { text: "#264653", bg: "#f0f4f6" },
+  Science:    { text: "#2a9d8f", bg: "#f0faf9" },
+};
+
+interface Article {
   id: number;
-  category: string;
-  categoryColor: "red" | "teal" | "gold" | "dark";
-  headline: string;
-  teaser: string;
+  category: Category;
+  title: string;
+  excerpt: string;
   author: string;
   date: string;
-  words: number;
-  size: "featured" | "secondary" | "brief";
-};
+  readTime: string;
+  imageBg: string;
+}
 
 const articles: Article[] = [
   {
     id: 1,
-    category: "Politics",
-    categoryColor: "red",
-    headline: "Global Leaders Convene for Historic Climate Summit in Geneva",
-    teaser:
-      "World leaders gathered in Geneva this week for what analysts are calling the most consequential climate summit in a decade. With emissions targets failing across major economies, the pressure to produce binding commitments has never been greater. Delegates from 140 nations arrived with draft proposals, but finding common ground remains elusive given diverging economic priorities.",
-    author: "Eleanor Whitfield",
-    date: "Feb 20, 2026",
-    words: 1840,
-    size: "featured",
+    category: "Technology",
+    title: "The Architecture of Modern AI Systems: A Deep Dive into Transformer Networks",
+    excerpt: "Large language models have fundamentally changed how we approach software architecture. This investigation examines the infrastructure powering today's most capable systems and what it means for future development.",
+    author: "Elena Marchetti",
+    date: "Feb 21, 2026",
+    readTime: "12 min read",
+    imageBg: "linear-gradient(135deg, #264653 0%, #2a9d8f 60%, #1a1a1a 100%)",
   },
   {
     id: 2,
-    category: "Culture",
-    categoryColor: "teal",
-    headline: "The Return of Print: Why Physical Magazines Are Thriving Again",
-    teaser:
-      "In an era of infinite digital scroll, a surprising number of readers are turning back to ink on paper. Independent magazine publishers report double-digit circulation growth for the third consecutive year, driven by readers seeking depth, curation, and the tactile pleasure of a well-designed spread.",
-    author: "Marcus Chen",
-    date: "Feb 19, 2026",
-    words: 2100,
-    size: "secondary",
+    category: "Business",
+    title: "The New Economics of Remote Work",
+    excerpt: "How distributed teams are reshaping corporate real estate and productivity benchmarks.",
+    author: "Marco Delgado",
+    date: "Feb 20, 2026",
+    readTime: "6 min read",
+    imageBg: "linear-gradient(135deg, #e63946 0%, #264653 100%)",
   },
   {
     id: 3,
-    category: "Technology",
-    categoryColor: "gold",
-    headline: "AI-Assisted Newsrooms: Promise and Peril",
-    teaser:
-      "Editorial teams adopting artificial intelligence tools report dramatic gains in output — but at what cost to journalistic instinct?",
-    author: "Priya Nair",
-    date: "Feb 18, 2026",
-    words: 920,
-    size: "brief",
+    category: "Culture",
+    title: "Tokyo's Underground Design Scene",
+    excerpt: "Inside the ateliers and studios redefining Japanese graphic identity for a global audience.",
+    author: "Yuki Tanaka",
+    date: "Feb 19, 2026",
+    readTime: "8 min read",
+    imageBg: "linear-gradient(135deg, #e9c46a 0%, #e63946 100%)",
   },
   {
     id: 4,
-    category: "Sports",
-    categoryColor: "red",
-    headline: "Marathon Season Opens with Record Participation",
-    teaser:
-      "This spring's marathon circuit has registered more entrants than any previous season, reflecting a post-pandemic surge in endurance sport.",
-    author: "James Okafor",
-    date: "Feb 17, 2026",
-    words: 640,
-    size: "brief",
+    category: "Opinion",
+    title: "Why Print Still Matters in a Screen-Saturated World",
+    excerpt: "An argument for the enduring relevance of paper, ink, and careful typography.",
+    author: "Sarah Collins",
+    date: "Feb 18, 2026",
+    readTime: "4 min read",
+    imageBg: "linear-gradient(135deg, #1a1a1a 0%, #264653 100%)",
   },
   {
     id: 5,
-    category: "Politics",
-    categoryColor: "red",
-    headline: "Senate Panel Moves Forward on Infrastructure Bill",
-    teaser:
-      "A bipartisan infrastructure bill cleared committee review on Thursday, setting the stage for a full Senate vote as early as next month.",
-    author: "Sofia Marchand",
-    date: "Feb 16, 2026",
-    words: 710,
-    size: "brief",
+    category: "Science",
+    title: "Climate Models Achieve Record Accuracy",
+    excerpt: "New computational approaches close the gap between prediction and measured reality.",
+    author: "Prof. Hiroshi Ono",
+    date: "Feb 17, 2026",
+    readTime: "7 min read",
+    imageBg: "linear-gradient(135deg, #2a9d8f 0%, #264653 100%)",
   },
 ];
 
-const categories = ["All", "Politics", "Culture", "Technology", "Sports"];
-
-const colorSwatches = [
-  {
-    name: "Near Black",
-    hex: "#1a1a1a",
-    role: "Body text, headlines",
-    light: false,
-    context: "text",
-  },
-  {
-    name: "Near White",
-    hex: "#fafafa",
-    role: "Background surface",
-    light: true,
-    context: "bg",
-  },
-  {
-    name: "Red",
-    hex: "#e63946",
-    role: "Breaking, accent, badges",
-    light: false,
-    context: "accent",
-  },
-  {
-    name: "Teal",
-    hex: "#2a9d8f",
-    role: "Features, culture",
-    light: false,
-    context: "badge",
-  },
-  {
-    name: "Gold",
-    hex: "#e9c46a",
-    role: "Special reports",
-    light: true,
-    context: "badge",
-  },
-  {
-    name: "Dark Teal",
-    hex: "#264653",
-    role: "Deep accent, footer",
-    light: false,
-    context: "button",
-  },
-];
-
-const typographyLevels = [
-  {
-    label: "Display",
-    cls: "text-6xl font-black leading-none tracking-tight",
-    sample: "The Press Endures",
-    note: "text-6xl / font-black / Hero headlines",
-  },
-  {
-    label: "Headline",
-    cls: "text-3xl font-black leading-tight tracking-tight",
-    sample: "Editorial Integrity in the Digital Age",
-    note: "text-3xl / font-black / Section titles",
-  },
-  {
-    label: "Subhead",
-    cls: "text-xl font-bold leading-snug",
-    sample: "Circulation Numbers Challenge Pessimists",
-    note: "text-xl / font-bold / Article subheads",
-  },
-  {
-    label: "Body",
-    cls: "text-base font-normal leading-relaxed",
-    sample:
-      "The newsroom floor hummed with the quiet industry of deadline-driven journalism, each reporter a node in a network of verified fact.",
-    note: "text-base / font-normal / Article body",
-  },
-  {
-    label: "Caption",
-    cls: "text-xs font-medium uppercase tracking-widest",
-    sample: "PHOTOGRAPH BY ANNA KOWALSKI — REUTERS",
-    note: "text-xs / uppercase / tracking-widest",
-  },
-];
-
-const doRules = [
-  "Use CSS grid with mixed col/row spans to create genuine magazine hierarchy",
-  "Assign red to breaking news only — preserve semantic weight",
-  "Keep headlines font-black with leading-tight for typographic authority",
-  "Separate sections with thin border-t border-[#1a1a1a]/20 rule lines",
-  "Category badges uppercase tracking-widest px-2 py-0.5 text-xs font-bold",
-  "Author bylines in a consistent format: Name / Date / Word count",
-];
-
-const dontRules = [
-  "Do not center body text — left-aligned prose respects reading flow",
-  "Do not use more than 4 accent colors — red/teal/gold/dark teal only",
-  "Do not apply shadows to article cards — borders carry structural meaning",
-  "Do not use rounded-full on category badges — pill shapes dilute authority",
-  "Do not scale or float images freely — constrain to grid columns strictly",
-  "Do not omit word counts and dates — readers use them to prioritize reading",
-];
+const navCategories = ["All", "Technology", "Business", "Culture", "Opinion", "Science"] as const;
+type NavCategory = (typeof navCategories)[number];
 
 /* ------------------------------------------------------------------ */
-/*  Badge component                                                     */
-/* ------------------------------------------------------------------ */
-
-function CategoryBadge({
-  category,
-  color,
-}: {
-  category: string;
-  color: "red" | "teal" | "gold" | "dark";
-}) {
-  const colorMap: Record<string, string> = {
-    red: "bg-[#e63946] text-white",
-    teal: "bg-[#2a9d8f] text-white",
-    gold: "bg-[#e9c46a] text-[#1a1a1a]",
-    dark: "bg-[#264653] text-white",
-  };
-  return (
-    <span
-      className={`inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-widest ${colorMap[color]}`}
-    >
-      {category}
-    </span>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Article card                                                        */
-/* ------------------------------------------------------------------ */
-
-function ArticleCard({
-  article,
-  expanded,
-  onExpand,
-}: {
-  article: Article;
-  expanded: boolean;
-  onExpand: () => void;
-}) {
-  return (
-    <div
-      className="group bg-white border border-[#1a1a1a]/10 hover:border-l-2 hover:border-l-[#e63946] cursor-pointer transition-all duration-200 p-4 h-full flex flex-col"
-      onClick={onExpand}
-    >
-      <div className="mb-2">
-        <CategoryBadge category={article.category} color={article.categoryColor} />
-      </div>
-      <h3
-        className={`font-black leading-tight text-[#1a1a1a] mb-2 ${
-          article.size === "featured"
-            ? "text-2xl"
-            : article.size === "secondary"
-              ? "text-xl"
-              : "text-base"
-        }`}
-      >
-        {article.headline}
-      </h3>
-      <p
-        className={`text-sm text-[#1a1a1a]/70 leading-relaxed mb-3 ${expanded ? "" : "line-clamp-3"}`}
-      >
-        {article.teaser}
-      </p>
-      <div className="mt-auto flex items-center justify-between text-xs text-[#1a1a1a]/40 border-t border-[#1a1a1a]/10 pt-2">
-        <span className="font-medium">{article.author}</span>
-        <span>{article.date}</span>
-        <span>{article.words.toLocaleString()} words</span>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Grid layout demo panel                                              */
-/* ------------------------------------------------------------------ */
-
-type GridLayout = "3col" | "2col" | "1col";
-
-function GridDemo({
-  layout,
-  articles: arts,
-}: {
-  layout: GridLayout;
-  articles: Article[];
-}) {
-  const cols =
-    layout === "3col"
-      ? "grid-cols-3"
-      : layout === "2col"
-        ? "grid-cols-2"
-        : "grid-cols-1";
-  return (
-    <div className={`grid ${cols} gap-4`}>
-      {arts.map((a) => (
-        <div
-          key={a.id}
-          className="bg-white border border-[#1a1a1a]/10 p-4"
-        >
-          <CategoryBadge category={a.category} color={a.categoryColor} />
-          <p className="text-sm font-black leading-tight text-[#1a1a1a] mt-2">
-            {a.headline}
-          </p>
-          <p className="text-xs text-[#1a1a1a]/50 mt-1">{a.author}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Main export                                                         */
+/*  Main export                                                        */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [gridLayout, setGridLayout] = useState<GridLayout>("3col");
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeNav, setActiveNav] = useState<NavCategory>("All");
+  const [activeComponentTab, setActiveComponentTab] = useState<"card" | "button" | "nav" | "input">("card");
+  const [hoveredSwatchIdx, setHoveredSwatchIdx] = useState<number | null>(null);
 
-  const { ref: heroRef } = useInView();
+  // aiRule 1: Color Awakening
+  const [colorAwakeningActive, setColorAwakeningActive] = useState(false);
+  const [colorAwakeningHoveredId, setColorAwakeningHoveredId] = useState<number | null>(null);
+
+  // aiRule 2: Editorial Stretch (hover tracked per-row via category key)
+  const [stretchHoveredCat, setStretchHoveredCat] = useState<Category | null>(null);
+
+  // aiRule 3: Crisp Typographic Shift
+  const [typoDemoHovered, setTypoDemoHovered] = useState(false);
+  const [typoGlowHovered, setTypoGlowHovered] = useState(false);
+
+  // aiRule 4: Readability First
+  const [readabilityAnimOn, setReadabilityAnimOn] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 80);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const filteredArticles = activeCategory
-    ? articles.filter((a) => a.category === activeCategory)
-    : articles;
-
-  const featuredArticle = articles[0];
-  const secondaryArticle = articles[1];
-  const briefArticles = articles.slice(2);
+  const filteredArticles =
+    activeNav === "All" ? articles : articles.filter((a) => a.category === activeNav);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a]">
-      {/* ================================================================ */}
-      {/* 1. Fixed Nav                                                      */}
-      {/* ================================================================ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa] border-b border-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-14">
-            {/* Masthead */}
-            <span className="text-lg font-black tracking-tight uppercase text-[#1a1a1a]">
-              StyleKit <span className="text-[#e63946]">Magazine</span>
-            </span>
+    <div className="min-h-screen bg-[#fafafa] font-sans text-[#1a1a1a] overflow-x-hidden">
+      <style>{`
+        @keyframes mg-breaking {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .mg-breaking-ticker {
+          animation: mg-breaking 24s linear infinite;
+        }
+      `}</style>
 
-            {/* Section nav */}
-            <nav className="hidden md:flex items-center gap-6">
-              {["Politics", "Culture", "Technology", "Sports", "Grid"].map((section) => (
-                <a
-                  key={section}
-                  href={`#${section.toLowerCase()}`}
-                  className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/60 hover:text-[#e63946] transition-colors duration-150"
-                >
-                  {section}
-                </a>
-              ))}
-            </nav>
-
-            {/* Right cluster */}
-            <div className="flex items-center gap-4">
-              <div className="relative hidden sm:block">
-                <svg
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#1a1a1a]/40"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="pl-7 pr-3 py-1 bg-white border border-[#1a1a1a]/20 text-xs focus:outline-none focus:border-[#e63946] w-32 transition-colors duration-150"
-                />
-              </div>
-              <time className="text-xs text-[#1a1a1a]/40 hidden md:block font-medium uppercase tracking-widest">
-                Feb 20, 2026
-              </time>
-              <Link
-                href="/styles"
-                className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/50 hover:text-[#e63946] transition-colors duration-150"
-              >
-                All Styles
-              </Link>
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa]/95 backdrop-blur-sm border-b-2 border-[#1a1a1a]">
+        {/* Breaking news ticker */}
+        <div className="bg-[#e63946] text-white text-xs font-semibold py-1 overflow-hidden">
+          <div className="flex whitespace-nowrap">
+            <div className="mg-breaking-ticker flex gap-12 pr-12">
+              <span className="uppercase tracking-wider">Breaking:</span>
+              <span>Magazine Grid Layout System — Editorial CSS Grid for Modern Publishing</span>
+              <span className="text-white/60">|</span>
+              <span>4-Column Desktop Grid with 2x2 Featured Span</span>
+              <span className="text-white/60">|</span>
+              <span>Color Awakening, Editorial Stretch, Crisp Typographic Shift</span>
+              <span className="text-white/60">|</span>
+              <span>Content First, Grid Second: The Magazine Philosophy</span>
+              <span className="text-white/60">|</span>
+            </div>
+            <div className="mg-breaking-ticker flex gap-12 pr-12" aria-hidden="true">
+              <span className="uppercase tracking-wider">Breaking:</span>
+              <span>Magazine Grid Layout System — Editorial CSS Grid for Modern Publishing</span>
+              <span className="text-white/60">|</span>
+              <span>4-Column Desktop Grid with 2x2 Featured Span</span>
+              <span className="text-white/60">|</span>
+              <span>Color Awakening, Editorial Stretch, Crisp Typographic Shift</span>
+              <span className="text-white/60">|</span>
+              <span>Content First, Grid Second: The Magazine Philosophy</span>
+              <span className="text-white/60">|</span>
             </div>
           </div>
+        </div>
+
+        {/* Main masthead */}
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+          <div className="flex items-center gap-3">
+            <GridIcon className="w-5 h-5 text-[#e63946]" />
+            <span className="text-lg font-black tracking-tight uppercase">
+              Magazine<span className="text-[#e63946]">Grid</span>
+            </span>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Grid Demo", "Components", "aiRules", "Philosophy"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-[#1a1a1a] hover:bg-zinc-100 cursor-pointer transition-colors duration-150"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#1a1a1a] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#e63946] transition-colors duration-200"
+          >
+            <span>←</span>
+            <span>StyleKit</span>
+          </Link>
         </div>
       </header>
 
       {/* ================================================================ */}
-      {/* 2. Hero Magazine Spread                                           */}
+      {/* 2. HERO                                                          */}
       {/* ================================================================ */}
-      <section className="pt-20 pb-0 border-b border-[#1a1a1a]" ref={heroRef}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {/* Issue banner */}
+      <section className="pt-28 pb-20 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+
+          {/* Masthead headline */}
+          <div className="text-center mb-12">
+            <div
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+                transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0s",
+              }}
+            >
+              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 border border-[#e63946]">
+                <span className="w-2 h-2 rounded-full bg-[#e63946] inline-block" />
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e63946]">
+                  Style Showcase
+                </span>
+              </div>
+            </div>
+
+            <h1
+              className="text-6xl md:text-8xl lg:text-[108px] font-black leading-[0.9] tracking-tight mb-6 uppercase"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+                transition:
+                  "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+              }}
+            >
+              Magazine
+              <br />
+              <span className="text-[#e63946]">Grid</span>
+            </h1>
+
+            <div
+              className="max-w-2xl mx-auto"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+                transition:
+                  "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s",
+              }}
+            >
+              <p className="text-zinc-500 text-lg leading-relaxed border-l-4 border-[#e63946] pl-4 text-left">
+                Inspired by print magazine typography and grid theory. Multiple column layouts, varied
+                card sizes, editorial hierarchy — all in a responsive CSS grid system built for
+                content-first publishing.
+              </p>
+            </div>
+          </div>
+
+          {/* Hero stats */}
           <div
-            className="py-2 border-b border-[#1a1a1a]/20 flex items-center gap-6"
+            className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-[#1a1a1a] mb-12"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transition: "opacity 0.5s ease 0.05s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition:
+                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s",
             }}
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-              Volume XLII
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-              Issue 08
-            </span>
-            <span className="ml-auto text-[10px] font-bold uppercase tracking-widest text-[#e63946]">
-              Breaking Now
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-0">
-            {/* Left: large image placeholder */}
-            <div className="md:col-span-7 border-r border-[#1a1a1a]/20">
+            {[
+              { value: "4",    label: "Column Grid",    sub: "desktop layout" },
+              { value: "4",    label: "aiRules",        sub: "interaction patterns" },
+              { value: "2×2",  label: "Featured Span",  sub: "hero card area" },
+              { value: "100%", label: "Responsive",     sub: "mobile to desktop" },
+            ].map((stat, i) => (
               <div
-                className="h-72 md:h-[480px] flex items-end relative"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #264653 0%, #2a9d8f 40%, #e9c46a 100%)",
-                  opacity: heroRevealed ? 1 : 0,
-                  transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s",
-                }}
+                key={stat.label}
+                className={`p-6 text-center group cursor-default hover:bg-[#1a1a1a] transition-colors duration-200 ${
+                  i < 3 ? "border-r border-[#1a1a1a]" : ""
+                }`}
               >
-                {/* Caption overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-[#1a1a1a]/70 px-6 py-3">
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-white/70">
-                    Photograph by Anna Kowalski — Reuters / Geneva, Feb 2026
-                  </p>
+                <div className="text-3xl font-black mb-1 group-hover:text-[#e63946] transition-colors duration-200">
+                  {stat.value}
+                </div>
+                <div className="text-xs font-semibold uppercase tracking-wider group-hover:text-white transition-colors duration-200">
+                  {stat.label}
+                </div>
+                <div className="text-xs text-zinc-400 mt-0.5 group-hover:text-zinc-300 transition-colors duration-200">
+                  {stat.sub}
                 </div>
               </div>
-            </div>
-
-            {/* Right: headline block */}
-            <div className="md:col-span-5 flex flex-col justify-between p-6 md:p-8">
-              <div>
-                <div
-                  className="mb-4"
-                  style={{
-                    opacity: heroRevealed ? 1 : 0,
-                    transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-                    transition:
-                      "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s",
-                  }}
-                >
-                  <CategoryBadge
-                    category={featuredArticle.category}
-                    color={featuredArticle.categoryColor}
-                  />
-                </div>
-
-                <h1
-                  className="text-4xl md:text-5xl lg:text-6xl font-black leading-none tracking-tight text-[#1a1a1a] mb-4"
-                  style={{
-                    opacity: heroRevealed ? 1 : 0,
-                    transform: heroRevealed ? "translateY(0)" : "translateY(32px)",
-                    transition:
-                      "opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.25s",
-                  }}
-                >
-                  {featuredArticle.headline}
-                </h1>
-
-                <p
-                  className="text-sm text-[#1a1a1a]/70 leading-relaxed mb-6"
-                  style={{
-                    opacity: heroRevealed ? 1 : 0,
-                    transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
-                    transition:
-                      "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.38s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.38s",
-                  }}
-                >
-                  {featuredArticle.teaser}
-                </p>
-              </div>
-
-              {/* Byline */}
-              <div
-                className="flex items-center justify-between border-t border-[#1a1a1a]/20 pt-4"
-                style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transition: "opacity 0.7s ease 0.5s",
-                }}
-              >
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]">
-                    {featuredArticle.author}
-                  </p>
-                  <p className="text-xs text-[#1a1a1a]/40 mt-0.5">
-                    {featuredArticle.date} &mdash;{" "}
-                    {featuredArticle.words.toLocaleString()} words
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="text-xs font-bold uppercase tracking-widest text-[#e63946] border border-[#e63946] px-3 py-1 hover:bg-[#e63946] hover:text-white transition-colors duration-150"
-                >
-                  Read
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 3. Editorial Grid                                                 */}
-      {/* ================================================================ */}
-      <section id="politics" className="py-12 md:py-16 border-b border-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-8">
-            <div className="flex items-center gap-4 border-b border-[#1a1a1a] pb-3">
-              <h2 className="text-2xl font-black uppercase tracking-tight text-[#1a1a1a]">
-                Today&apos;s Edition
-              </h2>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-                Featured Coverage
-              </span>
-            </div>
-          </RevealBlock>
-
-          {/* Magazine CSS grid — authentic mixed-size layout */}
-          <RevealBlock delay={0.05}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-[#1a1a1a]/20">
-              {/* Featured story: col-span-2 row-span-2 */}
-              <div className="md:col-span-2 md:row-span-2 border-r border-[#1a1a1a]/20 border-b border-[#1a1a1a]/20 md:border-b-0 p-6 flex flex-col group hover:border-l-2 hover:border-l-[#e63946] transition-all duration-200 cursor-pointer">
-                {/* Image placeholder */}
-                <div
-                  className="h-48 md:h-72 mb-4 flex items-end p-3"
-                  style={{
-                    background:
-                      "linear-gradient(160deg, #264653 0%, #2a9d8f 100%)",
-                  }}
-                >
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">
-                    Geneva Climate Summit
-                  </span>
-                </div>
-                <div className="mb-2">
-                  <CategoryBadge
-                    category={featuredArticle.category}
-                    color={featuredArticle.categoryColor}
-                  />
-                </div>
-                <h3 className="text-2xl md:text-3xl font-black leading-tight text-[#1a1a1a] mb-3">
-                  {featuredArticle.headline}
-                </h3>
-                <p className="text-sm text-[#1a1a1a]/70 leading-relaxed mb-4 line-clamp-3">
-                  {featuredArticle.teaser}
-                </p>
-                <div className="mt-auto flex items-center gap-3 text-xs text-[#1a1a1a]/40 border-t border-[#1a1a1a]/10 pt-3">
-                  <span className="font-bold text-[#1a1a1a]">{featuredArticle.author}</span>
-                  <span>{featuredArticle.date}</span>
-                  <span className="ml-auto">{featuredArticle.words.toLocaleString()} words</span>
-                </div>
-              </div>
-
-              {/* Secondary story: col-span-1 row-span-2 */}
-              <div className="md:row-span-2 border-b border-[#1a1a1a]/20 p-5 flex flex-col group hover:border-l-2 hover:border-l-[#2a9d8f] transition-all duration-200 cursor-pointer">
-                <div
-                  className="h-32 mb-3 flex items-end p-3"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #2a9d8f 0%, #264653 100%)",
-                  }}
-                >
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">
-                    Media & Culture
-                  </span>
-                </div>
-                <div className="mb-2">
-                  <CategoryBadge
-                    category={secondaryArticle.category}
-                    color={secondaryArticle.categoryColor}
-                  />
-                </div>
-                <h3 className="text-lg font-black leading-tight text-[#1a1a1a] mb-2">
-                  {secondaryArticle.headline}
-                </h3>
-                <p className="text-xs text-[#1a1a1a]/60 leading-relaxed mb-3 line-clamp-4 flex-1">
-                  {secondaryArticle.teaser}
-                </p>
-                <div className="flex items-center justify-between text-xs text-[#1a1a1a]/40 border-t border-[#1a1a1a]/10 pt-2 mt-auto">
-                  <span className="font-bold text-[#1a1a1a] text-[11px]">{secondaryArticle.author}</span>
-                  <span>{secondaryArticle.words.toLocaleString()} words</span>
-                </div>
-              </div>
-
-              {/* 3 briefs row */}
-              {briefArticles.map((article, i) => (
-                <div
-                  key={article.id}
-                  className={`p-4 border-t border-[#1a1a1a]/20 ${
-                    i < briefArticles.length - 1 ? "border-r border-[#1a1a1a]/20" : ""
-                  } group hover:border-l-2 hover:border-l-[#e63946] transition-all duration-200 cursor-pointer`}
-                >
-                  <div className="mb-1.5">
-                    <CategoryBadge category={article.category} color={article.categoryColor} />
-                  </div>
-                  <h4 className="text-sm font-black leading-tight text-[#1a1a1a] mb-1.5">
-                    {article.headline}
-                  </h4>
-                  <p className="text-xs text-[#1a1a1a]/50 leading-relaxed line-clamp-2 mb-2">
-                    {article.teaser}
-                  </p>
-                  <div className="flex items-center gap-2 text-[10px] text-[#1a1a1a]/30">
-                    <span className="font-bold text-[#1a1a1a]/50">{article.author}</span>
-                    <span>{article.words} words</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 4. Typography System                                              */}
-      {/* ================================================================ */}
-      <section
-        id="typography"
-        className="py-12 md:py-16 bg-white border-b border-[#1a1a1a]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-10">
-            <div className="border-b border-[#1a1a1a] pb-3 flex items-center gap-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight">
-                Typography System
-              </h2>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-                Type Scale
-              </span>
-            </div>
-          </RevealBlock>
-
-          {/* Type scale rows */}
-          <div className="space-y-0">
-            {typographyLevels.map((level, i) => (
-              <RevealBlock key={level.label} delay={i * 0.06}>
-                <div className="group flex flex-col md:flex-row md:items-baseline gap-3 md:gap-6 py-6 border-b border-[#1a1a1a]/10 hover:bg-[#fafafa] transition-colors duration-150 px-2">
-                  <div className="md:w-20 shrink-0">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#e63946]">
-                      {level.label}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <p className={`${level.cls} text-[#1a1a1a] truncate`}>{level.sample}</p>
-                  </div>
-                  <div className="md:w-64 shrink-0">
-                    <p className="text-[11px] text-[#1a1a1a]/40">{level.note}</p>
-                  </div>
-                </div>
-              </RevealBlock>
             ))}
           </div>
 
-          {/* Pull quote + dropcap examples */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <RevealBlock delay={0.1}>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-4">
-                  Pull Quote
-                </p>
-                <blockquote className="border-l-4 border-[#e63946] pl-6">
-                  <p className="text-2xl italic font-bold leading-snug text-[#1a1a1a] mb-3">
-                    &ldquo;The press is the guardian of the public mind — its
-                    dissolution is the dissolution of civic life itself.&rdquo;
-                  </p>
-                  <cite className="text-xs font-bold uppercase tracking-widest text-[#e63946] not-italic">
-                    Eleanor Whitfield, Senior Correspondent
-                  </cite>
-                </blockquote>
-              </div>
-            </RevealBlock>
-
-            <RevealBlock delay={0.15}>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-4">
-                  Dropcap Body Text
-                </p>
-                <div className="text-sm leading-relaxed text-[#1a1a1a]/80">
-                  <span className="float-left text-6xl font-black leading-none mr-2 mt-1 text-[#e63946]">
-                    T
-                  </span>
-                  he Geneva summit opened under overcast skies with delegates from
-                  140 nations filing into the Palais des Nations. The weight of
-                  expectation was palpable — three years of failed agreements had
-                  pushed this gathering to the edge of a defining moment for global
-                  climate policy. Negotiations began in earnest before the official
-                  ceremony concluded.
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 5. Component Showcase                                             */}
-      {/* ================================================================ */}
-      <section
-        id="culture"
-        className="py-12 md:py-16 border-b border-[#1a1a1a]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-10">
-            <div className="border-b border-[#1a1a1a] pb-3 flex items-center gap-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight">
-                Component Showcase
-              </h2>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-                UI Elements
-              </span>
-            </div>
-          </RevealBlock>
-
-          {/* Category badges */}
-          <RevealBlock className="mb-10">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-4">
-              Category Badge Variants
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <CategoryBadge category="Politics" color="red" />
-              <CategoryBadge category="Culture" color="teal" />
-              <CategoryBadge category="Technology" color="gold" />
-              <CategoryBadge category="Sports" color="red" />
-              <CategoryBadge category="Special Report" color="dark" />
-              <CategoryBadge category="Breaking" color="red" />
-              <CategoryBadge category="Opinion" color="teal" />
-              <CategoryBadge category="Investigation" color="dark" />
-            </div>
-          </RevealBlock>
-
-          {/* Article card hover effects */}
-          <RevealBlock className="mb-10" delay={0.05}>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-4">
-              Article Card — Hover to reveal red left border
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {articles.slice(0, 3).map((a) => (
-                <ArticleCard
-                  key={a.id}
-                  article={a}
-                  expanded={expandedArticle === a.id}
-                  onExpand={() =>
-                    setExpandedArticle(expandedArticle === a.id ? null : a.id)
-                  }
-                />
-              ))}
-            </div>
-            <p className="text-xs text-[#1a1a1a]/40 mt-3">
-              Click a card to expand / collapse the teaser text.
-            </p>
-          </RevealBlock>
-
-          {/* Search + Byline + Pagination */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Search */}
-            <RevealBlock delay={0.08}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-3">
-                Search Input
-              </p>
-              <div className="relative">
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1a1a1a]/30"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  className="w-full pl-9 pr-4 py-2.5 bg-white border border-[#1a1a1a] text-sm text-[#1a1a1a] focus:outline-none focus:border-[#e63946] transition-colors duration-150 placeholder:text-[#1a1a1a]/30"
-                />
-              </div>
-            </RevealBlock>
-
-            {/* Byline */}
-            <RevealBlock delay={0.1}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-3">
-                Byline Component
-              </p>
-              <div className="bg-white border border-[#1a1a1a]/10 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#264653] flex items-center justify-center text-white text-xs font-black">
-                    EW
-                  </div>
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-[#1a1a1a]">
-                      Eleanor Whitfield
-                    </p>
-                    <p className="text-[10px] text-[#1a1a1a]/40 uppercase tracking-widest mt-0.5">
-                      Senior Correspondent &mdash; Feb 20, 2026
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Pagination */}
-            <RevealBlock delay={0.12}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40 mb-3">
-                Pagination
-              </p>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  className="w-8 h-8 flex items-center justify-center border border-[#1a1a1a]/20 text-xs text-[#1a1a1a]/40 hover:border-[#e63946] hover:text-[#e63946] transition-colors duration-150"
-                >
-                  &laquo;
-                </button>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    className={`w-8 h-8 flex items-center justify-center text-xs font-bold border transition-colors duration-150 ${
-                      n === 2
-                        ? "bg-[#e63946] border-[#e63946] text-white"
-                        : "border-[#1a1a1a]/20 text-[#1a1a1a]/60 hover:border-[#e63946] hover:text-[#e63946]"
-                    }`}
-                  >
-                    {n}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  className="w-8 h-8 flex items-center justify-center border border-[#1a1a1a]/20 text-xs text-[#1a1a1a]/40 hover:border-[#e63946] hover:text-[#e63946] transition-colors duration-150"
-                >
-                  &raquo;
-                </button>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 6. Color System                                                   */}
-      {/* ================================================================ */}
-      <section
-        id="technology"
-        className="py-12 md:py-16 bg-white border-b border-[#1a1a1a]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-10">
-            <div className="border-b border-[#1a1a1a] pb-3 flex items-center gap-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight">
-                Color System
-              </h2>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-                Editorial Palette
-              </span>
-            </div>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {colorSwatches.map((swatch, i) => (
-              <RevealBlock key={swatch.name} delay={i * 0.05}>
-                <div className="bg-white border border-[#1a1a1a]/10">
-                  {/* Swatch block */}
-                  <div
-                    className="h-20 flex items-end p-2"
-                    style={{ backgroundColor: swatch.hex }}
-                  >
-                    <span
-                      className="text-[9px] font-mono font-bold"
-                      style={{ color: swatch.light ? "#1a1a1a" : "#fafafa", opacity: 0.8 }}
-                    >
-                      {swatch.hex}
-                    </span>
-                  </div>
-                  {/* Context strip */}
-                  <div className="p-3 border-t border-[#1a1a1a]/10">
-                    <p className="text-xs font-black text-[#1a1a1a] mb-0.5">{swatch.name}</p>
-                    <p className="text-[10px] text-[#1a1a1a]/50 leading-tight">{swatch.role}</p>
-                    {/* Usage preview */}
-                    <div className="mt-2">
-                      {swatch.context === "text" && (
-                        <p style={{ color: swatch.hex }} className="text-[11px] font-black">
-                          Aa Body
-                        </p>
-                      )}
-                      {swatch.context === "bg" && (
-                        <div
-                          className="h-4 border border-[#1a1a1a]/20 flex items-center px-1"
-                          style={{ backgroundColor: swatch.hex }}
-                        >
-                          <span className="text-[9px] font-bold text-[#1a1a1a]/50">Surface</span>
-                        </div>
-                      )}
-                      {swatch.context === "accent" && (
-                        <span
-                          className="inline-block px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest"
-                          style={{ backgroundColor: swatch.hex, color: "#fafafa" }}
-                        >
-                          Breaking
-                        </span>
-                      )}
-                      {swatch.context === "badge" && (
-                        <span
-                          className="inline-block px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest"
-                          style={{
-                            backgroundColor: swatch.hex,
-                            color: swatch.light ? "#1a1a1a" : "#fafafa",
-                          }}
-                        >
-                          Badge
-                        </span>
-                      )}
-                      {swatch.context === "button" && (
-                        <button
-                          type="button"
-                          className="px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white"
-                          style={{ backgroundColor: swatch.hex }}
-                        >
-                          Button
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 7. Grid Pattern Demo with Category Filter                         */}
-      {/* ================================================================ */}
-      <section
-        id="sports"
-        className="py-12 md:py-16 border-b border-[#1a1a1a]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-8">
-            <div className="border-b border-[#1a1a1a] pb-3 flex flex-col sm:flex-row sm:items-center gap-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight">
-                Grid Pattern Demo
-              </h2>
-              <div className="flex items-center gap-2 sm:ml-auto">
-                {/* Grid switcher */}
-                {(["3col", "2col", "1col"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setGridLayout(mode)}
-                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest border transition-colors duration-150 ${
-                      gridLayout === mode
-                        ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
-                        : "bg-transparent text-[#1a1a1a] border-[#1a1a1a]/30 hover:border-[#1a1a1a]"
-                    }`}
-                  >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Category filter */}
-          <RevealBlock delay={0.04} className="mb-6">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
+          {/* Category nav */}
+          <div
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(12px)",
+              transition:
+                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s",
+            }}
+          >
+            <nav className="flex items-center gap-0 border-b-2 border-[#1a1a1a] overflow-x-auto">
+              {navCategories.map((cat) => (
                 <button
                   key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat === "All" ? null : cat)}
-                  className={`px-3 py-1 text-xs font-black uppercase tracking-widest border transition-colors duration-150 ${
-                    (cat === "All" && activeCategory === null) ||
-                    cat === activeCategory
-                      ? "bg-[#e63946] border-[#e63946] text-white"
-                      : "bg-white border-[#1a1a1a]/20 text-[#1a1a1a]/60 hover:border-[#e63946] hover:text-[#e63946]"
+                  onClick={() => setActiveNav(cat)}
+                  className={`py-3 px-5 text-sm font-semibold uppercase tracking-wider whitespace-nowrap border-r border-[#1a1a1a] last:border-r-0 transition-colors duration-150 ${
+                    activeNav === cat
+                      ? "bg-[#1a1a1a] text-white"
+                      : "text-zinc-500 hover:text-[#1a1a1a] hover:bg-zinc-100"
                   }`}
                 >
                   {cat}
                 </button>
               ))}
+            </nav>
+          </div>
+
+          {/* Magazine grid */}
+          <div className="mt-8">
+            {filteredArticles.length === 0 ? (
+              <div className="py-20 text-center text-zinc-400 font-semibold uppercase tracking-wider">
+                No articles in this category
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Featured 2×2 */}
+                {filteredArticles[0] && (
+                  <article className="lg:col-span-2 lg:row-span-2 group cursor-pointer">
+                    <div className="relative h-full min-h-[320px] lg:min-h-[480px] overflow-hidden">
+                      <div
+                        className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
+                        style={{ background: filteredArticles[0].imageBg }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+                      <div className="absolute top-4 left-4">
+                        <span className="inline-block px-3 py-1 text-xs font-black uppercase tracking-wider bg-[#e63946] text-white">
+                          Featured
+                        </span>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                        <div className="flex items-center gap-2 mb-3 group/label">
+                          <span className="text-xs font-black uppercase tracking-wider text-[#e9c46a]">
+                            {filteredArticles[0].category}
+                          </span>
+                          <span
+                            className="block h-px bg-[#e9c46a] transition-all duration-300 ease-out group-hover/label:w-12"
+                            style={{ width: "16px" }}
+                          />
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-black text-white mb-3 leading-tight group-hover:text-[#e63946] transition-colors duration-200 ease-out">
+                          {filteredArticles[0].title}
+                        </h2>
+                        <p className="text-white/70 text-sm mb-4 line-clamp-2">
+                          {filteredArticles[0].excerpt}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-white/50">
+                          <span>{filteredArticles[0].author}</span>
+                          <span>·</span>
+                          <ClockIcon className="w-3 h-3" />
+                          <span>{filteredArticles[0].readTime}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                )}
+
+                {/* Regular cards */}
+                {filteredArticles.slice(1).map((article) => {
+                  const cat = categoryColors[article.category];
+                  return (
+                    <article key={article.id} className="group cursor-pointer">
+                      <div className="relative overflow-hidden mb-3">
+                        <div
+                          className="w-full h-44 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
+                          style={{ background: article.imageBg }}
+                        />
+                        <span
+                          className="absolute top-3 left-3 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                          style={{ backgroundColor: cat.text, color: "#fff" }}
+                        >
+                          {article.category}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className="text-xs font-black uppercase tracking-wider"
+                          style={{ color: cat.text }}
+                        >
+                          {article.category}
+                        </span>
+                        <span
+                          className="block h-px transition-all duration-300 ease-out group-hover:w-12"
+                          style={{ width: "16px", backgroundColor: cat.text }}
+                        />
+                      </div>
+                      <h3 className="text-base font-black leading-snug mb-2 group-hover:text-[#e63946] transition-colors duration-200 ease-out line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-zinc-500 text-sm line-clamp-2 mb-2">{article.excerpt}</p>
+                      <div className="flex items-center gap-2 text-xs text-zinc-400">
+                        <span>{article.author}</span>
+                        <span>·</span>
+                        <ClockIcon className="w-3 h-3" />
+                        <span>{article.readTime}</span>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e63946] block mb-3">
+              Color System
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+              Editorial
+              <br />
+              <span className="text-[#e63946]">Palette</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-12">
+            <p className="text-zinc-500 text-lg max-w-xl leading-relaxed border-l-4 border-zinc-300 pl-4">
+              Two neutrals anchor the grid — ink black and paper white. Four accent colors
+              correspond to content categories, each carrying distinct editorial weight.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-0 border border-[#1a1a1a]">
+              {palette.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="group cursor-default"
+                  onMouseEnter={() => setHoveredSwatchIdx(i)}
+                  onMouseLeave={() => setHoveredSwatchIdx(null)}
+                  style={{ borderRight: i < 5 ? "1px solid #1a1a1a" : "none" }}
+                >
+                  <div
+                    className="h-36 transition-transform duration-300 origin-bottom"
+                    style={{
+                      backgroundColor: swatch.hex,
+                      transform: hoveredSwatchIdx === i ? "scaleY(1.1)" : "scaleY(1)",
+                      border: swatch.hex === "#fafafa" ? "1px solid #e5e7eb" : "none",
+                    }}
+                  />
+                  <div className="p-3 border-t border-[#1a1a1a]">
+                    <div className="text-xs font-bold mb-0.5">{swatch.name}</div>
+                    <div className="text-[10px] font-mono text-zinc-400">{swatch.hex}</div>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400 block mt-1">
+                      {swatch.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </RevealBlock>
 
-          <RevealBlock delay={0.06}>
-            {filteredArticles.length > 0 ? (
-              <GridDemo layout={gridLayout} articles={filteredArticles} />
-            ) : (
-              <div className="py-16 text-center border border-[#1a1a1a]/10">
-                <p className="text-sm text-[#1a1a1a]/40 font-bold uppercase tracking-widest">
-                  No articles in this category
-                </p>
+          {/* Category color assignment */}
+          <RevealBlock delay={0.18} className="mt-8">
+            <div className="border border-[#1a1a1a] p-6 md:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-5">
+                Category color assignment
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {(
+                  Object.entries(categoryColors) as [Category, { text: string; bg: string }][]
+                ).map(([cat, col]) => (
+                  <div key={cat} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: col.text }} />
+                    <div>
+                      <div className="text-xs font-bold" style={{ color: col.text }}>
+                        {cat}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-400">{col.text}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </RevealBlock>
-
-          {/* Layout spec table */}
-          <RevealBlock delay={0.1} className="mt-8">
-            <div className="overflow-hidden border border-[#1a1a1a]/10">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-[#1a1a1a]">
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-white">
-                      Layout
-                    </th>
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-white hidden sm:table-cell">
-                      Columns
-                    </th>
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-white">
-                      Use Case
-                    </th>
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-white hidden md:table-cell">
-                      Gap
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    {
-                      layout: "3-Col",
-                      cols: "grid-cols-3",
-                      use: "Standard edition — politics, tech, sports",
-                      gap: "gap-4",
-                    },
-                    {
-                      layout: "2-Col",
-                      cols: "grid-cols-2",
-                      use: "Long-form features — culture, investigation",
-                      gap: "gap-4",
-                    },
-                    {
-                      layout: "1-Col",
-                      cols: "grid-cols-1",
-                      use: "Deep dive — single story emphasis",
-                      gap: "gap-6",
-                    },
-                  ].map((row, idx) => (
-                    <tr
-                      key={row.layout}
-                      className={`border-t border-[#1a1a1a]/10 ${
-                        idx % 2 === 0 ? "bg-white" : "bg-[#fafafa]"
-                      }`}
-                    >
-                      <td className="px-4 py-3 font-black text-xs uppercase tracking-widest text-[#e63946]">
-                        {row.layout}
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs text-[#1a1a1a]/60 hidden sm:table-cell">
-                        {row.cols}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-[#1a1a1a]/70">{row.use}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-[#1a1a1a]/60 hidden md:table-cell">
-                        {row.gap}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </RevealBlock>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* 8. Do / Don't Rules                                               */}
+      {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section
-        id="grid"
-        className="py-12 md:py-16 bg-[#fafafa] border-b border-[#1a1a1a]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <RevealBlock className="mb-10">
-            <div className="border-b border-[#1a1a1a] pb-3 flex items-center gap-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight">
-                Editorial Rules
-              </h2>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1a1a1a]/40">
-                Design Principles
-              </span>
+      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2a9d8f] block mb-3">
+              Components
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+              Editorial
+              <br />
+              <span className="text-[#2a9d8f]">Building Blocks</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-10">
+            <p className="text-zinc-500 text-lg max-w-xl leading-relaxed border-l-4 border-zinc-300 pl-4">
+              Each component inherits editorial principles — strict typographic hierarchy, category
+              color coding, and purposeful whitespace.
+            </p>
+          </RevealBlock>
+
+          {/* Tab selector */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex items-center gap-0 border border-[#1a1a1a] w-fit">
+              {(["card", "button", "nav", "input"] as const).map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveComponentTab(tab)}
+                  className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-150 ${
+                    i < 3 ? "border-r border-[#1a1a1a]" : ""
+                  } ${
+                    activeComponentTab === tab
+                      ? "bg-[#1a1a1a] text-white"
+                      : "text-zinc-500 hover:bg-zinc-100 hover:text-[#1a1a1a]"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.14}>
+            <div className="border border-[#1a1a1a] p-8 md:p-12 bg-white">
+
+              {/* CARD TAB */}
+              {activeComponentTab === "card" && (
+                <div className="space-y-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">
+                    Article card — standard grid cell with all three interaction rules
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {articles.slice(1, 4).map((article) => {
+                      const cat = categoryColors[article.category];
+                      return (
+                        <article key={article.id} className="group cursor-pointer">
+                          <div className="relative overflow-hidden mb-3">
+                            <div
+                              className="w-full h-40 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
+                              style={{ background: article.imageBg }}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span
+                              className="text-xs font-bold uppercase tracking-wider"
+                              style={{ color: cat.text }}
+                            >
+                              {article.category}
+                            </span>
+                            <span
+                              className="block h-px transition-all duration-300 ease-out group-hover:w-12"
+                              style={{ width: "16px", backgroundColor: cat.text }}
+                            />
+                          </div>
+                          <h3 className="text-base font-black leading-snug mb-2 group-hover:text-[#e63946] transition-colors duration-200 ease-out line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <div className="flex items-center gap-2 text-xs text-zinc-400">
+                            <span>{article.author}</span>
+                            <span>·</span>
+                            <span>{article.readTime}</span>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                  <div className="border-t border-zinc-100 pt-4">
+                    <p className="text-xs text-zinc-400 font-mono">
+                      group + grayscale-[20%] + group-hover:grayscale-0 + group-hover:scale-105 + group-hover:text-[#e63946]
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* BUTTON TAB */}
+              {activeComponentTab === "button" && (
+                <div className="space-y-10">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-6">
+                      Category label button — with Editorial Stretch decoration line
+                    </p>
+                    <div className="flex flex-wrap gap-5 items-center">
+                      {(
+                        Object.entries(categoryColors) as [Category, { text: string; bg: string }][]
+                      ).map(([cat, col]) => (
+                        <div key={cat} className="group flex items-center gap-2 cursor-pointer">
+                          <span
+                            className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded"
+                            style={{ color: col.text, backgroundColor: col.bg }}
+                          >
+                            {cat}
+                          </span>
+                          <span
+                            className="block h-px transition-all duration-300 ease-out group-hover:w-12"
+                            style={{ width: "16px", backgroundColor: col.text }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-6">
+                      Action buttons — editorial style
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1a1a1a] text-white text-sm font-bold uppercase tracking-wider hover:bg-[#e63946] transition-colors duration-200">
+                        Read More
+                        <ArrowRightIcon className="w-4 h-4" />
+                      </button>
+                      <button className="inline-flex items-center gap-2 px-6 py-2.5 border-2 border-[#1a1a1a] text-[#1a1a1a] text-sm font-bold uppercase tracking-wider hover:bg-[#1a1a1a] hover:text-white transition-colors duration-200">
+                        Subscribe
+                      </button>
+                      <button className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#e63946] text-white text-sm font-bold uppercase tracking-wider hover:bg-[#c1121f] transition-colors duration-200">
+                        Featured
+                      </button>
+                      <button className="text-sm font-bold uppercase tracking-wider text-zinc-500 hover:text-[#e63946] transition-colors duration-200 border-b border-transparent hover:border-[#e63946]">
+                        View All →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* NAV TAB */}
+              {activeComponentTab === "nav" && (
+                <div className="space-y-8">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-5">
+                      Category navigation — border-bottom indicator
+                    </p>
+                    <nav className="flex items-center gap-0 border-b-2 border-zinc-200 overflow-x-auto">
+                      {navCategories.map((cat) => (
+                        <button
+                          key={cat}
+                          className={`py-3 px-5 text-sm font-bold uppercase tracking-wider whitespace-nowrap border-b-2 -mb-0.5 transition-colors duration-150 ${
+                            cat === "All"
+                              ? "text-[#e63946] border-[#e63946]"
+                              : "text-zinc-500 border-transparent hover:text-[#1a1a1a] hover:border-zinc-300"
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </nav>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-5">
+                      Masthead header pattern
+                    </p>
+                    <div className="border-2 border-[#1a1a1a]">
+                      <div className="bg-[#e63946] text-white text-xs font-semibold py-1 px-4 uppercase tracking-wider">
+                        Breaking News
+                      </div>
+                      <div className="px-4 h-12 flex items-center justify-between border-b border-zinc-200">
+                        <span className="font-black text-lg uppercase tracking-tight">
+                          The <span className="text-[#e63946]">Daily</span>
+                        </span>
+                        <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                          <span className="hidden md:block hover:text-[#e63946] cursor-pointer transition-colors">World</span>
+                          <span className="hidden md:block hover:text-[#e63946] cursor-pointer transition-colors">Tech</span>
+                          <span className="hidden md:block hover:text-[#e63946] cursor-pointer transition-colors">Culture</span>
+                          <span className="px-3 py-1 bg-[#1a1a1a] text-white hover:bg-[#e63946] cursor-pointer transition-colors">Subscribe</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* INPUT TAB */}
+              {activeComponentTab === "input" && (
+                <div className="space-y-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-6">
+                    Search and form inputs — editorial style
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">
+                          Search Articles
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="Search articles..."
+                            className="w-full px-4 py-3 pr-12 bg-zinc-50 border-0 border-b-2 border-[#1a1a1a] text-[#1a1a1a] text-sm placeholder-zinc-400 focus:outline-none focus:border-[#e63946] transition-colors duration-200"
+                          />
+                          <SearchIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">
+                          Newsletter Signup
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="your@email.com"
+                          className="w-full px-4 py-3 bg-zinc-50 border-0 border-b-2 border-[#1a1a1a] text-[#1a1a1a] text-sm placeholder-zinc-400 focus:outline-none focus:border-[#e63946] transition-colors duration-200"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">
+                          Filter by Category
+                        </label>
+                        <select className="w-full px-4 py-3 bg-zinc-50 border-0 border-b-2 border-[#1a1a1a] text-[#1a1a1a] text-sm focus:outline-none focus:border-[#e63946] transition-colors duration-200">
+                          <option>All Categories</option>
+                          <option>Technology</option>
+                          <option>Business</option>
+                          <option>Culture</option>
+                          <option>Opinion</option>
+                        </select>
+                      </div>
+                      <div className="pt-2">
+                        <button className="w-full py-3 bg-[#1a1a1a] text-white text-sm font-bold uppercase tracking-wider hover:bg-[#e63946] transition-colors duration-200">
+                          Subscribe to Newsletter
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. AIRULES INTERACTIVE DEMOS                                     */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#1a1a1a] border-b-2 border-[#e63946]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e63946] block mb-3">
+              aiRules — Interaction Patterns
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight text-white">
+              4 Named
+              <br />
+              <span className="text-[#e63946]">Interaction Rules</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-zinc-400 text-lg max-w-xl leading-relaxed border-l-4 border-[#e63946] pl-4">
+              These are the codified behavior rules for Magazine Grid. Interact with each demo to
+              see the rule in action — and understand exactly what the AI should generate.
+            </p>
           </RevealBlock>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* DO column */}
-            <RevealBlock delay={0.05}>
-              <div className="border border-[#2a9d8f] bg-white">
-                <div className="bg-[#2a9d8f] px-5 py-3 flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={3}
+
+            {/* ---- aiRule 1: Color Awakening ---- */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-zinc-900 border border-zinc-700 p-8 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <span className="inline-block px-2 py-0.5 bg-[#e63946] text-white text-[10px] font-bold uppercase tracking-wider mb-2">
+                      Rule 01
+                    </span>
+                    <h3 className="text-xl font-black text-white uppercase">Color Awakening</h3>
+                  </div>
+                  <button
+                    onClick={() => setColorAwakeningActive((v) => !v)}
+                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+                      colorAwakeningActive
+                        ? "bg-[#e63946] text-white"
+                        : "border border-zinc-600 text-zinc-400 hover:border-zinc-400 hover:text-white"
+                    }`}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-xs font-black uppercase tracking-widest text-white">
-                    Do — Magazine Grid Principles
-                  </span>
+                    {colorAwakeningActive ? "Grayscale ON" : "Grayscale OFF"}
+                  </button>
                 </div>
-                <ul className="divide-y divide-[#1a1a1a]/10">
-                  {doRules.map((rule, i) => (
-                    <li key={i} className="px-5 py-4 flex items-start gap-3">
-                      <span className="text-[10px] font-black text-[#2a9d8f] mt-0.5 shrink-0 uppercase tracking-widest">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="text-sm text-[#1a1a1a]/80 leading-relaxed">{rule}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-zinc-400 text-sm mb-2 leading-relaxed">
+                  Images default to{" "}
+                  <code className="text-[#e9c46a] font-mono text-xs">grayscale-[20%]</code>. On
+                  hover: full color restores instantly and image scales to 1.05.
+                </p>
+                <p className="text-zinc-500 text-xs font-mono mb-6">
+                  group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {articles.slice(1, 5).map((article) => {
+                    const cat = categoryColors[article.category];
+                    const isHovered = colorAwakeningHoveredId === article.id;
+                    return (
+                      <div
+                        key={article.id}
+                        className="cursor-pointer"
+                        onMouseEnter={() => setColorAwakeningHoveredId(article.id)}
+                        onMouseLeave={() => setColorAwakeningHoveredId(null)}
+                      >
+                        <div
+                          className="h-24 w-full transition-all duration-500 ease-out"
+                          style={{
+                            background: article.imageBg,
+                            filter: colorAwakeningActive
+                              ? isHovered
+                                ? "grayscale(0)"
+                                : "grayscale(0.2)"
+                              : "grayscale(0)",
+                            transform: isHovered ? "scale(1.05)" : "scale(1)",
+                          }}
+                        />
+                        <div
+                          className="text-[10px] font-bold uppercase tracking-wider mt-1"
+                          style={{ color: cat.text }}
+                        >
+                          {article.category}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-zinc-500 text-xs">
+                  {colorAwakeningActive
+                    ? "Grayscale ON — hover a card to awaken its color"
+                    : "Toggle button to enable grayscale mode, then hover"}
+                </p>
               </div>
             </RevealBlock>
 
-            {/* DON'T column */}
-            <RevealBlock delay={0.1}>
-              <div className="border border-[#e63946] bg-white">
-                <div className="bg-[#e63946] px-5 py-3 flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  <span className="text-xs font-black uppercase tracking-widest text-white">
-                    Don&apos;t — Common Mistakes
+            {/* ---- aiRule 2: Editorial Stretch ---- */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-zinc-900 border border-zinc-700 p-8 h-full">
+                <div className="mb-4">
+                  <span className="inline-block px-2 py-0.5 bg-[#2a9d8f] text-white text-[10px] font-bold uppercase tracking-wider mb-2">
+                    Rule 02
                   </span>
+                  <h3 className="text-xl font-black text-white uppercase">Editorial Stretch</h3>
                 </div>
-                <ul className="divide-y divide-[#1a1a1a]/10">
-                  {dontRules.map((rule, i) => (
-                    <li key={i} className="px-5 py-4 flex items-start gap-3">
-                      <span className="text-[10px] font-black text-[#e63946] mt-0.5 shrink-0 uppercase tracking-widest">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="text-sm text-[#1a1a1a]/80 leading-relaxed">{rule}</span>
-                    </li>
+                <p className="text-zinc-400 text-sm mb-2 leading-relaxed">
+                  A horizontal decoration line next to the category label extends from{" "}
+                  <code className="text-[#e9c46a] font-mono text-xs">w-4</code> to{" "}
+                  <code className="text-[#e9c46a] font-mono text-xs">w-12</code> on hover,
+                  extending the typographic skeleton.
+                </p>
+                <p className="text-zinc-500 text-xs font-mono mb-6">
+                  w-4 h-px group-hover:w-12 transition-all duration-300 ease-out
+                </p>
+
+                <div className="space-y-3">
+                  {(
+                    Object.entries(categoryColors) as [Category, { text: string; bg: string }][]
+                  ).map(([cat, col]) => (
+                    <div
+                      key={cat}
+                      className="flex items-center justify-between py-2 cursor-pointer"
+                      onMouseEnter={() => setStretchHoveredCat(cat)}
+                      onMouseLeave={() => setStretchHoveredCat(null)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="text-xs font-bold uppercase tracking-wider px-2 py-0.5"
+                          style={{ color: col.text, backgroundColor: col.bg }}
+                        >
+                          {cat}
+                        </span>
+                        <span
+                          className="block h-px transition-all duration-300 ease-out"
+                          style={{
+                            width: stretchHoveredCat === cat ? "48px" : "16px",
+                            backgroundColor: col.text,
+                          }}
+                        />
+                      </div>
+                      <span className="text-zinc-600 text-xs">hover to stretch →</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
+                <p className="text-zinc-500 text-xs mt-4">
+                  Hover each row to see the decoration line extend from 16px to 48px
+                </p>
+              </div>
+            </RevealBlock>
+
+            {/* ---- aiRule 3: Crisp Typographic Shift ---- */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-zinc-900 border border-zinc-700 p-8 h-full">
+                <div className="mb-4">
+                  <span className="inline-block px-2 py-0.5 bg-[#e9c46a] text-[#1a1a1a] text-[10px] font-bold uppercase tracking-wider mb-2">
+                    Rule 03
+                  </span>
+                  <h3 className="text-xl font-black text-white uppercase">Crisp Typographic Shift</h3>
+                </div>
+                <p className="text-zinc-400 text-sm mb-2 leading-relaxed">
+                  Titles switch directly to{" "}
+                  <code className="text-[#e9c46a] font-mono text-xs">#e63946</code> on hover — no
+                  glow, no shadow, no fade. Direct color swap with{" "}
+                  <code className="text-[#e9c46a] font-mono text-xs">duration-200 ease-out</code>.
+                </p>
+                <p className="text-zinc-500 text-xs font-mono mb-6">
+                  group-hover:text-[#e63946] transition-colors duration-200 ease-out
+                </p>
+
+                <div className="space-y-4">
+                  {/* Correct demo */}
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#2a9d8f] mb-2">
+                      Correct — crisp direct color switch
+                    </p>
+                    <article
+                      className="group cursor-pointer bg-zinc-800 p-4"
+                      onMouseEnter={() => setTypoDemoHovered(true)}
+                      onMouseLeave={() => setTypoDemoHovered(false)}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#e63946]">
+                          Technology
+                        </span>
+                        <span
+                          className="block h-px transition-all duration-300 ease-out"
+                          style={{
+                            width: typoDemoHovered ? "48px" : "16px",
+                            backgroundColor: "#e63946",
+                          }}
+                        />
+                      </div>
+                      <h3
+                        className="text-base font-black leading-snug transition-colors duration-200 ease-out"
+                        style={{ color: typoDemoHovered ? "#e63946" : "#ffffff" }}
+                      >
+                        The Architecture of Modern AI Systems: A Deep Dive
+                      </h3>
+                      <p className="text-zinc-500 text-xs mt-2">
+                        {typoDemoHovered
+                          ? "Color shifted — crisp, direct, editorial"
+                          : "Hover to trigger the shift"}
+                      </p>
+                    </article>
+                  </div>
+
+                  {/* Wrong demo */}
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#e63946] mb-2">
+                      Wrong — glow effect (banned by aiRules)
+                    </p>
+                    <article
+                      className="group cursor-pointer bg-zinc-800 p-4"
+                      onMouseEnter={() => setTypoGlowHovered(true)}
+                      onMouseLeave={() => setTypoGlowHovered(false)}
+                    >
+                      <h3
+                        className="text-base font-black leading-snug transition-all duration-300"
+                        style={{
+                          color: "#ffffff",
+                          textShadow: typoGlowHovered
+                            ? "0 0 20px #e63946, 0 0 40px #e63946aa"
+                            : "none",
+                        }}
+                      >
+                        The Architecture of Modern AI Systems: A Deep Dive
+                      </h3>
+                      <p className="text-zinc-500 text-xs mt-2">
+                        {typoGlowHovered ? "Glow effect — messy, not editorial" : "Hover to see what NOT to do"}
+                      </p>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* ---- aiRule 4: Readability First ---- */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-zinc-900 border border-zinc-700 p-8 h-full">
+                <div className="mb-4">
+                  <span className="inline-block px-2 py-0.5 bg-[#264653] text-white text-[10px] font-bold uppercase tracking-wider mb-2">
+                    Rule 04
+                  </span>
+                  <h3 className="text-xl font-black text-white uppercase">Readability First</h3>
+                </div>
+                <p className="text-zinc-400 text-sm mb-2 leading-relaxed">
+                  Body text paragraphs must NEVER have position-shifting animations. No translateY,
+                  no slideIn. Only titles and images animate. Paragraphs stay stable for scan
+                  efficiency.
+                </p>
+                <p className="text-zinc-500 text-xs font-mono mb-6">
+                  {"/* paragraphs: NO transform, NO translate — text must be stable */"}
+                </p>
+
+                <div className="flex items-center gap-3 mb-6">
+                  <button
+                    onClick={() => setReadabilityAnimOn((v) => !v)}
+                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+                      readabilityAnimOn
+                        ? "bg-[#e63946] text-white"
+                        : "bg-[#264653] text-white hover:bg-[#2a9d8f]"
+                    }`}
+                  >
+                    {readabilityAnimOn ? "Animation ON (wrong)" : "Animation OFF (correct)"}
+                  </button>
+                  <span className="text-zinc-500 text-xs">toggle to compare</span>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-white font-black text-base leading-snug hover:text-[#e63946] transition-colors duration-200 ease-out cursor-pointer">
+                    How Grid Theory Shapes Modern Publishing
+                  </h4>
+                  {[
+                    "The Basel Grid System of 1961 codified what printers had known intuitively for centuries: visual hierarchy requires systematic constraint.",
+                    "When content is organized into a predictable grid, readers can scan efficiently. The eye knows where to look next.",
+                    "Magazine Grid applies these same print principles to the web — multiple columns, featured spans, consistent gutters — while remaining responsive.",
+                  ].map((paragraph, i) => (
+                    <p
+                      key={i}
+                      className="text-zinc-400 text-sm leading-relaxed"
+                      style={{
+                        transform: readabilityAnimOn
+                          ? `translateY(${(i + 1) * 5}px)`
+                          : "translateY(0)",
+                        opacity: readabilityAnimOn ? 0.5 : 1,
+                        transition: "transform 0.4s ease, opacity 0.4s ease",
+                        transitionDelay: readabilityAnimOn ? `${i * 0.08}s` : "0s",
+                      }}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+                <p className="text-zinc-500 text-xs mt-4">
+                  {readabilityAnimOn
+                    ? "Paragraphs shifting = readers lose their place. Bad UX."
+                    : "Paragraphs stable = correct. Only title animates on hover."}
+                </p>
               </div>
             </RevealBlock>
           </div>
+        </div>
+      </section>
 
-          {/* Decision card */}
-          <RevealBlock delay={0.15} className="mt-8">
-            <div className="bg-white border border-[#1a1a1a] p-6 md:p-8">
-              <div className="flex items-start gap-6">
-                <div className="shrink-0">
-                  <div className="w-12 h-12 bg-[#e63946] flex items-center justify-center">
-                    <span className="text-white font-black text-xl">!</span>
+      {/* ================================================================ */}
+      {/* 6. FULL MAGAZINE GRID LAYOUT DEMO                               */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#264653] block mb-3">
+              Grid Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+              Full Magazine
+              <br />
+              <span className="text-[#264653]">Grid Layout</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-12">
+            <p className="text-zinc-500 text-lg max-w-xl leading-relaxed border-l-4 border-zinc-300 pl-4">
+              4-column desktop grid with a 2x2 featured article. All three interaction rules
+              active: Color Awakening, Editorial Stretch, and Crisp Typographic Shift.
+            </p>
+          </RevealBlock>
+
+          <RevealBlock delay={0.1}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Featured 2×2 */}
+              <article className="lg:col-span-2 lg:row-span-2 group cursor-pointer">
+                <div className="relative h-full min-h-[300px] lg:min-h-[520px] overflow-hidden bg-[#1a1a1a]">
+                  <div
+                    className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                    style={{ background: articles[0].imageBg }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="inline-block px-3 py-1 bg-[#e63946] text-white text-xs font-black uppercase tracking-wider">
+                      Featured
+                    </span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                    <div className="flex items-center gap-2 mb-3 group/label">
+                      <span className="text-xs font-black uppercase tracking-wider text-[#e9c46a]">
+                        {articles[0].category}
+                      </span>
+                      <span
+                        className="block h-px bg-[#e9c46a] transition-all duration-300 ease-out group-hover/label:w-12"
+                        style={{ width: "16px" }}
+                      />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-black text-white mb-3 leading-tight group-hover:text-[#e63946] transition-colors duration-200 ease-out">
+                      {articles[0].title}
+                    </h2>
+                    <p className="text-white/70 text-sm mb-4 line-clamp-3">
+                      {articles[0].excerpt}
+                    </p>
+                    <div className="flex items-center gap-3 text-xs text-white/50">
+                      <span>{articles[0].author}</span>
+                      <span>·</span>
+                      <span>{articles[0].date}</span>
+                      <span>·</span>
+                      <ClockIcon className="w-3 h-3" />
+                      <span>{articles[0].readTime}</span>
+                    </div>
                   </div>
                 </div>
+              </article>
+
+              {/* Regular articles */}
+              {articles.slice(1).map((article) => {
+                const cat = categoryColors[article.category];
+                return (
+                  <article key={article.id} className="group cursor-pointer">
+                    <div className="relative overflow-hidden mb-3">
+                      <div
+                        className="w-full h-48 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
+                        style={{ background: article.imageBg }}
+                      />
+                      <span
+                        className="absolute top-3 left-3 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                        style={{ backgroundColor: cat.text, color: "#fff" }}
+                      >
+                        {article.category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className="text-xs font-black uppercase tracking-wider"
+                        style={{ color: cat.text }}
+                      >
+                        {article.category}
+                      </span>
+                      <span
+                        className="block h-px transition-all duration-300 ease-out group-hover:w-12"
+                        style={{ width: "16px", backgroundColor: cat.text }}
+                      />
+                    </div>
+                    <h3 className="text-base font-black leading-snug mb-2 group-hover:text-[#e63946] transition-colors duration-200 ease-out line-clamp-2">
+                      {article.title}
+                    </h3>
+                    <p className="text-zinc-500 text-sm line-clamp-2 mb-2">{article.excerpt}</p>
+                    <div className="flex items-center gap-2 text-xs text-zinc-400">
+                      <span>{article.author}</span>
+                      <span>·</span>
+                      <ClockIcon className="w-3 h-3" />
+                      <span>{article.readTime}</span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </RevealBlock>
+
+          {/* Grid structure diagram */}
+          <RevealBlock delay={0.18} className="mt-10">
+            <div className="border border-[#1a1a1a] p-6 bg-zinc-50">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400 mb-4">
+                CSS Grid structure — desktop (lg:grid-cols-4)
+              </p>
+              <div className="grid grid-cols-4 grid-rows-2 gap-2 h-24 mb-5">
+                <div className="col-span-2 row-span-2 bg-[#1a1a1a] flex items-center justify-center text-white text-xs font-bold uppercase tracking-wider">
+                  Featured 2×2
+                </div>
+                <div className="bg-[#e63946]/20 border border-[#e63946]/40 flex items-center justify-center text-[10px] font-bold text-[#e63946] uppercase">
+                  1×1
+                </div>
+                <div className="bg-[#2a9d8f]/20 border border-[#2a9d8f]/40 flex items-center justify-center text-[10px] font-bold text-[#2a9d8f] uppercase">
+                  1×1
+                </div>
+                <div className="bg-[#e9c46a]/20 border border-[#e9c46a]/40 flex items-center justify-center text-[10px] font-bold text-[#e9c46a] uppercase">
+                  1×1
+                </div>
+                <div className="bg-[#264653]/20 border border-[#264653]/40 flex items-center justify-center text-[10px] font-bold text-[#264653] uppercase">
+                  1×1
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-6 text-xs text-zinc-500 font-mono">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[#e63946] mb-2">
-                    Editorial Mandate
-                  </p>
-                  <h3 className="text-lg font-black leading-tight text-[#1a1a1a] mb-3">
-                    Hierarchy Must Be Felt Before It Is Read
-                  </h3>
-                  <p className="text-sm text-[#1a1a1a]/70 leading-relaxed max-w-2xl">
-                    A magazine grid earns its authority through scale contrast, not decoration. The featured article must be undeniably dominant — its image larger, its headline bolder, its position unmistakable. Readers should know the day&apos;s most important story within one second of opening the page.
-                  </p>
+                  <span className="font-bold text-[#1a1a1a] not-italic">Desktop</span>
+                  <br />
+                  lg:grid-cols-4
+                  <br />
+                  featured: col-span-2 row-span-2
+                </div>
+                <div>
+                  <span className="font-bold text-[#1a1a1a] not-italic">Tablet</span>
+                  <br />
+                  md:grid-cols-2
+                  <br />
+                  featured: col-span-2
+                </div>
+                <div>
+                  <span className="font-bold text-[#1a1a1a] not-italic">Mobile</span>
+                  <br />
+                  grid-cols-1
+                  <br />
+                  all items: full width
                 </div>
               </div>
             </div>
@@ -1213,123 +1317,415 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ================================================================ */}
-      {/* 9. Footer                                                         */}
+      {/* 7. DO / DON'T DESIGN RULES                                       */}
       {/* ================================================================ */}
-      <footer className="bg-[#264653] text-white">
-        {/* Section links grid */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 border-b border-white/20 pb-12">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">
-                Sections
-              </p>
-              <ul className="space-y-2">
-                {["Politics", "Culture", "Technology", "Sports", "Investigation"].map((s) => (
-                  <li key={s}>
-                    <a
-                      href={`#${s.toLowerCase()}`}
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 font-medium"
-                    >
-                      {s}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e9c46a] block mb-3">
+              Philosophy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+              Design
+              <br />
+              <span className="text-[#e9c46a]">Rules</span>
+            </h2>
+          </RevealBlock>
 
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">
-                Design
-              </p>
-              <ul className="space-y-2">
-                {["Typography", "Grid System", "Color Palette", "Components", "Do/Don't"].map((s) => (
-                  <li key={s}>
-                    <a
-                      href="#"
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 font-medium"
-                    >
-                      {s}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <RevealBlock delay={0.06} className="mb-14">
+            <p className="text-zinc-500 text-lg max-w-xl leading-relaxed border-l-4 border-zinc-300 pl-4">
+              Magazine Grid borrows from a century of print editorial theory. These rules encode
+              that wisdom for the web, ensuring every implementation feels authoritative and legible.
+            </p>
+          </RevealBlock>
 
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">
-                StyleKit
-              </p>
-              <ul className="space-y-2">
+          {/* Philosophy principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                title: "Visual Hierarchy",
+                tagline: "Large images command attention",
+                desc: "The featured article occupies a 2x2 grid area — four times the space of a regular card. Hierarchy is not suggested; it is enforced by the grid itself.",
+                color: "#e63946",
+              },
+              {
+                title: "Scan Friendly",
+                tagline: "Readers skim before they read",
+                desc: "Category labels, bold headlines, and reading time form a quick-scan layer. The grid must allow eyes to move freely without cognitive friction.",
+                color: "#2a9d8f",
+              },
+              {
+                title: "Space Rhythm",
+                tagline: "Alternating sizes create cadence",
+                desc: "Same-size cards kill engagement. Large-small alternation mirrors print editorial rhythm: a splash, then relief, then another splash.",
+                color: "#e9c46a",
+              },
+            ].map((principle, i) => (
+              <RevealBlock key={principle.title} delay={i * 0.08}>
+                <div className="group border border-[#1a1a1a] p-8 h-full hover:bg-[#1a1a1a] transition-colors duration-200 cursor-default">
+                  <div
+                    className="w-3 h-10 mb-6"
+                    style={{ backgroundColor: principle.color }}
+                  />
+                  <h3 className="text-lg font-black uppercase mb-1 group-hover:text-white transition-colors duration-200">
+                    {principle.title}
+                  </h3>
+                  <p
+                    className="text-xs font-bold uppercase tracking-wider mb-4 transition-colors duration-200"
+                    style={{ color: principle.color }}
+                  >
+                    {principle.tagline}
+                  </p>
+                  <p className="text-zinc-500 text-sm leading-relaxed group-hover:text-zinc-300 transition-colors duration-200">
+                    {principle.desc}
+                  </p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Do / Don't lists */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-[#1a1a1a]">
+            {/* Do */}
+            <RevealBlock delay={0.1} className="p-8 border-b md:border-b-0 md:border-r border-[#1a1a1a]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-[#2a9d8f] flex items-center justify-center">
+                  <CheckIcon className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-lg font-black uppercase text-[#2a9d8f]">Do</h3>
+              </div>
+              <ul className="space-y-3">
                 {[
-                  { label: "All Styles", href: "/styles" },
-                  { label: "Swiss Style", href: "/styles/swiss-style" },
-                  { label: "Dashboard", href: "/styles/dashboard-layout" },
-                  { label: "Film Noir", href: "/styles/film-noir" },
-                  { label: "Art Nouveau", href: "/styles/art-nouveau" },
-                ].map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 font-medium"
-                    >
-                      {link.label}
-                    </Link>
+                  "Use CSS Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+                  "Featured content: col-span-2 row-span-2 (2x2 area)",
+                  "Keep consistent gaps: gap-6 throughout the grid",
+                  "Add category labels on all article cards",
+                  "Apply group + group-hover: for all card interactions",
+                  "Images: grayscale-[20%] default, hover restores full color",
+                  "Decoration line: w-4 h-px group-hover:w-12 next to category",
+                  "Title hover: text-[#e63946] transition-colors duration-200 ease-out",
+                  "Add clear timestamps and reading time to every card",
+                  "Mobile: collapse to single column, stack vertically",
+                  "Consider ad slot placement in the grid layout",
+                ].map((rule) => (
+                  <li key={rule} className="flex items-start gap-3 text-sm text-zinc-600 leading-relaxed">
+                    <span className="mt-1.5 w-2 h-2 bg-[#2a9d8f] shrink-0" />
+                    {rule}
                   </li>
                 ))}
               </ul>
-            </div>
+            </RevealBlock>
 
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">
-                Issue Info
-              </p>
-              <ul className="space-y-2">
-                <li className="text-sm text-white/70">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-0.5">
-                    Volume
-                  </span>
-                  XLII — 2026
-                </li>
-                <li className="text-sm text-white/70">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-0.5">
-                    Issue
-                  </span>
-                  08, February
-                </li>
-                <li className="text-sm text-white/70">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-0.5">
-                    Frequency
-                  </span>
-                  Daily Edition
-                </li>
-                <li className="text-sm text-white/70">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-0.5">
-                    Coverage
-                  </span>
-                  Global
-                </li>
+            {/* Don't */}
+            <RevealBlock delay={0.15} className="p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-[#e63946] flex items-center justify-center">
+                  <XIcon className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-lg font-black uppercase text-[#e63946]">Don't</h3>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Never make all content blocks the same size",
+                  "Never ignore mobile responsive layout adaptation",
+                  "Never crowd content without adequate whitespace",
+                  "Never use inconsistent category tag styling",
+                  "Never ignore image aspect ratios — maintain crop consistency",
+                  "Never animate body paragraphs with translateY or slide-in",
+                  "Never add glow or shadow to headline hover states",
+                  "Never omit the featured span — it defines grid hierarchy",
+                  "Never use same-weight headlines throughout",
+                  "Never omit category labels — classification is essential",
+                  "Never use neon colors — stay within editorial palette",
+                ].map((rule) => (
+                  <li key={rule} className="flex items-start gap-3 text-sm text-zinc-600 leading-relaxed">
+                    <span className="mt-1.5 w-2 h-2 bg-[#e63946] shrink-0" />
+                    {rule}
+                  </li>
+                ))}
               </ul>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 8. RESPONSIVE GRID SHOWCASE                                      */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-zinc-100 border-b-2 border-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e63946] block mb-3">
+              Responsive System
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+              Three
+              <br />
+              <span className="text-[#e63946]">Breakpoints</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.06} className="mb-12">
+            <p className="text-zinc-500 text-lg max-w-xl leading-relaxed border-l-4 border-zinc-300 pl-4">
+              The grid collapses gracefully from 4-column desktop to 2-column tablet to
+              single-column mobile. The featured article adjusts its span at each breakpoint.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Mobile */}
+            <RevealBlock delay={0.08}>
+              <div className="border border-[#1a1a1a] bg-white p-6 h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    Mobile
+                  </span>
+                  <span className="text-xs font-mono text-zinc-400">grid-cols-1</span>
+                </div>
+                <div className="space-y-3">
+                  {articles.slice(0, 3).map((a) => (
+                    <div key={a.id} className="flex gap-3 group cursor-pointer">
+                      <div
+                        className="w-16 h-12 shrink-0 grayscale-[20%] group-hover:grayscale-0 transition-all duration-300"
+                        style={{ background: a.imageBg }}
+                      />
+                      <div>
+                        <div
+                          className="text-[10px] font-black uppercase tracking-wider"
+                          style={{ color: categoryColors[a.category].text }}
+                        >
+                          {a.category}
+                        </div>
+                        <div className="text-xs font-black line-clamp-2 leading-snug group-hover:text-[#e63946] transition-colors duration-200 ease-out">
+                          {a.title}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-zinc-100">
+                  <p className="text-[10px] text-zinc-400 font-mono">
+                    All items: w-full
+                    <br />
+                    Featured: no extra span
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Tablet */}
+            <RevealBlock delay={0.12}>
+              <div className="border border-[#1a1a1a] bg-white p-6 h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    Tablet
+                  </span>
+                  <span className="text-xs font-mono text-zinc-400">md:grid-cols-2</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="col-span-2 group cursor-pointer">
+                    <div
+                      className="w-full h-20 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-300"
+                      style={{ background: articles[0].imageBg }}
+                    />
+                    <div
+                      className="text-[10px] font-black uppercase mt-1"
+                      style={{ color: categoryColors[articles[0].category].text }}
+                    >
+                      {articles[0].category} — Featured
+                    </div>
+                    <div className="text-xs font-black line-clamp-1 group-hover:text-[#e63946] transition-colors duration-200 ease-out">
+                      {articles[0].title}
+                    </div>
+                  </div>
+                  {articles.slice(1, 3).map((a) => (
+                    <div key={a.id} className="group cursor-pointer">
+                      <div
+                        className="w-full h-14 grayscale-[20%] group-hover:grayscale-0 transition-all duration-300"
+                        style={{ background: a.imageBg }}
+                      />
+                      <div
+                        className="text-[9px] font-black uppercase mt-0.5"
+                        style={{ color: categoryColors[a.category].text }}
+                      >
+                        {a.category}
+                      </div>
+                      <div className="text-[10px] font-black line-clamp-2 leading-snug group-hover:text-[#e63946] transition-colors duration-200 ease-out">
+                        {a.title}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-zinc-100">
+                  <p className="text-[10px] text-zinc-400 font-mono">
+                    Featured: col-span-2
+                    <br />
+                    Regular: 1×1 cells
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Desktop */}
+            <RevealBlock delay={0.16}>
+              <div className="border border-[#1a1a1a] bg-white p-6 h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    Desktop
+                  </span>
+                  <span className="text-xs font-mono text-zinc-400">lg:grid-cols-4</span>
+                </div>
+                <div className="grid grid-cols-4 grid-rows-2 gap-1.5">
+                  <div className="col-span-2 row-span-2 group cursor-pointer">
+                    <div
+                      className="w-full h-full min-h-[80px] group-hover:scale-[1.02] transition-transform duration-300"
+                      style={{ background: articles[0].imageBg }}
+                    />
+                  </div>
+                  {articles.slice(1, 5).map((a) => (
+                    <div key={a.id} className="group cursor-pointer">
+                      <div
+                        className="w-full h-9 grayscale-[20%] group-hover:grayscale-0 transition-all duration-300"
+                        style={{ background: a.imageBg }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-zinc-100">
+                  <p className="text-[10px] text-zinc-400 font-mono">
+                    Featured: col-span-2 row-span-2
+                    <br />
+                    4 cols × 2 rows = 8 cells total
+                  </p>
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 9. FOOTER                                                        */}
+      {/* ================================================================ */}
+      <footer className="bg-[#1a1a1a] border-t-2 border-[#e63946]">
+        {/* Footer masthead */}
+        <div className="border-b border-zinc-800 py-8 px-5 md:px-10">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <GridIcon className="w-5 h-5 text-[#e63946]" />
+                <span className="text-2xl font-black uppercase tracking-tight text-white">
+                  Magazine<span className="text-[#e63946]">Grid</span>
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm max-w-sm leading-relaxed">
+                Inspired by print magazine typography and editorial grid theory. A layout system
+                for content-first publishing.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              {palette.map((s) => (
+                <div
+                  key={s.name}
+                  className="w-6 h-6 cursor-default hover:scale-125 transition-transform duration-200"
+                  style={{
+                    backgroundColor: s.hex,
+                    border: s.hex === "#fafafa" ? "1px solid #374151" : "none",
+                  }}
+                  title={s.name}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer links */}
+        <div className="max-w-7xl mx-auto px-5 md:px-10 py-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-4">
+                Style
+              </span>
+              <div className="space-y-2">
+                <Link href="/styles/magazine-grid" className="block text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  Documentation
+                </Link>
+                <Link href="/styles/magazine-grid/showcase" className="block text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  Showcase
+                </Link>
+                <Link href="/styles/magazine-grid/cover" className="block text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  Cover Preview
+                </Link>
+              </div>
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-4">
+                StyleKit
+              </span>
+              <div className="space-y-2">
+                <Link href="/" className="block text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  Home
+                </Link>
+                <Link href="/styles" className="block text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  All Styles
+                </Link>
+              </div>
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-4">
+                aiRules
+              </span>
+              <div className="space-y-2">
+                {[
+                  "Color Awakening",
+                  "Editorial Stretch",
+                  "Crisp Typographic Shift",
+                  "Readability First",
+                ].map((rule) => (
+                  <div key={rule} className="flex items-start gap-2 text-sm text-zinc-500">
+                    <span className="w-1.5 h-1.5 bg-[#e63946] shrink-0 mt-1.5" />
+                    {rule}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-4">
+                Palette
+              </span>
+              <div className="space-y-2">
+                {palette.map((s) => (
+                  <div key={s.name} className="flex items-center gap-2 text-sm text-zinc-400">
+                    <div
+                      className="w-3 h-3 shrink-0"
+                      style={{
+                        backgroundColor: s.hex,
+                        border: s.hex === "#fafafa" ? "1px solid #374151" : "none",
+                      }}
+                    />
+                    <span className="font-mono text-xs text-zinc-500">{s.hex}</span>
+                    <span>{s.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Masthead + copyright */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <p className="text-2xl font-black uppercase tracking-tight text-white mb-1">
-                StyleKit <span className="text-[#e63946]">Magazine</span>
-              </p>
-              <p className="text-xs text-white/40 uppercase tracking-widest">
-                杂志网格布局 — Magazine Grid Layout System
-              </p>
+          {/* Footer bottom */}
+          <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-zinc-500">
+              <span>Built for</span>
+              <span className="font-bold text-white">StyleKit</span>
+              <span>·</span>
+              <span>Magazine Grid Layout System</span>
             </div>
-            <div className="flex flex-col md:items-end gap-1">
-              <p className="text-xs text-white/40 uppercase tracking-widest">
-                &copy; 2026 StyleKit. All rights reserved.
-              </p>
-              <p className="text-xs text-white/30">
-                Editorial print grid system — CSS Grid &middot; Tailwind CSS &middot; Next.js
-              </p>
-            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#e63946] text-white text-xs font-bold uppercase tracking-wider hover:bg-white hover:text-[#1a1a1a] transition-colors duration-200"
+            >
+              <span>←</span>
+              <span>Back to StyleKit</span>
+            </Link>
           </div>
         </div>
       </footer>
