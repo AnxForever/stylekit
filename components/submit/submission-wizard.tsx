@@ -34,6 +34,7 @@ export interface WizardFormData {
   borderRadius: string; spacingSm: string; spacingMd: string; spacingLg: string;
   doList: string[]; dontList: string[]; aiRules: string[];
   buttonCode: string; cardCode: string; inputCode: string;
+  navCode: string; heroCode: string; footerCode: string;
 }
 
 const initial: WizardFormData = {
@@ -50,6 +51,7 @@ const initial: WizardFormData = {
   borderRadius: "0.5rem", spacingSm: "0.5rem", spacingMd: "1rem", spacingLg: "2rem",
   doList: [""], dontList: [""], aiRules: [""],
   buttonCode: "", cardCode: "", inputCode: "",
+  navCode: "", heroCode: "", footerCode: "",
 };
 
 // ── Constants ──────────────────────────────────────────────────────
@@ -152,6 +154,7 @@ export function SubmissionWizard() {
   const [keywordInput, setKeywordInput] = useState("");
   const [manifestInput, setManifestInput] = useState("");
   const [manifestMsg, setManifestMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [manifestCoverSvg, setManifestCoverSvg] = useState<string | null>(null);
   const [submissionPath, setSubmissionPath] = useState<SubmissionPath>("ai-manifest");
   const lastFP = useRef("");
   const text = pickLocale(locale, submitCopy);
@@ -198,6 +201,7 @@ export function SubmissionWizard() {
   const clearDraft = () => {
     localStorage.removeItem(STORAGE_KEY);
     setFd(initial); setHasDraft(false); setShowDraft(false);
+    setManifestCoverSvg(null);
     setTouched({}); setStepVal({}); setSaveStatus("idle");
     lastFP.current = "";
   };
@@ -304,6 +308,9 @@ export function SubmissionWizard() {
         setManifestMsg({ type: "error", text: manifestCopy.invalidShape });
         return false;
       }
+      const assetsRecord = asRecord(root.assets);
+      const coverSvg = asString(assetsRecord?.coverSvg);
+      setManifestCoverSvg(coverSvg ?? null);
 
       setFd((prev) => {
         const next: WizardFormData = { ...prev };
@@ -387,6 +394,12 @@ export function SubmissionWizard() {
         if (cardCode != null) next.cardCode = cardCode;
         const inputCode = asString(formDataRecord.inputCode);
         if (inputCode != null) next.inputCode = inputCode;
+        const navCode = asString(formDataRecord.navCode);
+        if (navCode != null) next.navCode = navCode;
+        const heroCode = asString(formDataRecord.heroCode);
+        if (heroCode != null) next.heroCode = heroCode;
+        const footerCode = asString(formDataRecord.footerCode);
+        if (footerCode != null) next.footerCode = footerCode;
 
         if (!next.slug) {
           const seed = next.nameEn || next.name;
@@ -599,7 +612,14 @@ export function SubmissionWizard() {
           {step === 4 && <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
           {step === 5 && <ComponentsStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
           {step === 6 && <PreviewValidateStep formData={fd} isAnimating={anim} onGoToStep={goStep} />}
-          {step === 7 && <SubmitStep formData={fd} isAnimating={anim} text={text} />}
+          {step === 7 && (
+            <SubmitStep
+              formData={fd}
+              manifestCoverSvg={manifestCoverSvg}
+              isAnimating={anim}
+              text={text}
+            />
+          )}
 
           {/* Navigation */}
           <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border">

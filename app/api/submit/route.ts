@@ -3,8 +3,12 @@ import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { isIP } from "node:net";
 import path from "path";
-import { wizardFormSchema } from "@/lib/submit/validator";
+import {
+  wizardFormSchema,
+  type ValidatedWizardFormData,
+} from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
+import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator";
 import { getStyleBySlug } from "@/lib/styles";
 import { hasActiveSubmissionSlug } from "@/lib/submit/reviewer";
 import {
@@ -25,7 +29,20 @@ const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 15;
 const MAX_BODY_BYTES = 128 * 1024;
+const MIN_MEANINGFUL_AI_RULES = 3;
+const MIN_COMPONENT_SNIPPET_LENGTH = 24;
+const REQUIRED_COMPONENT_FIELDS = ["buttonCode", "cardCode", "inputCode"] as const;
+const EXTENDED_COMPONENT_FIELDS = ["navCode", "heroCode", "footerCode"] as const;
+const MIN_EXTENDED_COMPONENTS_FOR_MANIFEST = 2;
 const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
+
+type SubmissionPayloadSource = "wizard" | "manifest";
+
+interface ParsedSubmitPayload {
+  source: SubmissionPayloadSource;
+  data: ValidatedWizardFormData;
+  coverSvg: string | null;
+}
 
 interface DbErrorLike {
   code?: string | null;
@@ -81,6 +98,130 @@ function getClientIpAddress(request: Request): string | null {
     normalizeIpAddress(request.headers.get("x-forwarded-for")) ||
     null
   );
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+}
+
+function asTrimmedString(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function hasMeaningfulComponentSnippet(value: string | undefined): boolean {
+  return Boolean(value && value.trim().length >= MIN_COMPONENT_SNIPPET_LENGTH);
+}
+
+function countMeaningfulList(values: string[]): number {
+  return values.filter((value) => value.trim().length > 0).length;
+}
+
+function pickManifestCandidate(payload: unknown): unknown {
+  const record = asRecord(payload);
+  if (record && "manifest" in record) {
+    return record.manifest;
+  }
+  return payload;
+}
+
+function isManifestPayload(payload: unknown): boolean {
+  const root = asRecord(payload);
+  if (!root) {
+    return false;
+  }
+
+  if ("manifest" in root) {
+    return true;
+  }
+
+  return "schemaVersion" in root && "formData" in root && "assets" in root;
+}
+
+function parseSubmitPayload(body: unknown):
+  | { ok: true; value: ParsedSubmitPayload }
+  | { ok: false; error: string; details: unknown } {
+  if (isManifestPayload(body)) {
+    const candidate = pickManifestCandidate(body);
+    const parsedManifest = validateStyleSubmissionManifest(candidate);
+    if (!parsedManifest.ok) {
+      return {
+        ok: false,
+        error: "Manifest validation failed",
+        details: parsedManifest.issues,
+      };
+    }
+
+    return {
+      ok: true,
+      value: {
+        source: "manifest",
+        data: parsedManifest.data.formData,
+        coverSvg: asTrimmedString(parsedManifest.data.assets.coverSvg),
+      },
+    };
+  }
+
+  const parsedWizard = wizardFormSchema.safeParse(body);
+  if (!parsedWizard.success) {
+    return {
+      ok: false,
+      error: "Validation failed",
+      details: parsedWizard.error.flatten().fieldErrors,
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      source: "wizard",
+      data: parsedWizard.data,
+      coverSvg: null,
+    },
+  };
+}
+
+function validateSubmissionQuality(
+  data: ValidatedWizardFormData,
+  source: SubmissionPayloadSource
+): Record<string, string[]> | null {
+  const issues: Record<string, string[]> = {};
+  const aiRules = Array.isArray(data.aiRules) ? data.aiRules : [];
+
+  const meaningfulAiRules = countMeaningfulList(aiRules);
+  if (meaningfulAiRules < MIN_MEANINGFUL_AI_RULES) {
+    issues.aiRules = [
+      `Provide at least ${MIN_MEANINGFUL_AI_RULES} non-empty AI rules for consistent generation quality.`,
+    ];
+  }
+
+  const missingRequiredComponents = REQUIRED_COMPONENT_FIELDS.filter(
+    (field) => !hasMeaningfulComponentSnippet(data[field])
+  );
+  if (missingRequiredComponents.length > 0) {
+    issues.components = [
+      `Missing core component snippets: ${missingRequiredComponents.join(", ")}.`,
+    ];
+  }
+
+  if (source === "manifest") {
+    const providedExtended = EXTENDED_COMPONENT_FIELDS.filter((field) =>
+      hasMeaningfulComponentSnippet(data[field])
+    );
+    if (providedExtended.length < MIN_EXTENDED_COMPONENTS_FOR_MANIFEST) {
+      issues.componentCoverage = [
+        `Manifest submissions must include at least ${MIN_EXTENDED_COMPONENTS_FOR_MANIFEST} of navCode, heroCode, footerCode.`,
+      ];
+    }
+  }
+
+  return Object.keys(issues).length > 0 ? issues : null;
 }
 
 function classifySubmissionError(error: unknown): {
@@ -165,19 +306,19 @@ export async function POST(request: Request) {
 
     const body = bodyResult.data;
 
-    const parsed = wizardFormSchema.safeParse(body);
-    if (!parsed.success) {
+    const parsed = parseSubmitPayload(body);
+    if (!parsed.ok) {
       return NextResponse.json(
         {
           success: false,
-          error: "Validation failed",
-          details: parsed.error.flatten().fieldErrors,
+          error: parsed.error,
+          details: parsed.details,
         },
         { status: 400 }
       );
     }
 
-    const data = parsed.data;
+    const { data, source, coverSvg } = parsed.value;
     const normalizedSlug = data.slug.trim().toLowerCase();
     if (getStyleBySlug(normalizedSlug)) {
       return NextResponse.json(
@@ -197,6 +338,18 @@ export async function POST(request: Request) {
       );
     }
 
+    const qualityIssues = validateSubmissionQuality(data, source);
+    if (qualityIssues) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Submission quality validation failed",
+          details: qualityIssues,
+        },
+        { status: 400 }
+      );
+    }
+
     const tokens = convertToStyleTokens(data);
     const designStyle = convertToDesignStyle(data);
     const authorName = user.user_metadata?.user_name ?? user.user_metadata?.full_name ?? "user";
@@ -205,6 +358,13 @@ export async function POST(request: Request) {
       user.user_metadata?.provider ?? user.app_metadata?.provider ?? "github";
     const formDataWithAuthor = {
       ...data,
+      ...(coverSvg
+        ? {
+            __assets: {
+              coverSvg,
+            },
+          }
+        : {}),
       __author: {
         userId: user.id,
         handle: authorName,

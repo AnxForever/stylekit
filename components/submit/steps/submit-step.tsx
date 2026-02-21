@@ -32,6 +32,9 @@ interface SubmitStepProps {
     buttonCode: string;
     cardCode: string;
     inputCode: string;
+    navCode: string;
+    heroCode: string;
+    footerCode: string;
     headingFont: string;
     bodyFont: string;
     fontSizeBase: string;
@@ -46,6 +49,7 @@ interface SubmitStepProps {
     spacingMd: string;
     spacingLg: string;
   };
+  manifestCoverSvg: string | null;
   isAnimating: boolean;
   text: {
     copyJson: string;
@@ -58,7 +62,7 @@ interface SubmitStepProps {
   };
 }
 
-export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
+export function SubmitStep({ formData, manifestCoverSvg, isAnimating, text }: SubmitStepProps) {
   const { t } = useI18n();
   const { user } = useUser();
   const [copied, setCopied] = useState(false);
@@ -90,7 +94,13 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
       const res = await fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(
+          manifestCoverSvg
+            ? {
+                manifest: buildManifestPayload(manifestCoverSvg),
+              }
+            : formData
+        ),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -171,6 +181,33 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
         button: { name: "Button", description: "Button component", code: formData.buttonCode },
         card: { name: "Card", description: "Card component", code: formData.cardCode },
         input: { name: "Input", description: "Input component", code: formData.inputCode },
+        ...(formData.navCode.trim()
+          ? {
+              nav: {
+                name: "Nav",
+                description: "Navigation component",
+                code: formData.navCode,
+              },
+            }
+          : {}),
+        ...(formData.heroCode.trim()
+          ? {
+              hero: {
+                name: "Hero",
+                description: "Hero section component",
+                code: formData.heroCode,
+              },
+            }
+          : {}),
+        ...(formData.footerCode.trim()
+          ? {
+              footer: {
+                name: "Footer",
+                description: "Footer component",
+                code: formData.footerCode,
+              },
+            }
+          : {}),
       },
       globalCss: "",
     };
@@ -206,7 +243,9 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
     const doList = formData.doList.filter((item) => item.trim());
     const dontList = formData.dontList.filter((item) => item.trim());
 
-    const componentCoverage: Array<"buttonCode" | "cardCode" | "inputCode"> = [];
+    const componentCoverage: Array<
+      "buttonCode" | "cardCode" | "inputCode" | "navCode" | "heroCode" | "footerCode"
+    > = [];
     if (formData.buttonCode.trim()) {
       componentCoverage.push("buttonCode");
     }
@@ -215,6 +254,15 @@ export function SubmitStep({ formData, isAnimating, text }: SubmitStepProps) {
     }
     if (formData.inputCode.trim()) {
       componentCoverage.push("inputCode");
+    }
+    if (formData.navCode.trim()) {
+      componentCoverage.push("navCode");
+    }
+    if (formData.heroCode.trim()) {
+      componentCoverage.push("heroCode");
+    }
+    if (formData.footerCode.trim()) {
+      componentCoverage.push("footerCode");
     }
     if (componentCoverage.length === 0) {
       componentCoverage.push("buttonCode");
