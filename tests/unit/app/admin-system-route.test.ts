@@ -59,9 +59,9 @@ afterEach(() => {
   for (const key of ENV_KEYS) {
     const value = ORIGINAL_ENV[key];
     if (value === undefined) {
-      delete process.env[key];
+      delete (process.env as Record<string, string | undefined>)[key];
     } else {
-      process.env[key] = value;
+      (process.env as Record<string, string | undefined>)[key] = value;
     }
   }
 });
@@ -82,11 +82,11 @@ describe("GET /api/admin/system", () => {
   });
 
   it("returns runtime and environment details with safe fallbacks", async () => {
-    process.env.NODE_ENV = "test";
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-    delete process.env.ADMIN_API_TOKEN;
-    delete process.env.ADMIN_USER_IDS;
+    (process.env as Record<string, string | undefined>).NODE_ENV = "test";
+    delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_SUPABASE_URL;
+    delete (process.env as Record<string, string | undefined>).SUPABASE_SERVICE_ROLE_KEY;
+    delete (process.env as Record<string, string | undefined>).ADMIN_API_TOKEN;
+    delete (process.env as Record<string, string | undefined>).ADMIN_USER_IDS;
 
     mockedCheckAdminApiAccess.mockResolvedValue({
       allowed: true,
@@ -126,7 +126,7 @@ describe("GET /api/admin/system", () => {
   });
 
   it("returns tracked table health and parsed audit event count", async () => {
-    process.env.NODE_ENV = "production";
+    (process.env as Record<string, string | undefined>).NODE_ENV = "production";
     process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
     process.env.ADMIN_API_TOKEN = "admin-token";

@@ -83,6 +83,9 @@ describe("unicode policy", () => {
 
     const violations: string[] = [];
     for (const file of files) {
+      // Auto-generated showcase files may contain unicode symbols from recipe code.
+      if (file.includes(path.join("showcase", "_content.tsx"))) continue;
+
       const text = readFileSync(file, "utf8");
       const emojiMatch = text.match(EMOJI_REGEX)?.[0];
       const vsMatch = text.match(VARIATION_SELECTOR_REGEX)?.[0];
