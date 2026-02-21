@@ -206,6 +206,7 @@ export async function POST(request: Request) {
     const formDataWithAuthor = {
       ...data,
       __author: {
+        userId: user.id,
         handle: authorName,
         avatarUrl: authorAvatarUrl,
         provider: authorProvider,

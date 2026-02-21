@@ -385,12 +385,38 @@ describe("profile routes", () => {
   it("submissions endpoint returns user submissions", async () => {
     mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
-    const chain = makeReadChain({
-      data: [{ id: "s1", slug: "neo-brutalist", status: "pending", submitted_at: "2026-01-01" }],
-      error: null,
-    });
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [{ id: "s1", slug: "neo-brutalist", status: "pending", submitted_at: "2026-01-01" }],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const fallbackChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
     mockedCreateClient.mockReturnValue({
-      from: vi.fn().mockReturnValue(chain),
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(fallbackChain),
     } as never);
 
     const response = await getSubmissions();
@@ -398,6 +424,54 @@ describe("profile routes", () => {
     await expect(response.json()).resolves.toEqual({
       success: true,
       submissions: [{ id: "s1", slug: "neo-brutalist", status: "pending", submitted_at: "2026-01-01" }],
+    });
+  });
+
+  it("submissions endpoint falls back to __author.userId when user_id column is missing", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const modernChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: null,
+              error: {
+                code: "42703",
+                message: "column submissions.user_id does not exist",
+              },
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const fallbackChain = {
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({
+              data: [{ id: "s-fallback", slug: "chaos-lab", status: "pending", submitted_at: "2026-02-21" }],
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    };
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce(modernChain)
+        .mockReturnValueOnce(fallbackChain),
+    } as never);
+
+    const response = await getSubmissions();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      submissions: [{ id: "s-fallback", slug: "chaos-lab", status: "pending", submitted_at: "2026-02-21" }],
     });
   });
 });
