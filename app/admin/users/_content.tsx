@@ -30,7 +30,7 @@ function formatResolvedTitle(title: string | null): string | null {
     return null;
   }
   if (title === SITE_OWNER_TITLE_TOKEN) {
-    return "Site Owner";
+    return "Qin Shi Huang";
   }
   if (title === EMPEROR_TITLE_TOKEN) {
     return "Qin Shi Huang";
@@ -403,7 +403,7 @@ export function AdminUsersContent() {
                                     )
                                   }
                                 />
-                                Site Owner
+                                Qin Shi Huang
                               </label>
                               <label className="inline-flex items-center gap-2 text-sm">
                                 <input

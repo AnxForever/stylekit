@@ -72,7 +72,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
     }
 
     if (title === SITE_OWNER_TITLE_TOKEN) {
-      return t("styleComments.titleSiteOwner");
+      return t("styleComments.titleEmperor");
     }
 
     if (title === EARLY_USER_TITLE_TOKEN) {

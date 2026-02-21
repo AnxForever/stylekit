@@ -157,7 +157,7 @@ export function ProfileContent() {
       return t("styleComments.titleEmperor");
     }
     if (rawProfileTitle === SITE_OWNER_TITLE_TOKEN) {
-      return t("styleComments.titleSiteOwner");
+      return t("styleComments.titleEmperor");
     }
     if (rawProfileTitle === EARLY_USER_TITLE_TOKEN) {
       return t("styleComments.titleEarlyUser");
