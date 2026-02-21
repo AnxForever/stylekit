@@ -136,20 +136,21 @@ export const cardStack: DesignStyle = {
     hero: {
       name: "卡片堆叠展示",
       description: "完整的卡片堆叠布局，hover 散开",
-      code: `<section className="py-20 px-4 bg-gradient-to-br from-slate-900 to-slate-800">
+      code: `<section className="py-20 px-4 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden">
   <div className="max-w-6xl mx-auto">
     <div className="text-center mb-16">
       <h2 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
-      <p className="text-slate-400">Hover to browse, click to select</p>
+      <p className="text-slate-400">Tap or hover to browse, click to select</p>
     </div>
 
-    <div className="relative h-[420px] flex items-center justify-center group">
+    <div className="relative h-[420px] flex items-center justify-center group" tabIndex={0}>
       {/* Card 3 (Back) */}
       <div className="
-        absolute w-80 p-8
+        absolute w-64 sm:w-80 p-6 sm:p-8
         bg-white rounded-2xl shadow-lg
         scale-90 translate-y-8 -rotate-3 opacity-60
-        group-hover:-rotate-6 group-hover:translate-x-10 group-hover:translate-y-14 group-hover:opacity-80
+        group-hover:rotate-6 group-hover:translate-x-5 sm:group-hover:translate-x-10 group-hover:translate-y-12 group-hover:opacity-80
+        group-focus-within:rotate-6 group-focus-within:translate-x-5 sm:group-focus-within:translate-x-10 group-focus-within:translate-y-12 group-focus-within:opacity-80
         transition-all duration-[400ms] ease-out z-10
       ">
         <div className="w-10 h-10 bg-amber-100 rounded-lg mb-4" />
@@ -158,10 +159,11 @@ export const cardStack: DesignStyle = {
 
       {/* Card 2 (Middle) */}
       <div className="
-        absolute w-80 p-8
+        absolute w-64 sm:w-80 p-6 sm:p-8
         bg-white rounded-2xl shadow-xl
         scale-95 translate-y-4 rotate-2 opacity-80
-        group-hover:rotate-5 group-hover:-translate-x-10 group-hover:translate-y-8 group-hover:opacity-90
+        group-hover:-rotate-5 group-hover:-translate-x-5 sm:group-hover:-translate-x-10 group-hover:translate-y-8 group-hover:opacity-90
+        group-focus-within:-rotate-5 group-focus-within:-translate-x-5 sm:group-focus-within:-translate-x-10 group-focus-within:translate-y-8 group-focus-within:opacity-90
         transition-all duration-[400ms] ease-out z-20
       ">
         <div className="w-10 h-10 bg-emerald-100 rounded-lg mb-4" />
@@ -171,9 +173,10 @@ export const cardStack: DesignStyle = {
 
       {/* Card 1 (Front) */}
       <div className="
-        absolute w-80 p-8
+        absolute w-64 sm:w-80 p-6 sm:p-8
         bg-white rounded-2xl shadow-2xl z-30
         group-hover:-translate-y-8 group-hover:scale-105 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.2)]
+        group-focus-within:-translate-y-8 group-focus-within:scale-105 group-focus-within:shadow-[0_30px_60px_rgba(0,0,0,0.2)]
         transition-all duration-[400ms] ease-out
         cursor-grab active:cursor-grabbing
       ">
