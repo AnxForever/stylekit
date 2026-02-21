@@ -71,6 +71,9 @@ export const wizardFormSchema = z.object({
   buttonCode: z.string(),
   cardCode: z.string(),
   inputCode: z.string(),
+  navCode: z.string().optional(),
+  heroCode: z.string().optional(),
+  footerCode: z.string().optional(),
 }).refine(
   (d) => d.name.trim().length > 0 || d.nameEn.trim().length > 0,
   { message: "At least one style name (name or nameEn) is required", path: ["name"] }

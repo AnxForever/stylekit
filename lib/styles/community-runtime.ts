@@ -73,6 +73,20 @@ function asStringList(value: unknown): string[] {
     .filter((item): item is string => item !== null);
 }
 
+function toInlineSvgDataUri(value: unknown): string | null {
+  const svg = asString(value);
+  if (!svg) {
+    return null;
+  }
+  if (svg.startsWith("data:image/svg+xml")) {
+    return svg;
+  }
+  if (!svg.includes("<svg")) {
+    return null;
+  }
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function asStyleType(value: unknown): StyleType {
   if (typeof value === "string" && STYLE_TYPES.has(value as StyleType)) {
     return value as StyleType;
@@ -116,6 +130,25 @@ function parseComponentTemplate(
     name: asString(record.name) ?? fallbackName,
     description: asString(record.description) ?? fallbackDescription,
     code: asString(record.code) ?? fallbackCode,
+  };
+}
+
+function parseOptionalComponentTemplate(
+  value: unknown,
+  fallbackName: string,
+  fallbackDescription: string,
+  fallbackCode: string | null
+): ComponentTemplate | undefined {
+  const record = asRecord(value);
+  const code = asString(record.code) ?? fallbackCode;
+  if (!code) {
+    return undefined;
+  }
+
+  return {
+    name: asString(record.name) ?? fallbackName,
+    description: asString(record.description) ?? fallbackDescription,
+    code,
   };
 }
 
@@ -209,6 +242,36 @@ function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle | null 
     asStringList(formData.aiRules).join("\n") ??
     "";
 
+  const assetsRecord = asRecord(formData.__assets);
+  const legacyAssetsRecord = asRecord(formData.assets);
+  const inlineCover =
+    toInlineSvgDataUri(assetsRecord.coverSvg) ??
+    toInlineSvgDataUri(legacyAssetsRecord.coverSvg);
+  const fallbackCover = `/styles/${slug}/opengraph-image`;
+  const legacyGeneratedCover = `/styles/${slug}.svg`;
+  const configuredCover = asString(storedDesignStyle.cover) ?? asString(formData.cover);
+  const resolvedCover =
+    configuredCover && configuredCover !== legacyGeneratedCover ? configuredCover : fallbackCover;
+
+  const navComponent = parseOptionalComponentTemplate(
+    componentsRecord.nav,
+    "Nav",
+    "Navigation bar",
+    asString(formData.navCode)
+  );
+  const heroComponent = parseOptionalComponentTemplate(
+    componentsRecord.hero,
+    "Hero",
+    "Hero section",
+    asString(formData.heroCode)
+  );
+  const footerComponent = parseOptionalComponentTemplate(
+    componentsRecord.footer,
+    "Footer",
+    "Footer section",
+    asString(formData.footerCode)
+  );
+
   const compatibleWith = asStringList(storedDesignStyle.compatibleWith).filter((item) =>
     SLUG_RE.test(item)
   );
@@ -218,10 +281,7 @@ function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle | null 
     name,
     nameEn,
     description,
-    cover:
-      asString(storedDesignStyle.cover) ??
-      asString(formData.cover) ??
-      `/styles/${slug}/opengraph-image`,
+    cover: inlineCover ?? resolvedCover,
     styleType: asStyleType(storedDesignStyle.styleType ?? formData.styleType),
     tags: asStyleTags(storedDesignStyle.tags ?? formData.tags),
     compatibleWith: compatibleWith.length > 0 ? compatibleWith : undefined,
@@ -263,6 +323,9 @@ function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle | null 
         "Text input",
         inputFallbackCode
       ),
+      ...(navComponent ? { nav: navComponent } : {}),
+      ...(heroComponent ? { hero: heroComponent } : {}),
+      ...(footerComponent ? { footer: footerComponent } : {}),
     },
     globalCss: asString(storedDesignStyle.globalCss) ?? "",
     aiRules,

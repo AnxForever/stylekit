@@ -193,7 +193,9 @@ describe("POST /api/submit/validate", () => {
       },
       warnings: [
         "coverSvg does not appear to contain an <svg> root element.",
-        "aiRules is empty. Add style guidance for better generation quality.",
+        "aiRules has 0 non-empty entries; recommend at least 3.",
+        "Missing core component snippets (24+ chars): buttonCode, cardCode, inputCode.",
+        "Recommend at least 2 extended components from navCode/heroCode/footerCode for stronger preview coverage.",
       ],
     });
   });

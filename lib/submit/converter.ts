@@ -104,7 +104,7 @@ export function convertToDesignStyle(data: ValidatedWizardFormData): Partial<Des
     name: data.name,
     nameEn: data.nameEn,
     description: data.description,
-    cover: `/styles/${data.slug}.svg`,
+    cover: `/styles/${data.slug}/opengraph-image`,
     styleType: data.styleType,
     tags: data.tags,
     category: data.category,
@@ -121,6 +121,33 @@ export function convertToDesignStyle(data: ValidatedWizardFormData): Partial<Des
       button: { name: "Button", description: "Primary button", code: data.buttonCode },
       card: { name: "Card", description: "Content card", code: data.cardCode },
       input: { name: "Input", description: "Text input", code: data.inputCode },
+      ...(data.navCode?.trim()
+        ? {
+            nav: {
+              name: "Nav",
+              description: "Navigation bar",
+              code: data.navCode,
+            },
+          }
+        : {}),
+      ...(data.heroCode?.trim()
+        ? {
+            hero: {
+              name: "Hero",
+              description: "Hero section",
+              code: data.heroCode,
+            },
+          }
+        : {}),
+      ...(data.footerCode?.trim()
+        ? {
+            footer: {
+              name: "Footer",
+              description: "Footer section",
+              code: data.footerCode,
+            },
+          }
+        : {}),
     },
     globalCss: "",
     aiRules: data.aiRules.filter((s) => s.trim()).join("\n"),

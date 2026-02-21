@@ -9,6 +9,10 @@ vi.mock("@/lib/submit/converter", () => ({
   convertToDesignStyle: vi.fn(),
 }));
 
+vi.mock("@/lib/submit/manifest-validator", () => ({
+  validateStyleSubmissionManifest: vi.fn(),
+}));
+
 vi.mock("@/lib/submit/reviewer-supabase", () => ({
   isSupabaseConfigured: vi.fn(),
   createSubmissionSupabase: vi.fn(),
@@ -44,6 +48,7 @@ vi.mock("@/lib/security/json-body", () => ({
 import { POST } from "@/app/api/submit/route";
 import { wizardFormSchema } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
+import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator";
 import {
   isSupabaseConfigured,
   createSubmissionSupabase,
@@ -63,6 +68,7 @@ import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 const mockedWizardSchema = vi.mocked(wizardFormSchema);
 const mockedConvertToStyleTokens = vi.mocked(convertToStyleTokens);
 const mockedConvertToDesignStyle = vi.mocked(convertToDesignStyle);
+const mockedValidateStyleSubmissionManifest = vi.mocked(validateStyleSubmissionManifest);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedCreateSubmissionSupabase = vi.mocked(createSubmissionSupabase);
 const mockedHasActiveSubmissionSlugSupabase = vi.mocked(hasActiveSubmissionSlugSupabase);
@@ -79,7 +85,55 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+function buildValidFormData(slug: string = "neo-brutalist") {
+  return {
+    name: "Neo Brutalist",
+    nameEn: "Neo Brutalist",
+    slug,
+    description: "High-contrast blocks for editorial-style UI systems.",
+    category: "modern",
+    styleType: "visual",
+    tags: ["modern", "high-contrast"],
+    primaryColor: "#111111",
+    secondaryColor: "#ffffff",
+    accentColors: ["#ff3b30"],
+    background: "#ffffff",
+    foreground: "#111111",
+    muted: "#666666",
+    keywords: ["brutalist", "high-contrast"],
+    philosophy: "Function first with bold visual hierarchy.",
+    headingFont: "Inter, sans-serif",
+    bodyFont: "Inter, sans-serif",
+    fontSizeBase: "1rem",
+    fontSizeHeading: "2rem",
+    fontSizeSmall: "0.875rem",
+    fontWeightNormal: "400",
+    fontWeightBold: "700",
+    lineHeightNormal: "1.5",
+    lineHeightTight: "1.25",
+    borderRadius: "0.5rem",
+    spacingSm: "0.5rem",
+    spacingMd: "1rem",
+    spacingLg: "2rem",
+    doList: ["Use strong borders"],
+    dontList: ["Avoid soft shadows"],
+    aiRules: [
+      "Keep high contrast between foreground and background.",
+      "Prefer block-level layout primitives with clear spacing.",
+      "Preserve consistent typography hierarchy.",
+    ],
+    buttonCode: "<button className='px-4 py-2 border-2 border-black'>Action</button>",
+    cardCode: "<div className='p-4 border-2 border-black'><h3>Card</h3><p>Body</p></div>",
+    inputCode: "<input className='px-3 py-2 border-2 border-black' placeholder='Type here' />",
+    navCode: "<nav className='flex items-center justify-between border-b-2 border-black p-4'>Nav</nav>",
+    heroCode: "<section className='border-2 border-black p-8'><h1>Hero</h1><p>Value prop</p></section>",
+    footerCode:
+      "<footer className='border-t-2 border-black p-4 text-sm'>Footer links and metadata</footer>",
+  };
+}
+
 function mockValidSupabaseSubmissionPayload(slug: string = "neo-brutalist"): void {
+  const formData = buildValidFormData(slug);
   mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
   mockedGetRequestClientKey.mockReturnValue("ip:test");
   mockedCheckRateLimit.mockReturnValue({
@@ -91,11 +145,11 @@ function mockValidSupabaseSubmissionPayload(slug: string = "neo-brutalist"): voi
   });
   mockedParseJsonBodyWithLimit.mockResolvedValue({
     ok: true,
-    data: { slug },
+    data: formData,
   });
   mockedWizardSchema.safeParse.mockReturnValue({
     success: true,
-    data: { slug },
+    data: formData,
   } as never);
   mockedGetStyleBySlug.mockReturnValue(undefined);
   mockedConvertToStyleTokens.mockReturnValue({ tokens: true } as never);
@@ -219,11 +273,11 @@ describe("POST /api/submit", () => {
     } as never);
     mockedParseJsonBodyWithLimit.mockResolvedValue({
       ok: true,
-      data: { slug: "apple-style" },
+      data: buildValidFormData("apple-style"),
     });
     mockedWizardSchema.safeParse.mockReturnValue({
       success: true,
-      data: { slug: "apple-style" },
+      data: buildValidFormData("apple-style"),
     } as never);
     mockedGetStyleBySlug.mockReturnValue({ slug: "apple-style" } as never);
 
@@ -252,11 +306,11 @@ describe("POST /api/submit", () => {
     } as never);
     mockedParseJsonBodyWithLimit.mockResolvedValue({
       ok: true,
-      data: { slug: "aurora-community" },
+      data: buildValidFormData("aurora-community"),
     });
     mockedWizardSchema.safeParse.mockReturnValue({
       success: true,
-      data: { slug: "aurora-community" },
+      data: buildValidFormData("aurora-community"),
     } as never);
     mockedGetStyleBySlug.mockReturnValue(undefined);
     mockedIsSupabaseConfigured.mockReturnValue(true);
@@ -283,7 +337,7 @@ describe("POST /api/submit", () => {
     expect(response.status).toBe(200);
     expect(mockedCreateSubmissionSupabase).toHaveBeenCalledWith(
       "neo-brutalist",
-      {
+      expect.objectContaining({
         slug: "neo-brutalist",
         __author: {
           userId: "user-1",
@@ -291,7 +345,7 @@ describe("POST /api/submit", () => {
           avatarUrl: null,
           provider: "github",
         },
-      },
+      }),
       { tokens: true },
       { design: true },
       null,
@@ -363,5 +417,115 @@ describe("POST /api/submit", () => {
       code: "DB_SCHEMA_MISMATCH",
       error: "Submissions schema is outdated. Apply Supabase migration 003 (user binding).",
     });
+  });
+
+  it("rejects low-quality submissions with insufficient aiRules", async () => {
+    const weakPayload = {
+      ...buildValidFormData("weak-style"),
+      aiRules: ["Only one rule"],
+    };
+
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:quality");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 15,
+      remaining: 14,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx" },
+    } as never);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: weakPayload,
+    });
+    mockedWizardSchema.safeParse.mockReturnValue({
+      success: true,
+      data: weakPayload,
+    } as never);
+    mockedGetStyleBySlug.mockReturnValue(undefined);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(false);
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "Submission quality validation failed",
+      details: {
+        aiRules: [
+          "Provide at least 3 non-empty AI rules for consistent generation quality.",
+        ],
+      },
+    });
+  });
+
+  it("accepts manifest payloads and persists coverSvg in submission form data", async () => {
+    const manifestPayload = buildValidFormData("manifest-style");
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetRequestClientKey.mockReturnValue("ip:manifest");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 15,
+      remaining: 14,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-1",
+      user_metadata: { user_name: "anx" },
+    } as never);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: {
+        manifest: {
+          schemaVersion: "1.0.0",
+        },
+      },
+    });
+    mockedValidateStyleSubmissionManifest.mockReturnValue({
+      ok: true,
+      data: {
+        formData: manifestPayload,
+        assets: {
+          coverSvg: "<svg viewBox='0 0 10 10'><rect width='10' height='10' /></svg>",
+        },
+      },
+      issues: [],
+    } as never);
+    mockedGetStyleBySlug.mockReturnValue(undefined);
+    mockedConvertToStyleTokens.mockReturnValue({ tokens: true } as never);
+    mockedConvertToDesignStyle.mockReturnValue({ design: true } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedHasActiveSubmissionSlugSupabase.mockResolvedValue(false);
+    mockedCreateSubmissionSupabase.mockResolvedValue({
+      id: "sub_manifest",
+      slug: "manifest-style",
+    } as never);
+
+    const response = await POST(new Request("https://stylekit.top/api/submit", { method: "POST" }));
+
+    expect(response.status).toBe(200);
+    expect(mockedWizardSchema.safeParse).not.toHaveBeenCalled();
+    expect(mockedCreateSubmissionSupabase).toHaveBeenCalledWith(
+      "manifest-style",
+      expect.objectContaining({
+        slug: "manifest-style",
+        __assets: {
+          coverSvg: "<svg viewBox='0 0 10 10'><rect width='10' height='10' /></svg>",
+        },
+      }),
+      { tokens: true },
+      { design: true },
+      null,
+      "user-1",
+      "anx",
+      null,
+      "github",
+    );
   });
 });

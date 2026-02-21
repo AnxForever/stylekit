@@ -230,6 +230,15 @@
         },
         "inputCode": {
           "type": "string"
+        },
+        "navCode": {
+          "type": "string"
+        },
+        "heroCode": {
+          "type": "string"
+        },
+        "footerCode": {
+          "type": "string"
         }
       }
     },
@@ -284,7 +293,10 @@
             "enum": [
               "buttonCode",
               "cardCode",
-              "inputCode"
+              "inputCode",
+              "navCode",
+              "heroCode",
+              "footerCode"
             ]
           },
           "uniqueItems": true

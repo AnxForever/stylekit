@@ -58,7 +58,13 @@ const communitySubmission: SubmissionRecord = {
     buttonCode: "<button className=\"px-4 py-2 rounded\">Aurora</button>",
     cardCode: "<div className=\"p-4 rounded-xl\">Card</div>",
     inputCode: "<input className=\"px-3 py-2 rounded\" />",
+    navCode:
+      "<nav className=\"flex items-center justify-between border-b px-4 py-3\"><span>Logo</span><a>Docs</a></nav>",
+    heroCode: "<section className=\"py-12\"><h1>Aurora Hero</h1><p>Glow-first narrative.</p></section>",
     aiRules: ["Prefer layered gradients."],
+    __assets: {
+      coverSvg: "<svg viewBox='0 0 10 10'><rect width='10' height='10' fill='#2f3cff' /></svg>",
+    },
   },
   tokens: {
     border: {
@@ -194,10 +200,35 @@ describe("community runtime styles", () => {
     expect(result?.source).toBe("community");
     expect(result?.submissionId).toBe("sub-community-1");
     expect(result?.style.nameEn).toBe("Aurora Community");
+    expect(result?.style.cover.startsWith("data:image/svg+xml;utf8,")).toBe(true);
+    expect(result?.style.components.nav?.code).toContain("Logo");
+    expect(result?.style.components.hero?.code).toContain("Aurora Hero");
+    expect(result?.style.components.footer).toBeUndefined();
     expect(result?.tokens).toBeTruthy();
     expect(mockedGetLatestApprovedSubmissionBySlug).toHaveBeenCalledWith(
       "aurora-community"
     );
+  });
+
+  it("falls back to opengraph cover when legacy generated svg cover is stored", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(false);
+    mockedGetLatestApprovedSubmissionBySlug.mockResolvedValue({
+      ...communitySubmission,
+      id: "sub-community-legacy-cover",
+      formData: {
+        ...communitySubmission.formData,
+        __assets: undefined,
+      },
+      designStyle: {
+        ...communitySubmission.designStyle,
+        cover: "/styles/aurora-community.svg",
+      },
+    } as never);
+
+    const result = await resolveStyleBySlug("aurora-community");
+
+    expect(result?.source).toBe("community");
+    expect(result?.style.cover).toBe("/styles/aurora-community/opengraph-image");
   });
 
   it("merges approved community meta and skips static slug collisions", async () => {
