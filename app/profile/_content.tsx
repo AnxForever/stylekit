@@ -136,9 +136,9 @@ export function ProfileContent() {
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
   const [showEmail, setShowEmail] = useState(false);
-  const { data: commentsData } = useProfileComments(user?.id);
-  const { data: ratingsData } = useProfileRatings(user?.id);
-  const { data: submissionsData, mutate: mutateSubmissions } = useProfileSubmissions(user?.id);
+  const { data: commentsData, isLoading: commentsLoading } = useProfileComments(user?.id);
+  const { data: ratingsData, isLoading: ratingsLoading } = useProfileRatings(user?.id);
+  const { data: submissionsData, mutate: mutateSubmissions, isLoading: submissionsLoading } = useProfileSubmissions(user?.id);
   const { data: profileTitleData } = useProfileTitle(user?.id);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
   const [editSubmissionName, setEditSubmissionName] = useState("");
@@ -431,7 +431,7 @@ export function ProfileContent() {
             alt={userName}
             width={96}
             height={96}
-            unoptimized
+            priority
             className="w-24 h-24 rounded-full border-2 border-border"
           />
         ) : (
@@ -553,7 +553,19 @@ export function ProfileContent() {
           {t("profile.comments")} ({comments.length})
         </h2>
 
-        {comments.length === 0 ? (
+        {commentsLoading ? (
+          <div className="space-y-3 animate-pulse">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="rounded-lg border border-border p-4 space-y-2">
+                <div className="flex justify-between">
+                  <div className="h-4 w-24 bg-muted/20 rounded" />
+                  <div className="h-3 w-20 bg-muted/20 rounded" />
+                </div>
+                <div className="h-4 w-full bg-muted/20 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : comments.length === 0 ? (
           <p className="text-muted-foreground py-8 text-center">
             {t("profile.noComments")}
           </p>
@@ -591,7 +603,16 @@ export function ProfileContent() {
           {t("profile.ratings")} ({ratings.length})
         </h2>
 
-        {ratings.length === 0 ? (
+        {ratingsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+                <div className="h-4 w-24 bg-muted/20 rounded" />
+                <div className="h-4 w-20 bg-muted/20 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : ratings.length === 0 ? (
           <p className="text-muted-foreground py-8 text-center">
             {t("profile.noRatings")}
           </p>
@@ -644,7 +665,19 @@ export function ProfileContent() {
           </p>
         )}
 
-        {submissions.length === 0 ? (
+        {submissionsLoading ? (
+          <div className="space-y-3 animate-pulse">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="rounded-lg border border-border px-4 py-3 space-y-3">
+                <div className="flex justify-between">
+                  <div className="h-4 w-32 bg-muted/20 rounded" />
+                  <div className="h-3 w-20 bg-muted/20 rounded" />
+                </div>
+                <div className="h-3 w-full bg-muted/20 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : submissions.length === 0 ? (
           <p className="text-muted-foreground py-8 text-center">
             {t("profile.noSubmissions")}
           </p>
