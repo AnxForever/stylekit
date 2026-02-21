@@ -220,7 +220,53 @@ describe("profile submission mutate route", () => {
     expect(response.status).toBe(200);
   });
 
-  it("DELETE blocks approved submissions", async () => {
+  it("PATCH updates own approved submission", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { description: "updated approved" },
+    });
+
+    const ownerMaybeSingle = vi.fn().mockResolvedValue({
+      data: {
+        id: SUBMISSION_ID,
+        status: "approved",
+        user_id: "user-1",
+        form_data: {
+          description: "old",
+          __author: { userId: "user-1" },
+          designStyle: {},
+        },
+      },
+      error: null,
+    });
+    const ownerEq = vi.fn().mockReturnValue({ maybeSingle: ownerMaybeSingle });
+    const ownerSelect = vi.fn().mockReturnValue({ eq: ownerEq });
+
+    const updateEq = vi.fn().mockResolvedValue({ error: null });
+    const update = vi.fn().mockReturnValue({ eq: updateEq });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce({ select: ownerSelect })
+        .mockReturnValueOnce({ update }),
+    } as never);
+
+    const response = await PATCH(
+      new Request(`https://stylekit.top/api/profile/submissions/${SUBMISSION_ID}`, {
+        method: "PATCH",
+        body: JSON.stringify({ description: "updated approved" }),
+      }),
+      { params: params(SUBMISSION_ID) }
+    );
+
+    expect(response.status).toBe(200);
+  });
+
+  it("DELETE removes own approved submission", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
@@ -237,8 +283,14 @@ describe("profile submission mutate route", () => {
     const ownerEq = vi.fn().mockReturnValue({ maybeSingle: ownerMaybeSingle });
     const ownerSelect = vi.fn().mockReturnValue({ eq: ownerEq });
 
+    const deleteEq = vi.fn().mockResolvedValue({ error: null });
+    const deleteFn = vi.fn().mockReturnValue({ eq: deleteEq });
+
     mockedCreateClient.mockReturnValue({
-      from: vi.fn().mockReturnValue({ select: ownerSelect }),
+      from: vi
+        .fn()
+        .mockReturnValueOnce({ select: ownerSelect })
+        .mockReturnValueOnce({ delete: deleteFn }),
     } as never);
 
     const response = await DELETE(
@@ -248,7 +300,9 @@ describe("profile submission mutate route", () => {
       { params: params(SUBMISSION_ID) }
     );
 
-    expect(response.status).toBe(409);
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ success: true });
+    expect(deleteFn).toHaveBeenCalled();
   });
 
   it("DELETE removes own pending submission", async () => {

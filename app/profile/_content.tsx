@@ -291,11 +291,21 @@ export function ProfileContent() {
     setEditSubmissionDescription(submission.description ?? "");
   }
 
-  async function saveSubmissionEdit(submissionId: string) {
+  async function saveSubmissionEdit(submission: {
+    id: string;
+    status: "pending" | "approved" | "rejected";
+  }) {
+    if (submission.status === "approved") {
+      const confirmed = window.confirm(t("profile.submissionApprovedEditConfirm"));
+      if (!confirmed) {
+        return;
+      }
+    }
+
     setSubmissionActionError(null);
-    setSubmissionActionBusyId(submissionId);
+    setSubmissionActionBusyId(submission.id);
     try {
-      const response = await fetch(`/api/profile/submissions/${submissionId}`, {
+      const response = await fetch(`/api/profile/submissions/${submission.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -321,16 +331,23 @@ export function ProfileContent() {
     }
   }
 
-  async function deleteSubmission(submissionId: string) {
-    const confirmed = window.confirm(t("profile.submissionDeleteConfirm"));
+  async function deleteSubmission(submission: {
+    id: string;
+    status: "pending" | "approved" | "rejected";
+  }) {
+    const confirmMessage =
+      submission.status === "approved"
+        ? t("profile.submissionApprovedDeleteConfirm")
+        : t("profile.submissionDeleteConfirm");
+    const confirmed = window.confirm(confirmMessage);
     if (!confirmed) {
       return;
     }
 
     setSubmissionActionError(null);
-    setSubmissionActionBusyId(submissionId);
+    setSubmissionActionBusyId(submission.id);
     try {
-      const response = await fetch(`/api/profile/submissions/${submissionId}`, {
+      const response = await fetch(`/api/profile/submissions/${submission.id}`, {
         method: "DELETE",
       });
       const body = await response.json().catch(() => null);
@@ -338,7 +355,7 @@ export function ProfileContent() {
         throw new Error(body?.error ?? t("profile.submissionDeleteFailed"));
       }
 
-      if (editingSubmissionId === submissionId) {
+      if (editingSubmissionId === submission.id) {
         setEditingSubmissionId(null);
       }
       await mutateSubmissions();
@@ -619,11 +636,7 @@ export function ProfileContent() {
                   </p>
                 )}
 
-                {sub.status === "approved" ? (
-                  <p className="text-xs text-muted">
-                    {t("profile.submissionLocked")}
-                  </p>
-                ) : editingSubmissionId === sub.id ? (
+                {editingSubmissionId === sub.id ? (
                   <div className="space-y-2">
                     <input
                       value={editSubmissionName}
@@ -647,7 +660,7 @@ export function ProfileContent() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => void saveSubmissionEdit(sub.id)}
+                        onClick={() => void saveSubmissionEdit(sub)}
                         disabled={submissionActionBusyId === sub.id}
                         className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
                       >
@@ -678,7 +691,7 @@ export function ProfileContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => void deleteSubmission(sub.id)}
+                      onClick={() => void deleteSubmission(sub)}
                       disabled={submissionActionBusyId === sub.id}
                       className="inline-flex items-center gap-1 rounded-md border border-red-300 px-3 py-1.5 text-xs text-red-700 hover:border-red-500 dark:border-red-800 dark:text-red-300 disabled:opacity-60"
                     >
