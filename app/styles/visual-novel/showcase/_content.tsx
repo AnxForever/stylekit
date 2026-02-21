@@ -245,7 +245,7 @@ export default function ShowcaseContent() {
                 className="group relative font-sans text-[11px] tracking-[0.1em] uppercase text-[#a5b4fc]/60 hover:text-white transition-colors duration-200"
               >
                 <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">
-                  ▶
+                  &#9654;
                 </span>
                 {id}
               </a>
@@ -445,7 +445,7 @@ export default function ShowcaseContent() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
                   <div className="flex items-center gap-3 relative z-10">
                     <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 font-sans text-sm">
-                      ▶
+                      &#9654;
                     </span>
                     <div className="flex-1">
                       <div className="font-sans text-lg font-medium">{ch.label}</div>
@@ -627,7 +627,7 @@ export default function ShowcaseContent() {
                       cursor: "pointer",
                     }}
                   >
-                    <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">▶</span>
+                    <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">&#9654;</span>
                     Next
                   </button>
                 </div>
@@ -729,7 +729,7 @@ export default function ShowcaseContent() {
                     cursor: "pointer",
                   }}
                 >
-                  <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">▶</span>
+                  <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">&#9654;</span>
                   {tab}
                 </button>
               ))}
@@ -759,7 +759,7 @@ export default function ShowcaseContent() {
                   <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#6366f1]/30 hover:bg-[#6366f1]/20 hover:border-[#6366f1]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
                     <div className="flex items-center gap-3 relative z-10">
-                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">▶</span>
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">&#9654;</span>
                       <span>"I should go to the rooftop and watch the sunset."</span>
                     </div>
                   </button>
@@ -767,7 +767,7 @@ export default function ShowcaseContent() {
                   <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#ec4899]/30 hover:bg-[#ec4899]/20 hover:border-[#ec4899]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
                     <div className="flex items-center gap-3 relative z-10">
-                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#ec4899] transition-all duration-300">▶</span>
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#ec4899] transition-all duration-300">&#9654;</span>
                       <span>"Stay and talk to Hana a little longer."</span>
                     </div>
                   </button>
@@ -775,7 +775,7 @@ export default function ShowcaseContent() {
                   <button className="group relative w-full px-8 py-4 bg-[#1a202c]/60 backdrop-blur-md text-[#e2e8f0] font-sans text-lg text-left rounded-lg border border-[#10b981]/30 hover:bg-[#10b981]/20 hover:border-[#10b981]/60 hover:text-white hover:-translate-y-0.5 active:translate-x-2 transition-all duration-300 ease-out overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
                     <div className="flex items-center gap-3 relative z-10">
-                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#10b981] transition-all duration-300">▶</span>
+                      <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#10b981] transition-all duration-300">&#9654;</span>
                       <span>"Ask Kenji about the old archive records."</span>
                     </div>
                   </button>
@@ -1183,7 +1183,7 @@ export default function ShowcaseContent() {
               href="/"
               className="group font-sans text-[12px] tracking-widest text-[#a5b4fc]/50 hover:text-white transition-colors duration-200"
             >
-              <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">▶</span>
+              <span className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300 mr-1">&#9654;</span>
               StyleKit
             </Link>
             <span className="text-white/10 text-sm">|</span>

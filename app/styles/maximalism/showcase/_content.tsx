@@ -767,7 +767,7 @@ export default function ShowcaseContent() {
                 </div>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 bg-[#06d6a0] flex items-center justify-center">
-                    <span className="font-black text-[#1a0a2e] text-sm">✓</span>
+                    <span className="font-black text-[#1a0a2e] text-sm">&#10003;</span>
                   </div>
                   <h3 className="font-serif font-black text-2xl text-[#06d6a0] uppercase">Do This</h3>
                 </div>
@@ -784,7 +784,7 @@ export default function ShowcaseContent() {
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <div className="w-5 h-5 shrink-0 mt-0.5 bg-[#06d6a0]/20 border-2 border-[#06d6a0] flex items-center justify-center">
-                        <span className="text-[#06d6a0] text-[10px] font-black">✓</span>
+                        <span className="text-[#06d6a0] text-[10px] font-black">&#10003;</span>
                       </div>
                       <span className="font-sans text-sm text-white/90 leading-snug">{item}</span>
                     </li>
@@ -801,7 +801,7 @@ export default function ShowcaseContent() {
                 </div>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 bg-[#d4145a] flex items-center justify-center">
-                    <span className="font-black text-white text-sm">✕</span>
+                    <span className="font-black text-white text-sm">&#10005;</span>
                   </div>
                   <h3 className="font-serif font-black text-2xl text-[#d4145a] uppercase">Not This</h3>
                 </div>
@@ -818,7 +818,7 @@ export default function ShowcaseContent() {
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <div className="w-5 h-5 shrink-0 mt-0.5 bg-[#d4145a]/20 border-2 border-[#d4145a] flex items-center justify-center">
-                        <span className="text-[#d4145a] text-[10px] font-black">✕</span>
+                        <span className="text-[#d4145a] text-[10px] font-black">&#10005;</span>
                       </div>
                       <span className="font-sans text-sm text-white/70 leading-snug line-through decoration-[#d4145a]/40">{item}</span>
                     </li>
@@ -1031,7 +1031,7 @@ export default function ShowcaseContent() {
               <div className="space-y-3">
                 {[
                   {
-                    icon: "✓",
+                    icon: "\u2713",
                     type: "Success",
                     msg: "Your maximalist creation has been saved with all layers intact.",
                     bg: "bg-[#06d6a0]/10",
@@ -1042,7 +1042,7 @@ export default function ShowcaseContent() {
                     iconColor: "text-[#1a0a2e]",
                   },
                   {
-                    icon: "⚠",
+                    icon: "\u26A0",
                     type: "Warning",
                     msg: "Adding more layers may increase load time. Keep going anyway.",
                     bg: "bg-[#ffbe0b]/10",
@@ -1053,7 +1053,7 @@ export default function ShowcaseContent() {
                     iconColor: "text-[#1a0a2e]",
                   },
                   {
-                    icon: "✕",
+                    icon: "\u2715",
                     type: "Error",
                     msg: "Too much whitespace detected. Add more decorative elements immediately.",
                     bg: "bg-[#d4145a]/10",
@@ -1064,7 +1064,7 @@ export default function ShowcaseContent() {
                     iconColor: "text-white",
                   },
                   {
-                    icon: "ℹ",
+                    icon: "\u2139",
                     type: "Info",
                     msg: "Mix at least two font families for authentic maximalist typography.",
                     bg: "bg-[#3a86ff]/10",
@@ -1129,7 +1129,7 @@ export default function ShowcaseContent() {
                       <p className="font-mono text-[#8338ec] text-[10px] mt-2 uppercase tracking-[0.2em]">just now</p>
                     </div>
                     <button className="shrink-0 w-5 h-5 bg-[#8338ec]/20 border-2 border-[#8338ec]/40 flex items-center justify-center hover:bg-[#d4145a] hover:border-[#d4145a] transition-colors duration-200">
-                      <span className="text-white text-[10px] font-black">✕</span>
+                      <span className="text-white text-[10px] font-black">&#10005;</span>
                     </button>
                   </div>
                 </div>

@@ -78,7 +78,7 @@ const buttonVariants = [
 
 const cardItems = [
   {
-    emoji: "🎨",
+    emoji: "\u{1F3A8}",
     title: "Creative Studio",
     desc: "Craft playful, squishy interfaces that feel tangible and alive.",
     bg: "#f8b4d9",
@@ -86,7 +86,7 @@ const cardItems = [
     badgeBg: "#fcd34d",
   },
   {
-    emoji: "🌿",
+    emoji: "\u{1F33F}",
     title: "Fresh Ideas",
     desc: "Soft mint tones and rounded shapes create a calm, welcoming space.",
     bg: "#a7f3d0",
@@ -94,7 +94,7 @@ const cardItems = [
     badgeBg: "#c4b5fd",
   },
   {
-    emoji: "✨",
+    emoji: "\u2728",
     title: "Magic Touch",
     desc: "Lavender gradients and glowing highlights bring pure delight.",
     bg: "#c4b5fd",
@@ -156,37 +156,37 @@ const dontRules = [
 
 const features = [
   {
-    icon: "🍬",
+    icon: "\u{1F36C}",
     title: "Candy Colors",
     desc: "Soft, cheerful pastels that feel edible and playful.",
     bg: "#ffd6e7",
   },
   {
-    icon: "🫧",
+    icon: "\u{1FAE7}",
     title: "Squishy Depth",
     desc: "Combined inner + outer shadows simulate real clay volume.",
     bg: "#d1fae5",
   },
   {
-    icon: "🧸",
+    icon: "\u{1F9F8}",
     title: "Rounded Everything",
     desc: "Extreme border-radius — nothing has a sharp edge.",
     bg: "#ede9fe",
   },
   {
-    icon: "✋",
+    icon: "\u270B",
     title: "Tactile Feel",
     desc: "Press animations make UI feel physically touchable.",
     bg: "#fef9c3",
   },
   {
-    icon: "🌈",
+    icon: "\u{1F308}",
     title: "Gradient Surfaces",
     desc: "Pastel gradients add softness and dimension to surfaces.",
     bg: "#fce7f3",
   },
   {
-    icon: "💫",
+    icon: "\u{1F4AB}",
     title: "Inner Shine",
     desc: "White inset highlight at top edge simulates clay sheen.",
     bg: "#e0f2fe",
@@ -570,7 +570,7 @@ export default function ShowcaseContent() {
               }}
             >
               <span>Clay + Play-Doh UI</span>
-              <span>✦</span>
+              <span>&#10022;</span>
               <span>Claymorphism</span>
             </span>
           </div>
@@ -739,7 +739,7 @@ export default function ShowcaseContent() {
                     }}
                   >
                     <span className="text-xl" style={{ transform: liked ? "scale(1.3)" : "scale(1)", display: "inline-block", transition: "transform 0.2s cubic-bezier(0.34,1.56,0.64,1)" }}>
-                      {liked ? "♥" : "♡"}
+                      {liked ? "\u2665" : "\u2661"}
                     </span>
                     <span>{likeCount} Likes</span>
                   </button>
@@ -773,7 +773,7 @@ export default function ShowcaseContent() {
                     className="absolute inset-x-6 top-4 h-1 rounded-full pointer-events-none"
                     style={{ background: "rgba(255,255,255,0.5)" }}
                   />
-                  <div className="text-6xl">🎪</div>
+                  <div className="text-6xl">&#127914;</div>
                   <div className="flex-1">
                     <span
                       className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
@@ -1136,7 +1136,7 @@ export default function ShowcaseContent() {
                           boxShadow: "2px 2px 0px rgba(0,0,0,0.1)",
                         }}
                       >
-                        ✓
+                        &#10003;
                       </span>
                       <span className="text-gray-700 text-sm leading-relaxed font-medium">{rule}</span>
                     </li>
@@ -1232,7 +1232,7 @@ export default function ShowcaseContent() {
                     className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-black"
                     style={{ backgroundColor: "#34d399" }}
                   >
-                    ✓
+                    &#10003;
                   </span>
                   Clay pattern: rounded, soft, 3D
                 </p>

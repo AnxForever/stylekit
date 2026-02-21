@@ -679,7 +679,7 @@ export default function VaporwaveShowcase() {
                     color: "#1a0533",
                   }}
                 >
-                  ✉
+                  &#9993;
                 </div>
                 <h3
                   className="text-xl font-black tracking-widest"
@@ -904,7 +904,7 @@ export default function VaporwaveShowcase() {
                       animation: isPlaying ? "vaporSpin 8s linear infinite" : "none",
                     }}
                   >
-                    <span style={{ color: "#1a0533" }}>♫</span>
+                    <span style={{ color: "#1a0533" }}>&#9835;</span>
                     {/* VHS overlay on art */}
                     <div
                       className="absolute inset-0"
@@ -973,7 +973,7 @@ export default function VaporwaveShowcase() {
                       (e.currentTarget as HTMLButtonElement).style.textShadow = "none";
                     }}
                   >
-                    ⏮
+                    &#9198;
                   </button>
                   <button
                     onClick={() => setIsPlaying(!isPlaying)}
@@ -986,7 +986,7 @@ export default function VaporwaveShowcase() {
                         : "0 0 20px rgba(255,113,206,0.5)",
                     }}
                   >
-                    {isPlaying ? "⏸" : "▶"}
+                    {isPlaying ? "\u23F8" : "\u25B6"}
                   </button>
                   <button
                     onClick={() => setActiveTrack((prev) => (prev === TRACKS.length - 1 ? 0 : prev + 1))}
@@ -1001,7 +1001,7 @@ export default function VaporwaveShowcase() {
                       (e.currentTarget as HTMLButtonElement).style.textShadow = "none";
                     }}
                   >
-                    ⏭
+                    &#9197;
                   </button>
                 </div>
 
@@ -1047,7 +1047,7 @@ export default function VaporwaveShowcase() {
                         className="text-xs w-4"
                         style={{ color: activeTrack === i ? "#ff71ce" : "rgba(255,113,206,0.3)" }}
                       >
-                        {activeTrack === i ? "♪" : String(i + 1).padStart(2, "0")}
+                        {activeTrack === i ? "\u266A" : String(i + 1).padStart(2, "0")}
                       </span>
                       <div className="flex-1">
                         <p
@@ -1108,7 +1108,7 @@ export default function VaporwaveShowcase() {
                     className="text-2xl font-black"
                     style={{ textShadow: "0 0 15px rgba(5,255,161,0.8)", color: "#05ffa1" }}
                   >
-                    ✓
+                    &#10003;
                   </span>
                   <h3
                     className="text-xl font-black tracking-widest"
@@ -1148,7 +1148,7 @@ export default function VaporwaveShowcase() {
                     className="text-2xl font-black"
                     style={{ textShadow: "0 0 15px rgba(255,107,107,0.8)", color: "#ff6b6b" }}
                   >
-                    ✗
+                    &#10007;
                   </span>
                   <h3
                     className="text-xl font-black tracking-widest"
@@ -1161,7 +1161,7 @@ export default function VaporwaveShowcase() {
                   {DONT_LIST.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="text-xs mt-0.5 flex-shrink-0" style={{ color: "#ff6b6b" }}>
-                        ✕
+                        &#10005;
                       </span>
                       <p className="text-sm leading-relaxed" style={{ color: "rgba(255,200,200,0.8)" }}>
                         {item}
@@ -1450,7 +1450,7 @@ export default function VaporwaveShowcase() {
                   className="text-4xl md:text-6xl font-black tracking-widest mb-8"
                   style={{ color: "rgba(255,113,206,0.2)" }}
                 >
-                  ❝
+                  &#10077;
                 </p>
                 <p
                   className="text-lg md:text-xl leading-relaxed mb-8 tracking-wide"

@@ -116,9 +116,9 @@ export default function GhibliStyleShowcase() {
   ];
 
   const tabs = [
-    { label: "Stories", emoji: "🌿" },
-    { label: "Nature", emoji: "🍃" },
-    { label: "Spirits", emoji: "✨" },
+    { label: "Stories", emoji: "\u{1F33F}" },
+    { label: "Nature", emoji: "\u{1F343}" },
+    { label: "Spirits", emoji: "\u2728" },
   ];
 
   const accordionItems = [
@@ -141,28 +141,28 @@ export default function GhibliStyleShowcase() {
 
   const featureCards = [
     {
-      icon: "☁️",
+      icon: "\u2601",
       title: "Sky",
       desc: "Dreamy clouds drift gently above the meadow.",
       grad: "from-[#85cdca] to-[#7cb9a8]",
       shadow: "rgba(133,205,202,0.3)",
     },
     {
-      icon: "🌿",
+      icon: "\u{1F33F}",
       title: "Nature",
       desc: "Forest spirits dance among the ancient trees.",
       grad: "from-[#7cb9a8] to-[#5a9a8a]",
       shadow: "rgba(124,185,168,0.3)",
     },
     {
-      icon: "🌅",
+      icon: "\u{1F305}",
       title: "Warmth",
       desc: "Golden sunset paints the world in amber hues.",
       grad: "from-[#e8a87c] to-[#d49a6c]",
       shadow: "rgba(232,168,124,0.3)",
     },
     {
-      icon: "🌸",
+      icon: "\u{1F338}",
       title: "Bloom",
       desc: "Petals fall softly like whispers on the wind.",
       grad: "from-[#c38d94] to-[#b07d84]",
@@ -325,10 +325,10 @@ export default function GhibliStyleShowcase() {
         >
           {/* Sparkle row */}
           <div className="flex justify-center items-center gap-3 mb-8">
-            <span className="text-[#e8a87c] text-2xl pulse-soft">✦</span>
+            <span className="text-[#e8a87c] text-2xl pulse-soft">&#10022;</span>
             <CloudShape className="w-12 h-6 text-[#7cb9a8]/70 drift-slow" />
             <span className="text-[#c38d94] text-2xl pulse-soft" style={{ animationDelay: "0.5s" }}>
-              ✦
+              &#10022;
             </span>
           </div>
 
@@ -476,7 +476,7 @@ export default function GhibliStyleShowcase() {
                   Discover
                 </button>
                 <button className="flex items-center gap-2 px-7 py-3.5 bg-gradient-to-b from-[#c38d94] to-[#a87d84] text-white font-medium rounded-full shadow-[0_6px_16px_rgba(195,141,148,0.35)] hover:-translate-y-1 transition-all duration-500 ease-in-out">
-                  <span>♡</span>
+                  <span>&#9825;</span>
                   Favorite
                 </button>
                 <button className="flex items-center gap-2 px-7 py-3.5 bg-white/70 backdrop-blur-sm text-[#5a4a3a] font-medium rounded-full border-2 border-[#d4c49a]/50 hover:bg-white hover:-translate-y-0.5 transition-all duration-500 ease-in-out">
@@ -558,7 +558,7 @@ export default function GhibliStyleShowcase() {
             <div className="p-8 bg-gradient-to-br from-[#f4e4bc]/90 to-[#e8d5a3]/90 rounded-3xl border border-[#d4c49a]/50 shadow-[0_8px_30px_rgba(90,74,58,0.06)]">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[#7cb9a8] to-[#5a9a8a] rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(124,185,168,0.4)] mb-4">
-                  <span className="text-2xl">✦</span>
+                  <span className="text-2xl">&#10022;</span>
                 </div>
                 <h3 className="text-xl font-semibold text-[#5a4a3a]">Start Your Journey</h3>
               </div>
@@ -678,10 +678,10 @@ export default function GhibliStyleShowcase() {
                         <LeafShape className="w-3 h-5 text-[#7cb9a8]" /> Ancient forests
                       </li>
                       <li className="flex items-center gap-2">
-                        <span className="text-[#c38d94]">✿</span> Blooming meadows
+                        <span className="text-[#c38d94]">&#10047;</span> Blooming meadows
                       </li>
                       <li className="flex items-center gap-2">
-                        <span className="text-[#85cdca]">🐦</span> Singing birds
+                        <span className="text-[#85cdca]">&#128038;</span> Singing birds
                       </li>
                     </ul>
                   </div>
@@ -833,7 +833,7 @@ export default function GhibliStyleShowcase() {
                         openAccordion === i ? "rotate-45" : "rotate-0"
                       }`}
                     >
-                      ✦
+                      &#10022;
                     </span>
                   </button>
                   <div
@@ -864,7 +864,7 @@ export default function GhibliStyleShowcase() {
             <RevealBlock delay={0}>
               <div className="flex items-start gap-4 p-5 bg-[#7cb9a8]/15 border border-[#7cb9a8]/30 rounded-2xl">
                 <div className="w-10 h-10 bg-gradient-to-br from-[#7cb9a8] to-[#5a9a8a] rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_4px_10px_rgba(124,185,168,0.3)] text-white font-bold text-sm">
-                  ✓
+                  &#10003;
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#5a9a8a] mb-1">Success!</h4>
@@ -892,7 +892,7 @@ export default function GhibliStyleShowcase() {
             <RevealBlock delay={0.12}>
               <div className="flex items-start gap-4 p-5 bg-[#c38d94]/15 border border-[#c38d94]/30 rounded-2xl">
                 <div className="w-10 h-10 bg-gradient-to-br from-[#c38d94] to-[#a87d84] rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_4px_10px_rgba(195,141,148,0.3)] text-white font-bold text-sm">
-                  ✕
+                  &#10005;
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#a87d84] mb-1">Oh no!</h4>
@@ -906,7 +906,7 @@ export default function GhibliStyleShowcase() {
             <RevealBlock delay={0.18}>
               <div className="flex items-start gap-4 p-5 bg-[#85cdca]/15 border border-[#85cdca]/30 rounded-2xl">
                 <div className="w-10 h-10 bg-gradient-to-br from-[#85cdca] to-[#6bb8b5] rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_4px_10px_rgba(133,205,202,0.3)] text-white font-bold text-sm">
-                  ℹ
+                  &#8505;
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#5a9a98] mb-1">Did you know?</h4>
@@ -1004,7 +1004,7 @@ export default function GhibliStyleShowcase() {
               <div className="p-8 bg-gradient-to-br from-[#7cb9a8]/12 to-[#85cdca]/8 rounded-3xl border border-[#7cb9a8]/25 shadow-[0_8px_30px_rgba(124,185,168,0.08)]">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#7cb9a8] to-[#5a9a8a] rounded-full flex items-center justify-center shadow-[0_3px_8px_rgba(124,185,168,0.35)] text-white font-bold text-sm">
-                    ✓
+                    &#10003;
                   </div>
                   <h3 className="text-xl font-semibold text-[#5a4a3a]">Do This</h3>
                 </div>
@@ -1012,7 +1012,7 @@ export default function GhibliStyleShowcase() {
                   {doList.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 mt-0.5 rounded-full bg-[#7cb9a8]/20 border border-[#7cb9a8]/35 flex items-center justify-center flex-shrink-0 text-[#5a9a8a] text-xs font-bold">
-                        ✓
+                        &#10003;
                       </span>
                       <span className="text-[#5a4a3a] text-sm leading-relaxed">{item}</span>
                     </li>
@@ -1026,7 +1026,7 @@ export default function GhibliStyleShowcase() {
               <div className="p-8 bg-gradient-to-br from-[#c38d94]/10 to-[#e8a87c]/6 rounded-3xl border border-[#c38d94]/20 shadow-[0_8px_30px_rgba(195,141,148,0.07)]">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#c38d94] to-[#a87d84] rounded-full flex items-center justify-center shadow-[0_3px_8px_rgba(195,141,148,0.35)] text-white font-bold text-sm">
-                    ✕
+                    &#10005;
                   </div>
                   <h3 className="text-xl font-semibold text-[#5a4a3a]">Avoid This</h3>
                 </div>
@@ -1034,7 +1034,7 @@ export default function GhibliStyleShowcase() {
                   {dontList.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 mt-0.5 rounded-full bg-[#c38d94]/15 border border-[#c38d94]/30 flex items-center justify-center flex-shrink-0 text-[#a87d84] text-xs font-bold">
-                        ✕
+                        &#10005;
                       </span>
                       <span className="text-[#7a6a5a] text-sm leading-relaxed">{item}</span>
                     </li>
@@ -1187,19 +1187,19 @@ export default function GhibliStyleShowcase() {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                icon: "✦",
+                icon: "\u2726",
                 color: "#7cb9a8",
                 title: "Hand-drawn Warmth",
                 desc: "Preserve the temperature and imperfection of hand-crafted work. Every stroke carries human intention and care.",
               },
               {
-                icon: "☁️",
+                icon: "\u2601",
                 color: "#85cdca",
                 title: "Natural Themes",
                 desc: "Clouds, forests, and sky are not just decoration — they are the language of wonder and quiet reverence for nature.",
               },
               {
-                icon: "✿",
+                icon: "\u273F",
                 color: "#c38d94",
                 title: "Dreamy Atmosphere",
                 desc: "Create serene, healing visual experiences. The pace is gentle, the colors soft, the mood always quietly magical.",

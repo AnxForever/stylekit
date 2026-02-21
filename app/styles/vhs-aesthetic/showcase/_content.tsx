@@ -416,7 +416,7 @@ export default function ShowcaseContent() {
               className="font-mono text-xs uppercase tracking-[0.4em]"
               style={{ color: "#00ff00" }}
             >
-              ▶ PLAY
+              &#9654; PLAY
             </span>
             <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
               |
@@ -444,7 +444,7 @@ export default function ShowcaseContent() {
             className="font-mono text-lg md:text-xl uppercase tracking-[0.4em] mb-10"
             style={{ color: "rgba(255,0,255,0.7)" }}
           >
-            ◀ REWIND TO THE FUTURE ▶
+            &#9664; REWIND TO THE FUTURE &#9654;
           </p>
 
           {/* Tape counter */}
@@ -479,7 +479,7 @@ export default function ShowcaseContent() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <button className="group relative px-8 py-3 bg-[#ff00ff]/20 text-[#ff00ff] font-mono font-bold uppercase tracking-widest border-2 border-[#ff00ff] shadow-[2px_0_#00ffff,-2px_0_#ff00ff] hover:bg-[#ff00ff]/40 hover:text-white hover:shadow-[4px_0_#00ffff,-4px_0_#ff00ff] hover:skew-x-2 active:skew-x-0 active:scale-95 active:shadow-none transition-all duration-75 ease-linear overflow-hidden">
               <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.1)_2px,rgba(255,255,255,0.1)_4px)] opacity-50 group-hover:opacity-100 transition-opacity duration-75" />
-              <span className="relative z-10">▶ PRESS PLAY</span>
+              <span className="relative z-10">&#9654; PRESS PLAY</span>
             </button>
             <button
               className="px-8 py-3 font-mono text-sm uppercase tracking-widest border-2 transition-all duration-75 ease-linear hover:skew-x-2 active:skew-x-0 active:scale-95"
@@ -490,7 +490,7 @@ export default function ShowcaseContent() {
                 boxShadow: "2px 0 #ff00ff, -2px 0 #00ffff",
               }}
             >
-              ◀◀ REWIND
+              &#9664;&#9664; REWIND
             </button>
           </div>
         </div>
@@ -599,7 +599,7 @@ export default function ShowcaseContent() {
                       {/* Cyan variant */}
                       <button className="group relative px-8 py-3 bg-[#00ffff]/10 text-[#00ffff] font-mono font-bold uppercase tracking-widest border-2 border-[#00ffff]/60 shadow-[2px_0_#ff00ff,-2px_0_#00ffff] hover:bg-[#00ffff]/25 hover:text-white hover:shadow-[4px_0_#ff00ff,-4px_0_#00ffff] hover:skew-x-2 active:skew-x-0 active:scale-95 active:shadow-none transition-all duration-75 ease-linear overflow-hidden">
                         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.08)_2px,rgba(255,255,255,0.08)_4px)] opacity-50 group-hover:opacity-100 transition-opacity duration-75" />
-                        <span className="relative z-10">◀◀ REWIND</span>
+                        <span className="relative z-10">&#9664;&#9664; REWIND</span>
                       </button>
 
                       {/* Stop / danger variant */}
@@ -1078,7 +1078,7 @@ export default function ShowcaseContent() {
                     className="font-mono text-xs uppercase tracking-[0.3em]"
                     style={{ color: "#00ffff", textShadow: "0 0 8px rgba(0,255,255,0.6)" }}
                   >
-                    ✓ DO — RECOMMENDED SIGNAL
+                    &#10003; DO — RECOMMENDED SIGNAL
                   </span>
                 </div>
 
@@ -1127,7 +1127,7 @@ export default function ShowcaseContent() {
                     className="font-mono text-xs uppercase tracking-[0.3em]"
                     style={{ color: "rgb(239,68,68)", textShadow: "0 0 8px rgba(255,0,0,0.4)" }}
                   >
-                    ✗ DON&apos;T — SIGNAL CORRUPTION
+                    &#10007; DON&apos;T — SIGNAL CORRUPTION
                   </span>
                 </div>
 
@@ -1297,7 +1297,7 @@ export default function ShowcaseContent() {
                   className="font-mono text-xs mt-4 vhs-blink"
                   style={{ color: "#ffff00" }}
                 >
-                  ▶ PLAY — TAPE A
+                  &#9654; PLAY — TAPE A
                 </p>
               </div>
             </div>
@@ -1397,7 +1397,7 @@ export default function ShowcaseContent() {
               className="font-mono text-[10px] uppercase tracking-[0.2em]"
               style={{ color: "rgba(255,255,255,0.25)" }}
             >
-              © 1989–{new Date().getFullYear()} STYLEKIT — VHS AESTHETIC DESIGN SYSTEM
+              &copy; 1989–{new Date().getFullYear()} STYLEKIT — VHS AESTHETIC DESIGN SYSTEM
             </p>
 
             <div className="flex gap-6">

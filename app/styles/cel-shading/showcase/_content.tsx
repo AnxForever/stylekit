@@ -476,7 +476,7 @@ export default function ShowcaseContent() {
                       <div className="absolute inset-y-0 right-0 w-8 bg-[#1a1a2e]/15" />
                       {/* Star */}
                       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <span className="text-white font-black text-xl">★</span>
+                        <span className="text-white font-black text-xl">&#9733;</span>
                       </div>
                     </div>
 
@@ -659,9 +659,9 @@ export default function ShowcaseContent() {
                 <div className="space-y-8">
                   <div className="grid md:grid-cols-3 gap-6">
                     {[
-                      { name: "Warrior", role: "Fighter", level: 42, hp: 78, color: "#e63946", symbol: "⚔" },
-                      { name: "Mage", role: "Sorcerer", level: 35, hp: 45, color: "#9b59b6", symbol: "✦" },
-                      { name: "Guardian", role: "Tank", level: 50, hp: 92, color: "#4ea8de", symbol: "⛉" },
+                      { name: "Warrior", role: "Fighter", level: 42, hp: 78, color: "#e63946", symbol: "\u2694" },
+                      { name: "Mage", role: "Sorcerer", level: 35, hp: 45, color: "#9b59b6", symbol: "\u2726" },
+                      { name: "Guardian", role: "Tank", level: 50, hp: 92, color: "#4ea8de", symbol: "\u26C9" },
                     ].map((c) => (
                       <CharacterCard key={c.name} {...c} />
                     ))}
@@ -787,7 +787,7 @@ export default function ShowcaseContent() {
                           className="text-3xl font-black"
                           style={{ color: i < 4 ? "#f1c40f" : "#ddd", textShadow: i < 4 ? "1px 1px 0 #1a1a2e" : "none" }}
                         >
-                          ★
+                          &#9733;
                         </span>
                       ))}
                     </div>
@@ -981,7 +981,7 @@ export default function ShowcaseContent() {
                 {/* Header strip */}
                 <div className="bg-[#2ecc71] border-b-[3px] border-[#1a1a2e] px-6 py-4 flex items-center gap-3">
                   <span className="w-8 h-8 border-[3px] border-[#1a1a2e] bg-[#fafaf5] rounded-full flex items-center justify-center font-black text-[#2ecc71] text-sm">
-                    ✓
+                    &#10003;
                   </span>
                   <span className="font-black text-white uppercase text-lg">Do This</span>
                 </div>
@@ -1022,7 +1022,7 @@ export default function ShowcaseContent() {
                 {/* Header strip */}
                 <div className="bg-[#e63946] border-b-[3px] border-[#1a1a2e] px-6 py-4 flex items-center gap-3">
                   <span className="w-8 h-8 border-[3px] border-[#1a1a2e] bg-[#fafaf5] rounded-full flex items-center justify-center font-black text-[#e63946] text-sm">
-                    ✕
+                    &#10005;
                   </span>
                   <span className="font-black text-white uppercase text-lg">Never Do This</span>
                 </div>
@@ -1394,7 +1394,7 @@ export default function ShowcaseContent() {
                 {/* Panel 5 */}
                 <div className="flex-1 bg-[#2ecc71] flex items-center justify-center p-5">
                   <div className="text-center">
-                    <p className="font-black text-white text-4xl" style={{ textShadow: "2px 2px 0 #1a1a2e" }}>★</p>
+                    <p className="font-black text-white text-4xl" style={{ textShadow: "2px 2px 0 #1a1a2e" }}>&#9733;</p>
                     <p className="font-black text-white uppercase text-xs mt-1">Victory!</p>
                   </div>
                 </div>

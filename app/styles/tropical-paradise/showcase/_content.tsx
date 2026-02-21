@@ -603,7 +603,7 @@ export default function ShowcaseContent() {
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <span key={s} className="text-[#ffc107] text-lg">
-                          {s <= 4 ? "★" : "☆"}
+                          {s <= 4 ? "\u2605" : "\u2606"}
                         </span>
                       ))}
                     </div>

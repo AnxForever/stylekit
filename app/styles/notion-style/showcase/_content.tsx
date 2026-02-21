@@ -676,7 +676,7 @@ export default function NotionStyleShowcase() {
                     "opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s",
                 }}
               >
-                {"📝"}
+                {"\u{1F4DD}"}
               </div>
 
               {/* Page title */}
@@ -774,7 +774,7 @@ export default function NotionStyleShowcase() {
 
                 {/* Blue callout */}
                 <div className="pt-1">
-                  <CalloutBlock emoji="💡" color="#2eaadc">
+                  <CalloutBlock emoji="\u{1F4A1}" color="#2eaadc">
                     Hover any block to see the{" "}
                     <strong className="font-semibold">&#x22EE;&#x22EE;</strong> drag handle
                     appear at opacity-100. This Drag Handle Illusion is Notion&apos;s
@@ -833,7 +833,7 @@ export default function NotionStyleShowcase() {
 
                 {/* Red callout — warning */}
                 <div className="pt-1">
-                  <CalloutBlock emoji="⚠️" color="#eb5757" title="Important">
+                  <CalloutBlock emoji="\u26A0" color="#eb5757" title="Important">
                     Never add translate or scale animations on hover or active states. The
                     entire philosophy of Notion-style interaction relies on pure color shifts
                     with no movement artifacts.
@@ -842,7 +842,7 @@ export default function NotionStyleShowcase() {
 
                 {/* Teal callout — success */}
                 <div className="pt-1">
-                  <CalloutBlock emoji="✅" color="#0f7b6c" title="Best Practice">
+                  <CalloutBlock emoji="\u2705" color="#0f7b6c" title="Best Practice">
                     Keep all interaction transitions at{" "}
                     <code className="font-mono bg-[#0f7b6c]/10 px-1 rounded text-[#0f7b6c]">
                       duration-150
@@ -1464,12 +1464,12 @@ export default function NotionStyleShowcase() {
                   <div className="p-4">
                     <div className="border border-gray-200 rounded-md bg-white shadow-sm overflow-hidden inline-block min-w-[180px]">
                       {[
-                        { icon: "✦", label: "Turn into" },
+                        { icon: "\u2726", label: "Turn into" },
                         { icon: "⧉", label: "Duplicate" },
                         { icon: "→", label: "Move to" },
-                        { icon: "🔗", label: "Copy link" },
+                        { icon: "\u{1F517}", label: "Copy link" },
                         null,
-                        { icon: "🗑", label: "Delete", danger: true },
+                        { icon: "\u{1F5D1}", label: "Delete", danger: true },
                       ].map((item, idx) =>
                         item === null ? (
                           <div key={idx} className="border-t border-gray-200 my-0.5" />
@@ -1517,7 +1517,7 @@ export default function NotionStyleShowcase() {
             {[
               {
                 id: "typography",
-                icon: "✦",
+                icon: "\u2726",
                 title: "Typography & Hierarchy",
                 content: (
                   <p className="text-sm text-[#37352f]/70 leading-relaxed">
@@ -1651,7 +1651,7 @@ export default function NotionStyleShowcase() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Do */}
                 <div className="flex gap-3 p-4 rounded-md" style={{ backgroundColor: "#0f7b6c0d", border: "1px solid #0f7b6c30" }}>
-                  <span className="text-base flex-shrink-0">{"✅"}</span>
+                  <span className="text-base flex-shrink-0">{"\u2705"}</span>
                   <div>
                     <p className="text-sm font-semibold text-[#0f7b6c] mb-2">Do</p>
                     <ul className="space-y-1.5">
@@ -1673,7 +1673,7 @@ export default function NotionStyleShowcase() {
 
                 {/* Don't */}
                 <div className="flex gap-3 p-4 rounded-md" style={{ backgroundColor: "#eb57570d", border: "1px solid #eb575730" }}>
-                  <span className="text-base flex-shrink-0">{"🚫"}</span>
+                  <span className="text-base flex-shrink-0">{"\u{1F6AB}"}</span>
                   <div>
                     <p className="text-sm font-semibold text-[#eb5757] mb-2">{"Don't"}</p>
                     <ul className="space-y-1.5">
