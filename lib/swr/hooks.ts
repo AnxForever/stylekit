@@ -225,7 +225,11 @@ export function useProfileComments(userId: string | undefined) {
 }
 
 export function useProfileSubmissions(userId: string | undefined) {
-  return useSWR<ProfileSubmissionsData>(userId ? "/api/profile/submissions" : null);
+  return useSWR<ProfileSubmissionsData>(userId ? "/api/profile/submissions" : null, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function useProfileRatings(userId: string | undefined) {
