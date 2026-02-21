@@ -1,15 +1,16 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hooks                                                       */
+/*  Inline hook — ZERO @/components/showcase imports                   */
 /* ------------------------------------------------------------------ */
 
 function useInView(options: IntersectionObserverInit = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -25,6 +26,7 @@ function useInView(options: IntersectionObserverInit = {}) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return { ref, inView };
 }
 
@@ -54,269 +56,85 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Deterministic pseudo-random                                        */
+/*  Inline SVG geometry                                                */
 /* ------------------------------------------------------------------ */
 
-function seededRand(seed: number, i: number): number {
-  return Math.abs(Math.sin(seed * 9301 + i * 49297 + 233) * 0.5 + 0.5) % 1;
-}
-
-/* ------------------------------------------------------------------ */
-/*  SVG Algorithm Components                                           */
-/* ------------------------------------------------------------------ */
-
-function LissajousPath({
-  seed = 42,
-  width = 200,
-  height = 200,
-  color = "#7c3aed",
-  strokeWidth = 1.5,
-}: {
-  seed?: number;
-  width?: number;
-  height?: number;
-  color?: string;
-  strokeWidth?: number;
-}) {
-  const a = (seed % 4) + 2;
-  const b = (seed % 3) + 3;
-  const delta = Math.PI / ((seed % 7) + 2);
-  const points = Array.from({ length: 300 }, (_, i) => {
-    const t = (i / 300) * Math.PI * 2;
-    const x = width / 2 + (width / 2 - 12) * Math.sin(a * t + delta);
-    const y = height / 2 + (height / 2 - 12) * Math.sin(b * t);
-    return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
+function GeoDiamond({ className = "", color = "#7c3aed" }: { className?: string; color?: string }) {
   return (
-    <path d={points} fill="none" stroke={color} strokeWidth={strokeWidth} opacity="0.85" />
-  );
-}
-
-function VoronoiCells({
-  seed = 42,
-  width = 200,
-  height = 200,
-}: {
-  seed?: number;
-  width?: number;
-  height?: number;
-}) {
-  const count = 12;
-  const colors = ["#7c3aed", "#3b82f6", "#14b8a6", "#f43f5e", "#f59e0b"];
-  const centers = Array.from({ length: count }, (_, i) => ({
-    x: seededRand(seed, i * 2) * width,
-    y: seededRand(seed, i * 2 + 1) * height,
-  }));
-
-  const cells = centers.map((c, i) => ({
-    cx: c.x,
-    cy: c.y,
-    r: 22 + seededRand(seed, i + 100) * 18,
-    color: colors[i % colors.length],
-    opacity: 0.15 + seededRand(seed, i + 200) * 0.25,
-  }));
-
-  const lines: { x1: number; y1: number; x2: number; y2: number; color: string }[] = [];
-  for (let i = 0; i < centers.length; i++) {
-    for (let j = i + 1; j < centers.length; j++) {
-      const dx = centers[i].x - centers[j].x;
-      const dy = centers[i].y - centers[j].y;
-      if (Math.sqrt(dx * dx + dy * dy) < 75) {
-        lines.push({
-          x1: centers[i].x,
-          y1: centers[i].y,
-          x2: centers[j].x,
-          y2: centers[j].y,
-          color: colors[(i + j) % colors.length],
-        });
-      }
-    }
-  }
-
-  return (
-    <>
-      {lines.map((l, i) => (
-        <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={l.color} strokeWidth="0.8" opacity="0.35" />
-      ))}
-      {cells.map((c, i) => (
-        <circle key={i} cx={c.cx} cy={c.cy} r={c.r} fill={c.color} fillOpacity={c.opacity} stroke={c.color} strokeWidth="0.8" strokeOpacity="0.6" />
-      ))}
-      {centers.map((c, i) => (
-        <circle key={`dot-${i}`} cx={c.x} cy={c.y} r="2.5" fill={colors[i % colors.length]} opacity="0.9" />
-      ))}
-    </>
-  );
-}
-
-function SpiralDots({
-  seed = 42,
-  width = 200,
-  height = 200,
-}: {
-  seed?: number;
-  width?: number;
-  height?: number;
-}) {
-  const goldenAngle = 2.399963 + (seed % 100) * 0.001;
-  const count = 80 + (seed % 40);
-  const colors = ["#7c3aed", "#3b82f6", "#14b8a6", "#f43f5e", "#f59e0b"];
-  const dots = Array.from({ length: count }, (_, i) => {
-    const r = Math.sqrt(i / count) * (Math.min(width, height) / 2 - 10);
-    const theta = i * goldenAngle;
-    return {
-      x: width / 2 + r * Math.cos(theta),
-      y: height / 2 + r * Math.sin(theta),
-      r: 1.5 + (i / count) * 2.5,
-      color: colors[i % colors.length],
-      opacity: 0.4 + (i / count) * 0.6,
-    };
-  });
-  return (
-    <>
-      {dots.map((d, i) => (
-        <circle key={i} cx={d.x} cy={d.y} r={d.r} fill={d.color} opacity={d.opacity} />
-      ))}
-    </>
-  );
-}
-
-function GridNoise({
-  seed = 42,
-  width = 200,
-  height = 200,
-}: {
-  seed?: number;
-  width?: number;
-  height?: number;
-}) {
-  const cols = 8;
-  const rows = 8;
-  const cellW = width / cols;
-  const cellH = height / rows;
-  const colors = ["#7c3aed", "#3b82f6", "#14b8a6", "#f43f5e", "#f59e0b"];
-  const cells = Array.from({ length: rows * cols }, (_, idx) => {
-    const row = Math.floor(idx / cols);
-    const col = idx % cols;
-    return {
-      row,
-      col,
-      heightFrac: seededRand(seed, idx),
-      color: colors[Math.floor(seededRand(seed, idx + 1000) * colors.length)],
-      opacity: 0.2 + seededRand(seed, idx + 2000) * 0.7,
-    };
-  });
-  return (
-    <>
-      {cells.map((c, i) => {
-        const barH = c.heightFrac * cellH * 0.9;
-        const x = c.col * cellW + cellW * 0.1;
-        const y = (c.row + 1) * cellH - barH;
-        return (
-          <rect key={i} x={x} y={y} width={cellW * 0.8} height={barH} fill={c.color} opacity={c.opacity} rx="1" />
-        );
-      })}
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Parameter Preview SVG                                              */
-/* ------------------------------------------------------------------ */
-
-function ParameterPreview({
-  seed,
-  complexity,
-  chaos,
-  colorShift,
-}: {
-  seed: number;
-  complexity: number;
-  chaos: number;
-  colorShift: number;
-}) {
-  const w = 320;
-  const h = 180;
-  const count = 20 + complexity * 8;
-  const baseHue = (colorShift + 270) % 360;
-
-  const elements = Array.from({ length: count }, (_, i) => {
-    const noiseX = seededRand(seed, i) * (chaos / 100) * 30;
-    const noiseY = seededRand(seed, i + 500) * (chaos / 100) * 30;
-    const t = (i / count) * Math.PI * 2;
-    const scale = 1 + (complexity - 1) * 0.15;
-    const maxR = Math.min(1, 1 / scale);
-    const rx = (w / 2 - 20) * scale * maxR;
-    const ry = (h / 2 - 20) * scale * maxR;
-    return {
-      x: w / 2 + rx * Math.cos(t) + noiseX,
-      y: h / 2 + ry * Math.sin(t * 1.3 + Math.PI / 4) + noiseY,
-      hue: (baseHue + i * (360 / count)) % 360,
-      size: 2 + seededRand(seed, i + 1000) * 4,
-    };
-  });
-
-  const pathPoints = elements
-    .map((e, i) => `${i === 0 ? "M" : "L"}${e.x.toFixed(1)},${e.y.toFixed(1)}`)
-    .join(" ");
-
-  return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="w-full rounded-lg">
-      <rect width={w} height={h} fill="#0a0a0a" rx="8" />
-      <path d={pathPoints} fill="none" stroke={`hsl(${baseHue},80%,65%)`} strokeWidth="1" opacity="0.4" />
-      {elements.map((e, i) => (
-        <circle key={i} cx={e.x} cy={e.y} r={e.size} fill={`hsl(${e.hue},75%,60%)`} opacity="0.75" />
-      ))}
-      <text x="10" y="20" fill="#7c3aed" fontSize="9" fontFamily="monospace" opacity="0.7">
-        {`SEED:${seed} C:${complexity} CH:${chaos}% H:${colorShift}\xb0`}
-      </text>
+    <svg className={className} viewBox="0 0 24 24" fill={color} aria-hidden="true">
+      <rect x="12" y="2" width="14.14" height="14.14" transform="rotate(45 12 12)" />
     </svg>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  HSL Color Wheel                                                    */
-/* ------------------------------------------------------------------ */
-
-function HslWheel() {
-  const accents = [
-    { name: "Violet", hex: "#7c3aed", h: 263 },
-    { name: "Blue",   hex: "#3b82f6", h: 217 },
-    { name: "Teal",   hex: "#14b8a6", h: 173 },
-    { name: "Rose",   hex: "#f43f5e", h: 350 },
-    { name: "Amber",  hex: "#f59e0b", h: 38 },
-  ];
-  const cx = 120;
-  const cy = 120;
-  const r = 80;
-  const positions = accents.map((a) => ({
-    ...a,
-    x: cx + r * Math.cos((a.h * Math.PI) / 180),
-    y: cy + r * Math.sin((a.h * Math.PI) / 180),
-  }));
-
+function GeoCircle({ className = "", color = "#3b82f6" }: { className?: string; color?: string }) {
   return (
-    <svg width="240" height="240" viewBox="0 0 240 240">
-      {Array.from({ length: 360 }, (_, deg) => {
-        const rad = (deg * Math.PI) / 180;
-        const x1 = cx + (r - 20) * Math.cos(rad);
-        const y1 = cy + (r - 20) * Math.sin(rad);
-        const x2 = cx + (r + 20) * Math.cos(rad);
-        const y2 = cy + (r + 20) * Math.sin(rad);
-        return (
-          <line key={deg} x1={x1} y1={y1} x2={x2} y2={y2} stroke={`hsl(${deg},75%,58%)`} strokeWidth="2" opacity="0.55" />
-        );
-      })}
-      <circle cx={cx} cy={cy} r={r - 22} fill="#0a0a0a" />
-      <text x={cx} y={cy - 6} textAnchor="middle" fill="#7c3aed" fontSize="9" fontFamily="monospace">HSL</text>
-      <text x={cx} y={cy + 8} textAnchor="middle" fill="#7c3aed" fontSize="8" fontFamily="monospace" opacity="0.4">WHEEL</text>
-      {positions.map((p) => (
-        <line key={p.name + "-s"} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke={p.hex} strokeWidth="1" opacity="0.3" strokeDasharray="3,3" />
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5" />
+      <circle cx="12" cy="12" r="2" />
+    </svg>
+  );
+}
+
+function GeoTriangle({ className = "", color = "#14b8a6" }: { className?: string; color?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill={color} aria-hidden="true">
+      <polygon points="12,3 22,21 2,21" />
+    </svg>
+  );
+}
+
+function GeoHex({ className = "", color = "#f59e0b" }: { className?: string; color?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill={color} aria-hidden="true">
+      <polygon points="12,2 20.66,7 20.66,17 12,22 3.34,17 3.34,7" />
+    </svg>
+  );
+}
+
+function GridPattern({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {Array.from({ length: 10 }, (_, row) =>
+        Array.from({ length: 10 }, (_, col) => (
+          <circle
+            key={`${row}-${col}`}
+            cx={col * 22 + 2}
+            cy={row * 22 + 2}
+            r="1.2"
+            fill="rgba(124,58,237,0.25)"
+          />
+        ))
+      )}
+    </svg>
+  );
+}
+
+function ConcentricCircles({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {[140, 110, 80, 50, 20].map((r) => (
+        <circle
+          key={r}
+          cx="150"
+          cy="150"
+          r={r}
+          fill="none"
+          stroke="rgba(124,58,237,0.15)"
+          strokeWidth="1"
+        />
       ))}
-      {positions.map((p) => (
-        <g key={p.name}>
-          <circle cx={p.x} cy={p.y} r="10" fill={p.hex} opacity="0.9" />
-          <circle cx={p.x} cy={p.y} r="10" fill="none" stroke={p.hex} strokeWidth="2" opacity="0.5" />
-        </g>
+      {[120, 90, 60, 30].map((r) => (
+        <circle
+          key={`b-${r}`}
+          cx="150"
+          cy="150"
+          r={r}
+          fill="none"
+          stroke="rgba(59,130,246,0.1)"
+          strokeWidth="0.5"
+        />
       ))}
     </svg>
   );
@@ -326,1091 +144,1671 @@ function HslWheel() {
 /*  Data                                                               */
 /* ------------------------------------------------------------------ */
 
+const algorithmColors = [
+  { name: "Violet", hex: "#7c3aed", label: "Primary", hsl: "hsl(263,73%,55%)" },
+  { name: "Near-Black", hex: "#0a0a0a", label: "Background", hsl: "hsl(0,0%,4%)" },
+  { name: "Blue", hex: "#3b82f6", label: "Secondary", hsl: "hsl(217,91%,60%)" },
+  { name: "Teal", hex: "#14b8a6", label: "Tertiary", hsl: "hsl(173,80%,40%)" },
+  { name: "Rose", hex: "#f43f5e", label: "Highlight", hsl: "hsl(350,89%,60%)" },
+  { name: "Amber", hex: "#f59e0b", label: "Accent", hsl: "hsl(38,92%,50%)" },
+];
+
 const algorithms = [
-  {
-    name: "Lissajous",
-    label: "LIS",
-    desc: "Parametric curve tracing two sinusoidal oscillations on perpendicular axes. Phase difference delta controls figure complexity.",
-    formula: "x = A\xb7sin(at + \u03b4), y = B\xb7sin(bt)",
-    accentColor: "#7c3aed",
-  },
-  {
-    name: "Voronoi",
-    label: "VOR",
-    desc: "Partition of the plane into cells based on distance to seed points. Each cell contains all points nearest to one seed.",
-    formula: "V(p) = {x | d(x,p) \u2264 d(x,q) \u2200q}",
-    accentColor: "#3b82f6",
-  },
-  {
-    name: "Phyllotaxis",
-    label: "PHY",
-    desc: "Golden angle spiral arrangement. Nature\u2019s packing algorithm \u2014 sunflower seeds, pine cones, galaxy arms.",
-    formula: "r = \u221ai, \u03b8 = i \xd7 137.508\xb0",
-    accentColor: "#14b8a6",
-  },
-  {
-    name: "Grid Noise",
-    label: "GRD",
-    desc: "Regular grid structure perturbed by pseudo-random values derived from seed. Order meeting chaos at defined amplitude.",
-    formula: "height[i,j] = noise(seed, i\xb7cols+j)",
-    accentColor: "#f43f5e",
-  },
+  { name: "Perlin Noise", id: "perlin", code: "0x01", color: "#7c3aed", desc: "Gradient noise for organic procedural textures. Seed dynamically injected via hash function." },
+  { name: "Voronoi", id: "voronoi", code: "0x02", color: "#3b82f6", desc: "Distance field partitioning. Each cell boundary derived from point set {P₀, P₁, ... Pₙ}." },
+  { name: "Flow Field", id: "flow", code: "0x03", color: "#14b8a6", desc: "Vector field integration using 4th-order Runge-Kutta. Particles follow curl-noise trajectories." },
+  { name: "Mandelbrot", id: "fractal", code: "0x04", color: "#f43f5e", desc: "Iterative complex function z = z² + c. Bounded at |z| < 2 for max 256 iterations." },
 ];
 
-const doRules = [
-  "Use mathematical functions (sin, cos, sqrt) as the source of all visual positions",
-  "Seed values must be deterministic \u2014 same seed always renders the same output",
-  "Color assignments via HSL rotation: hue = (baseHue + i \xd7 step) % 360",
-  "Embrace emergent complexity from simple iterative rules",
-  "Show algorithm parameters \u2014 seed display and coordinate readouts are part of the aesthetic",
-  "Low-opacity fills for areas, full-opacity strokes for lines \u2014 depth through layering",
-];
-
-const dontRules = [
-  "Never use Math.random() without seeding \u2014 outputs must be reproducible",
-  "Never add decorative elements unrelated to the algorithm output",
-  "Never use serif or display fonts \u2014 monospace is the voice of generative art",
-  "Never use background gradients as pure decoration \u2014 algorithmic patterns replace them",
-  "Never hide the seed value \u2014 it is core identity, not an implementation detail",
-  "Never use rounded-full on SVG containers \u2014 geometric precision only",
-];
-
-const accentColors = ["#7c3aed", "#3b82f6", "#14b8a6", "#f43f5e", "#f59e0b"] as const;
+type ComponentTab = "buttons" | "cards" | "inputs" | "badges";
 
 /* ------------------------------------------------------------------ */
-/*  Main Component                                                     */
+/*  Seed generator utility                                             */
+/* ------------------------------------------------------------------ */
+
+function generateSeed(): number {
+  return Math.floor(Math.random() * 99999);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+  const [activeAlgo, setActiveAlgo] = useState(0);
   const [seed, setSeed] = useState(42731);
-  const [activeAlgorithm, setActiveAlgorithm] = useState(0);
-  const [componentTab, setComponentTab] = useState<"button" | "card" | "input">("button");
-  const [algorithmParams, setAlgorithmParams] = useState({
-    complexity: 5,
-    chaos: 30,
-    colorShift: 0,
-  });
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [hoveredSeed, setHoveredSeed] = useState(false);
-  const [coordValue, setCoordValue] = useState({ x: 0, y: 0 });
+  const [iterations, setIterations] = useState(128);
+  const [noiseScale, setNoiseScale] = useState(0.4);
 
-  const { ref: heroRef, inView: heroInView } = useInView();
+  // aiRule 1: Algorithmic Flow demo
+  const [flowActive, setFlowActive] = useState(false);
+  const [flowOffset, setFlowOffset] = useState(0);
+
+  // aiRule 2: Parameter Shifting demo
+  const [shiftHovered, setShiftHovered] = useState<number | null>(null);
+  const [paramSeed, setParamSeed] = useState(42);
+
+  // aiRule 3: Exact Precision demo
+  const [precisionMode, setPrecisionMode] = useState<"linear" | "spring" | "ease" | null>(null);
+
+  // aiRule 4: Mathematical Glow demo
+  const [glowTarget, setGlowTarget] = useState<number | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 100);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  // Suppress unused variable warning — heroInView used implicitly via heroRef mount
-  void heroInView;
-
   useEffect(() => {
-    const start = Date.now();
-    const interval = setInterval(() => {
-      setElapsedTime((Date.now() - start) / 1000);
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
-  const vertexCount = 200 + (seed % 800);
-  const triangleCount = Math.floor(vertexCount * 1.4);
-  const renderMs = 12 + (seed % 88);
-
-  const algorithmSeeds = [
-    seed,
-    (seed * 3 + 17) % 99999,
-    (seed * 7 + 31) % 99999,
-    (seed * 11 + 53) % 99999,
-  ];
+    if (!flowActive) { setFlowOffset(0); return; }
+    let frame = 0;
+    const id = setInterval(() => {
+      frame++;
+      setFlowOffset(frame * 2);
+    }, 50);
+    return () => clearInterval(id);
+  }, [flowActive]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-mono overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] font-mono text-white overflow-x-hidden">
+      <style>{`
+        @keyframes gen-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes gen-pulse {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.06); }
+        }
+        @keyframes gen-drift {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(12px, -12px) rotate(90deg); }
+          50% { transform: translate(-6px, 16px) rotate(180deg); }
+          75% { transform: translate(-16px, -6px) rotate(270deg); }
+        }
+        @keyframes gen-hue-cycle {
+          0% { filter: hue-rotate(0deg); }
+          100% { filter: hue-rotate(360deg); }
+        }
+        @keyframes gen-scan {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(400%); }
+        }
+        @keyframes gen-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        @keyframes flow-line {
+          0% { stroke-dashoffset: 200; }
+          100% { stroke-dashoffset: 0; }
+        }
+        .gen-rotate-slow { animation: gen-rotate 20s linear infinite; }
+        .gen-rotate-fast { animation: gen-rotate 4s linear infinite; }
+        .gen-pulse-anim { animation: gen-pulse 3s ease-in-out infinite; }
+        .gen-drift-anim { animation: gen-drift 8s ease-in-out infinite; }
+        .gen-hue-anim { animation: gen-hue-cycle 6s linear infinite; }
+        .gen-blink { animation: gen-blink 1.2s step-end infinite; }
+        .gen-scan-line {
+          animation: gen-scan 3s linear infinite;
+        }
+      `}</style>
 
-      {/* ===== 1. Fixed Navigation ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-violet-500/15">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-14">
-            {/* Back to StyleKit */}
-            <Link
-              href="/styles"
-              className="text-xs text-violet-400/70 hover:text-violet-300 transition-colors duration-300 flex items-center gap-1.5 font-mono"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              StyleKit
-            </Link>
-
-            {/* Center: title + seed */}
-            <div className="flex items-center gap-4">
-              <span className="text-xs text-violet-300/60 tracking-widest hidden md:block">
-                GENERATIVE ART
-              </span>
-              <div className="bg-[#0a0a0a] border border-violet-500/30 rounded font-mono px-3 py-1 text-violet-300 text-xs">
-                SEED: {seed.toString().padStart(5, "0")}
-              </div>
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-neutral-800">
+        <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 relative">
+              <div
+                className="absolute inset-0 border border-violet-500/60 rotate-45 transition-transform duration-200 ease-linear"
+                style={{ boxShadow: "0 0 8px rgba(124,58,237,0.4)" }}
+              />
+              <div className="absolute inset-[5px] bg-violet-500/40 rotate-45" />
             </div>
-
-            {/* Right: render status */}
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-1.5 text-xs text-violet-400/50">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-                {elapsedTime.toFixed(1)}s
-              </div>
-              <div className="bg-violet-600/20 border border-violet-500/40 rounded px-3 py-1 text-xs text-violet-300 font-mono tracking-wider">
-                [ RENDER ]
-              </div>
-            </div>
+            <span className="text-white font-mono font-bold tracking-wider text-sm uppercase">
+              Gen<span className="text-violet-400">Art</span>
+            </span>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {["Palette", "Components", "Algorithms", "aiRules", "Philosophy"].map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 text-xs font-mono uppercase tracking-[0.15em] text-neutral-500 hover:text-violet-400 hover:bg-violet-500/5 cursor-pointer transition-all duration-200 ease-linear rounded"
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs uppercase tracking-[0.15em] text-violet-300 border border-violet-500/40 hover:border-violet-400 hover:text-white hover:shadow-[0_0_14px_rgba(124,58,237,0.3)] transition-all duration-200 ease-linear"
+          >
+            <span>←</span>
+            <span>StyleKit</span>
+          </Link>
         </div>
       </header>
 
-      {/* ===== 2. Hero — Algorithm Display ===== */}
-      <section
-        ref={heroRef}
-        className="relative pt-28 pb-20 px-6 md:px-12 min-h-screen flex items-center overflow-hidden"
-      >
-        {/* Background generative elements */}
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section className="relative pt-28 md:pt-36 pb-24 px-5 md:px-10 overflow-hidden">
+        {/* Background geometric decorations */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <svg
-            className="absolute"
-            style={{ top: "5%", right: "-5%", width: "65%", height: "65%", opacity: 0.08 }}
-            viewBox="0 0 400 400"
-          >
-            <LissajousPath seed={seed} width={400} height={400} color="#7c3aed" strokeWidth={1} />
-          </svg>
-          <svg
-            className="absolute"
-            style={{ bottom: "5%", left: "-8%", width: "50%", height: "50%", opacity: 0.06 }}
-            viewBox="0 0 400 400"
-          >
-            <LissajousPath seed={(seed + 13) % 99999} width={400} height={400} color="#3b82f6" strokeWidth={1} />
-          </svg>
-          {/* Seed-driven ambient dots */}
-          {Array.from({ length: 120 }, (_, i) => {
-            const x = seededRand(seed, i) * 100;
-            const y = seededRand(seed, i + 300) * 100;
-            const sz = seededRand(seed, i + 600) * 3 + 1;
-            const c = accentColors[i % accentColors.length];
-            return (
-              <div
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  left: `${x}%`,
-                  top: `${y}%`,
-                  width: `${sz}px`,
-                  height: `${sz}px`,
-                  backgroundColor: c,
-                  opacity: 0.08 + seededRand(seed, i + 900) * 0.14,
-                }}
-              />
-            );
-          })}
-        </div>
-
-        <div className="relative z-10 max-w-5xl mx-auto w-full">
-          {/* Algorithm label row */}
-          <div
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
-            }}
-            className="flex items-center gap-3 mb-8"
-          >
-            <span className="font-mono text-xs text-violet-400/60 tracking-widest">
-              ALGORITHM :: PARAMETRIC_RENDER
-            </span>
-            <div className="h-px flex-1 bg-violet-500/20" />
-            <span className="font-mono text-xs text-violet-400/40">v2.4.1</span>
+          {/* Dot grid */}
+          <div className="absolute inset-0 opacity-40">
+            <GridPattern className="w-full h-full" />
           </div>
 
-          {/* Main title */}
-          <h1
+          {/* Concentric circles top-right */}
+          <div className="absolute -top-20 -right-20 w-96 h-96 opacity-50 gen-rotate-slow">
+            <ConcentricCircles className="w-full h-full" />
+          </div>
+
+          {/* Concentric circles bottom-left */}
+          <div className="absolute -bottom-20 -left-20 w-80 h-80 opacity-30">
+            <ConcentricCircles className="w-full h-full" />
+          </div>
+
+          {/* Floating geometric shapes */}
+          <div className="absolute top-32 right-1/4 gen-drift-anim opacity-40">
+            <GeoDiamond className="w-8 h-8" color="#7c3aed" />
+          </div>
+          <div className="absolute top-48 left-1/4 gen-pulse-anim opacity-30">
+            <GeoCircle className="w-12 h-12" color="#3b82f6" />
+          </div>
+          <div className="absolute bottom-40 right-1/3 gen-drift-anim opacity-25" style={{ animationDelay: "2s" }}>
+            <GeoHex className="w-7 h-7" color="#f59e0b" />
+          </div>
+          <div className="absolute top-56 right-20 gen-rotate-slow opacity-20">
+            <GeoTriangle className="w-6 h-6" color="#14b8a6" />
+          </div>
+
+          {/* Scan line effect */}
+          <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent gen-scan-line pointer-events-none" />
+        </div>
+
+        {/* Hero content */}
+        <div className="max-w-6xl mx-auto relative">
+          {/* Eyebrow */}
+          <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s",
-              fontSize: "clamp(3.5rem, 10vw, 8rem)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
-            className="font-mono font-bold leading-none tracking-tight mb-2"
           >
-            <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-              GENERATIVE
+            <div className="inline-flex items-center gap-3 mb-8">
+              <div className="w-2 h-2 bg-violet-500 rotate-45 shadow-[0_0_8px_rgba(124,58,237,0.6)]" />
+              <span className="text-violet-400 font-mono text-xs uppercase tracking-[0.25em]">
+                Algorithm-Driven Visual Aesthetics
+              </span>
+              <div className="w-2 h-2 bg-violet-500 rotate-45 shadow-[0_0_8px_rgba(124,58,237,0.6)]" />
+            </div>
+          </div>
+
+          {/* Title */}
+          <h1
+            className="text-5xl md:text-7xl lg:text-[88px] font-mono font-bold leading-[1.0] tracking-tight mb-6"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
+            }}
+          >
+            <span className="text-white">Generative</span>
+            <br />
+            <span
+              style={{
+                background: "linear-gradient(135deg, #7c3aed 0%, #3b82f6 40%, #14b8a6 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Art.
             </span>
           </h1>
-          <h2
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s",
-              fontSize: "clamp(2rem, 6vw, 5.5rem)",
-            }}
-            className="font-mono font-bold leading-none tracking-tight text-violet-300/40 mb-10"
-          >
-            ART
-          </h2>
 
-          {/* Description + hero SVG */}
+          {/* Sub */}
+          <p
+            className="text-neutral-400 font-mono text-sm md:text-base leading-relaxed max-w-2xl mb-4"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
+            }}
+          >
+            算法驱动的程序化视觉美学 — Mathematical functions, noise textures,{" "}
+            and parametric geometry create unique dynamic interfaces. Every element is{" "}
+            derived from code, not craft.
+          </p>
+
+          {/* Param tags */}
           <div
-            className="grid md:grid-cols-2 gap-10 items-center"
+            className="flex flex-wrap gap-3 mb-10"
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.35s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s",
             }}
           >
-            {/* Left: description + stats */}
-            <div>
-              <p className="text-sm text-white/45 leading-relaxed mb-8 max-w-md">
-                Mathematical functions and algorithmic rules generate visual elements. Seed values, coordinate
-                systems, and iterative patterns produce emergent complexity from deterministic simplicity.
-              </p>
-
-              {/* Render stats */}
-              <div className="grid grid-cols-3 gap-3 mb-8">
-                {[
-                  { label: "VERTICES", value: vertexCount.toString() },
-                  { label: "TRIANGLES", value: triangleCount.toString() },
-                  { label: "RENDER_MS", value: `${renderMs}ms` },
-                ].map((stat) => (
-                  <div key={stat.label} className="bg-[#111111] border border-violet-500/20 rounded-lg p-3">
-                    <div className="font-mono text-[9px] text-violet-400/50 tracking-widest mb-1">{stat.label}</div>
-                    <div className="font-mono text-base text-violet-300 font-bold">{stat.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Seed controls */}
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="bg-[#0a0a0a] border border-violet-500/30 rounded font-mono px-3 py-2 text-violet-300 text-sm flex items-center gap-2">
-                  <span className="text-violet-400/50 text-xs">SEED</span>
-                  <span>{seed.toString().padStart(5, "0")}</span>
-                </div>
-                <button
-                  onClick={() => setSeed((s) => Math.max(0, s - 1))}
-                  className="bg-[#111111] border border-violet-500/30 rounded px-3 py-2 text-violet-400 text-sm hover:border-violet-500/60 hover:text-violet-300 transition-colors duration-200"
-                >
-                  &minus;
-                </button>
-                <button
-                  onClick={() => setSeed((s) => (s + 1) % 100000)}
-                  className="bg-[#111111] border border-violet-500/30 rounded px-3 py-2 text-violet-400 text-sm hover:border-violet-500/60 hover:text-violet-300 transition-colors duration-200"
-                >
-                  +
-                </button>
-                <button
-                  onClick={() => setSeed(Math.floor(seededRand(Date.now() % 99999, elapsedTime | 0) * 100000))}
-                  className="bg-violet-600/20 border border-violet-500/40 rounded px-3 py-2 text-violet-300 text-xs hover:bg-violet-600/30 transition-colors duration-200 tracking-wider"
-                >
-                  RAND
-                </button>
-              </div>
-            </div>
-
-            {/* Right: hero Lissajous SVG */}
-            <div className="relative">
-              <div
-                className="bg-[#111111] border border-violet-500/20 rounded-lg overflow-hidden"
-                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.4)" }}
+            {[
+              { label: "seed", value: seed },
+              { label: "iterations", value: iterations },
+              { label: "noise_scale", value: noiseScale.toFixed(2) },
+              { label: "algo", value: "perlin_v2" },
+            ].map((p) => (
+              <span
+                key={p.label}
+                className="px-3 py-1.5 bg-neutral-900 border border-neutral-700 rounded font-mono text-xs text-neutral-400"
               >
-                <div className="flex items-center justify-between px-4 py-2 border-b border-violet-500/15">
-                  <span className="font-mono text-xs text-violet-400/50">lissajous.svg</span>
-                  <span className="font-mono text-xs text-teal-400/70">ACTIVE</span>
+                <span className="text-violet-400">{p.label}</span>
+                <span className="text-neutral-600 mx-1">:</span>
+                <span className="text-neutral-200">{p.value}</span>
+              </span>
+            ))}
+          </div>
+
+          {/* CTA buttons */}
+          <div
+            className="flex flex-col sm:flex-row gap-4 mb-20"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+            }}
+          >
+            <button
+              onClick={() => setSeed(generateSeed())}
+              className="group relative px-6 py-3 rounded-lg overflow-hidden font-mono text-sm uppercase tracking-[0.18em] bg-violet-900/35 text-violet-300 border border-violet-500/50 hover:border-violet-400 hover:text-white hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] active:opacity-90 transition-all duration-200 ease-linear"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(124,58,237,0.3)_50%,transparent_75%)] bg-[length:200%_200%] bg-[0%_0%] group-hover:bg-[100%_100%] transition-all duration-500 ease-linear" />
+              <span className="relative z-10 group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">
+                Regenerate
+              </span>
+            </button>
+            <button className="group px-6 py-3 rounded-lg font-mono text-sm uppercase tracking-[0.18em] bg-transparent text-violet-400 border border-violet-500/40 hover:border-violet-400 hover:bg-violet-500/10 hover:shadow-[0_0_14px_rgba(124,58,237,0.25)] transition-all duration-200 ease-linear">
+              <span className="group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">
+                Parameters
+              </span>
+            </button>
+          </div>
+
+          {/* Stats row */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
+            }}
+          >
+            {[
+              { value: "∞", label: "Unique Outputs", color: "#7c3aed" },
+              { value: "4", label: "aiRules", color: "#3b82f6" },
+              { value: "16ms", label: "Render Delta", color: "#14b8a6" },
+              { value: "2^31", label: "Seed Space", color: "#f59e0b" },
+            ].map((stat, i) => (
+              <div
+                key={stat.label}
+                className="group bg-neutral-900/80 backdrop-blur rounded-lg p-5 border border-neutral-800 hover:border-violet-500/40 hover:shadow-[0_0_20px_rgba(124,58,237,0.14)] transition-all duration-200 ease-linear cursor-crosshair"
+                style={{ transitionDelay: `${i * 0.04}s` }}
+              >
+                <div className="text-2xl font-bold font-mono mb-1" style={{ color: stat.color }}>
+                  {stat.value}
                 </div>
-                <svg width="100%" viewBox="0 0 300 300" className="block">
-                  <rect width="300" height="300" fill="#0a0a0a" />
-                  <line x1="0" y1="150" x2="300" y2="150" stroke="#7c3aed" strokeWidth="0.4" opacity="0.2" />
-                  <line x1="150" y1="0" x2="150" y2="300" stroke="#7c3aed" strokeWidth="0.4" opacity="0.2" />
-                  <circle cx="150" cy="150" r="120" fill="none" stroke="#7c3aed" strokeWidth="0.4" opacity="0.12" />
-                  <LissajousPath seed={seed} width={300} height={300} color="#7c3aed" strokeWidth={1.5} />
-                  <LissajousPath seed={(seed + 7) % 99999} width={300} height={300} color="#3b82f6" strokeWidth={0.8} />
-                  <circle cx="150" cy="150" r="3" fill="#7c3aed" opacity="0.6" />
-                  <text x="155" y="148" fill="#7c3aed" fontSize="7" fontFamily="monospace" opacity="0.5">(0,0)</text>
-                </svg>
-                <div className="px-4 py-2 border-t border-violet-500/15 flex justify-between">
-                  <span className="font-mono text-[10px] text-violet-400/40">
-                    a={(seed % 4) + 2} b={(seed % 3) + 3} {"\u03b4"}={"\u03c0"}/{(seed % 7) + 2}
-                  </span>
-                  <span className="font-mono text-[10px] text-teal-400/60">300pts</span>
+                <div className="text-[10px] font-mono uppercase tracking-[0.15em] text-neutral-500">
+                  {stat.label}
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ===== 3. Algorithm Gallery ===== */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-violet-500/10">
-        <div className="max-w-7xl mx-auto">
-          <RevealBlock className="mb-12">
-            <div className="flex items-end justify-between">
-              <div>
-                <span className="font-mono text-xs text-violet-400/50 tracking-widest block mb-3">
-                  SECTION_02 :: ALGORITHM_GALLERY
-                </span>
-                <h2 className="font-mono text-3xl md:text-4xl font-bold text-white leading-tight">
-                  <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                    Algorithm
-                  </span>{" "}
-                  Visualizations
-                </h2>
-              </div>
-              <div className="hidden md:block font-mono text-xs text-violet-400/30 text-right">
-                <div>4 ALGORITHMS</div>
-                <div>SEED-CONTROLLED</div>
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Algorithm tab selector */}
-          <RevealBlock delay={0.06} className="flex gap-2 flex-wrap mb-10">
-            {algorithms.map((alg, i) => (
-              <button
-                key={alg.name}
-                onClick={() => setActiveAlgorithm(i)}
-                className={`px-4 py-2 font-mono text-xs tracking-wider rounded border transition-all duration-200 ${
-                  activeAlgorithm === i
-                    ? "border-violet-500/60 text-violet-300 bg-violet-600/15"
-                    : "border-violet-500/20 text-violet-400/50 hover:border-violet-500/40 hover:text-violet-400/80"
-                }`}
-                style={activeAlgorithm === i ? { boxShadow: "0 0 12px rgba(124,58,237,0.2)" } : {}}
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-violet-400 block mb-3">
+              // color_system
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Algorithmic{" "}
+              <span
+                style={{
+                  background: "linear-gradient(135deg, #7c3aed, #3b82f6)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
               >
-                [{alg.label}] {alg.name}
-              </button>
-            ))}
+                Color System
+              </span>
+            </h2>
           </RevealBlock>
 
-          {/* Active algorithm detail */}
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-neutral-400 font-mono text-sm max-w-xl leading-relaxed">
+              Colors generated via HSL rotation from violet base (#7c3aed at hsl(263,73%,55%)).
+              Each accent is a 60-degree hue step. Background stays near-black to maximize
+              perceptual contrast for algorithm-generated visuals.
+            </p>
+          </RevealBlock>
+
+          {/* Swatches */}
           <RevealBlock delay={0.1}>
-            <div
-              className="bg-[#111111] border border-violet-500/20 rounded-lg overflow-hidden mb-10"
-              style={{ boxShadow: "0 0 20px rgba(124,58,237,0.15)" }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-3 border-b border-violet-500/15">
-                <span className="font-mono text-xs text-violet-400/60">
-                  {algorithms[activeAlgorithm].name.toLowerCase()}_render.svg
-                </span>
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-xs" style={{ color: algorithms[activeAlgorithm].accentColor }}>
-                    {algorithms[activeAlgorithm].label}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setSeed((s) => Math.max(0, s - 1))}
-                      className="w-6 h-6 border border-violet-500/30 rounded text-violet-400/70 text-xs hover:border-violet-500/60 hover:text-violet-300 transition-colors duration-200 flex items-center justify-center"
-                    >
-                      &minus;
-                    </button>
-                    <span className="font-mono text-xs text-violet-300 w-14 text-center">
-                      {algorithmSeeds[activeAlgorithm].toString().padStart(5, "0")}
-                    </span>
-                    <button
-                      onClick={() => setSeed((s) => (s + 1) % 100000)}
-                      className="w-6 h-6 border border-violet-500/30 rounded text-violet-400/70 text-xs hover:border-violet-500/60 hover:text-violet-300 transition-colors duration-200 flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-0">
-                {/* SVG panel */}
-                <div className="p-8 flex items-center justify-center border-r border-violet-500/10">
-                  <svg width="220" height="220" viewBox="0 0 220 220">
-                    <rect width="220" height="220" fill="#0a0a0a" rx="6" />
-                    <line x1="0" y1="110" x2="220" y2="110" stroke="#ffffff" strokeWidth="0.3" opacity="0.08" />
-                    <line x1="110" y1="0" x2="110" y2="220" stroke="#ffffff" strokeWidth="0.3" opacity="0.08" />
-                    {activeAlgorithm === 0 && (
-                      <LissajousPath seed={algorithmSeeds[0]} width={220} height={220} color={algorithms[0].accentColor} strokeWidth={1.5} />
-                    )}
-                    {activeAlgorithm === 1 && (
-                      <VoronoiCells seed={algorithmSeeds[1]} width={220} height={220} />
-                    )}
-                    {activeAlgorithm === 2 && (
-                      <SpiralDots seed={algorithmSeeds[2]} width={220} height={220} />
-                    )}
-                    {activeAlgorithm === 3 && (
-                      <GridNoise seed={algorithmSeeds[3]} width={220} height={220} />
-                    )}
-                  </svg>
-                </div>
-
-                {/* Info panel */}
-                <div className="p-8 flex flex-col justify-center">
-                  <div className="font-mono text-xs text-violet-400/50 tracking-widest mb-3">
-                    ALGORITHM :: {algorithms[activeAlgorithm].name.toUpperCase()}
-                  </div>
-                  <h3
-                    className="font-mono text-2xl font-bold mb-4"
-                    style={{ color: algorithms[activeAlgorithm].accentColor }}
+            <div className="flex flex-wrap gap-6 md:gap-10 justify-start mb-16">
+              {algorithmColors.map((swatch, i) => (
+                <div
+                  key={swatch.name}
+                  className="flex flex-col items-center gap-3 cursor-crosshair"
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  <div
+                    style={{
+                      transform: hoveredSwatch === i ? "translateY(-8px) scale(1.08)" : "translateY(0) scale(1)",
+                      transition: "transform 0.2s ease-linear",
+                    }}
                   >
-                    {algorithms[activeAlgorithm].name}
-                  </h3>
-                  <p className="text-sm text-white/45 leading-relaxed mb-6">
-                    {algorithms[activeAlgorithm].desc}
-                  </p>
-                  <div className="bg-[#0a0a0a] border border-violet-500/20 rounded p-3">
-                    <div className="font-mono text-[10px] text-violet-400/40 mb-1 tracking-wider">FORMULA</div>
-                    <div className="font-mono text-xs text-teal-300/80">
-                      {algorithms[activeAlgorithm].formula}
+                    <div
+                      className="w-20 h-20 md:w-24 md:h-24 rounded-lg relative overflow-hidden"
+                      style={{
+                        backgroundColor: swatch.hex,
+                        border: swatch.hex === "#0a0a0a" ? "1px solid #404040" : "none",
+                        boxShadow:
+                          hoveredSwatch === i
+                            ? `0 0 24px ${swatch.hex}99, 0 0 48px ${swatch.hex}44`
+                            : `0 0 8px ${swatch.hex}33`,
+                        transition: "box-shadow 0.2s ease-linear",
+                      }}
+                    >
+                      {/* Scanline overlay on hover */}
+                      {hoveredSwatch === i && (
+                        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.06)_2px,rgba(255,255,255,0.06)_4px)]" />
+                      )}
+                      {/* Rotating indicator */}
+                      <div
+                        className="absolute top-1 right-1 w-2 h-2 border border-white/30 rotate-45 transition-transform duration-200 ease-linear"
+                        style={{
+                          transform: hoveredSwatch === i ? "rotate(90deg)" : "rotate(45deg)",
+                        }}
+                      />
                     </div>
                   </div>
+                  <div className="text-center">
+                    <div className="text-xs font-mono font-bold text-neutral-300">{swatch.name}</div>
+                    <div className="text-[10px] font-mono text-neutral-600 mt-0.5">{swatch.hex}</div>
+                    <div className="text-[9px] font-mono text-neutral-700 mt-0.5">{swatch.hsl}</div>
+                    <span className="inline-block mt-1.5 px-2 py-0.5 rounded font-mono text-[9px] uppercase tracking-[0.1em] text-neutral-500 bg-neutral-900 border border-neutral-800">
+                      {swatch.label}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </RevealBlock>
 
-          {/* 4-up thumbnail grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {algorithms.map((alg, i) => (
-              <RevealBlock key={alg.name} delay={i * 0.06}>
-                <button
-                  onClick={() => setActiveAlgorithm(i)}
-                  className={`w-full bg-[#111111] border rounded-lg overflow-hidden transition-all duration-200 ${
-                    activeAlgorithm === i
-                      ? "border-violet-500/50"
-                      : "border-violet-500/15 hover:border-violet-500/30"
-                  }`}
-                  style={activeAlgorithm === i ? { boxShadow: "0 0 12px rgba(124,58,237,0.25)" } : {}}
-                >
-                  <svg width="100%" viewBox="0 0 120 100">
-                    <rect width="120" height="100" fill="#0a0a0a" />
-                    {i === 0 && <LissajousPath seed={algorithmSeeds[0]} width={120} height={100} color={alg.accentColor} strokeWidth={1} />}
-                    {i === 1 && <VoronoiCells seed={algorithmSeeds[1]} width={120} height={100} />}
-                    {i === 2 && <SpiralDots seed={algorithmSeeds[2]} width={120} height={100} />}
-                    {i === 3 && <GridNoise seed={algorithmSeeds[3]} width={120} height={100} />}
-                  </svg>
-                  <div className="px-3 py-2 flex items-center justify-between border-t border-violet-500/10">
-                    <span className="font-mono text-[10px]" style={{ color: alg.accentColor }}>{alg.label}</span>
-                    <span className="font-mono text-[9px] text-violet-400/40">{alg.name}</span>
+          {/* HSL rotation diagram */}
+          <RevealBlock delay={0.2}>
+            <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-neutral-800">
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-6">
+                // hsl_rotation_palette — base: hsl(263, 73%, 55%)
+              </p>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                {[
+                  { offset: 0, name: "Violet", hex: "#7c3aed" },
+                  { offset: 60, name: "+60° Blue", hex: "#3b82f6" },
+                  { offset: 120, name: "+120° Teal", hex: "#14b8a6" },
+                  { offset: 180, name: "+180° Rose", hex: "#f43f5e" },
+                  { offset: 240, name: "+240° Amber", hex: "#f59e0b" },
+                  { offset: 300, name: "+300° Fuchsia", hex: "#a855f7" },
+                ].map((g) => (
+                  <div key={g.name} className="group cursor-crosshair">
+                    <div
+                      className="h-14 rounded-lg mb-2 transition-all duration-200 ease-linear group-hover:shadow-[0_0_16px_rgba(124,58,237,0.3)] group-hover:-translate-y-1"
+                      style={{ backgroundColor: g.hex }}
+                    />
+                    <div className="text-[9px] font-mono text-neutral-500 text-center">
+                      <div className="text-neutral-400">{g.name}</div>
+                      <div className="text-violet-500/60">+{g.offset}deg</div>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY                                             */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-blue-400 block mb-3">
+              // component_library
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Algorithmic{" "}
+              <span style={{ color: "#3b82f6" }}>Components</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-neutral-400 font-mono text-sm max-w-lg leading-relaxed">
+              Every component follows Exact Precision timing (ease-linear, 200ms).
+              Dark glass morphism with violet glow on interaction. Monospace font
+              throughout — code is the aesthetic.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2 border-b border-neutral-800 pb-4">
+              {(["buttons", "cards", "inputs", "badges"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded font-mono text-xs uppercase tracking-[0.15em] transition-all duration-200 ease-linear ${
+                    activeTab === tab
+                      ? "bg-violet-900/40 text-violet-300 border border-violet-500/50 shadow-[0_0_12px_rgba(124,58,237,0.25)]"
+                      : "text-neutral-500 border border-neutral-800 hover:text-neutral-300 hover:border-neutral-600"
+                  }`}
+                >
+                  {tab}
                 </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo panel */}
+          <RevealBlock delay={0.15}>
+            <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 md:p-12 border border-neutral-800 relative overflow-hidden">
+              {/* Background grid */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_20px,rgba(124,58,237,0.03)_20px,rgba(124,58,237,0.03)_21px),repeating-linear-gradient(90deg,transparent,transparent_20px,rgba(124,58,237,0.03)_20px,rgba(124,58,237,0.03)_21px)]" />
+
+              <div className="relative z-10">
+                {/* ---- BUTTONS ---- */}
+                {activeTab === "buttons" && (
+                  <div className="space-y-10">
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // primary — violet glow, ease-linear, duration-200
+                      </p>
+                      <div className="flex flex-wrap gap-4 items-center">
+                        <button className="group relative px-6 py-3 rounded-lg overflow-hidden font-mono text-sm uppercase tracking-[0.18em] bg-violet-900/35 text-violet-300 border border-violet-500/50 hover:border-violet-400 hover:text-white hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] active:opacity-90 transition-all duration-200 ease-linear">
+                          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(124,58,237,0.3)_50%,transparent_75%)] bg-[length:200%_200%] bg-[0%_0%] group-hover:bg-[100%_100%] transition-all duration-500 ease-linear" />
+                          <span className="relative z-10 group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">
+                            Generate
+                          </span>
+                        </button>
+                        <button className="group px-6 py-3 rounded-lg font-mono text-sm uppercase tracking-[0.18em] bg-transparent text-violet-400 border border-violet-500/40 hover:border-violet-400 hover:bg-violet-500/10 hover:shadow-[0_0_14px_rgba(124,58,237,0.25)] transition-all duration-200 ease-linear">
+                          <span className="group-hover:tracking-[0.24em] transition-all duration-200 ease-linear">
+                            Parameters
+                          </span>
+                        </button>
+                        <button className="px-6 py-3 rounded-lg font-mono text-sm uppercase tracking-[0.18em] text-blue-400 border border-blue-500/40 hover:border-blue-400 hover:bg-blue-500/10 hover:shadow-[0_0_14px_rgba(59,130,246,0.25)] transition-all duration-200 ease-linear">
+                          Render
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // accent variants — algorithmic HSL palette
+                      </p>
+                      <div className="flex flex-wrap gap-4 items-center">
+                        {[
+                          { label: "Perlin", color: "#7c3aed", glow: "124,58,237" },
+                          { label: "Voronoi", color: "#3b82f6", glow: "59,130,246" },
+                          { label: "Flow", color: "#14b8a6", glow: "20,184,166" },
+                          { label: "Fractal", color: "#f43f5e", glow: "244,63,94" },
+                        ].map((b) => (
+                          <button
+                            key={b.label}
+                            className="px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-[0.15em] border transition-all duration-200 ease-linear hover:brightness-125"
+                            style={{
+                              color: b.color,
+                              borderColor: `${b.color}55`,
+                              backgroundColor: `${b.color}15`,
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 16px rgba(${b.glow},0.4)`;
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                            }}
+                          >
+                            {b.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // size variants
+                      </p>
+                      <div className="flex flex-wrap gap-4 items-center">
+                        {[
+                          { size: "xs", px: "px-3 py-1.5 text-[10px]", track: "tracking-[0.12em]" },
+                          { size: "sm", px: "px-4 py-2 text-xs", track: "tracking-[0.15em]" },
+                          { size: "md", px: "px-6 py-3 text-sm", track: "tracking-[0.18em]" },
+                          { size: "lg", px: "px-8 py-4 text-base", track: "tracking-[0.2em]" },
+                        ].map(({ size, px, track }) => (
+                          <button
+                            key={size}
+                            className={`rounded-lg font-mono uppercase bg-violet-900/35 text-violet-300 border border-violet-500/50 hover:border-violet-400 hover:shadow-[0_0_16px_rgba(124,58,237,0.35)] transition-all duration-200 ease-linear hover:tracking-[0.24em] ${px} ${track}`}
+                          >
+                            {size.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ---- CARDS ---- */}
+                {activeTab === "cards" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {algorithms.map((algo) => (
+                      <div
+                        key={algo.id}
+                        className="group bg-neutral-900/80 backdrop-blur rounded-xl p-6 border border-neutral-800 relative overflow-hidden hover:border-violet-500/40 hover:shadow-[0_0_30px_rgba(124,58,237,0.14)] transition-all duration-200 ease-linear cursor-crosshair"
+                      >
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(124,58,237,0.05)_2px,rgba(124,58,237,0.05)_4px)] transition-opacity duration-200 ease-linear" />
+                        <div className="relative z-10">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div
+                              className="w-2 h-2 rounded-none rotate-45 transition-transform duration-200 ease-linear group-hover:rotate-90"
+                              style={{
+                                backgroundColor: algo.color,
+                                boxShadow: `0 0 8px ${algo.color}99`,
+                              }}
+                            />
+                            <h3
+                              className="font-mono text-xs uppercase tracking-[0.2em]"
+                              style={{ color: algo.color }}
+                            >
+                              Algorithm // {algo.code}
+                            </h3>
+                          </div>
+                          <h4 className="text-white text-lg font-mono font-bold mb-2 group-hover:text-violet-200 transition-colors duration-200 ease-linear">
+                            {algo.name}
+                          </h4>
+                          <p className="text-neutral-400 font-mono text-xs leading-relaxed group-hover:text-neutral-300 transition-colors duration-200 ease-linear">
+                            {algo.desc}
+                          </p>
+                          <div className="flex gap-2 mt-4">
+                            <span className="px-2 py-1 bg-neutral-800 rounded font-mono text-[9px] uppercase tracking-[0.1em] text-neutral-500">
+                              seed: {seed}
+                            </span>
+                            <span className="px-2 py-1 bg-neutral-800 rounded font-mono text-[9px] uppercase tracking-[0.1em] text-neutral-500">
+                              iter: {iterations}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* ---- INPUTS ---- */}
+                {activeTab === "inputs" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-violet-400 font-mono text-xs uppercase tracking-wider mb-2">
+                          Seed Value
+                        </label>
+                        <input
+                          type="number"
+                          value={seed}
+                          onChange={(e) => setSeed(Number(e.target.value))}
+                          className="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-neutral-100 font-mono text-sm focus:outline-none focus:border-violet-500 focus:shadow-[0_0_10px_rgba(124,58,237,0.2)] transition-all duration-200 ease-linear"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-blue-400 font-mono text-xs uppercase tracking-wider mb-2">
+                          Iterations
+                        </label>
+                        <input
+                          type="range"
+                          min={16}
+                          max={512}
+                          value={iterations}
+                          onChange={(e) => setIterations(Number(e.target.value))}
+                          className="w-full accent-violet-500"
+                        />
+                        <div className="flex justify-between mt-1">
+                          <span className="font-mono text-[10px] text-neutral-600">16</span>
+                          <span className="font-mono text-xs text-violet-400">{iterations}</span>
+                          <span className="font-mono text-[10px] text-neutral-600">512</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-teal-400 font-mono text-xs uppercase tracking-wider mb-2">
+                          Noise Scale
+                        </label>
+                        <input
+                          type="range"
+                          min={0.1}
+                          max={2.0}
+                          step={0.05}
+                          value={noiseScale}
+                          onChange={(e) => setNoiseScale(Number(e.target.value))}
+                          className="w-full accent-teal-500"
+                        />
+                        <div className="flex justify-between mt-1">
+                          <span className="font-mono text-[10px] text-neutral-600">0.10</span>
+                          <span className="font-mono text-xs text-teal-400">{noiseScale.toFixed(2)}</span>
+                          <span className="font-mono text-[10px] text-neutral-600">2.00</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-amber-400 font-mono text-xs uppercase tracking-wider mb-2">
+                          Algorithm
+                        </label>
+                        <select className="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-neutral-100 font-mono text-sm focus:outline-none focus:border-violet-500 transition-all duration-200 ease-linear">
+                          <option>Perlin Noise</option>
+                          <option>Voronoi Diagram</option>
+                          <option>Flow Field</option>
+                          <option>Mandelbrot Set</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-rose-400 font-mono text-xs uppercase tracking-wider mb-2">
+                          Color Mode
+                        </label>
+                        <div className="flex gap-2">
+                          {["HSL", "HSV", "LAB", "RGB"].map((mode) => (
+                            <button
+                              key={mode}
+                              className="flex-1 py-2 rounded font-mono text-xs uppercase tracking-[0.12em] border border-neutral-700 text-neutral-400 hover:border-violet-500/50 hover:text-violet-300 transition-all duration-200 ease-linear"
+                            >
+                              {mode}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setSeed(generateSeed())}
+                        className="w-full py-3.5 rounded-lg font-mono text-sm uppercase tracking-[0.18em] bg-violet-900/40 text-violet-300 border border-violet-500/50 hover:border-violet-400 hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] transition-all duration-200 ease-linear hover:tracking-[0.24em]"
+                      >
+                        Run Generation
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ---- BADGES ---- */}
+                {activeTab === "badges" && (
+                  <div className="space-y-8">
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // algorithm_tags
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { label: "perlin_noise", color: "#7c3aed" },
+                          { label: "voronoi", color: "#3b82f6" },
+                          { label: "flow_field", color: "#14b8a6" },
+                          { label: "fractal", color: "#f43f5e" },
+                          { label: "L-system", color: "#f59e0b" },
+                          { label: "reaction_diffusion", color: "#a855f7" },
+                          { label: "wave_function", color: "#3b82f6" },
+                          { label: "cellular_automata", color: "#14b8a6" },
+                        ].map((b) => (
+                          <span
+                            key={b.label}
+                            className="px-3 py-1.5 rounded font-mono text-[10px] uppercase tracking-[0.1em] border transition-all duration-200 ease-linear hover:-translate-y-0.5 cursor-default"
+                            style={{
+                              color: b.color,
+                              borderColor: `${b.color}44`,
+                              backgroundColor: `${b.color}12`,
+                            }}
+                          >
+                            {b.label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // param_badges
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { key: "seed", val: seed, color: "#7c3aed" },
+                          { key: "iter", val: iterations, color: "#3b82f6" },
+                          { key: "scale", val: noiseScale.toFixed(2), color: "#14b8a6" },
+                          { key: "x", val: "0.382", color: "#f59e0b" },
+                          { key: "y", val: "0.618", color: "#f43f5e" },
+                          { key: "t", val: "0.00s", color: "#a855f7" },
+                        ].map((b) => (
+                          <span
+                            key={b.key}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs border border-neutral-700 bg-neutral-900"
+                          >
+                            <span style={{ color: b.color }}>{b.key}</span>
+                            <span className="text-neutral-600">:</span>
+                            <span className="text-neutral-300">{b.val}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-600 mb-5">
+                        // status_indicators
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { label: "Rendering", dot: "#f59e0b", pulse: true },
+                          { label: "Complete", dot: "#14b8a6", pulse: false },
+                          { label: "Queued", dot: "#3b82f6", pulse: false },
+                          { label: "Error", dot: "#f43f5e", pulse: false },
+                        ].map((b) => (
+                          <span
+                            key={b.label}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded font-mono text-xs border border-neutral-700 bg-neutral-900 text-neutral-300"
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${b.pulse ? "gen-pulse-anim" : ""}`}
+                              style={{ backgroundColor: b.dot }}
+                            />
+                            {b.label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. ALGORITHM SHOWCASE                                            */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-teal-400 block mb-3">
+              // algorithm_catalogue
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Core <span style={{ color: "#14b8a6" }}>Algorithms</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-neutral-400 font-mono text-sm max-w-xl leading-relaxed">
+              Four foundational generative functions. Each produces distinct visual output
+              from identical seed values. Click an algorithm to inspect its parameters.
+            </p>
+          </RevealBlock>
+
+          {/* Algorithm selector */}
+          <RevealBlock delay={0.1} className="mb-6">
+            <div className="flex flex-wrap gap-2">
+              {algorithms.map((algo, i) => (
+                <button
+                  key={algo.id}
+                  onClick={() => setActiveAlgo(i)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-[0.12em] border transition-all duration-200 ease-linear"
+                  style={{
+                    color: activeAlgo === i ? algo.color : "#6b7280",
+                    borderColor: activeAlgo === i ? `${algo.color}66` : "#404040",
+                    backgroundColor: activeAlgo === i ? `${algo.color}14` : "transparent",
+                    boxShadow: activeAlgo === i ? `0 0 16px ${algo.color}33` : "none",
+                  }}
+                >
+                  <span className="font-mono text-[9px] opacity-60">{algo.code}</span>
+                  {algo.name}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* SVG Preview */}
+              <div className="md:col-span-2 bg-neutral-900/80 backdrop-blur rounded-xl border border-neutral-800 relative overflow-hidden" style={{ minHeight: "320px" }}>
+                {/* Coordinate axes */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 320" preserveAspectRatio="none">
+                  {/* Grid */}
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <line key={`v${i}`} x1={i * 57} y1="0" x2={i * 57} y2="320" stroke="rgba(124,58,237,0.06)" strokeWidth="1" />
+                  ))}
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <line key={`h${i}`} x1="0" y1={i * 57} x2="400" y2={i * 57} stroke="rgba(124,58,237,0.06)" strokeWidth="1" />
+                  ))}
+
+                  {/* Perlin noise simulation — wavy lines */}
+                  {activeAlgo === 0 && Array.from({ length: 12 }, (_, i) => {
+                    const y = 30 + i * 22;
+                    const pts = Array.from({ length: 20 }, (_, j) => {
+                      const x = j * 21;
+                      const wave = Math.sin((j + (seed % 50)) * 0.4 + i * 0.8) * 12 +
+                                   Math.sin((j + (seed % 30)) * 0.9 + i * 0.3) * 6;
+                      return `${x},${y + wave}`;
+                    }).join(" ");
+                    return (
+                      <polyline
+                        key={i}
+                        points={pts}
+                        fill="none"
+                        stroke={`hsl(${263 + i * 8},73%,${45 + i * 2}%)`}
+                        strokeWidth="1"
+                        opacity="0.6"
+                      />
+                    );
+                  })}
+
+                  {/* Voronoi simulation — cell boundaries */}
+                  {activeAlgo === 1 && Array.from({ length: 8 }, (_, i) => {
+                    const x = ((seed * (i + 1) * 137) % 360) + 20;
+                    const y = ((seed * (i + 3) * 97) % 280) + 20;
+                    return (
+                      <g key={i}>
+                        <circle cx={x} cy={y} r="3" fill="#3b82f6" opacity="0.8" />
+                        <circle cx={x} cy={y} r={30 + i * 8} fill="none" stroke="#3b82f6" strokeWidth="0.5" opacity="0.2" />
+                      </g>
+                    );
+                  })}
+
+                  {/* Flow field simulation — vector arrows */}
+                  {activeAlgo === 2 && Array.from({ length: 7 }, (_, row) =>
+                    Array.from({ length: 10 }, (_, col) => {
+                      const x = col * 40 + 20;
+                      const y = row * 44 + 22;
+                      const angle = Math.sin(col * 0.5 + row * 0.3 + (seed % 100) * 0.01) * Math.PI;
+                      const dx = Math.cos(angle) * 12;
+                      const dy = Math.sin(angle) * 12;
+                      return (
+                        <line
+                          key={`${row}-${col}`}
+                          x1={x}
+                          y1={y}
+                          x2={x + dx}
+                          y2={y + dy}
+                          stroke="#14b8a6"
+                          strokeWidth="1"
+                          opacity="0.5"
+                          markerEnd="url(#arr)"
+                        />
+                      );
+                    })
+                  )}
+                  {activeAlgo === 2 && (
+                    <defs>
+                      <marker id="arr" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+                        <polygon points="0 0, 4 2, 0 4" fill="#14b8a6" opacity="0.6" />
+                      </marker>
+                    </defs>
+                  )}
+
+                  {/* Mandelbrot simulation — escape time rings */}
+                  {activeAlgo === 3 && Array.from({ length: 8 }, (_, i) => (
+                    <ellipse
+                      key={i}
+                      cx="200"
+                      cy="160"
+                      rx={20 + i * 22}
+                      ry={15 + i * 18}
+                      fill="none"
+                      stroke={`hsl(${(i * 45 + (seed % 360)) % 360},80%,55%)`}
+                      strokeWidth="1"
+                      opacity={0.6 - i * 0.06}
+                    />
+                  ))}
+                </svg>
+
+                {/* Corner labels */}
+                <div className="absolute top-3 left-3 font-mono text-[9px] text-neutral-600 uppercase tracking-[0.1em]">
+                  x: 0.000
+                </div>
+                <div className="absolute top-3 right-3 font-mono text-[9px] text-neutral-600 uppercase tracking-[0.1em]">
+                  {algorithms[activeAlgo].name}
+                </div>
+                <div className="absolute bottom-3 right-3 font-mono text-[9px] text-neutral-600">
+                  seed: {seed}
+                </div>
+              </div>
+
+              {/* Param panel */}
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl border border-neutral-800 p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <div
+                    className="w-2 h-2 rotate-45"
+                    style={{
+                      backgroundColor: algorithms[activeAlgo].color,
+                      boxShadow: `0 0 8px ${algorithms[activeAlgo].color}88`,
+                    }}
+                  />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                    Parameters
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { key: "seed", val: seed, color: "#7c3aed" },
+                    { key: "iterations", val: iterations, color: "#3b82f6" },
+                    { key: "noise_scale", val: noiseScale.toFixed(3), color: "#14b8a6" },
+                    { key: "algorithm", val: algorithms[activeAlgo].code, color: algorithms[activeAlgo].color },
+                    { key: "color_space", val: "hsl_rot", color: "#f59e0b" },
+                    { key: "output_w", val: "1920", color: "#a855f7" },
+                    { key: "output_h", val: "1080", color: "#a855f7" },
+                  ].map((p) => (
+                    <div key={p.key} className="flex items-center justify-between py-1.5 border-b border-neutral-800">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-neutral-500">
+                        {p.key}
+                      </span>
+                      <span className="font-mono text-xs" style={{ color: p.color }}>
+                        {p.val}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setSeed(generateSeed())}
+                  className="mt-6 w-full py-2.5 rounded-lg font-mono text-xs uppercase tracking-[0.15em] border border-violet-500/40 text-violet-400 hover:border-violet-400 hover:shadow-[0_0_12px_rgba(124,58,237,0.3)] transition-all duration-200 ease-linear hover:tracking-[0.2em]"
+                >
+                  New Seed
+                </button>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6. aiRules INTERACTIVE DEMOS                                     */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-rose-400 block mb-3">
+              // ai_rules_demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Interaction <span style={{ color: "#f43f5e" }}>Rules</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-neutral-400 font-mono text-sm max-w-xl leading-relaxed">
+              Four named aiRules define every interaction in Generative Art style.
+              Each rule is demonstrated live below — interact with each demo to
+              feel the precise, algorithmic feedback pattern.
+            </p>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* aiRule 1: Algorithmic Flow */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-neutral-800 h-full relative overflow-hidden">
+                <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(124,58,237,0.04)_2px,rgba(124,58,237,0.04)_4px)] transition-opacity duration-200 ease-linear pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-[0.15em] bg-violet-900/40 text-violet-400 border border-violet-500/30">
+                      aiRule 01
+                    </span>
+                    <span className="font-mono text-xs text-white">Algorithmic Flow</span>
+                  </div>
+                  <p className="text-[10px] font-mono text-neutral-500 mb-5 leading-relaxed">
+                    交互应体现参数计算过程。通过网格或渐变层的线性位移模拟噪点流动。
+                    Grid shifts linearly to simulate noise field displacement.
+                  </p>
+
+                  {/* Flow grid demo */}
+                  <div className="relative h-32 rounded-lg bg-neutral-950 overflow-hidden mb-4 border border-neutral-800">
+                    <div
+                      className="absolute inset-0 transition-transform duration-200 ease-linear"
+                      style={{
+                        backgroundImage: "radial-gradient(circle, rgba(124,58,237,0.3) 1px, transparent 1px)",
+                        backgroundSize: "20px 20px",
+                        transform: `translate(${(flowOffset * 0.5) % 20}px, ${(flowOffset * 0.3) % 20}px)`,
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0 transition-all duration-200 ease-linear"
+                      style={{
+                        background: flowActive
+                          ? `linear-gradient(${flowOffset * 3}deg, rgba(124,58,237,0.15), rgba(59,130,246,0.1), transparent)`
+                          : "transparent",
+                      }}
+                    />
+                    <div className="absolute bottom-2 right-2 font-mono text-[9px] text-neutral-600">
+                      t: {flowOffset.toString().padStart(4, "0")}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setFlowActive(!flowActive)}
+                    className={`w-full py-2.5 rounded-lg font-mono text-xs uppercase tracking-[0.15em] border transition-all duration-200 ease-linear ${
+                      flowActive
+                        ? "bg-violet-900/40 text-violet-300 border-violet-500/60 shadow-[0_0_16px_rgba(124,58,237,0.3)]"
+                        : "text-neutral-500 border-neutral-700 hover:text-violet-400 hover:border-violet-500/40"
+                    }`}
+                  >
+                    {flowActive ? "Stop Flow // t=" + flowOffset : "Activate Flow Field"}
+                  </button>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* aiRule 2: Parameter Shifting */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-neutral-800 h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-[0.15em] bg-blue-900/40 text-blue-400 border border-blue-500/30">
+                    aiRule 02
+                  </span>
+                  <span className="font-mono text-xs text-white">Parameter Shifting</span>
+                </div>
+                <p className="text-[10px] font-mono text-neutral-500 mb-5 leading-relaxed">
+                  悬停时轻微调整字距与标记形态（方点旋转45deg→90deg），暗示 seed/参数变化。
+                  Letter-spacing and marker rotation shift on hover.
+                </p>
+
+                {/* Interactive parameter list */}
+                <div className="space-y-2 mb-5">
+                  {[
+                    { label: "noise_octaves", val: 4, color: "#7c3aed" },
+                    { label: "persistence", val: 0.5, color: "#3b82f6" },
+                    { label: "lacunarity", val: 2.0, color: "#14b8a6" },
+                    { label: "amplitude", val: 1.0, color: "#f59e0b" },
+                  ].map((p, i) => (
+                    <div
+                      key={p.label}
+                      className="flex items-center justify-between py-2.5 px-3 rounded border border-neutral-800 cursor-crosshair transition-all duration-200 ease-linear hover:border-violet-500/30 hover:bg-violet-500/5"
+                      onMouseEnter={() => setShiftHovered(i)}
+                      onMouseLeave={() => setShiftHovered(null)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-1.5 h-1.5 transition-transform duration-200 ease-linear"
+                          style={{
+                            backgroundColor: p.color,
+                            transform: shiftHovered === i ? "rotate(90deg)" : "rotate(45deg)",
+                            boxShadow: shiftHovered === i ? `0 0 6px ${p.color}88` : "none",
+                          }}
+                        />
+                        <span
+                          className="font-mono text-[10px] uppercase transition-all duration-200 ease-linear"
+                          style={{
+                            color: shiftHovered === i ? p.color : "#6b7280",
+                            letterSpacing: shiftHovered === i ? "0.18em" : "0.1em",
+                          }}
+                        >
+                          {p.label}
+                        </span>
+                      </div>
+                      <span
+                        className="font-mono text-xs transition-all duration-200 ease-linear"
+                        style={{ color: shiftHovered === i ? "#ffffff" : "#6b7280" }}
+                      >
+                        {p.val}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Seed shift demo */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setParamSeed(generateSeed())}
+                    className="flex-1 py-2 rounded-lg font-mono text-xs uppercase tracking-[0.15em] border border-blue-500/40 text-blue-400 hover:border-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.25)] transition-all duration-200 ease-linear hover:tracking-[0.2em]"
+                  >
+                    Shift Params
+                  </button>
+                  <span className="font-mono text-xs text-neutral-400">
+                    seed: <span className="text-blue-400">{paramSeed}</span>
+                  </span>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* aiRule 3: Exact Precision */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-neutral-800 h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-[0.15em] bg-teal-900/40 text-teal-400 border border-teal-500/30">
+                    aiRule 03
+                  </span>
+                  <span className="font-mono text-xs text-white">Exact Precision</span>
+                </div>
+                <p className="text-[10px] font-mono text-neutral-500 mb-5 leading-relaxed">
+                  优先使用 ease-linear + duration-200，保持程序化、可预测的反馈节奏。
+                  Compare: linear (predictable) vs spring (bouncy) vs ease-in-out.
+                </p>
+
+                <div className="space-y-5">
+                  {[
+                    {
+                      id: "linear" as const,
+                      label: "ease-linear / duration-200",
+                      desc: "Exact Precision — recommended",
+                      color: "#14b8a6",
+                      css: "transition: transform 0.2s linear",
+                    },
+                    {
+                      id: "spring" as const,
+                      label: "cubic-bezier(0.34,1.56,0.64,1)",
+                      desc: "Spring — avoid in this style",
+                      color: "#f43f5e",
+                      css: "transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1)",
+                    },
+                    {
+                      id: "ease" as const,
+                      label: "ease-in-out / duration-500",
+                      desc: "Organic — avoid over-softening",
+                      color: "#f59e0b",
+                      css: "transition: transform 0.5s ease-in-out",
+                    },
+                  ].map((mode) => (
+                    <div key={mode.id}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <span className="font-mono text-[9px] uppercase tracking-[0.1em]" style={{ color: mode.color }}>
+                            {mode.label}
+                          </span>
+                          <div className="font-mono text-[8px] text-neutral-600 mt-0.5">{mode.desc}</div>
+                        </div>
+                        <button
+                          className="text-[9px] font-mono px-2.5 py-1 rounded border transition-all duration-200 ease-linear uppercase tracking-[0.1em]"
+                          style={{
+                            color: mode.color,
+                            borderColor: `${mode.color}44`,
+                            backgroundColor: `${mode.color}12`,
+                          }}
+                          onClick={() => setPrecisionMode(precisionMode === mode.id ? null : mode.id)}
+                        >
+                          {precisionMode === mode.id ? "Reset" : "Animate"}
+                        </button>
+                      </div>
+                      <div className="relative h-8 bg-neutral-950 rounded border border-neutral-800 overflow-hidden">
+                        <div
+                          className="absolute top-1/2 -translate-y-1/2 left-2 w-5 h-5 rounded-sm rotate-45"
+                          style={{
+                            backgroundColor: mode.color,
+                            transform: `translateY(-50%) translateX(${precisionMode === mode.id ? "210px" : "0"}) rotate(${precisionMode === mode.id ? "180deg" : "45deg"})`,
+                            transition: precisionMode === mode.id
+                              ? mode.id === "linear"
+                                ? "transform 0.2s linear"
+                                : mode.id === "spring"
+                                ? "transform 0.6s cubic-bezier(0.34,1.56,0.64,1)"
+                                : "transform 0.5s ease-in-out"
+                              : "none",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* aiRule 4: Mathematical Glow */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-neutral-800 h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-[0.15em] bg-amber-900/40 text-amber-400 border border-amber-500/30">
+                    aiRule 04
+                  </span>
+                  <span className="font-mono text-xs text-white">Mathematical Glow</span>
+                </div>
+                <p className="text-[10px] font-mono text-neutral-500 mb-5 leading-relaxed">
+                  发光以清晰几何边缘为主，避免过度雾化。Glow follows sharp geometric
+                  boundaries — not diffuse halos. Each shape has a distinct glow signature.
+                </p>
+
+                {/* Geometric glow demos */}
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  {[
+                    {
+                      i: 0,
+                      label: "Diamond",
+                      color: "#7c3aed",
+                      shape: (
+                        <div
+                          className="w-10 h-10 rotate-45 transition-all duration-200 ease-linear"
+                          style={{
+                            backgroundColor: "#7c3aed",
+                            boxShadow: glowTarget === 0 ? "0 0 20px rgba(124,58,237,0.8), 0 0 40px rgba(124,58,237,0.4)" : "0 0 4px rgba(124,58,237,0.2)",
+                          }}
+                        />
+                      ),
+                    },
+                    {
+                      i: 1,
+                      label: "Circle",
+                      color: "#3b82f6",
+                      shape: (
+                        <div
+                          className="w-10 h-10 rounded-full border-2 transition-all duration-200 ease-linear"
+                          style={{
+                            borderColor: "#3b82f6",
+                            boxShadow: glowTarget === 1
+                              ? "0 0 20px rgba(59,130,246,0.8), inset 0 0 12px rgba(59,130,246,0.3)"
+                              : "0 0 4px rgba(59,130,246,0.2)",
+                          }}
+                        />
+                      ),
+                    },
+                    {
+                      i: 2,
+                      label: "Hex Line",
+                      color: "#14b8a6",
+                      shape: (
+                        <svg viewBox="0 0 40 40" className="w-10 h-10">
+                          <polygon
+                            points="20,4 34,12 34,28 20,36 6,28 6,12"
+                            fill="none"
+                            stroke="#14b8a6"
+                            strokeWidth={glowTarget === 2 ? "2" : "1"}
+                            style={{
+                              filter: glowTarget === 2 ? "drop-shadow(0 0 6px rgba(20,184,166,0.9))" : "none",
+                              transition: "all 0.2s ease-linear",
+                            }}
+                          />
+                        </svg>
+                      ),
+                    },
+                    {
+                      i: 3,
+                      label: "Cross Grid",
+                      color: "#f59e0b",
+                      shape: (
+                        <svg viewBox="0 0 40 40" className="w-10 h-10">
+                          <line x1="20" y1="4" x2="20" y2="36" stroke="#f59e0b" strokeWidth={glowTarget === 3 ? "2" : "1"} style={{ filter: glowTarget === 3 ? "drop-shadow(0 0 4px rgba(245,158,11,0.9))" : "none", transition: "all 0.2s ease-linear" }} />
+                          <line x1="4" y1="20" x2="36" y2="20" stroke="#f59e0b" strokeWidth={glowTarget === 3 ? "2" : "1"} style={{ filter: glowTarget === 3 ? "drop-shadow(0 0 4px rgba(245,158,11,0.9))" : "none", transition: "all 0.2s ease-linear" }} />
+                          <circle cx="20" cy="20" r="4" fill="#f59e0b" style={{ filter: glowTarget === 3 ? "drop-shadow(0 0 6px rgba(245,158,11,1))" : "none", transition: "all 0.2s ease-linear" }} />
+                        </svg>
+                      ),
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.i}
+                      className="flex flex-col items-center gap-2 p-4 rounded-lg bg-neutral-950 border border-neutral-800 cursor-crosshair transition-all duration-200 ease-linear hover:border-neutral-700"
+                      onMouseEnter={() => setGlowTarget(item.i)}
+                      onMouseLeave={() => setGlowTarget(null)}
+                    >
+                      <div className="flex items-center justify-center h-12">
+                        {item.shape}
+                      </div>
+                      <span className="font-mono text-[9px] uppercase tracking-[0.12em]" style={{ color: item.color }}>
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="font-mono text-[9px] text-neutral-600 text-center">
+                  Hover each shape — glow follows geometric edge, not diffuse halo
+                </p>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DO / DON'T RULES                                              */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-amber-400 block mb-3">
+              // design_rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Do <span style={{ color: "#f59e0b" }}>&amp;</span> Don&apos;t
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-neutral-400 font-mono text-sm max-w-xl leading-relaxed">
+              Design rules for Generative Art — derived from the style&apos;s algorithm-first
+              philosophy. Deviation breaks the aesthetic contract.
+            </p>
+          </RevealBlock>
+
+          {/* 3 philosophy principles */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+            {[
+              {
+                icon: <GeoCircle className="w-8 h-8" color="#7c3aed" />,
+                title: "Algorithm First",
+                tagline: "Code drives every visual",
+                desc: "No element is placed by hand. Each shape, color, and position is derived from a mathematical function. The codebase IS the design tool.",
+                items: ["SVG geometry as decoration", "HSL rotation for palettes", "Parametric control via seed"],
+                color: "#7c3aed",
+              },
+              {
+                icon: <GeoDiamond className="w-8 h-8" color="#3b82f6" />,
+                title: "Dark Canvas",
+                tagline: "Near-black amplifies color",
+                desc: "bg-[#0a0a0a] is mandatory. The near-black background makes algorithm-generated colors appear luminous, like code on a terminal screen.",
+                items: ["bg-[#0a0a0a] always", "Neutral-800 for borders", "Violet glow on interaction"],
+                color: "#3b82f6",
+              },
+              {
+                icon: <GeoHex className="w-8 h-8" color="#14b8a6" />,
+                title: "Mono Typography",
+                tagline: "font-mono everywhere",
+                desc: "Monospace fonts make the interface feel like code output. Every label, number, and heading uses font-mono — no exceptions.",
+                items: ["font-mono for all text", "Uppercase tracking labels", "Coordinate and param display"],
+                color: "#14b8a6",
+              },
+            ].map((p, i) => (
+              <RevealBlock key={p.title} delay={i * 0.08}>
+                <div
+                  className="group bg-neutral-900/80 backdrop-blur rounded-xl p-7 border border-neutral-800 h-full transition-all duration-200 ease-linear hover:border-violet-500/30 hover:shadow-[0_0_20px_rgba(124,58,237,0.1)] cursor-crosshair"
+                >
+                  <div className="mb-5 transition-transform duration-200 ease-linear group-hover:scale-110">
+                    {p.icon}
+                  </div>
+                  <h3 className="text-base font-mono font-bold text-white mb-1">{p.title}</h3>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.1em] mb-3" style={{ color: p.color }}>
+                    {p.tagline}
+                  </p>
+                  <p className="text-neutral-400 font-mono text-xs leading-relaxed mb-5">{p.desc}</p>
+                  <ul className="space-y-2">
+                    {p.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[10px] font-mono text-neutral-500">
+                        <span
+                          className="mt-0.5 w-1.5 h-1.5 rotate-45 shrink-0"
+                          style={{ backgroundColor: p.color }}
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+
+          {/* Do / Don't lists */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RevealBlock delay={0.1}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-teal-500/20 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-7 h-7 rounded border border-teal-500/40 bg-teal-500/10 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="font-mono text-sm uppercase tracking-[0.15em] text-teal-400">Do</h3>
+                  <div className="ml-auto w-2 h-2 rotate-45 bg-teal-500/40" />
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "bg-[#0a0a0a] or bg-neutral-950 — dark canvas always",
+                    "font-mono for all text — code-art aesthetic",
+                    "HSL rotation palette from violet #7c3aed base",
+                    "SVG geometric shapes as procedural decoration",
+                    "Show seed, coordinates, iteration counts as UI",
+                    "ease-linear + duration-200 for exact precision",
+                    "bg-neutral-900/80 backdrop-blur dark glass cards",
+                    "shadow-[0_0_20px_rgba(124,58,237,0.4)] violet glow",
+                    "Dot grid or line grid as background texture",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 font-mono text-xs text-neutral-400 leading-relaxed">
+                      <span className="mt-1 w-1.5 h-1.5 rotate-45 shrink-0 bg-teal-400/60" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+
+            <RevealBlock delay={0.16}>
+              <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-8 border border-rose-500/20 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-7 h-7 rounded border border-rose-500/40 bg-rose-500/10 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </div>
+                  <h3 className="font-mono text-sm uppercase tracking-[0.15em] text-rose-400">Don&apos;t</h3>
+                  <div className="ml-auto w-2 h-2 rotate-45 bg-rose-500/40" />
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "No images or raster bitmaps — SVG only",
+                    "No light or white backgrounds — breaks the aesthetic",
+                    "No serif or sans-serif fonts — monospace only",
+                    "No conventional shadows (shadow-md, shadow-lg)",
+                    "No static lifeless layouts — everything must move",
+                    "No spring/bounce easing — ease-linear is the standard",
+                    "No more than 5 colors without algorithmic justification",
+                    "No decorative elements not procedurally derived",
+                    "No over-fogged glow — keep geometric edge clarity",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 font-mono text-xs text-neutral-400 leading-relaxed">
+                      <span className="mt-1 w-1.5 h-1.5 rotate-45 shrink-0 bg-rose-400/60" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 8. FEATURE HIGHLIGHTS                                            */}
+      {/* ================================================================ */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          <RevealBlock className="mb-12">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-violet-400 block mb-3">
+              // feature_set
+            </span>
+            <h2 className="text-4xl md:text-5xl font-mono font-bold text-white leading-tight">
+              Built with <span style={{ color: "#7c3aed" }}>Precision</span>
+            </h2>
+          </RevealBlock>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {[
+              {
+                icon: <GeoCircle className="w-7 h-7" color="#7c3aed" />,
+                title: "Parametric Control",
+                desc: "Seed, iterations, scale — every visual output is reproducible and controllable via numeric parameters.",
+                color: "#7c3aed",
+              },
+              {
+                icon: <GeoDiamond className="w-7 h-7" color="#3b82f6" />,
+                title: "HSL Rotation Palette",
+                desc: "Six accent colors derived by rotating 60 degrees around the HSL wheel from violet base. Mathematically justified.",
+                color: "#3b82f6",
+              },
+              {
+                icon: <GeoTriangle className="w-7 h-7" color="#14b8a6" />,
+                title: "SVG Geometry Only",
+                desc: "No raster images. All decoration is procedural SVG — circles, lines, polygons derived from mathematical forms.",
+                color: "#14b8a6",
+              },
+              {
+                icon: <GeoHex className="w-7 h-7" color="#f59e0b" />,
+                title: "Dark Glass Morphism",
+                desc: "bg-neutral-900/80 with backdrop-blur. Cards feel like frosted dark glass — translucent, not opaque.",
+                color: "#f59e0b",
+              },
+              {
+                icon: <GeoCircle className="w-7 h-7" color="#f43f5e" />,
+                title: "Exact Linear Timing",
+                desc: "ease-linear at duration-200 for all interactions. Predictable, programmable, machine-like precision.",
+                color: "#f43f5e",
+              },
+              {
+                icon: <GeoDiamond className="w-7 h-7" color="#a855f7" />,
+                title: "Parameter Display",
+                desc: "UI elements surface algorithm state — seed values, coordinates, iteration counts. The interface is the debugger.",
+                color: "#a855f7",
+              },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.06}>
+                <div className="group bg-neutral-900/80 backdrop-blur rounded-xl p-7 border border-neutral-800 h-full transition-all duration-200 ease-linear hover:border-violet-500/30 hover:shadow-[0_0_16px_rgba(124,58,237,0.12)] cursor-crosshair relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(124,58,237,0.03)_2px,rgba(124,58,237,0.03)_4px)] transition-opacity duration-200 ease-linear" />
+                  <div className="relative z-10">
+                    <div className="mb-4 transition-transform duration-200 ease-linear group-hover:scale-110">
+                      {feature.icon}
+                    </div>
+                    <h4 className="font-mono text-sm font-bold text-white mb-2 group-hover:text-violet-200 transition-colors duration-200 ease-linear">
+                      {feature.title}
+                    </h4>
+                    <p className="font-mono text-xs text-neutral-400 leading-relaxed group-hover:text-neutral-300 transition-colors duration-200 ease-linear">
+                      {feature.desc}
+                    </p>
+                  </div>
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-linear">
+                    <div className="w-1.5 h-1.5 rotate-45" style={{ backgroundColor: feature.color }} />
+                  </div>
+                </div>
               </RevealBlock>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== 4. Component Showcase ===== */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-violet-500/10">
-        <div className="max-w-5xl mx-auto">
-          <RevealBlock className="mb-12">
-            <span className="font-mono text-xs text-violet-400/50 tracking-widest block mb-3">
-              SECTION_03 :: COMPONENT_SHOWCASE
-            </span>
-            <h2 className="font-mono text-3xl md:text-4xl font-bold text-white">
-              <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                Interface
-              </span>{" "}
-              Components
-            </h2>
-          </RevealBlock>
-
-          {/* Tab switcher */}
-          <RevealBlock delay={0.06} className="flex gap-2 mb-10">
-            {(["button", "card", "input"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setComponentTab(tab)}
-                className={`px-5 py-2 font-mono text-xs tracking-wider rounded border transition-all duration-200 ${
-                  componentTab === tab
-                    ? "border-violet-500/60 text-violet-300 bg-violet-600/15"
-                    : "border-violet-500/20 text-violet-400/50 hover:border-violet-500/40 hover:text-violet-400/80"
-                }`}
-              >
-                [{tab.toUpperCase()}]
-              </button>
-            ))}
-          </RevealBlock>
-
-          <RevealBlock delay={0.1}>
-            <div
-              className="bg-[#111111] border border-violet-500/20 rounded-lg p-8 md:p-12"
-              style={{ boxShadow: "0 0 20px rgba(124,58,237,0.1)" }}
-            >
-              {/* Button showcase */}
-              {componentTab === "button" && (
-                <div className="space-y-10">
-                  <div>
-                    <div className="font-mono text-xs text-violet-400/40 mb-5 tracking-wider">
-                      PRIMARY &mdash; violet fill, seed revealed on hover
-                    </div>
-                    <div className="flex flex-wrap gap-4 items-center">
-                      <button
-                        onMouseEnter={() => setHoveredSeed(true)}
-                        onMouseLeave={() => setHoveredSeed(false)}
-                        className="group relative px-7 py-3 bg-violet-600 hover:bg-violet-500 text-white font-mono text-sm tracking-wider rounded border border-violet-500 transition-all duration-200 overflow-hidden"
-                        style={{ boxShadow: "0 0 20px rgba(124,58,237,0.4)" }}
-                      >
-                        <span className="transition-opacity duration-200 group-hover:opacity-0">
-                          [ EXECUTE ]
-                        </span>
-                        <span className="absolute inset-0 flex items-center justify-center font-mono text-xs text-violet-200 transition-opacity duration-200 opacity-0 group-hover:opacity-100">
-                          SEED: {seed.toString().padStart(5, "0")}
-                        </span>
-                      </button>
-                      <button className="px-7 py-3 bg-transparent text-violet-400 font-mono text-sm tracking-wider rounded border border-violet-500/40 hover:border-violet-500/70 hover:text-violet-300 transition-all duration-200">
-                        [ RENDER ]
-                      </button>
-                      <button className="px-7 py-3 bg-teal-600/20 text-teal-300 font-mono text-sm tracking-wider rounded border border-teal-500/40 hover:border-teal-500/70 hover:bg-teal-600/30 transition-all duration-200">
-                        [ COMPILE ]
-                      </button>
-                    </div>
-                    {hoveredSeed && (
-                      <div className="mt-4 font-mono text-xs text-violet-400/60">
-                        seed={seed} &rarr; deterministic output for every parameter combination
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="font-mono text-xs text-violet-400/40 mb-5 tracking-wider">
-                      ICON BUTTONS &mdash; command-style labels
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                      {["PLOT", "TRACE", "EXPORT", "RESET"].map((label) => (
-                        <button
-                          key={label}
-                          className="flex items-center gap-2 px-4 py-2 bg-[#0a0a0a] border border-violet-500/25 rounded font-mono text-xs text-violet-400/70 hover:border-violet-500/50 hover:text-violet-300 transition-all duration-200"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-violet-500 opacity-70" />
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Card showcase */}
-              {componentTab === "card" && (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {[
-                    {
-                      title: "Lissajous Render",
-                      seed: seed,
-                      color: "#7c3aed",
-                      desc: "Parametric figure-eight. a=3, b=4, \u03b4=\u03c0/4. Phase offset produces the rotational angle.",
-                    },
-                    {
-                      title: "Phyllotaxis Field",
-                      seed: (seed + 42) % 99999,
-                      color: "#14b8a6",
-                      desc: "Golden angle spiral packing. 137.508\xb0 per step. Fibonacci series emerges at any scale.",
-                    },
-                  ].map((card) => (
-                    <div
-                      key={card.title}
-                      className="group bg-[#0a0a0a] border border-violet-500/20 rounded-lg overflow-hidden hover:border-violet-500/40 transition-all duration-300 cursor-pointer"
-                    >
-                      {/* Pattern header */}
-                      <div className="relative overflow-hidden" style={{ height: "120px" }}>
-                        <svg width="100%" height="120" viewBox="0 0 300 120">
-                          <rect width="300" height="120" fill="#0a0a0a" />
-                          <LissajousPath seed={card.seed} width={300} height={120} color={card.color} strokeWidth={1} />
-                          {Array.from({ length: 30 }, (_, i) => (
-                            <circle
-                              key={i}
-                              cx={seededRand(card.seed, i + 50) * 300}
-                              cy={seededRand(card.seed, i + 150) * 120}
-                              r="1.5"
-                              fill={card.color}
-                              opacity={0.25 + seededRand(card.seed, i) * 0.4}
-                            />
-                          ))}
-                        </svg>
-                        <div className="absolute top-2 right-3 font-mono text-[9px] text-violet-400/50">
-                          SEED:{card.seed.toString().padStart(5, "0")}
-                        </div>
-                      </div>
-                      <div className="p-5">
-                        <div className="font-mono text-[10px] tracking-widest mb-2" style={{ color: `${card.color}99` }}>
-                          ALGORITHM
-                        </div>
-                        <h3 className="font-mono text-sm font-bold text-white mb-2 group-hover:text-violet-300 transition-colors duration-200">
-                          {card.title}
-                        </h3>
-                        <p className="font-mono text-xs text-white/35 leading-relaxed">
-                          {card.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Input showcase */}
-              {componentTab === "input" && (
-                <div className="space-y-8 max-w-md">
-                  <div className="font-mono text-xs text-violet-400/40 tracking-wider">
-                    COORDINATE INPUT &mdash; displays algorithmic values
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs text-violet-400/50 tracking-wider mb-2">
-                      X_COORDINATE
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={coordValue.x}
-                        onChange={(e) => setCoordValue((v) => ({ ...v, x: Number(e.target.value) }))}
-                        className="w-full bg-[#0a0a0a] border border-violet-500/30 rounded px-4 py-3 font-mono text-sm text-violet-300 focus:border-violet-500/60 focus:outline-none transition-colors duration-200"
-                        placeholder="0.000"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-violet-400/40">px</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs text-violet-400/50 tracking-wider mb-2">
-                      Y_COORDINATE
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={coordValue.y}
-                        onChange={(e) => setCoordValue((v) => ({ ...v, y: Number(e.target.value) }))}
-                        className="w-full bg-[#0a0a0a] border border-violet-500/30 rounded px-4 py-3 font-mono text-sm text-violet-300 focus:border-violet-500/60 focus:outline-none transition-colors duration-200"
-                        placeholder="0.000"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-violet-400/40">px</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs text-violet-400/50 tracking-wider mb-2">
-                      ALGORITHM_LABEL
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue="lissajous_render_v1"
-                      className="w-full bg-[#0a0a0a] border border-violet-500/30 rounded px-4 py-3 font-mono text-sm text-violet-300 focus:border-violet-500/60 focus:outline-none transition-colors duration-200"
-                      placeholder="identifier_string"
-                    />
-                  </div>
-                  {/* Live math output */}
-                  <div className="bg-[#0a0a0a] border border-teal-500/20 rounded p-4">
-                    <div className="font-mono text-[10px] text-teal-400/50 mb-2 tracking-wider">MATH_OUTPUT</div>
-                    <div className="font-mono text-xs text-teal-300/80 space-y-1">
-                      <div>sin({coordValue.x}) = {Math.sin(coordValue.x).toFixed(6)}</div>
-                      <div>cos({coordValue.y}) = {Math.cos(coordValue.y).toFixed(6)}</div>
-                      <div>dist = {Math.sqrt(coordValue.x ** 2 + coordValue.y ** 2).toFixed(4)}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </RevealBlock>
+      {/* ================================================================ */}
+      {/* FOOTER                                                           */}
+      {/* ================================================================ */}
+      <footer className="relative bg-[#0a0a0a] border-t border-neutral-800 overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+          <GridPattern className="absolute bottom-0 right-0 w-64 h-64" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-violet-500/30 via-transparent to-transparent" />
         </div>
-      </section>
 
-      {/* ===== 5. Color System — HSL Wheel ===== */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-violet-500/10">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="mb-12">
-            <span className="font-mono text-xs text-violet-400/50 tracking-widest block mb-3">
-              SECTION_04 :: COLOR_SYSTEM
-            </span>
-            <h2 className="font-mono text-3xl md:text-4xl font-bold text-white">
-              <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                HSL
-              </span>{" "}
-              Color Architecture
-            </h2>
-          </RevealBlock>
+        {/* Top accent line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-violet-500/60 to-transparent" />
 
-          <div className="grid md:grid-cols-2 gap-12 items-start">
-            {/* HSL Wheel */}
-            <RevealBlock delay={0.06}>
-              <div
-                className="bg-[#111111] border border-violet-500/20 rounded-lg p-8 flex flex-col items-center"
-                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.15)" }}
-              >
-                <div className="font-mono text-xs text-violet-400/40 mb-6 tracking-wider">
-                  HSL_COLOR_WHEEL :: 360deg
-                </div>
-                <HslWheel />
-                <div className="mt-6 font-mono text-xs text-violet-400/40 text-center space-y-1">
-                  <div>5 accent positions</div>
-                  <div className="text-violet-400/25">algorithmically distributed</div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Accent swatches */}
-            <RevealBlock delay={0.1}>
-              <div className="space-y-4">
-                {[
-                  { name: "Violet", hex: "#7c3aed", hsl: "hsl(263, 80%, 57%)", h: 263, role: "Primary \u2014 dominant hue, UI identity" },
-                  { name: "Blue",   hex: "#3b82f6", hsl: "hsl(217, 91%, 60%)", h: 217, role: "Secondary \u2014 links, highlights" },
-                  { name: "Teal",   hex: "#14b8a6", hsl: "hsl(173, 80%, 40%)", h: 173, role: "Accent \u2014 data outputs, active states" },
-                  { name: "Rose",   hex: "#f43f5e", hsl: "hsl(350, 89%, 60%)", h: 350, role: "Alert \u2014 errors, boundaries" },
-                  { name: "Amber",  hex: "#f59e0b", hsl: "hsl(38, 92%, 50%)",  h: 38,  role: "Warm \u2014 warnings, seed highlights" },
-                ].map((c) => (
+        <div className="max-w-6xl mx-auto px-5 md:px-10 pt-16 pb-12 relative z-10">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
+            {/* Brand */}
+            <div className="flex flex-col gap-4 max-w-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 relative">
                   <div
-                    key={c.name}
-                    className="flex items-center gap-4 p-3 bg-[#111111] border border-violet-500/15 rounded-lg hover:border-violet-500/30 transition-colors duration-200"
-                  >
-                    <div
-                      className="w-10 h-10 rounded flex-shrink-0"
-                      style={{ backgroundColor: c.hex, boxShadow: `0 0 12px ${c.hex}50` }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-mono text-sm font-bold text-white mb-0.5">{c.name}</div>
-                      <div className="font-mono text-xs text-violet-400/50">{c.hsl}</div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="font-mono text-xs text-white/30 mb-0.5">{c.hex}</div>
-                      <div className="font-mono text-[9px] text-violet-400/30">H:{c.h}&deg;</div>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Generation formula */}
-                <div className="mt-4 bg-[#0a0a0a] border border-teal-500/20 rounded-lg p-4">
-                  <div className="font-mono text-[10px] text-teal-400/50 mb-2 tracking-wider">PALETTE_GENERATION</div>
-                  <div className="font-mono text-xs text-teal-300/70 space-y-1">
-                    <div>hue(i) = (baseHue + i &times; step) % 360</div>
-                    <div>step = 360 / colorCount</div>
-                    <div>saturation = 75&ndash;92%</div>
-                    <div>lightness = 40&ndash;60%</div>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 6. Parameters Panel ===== */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-violet-500/10">
-        <div className="max-w-5xl mx-auto">
-          <RevealBlock className="mb-12">
-            <span className="font-mono text-xs text-violet-400/50 tracking-widest block mb-3">
-              SECTION_05 :: PARAMETERS_PANEL
-            </span>
-            <h2 className="font-mono text-3xl md:text-4xl font-bold text-white">
-              <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                Render
-              </span>{" "}
-              Parameters
-            </h2>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Controls */}
-            <RevealBlock delay={0.06}>
-              <div
-                className="bg-[#111111] border border-violet-500/20 rounded-lg p-8"
-                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.1)" }}
-              >
-                <div className="font-mono text-xs text-violet-400/40 mb-6 tracking-wider">
-                  CONTROL_SURFACE
-                </div>
-
-                {/* Seed */}
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="font-mono text-xs text-violet-400/60 tracking-wider">SEED_VALUE</label>
-                    <div className="bg-[#0a0a0a] border border-violet-500/30 rounded font-mono px-3 py-1 text-violet-300 text-xs">
-                      {seed.toString().padStart(5, "0")}
-                    </div>
-                  </div>
-                  <input
-                    type="range" min="0" max="99999" value={seed}
-                    onChange={(e) => setSeed(Number(e.target.value))}
-                    className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                    style={{ background: `linear-gradient(to right, #7c3aed ${(seed / 99999) * 100}%, #1f1f1f ${(seed / 99999) * 100}%)` }}
+                    className="absolute inset-0 border border-violet-500/60 rotate-45"
+                    style={{ boxShadow: "0 0 8px rgba(124,58,237,0.4)" }}
                   />
-                  <div className="flex justify-between mt-1">
-                    <span className="font-mono text-[9px] text-violet-400/30">0</span>
-                    <span className="font-mono text-[9px] text-violet-400/30">99999</span>
-                  </div>
+                  <div className="absolute inset-[5px] bg-violet-500/40 rotate-45" />
                 </div>
-
-                {/* Complexity */}
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="font-mono text-xs text-violet-400/60 tracking-wider">COMPLEXITY</label>
-                    <span className="font-mono text-xs text-blue-300">{algorithmParams.complexity}/10</span>
-                  </div>
-                  <input
-                    type="range" min="1" max="10" value={algorithmParams.complexity}
-                    onChange={(e) => setAlgorithmParams((p) => ({ ...p, complexity: Number(e.target.value) }))}
-                    className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                    style={{ background: `linear-gradient(to right, #3b82f6 ${algorithmParams.complexity * 10}%, #1f1f1f ${algorithmParams.complexity * 10}%)` }}
-                  />
-                  <div className="flex justify-between mt-1">
-                    <span className="font-mono text-[9px] text-violet-400/30">SIMPLE</span>
-                    <span className="font-mono text-[9px] text-violet-400/30">COMPLEX</span>
-                  </div>
-                </div>
-
-                {/* Chaos */}
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="font-mono text-xs text-violet-400/60 tracking-wider">CHAOS</label>
-                    <span className="font-mono text-xs text-teal-300">{algorithmParams.chaos}%</span>
-                  </div>
-                  <input
-                    type="range" min="0" max="100" value={algorithmParams.chaos}
-                    onChange={(e) => setAlgorithmParams((p) => ({ ...p, chaos: Number(e.target.value) }))}
-                    className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                    style={{ background: `linear-gradient(to right, #14b8a6 ${algorithmParams.chaos}%, #1f1f1f ${algorithmParams.chaos}%)` }}
-                  />
-                  <div className="flex justify-between mt-1">
-                    <span className="font-mono text-[9px] text-violet-400/30">ORDER</span>
-                    <span className="font-mono text-[9px] text-violet-400/30">CHAOS</span>
-                  </div>
-                </div>
-
-                {/* Color Shift */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="font-mono text-xs text-violet-400/60 tracking-wider">COLOR_SHIFT</label>
-                    <span className="font-mono text-xs text-amber-300">{algorithmParams.colorShift}&deg;</span>
-                  </div>
-                  <input
-                    type="range" min="0" max="360" value={algorithmParams.colorShift}
-                    onChange={(e) => setAlgorithmParams((p) => ({ ...p, colorShift: Number(e.target.value) }))}
-                    className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                    style={{ background: `linear-gradient(to right, hsl(${algorithmParams.colorShift},75%,55%) 0%, #f59e0b 50%, #7c3aed 100%)` }}
-                  />
-                  <div className="flex justify-between mt-1">
-                    <span className="font-mono text-[9px] text-violet-400/30">0&deg;</span>
-                    <span className="font-mono text-[9px] text-violet-400/30">360&deg;</span>
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Live preview */}
-            <RevealBlock delay={0.1}>
-              <div
-                className="bg-[#111111] border border-violet-500/20 rounded-lg overflow-hidden"
-                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.15)" }}
-              >
-                <div className="flex items-center justify-between px-4 py-3 border-b border-violet-500/15">
-                  <span className="font-mono text-xs text-violet-400/50">preview_render.svg</span>
-                  <div className="flex items-center gap-1.5 text-xs text-teal-400/60 font-mono">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-                    LIVE
-                  </div>
-                </div>
-                <div className="p-4">
-                  <ParameterPreview
-                    seed={seed}
-                    complexity={algorithmParams.complexity}
-                    chaos={algorithmParams.chaos}
-                    colorShift={algorithmParams.colorShift}
-                  />
-                </div>
-                <div className="px-4 pb-4 space-y-1">
-                  {[
-                    { key: "seed",        val: seed.toString().padStart(5, "0") },
-                    { key: "complexity",  val: `${algorithmParams.complexity}/10` },
-                    { key: "chaos",       val: `${algorithmParams.chaos}%` },
-                    { key: "color_shift", val: `${algorithmParams.colorShift}\xb0` },
-                  ].map((p) => (
-                    <div key={p.key} className="flex justify-between font-mono text-[10px]">
-                      <span className="text-violet-400/40">{p.key}</span>
-                      <span className="text-violet-300/70">{p.val}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 7. Do / Don&apos;t Rules ===== */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-violet-500/10">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="mb-12">
-            <span className="font-mono text-xs text-violet-400/50 tracking-widest block mb-3">
-              SECTION_06 :: DESIGN_CONSTRAINTS
-            </span>
-            <h2 className="font-mono text-3xl md:text-4xl font-bold text-white">
-              <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                Algorithm
-              </span>{" "}
-              Rules
-            </h2>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* DO panel */}
-            <RevealBlock delay={0.06}>
-              <div className="bg-[#111111] border border-teal-500/25 rounded-lg overflow-hidden relative">
-                {/* Background texture */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]">
-                  <svg width="100%" height="100%" viewBox="0 0 300 500">
-                    <SpiralDots seed={seed} width={300} height={500} />
-                  </svg>
-                </div>
-                <div className="relative z-10 p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-5 h-5 rounded bg-teal-500/20 border border-teal-500/40 flex items-center justify-center">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M1.5 5L4 7.5L8.5 2" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                    <span className="font-mono text-sm font-bold text-teal-300 tracking-wider">DO</span>
-                  </div>
-                  <ul className="space-y-3">
-                    {doRules.map((rule, i) => (
-                      <li key={i} className="flex gap-3 items-start">
-                        <span className="font-mono text-[10px] text-teal-400/40 flex-shrink-0 mt-0.5 w-5">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span className="font-mono text-xs text-white/50 leading-relaxed">{rule}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* DON&apos;T panel */}
-            <RevealBlock delay={0.1}>
-              <div className="bg-[#111111] border border-rose-500/25 rounded-lg overflow-hidden relative">
-                {/* Background texture */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.05]">
-                  <svg width="100%" height="100%" viewBox="0 0 300 500">
-                    <LissajousPath seed={seed} width={300} height={500} color="#f43f5e" strokeWidth={0.8} />
-                  </svg>
-                </div>
-                <div className="relative z-10 p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-5 h-5 rounded bg-rose-500/20 border border-rose-500/40 flex items-center justify-center">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M2 2L8 8M8 2L2 8" stroke="#f43f5e" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                    </div>
-                    <span className="font-mono text-sm font-bold text-rose-300 tracking-wider">DON&apos;T</span>
-                  </div>
-                  <ul className="space-y-3">
-                    {dontRules.map((rule, i) => (
-                      <li key={i} className="flex gap-3 items-start">
-                        <span className="font-mono text-[10px] text-rose-400/40 flex-shrink-0 mt-0.5 w-5">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span className="font-mono text-xs text-white/40 leading-relaxed">{rule}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Philosophy statement */}
-          <RevealBlock delay={0.16} className="mt-8">
-            <div
-              className="bg-[#111111] border border-violet-500/20 rounded-lg p-8 text-center relative overflow-hidden"
-              style={{ boxShadow: "0 0 20px rgba(124,58,237,0.1)" }}
-            >
-              <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]">
-                <svg width="100%" height="100%" viewBox="0 0 800 160">
-                  <LissajousPath seed={seed} width={800} height={160} color="#7c3aed" strokeWidth={1} />
-                </svg>
-              </div>
-              <div className="relative z-10">
-                <div className="font-mono text-xs text-violet-400/40 mb-4 tracking-widest">
-                  AXIOM :: GENERATIVE_PHILOSOPHY
-                </div>
-                <p className="font-mono text-sm text-white/50 leading-relaxed max-w-2xl mx-auto">
-                  &ldquo;The algorithm does not create beauty &mdash; it reveals the beauty already embedded
-                  in mathematics. The seed is not a number; it is a coordinate in the infinite
-                  space of all possible artworks.&rdquo;
-                </p>
-                <div className="mt-4 font-mono text-xs text-violet-400/30">
-                  &mdash; Generative Art Principle
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ===== 8. Footer ===== */}
-      <footer className="border-t border-violet-500/15 py-16 px-6 md:px-12 relative overflow-hidden">
-        {/* Background texture */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
-          <svg width="100%" height="100%" viewBox="0 0 800 200">
-            <GridNoise seed={seed} width={800} height={200} />
-          </svg>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
-            {/* Status */}
-            <div>
-              <div className="font-mono text-base font-bold text-white mb-1">
-                <span className="bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
-                  RENDERING COMPLETE
+                <span className="font-mono font-bold text-white tracking-wider text-sm uppercase">
+                  Gen<span className="text-violet-400">Art</span>
                 </span>
               </div>
-              <div className="font-mono text-xs text-violet-400/40">
-                Part of StyleKit &mdash; generative design systems
+              <p className="font-mono text-xs text-neutral-500 leading-relaxed">
+                Algorithm-driven visual aesthetics through mathematical functions,
+                noise textures, and parametric geometry.
+              </p>
+              {/* Color dots */}
+              <div className="flex gap-2">
+                {["#7c3aed", "#3b82f6", "#14b8a6", "#f43f5e", "#f59e0b"].map((c) => (
+                  <div
+                    key={c}
+                    className="w-4 h-4 rotate-45 transition-all duration-200 ease-linear hover:scale-125 cursor-crosshair"
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
               </div>
             </div>
 
-            {/* Elapsed time counter */}
-            <div
-              className="bg-[#111111] border border-violet-500/25 rounded-lg px-6 py-3 text-center"
-              style={{ boxShadow: "0 0 12px rgba(124,58,237,0.15)" }}
-            >
-              <div className="font-mono text-[10px] text-violet-400/40 mb-1 tracking-widest">ELAPSED_TIME</div>
-              <div className="font-mono text-2xl font-bold text-violet-300">
-                {elapsedTime.toFixed(1)}
-                <span className="text-sm text-violet-400/50 ml-1">s</span>
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 font-mono text-xs">
+              <div className="flex flex-col gap-3">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-600">Style</span>
+                <Link href="/styles/generative-art" className="text-neutral-500 hover:text-violet-400 transition-colors duration-200 ease-linear">
+                  Documentation
+                </Link>
+                <Link href="/styles/generative-art/showcase" className="text-neutral-500 hover:text-violet-400 transition-colors duration-200 ease-linear">
+                  Showcase
+                </Link>
+                <Link href="/styles/generative-art/cover" className="text-neutral-500 hover:text-violet-400 transition-colors duration-200 ease-linear">
+                  Cover
+                </Link>
               </div>
-            </div>
-
-            {/* Seed display */}
-            <div className="bg-[#0a0a0a] border border-violet-500/30 rounded font-mono px-4 py-3">
-              <div className="text-[10px] text-violet-400/40 mb-1 tracking-widest">FINAL_SEED</div>
-              <div className="text-violet-300 font-bold tracking-wider">{seed.toString().padStart(5, "0")}</div>
+              <div className="flex flex-col gap-3">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-600">StyleKit</span>
+                <Link href="/" className="text-neutral-500 hover:text-violet-400 transition-colors duration-200 ease-linear">
+                  Home
+                </Link>
+                <Link href="/styles" className="text-neutral-500 hover:text-violet-400 transition-colors duration-200 ease-linear">
+                  All Styles
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-600">Palette</span>
+                {algorithmColors.map((s) => (
+                  <span key={s.name} className="flex items-center gap-2 text-neutral-500 text-[10px]">
+                    <span
+                      className="w-2.5 h-2.5 rotate-45 inline-block shrink-0"
+                      style={{ backgroundColor: s.hex, border: s.hex === "#0a0a0a" ? "1px solid #404040" : "none" }}
+                    />
+                    {s.name}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
+          {/* Divider */}
+          <div className="h-px bg-neutral-800 mb-8" />
+
           {/* Bottom row */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 border-t border-violet-500/10">
-            <div className="font-mono text-xs text-violet-400/30">
-              &copy; 2025 StyleKit &mdash; Generative Art Design System
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 font-mono text-xs text-neutral-600">
+              <span>GenArt Style — StyleKit</span>
+              <span className="text-neutral-800">|</span>
+              <span>seed: <span className="text-violet-400/60">{seed}</span></span>
+              <span className="text-neutral-800">|</span>
+              <span>iter: <span className="text-blue-400/60">{iterations}</span></span>
             </div>
-
-            {/* Accent dots */}
-            <div className="flex items-center gap-2">
-              {accentColors.map((c) => (
-                <div
-                  key={c}
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: c, boxShadow: `0 0 6px ${c}60` }}
-                />
-              ))}
-            </div>
-
-            <nav className="flex items-center gap-6">
-              <Link href="/styles/generative-art" className="font-mono text-xs text-violet-400/30 hover:text-violet-400/70 transition-colors duration-200">
-                Docs
-              </Link>
-              <Link href="/styles" className="font-mono text-xs text-violet-400/30 hover:text-violet-400/70 transition-colors duration-200">
-                All Styles
-              </Link>
-              <Link href="/" className="font-mono text-xs text-violet-400/30 hover:text-violet-400/70 transition-colors duration-200">
-                Home
-              </Link>
-            </nav>
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-5 py-2 rounded-lg font-mono text-xs uppercase tracking-[0.15em] border border-violet-500/30 text-violet-400 hover:border-violet-400 hover:shadow-[0_0_14px_rgba(124,58,237,0.3)] transition-all duration-200 ease-linear hover:tracking-[0.2em]"
+            >
+              <GeoDiamond className="w-3 h-3" color="#7c3aed" />
+              Back to StyleKit
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </footer>
-
     </div>
   );
 }

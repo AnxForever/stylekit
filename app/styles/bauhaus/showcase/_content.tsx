@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Intersection Observer Hook                                          */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
 function useInView(options = {}) {
@@ -60,1418 +60,1792 @@ function RevealBlock({
 /* ------------------------------------------------------------------ */
 
 const PALETTE = [
-  { name: "Red", hex: "#FF0000", bg: "#FF0000", text: "#FFFFFF" },
-  { name: "Yellow", hex: "#FFCC00", bg: "#FFCC00", text: "#000000" },
-  { name: "Blue", hex: "#0000FF", bg: "#0000FF", text: "#FFFFFF" },
-  { name: "Black", hex: "#000000", bg: "#000000", text: "#FFFFFF" },
-  { name: "White", hex: "#FFFFFF", bg: "#FFFFFF", text: "#000000" },
+  { name: "Bauhaus Red", hex: "#ff0000", label: "Primary", textOnColor: "#ffffff" },
+  { name: "Bauhaus Yellow", hex: "#ffcc00", label: "Secondary", textOnColor: "#000000" },
+  { name: "Bauhaus Blue", hex: "#0000ff", label: "Tertiary", textOnColor: "#ffffff" },
+  { name: "Black", hex: "#000000", label: "Structure", textOnColor: "#ffffff" },
+  { name: "White", hex: "#ffffff", label: "Space", textOnColor: "#000000" },
 ];
 
-const PRINCIPLES = [
-  {
-    number: "01",
-    title: "FORM FOLLOWS FUNCTION",
-    desc: "Every visual element must justify its existence through purpose. Decoration without function is waste. The shape of an object should be determined by what it does, not how it looks.",
-    color: "#FF0000",
-    shape: "circle",
-  },
-  {
-    number: "02",
-    title: "PRIMARY COLORS ONLY",
-    desc: "Red, yellow, blue — the three primaries plus black and white. No mixed tones, no pastels, no gradients. Color serves as structural signal, not ornament.",
-    color: "#FFCC00",
-    shape: "square",
-  },
-  {
-    number: "03",
-    title: "BASIC GEOMETRY",
-    desc: "Circle, square, triangle — the three fundamental forms. All design complexity can be reduced to these pure geometries. Combine them rationally; never purely decoratively.",
-    color: "#0000FF",
-    shape: "triangle",
-  },
-  {
-    number: "04",
-    title: "CRAFT + ART = DESIGN",
-    desc: "The Bauhaus school unified fine art with craft and industry. A well-designed chair and a well-designed typeface obey the same laws: honest materials, honest structure.",
-    color: "#000000",
-    shape: "square",
-  },
+const DO_LIST = [
+  "Use primary colors: red #ff0000, yellow #ffcc00, blue #0000ff plus black and white",
+  "Use basic geometric shapes — circle, square, triangle — as structural UI elements",
+  "Apply border-4 border-black on all interactive elements",
+  "Use font-black or font-bold uppercase for all headings",
+  "Use duration-150 or duration-200 — short, sharp, mechanical",
+  "Use ease-out only — never ease-in-out",
+  "Use pseudo-elements for color-block slide animations (translate-x rail mechanism)",
+  "Scale or rotate geometric decorators on hover — mechanical feel",
+  "Hard primary color switches on interaction — no transparency fade",
+  "Emphasize grid and strict alignment",
 ];
 
-const DO_RULES = [
-  "Use primary colors only — red #FF0000, yellow #FFCC00, blue #0000FF plus black and white",
-  "Use basic geometric shapes (circle, square, triangle) as structural UI elements",
-  "Apply rounded-none for squares and rounded-full for circles — shapes must be pure",
-  "Use font-black or font-bold uppercase for all headings — weight carries hierarchy",
-  "Apply hard pure-black borders: border-4 border-black on all interactive elements",
-  "Use primary color blocks as layout structure, not just decoration",
-  "Use font-mono for body text functional labels and metadata",
-  "Employ stark whitespace — emptiness must be purposeful, not accidental",
+const DONT_LIST = [
+  "Never use complex gradients — Bauhaus forbids blended color",
+  "Never use decorative ornamental elements",
+  "Never use serif typefaces — sans-serif geometric only",
+  "Never use non-primary complex color palettes",
+  "Never use duration-500 or above — no slow fades",
+  "Never use ease-in-out — banned by Bauhaus motion rules",
+  "Never use rounded-lg or rounded-xl — only rounded-full for pure circles",
+  "Never use opacity fades for color interaction — use hard cuts",
+  "Never use organic or irregular shapes — pure geometry only",
+  "Never use decorative shadows or glows — borders define structure",
 ];
 
-const DONT_RULES = [
-  "Never use gradients — Bauhaus color is flat and pure, never blended",
-  "Never use soft or muted tones — every color must be a primary or neutral",
-  "Never use decorative fonts — sans-serif geometric typefaces only",
-  "Never add ornamentation that does not serve a structural function",
-  "Never use pastel colors — they contradict the primary-only system",
-  "Never use rounded corners on squares — purity of form is non-negotiable",
-  "Never center body text — geometric layouts use grid-based left alignment",
-  "Never use shadow or blur effects — surfaces are flat and honest",
-];
-
-const TYPOGRAPHY_SCALE = [
-  { label: "Display", size: "text-7xl", weight: "font-black", tracking: "tracking-tight", sample: "BAUHAUS 1919" },
-  { label: "H1", size: "text-5xl", weight: "font-black", tracking: "tracking-tight", sample: "FORM FOLLOWS FUNCTION" },
-  { label: "H2", size: "text-3xl", weight: "font-bold", tracking: "tracking-widest", sample: "PRIMARY GEOMETRY" },
-  { label: "H3", size: "text-xl", weight: "font-bold", tracking: "tracking-wider", sample: "STRUCTURAL ELEMENT" },
-  { label: "Body", size: "text-base", weight: "font-normal", tracking: "tracking-normal", sample: "Honest materials, honest structure, purposeful form." },
-  { label: "Label", size: "text-xs", weight: "font-bold", tracking: "tracking-widest", sample: "FUNCTIONAL LABEL / 1919" },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
-
-function GeometricCircle({
-  size = 64,
-  color = "#FF0000",
-}: {
-  size?: number;
-  color?: string;
-}) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <circle cx="32" cy="32" r="32" fill={color} />
-    </svg>
-  );
-}
-
-function GeometricSquare({
-  size = 64,
-  color = "#FFCC00",
-}: {
-  size?: number;
-  color?: string;
-}) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <rect width="64" height="64" fill={color} />
-    </svg>
-  );
-}
-
-function GeometricTriangle({
-  size = 64,
-  color = "#0000FF",
-}: {
-  size?: number;
-  color?: string;
-}) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <polygon points="32,0 64,64 0,64" fill={color} />
-    </svg>
-  );
-}
-
-function BauhausButton({
-  children,
-  variant = "red",
-  onClick,
-}: {
-  children: React.ReactNode;
-  variant?: "red" | "yellow" | "blue" | "black" | "outline";
-  onClick?: () => void;
-}) {
-  const base =
-    "px-8 py-4 font-black uppercase tracking-widest text-sm border-4 border-black transition-colors duration-150 cursor-pointer select-none";
-
-  const variants = {
-    red: "bg-[#FF0000] text-white hover:bg-black",
-    yellow: "bg-[#FFCC00] text-black hover:bg-black hover:text-white",
-    blue: "bg-[#0000FF] text-white hover:bg-black",
-    black: "bg-black text-white hover:bg-[#FF0000]",
-    outline: "bg-white text-black hover:bg-black hover:text-white",
-  };
-
-  return (
-    <button className={`${base} ${variants[variant]}`} onClick={onClick}>
-      {children}
-    </button>
-  );
-}
+type ComponentTab = "buttons" | "cards" | "inputs" | "badges";
 
 /* ------------------------------------------------------------------ */
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const { ref: heroRef, inView: heroInView } = useInView();
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<ComponentTab>("buttons");
 
-  const [activeTab, setActiveTab] = useState<"red" | "yellow" | "blue">("red");
-  const [inputValue, setInputValue] = useState("");
-  const [progress, setProgress] = useState(62);
-  const [toggleStates, setToggleStates] = useState([true, false, true]);
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
+  // Color palette hover
+  const [hoveredSwatch, setHoveredSwatch] = useState<number | null>(null);
+
+  // Input focus states for component demo
+  const [inputFocused1, setInputFocused1] = useState(false);
+  const [inputFocused2, setInputFocused2] = useState(false);
+
+  /* ---- aiRule 1: Structural Shifts ---- */
+  const [structuralActive, setStructuralActive] = useState<number>(0);
+
+  /* ---- aiRule 2: Mechanical Precision ---- */
+  const [mechanicalClicked, setMechanicalClicked] = useState<number | null>(null);
+  const [progressValue, setProgressValue] = useState(62);
+
+  /* ---- aiRule 3: Primary Color Swaps ---- */
+  const [colorSwapIndex, setColorSwapIndex] = useState<number>(0);
+
+  /* ---- aiRule 4: Geometric Reveals ---- */
+  const [revealHovered, setRevealHovered] = useState<number | null>(null);
+
+  /* ---- aiRule 5: Geometric Animation ---- */
+  const [shapeHovered, setShapeHovered] = useState<string | null>(null);
+
+  /* ---- Notification ---- */
   const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   function showNotification(msg: string) {
     setNotification(msg);
-    setTimeout(() => setNotification(null), 2000);
+    setTimeout(() => setNotification(null), 1800);
   }
 
-  const tabConfig = {
-    red: { bg: "bg-[#FF0000]", text: "text-white", border: "border-[#FF0000]", label: "PRIMARY RED" },
-    yellow: { bg: "bg-[#FFCC00]", text: "text-black", border: "border-[#FFCC00]", label: "SECONDARY YELLOW" },
-    blue: { bg: "bg-[#0000FF]", text: "text-white", border: "border-[#0000FF]", label: "TERTIARY BLUE" },
-  };
+  const colorSwapOptions = [
+    { bg: "#000000", text: "#ffffff", label: "BLACK" },
+    { bg: "#ff0000", text: "#ffffff", label: "RED" },
+    { bg: "#ffcc00", text: "#000000", label: "YELLOW" },
+    { bg: "#0000ff", text: "#ffffff", label: "BLUE" },
+    { bg: "#ffffff", text: "#000000", label: "WHITE" },
+  ];
+  const currentSwap = colorSwapOptions[colorSwapIndex];
 
   return (
-    <div className="min-h-screen bg-white text-black font-mono">
+    <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
+      <style>{`
+        @keyframes bauhaus-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.06); }
+        }
+        @keyframes bauhaus-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes bauhaus-march {
+          0%, 100% { transform: translateX(0); }
+          50% { transform: translateX(6px); }
+        }
+      `}</style>
 
-      {/* ===== 1. Fixed Navigation ===== */}
+      {/* ================================================================ */}
+      {/* 1. FIXED NAV                                                     */}
+      {/* ================================================================ */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Brand */}
-            <span className="font-black uppercase tracking-widest text-sm">
-              BAUHAUS <span className="text-[#FF0000]">1919</span>
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          {/* Logo — three primary color blocks */}
+          <div className="flex items-center gap-0">
+            <div className="w-8 h-8 bg-red-600 border-2 border-black" />
+            <div className="w-8 h-8 bg-yellow-400 border-2 border-black border-l-0" />
+            <div className="w-8 h-8 bg-blue-600 border-2 border-black border-l-0" />
+            <span className="ml-3 text-sm font-black uppercase tracking-widest text-black">
+              Bauhaus
             </span>
-
-            {/* Nav items */}
-            <nav className="hidden md:flex items-center gap-0">
-              {["Hero", "Components", "Palette", "Geometry", "Principles", "Typography"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="px-4 py-5 text-xs font-bold uppercase tracking-widest text-black hover:bg-[#FF0000] hover:text-white transition-colors duration-150 border-r-2 border-black last:border-r-0"
-                >
-                  {item}
-                </a>
-              ))}
-            </nav>
-
-            {/* CTA */}
-            <Link
-              href="/"
-              className="px-4 py-2 bg-black text-white font-black uppercase tracking-widest text-xs border-4 border-black hover:bg-[#FF0000] transition-colors duration-150"
-            >
-              StyleKit →
-            </Link>
           </div>
+
+          {/* Center nav */}
+          <nav className="hidden md:flex items-center gap-0">
+            {["Palette", "Components", "AI Rules", "Philosophy", "App"].map((item, i) => (
+              <span
+                key={item}
+                className="group relative px-4 py-2 text-xs font-black uppercase tracking-widest text-black border-l-2 border-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
+                style={{ borderLeftColor: i === 0 ? "transparent" : "#000000" }}
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          {/* Back to StyleKit — slide reveal */}
+          <Link
+            href="/"
+            className="group relative px-6 py-2 bg-black text-white font-black uppercase tracking-widest text-xs border-4 border-black overflow-hidden hover:text-black transition-colors duration-150"
+          >
+            <span className="relative z-10">StyleKit</span>
+            <div className="absolute inset-0 bg-yellow-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+          </Link>
         </div>
       </header>
 
-      {/* ===== 2. Hero ===== */}
-      <section id="hero" className="pt-16 bg-white min-h-screen flex flex-col" ref={heroRef}>
-        {/* Top structural band */}
+      {/* Notification toast */}
+      {notification && (
+        <div className="fixed top-20 right-6 z-50 px-6 py-3 bg-black text-yellow-400 font-black uppercase tracking-widest text-xs border-4 border-yellow-400">
+          {notification}
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* 2. HERO                                                          */}
+      {/* ================================================================ */}
+      <section className="relative pt-16 min-h-screen flex items-center bg-white overflow-hidden">
+        {/* Structural vertical stripe */}
+        <div className="absolute top-16 left-0 w-3 h-full bg-black" />
+        <div className="absolute top-16 left-3 w-6 h-full bg-red-600" />
+
+        {/* Geometric background decorators */}
         <div
-          className="flex border-b-4 border-black"
+          className="absolute top-24 right-16 w-56 h-56 bg-yellow-400 rounded-full border-4 border-black"
+          style={{ animation: "bauhaus-pulse 4s ease-out infinite" }}
+        />
+        <div className="absolute bottom-28 right-44 w-40 h-40 bg-blue-600 border-4 border-black" />
+        {/* Triangle */}
+        <div
+          className="absolute top-52 right-72 w-0 h-0 pointer-events-none"
           style={{
-            opacity: heroInView ? 1 : 0,
-            transition: "opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0s",
+            borderLeft: "60px solid transparent",
+            borderRight: "60px solid transparent",
+            borderBottom: "104px solid #ff0000",
           }}
-        >
-          <div className="w-4 bg-[#FF0000]" />
-          <div className="w-4 bg-[#FFCC00]" />
-          <div className="w-4 bg-[#0000FF]" />
-          <div className="flex-1 bg-black h-4" />
-        </div>
+        />
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-12 max-w-7xl mx-auto w-full px-6 py-16 gap-0">
-          {/* Left: geometric composition — 5 cols */}
+        {/* Hero content */}
+        <div className="relative z-10 px-12 md:px-24 max-w-5xl">
+          {/* Eyebrow tag */}
           <div
-            className="md:col-span-5 flex items-center justify-center py-12 relative"
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateX(0)" : "translateX(-48px)",
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.3s ease-out 0s, transform 0.3s ease-out 0s",
             }}
           >
-            {/* Bauhaus geometric composition */}
-            <div className="relative w-72 h-72 border-4 border-black">
-              {/* Yellow square background fill */}
-              <div className="absolute inset-0 bg-white" />
-
-              {/* Large red circle — top left */}
-              <div
-                className="absolute rounded-full bg-[#FF0000]"
-                style={{ width: 140, height: 140, top: -20, left: -20 }}
-              />
-
-              {/* Blue square — bottom right */}
-              <div
-                className="absolute bg-[#0000FF]"
-                style={{ width: 100, height: 100, bottom: -12, right: -12 }}
-              />
-
-              {/* Yellow triangle via SVG — center */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg width="120" height="104" viewBox="0 0 120 104" fill="none" aria-hidden="true">
-                  <polygon points="60,4 116,100 4,100" fill="#FFCC00" stroke="#000000" strokeWidth="4" />
-                </svg>
-              </div>
-
-              {/* Small black square accent */}
-              <div
-                className="absolute bg-black"
-                style={{ width: 24, height: 24, top: 12, right: 12 }}
-              />
-
-              {/* Small red circle accent */}
-              <div
-                className="absolute rounded-full bg-[#FF0000]"
-                style={{ width: 20, height: 20, bottom: 16, left: 16 }}
-              />
-            </div>
+            <span className="inline-block px-5 py-1.5 bg-red-600 text-white text-xs font-black uppercase tracking-[0.3em] mb-7 border-4 border-black">
+              Das Staatliche Bauhaus / 1919
+            </span>
           </div>
 
-          {/* Right: text — 7 cols */}
-          <div
-            className="md:col-span-7 flex flex-col justify-center pl-0 md:pl-12 border-l-0 md:border-l-4 md:border-black"
+          {/* Main title */}
+          <h1
+            className="text-7xl md:text-[112px] font-black text-black uppercase leading-none tracking-tighter mb-8"
             style={{
-              opacity: heroInView ? 1 : 0,
-              transform: heroInView ? "translateY(0)" : "translateY(48px)",
-              transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(36px)",
+              transition: "opacity 0.4s ease-out 0.1s, transform 0.4s ease-out 0.1s",
             }}
           >
-            <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-4 font-mono">
-              BAUHAUS / WEIMAR / 1919
-            </p>
+            FORM
+            <br />
+            <span className="text-red-600">FOLLOWS</span>
+            <br />
+            FUNCTION.
+          </h1>
 
-            <h1 className="text-6xl md:text-8xl font-black uppercase leading-none tracking-tighter text-black mb-6">
-              FORM
-              <br />
-              <span className="text-[#FF0000]">FOLLOWS</span>
-              <br />
-              FUNCTION.
-            </h1>
+          {/* Subtitle */}
+          <p
+            className="text-base font-bold text-black max-w-md mb-10 uppercase tracking-wider leading-snug border-l-4 border-yellow-400 pl-4"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.4s ease-out 0.2s, transform 0.4s ease-out 0.2s",
+            }}
+          >
+            Germany 1919. Primary colors. Geometric form.
+            Functional beauty. Zero ornament. Every element earns its place.
+          </p>
 
-            <p className="text-base font-mono text-black leading-relaxed mb-8 max-w-md border-l-4 border-[#FFCC00] pl-4">
-              Das Staatliche Bauhaus — unified crafts, fine arts, and industrial design under one roof.
-              Primary colors. Basic geometry. Zero decoration. Every element earns its place.
-            </p>
+          {/* CTA row */}
+          <div
+            className="flex flex-col sm:flex-row gap-4 mb-16"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.4s ease-out 0.3s, transform 0.4s ease-out 0.3s",
+            }}
+          >
+            {/* Slide-reveal CTA */}
+            <button
+              className="group relative px-10 py-4 bg-red-600 text-white font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden hover:text-black active:translate-y-1 transition-all duration-150"
+              onClick={() => showNotification("Exploring Bauhaus system")}
+            >
+              <span className="relative z-10">Explore Style</span>
+              <div className="absolute inset-0 bg-yellow-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+            </button>
+            <button
+              className="group relative px-10 py-4 bg-white text-black font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden hover:text-white active:translate-y-1 transition-all duration-150"
+              onClick={() => showNotification("Loading documentation")}
+            >
+              <span className="relative z-10">View Docs</span>
+              <div className="absolute inset-0 bg-blue-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+            </button>
+          </div>
 
-            <div className="flex flex-wrap gap-4">
-              <BauhausButton variant="red">EXPLORE SYSTEM</BauhausButton>
-              <BauhausButton variant="outline">LEARN MORE</BauhausButton>
-            </div>
-
-            {/* Bottom stat row */}
-            <div className="flex gap-0 mt-12 border-t-4 border-black pt-6">
-              {[
-                { value: "3", label: "PRIMARY COLORS" },
-                { value: "3", label: "BASIC SHAPES" },
-                { value: "0", label: "DECORATIONS" },
-              ].map((stat, i) => (
+          {/* Stats row */}
+          <div
+            className="grid grid-cols-3 gap-0 max-w-lg"
+            style={{
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.4s ease-out 0.4s, transform 0.4s ease-out 0.4s",
+            }}
+          >
+            {[
+              { value: "1919", label: "Founded", bg: "#ff0000" },
+              { value: "3", label: "Primary Colors", bg: "#ffcc00" },
+              { value: "0", label: "Decorations", bg: "#0000ff" },
+            ].map((stat, i) => (
+              <div
+                key={stat.label}
+                className="p-5 border-4 border-black text-center hover:-translate-y-1 transition-transform duration-150 ease-out cursor-default"
+                style={{ backgroundColor: stat.bg }}
+              >
                 <div
-                  key={stat.label}
-                  className={`flex-1 px-4 ${i < 2 ? "border-r-4 border-black" : ""}`}
+                  className="text-3xl font-black"
+                  style={{ color: i === 1 ? "#000000" : "#ffffff" }}
                 >
-                  <p className="text-4xl font-black text-black">{stat.value}</p>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mt-1">
-                    {stat.label}
-                  </p>
+                  {stat.value}
                 </div>
-              ))}
-            </div>
+                <div
+                  className="text-xs font-black uppercase tracking-widest mt-1"
+                  style={{ color: i === 1 ? "#00000099" : "#ffffffaa" }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-
-        {/* Bottom structural band */}
-        <div className="border-t-4 border-black flex">
-          <div className="flex-1 bg-black h-3" />
-          <div className="w-12 bg-[#0000FF]" />
-          <div className="w-8 bg-[#FFCC00]" />
-          <div className="w-6 bg-[#FF0000]" />
         </div>
       </section>
 
-      {/* ===== 3. Component Demos ===== */}
-      <section id="components" className="py-24 px-6 bg-white border-t-0">
+      {/* ================================================================ */}
+      {/* 3. COLOR PALETTE                                                 */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
         <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-yellow-400 block mb-4">
+              — Color System / Farbsystem
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-white uppercase leading-none">
+              Primary<br />
+              <span className="text-red-600">Colors Only</span>
+            </h2>
+          </RevealBlock>
 
-          {/* Section header */}
-          <RevealBlock className="mb-16">
-            <div className="flex items-end gap-6 border-b-4 border-black pb-6">
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-black">
-                COMPONENTS
-              </h2>
-              <div className="flex gap-2 mb-2">
-                <div className="w-6 h-6 bg-[#FF0000]" />
-                <div className="w-6 h-6 rounded-full bg-[#FFCC00]" />
-                <div className="w-6 h-6 bg-[#0000FF]" />
-              </div>
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white font-bold text-base max-w-lg uppercase tracking-wide leading-snug mt-6 opacity-80">
+              Red, yellow, blue plus black and white. No gradients. No pastels. No mixing.
+              Pure pigment — the Bauhaus palette.
+            </p>
+          </RevealBlock>
+
+          {/* Swatches */}
+          <RevealBlock delay={0.1}>
+            <div className="flex flex-col md:flex-row gap-0 border-4 border-white">
+              {PALETTE.map((color, i) => (
+                <div
+                  key={color.name}
+                  className="flex-1 min-h-52 p-8 flex flex-col justify-between cursor-pointer border-r-2 border-white last:border-r-0"
+                  style={{
+                    backgroundColor: color.hex,
+                    transform: hoveredSwatch === i ? "translateY(-8px)" : "translateY(0)",
+                    transition: "transform 0.2s ease-out",
+                  }}
+                  onMouseEnter={() => setHoveredSwatch(i)}
+                  onMouseLeave={() => setHoveredSwatch(null)}
+                >
+                  {/* Geometric shape indicator */}
+                  <div className="mb-6">
+                    {i === 0 && (
+                      <div
+                        className="w-10 h-10 rounded-full border-4"
+                        style={{ borderColor: color.textOnColor }}
+                      />
+                    )}
+                    {i === 1 && (
+                      <div
+                        className="w-10 h-10 border-4"
+                        style={{ borderColor: color.textOnColor }}
+                      />
+                    )}
+                    {i === 2 && (
+                      <div
+                        className="w-0 h-0"
+                        style={{
+                          borderLeft: "20px solid transparent",
+                          borderRight: "20px solid transparent",
+                          borderBottom: `34px solid ${color.textOnColor}`,
+                        }}
+                      />
+                    )}
+                    {i === 3 && (
+                      <div className="w-10 h-10 rounded-full border-4 border-white" />
+                    )}
+                    {i === 4 && (
+                      <div className="w-10 h-10 border-4 border-black" />
+                    )}
+                  </div>
+                  <div>
+                    <div
+                      className="text-sm font-black uppercase tracking-widest mb-1"
+                      style={{ color: color.textOnColor }}
+                    >
+                      {color.label}
+                    </div>
+                    <div
+                      className="text-xs font-bold font-mono"
+                      style={{ color: color.textOnColor, opacity: 0.6 }}
+                    >
+                      {color.hex}
+                    </div>
+                    <div
+                      className="text-xl font-black uppercase mt-3"
+                      style={{ color: color.textOnColor }}
+                    >
+                      {color.name}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </RevealBlock>
 
-          {/* Tab switcher */}
-          <RevealBlock delay={0.05} className="mb-12">
-            <div className="flex border-4 border-black">
-              {(["red", "yellow", "blue"] as const).map((tab) => (
+          {/* Geometric composition */}
+          <RevealBlock delay={0.2} className="mt-14">
+            <div className="bg-white border-4 border-white p-10">
+              <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-8">
+                The Three Pure Forms — Geometric Composition
+              </p>
+              <div className="flex items-end gap-12 flex-wrap">
+                <div className="flex flex-col items-center gap-4">
+                  <div
+                    className="w-28 h-28 bg-yellow-400 rounded-full border-4 border-black cursor-pointer"
+                    style={{
+                      transform: shapeHovered === "pal-circle" ? "scale(1.25)" : "scale(1)",
+                      transition: "transform 0.2s ease-out",
+                    }}
+                    onMouseEnter={() => setShapeHovered("pal-circle")}
+                    onMouseLeave={() => setShapeHovered(null)}
+                  />
+                  <div className="text-center">
+                    <div className="text-xs font-black uppercase tracking-widest">Circle</div>
+                    <div className="text-[10px] font-bold uppercase opacity-50 mt-1">scale-125 on hover</div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-4">
+                  <div
+                    className="w-28 h-28 bg-blue-600 border-4 border-black cursor-pointer"
+                    style={{
+                      transform: shapeHovered === "pal-square" ? "rotate(45deg)" : "rotate(0deg)",
+                      transition: "transform 0.2s ease-out",
+                    }}
+                    onMouseEnter={() => setShapeHovered("pal-square")}
+                    onMouseLeave={() => setShapeHovered(null)}
+                  />
+                  <div className="text-center mt-4">
+                    <div className="text-xs font-black uppercase tracking-widest">Square</div>
+                    <div className="text-[10px] font-bold uppercase opacity-50 mt-1">rotate-45 on hover</div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-4">
+                  <div
+                    className="w-0 h-0 cursor-pointer"
+                    style={{
+                      borderLeft: "56px solid transparent",
+                      borderRight: "56px solid transparent",
+                      borderBottom: "97px solid #ff0000",
+                      transform: shapeHovered === "pal-triangle" ? "scale(1.15) rotate(180deg)" : "scale(1) rotate(0deg)",
+                      transition: "transform 0.2s ease-out",
+                    }}
+                    onMouseEnter={() => setShapeHovered("pal-triangle")}
+                    onMouseLeave={() => setShapeHovered(null)}
+                  />
+                  <div className="text-center mt-8">
+                    <div className="text-xs font-black uppercase tracking-widest">Triangle</div>
+                    <div className="text-[10px] font-bold uppercase opacity-50 mt-1">scale + rotate-180</div>
+                  </div>
+                </div>
+                <div className="flex-1 min-w-40">
+                  <div className="bg-black border-4 border-black p-5 text-white font-mono text-xs leading-relaxed">
+                    {`/* Bauhaus Form Language */\ncircle  → warmth, movement\nsquare  → order, stability\ntriangle → energy, direction\n\nhover:scale-125\nhover:rotate-45\nduration-200 ease-out`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 4. COMPONENT GALLERY                                             */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-red-600 block mb-4">
+              — Components / Komponenten
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-black uppercase leading-none">
+              Structural<br />
+              <span className="text-blue-600">Building Blocks</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-10">
+            <p className="text-black font-bold text-base max-w-lg uppercase tracking-wide leading-snug mt-6 opacity-70">
+              Every component stripped of ornament. Heavy borders. Primary colors.
+              Short mechanical transitions. No decoration without function.
+            </p>
+          </RevealBlock>
+
+          {/* Tabs */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-0 border-4 border-black">
+              {(["buttons", "cards", "inputs", "badges"] as ComponentTab[]).map((tab, i) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-4 font-black uppercase tracking-widest text-xs transition-colors duration-150 border-r-4 border-black last:border-r-0 ${
-                    activeTab === tab
-                      ? `${tabConfig[tab].bg} ${tabConfig[tab].text}`
-                      : "bg-white text-black hover:bg-gray-100"
-                  }`}
+                  className="px-6 py-3.5 text-xs font-black uppercase tracking-widest transition-colors duration-150"
+                  style={{
+                    backgroundColor: activeTab === tab ? "#000000" : "#ffffff",
+                    color: activeTab === tab ? "#ffcc00" : "#000000",
+                    borderRight: i < 3 ? "2px solid #000" : "none",
+                  }}
                 >
-                  {tabConfig[tab].label}
+                  {tab}
                 </button>
               ))}
             </div>
           </RevealBlock>
 
-          {/* Tab: RED — Buttons */}
-          {activeTab === "red" && (
-            <RevealBlock>
-              <div className="space-y-12">
-                {/* Button variants */}
-                <div className="border-4 border-black p-8">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-6 border-l-4 border-[#FF0000] pl-3">
-                    BUTTON VARIANTS — PRIMARY COLORS + BLACK BORDER
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <BauhausButton variant="red" onClick={() => showNotification("RED clicked")}>
-                      RED PRIMARY
-                    </BauhausButton>
-                    <BauhausButton variant="yellow" onClick={() => showNotification("YELLOW clicked")}>
-                      YELLOW SECONDARY
-                    </BauhausButton>
-                    <BauhausButton variant="blue" onClick={() => showNotification("BLUE clicked")}>
-                      BLUE TERTIARY
-                    </BauhausButton>
-                    <BauhausButton variant="black" onClick={() => showNotification("BLACK clicked")}>
-                      BLACK STRUCTURAL
-                    </BauhausButton>
-                    <BauhausButton variant="outline" onClick={() => showNotification("OUTLINE clicked")}>
-                      OUTLINE GHOST
-                    </BauhausButton>
-                  </div>
-                  {notification && (
-                    <div className="mt-4 px-4 py-3 bg-black text-white font-bold uppercase tracking-widest text-xs border-4 border-[#FF0000] inline-block">
-                      {notification}
-                    </div>
-                  )}
-                </div>
+          {/* Demo panel */}
+          <RevealBlock delay={0.15}>
+            <div className="bg-white border-4 border-black p-10 md:p-14">
 
-                {/* Toggle switches */}
-                <div className="border-4 border-black p-8">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-6 border-l-4 border-[#FF0000] pl-3">
-                    TOGGLE SWITCHES — BINARY STATES
-                  </p>
-                  <div className="space-y-4">
-                    {[
-                      { label: "GRID SYSTEM ACTIVE", desc: "Enable column grid", color: "bg-[#FF0000]", shape: "rounded-none" },
-                      { label: "PRIMARY COLORS ONLY", desc: "Strict palette mode", color: "bg-[#FFCC00]", shape: "rounded-full" },
-                      { label: "GEOMETRIC FORMS", desc: "Pure shape rendering", color: "bg-[#0000FF]", shape: "rounded-none" },
-                    ].map((item, index) => (
-                      <div
-                        key={item.label}
-                        className="flex items-center justify-between p-4 border-2 border-black hover:border-[#FF0000] transition-colors duration-150"
-                      >
-                        <div>
-                          <p className="font-black uppercase tracking-widest text-xs text-black">{item.label}</p>
-                          <p className="text-xs font-mono text-gray-600 mt-1">{item.desc}</p>
-                        </div>
+              {/* ---- BUTTONS ---- */}
+              {activeTab === "buttons" && (
+                <div className="space-y-12">
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Primary — Color Block Slide Reveal (Geometric Reveal Rule)
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { label: "ACTION", bg: "#ff0000", reveal: "#ffcc00", textAfter: "#000000" },
+                        { label: "EXPLORE", bg: "#0000ff", reveal: "#ff0000", textAfter: "#ffffff" },
+                        { label: "SUBMIT", bg: "#000000", reveal: "#0000ff", textAfter: "#ffffff" },
+                        { label: "CONFIRM", bg: "#ffcc00", textColor: "#000000", reveal: "#000000", textAfter: "#ffffff" },
+                      ].map((btn) => (
                         <button
-                          onClick={() => {
-                            const next = [...toggleStates];
-                            next[index] = !next[index];
-                            setToggleStates(next);
-                          }}
-                          className={`relative w-16 h-8 border-4 border-black transition-colors duration-150 ${
-                            toggleStates[index] ? item.color : "bg-white"
-                          } ${item.shape}`}
-                          aria-pressed={toggleStates[index]}
+                          key={btn.label}
+                          className="group relative px-8 py-4 font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden active:translate-y-1 transition-all duration-150"
+                          style={{ backgroundColor: btn.bg, color: btn.textColor ?? "#ffffff" }}
+                          onClick={() => showNotification(`${btn.label} clicked`)}
                         >
                           <span
-                            className={`absolute top-0 w-6 h-6 bg-black transition-all duration-150 ${
-                              toggleStates[index] ? "left-[calc(100%-24px)]" : "left-0"
-                            }`}
+                            className="relative z-10 transition-colors duration-150"
+                            style={{ color: btn.textColor ?? "#ffffff" }}
+                          >
+                            {btn.label}
+                          </span>
+                          <div
+                            className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out"
+                            style={{ backgroundColor: btn.reveal }}
                           />
                         </button>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
 
-          {/* Tab: YELLOW — Cards */}
-          {activeTab === "yellow" && (
-            <RevealBlock>
-              <div className="space-y-12">
-                {/* Shape cards */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FFCC00] mb-6 border-l-4 border-[#FFCC00] pl-3">
-                    GEOMETRIC CARDS — PRIMARY COLOR ACCENT STRIPS
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black">
-                    {[
-                      {
-                        color: "#FF0000",
-                        textColor: "text-white",
-                        shape: "CIRCLE",
-                        desc: "Unity, wholeness, dynamic tension. The circle has no beginning and no end.",
-                        geometry: <GeometricCircle size={56} color="#FFFFFF" />,
-                      },
-                      {
-                        color: "#FFCC00",
-                        textColor: "text-black",
-                        shape: "SQUARE",
-                        desc: "Stability, order, rationality. Four equal sides — the democratic form.",
-                        geometry: <GeometricSquare size={56} color="#000000" />,
-                      },
-                      {
-                        color: "#0000FF",
-                        textColor: "text-white",
-                        shape: "TRIANGLE",
-                        desc: "Dynamic energy, direction, conflict. Three points of tension held in equilibrium.",
-                        geometry: <GeometricTriangle size={56} color="#FFFFFF" />,
-                      },
-                    ].map((card, i) => (
-                      <div
-                        key={card.shape}
-                        className={`p-8 border-r-4 border-black last:border-r-0 group hover:opacity-90 transition-opacity duration-150`}
-                        style={{ backgroundColor: card.color }}
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Outline — Hard Border Invert
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button
+                        className="px-8 py-4 bg-white text-black font-black uppercase tracking-wider text-sm border-4 border-black hover:bg-black hover:text-white transition-colors duration-150 active:translate-y-1"
+                        onClick={() => showNotification("Outline clicked")}
                       >
-                        <div className="mb-6">{card.geometry}</div>
-                        <h3 className={`text-2xl font-black uppercase tracking-widest mb-3 ${card.textColor}`}>
-                          {card.shape}
-                        </h3>
-                        <p className={`text-xs font-mono leading-relaxed ${card.textColor} opacity-90`}>
-                          {card.desc}
-                        </p>
-                        <div
-                          className={`mt-6 w-8 border-b-4 ${i === 1 ? "border-black" : "border-white"}`}
-                        />
-                      </div>
-                    ))}
+                        OUTLINED
+                      </button>
+                      <button
+                        className="px-8 py-4 bg-white text-red-600 font-black uppercase tracking-wider text-sm border-4 border-red-600 hover:bg-red-600 hover:text-white transition-colors duration-150 active:translate-y-1"
+                        onClick={() => showNotification("Danger clicked")}
+                      >
+                        DANGER
+                      </button>
+                      <button
+                        className="px-8 py-4 bg-white text-blue-600 font-black uppercase tracking-wider text-sm border-4 border-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-150 active:translate-y-1"
+                        onClick={() => showNotification("Info clicked")}
+                      >
+                        INFO
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Size Variants — Bauhaus Grid Proportions
+                    </p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { size: "SM", cls: "px-4 py-2 text-xs" },
+                        { size: "MD", cls: "px-7 py-3 text-sm" },
+                        { size: "LG", cls: "px-10 py-5 text-base" },
+                      ].map(({ size, cls }) => (
+                        <button
+                          key={size}
+                          className={`group relative bg-yellow-400 text-black font-black uppercase tracking-widest border-4 border-black overflow-hidden hover:text-white active:translate-y-1 transition-all duration-150 ${cls}`}
+                          onClick={() => showNotification(`${size} button`)}
+                        >
+                          <span className="relative z-10">{size}</span>
+                          <div className="absolute inset-0 bg-black -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+              )}
 
-                {/* Input + Form */}
-                <div className="border-4 border-black p-8">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FFCC00] mb-6 border-l-4 border-[#FFCC00] pl-3">
-                    INPUT FIELDS — THICK BLACK BORDERS
-                  </p>
-                  <div className="max-w-md space-y-4">
+              {/* ---- CARDS ---- */}
+              {activeTab === "cards" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {[
+                    { title: "Form", sub: "Follows Function", desc: "Every design decision justified by purpose. No ornament without utility. Structure is beauty.", circleColor: "#ffcc00", squareColor: "#0000ff" },
+                    { title: "Craft", sub: "Meets Industry", desc: "Bauhaus united fine arts with industrial production. Machine-age beauty through manufacturing.", circleColor: "#ff0000", squareColor: "#ffcc00" },
+                    { title: "Grid", sub: "Structures All", desc: "The invisible 12-column grid underpins all composition. Alignment is not optional — it is law.", circleColor: "#0000ff", squareColor: "#ff0000" },
+                    { title: "Type", sub: "Is Architecture", desc: "Sans-serif letterforms. No decorative strokes. Typography as pure geometric structure.", circleColor: "#ffcc00", squareColor: "#000000" },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="group relative p-8 bg-white border-4 border-black cursor-pointer hover:-translate-y-2 transition-all duration-200 ease-out"
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = `8px 8px 0px ${card.circleColor}`;
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+                      }}
+                    >
+                      {/* Circle decorator — scales on hover */}
+                      <div
+                        className="absolute -top-5 -left-5 w-10 h-10 rounded-full border-4 border-black group-hover:scale-125 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: card.circleColor }}
+                      />
+                      {/* Square decorator — rotates on hover */}
+                      <div
+                        className="absolute -bottom-4 -right-4 w-8 h-8 border-4 border-black group-hover:rotate-45 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: card.squareColor }}
+                      />
+                      <h3 className="text-3xl font-black text-black uppercase tracking-wider mb-1 group-hover:text-red-600 transition-colors duration-150">
+                        {card.title}
+                      </h3>
+                      <p className="text-xs font-black uppercase tracking-widest text-black mb-4 opacity-40">
+                        {card.sub}
+                      </p>
+                      <p className="text-black font-bold text-sm leading-relaxed">
+                        {card.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- INPUTS ---- */}
+              {activeTab === "inputs" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-black mb-2">
-                        NAME / LABEL
-                      </label>
+                      <label className="block text-xs font-black uppercase tracking-widest text-black mb-2">Name</label>
                       <input
                         type="text"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        placeholder="ENTER TEXT HERE"
-                        className="w-full px-4 py-3 bg-white border-4 border-black text-black font-mono uppercase tracking-wide placeholder-gray-400 focus:outline-none focus:border-[#FF0000] transition-colors duration-150"
+                        placeholder="ENTER TEXT"
+                        className="w-full px-6 py-4 bg-white border-4 text-black font-bold placeholder-gray-300 focus:outline-none transition-colors duration-150"
+                        style={{ borderColor: inputFocused1 ? "#ff0000" : "#000000" }}
+                        onFocus={() => setInputFocused1(true)}
+                        onBlur={() => setInputFocused1(false)}
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-black mb-2">
-                        EMAIL / FUNCTION
-                      </label>
+                      <label className="block text-xs font-black uppercase tracking-widest text-black mb-2">Email</label>
                       <input
                         type="email"
-                        placeholder="YOUR@ADDRESS.COM"
-                        className="w-full px-4 py-3 bg-white border-4 border-black text-black font-mono uppercase tracking-wide placeholder-gray-400 focus:outline-none focus:border-[#0000FF] transition-colors duration-150"
+                        placeholder="YOU@BAUHAUS.DE"
+                        className="w-full px-6 py-4 bg-white border-4 text-black font-bold placeholder-gray-300 focus:outline-none transition-colors duration-150"
+                        style={{ borderColor: inputFocused2 ? "#0000ff" : "#000000" }}
+                        onFocus={() => setInputFocused2(true)}
+                        onBlur={() => setInputFocused2(false)}
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-black mb-2">
-                        MESSAGE / CONTENT
-                      </label>
+                      <label className="block text-xs font-black uppercase tracking-widest text-black mb-2">Message</label>
                       <textarea
-                        rows={3}
-                        placeholder="TYPE YOUR MESSAGE..."
-                        className="w-full px-4 py-3 bg-white border-4 border-black text-black font-mono uppercase tracking-wide placeholder-gray-400 focus:outline-none focus:border-[#FFCC00] resize-none transition-colors duration-150"
+                        rows={4}
+                        placeholder="WRITE SOMETHING FUNCTIONAL..."
+                        className="w-full px-6 py-4 bg-white border-4 border-black text-black font-bold placeholder-gray-300 focus:border-yellow-400 focus:outline-none transition-colors duration-150 resize-none"
                       />
                     </div>
-                    <BauhausButton variant="black">SUBMIT FORM</BauhausButton>
                   </div>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-black mb-2">Category</label>
+                      <select className="w-full px-6 py-4 bg-white border-4 border-black text-black font-bold focus:border-red-600 focus:outline-none transition-colors duration-150">
+                        <option>Architecture</option>
+                        <option>Design</option>
+                        <option>Craft</option>
+                        <option>Typography</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-6 h-6 border-4 border-black bg-red-600 flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors duration-150">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <label className="text-sm font-black uppercase tracking-wider cursor-pointer">
+                        Functional design only
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-6 h-6 border-4 border-black cursor-pointer hover:bg-blue-600 transition-colors duration-150" />
+                      <label className="text-sm font-black uppercase tracking-wider cursor-pointer">
+                        No ornamental elements
+                      </label>
+                    </div>
+                    <button
+                      className="group relative w-full py-4 bg-black text-white font-black uppercase tracking-widest text-sm border-4 border-black overflow-hidden hover:text-black active:translate-y-1 transition-all duration-150"
+                      onClick={() => showNotification("Form submitted")}
+                    >
+                      <span className="relative z-10">Submit Form</span>
+                      <div className="absolute inset-0 bg-red-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- BADGES ---- */}
+              {activeTab === "badges" && (
+                <div className="space-y-10">
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Status Badges — Hard Color Blocks
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "Functional", bg: "#000000", text: "#ffffff" },
+                        { label: "Geometric", bg: "#ff0000", text: "#ffffff" },
+                        { label: "Minimal", bg: "#ffcc00", text: "#000000" },
+                        { label: "Structural", bg: "#0000ff", text: "#ffffff" },
+                        { label: "Primary", bg: "#000000", text: "#ff0000" },
+                        { label: "Modern", bg: "#ff0000", text: "#ffcc00" },
+                        { label: "Precise", bg: "#0000ff", text: "#ffcc00" },
+                        { label: "Pure", bg: "#ffcc00", text: "#0000ff" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="px-4 py-2 text-xs font-black uppercase tracking-widest border-2 border-black hover:-translate-y-1 transition-transform duration-150 cursor-default"
+                          style={{ backgroundColor: b.bg, color: b.text }}
+                        >
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Indicator Badges — with Geometric Markers
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {[
+                        { label: "Active", icon: "circle", bg: "#ff0000", text: "#ffffff" },
+                        { label: "Pending", icon: "square", bg: "#ffcc00", text: "#000000" },
+                        { label: "Stable", icon: "triangle", bg: "#0000ff", text: "#ffffff" },
+                        { label: "Complete", icon: "circle", bg: "#000000", text: "#ffcc00" },
+                      ].map((b) => (
+                        <span
+                          key={b.label}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-black uppercase tracking-widest border-4 border-black hover:-translate-y-1 transition-transform duration-150 cursor-default"
+                          style={{ backgroundColor: b.bg, color: b.text }}
+                        >
+                          {b.icon === "circle" && (
+                            <span className="w-3 h-3 rounded-full border-2 shrink-0" style={{ borderColor: b.text }} />
+                          )}
+                          {b.icon === "square" && (
+                            <span className="w-3 h-3 border-2 shrink-0" style={{ borderColor: b.text }} />
+                          )}
+                          {b.icon === "triangle" && (
+                            <span
+                              className="w-0 h-0 shrink-0"
+                              style={{
+                                borderLeft: "5px solid transparent",
+                                borderRight: "5px solid transparent",
+                                borderBottom: `8px solid ${b.text}`,
+                              }}
+                            />
+                          )}
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-black tracking-[0.25em] uppercase text-black mb-6 border-b-2 border-black pb-2">
+                      Count Badges
+                    </p>
+                    <div className="flex flex-wrap gap-6 items-center">
+                      {[
+                        { label: "Shapes", count: 3, bg: "#ff0000", text: "#fff" },
+                        { label: "Colors", count: 5, bg: "#ffcc00", text: "#000" },
+                        { label: "Principles", count: 7, bg: "#0000ff", text: "#fff" },
+                        { label: "Rules", count: 12, bg: "#000000", text: "#ffcc00" },
+                      ].map((b) => (
+                        <div key={b.label} className="flex items-center gap-2">
+                          <span className="text-sm text-black font-black uppercase tracking-wider">{b.label}</span>
+                          <span
+                            className="w-8 h-8 flex items-center justify-center text-sm font-black border-2 border-black hover:scale-110 transition-transform duration-150 cursor-default"
+                            style={{ backgroundColor: b.bg, color: b.text }}
+                          >
+                            {b.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. AI RULES — INTERACTIVE DEMOS (all 5 named rules)             */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-blue-600 block mb-4">
+              — Interaction Rules / AI Rules Demo
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-black uppercase leading-none">
+              Named<br />
+              <span className="text-yellow-400" style={{ WebkitTextStroke: "3px #000" }}>AI Rules</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-16">
+            <p className="text-black font-bold text-base max-w-xl uppercase tracking-wide leading-snug mt-6 opacity-70">
+              Five named interaction patterns from the Bauhaus aiRules specification.
+              Click, hover, and interact with each demo to experience the rule in action.
+            </p>
+          </RevealBlock>
+
+          {/* ---- Rule 1: Structural Shifts ---- */}
+          <RevealBlock delay={0.08} className="mb-12">
+            <div className="border-4 border-black">
+              {/* Rule header */}
+              <div className="bg-red-600 border-b-4 border-black p-6 flex items-center gap-4">
+                <div className="w-8 h-8 bg-white border-2 border-black shrink-0 flex items-center justify-center">
+                  <span className="font-black text-red-600 text-xs">01</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-wider text-white">
+                    Structural Shifts
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-white opacity-70 mt-0.5">
+                    Animation shows "structure" — hard displacement and large solid color blocks sliding to cover each other
+                  </p>
                 </div>
               </div>
-            </RevealBlock>
-          )}
 
-          {/* Tab: BLUE — Progress + Accordion */}
-          {activeTab === "blue" && (
-            <RevealBlock>
-              <div className="space-y-12">
-                {/* Progress bars */}
-                <div className="border-4 border-black p-8">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#0000FF] mb-6 border-l-4 border-[#0000FF] pl-3">
-                    PROGRESS INDICATORS — GEOMETRIC PROPORTION
-                  </p>
-                  <div className="space-y-6">
-                    {/* Linear */}
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-widest text-black">
-                          PROJECT COMPLETION
+              <div className="p-8">
+                <p className="text-xs font-black uppercase tracking-widest text-black mb-6 opacity-50">
+                  Click each discipline block to shift the active structural section:
+                </p>
+
+                {/* Interactive structural blocks */}
+                <div className="flex flex-col md:flex-row gap-0 border-4 border-black overflow-hidden mb-6">
+                  {[
+                    { label: "Architecture", color: "#ff0000", textColor: "#ffffff" },
+                    { label: "Craft", color: "#ffcc00", textColor: "#000000" },
+                    { label: "Fine Arts", color: "#0000ff", textColor: "#ffffff" },
+                    { label: "Technology", color: "#000000", textColor: "#ffffff" },
+                  ].map((block, i) => (
+                    <div
+                      key={block.label}
+                      className="flex-1 relative overflow-hidden cursor-pointer border-r-2 border-black last:border-r-0"
+                      onClick={() => setStructuralActive(i)}
+                      style={{ minHeight: "120px" }}
+                    >
+                      {/* Base (inactive) */}
+                      <div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        <span className="text-xs font-black uppercase tracking-widest text-black opacity-30">
+                          {block.label}
                         </span>
-                        <span className="text-xs font-black text-[#FF0000]">{progress}%</span>
                       </div>
-                      <div className="h-8 bg-white border-4 border-black">
-                        <div
-                          className="h-full bg-[#FF0000] transition-all duration-500"
-                          style={{ width: `${progress}%` }}
-                        />
+                      {/* Active color block slides in */}
+                      <div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{
+                          backgroundColor: block.color,
+                          transform: structuralActive === i ? "translateX(0)" : "translateX(-100%)",
+                          transition: "transform 0.2s ease-out",
+                        }}
+                      >
+                        <span
+                          className="text-sm font-black uppercase tracking-widest"
+                          style={{ color: block.textColor }}
+                        >
+                          {block.label}
+                        </span>
                       </div>
+                      {/* Click hint */}
+                      <div className="absolute inset-0 pointer-events-none border-2 border-transparent" />
                     </div>
-
-                    {/* Segmented */}
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-black mb-2 block">
-                        PHASE BREAKDOWN
-                      </span>
-                      <div className="grid grid-cols-4 gap-2">
-                        {[
-                          { value: 100, color: "bg-[#FF0000]", label: "PLAN" },
-                          { value: 100, color: "bg-[#FFCC00]", label: "BUILD" },
-                          { value: progress, color: "bg-[#0000FF]", label: "TEST" },
-                          { value: 12, color: "bg-black", label: "SHIP" },
-                        ].map((item) => (
-                          <div key={item.label}>
-                            <div className="h-6 bg-white border-4 border-black mb-1">
-                              <div
-                                className={`h-full ${item.color} transition-all duration-500`}
-                                style={{ width: `${item.value}%` }}
-                              />
-                            </div>
-                            <p className="text-xs font-bold uppercase tracking-widest text-center text-black">
-                              {item.label}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Controls */}
-                    <div className="flex gap-4 pt-4 border-t-4 border-black">
-                      <BauhausButton
-                        variant="outline"
-                        onClick={() => setProgress(Math.max(0, progress - 10))}
-                      >
-                        DECREASE
-                      </BauhausButton>
-                      <BauhausButton
-                        variant="blue"
-                        onClick={() => setProgress(Math.min(100, progress + 10))}
-                      >
-                        INCREASE
-                      </BauhausButton>
-                      <BauhausButton
-                        variant="black"
-                        onClick={() => setProgress(62)}
-                      >
-                        RESET
-                      </BauhausButton>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
-                {/* Accordion */}
+                <div className="bg-black p-4">
+                  <code className="text-yellow-400 text-xs font-mono">
+                    {`/* Structural Shifts — hard displacement */\n/* Active block: "${["Architecture", "Craft", "Fine Arts", "Technology"][structuralActive]}" */\ntransform: translateX(-100%) → translateX(0);\ntransition: transform 0.2s ease-out;\n/* Large solid color block covers previous — no fade */`}
+                  </code>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* ---- Rule 2: Mechanical Precision ---- */}
+          <RevealBlock delay={0.1} className="mb-12">
+            <div className="border-4 border-black">
+              <div className="bg-yellow-400 border-b-4 border-black p-6 flex items-center gap-4">
+                <div className="w-8 h-8 bg-black border-2 border-black shrink-0 flex items-center justify-center">
+                  <span className="font-black text-yellow-400 text-xs">02</span>
+                </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#0000FF] mb-6 border-l-4 border-[#0000FF] pl-3">
-                    ACCORDION — COLLAPSIBLE INFORMATION
+                  <h3 className="text-xl font-black uppercase tracking-wider text-black">
+                    Mechanical Precision
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-black opacity-60 mt-0.5">
+                    Transitions are short, sharp, powerful — duration-150 or duration-200, always ease-out, never ease-in-out
                   </p>
-                  <div className="border-4 border-black">
-                    {[
-                      {
-                        title: "WHAT IS BAUHAUS?",
-                        content: "Bauhaus was a German art school founded in 1919 by Walter Gropius in Weimar. It combined crafts and fine arts, rejecting the separation between fine art and applied art. The school became influential for its approach to design: functionality, geometric forms, primary colors, and honest use of materials.",
-                        accent: "#FF0000",
-                        shape: "circle",
-                      },
-                      {
-                        title: "CORE VISUAL LANGUAGE",
-                        content: "Three primary colors: red, yellow, blue. Three basic shapes: circle, square, triangle. Black and white as structure. No gradients, no decorative typefaces, no ornament. Every visual decision serves a communicative function. Waste is the enemy of design.",
-                        accent: "#FFCC00",
-                        shape: "square",
-                      },
-                      {
-                        title: "DESIGN LEGACY",
-                        content: "Bauhaus principles continue to define modern design — from the International Style in architecture, to flat UI design in digital interfaces, to product design philosophy. The emphasis on simplicity, functionality, and geometric purity remains the dominant paradigm in contemporary visual culture.",
-                        accent: "#0000FF",
-                        shape: "triangle",
-                      },
-                    ].map((item, index) => (
-                      <div
-                        key={item.title}
-                        className="border-b-4 border-black last:border-b-0"
+                </div>
+              </div>
+
+              <div className="p-8">
+                <p className="text-xs font-black uppercase tracking-widest text-black mb-6 opacity-50">
+                  Click each button — feel the snap difference between allowed and forbidden timing:
+                </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  {[
+                    { label: "150ms ease-out", ms: 150, easing: "ease-out", bg: "#ff0000", text: "#fff", allowed: true },
+                    { label: "200ms ease-out", ms: 200, easing: "ease-out", bg: "#ffcc00", text: "#000", allowed: true },
+                    { label: "300ms ease-out", ms: 300, easing: "ease-out", bg: "#0000ff", text: "#fff", allowed: false },
+                    { label: "500ms ease-in-out", ms: 500, easing: "ease-in-out", bg: "#666", text: "#fff", allowed: false },
+                  ].map((btn, i) => (
+                    <div key={btn.label} className="flex flex-col gap-2">
+                      <button
+                        className="py-4 font-black uppercase tracking-wider text-xs border-4 border-black active:translate-y-1"
+                        style={{
+                          backgroundColor: mechanicalClicked === i ? btn.bg : "#ffffff",
+                          color: mechanicalClicked === i ? btn.text : "#000000",
+                          transition: `background-color ${btn.ms}ms ${btn.easing}, color ${btn.ms}ms ${btn.easing}`,
+                        }}
+                        onClick={() => {
+                          setMechanicalClicked(i);
+                          setTimeout(() => setMechanicalClicked(null), btn.ms + 50);
+                        }}
                       >
-                        <button
-                          onClick={() =>
-                            setActiveAccordion(activeAccordion === index ? null : index)
-                          }
-                          className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors duration-150"
+                        Click
+                      </button>
+                      <div className="text-center">
+                        <span
+                          className="text-[10px] font-black uppercase tracking-wider block"
+                          style={{ color: btn.allowed ? "#000" : "#666" }}
                         >
-                          <div className="flex items-center gap-4">
-                            {/* Geometric indicator */}
-                            {item.shape === "circle" && (
-                              <div
-                                className="w-5 h-5 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: item.accent }}
-                              />
-                            )}
-                            {item.shape === "square" && (
-                              <div
-                                className="w-5 h-5 flex-shrink-0"
-                                style={{ backgroundColor: item.accent }}
-                              />
-                            )}
-                            {item.shape === "triangle" && (
-                              <svg width="20" height="18" viewBox="0 0 20 18" fill="none" className="flex-shrink-0" aria-hidden="true">
-                                <polygon points="10,1 19,17 1,17" fill={item.accent} />
-                              </svg>
-                            )}
-                            <span className="font-black uppercase tracking-widest text-sm text-black">
-                              {item.title}
-                            </span>
-                          </div>
-                          <div
-                            className="w-8 h-8 border-4 border-black flex items-center justify-center font-black text-base transition-colors duration-150"
-                            style={{
-                              backgroundColor: activeAccordion === index ? item.accent : "white",
-                              color: item.accent === "#FFCC00" && activeAccordion === index ? "black" : activeAccordion === index ? "white" : "black",
-                            }}
-                          >
-                            {activeAccordion === index ? "−" : "+"}
-                          </div>
-                        </button>
-                        {activeAccordion === index && (
-                          <div className="px-6 pb-6 border-t-4 border-black" style={{ borderColor: item.accent }}>
-                            <p className="text-sm font-mono text-black leading-relaxed pt-4">
-                              {item.content}
-                            </p>
-                          </div>
+                          {btn.label}
+                        </span>
+                        {!btn.allowed && (
+                          <span className="text-[9px] font-black uppercase text-red-500 block mt-0.5">
+                            BANNED
+                          </span>
+                        )}
+                        {btn.allowed && (
+                          <span className="text-[9px] font-black uppercase text-green-600 block mt-0.5">
+                            ALLOWED
+                          </span>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-          )}
-        </div>
-      </section>
-
-      {/* ===== 4. Color Palette ===== */}
-      <section id="palette" className="py-24 px-6 bg-black border-t-4 border-black">
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-white pb-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FFCC00] mb-3 font-mono">
-                COLOR SYSTEM / FARBSYSTEM
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-white">
-                PRIMARY PALETTE
-              </h2>
-            </div>
-          </RevealBlock>
-
-          {/* 5 color blocks */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-0 border-4 border-white">
-            {PALETTE.map((color, i) => (
-              <RevealBlock key={color.name} delay={i * 0.07}>
-                <div
-                  className="relative p-8 border-r-4 border-white last:border-r-0 group hover:scale-[1.02] transition-transform duration-150"
-                  style={{ backgroundColor: color.bg }}
-                >
-                  {/* Geometry indicator */}
-                  <div className="mb-8">
-                    {i === 0 && (
-                      <div
-                        className="w-12 h-12 rounded-full border-4"
-                        style={{ borderColor: color.text }}
-                      />
-                    )}
-                    {i === 1 && (
-                      <div
-                        className="w-12 h-12 border-4"
-                        style={{ borderColor: color.text }}
-                      />
-                    )}
-                    {i === 2 && (
-                      <svg width="52" height="46" viewBox="0 0 52 46" fill="none" aria-hidden="true">
-                        <polygon
-                          points="26,4 50,42 2,42"
-                          fill="none"
-                          stroke={color.text}
-                          strokeWidth="4"
-                        />
-                      </svg>
-                    )}
-                    {i === 3 && (
-                      <div
-                        className="w-12 h-12 rounded-full border-4"
-                        style={{ borderColor: color.text }}
-                      />
-                    )}
-                    {i === 4 && (
-                      <div
-                        className="w-12 h-12 border-4"
-                        style={{ borderColor: color.text === "#000000" ? "#000000" : color.text }}
-                      />
-                    )}
-                  </div>
-
-                  <p
-                    className="font-black uppercase tracking-widest text-sm mb-2"
-                    style={{ color: color.text }}
-                  >
-                    {color.name}
-                  </p>
-                  <p
-                    className="font-mono text-xs tracking-widest"
-                    style={{ color: color.text, opacity: 0.7 }}
-                  >
-                    {color.hex}
-                  </p>
-
-                  {/* Role label */}
-                  <p
-                    className="font-mono text-xs uppercase tracking-widest mt-4 opacity-60"
-                    style={{ color: color.text }}
-                  >
-                    {i === 0 && "CIRCLE / DYNAMIC"}
-                    {i === 1 && "TRIANGLE / ENERGY"}
-                    {i === 2 && "SQUARE / STABLE"}
-                    {i === 3 && "STRUCTURE / GROUND"}
-                    {i === 4 && "SPACE / VOID"}
-                  </p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* Color rule */}
-          <RevealBlock delay={0.4} className="mt-12">
-            <div className="border-4 border-white p-8">
-              <div className="flex flex-wrap gap-8 items-center">
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 bg-[#FF0000] border-2 border-white" />
-                  <div className="w-8 h-8 rounded-full bg-[#FFCC00] border-2 border-white" />
-                  <div className="w-8 h-8 bg-[#0000FF] border-2 border-white" />
-                  <div className="text-white font-black text-2xl flex items-center">+</div>
-                  <div className="w-8 h-8 bg-white border-2 border-white" />
-                  <div className="w-8 h-8 bg-gray-600 border-2 border-white" />
-                </div>
-                <p className="text-white font-mono text-xs uppercase tracking-widest leading-relaxed max-w-lg">
-                  RULE: Only these five values are permitted. No tints, no shades, no mixing.
-                  Color serves as structural signal. Red = urgency / action. Yellow = caution / secondary.
-                  Blue = information / depth. Black = structure. White = space.
-                </p>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ===== 5. Geometric Shapes ===== */}
-      <section id="geometry" className="py-24 px-6 bg-white border-t-4 border-black">
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-black pb-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-3 font-mono">
-                GRUNDFORMEN / BASIC FORMS
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-black">
-                GEOMETRIC LANGUAGE
-              </h2>
-            </div>
-          </RevealBlock>
-
-          {/* Three shape demonstrations */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black mb-16">
-            {/* Circle */}
-            <RevealBlock delay={0.05}>
-              <div className="border-r-4 border-black p-12 flex flex-col items-center group">
-                <div className="mb-8 relative">
-                  <svg width="160" height="160" viewBox="0 0 160 160" fill="none" aria-hidden="true">
-                    <circle cx="80" cy="80" r="76" fill="#FF0000" stroke="#000000" strokeWidth="8" />
-                    <circle cx="80" cy="80" r="40" fill="none" stroke="#FFFFFF" strokeWidth="4" />
-                    <circle cx="80" cy="80" r="8" fill="#FFFFFF" />
-                    <line x1="80" y1="4" x2="80" y2="156" stroke="#FFFFFF" strokeWidth="2" opacity="0.5" />
-                    <line x1="4" y1="80" x2="156" y2="80" stroke="#FFFFFF" strokeWidth="2" opacity="0.5" />
-                  </svg>
-                </div>
-                <h3 className="font-black uppercase tracking-widest text-xl text-black mb-3">CIRCLE</h3>
-                <p className="font-mono text-xs text-center text-black leading-relaxed">
-                  Perfect symmetry in all directions.
-                  No beginning. No end. Unity and wholeness.
-                  Itten assigned it to RED — warm, advancing.
-                </p>
-                <div className="mt-6 flex gap-2">
-                  <div className="w-4 h-4 rounded-full bg-[#FF0000] border-2 border-black" />
-                  <div className="w-4 h-4 rounded-full bg-[#FF0000] border-2 border-black opacity-70" />
-                  <div className="w-4 h-4 rounded-full bg-[#FF0000] border-2 border-black opacity-40" />
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Square */}
-            <RevealBlock delay={0.1}>
-              <div className="border-r-4 border-black p-12 flex flex-col items-center">
-                <div className="mb-8 relative">
-                  <svg width="160" height="160" viewBox="0 0 160 160" fill="none" aria-hidden="true">
-                    <rect x="4" y="4" width="152" height="152" fill="#FFCC00" stroke="#000000" strokeWidth="8" />
-                    <rect x="32" y="32" width="96" height="96" fill="none" stroke="#000000" strokeWidth="4" />
-                    <rect x="60" y="60" width="40" height="40" fill="#000000" />
-                    <line x1="4" y1="4" x2="156" y2="156" stroke="#000000" strokeWidth="2" opacity="0.4" />
-                    <line x1="156" y1="4" x2="4" y2="156" stroke="#000000" strokeWidth="2" opacity="0.4" />
-                  </svg>
-                </div>
-                <h3 className="font-black uppercase tracking-widest text-xl text-black mb-3">SQUARE</h3>
-                <p className="font-mono text-xs text-center text-black leading-relaxed">
-                  Four equal sides. Perfect balance.
-                  Stability, order, rationality.
-                  Itten assigned it to YELLOW — neutral, contained.
-                </p>
-                <div className="mt-6 flex gap-2">
-                  <div className="w-4 h-4 bg-[#FFCC00] border-2 border-black" />
-                  <div className="w-4 h-4 bg-[#FFCC00] border-2 border-black opacity-70" />
-                  <div className="w-4 h-4 bg-[#FFCC00] border-2 border-black opacity-40" />
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* Triangle */}
-            <RevealBlock delay={0.15}>
-              <div className="p-12 flex flex-col items-center">
-                <div className="mb-8 relative">
-                  <svg width="160" height="160" viewBox="0 0 160 160" fill="none" aria-hidden="true">
-                    <polygon points="80,8 156,152 4,152" fill="#0000FF" stroke="#000000" strokeWidth="8" />
-                    <polygon points="80,48 124,128 36,128" fill="none" stroke="#FFFFFF" strokeWidth="4" />
-                    <polygon points="80,80 100,116 60,116" fill="#FFFFFF" />
-                  </svg>
-                </div>
-                <h3 className="font-black uppercase tracking-widest text-xl text-black mb-3">TRIANGLE</h3>
-                <p className="font-mono text-xs text-center text-black leading-relaxed">
-                  Three points of tension. Directional force.
-                  Dynamic energy and conflict resolved.
-                  Itten assigned it to BLUE — cool, receding.
-                </p>
-                <div className="mt-6 flex gap-2">
-                  {[1, 0.7, 0.4].map((op, i) => (
-                    <svg key={i} width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden="true">
-                      <polygon points="8,1 15,13 1,13" fill="#0000FF" opacity={op} stroke="#000000" strokeWidth="1.5" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Composition demo */}
-          <RevealBlock delay={0.2}>
-            <div className="border-4 border-black p-12">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-8 border-l-4 border-[#FF0000] pl-3">
-                COMPOSITION — THREE PRIMARIES IN STRUCTURAL ARRANGEMENT
-              </p>
-              <div className="flex flex-wrap gap-8 items-center justify-center">
-                {/* Large composition */}
-                <div className="relative w-80 h-80 border-4 border-black bg-white flex-shrink-0">
-                  {/* Red circle top-left */}
-                  <div className="absolute top-6 left-6 w-28 h-28 rounded-full bg-[#FF0000]" />
-                  {/* Blue square bottom-right */}
-                  <div className="absolute bottom-6 right-6 w-24 h-24 bg-[#0000FF]" />
-                  {/* Yellow triangle center */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg width="100" height="87" viewBox="0 0 100 87" fill="none" aria-hidden="true">
-                      <polygon points="50,4 96,83 4,83" fill="#FFCC00" stroke="#000000" strokeWidth="3" />
-                    </svg>
-                  </div>
-                  {/* Small accents */}
-                  <div className="absolute top-6 right-6 w-6 h-6 bg-black" />
-                  <div className="absolute bottom-6 left-6 w-6 h-6 rounded-full bg-[#FFCC00]" />
-                </div>
-
-                {/* Legend */}
-                <div className="space-y-4">
-                  {[
-                    { shape: "CIRCLE", color: "#FF0000", label: "CIRCLE — RED — WARMTH — MOVEMENT" },
-                    { shape: "SQUARE", color: "#FFCC00", label: "SQUARE — YELLOW — LOGIC — ORDER" },
-                    { shape: "TRIANGLE", color: "#0000FF", label: "TRIANGLE — BLUE — DEPTH — ENERGY" },
-                  ].map((item) => (
-                    <div key={item.shape} className="flex items-center gap-4">
-                      <div className="w-6 h-6 border-2 border-black flex-shrink-0" style={{ backgroundColor: item.color }} />
-                      <p className="font-mono text-xs uppercase tracking-widest text-black">{item.label}</p>
                     </div>
                   ))}
-                  <div className="flex items-center gap-4 pt-2 border-t-2 border-black">
-                    <div className="w-6 h-6 bg-black border-2 border-black flex-shrink-0" />
-                    <p className="font-mono text-xs uppercase tracking-widest text-black">
-                      BLACK — STRUCTURE — GROUND — BOUNDARY
+                </div>
+
+                {/* Progress bar demo with mechanical timing */}
+                <div className="border-4 border-black p-6 mb-4">
+                  <p className="text-xs font-black uppercase tracking-widest text-black mb-4 opacity-50">
+                    Progress Bar — Mechanical step controls (duration-200 ease-out):
+                  </p>
+                  <div className="h-8 bg-white border-4 border-black mb-4 overflow-hidden">
+                    <div
+                      className="h-full bg-red-600"
+                      style={{ width: `${progressValue}%`, transition: "width 0.2s ease-out" }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <button
+                      className="px-5 py-2 bg-white text-black font-black uppercase tracking-wider text-xs border-4 border-black hover:bg-black hover:text-white transition-colors duration-150 active:translate-y-0.5"
+                      onClick={() => setProgressValue(Math.max(0, progressValue - 10))}
+                    >
+                      −10
+                    </button>
+                    <span className="font-black text-2xl tabular-nums">{progressValue}%</span>
+                    <button
+                      className="px-5 py-2 bg-red-600 text-white font-black uppercase tracking-wider text-xs border-4 border-black hover:bg-black transition-colors duration-150 active:translate-y-0.5"
+                      onClick={() => setProgressValue(Math.min(100, progressValue + 10))}
+                    >
+                      +10
+                    </button>
+                    <button
+                      className="px-5 py-2 bg-black text-yellow-400 font-black uppercase tracking-wider text-xs border-4 border-black hover:bg-yellow-400 hover:text-black transition-colors duration-150 active:translate-y-0.5"
+                      onClick={() => setProgressValue(62)}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-black p-4">
+                  <code className="text-yellow-400 text-xs font-mono">
+                    {`/* Mechanical Precision Rule */\ntransition-duration: 150ms | 200ms  ← ALLOWED\ntransition-duration: 300ms | 500ms  ← BANNED\ntransition-timing: ease-out          ← REQUIRED\ntransition-timing: ease-in-out       ← BANNED`}
+                  </code>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* ---- Rule 3: Primary Color Swaps ---- */}
+          <RevealBlock delay={0.12} className="mb-12">
+            <div className="border-4 border-black">
+              <div className="bg-blue-600 border-b-4 border-black p-6 flex items-center gap-4">
+                <div className="w-8 h-8 bg-white border-2 border-black shrink-0 flex items-center justify-center">
+                  <span className="font-black text-blue-600 text-xs">03</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-wider text-white">
+                    Primary Color Swaps
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-white opacity-70 mt-0.5">
+                    On interaction, colors hard-switch between Red, Yellow, Blue, Black, White — zero transparency fade, zero gradient
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-8">
+                <p className="text-xs font-black uppercase tracking-widest text-black mb-6 opacity-50">
+                  Click the main block or the color selectors to cycle — hard cut, no gradient:
+                </p>
+
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  {/* Main color swap block */}
+                  <div
+                    className="flex-1 min-h-52 border-4 border-black flex flex-col items-center justify-center cursor-pointer select-none"
+                    style={{
+                      backgroundColor: currentSwap.bg,
+                      transition: "background-color 0.15s ease-out",
+                    }}
+                    onClick={() => setColorSwapIndex((s) => (s + 1) % colorSwapOptions.length)}
+                  >
+                    <div
+                      className="text-5xl font-black uppercase tracking-widest mb-2"
+                      style={{ color: currentSwap.text, transition: "color 0.15s ease-out" }}
+                    >
+                      {currentSwap.label}
+                    </div>
+                    <div
+                      className="text-xs font-black uppercase tracking-widest opacity-50"
+                      style={{ color: currentSwap.text }}
+                    >
+                      Click to swap color
+                    </div>
+                  </div>
+
+                  {/* Color selector buttons */}
+                  <div className="flex md:flex-col gap-2">
+                    {colorSwapOptions.map((c, i) => (
+                      <button
+                        key={c.label}
+                        onClick={() => setColorSwapIndex(i)}
+                        className="w-12 h-12 border-4 border-black hover:scale-110 transition-transform duration-150 ease-out"
+                        style={{
+                          backgroundColor: c.bg,
+                          outline: colorSwapIndex === i ? "3px solid #ff0000" : "none",
+                          outlineOffset: "2px",
+                        }}
+                        title={c.label}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Code panel */}
+                  <div className="md:w-64 space-y-3">
+                    <div className="bg-black p-4">
+                      <code className="text-yellow-400 text-xs font-mono">
+                        {`/* Primary Color Swap */\nbg: ${currentSwap.bg}\ncolor: ${currentSwap.text}\ntransition: 150ms ease-out\n\n/* NO opacity fade */\n/* NO gradient blend */\n/* HARD switch only */`}
+                      </code>
+                    </div>
+                    <div className="border-4 border-black p-4">
+                      <p className="text-xs font-black uppercase text-black leading-relaxed">
+                        Red → Yellow → Blue → Black → White.
+                        No intermediate states. No rgba(). Pure color identity switching.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* ---- Rule 4: Geometric Reveals ---- */}
+          <RevealBlock delay={0.14} className="mb-12">
+            <div className="border-4 border-black">
+              <div className="bg-black border-b-4 border-black p-6 flex items-center gap-4">
+                <div className="w-8 h-8 bg-yellow-400 border-2 border-yellow-400 shrink-0 rounded-full flex items-center justify-center">
+                  <span className="font-black text-black text-xs">04</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-wider text-white">
+                    Geometric Reveals
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-white opacity-60 mt-0.5">
+                    Pseudo-element color blocks slide in like rail mechanisms — translateX(-100%) to translateX(0), covering the original
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-8">
+                <p className="text-xs font-black uppercase tracking-widest text-black mb-8 opacity-50">
+                  Hover each card to watch the color block slide in from the left like a rail:
+                </p>
+
+                {/* Three reveal panels */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black overflow-hidden mb-6">
+                  {[
+                    { label: "Red Slide", baseBg: "#ff0000", revealBg: "#ffcc00", baseText: "#ffffff", revealText: "#000000" },
+                    { label: "Blue Slide", baseBg: "#0000ff", revealBg: "#ff0000", baseText: "#ffffff", revealText: "#ffffff" },
+                    { label: "Yellow Slide", baseBg: "#ffcc00", revealBg: "#0000ff", baseText: "#000000", revealText: "#ffffff" },
+                  ].map((item, i) => (
+                    <div
+                      key={item.label}
+                      className="relative overflow-hidden cursor-pointer border-r-2 border-black last:border-r-0 min-h-40 flex items-center justify-center"
+                      style={{ backgroundColor: item.baseBg }}
+                      onMouseEnter={() => setRevealHovered(i)}
+                      onMouseLeave={() => setRevealHovered(null)}
+                    >
+                      {/* Base text */}
+                      <span
+                        className="relative z-10 text-sm font-black uppercase tracking-widest transition-colors duration-100"
+                        style={{ color: revealHovered === i ? item.revealText : item.baseText }}
+                      >
+                        {revealHovered === i ? "Revealed!" : item.label}
+                      </span>
+                      {/* Sliding color overlay */}
+                      <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                          backgroundColor: item.revealBg,
+                          transform: revealHovered === i ? "translateX(0)" : "translateX(-100%)",
+                          transition: "transform 0.2s ease-out",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Button reveal demos */}
+                <div className="flex flex-wrap gap-4 mb-6">
+                  <button className="group relative px-8 py-4 bg-red-600 text-white font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden hover:text-black active:translate-y-1 transition-colors duration-150">
+                    <span className="relative z-10">Hover Me</span>
+                    <div className="absolute inset-0 bg-yellow-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                  </button>
+                  <button className="group relative px-8 py-4 bg-black text-white font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden hover:text-black active:translate-y-1 transition-colors duration-150">
+                    <span className="relative z-10">Slide Reveal</span>
+                    <div className="absolute inset-0 bg-blue-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                  </button>
+                  <button className="group relative px-8 py-4 bg-blue-600 text-white font-black uppercase tracking-wider text-sm border-4 border-black overflow-hidden hover:text-black active:translate-y-1 transition-colors duration-150">
+                    <span className="relative z-10">Rail Effect</span>
+                    <div className="absolute inset-0 bg-red-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                  </button>
+                </div>
+
+                <div className="bg-black p-4">
+                  <code className="text-yellow-400 text-xs font-mono">
+                    {`/* Geometric Reveal — Rail Mechanism */\n.slide-reveal { position: relative; overflow: hidden; }\n\n/* Color overlay */\n.overlay { position: absolute; inset: 0; }\n.overlay { transform: translateX(-100%); }\n.overlay { transition: transform 0.2s ease-out; } /* REQUIRED */\n\n.parent:hover .overlay { transform: translateX(0); }`}
+                  </code>
+                </div>
+              </div>
+            </div>
+          </RevealBlock>
+
+          {/* ---- Rule 5: Geometric Animation ---- */}
+          <RevealBlock delay={0.16}>
+            <div className="border-4 border-black">
+              <div className="bg-yellow-400 border-b-4 border-black p-6 flex items-center gap-4">
+                <div className="w-8 h-8 bg-blue-600 border-2 border-black shrink-0 flex items-center justify-center">
+                  <span className="font-black text-yellow-400 text-xs">05</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-wider text-black">
+                    Geometric Animation
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-black opacity-60 mt-0.5">
+                    Geometric decorators scale-125 or rotate-45 on hover — mechanical rotation and growth, machine-age precision
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-8">
+                <p className="text-xs font-black uppercase tracking-widest text-black mb-8 opacity-50">
+                  Hover each shape to see mechanical animation — scale-125 or rotate-45:
+                </p>
+
+                <div className="flex flex-wrap gap-14 items-end justify-center mb-10">
+                  {/* Circle — scale-125 */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div
+                      className="w-24 h-24 bg-yellow-400 rounded-full border-4 border-black cursor-pointer"
+                      style={{
+                        transform: shapeHovered === "ga-circle" ? "scale(1.25)" : "scale(1)",
+                        transition: "transform 0.2s ease-out",
+                      }}
+                      onMouseEnter={() => setShapeHovered("ga-circle")}
+                      onMouseLeave={() => setShapeHovered(null)}
+                    />
+                    <div className="text-center">
+                      <div className="text-xs font-black uppercase tracking-widest">Circle</div>
+                      <div className="text-[10px] font-bold uppercase opacity-50 mt-1">scale-125</div>
+                    </div>
+                  </div>
+
+                  {/* Square — rotate-45 */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div
+                      className="w-24 h-24 bg-blue-600 border-4 border-black cursor-pointer"
+                      style={{
+                        transform: shapeHovered === "ga-square" ? "rotate(45deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s ease-out",
+                      }}
+                      onMouseEnter={() => setShapeHovered("ga-square")}
+                      onMouseLeave={() => setShapeHovered(null)}
+                    />
+                    <div className="text-center">
+                      <div className="text-xs font-black uppercase tracking-widest">Square</div>
+                      <div className="text-[10px] font-bold uppercase opacity-50 mt-1">rotate-45</div>
+                    </div>
+                  </div>
+
+                  {/* Triangle — scale + rotate */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div
+                      className="cursor-pointer"
+                      style={{
+                        width: 0,
+                        height: 0,
+                        borderLeft: "48px solid transparent",
+                        borderRight: "48px solid transparent",
+                        borderBottom: "83px solid #ff0000",
+                        transform: shapeHovered === "ga-triangle" ? "scale(1.25) rotate(180deg)" : "scale(1) rotate(0deg)",
+                        transition: "transform 0.2s ease-out",
+                      }}
+                      onMouseEnter={() => setShapeHovered("ga-triangle")}
+                      onMouseLeave={() => setShapeHovered(null)}
+                    />
+                    <div className="text-center mt-6">
+                      <div className="text-xs font-black uppercase tracking-widest">Triangle</div>
+                      <div className="text-[10px] font-bold uppercase opacity-50 mt-1">scale + rotate-180</div>
+                    </div>
+                  </div>
+
+                  {/* Composite card — all decorators animate together */}
+                  <div
+                    className="group relative p-8 bg-white border-4 border-black cursor-pointer hover:-translate-y-2 transition-transform duration-200 ease-out"
+                    style={{ minWidth: "200px" }}
+                    onMouseEnter={() => setShapeHovered("ga-card")}
+                    onMouseLeave={() => setShapeHovered(null)}
+                  >
+                    {/* Yellow circle */}
+                    <div
+                      className="absolute -top-5 -left-5 w-10 h-10 bg-yellow-400 rounded-full border-4 border-black"
+                      style={{
+                        transform: shapeHovered === "ga-card" ? "scale(1.3)" : "scale(1)",
+                        transition: "transform 0.2s ease-out",
+                      }}
+                    />
+                    {/* Blue square */}
+                    <div
+                      className="absolute -bottom-4 -right-4 w-8 h-8 bg-blue-600 border-4 border-black"
+                      style={{
+                        transform: shapeHovered === "ga-card" ? "rotate(45deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s ease-out",
+                      }}
+                    />
+                    <h4
+                      className="text-xl font-black uppercase tracking-wider mt-4"
+                      style={{
+                        color: shapeHovered === "ga-card" ? "#ff0000" : "#000000",
+                        transition: "color 0.15s ease-out",
+                      }}
+                    >
+                      Composite
+                    </h4>
+                    <p className="text-xs font-bold uppercase text-black opacity-50 mt-1">
+                      Both decorators animate together
                     </p>
                   </div>
                 </div>
+
+                <div className="bg-black p-4">
+                  <code className="text-yellow-400 text-xs font-mono">
+                    {`/* Geometric Animation Rule */\n/* Circle:   */ group-hover:scale-125\n/* Square:   */ group-hover:rotate-45\n/* Both:     */ transition-transform duration-200 ease-out\n/* Card:     */ hover:-translate-y-2 (lift)\n/* Color:    */ group-hover:text-red-600 duration-150`}
+                  </code>
+                </div>
               </div>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ===== 6. Design Principles ===== */}
-      <section id="principles" className="py-24 px-6 bg-white border-t-4 border-black">
+      {/* ================================================================ */}
+      {/* 6. APP DEMO — Design Studio Dashboard                           */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
         <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-black pb-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#0000FF] mb-3 font-mono">
-                GESTALTUNGSREGELN / DESIGN RULES
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-black">
-                PRINCIPLES
-              </h2>
-            </div>
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-red-600 block mb-4">
+              — App Demo / Anwendung
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-white uppercase leading-none">
+              Bauhaus<br />
+              <span className="text-yellow-400">Studio</span>
+            </h2>
           </RevealBlock>
 
-          {/* 4 principle cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-4 border-black mb-16">
-            {PRINCIPLES.map((p, i) => (
-              <RevealBlock key={p.number} delay={i * 0.08}>
-                <div
-                  className={`p-8 border-b-4 border-black ${i % 2 === 0 ? "md:border-r-4" : ""} ${i >= 2 ? "border-b-0" : ""} group`}
-                >
-                  {/* Number + shape */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="font-black text-5xl text-black leading-none">{p.number}</span>
-                    {p.shape === "circle" && (
-                      <div className="w-10 h-10 rounded-full" style={{ backgroundColor: p.color }} />
-                    )}
-                    {p.shape === "square" && (
-                      <div className="w-10 h-10" style={{ backgroundColor: p.color }} />
-                    )}
-                    {p.shape === "triangle" && (
-                      <svg width="44" height="38" viewBox="0 0 44 38" fill="none" aria-hidden="true">
-                        <polygon points="22,3 42,35 2,35" fill={p.color} stroke="#000000" strokeWidth="3" />
-                      </svg>
-                    )}
-                  </div>
-                  <h3 className="font-black uppercase tracking-widest text-base text-black mb-3 border-b-2 pb-2" style={{ borderColor: p.color }}>
-                    {p.title}
-                  </h3>
-                  <p className="font-mono text-xs text-black leading-relaxed">
-                    {p.desc}
-                  </p>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-
-          {/* DO / DON'T panels */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-4 border-black">
-            {/* DO */}
-            <RevealBlock delay={0.1}>
-              <div className="border-r-0 md:border-r-4 border-black">
-                {/* Panel header */}
-                <div className="bg-black px-6 py-4 flex items-center gap-3 border-b-4 border-black">
-                  <div className="w-5 h-5 rounded-full bg-[#FF0000]" />
-                  <p className="font-black uppercase tracking-widest text-sm text-white">DO</p>
-                </div>
-                <ul className="divide-y-4 divide-black">
-                  {DO_RULES.map((rule, i) => (
-                    <li key={rule} className="flex gap-4 px-6 py-4 hover:bg-[#FF0000] hover:text-white group transition-colors duration-150 cursor-default">
-                      <span className="font-black text-xs text-[#FF0000] group-hover:text-white flex-shrink-0 mt-0.5 transition-colors duration-150">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-mono text-xs text-black group-hover:text-white leading-relaxed transition-colors duration-150">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            {/* DON'T */}
-            <RevealBlock delay={0.15}>
-              <div>
-                {/* Panel header */}
-                <div className="bg-white px-6 py-4 flex items-center gap-3 border-b-4 border-black">
-                  <div className="w-5 h-5 bg-gray-300" />
-                  <p className="font-black uppercase tracking-widest text-sm text-gray-400">DON&apos;T</p>
-                </div>
-                <ul className="divide-y-4 divide-black">
-                  {DONT_RULES.map((rule, i) => (
-                    <li key={rule} className="flex gap-4 px-6 py-4 cursor-default">
-                      <span className="font-black text-xs text-gray-300 flex-shrink-0 mt-0.5">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-mono text-xs text-gray-400 leading-relaxed line-through decoration-gray-300">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 7. Typography ===== */}
-      <section id="typography" className="py-24 px-6 bg-[#FFCC00] border-t-4 border-black">
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-black pb-6">
-              <p className="text-xs font-black uppercase tracking-widest text-black mb-3 font-mono">
-                TYPOGRAFIE / SCHRIFT
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-black">
-                TYPOGRAPHY SYSTEM
-              </h2>
-            </div>
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-white font-bold text-base max-w-lg uppercase tracking-wide leading-snug mt-6 opacity-70">
+              A design school project management interface — showing the complete
+              Bauhaus design system applied to a functional UI context.
+            </p>
           </RevealBlock>
 
-          <div className="border-4 border-black bg-white">
-            {TYPOGRAPHY_SCALE.map((item, i) => (
-              <RevealBlock key={item.label} delay={i * 0.06}>
-                <div className="group flex flex-col md:flex-row md:items-baseline gap-4 md:gap-8 px-8 py-6 border-b-4 border-black last:border-b-0 hover:bg-[#FF0000] hover:text-white transition-colors duration-150 cursor-default">
-                  {/* Label */}
-                  <div className="w-20 flex-shrink-0">
-                    <span className="text-xs font-black uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors duration-150">
-                      {item.label}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-white">
+            {/* Sidebar */}
+            <RevealBlock delay={0.1} className="border-r-4 border-white">
+              <div className="bg-black p-8 h-full">
+                <div className="flex items-center gap-3 mb-8 pb-4 border-b-4 border-white">
+                  <div className="w-6 h-6 bg-red-600 border-2 border-white" />
+                  <span className="text-white font-black uppercase tracking-widest text-sm">Bauhaus Studio</span>
+                </div>
+
+                {[
+                  { label: "Architecture", count: 12, color: "#ff0000", active: true },
+                  { label: "Typography", count: 8, color: "#ffcc00", active: false },
+                  { label: "Graphic Arts", count: 15, color: "#0000ff", active: false },
+                  { label: "Industrial", count: 6, color: "#ffffff", active: false },
+                  { label: "Photography", count: 9, color: "#ff0000", active: false },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="group flex items-center justify-between py-3 border-b-2 border-white border-opacity-20 cursor-pointer hover:px-2 transition-all duration-150"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-3 h-3 border-2 border-white"
+                        style={{ backgroundColor: item.active ? item.color : "transparent" }}
+                      />
+                      <span className="text-white font-bold uppercase tracking-wider text-sm">{item.label}</span>
+                    </div>
+                    <span className="text-white text-xs font-black w-6 h-6 flex items-center justify-center border-2 border-white opacity-60">
+                      {item.count}
                     </span>
                   </div>
-                  {/* Sample */}
-                  <div className="flex-1 min-w-0">
-                    <p className={`${item.size} ${item.weight} ${item.tracking} text-black group-hover:text-white leading-tight truncate transition-colors duration-150`}>
-                      {item.sample}
-                    </p>
+                ))}
+
+                <button
+                  className="group relative w-full mt-8 py-3 bg-red-600 text-white font-black uppercase tracking-widest text-sm border-4 border-white overflow-hidden hover:text-black transition-colors duration-150"
+                  onClick={() => showNotification("New project created")}
+                >
+                  <span className="relative z-10">New Project</span>
+                  <div className="absolute inset-0 bg-yellow-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+                </button>
+              </div>
+            </RevealBlock>
+
+            {/* Main content */}
+            <RevealBlock delay={0.14} className="md:col-span-2">
+              <div className="bg-white p-8 h-full">
+                <div className="flex items-center justify-between mb-8 border-b-4 border-black pb-4">
+                  <h3 className="text-2xl font-black uppercase tracking-wider text-black">
+                    Active Projects
+                  </h3>
+                  <div className="flex gap-0">
+                    <button className="px-4 py-2 bg-black text-white text-xs font-black uppercase tracking-widest border-2 border-black">
+                      Grid
+                    </button>
+                    <button className="px-4 py-2 bg-white text-black text-xs font-black uppercase tracking-widest border-2 border-black border-l-0 hover:bg-black hover:text-white transition-colors duration-150">
+                      List
+                    </button>
                   </div>
-                  {/* Meta */}
-                  <div className="w-48 flex-shrink-0">
-                    <p className="text-xs font-mono text-gray-400 group-hover:text-white opacity-80 transition-colors duration-150">
-                      {item.weight} / {item.tracking}
-                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  {[
+                    { title: "Workshop Chair", phase: "Production", pct: 75, phaseColor: "#ff0000" },
+                    { title: "Typography Poster", phase: "Design", pct: 40, phaseColor: "#ffcc00" },
+                    { title: "Steel Lamp", phase: "Prototype", pct: 90, phaseColor: "#0000ff" },
+                    { title: "Weaving Pattern", phase: "Research", pct: 25, phaseColor: "#000000" },
+                  ].map((proj) => (
+                    <div
+                      key={proj.title}
+                      className="group relative border-4 border-black p-5 cursor-pointer hover:-translate-y-1 transition-transform duration-150 overflow-hidden"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h4 className="text-base font-black uppercase tracking-wide text-black group-hover:text-red-600 transition-colors duration-150">
+                            {proj.title}
+                          </h4>
+                          <span
+                            className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 mt-1 inline-block border-2 border-black"
+                            style={{
+                              backgroundColor: proj.phaseColor,
+                              color: proj.phaseColor === "#ffcc00" ? "#000" : "#fff",
+                            }}
+                          >
+                            {proj.phase}
+                          </span>
+                        </div>
+                        <div
+                          className="w-8 h-8 border-2 border-black"
+                          style={{ backgroundColor: proj.phaseColor }}
+                        />
+                      </div>
+                      <div className="h-2 bg-gray-100 border-2 border-black overflow-hidden">
+                        <div
+                          className="h-full transition-all duration-200"
+                          style={{ width: `${proj.pct}%`, backgroundColor: proj.phaseColor }}
+                        />
+                      </div>
+                      <div className="flex justify-between mt-2">
+                        <span className="text-xs font-black uppercase text-black opacity-40">Progress</span>
+                        <span className="text-xs font-black uppercase" style={{ color: proj.phaseColor }}>
+                          {proj.pct}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-3 gap-0 border-4 border-black">
+                  {[
+                    { label: "Active", value: "4", bg: "#ff0000", text: "#fff" },
+                    { label: "Complete", value: "12", bg: "#0000ff", text: "#fff" },
+                    { label: "Members", value: "8", bg: "#ffcc00", text: "#000" },
+                  ].map((stat, i) => (
+                    <div
+                      key={stat.label}
+                      className="p-5 text-center border-r-2 border-black last:border-r-0 hover:-translate-y-1 transition-transform duration-150 cursor-default"
+                      style={{ backgroundColor: stat.bg }}
+                    >
+                      <div className="text-3xl font-black" style={{ color: stat.text }}>
+                        {stat.value}
+                      </div>
+                      <div
+                        className="text-xs font-black uppercase tracking-widest mt-1"
+                        style={{ color: stat.text, opacity: 0.7 }}
+                      >
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </RevealBlock>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 7. DO / DON'T — Design Philosophy                               */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-black block mb-4">
+              — Design Rules / Gestaltungsregeln
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-black uppercase leading-none">
+              Bauhaus<br />
+              <span className="text-red-600">Law</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-14">
+            <p className="text-black font-bold text-base max-w-xl uppercase tracking-wide leading-snug mt-6 opacity-70">
+              The Bauhaus was strict about what belonged in design and what did not.
+              Form follows function. These rules are non-negotiable.
+            </p>
+          </RevealBlock>
+
+          {/* Principle cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-4 border-black mb-14">
+            {[
+              {
+                icon: "circle",
+                iconColor: "#ffcc00",
+                title: "Functionalism",
+                tagline: "Design serves purpose",
+                desc: "Every element must justify its existence through function. Remove anything serving only decoration. Shape arises from purpose.",
+                items: ["Geometric sans-serif type", "Grid-based layouts", "Primary color hierarchy"],
+                bg: "#ff0000",
+                text: "#ffffff",
+              },
+              {
+                icon: "square",
+                iconColor: "#ff0000",
+                title: "Geometry",
+                tagline: "Pure form language",
+                desc: "Circle, square, triangle — the three primary forms from which all design emerges. No organic curves. Only structure.",
+                items: ["Circle — completeness", "Square — stability", "Triangle — direction"],
+                bg: "#ffcc00",
+                text: "#000000",
+              },
+              {
+                icon: "triangle",
+                iconColor: "#0000ff",
+                title: "Unity",
+                tagline: "Art meets industry",
+                desc: "Bauhaus unified fine arts with industrial craft. Machine production is not the enemy of beauty — it is its modern medium.",
+                items: ["Craft + industry", "Art + technology", "Individual + collective"],
+                bg: "#0000ff",
+                text: "#ffffff",
+              },
+            ].map((card, i) => (
+              <RevealBlock key={card.title} delay={i * 0.08}>
+                <div
+                  className="group p-10 border-r-2 border-black last:border-r-0 h-full cursor-default"
+                  style={{ backgroundColor: card.bg }}
+                >
+                  <div className="mb-8">
+                    {card.icon === "circle" && (
+                      <div
+                        className="w-16 h-16 rounded-full border-4 border-black group-hover:scale-125 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: card.iconColor }}
+                      />
+                    )}
+                    {card.icon === "square" && (
+                      <div
+                        className="w-16 h-16 border-4 border-black group-hover:rotate-45 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: card.iconColor }}
+                      />
+                    )}
+                    {card.icon === "triangle" && (
+                      <div
+                        className="w-0 h-0 group-hover:scale-125 transition-transform duration-200 ease-out"
+                        style={{
+                          borderLeft: "32px solid transparent",
+                          borderRight: "32px solid transparent",
+                          borderBottom: `55px solid ${card.iconColor}`,
+                        }}
+                      />
+                    )}
                   </div>
+                  <h3 className="text-2xl font-black uppercase tracking-wider mb-1" style={{ color: card.text }}>
+                    {card.title}
+                  </h3>
+                  <p className="text-xs font-black uppercase tracking-widest mb-6 opacity-60" style={{ color: card.text }}>
+                    {card.tagline}
+                  </p>
+                  <p className="font-bold text-sm leading-relaxed mb-6" style={{ color: card.text, opacity: 0.85 }}>
+                    {card.desc}
+                  </p>
+                  <ul className="space-y-2">
+                    {card.items.map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm font-bold uppercase tracking-wider" style={{ color: card.text }}>
+                        <span className="w-2 h-2 border-2 shrink-0" style={{ borderColor: card.text, backgroundColor: card.text }} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </RevealBlock>
             ))}
           </div>
 
-          {/* Typeface rule block */}
-          <RevealBlock delay={0.35} className="mt-8">
-            <div className="border-4 border-black bg-black p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FFCC00] mb-3">GEOMETRY</p>
-                  <p className="font-mono text-xs text-white leading-relaxed">
-                    Bauhaus typography favored geometric sans-serif faces. Letters constructed from circles,
-                    squares, triangles — the same vocabulary as the visual language.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-3">UPPERCASE</p>
-                  <p className="font-mono text-xs text-white leading-relaxed">
-                    All headings must be uppercase. Lowercase is a formal affectation. Capital letters are
-                    structurally honest — they occupy their full height without descender waste.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#0000FF] mb-3">WEIGHT</p>
-                  <p className="font-mono text-xs text-white leading-relaxed">
-                    font-black for all headlines. Weight carries hierarchy.
-                    Bold, not decoration, distinguishes importance.
-                    Only body text may be regular weight.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ===== 8. Alerts / Status messages ===== */}
-      <section className="py-24 px-6 bg-white border-t-4 border-black">
-        <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-black pb-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-3 font-mono">
-                STATUSMELDUNGEN / SYSTEM MESSAGES
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-black">
-                ALERT PANELS
-              </h2>
-            </div>
-          </RevealBlock>
-
-          <div className="space-y-0 border-4 border-black">
-            {/* Success */}
-            <RevealBlock delay={0.05}>
-              <div className="flex items-center gap-6 p-6 border-b-4 border-black border-l-[12px] border-l-[#0000FF] hover:bg-gray-50 transition-colors duration-150">
-                <div className="w-12 h-12 bg-[#0000FF] rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <polyline points="3,10 8,15 17,5" stroke="white" strokeWidth="3" strokeLinecap="square" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-black uppercase tracking-widest text-xs text-black mb-1">SUCCESS</p>
-                  <p className="font-mono text-xs text-gray-700">Operation completed. Form accepted. System nominal.</p>
-                </div>
-                <div className="w-4 h-4 bg-[#0000FF] flex-shrink-0" />
-              </div>
-            </RevealBlock>
-
-            {/* Warning */}
+          {/* Do / Don't panels */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-4 border-black">
             <RevealBlock delay={0.1}>
-              <div className="flex items-center gap-6 p-6 border-b-4 border-black border-l-[12px] border-l-[#FFCC00] hover:bg-gray-50 transition-colors duration-150">
-                <div className="w-12 h-12 bg-[#FFCC00] flex items-center justify-center flex-shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <polygon points="10,2 18,17 2,17" stroke="black" strokeWidth="2" fill="none" />
-                    <line x1="10" y1="8" x2="10" y2="12" stroke="black" strokeWidth="2" strokeLinecap="square" />
-                    <rect x="9" y="14" width="2" height="2" fill="black" />
-                  </svg>
+              <div className="bg-black p-10 border-r-2 border-white h-full">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-8 h-8 bg-yellow-400 border-2 border-white flex items-center justify-center">
+                    <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-black uppercase tracking-wider text-white">Bauhaus Mandates</h3>
                 </div>
-                <div className="flex-1">
-                  <p className="font-black uppercase tracking-widest text-xs text-black mb-1">WARNING</p>
-                  <p className="font-mono text-xs text-gray-700">Proceed with caution. Review before confirming action.</p>
-                </div>
-                <div className="w-4 h-4 bg-[#FFCC00] flex-shrink-0" />
+                <ul className="space-y-4">
+                  {DO_LIST.map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm font-bold text-white leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 bg-yellow-400 shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </RevealBlock>
 
-            {/* Error */}
-            <RevealBlock delay={0.15}>
-              <div className="flex items-center gap-6 p-6 border-b-4 border-black border-l-[12px] border-l-[#FF0000] hover:bg-gray-50 transition-colors duration-150">
-                <div className="w-12 h-12 bg-[#FF0000] rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <line x1="5" y1="5" x2="15" y2="15" stroke="white" strokeWidth="3" strokeLinecap="square" />
-                    <line x1="15" y1="5" x2="5" y2="15" stroke="white" strokeWidth="3" strokeLinecap="square" />
-                  </svg>
+            <RevealBlock delay={0.16}>
+              <div className="bg-red-600 p-10 h-full">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-8 h-8 bg-white border-2 border-white flex items-center justify-center">
+                    <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-black uppercase tracking-wider text-white">Strictly Forbidden</h3>
                 </div>
-                <div className="flex-1">
-                  <p className="font-black uppercase tracking-widest text-xs text-black mb-1">ERROR</p>
-                  <p className="font-mono text-xs text-gray-700">Critical failure. System halted. Investigate immediately.</p>
-                </div>
-                <div className="w-4 h-4 rounded-full bg-[#FF0000] flex-shrink-0" />
-              </div>
-            </RevealBlock>
-
-            {/* Info */}
-            <RevealBlock delay={0.2}>
-              <div className="flex items-center gap-6 p-6 border-l-[12px] border-l-black hover:bg-gray-50 transition-colors duration-150">
-                <div className="w-12 h-12 bg-black flex items-center justify-center flex-shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <circle cx="10" cy="10" r="8" stroke="white" strokeWidth="2" />
-                    <line x1="10" y1="9" x2="10" y2="14" stroke="white" strokeWidth="2" strokeLinecap="square" />
-                    <rect x="9" y="6" width="2" height="2" fill="white" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-black uppercase tracking-widest text-xs text-black mb-1">INFORMATION</p>
-                  <p className="font-mono text-xs text-gray-700">Additional context available. No action required at this time.</p>
-                </div>
-                <div className="w-4 h-4 bg-black flex-shrink-0" />
+                <ul className="space-y-4">
+                  {DONT_LIST.map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm font-bold text-white leading-relaxed">
+                      <span className="mt-1.5 w-2 h-2 bg-white shrink-0" />
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </RevealBlock>
           </div>
         </div>
       </section>
 
-      {/* ===== 9. Grid System Demo ===== */}
-      <section className="py-24 px-6 bg-black border-t-4 border-black">
+      {/* ================================================================ */}
+      {/* 8. FEATURE HIGHLIGHTS                                            */}
+      {/* ================================================================ */}
+      <section className="py-24 md:py-32 px-5 md:px-10 bg-yellow-400 border-t-4 border-black border-b-4">
         <div className="max-w-7xl mx-auto">
-
-          <RevealBlock className="mb-16">
-            <div className="border-b-4 border-white pb-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FF0000] mb-3 font-mono">
-                RASTER / GRID SYSTEM
-              </p>
-              <h2 className="text-5xl font-black uppercase tracking-tighter text-white">
-                STRUCTURAL GRID
-              </h2>
-            </div>
+          <RevealBlock className="mb-14">
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-black block mb-4">
+              — Key Principles
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black text-black uppercase leading-none">
+              What Makes<br />
+              Bauhaus
+            </h2>
           </RevealBlock>
 
-          {/* 12-column visualization */}
-          <RevealBlock delay={0.05} className="mb-8">
-            <div className="grid grid-cols-12 gap-2">
-              {Array.from({ length: 12 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0 border-4 border-black">
+            {[
+              { shape: "circle", shapeColor: "#ff0000", title: "Primary Colors", desc: "Red, yellow, blue — the three pigments of all color theory. Plus black and white. Nothing else permitted.", bg: "#ffffff", textWhite: false },
+              { shape: "square", shapeColor: "#0000ff", title: "No Ornament", desc: "Adolf Loos: Ornament is crime. Every element earns its place through function. Beauty is structural clarity.", bg: "#000000", textWhite: true },
+              { shape: "triangle", shapeColor: "#ffcc00", title: "Grid First", desc: "The invisible 12-column grid governs all composition. Nothing floats. Everything aligns.", bg: "#ffffff", textWhite: false },
+              { shape: "circle", shapeColor: "#ffcc00", title: "Mechanical Motion", desc: "Interactions snap like precision instruments. duration-150, ease-out. Machine age UI form.", bg: "#0000ff", textWhite: true },
+              { shape: "square", shapeColor: "#ff0000", title: "Type As Structure", desc: "Letters are architecture. Sans-serif, bold, uppercase. Typography communicates form before meaning.", bg: "#ffffff", textWhite: false },
+              { shape: "triangle", shapeColor: "#0000ff", title: "Art + Industry", desc: "Bauhaus unified the workshop with the studio. Design is both handcraft and machine production.", bg: "#ff0000", textWhite: true },
+            ].map((feature, i) => (
+              <RevealBlock key={feature.title} delay={i * 0.06}>
                 <div
-                  key={i}
-                  className="h-12 border-2 border-white flex items-center justify-center"
-                  style={{
-                    backgroundColor: [0, 3, 6, 9].includes(i)
-                      ? "#FF0000"
-                      : [1, 4, 7, 10].includes(i)
-                      ? "#FFCC00"
-                      : [2, 5, 8, 11].includes(i)
-                      ? "#0000FF"
-                      : "white",
-                  }}
+                  className="group p-8 border-r-2 border-b-2 border-black h-full cursor-default hover:-translate-y-1 transition-transform duration-150"
+                  style={{ backgroundColor: feature.bg }}
                 >
-                  <span
-                    className="font-black text-xs"
-                    style={{
-                      color: [1, 4, 7, 10].includes(i) ? "#000000" : "#FFFFFF",
-                    }}
+                  <div className="mb-6">
+                    {feature.shape === "circle" && (
+                      <div
+                        className="w-14 h-14 rounded-full border-4 border-black group-hover:scale-125 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: feature.shapeColor }}
+                      />
+                    )}
+                    {feature.shape === "square" && (
+                      <div
+                        className="w-14 h-14 border-4 border-black group-hover:rotate-45 transition-transform duration-200 ease-out"
+                        style={{ backgroundColor: feature.shapeColor }}
+                      />
+                    )}
+                    {feature.shape === "triangle" && (
+                      <div
+                        className="w-0 h-0 group-hover:scale-110 transition-transform duration-200 ease-out"
+                        style={{
+                          borderLeft: "28px solid transparent",
+                          borderRight: "28px solid transparent",
+                          borderBottom: `48px solid ${feature.shapeColor}`,
+                        }}
+                      />
+                    )}
+                  </div>
+                  <h4
+                    className="text-xl font-black uppercase tracking-wider mb-3"
+                    style={{ color: feature.textWhite ? "#ffffff" : "#000000" }}
                   >
-                    {i + 1}
-                  </span>
+                    {feature.title}
+                  </h4>
+                  <p
+                    className="text-sm font-bold leading-relaxed"
+                    style={{ color: feature.textWhite ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.7)" }}
+                  >
+                    {feature.desc}
+                  </p>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* FOOTER                                                           */}
+      {/* ================================================================ */}
+      <footer className="bg-black border-t-4 border-white">
+        {/* Top color bar */}
+        <div className="flex h-2">
+          <div className="flex-1 bg-red-600" />
+          <div className="flex-1 bg-yellow-400" />
+          <div className="flex-1 bg-blue-600" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-5 md:px-10 pt-16 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-4 border-white mb-12">
+            {/* Brand */}
+            <div className="md:col-span-2 p-10 border-r-2 border-white">
+              <div className="flex items-center gap-0 mb-6">
+                <div className="w-8 h-8 bg-red-600 border-2 border-white" />
+                <div className="w-8 h-8 bg-yellow-400 border-2 border-white border-l-0" />
+                <div className="w-8 h-8 bg-blue-600 border-2 border-white border-l-0" />
+                <span className="ml-4 text-xl font-black uppercase tracking-widest text-white">Bauhaus</span>
+              </div>
+              <p className="text-white font-bold text-sm uppercase tracking-wide leading-relaxed max-w-xs mb-6 opacity-70">
+                The Bauhaus school 1919–1933, Germany.
+                Primary colors. Geometric precision. Form follows function.
+                Its principles continue to define modern design.
+              </p>
+              <div className="flex gap-0">
+                {PALETTE.map((c) => (
+                  <div
+                    key={c.hex}
+                    className="w-8 h-8 border-2 border-white hover:scale-110 transition-transform duration-150 cursor-default"
+                    style={{ backgroundColor: c.hex }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Style links */}
+            <div className="p-10 border-r-2 border-white">
+              <span className="text-xs font-black tracking-[0.25em] uppercase text-yellow-400 block mb-6">
+                Style
+              </span>
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/styles/bauhaus"
+                  className="text-white text-sm font-black uppercase tracking-wider hover:text-yellow-400 transition-colors duration-150"
+                >
+                  Documentation
+                </Link>
+                <Link
+                  href="/styles/bauhaus/showcase"
+                  className="text-white text-sm font-black uppercase tracking-wider hover:text-red-600 transition-colors duration-150"
+                >
+                  Showcase
+                </Link>
+                <Link
+                  href="/styles/bauhaus/cover"
+                  className="text-white text-sm font-black uppercase tracking-wider hover:text-blue-400 transition-colors duration-150"
+                >
+                  Cover
+                </Link>
+              </div>
+            </div>
+
+            {/* StyleKit links */}
+            <div className="p-10">
+              <span className="text-xs font-black tracking-[0.25em] uppercase text-red-600 block mb-6">
+                StyleKit
+              </span>
+              <div className="flex flex-col gap-3 mb-8">
+                <Link
+                  href="/"
+                  className="text-white text-sm font-black uppercase tracking-wider hover:text-yellow-400 transition-colors duration-150"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/styles"
+                  className="text-white text-sm font-black uppercase tracking-wider hover:text-red-600 transition-colors duration-150"
+                >
+                  All Styles
+                </Link>
+              </div>
+              <span className="text-xs font-black tracking-[0.25em] uppercase text-blue-400 block mb-4">
+                Palette
+              </span>
+              {PALETTE.map((c) => (
+                <div key={c.name} className="flex items-center gap-2 mb-2">
+                  <div className="w-4 h-4 border border-white" style={{ backgroundColor: c.hex }} />
+                  <span className="text-white text-xs font-bold uppercase tracking-wider opacity-60">{c.name}</span>
                 </div>
               ))}
             </div>
-            <p className="font-mono text-xs text-white uppercase tracking-widest mt-3 opacity-60">
-              12 EQUAL COLUMNS — STRUCTURAL FOUNDATION
-            </p>
-          </RevealBlock>
-
-          {/* Layout examples */}
-          <div className="space-y-4">
-            {[
-              { label: "12 / 0", cols: [12], colors: ["#FF0000"], textColors: ["white"] },
-              { label: "6 / 6", cols: [6, 6], colors: ["#FFCC00", "#0000FF"], textColors: ["black", "white"] },
-              { label: "4 / 4 / 4", cols: [4, 4, 4], colors: ["#0000FF", "#FF0000", "#FFCC00"], textColors: ["white", "white", "black"] },
-              { label: "3 / 3 / 3 / 3", cols: [3, 3, 3, 3], colors: ["#FF0000", "#FFCC00", "#0000FF", "#000000"], textColors: ["white", "black", "white", "white"] },
-              { label: "8 / 4", cols: [8, 4], colors: ["#000000", "#FF0000"], textColors: ["white", "white"] },
-              { label: "3 / 9", cols: [3, 9], colors: ["#FFCC00", "#000000"], textColors: ["black", "white"] },
-            ].map((row, ri) => (
-              <RevealBlock key={row.label} delay={ri * 0.06}>
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-xs text-white uppercase tracking-widest w-28 flex-shrink-0 opacity-60">
-                    {row.label}
-                  </span>
-                  <div className="flex-1 grid grid-cols-12 gap-1 h-12">
-                    {row.cols.map((span, ci) => (
-                      <div
-                        key={ci}
-                        className={`col-span-${span} h-full border-2 border-white flex items-center justify-center font-black text-xs`}
-                        style={{
-                          backgroundColor: row.colors[ci],
-                          color: row.textColors[ci],
-                          gridColumn: `span ${span}`,
-                        }}
-                      >
-                        {span}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 10. Footer ===== */}
-      <footer className="bg-white border-t-4 border-black">
-        {/* Geometric accent bar */}
-        <div className="flex border-b-4 border-black">
-          <div className="flex-1 h-8 bg-[#FF0000]" />
-          <div className="w-32 h-8 bg-[#FFCC00]" />
-          <div className="w-24 h-8 bg-[#0000FF]" />
-          <div className="w-16 h-8 bg-black" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-0 border-4 border-black mb-12">
-            {/* Brand block */}
-            <div className="md:col-span-5 p-8 border-b-4 md:border-b-0 md:border-r-4 border-black bg-black">
-              <div className="flex items-center gap-4 mb-6">
-                {/* Geometric composition micro */}
-                <div className="relative w-16 h-16">
-                  <div className="absolute top-0 left-0 w-10 h-10 rounded-full bg-[#FF0000]" />
-                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#0000FF]" />
-                  <svg width="32" height="28" viewBox="0 0 32 28" className="absolute inset-0 m-auto" fill="none" aria-hidden="true">
-                    <polygon points="16,2 30,26 2,26" fill="#FFCC00" stroke="#000000" strokeWidth="2" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-black uppercase tracking-widest text-xl text-white">BAUHAUS</p>
-                  <p className="font-mono text-xs text-[#FF0000] uppercase tracking-widest">1919 — WEIMAR</p>
-                </div>
-              </div>
-              <p className="font-mono text-xs text-white leading-relaxed opacity-70">
-                Das Staatliche Bauhaus. Art school that changed everything.
-                Primary colors. Basic geometry. Zero decoration.
-                Form follows function — always.
-              </p>
-            </div>
-
-            {/* Navigation */}
-            <div className="md:col-span-3 p-8 border-b-4 md:border-b-0 md:border-r-4 border-black">
-              <p className="text-xs font-black uppercase tracking-widest text-[#FF0000] mb-6">SECTIONS</p>
-              <ul className="space-y-3">
-                {["Hero", "Components", "Palette", "Geometry", "Principles", "Typography"].map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      className="font-mono text-xs uppercase tracking-widest text-black hover:text-[#FF0000] transition-colors duration-150"
-                    >
-                      → {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div className="md:col-span-4 p-8">
-              <p className="text-xs font-black uppercase tracking-widest text-[#0000FF] mb-6">STYLEKIT</p>
-              <ul className="space-y-3">
-                {[
-                  { label: "All Styles", href: "/styles" },
-                  { label: "Swiss Style", href: "/styles/swiss-style" },
-                  { label: "Swiss Poster", href: "/styles/swiss-poster" },
-                  { label: "Art Deco", href: "/styles/art-deco" },
-                  { label: "Home", href: "/" },
-                ].map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="font-mono text-xs uppercase tracking-widest text-black hover:text-[#0000FF] transition-colors duration-150"
-                    >
-                      → {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Geometry shapes */}
-              <div className="flex gap-3 mt-8 pt-6 border-t-4 border-black">
-                <div className="w-8 h-8 rounded-full bg-[#FF0000] border-2 border-black" />
-                <div className="w-8 h-8 bg-[#FFCC00] border-2 border-black" />
-                <svg width="32" height="28" viewBox="0 0 32 28" fill="none" aria-hidden="true">
-                  <polygon points="16,2 30,26 2,26" fill="#0000FF" stroke="#000000" strokeWidth="2" />
-                </svg>
-                <div className="w-8 h-8 bg-black border-2 border-black" />
-              </div>
-            </div>
           </div>
 
-          {/* Footer bottom */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-t-4 border-black pt-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-black">
-              BAUHAUS SHOWCASE — STYLEKIT COMPONENT SYSTEM
-            </p>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-xs text-gray-400 uppercase tracking-widest">
-                FORM FOLLOWS FUNCTION — 1919
-              </span>
-              <div className="flex gap-1">
-                <div className="w-3 h-3 bg-[#FF0000]" />
-                <div className="w-3 h-3 bg-[#FFCC00]" />
-                <div className="w-3 h-3 bg-[#0000FF]" />
-              </div>
+          {/* Divider */}
+          <div className="flex h-1 mb-8">
+            <div className="flex-1 bg-red-600 opacity-60" />
+            <div className="flex-1 bg-yellow-400 opacity-60" />
+            <div className="flex-1 bg-blue-600 opacity-60" />
+          </div>
+
+          {/* Bottom row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3 text-white text-sm font-black uppercase tracking-wider">
+              <div className="w-4 h-4 bg-red-600 border border-white" />
+              <span>Bauhaus — Form Follows Function — 1919</span>
             </div>
+            <Link
+              href="/"
+              className="group relative px-8 py-3 bg-white text-black font-black uppercase tracking-widest text-sm border-4 border-white overflow-hidden hover:text-white transition-colors duration-150"
+            >
+              <span className="relative z-10">Back to StyleKit</span>
+              <div className="absolute inset-0 bg-red-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-200 ease-out" />
+            </Link>
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
