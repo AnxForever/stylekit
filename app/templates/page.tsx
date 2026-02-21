@@ -452,6 +452,31 @@ export default function TemplatesPage() {
   }, [activeType, activeSort, queryParam, t]);
 
   useEffect(() => {
+    const savedScroll = sessionStorage.getItem("templates-scroll-position");
+    if (savedScroll) {
+      const y = parseInt(savedScroll, 10);
+      setTimeout(() => {
+        window.scrollTo({ top: y, behavior: "instant" });
+      }, 100);
+      sessionStorage.removeItem("templates-scroll-position");
+    }
+
+    const savedUrl = sessionStorage.getItem("templates-return-url");
+    if (savedUrl && !window.location.search) {
+      try {
+        const url = new URL(savedUrl);
+        if (url.search) {
+          sessionStorage.removeItem("templates-return-url");
+          router.replace(url.pathname + url.search, { scroll: false });
+        }
+      } catch {
+        // ignore invalid URL
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setSearchQuery(queryParam);
   }, [queryParam]);
 
@@ -814,6 +839,10 @@ export default function TemplatesPage() {
                       href={template.href}
                       ref={(element) => {
                         templateCardRefs.current[index] = element;
+                      }}
+                      onClick={() => {
+                        sessionStorage.setItem("templates-scroll-position", window.scrollY.toString());
+                        sessionStorage.setItem("templates-return-url", window.location.href);
                       }}
                       onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
                       aria-label={`${templateName} - ${t("templates.openTemplate")}`}
