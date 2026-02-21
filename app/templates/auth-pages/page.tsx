@@ -237,7 +237,7 @@ function LeftPanel() {
             <div>
               <p className="text-white text-sm font-semibold">Loved by 40,000+ creators</p>
               <p className="text-indigo-300 text-xs mt-0.5">
-                "Lumino transformed how our studio collaborates on campaigns."
+                &ldquo;Lumino transformed how our studio collaborates on campaigns.&rdquo;
               </p>
             </div>
           </div>
@@ -327,7 +327,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-gray-900">Sign in to Lumino</h1>
-        <p className="text-gray-500 text-sm">Welcome back — let's pick up where you left off.</p>
+        <p className="text-gray-500 text-sm">Welcome back &mdash; let&apos;s pick up where you left off.</p>
       </div>
 
       {/* Social buttons */}
