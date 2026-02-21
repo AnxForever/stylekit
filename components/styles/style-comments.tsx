@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Check, MessageSquare, Pencil, Send, Trash2, X } from "lucide-react";
@@ -17,6 +17,8 @@ interface StyleCommentsProps {
   slug: string;
 }
 
+const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+
 function getTitleBadgeClass(title: string | null): string {
   if (title === EMPEROR_TITLE_TOKEN) {
     return "border-amber-300/80 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-200";
@@ -31,6 +33,49 @@ function getTitleBadgeClass(title: string | null): string {
   }
 
   return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
+}
+
+function normalizeHexColor(value: string | null | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!HEX_COLOR_RE.test(trimmed)) {
+    return null;
+  }
+  return trimmed.toLowerCase();
+}
+
+function pickBadgeTextColor(hex: string): string {
+  const normalized = normalizeHexColor(hex);
+  if (!normalized) {
+    return "#111827";
+  }
+
+  const red = Number.parseInt(normalized.slice(1, 3), 16);
+  const green = Number.parseInt(normalized.slice(3, 5), 16);
+  const blue = Number.parseInt(normalized.slice(5, 7), 16);
+  const luminance = (red * 299 + green * 587 + blue * 114) / 1000;
+  return luminance >= 155 ? "#111827" : "#f8fafc";
+}
+
+function getTitleBadgeAppearance(
+  title: string | null,
+  titleColor: string | null | undefined
+): { className: string; style?: CSSProperties } {
+  const normalizedColor = normalizeHexColor(titleColor);
+  if (!normalizedColor) {
+    return { className: getTitleBadgeClass(title) };
+  }
+
+  return {
+    className: "border",
+    style: {
+      backgroundColor: normalizedColor,
+      borderColor: normalizedColor,
+      color: pickBadgeTextColor(normalizedColor),
+    },
+  };
 }
 
 export function StyleComments({ slug }: StyleCommentsProps) {
@@ -281,7 +326,10 @@ export function StyleComments({ slug }: StyleCommentsProps) {
             const avatarFallback = commentName.charAt(0).toUpperCase();
             const isOwner = isOwnComment(comment);
             const isEditing = editingCommentId === comment.id;
-            const titleBadgeClass = getTitleBadgeClass(rawTitle);
+            const titleBadge = getTitleBadgeAppearance(
+              rawTitle,
+              comment.author_title_color
+            );
 
             return (
               <div
@@ -310,7 +358,10 @@ export function StyleComments({ slug }: StyleCommentsProps) {
                           {commentName}
                         </span>
                         {commentTitle ? (
-                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] leading-none ${titleBadgeClass}`}>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-none ${titleBadge.className}`}
+                            style={titleBadge.style}
+                          >
                             {commentTitle}
                           </span>
                         ) : null}

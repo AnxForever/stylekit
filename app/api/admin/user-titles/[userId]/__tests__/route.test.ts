@@ -58,6 +58,7 @@ describe("admin user titles [userId] route", () => {
       data: {
         user_id: "11111111-1111-4111-8111-111111111111",
         custom_title: "VIP",
+        title_color: "#ff5500",
         is_owner: false,
         title_enabled: true,
         updated_at: "2026-02-21T00:00:00.000Z",
@@ -76,7 +77,12 @@ describe("admin user titles [userId] route", () => {
       new Request("https://stylekit.top/api/admin/user-titles/11111111-1111-4111-8111-111111111111", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customTitle: "VIP", isOwner: false, titleEnabled: true }),
+        body: JSON.stringify({
+          customTitle: "VIP",
+          titleColor: "#FF5500",
+          isOwner: false,
+          titleEnabled: true,
+        }),
       }),
       { params: params("11111111-1111-4111-8111-111111111111") }
     );
@@ -88,6 +94,7 @@ describe("admin user titles [userId] route", () => {
       rule: {
         userId: "11111111-1111-4111-8111-111111111111",
         customTitle: "VIP",
+        titleColor: "#ff5500",
         isOwner: false,
         titleEnabled: true,
         updatedAt: "2026-02-21T00:00:00.000Z",
@@ -95,6 +102,27 @@ describe("admin user titles [userId] route", () => {
       },
     });
     expect(mockedRecordAdminAuditEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it("PUT rejects invalid title color", async () => {
+    mockedCheckAdminApiAccess.mockResolvedValue({
+      allowed: true,
+      actor: { type: "user", id: "admin-1" },
+    });
+
+    const response = await PUT(
+      new Request("https://stylekit.top/api/admin/user-titles/11111111-1111-4111-8111-111111111111", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titleColor: "red" }),
+      }),
+      { params: params("11111111-1111-4111-8111-111111111111") }
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "titleColor must be a valid hex color like #ff5a7a.",
+    });
   });
 
   it("DELETE clears title config", async () => {

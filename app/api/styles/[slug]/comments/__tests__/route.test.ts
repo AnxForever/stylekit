@@ -187,6 +187,7 @@ describe("styles comments route", () => {
         author_provider: "unknown",
         author_seq_id: null,
         author_title: null,
+        author_title_color: null,
       },
     });
   });
@@ -376,6 +377,7 @@ describe("styles comments route", () => {
           author_provider: "linuxdo",
           author_seq_id: 12,
           author_title: "站主",
+          author_title_color: null,
         },
       ],
       total: 1,
@@ -408,6 +410,7 @@ describe("styles comments route", () => {
         {
           user_id: userId,
           custom_title: "VIP",
+          title_color: "#ff5500",
           is_owner: false,
           title_enabled: true,
         },
@@ -415,6 +418,16 @@ describe("styles comments route", () => {
       error: null,
     });
     const titleSelect = vi.fn().mockReturnValue({ in: titleIn });
+    const seqIn = vi.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: userId,
+          seq_id: 11,
+        },
+      ],
+      error: null,
+    });
+    const seqSelect = vi.fn().mockReturnValue({ in: seqIn });
 
     const getUserById = vi.fn().mockResolvedValue({
       data: {
@@ -438,6 +451,9 @@ describe("styles comments route", () => {
         if (tableName === "user_titles") {
           return { select: titleSelect };
         }
+        if (tableName === "user_seq_ids") {
+          return { select: seqSelect };
+        }
         return { select: vi.fn().mockReturnValue({ in: vi.fn() }) };
       }),
       auth: {
@@ -455,7 +471,8 @@ describe("styles comments route", () => {
     expect(response.status).toBe(200);
     const payload = await response.json();
     expect(payload.comments[0].author_title).toBe("VIP");
-    expect(payload.comments[0].author_seq_id).toBe(50);
+    expect(payload.comments[0].author_seq_id).toBe(11);
+    expect(payload.comments[0].author_title_color).toBe("#ff5500");
 
     const titleDisabledIn = vi.fn().mockResolvedValue({
       data: [
@@ -470,6 +487,16 @@ describe("styles comments route", () => {
     });
     const styleSelectSecond = vi.fn().mockReturnValue({ eq });
     const titleSelectSecond = vi.fn().mockReturnValue({ in: titleDisabledIn });
+    const seqInSecond = vi.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: userId,
+          seq_id: 11,
+        },
+      ],
+      error: null,
+    });
+    const seqSelectSecond = vi.fn().mockReturnValue({ in: seqInSecond });
     mockedCreateClient.mockReturnValueOnce({
       from: vi.fn((tableName: string) => {
         if (tableName === "style_comments") {
@@ -477,6 +504,9 @@ describe("styles comments route", () => {
         }
         if (tableName === "user_titles") {
           return { select: titleSelectSecond };
+        }
+        if (tableName === "user_seq_ids") {
+          return { select: seqSelectSecond };
         }
         return { select: vi.fn().mockReturnValue({ in: vi.fn() }) };
       }),
@@ -493,5 +523,6 @@ describe("styles comments route", () => {
     );
     const fallbackPayload = await fallbackResponse.json();
     expect(fallbackPayload.comments[0].author_title).toBe(EARLY_USER_TITLE_TOKEN);
+    expect(fallbackPayload.comments[0].author_title_color).toBeNull();
   });
 });

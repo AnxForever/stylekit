@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   Heart,
   ExternalLink,
@@ -33,6 +33,8 @@ import {
   SITE_OWNER_TITLE_TOKEN,
 } from "@/lib/auth/user-title-policy";
 
+const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+
 function getTitleBadgeClass(title: string): string {
   if (title === EMPEROR_TITLE_TOKEN) {
     return "border-amber-300/80 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-200";
@@ -47,6 +49,66 @@ function getTitleBadgeClass(title: string): string {
   }
 
   return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
+}
+
+function normalizeHexColor(value: string | null | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!HEX_COLOR_RE.test(trimmed)) {
+    return null;
+  }
+  return trimmed.toLowerCase();
+}
+
+function pickBadgeTextColor(hex: string): string {
+  const normalized = normalizeHexColor(hex);
+  if (!normalized) {
+    return "#111827";
+  }
+
+  const red = Number.parseInt(normalized.slice(1, 3), 16);
+  const green = Number.parseInt(normalized.slice(3, 5), 16);
+  const blue = Number.parseInt(normalized.slice(5, 7), 16);
+  const luminance = (red * 299 + green * 587 + blue * 114) / 1000;
+  return luminance >= 155 ? "#111827" : "#f8fafc";
+}
+
+function getTitleBadgeAppearance(
+  title: string | null,
+  titleColor: string | null | undefined
+): { className: string; style?: CSSProperties } {
+  const normalizedColor = normalizeHexColor(titleColor);
+  if (!normalizedColor) {
+    return {
+      className: title ? getTitleBadgeClass(title) : "",
+    };
+  }
+
+  return {
+    className: "border",
+    style: {
+      backgroundColor: normalizedColor,
+      borderColor: normalizedColor,
+      color: pickBadgeTextColor(normalizedColor),
+    },
+  };
+}
+
+function asPositiveInt(value: unknown): number | null {
+  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isInteger(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
 }
 
 export function ProfileContent() {
@@ -165,8 +227,11 @@ export function ProfileContent() {
     return rawProfileTitle;
   })();
   const profileTitleBadgeClass = rawProfileTitle
-    ? getTitleBadgeClass(rawProfileTitle)
-    : "";
+    ? getTitleBadgeAppearance(rawProfileTitle, profileTitleData?.titleColor)
+    : { className: "" };
+  const profileSeqId =
+    asPositiveInt(profileTitleData?.seqId) ??
+    asPositiveInt(user.user_metadata?.seq_id);
 
   const comments = commentsData?.comments ?? [];
   const ratings = ratingsData?.ratings ?? [];
@@ -216,7 +281,10 @@ export function ProfileContent() {
           </h1>
           {profileTitleLabel && (
             <div className="mt-2 flex justify-center sm:justify-start">
-              <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass}`}>
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass.className}`}
+                style={profileTitleBadgeClass.style}
+              >
                 {profileTitleLabel}
               </span>
             </div>
@@ -455,7 +523,7 @@ export function ProfileContent() {
               {t("profile.userId")}
             </span>
             <span className="text-sm font-mono text-foreground">
-              #{user.user_metadata?.seq_id ?? user.id.slice(0, 8)}
+              #{profileSeqId ?? user.id.slice(0, 8)}
             </span>
           </div>
           <div className="flex justify-between px-4 py-3">
@@ -463,7 +531,10 @@ export function ProfileContent() {
               {t("profile.userTitle")}
             </span>
             {profileTitleLabel ? (
-              <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass}`}>
+              <span
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
+                style={profileTitleBadgeClass.style}
+              >
                 {profileTitleLabel}
               </span>
             ) : (

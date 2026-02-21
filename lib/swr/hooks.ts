@@ -37,6 +37,7 @@ interface Comment {
   author_provider: "github" | "linuxdo" | "unknown";
   author_seq_id: number | null;
   author_title: string | null;
+  author_title_color: string | null;
 }
 
 interface CommentsData {
@@ -150,6 +151,7 @@ interface ProfileRatingsData {
 interface ProfileTitleData {
   success: boolean;
   title: string | null;
+  titleColor: string | null;
   seqId: number | null;
 }
 
@@ -281,6 +283,7 @@ interface AdminUser {
   lastActive: string;
   seqId: number | null;
   customTitle: string | null;
+  titleColor: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   isEarlyUser: boolean;

@@ -9,6 +9,9 @@ import {
 } from "@/lib/auth/user-title-policy";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 function asString(value: unknown): string | null {
   if (typeof value !== "string") {
     return null;
@@ -68,7 +71,7 @@ async function loadTitleRuleForUser(
   const titleRuleMap = await loadUserTitleRuleMap([userId], async (ids) => {
     const { data, error } = await sb
       .from("user_titles")
-      .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+      .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
       .in("user_id", ids);
 
     return {
@@ -131,8 +134,11 @@ export async function GET() {
     asString(metadata.user_title) ?? asString(metadata.title);
 
   let seqId = asPositiveInt(metadata.seq_id);
-  if (seqId == null) {
-    seqId = await loadSeqIdForUser(user.id);
+  if (UUID_RE.test(user.id)) {
+    const dbSeqId = await loadSeqIdForUser(user.id);
+    if (dbSeqId != null) {
+      seqId = dbSeqId;
+    }
   }
 
   let rule: UserTitleRule | null = null;
@@ -149,10 +155,13 @@ export async function GET() {
     rule,
     fallbackCustomTitle,
   });
+  const resolvedTitleColor =
+    resolvedTitle && rule?.titleColor ? rule.titleColor : null;
 
   return NextResponse.json({
     success: true,
     title: resolvedTitle,
+    titleColor: resolvedTitleColor,
     seqId: seqId ?? null,
   });
 }
