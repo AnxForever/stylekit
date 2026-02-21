@@ -200,7 +200,28 @@ export async function GET(request: Request) {
       updateLastActive(user, authUser.lastSignInAt ?? authUser.createdAt);
     }
 
-    const commentsRows = await readTableRows(admin, "style_comments");
+    // Fetch all independent tables in parallel
+    const [
+      commentsRows,
+      ratingsRows,
+      ...restRows
+    ] = await Promise.all([
+      readTableRows(admin, "style_comments"),
+      readTableRows(admin, "style_ratings"),
+      ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+      ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+      readTableRows(admin, "user_seq_ids"),
+      readTableRows(admin, "user_titles"),
+    ]);
+
+    const favoriteResults = restRows.slice(0, FAVORITES_TABLE_CANDIDATES.length) as (TableRow[] | null)[];
+    const submissionResults = restRows.slice(
+      FAVORITES_TABLE_CANDIDATES.length,
+      FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length
+    ) as (TableRow[] | null)[];
+    const userSeqRows = restRows[FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length] as TableRow[] | null;
+    const userTitleRows = restRows[FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length + 1] as TableRow[] | null;
+
     if (commentsRows) {
       for (const row of commentsRows) {
         const userId = resolveRowUserId(row);
@@ -214,7 +235,6 @@ export async function GET(request: Request) {
       }
     }
 
-    const ratingsRows = await readTableRows(admin, "style_ratings");
     if (ratingsRows) {
       for (const row of ratingsRows) {
         const userId = resolveRowUserId(row);
@@ -226,8 +246,7 @@ export async function GET(request: Request) {
     }
 
     const seenFavoriteKeys = new Set<string>();
-    for (const tableName of FAVORITES_TABLE_CANDIDATES) {
-      const favoriteRows = await readTableRows(admin, tableName);
+    for (const favoriteRows of favoriteResults) {
       if (!favoriteRows) continue;
 
       for (const row of favoriteRows) {
@@ -250,8 +269,7 @@ export async function GET(request: Request) {
       }
     }
 
-    for (const tableName of SUBMISSIONS_TABLE_CANDIDATES) {
-      const submissionRows = await readTableRows(admin, tableName);
+    for (const submissionRows of submissionResults) {
       if (!submissionRows) continue;
 
       for (const row of submissionRows) {
@@ -266,9 +284,8 @@ export async function GET(request: Request) {
       }
     }
 
-    const userSeqRows = await readTableRows(admin, "user_seq_ids");
     seqIdMap = buildSeqIdMap(userSeqRows);
-    titleRuleMap = buildUserTitleRuleMap(await readTableRows(admin, "user_titles"));
+    titleRuleMap = buildUserTitleRuleMap(userTitleRows);
   } catch {
     return NextResponse.json(
       { error: "Failed to load users." },

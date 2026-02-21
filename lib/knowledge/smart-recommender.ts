@@ -88,6 +88,41 @@ export interface SmartRecommendation {
   };
 }
 
+// ============ STATIC SETS (O(1) lookups) ============
+
+const MOOD_STYLES: Record<string, Set<string>> = {
+  playful: new Set(["neo-brutalist-playful", "bento-grid", "soft-ui"]),
+  professional: new Set(["corporate-clean", "minimalist-flat", "editorial"]),
+  luxury: new Set(["glassmorphism", "editorial", "neumorphism"]),
+  minimal: new Set(["minimalist-flat", "bento-grid", "corporate-clean"]),
+  bold: new Set(["neo-brutalist", "cyberpunk-neon", "neo-brutalist-playful"]),
+};
+
+const AUDIENCE_DEVELOPER = new Set(["neo-brutalist", "minimalist-flat", "bento-grid"]);
+const AUDIENCE_CREATIVE = new Set(["neo-brutalist-playful", "glassmorphism", "editorial"]);
+const AUDIENCE_ENTERPRISE = new Set(["corporate-clean", "minimalist-flat", "editorial"]);
+const AUDIENCE_CONSUMER = new Set(["soft-ui", "glassmorphism", "bento-grid"]);
+const AGE_YOUNG = new Set(["neo-brutalist-playful", "cyberpunk-neon", "bento-grid"]);
+const AGE_SENIOR = new Set(["corporate-clean", "minimalist-flat", "soft-ui"]);
+
+const MOBILE_FRIENDLY = new Set(["soft-ui", "minimalist-flat", "corporate-clean"]);
+const MOBILE_HEAVY = new Set(["glassmorphism", "neumorphism"]);
+const DESKTOP_OPTIMIZED = new Set(["bento-grid", "editorial", "glassmorphism"]);
+const PERF_FRIENDLY = new Set(["minimalist-flat", "neo-brutalist", "corporate-clean"]);
+const PERF_HEAVY = new Set(["glassmorphism", "neumorphism", "cyberpunk-neon"]);
+
+const A11Y_HIGH_CONTRAST = new Set(["neo-brutalist", "corporate-clean", "minimalist-flat"]);
+const A11Y_MEDIUM_CONTRAST = new Set(["editorial", "bento-grid"]);
+const A11Y_LOW_CONTRAST = new Set(["neumorphism", "soft-ui", "glassmorphism"]);
+
+const BRIGHT_STYLES = new Set(["neo-brutalist", "neo-brutalist-playful", "cyberpunk-neon"]);
+const MUTED_STYLES = new Set(["neumorphism", "soft-ui", "glassmorphism", "corporate-clean"]);
+const NEUTRAL_STYLES = new Set(["minimalist-flat", "bento-grid", "editorial"]);
+
+const SERIF_FRIENDLY = new Set(["editorial", "minimalist-flat", "corporate-clean"]);
+const SANS_FRIENDLY = new Set(["neo-brutalist", "glassmorphism", "neumorphism", "soft-ui", "bento-grid"]);
+const MONO_FRIENDLY = new Set(["neo-brutalist", "cyberpunk-neon"]);
+
 // ============ SCORING FUNCTIONS ============
 
 /**
@@ -132,17 +167,10 @@ function calculateProductTypeScore(styleSlug: string, productType: string): numb
 function calculateBrandMoodScore(styleSlug: string, mood?: string): number {
   if (!mood) return 50;
 
-  const moodStyleMap: Record<string, string[]> = {
-    playful: ["neo-brutalist-playful", "bento-grid", "soft-ui"],
-    professional: ["corporate-clean", "minimalist-flat", "editorial"],
-    luxury: ["glassmorphism", "editorial", "neumorphism"],
-    minimal: ["minimalist-flat", "bento-grid", "corporate-clean"],
-    bold: ["neo-brutalist", "cyberpunk-neon", "neo-brutalist-playful"],
-  };
-
-  const matchingStyles = moodStyleMap[mood] || [];
-  if (matchingStyles.includes(styleSlug)) return 90;
-  if (matchingStyles.some((s) => styleSlug.includes(s.split("-")[0]))) return 70;
+  const matchingStyles = MOOD_STYLES[mood];
+  if (!matchingStyles) return 50;
+  if (matchingStyles.has(styleSlug)) return 90;
+  if (Array.from(matchingStyles).some((s) => styleSlug.includes(s.split("-")[0]))) return 70;
   return 50;
 }
 
@@ -152,25 +180,13 @@ function calculateBrandMoodScore(styleSlug: string, mood?: string): number {
 function calculateAudienceScore(styleSlug: string, context: RecommendationContext): number {
   let score = 50;
 
-  if (context.targetAudience === "developer") {
-    if (["neo-brutalist", "minimalist-flat", "bento-grid"].includes(styleSlug)) score += 30;
-  }
-  if (context.targetAudience === "creative") {
-    if (["neo-brutalist-playful", "glassmorphism", "editorial"].includes(styleSlug)) score += 30;
-  }
-  if (context.targetAudience === "enterprise") {
-    if (["corporate-clean", "minimalist-flat", "editorial"].includes(styleSlug)) score += 30;
-  }
-  if (context.targetAudience === "consumer") {
-    if (["soft-ui", "glassmorphism", "bento-grid"].includes(styleSlug)) score += 30;
-  }
+  if (context.targetAudience === "developer" && AUDIENCE_DEVELOPER.has(styleSlug)) score += 30;
+  if (context.targetAudience === "creative" && AUDIENCE_CREATIVE.has(styleSlug)) score += 30;
+  if (context.targetAudience === "enterprise" && AUDIENCE_ENTERPRISE.has(styleSlug)) score += 30;
+  if (context.targetAudience === "consumer" && AUDIENCE_CONSUMER.has(styleSlug)) score += 30;
 
-  if (context.ageGroup === "young") {
-    if (["neo-brutalist-playful", "cyberpunk-neon", "bento-grid"].includes(styleSlug)) score += 15;
-  }
-  if (context.ageGroup === "senior") {
-    if (["corporate-clean", "minimalist-flat", "soft-ui"].includes(styleSlug)) score += 15;
-  }
+  if (context.ageGroup === "young" && AGE_YOUNG.has(styleSlug)) score += 15;
+  if (context.ageGroup === "senior" && AGE_SENIOR.has(styleSlug)) score += 15;
 
   return Math.min(score, 100);
 }
@@ -181,22 +197,18 @@ function calculateAudienceScore(styleSlug: string, context: RecommendationContex
 function calculateDeviceScore(styleSlug: string, context: RecommendationContext): number {
   let score = 50;
 
-  // Mobile-friendly styles
   if (context.primaryDevice === "mobile") {
-    if (["soft-ui", "minimalist-flat", "corporate-clean"].includes(styleSlug)) score += 25;
-    // Heavy styles penalized on mobile
-    if (["glassmorphism", "neumorphism"].includes(styleSlug)) score -= 15;
+    if (MOBILE_FRIENDLY.has(styleSlug)) score += 25;
+    if (MOBILE_HEAVY.has(styleSlug)) score -= 15;
   }
 
-  // Desktop-optimized styles
   if (context.primaryDevice === "desktop") {
-    if (["bento-grid", "editorial", "glassmorphism"].includes(styleSlug)) score += 20;
+    if (DESKTOP_OPTIMIZED.has(styleSlug)) score += 20;
   }
 
-  // Performance priority
   if (context.performancePriority) {
-    if (["minimalist-flat", "neo-brutalist", "corporate-clean"].includes(styleSlug)) score += 20;
-    if (["glassmorphism", "neumorphism", "cyberpunk-neon"].includes(styleSlug)) score -= 20;
+    if (PERF_FRIENDLY.has(styleSlug)) score += 20;
+    if (PERF_HEAVY.has(styleSlug)) score -= 20;
   }
 
   return Math.min(Math.max(score, 0), 100);
@@ -208,14 +220,9 @@ function calculateDeviceScore(styleSlug: string, context: RecommendationContext)
 function calculateAccessibilityScore(styleSlug: string, context: RecommendationContext): number {
   if (!context.accessibilityPriority) return 50;
 
-  // High contrast styles
-  if (["neo-brutalist", "corporate-clean", "minimalist-flat"].includes(styleSlug)) return 90;
-
-  // Medium contrast
-  if (["editorial", "bento-grid"].includes(styleSlug)) return 75;
-
-  // Low contrast (need extra care)
-  if (["neumorphism", "soft-ui", "glassmorphism"].includes(styleSlug)) return 50;
+  if (A11Y_HIGH_CONTRAST.has(styleSlug)) return 90;
+  if (A11Y_MEDIUM_CONTRAST.has(styleSlug)) return 75;
+  if (A11Y_LOW_CONTRAST.has(styleSlug)) return 50;
 
   return 60;
 }
@@ -389,16 +396,12 @@ export function getSmartRecommendation(
  */
 function calculateColorCompatibility(styleSlug: string, color: ColorPalette): number {
   // Simplified compatibility check based on style characteristics
-  const brightStyles = ["neo-brutalist", "neo-brutalist-playful", "cyberpunk-neon"];
-  const mutedStyles = ["neumorphism", "soft-ui", "glassmorphism", "corporate-clean"];
-  const neutralStyles = ["minimalist-flat", "bento-grid", "editorial"];
-
   const isBrightPalette =
     color.cta.includes("#") && parseInt(color.cta.slice(1, 3), 16) > 200;
 
-  if (brightStyles.includes(styleSlug) && isBrightPalette) return 90;
-  if (mutedStyles.includes(styleSlug) && !isBrightPalette) return 85;
-  if (neutralStyles.includes(styleSlug)) return 80; // Works with most
+  if (BRIGHT_STYLES.has(styleSlug) && isBrightPalette) return 90;
+  if (MUTED_STYLES.has(styleSlug) && !isBrightPalette) return 85;
+  if (NEUTRAL_STYLES.has(styleSlug)) return 80;
 
   return 70; // Default reasonable compatibility
 }
@@ -407,16 +410,6 @@ function calculateColorCompatibility(styleSlug: string, color: ColorPalette): nu
  * Calculate style-typography compatibility
  */
 function calculateTypographyCompatibility(styleSlug: string, typo: FontPairing): number {
-  const serifFriendly = ["editorial", "minimalist-flat", "corporate-clean"];
-  const sansFriendly = [
-    "neo-brutalist",
-    "glassmorphism",
-    "neumorphism",
-    "soft-ui",
-    "bento-grid",
-  ];
-  const monoFriendly = ["neo-brutalist", "cyberpunk-neon"];
-
   const isSerif =
     typo.headingFont.toLowerCase().includes("serif") ||
     typo.headingFont.toLowerCase().includes("georgia");
@@ -424,9 +417,9 @@ function calculateTypographyCompatibility(styleSlug: string, typo: FontPairing):
     typo.headingFont.toLowerCase().includes("mono") ||
     typo.bodyFont.toLowerCase().includes("mono");
 
-  if (isSerif && serifFriendly.includes(styleSlug)) return 90;
-  if (!isSerif && sansFriendly.includes(styleSlug)) return 85;
-  if (isMono && monoFriendly.includes(styleSlug)) return 88;
+  if (isSerif && SERIF_FRIENDLY.has(styleSlug)) return 90;
+  if (!isSerif && SANS_FRIENDLY.has(styleSlug)) return 85;
+  if (isMono && MONO_FRIENDLY.has(styleSlug)) return 88;
 
   return 75; // Default reasonable compatibility
 }

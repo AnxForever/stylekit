@@ -4,7 +4,7 @@
  */
 export function getSessionId(): string {
   if (typeof window === "undefined") return "";
-  const key = "stylekit-session-id";
+  const key = "stylekit-session-id-v1";
   let id = localStorage.getItem(key);
   if (!id) {
     id = crypto.randomUUID();

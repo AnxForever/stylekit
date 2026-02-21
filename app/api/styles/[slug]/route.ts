@@ -3,14 +3,16 @@ import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { trackStyleUsage } from "@/lib/analytics";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  trackStyleUsage(slug, "api");
+  after(() => {
+    trackStyleUsage(slug, "api");
+  });
   const resolved = await resolveStyleBySlug(slug);
   const style = resolved?.style;
 

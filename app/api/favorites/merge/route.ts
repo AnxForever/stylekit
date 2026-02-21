@@ -57,28 +57,15 @@ export async function POST(request: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    let merged = false;
+    const mergeResults = await Promise.allSettled(
+      FAVORITES_TABLE_CANDIDATES.map((tableName) =>
+        upsertFavoritesForUser(sb, tableName, user.id, parsed.data.slugs)
+      )
+    );
 
-    for (const tableName of FAVORITES_TABLE_CANDIDATES) {
-      try {
-        const didMerge = await upsertFavoritesForUser(
-          sb,
-          tableName,
-          user.id,
-          parsed.data.slugs
-        );
-        if (didMerge) {
-          merged = true;
-        }
-      } catch {
-        if (!merged) {
-          return NextResponse.json(
-            { success: false, error: "Failed to merge favorites" },
-            { status: 500 }
-          );
-        }
-      }
-    }
+    const merged = mergeResults.some(
+      (r) => r.status === "fulfilled" && r.value
+    );
 
     if (!merged) {
       return NextResponse.json(

@@ -12,7 +12,6 @@ import type { Locale } from "@/lib/i18n/translations";
 import { pickLocale } from "@/lib/i18n/locale-copy";
 import { submitCopy } from "@/lib/i18n/submit-copy";
 import { stylesMeta } from "@/lib/styles/meta";
-import { parseManifestImportText } from "@/lib/submit/manifest-import";
 import { BasicInfoStep } from "./steps/basic-info-step";
 import { ColorPaletteStep } from "./steps/color-palette-step";
 import { TypographyStep } from "./steps/typography-step";
@@ -20,6 +19,7 @@ import { RulesStep } from "./steps/rules-step";
 import { ComponentsStep } from "./steps/components-step";
 import { PreviewValidateStep } from "./steps/preview-validate-step";
 import { SubmitStep } from "./steps/submit-step";
+import { parseManifestImportText } from "@/lib/submit/manifest-import";
 
 // ── Form Data ──────────────────────────────────────────────────────
 export interface WizardFormData {
@@ -150,7 +150,6 @@ export function SubmissionWizard() {
       return !!(parsed?.data && hasMeaningful(parsed.data));
     } catch { return false; }
   });
-  const [showDraft, setShowDraft] = useState(() => hasDraft);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [keywordInput, setKeywordInput] = useState("");
   const [manifestInput, setManifestInput] = useState("");
@@ -195,13 +194,13 @@ export function SubmissionWizard() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const p = JSON.parse(raw);
-      if (p?.data) { setFd({ ...initial, ...p.data }); setShowDraft(false); }
+      if (p?.data) { setFd({ ...initial, ...p.data }); setHasDraft(false); }
     } catch { /* ignore */ }
   };
 
   const clearDraft = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setFd(initial); setHasDraft(false); setShowDraft(false);
+    setFd(initial); setHasDraft(false);
     setManifestCoverSvg(null);
     setTouched({}); setStepVal({}); setSaveStatus("idle");
     lastFP.current = "";
@@ -507,7 +506,7 @@ export function SubmissionWizard() {
   return (
     <>
       {/* Draft Notice */}
-      {showDraft && (
+      {hasDraft ? (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-background border border-border shadow-lg p-4 max-w-md animate-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
             <Save className="w-5 h-5 text-muted mt-0.5" />
@@ -516,13 +515,13 @@ export function SubmissionWizard() {
               <p className="text-xs text-muted mb-3">{text.draftNoticeDescription}</p>
               <div className="flex gap-2">
                 <button onClick={loadDraft} className="px-3 py-1.5 text-xs bg-foreground text-background hover:bg-foreground/90 transition-colors">{text.continueEditing}</button>
-                <button onClick={() => setShowDraft(false)} className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors">{text.startFresh}</button>
+                <button onClick={() => setHasDraft(false)} className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors">{text.startFresh}</button>
               </div>
             </div>
-            <button onClick={() => setShowDraft(false)} className="text-muted hover:text-foreground"><X className="w-4 h-4" /></button>
+            <button onClick={() => setHasDraft(false)} className="text-muted hover:text-foreground"><X className="w-4 h-4" /></button>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Page Header */}
       <section className="border-b border-border">
@@ -607,7 +606,7 @@ export function SubmissionWizard() {
           </div>
 
           {/* Step Content */}
-          {step === 1 && (
+          {step === 1 ? (
             <BasicInfoStep
               formData={fd}
               updateField={updateField}
@@ -633,20 +632,20 @@ export function SubmissionWizard() {
               removeKeyword={removeKeyword}
               toggleTag={toggleTag}
             />
-          )}
-          {step === 2 && <ColorPaletteStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} addAccentColor={addAccentColor} updateAccentColor={updateAccentColor} removeAccentColor={removeAccentColor} />}
-          {step === 3 && <TypographyStep formData={fd} updateField={updateField} isAnimating={anim} />}
-          {step === 4 && <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
-          {step === 5 && <ComponentsStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
-          {step === 6 && <PreviewValidateStep formData={fd} manifestCoverSvg={manifestCoverSvg} isAnimating={anim} onGoToStep={goStep} />}
-          {step === 7 && (
+          ) : null}
+          {step === 2 ? <ColorPaletteStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} addAccentColor={addAccentColor} updateAccentColor={updateAccentColor} removeAccentColor={removeAccentColor} /> : null}
+          {step === 3 ? <TypographyStep formData={fd} updateField={updateField} isAnimating={anim} /> : null}
+          {step === 4 ? <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} /> : null}
+          {step === 5 ? <ComponentsStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} /> : null}
+          {step === 6 ? <PreviewValidateStep formData={fd} manifestCoverSvg={manifestCoverSvg} isAnimating={anim} onGoToStep={goStep} /> : null}
+          {step === 7 ? (
             <SubmitStep
               formData={fd}
               manifestCoverSvg={manifestCoverSvg}
               isAnimating={anim}
               text={text}
             />
-          )}
+          ) : null}
 
           {/* Navigation */}
           <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border">
