@@ -162,6 +162,7 @@ describe("GET /api/admin/users", () => {
             user_id: USER_ONE_ID,
             custom_title: null,
             title_color: "#ff5500",
+            title_icon_path: "M0 0 L10 10 Z",
             is_owner: true,
             title_enabled: true,
           },
@@ -204,6 +205,7 @@ describe("GET /api/admin/users", () => {
     expect(payload.users[0].lastActive).toBe("2026-02-21T03:00:00.000Z");
     expect(payload.users[0].resolvedTitle).toBe(SITE_OWNER_TITLE_TOKEN);
     expect(payload.users[0].titleColor).toBe("#ff5500");
+    expect(payload.users[0].titleIconPath).toBe("M0 0 L10 10 Z");
     expect(payload.users[0].isOwner).toBe(true);
 
     const secondUser = payload.users.find(
@@ -215,6 +217,7 @@ describe("GET /api/admin/users", () => {
     expect(secondUser.seqId).toBe(88);
     expect(secondUser.resolvedTitle).toBe(EARLY_USER_TITLE_TOKEN);
     expect(secondUser.titleColor).toBeNull();
+    expect(secondUser.titleIconPath).toBeNull();
     expect(secondUser.isEarlyUser).toBe(true);
 
     const thirdUser = payload.users.find(

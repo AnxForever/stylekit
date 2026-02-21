@@ -5,7 +5,9 @@ import Image from "next/image";
 import {
   EMPEROR_TITLE_TOKEN,
   EARLY_USER_TITLE_TOKEN,
+  normalizeTitleIconPathInput,
   SITE_OWNER_TITLE_TOKEN,
+  USER_TITLE_ICON_PATH_MAX_LENGTH,
 } from "@/lib/auth/user-title-policy";
 import {
   ChevronDown,
@@ -32,6 +34,7 @@ const PRESET_TITLE_COLORS = [
 interface TitleDraft {
   customTitle: string;
   titleColor: string;
+  titleIconPath: string;
   isOwner: boolean;
   titleEnabled: boolean;
 }
@@ -108,6 +111,14 @@ function toCompactColorInput(value: string): string {
   return value.replace(/\s+/g, "");
 }
 
+function normalizeTitleIconPathForRender(value: string | null | undefined): string | null {
+  const normalized = normalizeTitleIconPathInput(value);
+  if (!normalized.ok) {
+    return null;
+  }
+  return normalized.value;
+}
+
 export function AdminUsersContent() {
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
@@ -149,6 +160,7 @@ export function AdminUsersContent() {
         [user.userId]: {
           customTitle: user.customTitle ?? "",
           titleColor: user.titleColor ?? "",
+          titleIconPath: user.titleIconPath ?? "",
           isOwner: user.isOwner,
           titleEnabled: user.titleEnabled,
         },
@@ -174,12 +186,16 @@ export function AdminUsersContent() {
     (
       userId: string,
       patch: Partial<TitleDraft>,
-      fallback: Pick<AdminUser, "customTitle" | "titleColor" | "isOwner" | "titleEnabled">
+      fallback: Pick<
+        AdminUser,
+        "customTitle" | "titleColor" | "titleIconPath" | "isOwner" | "titleEnabled"
+      >
     ) => {
       setTitleDrafts((prev) => {
         const current = prev[userId] ?? {
           customTitle: fallback.customTitle ?? "",
           titleColor: fallback.titleColor ?? "",
+          titleIconPath: fallback.titleIconPath ?? "",
           isOwner: fallback.isOwner,
           titleEnabled: fallback.titleEnabled,
         };
@@ -201,6 +217,7 @@ export function AdminUsersContent() {
       const draft = titleDrafts[user.userId] ?? {
         customTitle: user.customTitle ?? "",
         titleColor: user.titleColor ?? "",
+        titleIconPath: user.titleIconPath ?? "",
         isOwner: user.isOwner,
         titleEnabled: user.titleEnabled,
       };
@@ -210,6 +227,18 @@ export function AdminUsersContent() {
         setTitleErrors((prev) => ({
           ...prev,
           [user.userId]: "颜色格式错误，请使用 #RRGGBB，例如 #ff5a7a。",
+        }));
+        return;
+      }
+      const normalizedTitleIconPath = normalizeTitleIconPathInput(
+        draft.titleIconPath
+      );
+      if (!normalizedTitleIconPath.ok) {
+        setTitleErrors((prev) => ({
+          ...prev,
+          [user.userId]:
+            normalizedTitleIconPath.error ??
+            "矢量图路径无效，请输入合法的 SVG Path 数据。",
         }));
         return;
       }
@@ -223,6 +252,7 @@ export function AdminUsersContent() {
           body: JSON.stringify({
             customTitle: draft.customTitle,
             titleColor: normalizedColor ?? null,
+            titleIconPath: normalizedTitleIconPath.value,
             isOwner: draft.isOwner,
             titleEnabled: draft.titleEnabled,
           }),
@@ -265,6 +295,7 @@ export function AdminUsersContent() {
           [user.userId]: {
             customTitle: "",
             titleColor: "",
+            titleIconPath: "",
             isOwner: false,
             titleEnabled: true,
           },
@@ -369,6 +400,7 @@ export function AdminUsersContent() {
                 const draft = titleDrafts[user.userId] ?? {
                   customTitle: user.customTitle ?? "",
                   titleColor: user.titleColor ?? "",
+                  titleIconPath: user.titleIconPath ?? "",
                   isOwner: user.isOwner,
                   titleEnabled: user.titleEnabled,
                 };
@@ -376,6 +408,9 @@ export function AdminUsersContent() {
                 const resolvedTitleLabel = formatResolvedTitle(user.resolvedTitle);
                 const titleBadgeClass = getTitleBadgeClass(user.resolvedTitle);
                 const titleBadgeStyle = buildCustomTitleBadgeStyle(user.titleColor);
+                const titleIconPath = user.resolvedTitle
+                  ? normalizeTitleIconPathForRender(user.titleIconPath)
+                  : null;
                 const draftTitleRaw = draft.customTitle.trim() || user.resolvedTitle;
                 const draftTitleLabel =
                   formatResolvedTitle(draftTitleRaw) ?? "头衔预览";
@@ -386,6 +421,16 @@ export function AdminUsersContent() {
                 const isDraftColorInvalid =
                   hasDraftColorInput && !normalizedDraftColor;
                 const draftColorValue = normalizedDraftColor ?? "#e11d48";
+                const normalizedDraftIconPath = normalizeTitleIconPathInput(
+                  draft.titleIconPath
+                );
+                const hasDraftIconInput = draft.titleIconPath.trim().length > 0;
+                const isDraftIconInvalid =
+                  hasDraftIconInput && !normalizedDraftIconPath.ok;
+                const draftIconPath =
+                  draftTitleRaw && normalizedDraftIconPath.ok
+                    ? normalizedDraftIconPath.value
+                    : null;
 
                 return (
                   <Fragment key={user.userId}>
@@ -421,9 +466,19 @@ export function AdminUsersContent() {
                       <td className="px-4 py-3">
                         {resolvedTitleLabel ? (
                           <span
-                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${titleBadgeClass}`}
+                            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs ${titleBadgeClass}`}
                             style={titleBadgeStyle}
                           >
+                            {titleIconPath ? (
+                              <svg
+                                viewBox="0 0 40 40"
+                                className="h-3 w-3 fill-current"
+                                aria-hidden="true"
+                                focusable="false"
+                              >
+                                <path d={titleIconPath} />
+                              </svg>
+                            ) : null}
                             {resolvedTitleLabel}
                           </span>
                         ) : (
@@ -516,6 +571,35 @@ export function AdminUsersContent() {
                                   清除
                                 </button>
                               </div>
+                              <div className="md:col-span-2 xl:col-span-2 flex items-center gap-2">
+                                <input
+                                  value={draft.titleIconPath}
+                                  onChange={(event) =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleIconPath: event.target.value },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                  placeholder="SVG path data (optional)"
+                                  maxLength={USER_TITLE_ICON_PATH_MAX_LENGTH}
+                                  className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background font-mono"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateDraft(
+                                      user.userId,
+                                      { titleIconPath: "" },
+                                      usersById.get(user.userId) ?? user
+                                    )
+                                  }
+                                  className="shrink-0 px-2.5 py-2 text-xs border border-border rounded-md hover:bg-muted/10 transition-colors"
+                                  title="清除矢量图"
+                                >
+                                  清除
+                                </button>
+                              </div>
                               <div className="md:col-span-2 xl:col-span-2 flex flex-wrap items-center gap-2">
                                 {PRESET_TITLE_COLORS.map((preset) => {
                                   const isSelected =
@@ -575,7 +659,9 @@ export function AdminUsersContent() {
                                 Title Enabled
                               </label>
                               <button
-                                disabled={isSavingTitle || isDraftColorInvalid}
+                                disabled={
+                                  isSavingTitle || isDraftColorInvalid || isDraftIconInvalid
+                                }
                                 onClick={() => handleSaveTitle(user)}
                                 className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                               >
@@ -592,9 +678,19 @@ export function AdminUsersContent() {
 
                             <div>
                               <span
-                                className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${draftBadgeClass}`}
+                                className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${draftBadgeClass}`}
                                 style={draftBadgeStyle}
                               >
+                                {draftIconPath ? (
+                                  <svg
+                                    viewBox="0 0 40 40"
+                                    className="h-3.5 w-3.5 fill-current"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                  >
+                                    <path d={draftIconPath} />
+                                  </svg>
+                                ) : null}
                                 {draftTitleLabel}
                               </span>
                             </div>
@@ -628,6 +724,12 @@ export function AdminUsersContent() {
                             {isDraftColorInvalid ? (
                               <p className="text-xs text-amber-600 dark:text-amber-300">
                                 颜色值无效，请输入 `#RRGGBB`，例如 `#ff5a7a`。
+                              </p>
+                            ) : null}
+                            {isDraftIconInvalid ? (
+                              <p className="text-xs text-amber-600 dark:text-amber-300">
+                                {normalizedDraftIconPath.error ??
+                                  "矢量图路径无效，请使用 SVG path 数据。"}
                               </p>
                             ) : null}
                           </div>

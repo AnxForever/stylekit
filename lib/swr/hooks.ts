@@ -287,6 +287,7 @@ interface AdminUser {
   seqId: number | null;
   customTitle: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   isEarlyUser: boolean;
