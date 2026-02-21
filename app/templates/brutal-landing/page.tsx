@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Menu, Palette, Shield, Tag, Zap } from "lucide-react";
+import { ChevronDown, Menu, Palette, Shield, Tag, X, Zap } from "lucide-react";
 import {
   BrutalButton,
   BrutalCard,
@@ -12,11 +12,174 @@ import {
 } from "@/components/ui/brutal";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const FEATURES = [
+  {
+    icon: <Zap className="w-10 h-10" />,
+    title: "超级快速",
+    desc: "毫秒级响应，让用户体验流畅无比。经过优化的底层引擎确保每一次交互都如丝般顺滑。",
+    color: "bg-[#ff006e]",
+    textColor: "text-white",
+  },
+  {
+    icon: <Palette className="w-10 h-10" />,
+    title: "高度可定制",
+    desc: "完全自定义的设计系统，满足各种需求。从颜色到字体，每一个细节都可以精确控制。",
+    color: "bg-[#ccff00]",
+    textColor: "text-black",
+  },
+  {
+    icon: <Shield className="w-10 h-10" />,
+    title: "安全可靠",
+    desc: "企业级安全标准，数据加密存储。通过 ISO 27001 认证，让你的数据始终安全。",
+    color: "bg-[#00d9ff]",
+    textColor: "text-black",
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    question: "免费版有哪些功能限制？",
+    answer:
+      "免费版包含基础功能、社区支持以及 1 个项目额度。你可以体验核心的 Neo-Brutalist 组件库，但无法访问高级主题和 API。升级到专业版即可解锁全部功能。",
+  },
+  {
+    question: "可以随时取消订阅吗？",
+    answer:
+      "当然可以。我们不锁定任何合同。你可以在账户设置中随时取消，取消后当前计费周期结束前仍可正常使用所有功能，不会立即失效。",
+  },
+  {
+    question: "是否支持团队协作？",
+    answer:
+      "专业版支持最多 5 名团队成员共享访问权限。企业版则提供无限成员席位、角色权限管理以及团队专属仪表盘，非常适合大型组织使用。",
+  },
+  {
+    question: "技术支持响应时间是多少？",
+    answer:
+      "免费版用户可通过社区论坛获取支持，响应时间视社区活跃度而定。专业版用户享有优先邮件支持，我们承诺在 24 小时内响应。企业版用户则拥有专属客户经理和 4 小时 SLA 保障。",
+  },
+];
+
 export default function BrutalLandingTemplate() {
+  // Mobile menu
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Email form
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [submitState, setSubmitState] = useState<"idle" | "loading" | "success">("idle");
+
+  // FAQ accordion
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Feature tabs
+  const [activeFeature, setActiveFeature] = useState(0);
+
+  // Backdrop ref for mobile menu
+  const backdropRef = useRef<HTMLDivElement>(null);
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (backdropRef.current && e.target === backdropRef.current) {
+        setMobileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [mobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu open
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  function handleEmailSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setEmailError("");
+
+    if (!email.trim()) {
+      setEmailError("邮箱地址不能为空");
+      return;
+    }
+    if (!EMAIL_REGEX.test(email.trim())) {
+      setEmailError("请输入有效的邮箱地址");
+      return;
+    }
+
+    setSubmitState("loading");
+    setTimeout(() => {
+      setSubmitState("success");
+    }, 1500);
+  }
+
+  function toggleFaq(index: number) {
+    setOpenFaq((prev) => (prev === index ? null : index));
+  }
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Mobile menu backdrop */}
+      {mobileMenuOpen && (
+        <div
+          ref={backdropRef}
+          className="fixed inset-0 z-40 bg-black/60"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile menu dropdown */}
+      {mobileMenuOpen && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-[#ccff00] border-b-4 border-black shadow-[0_8px_0px_0px_rgba(0,0,0,1)]">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between border-b-2 border-black">
+            <Link
+              href="/templates/brutal-landing"
+              className="font-black text-2xl"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              BRUTAL<span className="text-[#ff006e]">.</span>
+            </Link>
+            <button
+              className="p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              aria-label="Close menu"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <X className="w-6 h-6" aria-hidden="true" />
+            </button>
+          </div>
+          <nav className="px-4 py-6 flex flex-col gap-4">
+            {["功能", "定价", "关于"].map((label, i) => {
+              const hrefs = ["#features", "#pricing", "#about"];
+              return (
+                <a
+                  key={i}
+                  href={hrefs[i]}
+                  className="font-black text-2xl border-b-2 border-black pb-4 hover:text-[#ff006e] transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              );
+            })}
+            <div className="pt-2">
+              <BrutalButton
+                variant="primary"
+                size="lg"
+                className="w-full"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                开始使用
+              </BrutalButton>
+            </div>
+          </nav>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#ccff00] border-b-4 border-black">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -40,6 +203,8 @@ export default function BrutalLandingTemplate() {
           <button
             className="md:hidden p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
             aria-label="Open menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="w-6 h-6" aria-hidden="true" />
           </button>
@@ -102,7 +267,7 @@ export default function BrutalLandingTemplate() {
         </div>
       </BrutalSection>
 
-      {/* Features Section */}
+      {/* Features Section with active tab highlight */}
       <BrutalSection id="features" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -110,34 +275,61 @@ export default function BrutalLandingTemplate() {
             <h2 className="text-4xl md:text-5xl font-black">
               为什么选择我们？
             </h2>
+            <p className="mt-4 text-zinc-600 font-medium">点击功能卡片了解更多详情</p>
           </div>
+
+          {/* Feature detail panel */}
+          <div className="mb-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white p-6 md:p-8">
+            <div className="flex items-start gap-6">
+              <div
+                className={`shrink-0 w-16 h-16 border-4 border-black flex items-center justify-center ${FEATURES[activeFeature].color}`}
+              >
+                <span className={FEATURES[activeFeature].textColor}>
+                  {FEATURES[activeFeature].icon}
+                </span>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black mb-2">{FEATURES[activeFeature].title}</h3>
+                <p className="text-base leading-relaxed text-zinc-700">
+                  {FEATURES[activeFeature].desc}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Zap className="w-10 h-10" />,
-                title: "超级快速",
-                desc: "毫秒级响应，让用户体验流畅无比",
-                color: "bg-[#ff006e]",
-              },
-              {
-                icon: <Palette className="w-10 h-10" />,
-                title: "高度可定制",
-                desc: "完全自定义的设计系统，满足各种需求",
-                color: "bg-[#ccff00]",
-              },
-              {
-                icon: <Shield className="w-10 h-10" />,
-                title: "安全可靠",
-                desc: "企业级安全标准，数据加密存储",
-                color: "bg-[#00d9ff]",
-              },
-            ].map((feature, i) => (
-              <BrutalCard key={i} className={`${feature.color} p-8`}>
-                <span className="block mb-4">{feature.icon}</span>
-                <h3 className="text-2xl font-black mb-3">{feature.title}</h3>
-                <p className="text-sm">{feature.desc}</p>
-              </BrutalCard>
-            ))}
+            {FEATURES.map((feature, i) => {
+              const isActive = activeFeature === i;
+              return (
+                <BrutalCard
+                  key={i}
+                  className={`p-8 cursor-pointer transition-all ${feature.color} ${
+                    isActive
+                      ? "shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] -translate-y-2 scale-[1.02]"
+                      : "opacity-70 hover:opacity-90 hover:-translate-y-1"
+                  }`}
+                  onClick={() => setActiveFeature(i)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isActive}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveFeature(i);
+                    }
+                  }}
+                >
+                  <span className="block mb-4">{feature.icon}</span>
+                  <h3 className="text-2xl font-black mb-3">{feature.title}</h3>
+                  <p className="text-sm">{feature.desc.split("。")[0]}。</p>
+                  {isActive && (
+                    <div className="mt-4 inline-block bg-black text-white text-xs font-black px-3 py-1">
+                      当前选中
+                    </div>
+                  )}
+                </BrutalCard>
+              );
+            })}
           </div>
         </div>
       </BrutalSection>
@@ -207,7 +399,7 @@ export default function BrutalLandingTemplate() {
         </div>
       </BrutalSection>
 
-      {/* CTA Section */}
+      {/* CTA Section with email validation */}
       <BrutalSection className="py-20 bg-[#ccff00]">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-black mb-6">
@@ -216,16 +408,117 @@ export default function BrutalLandingTemplate() {
           <p className="text-lg mb-8">
             立即注册，免费试用 14 天所有功能。无需信用卡。
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <BrutalInput
-              placeholder="输入你的邮箱"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1"
-            />
-            <BrutalButton variant="primary">
-              立即开始 →
-            </BrutalButton>
+
+          {submitState === "success" ? (
+            <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8">
+              <div className="text-5xl mb-4 select-none" aria-hidden="true">
+                &#127881; &#10024; &#127881;
+              </div>
+              <p className="text-2xl font-black">WE GOT YOUR EMAIL!</p>
+              <p className="mt-2 text-zinc-600 font-medium">
+                我们会尽快与你联系，敬请期待。
+              </p>
+              <BrutalButton
+                variant="primary"
+                size="sm"
+                className="mt-6"
+                onClick={() => {
+                  setSubmitState("idle");
+                  setEmail("");
+                  setEmailError("");
+                }}
+              >
+                重新订阅
+              </BrutalButton>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleEmailSubmit}
+              noValidate
+              className="flex flex-col gap-3 max-w-md mx-auto"
+            >
+              <div className="flex flex-col sm:flex-row gap-4">
+                <BrutalInput
+                  type="email"
+                  placeholder="输入你的邮箱"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError("");
+                  }}
+                  error={!!emailError}
+                  disabled={submitState === "loading"}
+                  className="flex-1"
+                  aria-invalid={!!emailError}
+                  aria-describedby={emailError ? "email-error" : undefined}
+                />
+                <BrutalButton
+                  type="submit"
+                  variant="primary"
+                  disabled={submitState === "loading"}
+                >
+                  {submitState === "loading" ? "SENDING..." : "立即开始 →"}
+                </BrutalButton>
+              </div>
+              {emailError && (
+                <p
+                  id="email-error"
+                  role="alert"
+                  className="text-left text-sm font-bold text-[#ff006e] border-l-4 border-[#ff006e] pl-3"
+                >
+                  {emailError}
+                </p>
+              )}
+            </form>
+          )}
+        </div>
+      </BrutalSection>
+
+      {/* FAQ Section */}
+      <BrutalSection className="py-20 bg-white">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <BrutalTag className="mb-4">FAQ 常见问题</BrutalTag>
+            <h2 className="text-4xl md:text-5xl font-black">
+              你可能想知道的
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {FAQ_ITEMS.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div
+                  key={i}
+                  className={`border-4 border-black transition-all ${
+                    isOpen
+                      ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-[#ccff00]"
+                      : "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                  }`}
+                >
+                  <button
+                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleFaq(i)}
+                  >
+                    <span className="font-black text-lg leading-snug">{item.question}</span>
+                    <ChevronDown
+                      className={`shrink-0 w-6 h-6 transition-transform duration-200 ${
+                        isOpen ? "rotate-180" : "rotate-0"
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-6 pb-6 border-t-4 border-black">
+                      <p className="pt-4 text-base leading-relaxed">
+                        {item.answer}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </BrutalSection>
