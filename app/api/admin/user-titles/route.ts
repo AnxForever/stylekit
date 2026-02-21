@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
-import { isUserTitlesSchemaMissing } from "@/lib/auth/user-title-policy";
+import {
+  isUserTitlesSchemaMissing,
+  normalizeTitleColorInput,
+} from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const UUID_RE =
@@ -15,6 +18,7 @@ interface DbErrorLike {
 interface TitleRuleItem {
   userId: string;
   customTitle: string | null;
+  titleColor: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   updatedAt: string | null;
@@ -47,7 +51,7 @@ export async function GET(request: Request) {
 
   let query = sb
     .from("user_titles")
-    .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by", {
+    .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by", {
       count: "exact",
     });
 
@@ -89,6 +93,7 @@ export async function GET(request: Request) {
       return {
         userId,
         customTitle: toStringOrNull(record.custom_title),
+        titleColor: toTitleColorOrNull(record.title_color),
         isOwner: toBooleanOrDefault(record.is_owner, false),
         titleEnabled: toBooleanOrDefault(record.title_enabled, true),
         updatedAt: toStringOrNull(record.updated_at),
@@ -118,4 +123,12 @@ function toBooleanOrDefault(value: unknown, fallback: boolean): boolean {
     return value;
   }
   return fallback;
+}
+
+function toTitleColorOrNull(value: unknown): string | null {
+  const normalized = normalizeTitleColorInput(value);
+  if (!normalized.ok) {
+    return null;
+  }
+  return normalized.value;
 }

@@ -64,6 +64,7 @@ describe("profile routes", () => {
         {
           user_id: "user-9",
           custom_title: "VIP",
+          title_color: "#ff5500",
           is_owner: false,
           title_enabled: true,
           updated_at: null,
@@ -83,6 +84,7 @@ describe("profile routes", () => {
     await expect(response.json()).resolves.toEqual({
       success: true,
       title: "VIP",
+      titleColor: "#ff5500",
       seqId: 12,
     });
   });
@@ -110,7 +112,47 @@ describe("profile routes", () => {
     await expect(response.json()).resolves.toEqual({
       success: true,
       title: EMPEROR_TITLE_TOKEN,
+      titleColor: null,
       seqId: 1,
+    });
+  });
+
+  it("title endpoint prefers seq id from user_seq_ids over metadata seq_id", async () => {
+    mockedGetAdminUserIds.mockReturnValue([]);
+    mockedGetServerUser.mockResolvedValue({
+      id: "11111111-1111-4111-8111-111111111111",
+      user_metadata: { seq_id: 50 },
+    } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const seqMaybeSingle = vi.fn().mockResolvedValue({
+      data: { seq_id: 150 },
+      error: null,
+    });
+    const seqEq = vi.fn().mockReturnValue({ maybeSingle: seqMaybeSingle });
+    const seqSelect = vi.fn().mockReturnValue({ eq: seqEq });
+
+    const titleIn = vi.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    });
+    const titleSelect = vi.fn().mockReturnValue({ in: titleIn });
+
+    mockedCreateClient
+      .mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({ select: seqSelect }),
+      } as never)
+      .mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({ select: titleSelect }),
+      } as never);
+
+    const response = await getTitle();
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      title: null,
+      titleColor: null,
+      seqId: 150,
     });
   });
 

@@ -5,6 +5,7 @@ import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import {
   isUserTitlesSchemaMissing,
   normalizeCustomTitleInput,
+  normalizeTitleColorInput,
   USER_TITLE_MAX_LENGTH,
 } from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -16,12 +17,14 @@ const paramsSchema = z.object({
 const bodySchema = z
   .object({
     customTitle: z.union([z.string(), z.null()]).optional(),
+    titleColor: z.union([z.string(), z.null()]).optional(),
     isOwner: z.boolean().optional(),
     titleEnabled: z.boolean().optional(),
   })
   .refine(
     (value) =>
       value.customTitle !== undefined ||
+      value.titleColor !== undefined ||
       value.isOwner !== undefined ||
       value.titleEnabled !== undefined,
     { message: "Provide at least one field to update." }
@@ -36,6 +39,7 @@ interface DbErrorLike {
 interface TitleRuleResponse {
   userId: string;
   customTitle: string | null;
+  titleColor: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   updatedAt: string | null;
@@ -95,6 +99,7 @@ export async function PUT(
     updated_at: new Date().toISOString(),
     updated_by: access.actor?.id ?? "unknown",
   };
+  let normalizedTitleColorForAudit: string | null | undefined;
 
   if (parsedBody.data.customTitle !== undefined) {
     const normalized = normalizeCustomTitleInput(parsedBody.data.customTitle);
@@ -111,6 +116,22 @@ export async function PUT(
     payload.custom_title = normalized.value;
   }
 
+  if (parsedBody.data.titleColor !== undefined) {
+    const normalized = normalizeTitleColorInput(parsedBody.data.titleColor);
+    if (!normalized.ok) {
+      return NextResponse.json(
+        {
+          error:
+            normalized.error ??
+            "titleColor must be a valid hex color like #ff5a7a.",
+        },
+        { status: 400 }
+      );
+    }
+    payload.title_color = normalized.value;
+    normalizedTitleColorForAudit = normalized.value;
+  }
+
   if (parsedBody.data.isOwner !== undefined) {
     payload.is_owner = parsedBody.data.isOwner;
   }
@@ -122,7 +143,7 @@ export async function PUT(
   const { data, error } = await sb
     .from("user_titles")
     .upsert(payload, { onConflict: "user_id" })
-    .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+    .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
     .single();
 
   if (error) {
@@ -131,7 +152,7 @@ export async function PUT(
       return NextResponse.json(
         {
           error:
-            "Title table is not ready. Apply Supabase migration 006 (user_titles).",
+            "Title table is not ready. Apply Supabase migrations 006 and 009.",
         },
         { status: 503 }
       );
@@ -150,6 +171,7 @@ export async function PUT(
     actor: access.actor,
     metadata: {
       customTitle: parsedBody.data.customTitle ?? null,
+      titleColor: normalizedTitleColorForAudit,
       isOwner: parsedBody.data.isOwner,
       titleEnabled: parsedBody.data.titleEnabled,
     },
@@ -202,7 +224,7 @@ export async function DELETE(
       return NextResponse.json(
         {
           error:
-            "Title table is not ready. Apply Supabase migration 006 (user_titles).",
+            "Title table is not ready. Apply Supabase migrations 006 and 009.",
         },
         { status: 503 }
       );
@@ -235,6 +257,7 @@ function toRuleResponse(data: unknown, userId: string): TitleRuleResponse {
     return {
       userId,
       customTitle: null,
+      titleColor: null,
       isOwner: false,
       titleEnabled: true,
       updatedAt: null,
@@ -246,6 +269,7 @@ function toRuleResponse(data: unknown, userId: string): TitleRuleResponse {
   return {
     userId: toStringOrNull(row.user_id) ?? userId,
     customTitle: toStringOrNull(row.custom_title),
+    titleColor: toTitleColorOrNull(row.title_color),
     isOwner: toBooleanOrDefault(row.is_owner, false),
     titleEnabled: toBooleanOrDefault(row.title_enabled, true),
     updatedAt: toStringOrNull(row.updated_at),
@@ -266,4 +290,12 @@ function toBooleanOrDefault(value: unknown, fallback: boolean): boolean {
     return value;
   }
   return fallback;
+}
+
+function toTitleColorOrNull(value: unknown): string | null {
+  const normalized = normalizeTitleColorInput(value);
+  if (!normalized.ok) {
+    return null;
+  }
+  return normalized.value;
 }

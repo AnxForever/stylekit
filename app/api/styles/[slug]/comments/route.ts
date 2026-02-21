@@ -58,6 +58,7 @@ interface CommentOutput {
   author_provider: AuthorProvider;
   author_seq_id: number | null;
   author_title: string | null;
+  author_title_color: string | null;
 }
 
 interface AuthLookupResult {
@@ -324,22 +325,25 @@ async function loadAuthorIdentities(
     })
   );
 
-  const missingSeqIds = Array.from(map.values())
-    .filter((identity) => identity.seqId == null && UUID_RE.test(identity.userId))
-    .map((identity) => identity.userId);
+  const seqLookupUserIds = Array.from(
+    new Set(
+      Array.from(map.keys()).filter((userId) => UUID_RE.test(userId))
+    )
+  );
 
-  if (missingSeqIds.length > 0) {
-    const seqIdMap = await lookupSeqIdMap(
-      Array.from(new Set(missingSeqIds)),
-      lookupSeqIds
-    );
+  if (seqLookupUserIds.length > 0) {
+    const seqIdMap = await lookupSeqIdMap(seqLookupUserIds, lookupSeqIds);
 
-    for (const [userId, seqId] of seqIdMap.entries()) {
+    for (const userId of seqLookupUserIds) {
       const current = map.get(userId);
-      if (!current || current.seqId != null) {
+      if (!current) {
         continue;
       }
-      map.set(userId, { ...current, seqId });
+
+      const dbSeqId = seqIdMap.get(userId);
+      if (dbSeqId != null) {
+        map.set(userId, { ...current, seqId: dbSeqId });
+      }
     }
   }
 
@@ -371,6 +375,8 @@ function toCommentOutput(
           fallbackCustomTitle: identity?.profileTitle ?? null,
         })
       : null;
+  const resolvedTitleColor =
+    resolvedTitle && resolvedRule?.titleColor ? resolvedRule.titleColor : null;
 
   return {
     id: asString(row.id) ?? "",
@@ -385,6 +391,7 @@ function toCommentOutput(
     author_provider: identity?.provider ?? "unknown",
     author_seq_id: identity?.seqId ?? null,
     author_title: resolvedTitle,
+    author_title_color: resolvedTitleColor,
   };
 }
 
@@ -474,7 +481,7 @@ export async function POST(
       user.app_metadata
     );
 
-    if (identity.seqId == null && UUID_RE.test(user.id)) {
+    if (UUID_RE.test(user.id)) {
       const seqMap = await lookupSeqIdMap([user.id], async (userIds) => {
         const { data, error } = await sb
           .from("user_seq_ids")
@@ -497,7 +504,7 @@ export async function POST(
       async (userIds) => {
         const { data, error } = await sb
           .from("user_titles")
-          .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+          .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
           .in("user_id", userIds);
 
         return {
@@ -706,7 +713,7 @@ export async function GET(
       async (ids) => {
         const { data, error } = await sb
           .from("user_titles")
-          .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+          .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
           .in("user_id", ids);
 
         return {
@@ -789,7 +796,7 @@ export async function GET(
     async (ids) => {
       const { data, error } = await sb
         .from("user_titles")
-        .select("user_id, custom_title, is_owner, title_enabled, updated_at, updated_by")
+        .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
         .in("user_id", ids);
 
       return {

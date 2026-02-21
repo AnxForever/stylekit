@@ -44,6 +44,7 @@ describe("GET /api/admin/user-titles", () => {
         {
           user_id: "11111111-1111-4111-8111-111111111111",
           custom_title: "VIP",
+          title_color: "#ff5500",
           is_owner: false,
           title_enabled: true,
           updated_at: "2026-02-21T00:00:00.000Z",
@@ -70,6 +71,7 @@ describe("GET /api/admin/user-titles", () => {
         {
           userId: "11111111-1111-4111-8111-111111111111",
           customTitle: "VIP",
+          titleColor: "#ff5500",
           isOwner: false,
           titleEnabled: true,
           updatedAt: "2026-02-21T00:00:00.000Z",
