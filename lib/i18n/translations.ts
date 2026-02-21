@@ -410,6 +410,14 @@ const en = {
     "styleComments.providerUnknown": "Unknown",
     "styleComments.titleSiteOwner": "Site Owner",
     "styleComments.titleEarlyUser": "Early User",
+    "styleComments.titleEmperor": "Qin Shi Huang",
+    "styleComments.edit": "Edit",
+    "styleComments.delete": "Delete",
+    "styleComments.save": "Save",
+    "styleComments.cancel": "Cancel",
+    "styleComments.deleteConfirm": "Delete this comment? This action cannot be undone.",
+    "styleComments.updateFailed": "Failed to update comment",
+    "styleComments.deleteFailed": "Failed to delete comment",
 
     // Submit
     "submit.signInRequired": "Sign in first to submit to the community.",
@@ -1479,6 +1487,14 @@ const zh: { [K in keyof typeof en]: string } = {
   "styleComments.providerUnknown": "\u672a\u77e5",
   "styleComments.titleSiteOwner": "\u7ad9\u4e3b",
   "styleComments.titleEarlyUser": "\u5143\u8001\u7528\u6237",
+  "styleComments.titleEmperor": "\u79e6\u59cb\u7687",
+  "styleComments.edit": "\u7f16\u8f91",
+  "styleComments.delete": "\u5220\u9664",
+  "styleComments.save": "\u4fdd\u5b58",
+  "styleComments.cancel": "\u53d6\u6d88",
+  "styleComments.deleteConfirm": "\u786e\u5b9a\u5220\u9664\u8fd9\u6761\u8bc4\u8bba\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u64a4\u9500\u3002",
+  "styleComments.updateFailed": "\u66f4\u65b0\u8bc4\u8bba\u5931\u8d25",
+  "styleComments.deleteFailed": "\u5220\u9664\u8bc4\u8bba\u5931\u8d25",
 
   // Submit
   "submit.signInRequired": "\u8bf7\u5148\u767b\u5f55\u540e\u518d\u6295\u7a3f\u5230\u793e\u533a\u3002",

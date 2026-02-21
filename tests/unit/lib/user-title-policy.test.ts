@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  EMPEROR_TITLE_TOKEN,
   EARLY_USER_TITLE_TOKEN,
   SITE_OWNER_TITLE_TOKEN,
   isEarlyUser,
@@ -42,6 +43,26 @@ describe("user title policy", () => {
     });
 
     expect(title).toBe(SITE_OWNER_TITLE_TOKEN);
+  });
+
+  it("returns emperor token for seq id 1 and 2", () => {
+    expect(
+      resolveUserTitle({
+        userId: "11111111-1111-4111-8111-111111111111",
+        seqId: 1,
+        adminUserIds: new Set<string>(),
+        rule: null,
+      })
+    ).toBe(EMPEROR_TITLE_TOKEN);
+
+    expect(
+      resolveUserTitle({
+        userId: "22222222-2222-4222-8222-222222222222",
+        seqId: 2,
+        adminUserIds: new Set<string>(),
+        rule: null,
+      })
+    ).toBe(EMPEROR_TITLE_TOKEN);
   });
 
   it("returns early user token by seq id", () => {
