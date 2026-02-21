@@ -4,6 +4,14 @@ vi.mock("@/lib/analytics", () => ({
   trackStyleUsage: vi.fn(),
 }));
 
+vi.mock("@/lib/styles/community-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/styles/community-runtime")>();
+  return {
+    ...actual,
+    resolveStyleBySlug: vi.fn(actual.resolveStyleBySlug),
+  };
+});
+
 import { GET as getStyleDetail } from "@/app/api/styles/[slug]/route";
 import { GET as getStyleTokens } from "@/app/api/styles/[slug]/tokens/route";
 import { GET as getStyleRecipes } from "@/app/api/styles/[slug]/recipes/route";
@@ -12,8 +20,11 @@ import { GET as getClaudeRules } from "@/app/api/styles/[slug]/claude-rules/rout
 import { GET as getCursorRules } from "@/app/api/styles/[slug]/cursorrules/route";
 import { GET as getSkillPack } from "@/app/api/styles/[slug]/skill-pack/route";
 import { GET as getVersions } from "@/app/api/styles/[slug]/versions/route";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import type { DesignStyle } from "@/lib/styles";
 
 const params = (slug: string) => Promise.resolve({ slug });
+const mockedResolveStyleBySlug = vi.mocked(resolveStyleBySlug);
 
 describe("styles [slug] core routes", () => {
   it("style detail returns 404 for missing slug", async () => {
@@ -68,6 +79,69 @@ describe("styles [slug] core routes", () => {
     const body = (await ok.json()) as { styleSlug: string; recipes: unknown };
     expect(body.styleSlug).toBe("neo-brutalist");
     expect(body.recipes).toBeTruthy();
+  });
+
+  it("recipes route returns synthesized recipes for community style", async () => {
+    const communityStyle: DesignStyle = {
+      slug: "aurora-community",
+      name: "极光社区风",
+      nameEn: "Aurora Community",
+      description: "Community-submitted aurora style.",
+      cover: "/styles/aurora-community/opengraph-image",
+      styleType: "visual",
+      tags: ["expressive", "modern"],
+      category: "expressive",
+      colors: {
+        primary: "#2f3cff",
+        secondary: "#f6f8ff",
+        accent: ["#22d3ee", "#a855f7"],
+      },
+      keywords: ["aurora", "glow"],
+      philosophy: "Blend soft glow with high readability.",
+      doList: ["Keep glow effects subtle."],
+      dontList: ["Avoid muddy gradients."],
+      components: {
+        button: {
+          name: "Button",
+          description: "Primary action",
+          code: "<button className=\"px-4 py-2 rounded\">Aurora</button>",
+        },
+        card: {
+          name: "Card",
+          description: "Content card",
+          code: "<div className=\"p-4 rounded-xl\">Card</div>",
+        },
+        input: {
+          name: "Input",
+          description: "Text input",
+          code: "<input className=\"px-3 py-2 rounded\" />",
+        },
+      },
+      globalCss: "",
+      aiRules: "Prefer layered gradients.",
+    };
+
+    mockedResolveStyleBySlug.mockResolvedValueOnce({
+      source: "community",
+      style: communityStyle,
+      submissionId: "sub-community-1",
+      tokens: null,
+    });
+
+    const response = await getStyleRecipes(
+      new Request("https://stylekit.top/api/styles/aurora-community/recipes"),
+      { params: params("aurora-community") },
+    );
+
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as {
+      styleSlug: string;
+      recipes: Record<string, { variants: Record<string, unknown>; skeleton: { structure?: string } }>;
+    };
+    expect(body.styleSlug).toBe("aurora-community");
+    expect(body.recipes.button).toBeTruthy();
+    expect(body.recipes.button.variants.default).toBeTruthy();
+    expect(body.recipes.button.skeleton.structure).toContain("Aurora");
   });
 
   it("markdown route returns markdown content", async () => {
