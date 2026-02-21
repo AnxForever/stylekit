@@ -12,6 +12,8 @@ interface StyleCommentsProps {
   slug: string;
 }
 
+const SITE_OWNER_TITLE_TOKEN = "__site_owner__";
+
 export function StyleComments({ slug }: StyleCommentsProps) {
   const { t, locale } = useI18n();
   const { data, mutate } = useStyleComments(slug);
@@ -25,6 +27,29 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
   const userName = user?.user_metadata?.user_name ?? user?.user_metadata?.full_name ?? "";
   const userAvatar = user?.user_metadata?.avatar_url ?? "";
+
+  const getProviderLabel = (provider: Comment["author_provider"] | undefined): string => {
+    switch (provider) {
+      case "github":
+        return t("styleComments.providerGitHub");
+      case "linuxdo":
+        return t("styleComments.providerLinuxDo");
+      default:
+        return t("styleComments.providerUnknown");
+    }
+  };
+
+  const getDisplayTitle = (title: string | null): string | null => {
+    if (!title) {
+      return null;
+    }
+
+    if (title === SITE_OWNER_TITLE_TOKEN) {
+      return t("styleComments.titleSiteOwner");
+    }
+
+    return title;
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -118,37 +143,65 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         </div>
       )}
 
-      {/* Comment list */}
       {comments.length > 0 && (
         <div className="space-y-3 pt-2">
-          {comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="p-3 border border-border rounded-md text-sm"
-            >
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  {comment.avatar_url ? (
-                    <Image
-                      src={comment.avatar_url}
-                      alt={comment.author_name}
-                      width={20}
-                      height={20}
-                      unoptimized
-                      className="w-5 h-5 rounded-full"
-                    />
-                  ) : null}
-                  <span className="font-medium text-foreground">
-                    {comment.author_name}
+          {comments.map((comment) => {
+            const commentTitle = getDisplayTitle(comment.author_title);
+            const commentName = comment.author_name?.trim() || "User";
+            const avatarFallback = commentName.charAt(0).toUpperCase();
+
+            return (
+              <div
+                key={comment.id}
+                className="p-3 border border-border rounded-md text-sm"
+              >
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <div className="flex items-start gap-2 min-w-0">
+                    {comment.avatar_url ? (
+                      <Image
+                        src={comment.avatar_url}
+                        alt={commentName}
+                        width={24}
+                        height={24}
+                        unoptimized
+                        className="w-6 h-6 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-muted/30 flex items-center justify-center text-[10px] font-semibold text-foreground/80">
+                        {avatarFallback || "U"}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-foreground truncate max-w-[200px]">
+                          {commentName}
+                        </span>
+                        {commentTitle ? (
+                          <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/30 px-2 py-0.5 text-[11px] leading-none text-foreground/80">
+                            {commentTitle}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap mt-1 text-[11px] text-muted">
+                        <span>
+                          {getProviderLabel(comment.author_provider)}
+                        </span>
+                        {comment.author_seq_id ? (
+                          <span>#{comment.author_seq_id}</span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-muted shrink-0">
+                    {new Date(comment.created_at).toLocaleDateString(
+                      locale === "zh" ? "zh-CN" : "en-US"
+                    )}
                   </span>
                 </div>
-                <span className="text-xs text-muted">
-                  {new Date(comment.created_at).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US")}
-                </span>
+                <p className="text-foreground/80">{comment.content}</p>
               </div>
-              <p className="text-foreground/80">{comment.content}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

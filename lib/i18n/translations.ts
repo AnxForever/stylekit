@@ -405,6 +405,10 @@ const en = {
     "styleComments.signInAction": "Go to sign in",
     "styleComments.postFailed": "Failed to post comment",
     "styleComments.networkError": "Network error, please try again",
+    "styleComments.providerGitHub": "GitHub",
+    "styleComments.providerLinuxDo": "Linux DO",
+    "styleComments.providerUnknown": "Unknown",
+    "styleComments.titleSiteOwner": "Site Owner",
 
     // Submit
     "submit.signInRequired": "Sign in first to submit to the community.",
@@ -1469,6 +1473,10 @@ const zh: { [K in keyof typeof en]: string } = {
   "styleComments.signInAction": "\u53bb\u767b\u5f55",
   "styleComments.postFailed": "\u8bc4\u8bba\u53d1\u8868\u5931\u8d25",
   "styleComments.networkError": "\u7f51\u7edc\u9519\u8bef\uff0c\u8bf7\u91cd\u8bd5",
+  "styleComments.providerGitHub": "GitHub",
+  "styleComments.providerLinuxDo": "Linux DO",
+  "styleComments.providerUnknown": "\u672a\u77e5",
+  "styleComments.titleSiteOwner": "\u7ad9\u4e3b",
 
   // Submit
   "submit.signInRequired": "\u8bf7\u5148\u767b\u5f55\u540e\u518d\u6295\u7a3f\u5230\u793e\u533a\u3002",

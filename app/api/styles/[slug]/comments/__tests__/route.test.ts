@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/submit/reviewer-supabase", () => ({
   isSupabaseConfigured: vi.fn(),
@@ -22,6 +22,10 @@ vi.mock("@/lib/security/json-body", () => ({
   parseJsonBodyWithLimit: vi.fn(),
 }));
 
+vi.mock("@/lib/auth/admin-policy", () => ({
+  getAdminUserIds: vi.fn(),
+}));
+
 vi.mock("@supabase/supabase-js", () => ({
   createClient: vi.fn(),
 }));
@@ -36,6 +40,7 @@ import {
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
+import { getAdminUserIds } from "@/lib/auth/admin-policy";
 import { createClient } from "@supabase/supabase-js";
 
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
@@ -45,12 +50,17 @@ const mockedCreateRateLimitHeaders = vi.mocked(createRateLimitHeaders);
 const mockedGetRequestClientKey = vi.mocked(getRequestClientKey);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedParseJsonBodyWithLimit = vi.mocked(parseJsonBodyWithLimit);
+const mockedGetAdminUserIds = vi.mocked(getAdminUserIds);
 const mockedCreateClient = vi.mocked(createClient);
 
 const params = (slug: string) => Promise.resolve({ slug });
 
 afterEach(() => {
   vi.clearAllMocks();
+});
+
+beforeEach(() => {
+  mockedGetAdminUserIds.mockReturnValue([]);
 });
 
 describe("styles comments route", () => {
@@ -65,7 +75,7 @@ describe("styles comments route", () => {
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments", {
         method: "POST",
       }),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(403);
@@ -96,7 +106,7 @@ describe("styles comments route", () => {
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments", {
         method: "POST",
       }),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(401);
@@ -159,7 +169,7 @@ describe("styles comments route", () => {
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments", {
         method: "POST",
       }),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(200);
@@ -173,6 +183,9 @@ describe("styles comments route", () => {
         avatar_url: "https://img.example/avatar.png",
         user_id: "user-1",
         created_at: "2026-01-01",
+        author_provider: "unknown",
+        author_seq_id: null,
+        author_title: null,
       },
     });
   });
@@ -226,7 +239,7 @@ describe("styles comments route", () => {
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments", {
         method: "POST",
       }),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(503);
@@ -242,7 +255,7 @@ describe("styles comments route", () => {
 
     const response = await GET(
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments"),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(200);
@@ -270,7 +283,7 @@ describe("styles comments route", () => {
 
     const response = await GET(
       new Request("https://stylekit.top/api/styles/neo-brutalist/comments"),
-      { params: params("neo-brutalist") },
+      { params: params("neo-brutalist") }
     );
 
     expect(response.status).toBe(503);
@@ -279,6 +292,92 @@ describe("styles comments route", () => {
       total: 0,
       code: "DB_NOT_READY",
       error: "Comments database schema is not ready. Run Supabase migrations 002-005.",
+    });
+  });
+
+  it("GET enriches legacy comments with author provider, seq id, and title", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const legacyUserId = "11111111-1111-4111-8111-111111111111";
+
+    const modernRange = vi.fn().mockResolvedValue({
+      data: null,
+      count: null,
+      error: {
+        code: "42703",
+        message: "column style_comments.user_id does not exist",
+      },
+    });
+    const modernOrder = vi.fn().mockReturnValue({ range: modernRange });
+    const modernEq = vi.fn().mockReturnValue({ order: modernOrder });
+    const modernSelect = vi.fn().mockReturnValue({ eq: modernEq });
+
+    const legacyRange = vi.fn().mockResolvedValue({
+      data: [
+        {
+          id: "c-legacy",
+          content: "legacy comment",
+          author_name: "legacy-user",
+          session_id: `user:${legacyUserId}`,
+          created_at: "2026-02-21T00:00:00.000Z",
+        },
+      ],
+      count: 1,
+      error: null,
+    });
+    const legacyOrder = vi.fn().mockReturnValue({ range: legacyRange });
+    const legacyEq = vi.fn().mockReturnValue({ order: legacyOrder });
+    const legacySelect = vi.fn().mockReturnValue({ eq: legacyEq });
+
+    const getUserById = vi.fn().mockResolvedValue({
+      data: {
+        user: {
+          user_metadata: {
+            user_name: "legacy-user",
+            avatar_url: "https://img.example/legacy.png",
+            provider: "linuxdo",
+            seq_id: 12,
+            user_title: "站主",
+          },
+        },
+      },
+      error: null,
+    });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce({ select: modernSelect })
+        .mockReturnValueOnce({ select: legacySelect }),
+      auth: {
+        admin: {
+          getUserById,
+        },
+      },
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/comments?limit=10"),
+      { params: params("neo-brutalist") }
+    );
+
+    expect(response.status).toBe(200);
+    expect(getUserById).toHaveBeenCalledWith(legacyUserId);
+    await expect(response.json()).resolves.toEqual({
+      comments: [
+        {
+          id: "c-legacy",
+          content: "legacy comment",
+          author_name: "legacy-user",
+          avatar_url: "https://img.example/legacy.png",
+          user_id: legacyUserId,
+          created_at: "2026-02-21T00:00:00.000Z",
+          author_provider: "linuxdo",
+          author_seq_id: 12,
+          author_title: "站主",
+        },
+      ],
+      total: 1,
     });
   });
 });
