@@ -13,6 +13,7 @@ interface ProfileSubmission {
   slug: string;
   status: "pending" | "approved" | "rejected";
   submitted_at: string;
+  user_id?: string | null;
   name: string | null;
   name_en: string | null;
   description: string | null;
@@ -64,6 +65,83 @@ function asString(value: unknown): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
+function normalizeHandle(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+  const normalized = value.trim().replace(/^@+/, "").toLowerCase();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeProvider(value: unknown): string | null {
+  const provider = asString(value)?.toLowerCase() ?? null;
+  return provider;
+}
+
+function getCurrentUserHandles(user: {
+  user_metadata?: Record<string, unknown> | null;
+  email?: string | null;
+}): Set<string> {
+  const handles = new Set<string>();
+  const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
+
+  const candidates = [
+    asString(metadata.user_name),
+    asString(metadata.preferred_username),
+    asString(metadata.name),
+    asString(metadata.full_name),
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeHandle(candidate);
+    if (normalized) {
+      handles.add(normalized);
+    }
+  }
+
+  const emailPrefix = asString(user.email)?.split("@")[0] ?? null;
+  const normalizedEmailPrefix = normalizeHandle(emailPrefix);
+  if (normalizedEmailPrefix) {
+    handles.add(normalizedEmailPrefix);
+  }
+
+  return handles;
+}
+
+function matchesSubmissionOwnerByIdentity(
+  submission: ProfileSubmission,
+  userId: string,
+  userHandles: Set<string>,
+  userProvider: string | null
+): boolean {
+  if (submission.user_id && submission.user_id === userId) {
+    return true;
+  }
+
+  const formData = asRecord(submission.form_data);
+  const author = asRecord(formData.__author);
+  const authorUserId = asString(author.userId);
+  if (authorUserId && authorUserId === userId) {
+    return true;
+  }
+
+  if (userHandles.size === 0) {
+    return false;
+  }
+
+  const authorHandle =
+    normalizeHandle(asString(author.handle)) ??
+    normalizeHandle(asString(formData.authorName));
+  if (!authorHandle || !userHandles.has(authorHandle)) {
+    return false;
+  }
+
+  const authorProvider = normalizeProvider(author.provider);
+  if (!authorProvider || !userProvider) {
+    return true;
+  }
+  return authorProvider === userProvider;
+}
+
 function mapSubmissionRow(row: ProfileSubmission): ProfileSubmission {
   const formData = asRecord(row.form_data);
   return {
@@ -99,7 +177,7 @@ export async function GET() {
 
   const modernResult = await sb
     .from("submissions")
-    .select("id, slug, status, submitted_at, form_data")
+    .select("id, slug, status, submitted_at, user_id, form_data")
     .eq("user_id", user.id)
     .order("submitted_at", { ascending: false })
     .limit(50);
@@ -114,9 +192,8 @@ export async function GET() {
   const fallbackResult = await sb
     .from("submissions")
     .select("id, slug, status, submitted_at, form_data")
-    .eq("form_data->__author->>userId", user.id)
     .order("submitted_at", { ascending: false })
-    .limit(50);
+    .limit(300);
 
   if (fallbackResult.error && modernResult.error) {
     return NextResponse.json(
@@ -125,9 +202,22 @@ export async function GET() {
     );
   }
 
+  const userHandles = getCurrentUserHandles({
+    user_metadata: (user.user_metadata as Record<string, unknown> | null) ?? null,
+    email: user.email ?? null,
+  });
+  const userProvider = normalizeProvider(
+    (user.user_metadata as Record<string, unknown> | null)?.provider ??
+      (user.app_metadata as Record<string, unknown> | null)?.provider
+  );
+
   const submissions = mergeSubmissions(
     modernResult.error ? [] : ((modernResult.data ?? []) as ProfileSubmission[]),
-    fallbackResult.error ? [] : ((fallbackResult.data ?? []) as ProfileSubmission[])
+    fallbackResult.error
+      ? []
+      : ((fallbackResult.data ?? []) as ProfileSubmission[]).filter((item) =>
+          matchesSubmissionOwnerByIdentity(item, user.id, userHandles, userProvider)
+        )
   );
 
   return NextResponse.json({ success: true, submissions });

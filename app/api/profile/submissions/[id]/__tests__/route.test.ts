@@ -165,6 +165,61 @@ describe("profile submission mutate route", () => {
     expect(response.status).toBe(403);
   });
 
+  it("PATCH allows legacy owner matching by handle and provider", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({
+      id: "user-legacy",
+      user_metadata: {
+        user_name: "legacy-owner",
+        provider: "github",
+      },
+    } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { description: "legacy edit" },
+    });
+
+    const ownerMaybeSingle = vi.fn().mockResolvedValue({
+      data: {
+        id: SUBMISSION_ID,
+        status: "pending",
+        user_id: null,
+        form_data: {
+          __author: {
+            handle: "legacy-owner",
+            provider: "github",
+          },
+          description: "old",
+          designStyle: {},
+        },
+      },
+      error: null,
+    });
+    const ownerEq = vi.fn().mockReturnValue({ maybeSingle: ownerMaybeSingle });
+    const ownerSelect = vi.fn().mockReturnValue({ eq: ownerEq });
+
+    const updateEq = vi.fn().mockResolvedValue({ error: null });
+    const update = vi.fn().mockReturnValue({ eq: updateEq });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce({ select: ownerSelect })
+        .mockReturnValueOnce({ update }),
+    } as never);
+
+    const response = await PATCH(
+      new Request(`https://stylekit.top/api/profile/submissions/${SUBMISSION_ID}`, {
+        method: "PATCH",
+        body: JSON.stringify({ description: "legacy edit" }),
+      }),
+      { params: params(SUBMISSION_ID) }
+    );
+
+    expect(response.status).toBe(200);
+  });
+
   it("DELETE blocks approved submissions", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
@@ -235,4 +290,3 @@ describe("profile submission mutate route", () => {
     expect(deleteFn).toHaveBeenCalled();
   });
 });
-

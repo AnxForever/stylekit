@@ -71,6 +71,47 @@ function asString(value: unknown): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
+function normalizeHandle(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+  const normalized = value.trim().replace(/^@+/, "").toLowerCase();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeProvider(value: unknown): string | null {
+  return asString(value)?.toLowerCase() ?? null;
+}
+
+function getCurrentUserHandles(user: {
+  user_metadata?: Record<string, unknown> | null;
+  email?: string | null;
+}): Set<string> {
+  const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
+  const handles = new Set<string>();
+
+  const candidates = [
+    asString(metadata.user_name),
+    asString(metadata.preferred_username),
+    asString(metadata.name),
+    asString(metadata.full_name),
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeHandle(candidate);
+    if (normalized) {
+      handles.add(normalized);
+    }
+  }
+
+  const emailPrefix = asString(user.email)?.split("@")[0] ?? null;
+  const normalizedEmailPrefix = normalizeHandle(emailPrefix);
+  if (normalizedEmailPrefix) {
+    handles.add(normalizedEmailPrefix);
+  }
+
+  return handles;
+}
+
 function normalizeSubmissionRow(row: unknown): SubmissionOwnerRow | null {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     return null;
@@ -104,8 +145,45 @@ function getSubmissionOwnerId(row: SubmissionOwnerRow): string | null {
   return asString(author.userId);
 }
 
-function canMutateSubmission(row: SubmissionOwnerRow, userId: string): boolean {
-  return getSubmissionOwnerId(row) === userId;
+function canMutateSubmission(
+  row: SubmissionOwnerRow,
+  user: {
+    id: string;
+    user_metadata?: Record<string, unknown> | null;
+    app_metadata?: Record<string, unknown> | null;
+    email?: string | null;
+  }
+): boolean {
+  const ownerId = getSubmissionOwnerId(row);
+  if (ownerId && ownerId === user.id) {
+    return true;
+  }
+
+  const userHandles = getCurrentUserHandles({
+    user_metadata: user.user_metadata ?? null,
+    email: user.email ?? null,
+  });
+  if (userHandles.size === 0) {
+    return false;
+  }
+
+  const author = asRecord(row.form_data.__author);
+  const authorHandle =
+    normalizeHandle(asString(author.handle)) ??
+    normalizeHandle(asString(row.form_data.authorName));
+  if (!authorHandle || !userHandles.has(authorHandle)) {
+    return false;
+  }
+
+  const authorProvider = normalizeProvider(author.provider);
+  const userProvider = normalizeProvider(
+    (user.user_metadata ?? {})["provider"] ?? (user.app_metadata ?? {})["provider"]
+  );
+  if (!authorProvider || !userProvider) {
+    return true;
+  }
+
+  return authorProvider === userProvider;
 }
 
 function isImmutableStatus(status: SubmissionOwnerRow["status"]): boolean {
@@ -256,7 +334,7 @@ export async function PATCH(
     );
   }
 
-  if (!canMutateSubmission(loaded.row, user.id)) {
+  if (!canMutateSubmission(loaded.row, user)) {
     return NextResponse.json(
       { success: false, error: "You can only edit your own submissions" },
       { status: 403 }
@@ -334,7 +412,7 @@ export async function DELETE(
     );
   }
 
-  if (!canMutateSubmission(loaded.row, user.id)) {
+  if (!canMutateSubmission(loaded.row, user)) {
     return NextResponse.json(
       { success: false, error: "You can only delete your own submissions" },
       { status: 403 }
@@ -362,4 +440,3 @@ export async function DELETE(
 
   return NextResponse.json({ success: true });
 }
-
