@@ -228,8 +228,8 @@ export async function GET(request: Request) {
 }
 
 async function readAllAuthUsers(admin: SupabaseLike): Promise<AuthUserLite[]> {
-  const listUsers = admin.auth?.admin?.listUsers;
-  if (!listUsers) {
+  const authAdmin = admin.auth?.admin;
+  if (!authAdmin?.listUsers) {
     return [];
   }
 
@@ -238,7 +238,20 @@ async function readAllAuthUsers(admin: SupabaseLike): Promise<AuthUserLite[]> {
   const users: AuthUserLite[] = [];
 
   for (let page = 1; page <= maxPages; page++) {
-    const { data, error } = await listUsers({ page, perPage });
+    let result:
+      | {
+          data?: { users?: unknown[] } | null;
+          error?: DbErrorLike | null;
+        }
+      | null = null;
+
+    try {
+      result = await authAdmin.listUsers({ page, perPage });
+    } catch {
+      break;
+    }
+
+    const { data, error } = result ?? {};
     if (error) {
       break;
     }
