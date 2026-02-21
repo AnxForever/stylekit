@@ -107,7 +107,7 @@ export const dashboardLayout: DesignStyle = {
     hero: {
       name: "仪表盘布局完整示例",
       description: "完整的仪表盘页面结构",
-      code: `<div className="min-h-screen flex bg-[#f9fafb]">
+      code: `<div className="h-[480px] flex bg-[#f9fafb] overflow-hidden">
   {/* 侧边导航 */}
   <aside className="w-64 bg-[#111827] text-white flex-shrink-0 flex flex-col">
     <div className="p-6">
@@ -143,7 +143,7 @@ export const dashboardLayout: DesignStyle = {
     {/* 内容区 */}
     <main className="flex-1 p-6">
       {/* KPI 卡片行 */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <span className="text-xs text-gray-500">Revenue</span>
           <div className="text-2xl font-bold text-[#111827] mt-1">$48.2K</div>
@@ -167,7 +167,7 @@ export const dashboardLayout: DesignStyle = {
       </div>
 
       {/* 图表区 */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <h3 className="font-medium text-[#111827] mb-4">Revenue Trend</h3>
           <div className="aspect-[2/1] bg-gray-50 rounded-lg" />

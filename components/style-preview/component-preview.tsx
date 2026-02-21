@@ -65,7 +65,7 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
       </div>
 
       {/* Preview Area */}
-      <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
+      <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto">
         <div
           dangerouslySetInnerHTML={{
             __html: previewHtml,
@@ -79,11 +79,23 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
   );
 }
 
-// 简单地从 JSX 代码生成可预览的 HTML
+// Non-void HTML elements that must have explicit closing tags.
+// In JSX <div ... /> is valid, but browsers treat it as an unclosed <div> tag,
+// swallowing all subsequent siblings into it and breaking layout completely.
+const BLOCK_ELEMENTS =
+  "div|span|p|h[1-6]|section|article|nav|aside|header|footer|main|ul|ol|li|button|label|blockquote|pre|code|form|fieldset|figure|figcaption|details|summary|a|strong|em|time|address";
+
+// 从 JSX 代码生成可预览的 HTML
 function generatePreviewHTML(code: string): string {
   return code
     .replace(/className=/g, "class=")
     .replace(/\{`([^`]*)`\}/g, "$1")
-    .replace(/\{\/\*.*?\*\/\}/g, "")
+    // Handle both single-line and multi-line JSX comments
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+    // Convert self-closing non-void elements: <div ... /> → <div ...></div>
+    .replace(
+      new RegExp(`<(${BLOCK_ELEMENTS})((?:[^>]|"[^"]*"|'[^']*')*?)\\s*\\/>`, "g"),
+      "<$1$2></$1>"
+    )
     .trim();
 }
