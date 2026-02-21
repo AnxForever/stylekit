@@ -17,6 +17,7 @@ const mockedGetSupabaseAdmin = vi.mocked(getSupabaseAdmin);
 
 const USER_ONE_ID = "11111111-1111-4111-8111-111111111111";
 const USER_TWO_ID = "22222222-2222-4222-8222-222222222222";
+const USER_THREE_ID = "33333333-3333-4333-8333-333333333333";
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -98,6 +99,14 @@ describe("GET /api/admin/users", () => {
             session_id: `user:${USER_ONE_ID}`,
             created_at: "2026-02-21T01:00:00.000Z",
           },
+          {
+            user_id: USER_THREE_ID,
+            created_at: "2026-02-21T02:30:00.000Z",
+          },
+          {
+            session_id: "user:not-a-uuid",
+            created_at: "2026-02-21T02:45:00.000Z",
+          },
         ],
         error: null,
       },
@@ -158,8 +167,8 @@ describe("GET /api/admin/users", () => {
     expect(response.status).toBe(200);
     const payload = await response.json();
 
-    expect(payload.total).toBe(2);
-    expect(payload.users).toHaveLength(2);
+    expect(payload.total).toBe(3);
+    expect(payload.users).toHaveLength(3);
     expect(payload.users[0].userId).toBe(USER_ONE_ID);
     expect(payload.users[0].authorName).toBe("Auth Name");
     expect(payload.users[0].avatarUrl).toBe("https://cdn.example.com/avatar.png");
@@ -175,6 +184,18 @@ describe("GET /api/admin/users", () => {
     expect(secondUser).toBeTruthy();
     expect(secondUser.commentCount).toBe(0);
     expect(secondUser.favoriteCount).toBe(0);
+
+    const thirdUser = payload.users.find(
+      (item: { userId: string }) => item.userId === USER_THREE_ID
+    );
+    expect(thirdUser).toBeTruthy();
+    expect(thirdUser.authorName).toBe("User 33333333");
+    expect(thirdUser.ratingCount).toBe(1);
+
+    const hasInvalidLegacyId = payload.users.some(
+      (item: { userId: string }) => item.userId === "not-a-uuid"
+    );
+    expect(hasInvalidLegacyId).toBe(false);
 
     const searchByEmailResponse = await GET(
       new Request(
