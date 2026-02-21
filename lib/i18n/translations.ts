@@ -1005,6 +1005,10 @@ const en = {
     "aiGen.exportJSON": "Copy JSON",
     "aiGen.exportTailwind": "Copy Tailwind Config",
     "aiGen.download": "Download JSON",
+    "aiGen.variationCountLabel": "Number of variations",
+    "aiGen.variationCountHint": "Generate multiple style candidates to explore different interpretations.",
+    "aiGen.creativityLabel": "Creativity",
+    "aiGen.creativityHint": "Higher values produce more adventurous and exploratory blends.",
 
     // Pipeline
     "pipeline.title": "Style Pipeline",
@@ -2087,6 +2091,10 @@ const zh: { [K in keyof typeof en]: string } = {
   "aiGen.exportJSON": "复制 JSON",
   "aiGen.exportTailwind": "复制 Tailwind 配置",
   "aiGen.download": "下载 JSON",
+  "aiGen.variationCountLabel": "变体数量",
+  "aiGen.variationCountHint": "生成多个风格候选项，探索不同的解读方式。",
+  "aiGen.creativityLabel": "创意程度",
+  "aiGen.creativityHint": "数值越高，生成结果越大胆、越具探索性。",
 
   // Pipeline
   "pipeline.title": "风格流水线",

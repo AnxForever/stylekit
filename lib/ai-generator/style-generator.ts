@@ -11,6 +11,9 @@ import { styles } from "../styles/index";
 export interface GenerationRequest {
   description: string;
   baseStyle?: string;
+  variationCount?: number;
+  creativity?: number;
+  seed?: number;
 }
 
 export interface GenerationInsights {
@@ -27,8 +30,22 @@ export interface GeneratedStyle {
   tokens: StyleTokens;
   sourceStyles: { slug: string; weight: number }[];
   confidence: number;
+  variantId?: string;
+  variantLabel?: string;
   reasoning?: string[];
   insights?: GenerationInsights;
+}
+
+export interface GenerationMeta {
+  variationCount: number;
+  creativity: number;
+  seed: number;
+}
+
+export interface GeneratedStyleCandidates {
+  result: GeneratedStyle;
+  candidates: GeneratedStyle[];
+  meta: GenerationMeta;
 }
 
 // ============ KEYWORD MAPPINGS ============
@@ -194,6 +211,16 @@ const DEFAULT_FALLBACK_STYLES = [
   "apple-style",
   "minimalist-flat",
   "corporate-clean",
+] as const;
+
+const GENERATOR_DEFAULT_VARIATION_COUNT = 3;
+const GENERATOR_MAX_VARIATION_COUNT = 4;
+const GENERATOR_DEFAULT_CREATIVITY = 0.55;
+const GENERATOR_VARIANT_LABELS = [
+  "Balanced",
+  "Exploratory",
+  "Bold",
+  "Wildcard",
 ] as const;
 
 function normalizeText(value: string): string {
@@ -808,11 +835,89 @@ function getStyleDisplayName(slug: string): string {
   return styles.find((style) => style.slug === slug)?.nameEn ?? slug;
 }
 
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function hashSeedInput(value: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function createSeededRandom(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pickWeightedWithoutReplacement(
+  pool: { slug: string; score: number }[],
+  count: number,
+  random: () => number
+): string[] {
+  const remaining = pool
+    .filter((item) => item.score > 0)
+    .map((item) => ({ ...item }));
+  const selected: string[] = [];
+
+  while (remaining.length > 0 && selected.length < count) {
+    const total = remaining.reduce((sum, item) => sum + item.score, 0);
+    if (total <= 0) break;
+
+    let threshold = random() * total;
+    let selectedIndex = 0;
+    for (let i = 0; i < remaining.length; i += 1) {
+      threshold -= remaining[i].score;
+      if (threshold <= 0) {
+        selectedIndex = i;
+        break;
+      }
+    }
+
+    selected.push(remaining[selectedIndex].slug);
+    remaining.splice(selectedIndex, 1);
+  }
+
+  return selected;
+}
+
+function normalizeSourceStyles(
+  sourceStyles: { slug: string; weight: number }[]
+): { slug: string; weight: number }[] {
+  const bySlug = new Map<string, number>();
+  for (const item of sourceStyles) {
+    if (!AVAILABLE_STYLE_SLUGS.has(item.slug)) continue;
+    if (!Number.isFinite(item.weight) || item.weight <= 0) continue;
+    bySlug.set(item.slug, (bySlug.get(item.slug) ?? 0) + item.weight);
+  }
+
+  const entries = [...bySlug.entries()].map(([slug, weight]) => ({ slug, weight }));
+  const total = entries.reduce((sum, entry) => sum + entry.weight, 0);
+  if (total <= 0) return [];
+
+  return entries
+    .map((entry) => ({
+      slug: entry.slug,
+      weight: entry.weight / total,
+    }))
+    .sort((a, b) => b.weight - a.weight);
+}
+
 function calculateConfidence(
   parsed: ParsedDescription,
-  scoring: ScoringResult
+  scoring: ScoringResult,
+  sourceStyles: { slug: string; weight: number }[] = scoring.sourceStyles
 ): number {
-  const topWeight = scoring.sourceStyles[0]?.weight ?? 0;
+  const topWeight = sourceStyles[0]?.weight ?? 0;
   const topScore = scoring.rankedScores[0]?.score ?? 0;
   const secondScore = scoring.rankedScores[1]?.score ?? 0;
   const separation = Math.max(0, topScore - secondScore);
@@ -843,7 +948,12 @@ function calculateConfidence(
   return Math.max(12, Math.min(98, Math.round(raw)));
 }
 
-function buildReasoning(parsed: ParsedDescription, scoring: ScoringResult): string[] {
+function buildReasoning(
+  parsed: ParsedDescription,
+  scoring: ScoringResult,
+  sourceStyles: { slug: string; weight: number }[] = scoring.sourceStyles,
+  variantLabel?: string
+): string[] {
   const hints: string[] = [];
 
   if (scoring.resolvedBaseStyle) {
@@ -869,19 +979,28 @@ function buildReasoning(parsed: ParsedDescription, scoring: ScoringResult): stri
     hints.push(`Applied negative constraints: ${avoided.slice(0, 4).join(", ")}.`);
   }
 
-  if (scoring.sourceStyles[0]) {
+  if (variantLabel && variantLabel !== GENERATOR_VARIANT_LABELS[0]) {
+    hints.push(`Variation mode: ${variantLabel.toLowerCase()}.`);
+  }
+
+  if (sourceStyles[0]) {
     hints.push(
-      `Primary influence: ${getStyleDisplayName(scoring.sourceStyles[0].slug)} (${Math.round(
-        scoring.sourceStyles[0].weight * 100
+      `Primary influence: ${getStyleDisplayName(sourceStyles[0].slug)} (${Math.round(
+        sourceStyles[0].weight * 100
       )}%).`
     );
   }
 
-  return hints.slice(0, 4);
+  return hints.slice(0, 5);
 }
 
-function buildDescription(parsed: ParsedDescription, scoring: ScoringResult): string {
-  const sourceNames = scoring.sourceStyles
+function buildDescription(
+  parsed: ParsedDescription,
+  scoring: ScoringResult,
+  sourceStyles: { slug: string; weight: number }[] = scoring.sourceStyles,
+  variantLabel?: string
+): string {
+  const sourceNames = sourceStyles
     .slice(0, 3)
     .map((source) => getStyleDisplayName(source.slug))
     .join(", ");
@@ -892,12 +1011,16 @@ function buildDescription(parsed: ParsedDescription, scoring: ScoringResult): st
     ...scoring.excludedStyles.map(getStyleDisplayName),
   ];
   const uniqueAvoidList = [...new Set(avoidList)];
+  const variantPart =
+    variantLabel && variantLabel !== GENERATOR_VARIANT_LABELS[0]
+      ? ` Mode: ${variantLabel.toLowerCase()}.`
+      : "";
 
   if (uniqueAvoidList.length > 0) {
-    return `Generated from: ${sourceNames}. Keywords: ${keywordPart}. Avoided: ${uniqueAvoidList.slice(0, 4).join(", ")}.`;
+    return `Generated from: ${sourceNames}. Keywords: ${keywordPart}. Avoided: ${uniqueAvoidList.slice(0, 4).join(", ")}.${variantPart}`;
   }
 
-  return `Generated from: ${sourceNames}. Keywords: ${keywordPart}.`;
+  return `Generated from: ${sourceNames}. Keywords: ${keywordPart}.${variantPart}`;
 }
 
 function buildInsights(parsed: ParsedDescription, scoring: ScoringResult): GenerationInsights {
@@ -912,7 +1035,11 @@ function buildInsights(parsed: ParsedDescription, scoring: ScoringResult): Gener
 
 // ============ NAME GENERATION ============
 
-function generateName(parsed: ParsedDescription, sourceStyles: { slug: string; weight: number }[]): string {
+function generateName(
+  parsed: ParsedDescription,
+  sourceStyles: { slug: string; weight: number }[],
+  variantLabel?: string
+): string {
   const parts: string[] = [];
 
   // Use top keywords for the name
@@ -939,7 +1066,355 @@ function generateName(parsed: ParsedDescription, sourceStyles: { slug: string; w
     parts.push("Fusion");
   }
 
-  return parts.join(" ");
+  const baseName = parts.join(" ");
+  if (variantLabel && variantLabel !== GENERATOR_VARIANT_LABELS[0]) {
+    return `${baseName} (${variantLabel})`;
+  }
+  return baseName;
+}
+
+interface CandidateSourcePlan {
+  sourceStyles: { slug: string; weight: number }[];
+  variantId: string;
+  variantLabel: string;
+}
+
+function resolveGenerationMeta(request: GenerationRequest): GenerationMeta {
+  const variationInput =
+    typeof request.variationCount === "number" && Number.isFinite(request.variationCount)
+      ? Math.trunc(request.variationCount)
+      : GENERATOR_DEFAULT_VARIATION_COUNT;
+  const variationCount = clampNumber(
+    variationInput,
+    1,
+    GENERATOR_MAX_VARIATION_COUNT
+  );
+
+  const rawCreativity =
+    typeof request.creativity === "number" && Number.isFinite(request.creativity)
+      ? request.creativity
+      : GENERATOR_DEFAULT_CREATIVITY;
+  const creativity = clampNumber(rawCreativity > 1 ? rawCreativity / 100 : rawCreativity, 0, 1);
+
+  const providedSeed =
+    typeof request.seed === "number" && Number.isFinite(request.seed)
+      ? Math.trunc(request.seed) >>> 0
+      : null;
+  const fallbackSeed = hashSeedInput(
+    `${normalizeText(request.description)}|${resolveStyleSlug(request.baseStyle) ?? ""}`
+  );
+
+  return {
+    variationCount,
+    creativity,
+    seed: providedSeed ?? fallbackSeed,
+  };
+}
+
+function buildCandidateSourcePlans(
+  parsed: ParsedDescription,
+  scoring: ScoringResult,
+  meta: GenerationMeta
+): CandidateSourcePlan[] {
+  const poolFromScores = scoring.rankedScores
+    .filter(
+      (item) =>
+        item.score > 0 &&
+        AVAILABLE_STYLE_SLUGS.has(item.slug) &&
+        !scoring.excludedStyles.includes(item.slug)
+    )
+    .slice(0, 8);
+
+  const pool =
+    poolFromScores.length > 0
+      ? poolFromScores
+      : scoring.sourceStyles.map((item) => ({
+          slug: item.slug,
+          score: Math.max(1, item.weight * 100),
+        }));
+
+  const fallbackSourceStyles = normalizeSourceStyles(scoring.sourceStyles);
+  const primarySlug = fallbackSourceStyles[0]?.slug ?? pool[0]?.slug ?? null;
+  const baseSlug = scoring.resolvedBaseStyle;
+  const explicitMentionPool = parsed.explicitMentions.filter((slug) =>
+    pool.some((entry) => entry.slug === slug)
+  );
+  const signatures = new Set<string>();
+  const plans: CandidateSourcePlan[] = [];
+
+  for (let index = 0; index < meta.variationCount; index += 1) {
+    const variantLabel =
+      GENERATOR_VARIANT_LABELS[index] ?? `Option ${index + 1}`;
+    const variantId = `option-${index + 1}`;
+    let acceptedPlan: CandidateSourcePlan | null = null;
+
+    for (let attempt = 0; attempt < 7 && !acceptedPlan; attempt += 1) {
+      const random = createSeededRandom(
+        (meta.seed + index * 101 + attempt * 1619) >>> 0
+      );
+      const desiredCount = clampNumber(
+        2 + (index > 0 ? 1 : 0) + Math.round(meta.creativity * 2),
+        2,
+        Math.max(2, pool.length)
+      );
+      const selectionDepth = clampNumber(
+        desiredCount + 2 + index,
+        desiredCount,
+        pool.length
+      );
+      const selectionPool = pool.slice(0, selectionDepth);
+      if (selectionPool.length === 0) {
+        break;
+      }
+
+      let leaderSlug: string;
+      if (index === 0 && primarySlug) {
+        leaderSlug = primarySlug;
+      } else {
+        const leaderWindow = selectionPool.slice(
+          0,
+          Math.min(selectionPool.length, 1 + index + Math.round(meta.creativity * 2))
+        );
+        const weightedWindow = leaderWindow.map((item, itemIndex) => ({
+          slug: item.slug,
+          score: item.score * (1 - itemIndex * 0.1),
+        }));
+        leaderSlug =
+          pickWeightedWithoutReplacement(weightedWindow, 1, random)[0] ??
+          leaderWindow[0]?.slug ??
+          selectionPool[0].slug;
+      }
+
+      const selectedSlugs: string[] = [leaderSlug];
+
+      if (
+        baseSlug &&
+        baseSlug !== leaderSlug &&
+        selectionPool.some((entry) => entry.slug === baseSlug) &&
+        (index === 0 || random() > 0.45)
+      ) {
+        selectedSlugs.push(baseSlug);
+      }
+
+      if (explicitMentionPool.length > 0 && random() > 0.35) {
+        const mentionSlug = explicitMentionPool[Math.floor(random() * explicitMentionPool.length)];
+        if (mentionSlug && !selectedSlugs.includes(mentionSlug)) {
+          selectedSlugs.push(mentionSlug);
+        }
+      }
+
+      const availablePool = selectionPool.filter(
+        (entry) => !selectedSlugs.includes(entry.slug)
+      );
+      const neededCount = Math.max(0, desiredCount - selectedSlugs.length);
+      const weightedPool = availablePool.map((entry) => ({
+        slug: entry.slug,
+        score: entry.score * (0.8 + random() * 0.6),
+      }));
+      selectedSlugs.push(...pickWeightedWithoutReplacement(weightedPool, neededCount, random));
+
+      const uniqueSelected = [...new Set(selectedSlugs)];
+      if (uniqueSelected.length === 0) {
+        continue;
+      }
+
+      let sourceStyles: { slug: string; weight: number }[];
+      if (uniqueSelected.length === 1) {
+        sourceStyles = [{ slug: uniqueSelected[0], weight: 1 }];
+      } else {
+        let leaderWeight = index === 0 ? 0.52 - meta.creativity * 0.14 : 0.38 - meta.creativity * 0.08;
+        if (baseSlug && leaderSlug === baseSlug && index === 0) {
+          leaderWeight = Math.max(leaderWeight, 0.48);
+        }
+        leaderWeight = clampNumber(leaderWeight, 0.26, 0.72);
+
+        const others = uniqueSelected.filter((slug) => slug !== leaderSlug);
+        const otherScores = others.map((slug) => {
+          const score = selectionPool.find((entry) => entry.slug === slug)?.score ?? 1;
+          const mentionBoost = parsed.explicitMentions.includes(slug) ? 1.18 : 1;
+          const baseBoost = baseSlug === slug ? 1.12 : 1;
+          return {
+            slug,
+            score: score * mentionBoost * baseBoost * (0.82 + random() * 0.5),
+          };
+        });
+        const otherTotal = otherScores.reduce((sum, item) => sum + item.score, 0);
+        const restWeight = Math.max(0.01, 1 - leaderWeight);
+
+        sourceStyles = [
+          { slug: leaderSlug, weight: leaderWeight },
+          ...otherScores.map((item) => ({
+            slug: item.slug,
+            weight: otherTotal > 0 ? (item.score / otherTotal) * restWeight : restWeight / others.length,
+          })),
+        ];
+      }
+
+      const normalized = normalizeSourceStyles(sourceStyles);
+      if (normalized.length === 0) {
+        continue;
+      }
+
+      const signature = normalized.map((item) => item.slug).join("|");
+      if (signatures.has(signature)) {
+        continue;
+      }
+      signatures.add(signature);
+      acceptedPlan = {
+        sourceStyles: normalized,
+        variantId,
+        variantLabel,
+      };
+    }
+
+    if (acceptedPlan) {
+      plans.push(acceptedPlan);
+    }
+  }
+
+  if (plans.length > 0) {
+    return plans;
+  }
+
+  if (fallbackSourceStyles.length > 0) {
+    return [
+      {
+        sourceStyles: fallbackSourceStyles,
+        variantId: "option-1",
+        variantLabel: GENERATOR_VARIANT_LABELS[0],
+      },
+    ];
+  }
+
+  const fallbackSlug = pool[0]?.slug ?? AVAILABLE_VISUAL_STYLES[0]?.slug;
+  if (!fallbackSlug) {
+    return [];
+  }
+
+  return [
+    {
+      sourceStyles: [{ slug: fallbackSlug, weight: 1 }],
+      variantId: "option-1",
+      variantLabel: GENERATOR_VARIANT_LABELS[0],
+    },
+  ];
+}
+
+interface TokenSource {
+  slug: string;
+  weight: number;
+  tokens: StyleTokens;
+}
+
+function resolveTokenSources(
+  sourceStyles: { slug: string; weight: number }[]
+): TokenSource[] {
+  const normalizedSourceStyles = normalizeSourceStyles(sourceStyles);
+  const resolvedSources: TokenSource[] = [];
+
+  for (const sourceStyle of normalizedSourceStyles) {
+    const tokens = getStyleTokens(sourceStyle.slug);
+    if (tokens) {
+      resolvedSources.push({
+        slug: sourceStyle.slug,
+        weight: sourceStyle.weight,
+        tokens,
+      });
+    }
+  }
+
+  if (resolvedSources.length > 0) {
+    return resolvedSources;
+  }
+
+  const fallbackSlug = normalizedSourceStyles[0]?.slug ?? AVAILABLE_VISUAL_STYLES[0]?.slug;
+  if (!fallbackSlug) {
+    return [];
+  }
+  const fallbackTokens = getStyleTokens(fallbackSlug);
+  if (!fallbackTokens) {
+    return [];
+  }
+
+  return [{ slug: fallbackSlug, weight: 1, tokens: fallbackTokens }];
+}
+
+function buildGeneratedCandidate(
+  parsed: ParsedDescription,
+  scoring: ScoringResult,
+  plan: CandidateSourcePlan,
+  variantIndex: number,
+  meta: GenerationMeta
+): GeneratedStyle {
+  const tokenSources = resolveTokenSources(plan.sourceStyles);
+  if (tokenSources.length === 0) {
+    throw new Error("No style tokens available for generation");
+  }
+
+  const normalizedSourceStyles = normalizeSourceStyles(
+    tokenSources.map((source) => ({ slug: source.slug, weight: source.weight }))
+  );
+  const tokens = interpolateTokens(
+    tokenSources.map((source) => ({
+      tokens: source.tokens,
+      weight: source.weight,
+    }))
+  );
+
+  const baselineConfidence = calculateConfidence(parsed, scoring, normalizedSourceStyles);
+  let confidence = baselineConfidence;
+  if (variantIndex > 0) {
+    const primarySource = scoring.sourceStyles[0]?.slug;
+    const candidatePrimary = normalizedSourceStyles[0]?.slug;
+    const divergencePenalty =
+      primarySource && candidatePrimary && primarySource !== candidatePrimary
+        ? 5 + variantIndex * 2
+        : 2 + variantIndex;
+    confidence = Math.round(
+      clampNumber(
+        baselineConfidence - divergencePenalty + Math.round(meta.creativity * 4),
+        10,
+        96
+      )
+    );
+  }
+
+  return {
+    name: generateName(parsed, normalizedSourceStyles, plan.variantLabel),
+    description: buildDescription(parsed, scoring, normalizedSourceStyles, plan.variantLabel),
+    tokens,
+    sourceStyles: normalizedSourceStyles,
+    confidence,
+    variantId: plan.variantId,
+    variantLabel: plan.variantLabel,
+    reasoning: buildReasoning(parsed, scoring, normalizedSourceStyles, plan.variantLabel),
+    insights: buildInsights(parsed, scoring),
+  };
+}
+
+export function generateStyleCandidatesFromDescription(
+  request: GenerationRequest
+): GeneratedStyleCandidates {
+  const parsed = parseDescription(request.description);
+  const scoring = scoreStyles(parsed, request.baseStyle);
+  const meta = resolveGenerationMeta(request);
+  const plans = buildCandidateSourcePlans(parsed, scoring, meta);
+  const candidates = plans
+    .slice(0, meta.variationCount)
+    .map((plan, index) => buildGeneratedCandidate(parsed, scoring, plan, index, meta));
+
+  if (candidates.length === 0) {
+    throw new Error("No style tokens available for generation");
+  }
+
+  return {
+    result: candidates[0],
+    candidates,
+    meta: {
+      ...meta,
+      variationCount: candidates.length,
+    },
+  };
 }
 
 // ============ MAIN GENERATOR ============
@@ -947,51 +1422,11 @@ function generateName(parsed: ParsedDescription, sourceStyles: { slug: string; w
 export function generateStyleFromDescription(
   request: GenerationRequest
 ): GeneratedStyle {
-  const parsed = parseDescription(request.description);
-  const scoring = scoreStyles(parsed, request.baseStyle);
-  const sourceStyles = scoring.sourceStyles;
-
-  // Fetch tokens for each source style
-  const sources: { tokens: StyleTokens; weight: number }[] = [];
-  for (const { slug, weight } of sourceStyles) {
-    const tokens = getStyleTokens(slug);
-    if (tokens) {
-      sources.push({ tokens, weight });
-    }
-  }
-
-  if (sources.length === 0) {
-    // Ultimate fallback: use first available visual style tokens.
-    const fallbackSlug = sourceStyles[0]?.slug || AVAILABLE_VISUAL_STYLES[0]?.slug;
-    const fallback = fallbackSlug ? getStyleTokens(fallbackSlug) : undefined;
-    if (fallback) {
-      sources.push({ tokens: fallback, weight: 1 });
-    } else {
-      throw new Error("No style tokens available for generation");
-    }
-  }
-
-  // Interpolate tokens
-  const tokens = interpolateTokens(sources);
-
-  // Confidence is based on multiple NLP and scoring signals.
-  const confidence = calculateConfidence(parsed, scoring);
-
-  // Generate name and description
-  const name = generateName(parsed, sourceStyles);
-  const description = buildDescription(parsed, scoring);
-  const reasoning = buildReasoning(parsed, scoring);
-  const insights = buildInsights(parsed, scoring);
-
-  return {
-    name,
-    description,
-    tokens,
-    sourceStyles,
-    confidence,
-    reasoning,
-    insights,
-  };
+  const { result } = generateStyleCandidatesFromDescription({
+    ...request,
+    variationCount: 1,
+  });
+  return result;
 }
 
 /** Get all available style slugs that have tokens */
