@@ -56,7 +56,7 @@ export const visualNovel: DesignStyle = {
   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
   <div className="flex items-center gap-3 relative z-10">
     <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#6366f1] transition-all duration-300">
-      ▶
+      \u25B6
     </span>
     <span>"I should go to the rooftop and watch the sunset."</span>
   </div>
@@ -276,7 +276,7 @@ Primary:
 
 ## Animation & Interaction Rules
 - Dialogue Focus: 模拟游戏中的"选择支"。悬停选项按钮时，通过加深背景模糊（\`backdrop-blur\`）并叠加一层非常微弱的白色或主题色渐变（如 \`hover:bg-white/10\`），营造出选项被聚光灯照亮的沉浸感。
-- Cursor Prompt: 悬停时，在文本的左侧利用隐藏元素浮现一个小小的指示符（如 ▶ 或 ✦），并带有轻微的位移动画（\`opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0\`），高度还原视觉小说的 UI 特征。
+- Cursor Prompt: 悬停时，在文本的左侧利用隐藏元素浮现一个小小的指示符（如 \u25B6 或 \u2726），并带有轻微的位移动画（\`opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0\`），高度还原视觉小说的 UI 特征。
 - Sprite Breathing: 过渡动画必须极其平滑（\`duration-300 ease-in-out\`）。卡片悬停时，可以有极其微小且缓慢的上浮（\`hover:-translate-y-0.5\`），模拟游戏角色立绘（Sprite）呼吸的动作。
 - Story Text: 点击（\`:active\`）时，选项框可以稍微横向移动（\`active:translate-x-2\`）以示确认，而不是传统的下沉。`,
 

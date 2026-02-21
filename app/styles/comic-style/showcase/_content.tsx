@@ -276,7 +276,7 @@ const colorSwatches = [
 
 const featureCards = [
   {
-    icon: "✦",
+    icon: "\u2726",
     iconBg: "#ff3333",
     title: "Bold Ink Lines",
     desc: "Every border is 4px solid black. Ink is the law.",
@@ -288,13 +288,13 @@ const featureCards = [
     desc: "Radial-gradient dots mimic vintage newsprint printing.",
   },
   {
-    icon: "★",
+    icon: "\u2605",
     iconBg: "#3366ff",
     title: "Primary Palette",
     desc: "Red, Yellow, Blue, Green — four pillars of comic color.",
   },
   {
-    icon: "⚡",
+    icon: "\u26A1",
     iconBg: "#33cc33",
     title: "Exaggerated Motion",
     desc: "scale-110, -rotate-3, 100ms — everything snaps and pops.",
@@ -592,17 +592,17 @@ export default function ShowcaseContent() {
               className="flex-1 flex justify-around items-center font-black uppercase tracking-widest text-xs text-white"
             >
               <span>COMIC STYLE</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
               <span>BOLD INK LINES</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
               <span>HALFTONE DOTS</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
               <span>PRIMARY COLORS</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
               <span>PANEL LAYOUTS</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
               <span>ACTION WORDS</span>
-              <span className="text-[#ffcc00]">★</span>
+              <span className="text-[#ffcc00]">&#9733;</span>
             </div>
           ))}
         </div>

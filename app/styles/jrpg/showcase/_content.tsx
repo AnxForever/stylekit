@@ -8,10 +8,10 @@ import Link from "next/link";
 /* ------------------------------------------------------------------ */
 
 const menuItems = [
-  { label: "Battle", icon: "⚔" },
+  { label: "Battle", icon: "\u2694" },
   { label: "Item", icon: "⊕" },
-  { label: "Magic", icon: "✦" },
-  { label: "Status", icon: "★" },
+  { label: "Magic", icon: "\u2726" },
+  { label: "Status", icon: "\u2605" },
   { label: "Equip", icon: "◈" },
 ];
 
@@ -548,7 +548,7 @@ export default function ShowcaseContent() {
                               transition: "opacity 0.08s ease",
                             }}
                           >
-                            ▶
+                            &#9654;
                           </span>
 
                           <span className="text-base w-6 text-center select-none">
@@ -636,7 +636,7 @@ export default function ShowcaseContent() {
                   <ul className="space-y-2 text-xs text-[#93c5fd]/60">
                     <li className="flex gap-2">
                       <span className="text-[#fbbf24]">◆</span>
-                      Gold cursor ▶ uses pure JS activeMenu state — no CSS animation
+                      Gold cursor &#9654; uses pure JS activeMenu state — no CSS animation
                     </li>
                     <li className="flex gap-2">
                       <span className="text-[#fbbf24]">◆</span>
@@ -1175,7 +1175,7 @@ export default function ShowcaseContent() {
 
                 <RPGPanel className="p-0 overflow-hidden">
                   <div className="px-5 py-2.5 bg-[#22c55e]/10 border-b border-[#22c55e]/30 flex items-center gap-2">
-                    <span className="text-[#22c55e] text-sm">▶</span>
+                    <span className="text-[#22c55e] text-sm">&#9654;</span>
                     <span className="text-xs font-mono tracking-widest uppercase text-[#22c55e]">
                       Recommended Practices
                     </span>
@@ -1199,7 +1199,7 @@ export default function ShowcaseContent() {
 
                   <div className="px-5 py-2.5 bg-[#0f172a]/50 border-t border-[#22c55e]/20 flex items-center justify-between">
                     <span className="text-[9px] tracking-[0.3em] text-[#22c55e]/40">
-                      PRESS ▶ TO CONTINUE
+                      PRESS &#9654; TO CONTINUE
                     </span>
                     <span className="text-[9px] text-[#22c55e]/30">
                       {doRules.length} entries
@@ -1234,7 +1234,7 @@ export default function ShowcaseContent() {
                         className="flex items-start gap-4 px-5 py-4 border-b border-[#1e40af]/30 last:border-b-0 hover:bg-[#ef4444]/5 transition-colors duration-75"
                       >
                         <span className="text-[#ef4444] font-bold text-xs mt-0.5 flex-shrink-0">
-                          ✕
+                          &#10005;
                         </span>
                         <span className="text-xs text-[#93c5fd]/60 leading-relaxed">
                           {rule}
@@ -1343,7 +1343,7 @@ export default function ShowcaseContent() {
                       href={link.href}
                       className="text-xs font-mono text-[#93c5fd]/50 hover:text-[#fbbf24] transition-colors duration-150 tracking-wider flex items-center gap-1.5"
                     >
-                      <span className="text-[#1e40af]">▶</span>
+                      <span className="text-[#1e40af]">&#9654;</span>
                       {link.label}
                     </Link>
                   </li>
@@ -1362,7 +1362,7 @@ export default function ShowcaseContent() {
                       href={`#${s.toLowerCase()}`}
                       className="text-xs font-mono text-[#93c5fd]/50 hover:text-[#fbbf24] transition-colors duration-150 tracking-wider flex items-center gap-1.5"
                     >
-                      <span className="text-[#1e40af]">▶</span>
+                      <span className="text-[#1e40af]">&#9654;</span>
                       {s}
                     </a>
                   </li>
@@ -1381,7 +1381,7 @@ export default function ShowcaseContent() {
                     className="text-xs font-mono text-[#93c5fd]/40 flex items-center gap-1.5"
                   >
                     <span className="text-[8px]" style={{ color: c.accent }}>
-                      ★
+                      &#9733;
                     </span>
                     {c.name} — LV {c.level}
                   </li>
@@ -1422,7 +1422,7 @@ export default function ShowcaseContent() {
 
           {/* Copyright */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-mono text-[#93c5fd]/30 tracking-widest">
-            <span>© 2025 StyleKit Guild — All Rights Reserved</span>
+            <span>&copy; 2025 StyleKit Guild — All Rights Reserved</span>
             <span
               className="text-[#fbbf24]/30"
               style={{ textShadow: "0 0 8px rgba(251,191,36,0.2)" }}

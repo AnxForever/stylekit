@@ -177,11 +177,11 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
       </h2>
       <div className="flex items-center justify-center gap-3">
         <div className="h-px w-10 bg-gradient-to-r from-transparent to-[#c9a227]/40" />
-        <span className="text-[#c9a227]/30 font-serif text-xs tracking-wider">✦</span>
+        <span className="text-[#c9a227]/30 font-serif text-xs tracking-wider">&#10022;</span>
         <div className="h-px w-16 bg-[#c9a227]/30" />
-        <span className="text-[#c9a227]/50 font-serif text-sm">✧</span>
+        <span className="text-[#c9a227]/50 font-serif text-sm">&#10023;</span>
         <div className="h-px w-16 bg-[#c9a227]/30" />
-        <span className="text-[#c9a227]/30 font-serif text-xs tracking-wider">✦</span>
+        <span className="text-[#c9a227]/30 font-serif text-xs tracking-wider">&#10022;</span>
         <div className="h-px w-10 bg-gradient-to-l from-transparent to-[#c9a227]/40" />
       </div>
     </div>
@@ -963,28 +963,28 @@ export default function GothicShowcase() {
             </p>
             <div className="space-y-3">
               <div className="flex items-start gap-4 p-4 bg-[#111111] border border-[#c9a227]/20 border-l-2 border-l-[#c9a227]">
-                <span className="text-[#c9a227] font-serif flex-shrink-0 mt-0.5 text-lg">✓</span>
+                <span className="text-[#c9a227] font-serif flex-shrink-0 mt-0.5 text-lg">&#10003;</span>
                 <div>
                   <p className="font-serif text-sm tracking-wider text-[#c9a227] uppercase">Blessed — Ritual Complete</p>
                   <p className="font-serif text-xs italic text-[#c9a227]/40 mt-1">The sacred operation has been fulfilled.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 p-4 bg-[#111111] border border-[#c9a227]/20 border-l-2 border-l-[#c9a227]/40">
-                <span className="text-[#c9a227]/60 font-serif flex-shrink-0 mt-0.5 text-lg">⚠</span>
+                <span className="text-[#c9a227]/60 font-serif flex-shrink-0 mt-0.5 text-lg">&#9888;</span>
                 <div>
                   <p className="font-serif text-sm tracking-wider text-[#c9a227]/70 uppercase">Omen — Heed the Warning</p>
                   <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">Dark forces stir at the edges of perception.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 p-4 bg-[#111111] border border-[#c9a227]/20 border-l-2 border-l-[#8b1a1a]">
-                <span className="text-[#8b1a1a] font-serif flex-shrink-0 mt-0.5 text-lg">✕</span>
+                <span className="text-[#8b1a1a] font-serif flex-shrink-0 mt-0.5 text-lg">&#10005;</span>
                 <div>
                   <p className="font-serif text-sm tracking-wider text-[#8b1a1a] uppercase">Cursed — Ritual Failed</p>
                   <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">Something ancient and malevolent has intervened.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 p-4 bg-[#111111] border border-[#c9a227]/20 border-l-2 border-l-[#4a2d6e]">
-                <span className="text-[#4a2d6e] font-serif flex-shrink-0 mt-0.5 text-lg">ℹ</span>
+                <span className="text-[#4a2d6e] font-serif flex-shrink-0 mt-0.5 text-lg">&#8505;</span>
                 <div>
                   <p className="font-serif text-sm tracking-wider text-[#4a2d6e] uppercase">Prophecy — Ancient Knowledge</p>
                   <p className="font-serif text-xs italic text-[#c9a227]/30 mt-1">The scrolls speak of things yet to come.</p>
@@ -1321,11 +1321,11 @@ export default function GothicShowcase() {
           {/* Bottom divider */}
           <div className="mt-10 flex items-center justify-center gap-4">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#c9a227]/15" />
-            <span className="font-serif text-xs text-[#c9a227]/20 tracking-widest">✦</span>
+            <span className="font-serif text-xs text-[#c9a227]/20 tracking-widest">&#10022;</span>
             <span className="font-serif text-xs text-[#c9a227]/10 italic">
               Aedificatum in aeternum
             </span>
-            <span className="font-serif text-xs text-[#c9a227]/20 tracking-widest">✦</span>
+            <span className="font-serif text-xs text-[#c9a227]/20 tracking-widest">&#10022;</span>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#c9a227]/15" />
           </div>
         </div>
