@@ -305,14 +305,27 @@ export function ProfileContent() {
     setSubmissionActionError(null);
     setSubmissionActionBusyId(submission.id);
     try {
+      const updates: Record<string, string> = {};
+      const trimmedName = editSubmissionName.trim();
+      const trimmedNameEn = editSubmissionNameEn.trim();
+      const trimmedDescription = editSubmissionDescription.trim();
+      if (trimmedName) {
+        updates.name = trimmedName;
+      }
+      if (trimmedNameEn) {
+        updates.nameEn = trimmedNameEn;
+      }
+      if (trimmedDescription) {
+        updates.description = trimmedDescription;
+      }
+      if (Object.keys(updates).length === 0) {
+        throw new Error(t("profile.submissionEditEmpty"));
+      }
+
       const response = await fetch(`/api/profile/submissions/${submission.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: editSubmissionName.trim(),
-          nameEn: editSubmissionNameEn.trim(),
-          description: editSubmissionDescription.trim(),
-        }),
+        body: JSON.stringify(updates),
       });
 
       const body = await response.json().catch(() => null);
@@ -320,8 +333,29 @@ export function ProfileContent() {
         throw new Error(body?.error ?? t("profile.submissionUpdateFailed"));
       }
 
+      await mutateSubmissions(
+        (current) => {
+          if (!current) {
+            return current;
+          }
+          return {
+            ...current,
+            submissions: current.submissions.map((item) =>
+              item.id === submission.id
+                ? {
+                    ...item,
+                    name: updates.name ?? item.name,
+                    name_en: updates.nameEn ?? item.name_en,
+                    description: updates.description ?? item.description,
+                  }
+                : item
+            ),
+          };
+        },
+        { revalidate: false }
+      );
       setEditingSubmissionId(null);
-      await mutateSubmissions();
+      void mutateSubmissions();
     } catch (error) {
       setSubmissionActionError(
         error instanceof Error ? error.message : t("profile.submissionUpdateFailed")
@@ -355,10 +389,22 @@ export function ProfileContent() {
         throw new Error(body?.error ?? t("profile.submissionDeleteFailed"));
       }
 
+      await mutateSubmissions(
+        (current) => {
+          if (!current) {
+            return current;
+          }
+          return {
+            ...current,
+            submissions: current.submissions.filter((item) => item.id !== submission.id),
+          };
+        },
+        { revalidate: false }
+      );
       if (editingSubmissionId === submission.id) {
         setEditingSubmissionId(null);
       }
-      await mutateSubmissions();
+      void mutateSubmissions();
     } catch (error) {
       setSubmissionActionError(
         error instanceof Error ? error.message : t("profile.submissionDeleteFailed")

@@ -32,6 +32,7 @@ interface FullSubmissionData {
 }
 
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
+const DETAIL_CACHE_LIMIT = 20;
 
 export function SubmissionsReview() {
   const canRegisterToCodebase = process.env.NODE_ENV !== "production";
@@ -55,8 +56,14 @@ export function SubmissionsReview() {
   const [detailLoadingId, setDetailLoadingId] = useState<string | null>(null);
   const detailCache = useRef<Map<string, FullSubmissionData>>(new Map());
 
-  const fetchSubmissions = useCallback(async (signal?: AbortSignal) => {
-    setLoading(true);
+  const fetchSubmissions = useCallback(async (
+    signal?: AbortSignal,
+    options?: { showLoading?: boolean }
+  ) => {
+    const showLoading = options?.showLoading ?? true;
+    if (showLoading) {
+      setLoading(true);
+    }
     setError(null);
     const params = filter !== "all" ? `?status=${filter}` : "";
 
@@ -79,7 +86,7 @@ export function SubmissionsReview() {
       setError(err instanceof Error ? err.message : "Failed to load submissions.");
       setSubmissions([]);
     } finally {
-      if (!signal?.aborted) {
+      if (!signal?.aborted && showLoading) {
         setLoading(false);
       }
     }
@@ -90,6 +97,45 @@ export function SubmissionsReview() {
     void fetchSubmissions(controller.signal);
     return () => controller.abort();
   }, [fetchSubmissions]);
+
+  useEffect(() => {
+    detailCache.current.clear();
+    setExpandedId(null);
+    setDetailLoadingId(null);
+  }, [filter]);
+
+  function upsertDetailCache(id: string, data: FullSubmissionData) {
+    const cache = detailCache.current;
+    if (cache.has(id)) {
+      cache.delete(id);
+    }
+    cache.set(id, data);
+    while (cache.size > DETAIL_CACHE_LIMIT) {
+      const oldestKey = cache.keys().next().value;
+      if (!oldestKey) {
+        break;
+      }
+      cache.delete(oldestKey);
+    }
+  }
+
+  function patchSubmissionInList(
+    id: string,
+    patch: Partial<Submission> & { formData?: Partial<Submission["formData"]> }
+  ) {
+    setSubmissions((current) =>
+      current.map((item) => {
+        if (item.id !== id) {
+          return item;
+        }
+        return {
+          ...item,
+          ...patch,
+          formData: patch.formData ? { ...item.formData, ...patch.formData } : item.formData,
+        };
+      })
+    );
+  }
 
   async function handleReview(id: string, action: "approve" | "reject") {
     setSubmitting(true);
@@ -107,9 +153,38 @@ export function SubmissionsReview() {
         throw new Error(data?.error ?? "Failed to submit review.");
       }
 
+      const payload = (await res.json().catch(() => null)) as
+        | { submission?: { reviewedAt?: string; reviewNote?: string } }
+        | null;
+      const nextStatus: Submission["status"] =
+        action === "approve" ? "approved" : "rejected";
+      const nextReviewedAt =
+        typeof payload?.submission?.reviewedAt === "string"
+          ? payload.submission.reviewedAt
+          : new Date().toISOString();
+      const nextReviewNote =
+        typeof payload?.submission?.reviewNote === "string"
+          ? payload.submission.reviewNote
+          : note.trim() || undefined;
+
+      setSubmissions((current) =>
+        current
+          .map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  status: nextStatus,
+                  reviewedAt: nextReviewedAt,
+                  reviewNote: nextReviewNote,
+                }
+              : item
+          )
+          .filter((item) => filter === "all" || item.status === filter)
+      );
+
       setReviewingId(null);
       setNote("");
-      await fetchSubmissions();
+      void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit review.");
     } finally {
@@ -208,9 +283,30 @@ export function SubmissionsReview() {
         throw new Error(data?.error ?? "Failed to update submission.");
       }
 
-      detailCache.current.delete(submission.id);
+      const updatesForList: Partial<Submission["formData"]> = {};
+      if (updates.name) {
+        updatesForList.name = updates.name;
+      }
+      if (updates.nameEn) {
+        updatesForList.nameEn = updates.nameEn;
+      }
+      if (updates.description) {
+        updatesForList.description = updates.description;
+      }
+      patchSubmissionInList(submission.id, { formData: updatesForList });
+
+      const cachedDetails = detailCache.current.get(submission.id);
+      if (cachedDetails) {
+        upsertDetailCache(submission.id, {
+          formData: {
+            ...cachedDetails.formData,
+            ...updatesForList,
+          },
+        });
+      }
+
       cancelEdit();
-      await fetchSubmissions();
+      void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update submission.");
     } finally {
@@ -232,8 +328,16 @@ export function SubmissionsReview() {
         throw new Error(data?.error ?? "Failed to delete submission.");
       }
 
+      setSubmissions((current) => current.filter((item) => item.id !== id));
+      detailCache.current.delete(id);
+      if (expandedId === id) {
+        setExpandedId(null);
+      }
+      if (editingId === id) {
+        cancelEdit();
+      }
       setConfirmDeleteId(null);
-      await fetchSubmissions();
+      void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete submission.");
     } finally {
@@ -263,7 +367,7 @@ export function SubmissionsReview() {
         throw new Error("Failed to load submission details.");
       }
       const data = (await res.json()) as FullSubmissionData;
-      detailCache.current.set(id, data);
+      upsertDetailCache(id, data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load details.");
       setExpandedId((current) => (current === id ? null : current));
