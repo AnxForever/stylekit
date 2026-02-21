@@ -6,6 +6,8 @@ import {
   isUserTitlesSchemaMissing,
   normalizeCustomTitleInput,
   normalizeTitleColorInput,
+  normalizeTitleIconPathInput,
+  USER_TITLE_ICON_PATH_MAX_LENGTH,
   USER_TITLE_MAX_LENGTH,
 } from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -18,6 +20,7 @@ const bodySchema = z
   .object({
     customTitle: z.union([z.string(), z.null()]).optional(),
     titleColor: z.union([z.string(), z.null()]).optional(),
+    titleIconPath: z.union([z.string(), z.null()]).optional(),
     isOwner: z.boolean().optional(),
     titleEnabled: z.boolean().optional(),
   })
@@ -25,6 +28,7 @@ const bodySchema = z
     (value) =>
       value.customTitle !== undefined ||
       value.titleColor !== undefined ||
+      value.titleIconPath !== undefined ||
       value.isOwner !== undefined ||
       value.titleEnabled !== undefined,
     { message: "Provide at least one field to update." }
@@ -40,10 +44,27 @@ interface TitleRuleResponse {
   userId: string;
   customTitle: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   updatedAt: string | null;
   updatedBy: string | null;
+}
+
+function isMissingTitleIconColumnError(
+  error: DbErrorLike | null | undefined
+): boolean {
+  if (!error) {
+    return false;
+  }
+
+  const code = error.code ?? null;
+  if (code !== "42703" && code !== "PGRST204") {
+    return false;
+  }
+
+  const message = `${error.message ?? ""} ${error.details ?? ""}`.toLowerCase();
+  return message.includes("title_icon_path");
 }
 
 export async function PUT(
@@ -100,6 +121,7 @@ export async function PUT(
     updated_by: access.actor?.id ?? "unknown",
   };
   let normalizedTitleColorForAudit: string | null | undefined;
+  let normalizedTitleIconPathForAudit: string | null | undefined;
 
   if (parsedBody.data.customTitle !== undefined) {
     const normalized = normalizeCustomTitleInput(parsedBody.data.customTitle);
@@ -132,6 +154,22 @@ export async function PUT(
     normalizedTitleColorForAudit = normalized.value;
   }
 
+  if (parsedBody.data.titleIconPath !== undefined) {
+    const normalized = normalizeTitleIconPathInput(parsedBody.data.titleIconPath);
+    if (!normalized.ok) {
+      return NextResponse.json(
+        {
+          error:
+            normalized.error ??
+            `titleIconPath must be at most ${USER_TITLE_ICON_PATH_MAX_LENGTH} characters.`,
+        },
+        { status: 400 }
+      );
+    }
+    payload.title_icon_path = normalized.value;
+    normalizedTitleIconPathForAudit = normalized.value;
+  }
+
   if (parsedBody.data.isOwner !== undefined) {
     payload.is_owner = parsedBody.data.isOwner;
   }
@@ -140,19 +178,49 @@ export async function PUT(
     payload.title_enabled = parsedBody.data.titleEnabled;
   }
 
-  const { data, error } = await sb
+  const selectWithIcon =
+    "user_id, custom_title, title_color, title_icon_path, is_owner, title_enabled, updated_at, updated_by";
+  const selectWithoutIcon =
+    "user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by";
+
+  const primaryResult = await sb
     .from("user_titles")
     .upsert(payload, { onConflict: "user_id" })
-    .select("user_id, custom_title, title_color, is_owner, title_enabled, updated_at, updated_by")
+    .select(selectWithIcon)
     .single();
+
+  let data = primaryResult.data;
+  let error = primaryResult.error;
+
+  if (error && isMissingTitleIconColumnError(error as DbErrorLike)) {
+    const fallbackPayload = { ...payload };
+    delete fallbackPayload.title_icon_path;
+    const fallbackResult = await sb
+      .from("user_titles")
+      .upsert(fallbackPayload, { onConflict: "user_id" })
+      .select(selectWithoutIcon)
+      .single();
+    data = fallbackResult.data;
+    error = fallbackResult.error;
+  }
 
   if (error) {
     const dbError = error as DbErrorLike;
+    if (isMissingTitleIconColumnError(dbError)) {
+      return NextResponse.json(
+        {
+          error:
+            "Title icon column is not ready. Apply Supabase migration 012.",
+        },
+        { status: 503 }
+      );
+    }
+
     if (isUserTitlesSchemaMissing(dbError)) {
       return NextResponse.json(
         {
           error:
-            "Title table is not ready. Apply Supabase migrations 006 and 009.",
+            "Title table is not ready. Apply Supabase migrations 006, 009, and 012.",
         },
         { status: 503 }
       );
@@ -172,6 +240,7 @@ export async function PUT(
     metadata: {
       customTitle: parsedBody.data.customTitle ?? null,
       titleColor: normalizedTitleColorForAudit,
+      titleIconPath: normalizedTitleIconPathForAudit,
       isOwner: parsedBody.data.isOwner,
       titleEnabled: parsedBody.data.titleEnabled,
     },
@@ -258,6 +327,7 @@ function toRuleResponse(data: unknown, userId: string): TitleRuleResponse {
       userId,
       customTitle: null,
       titleColor: null,
+      titleIconPath: null,
       isOwner: false,
       titleEnabled: true,
       updatedAt: null,
@@ -270,6 +340,7 @@ function toRuleResponse(data: unknown, userId: string): TitleRuleResponse {
     userId: toStringOrNull(row.user_id) ?? userId,
     customTitle: toStringOrNull(row.custom_title),
     titleColor: toTitleColorOrNull(row.title_color),
+    titleIconPath: toTitleIconPathOrNull(row.title_icon_path),
     isOwner: toBooleanOrDefault(row.is_owner, false),
     titleEnabled: toBooleanOrDefault(row.title_enabled, true),
     updatedAt: toStringOrNull(row.updated_at),
@@ -294,6 +365,14 @@ function toBooleanOrDefault(value: unknown, fallback: boolean): boolean {
 
 function toTitleColorOrNull(value: unknown): string | null {
   const normalized = normalizeTitleColorInput(value);
+  if (!normalized.ok) {
+    return null;
+  }
+  return normalized.value;
+}
+
+function toTitleIconPathOrNull(value: unknown): string | null {
+  const normalized = normalizeTitleIconPathInput(value);
   if (!normalized.ok) {
     return null;
   }

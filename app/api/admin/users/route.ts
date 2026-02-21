@@ -28,6 +28,7 @@ interface UserInfo {
   profileTitle: string | null;
   customTitle: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   isEarlyUser: boolean;
@@ -46,6 +47,7 @@ interface UserPayload {
   seqId: number | null;
   customTitle: string | null;
   titleColor: string | null;
+  titleIconPath: string | null;
   isOwner: boolean;
   titleEnabled: boolean;
   isEarlyUser: boolean;
@@ -144,6 +146,7 @@ export async function GET(request: Request) {
         profileTitle: options?.profileTitle ?? null,
         customTitle: null,
         titleColor: null,
+        titleIconPath: null,
         isOwner: false,
         titleEnabled: true,
         isEarlyUser: false,
@@ -283,6 +286,7 @@ export async function GET(request: Request) {
     const rule = titleRuleMap.get(user.userId) ?? null;
     user.customTitle = rule?.customTitle ?? null;
     user.titleColor = rule?.titleColor ?? null;
+    user.titleIconPath = rule?.titleIconPath ?? null;
     user.isOwner = rule?.isOwner ?? false;
     user.titleEnabled = rule?.titleEnabled ?? true;
     user.isEarlyUser = isEarlyUser(user.seqId);
@@ -505,6 +509,7 @@ function toUserPayload(user: UserInfo): UserPayload {
     seqId: user.seqId,
     customTitle: user.customTitle,
     titleColor: user.titleColor,
+    titleIconPath: user.titleIconPath,
     isOwner: user.isOwner,
     titleEnabled: user.titleEnabled,
     isEarlyUser: user.isEarlyUser,
