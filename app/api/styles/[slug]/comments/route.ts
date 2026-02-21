@@ -9,12 +9,16 @@ import {
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
+import { getAdminUserIds } from "@/lib/auth/admin-policy";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COMMENTS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const COMMENTS_RATE_LIMIT_MAX_REQUESTS = 40;
 const MAX_BODY_BYTES = 8 * 1024;
 const LEGACY_USER_SESSION_PREFIX = "user:";
+const SITE_OWNER_TITLE_TOKEN = "__site_owner__";
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const commentSchema = z.object({
   content: z.string().min(1).max(280),
@@ -23,10 +27,92 @@ const commentSchema = z.object({
 const slugSchema = z.string().regex(SLUG_RE);
 const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
 
+type AuthorProvider = "github" | "linuxdo" | "unknown";
+
 interface DbErrorLike {
   code?: string | null;
   message?: string | null;
   details?: string | null;
+}
+
+interface AuthorIdentity {
+  userId: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  provider: AuthorProvider;
+  seqId: number | null;
+  title: string | null;
+}
+
+interface CommentOutput {
+  id: string;
+  content: string;
+  author_name: string;
+  avatar_url: string | null;
+  user_id: string | null;
+  created_at: string;
+  author_provider: AuthorProvider;
+  author_seq_id: number | null;
+  author_title: string | null;
+}
+
+interface AuthLookupResult {
+  data?: {
+    user?: unknown;
+  } | null;
+  error?: DbErrorLike | null;
+}
+
+type GetUserByIdFn = (userId: string) => Promise<AuthLookupResult>;
+
+type TableRow = Record<string, unknown>;
+
+interface SeqLookupResult {
+  data: unknown[] | null;
+  error: DbErrorLike | null;
+}
+
+type SeqLookupFn = (userIds: string[]) => Promise<SeqLookupResult>;
+
+function isTableRow(value: unknown): value is TableRow {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+  return value as Record<string, unknown>;
+}
+
+function asString(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function asPositiveInt(value: unknown): number | null {
+  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isInteger(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+function normalizeProvider(value: unknown): AuthorProvider {
+  if (value === "github" || value === "linuxdo") {
+    return value;
+  }
+  return "unknown";
 }
 
 function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
@@ -93,6 +179,210 @@ function classifyDbError(error: DbErrorLike | null | undefined): {
     status: 500,
     code: "DB_WRITE_FAILED",
     message: "Failed to save comment.",
+  };
+}
+
+function parseLegacySessionUserId(sessionId: string | null): string | null {
+  if (!sessionId) {
+    return null;
+  }
+
+  const trimmed = sessionId.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const candidate = trimmed.startsWith(LEGACY_USER_SESSION_PREFIX)
+    ? trimmed.slice(LEGACY_USER_SESSION_PREFIX.length)
+    : trimmed;
+
+  return UUID_RE.test(candidate) ? candidate : null;
+}
+
+function resolveRowUserId(row: TableRow): string | null {
+  const fromUserIdColumn = asString(row.user_id);
+  if (fromUserIdColumn) {
+    return fromUserIdColumn;
+  }
+
+  const fromSession = parseLegacySessionUserId(asString(row.session_id));
+  if (fromSession) {
+    return fromSession;
+  }
+
+  return null;
+}
+
+function defaultAuthorName(userId: string | null): string {
+  if (userId && UUID_RE.test(userId)) {
+    return `User ${userId.slice(0, 8)}`;
+  }
+  return "User";
+}
+
+function resolveAuthorTitle(
+  userId: string,
+  userMetadata: Record<string, unknown>,
+  adminUserIds: Set<string>
+): string | null {
+  const customTitle = asString(userMetadata.user_title) ?? asString(userMetadata.title);
+  if (customTitle) {
+    return customTitle;
+  }
+
+  if (adminUserIds.has(userId)) {
+    return SITE_OWNER_TITLE_TOKEN;
+  }
+
+  return null;
+}
+
+function buildIdentityFromAuthData(
+  userId: string,
+  userMetadataRaw: unknown,
+  appMetadataRaw: unknown,
+  adminUserIds: Set<string>
+): AuthorIdentity {
+  const userMetadata = asRecord(userMetadataRaw);
+  const appMetadata = asRecord(appMetadataRaw);
+
+  return {
+    userId,
+    displayName:
+      asString(userMetadata.user_name) ??
+      asString(userMetadata.full_name) ??
+      asString(userMetadata.name),
+    avatarUrl: asString(userMetadata.avatar_url),
+    provider: normalizeProvider(userMetadata.provider ?? appMetadata.provider),
+    seqId: asPositiveInt(userMetadata.seq_id),
+    title: resolveAuthorTitle(userId, userMetadata, adminUserIds),
+  };
+}
+
+function baseIdentity(userId: string, adminUserIds: Set<string>): AuthorIdentity {
+  return {
+    userId,
+    displayName: null,
+    avatarUrl: null,
+    provider: "unknown",
+    seqId: null,
+    title: adminUserIds.has(userId) ? SITE_OWNER_TITLE_TOKEN : null,
+  };
+}
+
+async function lookupSeqIdMap(
+  userIds: string[],
+  lookup: SeqLookupFn
+): Promise<Map<string, number>> {
+  const result = new Map<string, number>();
+  if (userIds.length === 0) {
+    return result;
+  }
+
+  try {
+    const { data, error } = await lookup(userIds);
+    if (error || !Array.isArray(data)) {
+      return result;
+    }
+
+    for (const row of data) {
+      if (!isTableRow(row)) {
+        continue;
+      }
+      const userId = asString(row.user_id);
+      const seqId = asPositiveInt(row.seq_id);
+      if (!userId || seqId == null) {
+        continue;
+      }
+      result.set(userId, seqId);
+    }
+  } catch {
+    return result;
+  }
+
+  return result;
+}
+
+async function loadAuthorIdentities(
+  userIds: string[],
+  getUserById: GetUserByIdFn | undefined,
+  lookupSeqIds: SeqLookupFn,
+  adminUserIds: Set<string>
+): Promise<Map<string, AuthorIdentity>> {
+  const map = new Map<string, AuthorIdentity>();
+  if (userIds.length === 0) {
+    return map;
+  }
+
+  await Promise.all(
+    userIds.map(async (userId) => {
+      let identity = baseIdentity(userId, adminUserIds);
+
+      if (getUserById && UUID_RE.test(userId)) {
+        try {
+          const authResult = await getUserById(userId);
+          const rawUser = authResult.data?.user;
+
+          if (isTableRow(rawUser)) {
+            identity = buildIdentityFromAuthData(
+              userId,
+              rawUser.user_metadata,
+              rawUser.app_metadata,
+              adminUserIds
+            );
+          }
+        } catch {
+          // Ignore auth lookup failures so comments can still load.
+        }
+      }
+
+      map.set(userId, identity);
+    })
+  );
+
+  const missingSeqIds = Array.from(map.values())
+    .filter((identity) => identity.seqId == null && UUID_RE.test(identity.userId))
+    .map((identity) => identity.userId);
+
+  if (missingSeqIds.length > 0) {
+    const seqIdMap = await lookupSeqIdMap(
+      Array.from(new Set(missingSeqIds)),
+      lookupSeqIds
+    );
+
+    for (const [userId, seqId] of seqIdMap.entries()) {
+      const current = map.get(userId);
+      if (!current || current.seqId != null) {
+        continue;
+      }
+      map.set(userId, { ...current, seqId });
+    }
+  }
+
+  return map;
+}
+
+function toCommentOutput(
+  rawRow: unknown,
+  identity: AuthorIdentity | null,
+  fallbackUserId: string | null = null
+): CommentOutput {
+  const row = isTableRow(rawRow) ? rawRow : {};
+  const resolvedUserId = resolveRowUserId(row) ?? fallbackUserId;
+
+  return {
+    id: asString(row.id) ?? "",
+    content: asString(row.content) ?? "",
+    author_name:
+      asString(row.author_name) ??
+      identity?.displayName ??
+      defaultAuthorName(resolvedUserId),
+    avatar_url: asString(row.avatar_url) ?? identity?.avatarUrl ?? null,
+    user_id: resolvedUserId,
+    created_at: asString(row.created_at) ?? new Date(0).toISOString(),
+    author_provider: identity?.provider ?? "unknown",
+    author_seq_id: identity?.seqId ?? null,
+    author_title: identity?.title ?? null,
   };
 }
 
@@ -175,13 +465,36 @@ export async function POST(
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
+    const adminUserIds = new Set(getAdminUserIds());
+    let identity = buildIdentityFromAuthData(
+      user.id,
+      user.user_metadata,
+      user.app_metadata,
+      adminUserIds
+    );
+
+    if (identity.seqId == null && UUID_RE.test(user.id)) {
+      const seqMap = await lookupSeqIdMap([user.id], async (userIds) => {
+        const { data, error } = await sb
+          .from("user_seq_ids")
+          .select("user_id, seq_id")
+          .in("user_id", userIds);
+
+        return {
+          data: Array.isArray(data) ? (data as unknown[]) : null,
+          error: (error as DbErrorLike | null) ?? null,
+        };
+      });
+      const seqId = seqMap.get(user.id);
+      if (seqId != null) {
+        identity = { ...identity, seqId };
+      }
+    }
+
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? null;
 
-    const authorName =
-      user.user_metadata?.user_name ??
-      user.user_metadata?.full_name ??
-      "User";
-    const avatarUrl = user.user_metadata?.avatar_url ?? null;
+    const authorName = identity.displayName ?? "User";
+    const avatarUrl = identity.avatarUrl;
     const legacySessionId = buildLegacyUserSessionId(user.id);
     let useLegacyIdentity = false;
 
@@ -239,10 +552,13 @@ export async function POST(
         avatar_url: avatarUrl,
         ip_address: ip,
       })
-      .select("id, content, author_name, avatar_url, user_id, created_at")
+      .select("id, content, author_name, avatar_url, user_id, session_id, created_at")
       .single();
     if (!modernInsertResult.error) {
-      return NextResponse.json({ success: true, comment: modernInsertResult.data });
+      return NextResponse.json({
+        success: true,
+        comment: toCommentOutput(modernInsertResult.data, identity, user.id),
+      });
     }
 
     const modernInsertError = modernInsertResult.error as DbErrorLike;
@@ -263,7 +579,7 @@ export async function POST(
         session_id: legacySessionId,
         ip_address: ip,
       })
-      .select("id, content, author_name, created_at")
+      .select("id, content, author_name, session_id, created_at")
       .single();
 
     if (legacyInsertResult.error) {
@@ -276,11 +592,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      comment: {
-        ...legacyInsertResult.data,
-        avatar_url: null,
-        user_id: null,
-      },
+      comment: toCommentOutput(legacyInsertResult.data, identity, user.id),
     });
   } catch {
     return NextResponse.json(
@@ -322,15 +634,61 @@ export async function GET(
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
+  const adminUserIds = new Set(getAdminUserIds());
+  const authAdmin = sb.auth?.admin;
+  const getUserById: GetUserByIdFn | undefined =
+    authAdmin && typeof authAdmin.getUserById === "function"
+      ? (userId: string) => authAdmin.getUserById(userId)
+      : undefined;
+
+  const lookupSeqIds: SeqLookupFn = async (userIds) => {
+    const { data, error } = await sb
+      .from("user_seq_ids")
+      .select("user_id, seq_id")
+      .in("user_id", userIds);
+
+    return {
+      data: Array.isArray(data) ? (data as unknown[]) : null,
+      error: (error as DbErrorLike | null) ?? null,
+    };
+  };
+
   const modernListResult = await sb
     .from("style_comments")
-    .select("id, content, author_name, avatar_url, user_id, created_at", { count: "exact" })
+    .select("id, content, author_name, avatar_url, user_id, session_id, created_at", { count: "exact" })
     .eq("style_slug", slugParsed.data)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
   if (!modernListResult.error) {
+    const rows = Array.isArray(modernListResult.data)
+      ? (modernListResult.data as unknown[])
+      : [];
+
+    const userIds = Array.from(
+      new Set(
+        rows
+          .filter(isTableRow)
+          .map((row) => resolveRowUserId(row))
+          .filter((userId): userId is string => Boolean(userId))
+      )
+    );
+
+    const identityMap = await loadAuthorIdentities(
+      userIds,
+      getUserById,
+      lookupSeqIds,
+      adminUserIds
+    );
+
+    const comments = rows.map((row) => {
+      const tableRow = isTableRow(row) ? row : {};
+      const userId = resolveRowUserId(tableRow);
+      const identity = userId ? identityMap.get(userId) ?? null : null;
+      return toCommentOutput(tableRow, identity, userId);
+    });
+
     return NextResponse.json({
-      comments: modernListResult.data ?? [],
+      comments,
       total: modernListResult.count ?? 0,
     });
   }
@@ -351,7 +709,7 @@ export async function GET(
 
   const legacyListResult = await sb
     .from("style_comments")
-    .select("id, content, author_name, created_at", { count: "exact" })
+    .select("id, content, author_name, session_id, created_at", { count: "exact" })
     .eq("style_slug", slugParsed.data)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
@@ -368,11 +726,32 @@ export async function GET(
     );
   }
 
-  const comments = (legacyListResult.data ?? []).map((item) => ({
-    ...item,
-    avatar_url: null,
-    user_id: null,
-  }));
+  const legacyRows = Array.isArray(legacyListResult.data)
+    ? (legacyListResult.data as unknown[])
+    : [];
+
+  const legacyUserIds = Array.from(
+    new Set(
+      legacyRows
+        .filter(isTableRow)
+        .map((row) => resolveRowUserId(row))
+        .filter((userId): userId is string => Boolean(userId))
+    )
+  );
+
+  const legacyIdentityMap = await loadAuthorIdentities(
+    legacyUserIds,
+    getUserById,
+    lookupSeqIds,
+    adminUserIds
+  );
+
+  const comments = legacyRows.map((row) => {
+    const tableRow = isTableRow(row) ? row : {};
+    const userId = resolveRowUserId(tableRow);
+    const identity = userId ? legacyIdentityMap.get(userId) ?? null : null;
+    return toCommentOutput(tableRow, identity, userId);
+  });
 
   return NextResponse.json({
     comments,
