@@ -24,6 +24,7 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 const STORAGE_KEY = "stylekit-favorites";
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
   const headers = new Headers(init.headers ?? {});
@@ -43,12 +44,32 @@ async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
   });
 }
 
+function normalizeFavorites(values: unknown): string[] {
+  if (!Array.isArray(values)) return [];
+
+  const normalized: string[] = [];
+  const seen = new Set<string>();
+  for (const value of values) {
+    if (typeof value !== "string") continue;
+    const slug = value.trim();
+    if (!SLUG_RE.test(slug) || seen.has(slug)) continue;
+    seen.add(slug);
+    normalized.push(slug);
+  }
+
+  return normalized;
+}
+
+function mergeFavoriteLists(...lists: string[][]): string[] {
+  return normalizeFavorites(lists.flat());
+}
+
 function readLocalFavorites(): string[] {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
+      return normalizeFavorites(parsed);
     }
   } catch {
     // Invalid JSON, ignore
@@ -56,40 +77,61 @@ function readLocalFavorites(): string[] {
   return [];
 }
 
+function writeLocalFavorites(favorites: string[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+  } catch {
+    // Ignore write failures (private mode / quota)
+  }
+}
+
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const { user } = useUser();
   const [favorites, setFavorites] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const mergedRef = useRef(false);
+  const mergedUserIdRef = useRef<string | null>(null);
 
   // Authenticated mode: load favorites from server
   useEffect(() => {
     if (!user || !mounted) return;
+    const userId = user.id;
 
     let cancelled = false;
     setSyncing(true);
 
     async function loadServerFavorites() {
       try {
-        // Merge local favorites to server on login (upsert-based and idempotent).
-        if (!mergedRef.current) {
-          mergedRef.current = true;
-          const localSlugs = readLocalFavorites();
-          if (localSlugs.length > 0) {
-            await fetchWithAuth("/api/favorites/merge", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ slugs: localSlugs }),
-            });
-          }
+        const localSlugs = readLocalFavorites();
+
+        // Merge once per logged-in user per page session.
+        if (mergedUserIdRef.current !== userId && localSlugs.length > 0) {
+          mergedUserIdRef.current = userId;
+          await fetchWithAuth("/api/favorites/merge", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slugs: localSlugs }),
+          });
         }
 
         const res = await fetchWithAuth("/api/favorites");
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled && data.success && Array.isArray(data.favorites)) {
-          setFavorites(data.favorites);
+          const serverSlugs = normalizeFavorites(data.favorites);
+          const mergedSlugs = mergeFavoriteLists(serverSlugs, localSlugs);
+          setFavorites(mergedSlugs);
+
+          // If server still misses local slugs, retry best-effort upsert.
+          const serverSet = new Set(serverSlugs);
+          const missingLocal = localSlugs.filter((slug) => !serverSet.has(slug));
+          if (missingLocal.length > 0) {
+            void fetchWithAuth("/api/favorites/merge", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ slugs: missingLocal }),
+            }).catch(() => {});
+          }
         }
       } catch {
         // Network error, keep current state
@@ -106,16 +148,17 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true);
     if (!user) {
+      mergedUserIdRef.current = null;
       setFavorites(readLocalFavorites());
     }
   }, [user]);
 
-  // Anonymous mode: persist to localStorage
+  // Persist a local shadow copy for both anonymous and authenticated users.
   useEffect(() => {
-    if (mounted && !user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+    if (mounted) {
+      writeLocalFavorites(favorites);
     }
-  }, [favorites, mounted, user]);
+  }, [favorites, mounted]);
 
   const addFavorite = useCallback((slug: string) => {
     setFavorites((prev) => {
