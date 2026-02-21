@@ -7,7 +7,6 @@ import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const submissionIdSchema = z.string().uuid();
 const MAX_BODY_BYTES = 32 * 1024;
-const IMMUTABLE_SUBMISSION_STATUS = "approved";
 
 const updateSchema = z
   .object({
@@ -186,10 +185,6 @@ function canMutateSubmission(
   return authorProvider === userProvider;
 }
 
-function isImmutableStatus(status: SubmissionOwnerRow["status"]): boolean {
-  return status === IMMUTABLE_SUBMISSION_STATUS;
-}
-
 function patchSubmissionFormData(
   formData: Record<string, unknown>,
   updates: z.infer<typeof updateSchema>
@@ -341,13 +336,6 @@ export async function PATCH(
     );
   }
 
-  if (isImmutableStatus(loaded.row.status)) {
-    return NextResponse.json(
-      { success: false, error: "Approved submissions can no longer be edited" },
-      { status: 409 }
-    );
-  }
-
   const nextFormData = patchSubmissionFormData(loaded.row.form_data, payload.data);
   const { error: updateError } = await sb
     .from("submissions")
@@ -416,13 +404,6 @@ export async function DELETE(
     return NextResponse.json(
       { success: false, error: "You can only delete your own submissions" },
       { status: 403 }
-    );
-  }
-
-  if (isImmutableStatus(loaded.row.status)) {
-    return NextResponse.json(
-      { success: false, error: "Approved submissions can no longer be deleted" },
-      { status: 409 }
     );
   }
 
