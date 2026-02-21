@@ -182,7 +182,7 @@ export function AiGuidePanel({ locale, defaultOpen }: AiGuidePanelProps) {
         {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
       </button>
 
-      {isOpen && (
+      {isOpen ? (
         <div className="px-4 pb-4 space-y-5 border-t border-border pt-4">
           {/* Master Prompt */}
           <div>
@@ -266,7 +266,7 @@ export function AiGuidePanel({ locale, defaultOpen }: AiGuidePanelProps) {
             </ul>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

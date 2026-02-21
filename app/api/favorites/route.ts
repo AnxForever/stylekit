@@ -35,20 +35,22 @@ async function handleGetWithRequest(request: Request) {
 
   const favorites = new Set<string>();
 
-  for (const tableName of FAVORITES_TABLE_CANDIDATES) {
-    try {
-      const slugs = await readFavoriteSlugsForUser(sb, tableName, user.id);
-      if (slugs === null) {
-        continue;
-      }
-      for (const slug of slugs) {
-        favorites.add(slug);
-      }
-    } catch {
+  const results = await Promise.allSettled(
+    FAVORITES_TABLE_CANDIDATES.map((tableName) =>
+      readFavoriteSlugsForUser(sb, tableName, user.id)
+    )
+  );
+
+  for (const result of results) {
+    if (result.status === "rejected") {
       return NextResponse.json(
         { success: false, error: "Failed to load favorites" },
         { status: 500 }
       );
+    }
+    if (result.value === null) continue;
+    for (const slug of result.value) {
+      favorites.add(slug);
     }
   }
 
@@ -93,23 +95,15 @@ export async function POST(request: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    let inserted = false;
+    const insertResults = await Promise.allSettled(
+      FAVORITES_TABLE_CANDIDATES.map((tableName) =>
+        insertFavoriteForUser(sb, tableName, user.id, slug)
+      )
+    );
 
-    for (const tableName of FAVORITES_TABLE_CANDIDATES) {
-      try {
-        const didInsert = await insertFavoriteForUser(sb, tableName, user.id, slug);
-        if (didInsert) {
-          inserted = true;
-        }
-      } catch {
-        if (!inserted) {
-          return NextResponse.json(
-            { success: false, error: "Failed to add favorite" },
-            { status: 500 }
-          );
-        }
-      }
-    }
+    const inserted = insertResults.some(
+      (r) => r.status === "fulfilled" && r.value
+    );
 
     if (!inserted) {
       return NextResponse.json(
@@ -162,23 +156,11 @@ export async function DELETE(request: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    let removed = false;
-
-    for (const tableName of FAVORITES_TABLE_CANDIDATES) {
-      try {
-        const didRemove = await deleteFavoriteForUser(sb, tableName, user.id, slug);
-        if (didRemove) {
-          removed = true;
-        }
-      } catch {
-        if (!removed) {
-          return NextResponse.json(
-            { success: false, error: "Failed to remove favorite" },
-            { status: 500 }
-          );
-        }
-      }
-    }
+    await Promise.allSettled(
+      FAVORITES_TABLE_CANDIDATES.map((tableName) =>
+        deleteFavoriteForUser(sb, tableName, user.id, slug)
+      )
+    );
 
     return NextResponse.json({ success: true });
   } catch {

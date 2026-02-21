@@ -6,7 +6,7 @@
 
 import type { StoredCustomStyle, CustomStyleDefinition } from "./types";
 
-const STORAGE_KEY = "stylekit-custom-styles";
+const STORAGE_KEY = "stylekit-custom-styles-v1";
 
 /**
  * Get all stored custom styles
