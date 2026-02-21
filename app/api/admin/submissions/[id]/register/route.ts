@@ -9,6 +9,10 @@ import {
 import { autoRegisterStyle } from "@/lib/submit/auto-register";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 
+function isCodebaseRegistrationEnabled(): boolean {
+  return process.env.NODE_ENV !== "production";
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -36,6 +40,16 @@ export async function POST(
       return NextResponse.json(
         { success: false, error: "Invalid submission ID" },
         { status: 400 },
+      );
+    }
+
+    if (!isCodebaseRegistrationEnabled()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Codebase registration is disabled in production runtime.",
+        },
+        { status: 409 },
       );
     }
 

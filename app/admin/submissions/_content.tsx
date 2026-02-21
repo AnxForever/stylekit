@@ -34,6 +34,7 @@ interface FullSubmissionData {
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 
 export function SubmissionsReview() {
+  const canRegisterToCodebase = process.env.NODE_ENV !== "production";
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -315,56 +316,64 @@ export function SubmissionsReview() {
                 <p className="text-xs text-muted mb-2">
                   Approved submissions are already live in <code>/styles/{sub.slug}</code>. Registration is optional codebase archiving.
                 </p>
-                {registeringId === sub.id && registerResult ? (
-                  <div className="border border-border rounded-md p-4 space-y-3">
-                    <p className={`text-sm font-medium ${registerResult.success ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
-                      {registerResult.success ? "Style archived to codebase successfully" : "Registration completed with errors"}
-                    </p>
-                    {registerResult.filesWritten.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-muted mb-1">Files written:</p>
-                        <ul className="text-xs text-muted space-y-0.5">
-                          {registerResult.filesWritten.map((f) => (
-                            <li key={f}><code>{f}</code></li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {registerResult.registriesPatched.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-muted mb-1">Registries patched:</p>
-                        <ul className="text-xs text-muted space-y-0.5">
-                          {registerResult.registriesPatched.map((f) => (
-                            <li key={f}><code>{f}</code></li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {registerResult.errors.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Errors:</p>
-                        <ul className="text-xs text-red-600 dark:text-red-400 space-y-0.5">
-                          {registerResult.errors.map((e, i) => (
-                            <li key={i}>{e}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    <button
-                      onClick={() => { setRegisteringId(null); setRegisterResult(null); }}
-                      className="text-xs text-muted hover:text-foreground transition-colors"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
+                {!canRegisterToCodebase ? (
+                  <p className="text-xs text-muted">
+                    Codebase registration is disabled in production runtime (read-only filesystem).
+                  </p>
                 ) : (
-                  <button
-                    disabled={registeringId === sub.id}
-                    onClick={() => handleRegister(sub.id)}
-                    className="px-4 py-2 border-2 border-foreground rounded-md text-sm font-medium hover:bg-foreground hover:text-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {registeringId === sub.id ? "Registering..." : "Register to Codebase"}
-                  </button>
+                  <>
+                    {registeringId === sub.id && registerResult ? (
+                      <div className="border border-border rounded-md p-4 space-y-3">
+                        <p className={`text-sm font-medium ${registerResult.success ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
+                          {registerResult.success ? "Style archived to codebase successfully" : "Registration completed with errors"}
+                        </p>
+                        {registerResult.filesWritten.length > 0 && (
+                          <div>
+                            <p className="text-xs font-medium text-muted mb-1">Files written:</p>
+                            <ul className="text-xs text-muted space-y-0.5">
+                              {registerResult.filesWritten.map((f) => (
+                                <li key={f}><code>{f}</code></li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {registerResult.registriesPatched.length > 0 && (
+                          <div>
+                            <p className="text-xs font-medium text-muted mb-1">Registries patched:</p>
+                            <ul className="text-xs text-muted space-y-0.5">
+                              {registerResult.registriesPatched.map((f) => (
+                                <li key={f}><code>{f}</code></li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {registerResult.errors.length > 0 && (
+                          <div>
+                            <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Errors:</p>
+                            <ul className="text-xs text-red-600 dark:text-red-400 space-y-0.5">
+                              {registerResult.errors.map((e, i) => (
+                                <li key={i}>{e}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <button
+                          onClick={() => { setRegisteringId(null); setRegisterResult(null); }}
+                          className="text-xs text-muted hover:text-foreground transition-colors"
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        disabled={registeringId === sub.id}
+                        onClick={() => handleRegister(sub.id)}
+                        className="px-4 py-2 border-2 border-foreground rounded-md text-sm font-medium hover:bg-foreground hover:text-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {registeringId === sub.id ? "Registering..." : "Register to Codebase"}
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             )}
