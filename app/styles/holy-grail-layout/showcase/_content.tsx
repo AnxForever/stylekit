@@ -4,12 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
-/*  Inline hooks                                                        */
+/*  Inline hooks — ZERO @/components/showcase imports                  */
 /* ------------------------------------------------------------------ */
 
-function useInView(options = {}) {
+function useInView(options?: IntersectionObserverInit) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -24,8 +25,8 @@ function useInView(options = {}) {
     );
     obs.observe(el);
     return () => obs.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return { ref, inView };
 }
 
@@ -55,1346 +56,1249 @@ function RevealBlock({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Static data                                                         */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
-type PanelId = "dashboard" | "projects" | "settings";
-
-const demoNavItems: { id: PanelId; label: string; icon: string }[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-  },
-  {
-    id: "projects",
-    label: "Projects",
-    icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z",
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-  },
-];
-
-const dashboardMetrics = [
-  { label: "Revenue", value: "$48,320", change: "+12.5%", up: true, color: "#3b82f6" },
-  { label: "Users", value: "2,847", change: "+8.2%", up: true, color: "#10b981" },
-  { label: "Bounce", value: "24.3%", change: "-3.1%", up: true, color: "#f59e0b" },
-  { label: "Session", value: "4m 32s", change: "-0.8%", up: false, color: "#ef4444" },
-];
-
-const projectRows = [
-  { name: "StyleKit Core", status: "Active", progress: 78, owner: "Sarah K." },
-  { name: "API Gateway", status: "Review", progress: 92, owner: "James T." },
-  { name: "Mobile App", status: "Active", progress: 45, owner: "Mika R." },
-  { name: "Design System", status: "Planning", progress: 15, owner: "Alex M." },
-  { name: "Auth Service", status: "Active", progress: 60, owner: "Jordan L." },
-];
-
-const activityFeed = [
-  { user: "Alex M.", action: "deployed v2.4.1", time: "2 min ago", color: "#10b981" },
-  { user: "Sarah K.", action: "merged PR #847", time: "15 min ago", color: "#3b82f6" },
-  { user: "James T.", action: "created branch", time: "1 hr ago", color: "#f59e0b" },
-  { user: "Mika R.", action: "resolved issues", time: "2 hr ago", color: "#a855f7" },
-];
-
-const colorTokens = [
-  { name: "Primary Dark", hex: "#1e293b", role: "Sidebar, header, text", light: false },
-  { name: "Surface", hex: "#f1f5f9", role: "Page background", light: true },
-  { name: "Blue", hex: "#3b82f6", role: "Active nav, CTAs", light: false },
-  { name: "Emerald", hex: "#10b981", role: "Success states", light: false },
-  { name: "Amber", hex: "#f59e0b", role: "Warnings, neutral", light: true },
-  { name: "Red", hex: "#ef4444", role: "Errors, danger", light: false },
-  { name: "White", hex: "#ffffff", role: "Card backgrounds", light: true },
-  { name: "Border", hex: "#e2e8f0", role: "Dividers, outlines", light: true },
-];
-
-type ViewportMode = "desktop" | "tablet" | "mobile";
-
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                      */
-/* ------------------------------------------------------------------ */
-
-function NavIcon({ path }: { path: string }) {
+function LayoutIcon({ className = "" }: { className?: string }) {
   return (
-    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d={path} />
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="4" rx="1" />
+      <rect x="2" y="17" width="20" height="4" rx="1" />
+      <rect x="2" y="9" width="5" height="6" rx="1" />
+      <rect x="9" y="9" width="8" height="6" rx="1" />
+      <rect x="19" y="9" width="3" height="6" rx="1" />
     </svg>
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    Active: "bg-[#10b981]/10 text-[#10b981]",
-    Review: "bg-[#3b82f6]/10 text-[#3b82f6]",
-    Planning: "bg-gray-100 text-gray-500",
-  };
+function CheckIcon({ className = "" }: { className?: string }) {
   return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${map[status] ?? "bg-gray-100 text-gray-500"}`}>
-      {status}
-    </span>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
   );
 }
 
-function DashboardPanel() {
+function XIcon({ className = "" }: { className?: string }) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-base font-bold text-[#1e293b] mb-0.5">Dashboard</h3>
-        <p className="text-xs text-gray-500">Welcome back. Here is what is happening today.</p>
-      </div>
-      <div className="grid grid-cols-2 gap-2.5">
-        {dashboardMetrics.map((m) => (
-          <div
-            key={m.label}
-            className="group bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{m.label}</span>
-              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: `${m.color}15` }}>
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: m.color }} />
-              </div>
-            </div>
-            <div className="text-lg font-bold text-[#1e293b] group-hover:text-[#3b82f6] transition-colors duration-150">{m.value}</div>
-            <div className={`text-[10px] font-medium mt-0.5 ${m.up ? "text-[#10b981]" : "text-[#ef4444]"}`}>{m.change}</div>
-          </div>
-        ))}
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
-          <span className="text-xs font-semibold text-[#1e293b]">Projects</span>
-          <button className="text-[10px] text-[#3b82f6] font-medium hover:underline active:scale-[0.98] transition-all duration-150">View all</button>
-        </div>
-        <div className="divide-y divide-gray-50">
-          {projectRows.slice(0, 3).map((row) => (
-            <div key={row.name} className="px-4 py-2.5 flex items-center gap-3 hover:bg-gray-50/50 transition-colors duration-150">
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-[#1e293b] truncate">{row.name}</div>
-                <div className="text-[10px] text-gray-400">{row.owner}</div>
-              </div>
-              <StatusBadge status={row.status} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
   );
 }
 
-function ProjectsPanel() {
+function MonitorIcon({ className = "" }: { className?: string }) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-base font-bold text-[#1e293b] mb-0.5">Projects</h3>
-          <p className="text-xs text-gray-500">All active and planned projects.</p>
-        </div>
-        <button className="px-3 py-1.5 bg-[#3b82f6] text-white text-xs font-medium rounded-lg hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)] active:scale-[0.98] active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 transition-all duration-150 ease-out">
-          + New
-        </button>
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-gray-50 bg-gray-50/60">
-              <th className="px-4 py-2.5 text-left font-medium text-gray-400 uppercase tracking-wider">Project</th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-400 uppercase tracking-wider">Status</th>
-              <th className="px-4 py-2.5 text-left font-medium text-gray-400 uppercase tracking-wider">Progress</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projectRows.map((row) => (
-              <tr key={row.name} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-[#1e293b]">{row.name}</div>
-                  <div className="text-gray-400 text-[10px]">{row.owner}</div>
-                </td>
-                <td className="px-4 py-3"><StatusBadge status={row.status} /></td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#3b82f6] rounded-full transition-all duration-500" style={{ width: `${row.progress}%` }} />
-                    </div>
-                    <span className="text-gray-400 w-7 text-right">{row.progress}%</span>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
   );
 }
 
-function SettingsPanel() {
-  const [notifs, setNotifs] = useState(true);
-  const [compact, setCompact] = useState(false);
-
+function TabletIcon({ className = "" }: { className?: string }) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-base font-bold text-[#1e293b] mb-0.5">Settings</h3>
-        <p className="text-xs text-gray-500">Manage your workspace preferences.</p>
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-50">
-        {[
-          { label: "Email Notifications", desc: "Receive updates on project activity", value: notifs, toggle: () => setNotifs((v) => !v) },
-          { label: "Compact Sidebar", desc: "Show icon-only nav on desktop", value: compact, toggle: () => setCompact((v) => !v) },
-        ].map((s) => (
-          <div key={s.label} className="px-5 py-4 flex items-center justify-between">
-            <div>
-              <div className="text-xs font-medium text-[#1e293b]">{s.label}</div>
-              <div className="text-[10px] text-gray-400 mt-0.5">{s.desc}</div>
-            </div>
-            <button
-              onClick={s.toggle}
-              className={`w-10 h-5.5 rounded-full relative transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 ${s.value ? "bg-[#3b82f6]" : "bg-gray-200"}`}
-              style={{ minWidth: 40, height: 22 }}
-            >
-              <span
-                className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-150"
-                style={{ transform: s.value ? "translateX(18px)" : "translateX(0)" }}
-              />
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-        <div className="text-xs font-semibold text-[#1e293b] mb-3">Profile</div>
-        <div className="space-y-3">
-          <div>
-            <label className="text-[10px] font-medium text-gray-500 block mb-1">Display name</label>
-            <input
-              type="text"
-              defaultValue="Admin User"
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/20 focus:border-[#3b82f6] transition-all duration-150"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-medium text-gray-500 block mb-1">Email</label>
-            <input
-              type="email"
-              defaultValue="admin@stylekit.dev"
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/20 focus:border-[#3b82f6] transition-all duration-150"
-            />
-          </div>
-          <button className="px-4 py-2 bg-[#3b82f6] text-white text-xs font-medium rounded-lg hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(59,130,246,0.3)] active:scale-[0.98] active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 transition-all duration-150 ease-out">
-            Save changes
-          </button>
-        </div>
-      </div>
-    </div>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function PhoneIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="6" y="2" width="12" height="20" rx="2" />
+      <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+function ZapIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M13 2L4.09 12.97 11 12l-2 10 8.91-10.97L11 12l2-10z" />
+    </svg>
+  );
+}
+
+function AnchorIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <circle cx="12" cy="5" r="3" />
+      <path d="M12 8v13M5 12H2a10 10 0 0 0 20 0h-3" />
+    </svg>
+  );
+}
+
+function MouseIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="6" y="3" width="12" height="18" rx="6" />
+      <path d="M12 7v4" />
+    </svg>
+  );
+}
+
+function LayersIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+      <path d="M2 17l10 5 10-5" />
+      <path d="M2 12l10 5 10-5" />
+    </svg>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Responsive layout previews                                          */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-function DesktopPreview() {
-  return (
-    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white" style={{ height: 280 }}>
-      {/* Header */}
-      <div className="h-10 bg-[#1e293b] flex items-center px-4 gap-3 border-b border-white/10 shrink-0">
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]/80" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]/80" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#10b981]/80" />
-        </div>
-        <div className="flex-1 h-4 bg-white/10 rounded max-w-xs mx-auto" />
-        <div className="w-6 h-6 rounded-full bg-[#3b82f6]" />
-      </div>
-      {/* Body: 3 cols */}
-      <div className="flex" style={{ height: 230 }}>
-        <div className="w-36 bg-[#f8fafc] border-r border-gray-200 shrink-0 p-3 flex flex-col gap-2">
-          <div className="text-[8px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Left Nav</div>
-          {["Dashboard", "Projects", "Team", "Settings"].map((item, i) => (
-            <div
-              key={item}
-              className={`h-6 rounded flex items-center px-2 text-[8px] font-medium transition-all duration-150 ${
-                i === 0 ? "bg-[#3b82f6]/10 text-[#3b82f6] border-l-2 border-[#3b82f6]" : "text-gray-400"
-              }`}
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-        <div className="flex-1 p-4 bg-[#f1f5f9] flex flex-col gap-3 min-w-0">
-          <div className="text-[8px] font-semibold uppercase tracking-wider text-gray-400">Main Content (flex-1)</div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-white rounded-lg p-2 border border-gray-100">
-              <div className="text-[8px] text-gray-400 mb-1">Revenue</div>
-              <div className="text-sm font-bold text-[#1e293b]">$48k</div>
-            </div>
-            <div className="bg-white rounded-lg p-2 border border-gray-100">
-              <div className="text-[8px] text-gray-400 mb-1">Users</div>
-              <div className="text-sm font-bold text-[#10b981]">2.8k</div>
-            </div>
-          </div>
-          <div className="flex-1 bg-white rounded-lg border border-gray-100" />
-        </div>
-        <div className="w-40 bg-[#f8fafc] border-l border-gray-200 shrink-0 p-3 flex flex-col gap-2">
-          <div className="text-[8px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Right Sidebar</div>
-          {activityFeed.map((a) => (
-            <div key={a.user} className="flex items-center gap-1.5">
-              <div className="w-3.5 h-3.5 rounded-full shrink-0" style={{ backgroundColor: a.color }} />
-              <div className="text-[8px] text-gray-500 truncate">{a.user}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TabletPreview() {
-  return (
-    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white" style={{ height: 280 }}>
-      <div className="h-10 bg-[#1e293b] flex items-center px-4 gap-3 border-b border-white/10">
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]/80" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]/80" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#10b981]/80" />
-        </div>
-        <div className="flex-1 h-4 bg-white/10 rounded max-w-xs mx-auto" />
-      </div>
-      <div className="flex" style={{ height: 230 }}>
-        {/* Collapsed left nav */}
-        <div className="w-12 bg-[#f8fafc] border-r border-gray-200 shrink-0 p-2 flex flex-col items-center gap-3 pt-4">
-          <div className="text-[8px] text-gray-300 font-semibold">NAV</div>
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className={`w-7 h-7 rounded-lg flex items-center justify-center ${i === 0 ? "bg-[#3b82f6]/10" : "bg-gray-100"}`}>
-              <div className={`w-3 h-3 rounded ${i === 0 ? "bg-[#3b82f6]" : "bg-gray-300"}`} />
-            </div>
-          ))}
-        </div>
-        {/* Main: full width, right sidebar hidden */}
-        <div className="flex-1 p-4 bg-[#f1f5f9] flex flex-col gap-3">
-          <div className="text-[8px] font-semibold uppercase tracking-wider text-gray-400">Main Content</div>
-          <div className="grid grid-cols-2 gap-2">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white rounded-lg p-2 border border-gray-100 h-10" />
-            ))}
-          </div>
-          <div className="flex-1 bg-white rounded-lg border border-gray-100" />
-          <div className="text-[8px] text-gray-400 text-center">Right sidebar hidden at md breakpoint</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MobilePreview() {
-  return (
-    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white" style={{ height: 280 }}>
-      {/* Mobile header with hamburger */}
-      <div className="h-10 bg-[#1e293b] flex items-center justify-between px-4 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-4 flex flex-col justify-between">
-            <div className="h-0.5 w-full bg-white/80 rounded" />
-            <div className="h-0.5 w-full bg-white/80 rounded" />
-            <div className="h-0.5 w-full bg-white/80 rounded" />
-          </div>
-          <div className="w-16 h-3 bg-white/20 rounded" />
-        </div>
-        <div className="w-6 h-6 rounded-full bg-[#3b82f6]" />
-      </div>
-      {/* Stacked content */}
-      <div className="p-4 bg-[#f1f5f9] flex flex-col gap-3" style={{ height: 230 }}>
-        <div className="text-[8px] font-semibold uppercase tracking-wider text-gray-400">Stacked layout — all columns vertical</div>
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-white rounded-lg p-2 border border-gray-100 h-12" />
-        ))}
-        <div className="text-[8px] text-gray-400 text-center mt-auto">Left nav + right sidebar hidden; hamburger reveals drawer</div>
-      </div>
-    </div>
-  );
-}
+type ViewportMode = "desktop" | "tablet" | "mobile";
+type ComponentTab = "cards" | "navlinks" | "buttons" | "metrics";
 
 /* ------------------------------------------------------------------ */
-/*  Main export                                                         */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const zoneData = [
+  {
+    zone: "Header",
+    tailwind: "sticky top-0 z-50 h-14",
+    description: "Fixed at top. Contains brand logo, global navigation, and user actions. Always visible during scroll.",
+    color: "#3b82f6",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    width: "Full width",
+    height: "56px (h-14)",
+  },
+  {
+    zone: "Left Nav",
+    tailwind: "w-60 flex-shrink-0",
+    description: "Fixed-width left column. Houses the primary navigation menu with active state indicators.",
+    color: "#10b981",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    width: "240px (w-60)",
+    height: "flex-1 (fills body)",
+  },
+  {
+    zone: "Main Content",
+    tailwind: "flex-1 min-w-0",
+    description: "The primary canvas. flex-1 makes it fill remaining space. min-w-0 prevents overflow blowout.",
+    color: "#1e293b",
+    bg: "bg-slate-50",
+    border: "border-slate-200",
+    width: "flex-1 (adaptive)",
+    height: "flex-1 (fills body)",
+  },
+  {
+    zone: "Right Sidebar",
+    tailwind: "w-64 flex-shrink-0",
+    description: "Fixed-width right column. Secondary info: activity feeds, contextual tools, quick actions.",
+    color: "#f59e0b",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    width: "256px (w-64)",
+    height: "flex-1 (fills body)",
+  },
+  {
+    zone: "Footer",
+    tailwind: "bg-white border-t",
+    description: "Anchored below main body. Copyright, secondary links, version info. Always at bottom.",
+    color: "#ef4444",
+    bg: "bg-red-50",
+    border: "border-red-200",
+    width: "Full width",
+    height: "auto (content-driven)",
+  },
+];
+
+const metricsData = [
+  { label: "Total Users", value: "12,481", delta: "+8.3%", positive: true, color: "#3b82f6" },
+  { label: "Revenue", value: "$48,290", delta: "+12.1%", positive: true, color: "#10b981" },
+  { label: "Avg Session", value: "4m 32s", delta: "-0.4%", positive: false, color: "#f59e0b" },
+  { label: "Error Rate", value: "0.12%", delta: "-23%", positive: true, color: "#ef4444" },
+];
+
+const activityItems = [
+  { text: "New user registered", time: "2m ago", dot: "#3b82f6" },
+  { text: "Order #4821 completed", time: "15m ago", dot: "#10b981" },
+  { text: "Invoice #INV-099 sent", time: "1h ago", dot: "#f59e0b" },
+  { text: "Server health: OK", time: "2h ago", dot: "#10b981" },
+  { text: "Cache cleared", time: "3h ago", dot: "#94a3b8" },
+];
+
+const navLabels = ["Dashboard", "Projects", "Analytics", "Reports", "Settings"];
+
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
 /* ------------------------------------------------------------------ */
 
 export default function ShowcaseContent() {
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [activePanel, setActivePanel] = useState<PanelId>("dashboard");
-  const [viewportMode, setViewportMode] = useState<ViewportMode>("desktop");
-  const [componentTab, setComponentTab] = useState<"button" | "card" | "nav">("button");
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [viewport, setViewport] = useState<ViewportMode>("desktop");
+  const [activeTab, setActiveTab] = useState<ComponentTab>("cards");
+  const [activeNavItem, setActiveNavItem] = useState(0);
+  const [durationDemo, setDurationDemo] = useState<"fast" | "slow" | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 80);
+    const t = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const { ref: anatomyRef, inView: anatomyInView } = useInView();
-  const { ref: componentsRef, inView: componentsInView } = useInView();
-  const { ref: responsiveRef, inView: responsiveInView } = useInView();
-  const { ref: colorsRef, inView: colorsInView } = useInView();
-  const { ref: rulesRef, inView: rulesInView } = useInView();
-
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-[#1e293b]">
+    <div className="min-h-screen bg-[#f1f5f9] font-sans text-[#1e293b] overflow-x-hidden">
 
-      {/* ================================================================ */}
-      {/* 1. Fixed showcase nav (styled as holy-grail header)              */}
-      {/* ================================================================ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="px-6 flex items-center justify-between h-14">
-          {/* Left: brand + back link */}
-          <div className="flex items-center gap-5">
-            <Link
-              href="/styles"
-              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150 group"
-            >
-              <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              StyleKit
-            </Link>
-            <div className="hidden md:flex items-center gap-1 text-gray-300">
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-            <span className="hidden md:block font-semibold text-[#1e293b] text-sm">
-              Holy<span className="text-[#3b82f6]">Grail</span> Layout
+      {/* ============================================================= */}
+      {/* 1. FIXED STICKY NAV                                           */}
+      {/* ============================================================= */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+          {/* Back to StyleKit */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
+          >
+            <span className="text-base leading-none">&larr;</span>
+            <span>StyleKit</span>
+          </Link>
+
+          {/* Center brand */}
+          <div className="flex items-center gap-2">
+            <LayoutIcon className="w-5 h-5 text-[#3b82f6]" />
+            <span className="text-sm font-semibold text-[#1e293b] tracking-tight">
+              Holy Grail Layout
+            </span>
+            <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-[#3b82f6]/10 text-[#3b82f6] ml-1">
+              Layout
             </span>
           </div>
 
-          {/* Center: search */}
-          <div className="hidden md:flex items-center flex-1 max-w-sm mx-8">
-            <div className="relative w-full">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/20 focus:border-[#3b82f6] transition-all duration-150"
-              />
-            </div>
-          </div>
-
-          {/* Right: nav links + avatar */}
-          <div className="flex items-center gap-5">
-            <Link
-              href="/styles/holy-grail-layout"
-              className="hidden sm:block text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
-            >
-              Docs
-            </Link>
-            <Link
-              href="/styles"
-              className="hidden sm:block text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
-            >
-              All Styles
-            </Link>
-            <div className="w-8 h-8 rounded-full bg-[#3b82f6] flex items-center justify-center text-white text-xs font-bold">
-              U
-            </div>
-          </div>
+          {/* CTA */}
+          <Link
+            href="/styles"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1e293b] text-white text-sm font-medium
+              hover:bg-[#0f172a] hover:-translate-y-0.5 hover:shadow-md
+              active:scale-[0.98] active:translate-y-0
+              focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+              transition-all duration-150 ease-out"
+          >
+            View Styles
+            <ArrowRightIcon className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </header>
 
-      {/* ================================================================ */}
-      {/* 2. Hero — explanation + interactive live demo                     */}
-      {/* ================================================================ */}
-      <section className="pt-28 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
-        {/* Title block */}
-        <div className="mb-14">
-          <span
-            className="inline-block text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-4"
+      {/* ============================================================= */}
+      {/* 2. HERO WITH LAYOUT DIAGRAM                                   */}
+      {/* ============================================================= */}
+      <section className="pt-28 md:pt-36 pb-20 px-5 md:px-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Eyebrow */}
+          <div
             style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.55s cubic-bezier(0.16,1,0.3,1) 0s",
             }}
           >
-            Layout Pattern
-          </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#3b82f6]/10 text-[#3b82f6] text-xs font-semibold tracking-wide uppercase mb-6">
+              <LayoutIcon className="w-3.5 h-3.5" />
+              Classic Web Layout Pattern
+            </span>
+          </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-            <h1 className="text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight">
-              <span
-                className="block"
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: text */}
+            <div>
+              <h1
+                className="text-5xl md:text-6xl lg:text-[64px] font-bold leading-[1.05] tracking-tight mb-6"
                 style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s",
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
                 }}
               >
-                圣杯布局
-              </span>
-              <span
-                className="block text-[#3b82f6]"
+                Holy Grail
+                <br />
+                <span className="text-[#3b82f6]">Layout</span>
+              </h1>
+
+              <p
+                className="text-gray-500 text-lg leading-relaxed max-w-lg mb-8"
                 style={{
-                  opacity: heroRevealed ? 1 : 0,
-                  transform: heroRevealed ? "translateY(0)" : "translateY(40px)",
-                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s",
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s",
                 }}
               >
-                Holy Grail.
-              </span>
-            </h1>
+                The classic five-zone web layout: sticky header, three equal-height columns
+                (left nav, main content, right sidebar), and a persistent footer. The
+                gold standard for productivity dashboards, admin panels, and documentation sites.
+              </p>
 
-            <p
-              className="max-w-sm text-sm text-gray-500 leading-relaxed lg:text-right"
+              {/* Stat pills */}
+              <div
+                className="flex flex-wrap gap-3"
+                style={{
+                  opacity: heroVisible ? 1 : 0,
+                  transform: heroVisible ? "translateY(0)" : "translateY(16px)",
+                  transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+                }}
+              >
+                {[
+                  { label: "5 Zones", color: "#3b82f6" },
+                  { label: "CSS Flexbox", color: "#10b981" },
+                  { label: "Responsive", color: "#f59e0b" },
+                  { label: "SEO Friendly", color: "#1e293b" },
+                ].map((pill) => (
+                  <span
+                    key={pill.label}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white border border-gray-200 text-gray-700 shadow-sm"
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full inline-block"
+                      style={{ backgroundColor: pill.color }}
+                    />
+                    {pill.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: layout diagram */}
+            <div
               style={{
-                opacity: heroRevealed ? 1 : 0,
-                transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(24px)",
+                transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s",
               }}
             >
-              The classic 5-zone web layout: fixed header, 3-column body with left nav, main content, and right sidebar, plus a footer. Main content loads first in HTML for SEO. All columns are equal height.
-            </p>
-          </div>
-        </div>
-
-        {/* Tag row */}
-        <div
-          className="flex flex-wrap gap-2 mb-12"
-          style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.4s",
-          }}
-        >
-          {["CSS Grid", "Flexbox", "5-zone structure", "Equal-height columns", "SEO-first HTML order", "Sticky header"].map((tag) => (
-            <span key={tag} className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs text-gray-600 font-medium shadow-sm">
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* ---- INTERACTIVE LIVE DEMO ---- */}
-        <div
-          className="rounded-2xl border border-gray-200 overflow-hidden shadow-lg bg-white"
-          style={{
-            opacity: heroRevealed ? 1 : 0,
-            transform: heroRevealed ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s",
-          }}
-        >
-          {/* Demo browser chrome */}
-          <div className="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
-                <span className="w-3 h-3 rounded-full bg-[#f59e0b]" />
-                <span className="w-3 h-3 rounded-full bg-[#10b981]" />
-              </div>
-              <span className="ml-2 text-[10px] text-gray-400 font-medium">Live Holy Grail Demo — click the nav items</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="text-[10px] text-gray-400">interactive</span>
-            </div>
-          </div>
-
-          {/* === Holy Grail shell === */}
-          <div className="flex flex-col" style={{ minHeight: 540 }}>
-
-            {/* Demo inner header */}
-            <div className="bg-[#1e293b] text-white px-5 py-3 flex items-center justify-between border-b border-white/10 shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="text-sm font-bold tracking-tight">Acme<span className="text-[#3b82f6]">HQ</span></div>
-                <div className="hidden sm:flex items-center gap-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1">
-                  <svg className="w-3.5 h-3.5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span className="text-xs text-white/40 ml-1 pr-8">Search...</span>
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden">
+                {/* Diagram header bar */}
+                <div className="h-9 bg-[#3b82f6] flex items-center px-4 gap-2">
+                  <span className="text-white text-xs font-semibold tracking-wide">HEADER</span>
+                  <span className="ml-auto text-blue-200 text-[10px] font-mono">sticky top-0 z-50</span>
+                </div>
+                {/* Three columns */}
+                <div className="flex" style={{ minHeight: 200 }}>
+                  {/* Left nav */}
+                  <div className="w-16 md:w-24 bg-[#f1f5f9] border-r border-gray-200 p-2 flex-shrink-0 flex flex-col gap-1.5">
+                    <div className="text-[9px] font-bold text-[#10b981] uppercase tracking-wide mb-1">Left Nav</div>
+                    {["Home", "Docs", "API", "Settings"].map((item, i) => (
+                      <div
+                        key={item}
+                        className={`h-5 rounded text-[9px] flex items-center px-1.5 font-medium ${
+                          i === 0
+                            ? "bg-[#3b82f6]/10 text-[#3b82f6]"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                    <div className="text-[8px] font-mono text-gray-400 mt-auto">w-60</div>
+                  </div>
+                  {/* Main */}
+                  <div className="flex-1 bg-white p-3 min-w-0">
+                    <div className="text-[9px] font-bold text-[#1e293b] uppercase tracking-wide mb-2">Main Content</div>
+                    <div className="grid grid-cols-2 gap-1.5 mb-2">
+                      {["1,234", "$5.6k", "98%", "12ms"].map((v) => (
+                        <div key={v} className="bg-[#f1f5f9] rounded p-1.5">
+                          <div className="text-[10px] font-bold text-[#1e293b]">{v}</div>
+                          <div className="text-[8px] text-gray-400">metric</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="h-2 bg-[#f1f5f9] rounded mb-1" />
+                    <div className="h-2 bg-[#f1f5f9] rounded w-3/4" />
+                    <div className="text-[8px] font-mono text-gray-400 mt-2">flex-1 min-w-0</div>
+                  </div>
+                  {/* Right sidebar */}
+                  <div className="w-14 md:w-20 bg-[#f1f5f9] border-l border-gray-200 p-2 flex-shrink-0 flex flex-col gap-1">
+                    <div className="text-[9px] font-bold text-[#f59e0b] uppercase tracking-wide mb-1">Sidebar</div>
+                    {["Event 1", "Event 2", "Event 3"].map((e) => (
+                      <div key={e} className="h-4 bg-white rounded border border-gray-200 text-[8px] flex items-center px-1 text-gray-400">
+                        {e}
+                      </div>
+                    ))}
+                    <div className="text-[8px] font-mono text-gray-400 mt-auto">w-64</div>
+                  </div>
+                </div>
+                {/* Footer bar */}
+                <div className="h-7 bg-[#f1f5f9] border-t border-gray-200 flex items-center px-4 gap-2">
+                  <span className="text-[10px] font-semibold text-[#ef4444] uppercase tracking-wide">FOOTER</span>
+                  <span className="ml-auto text-gray-400 text-[9px] font-mono">border-t border-gray-200</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <button className="relative p-1.5 hover:bg-white/10 rounded-lg transition-colors duration-150 active:scale-[0.98]">
-                  <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#ef4444] rounded-full" />
+              <p className="text-center text-xs text-gray-400 mt-3">
+                Five zones &mdash; equal-height columns guaranteed by Flexbox
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================= */}
+      {/* 3. LIVE INTERACTIVE DEMO — viewport toggle                    */}
+      {/* ============================================================= */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[#3b82f6] block mb-3">
+              Live Demo
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1e293b] leading-tight">
+              Responsive <span className="text-[#3b82f6]">breakpoints</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Toggle between viewports to see how the layout collapses. On tablet, the right sidebar
+              hides. On mobile, all columns stack vertically.
+            </p>
+          </RevealBlock>
+
+          {/* Viewport toggle */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  { mode: "desktop" as ViewportMode, label: "Desktop", Icon: MonitorIcon, note: ">1024px" },
+                  { mode: "tablet" as ViewportMode, label: "Tablet", Icon: TabletIcon, note: "768\u20131024px" },
+                  { mode: "mobile" as ViewportMode, label: "Mobile", Icon: PhoneIcon, note: "<768px" },
+                ] as const
+              ).map(({ mode, label, Icon, note }) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewport(mode)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all duration-150 ease-out
+                    ${viewport === mode
+                      ? "bg-[#1e293b] text-white border-[#1e293b] shadow-sm"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{label}</span>
+                  <span className={`text-[10px] font-mono ${viewport === mode ? "text-blue-300" : "text-gray-400"}`}>
+                    {note}
+                  </span>
                 </button>
-                <div className="w-7 h-7 rounded-full bg-[#3b82f6] flex items-center justify-center text-white text-xs font-bold">A</div>
+              ))}
+            </div>
+          </RevealBlock>
+
+          {/* Demo frame */}
+          <RevealBlock delay={0.15}>
+            <div className="bg-[#f1f5f9] rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+              {/* Mock browser chrome */}
+              <div className="bg-gray-100 border-b border-gray-200 px-4 py-2.5 flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                </div>
+                <div className="flex-1 mx-4 h-6 bg-white rounded border border-gray-200 flex items-center px-3">
+                  <span className="text-xs text-gray-400 font-mono">myapp.com/dashboard</span>
+                </div>
+              </div>
+
+              {/* Layout demo */}
+              <div
+                className="transition-all duration-300 ease-out overflow-hidden"
+                style={{ maxWidth: viewport === "mobile" ? 375 : viewport === "tablet" ? 768 : "100%", margin: "0 auto" }}
+              >
+                <div className="flex flex-col" style={{ minHeight: 320 }}>
+                  {/* Header */}
+                  <div className="h-11 bg-white border-b border-gray-200 flex items-center justify-between px-4 flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded bg-[#3b82f6] flex items-center justify-center">
+                        <LayoutIcon className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <span className="text-sm font-semibold text-[#1e293b]">MyApp</span>
+                    </div>
+                    {viewport !== "mobile" && (
+                      <nav className="flex items-center gap-4">
+                        {["Home", "Docs", "API"].map((item) => (
+                          <span key={item} className="text-xs text-gray-500 font-medium">{item}</span>
+                        ))}
+                      </nav>
+                    )}
+                    <div className="w-7 h-7 rounded-full bg-[#3b82f6]/10 flex items-center justify-center">
+                      <span className="text-xs font-bold text-[#3b82f6]">A</span>
+                    </div>
+                  </div>
+
+                  {/* Body area */}
+                  <div className={`flex flex-1 ${viewport === "mobile" ? "flex-col" : "flex-row"}`}>
+                    {/* Left nav */}
+                    {viewport !== "mobile" && (
+                      <div className="w-40 bg-white border-r border-gray-200 flex-shrink-0 p-3">
+                        <div className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold mb-2 px-1">Navigation</div>
+                        <div className="space-y-0.5">
+                          {navLabels.map((label, i) => (
+                            <div
+                              key={label}
+                              className={`text-xs px-2 py-1.5 rounded flex items-center gap-2 font-medium ${
+                                i === 0
+                                  ? "bg-[#3b82f6]/10 text-[#3b82f6]"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              <div
+                                className="w-1.5 h-1.5 rounded-full"
+                                style={{ backgroundColor: i === 0 ? "#3b82f6" : "#d1d5db" }}
+                              />
+                              {label}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Mobile nav (horizontal strip) */}
+                    {viewport === "mobile" && (
+                      <div className="bg-white border-b border-gray-200 flex overflow-x-auto gap-0 flex-shrink-0">
+                        {navLabels.slice(0, 4).map((label, i) => (
+                          <div
+                            key={label}
+                            className={`text-[10px] px-3 py-2 flex-shrink-0 font-medium border-b-2 ${
+                              i === 0
+                                ? "border-[#3b82f6] text-[#3b82f6]"
+                                : "border-transparent text-gray-500"
+                            }`}
+                          >
+                            {label}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Main content */}
+                    <div className="flex-1 p-4 min-w-0">
+                      <div className="text-xs font-bold text-[#1e293b] mb-3">Dashboard</div>
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        {metricsData.slice(0, 4).map((m) => (
+                          <div key={m.label} className="bg-white rounded-lg p-2.5 border border-gray-100 shadow-sm">
+                            <div className="text-[10px] text-gray-400 mb-0.5">{m.label}</div>
+                            <div className="text-sm font-bold" style={{ color: m.color }}>{m.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="space-y-1.5">
+                        <div className="h-3 bg-gray-100 rounded w-full" />
+                        <div className="h-3 bg-gray-100 rounded w-5/6" />
+                        <div className="h-3 bg-gray-100 rounded w-4/5" />
+                      </div>
+                    </div>
+
+                    {/* Right sidebar — hidden on tablet+mobile */}
+                    {viewport === "desktop" && (
+                      <div className="w-44 bg-white border-l border-gray-200 flex-shrink-0 p-3">
+                        <div className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold mb-2">Activity</div>
+                        <div className="space-y-2">
+                          {activityItems.slice(0, 4).map((item) => (
+                            <div key={item.text} className="flex items-start gap-1.5">
+                              <div
+                                className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0"
+                                style={{ backgroundColor: item.dot }}
+                              />
+                              <div>
+                                <div className="text-[9px] text-gray-600 leading-tight">{item.text}</div>
+                                <div className="text-[8px] text-gray-400">{item.time}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="h-8 bg-white border-t border-gray-200 flex items-center px-4 flex-shrink-0">
+                    <span className="text-[9px] text-gray-400">
+                      {viewport === "desktop" && "Full 3-column layout: Left Nav + Main + Right Sidebar"}
+                      {viewport === "tablet" && "Tablet: Right sidebar hidden, left nav + main content"}
+                      {viewport === "mobile" && "Mobile: All columns stacked vertically"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
+          </RevealBlock>
+        </div>
+      </section>
 
-            {/* Body: left nav + main + right sidebar */}
-            <div className="flex flex-1">
+      {/* ============================================================= */}
+      {/* 4. LAYOUT ANATOMY — 5 zones explained                         */}
+      {/* ============================================================= */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[#10b981] block mb-3">
+              Anatomy
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1e293b] leading-tight">
+              The five <span className="text-[#10b981]">zones</span>
+            </h2>
+          </RevealBlock>
 
-              {/* Left Nav */}
-              <aside className="w-56 bg-[#f8fafc] border-r border-gray-200 shrink-0 hidden md:flex flex-col">
-                <div className="px-4 py-4">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-3 px-2">Navigation</div>
-                  <nav className="space-y-1">
-                    {demoNavItems.map((item) => {
-                      const isActive = activePanel === item.id;
-                      return (
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Each zone has a specific purpose, fixed or adaptive dimensions, and
+              defined Tailwind classes. Together they create a predictable, scannable page structure.
+            </p>
+          </RevealBlock>
+
+          <div className="space-y-4">
+            {zoneData.map((zone, i) => (
+              <RevealBlock key={zone.zone} delay={i * 0.06}>
+                <div className={`bg-white rounded-xl border ${zone.border} p-5 md:p-7 hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out`}>
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                    {/* Zone badge */}
+                    <div className="flex items-center gap-3 md:w-40 flex-shrink-0">
+                      <div
+                        className="w-2.5 h-10 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: zone.color }}
+                      />
+                      <div>
+                        <div className="text-sm font-bold text-[#1e293b]">{zone.zone}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">Zone {i + 1}</div>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-600 leading-relaxed">{zone.description}</p>
+                    </div>
+
+                    {/* Dimensions */}
+                    <div className="flex gap-4 md:gap-6 text-sm flex-shrink-0">
+                      <div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Width</div>
+                        <div className="font-mono text-xs text-[#1e293b] font-medium">{zone.width}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Height</div>
+                        <div className="font-mono text-xs text-[#1e293b] font-medium">{zone.height}</div>
+                      </div>
+                    </div>
+
+                    {/* Code snippet */}
+                    <div className={`${zone.bg} rounded-lg px-3 py-2 flex-shrink-0`}>
+                      <code className="text-[10px] font-mono" style={{ color: zone.color }}>
+                        {zone.tailwind}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================= */}
+      {/* 5. COMPONENT GALLERY                                          */}
+      {/* ============================================================= */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[#f59e0b] block mb-3">
+              Components
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1e293b] leading-tight">
+              Building <span className="text-[#f59e0b]">blocks</span>
+            </h2>
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-8">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Every interactive element follows strict interaction physics: crisp 150ms transitions,
+              0.5px content card lifts, anchored nav links, and tactile button press states.
+            </p>
+          </RevealBlock>
+
+          {/* Tab bar */}
+          <RevealBlock delay={0.1} className="mb-8">
+            <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
+              {(["cards", "navlinks", "buttons", "metrics"] as ComponentTab[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all duration-150 ease-out
+                    ${activeTab === tab
+                      ? "bg-[#1e293b] text-white shadow-sm"
+                      : "bg-[#f1f5f9] text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                  {tab === "navlinks" ? "Nav Links" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+          </RevealBlock>
+
+          <RevealBlock delay={0.15}>
+            <div className="bg-[#f1f5f9] rounded-2xl p-6 md:p-10 border border-gray-200">
+
+              {/* CARDS TAB */}
+              {activeTab === "cards" && (
+                <div>
+                  <p className="text-xs text-gray-400 font-mono mb-6">
+                    hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      { title: "Analytics Overview", desc: "Track key metrics across all your projects in one unified view.", value: "12,481", label: "Total Events", color: "#3b82f6" },
+                      { title: "Revenue Report", desc: "Monitor revenue streams and financial health at a glance.", value: "$48.2k", label: "Monthly Total", color: "#10b981" },
+                      { title: "Performance", desc: "Page load times, error rates, and uptime status monitoring.", value: "99.9%", label: "Uptime", color: "#f59e0b" },
+                      { title: "User Growth", desc: "New signups, active users, and retention rate trends.", value: "+8.3%", label: "MoM Growth", color: "#3b82f6" },
+                      { title: "Support Queue", desc: "Open tickets, response times, and satisfaction scores.", value: "14", label: "Open Tickets", color: "#ef4444" },
+                      { title: "Deployments", desc: "Recent deployment history and environment health status.", value: "3", label: "This Week", color: "#10b981" },
+                    ].map((card) => (
+                      <div
+                        key={card.title}
+                        className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out cursor-default"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <h3 className="text-sm font-semibold text-[#1e293b] leading-tight">{card.title}</h3>
+                          <div className="w-2 h-2 rounded-full mt-0.5 flex-shrink-0" style={{ backgroundColor: card.color }} />
+                        </div>
+                        <p className="text-xs text-gray-500 leading-relaxed mb-4">{card.desc}</p>
+                        <div>
+                          <div className="text-2xl font-bold" style={{ color: card.color }}>{card.value}</div>
+                          <div className="text-xs text-gray-400 mt-0.5">{card.label}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* NAV LINKS TAB */}
+              {activeTab === "navlinks" && (
+                <div>
+                  <p className="text-xs text-gray-400 font-mono mb-6">
+                    hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50 transition-all duration-150
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Sidebar nav */}
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                      <div className="px-4 py-3 bg-[#f1f5f9] border-b border-gray-200">
+                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Left Sidebar Navigation</span>
+                      </div>
+                      <nav className="p-3 space-y-0.5">
+                        {[
+                          { label: "Dashboard", badge: null },
+                          { label: "Projects", badge: "12" },
+                          { label: "Analytics", badge: null },
+                          { label: "Reports", badge: "3" },
+                          { label: "Integrations", badge: null },
+                          { label: "Settings", badge: null },
+                        ].map((item, i) => (
+                          <button
+                            key={item.label}
+                            onClick={() => setActiveNavItem(i)}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left
+                              ${activeNavItem === i
+                                ? "bg-[#3b82f6]/10 text-[#3b82f6]"
+                                : "text-gray-600 hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50"
+                              }`}
+                          >
+                            <span>{item.label}</span>
+                            {item.badge && (
+                              <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${activeNavItem === i ? "bg-[#3b82f6]/20 text-[#3b82f6]" : "bg-gray-100 text-gray-500"}`}>
+                                {item.badge}
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </nav>
+                    </div>
+
+                    {/* Rules explanation */}
+                    <div className="flex flex-col gap-4">
+                      <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                        <div className="text-xs font-semibold text-[#10b981] uppercase tracking-wide mb-3">Active State</div>
+                        <code className="text-xs font-mono text-gray-600 block leading-relaxed">
+                          bg-[#3b82f6]/10<br />
+                          text-[#3b82f6]<br />
+                          font-medium
+                        </code>
+                        <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+                          Always-visible active indicator. No animation needed &mdash; clarity over motion.
+                        </p>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                        <div className="text-xs font-semibold text-[#3b82f6] uppercase tracking-wide mb-3">Hover State</div>
+                        <code className="text-xs font-mono text-gray-600 block leading-relaxed">
+                          hover:border-l-2<br />
+                          hover:border-[#3b82f6]<br />
+                          hover:bg-gray-50
+                        </code>
+                        <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+                          Left-border highlight only. Zero vertical displacement &mdash; nav items must feel anchored.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* BUTTONS TAB */}
+              {activeTab === "buttons" && (
+                <div className="space-y-8">
+                  {/* Primary */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Primary &mdash; Blue action button</p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="
+                        px-5 py-2.5
+                        bg-[#3b82f6] text-white
+                        rounded-lg font-medium text-sm
+                        hover:bg-[#2563eb] hover:-translate-y-0.5
+                        hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+                        focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                        active:scale-[0.98] active:bg-[#1d4ed8] active:translate-y-0 active:shadow-none
+                        transition-all duration-150 ease-out
+                      ">
+                        Save Changes
+                      </button>
+                      <button className="
+                        px-5 py-2.5
+                        bg-[#10b981] text-white
+                        rounded-lg font-medium text-sm
+                        hover:bg-[#059669] hover:-translate-y-0.5
+                        hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)]
+                        focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:ring-offset-2
+                        active:scale-[0.98] active:translate-y-0 active:shadow-none
+                        transition-all duration-150 ease-out
+                      ">
+                        Confirm
+                      </button>
+                      <button className="
+                        px-5 py-2.5
+                        bg-[#ef4444] text-white
+                        rounded-lg font-medium text-sm
+                        hover:bg-[#dc2626] hover:-translate-y-0.5
+                        hover:shadow-[0_4px_10px_rgba(239,68,68,0.4)]
+                        focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:ring-offset-2
+                        active:scale-[0.98] active:translate-y-0 active:shadow-none
+                        transition-all duration-150 ease-out
+                      ">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Secondary / outline */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Secondary &amp; Outline variants</p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <button className="
+                        px-5 py-2.5
+                        bg-white text-[#1e293b]
+                        border border-gray-300
+                        rounded-lg font-medium text-sm
+                        hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-sm
+                        focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                        active:scale-[0.98] active:translate-y-0
+                        transition-all duration-150 ease-out
+                      ">
+                        Cancel
+                      </button>
+                      <button className="
+                        px-5 py-2.5
+                        bg-transparent text-[#3b82f6]
+                        border border-[#3b82f6]
+                        rounded-lg font-medium text-sm
+                        hover:bg-[#3b82f6]/5 hover:-translate-y-0.5
+                        focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                        active:scale-[0.98] active:translate-y-0
+                        transition-all duration-150 ease-out
+                      ">
+                        Export
+                      </button>
+                      <button className="
+                        px-5 py-2.5
+                        bg-[#f1f5f9] text-gray-600
+                        rounded-lg font-medium text-sm
+                        hover:bg-gray-200 hover:-translate-y-0.5
+                        focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2
+                        active:scale-[0.98] active:translate-y-0
+                        transition-all duration-150 ease-out
+                      ">
+                        More options
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Size variants */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Size variants</p>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                        { size: "XS", classes: "px-3 py-1.5 text-xs" },
+                        { size: "SM", classes: "px-4 py-2 text-sm" },
+                        { size: "MD", classes: "px-5 py-2.5 text-sm" },
+                        { size: "LG", classes: "px-6 py-3 text-base" },
+                      ].map(({ size, classes }) => (
                         <button
-                          key={item.id}
-                          onClick={() => setActivePanel(item.id)}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left transition-all duration-150 ease-out ${
-                            isActive
-                              ? "bg-[#3b82f6]/10 text-[#3b82f6] font-medium border-l-2 border-[#3b82f6]"
-                              : "text-gray-600 hover:bg-gray-100 hover:border-l-2 hover:border-[#3b82f6]"
-                          }`}
+                          key={size}
+                          className={`bg-[#3b82f6] text-white rounded-lg font-medium
+                            hover:bg-[#2563eb] hover:-translate-y-0.5
+                            hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+                            focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                            active:scale-[0.98] active:translate-y-0 active:shadow-none
+                            transition-all duration-150 ease-out ${classes}`}
                         >
-                          <NavIcon path={item.icon} />
-                          {item.label}
-                        </button>
-                      );
-                    })}
-                  </nav>
-
-                  <div className="mt-6">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-3 px-2">Quick Actions</div>
-                    <div className="space-y-1">
-                      {["New Project", "Invite Member", "Export Report"].map((action) => (
-                        <button
-                          key={action}
-                          className="w-full text-left px-3 py-2 text-xs text-gray-500 rounded-lg hover:bg-gray-100 hover:border-l-2 hover:border-[#3b82f6] active:scale-[0.98] transition-all duration-150"
-                        >
-                          {action}
+                          {size}
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
-              </aside>
-
-              {/* Main Content */}
-              <main className="flex-1 p-5 md:p-6 min-w-0 bg-[#f1f5f9] overflow-auto">
-                {activePanel === "dashboard" && <DashboardPanel />}
-                {activePanel === "projects" && <ProjectsPanel />}
-                {activePanel === "settings" && <SettingsPanel />}
-              </main>
-
-              {/* Right Sidebar */}
-              <aside className="w-64 bg-[#f8fafc] border-l border-gray-200 shrink-0 hidden lg:flex flex-col p-4 overflow-y-auto">
-                <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-4">Activity</div>
-                  <div className="space-y-4">
-                    {activityFeed.map((a, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-                          style={{ backgroundColor: a.color }}
-                        >
-                          {a.user[0]}
-                        </div>
-                        <div>
-                          <div className="text-xs">
-                            <span className="font-medium text-[#1e293b]">{a.user}</span>{" "}
-                            <span className="text-gray-500">{a.action}</span>
-                          </div>
-                          <div className="text-[10px] text-gray-400 mt-0.5">{a.time}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-5 border-t border-gray-200">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-3">Team Online</div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#a855f7"].map((color, i) => (
-                      <div key={i} className="relative">
-                        <div className="w-7 h-7 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: color }} />
-                        <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-[#10b981] rounded-full border-2 border-white" />
-                      </div>
-                    ))}
-                    <span className="text-[10px] text-gray-400">+3 more</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-5 border-t border-gray-200">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-3">Storage</div>
-                  <div className="text-xs text-gray-600 mb-2">14.2 GB of 20 GB used</div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#3b82f6] rounded-full" style={{ width: "71%" }} />
-                  </div>
-                  <div className="text-[10px] text-gray-400 mt-1">71% used</div>
-                </div>
-              </aside>
-            </div>
-
-            {/* Demo footer */}
-            <div className="bg-[#f8fafc] border-t border-gray-200 px-5 py-2.5 flex items-center justify-between shrink-0">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">AcmeHQ &copy; 2026</span>
-              <div className="flex items-center gap-4">
-                {["Privacy", "Terms", "Status"].map((link) => (
-                  <span key={link} className="text-[10px] text-gray-400 hover:text-gray-600 cursor-pointer transition-colors duration-150">
-                    {link}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-4 text-center text-xs text-gray-400">
-          Click Dashboard, Projects, or Settings in the left nav to switch panels. Right sidebar shows live activity.
-        </p>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 3. Layout anatomy — 5-zone diagram                               */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 bg-white">
-        <div className="max-w-7xl mx-auto" ref={anatomyRef}>
-          <RevealBlock className="mb-12">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-3 block">Architecture</span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Layout <span className="text-[#3b82f6]">anatomy</span>
-            </h2>
-            <p className="mt-3 text-gray-500 text-sm max-w-md">
-              Five distinct regions, each with a defined role. The main content appears first in HTML source order for SEO, even though it renders in the center column visually.
-            </p>
-          </RevealBlock>
-
-          <div
-            style={{
-              opacity: anatomyInView ? 1 : 0,
-              transform: anatomyInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
-            }}
-          >
-            {/* Zone diagram */}
-            <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-[#f1f5f9] p-3 md:p-4">
-              {/* Zone 1: Header */}
-              <div className="bg-[#1e293b] text-white rounded-xl px-5 py-4 mb-3 flex items-center justify-between">
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-wider text-white/60 mb-0.5">Zone 1</div>
-                  <div className="text-sm font-bold">Header</div>
-                </div>
-                <div className="text-right text-xs text-white/50">
-                  <div>fixed top-0</div>
-                  <div>z-50, h-14</div>
-                  <div>full width</div>
-                </div>
-              </div>
-
-              {/* Zones 2, 3, 4 */}
-              <div className="flex gap-3 mb-3" style={{ minHeight: 220 }}>
-                {/* Zone 2: Left nav */}
-                <div className="w-44 bg-[#e2e8f0] rounded-xl p-4 flex flex-col border-2 border-[#3b82f6]/30 shrink-0">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Zone 2</div>
-                  <div className="text-sm font-bold text-[#1e293b] mb-1">Left Nav</div>
-                  <div className="space-y-1 text-[10px] text-gray-500">
-                    <div className="font-mono">w-60 or w-64</div>
-                    <div className="font-mono">flex-shrink-0</div>
-                    <div className="font-mono">overflow-y-auto</div>
-                    <div className="font-mono">bg-slate-50</div>
-                  </div>
-                  <div className="mt-3 text-[10px] text-[#3b82f6] font-semibold">Fixed width</div>
-                  <div className="mt-auto space-y-1.5 pt-3">
-                    {["Dashboard", "Projects", "Settings"].map((item) => (
-                      <div key={item} className="h-5 bg-white/60 rounded flex items-center px-2">
-                        <span className="text-[9px] text-gray-500">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Zone 3: Main */}
-                <div className="flex-1 bg-[#dbeafe] rounded-xl p-4 border-2 border-[#3b82f6]/50 min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#3b82f6] mb-1">Zone 3 — SEO PRIORITY</div>
-                  <div className="text-sm font-bold text-[#1e293b] mb-1">Main Content</div>
-                  <div className="space-y-1 text-[10px] text-[#3b82f6]/80">
-                    <div className="font-mono">flex-1</div>
-                    <div className="font-mono">min-width: 0</div>
-                    <div className="font-mono">overflow-auto</div>
-                    <div className="font-mono bg-[#3b82f6]/10 px-1.5 py-0.5 rounded inline-block">First in HTML source</div>
-                  </div>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="h-10 bg-white/60 rounded-lg" />
-                    ))}
-                  </div>
-                  <div className="mt-2 h-16 bg-white/40 rounded-lg" />
-                </div>
-
-                {/* Zone 4: Right sidebar */}
-                <div className="w-44 bg-[#e2e8f0] rounded-xl p-4 flex flex-col border-2 border-[#10b981]/30 shrink-0 hidden sm:flex">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Zone 4</div>
-                  <div className="text-sm font-bold text-[#1e293b] mb-1">Right Sidebar</div>
-                  <div className="space-y-1 text-[10px] text-gray-500">
-                    <div className="font-mono">w-64 or w-72</div>
-                    <div className="font-mono">flex-shrink-0</div>
-                    <div className="font-mono">overflow-y-auto</div>
-                  </div>
-                  <div className="mt-3 text-[10px] text-[#10b981] font-semibold">Fixed width</div>
-                  <div className="mt-auto space-y-2 pt-3">
-                    {activityFeed.slice(0, 3).map((a, i) => (
-                      <div key={i} className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: a.color }} />
-                        <div className="h-2 bg-white/60 rounded flex-1" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Zone 5: Footer */}
-              <div className="bg-gray-200 rounded-xl px-5 py-4 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-0.5">Zone 5</div>
-                  <div className="text-sm font-bold text-gray-700">Footer</div>
-                </div>
-                <div className="text-right text-[10px] text-gray-500">
-                  <div>border-t, bg-slate-50</div>
-                  <div>full width below body</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Zone legend */}
-          <div
-            className="mt-6 flex flex-wrap gap-4"
-            style={{
-              opacity: anatomyInView ? 1 : 0,
-              transform: anatomyInView ? "translateY(0)" : "translateY(16px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s",
-            }}
-          >
-            {[
-              { label: "Header (Zone 1)", color: "#1e293b", text: "#fff" },
-              { label: "Left Nav (Zone 2)", color: "#e2e8f0", text: "#1e293b", border: true },
-              { label: "Main Content (Zone 3)", color: "#dbeafe", text: "#1e293b", border: true },
-              { label: "Right Sidebar (Zone 4)", color: "#e2e8f0", text: "#1e293b", border: true },
-              { label: "Footer (Zone 5)", color: "#d1d5db", text: "#1e293b", border: true },
-            ].map((zone) => (
-              <div key={zone.label} className="flex items-center gap-2">
-                <span
-                  className={`w-3.5 h-3.5 rounded ${zone.border ? "border border-gray-400" : ""}`}
-                  style={{ backgroundColor: zone.color }}
-                />
-                <span className="text-xs text-gray-600">{zone.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* HTML source order callout */}
-          <div
-            className="mt-8 bg-[#dbeafe] border border-[#3b82f6]/20 rounded-2xl p-6"
-            style={{
-              opacity: anatomyInView ? 1 : 0,
-              transform: anatomyInView ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s",
-            }}
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-[#3b82f6] rounded-lg flex items-center justify-center shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm font-bold text-[#1e293b] mb-1">SEO-first HTML order</div>
-                <p className="text-sm text-[#1e293b]/70 leading-relaxed">
-                  In the Holy Grail pattern, the <code className="bg-[#3b82f6]/10 px-1.5 py-0.5 rounded font-mono text-xs">&lt;main&gt;</code> element
-                  appears first in the HTML source order — before the left nav and right sidebar — even though CSS places it in the center column.
-                  This ensures search engines and screen readers encounter the primary content first.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 4. Component demos — Button, Card, Nav link                      */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto" ref={componentsRef}>
-          <RevealBlock className="mb-12">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-3 block">Components</span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Interactive <span className="text-[#3b82f6]">elements</span>
-            </h2>
-            <p className="mt-3 text-gray-500 text-sm max-w-md">
-              Every interactive element in the Holy Grail layout follows a consistent physics model: hover lifts slightly, active presses in, focus shows a ring.
-            </p>
-          </RevealBlock>
-
-          {/* Tab switcher */}
-          <div
-            className="flex items-center gap-1 bg-white rounded-xl p-1 mb-8 w-fit border border-gray-200 shadow-sm"
-            style={{
-              opacity: componentsInView ? 1 : 0,
-              transform: componentsInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s",
-            }}
-          >
-            {(["button", "card", "nav"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setComponentTab(tab)}
-                className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-all duration-150 ease-out active:scale-[0.98] ${
-                  componentTab === tab
-                    ? "bg-[#3b82f6] text-white shadow-sm"
-                    : "text-gray-500 hover:text-[#1e293b] hover:bg-gray-50"
-                }`}
-              >
-                {tab === "nav" ? "Nav Link" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          <div
-            style={{
-              opacity: componentsInView ? 1 : 0,
-              transform: componentsInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s",
-            }}
-          >
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 md:p-10">
-
-              {/* Button panel */}
-              {componentTab === "button" && (
-                <div className="space-y-8">
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Primary actions</div>
-                    <div className="flex flex-wrap gap-3">
-                      <button className="px-4 py-2 bg-[#3b82f6] text-white rounded-lg font-medium text-sm hover:bg-[#2563eb] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(59,130,246,0.4)] focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 active:scale-[0.98] active:bg-[#1d4ed8] active:translate-y-0 active:shadow-none transition-all duration-150 ease-out">
-                        Save Changes
-                      </button>
-                      <button className="px-4 py-2 bg-[#10b981] text-white rounded-lg font-medium text-sm hover:bg-[#059669] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(16,185,129,0.4)] focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:ring-offset-2 active:scale-[0.98] active:translate-y-0 active:shadow-none transition-all duration-150 ease-out">
-                        Publish
-                      </button>
-                      <button className="px-4 py-2 bg-[#ef4444] text-white rounded-lg font-medium text-sm hover:bg-[#dc2626] hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:ring-offset-2 active:scale-[0.98] active:translate-y-0 transition-all duration-150 ease-out">
-                        Delete
-                      </button>
-                      <button className="px-4 py-2 bg-[#f59e0b] text-white rounded-lg font-medium text-sm hover:bg-[#d97706] hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#f59e0b] focus:ring-offset-2 active:scale-[0.98] active:translate-y-0 transition-all duration-150 ease-out">
-                        Archive
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Secondary actions</div>
-                    <div className="flex flex-wrap gap-3">
-                      <button className="px-4 py-2 border border-gray-200 text-[#1e293b] rounded-lg font-medium text-sm hover:bg-gray-50 hover:border-gray-300 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 active:scale-[0.98] active:translate-y-0 transition-all duration-150 ease-out">
-                        Cancel
-                      </button>
-                      <button className="px-4 py-2 border border-[#3b82f6]/30 text-[#3b82f6] rounded-lg font-medium text-sm hover:bg-[#3b82f6]/5 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 active:scale-[0.98] active:translate-y-0 transition-all duration-150 ease-out">
-                        View Report
-                      </button>
-                      <button className="px-4 py-2 text-[#3b82f6] font-medium text-sm hover:bg-[#3b82f6]/5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 active:scale-[0.98] transition-all duration-150 ease-out">
-                        Learn more
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Size variants</div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button className="px-2.5 py-1 bg-[#3b82f6] text-white rounded text-xs font-medium hover:bg-[#2563eb] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 transition-all duration-150 ease-out">xs</button>
-                      <button className="px-3 py-1.5 bg-[#3b82f6] text-white rounded-md text-sm font-medium hover:bg-[#2563eb] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-1 transition-all duration-150 ease-out">sm</button>
-                      <button className="px-4 py-2 bg-[#3b82f6] text-white rounded-lg text-sm font-medium hover:bg-[#2563eb] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 transition-all duration-150 ease-out">md</button>
-                      <button className="px-5 py-2.5 bg-[#3b82f6] text-white rounded-xl text-base font-medium hover:bg-[#2563eb] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 transition-all duration-150 ease-out">lg</button>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <div className="text-xs font-semibold text-gray-600 mb-2">Button physics rule</div>
-                    <code className="text-[11px] text-gray-500 font-mono leading-relaxed block">
-                      hover: -translate-y-0.5 + shadow<br />
-                      active: scale-[0.98] + translate-y-0 + shadow-none<br />
-                      focus: ring-2 ring-[accent] ring-offset-2<br />
-                      transition: all duration-150 ease-out
-                    </code>
-                  </div>
-                </div>
               )}
 
-              {/* Card panel */}
-              {componentTab === "card" && (
-                <div className="space-y-6">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
-                    Content cards — hover:-translate-y-0.5 hover:shadow-md (minimal displacement)
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { title: "API Gateway", desc: "Manage authentication, rate limiting, and routing for microservices.", color: "#3b82f6", tag: "Active" },
-                      { title: "Monitoring", desc: "Real-time metrics and log aggregation across your infrastructure.", color: "#10b981", tag: "Healthy" },
-                      { title: "CI/CD Pipeline", desc: "Automated builds, testing, and deployment with zero-downtime.", color: "#f59e0b", tag: "Running" },
-                      { title: "Database Admin", desc: "Query builder, migration tools, and performance diagnostics.", color: "#ef4444", tag: "Attention" },
-                    ].map((c) => (
+              {/* METRICS TAB */}
+              {activeTab === "metrics" && (
+                <div>
+                  <p className="text-xs text-gray-400 font-mono mb-6">
+                    Dashboard metric cards &mdash; main content zone components
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {metricsData.map((m) => (
                       <div
-                        key={c.title}
-                        className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out cursor-pointer"
+                        key={m.label}
+                        className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out"
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${c.color}15` }}>
-                              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: c.color }} />
-                            </div>
-                            <h4 className="font-semibold text-[#1e293b] text-sm group-hover:text-[#3b82f6] transition-colors duration-150">{c.title}</h4>
-                          </div>
+                          <span className="text-sm font-medium text-gray-500">{m.label}</span>
                           <span
-                            className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                            style={{ backgroundColor: `${c.color}10`, color: c.color }}
+                            className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                              m.positive ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"
+                            }`}
                           >
-                            {c.tag}
+                            {m.delta}
                           </span>
                         </div>
-                        <p className="text-gray-500 text-xs leading-relaxed">{c.desc}</p>
-                        <div className="mt-4 h-1 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="text-3xl font-bold" style={{ color: m.color }}>{m.value}</div>
+                        <div className="mt-4 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ backgroundColor: c.color, width: c.tag === "Active" ? "65%" : c.tag === "Healthy" ? "90%" : c.tag === "Running" ? "45%" : "30%" }}
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{ width: "72%", backgroundColor: m.color, opacity: 0.4 }}
                           />
                         </div>
+                        <div className="mt-2 text-xs text-gray-400">vs. last month</div>
                       </div>
                     ))}
                   </div>
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <div className="text-xs font-semibold text-gray-600 mb-2">Card hover rule</div>
-                    <code className="text-[11px] text-gray-500 font-mono">
-                      hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out
-                    </code>
-                    <p className="text-xs text-gray-400 mt-1">Maximum -translate-y-0.5 (2px). Never use -translate-y-1 or larger — creates excessive displacement.</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Nav link panel */}
-              {componentTab === "nav" && (
-                <div className="space-y-6">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
-                    Sidebar nav link states — border-l-2 highlight ONLY, no vertical displacement
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-3">All states</div>
-                      <div className="bg-[#f8fafc] rounded-xl p-4 border border-gray-200 space-y-1">
-                        {/* Default */}
-                        <div className="flex items-center gap-3 px-3 py-2 text-gray-600 text-sm rounded-lg">
-                          <div className="w-4 h-4 bg-gray-300 rounded" />
-                          <span>Analytics</span>
-                          <span className="ml-auto text-[10px] text-gray-300 font-mono">default</span>
-                        </div>
-                        {/* Hover */}
-                        <div className="flex items-center gap-3 px-3 py-2 text-gray-700 text-sm rounded-lg bg-gray-100 border-l-2 border-[#3b82f6]">
-                          <div className="w-4 h-4 bg-[#3b82f6]/40 rounded" />
-                          <span>Team</span>
-                          <span className="ml-auto text-[10px] text-[#3b82f6]/50 font-mono">hover</span>
-                        </div>
-                        {/* Active */}
-                        <div className="flex items-center gap-3 px-3 py-2 text-[#3b82f6] text-sm rounded-lg bg-[#3b82f6]/10 border-l-2 border-[#3b82f6] font-medium">
-                          <div className="w-4 h-4 bg-[#3b82f6] rounded" />
-                          <span>Dashboard</span>
-                          <span className="ml-auto text-[10px] text-[#3b82f6]/50 font-mono">active</span>
-                        </div>
-                        {/* Focus */}
-                        <div className="flex items-center gap-3 px-3 py-2 text-gray-600 text-sm rounded-lg outline-none ring-2 ring-[#3b82f6]/30">
-                          <div className="w-4 h-4 bg-gray-300 rounded" />
-                          <span>Reports</span>
-                          <span className="ml-auto text-[10px] text-gray-300 font-mono">focus</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-3">Key rules</div>
-                      <div className="space-y-3">
-                        <div className="bg-[#10b981]/5 border border-[#10b981]/20 rounded-xl p-4">
-                          <div className="text-xs font-semibold text-[#10b981] mb-2">DO: Border-left only</div>
-                          <code className="text-[10px] text-gray-600 font-mono block leading-relaxed">
-                            hover:border-l-2<br />
-                            hover:border-[#3b82f6]<br />
-                            hover:bg-gray-100<br />
-                            transition-all duration-150
-                          </code>
-                        </div>
-                        <div className="bg-[#ef4444]/5 border border-[#ef4444]/20 rounded-xl p-4">
-                          <div className="text-xs font-semibold text-[#ef4444] mb-2">NEVER: Vertical displacement</div>
-                          <code className="text-[10px] text-gray-400 font-mono line-through block leading-relaxed">
-                            hover:-translate-y-0.5<br />
-                            hover:-translate-y-1<br />
-                            hover:mt-[-2px]
-                          </code>
-                          <p className="text-[10px] text-gray-500 mt-2">Nav links must not shift vertically. It disrupts layout flow and causes visual jumping as users scan the menu.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
-          </div>
+          </RevealBlock>
         </div>
       </section>
 
-      {/* ================================================================ */}
-      {/* 5. Responsive behavior                                            */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 bg-white">
-        <div className="max-w-7xl mx-auto" ref={responsiveRef}>
-          <RevealBlock className="mb-12">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-3 block">Responsive</span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Adaptive <span className="text-[#f59e0b]">behavior</span>
+      {/* ============================================================= */}
+      {/* 6. ANIMATION & INTERACTION RULES                              */}
+      {/* ============================================================= */}
+      <section className="py-20 md:py-28 px-5 md:px-10">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[#3b82f6] block mb-3">
+              Interaction Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1e293b] leading-tight">
+              Animation &amp; <span className="text-[#3b82f6]">interaction</span> rules
             </h2>
-            <p className="mt-3 text-gray-500 text-sm max-w-md">
-              At three breakpoints the Holy Grail layout gracefully collapses: the right sidebar hides at medium screens, then the left nav hides on mobile.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              Four named interaction patterns govern all Holy Grail components. Hover or interact
+              with each demo card to feel the physics. Productivity tools demand crisp, predictable responses.
             </p>
           </RevealBlock>
 
-          {/* Viewport toggle */}
-          <div
-            className="flex items-center gap-1 bg-[#f1f5f9] rounded-xl p-1 mb-8 w-fit border border-gray-200 shadow-sm"
-            style={{
-              opacity: responsiveInView ? 1 : 0,
-              transform: responsiveInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s",
-            }}
-          >
-            {(["desktop", "tablet", "mobile"] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewportMode(mode)}
-                className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-all duration-150 ease-out active:scale-[0.98] ${
-                  viewportMode === mode
-                    ? "bg-white text-[#1e293b] shadow-sm border border-gray-200"
-                    : "text-gray-500 hover:text-[#1e293b]"
-                }`}
-              >
-                {mode === "desktop" ? "Desktop (lg+)" : mode === "tablet" ? "Tablet (md)" : "Mobile (<md)"}
-              </button>
-            ))}
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-          <div
-            style={{
-              opacity: responsiveInView ? 1 : 0,
-              transform: responsiveInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s",
-            }}
-          >
-            {viewportMode === "desktop" && <DesktopPreview />}
-            {viewportMode === "tablet" && <TabletPreview />}
-            {viewportMode === "mobile" && <MobilePreview />}
-          </div>
-
-          {/* Breakpoint table */}
-          <div
-            className="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
-            style={{
-              opacity: responsiveInView ? 1 : 0,
-              transform: responsiveInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
-            }}
-          >
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/60">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Breakpoint</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Left Nav</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Right Sidebar</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">Main Content</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { bp: "Desktop (lg+, 1024px+)", left: "w-60, always visible", right: "w-64, always visible", main: "flex-1, center column" },
-                  { bp: "Tablet (md, 768–1023px)", left: "w-60, visible (icon-only option)", right: "hidden (lg:block)", main: "flex-1, wider" },
-                  { bp: "Mobile (<md, <768px)", left: "hidden (hamburger drawer)", right: "hidden", main: "full width, stacked" },
-                ].map((row, i) => (
-                  <tr key={i} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4 text-xs font-medium text-[#1e293b]">{row.bp}</td>
-                    <td className="px-6 py-4 text-xs text-gray-600">
-                      <code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-[#3b82f6]">{row.left}</code>
-                    </td>
-                    <td className="px-6 py-4 text-xs text-gray-600 hidden sm:table-cell">
-                      <code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-[#10b981]">{row.right}</code>
-                    </td>
-                    <td className="px-6 py-4 text-xs text-gray-600 hidden md:table-cell">{row.main}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 6. Color system                                                   */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto" ref={colorsRef}>
-          <RevealBlock className="mb-12">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-3 block">Palette</span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Color <span className="text-[#3b82f6]">system</span>
-            </h2>
-            <p className="mt-3 text-gray-500 text-sm max-w-md">
-              A functional eight-token palette built on Slate and four accent colors. Each token has a defined semantic role within the layout zones.
-            </p>
-          </RevealBlock>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {colorTokens.map((c, i) => (
-              <div
-                key={c.name}
-                className="group cursor-pointer"
-                style={{
-                  opacity: colorsInView ? 1 : 0,
-                  transform: colorsInView ? "translateY(0)" : "translateY(24px)",
-                  transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s`,
-                }}
-              >
-                <div
-                  className="w-full aspect-[4/3] rounded-xl mb-3 group-hover:scale-[1.03] group-hover:shadow-md transition-all duration-150 ease-out flex items-end p-3"
-                  style={{
-                    backgroundColor: c.hex,
-                    border: c.light ? "1px solid #e2e8f0" : "none",
-                  }}
-                >
-                  <span
-                    className="text-[10px] font-mono opacity-70"
-                    style={{ color: c.light ? "#1e293b" : "#ffffff" }}
-                  >
-                    {c.hex}
-                  </span>
+            {/* Card 1: Content Supremacy */}
+            <RevealBlock delay={0.08}>
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <LayersIcon className="w-4 h-4 text-[#3b82f6]" />
+                  <span className="text-sm font-bold text-[#1e293b]">Content Supremacy</span>
+                  <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded bg-blue-50 text-[#3b82f6]">Card Float</span>
                 </div>
-                <div className="font-semibold text-sm text-[#1e293b]">{c.name}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{c.role}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Semantic role callouts */}
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            style={{
-              opacity: colorsInView ? 1 : 0,
-              transform: colorsInView ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s",
-            }}
-          >
-            {[
-              {
-                title: "Layout zones",
-                items: [
-                  { swatch: "#1e293b", label: "Primary Dark", desc: "Header bg, footer text, primary headings" },
-                  { swatch: "#f1f5f9", label: "Surface", desc: "Main content area background (slate-100)" },
-                  { swatch: "#ffffff", label: "White", desc: "Card and panel backgrounds" },
-                  { swatch: "#e2e8f0", label: "Border", desc: "Column dividers, card outlines" },
-                ],
-              },
-              {
-                title: "Accent colors (semantic)",
-                items: [
-                  { swatch: "#3b82f6", label: "Blue", desc: "Active nav state, CTAs, links, focus rings" },
-                  { swatch: "#10b981", label: "Emerald", desc: "Success, positive metrics, online indicators" },
-                  { swatch: "#f59e0b", label: "Amber", desc: "Warnings, neutral change, planning status" },
-                  { swatch: "#ef4444", label: "Red", desc: "Errors, danger actions, negative trends" },
-                ],
-              },
-            ].map((group) => (
-              <div key={group.title} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-                <h4 className="text-sm font-bold text-[#1e293b] mb-4">{group.title}</h4>
+                <p className="text-xs text-gray-400 leading-relaxed mb-1">
+                  Main content cards: minimal, non-distracting float. Enough to signal interactivity
+                  without disrupting reading focus.
+                </p>
+                <div className="font-mono text-[10px] text-gray-400 bg-[#f1f5f9] rounded-lg px-3 py-2 mb-6">
+                  hover:-translate-y-0.5 hover:shadow-md<br />
+                  transition-all duration-150 ease-out
+                </div>
                 <div className="space-y-3">
-                  {group.items.map((item) => (
-                    <div key={item.label} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg shrink-0 border border-gray-100" style={{ backgroundColor: item.swatch }} />
-                      <div>
-                        <div className="text-xs font-semibold text-[#1e293b]">{item.label}</div>
-                        <div className="text-[10px] text-gray-400">{item.desc}</div>
-                      </div>
+                  {["Project Alpha \u2014 Q1 Deliverables", "Design System v2.0 Audit", "Infrastructure Review"].map((title) => (
+                    <div
+                      key={title}
+                      className="bg-[#f1f5f9] rounded-xl p-4 border border-gray-100 cursor-default hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-out"
+                    >
+                      <div className="text-sm font-medium text-[#1e293b] mb-1">{title}</div>
+                      <div className="text-xs text-gray-400">Hover to feel the 0.5px lift</div>
                     </div>
                   ))}
                 </div>
               </div>
-            ))}
+            </RevealBlock>
+
+            {/* Card 2: Navigation Anchoring */}
+            <RevealBlock delay={0.12}>
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <AnchorIcon className="w-4 h-4 text-[#10b981]" />
+                  <span className="text-sm font-bold text-[#1e293b]">Navigation Anchoring</span>
+                  <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-50 text-[#10b981]">No Y-shift</span>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed mb-1">
+                  Sidebar nav hover uses left-border highlight only. Zero vertical displacement.
+                  Nav must feel anchored and stable &mdash; it is the user&apos;s spatial reference.
+                </p>
+                <div className="font-mono text-[10px] text-gray-400 bg-[#f1f5f9] rounded-lg px-3 py-2 mb-6">
+                  hover:border-l-2<br />
+                  hover:border-[#3b82f6]<br />
+                  hover:bg-gray-50<br />
+                  transition-all duration-150
+                </div>
+                <nav className="bg-[#f1f5f9] rounded-xl border border-gray-200 p-3 space-y-0.5">
+                  {["Dashboard", "Projects", "Analytics", "Reports", "Settings"].map((item, i) => (
+                    <div
+                      key={item}
+                      className={`px-3 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all duration-150 select-none
+                        ${i === 0
+                          ? "bg-[#3b82f6]/10 text-[#3b82f6]"
+                          : "text-gray-600 hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50"
+                        }`}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            </RevealBlock>
+
+            {/* Card 3: Crisp Performance */}
+            <RevealBlock delay={0.16}>
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <ZapIcon className="w-4 h-4 text-[#f59e0b]" />
+                  <span className="text-sm font-bold text-[#1e293b]">Crisp Performance</span>
+                  <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded bg-amber-50 text-[#f59e0b]">duration-150</span>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed mb-1">
+                  All transitions must be 150ms or less. Productivity tools require instant
+                  response. Sluggish animations erode trust and interrupt workflow.
+                </p>
+                <div className="font-mono text-[10px] text-gray-400 bg-[#f1f5f9] rounded-lg px-3 py-2 mb-6">
+                  transition-all duration-150 ease-out<br />
+                  <span className="text-red-400">&#x2717; duration-300+ prohibited</span>
+                </div>
+
+                {/* Speed comparison */}
+                <div className="space-y-5">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-medium text-[#10b981]">duration-150 (correct)</span>
+                      <button
+                        className="text-xs px-2.5 py-1 rounded bg-emerald-50 text-[#10b981] hover:bg-emerald-100 transition-colors duration-150 font-medium"
+                        onClick={() => setDurationDemo(durationDemo === "fast" ? null : "fast")}
+                      >
+                        Animate
+                      </button>
+                    </div>
+                    <div className="relative h-9 bg-[#f1f5f9] rounded-full overflow-hidden border border-gray-200">
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 left-2 w-6 h-6 rounded-full bg-[#10b981]"
+                        style={{
+                          transform: `translateY(-50%) translateX(${durationDemo === "fast" ? "180px" : "0"})`,
+                          transition: durationDemo === "fast" ? "transform 0.15s ease-out" : "none",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-medium text-[#ef4444]">duration-500 (prohibited)</span>
+                      <button
+                        className="text-xs px-2.5 py-1 rounded bg-red-50 text-[#ef4444] hover:bg-red-100 transition-colors duration-150 font-medium"
+                        onClick={() => setDurationDemo(durationDemo === "slow" ? null : "slow")}
+                      >
+                        Animate
+                      </button>
+                    </div>
+                    <div className="relative h-9 bg-[#f1f5f9] rounded-full overflow-hidden border border-gray-200">
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 left-2 w-6 h-6 rounded-full bg-[#ef4444] opacity-60"
+                        style={{
+                          transform: `translateY(-50%) translateX(${durationDemo === "slow" ? "180px" : "0"})`,
+                          transition: durationDemo === "slow" ? "transform 0.5s ease-out" : "none",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </RevealBlock>
+
+            {/* Card 4: Button Physics */}
+            <RevealBlock delay={0.2}>
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <MouseIcon className="w-4 h-4 text-[#ef4444]" />
+                  <span className="text-sm font-bold text-[#1e293b]">Button Physics</span>
+                  <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded bg-red-50 text-[#ef4444]">Tactile</span>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed mb-1">
+                  Three-state button: hover floats 0.5px with glow shadow, active micro-presses
+                  with scale(0.98) + translate-y-0 (resets lift), focus shows WCAG 2.1 AA ring.
+                </p>
+                <div className="font-mono text-[10px] text-gray-400 bg-[#f1f5f9] rounded-lg px-3 py-2 mb-6">
+                  hover:-translate-y-0.5<br />
+                  hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]<br />
+                  active:scale-[0.98] active:translate-y-0<br />
+                  focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2<br />
+                  transition-all duration-150 ease-out
+                </div>
+                <div className="flex flex-wrap gap-3 justify-center py-4">
+                  <button
+                    className="
+                      px-5 py-2.5
+                      bg-[#3b82f6] text-white
+                      rounded-lg font-medium text-sm
+                      hover:bg-[#2563eb] hover:-translate-y-0.5
+                      hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+                      focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                      active:scale-[0.98] active:bg-[#1d4ed8] active:translate-y-0 active:shadow-none
+                      transition-all duration-150 ease-out
+                    "
+                  >
+                    Try me &mdash; hover, click, tab
+                  </button>
+                  <button
+                    className="
+                      px-5 py-2.5
+                      bg-white text-[#1e293b]
+                      border border-gray-300
+                      rounded-lg font-medium text-sm
+                      hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-sm
+                      focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2
+                      active:scale-[0.98] active:translate-y-0 active:shadow-none
+                      transition-all duration-150 ease-out
+                    "
+                  >
+                    Secondary
+                  </button>
+                </div>
+                <p className="text-center text-xs text-gray-400">
+                  Press Tab to see the focus ring &mdash; WCAG 2.1 AA required
+                </p>
+              </div>
+            </RevealBlock>
           </div>
         </div>
       </section>
 
-      {/* ================================================================ */}
-      {/* 7. Design rules — Do / Don't                                      */}
-      {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 bg-white">
-        <div className="max-w-7xl mx-auto" ref={rulesRef}>
-          <RevealBlock className="mb-16">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#3b82f6] mb-3 block">Guidelines</span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Design <span className="text-[#3b82f6]">rules</span>
+      {/* ============================================================= */}
+      {/* 7. DESIGN RULES — DO / DON'T                                  */}
+      {/* ============================================================= */}
+      <section className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <RevealBlock className="mb-4">
+            <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[#1e293b] block mb-3">
+              Design Rules
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1e293b] leading-tight">
+              Do&apos;s &amp; <span className="text-[#ef4444]">don&apos;ts</span>
             </h2>
-            <p className="mt-3 text-gray-500 text-sm max-w-md">
-              The Holy Grail layout has clear invariants. Violating them breaks the equal-height column guarantee or disrupts the reading flow.
+          </RevealBlock>
+
+          <RevealBlock delay={0.05} className="mb-12">
+            <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+              These rules are non-negotiable. Every violation degrades the layout&apos;s structural
+              integrity or interaction quality. Apply them without exception.
             </p>
           </RevealBlock>
 
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"
-            style={{
-              opacity: rulesInView ? 1 : 0,
-              transform: rulesInView ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s",
-            }}
-          >
-            <RevealBlock>
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 h-full">
-                <h3 className="text-base font-bold text-[#10b981] mb-6 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#10b981] flex items-center justify-center shrink-0">
-                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                  Do
-                </h3>
-                <ul className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* DO column */}
+            <RevealBlock delay={0.1}>
+              <div className="bg-white rounded-2xl p-8 border border-emerald-200 shadow-sm h-full">
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                    <CheckIcon className="w-4 h-4 text-[#10b981]" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#10b981]">Do</h3>
+                </div>
+                <ul className="space-y-3">
                   {[
-                    { rule: "Use CSS Grid or Flexbox for equal-height 3 columns", note: "Never floats or absolute positioning for columns" },
-                    { rule: "Sticky header at top-0 with z-50", note: "Users always see the primary nav and branding" },
-                    { rule: "Main content uses flex-1 (self-adapting width)", note: "Sidebar widths are fixed; main takes remaining space" },
-                    { rule: "Left nav: w-60 or w-64, fixed and non-resizable", note: "Sidebar width must not change with content length" },
-                    { rule: "Right sidebar: w-64 or w-72, fixed width", note: "Same principle — fixed width regardless of content" },
-                    { rule: "Collapse right sidebar at md, left nav at <md", note: "Responsive priority: main content is always visible" },
-                    { rule: "Card hover: -translate-y-0.5 hover:shadow-md", note: "Minimal lift — content supremacy principle" },
-                    { rule: "All transitions duration-150 ease-out", note: "Crisp performance — never exceed duration-200" },
-                    { rule: "active:scale-[0.98] on all interactive buttons", note: "Button physics: press confirms the action" },
-                  ].map((item) => (
-                    <li key={item.rule} className="flex items-start gap-3">
-                      <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#10b981] shrink-0 mt-2" />
-                      <div>
-                        <div className="text-sm text-[#1e293b] font-medium">{item.rule}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">{item.note}</div>
-                      </div>
+                    "Use CSS Grid or Flexbox to guarantee equal-height columns",
+                    "Fix header with sticky top-0 z-50 &mdash; always visible on scroll",
+                    "Make main content flex-1 with min-w-0 to prevent overflow",
+                    "Keep left nav at fixed w-60 and right sidebar at w-64",
+                    "Place main content first in HTML source for SEO",
+                    "Collapse right sidebar at 1024px breakpoint",
+                    "Stack all columns vertically at 768px on mobile",
+                    "All buttons: active:scale-[0.98] + focus:ring-2 + focus:ring-[#3b82f6]",
+                    "Content cards: hover:-translate-y-0.5 hover:shadow-md (minimal motion)",
+                    "Sidebar nav: hover:border-l-2 hover:border-[#3b82f6] &mdash; NO vertical shift",
+                    "All transitions: duration-150 ease-out &mdash; instant and crisp",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed">
+                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#10b981] flex-shrink-0" />
+                      <span dangerouslySetInnerHTML={{ __html: rule }} />
                     </li>
                   ))}
                 </ul>
               </div>
             </RevealBlock>
 
-            <RevealBlock delay={0.1}>
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 h-full">
-                <h3 className="text-base font-bold text-[#ef4444] mb-6 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#ef4444] flex items-center justify-center shrink-0">
-                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </span>
-                  Don&apos;t
-                </h3>
-                <ul className="space-y-4">
+            {/* DON'T column */}
+            <RevealBlock delay={0.15}>
+              <div className="bg-white rounded-2xl p-8 border border-red-200 shadow-sm h-full">
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                    <XIcon className="w-4 h-4 text-[#ef4444]" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#ef4444]">Don&apos;t</h3>
+                </div>
+                <ul className="space-y-3">
                   {[
-                    { rule: "Allow columns to have unequal heights", note: "Equal-height is the defining feature of holy grail" },
-                    { rule: "Make main content area too narrow (<480px)", note: "Content must always be primary real estate" },
-                    { rule: "Let sidebar width change based on content length", note: "Sidebars must be fixed-width at all times" },
-                    { rule: "Skip responsive collapse of sidebars", note: "Mobile users need full-width content area" },
-                    { rule: "Use non-sticky or scrolling-away header", note: "Header provides persistent orientation" },
-                    { rule: "Add vertical displacement to sidebar nav links", note: "Nav links: border-l-2 highlight ONLY, no translate-y" },
-                    { rule: "Use -translate-y-1 or larger on card hover", note: "Large displacement is distracting — use 0.5 max" },
-                    { rule: "Exceed duration-200 on any transition", note: "Over 200ms feels sluggish for layout interactions" },
-                    { rule: "Omit active:scale-[0.98] from buttons", note: "Without press physics, buttons feel unresponsive" },
-                  ].map((item) => (
-                    <li key={item.rule} className="flex items-start gap-3">
-                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#ef4444] shrink-0" />
-                      <div>
-                        <div className="text-sm text-[#1e293b] font-medium">{item.rule}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">{item.note}</div>
-                      </div>
+                    "Let three columns render at different heights",
+                    "Allow main content to become too narrow &mdash; always flex-1 min-w-0",
+                    "Ignore responsive collapse &mdash; sidebar must hide at 1024px",
+                    "Let sidebar width change with content &mdash; always fixed width",
+                    "Forget to fix header &mdash; it must stick on scroll",
+                    "Use large card displacement: hover:-translate-y-2 breaks reading focus",
+                    "Exceed duration-200 for any interactive element animation",
+                    "Omit active:scale-[0.98] on buttons &mdash; no tactile confirmation",
+                    "Add vertical displacement to sidebar nav hover &mdash; breaks anchoring",
+                    "Apply spring cubic-bezier to productivity UI &mdash; too bouncy",
+                    "Use position:absolute to fake equal-height columns",
+                  ].map((rule) => (
+                    <li key={rule} className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed">
+                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#ef4444] flex-shrink-0" />
+                      <span dangerouslySetInnerHTML={{ __html: rule }} />
                     </li>
                   ))}
                 </ul>
@@ -1402,152 +1306,139 @@ export default function ShowcaseContent() {
             </RevealBlock>
           </div>
 
-          {/* Visual do/don't examples */}
+          {/* Quick reference: CSS snippet */}
           <RevealBlock delay={0.2}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* DO: Equal height columns */}
-              <div className="bg-[#10b981]/5 border border-[#10b981]/20 rounded-2xl p-6">
-                <div className="text-xs font-bold text-[#10b981] uppercase tracking-wider mb-3">Do: Equal-height columns</div>
-                <div className="flex gap-2" style={{ height: 100 }}>
-                  <div className="w-20 bg-[#10b981]/10 border border-[#10b981]/30 rounded-lg flex items-center justify-center text-[9px] text-[#10b981] font-mono">Left Nav</div>
-                  <div className="flex-1 bg-[#10b981]/20 border border-[#10b981]/40 rounded-lg flex items-center justify-center text-[9px] text-[#10b981] font-mono font-bold">Main (flex-1)</div>
-                  <div className="w-24 bg-[#10b981]/10 border border-[#10b981]/30 rounded-lg flex items-center justify-center text-[9px] text-[#10b981] font-mono">Right</div>
+            <div className="bg-[#1e293b] rounded-2xl p-6 md:p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
                 </div>
-                <p className="text-xs text-gray-500 mt-3">All three columns stretch to the same height using <code className="font-mono text-[#10b981]">align-items: stretch</code>.</p>
+                <span className="text-xs font-mono text-gray-400">holy-grail-skeleton.tsx</span>
               </div>
+              <pre className="text-xs font-mono text-gray-300 leading-relaxed overflow-x-auto">
+{`<div className="min-h-screen flex flex-col bg-[#f1f5f9]">
+  {/* Header — sticky, always visible */}
+  <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <div className="px-6 py-3 flex items-center justify-between h-14">
+      ...
+    </div>
+  </header>
 
-              {/* DON'T: Unequal columns */}
-              <div className="bg-[#ef4444]/5 border border-[#ef4444]/20 rounded-2xl p-6">
-                <div className="text-xs font-bold text-[#ef4444] uppercase tracking-wider mb-3">Don&apos;t: Unequal column heights</div>
-                <div className="flex gap-2 items-start" style={{ height: 100 }}>
-                  <div className="w-20 bg-[#ef4444]/10 border border-[#ef4444]/30 rounded-lg flex items-center justify-center text-[9px] text-[#ef4444] font-mono" style={{ height: 60 }}>Left Nav</div>
-                  <div className="flex-1 bg-[#ef4444]/20 border border-[#ef4444]/40 rounded-lg flex items-center justify-center text-[9px] text-[#ef4444] font-mono font-bold h-full">Main</div>
-                  <div className="w-24 bg-[#ef4444]/10 border border-[#ef4444]/30 rounded-lg flex items-center justify-center text-[9px] text-[#ef4444] font-mono" style={{ height: 40 }}>Right</div>
-                </div>
-                <p className="text-xs text-gray-500 mt-3">Short sidebar content leaves visible gaps — the classic layout bug holy grail solves.</p>
-              </div>
+  {/* Three-column body — equal-height via flex */}
+  <div className="flex-1 flex">
+    {/* Left nav — fixed width */}
+    <aside className="w-60 bg-white border-r border-gray-200 p-4 flex-shrink-0 hidden md:block">
+      ...
+    </aside>
 
-              {/* DO: Nav link border-l only */}
-              <div className="bg-[#3b82f6]/5 border border-[#3b82f6]/20 rounded-2xl p-6">
-                <div className="text-xs font-bold text-[#3b82f6] uppercase tracking-wider mb-3">Do: Nav link hover — border-l-2 only</div>
-                <div className="space-y-1">
-                  {["Dashboard", "Projects", "Settings"].map((item, i) => (
-                    <div
-                      key={item}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
-                        i === 1
-                          ? "bg-[#3b82f6]/10 text-[#3b82f6] border-l-2 border-[#3b82f6]"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      <div className={`w-3 h-3 rounded ${i === 1 ? "bg-[#3b82f6]" : "bg-gray-300"}`} />
-                      {item}
-                      {i === 1 && <span className="ml-auto text-[10px] text-[#3b82f6]/60 font-mono">border-l-2</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
+    {/* Main content — adaptive, source-first for SEO */}
+    <main className="flex-1 p-6 min-w-0">
+      ...
+    </main>
 
-              {/* DON'T: Nav link with vertical shift */}
-              <div className="bg-[#ef4444]/5 border border-[#ef4444]/20 rounded-2xl p-6">
-                <div className="text-xs font-bold text-[#ef4444] uppercase tracking-wider mb-3">Don&apos;t: Nav link hover — vertical displacement</div>
-                <div className="space-y-1">
-                  {["Dashboard", "Projects", "Settings"].map((item, i) => (
-                    <div
-                      key={item}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
-                        i === 1
-                          ? "bg-[#ef4444]/10 text-[#ef4444] -translate-y-0.5"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      <div className={`w-3 h-3 rounded ${i === 1 ? "bg-[#ef4444]" : "bg-gray-300"}`} />
-                      {item}
-                      {i === 1 && <span className="ml-auto text-[10px] text-[#ef4444]/60 font-mono line-through">-translate-y-0.5</span>}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Vertical shift causes layout jumping as the user moves through menu items.</p>
-              </div>
-            </div>
-          </RevealBlock>
+    {/* Right sidebar — fixed width, hidden on tablet */}
+    <aside className="w-64 bg-white border-l border-gray-200 p-4 flex-shrink-0 hidden lg:block">
+      ...
+    </aside>
+  </div>
 
-          {/* Layout specs summary */}
-          <RevealBlock delay={0.3} className="mt-10">
-            <div className="bg-[#1e293b] rounded-2xl p-8 text-white">
-              <h4 className="text-base font-bold mb-6">Layout specification tokens</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { label: "Left nav width", value: "w-60 / w-64", sub: "240px or 256px, fixed" },
-                  { label: "Right sidebar width", value: "w-64 / w-72", sub: "256px or 288px, fixed" },
-                  { label: "Header height", value: "h-14", sub: "56px, sticky top-0 z-50" },
-                  { label: "Transition speed", value: "duration-150", sub: "ease-out, never exceed 200" },
-                  { label: "Card hover lift", value: "-translate-y-0.5", sub: "2px maximum" },
-                  { label: "Button active scale", value: "scale-[0.98]", sub: "Required on all buttons" },
-                  { label: "Focus ring", value: "ring-2 ring-[accent]", sub: "ring-offset-2 on buttons" },
-                  { label: "Main content", value: "flex-1 min-w-0", sub: "Adaptive, never fixed" },
-                ].map((spec) => (
-                  <div key={spec.label}>
-                    <div className="text-xs text-white/50 mb-1">{spec.label}</div>
-                    <div className="text-lg font-bold text-white font-mono">{spec.value}</div>
-                    <div className="text-xs text-white/40 mt-0.5">{spec.sub}</div>
-                  </div>
-                ))}
-              </div>
+  {/* Footer */}
+  <footer className="bg-white border-t border-gray-200">
+    ...
+  </footer>
+</div>`}
+              </pre>
             </div>
           </RevealBlock>
         </div>
       </section>
 
-      {/* ================================================================ */}
-      {/* 8. Footer                                                         */}
-      {/* ================================================================ */}
-      <footer className="border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div>
-              <div className="text-sm font-bold text-[#1e293b] mb-1">
-                Holy<span className="text-[#3b82f6]">Grail</span> Layout
+      {/* ============================================================= */}
+      {/* 8. FOOTER                                                      */}
+      {/* ============================================================= */}
+      <footer className="bg-[#1e293b] text-white">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 py-14">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-10">
+            {/* Brand */}
+            <div className="max-w-xs">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-[#3b82f6] flex items-center justify-center">
+                  <LayoutIcon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold tracking-tight">Holy Grail Layout</span>
               </div>
-              <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-                The classic 5-zone web layout pattern — part of StyleKit, a curated library of production-ready UI design styles.
+              <p className="text-sm text-gray-400 leading-relaxed mb-5">
+                The classic five-zone web layout pattern. Built for productivity dashboards,
+                admin panels, and documentation sites that demand structural clarity.
               </p>
+              {/* Color swatches */}
+              <div className="flex gap-2">
+                {["#1e293b", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"].map((color, i) => (
+                  <div
+                    key={i}
+                    className="w-5 h-5 rounded-full border border-white/10 hover:-translate-y-0.5 transition-transform duration-150"
+                    style={{ backgroundColor: color }}
+                    title={color}
+                  />
+                ))}
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <div className="flex flex-wrap gap-6">
-                <Link
-                  href="/styles/holy-grail-layout"
-                  className="text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
-                >
+            {/* Links */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-gray-500">This Style</span>
+                <Link href="/styles/holy-grail-layout" className="text-gray-400 hover:text-white transition-colors duration-150">
                   Documentation
                 </Link>
-                <Link
-                  href="/styles"
-                  className="text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
-                >
+                <Link href="/styles/holy-grail-layout/showcase" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Showcase
+                </Link>
+                <Link href="/styles/holy-grail-layout/cover" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Cover
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-gray-500">StyleKit</span>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors duration-150">
+                  Home
+                </Link>
+                <Link href="/styles" className="text-gray-400 hover:text-white transition-colors duration-150">
                   All Styles
                 </Link>
               </div>
-              <Link
-                href="/styles"
-                className="px-4 py-2 bg-[#1e293b] text-white text-sm font-medium rounded-lg hover:bg-[#334155] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:ring-offset-2 transition-all duration-150 ease-out"
-              >
-                Browse Styles
-              </Link>
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-gray-500">Compatible</span>
+                {["corporate-clean", "editorial", "notion-style", "minimalist-flat", "dark-mode"].map((s) => (
+                  <Link key={s} href={`/styles/${s}`} className="text-gray-400 hover:text-white transition-colors duration-150 text-xs">
+                    {s}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6">
-              <span className="text-xs text-gray-400">StyleKit &copy; 2026</span>
-              <span className="text-xs text-gray-300">Holy Grail Layout Showcase</span>
+          {/* Divider */}
+          <div className="h-px bg-white/10 mb-8" />
+
+          {/* Bottom */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-xs text-gray-500">
+              Holy Grail Layout &mdash; part of the StyleKit design system
             </div>
-            <div className="flex items-center gap-2">
-              {["#1e293b", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"].map((color) => (
-                <div key={color} className="w-5 h-5 rounded-full border border-white shadow-sm" style={{ backgroundColor: color }} />
-              ))}
-            </div>
+            <Link
+              href="/styles"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/5 text-gray-300 text-sm font-medium border border-white/10
+                hover:bg-white/10 hover:-translate-y-0.5 hover:text-white
+                active:scale-[0.98] active:translate-y-0
+                focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 focus:ring-offset-[#1e293b]
+                transition-all duration-150 ease-out"
+            >
+              <span>&larr;</span>
+              <span>All Styles</span>
+            </Link>
           </div>
         </div>
       </footer>
