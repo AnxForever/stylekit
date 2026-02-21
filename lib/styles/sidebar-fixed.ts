@@ -143,15 +143,15 @@ export const sidebarFixed: DesignStyle = {
     hero: {
       name: "固定侧边栏布局",
       description: "完整的侧边栏应用布局",
-      code: `<div className="min-h-screen bg-zinc-50">
+      code: `<div className="h-[480px] flex overflow-hidden bg-zinc-50">
   {/* Sidebar */}
   <aside className="
-    fixed top-0 left-0
-    w-64 h-screen
+    relative
+    w-64 h-full
     bg-white
     border-r border-zinc-200
     flex flex-col
-    z-40
+    flex-shrink-0
   ">
     {/* Logo */}
     <div className="p-6 border-b border-zinc-200">
@@ -197,7 +197,7 @@ export const sidebarFixed: DesignStyle = {
   </aside>
 
   {/* Main Content */}
-  <main className="ml-64 p-8">
+  <main className="flex-1 p-8 overflow-y-auto">
     {/* Header */}
     <div className="mb-8">
       <h1 className="text-2xl font-bold text-zinc-900">Dashboard</h1>
