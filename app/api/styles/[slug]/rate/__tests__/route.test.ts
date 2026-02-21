@@ -155,6 +155,7 @@ describe("styles rating route", () => {
       success: true,
       averageRating: 4.8,
       totalRatings: 12,
+      userRating: 5,
     });
   });
 
@@ -221,6 +222,7 @@ describe("styles rating route", () => {
     await expect(response.json()).resolves.toEqual({
       averageRating: 0,
       totalRatings: 0,
+      userRating: null,
     });
   });
 
@@ -247,8 +249,62 @@ describe("styles rating route", () => {
     await expect(response.json()).resolves.toEqual({
       averageRating: 0,
       totalRatings: 0,
+      userRating: null,
       code: "DB_NOT_READY",
       error: "Ratings database schema is not ready. Run Supabase migrations 002-005.",
+    });
+  });
+
+  it("GET returns userRating when authenticated user has legacy session rating", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+    mockedGetServerUser.mockResolvedValue({ id: "user-9" } as never);
+
+    const summaryMaybeSingle = vi.fn().mockResolvedValue({
+      data: { average_rating: 4.2, total_ratings: 5 },
+      error: null,
+    });
+    const summarySelect = {
+      eq: vi.fn().mockReturnValue({
+        maybeSingle: summaryMaybeSingle,
+      }),
+    };
+
+    const modernLimit = vi.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    });
+    const modernOrder = vi.fn().mockReturnValue({ limit: modernLimit });
+    const modernEqUser = vi.fn().mockReturnValue({ order: modernOrder });
+    const modernEqSlug = vi.fn().mockReturnValue({ eq: modernEqUser });
+    const modernSelect = vi.fn().mockReturnValue({ eq: modernEqSlug });
+
+    const legacyLimit = vi.fn().mockResolvedValue({
+      data: [{ rating: 5, created_at: "2026-02-21T10:00:00.000Z" }],
+      error: null,
+    });
+    const legacyOrder = vi.fn().mockReturnValue({ limit: legacyLimit });
+    const legacyIn = vi.fn().mockReturnValue({ order: legacyOrder });
+    const legacyEq = vi.fn().mockReturnValue({ in: legacyIn });
+    const legacySelect = vi.fn().mockReturnValue({ eq: legacyEq });
+
+    mockedCreateClient.mockReturnValue({
+      from: vi
+        .fn()
+        .mockReturnValueOnce({ select: vi.fn().mockReturnValue(summarySelect) })
+        .mockReturnValueOnce({ select: modernSelect })
+        .mockReturnValueOnce({ select: legacySelect }),
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/rate"),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      averageRating: 4.2,
+      totalRatings: 5,
+      userRating: 5,
     });
   });
 });

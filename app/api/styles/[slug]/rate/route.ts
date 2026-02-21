@@ -29,6 +29,32 @@ interface DbErrorLike {
   details?: string | null;
 }
 
+interface UserRatingRow {
+  rating?: number | null;
+  created_at?: string | null;
+}
+
+interface UserRatingQueryResult {
+  data: unknown[] | null;
+  error: DbErrorLike | null;
+}
+
+interface UserRatingQueryBuilder {
+  eq: (column: string, value: string) => UserRatingQueryBuilder;
+  in: (column: string, values: string[]) => UserRatingQueryBuilder;
+  order: (
+    column: string,
+    options: { ascending: boolean }
+  ) => UserRatingQueryBuilder;
+  limit: (count: number) => Promise<UserRatingQueryResult>;
+}
+
+interface UserRatingClient {
+  from: (tableName: string) => {
+    select: (columns: string) => UserRatingQueryBuilder;
+  };
+}
+
 function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
   return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
 }
@@ -77,6 +103,78 @@ function classifyDbError(error: DbErrorLike | null | undefined): {
     code: "DB_WRITE_FAILED",
     message: "Failed to save rating.",
   };
+}
+
+function normalizeRatingValue(value: unknown): number | null {
+  if (typeof value !== "number") {
+    return null;
+  }
+  if (!Number.isInteger(value) || value < 1 || value > 5) {
+    return null;
+  }
+  return value;
+}
+
+function selectLatestUserRating(
+  modern: UserRatingRow | null | undefined,
+  legacy: UserRatingRow | null | undefined
+): number | null {
+  const modernRating = normalizeRatingValue(modern?.rating);
+  const legacyRating = normalizeRatingValue(legacy?.rating);
+  if (modernRating == null && legacyRating == null) {
+    return null;
+  }
+  if (modernRating != null && legacyRating == null) {
+    return modernRating;
+  }
+  if (modernRating == null && legacyRating != null) {
+    return legacyRating;
+  }
+
+  const modernAt = typeof modern?.created_at === "string" ? modern.created_at : "";
+  const legacyAt = typeof legacy?.created_at === "string" ? legacy.created_at : "";
+  return modernAt >= legacyAt ? modernRating : legacyRating;
+}
+
+async function loadUserRatingForStyle(
+  sb: UserRatingClient,
+  slug: string,
+  userId: string
+): Promise<number | null> {
+  const modernLookup = await sb
+    .from("style_ratings")
+    .select("rating, created_at")
+    .eq("style_slug", slug)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (modernLookup.error && !isMissingUserIdColumnError(modernLookup.error as DbErrorLike)) {
+    return null;
+  }
+
+  const legacyLookup = await sb
+    .from("style_ratings")
+    .select("rating, created_at")
+    .eq("style_slug", slug)
+    .in("session_id", [buildLegacyUserSessionId(userId), userId])
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (legacyLookup.error && modernLookup.error) {
+    return null;
+  }
+
+  const modernRow =
+    Array.isArray(modernLookup.data) && modernLookup.data.length > 0
+      ? (modernLookup.data[0] as UserRatingRow)
+      : null;
+  const legacyRow =
+    Array.isArray(legacyLookup.data) && legacyLookup.data.length > 0
+      ? (legacyLookup.data[0] as UserRatingRow)
+      : null;
+
+  return selectLatestUserRating(modernRow, legacyRow);
 }
 
 export async function POST(
@@ -262,6 +360,7 @@ export async function POST(
       success: true,
       averageRating: summary?.average_rating ?? parsed.data.rating,
       totalRatings: summary?.total_ratings ?? 1,
+      userRating: parsed.data.rating,
     });
   } catch {
     return NextResponse.json(
@@ -285,7 +384,7 @@ export async function GET(
   }
 
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ averageRating: 0, totalRatings: 0 });
+    return NextResponse.json({ averageRating: 0, totalRatings: 0, userRating: null });
   }
 
   const { createClient } = await import("@supabase/supabase-js");
@@ -306,6 +405,7 @@ export async function GET(
       {
         averageRating: 0,
         totalRatings: 0,
+        userRating: null,
         code: classified.code,
         error: classified.message,
       },
@@ -313,8 +413,23 @@ export async function GET(
     );
   }
 
+  let userRating: number | null = null;
+  try {
+    const user = await getServerUser();
+    if (user?.id) {
+      userRating = await loadUserRatingForStyle(
+        sb as unknown as UserRatingClient,
+        slugParsed.data,
+        user.id
+      );
+    }
+  } catch {
+    userRating = null;
+  }
+
   return NextResponse.json({
     averageRating: data?.average_rating ?? 0,
     totalRatings: data?.total_ratings ?? 0,
+    userRating,
   });
 }
