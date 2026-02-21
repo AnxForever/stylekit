@@ -136,9 +136,8 @@ export async function GET() {
   let seqId = asPositiveInt(metadata.seq_id);
   if (UUID_RE.test(user.id)) {
     const dbSeqId = await loadSeqIdForUser(user.id);
-    if (dbSeqId != null) {
-      seqId = dbSeqId;
-    }
+    // Always prefer DB value over stale metadata seq_id
+    seqId = dbSeqId ?? null;
   }
 
   let rule: UserTitleRule | null = null;
