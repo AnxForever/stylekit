@@ -17,6 +17,8 @@ import {
   BarChart3,
   Eye,
   EyeOff,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { useUser } from "@/lib/auth/use-user";
 import { useFavorites } from "@/lib/favorites/context";
@@ -136,8 +138,14 @@ export function ProfileContent() {
   const [showEmail, setShowEmail] = useState(false);
   const { data: commentsData } = useProfileComments(user?.id);
   const { data: ratingsData } = useProfileRatings(user?.id);
-  const { data: submissionsData } = useProfileSubmissions(user?.id);
+  const { data: submissionsData, mutate: mutateSubmissions } = useProfileSubmissions(user?.id);
   const { data: profileTitleData } = useProfileTitle(user?.id);
+  const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
+  const [editSubmissionName, setEditSubmissionName] = useState("");
+  const [editSubmissionNameEn, setEditSubmissionNameEn] = useState("");
+  const [editSubmissionDescription, setEditSubmissionDescription] = useState("");
+  const [submissionActionBusyId, setSubmissionActionBusyId] = useState<string | null>(null);
+  const [submissionActionError, setSubmissionActionError] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -269,6 +277,79 @@ export function ProfileContent() {
       locale === "zh" ? "zh-CN" : "en-US",
       { month: "short", day: "numeric", year: "numeric" }
     );
+
+  function beginEditSubmission(submission: {
+    id: string;
+    name: string | null;
+    name_en: string | null;
+    description: string | null;
+  }) {
+    setSubmissionActionError(null);
+    setEditingSubmissionId(submission.id);
+    setEditSubmissionName(submission.name ?? "");
+    setEditSubmissionNameEn(submission.name_en ?? "");
+    setEditSubmissionDescription(submission.description ?? "");
+  }
+
+  async function saveSubmissionEdit(submissionId: string) {
+    setSubmissionActionError(null);
+    setSubmissionActionBusyId(submissionId);
+    try {
+      const response = await fetch(`/api/profile/submissions/${submissionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editSubmissionName.trim(),
+          nameEn: editSubmissionNameEn.trim(),
+          description: editSubmissionDescription.trim(),
+        }),
+      });
+
+      const body = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(body?.error ?? t("profile.submissionUpdateFailed"));
+      }
+
+      setEditingSubmissionId(null);
+      await mutateSubmissions();
+    } catch (error) {
+      setSubmissionActionError(
+        error instanceof Error ? error.message : t("profile.submissionUpdateFailed")
+      );
+    } finally {
+      setSubmissionActionBusyId(null);
+    }
+  }
+
+  async function deleteSubmission(submissionId: string) {
+    const confirmed = window.confirm(t("profile.submissionDeleteConfirm"));
+    if (!confirmed) {
+      return;
+    }
+
+    setSubmissionActionError(null);
+    setSubmissionActionBusyId(submissionId);
+    try {
+      const response = await fetch(`/api/profile/submissions/${submissionId}`, {
+        method: "DELETE",
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(body?.error ?? t("profile.submissionDeleteFailed"));
+      }
+
+      if (editingSubmissionId === submissionId) {
+        setEditingSubmissionId(null);
+      }
+      await mutateSubmissions();
+    } catch (error) {
+      setSubmissionActionError(
+        error instanceof Error ? error.message : t("profile.submissionDeleteFailed")
+      );
+    } finally {
+      setSubmissionActionBusyId(null);
+    }
+  }
 
   const stats = [
     { label: t("profile.statsFavorites"), value: favorites.length, icon: Heart },
@@ -494,6 +575,12 @@ export function ProfileContent() {
           {t("profile.submissions")} ({submissions.length})
         </h2>
 
+        {submissionActionError && (
+          <p className="mb-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+            {submissionActionError}
+          </p>
+        )}
+
         {submissions.length === 0 ? (
           <p className="text-muted-foreground py-8 text-center">
             {t("profile.noSubmissions")}
@@ -503,26 +590,105 @@ export function ProfileContent() {
             {submissions.map((sub) => (
               <div
                 key={sub.id}
-                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
+                className="rounded-lg border border-border bg-background px-4 py-3 space-y-3"
               >
-                <div className="flex items-center gap-3">
-                  <Link
-                    href={`/styles/${sub.slug}`}
-                    className="text-sm font-medium text-foreground hover:underline"
-                  >
-                    {sub.slug}
-                  </Link>
-                  <span
-                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                      statusColors[sub.status] ?? ""
-                    }`}
-                  >
-                    {t(`profile.submissionStatus.${sub.status}`)}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Link
+                      href={`/styles/${sub.slug}`}
+                      className="text-sm font-medium text-foreground hover:underline truncate"
+                    >
+                      {sub.name_en || sub.name || sub.slug}
+                    </Link>
+                    <span
+                      className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
+                        statusColors[sub.status] ?? ""
+                      }`}
+                    >
+                      {t(`profile.submissionStatus.${sub.status}`)}
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground shrink-0">
+                    {formatDate(sub.submitted_at)}
                   </span>
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(sub.submitted_at)}
-                </span>
+
+                {(sub.description || sub.slug) && (
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {sub.description || sub.slug}
+                  </p>
+                )}
+
+                {sub.status === "approved" ? (
+                  <p className="text-xs text-muted">
+                    {t("profile.submissionLocked")}
+                  </p>
+                ) : editingSubmissionId === sub.id ? (
+                  <div className="space-y-2">
+                    <input
+                      value={editSubmissionName}
+                      onChange={(event) => setEditSubmissionName(event.target.value)}
+                      placeholder={t("profile.submissionEditName")}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                    />
+                    <input
+                      value={editSubmissionNameEn}
+                      onChange={(event) => setEditSubmissionNameEn(event.target.value)}
+                      placeholder={t("profile.submissionEditNameEn")}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                    />
+                    <textarea
+                      value={editSubmissionDescription}
+                      onChange={(event) => setEditSubmissionDescription(event.target.value)}
+                      placeholder={t("profile.submissionEditDescription")}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      rows={3}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void saveSubmissionEdit(sub.id)}
+                        disabled={submissionActionBusyId === sub.id}
+                        className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
+                      >
+                        {submissionActionBusyId === sub.id
+                          ? t("profile.submissionSaving")
+                          : t("profile.submissionSave")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingSubmissionId(null)}
+                        disabled={submissionActionBusyId === sub.id}
+                        className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
+                      >
+                        {t("profile.submissionCancel")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => beginEditSubmission(sub)}
+                      disabled={submissionActionBusyId === sub.id}
+                      className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                      {t("profile.submissionEdit")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void deleteSubmission(sub.id)}
+                      disabled={submissionActionBusyId === sub.id}
+                      className="inline-flex items-center gap-1 rounded-md border border-red-300 px-3 py-1.5 text-xs text-red-700 hover:border-red-500 dark:border-red-800 dark:text-red-300 disabled:opacity-60"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      {submissionActionBusyId === sub.id
+                        ? t("profile.submissionDeleting")
+                        : t("profile.submissionDelete")}
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
