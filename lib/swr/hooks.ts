@@ -147,6 +147,12 @@ interface ProfileRatingsData {
   ratings: ProfileRating[];
 }
 
+interface ProfileTitleData {
+  success: boolean;
+  title: string | null;
+  seqId: number | null;
+}
+
 // ---------- Hooks ----------
 
 export function useTrendingStyles(count = 8) {
@@ -216,6 +222,10 @@ export function useProfileSubmissions(userId: string | undefined) {
 
 export function useProfileRatings(userId: string | undefined) {
   return useSWR<ProfileRatingsData>(userId ? "/api/profile/ratings" : null);
+}
+
+export function useProfileTitle(userId: string | undefined) {
+  return useSWR<ProfileTitleData>(userId ? "/api/profile/title" : null);
 }
 
 // ---------- Admin Comments ----------
@@ -582,6 +592,7 @@ export type {
   ProfileSubmissionsData,
   ProfileRating,
   ProfileRatingsData,
+  ProfileTitleData,
   AdminComment,
   AdminCommentsData,
   AdminCommentsQuery,
