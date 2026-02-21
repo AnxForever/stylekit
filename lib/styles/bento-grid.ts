@@ -146,7 +146,7 @@ export const bentoGrid: DesignStyle = {
       Features
     </h2>
 
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {/* 大卡片 - 跨2列2行 */}
       <div className="group col-span-2 row-span-2 p-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl text-white hover:shadow-[0_12px_40px_rgba(59,130,246,0.3)] hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 ease-out cursor-pointer">
         <h3 className="text-2xl font-bold mb-4">Core Feature</h3>
