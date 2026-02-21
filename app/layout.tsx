@@ -1,17 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
-
-const Analytics = dynamic(
-  () => import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
-  { ssr: false }
-);
-const RegisterSW = dynamic(
-  () => import("@/components/pwa/register-sw").then((m) => ({ default: m.RegisterSW })),
-  { ssr: false }
-);
+import { ClientScripts } from "@/components/layout/client-scripts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import "./globals.css";
 
@@ -137,8 +128,7 @@ export default function RootLayout({
           {children}
           <ScrollToTop />
         </ClientProviders>
-        <Analytics />
-        <RegisterSW />
+        <ClientScripts />
       </body>
     </html>
   );
