@@ -638,7 +638,7 @@ export function SubmissionWizard() {
           {step === 3 && <TypographyStep formData={fd} updateField={updateField} isAnimating={anim} />}
           {step === 4 && <RulesStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
           {step === 5 && <ComponentsStep formData={fd} updateField={updateField} getVisibleError={getVisibleError} markTouched={markTouched} isAnimating={anim} text={text} />}
-          {step === 6 && <PreviewValidateStep formData={fd} isAnimating={anim} onGoToStep={goStep} />}
+          {step === 6 && <PreviewValidateStep formData={fd} manifestCoverSvg={manifestCoverSvg} isAnimating={anim} onGoToStep={goStep} />}
           {step === 7 && (
             <SubmitStep
               formData={fd}
