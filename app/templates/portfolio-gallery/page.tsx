@@ -231,11 +231,9 @@ function CategoryBadge({ category }: { category: Category }) {
 
 function ProjectCard({
   project,
-  index,
   onClick,
 }: {
   project: Project;
-  index: number;
   onClick: () => void;
 }) {
   return (
@@ -287,11 +285,9 @@ function ProjectCard({
 
 function ProjectRow({
   project,
-  index,
   onClick,
 }: {
   project: Project;
-  index: number;
   onClick: () => void;
 }) {
   return (
@@ -612,11 +608,10 @@ export default function PortfolioGalleryTemplate() {
         <div className="max-w-7xl mx-auto">
           {viewMode === "grid" ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {filteredProjects.map((project, index) => (
+              {filteredProjects.map((project) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  index={index}
                   onClick={() => setSelectedProject(project)}
                 />
               ))}
@@ -633,11 +628,10 @@ export default function PortfolioGalleryTemplate() {
                 <span className="w-4 shrink-0" />
               </div>
               <div className="border-t border-white/5 mb-2" />
-              {filteredProjects.map((project, index) => (
+              {filteredProjects.map((project) => (
                 <ProjectRow
                   key={project.id}
                   project={project}
-                  index={index}
                   onClick={() => setSelectedProject(project)}
                 />
               ))}
