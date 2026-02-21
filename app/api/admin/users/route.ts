@@ -204,6 +204,26 @@ export async function GET(request: Request) {
   }
 
   let users = Array.from(usersMap.values());
+  for (const user of users) {
+    if (user.authorName) {
+      continue;
+    }
+
+    const email = userEmailMap.get(user.userId);
+    if (email && email.includes("@")) {
+      const localPart = email.split("@")[0]?.trim();
+      if (localPart) {
+        user.authorName = localPart;
+        continue;
+      }
+    }
+
+    if (UUID_RE.test(user.userId)) {
+      user.authorName = `User ${user.userId.slice(0, 8)}`;
+    } else {
+      user.authorName = "User";
+    }
+  }
 
   if (search) {
     users = users.filter(
@@ -353,7 +373,7 @@ async function readTableRows(
 
 function resolveRowUserId(row: TableRow): string | null {
   const directUserId = getStringField(row, "user_id");
-  if (directUserId) {
+  if (directUserId && UUID_RE.test(directUserId)) {
     return directUserId;
   }
 
@@ -368,7 +388,10 @@ function resolveRowUserId(row: TableRow): string | null {
 function extractUserIdFromSession(sessionId: string): string | null {
   if (sessionId.startsWith(LEGACY_USER_SESSION_PREFIX)) {
     const userId = sessionId.slice(LEGACY_USER_SESSION_PREFIX.length).trim();
-    return userId.length > 0 ? userId : null;
+    if (UUID_RE.test(userId)) {
+      return userId;
+    }
+    return null;
   }
 
   if (UUID_RE.test(sessionId)) {
