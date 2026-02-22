@@ -6,7 +6,7 @@ import type { AnalysisResult } from "@/lib/analyzer";
 const PLACEHOLDER_CODE = `<div className="bg-white rounded-2xl shadow-xl p-6">
   <h2 className="text-xl font-semibold text-gray-900">Card Title</h2>
   <p className="text-gray-600 mt-2">Some description text here.</p>
-  <button className="mt-4 bg-indigo-500 text-white rounded-xl px-4 py-2 shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200">
+  <button className="mt-4 bg-indigo-500 text-white rounded-xl px-4 py-2 shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-[transform,box-shadow] duration-200">
     Click me
   </button>
 </div>`;

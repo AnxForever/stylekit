@@ -34,7 +34,7 @@ export const NeuCheckbox = React.forwardRef<HTMLInputElement, NeuCheckboxProps>(
             NEU_SHADOWS.pressed,
             "peer-checked:bg-[#6d5dfc]",
             "peer-checked:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]",
-            "transition-all duration-200"
+            "transition-[background-color,box-shadow] duration-200"
           )} />
           <svg
             className="absolute inset-0 w-6 h-6 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-1"
@@ -87,7 +87,7 @@ export const NeuRadio = React.forwardRef<HTMLInputElement, NeuRadioProps>(
           <div className={cn(
             "w-6 h-6 bg-[#e0e5ec] rounded-full",
             NEU_SHADOWS.pressed,
-            "transition-all duration-200"
+            "transition-[box-shadow] duration-200"
           )} />
           <div className={cn(
             "absolute inset-1 bg-[#6d5dfc] rounded-full",

@@ -223,6 +223,10 @@ export default function WatercolorStyleShowcase() {
           border-color: rgba(74,111,165,0.40) !important;
           outline: none;
         }
+        .wc-input-focus:focus-visible {
+          outline: 2px solid rgba(74,111,165,0.6);
+          outline-offset: 2px;
+        }
       `}</style>
 
       {/* ─── NAV ──────────────────────────────────────────────────────────────── */}

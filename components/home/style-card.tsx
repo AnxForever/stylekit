@@ -20,7 +20,7 @@ export const StyleCard = React.memo(function StyleCard({
   variant = "default",
 }: StyleCardProps) {
   const isCompact = variant === "compact";
-  const cardClassName = "group block border border-border motion-safe:transition-all motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
+  const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {

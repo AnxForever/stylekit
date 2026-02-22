@@ -21,7 +21,7 @@ const progressVariants = cva(
   }
 );
 
-const indicatorVariants = cva("h-full w-full flex-1 transition-all", {
+const indicatorVariants = cva("h-full w-full flex-1 transition-transform", {
   variants: {
     variant: {
       default: "bg-foreground",

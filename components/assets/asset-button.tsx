@@ -85,7 +85,7 @@ export const AssetButton = React.forwardRef<
     return (
       <button
         ref={ref}
-        className={`inline-flex items-center justify-center gap-2 ${flexDirection} ${sizeConfig.button} ${variantClass} rounded transition-all hover:scale-105 ${className || ""}`}
+        className={`inline-flex items-center justify-center gap-2 ${flexDirection} ${sizeConfig.button} ${variantClass} rounded transition-[color,background-color,border-color,transform] hover:scale-105 ${className || ""}`}
         {...props}
       >
         {buttonContent}

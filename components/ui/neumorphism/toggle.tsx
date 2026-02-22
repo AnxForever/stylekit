@@ -33,14 +33,14 @@ export const NeuToggle = React.forwardRef<HTMLInputElement, NeuToggleProps>(
             "w-12 h-7 bg-[#e0e5ec] rounded-full",
             NEU_SHADOWS.pressed,
             "peer-checked:bg-[#6d5dfc]/20",
-            "transition-all duration-300"
+            "transition-[background-color,box-shadow] duration-300"
           )} />
           <div className={cn(
             "absolute top-0.5 left-0.5 w-6 h-6 bg-[#e0e5ec] rounded-full",
             NEU_SHADOWS.raised,
             "peer-checked:translate-x-5",
             "peer-checked:bg-[#6d5dfc]",
-            "transition-all duration-300"
+            "transition-[transform,background-color,box-shadow] duration-300"
           )} />
         </div>
         {label && (

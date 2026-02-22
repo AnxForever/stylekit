@@ -639,6 +639,8 @@ export default function ShowcaseContent() {
               <img
                 src="https://picsum.photos/seed/comic-panel1/800/400"
                 alt="Wide comic panel"
+                width={800}
+                height={400}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-100 ease-out"
               />
               <div
@@ -668,6 +670,8 @@ export default function ShowcaseContent() {
               <img
                 src="https://picsum.photos/seed/comic-panel2/400/700"
                 alt="Tall comic panel"
+                width={400}
+                height={700}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-100 ease-out"
               />
               <div
@@ -696,6 +700,8 @@ export default function ShowcaseContent() {
               <img
                 src="https://picsum.photos/seed/comic-panel3/400/300"
                 alt="Small comic panel"
+                width={400}
+                height={300}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-100 ease-out"
               />
               <div
@@ -727,6 +733,8 @@ export default function ShowcaseContent() {
               <img
                 src="https://picsum.photos/seed/comic-panel4/400/300"
                 alt="Victory comic panel"
+                width={400}
+                height={300}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-100 ease-out"
               />
               <div className="absolute top-2 right-2">

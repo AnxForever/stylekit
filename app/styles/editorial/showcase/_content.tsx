@@ -200,7 +200,7 @@ export default function ShowcaseContent() {
                 {/* Hover Image Reveal */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] aspect-[3/4] pointer-events-none opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-500 ease-out hidden md:block z-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={work.image} alt={work.title} className="w-full h-full object-cover" />
+                  <img src={work.image} alt={work.title} width={300} height={400} className="w-full h-full object-cover" />
                 </div>
               </div>
             ))}
