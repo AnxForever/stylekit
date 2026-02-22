@@ -1,14 +1,26 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n/context";
+import type { DesignStyle } from "@/lib/styles";
+import type { StoredCustomStyle } from "@/lib/style-creator/types";
 import type {
   FieldDefinition,
   SectionConfig,
   TemplateDefinition,
 } from "@/lib/generator/types";
 import type { GeneratorScenarioPack } from "@/lib/generator/scenario-packs";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState, useRef, useEffect, type ChangeEvent } from "react";
+import {
+  ArrowUp,
+  ArrowDown,
+  ChevronDown,
+  ChevronUp,
+  Code2,
+  ClipboardCopy,
+  ExternalLink,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
+import { useState, useRef, useEffect, useCallback, type ChangeEvent } from "react";
 
 interface ContentStepProps {
   templateDef: TemplateDefinition;
@@ -29,6 +41,12 @@ interface ContentStepProps {
   previewHtml: string;
   isPreviewPending?: boolean;
   previewError?: string | null;
+  onReorderSection: (fromIndex: number, toIndex: number) => void;
+  allStyles: DesignStyle[];
+  customStyles: StoredCustomStyle[];
+  currentStyleSlug: string | null;
+  currentCustomId: string | null;
+  onStyleChange: (slug: string, isCustom: boolean) => void;
 }
 
 type PreviewViewport = "desktop" | "tablet" | "mobile";
@@ -203,6 +221,12 @@ export function ContentStep({
   previewHtml,
   isPreviewPending = false,
   previewError = null,
+  onReorderSection,
+  allStyles,
+  customStyles,
+  currentStyleSlug,
+  currentCustomId,
+  onStyleChange,
 }: ContentStepProps) {
   const { t, locale } = useI18n();
   const isZh = locale === "zh";
@@ -274,6 +298,10 @@ export function ContentStep({
   const [editingScenarioName, setEditingScenarioName] = useState("");
   const [editingScenarioDescription, setEditingScenarioDescription] = useState("");
   const [previewViewport, setPreviewViewport] = useState<PreviewViewport>("desktop");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showSource, setShowSource] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [showStyleDropdown, setShowStyleDropdown] = useState(false);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -313,6 +341,50 @@ export function ContentStep({
     onImportScenarioPacks(jsonContent);
     event.target.value = "";
   };
+
+  const handleOpenInNewTab = useCallback(() => {
+    if (!previewHtml) return;
+    const blob = new Blob([previewHtml], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }, [previewHtml]);
+
+  const handleCopyCode = useCallback(async () => {
+    if (!previewHtml) return;
+    try {
+      await navigator.clipboard.writeText(previewHtml);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2000);
+    } catch {
+      // fallback
+      const textarea = document.createElement("textarea");
+      textarea.value = previewHtml;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2000);
+    }
+  }, [previewHtml]);
+
+  const currentStyleName = currentCustomId
+    ? customStyles.find((s) => s.id === currentCustomId)?.name ?? "Custom"
+    : allStyles.find((s) => s.slug === currentStyleSlug)?.name ?? "---";
+
+  const styleDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showStyleDropdown) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (styleDropdownRef.current && !styleDropdownRef.current.contains(event.target as Node)) {
+        setShowStyleDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showStyleDropdown]);
 
   const handleEnrichSection = (section: SectionConfig) => {
     const sectionDef = templateDef.sections.find((item) => item.id === section.id);
@@ -569,7 +641,7 @@ export function ContentStep({
             </div>
           </div>
 
-          {sections.map((section) => {
+          {sections.map((section, sectionIndex) => {
             const sectionDef = templateDef.sections.find((item) => item.id === section.id);
             if (!sectionDef) return null;
 
@@ -618,11 +690,37 @@ export function ContentStep({
                       </p>
                     </div>
                   </div>
-                  {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-muted" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-muted" />
-                  )}
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      disabled={sectionIndex === 0}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onReorderSection(sectionIndex, sectionIndex - 1);
+                      }}
+                      className="p-1 text-muted hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title={isZh ? "上移" : "Move up"}
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={sectionIndex === sections.length - 1}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onReorderSection(sectionIndex, sectionIndex + 1);
+                      }}
+                      className="p-1 text-muted hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title={isZh ? "下移" : "Move down"}
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-muted" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-muted" />
+                    )}
+                  </div>
                 </button>
 
                 {isExpanded && section.enabled && (
@@ -684,24 +782,108 @@ export function ContentStep({
 
         <div className="lg:sticky lg:top-24 h-fit">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-            <p className="text-xs tracking-widest uppercase text-muted">
-              {uiText.previewTitle}
-            </p>
-            <div className="inline-flex border border-border overflow-hidden">
-              {previewViewportOptions.map((option) => (
+            <div className="flex items-center gap-3">
+              <p className="text-xs tracking-widest uppercase text-muted">
+                {uiText.previewTitle}
+              </p>
+              <div className="relative" ref={styleDropdownRef}>
                 <button
-                  key={option.id}
                   type="button"
-                  onClick={() => setPreviewViewport(option.id)}
-                  className={`px-2.5 py-1 text-[11px] transition-colors ${
-                    previewViewport === option.id
-                      ? "bg-foreground text-background"
-                      : "text-muted hover:text-foreground"
-                  }`}
+                  onClick={() => setShowStyleDropdown((prev) => !prev)}
+                  className="inline-flex items-center gap-1.5 px-2 py-1 text-[11px] border border-border hover:border-foreground transition-colors"
                 >
-                  {option.label}
+                  <span className="max-w-[120px] truncate">{currentStyleName}</span>
+                  <ChevronDown className="w-3 h-3 text-muted" />
                 </button>
-              ))}
+                {showStyleDropdown && (
+                  <div className="absolute top-full left-0 mt-1 z-50 w-56 max-h-64 overflow-y-auto border border-border bg-background shadow-lg">
+                    {allStyles.map((style) => (
+                      <button
+                        key={style.slug}
+                        type="button"
+                        onClick={() => {
+                          onStyleChange(style.slug, false);
+                          setShowStyleDropdown(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors ${
+                          currentStyleSlug === style.slug ? "bg-foreground/5 font-medium" : ""
+                        }`}
+                      >
+                        {isZh ? style.name : style.nameEn}
+                      </button>
+                    ))}
+                    {customStyles.length > 0 && (
+                      <div className="border-t border-border">
+                        {customStyles.map((style) => (
+                          <button
+                            key={style.id}
+                            type="button"
+                            onClick={() => {
+                              onStyleChange(style.id, true);
+                              setShowStyleDropdown(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 text-xs hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors ${
+                              currentCustomId === style.id ? "bg-foreground/5 font-medium" : ""
+                            }`}
+                          >
+                            {style.name}
+                            <span className="ml-1.5 text-[10px] text-muted uppercase">custom</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="inline-flex border border-border overflow-hidden">
+                {previewViewportOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setPreviewViewport(option.id)}
+                    className={`px-2.5 py-1 text-[11px] transition-colors ${
+                      previewViewport === option.id
+                        ? "bg-foreground text-background"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSource((prev) => !prev)}
+                className={`p-1.5 border border-border transition-colors ${
+                  showSource ? "bg-foreground text-background" : "text-muted hover:text-foreground"
+                }`}
+                title={isZh ? "查看源码" : "View source"}
+              >
+                <Code2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleOpenInNewTab}
+                disabled={!previewHtml}
+                className="p-1.5 border border-border text-muted hover:text-foreground transition-colors disabled:opacity-30"
+                title={isZh ? "新标签页打开" : "Open in new tab"}
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsFullscreen((prev) => !prev)}
+                className="p-1.5 border border-border text-muted hover:text-foreground transition-colors"
+                title={isZh ? "全屏" : "Fullscreen"}
+              >
+                {isFullscreen ? (
+                  <Minimize2 className="w-3.5 h-3.5" />
+                ) : (
+                  <Maximize2 className="w-3.5 h-3.5" />
+                )}
+              </button>
             </div>
           </div>
           <p className="text-[11px] text-muted mb-3">
@@ -714,25 +896,87 @@ export function ContentStep({
             <p className="text-xs text-muted mb-3">{t("generator.previewGenerating")}</p>
           )}
           <div className="border border-border bg-zinc-100 overflow-auto p-3">
-            <div
-              className="mx-auto border border-border bg-white overflow-hidden transition-[width] duration-300"
-              style={{
-                width: activeViewportOption.width,
-                maxWidth: "100%",
-                height: "600px",
-              }}
-            >
-              <iframe
-                ref={iframeRef}
-                title={uiText.previewFrameTitle}
-                className="w-full h-full"
-                sandbox="allow-same-origin"
-                style={{ border: "none" }}
-              />
-            </div>
+            {showSource ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 px-2 py-1 text-[11px] border border-border bg-background hover:border-foreground transition-colors"
+                >
+                  <ClipboardCopy className="w-3 h-3" />
+                  {codeCopied ? (isZh ? "已复制" : "Copied") : (isZh ? "复制" : "Copy")}
+                </button>
+                <pre
+                  className="overflow-auto text-xs leading-relaxed p-3 bg-white dark:bg-zinc-950 text-foreground"
+                  style={{
+                    height: "70vh",
+                    minHeight: "500px",
+                    maxHeight: "90vh",
+                  }}
+                >
+                  <code>{previewHtml}</code>
+                </pre>
+              </div>
+            ) : (
+              <div
+                className="mx-auto border border-border bg-white overflow-hidden transition-[width] duration-300"
+                style={{
+                  width: activeViewportOption.width,
+                  maxWidth: "100%",
+                  height: "70vh",
+                  minHeight: "500px",
+                }}
+              >
+                <iframe
+                  ref={iframeRef}
+                  title={uiText.previewFrameTitle}
+                  className="w-full h-full"
+                  sandbox="allow-same-origin"
+                  style={{ border: "none" }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {isFullscreen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+          onClick={() => setIsFullscreen(false)}
+        >
+          <div
+            className="w-full h-full bg-white overflow-auto"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-2 bg-zinc-100 border-b border-border">
+              <p className="text-xs tracking-widest uppercase text-muted">
+                {uiText.previewTitle}
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsFullscreen(false)}
+                className="p-1.5 border border-border text-muted hover:text-foreground transition-colors"
+              >
+                <Minimize2 className="w-4 h-4" />
+              </button>
+            </div>
+            {showSource ? (
+              <pre className="overflow-auto text-xs leading-relaxed p-4 bg-white dark:bg-zinc-950 text-foreground h-[calc(100vh-48px)]">
+                <code>{previewHtml}</code>
+              </pre>
+            ) : (
+              <iframe
+                title={uiText.previewFrameTitle}
+                srcDoc={previewHtml}
+                className="w-full h-[calc(100vh-48px)]"
+                sandbox="allow-same-origin"
+                style={{ border: "none" }}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

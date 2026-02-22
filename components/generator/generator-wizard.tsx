@@ -516,6 +516,34 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
     [resetFeedback]
   );
 
+  const handleReorderSection = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      if (fromIndex === toIndex) return;
+      resetFeedback();
+      setSections((prev) => {
+        const next = [...prev];
+        const [moved] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, moved);
+        return next;
+      });
+    },
+    [resetFeedback]
+  );
+
+  const handleStyleChange = useCallback(
+    (slug: string, isCustom: boolean) => {
+      resetFeedback();
+      if (isCustom) {
+        setSelectedCustomId(slug);
+        setSelectedStyleSlug(null);
+      } else {
+        setSelectedStyleSlug(slug);
+        setSelectedCustomId(null);
+      }
+    },
+    [resetFeedback]
+  );
+
   const handleApplyScenarioPack = useCallback(
     (scenarioId: string) => {
       resetFeedback();
@@ -793,6 +821,12 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
               previewHtml={previewHtml}
               isPreviewPending={isPreviewPending}
               previewError={previewError}
+              onReorderSection={handleReorderSection}
+              allStyles={styles}
+              customStyles={customStyles}
+              currentStyleSlug={selectedStyleSlug}
+              currentCustomId={selectedCustomId}
+              onStyleChange={handleStyleChange}
             />
 
             {styleInput && (
