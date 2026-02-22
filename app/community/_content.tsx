@@ -186,6 +186,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                             alt={item.author.handle}
                             width={20}
                             height={20}
+                            unoptimized
                             className="w-5 h-5 rounded-full"
                           />
                         ) : (
