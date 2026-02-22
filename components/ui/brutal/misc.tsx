@@ -62,9 +62,9 @@ export const BrutalLink = React.forwardRef<HTMLAnchorElement, BrutalLinkProps>(
     const variants = {
       default: "text-black hover:text-brutal-pink font-black transition-colors",
       underline:
-        "text-black underline decoration-4 decoration-brutal-pink underline-offset-4 hover:bg-brutal-pink hover:text-white transition-all",
+        "text-black underline decoration-4 decoration-brutal-pink underline-offset-4 hover:bg-brutal-pink hover:text-white transition-colors",
       button:
-        "inline-block px-4 py-2 bg-black text-white font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all",
+        "inline-block px-4 py-2 bg-black text-white font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-[box-shadow,transform]",
     };
 
     return (

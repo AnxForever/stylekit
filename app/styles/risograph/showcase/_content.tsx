@@ -149,6 +149,10 @@ export default function RisographShowcase() {
           box-shadow: 2px 2px 0 #ff6b9d;
           outline: none;
         }
+        .riso-input:focus-visible {
+          outline: 2px solid #2563eb;
+          outline-offset: 2px;
+        }
         .riso-reg-mark {
           transition: transform 100ms ease-linear;
           transform: translate(8px, -8px);

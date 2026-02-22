@@ -33,7 +33,7 @@ export function FavoriteButton({ slug, className, size = "md" }: FavoriteButtonP
         toggleFavorite(slug);
       }}
       className={cn(
-        "flex items-center justify-center rounded-full transition-all",
+        "flex items-center justify-center rounded-full transition-colors",
         "hover:bg-zinc-100 dark:hover:bg-zinc-800",
         "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground/20",
         sizeClasses[size],

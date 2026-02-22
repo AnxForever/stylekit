@@ -163,7 +163,7 @@ export function InputOTP({
             "border-2 border-border rounded-md",
             "bg-background text-foreground",
             "focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary",
-            "transition-all duration-150",
+            "transition-[border-color,box-shadow] duration-150",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             error && "border-red-500 focus:ring-red-500 focus:border-red-500",
             slotClassName

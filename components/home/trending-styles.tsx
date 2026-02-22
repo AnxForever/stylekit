@@ -19,7 +19,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
   const topStyles = data?.top ?? [];
   const useFallback = !isLoading && (!data?.top || data.top.length === 0);
   const sectionLinkClassName = "text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1";
-  const cardClassName = "group block border border-border motion-safe:transition-all motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5";
+  const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5";
   const gridClassName = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
@@ -198,7 +198,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                     </div>
                     <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800">
                       <div
-                        className="h-full bg-foreground/60 transition-all duration-500"
+                        className="h-full bg-foreground/60 transition-[width] duration-500"
                         style={{ width: `${barWidth}%` }}
                       />
                     </div>

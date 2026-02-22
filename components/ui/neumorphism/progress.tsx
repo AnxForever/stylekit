@@ -29,7 +29,7 @@ export const NeuProgress = React.forwardRef<HTMLDivElement, NeuProgressProps>(
         )}>
           <div
             className={cn(
-              "h-full rounded-full transition-all duration-500",
+              "h-full rounded-full transition-[width] duration-500",
               colorStyles[color],
               "shadow-[2px_0_4px_rgba(0,0,0,0.1)]"
             )}

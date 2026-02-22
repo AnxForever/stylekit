@@ -816,7 +816,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
 
                 <div className="mt-4 h-2 w-full bg-border/40 overflow-hidden">
                   <div
-                    className="h-full bg-foreground transition-all duration-300"
+                    className="h-full bg-foreground transition-[width] duration-300"
                     style={{ width: `${contentMetrics.readinessScore}%` }}
                   />
                 </div>
@@ -857,7 +857,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
                         </div>
                         <div className="h-1.5 w-full bg-border/40 overflow-hidden">
                           <div
-                            className="h-full bg-foreground transition-all duration-300"
+                            className="h-full bg-foreground transition-[width] duration-300"
                             style={{ width: `${section.completion}%` }}
                           />
                         </div>
@@ -922,7 +922,7 @@ export function GeneratorWizard({ styles }: GeneratorWizardProps) {
         <div className="mt-3">
           <div className="h-1.5 w-full bg-border/50 overflow-hidden">
             <div
-              className="h-full bg-foreground transition-all duration-200"
+              className="h-full bg-foreground transition-[width] duration-200"
               style={{ width: `${Math.min(100, Math.max(0, downloadProgress.progress))}%` }}
             />
           </div>

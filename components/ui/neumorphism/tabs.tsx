@@ -40,7 +40,7 @@ export const NeuTabs: React.FC<NeuTabsProps> = ({ tabs, defaultTab, className, .
             id={`${tablistId}-tab-${tab.id}`}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+              "px-4 py-2 rounded-lg text-sm font-medium transition-[color,background-color,box-shadow] duration-200",
               activeTab === tab.id
                 ? cn("bg-[#e0e5ec] text-gray-800", NEU_SHADOWS.raised)
                 : "text-gray-500 hover:text-gray-700"

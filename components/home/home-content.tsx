@@ -441,7 +441,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                   delayMs={100 + featureIndex * 70}
                   disableDelayOnMobile
                 >
-                  <article className="group relative overflow-hidden border border-border bg-background/70 p-4 sm:p-5 md:p-6 motion-safe:transition-all motion-safe:duration-200 hover:border-foreground focus-within:border-foreground focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-background motion-safe:hover:-translate-y-0.5">
+                  <article className="group relative overflow-hidden border border-border bg-background/70 p-4 sm:p-5 md:p-6 motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-background motion-safe:hover:-translate-y-0.5">
                     <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="w-10 h-10 border border-border flex items-center justify-center text-muted group-hover:text-foreground group-hover:border-foreground transition-colors mb-4">
                       <Icon className="w-4 h-4" />

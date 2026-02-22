@@ -26,7 +26,7 @@ function UsageBar({ label, sublabel, count, maxCount, color }: UsageBarProps) {
       </div>
       <div className="h-2 bg-zinc-100 dark:bg-zinc-800">
         <div
-          className="h-full transition-all duration-500"
+          className="h-full transition-[width] duration-500"
           style={{
             width: `${barWidth}%`,
             backgroundColor: color || "var(--color-foreground)",

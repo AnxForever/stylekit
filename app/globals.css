@@ -3,6 +3,7 @@
 @plugin "@tailwindcss/typography";
 
 :root {
+  color-scheme: light;
   --background: #fafafa;
   --foreground: #0a0a0a;
   --accent: #e63946;
@@ -19,6 +20,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #0a0a0a;
   --foreground: #fafafa;
   --accent: #ff6b6b;
@@ -58,6 +60,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif), ui-serif, Georgia, serif;
   font-weight: 400;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 /* Selection style */
@@ -245,4 +248,24 @@ code {
 .text-stroke-white {
   -webkit-text-stroke: 2px white;
   color: transparent;
+}
+
+/* Interactive element touch optimization */
+a, button, [role="button"], input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Tabular numbers utility */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

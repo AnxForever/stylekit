@@ -168,7 +168,7 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
         <div className="mt-3 space-y-2">
           <div className="h-1 w-full bg-border/70 overflow-hidden" aria-hidden="true">
             <div
-              className="h-full bg-foreground/70 transition-all duration-500 ease-out"
+              className="h-full bg-foreground/70 transition-[width] duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -182,7 +182,7 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
                   aria-pressed={isActive}
                   aria-label={`${t("home.featuredSlide")} ${index + 1}`}
                   onClick={() => setFeaturedIndex(index)}
-                  className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
+                  className={`h-2 rounded-full transition-[width,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
                     isActive
                       ? "w-8 bg-foreground"
                       : "w-3 bg-foreground/25 hover:bg-foreground/45"
