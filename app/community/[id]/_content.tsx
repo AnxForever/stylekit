@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
+import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { useI18n } from "@/lib/i18n/context";
 import type { SubmissionRecord } from "@/lib/submit/reviewer";
 import type { DesignStyle } from "@/lib/styles";
@@ -116,6 +117,17 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
                   {formatDate(submission.submittedAt, locale)}
                 </time>
               </div>
+
+              {style.components && Object.values(style.components).some((c) => c.code) && (
+                <div className="mt-4">
+                  <Link
+                    href={`/styles/${submission.slug}/showcase`}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
+                  >
+                    {t("styleDetail.viewShowcase")}
+                  </Link>
+                </div>
+              )}
             </div>
 
             {style.cover?.startsWith("data:") && (
@@ -208,6 +220,23 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
             <pre className="text-sm text-muted bg-muted/5 border border-border p-4 md:p-6 overflow-x-auto whitespace-pre-wrap leading-relaxed">
               {style.aiRules}
             </pre>
+          </div>
+        </section>
+      )}
+
+      {/* Example Prompts */}
+      {style.examplePrompts && style.examplePrompts.length > 0 && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("styleDetail.examplePrompts")}
+            </p>
+            <ExamplePrompts
+              prompts={style.examplePrompts}
+              styleName={style.name}
+              styleSlug={submission.slug}
+              aiRules={style.aiRules}
+            />
           </div>
         </section>
       )}
