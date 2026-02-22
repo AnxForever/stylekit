@@ -47,6 +47,9 @@ next-env.d.ts
 nul
 
 # Agent/IDE Rules
+AGENTS.md
+AI_CONTEXT.md
+AI-ICON-WORKFLOW-TUTORIAL.md
 CLAUDE.md
 trae-rules.md
 NEO-BRUTALIST-GUIDE.md
@@ -84,6 +87,7 @@ tools/scripts/output/
 
 # Competitor analysis data
 uiprompt-*.json
+chaos-lab-manifest.json
 
 # npm lock file (project uses pnpm)
 package-lock.json
