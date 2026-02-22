@@ -19,6 +19,7 @@ import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleComments } from "@/components/styles/style-comments";
 import { useI18n } from "@/lib/i18n/context";
+import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import { useCommunityFeed } from "@/lib/swr";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
@@ -49,7 +50,7 @@ export function StyleDetailContent({
   changelog,
   communityVersions = [],
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { data: communityData } = useCommunityFeed({
     slug: style.slug,
     limit: 1,
@@ -108,7 +109,7 @@ export function StyleDetailContent({
                 )}
               </div>
               <p className="text-lg text-muted leading-relaxed mb-6">
-                {style.description}
+                {localizedString(locale, style.description, style.descriptionEn)}
               </p>
               {communityAttribution && (
                 <Link
@@ -212,7 +213,7 @@ export function StyleDetailContent({
           </p>
           <div className="max-w-3xl">
             <div className="prose prose-lg">
-              {style.philosophy.split("\n\n").map((paragraph, i) => (
+              {localizedString(locale, style.philosophy, style.philosophyEn).split("\n\n").map((paragraph, i) => (
                 <p key={i} className="text-muted leading-relaxed mb-4 last:mb-0">
                   {paragraph}
                 </p>
@@ -231,7 +232,7 @@ export function StyleDetailContent({
                 {t("styleDetail.dos")}
               </p>
               <ul className="space-y-3">
-                {style.doList.map((item, i) => (
+                {localizedList(locale, style.doList, style.doListEn).map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
                     <span className="text-sm leading-relaxed">{item}</span>
@@ -244,7 +245,7 @@ export function StyleDetailContent({
                 {t("styleDetail.donts")}
               </p>
               <ul className="space-y-3">
-                {style.dontList.map((item, i) => (
+                {localizedList(locale, style.dontList, style.dontListEn).map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
                     <span className="text-sm leading-relaxed">{item}</span>

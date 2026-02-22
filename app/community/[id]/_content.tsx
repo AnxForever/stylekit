@@ -9,6 +9,7 @@ import { PromptPairExporter } from "@/components/style-preview/prompt-pair-expor
 import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { useI18n } from "@/lib/i18n/context";
+import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { SubmissionRecord } from "@/lib/submit/reviewer";
 import type { DesignStyle } from "@/lib/styles";
 
@@ -83,7 +84,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
               )}
               {style.description && (
                 <p className="text-lg text-muted leading-relaxed mb-6">
-                  {style.description}
+                  {localizedString(locale, style.description, style.descriptionEn)}
                 </p>
               )}
 
@@ -202,7 +203,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
             </p>
             <div className="max-w-3xl">
               <div className="prose prose-lg">
-                {style.philosophy.split("\n\n").map((paragraph, i) => (
+                {localizedString(locale, style.philosophy, style.philosophyEn).split("\n\n").map((paragraph, i) => (
                   <p key={i} className="text-muted leading-relaxed mb-4 last:mb-0">
                     {paragraph}
                   </p>
@@ -224,7 +225,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
                     {t("styleDetail.dos")}
                   </p>
                   <ul className="space-y-3">
-                    {style.doList.map((item, i) => (
+                    {localizedList(locale, style.doList, style.doListEn).map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
                         <span className="text-sm leading-relaxed">{item}</span>
@@ -239,7 +240,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
                     {t("styleDetail.donts")}
                   </p>
                   <ul className="space-y-3">
-                    {style.dontList.map((item, i) => (
+                    {localizedList(locale, style.dontList, style.dontListEn).map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
                         <span className="text-sm leading-relaxed">{item}</span>
