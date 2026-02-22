@@ -432,6 +432,7 @@ export function ProfileContent() {
             width={96}
             height={96}
             priority
+            unoptimized
             className="w-24 h-24 rounded-full border-2 border-border"
           />
         ) : (
