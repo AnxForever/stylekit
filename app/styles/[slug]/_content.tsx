@@ -24,6 +24,7 @@ import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
+import type { CommunityFeedItem } from "@/lib/community/feed";
 
 interface Props {
   style: DesignStyle;
@@ -34,6 +35,7 @@ interface Props {
   accessibilityScore: AccessibilityScore | null;
   version?: string;
   changelog?: StyleVersion[];
+  communityVersions?: CommunityFeedItem[];
 }
 
 export function StyleDetailContent({
@@ -45,6 +47,7 @@ export function StyleDetailContent({
   accessibilityScore,
   version,
   changelog,
+  communityVersions = [],
 }: Props) {
   const { t } = useI18n();
   const { data: communityData } = useCommunityFeed({
@@ -388,6 +391,57 @@ export function StyleDetailContent({
           <StylePackExport style={style} />
         </div>
       </section>
+
+      {/* Community Versions — shown when built-in and community share a slug */}
+      {styleSource === "static" && communityVersions.length > 0 && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("community.label")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-2">
+              {t("styleDetail.communityVersions")}
+            </h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("styleDetail.communityVersionsDesc")}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {communityVersions.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/community?slug=${item.slug}`}
+                  className="group block border border-border p-4 hover:border-foreground transition-colors"
+                >
+                  {item.cover && (
+                    <div className="aspect-video mb-3 overflow-hidden border border-border">
+                      <Image
+                        src={item.cover}
+                        alt={item.titleEn ?? item.title}
+                        width={400}
+                        height={225}
+                        unoptimized
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <p className="font-medium text-sm mb-1 group-hover:underline">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {t("styleDetail.communityVersionsBy").replace("{author}", item.author.handle)}
+                  </p>
+                </Link>
+              ))}
+            </div>
+            <Link
+              href={`/community?slug=${style.slug}`}
+              className="text-sm underline underline-offset-4 hover:no-underline"
+            >
+              {t("styleDetail.viewAllCommunityVersions")}
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Community */}
       <section className="border-t border-border">

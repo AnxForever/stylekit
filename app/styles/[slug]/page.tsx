@@ -8,6 +8,7 @@ import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { listCommunityFeed, type CommunityFeedItem } from "@/lib/community/feed";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -74,6 +75,12 @@ export default async function StyleDetailPage({
     notFound();
   }
   const { style } = resolved;
+
+  // When built-in style exists, also fetch community versions for the same slug
+  const communityVersions: CommunityFeedItem[] =
+    resolved.source === "static"
+      ? (await listCommunityFeed({ slug, limit: 48, offset: 0 })).items
+      : [];
 
   // Pre-compute compatible styles for layout patterns
   const compatibleStyles =
@@ -150,6 +157,7 @@ export default async function StyleDetailPage({
             accessibilityScore={accessibilityScore}
             version={version}
             changelog={changelog}
+            communityVersions={communityVersions}
           />
         </main>
       </DisableAutoScroll>

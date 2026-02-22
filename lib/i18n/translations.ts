@@ -781,6 +781,10 @@ const en = {
     "styleDetail.aiRulesTitle": "AI Rules",
     "styleDetail.aiRulesDesc": "Export and add the following rules to your AI coding assistant to generate code following the {name} style.",
     "styleDetail.ratingsFeedback": "Ratings & Feedback",
+    "styleDetail.communityVersions": "Community Versions",
+    "styleDetail.communityVersionsDesc": "The community has also submitted versions of this style. Browse their interpretations below.",
+    "styleDetail.communityVersionsBy": "by {author}",
+    "styleDetail.viewAllCommunityVersions": "View all community versions",
 
     // IDE Export
     "ideExport.exportToIde": "Export to IDE",
@@ -1911,6 +1915,10 @@ const zh: { [K in keyof typeof en]: string } = {
   "styleDetail.aiRulesTitle": "AI 规则",
   "styleDetail.aiRulesDesc": "将以下规则导出并添加到你的 AI 编码助手中，让它按照 {name} 风格生成代码。",
   "styleDetail.ratingsFeedback": "评分与反馈",
+  "styleDetail.communityVersions": "社区版本",
+  "styleDetail.communityVersionsDesc": "社区成员也提交了此风格的版本，欢迎浏览他们的诠释。",
+  "styleDetail.communityVersionsBy": "by {author}",
+  "styleDetail.viewAllCommunityVersions": "查看所有社区版本",
 
   // IDE Export
   "ideExport.exportToIde": "导出到 IDE",
