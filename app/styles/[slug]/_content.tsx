@@ -409,7 +409,7 @@ export function StyleDetailContent({
               {communityVersions.map((item) => (
                 <Link
                   key={item.id}
-                  href={`/community?slug=${item.slug}`}
+                  href={`/community/${item.id}`}
                   className="group block border border-border p-4 hover:border-foreground transition-colors"
                 >
                   {item.cover && (

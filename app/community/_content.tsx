@@ -143,7 +143,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                   key={item.id}
                   className="border border-border bg-background/80 hover:border-foreground transition-colors overflow-hidden"
                 >
-                  <Link href={`/styles/${item.slug}`} className="block aspect-[16/10] relative bg-zinc-100 dark:bg-zinc-900">
+                  <Link href={`/community/${item.id}`} className="block aspect-[16/10] relative bg-zinc-100 dark:bg-zinc-900">
                     {item.cover ? (
                       <Image
                         src={item.cover}
@@ -162,7 +162,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                   <div className="p-4 space-y-3">
                     <div>
                       <Link
-                        href={`/styles/${item.slug}`}
+                        href={`/community/${item.id}`}
                         className="text-lg hover:underline leading-tight"
                       >
                         {item.title}

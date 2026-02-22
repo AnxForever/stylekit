@@ -183,7 +183,7 @@ function parseExamplePrompts(value: unknown): ExamplePrompt[] | undefined {
   return prompts.length > 0 ? prompts : undefined;
 }
 
-function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle | null {
+export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle | null {
   const slug = normalizeSlug(submission.slug);
   if (!SLUG_RE.test(slug)) {
     return null;
