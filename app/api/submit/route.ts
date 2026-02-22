@@ -9,12 +9,9 @@ import {
 } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
 import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator";
-import { getStyleBySlug } from "@/lib/styles";
-import { hasActiveSubmissionSlug } from "@/lib/submit/reviewer";
 import {
   isSupabaseConfigured,
   createSubmissionSupabase,
-  hasActiveSubmissionSlugSupabase,
 } from "@/lib/submit/reviewer-supabase";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import {
@@ -320,23 +317,6 @@ export async function POST(request: Request) {
 
     const { data, source, coverSvg } = parsed.value;
     const normalizedSlug = data.slug.trim().toLowerCase();
-    if (getStyleBySlug(normalizedSlug)) {
-      return NextResponse.json(
-        { success: false, error: "This slug is already used by a built-in style." },
-        { status: 409 }
-      );
-    }
-
-    const useSupabase = isSupabaseConfigured();
-    const hasConflict = useSupabase
-      ? await hasActiveSubmissionSlugSupabase(normalizedSlug)
-      : await hasActiveSubmissionSlug(normalizedSlug);
-    if (hasConflict) {
-      return NextResponse.json(
-        { success: false, error: "This slug is already pending review or approved." },
-        { status: 409 }
-      );
-    }
 
     const qualityIssues = validateSubmissionQuality(data, source);
     if (qualityIssues) {
@@ -374,6 +354,7 @@ export async function POST(request: Request) {
     };
 
     // Use Supabase when configured, otherwise fall back to file system
+    const useSupabase = isSupabaseConfigured();
     if (useSupabase) {
       const ip = getClientIpAddress(request);
       const result = await createSubmissionSupabase(
