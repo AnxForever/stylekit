@@ -292,17 +292,27 @@ export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle 
       accent,
     },
     keywords: asStringList(storedDesignStyle.keywords ?? formData.keywords),
+    descriptionEn: asString(storedDesignStyle.descriptionEn) ?? undefined,
     philosophy:
       asString(storedDesignStyle.philosophy) ??
       asString(formData.philosophy) ??
       "Community submitted style.",
+    philosophyEn: asString(storedDesignStyle.philosophyEn) ?? undefined,
     doList: (() => {
       const list = asStringList(storedDesignStyle.doList ?? formData.doList);
       return list.length > 0 ? list : ["Keep style language consistent across components."];
     })(),
+    doListEn: (() => {
+      const list = asStringList(storedDesignStyle.doListEn);
+      return list.length > 0 ? list : undefined;
+    })(),
     dontList: (() => {
       const list = asStringList(storedDesignStyle.dontList ?? formData.dontList);
       return list.length > 0 ? list : ["Do not mix conflicting visual systems."];
+    })(),
+    dontListEn: (() => {
+      const list = asStringList(storedDesignStyle.dontListEn);
+      return list.length > 0 ? list : undefined;
     })(),
     components: {
       button: parseComponentTemplate(
@@ -329,6 +339,7 @@ export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle 
     },
     globalCss: asString(storedDesignStyle.globalCss) ?? "",
     aiRules,
+    aiRulesEn: asString(storedDesignStyle.aiRulesEn) ?? undefined,
     examplePrompts: parseExamplePrompts(storedDesignStyle.examplePrompts),
   };
 }

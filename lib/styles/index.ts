@@ -54,8 +54,11 @@ export interface DesignStyle {
 
   // 文档内容
   philosophy: string;
+  philosophyEn?: string;
   doList: string[];
+  doListEn?: string[];
   dontList: string[];
+  dontListEn?: string[];
 
   // 组件模板
   components: {
@@ -68,9 +71,11 @@ export interface DesignStyle {
   };
 
   // 导出内容
+  descriptionEn?: string;
   tailwindConfig?: string;
   globalCss: string;
   aiRules: string;
+  aiRulesEn?: string;
 
   // 示例 Prompts（帮助用户快速上手）
   examplePrompts?: ExamplePrompt[];
