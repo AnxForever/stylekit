@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Copy, ExternalLink, Send, AlertCircle, Package } from "lucide-react";
+import { Check, Copy, Send, AlertCircle, Package } from "lucide-react";
 import type { StyleCategory, StyleType, StyleTag } from "@/lib/styles/meta";
 import { generateStyleScaffoldFiles, type StyleScaffoldInput } from "@/lib/scaffold/style-scaffold";
 import { useUser } from "@/lib/auth/use-user";
@@ -54,11 +54,6 @@ interface SubmitStepProps {
   text: {
     copyJson: string;
     copied: string;
-    submissionGuide: string;
-    submissionGuideDesc: string;
-    submissionSteps: readonly string[];
-    submitOnGithub: string;
-    step: string;
   };
 }
 
@@ -390,56 +385,6 @@ export function SubmitStep({ formData, manifestCoverSvg, isAnimating, text }: Su
         <p className="text-sm text-muted">{t("submit.completeDesc")}</p>
       </div>
 
-      {/* Submit to Community - Primary Action */}
-      <div className="border-2 border-foreground p-6">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Send className="w-6 h-6" />
-          <div>
-            <p className="font-medium mb-1">{t("submit.communitySectionTitle")}</p>
-            <p className="text-sm text-muted">{t("submit.communitySectionDesc")}</p>
-          </div>
-          <button
-            type="button"
-            onClick={submitToCommunity}
-            disabled={
-              !user ||
-              isSubmitting ||
-              !formData.slug.trim() ||
-              submitResult?.success === true
-            }
-            className="inline-flex items-center gap-2 px-8 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base font-medium"
-          >
-            <Send className="w-4 h-4" />
-            {isSubmitting ? t("submit.submitting") : submitResult?.success ? t("submit.submitted") : t("submit.submitStyle")}
-          </button>
-          {!user && (
-            <p className="text-xs text-muted">
-              {t("submit.signInRequired")}
-              {" "}
-              <Link href="/login" className="underline hover:text-foreground">
-                {t("auth.signIn")}
-              </Link>
-            </p>
-          )}
-          {submitResult?.success && (
-            <div className="w-full p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
-              <div className="flex items-center gap-2 justify-center">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                <span>{t("submit.savedPrefix")} <code className="font-mono text-xs">{submitResult.id}</code></span>
-              </div>
-            </div>
-          )}
-          {submitResult && !submitResult.success && (
-            <div className="w-full p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
-              <div className="flex items-center gap-2 justify-center">
-                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                <span>{t("submit.failedPrefix")} {submitResult.error}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Export Options - Collapsible */}
       <details className="border border-border">
         <summary className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 text-sm font-medium cursor-pointer select-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
@@ -529,30 +474,51 @@ export function SubmitStep({ formData, manifestCoverSvg, isAnimating, text }: Su
         </div>
       )}
 
-      {/* Submission Guide */}
+      {/* Submit to Community */}
       <div className="border border-border">
         <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-border">
-          <p className="text-sm font-medium">{text.submissionGuide}</p>
-          <p className="text-xs text-muted mt-1">{text.submissionGuideDesc}</p>
+          <p className="text-sm font-medium">{t("submit.communitySectionTitle")}</p>
+          <p className="text-xs text-muted mt-1">{t("submit.communitySectionDesc")}</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-          {text.submissionSteps.map((stepText, idx) => (
-            <div key={idx} className="p-3 border border-border">
-              <div className="text-xs text-muted mb-1">{text.step} {idx + 1}</div>
-              <p className="text-sm">{stepText}</p>
-            </div>
-          ))}
-        </div>
-        <div className="p-4 border-t border-border">
-          <a
-            href="https://github.com/AnxForever/stylekit/issues/new"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 transition-colors"
+        <div className="p-4 flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={submitToCommunity}
+            disabled={
+              !user ||
+              isSubmitting ||
+              !formData.slug.trim() ||
+              submitResult?.success === true
+            }
+            className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <ExternalLink className="w-4 h-4" />
-            {text.submitOnGithub}
-          </a>
+            <Send className="w-4 h-4" />
+            {isSubmitting ? t("submit.submitting") : submitResult?.success ? t("submit.submitted") : t("submit.submitStyle")}
+          </button>
+          {!user && (
+            <p className="text-xs text-muted">
+              {t("submit.signInRequired")}{" "}
+              <Link href="/login" className="underline hover:text-foreground">
+                {t("auth.signIn")}
+              </Link>
+            </p>
+          )}
+          {submitResult?.success && (
+            <div className="p-3 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-sm">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <span>{t("submit.savedPrefix")} <code className="font-mono text-xs">{submitResult.id}</code></span>
+              </div>
+            </div>
+          )}
+          {submitResult && !submitResult.success && (
+            <div className="p-3 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-sm">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                <span>{t("submit.failedPrefix")} {submitResult.error}</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -96,15 +96,6 @@ export const submitCopy = {
     downloadScaffoldLoading: "Preparing...",
     jsonPreview: "JSON Preview",
     close: "Close",
-    submissionGuide: "Submission Guide",
-    submissionGuideDesc: "After finishing the form, follow the steps below to submit your style.",
-    submissionSteps: [
-      "Click Download Scaffold (recommended) or Copy JSON to export the style definition.",
-      "Open a new GitHub issue",
-      "Paste the JSON into the issue body",
-      "Wait for review and approval",
-    ],
-    submitOnGithub: "Submit on GitHub",
     categoryLabels: {
       modern: "Modern",
       minimal: "Minimal",
@@ -350,15 +341,6 @@ export const submitCopy = {
     downloadScaffoldLoading: "正在生成...",
     jsonPreview: "JSON 预览",
     close: "关闭",
-    submissionGuide: "提交流程说明",
-    submissionGuideDesc: "完成表单后，按以下步骤提交你的风格。",
-    submissionSteps: [
-      '点击"下载脚手架"（推荐）或"复制 JSON"导出风格定义。',
-      "前往 GitHub 创建新 Issue。",
-      "将 JSON 粘贴到 Issue 描述中。",
-      "等待审核通过。",
-    ],
-    submitOnGithub: "前往 GitHub 提交",
     categoryLabels: {
       modern: "现代",
       minimal: "极简",
