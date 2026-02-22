@@ -651,6 +651,8 @@ export default function SplitScreenShowcase() {
                 <img
                   src="https://picsum.photos/seed/split01/800/600"
                   alt="Visual panel"
+                  width={800}
+                  height={600}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f0f]/60 to-transparent" />

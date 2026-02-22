@@ -715,7 +715,7 @@ export function ContentStep({
           )}
           <div className="border border-border bg-zinc-100 overflow-auto p-3">
             <div
-              className="mx-auto border border-border bg-white overflow-hidden transition-all duration-300"
+              className="mx-auto border border-border bg-white overflow-hidden transition-[width] duration-300"
               style={{
                 width: activeViewportOption.width,
                 maxWidth: "100%",

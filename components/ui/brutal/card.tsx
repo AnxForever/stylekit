@@ -29,7 +29,7 @@ export const BrutalCard = React.forwardRef<HTMLDivElement, BrutalCardProps>(
           "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
           hoverColors[hoverColor],
           hoverColor !== "none" && "hover:-translate-y-1 md:hover:-translate-y-2",
-          "transition-all duration-300",
+          "transition-[box-shadow,transform] duration-300",
           className
         )}
         {...props}

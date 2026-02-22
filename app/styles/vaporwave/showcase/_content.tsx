@@ -354,7 +354,7 @@ export default function VaporwaveShowcase() {
             </h1>
           </div>
 
-          <div className={`relative mb-10 cursor-pointer select-none ${glitchActive ? "vapor-glitch" : ""}`} onClick={handleGlitch}>
+          <button type="button" className={`relative mb-10 cursor-pointer select-none ${glitchActive ? "vapor-glitch" : ""}`} onClick={handleGlitch}>
             <h1
               className="text-7xl md:text-9xl font-black tracking-widest leading-none"
               style={{
@@ -365,7 +365,7 @@ export default function VaporwaveShowcase() {
             >
               ＷＡＶＥ
             </h1>
-          </div>
+          </button>
 
           <p
             className="text-lg md:text-xl mb-3 tracking-[0.2em]"

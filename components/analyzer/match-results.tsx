@@ -14,7 +14,7 @@ function ConfidenceBar({ value }: { value: number }) {
     <div className="flex items-center gap-3">
       <div className="flex-1 h-2 rounded-full bg-muted/20 overflow-hidden">
         <div
-          className={`h-full rounded-full ${color} transition-all duration-500`}
+          className={`h-full rounded-full ${color} transition-[width] duration-500`}
           style={{ width: `${width}%` }}
         />
       </div>

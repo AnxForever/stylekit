@@ -79,7 +79,7 @@ export default function CalendarScheduleTemplate() {
       {/* Mobile Sidebar */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute inset-0 bg-black/40" role="presentation" onClick={() => setSidebarOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-xl overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <span className="font-bold">Calendar</span>

@@ -15,7 +15,7 @@ export interface NeuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEle
 
 export const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
   ({ className, variant = "default", size = "md", loading, disabled, children, ...props }, ref) => {
-    const baseStyles = "bg-[#e0e5ec] font-medium rounded-xl transition-all duration-200 focus:outline-none";
+    const baseStyles = "bg-[#e0e5ec] font-medium rounded-xl transition-[box-shadow] duration-200 focus:outline-none";
 
     const variantStyles = {
       default: `text-gray-700 ${NEU_SHADOWS.raised} hover:${NEU_SHADOWS.hover} active:${NEU_SHADOWS.pressed}`,
@@ -87,7 +87,7 @@ export const NeuIconButton = React.forwardRef<HTMLButtonElement, NeuIconButtonPr
         ref={ref}
         className={cn(
           "bg-[#e0e5ec] rounded-xl flex items-center justify-center",
-          "text-gray-600 transition-all duration-200",
+          "text-gray-600 transition-[box-shadow] duration-200",
           "focus:outline-none focus:ring-2 focus:ring-[#6d5dfc]/30",
           sizeStyles[size],
           variantStyles[variant],
