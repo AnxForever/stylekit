@@ -51,11 +51,14 @@ CLAUDE.md
 trae-rules.md
 NEO-BRUTALIST-GUIDE.md
 PHASE-5A-SUMMARY.md
+.mcp.json
+.vscode/
 .claude/
 .trae/
 .cursor/
 .windsurf/
 skills/
+skills-lock.json
 
 # Screenshots
 stylekit-*.png
@@ -92,6 +95,7 @@ tools/scripts/refine-batch-01.mjs
 
 # External sub-projects
 editorial-brutalist-portfolio/
+style-extractor-dev/
 
 # AI Studio exported data files
 "ai_studio_code*.txt"
