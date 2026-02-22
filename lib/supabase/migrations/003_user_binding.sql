@@ -6,7 +6,7 @@
 -- user_favorites: add user_id, relax session_id
 ALTER TABLE public.user_favorites ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id);
 ALTER TABLE public.user_favorites ALTER COLUMN session_id DROP NOT NULL;
-DROP INDEX IF EXISTS user_favorites_session_id_style_slug_key;
+ALTER TABLE public.user_favorites DROP CONSTRAINT IF EXISTS user_favorites_session_id_style_slug_key;
 CREATE UNIQUE INDEX IF NOT EXISTS user_favorites_user_slug
   ON public.user_favorites(user_id, style_slug) WHERE user_id IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS user_favorites_session_slug
