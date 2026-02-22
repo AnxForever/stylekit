@@ -5,7 +5,9 @@ import Link from "next/link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
+import { PromptPairExporter } from "@/components/style-preview/prompt-pair-exporter";
 import { ExamplePrompts } from "@/components/style-preview/example-prompts";
+import { CodeBlock } from "@/components/style-preview/code-block";
 import { useI18n } from "@/lib/i18n/context";
 import type { SubmissionRecord } from "@/lib/submit/reviewer";
 import type { DesignStyle } from "@/lib/styles";
@@ -57,7 +59,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
       {/* Hero */}
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-4">
             <ScrollBackButton label={t("community.label")} href={backHref} />
             <div className="flex items-center gap-2 text-sm text-muted">
               <Link
@@ -71,11 +73,13 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
             </div>
           </div>
 
-          <div className={`${style.cover?.startsWith("data:") ? "grid grid-cols-1 md:grid-cols-2 gap-8 items-start" : ""}`}>
-            <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl mb-2">{style.name}</h1>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
+                {style.name}
+              </h1>
               {style.nameEn && style.nameEn !== style.name && (
-                <p className="text-xl text-muted mb-4">{style.nameEn}</p>
+                <p className="text-xl text-muted mb-6">{style.nameEn}</p>
               )}
               {style.description && (
                 <p className="text-lg text-muted leading-relaxed mb-6">
@@ -84,7 +88,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
               )}
 
               {/* Author attribution */}
-              <div className="inline-flex items-center gap-3 border border-border bg-background/70 px-3 py-2">
+              <div className="inline-flex items-center gap-3 border border-border bg-background/70 px-3 py-2 mb-6">
                 {author.avatarUrl ? (
                   <Image
                     src={author.avatarUrl}
@@ -106,7 +110,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
                   </span>
                 </span>
                 {author.provider !== "unknown" && (
-                  <span className="uppercase tracking-wide border border-border px-1 py-0.5 text-[10px]">
+                  <span className="text-[10px] uppercase tracking-wider text-muted border border-border px-1.5 py-0.5">
                     {author.provider}
                   </span>
                 )}
@@ -118,8 +122,23 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
                 </time>
               </div>
 
+              {/* Keywords */}
+              {style.keywords && style.keywords.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {style.keywords.map((keyword) => (
+                    <span
+                      key={keyword}
+                      className="text-xs px-3 py-1 bg-zinc-100 text-muted"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Actions */}
               {style.components && Object.values(style.components).some((c) => c.code) && (
-                <div className="mt-4">
+                <div className="flex flex-wrap gap-4 mt-6">
                   <Link
                     href={`/styles/${submission.slug}/showcase`}
                     className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
@@ -130,70 +149,106 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
               )}
             </div>
 
-            {style.cover?.startsWith("data:") && (
-              <div className="border border-border overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={style.cover}
-                  alt={`${style.name} cover`}
-                  className="w-full h-auto"
-                />
-              </div>
-            )}
+            {/* Color Palette / Cover */}
+            <div>
+              {style.cover?.startsWith("data:") && (
+                <div className="border border-border overflow-hidden mb-6">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={style.cover}
+                    alt={`${style.name} cover`}
+                    className="w-full h-auto"
+                  />
+                </div>
+              )}
+              <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                {t("styleDetail.colorPalette")}
+              </p>
+              <ColorPalette colors={style.colors} />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Color palette */}
-      <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            Colors
-          </p>
-          <ColorPalette colors={style.colors} />
-        </div>
-      </section>
-
-      {/* Design Rules */}
-      {(style.philosophy || (style.doList && style.doList.length > 0) || (style.dontList && style.dontList.length > 0)) && (
+      {/* Prompt Pair Export */}
+      {style.aiRules && (
         <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Design Rules
+              {t("promptPair.sectionLabel")}
             </p>
-            {style.philosophy && (
-              <p className="text-base text-muted leading-relaxed mb-6">{style.philosophy}</p>
-            )}
-            {((style.doList && style.doList.length > 0) || (style.dontList && style.dontList.length > 0)) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {style.doList && style.doList.length > 0 && (
-                  <div>
-                    <p className="text-xs tracking-widest uppercase text-green-600 dark:text-green-400 mb-3">Do</p>
-                    <ul className="space-y-2">
-                      {style.doList.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted">
-                          <span className="text-green-600 dark:text-green-400 mt-0.5 shrink-0">&#10003;</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {style.dontList && style.dontList.length > 0 && (
-                  <div>
-                    <p className="text-xs tracking-widest uppercase text-red-600 dark:text-red-400 mb-3">Don&apos;t</p>
-                    <ul className="space-y-2">
-                      {style.dontList.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted">
-                          <span className="text-red-600 dark:text-red-400 mt-0.5 shrink-0">&#10007;</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            <h2 className="text-2xl md:text-3xl mb-4">{t("promptPair.title")}</h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("promptPair.description").replace("{name}", style.name)}
+            </p>
+            <PromptPairExporter
+              styleName={style.name}
+              styleSlug={submission.slug}
+              aiRules={style.aiRules}
+              doList={style.doList}
+              dontList={style.dontList}
+              keywords={style.keywords}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Philosophy */}
+      {style.philosophy && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("styleDetail.philosophy")}
+            </p>
+            <div className="max-w-3xl">
+              <div className="prose prose-lg">
+                {style.philosophy.split("\n\n").map((paragraph, i) => (
+                  <p key={i} className="text-muted leading-relaxed mb-4 last:mb-0">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
-            )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Do's and Don'ts */}
+      {((style.doList && style.doList.length > 0) || (style.dontList && style.dontList.length > 0)) && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+              {style.doList && style.doList.length > 0 && (
+                <div>
+                  <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                    {t("styleDetail.dos")}
+                  </p>
+                  <ul className="space-y-3">
+                    {style.doList.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
+                        <span className="text-sm leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {style.dontList && style.dontList.length > 0 && (
+                <div>
+                  <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                    {t("styleDetail.donts")}
+                  </p>
+                  <ul className="space-y-3">
+                    {style.dontList.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
+                        <span className="text-sm leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -201,25 +256,25 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
       {/* Component Preview */}
       {style.components && Object.values(style.components).some((c) => c.code) && (
         <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Components
+              {t("styleDetail.componentTemplates")}
             </p>
+            <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
             <ComponentPreview components={style.components} />
           </div>
         </section>
       )}
 
-      {/* AI Rules */}
-      {style.aiRules && (
+      {/* Global CSS */}
+      {style.globalCss && (
         <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              AI Rules
+              {t("styleDetail.globalStyles")}
             </p>
-            <pre className="text-sm text-muted bg-muted/5 border border-border p-4 md:p-6 overflow-x-auto whitespace-pre-wrap leading-relaxed">
-              {style.aiRules}
-            </pre>
+            <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
+            <CodeBlock code={style.globalCss} language="css" />
           </div>
         </section>
       )}
@@ -227,7 +282,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
       {/* Example Prompts */}
       {style.examplePrompts && style.examplePrompts.length > 0 && (
         <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
               {t("styleDetail.examplePrompts")}
             </p>
@@ -248,7 +303,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
             href={backHref}
             className="text-sm underline underline-offset-4 hover:no-underline text-muted hover:text-foreground"
           >
-            View all community submissions for {submission.slug}
+            {t("styleDetail.viewAllCommunityVersions")}
           </Link>
         </div>
       </section>
