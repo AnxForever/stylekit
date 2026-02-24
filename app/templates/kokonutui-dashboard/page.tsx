@@ -155,6 +155,187 @@ export default function KokonutuiDashboardPage() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [activePage, setActivePage] = useState<KokonutPage>("Dashboard");
 
+  const renderModuleContent = () => {
+    switch (activePage) {
+      case "Analytics":
+        return (
+          <div className="space-y-6">
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { label: "Net Cash Flow", value: "+$12,430", trend: "+8.4%" },
+                { label: "Expense Ratio", value: "34.2%", trend: "-2.1%" },
+                { label: "Forecast Accuracy", value: "92.6%", trend: "+1.7%" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-4"
+                >
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">{item.label}</p>
+                  <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{item.value}</p>
+                  <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">{item.trend}</p>
+                </div>
+              ))}
+            </section>
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Cash Flow Trend</h3>
+              <div className="mt-4 flex items-end gap-2 h-44">
+                {[38, 55, 62, 49, 71, 66, 82, 76, 88, 73, 92, 85].map((h, index) => (
+                  <div key={index} className="flex-1 rounded-t-md bg-zinc-900/70 dark:bg-zinc-100/80" style={{ height: `${h}%` }} />
+                ))}
+              </div>
+            </section>
+          </div>
+        );
+      case "Organization":
+        return (
+          <div className="space-y-6">
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Department Ownership</h3>
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { team: "Finance Ops", owner: "Eugene An", members: 8, budget: "$320K" },
+                  { team: "Revenue Team", owner: "Maria Garcia", members: 12, budget: "$540K" },
+                  { team: "Compliance", owner: "Alex Smith", members: 5, budget: "$180K" },
+                  { team: "Procurement", owner: "Luna Park", members: 7, budget: "$210K" },
+                ].map((team) => (
+                  <div key={team.team} className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{team.team}</p>
+                    <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Owner: {team.owner}</p>
+                    <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Members: {team.members}</p>
+                    <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">Budget: {team.budget}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Organization Notes</h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Centralized ownership is enabled for all finance workflows. Role inheritance applies from department leads.
+              </p>
+            </section>
+          </div>
+        );
+      case "Projects":
+        return (
+          <div className="space-y-6">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { name: "ERP Migration", budget: "$420K", spent: 74 },
+                { name: "AP Automation", budget: "$180K", spent: 48 },
+                { name: "Risk Dashboard", budget: "$95K", spent: 63 },
+                { name: "Vendor Portal", budget: "$150K", spent: 29 },
+              ].map((project) => (
+                <div
+                  key={project.name}
+                  className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-5"
+                >
+                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{project.name}</p>
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Budget {project.budget}</p>
+                  <div className="mt-4 h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-zinc-900 dark:bg-zinc-100 rounded-full" style={{ width: `${project.spent}%` }} />
+                  </div>
+                  <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400">{project.spent}% utilized</p>
+                </div>
+              ))}
+            </section>
+          </div>
+        );
+      case "Transactions":
+      case "Invoices":
+      case "Payments":
+        return (
+          <div className="space-y-6">
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{activePage} Center</h3>
+              <div className="mt-4 space-y-3">
+                {transactions.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between rounded-lg border border-zinc-200 dark:border-zinc-800 p-3">
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{tx.title}</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">{tx.timestamp}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-zinc-700 dark:text-zinc-300">{tx.amount}</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">{tx.status}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        );
+      case "Members":
+      case "Permissions":
+      case "Chat":
+      case "Meetings":
+        return (
+          <div className="space-y-6">
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{activePage} Workspace</h3>
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: "Alex Smith", role: "Finance Lead" },
+                  { name: "Maria Garcia", role: "Ops Manager" },
+                  { name: "John Doe", role: "Analyst" },
+                  { name: "Luna Park", role: "Coordinator" },
+                ].map((member) => (
+                  <div key={member.name} className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
+                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{member.name}</p>
+                    <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{member.role}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        );
+      case "Settings":
+        return (
+          <div className="space-y-6">
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Preference Controls</h3>
+              <div className="mt-4 space-y-4">
+                {[
+                  "Enable payout notifications",
+                  "Require double approval for transfers",
+                  "Weekly analytics digest by email",
+                ].map((item) => (
+                  <label key={item} className="flex items-center justify-between rounded-lg border border-zinc-200 dark:border-zinc-800 p-3">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{item}</span>
+                    <input type="checkbox" className="h-4 w-4" defaultChecked />
+                  </label>
+                ))}
+              </div>
+            </section>
+          </div>
+        );
+      case "Help":
+        return (
+          <div className="space-y-6">
+            <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Support Center</h3>
+              <div className="mt-4 space-y-3">
+                {[
+                  "How to reconcile multi-account transactions?",
+                  "How to set role-based approval flows?",
+                  "How to export monthly finance audits?",
+                ].map((question) => (
+                  <div key={question} className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
+                    <p className="text-sm text-zinc-700 dark:text-zinc-300">{question}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        );
+      default:
+        return (
+          <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">{kokonutPageSummary[activePage]}</p>
+          </section>
+        );
+    }
+  };
+
   return (
     <>
       <TemplateBackButton variant="dark" />
@@ -501,41 +682,9 @@ export default function KokonutuiDashboardPage() {
               <div className="space-y-6">
                 <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
                   <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{activePage}</h2>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {kokonutPageSummary[activePage]}
-                  </p>
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{kokonutPageSummary[activePage]}</p>
                 </section>
-
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {accounts.slice(0, 3).map((account) => (
-                    <div
-                      key={account.id}
-                      className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-4"
-                    >
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">{account.description}</p>
-                      <p className="mt-2 text-base font-medium text-zinc-900 dark:text-zinc-100">{account.title}</p>
-                      <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{account.balance}</p>
-                    </div>
-                  ))}
-                </section>
-
-                <section className="rounded-xl border border-gray-200 dark:border-[#1F1F23] bg-white dark:bg-zinc-900/70 p-6">
-                  <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Recent Items</h3>
-                  <div className="mt-4 space-y-3">
-                    {transactions.slice(0, 4).map((tx) => (
-                      <div
-                        key={tx.id}
-                        className="flex items-center justify-between rounded-lg border border-zinc-100 dark:border-zinc-800 p-3"
-                      >
-                        <div>
-                          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{tx.title}</p>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400">{tx.timestamp}</p>
-                        </div>
-                        <span className="text-sm text-zinc-700 dark:text-zinc-300">{tx.amount}</span>
-                      </div>
-                    ))}
-                  </div>
-                </section>
+                {renderModuleContent()}
               </div>
             )}
           </main>
