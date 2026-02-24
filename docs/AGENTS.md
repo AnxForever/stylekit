@@ -42,6 +42,7 @@ Run and report these commands:
 ```bash
 npm run security:secrets
 npm run lint
+npm run lint:style-rules
 npx tsc --noEmit
 npm run test
 npm run build
