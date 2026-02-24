@@ -21,6 +21,11 @@ interface Template {
   name: LocaleCopy<string>;
   description: LocaleCopy<string>;
   styleSlug: string;
+  coverColors?: {
+    primary: string;
+    secondary: string;
+    accent: string[];
+  };
   type: TemplateType;
   href: string;
 }
@@ -375,6 +380,11 @@ const templates: Template[] = [
       en: "Modern finance dashboard with account overview, transactions, and event tracking.",
     },
     styleSlug: "kokonutui-dashboard",
+    coverColors: {
+      primary: "#18181b",
+      secondary: "#71717a",
+      accent: ["#27272a", "#52525b", "#a1a1aa"],
+    },
     type: "dashboard",
     href: "/templates/kokonutui-dashboard",
   },
@@ -386,6 +396,11 @@ const templates: Template[] = [
       en: "Frosted glass CRM dashboard with contact management, sales targets, and team performance.",
     },
     styleSlug: "crm-frosted-glass",
+    coverColors: {
+      primary: "#0ea5e9",
+      secondary: "#334155",
+      accent: ["#22d3ee", "#a78bfa", "#0f172a"],
+    },
     type: "dashboard",
     href: "/templates/crm-frosted-glass",
   },
@@ -397,6 +412,11 @@ const templates: Template[] = [
       en: "shadcn-style analytics dashboard with stat cards, interactive charts, and data tables.",
     },
     styleSlug: "shadcn-analytics",
+    coverColors: {
+      primary: "#111827",
+      secondary: "#6b7280",
+      accent: ["#3b82f6", "#10b981", "#f59e0b"],
+    },
     type: "dashboard",
     href: "/templates/shadcn-analytics",
   },
@@ -856,6 +876,13 @@ export default function TemplatesPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {filteredTemplates.map((template, index) => {
                 const style = styleMap.get(template.styleSlug);
+                const previewColors = style
+                  ? {
+                      primary: style.colors.primary,
+                      secondary: style.colors.secondary,
+                      accent: style.colors.accent,
+                    }
+                  : template.coverColors;
                 const templateName = pickLocale(locale, template.name);
                 const templateDescription = pickLocale(locale, template.description);
                 const styleLabel = locale === "zh"
@@ -882,14 +909,10 @@ export default function TemplatesPage() {
                       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                        {style && (
+                        {previewColors && (
                           <TemplateCoverPreview
                             templateId={template.id}
-                            colors={{
-                              primary: style.colors.primary,
-                              secondary: style.colors.secondary,
-                              accent: style.colors.accent,
-                            }}
+                            colors={previewColors}
                           />
                         )}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
