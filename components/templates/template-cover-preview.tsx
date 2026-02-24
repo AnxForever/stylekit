@@ -298,6 +298,9 @@ const TEMPLATE_LAYOUT_MAP: Record<string, string> = {
   "fitness-health": "dashboard",
   "learning-course": "dashboard",
   "real-estate": "magazine",
+  "kokonutui-dashboard": "dashboard",
+  "crm-frosted-glass": "dashboard",
+  "shadcn-analytics": "dashboard",
 };
 
 export function TemplateCoverPreview({ templateId, colors }: CoverProps) {

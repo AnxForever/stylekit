@@ -193,7 +193,7 @@ export default function KokonutuiDashboardPage() {
           <div className="fixed inset-0 bg-black/50 z-[65] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
         )}
         {/* Main content area */}
-        <div className="w-full flex flex-1 flex-col">
+        <div className="flex-1 min-w-0 flex flex-col">
           {/* Top Nav */}
           <header className="h-16 border-b border-gray-200 dark:border-[#1F1F23]">
             <nav className="px-3 sm:px-6 flex items-center justify-between bg-white dark:bg-[#0F0F12] h-full">

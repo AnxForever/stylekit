@@ -100,6 +100,8 @@ tools/scripts/refine-batch-01.mjs
 # External sub-projects
 editorial-brutalist-portfolio/
 style-extractor-dev/
+dashboards/
+.playwright-mcp/
 
 # AI Studio exported data files
 "ai_studio_code*.txt"
