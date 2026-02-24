@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 
 const navMain = [
-  { icon: Users, label: "Contacts", active: true },
+  { icon: Users, label: "Contacts" },
   { icon: TrendingUp, label: "Analytics" },
   { icon: DollarSign, label: "Sales Pipeline" },
   { icon: Calendar, label: "Calendar" },
@@ -48,6 +48,35 @@ const navAdmin = [
   { icon: Settings, label: "Settings" },
   { icon: Zap, label: "Automations" },
 ];
+
+type CrmPage =
+  | "Contacts"
+  | "Analytics"
+  | "Sales Pipeline"
+  | "Calendar"
+  | "Campaigns"
+  | "Reports"
+  | "Deals"
+  | "Messages"
+  | "Data Import"
+  | "Forecasting"
+  | "Settings"
+  | "Automations";
+
+const crmPageSummary: Record<CrmPage, string> = {
+  Contacts: "Manage customer profiles, communication history, and contact value.",
+  Analytics: "Track lead flow, conversion trend, and performance by channel.",
+  "Sales Pipeline": "Monitor opportunity stages, owner assignment, and expected revenue.",
+  Calendar: "Review meetings, follow-ups, and due activity timelines.",
+  Campaigns: "Measure campaign delivery and attribution across lifecycle stages.",
+  Reports: "Generate executive snapshots and operational drill-down reports.",
+  Deals: "Inspect active deals, negotiation status, and close probability.",
+  Messages: "Review team and customer communication in one shared workspace.",
+  "Data Import": "Import and normalize external contact and deal datasets.",
+  Forecasting: "Project upcoming revenue and identify risk gaps early.",
+  Settings: "Configure CRM workspace preferences and business rules.",
+  Automations: "Manage rule-based workflows, notifications, and task triggers.",
+};
 const stats = [
   { title: "Total Contacts", value: "2,847", change: "+12%", icon: Users, color: "text-blue-400" },
   { title: "Active Deals", value: "156", change: "+8%", icon: TrendingUp, color: "text-green-400" },
@@ -102,10 +131,21 @@ function GlassCard({ className = "", children }: { className?: string; children:
   );
 }
 
-function NavButton({ icon: Icon, label, active }: { icon: React.ElementType; label: string; active?: boolean }) {
+function NavButton({
+  icon: Icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon: React.ElementType;
+  label: string;
+  active?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <button
       type="button"
+      onClick={onClick}
       className={`w-full flex items-center px-3 py-2.5 text-base text-white/80 hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg ${
         active ? "bg-white/20 text-white border border-white/30" : ""
       }`}
@@ -118,6 +158,7 @@ function NavButton({ icon: Icon, label, active }: { icon: React.ElementType; lab
 
 export default function CrmFrostedGlassPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activePage, setActivePage] = useState<CrmPage>("Contacts");
 
   return (
     <>
@@ -141,7 +182,13 @@ export default function CrmFrostedGlassPage() {
                 <h4 className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-3">Main Menu</h4>
                 <nav className="space-y-1">
                   {navMain.map((item) => (
-                    <NavButton key={item.label} icon={item.icon} label={item.label} active={item.active} />
+                    <NavButton
+                      key={item.label}
+                      icon={item.icon}
+                      label={item.label}
+                      active={activePage === item.label}
+                      onClick={() => setActivePage(item.label as CrmPage)}
+                    />
                   ))}
                 </nav>
               </div>
@@ -150,7 +197,13 @@ export default function CrmFrostedGlassPage() {
                 <h4 className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-3">CRM Tools</h4>
                 <nav className="space-y-1">
                   {navTools.map((item) => (
-                    <NavButton key={item.label} icon={item.icon} label={item.label} />
+                    <NavButton
+                      key={item.label}
+                      icon={item.icon}
+                      label={item.label}
+                      active={activePage === item.label}
+                      onClick={() => setActivePage(item.label as CrmPage)}
+                    />
                   ))}
                 </nav>
               </div>
@@ -159,7 +212,13 @@ export default function CrmFrostedGlassPage() {
                 <h4 className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-3">Administration</h4>
                 <nav className="space-y-1">
                   {navAdmin.map((item) => (
-                    <NavButton key={item.label} icon={item.icon} label={item.label} />
+                    <NavButton
+                      key={item.label}
+                      icon={item.icon}
+                      label={item.label}
+                      active={activePage === item.label}
+                      onClick={() => setActivePage(item.label as CrmPage)}
+                    />
                   ))}
                 </nav>
               </div>
@@ -194,8 +253,8 @@ export default function CrmFrostedGlassPage() {
             <GlassCard className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-3xl font-bold text-white">Dashboard</h2>
-                  <p className="text-white/60">Welcome back! Here is your CRM overview</p>
+                  <h2 className="text-3xl font-bold text-white">{activePage}</h2>
+                  <p className="text-white/60">{crmPageSummary[activePage]}</p>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -221,6 +280,8 @@ export default function CrmFrostedGlassPage() {
                 </div>
               </div>
             </GlassCard>
+            {activePage === "Contacts" ? (
+              <>
             {/* Stats Cards */}
             <div className="grid grid-cols-4 gap-6">
               {stats.map((stat) => (
@@ -377,6 +438,27 @@ export default function CrmFrostedGlassPage() {
                 </div>
               </div>
             </GlassCard>
+              </>
+            ) : (
+              <GlassCard className="p-8">
+                <h3 className="text-2xl font-semibold text-white">{activePage} Workspace</h3>
+                <p className="mt-2 text-white/70">
+                  This section is now active. Use the left navigation to switch between CRM modules.
+                </p>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {stats.slice(0, 4).map((stat) => (
+                    <div
+                      key={stat.title}
+                      className="rounded-2xl border border-white/20 bg-white/5 p-4"
+                    >
+                      <p className="text-xs text-white/60">{stat.title}</p>
+                      <p className="mt-1 text-xl font-semibold text-white">{stat.value}</p>
+                      <p className={`mt-1 text-sm ${stat.color}`}>{stat.change}</p>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            )}
           </div>
 
           {/* Right Sidebar */}
