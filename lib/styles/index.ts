@@ -240,9 +240,10 @@ import { witchcore } from "./witchcore";
 import { neonTokyo } from "./neon-tokyo";
 import { paperCraft } from "./paper-craft";
 import { blueprint } from "./blueprint";
+import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
-export const styles: DesignStyle[] = [
+const rawStyles: DesignStyle[] = [
   neoBrutalist,
   editorial,
   neumorphism,
@@ -387,6 +388,8 @@ export const styles: DesignStyle[] = [
   paperCraft,
   blueprint,
 ];
+
+export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));
 
 // 根据 slug 获取风格
 export function getStyleBySlug(slug: string): DesignStyle | undefined {
