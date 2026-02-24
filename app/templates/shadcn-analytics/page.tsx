@@ -46,6 +46,20 @@ const navSecondary = [
   { title: "Get Help", icon: HelpCircle },
   { title: "Search", icon: Search },
 ];
+
+const shadcnPageSummary: Record<string, string> = {
+  Dashboard: "Overview of performance metrics, charts, and recent document execution.",
+  Lifecycle: "Track process states and status transitions across workflow stages.",
+  Analytics: "Inspect trends, segments, and comparative performance over time.",
+  Projects: "Review project-level budget, status, and execution insights.",
+  Team: "Manage team output, owner responsibility, and review cadence.",
+  "Data Library": "Browse structured datasets and source collections.",
+  Reports: "Access generated reports and downloadable analytics snapshots.",
+  "Word Assistant": "Manage writing assistant assets and generated drafts.",
+  Settings: "Configure workspace preferences and dashboard behavior.",
+  "Get Help": "Open support guidance, troubleshooting, and documentation.",
+  Search: "Find modules, reports, and records quickly.",
+};
 /* ── Stats Cards Data ── */
 const statCards = [
   { label: "Total Revenue", value: "$1,250.00", badge: "+12.5%", trend: "up" as const, footer: "Trending up this month", detail: "Visitors for the last 6 months" },
@@ -174,6 +188,7 @@ export default function ShadcnAnalyticsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [timeRange, setTimeRange] = useState("90d");
   const [page, setPage] = useState(0);
+  const [activePage, setActivePage] = useState("Dashboard");
   const pageSize = 5;
   const totalPages = Math.ceil(tableData.length / pageSize);
   const pagedData = tableData.slice(page * pageSize, (page + 1) * pageSize);
@@ -198,7 +213,12 @@ export default function ShadcnAnalyticsPage() {
                 <button
                   key={item.title}
                   type="button"
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                  onClick={() => setActivePage(item.title)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors ${
+                    activePage === item.title
+                      ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  }`}
                 >
                   <item.icon className="w-4 h-4" />
                   {item.title}
@@ -212,7 +232,12 @@ export default function ShadcnAnalyticsPage() {
                   <button
                     key={item.name}
                     type="button"
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    onClick={() => setActivePage(item.name)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activePage === item.name
+                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    }`}
                   >
                     <item.icon className="w-4 h-4" />
                     {item.name}
@@ -226,7 +251,12 @@ export default function ShadcnAnalyticsPage() {
                   <button
                     key={item.title}
                     type="button"
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    onClick={() => setActivePage(item.title)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activePage === item.title
+                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    }`}
                   >
                     <item.icon className="w-4 h-4" />
                     {item.title}
@@ -257,12 +287,13 @@ export default function ShadcnAnalyticsPage() {
               <Menu className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
             </button>
             <div className="w-px h-4 bg-zinc-200 dark:bg-zinc-700 mx-2" />
-            <h1 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Documents</h1>
+            <h1 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{activePage}</h1>
           </header>
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            {activePage === "Dashboard" ? (
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               {/* Stat Cards */}
               <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:px-6 xl:grid-cols-4">
                 {statCards.map((card) => (
@@ -408,7 +439,29 @@ export default function ShadcnAnalyticsPage() {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            ) : (
+              <div className="px-4 lg:px-6 py-6">
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{activePage}</h2>
+                  <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                    {shadcnPageSummary[activePage] ?? "This module is ready. Use the sidebar to switch between views."}
+                  </p>
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {statCards.map((card) => (
+                      <div
+                        key={card.label}
+                        className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4"
+                      >
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400">{card.label}</p>
+                        <p className="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">{card.value}</p>
+                        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{card.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
