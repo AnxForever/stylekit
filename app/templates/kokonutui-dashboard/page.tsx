@@ -126,7 +126,7 @@ export default function KokonutuiDashboardPage() {
   return (
     <>
       <TemplateBackButton variant="dark" />
-      <div className="flex h-screen bg-white dark:bg-[#0F0F12]">
+      <div className="min-h-screen bg-white dark:bg-[#0F0F12]">
         {/* Mobile menu button */}
         <button
           type="button"
@@ -138,7 +138,7 @@ export default function KokonutuiDashboardPage() {
 
         {/* Sidebar */}
         <nav
-          className={`fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-[#0F0F12] transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:w-64 border-r border-gray-200 dark:border-[#1F1F23] ${
+          className={`fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-[#0F0F12] transform transition-transform duration-200 ease-in-out lg:translate-x-0 border-r border-gray-200 dark:border-[#1F1F23] ${
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -193,7 +193,7 @@ export default function KokonutuiDashboardPage() {
           <div className="fixed inset-0 bg-black/50 z-[65] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
         )}
         {/* Main content area */}
-        <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex min-h-screen min-w-0 flex-col lg:ml-64">
           {/* Top Nav */}
           <header className="h-16 border-b border-gray-200 dark:border-[#1F1F23]">
             <nav className="px-3 sm:px-6 flex items-center justify-between bg-white dark:bg-[#0F0F12] h-full">
