@@ -367,6 +367,39 @@ const templates: Template[] = [
     type: "ecommerce",
     href: "/templates/real-estate",
   },
+  {
+    id: "kokonutui-dashboard",
+    name: { zh: "KokonutUI 财务面板", en: "KokonutUI Finance Dashboard" },
+    description: {
+      zh: "现代财务管理仪表盘，包含账户概览、交易记录和事件追踪。",
+      en: "Modern finance dashboard with account overview, transactions, and event tracking.",
+    },
+    styleSlug: "kokonutui-dashboard",
+    type: "dashboard",
+    href: "/templates/kokonutui-dashboard",
+  },
+  {
+    id: "crm-frosted-glass",
+    name: { zh: "毛玻璃 CRM 面板", en: "Frosted Glass CRM Dashboard" },
+    description: {
+      zh: "磨砂玻璃效果的 CRM 管理面板，包含联系人管理、销售目标和团队绩效。",
+      en: "Frosted glass CRM dashboard with contact management, sales targets, and team performance.",
+    },
+    styleSlug: "crm-frosted-glass",
+    type: "dashboard",
+    href: "/templates/crm-frosted-glass",
+  },
+  {
+    id: "shadcn-analytics",
+    name: { zh: "shadcn 数据分析面板", en: "shadcn Analytics Dashboard" },
+    description: {
+      zh: "基于 shadcn 风格的数据分析仪表盘，包含统计卡片、交互式图表和数据表格。",
+      en: "shadcn-style analytics dashboard with stat cards, interactive charts, and data tables.",
+    },
+    styleSlug: "shadcn-analytics",
+    type: "dashboard",
+    href: "/templates/shadcn-analytics",
+  },
 ];
 
 const allStyles = getAllStylesMeta();

@@ -31,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "style-extractor-dev/templates/**/*", "packages/core", "tests/e2e", "tests/playwright.config.ts", "tools/cli", "tools/scripts", "editorial-brutalist-portfolio"]
+  "exclude": ["node_modules", "style-extractor-dev/templates/**/*", "packages/core", "tests/e2e", "tests/playwright.config.ts", "tools/cli", "tools/scripts", "editorial-brutalist-portfolio", "dashboards"]
 }
