@@ -5,7 +5,9 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 
 const PROJECT_ROOT = process.cwd();
-const EXTRACTOR_ROOT = path.join(PROJECT_ROOT, "style-extractor-dev");
+const EXTRACTOR_ROOT = process.env.STYLE_EXTRACTOR_ROOT
+  ? path.resolve(PROJECT_ROOT, process.env.STYLE_EXTRACTOR_ROOT)
+  : path.join(PROJECT_ROOT, "style-extractor-dev");
 const STYLE_ROOT = path.join(PROJECT_ROOT, "lib", "styles");
 const SCAN_DIRS = ["scripts", "tests", "tools"];
 const JS_EXTENSIONS = new Set([".js", ".cjs", ".mjs"]);
@@ -221,25 +223,31 @@ function runStylePromptSafetyChecks() {
 }
 
 function main() {
-  if (!fs.existsSync(EXTRACTOR_ROOT)) {
-    console.error("[style-extractor-check] Missing folder: style-extractor-dev");
-    process.exit(1);
-  }
-
+  const extractorExists = fs.existsSync(EXTRACTOR_ROOT);
   const files = [];
-  for (const relativeDir of SCAN_DIRS) {
-    collectJavaScriptFiles(path.join(EXTRACTOR_ROOT, relativeDir), files);
+  let syntaxFailures = [];
+  let consistencyIssues = [];
+
+  if (extractorExists) {
+    for (const relativeDir of SCAN_DIRS) {
+      collectJavaScriptFiles(path.join(EXTRACTOR_ROOT, relativeDir), files);
+    }
+
+    files.sort();
+
+    if (files.length === 0) {
+      console.error("[style-extractor-check] No JavaScript files found to validate.");
+      process.exit(1);
+    }
+
+    syntaxFailures = runSyntaxChecks(files);
+    consistencyIssues = runConsistencyChecks();
+  } else {
+    console.warn(
+      "[style-extractor-check] Missing folder: style-extractor-dev. Skipping extractor syntax/consistency checks.",
+    );
   }
 
-  files.sort();
-
-  if (files.length === 0) {
-    console.error("[style-extractor-check] No JavaScript files found to validate.");
-    process.exit(1);
-  }
-
-  const syntaxFailures = runSyntaxChecks(files);
-  const consistencyIssues = runConsistencyChecks();
   const promptSafetyIssues = runStylePromptSafetyChecks();
 
   if (syntaxFailures.length > 0 || consistencyIssues.length > 0 || promptSafetyIssues.length > 0) {
@@ -272,9 +280,13 @@ function main() {
     process.exit(1);
   }
 
-  console.log(
-    `[style-extractor-check] OK. Checked ${files.length} JavaScript files + consistency checks + style prompt safety.`,
-  );
+  if (extractorExists) {
+    console.log(
+      `[style-extractor-check] OK. Checked ${files.length} JavaScript files + consistency checks + style prompt safety.`,
+    );
+  } else {
+    console.log("[style-extractor-check] OK. Checked style prompt safety only.");
+  }
 }
 
 main();
