@@ -160,6 +160,218 @@ export default function CrmFrostedGlassPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activePage, setActivePage] = useState<CrmPage>("Contacts");
 
+  const renderCrmModuleContent = () => {
+    switch (activePage) {
+      case "Analytics":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { label: "Lead Conversion", value: "28.4%", change: "+3.2%" },
+                { label: "Avg Deal Cycle", value: "21 days", change: "-1.8d" },
+                { label: "Attribution Score", value: "86/100", change: "+4" },
+              ].map((item) => (
+                <GlassCard key={item.label} className="p-5">
+                  <p className="text-white/70 text-sm">{item.label}</p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{item.value}</p>
+                  <p className="mt-1 text-sm text-emerald-300">{item.change}</p>
+                </GlassCard>
+              ))}
+            </div>
+            <GlassCard className="p-6">
+              <h3 className="text-xl font-semibold text-white">Channel Contribution</h3>
+              <div className="mt-4 space-y-3">
+                {[
+                  { channel: "Inbound", value: 72 },
+                  { channel: "Outbound", value: 54 },
+                  { channel: "Partnership", value: 43 },
+                  { channel: "Referral", value: 61 },
+                ].map((row) => (
+                  <div key={row.channel}>
+                    <div className="flex items-center justify-between text-sm text-white/80 mb-1">
+                      <span>{row.channel}</span>
+                      <span>{row.value}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-400" style={{ width: `${row.value}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          </div>
+        );
+      case "Sales Pipeline":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Pipeline Stages</h3>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[
+                { stage: "Qualified", deals: 28, value: "$124K" },
+                { stage: "Proposal", deals: 16, value: "$96K" },
+                { stage: "Negotiation", deals: 9, value: "$63K" },
+                { stage: "Closing", deals: 5, value: "$41K" },
+              ].map((stage) => (
+                <div key={stage.stage} className="rounded-xl border border-white/20 bg-white/5 p-4">
+                  <p className="text-sm text-white/70">{stage.stage}</p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{stage.deals}</p>
+                  <p className="mt-1 text-sm text-white/80">{stage.value}</p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        );
+      case "Calendar":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Upcoming Schedule</h3>
+            <div className="mt-4 space-y-3">
+              {[
+                { time: "09:30", title: "Pipeline Review", owner: "Sales Team A" },
+                { time: "11:00", title: "Key Account Check-in", owner: "Maria Garcia" },
+                { time: "14:00", title: "Forecast Sync", owner: "Finance Ops" },
+                { time: "16:30", title: "Campaign Debrief", owner: "Growth Team" },
+              ].map((event) => (
+                <div key={event.time} className="rounded-xl border border-white/20 bg-white/5 p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-white">{event.title}</p>
+                    <p className="text-xs text-white/60 mt-1">{event.owner}</p>
+                  </div>
+                  <span className="text-sm text-cyan-300">{event.time}</span>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        );
+      case "Campaigns":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { name: "Q2 Expansion", status: "Running", budget: "$42K", roi: "3.4x" },
+              { name: "Enterprise Reactivation", status: "Draft", budget: "$18K", roi: "2.1x" },
+              { name: "Partner Co-Sell", status: "Running", budget: "$26K", roi: "2.8x" },
+              { name: "Retention Push", status: "Completed", budget: "$12K", roi: "4.1x" },
+            ].map((campaign) => (
+              <GlassCard key={campaign.name} className="p-5">
+                <p className="text-lg font-semibold text-white">{campaign.name}</p>
+                <p className="mt-1 text-sm text-white/70">Status: {campaign.status}</p>
+                <div className="mt-4 flex items-center justify-between text-sm">
+                  <span className="text-white/70">Budget {campaign.budget}</span>
+                  <span className="text-emerald-300">ROI {campaign.roi}</span>
+                </div>
+              </GlassCard>
+            ))}
+          </div>
+        );
+      case "Reports":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Reporting Hub</h3>
+            <div className="mt-4 space-y-3">
+              {[
+                "Monthly Revenue Performance",
+                "Pipeline Velocity Analysis",
+                "Campaign Attribution Summary",
+                "Team Productivity Breakdown",
+              ].map((report) => (
+                <div key={report} className="rounded-xl border border-white/20 bg-white/5 p-4 flex items-center justify-between">
+                  <span className="text-sm text-white">{report}</span>
+                  <button type="button" className="text-xs px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white">
+                    Export
+                  </button>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        );
+      case "Deals":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { client: "TechCorp", stage: "Negotiation", amount: "$32K" },
+              { client: "NorthBridge", stage: "Proposal", amount: "$18K" },
+              { client: "Apex Systems", stage: "Closing", amount: "$47K" },
+              { client: "CloudNine", stage: "Qualified", amount: "$11K" },
+            ].map((deal) => (
+              <GlassCard key={deal.client} className="p-5">
+                <p className="text-lg font-semibold text-white">{deal.client}</p>
+                <p className="mt-1 text-sm text-white/70">{deal.stage}</p>
+                <p className="mt-3 text-xl font-bold text-emerald-300">{deal.amount}</p>
+              </GlassCard>
+            ))}
+          </div>
+        );
+      case "Messages":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Message Threads</h3>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-1 space-y-2">
+                {["Sarah Johnson", "Michael Chen", "Lisa Thompson"].map((name) => (
+                  <button key={name} type="button" className="w-full text-left rounded-lg border border-white/20 bg-white/5 p-3 text-sm text-white hover:bg-white/10">
+                    {name}
+                  </button>
+                ))}
+              </div>
+              <div className="md:col-span-2 rounded-lg border border-white/20 bg-white/5 p-4 space-y-3">
+                <p className="text-sm text-white/80">Sarah Johnson</p>
+                <div className="rounded-lg bg-white/10 p-3 text-sm text-white/90">Can we revise the proposal timeline to next Tuesday?</div>
+                <div className="rounded-lg bg-cyan-500/30 p-3 text-sm text-white ml-10">Yes, we will align the timeline and update your draft today.</div>
+              </div>
+            </div>
+          </GlassCard>
+        );
+      case "Data Import":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Data Import</h3>
+            <div className="mt-4 rounded-xl border border-dashed border-white/30 bg-white/5 p-10 text-center">
+              <p className="text-white/80">Drop CSV / XLSX files here</p>
+              <button type="button" className="mt-4 px-4 py-2 text-sm rounded-lg bg-white/20 hover:bg-white/30 text-white">
+                Select File
+              </button>
+            </div>
+          </GlassCard>
+        );
+      case "Forecasting":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">Quarter Forecast</h3>
+            <div className="mt-4 flex items-end gap-2 h-44">
+              {[42, 55, 61, 58, 67, 74, 82, 79].map((h, index) => (
+                <div key={index} className="flex-1 rounded-t-md bg-gradient-to-t from-cyan-400/70 to-fuchsia-400/70" style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </GlassCard>
+        );
+      case "Settings":
+      case "Automations":
+        return (
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-semibold text-white">{activePage}</h3>
+            <div className="mt-4 space-y-3">
+              {[
+                "Auto-assign leads by region",
+                "Notify owner on stage change",
+                "Send weekly forecast digest",
+              ].map((rule) => (
+                <label key={rule} className="flex items-center justify-between rounded-lg border border-white/20 bg-white/5 p-3">
+                  <span className="text-sm text-white/85">{rule}</span>
+                  <input type="checkbox" className="h-4 w-4" defaultChecked />
+                </label>
+              ))}
+            </div>
+          </GlassCard>
+        );
+      default:
+        return (
+          <GlassCard className="p-6">
+            <p className="text-white/70">{crmPageSummary[activePage]}</p>
+          </GlassCard>
+        );
+    }
+  };
+
   return (
     <>
       <TemplateBackButton variant="glass" />
@@ -440,24 +652,7 @@ export default function CrmFrostedGlassPage() {
             </GlassCard>
               </>
             ) : (
-              <GlassCard className="p-8">
-                <h3 className="text-2xl font-semibold text-white">{activePage} Workspace</h3>
-                <p className="mt-2 text-white/70">
-                  This section is now active. Use the left navigation to switch between CRM modules.
-                </p>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {stats.slice(0, 4).map((stat) => (
-                    <div
-                      key={stat.title}
-                      className="rounded-2xl border border-white/20 bg-white/5 p-4"
-                    >
-                      <p className="text-xs text-white/60">{stat.title}</p>
-                      <p className="mt-1 text-xl font-semibold text-white">{stat.value}</p>
-                      <p className={`mt-1 text-sm ${stat.color}`}>{stat.change}</p>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
+              renderCrmModuleContent()
             )}
           </div>
 

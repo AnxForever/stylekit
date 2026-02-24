@@ -193,6 +193,115 @@ export default function ShadcnAnalyticsPage() {
   const totalPages = Math.ceil(tableData.length / pageSize);
   const pagedData = tableData.slice(page * pageSize, (page + 1) * pageSize);
 
+  const renderShadcnModuleContent = () => {
+    switch (activePage) {
+      case "Lifecycle":
+        return (
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Lifecycle Stages</h2>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[
+                { stage: "Draft", count: 18 },
+                { stage: "Review", count: 11 },
+                { stage: "Approved", count: 26 },
+                { stage: "Archived", count: 9 },
+              ].map((stage) => (
+                <div key={stage.stage} className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4">
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">{stage.stage}</p>
+                  <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{stage.count}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "Analytics":
+        return (
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Analytics Deep Dive</h2>
+            <div className="mt-4 flex items-end gap-2 h-44">
+              {[28, 35, 48, 42, 57, 63, 59, 68, 72, 66, 79, 74].map((h, i) => (
+                <div key={i} className="flex-1 rounded-t-sm bg-zinc-900 dark:bg-zinc-100" style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </div>
+        );
+      case "Projects":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { name: "Q3 Knowledge Base", owner: "Eddie Lake", status: "In Progress" },
+              { name: "Policy Refactor", owner: "Jamik Tashpulatov", status: "Review" },
+              { name: "Data Cleanup", owner: "Eddie Lake", status: "Done" },
+              { name: "Audit Pack", owner: "Jamik Tashpulatov", status: "Planned" },
+            ].map((project) => (
+              <div key={project.name} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-5">
+                <p className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{project.name}</p>
+                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{project.owner}</p>
+                <p className="mt-3 text-xs inline-block px-2 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">{project.status}</p>
+              </div>
+            ))}
+          </div>
+        );
+      case "Team":
+        return (
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Team Capacity</h2>
+            <div className="mt-4 space-y-3">
+              {[
+                { member: "Eddie Lake", capacity: 82 },
+                { member: "Jamik Tashpulatov", capacity: 66 },
+                { member: "Maya Wang", capacity: 74 },
+              ].map((member) => (
+                <div key={member.member}>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-zinc-700 dark:text-zinc-300">{member.member}</span>
+                    <span className="text-zinc-500 dark:text-zinc-400">{member.capacity}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
+                    <div className="h-full rounded-full bg-zinc-900 dark:bg-zinc-100" style={{ width: `${member.capacity}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "Data Library":
+      case "Reports":
+      case "Word Assistant":
+      case "Settings":
+      case "Get Help":
+      case "Search":
+        return (
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{activePage}</h2>
+            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              {shadcnPageSummary[activePage] ?? "This module is ready."}
+            </p>
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+              {[
+                "Overview panel",
+                "Recent updates",
+                "Saved views",
+                "Ownership and permissions",
+                "Export and sharing",
+                "Audit history",
+              ].map((item) => (
+                <div key={item} className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-3 text-sm text-zinc-700 dark:text-zinc-300">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{shadcnPageSummary[activePage]}</p>
+          </div>
+        );
+    }
+  };
+
   return (
     <>
       <TemplateBackButton variant="default" />
@@ -441,26 +550,7 @@ export default function ShadcnAnalyticsPage() {
               </div>
               </div>
             ) : (
-              <div className="px-4 lg:px-6 py-6">
-                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm p-6">
-                  <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{activePage}</h2>
-                  <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                    {shadcnPageSummary[activePage] ?? "This module is ready. Use the sidebar to switch between views."}
-                  </p>
-                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    {statCards.map((card) => (
-                      <div
-                        key={card.label}
-                        className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4"
-                      >
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400">{card.label}</p>
-                        <p className="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">{card.value}</p>
-                        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{card.detail}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <div className="px-4 lg:px-6 py-6">{renderShadcnModuleContent()}</div>
             )}
           </div>
         </div>
