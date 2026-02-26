@@ -173,7 +173,7 @@ export const editorial: DesignStyle = {
     </p>
   </div>
   <div className="w-full aspect-[21/9] bg-gray-200 overflow-hidden">
-    <img src="hero.jpg" alt="Hero" className="w-full h-full object-cover" />
+    <img src="/readme/home-hero.png" alt="Hero" className="w-full h-full object-cover" />
   </div>
 </section>`,
     },
