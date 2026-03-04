@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StylesContent } from "@/components/styles/styles-content";
 import { type StyleType, type StyleTag } from "@/lib/styles/meta";
 import { listCatalogStylesMeta } from "@/lib/styles/community-runtime";
+
+export const metadata: Metadata = {
+  title: "Browse 130+ Design Styles",
+  description:
+    "Explore 130+ curated visual styles: Neo-Brutalist, Glassmorphism, Cyberpunk, Art Deco, and more. Each style includes design tokens, component recipes, and export tools.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/styles`,
+  },
+};
 
 type StyleSort = "recommended" | "name-asc" | "name-desc";
 
