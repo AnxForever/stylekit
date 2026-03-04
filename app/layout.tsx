@@ -11,10 +11,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "StyleKit - AI-Friendly Design System | 85+ Visual Styles",
+    default: "StyleKit - AI-Friendly Design System | 130+ Visual Styles",
     template: "%s | StyleKit",
   },
-  description: "AI-friendly design system with 85+ visual styles including Neo-Brutalist, Glassmorphism, Neumorphism. Export design tokens, component recipes, and AI prompts for consistent UI generation.",
+  description: "AI-friendly design system with 130+ visual styles including Neo-Brutalist, Glassmorphism, Neumorphism. Export design tokens, component recipes, and AI prompts for consistent UI generation.",
   keywords: [
     "design system",
     "UI components",
@@ -50,21 +50,12 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: "StyleKit",
     title: "StyleKit - AI-Friendly Design System",
-    description: "85+ visual styles with design tokens, component recipes, and AI prompts. Make AI-generated UI beautiful and consistent.",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "StyleKit - AI-Friendly Design System",
-      },
-    ],
+    description: "130+ visual styles with design tokens, component recipes, and AI prompts. Make AI-generated UI beautiful and consistent.",
   },
   twitter: {
     card: "summary_large_image",
     title: "StyleKit - AI-Friendly Design System",
-    description: "85+ visual styles with design tokens, component recipes, and AI prompts.",
-    images: ["/og-image.svg"],
+    description: "130+ visual styles with design tokens, component recipes, and AI prompts.",
     creator: "@stylekit",
   },
   robots: {
@@ -79,9 +70,12 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // 添加你的验证码
-    // google: "your-google-verification-code",
-    // yandex: "your-yandex-verification-code",
+    // TODO: Register at https://search.google.com/search-console → get verification code
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    // TODO: Register at https://www.bing.com/webmasters → get verification code
+    other: {
+      "msvalidate.01": process.env.BING_SITE_VERIFICATION || "",
+    },
   },
   category: "technology",
 };
@@ -105,7 +99,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "StyleKit",
-              description: "AI-friendly design system with 85+ visual styles, design tokens, component recipes, and AI prompts.",
+              description: "AI-friendly design system with 130+ visual styles, design tokens, component recipes, and AI prompts.",
               url: BASE_URL,
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
