@@ -3,7 +3,7 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
 function getTemplateSlugs(): string[] {
   const templatesDir = join(process.cwd(), "app/templates");
