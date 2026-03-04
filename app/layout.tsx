@@ -6,7 +6,7 @@ import { ClientScripts } from "@/components/layout/client-scripts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -38,10 +38,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
-    languages: {
-      "en-US": `${BASE_URL}/en`,
-      "zh-CN": BASE_URL,
-    },
   },
   openGraph: {
     type: "website",
@@ -70,9 +66,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // TODO: Register at https://search.google.com/search-console → get verification code
     google: process.env.GOOGLE_SITE_VERIFICATION,
-    // TODO: Register at https://www.bing.com/webmasters → get verification code
     other: {
       "msvalidate.01": process.env.BING_SITE_VERIFICATION || "",
     },
