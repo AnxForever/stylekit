@@ -4,9 +4,9 @@
 
 # StyleKit
 
-**AI-Friendly Design System — 120+ Styles, 30+ Templates, One Toolkit**
+**AI-Friendly Design System — 130+ Styles, 30+ Templates, One Toolkit**
 
-[![Live Site](https://img.shields.io/badge/Live-stylekit.top-black?style=for-the-badge&logo=vercel)](https://stylekit.top)
+[![Live Site](https://img.shields.io/badge/Live-www.stylekit.top-black?style=for-the-badge&logo=vercel)](https://www.stylekit.top)
 
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
@@ -24,7 +24,7 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. It provi
 
 ## Features
 
-**Design System** — 120+ visual styles with design tokens, component recipes, and export to CSS variables, Tailwind presets, shadcn themes, and Figma tokens.
+**Design System** — 130+ visual styles with design tokens, component recipes, and export to CSS variables, Tailwind presets, shadcn themes, and Figma tokens.
 
 **AI Tools** — Prompt builder (Surface + Context + Constraints), smart recommender, style linter, style analyzer, and style blender.
 
@@ -45,7 +45,7 @@ Open [http://localhost:3000](http://localhost:3000). See [`.env.example`](.env.e
 
 ## Styles
 
-120+ styles across multiple categories:
+130+ styles across multiple categories:
 
 | Category | Examples |
 |----------|---------|
@@ -59,13 +59,13 @@ Open [http://localhost:3000](http://localhost:3000). See [`.env.example`](.env.e
 | Layout Patterns | Magazine Grid, Masonry Flow, Split Screen, Parallax |
 | Nature / Cozy | Cottagecore, Scandinavian, Wabi-Sabi, Natural Organic |
 
-[Browse all styles →](https://stylekit.top/styles)
+[Browse all styles →](https://www.stylekit.top/styles)
 
 ## Templates
 
 30+ production-ready page templates covering SaaS landing, admin panel, e-commerce, portfolio, editorial blog, dashboard, auth pages, docs site, pricing, and more.
 
-[Browse all templates →](https://stylekit.top/templates)
+[Browse all templates →](https://www.stylekit.top/templates)
 
 ## AI Integration
 
@@ -90,7 +90,7 @@ Export any style as `.cursorrules`, `claude-rules`, `windsurf-rules`, `tailwind-
 
 ### llms.txt
 
-AI-discoverable docs at [`/llms.txt`](https://stylekit.top/llms.txt) and `/llms-full.txt`.
+AI-discoverable docs at [`/llms.txt`](https://www.stylekit.top/llms.txt) and `/llms-full.txt`.
 
 ### CLI
 
@@ -116,7 +116,7 @@ GET  /api/knowledge/search?q=...      # Search design knowledge
 GET  /api/knowledge/smart             # Smart recommendations
 ```
 
-[Full API docs →](https://stylekit.top/developers/api)
+[Full API docs →](https://www.stylekit.top/developers/api)
 
 ## Tech Stack
 
@@ -151,7 +151,7 @@ MIT — see [LICENSE](LICENSE).
 
 <div align="center">
 
-**[stylekit.top](https://stylekit.top)**
+**[www.stylekit.top](https://www.stylekit.top)**
 
 Built by [AnxForever](https://github.com/AnxForever)
 
