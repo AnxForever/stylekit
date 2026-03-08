@@ -78,6 +78,7 @@ image.jpg
 
 # Runtime data (analytics, submissions)
 /.data/
+/data/
 
 # Workspace build outputs and generated reports
 packages/**/node_modules/
@@ -106,3 +107,6 @@ dashboards/
 # AI Studio exported data files
 "ai_studio_code*.txt"
 ai_studio_code*.txt
+
+# Skill packs
+*.skill
