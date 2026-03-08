@@ -5,9 +5,12 @@ import { Footer } from "@/components/layout/footer";
 import { BlendContent } from "./_content";
 
 export const metadata: Metadata = {
-  title: "Blend Styles - StyleKit",
+  title: "Blend Styles",
   description:
     "Mix and match design token dimensions from different styles. Pick colors from one style, typography from another, and create unique hybrid designs.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/blend`,
+  },
 };
 
 export default function BlendPage() {

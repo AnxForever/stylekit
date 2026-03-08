@@ -6,9 +6,9 @@ import { type StyleType, type StyleTag } from "@/lib/styles/meta";
 import { listCatalogStylesMeta } from "@/lib/styles/community-runtime";
 
 export const metadata: Metadata = {
-  title: "Browse 130+ Design Styles",
+  title: "Browse 130+ UI Design Styles & AI Prompts",
   description:
-    "Explore 130+ curated visual styles: Neo-Brutalist, Glassmorphism, Cyberpunk, Art Deco, and more. Each style includes design tokens, component recipes, and export tools.",
+    "Explore 130+ curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.",
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/styles`,
   },

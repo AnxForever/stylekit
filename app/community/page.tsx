@@ -4,8 +4,11 @@ import { Footer } from "@/components/layout/footer";
 import { CommunityContent } from "./_content";
 
 export const metadata: Metadata = {
-  title: "社区 - StyleKit",
+  title: "社区风格",
   description: "浏览已通过审核的社区投稿风格与作者署名。",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/community`,
+  },
 };
 
 interface CommunityPageProps {
