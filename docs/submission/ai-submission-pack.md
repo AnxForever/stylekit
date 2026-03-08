@@ -6,7 +6,7 @@ Use this pack to generate submission artifacts that are both schema-valid and pr
 
 A submission is ready only when all three artifacts are usable:
 
-1. `manifest.json` fully matches `schemas/style-submission-manifest.schema.json`
+1. `manifest.json` fully matches `lib/schemas/style-submission-manifest.schema.json`
 2. `cover.svg` is valid SVG and visually matches the style direction
 3. `self-check.md` clearly lists risks and review focus
 
@@ -51,7 +51,7 @@ You MUST output exactly three artifacts and nothing else:
 
 Hard constraints:
 - manifest.json MUST satisfy:
-  schemas/style-submission-manifest.schema.json
+  lib/schemas/style-submission-manifest.schema.json
 - slug must match ^[a-z0-9]+(?:-[a-z0-9]+)*$
 - all colors must be valid hex
 - doList and dontList must each include at least 1 non-empty item
