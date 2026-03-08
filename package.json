@@ -22,8 +22,6 @@
     "test:style-extractor:ci": "npm run check:style-extractor && npm run test:style-extractor",
     "cli": "npx --no-install tsx tools/cli/stylekit.ts",
     "mcp": "npx --no-install tsx tools/mcp/server.ts",
-    "hooks:install": "git config core.hooksPath .githooks",
-    "worktree:new": "bash tools/scripts/new-cc-worktree.sh",
     "e2e": "npx playwright test --config tests/playwright.config.ts",
     "e2e:chrome": "node tools/scripts/run-playwright-chrome.mjs",
     "e2e:ui": "npx playwright test --config tests/playwright.config.ts --ui"
