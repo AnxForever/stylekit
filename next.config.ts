@@ -51,6 +51,11 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      { source: "/prompts", destination: "/ui-prompts", permanent: true },
+      { source: "/prompts/landing-page", destination: "/landing-page-prompts", permanent: true },
+      { source: "/prompts/dashboard-design", destination: "/dashboard-prompts", permanent: true },
+      { source: "/prompts/tailwind-ui", destination: "/tailwind-ui-prompts", permanent: true },
+      { source: "/prompts/dark-mode", destination: "/dark-mode-ui-prompts", permanent: true },
       { source: "/prompt-builder", destination: "/generate", permanent: false },
       { source: "/linter", destination: "/generate", permanent: false },
       { source: "/playground", destination: "/generate", permanent: false },

@@ -4,9 +4,12 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 export const metadata: Metadata = {
-  title: "Create Style - StyleKit",
+  title: "Create Style",
   description:
     "Create a custom style or import style-extractor results, then reuse it in the generator.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/create-style`,
+  },
 };
 
 const StyleCreatorClient = dynamic(

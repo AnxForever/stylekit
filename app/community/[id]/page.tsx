@@ -18,22 +18,26 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  if (!isValidSubmissionId(id)) return { title: "Not Found — StyleKit" };
+  if (!isValidSubmissionId(id)) return { title: "Not Found" };
 
   const submission = isSupabaseConfigured()
     ? (await getSubmissionSupabase(id)) ?? (await getSubmission(id))
     : await getSubmission(id);
 
   if (!submission || submission.status !== "approved") {
-    return { title: "Not Found — StyleKit" };
+    return { title: "Not Found" };
   }
 
   const style = mapSubmissionToStyle(submission);
-  if (!style) return { title: "Not Found — StyleKit" };
+  if (!style) return { title: "Not Found" };
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
   return {
-    title: `${style.name} — Community — StyleKit`,
+    title: `${style.name} — Community`,
     description: style.description,
+    alternates: {
+      canonical: `${baseUrl}/community/${id}`,
+    },
   };
 }
 

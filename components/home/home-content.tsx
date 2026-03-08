@@ -16,7 +16,7 @@ interface HomeContentProps {
 }
 
 export function HomeContent({ styles }: HomeContentProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [activeQuickLink, setActiveQuickLink] = useState("#home-core-features");
   const [homeScrollProgress, setHomeScrollProgress] = useState(0);
   const [isMobileQuickJumpVisible, setIsMobileQuickJumpVisible] = useState(false);
@@ -272,6 +272,29 @@ export function HomeContent({ styles }: HomeContentProps) {
                   className={ctaSecondaryClassName}
                 >
                   {t("home.ctaGenerate")}
+                </Link>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link href="/ui-prompts" className={smallLinkClassName}>
+                  {locale === "zh" ? "UI 设计提示词" : "UI Design Prompts"}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+                <Link href="/landing-page-prompts" className={smallLinkClassName}>
+                  {locale === "zh" ? "落地页提示词" : "Landing Page Prompts"}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+                <Link href="/dashboard-prompts" className={smallLinkClassName}>
+                  {locale === "zh" ? "Dashboard 提示词" : "Dashboard Prompts"}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+                <Link href="/tailwind-ui-prompts" className={smallLinkClassName}>
+                  {locale === "zh" ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+                <Link href="/dark-mode-ui-prompts" className={smallLinkClassName}>
+                  {locale === "zh" ? "暗黑模式提示词" : "Dark Mode UI Prompts"}
+                  <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
 

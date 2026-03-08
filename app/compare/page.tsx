@@ -5,9 +5,12 @@ import { Footer } from "@/components/layout/footer";
 import { CompareContent } from "./_content";
 
 export const metadata: Metadata = {
-  title: "Compare Styles - StyleKit",
+  title: "Compare Styles",
   description:
     "Compare design styles side-by-side. Analyze token differences in colors, typography, spacing, shadows, and more.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/compare`,
+  },
 };
 
 export default function ComparePage() {
