@@ -26,23 +26,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const resolved = await resolveStyleBySlug(slug);
   if (!resolved) {
-    return { title: "Style Not Found — StyleKit" };
+    return { title: "Style Not Found" };
   }
   const style = resolved.style;
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
   const url = `${BASE_URL}/styles/${slug}`;
+  const description = `${style.description} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
 
   return {
     title: `${style.name} (${style.nameEn})`,
-    description: style.description,
+    description,
     keywords: style.keywords,
     alternates: {
       canonical: url,
     },
     openGraph: {
       title: `${style.name} (${style.nameEn}) — StyleKit`,
-      description: style.description,
+      description,
       url,
       type: "article",
       images: [
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: {
       card: "summary_large_image",
       title: `${style.name} (${style.nameEn}) — StyleKit`,
-      description: style.description,
+      description,
       images: [`${BASE_URL}/styles/${slug}/opengraph-image`],
     },
   };
@@ -138,11 +139,62 @@ export default async function StyleDetailPage({
     keywords: style.keywords.join(", "),
   };
 
+  // FAQ Schema for SEO
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What is ${style.nameEn} design style?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: style.description,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How to implement ${style.nameEn} with Tailwind CSS?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `StyleKit provides complete design tokens for ${style.nameEn} (colors, spacing, border-radius, shadows, and more) that you can export directly into your Tailwind configuration. It also offers component-level code snippets and AI Rules to quickly implement this style in your project.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Which AI tools support ${style.nameEn} prompts?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `AI coding tools like v0 (Vercel), Cursor, and Claude can all use ${style.nameEn} style prompts. StyleKit provides pre-formatted AI Rules that can be exported as Cursor Rules, Claude Code configs, and other formats.`,
+        },
+      },
+    ],
+  };
+
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Styles", item: `${BASE_URL}/styles` },
+      { "@type": "ListItem", position: 3, name: style.nameEn, item: `${BASE_URL}/styles/${slug}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
       <Header />
 

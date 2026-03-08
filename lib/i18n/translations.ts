@@ -1191,6 +1191,40 @@ const en = {
     "admin.system.memoryUsage": "Memory Usage",
     "admin.system.auditEvents": "Audit Events",
     "admin.system.viewAnalytics": "View Analytics",
+
+    // SEO Sections
+    "seo.whatIs": "What is",
+    "seo.whatIsTitle": "What is {style}?",
+    "seo.promptExamples": "Prompt Examples",
+    "seo.promptExamplesTitle": "AI Prompt Examples",
+    "seo.promptExamplesDesc": "Copy these prompts to generate {style} designs with your favorite AI tool.",
+    "seo.useCases": "Use Cases",
+    "seo.useCasesTitle": "Best Use Cases",
+    "seo.useCasesDesc": "Recommended scenarios for this design style.",
+    "seo.faq": "FAQ",
+    "seo.faqTitle": "Frequently Asked Questions",
+    "seo.forV0": "For v0",
+    "seo.forCursor": "For Cursor",
+    "seo.forClaude": "For Claude",
+    "seo.forGeneral": "General",
+    "seo.copyPrompt": "Copy",
+    "seo.copiedPrompt": "Copied!",
+    "seo.viewStyle": "View Style",
+    "seo.relatedStyles": "Related Styles",
+    "seo.relatedStylesDesc": "Explore these styles for ready-made tokens and components.",
+    "seo.breadcrumbHome": "Home",
+    "seo.breadcrumbStyles": "Styles",
+    "seo.breadcrumbPrompts": "Prompts",
+
+    // Prompts Pages
+    "prompts.title": "UI Design Prompts Library",
+    "prompts.subtitle": "AI Design Prompts",
+    "prompts.description": "Curated AI prompts for generating beautiful web interfaces. Optimized for v0, Cursor, Claude, and more.",
+    "prompts.browseTopics": "Browse Topics",
+    "prompts.promptCount": "{count} prompts",
+    "prompts.styleCount": "{count} styles",
+    "prompts.intro": "About This Topic",
+    "prompts.dosAndDonts": "Tips & Guidelines",
 } as const;
 
 const zh: { [K in keyof typeof en]: string } = {
@@ -2324,6 +2358,40 @@ const zh: { [K in keyof typeof en]: string } = {
   "admin.system.memoryUsage": "内存使用",
   "admin.system.auditEvents": "审计事件",
   "admin.system.viewAnalytics": "查看分析",
+
+  // SEO Sections
+  "seo.whatIs": "什么是",
+  "seo.whatIsTitle": "什么是{style}？",
+  "seo.promptExamples": "提示词示例",
+  "seo.promptExamplesTitle": "AI 提示词示例",
+  "seo.promptExamplesDesc": "复制这些提示词，用你喜欢的 AI 工具生成{style}设计。",
+  "seo.useCases": "适用场景",
+  "seo.useCasesTitle": "最佳使用场景",
+  "seo.useCasesDesc": "推荐使用该设计风格的场景。",
+  "seo.faq": "常见问题",
+  "seo.faqTitle": "常见问题解答",
+  "seo.forV0": "v0 适用",
+  "seo.forCursor": "Cursor 适用",
+  "seo.forClaude": "Claude 适用",
+  "seo.forGeneral": "通用",
+  "seo.copyPrompt": "复制",
+  "seo.copiedPrompt": "已复制！",
+  "seo.viewStyle": "查看风格",
+  "seo.relatedStyles": "相关风格",
+  "seo.relatedStylesDesc": "探索这些风格获取现成的 tokens 和组件。",
+  "seo.breadcrumbHome": "首页",
+  "seo.breadcrumbStyles": "风格库",
+  "seo.breadcrumbPrompts": "提示词",
+
+  // Prompts Pages
+  "prompts.title": "UI 设计提示词库",
+  "prompts.subtitle": "AI 设计提示词",
+  "prompts.description": "精选 AI 提示词，用于生成精美的网页界面。针对 v0、Cursor、Claude 等工具优化。",
+  "prompts.browseTopics": "浏览主题",
+  "prompts.promptCount": "{count} 条提示词",
+  "prompts.styleCount": "{count} 个风格",
+  "prompts.intro": "关于此主题",
+  "prompts.dosAndDonts": "建议与注意事项",
 } as const;
 
 export const translations = {

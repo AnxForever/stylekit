@@ -18,6 +18,7 @@ import { IdeExportButtons } from "@/components/export/ide-export-buttons";
 import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleComments } from "@/components/styles/style-comments";
+import { StyleSEOSection } from "@/components/style-preview/style-seo-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import { useCommunityFeed } from "@/lib/swr";
@@ -457,6 +458,15 @@ export function StyleDetailContent({
           <StyleComments slug={style.slug} />
         </div>
       </section>
+
+      {/* SEO Section: What is, Prompts, Use Cases, FAQ */}
+      <StyleSEOSection
+        styleName={style.name}
+        styleNameEn={style.nameEn}
+        styleSlug={style.slug}
+        description={style.description}
+        keywords={style.keywords}
+      />
     </>
   );
 }

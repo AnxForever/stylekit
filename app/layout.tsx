@@ -19,11 +19,15 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "StyleKit - AI-Friendly Design System | 130+ Visual Styles",
+    default: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
     template: "%s | StyleKit",
   },
-  description: "AI-friendly design system with 130+ visual styles including Neo-Brutalist, Glassmorphism, Neumorphism. Export design tokens, component recipes, and AI prompts for consistent UI generation.",
+  description: "UI design prompt library and AI-friendly design system with 130+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
   keywords: [
+    "UI design prompts",
+    "web design prompts",
+    "website design prompts",
+    "AI UI prompt library",
     "design system",
     "UI components",
     "Tailwind CSS",
@@ -53,13 +57,13 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: BASE_URL,
     siteName: "StyleKit",
-    title: "StyleKit - AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, and AI prompts. Make AI-generated UI beautiful and consistent.",
+    title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
+    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "StyleKit - AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, and AI prompts.",
+    title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
+    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
     creator: "@stylekit",
   },
   robots: {
