@@ -92,6 +92,7 @@ chaos-lab-manifest.json
 
 # npm lock file (project uses pnpm)
 package-lock.json
+packages/**/package-lock.json
 
 # Temporary dev scripts (batch processing tools)
 process.js
