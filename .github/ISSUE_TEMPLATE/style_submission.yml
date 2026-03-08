@@ -11,12 +11,11 @@ body:
         Thanks for contributing to StyleKit.
 
         Before submitting:
-        1) Build your `manifest.json` using `schemas/style-submission-manifest.schema.json`
+        1) Build your `manifest.json` using `lib/schemas/style-submission-manifest.schema.json`
         2) Prepare `cover.svg`
         3) Include a short `self-check.md` report
 
         Reference docs:
-        - `docs/research/ai-style-submission-research.md`
         - `docs/submission/ai-submission-pack.md`
 
   - type: dropdown
@@ -95,7 +94,7 @@ body:
       options:
         - label: I confirmed the slug is not already in StyleKit.
           required: true
-        - label: I confirmed the manifest follows `schemas/style-submission-manifest.schema.json`.
+        - label: I confirmed the manifest follows `lib/schemas/style-submission-manifest.schema.json`.
           required: true
         - label: I understand this issue is a proposal and still requires maintainer review.
           required: true
