@@ -53,8 +53,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "zh_CN",
-    alternateLocale: "en_US",
+    locale: "en_US",
     url: BASE_URL,
     siteName: "StyleKit",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
@@ -78,7 +77,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
+    google: process.env.GOOGLE_SITE_VERIFICATION || "2f16e5aff2dd3b60",
     other: {
       "msvalidate.01": process.env.BING_SITE_VERIFICATION || "",
     },
@@ -92,7 +91,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon.svg" />
