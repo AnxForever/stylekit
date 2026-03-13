@@ -60,6 +60,8 @@ const nextConfig: NextConfig = {
       { source: "/linter", destination: "/generate", permanent: false },
       { source: "/playground", destination: "/generate", permanent: false },
       { source: "/api-test", destination: "/developers", permanent: false },
+      { source: "/en", destination: "/", permanent: true },
+      { source: "/zh", destination: "/", permanent: true },
     ];
   },
 
