@@ -29,6 +29,7 @@ export interface ExternalNavItem {
 // Main navigation items (shown directly in nav bar)
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
+  { href: "/animations", labelKey: "nav.animations" },
   { href: "/templates", labelKey: "nav.templates" },
   { href: "/community", labelKey: "nav.community" },
   { href: "/generate", labelKey: "nav.generator" },
