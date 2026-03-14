@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from "react";
 import { Locale, translations, TranslationKey } from "./translations";
@@ -18,20 +17,14 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("zh");
-  const [mounted, setMounted] = useState(false);
-
-  /* eslint-disable react-hooks/set-state-in-effect */
-  // Required pattern for SSR hydration with localStorage
-  useEffect(() => {
-    setMounted(true);
-    // Load saved locale from localStorage
-    const savedLocale = localStorage.getItem("stylekit-locale") as Locale | null;
-    if (savedLocale && (savedLocale === "zh" || savedLocale === "en")) {
-      setLocaleState(savedLocale);
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window === "undefined") {
+      return "zh";
     }
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
+
+    const savedLocale = localStorage.getItem("stylekit-locale") as Locale | null;
+    return savedLocale === "zh" || savedLocale === "en" ? savedLocale : "zh";
+  });
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
@@ -41,15 +34,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t = (key: TranslationKey): string => {
     return translations[locale][key] || key;
   };
-
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return (
-      <I18nContext.Provider value={{ locale: "zh", setLocale, t }}>
-        {children}
-      </I18nContext.Provider>
-    );
-  }
 
   return (
     <I18nContext.Provider value={{ locale, setLocale, t }}>

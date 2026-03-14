@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/favorite-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -40,7 +41,18 @@ export const StyleCard = React.memo(function StyleCard({
     >
       {/* Cover preview */}
       <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
-        <StyleCoverPreview styleSlug={style.slug} />
+        {isCompact ? (
+          <Image
+            src={style.cover}
+            alt={`${style.nameEn} cover`}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover"
+            unoptimized
+          />
+        ) : (
+          <StyleCoverPreview styleSlug={style.slug} />
+        )}
 
         {/* Type badge for layout styles */}
         {style.styleType === "layout" && (

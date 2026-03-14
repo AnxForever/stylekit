@@ -6,29 +6,60 @@ import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useI18n } from "@/lib/i18n/context";
 import dynamic from "next/dynamic";
+
 const StylePreviewSwitcher = dynamic(
   () => import("@/components/style-preview-switcher").then(m => ({ default: m.StylePreviewSwitcher })),
   { loading: () => <div className="border border-border bg-zinc-50 dark:bg-zinc-900/50 p-6 text-center text-sm text-muted">Loading preview...</div> }
 );
 
-// Import all sections
 import {
   ButtonSection,
   InputSection,
   CardSection,
   AlertSection,
   LoadingProgressSection,
-  FormControlsSection,
-  ModalTooltipSection,
-  TableSection,
-  DrawerPopoverSection,
-  ToastSection,
-  ListSection,
-  PaginationSection,
-  TreeSection,
-  InputOTPSection,
-  ResizableSection,
 } from "./sections";
+
+const FormControlsSection = dynamic(
+  () => import("./sections/form-controls-section").then((m) => ({ default: m.FormControlsSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const ModalTooltipSection = dynamic(
+  () => import("./sections/modal-tooltip-section").then((m) => ({ default: m.ModalTooltipSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const TableSection = dynamic(
+  () => import("./sections/table-section").then((m) => ({ default: m.TableSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const DrawerPopoverSection = dynamic(
+  () => import("./sections/drawer-popover-section").then((m) => ({ default: m.DrawerPopoverSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const ToastSection = dynamic(
+  () => import("./sections/toast-section").then((m) => ({ default: m.ToastSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const ListSection = dynamic(
+  () => import("./sections/list-section").then((m) => ({ default: m.ListSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const PaginationSection = dynamic(
+  () => import("./sections/pagination-section").then((m) => ({ default: m.PaginationSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const TreeSection = dynamic(
+  () => import("./sections/tree-section").then((m) => ({ default: m.TreeSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const InputOTPSection = dynamic(
+  () => import("./sections/input-otp-section").then((m) => ({ default: m.InputOTPSection })),
+  { loading: () => <SectionSkeleton /> }
+);
+const ResizableSection = dynamic(
+  () => import("./sections/resizable-section").then((m) => ({ default: m.ResizableSection })),
+  { loading: () => <SectionSkeleton /> }
+);
 
 export default function ComponentsPage() {
   const { t } = useI18n();
@@ -99,5 +130,21 @@ export default function ComponentsPage() {
         <Footer />
       </div>
     </TooltipProvider>
+  );
+}
+
+function SectionSkeleton() {
+  return (
+    <section className="border-b border-border">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-16 animate-pulse">
+        <div className="h-8 w-48 rounded bg-zinc-200 dark:bg-zinc-800 mb-4" />
+        <div className="h-4 w-full max-w-2xl rounded bg-zinc-200 dark:bg-zinc-800 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="h-28 rounded border border-border bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-28 rounded border border-border bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-28 rounded border border-border bg-zinc-100 dark:bg-zinc-900" />
+        </div>
+      </div>
+    </section>
   );
 }

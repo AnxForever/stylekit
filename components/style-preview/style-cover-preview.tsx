@@ -15,20 +15,61 @@ export function StyleCoverPreview({
   styleSlug,
   className,
 }: StyleCoverPreviewProps) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [renderer, setRenderer] = React.useState<(() => React.ReactNode) | null>(null);
   const [loaded, setLoaded] = React.useState(false);
+  const [shouldLoad, setShouldLoad] = React.useState(false);
 
   React.useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setShouldLoad(true);
+      return;
+    }
+
+    const element = containerRef.current;
+    if (!element) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting) {
+          return;
+        }
+
+        setShouldLoad(true);
+        observer.disconnect();
+      },
+      { rootMargin: "240px 0px" }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!shouldLoad) {
+      return;
+    }
+
     styleComponentsPromise.then(components => {
       const r = components[styleSlug]?.coverPreview;
       if (r) setRenderer(() => r);
       setLoaded(true);
     });
-  }, [styleSlug]);
+  }, [shouldLoad, styleSlug]);
 
-  if (!loaded) {
+  if (!shouldLoad || !loaded) {
     return (
-      <div className={cn("w-full h-full bg-zinc-100 dark:bg-zinc-800 animate-pulse", className)} />
+      <div
+        ref={containerRef}
+        className={cn("w-full h-full bg-zinc-100 dark:bg-zinc-800 animate-pulse", className)}
+      />
     );
   }
 
