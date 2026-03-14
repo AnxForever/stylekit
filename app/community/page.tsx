@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 interface CommunityPageProps {
   searchParams: Promise<{
     slug?: string | string[];
+    offset?: string | string[];
   }>;
 }
 
@@ -26,12 +27,25 @@ export default async function CommunityPage({ searchParams }: CommunityPageProps
       : Array.isArray(rawSlug)
         ? rawSlug[0] ?? ""
         : "";
+  const rawOffset = params.offset;
+  const offsetValue =
+    typeof rawOffset === "string"
+      ? rawOffset
+      : Array.isArray(rawOffset)
+        ? rawOffset[0] ?? "0"
+        : "0";
+  const parsedOffset = Number.parseInt(offsetValue, 10);
+  const initialOffset = Number.isFinite(parsedOffset) && parsedOffset >= 0 ? parsedOffset : 0;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <CommunityContent key={initialSlug || "all"} initialSlug={initialSlug} />
+        <CommunityContent
+          key={`${initialSlug || "all"}:${initialOffset}`}
+          initialSlug={initialSlug}
+          initialOffset={initialOffset}
+        />
       </main>
       <Footer />
     </div>
