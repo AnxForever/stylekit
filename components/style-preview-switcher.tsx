@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, startTransition } from "react";
+import { useEffect, useId, useState, startTransition } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -32,6 +32,9 @@ function loadRenderStyleComponent(): Promise<RenderStyleComponentFn> {
 
 export function StylePreviewSwitcher() {
   const styles = getAllStylesMeta();
+  const labelId = useId();
+  const triggerId = useId();
+  const listboxId = useId();
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [renderStyleComponent, setRenderStyleComponent] = useState<RenderStyleComponentFn | null>(null);
@@ -66,7 +69,7 @@ export function StylePreviewSwitcher() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="text-xs tracking-widest uppercase text-muted mb-1">
+          <p id={labelId} className="text-xs tracking-widest uppercase text-muted mb-1">
             {locale === "zh" ? "风格预览" : "Style Preview"}
           </p>
           <p className="text-sm text-muted">
@@ -79,7 +82,13 @@ export function StylePreviewSwitcher() {
         {/* Style Selector */}
         <div className="relative">
           <button
+            id={triggerId}
+            type="button"
             onClick={() => setIsOpen((prev) => !prev)}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-controls={isOpen ? listboxId : undefined}
+            aria-labelledby={labelId}
             className="flex items-center gap-2 px-4 py-2 border border-border bg-background hover:border-foreground/50 transition-colors text-sm min-w-[180px]"
           >
             <span>
@@ -95,10 +104,18 @@ export function StylePreviewSwitcher() {
           </button>
 
           {isOpen && (
-            <div className="absolute z-10 top-full right-0 mt-1 border border-border bg-background shadow-lg min-w-[200px]">
+            <div
+              id={listboxId}
+              role="listbox"
+              aria-labelledby={labelId}
+              className="absolute z-10 top-full right-0 mt-1 border border-border bg-background shadow-lg min-w-[200px]"
+            >
               {styles.map((style) => (
                 <button
                   key={style.slug}
+                  type="button"
+                  role="option"
+                  aria-selected={selectedSlug === style.slug}
                   onClick={() => {
                     startTransition(() => {
                       setSelectedSlug(style.slug);

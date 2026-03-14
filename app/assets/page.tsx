@@ -99,6 +99,10 @@ export default function AssetsPage() {
     { key: "images", label: locale === "zh" ? "图片素材" : "Image Assets", icon: ImageIcon },
     { key: "components", label: locale === "zh" ? "组件素材" : "Component Assets", icon: LayoutGrid },
   ];
+  const imageTabId = "assets-tab-images";
+  const componentTabId = "assets-tab-components";
+  const imagePanelId = "assets-panel-images";
+  const componentPanelId = "assets-panel-components";
 
   return (
     <main className="min-h-screen bg-background">
@@ -125,12 +129,17 @@ export default function AssetsPage() {
       {/* Tabs */}
       <section className="border-b border-border sticky top-0 z-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-          <div className="flex gap-0">
+          <div className="flex gap-0" role="tablist" aria-label={locale === "zh" ? "素材类别" : "Asset categories"}>
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
+                id={tab.key === "images" ? imageTabId : componentTabId}
+                role="tab"
+                aria-selected={activeTab === tab.key}
+                aria-controls={tab.key === "images" ? imagePanelId : componentPanelId}
+                tabIndex={activeTab === tab.key ? 0 : -1}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.key
                     ? "border-foreground text-foreground"
@@ -147,7 +156,7 @@ export default function AssetsPage() {
 
       {/* Tab Content */}
       {activeTab === "images" && (
-        <>
+        <div role="tabpanel" id={imagePanelId} aria-labelledby={imageTabId}>
           {/* Image Assets: Icon Collections */}
           <section>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
@@ -254,30 +263,31 @@ export default function AssetsPage() {
               </div>
             </div>
           </section>
-        </>
+        </div>
       )}
 
       {activeTab === "components" && (
-        <section>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
-            <div className="mb-8 sm:mb-10">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">
-                {locale === "zh" ? "Dashboard 组件" : "Dashboard Components"}
-              </h2>
-              <p className="text-sm text-muted max-w-2xl">
-                {locale === "zh"
-                  ? "从 v0.dev 移植的 Dashboard 模板组件，已转换为纯 Tailwind CSS 单文件实现，可直接复制使用。"
-                  : "Dashboard template components ported from v0.dev, converted to pure Tailwind CSS single-file implementations. Copy and use directly."}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {componentAssets.map((comp) => (
-                <div
-                  key={comp.id}
-                  className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground hover:shadow-lg transition-all"
-                >
-                  {/* Preview area */}
-                  <div className={`h-40 bg-gradient-to-br ${comp.colors.bg} relative overflow-hidden`}>
+        <div role="tabpanel" id={componentPanelId} aria-labelledby={componentTabId}>
+          <section>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+              <div className="mb-8 sm:mb-10">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">
+                  {locale === "zh" ? "Dashboard 组件" : "Dashboard Components"}
+                </h2>
+                <p className="text-sm text-muted max-w-2xl">
+                  {locale === "zh"
+                    ? "从 v0.dev 移植的 Dashboard 模板组件，已转换为纯 Tailwind CSS 单文件实现，可直接复制使用。"
+                    : "Dashboard template components ported from v0.dev, converted to pure Tailwind CSS single-file implementations. Copy and use directly."}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {componentAssets.map((comp) => (
+                  <div
+                    key={comp.id}
+                    className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground hover:shadow-lg transition-all"
+                  >
+                    {/* Preview area */}
+                    <div className={`h-40 bg-gradient-to-br ${comp.colors.bg} relative overflow-hidden`}>
                     {/* Abstract dashboard layout preview */}
                     <div className="absolute inset-3 flex gap-2 opacity-60">
                       <div className="w-10 rounded-lg bg-white/10 flex flex-col gap-1.5 p-1.5">
@@ -306,63 +316,63 @@ export default function AssetsPage() {
                         </span>
                       ))}
                     </div>
-                  </div>
-                  {/* Info */}
-                  <div className="p-4 sm:p-5">
-                    <h3 className="text-base font-semibold mb-1 text-foreground">
-                      {pick(comp.name)}
-                    </h3>
-                    <p className="text-xs text-muted mb-3 line-clamp-2">
-                      {pick(comp.description)}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-muted">
-                        {locale === "zh" ? "来源" : "Source"}: {comp.source}
-                      </span>
-                      <Link
-                        href={comp.href}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:underline"
-                      >
-                        {locale === "zh" ? "查看" : "View"}
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
+                    </div>
+                    {/* Info */}
+                    <div className="p-4 sm:p-5">
+                      <h3 className="text-base font-semibold mb-1 text-foreground">
+                        {pick(comp.name)}
+                      </h3>
+                      <p className="text-xs text-muted mb-3 line-clamp-2">
+                        {pick(comp.description)}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-muted">
+                          {locale === "zh" ? "来源" : "Source"}: {comp.source}
+                        </span>
+                        <Link
+                          href={comp.href}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:underline"
+                        >
+                          {locale === "zh" ? "查看" : "View"}
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* How to use */}
-            <div className="mt-10 sm:mt-12 border border-border bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-6 sm:p-8">
-              <h3 className="text-lg font-semibold mb-4">
-                {locale === "zh" ? "如何使用" : "How to Use"}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold shrink-0">1</div>
-                  <div>
-                    <p className="text-sm font-medium">{locale === "zh" ? "浏览预览" : "Browse Previews"}</p>
-                    <p className="text-xs text-muted">{locale === "zh" ? "点击查看完整的交互式预览" : "Click to view full interactive preview"}</p>
+                ))}
+              </div>
+              {/* How to use */}
+              <div className="mt-10 sm:mt-12 border border-border bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-6 sm:p-8">
+                <h3 className="text-lg font-semibold mb-4">
+                  {locale === "zh" ? "如何使用" : "How to Use"}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold shrink-0">1</div>
+                    <div>
+                      <p className="text-sm font-medium">{locale === "zh" ? "浏览预览" : "Browse Previews"}</p>
+                      <p className="text-xs text-muted">{locale === "zh" ? "点击查看完整的交互式预览" : "Click to view full interactive preview"}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 flex items-center justify-center text-sm font-bold shrink-0">2</div>
-                  <div>
-                    <p className="text-sm font-medium">{locale === "zh" ? "复制源码" : "Copy Source"}</p>
-                    <p className="text-xs text-muted">{locale === "zh" ? "每个组件都是单文件，直接复制 page.tsx" : "Each component is a single file, copy page.tsx directly"}</p>
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 flex items-center justify-center text-sm font-bold shrink-0">2</div>
+                    <div>
+                      <p className="text-sm font-medium">{locale === "zh" ? "复制源码" : "Copy Source"}</p>
+                      <p className="text-xs text-muted">{locale === "zh" ? "每个组件都是单文件，直接复制 page.tsx" : "Each component is a single file, copy page.tsx directly"}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold shrink-0">3</div>
-                  <div>
-                    <p className="text-sm font-medium">{locale === "zh" ? "自定义修改" : "Customize"}</p>
-                    <p className="text-xs text-muted">{locale === "zh" ? "纯 Tailwind CSS，无外部依赖，随意改" : "Pure Tailwind CSS, no external deps, modify freely"}</p>
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold shrink-0">3</div>
+                    <div>
+                      <p className="text-sm font-medium">{locale === "zh" ? "自定义修改" : "Customize"}</p>
+                      <p className="text-xs text-muted">{locale === "zh" ? "纯 Tailwind CSS，无外部依赖，随意改" : "Pure Tailwind CSS, no external deps, modify freely"}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       )}
 
       {/* Download Dialog */}
