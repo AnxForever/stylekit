@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo, useCallback, useRef, useEffect, type ReactNode } from "react";
+import { useState, useTransition, useMemo, useCallback, useRef, useEffect, useId, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
@@ -27,6 +27,8 @@ export function StylesContent({
   initialSort,
 }: StylesContentProps) {
   const { t } = useI18n();
+  const tagTriggerId = useId();
+  const tagListboxId = useId();
   const { favorites } = useFavorites();
   const router = useRouter();
   const pathname = usePathname();
@@ -272,9 +274,14 @@ export function StylesContent({
           {/* Tag Filter - Dropdown */}
           <div className="flex flex-wrap items-center gap-2 mb-8 md:mb-12 text-sm">
             <span className="text-muted">{t("styles.tags")}:</span>
-            <div className="relative">
+            <div ref={tagDropdownRef} className="relative">
               <button
+                id={tagTriggerId}
+                type="button"
                 onClick={() => setTagDropdownOpen((prev) => !prev)}
+                aria-expanded={tagDropdownOpen}
+                aria-haspopup="listbox"
+                aria-controls={tagDropdownOpen ? tagListboxId : undefined}
                 className="inline-flex items-center gap-2 px-3 py-1.5 border border-border hover:border-foreground transition-colors"
               >
                 {activeTags.length === 0 ? (
@@ -286,12 +293,18 @@ export function StylesContent({
               </button>
               {tagDropdownOpen && (
                 <div
-                  ref={tagDropdownRef}
+                  id={tagListboxId}
+                  role="listbox"
+                  aria-labelledby={tagTriggerId}
+                  aria-multiselectable="true"
                   className="absolute top-full left-0 mt-1 w-48 bg-background border border-border shadow-lg z-50"
                 >
                   {availableTags.map((tag) => (
                     <button
                       key={tag}
+                      type="button"
+                      role="option"
+                      aria-selected={activeTags.includes(tag)}
                       onClick={() => handleToggleTag(tag)}
                       className={`w-full px-3 py-2 text-left text-sm flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${
                         activeTags.includes(tag) ? "bg-zinc-50 dark:bg-zinc-900" : ""
@@ -315,7 +328,12 @@ export function StylesContent({
                     className="inline-flex items-center gap-1 px-2 py-0.5 bg-foreground text-background text-xs"
                   >
                     {tagLabels[tag]}
-                    <button onClick={() => handleToggleTag(tag)} className="hover:opacity-70">
+                    <button
+                      type="button"
+                      aria-label={`${t("styles.clearTags")} ${tagLabels[tag]}`}
+                      onClick={() => handleToggleTag(tag)}
+                      className="hover:opacity-70"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
