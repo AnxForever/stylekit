@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { AnimationCard } from "@/components/animations/animation-card";
+import { AnimationCard, AnimationCardPreviewStyles } from "@/components/animations/animation-card";
 import type { AnimationMeta, AnimationCategory, AnimationTrigger } from "@/lib/animations/types";
 
 type CategoryFilter = AnimationCategory | "all";
@@ -88,6 +88,7 @@ export function AnimationsContent({
 
   return (
     <>
+      <AnimationCardPreviewStyles />
       {/* Page Header -- editorial style */}
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
