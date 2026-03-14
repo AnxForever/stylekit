@@ -20,6 +20,7 @@ import { ComponentsStep } from "./steps/components-step";
 import { PreviewValidateStep } from "./steps/preview-validate-step";
 import { SubmitStep } from "./steps/submit-step";
 import { parseManifestImportText } from "@/lib/submit/manifest-import";
+import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
 // ── Form Data ──────────────────────────────────────────────────────
 export interface WizardFormData {
@@ -588,7 +589,7 @@ export function SubmissionWizard() {
               if (hasUnsavedChanges && !window.confirm(leaveWarning)) {
                 return;
               }
-              router.back();
+              navigateBackOrFallback(router, { fallbackHref: "/" });
             }}
             className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-6"
           >

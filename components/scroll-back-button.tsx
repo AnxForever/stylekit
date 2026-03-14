@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
 interface ScrollBackButtonProps {
   label?: string;
@@ -28,6 +29,7 @@ export function ScrollBackButton({
         setTimeout(() => {
           window.scrollTo({ top: y, behavior: "instant" });
         }, 50);
+        sessionStorage.removeItem(`scroll-${pathname}`);
       }
     }
   }, []);
@@ -43,19 +45,16 @@ export function ScrollBackButton({
     if (href) {
       // 如果指定了href，检查是否有保存的styles列表URL
       if (href === "/styles") {
-        const savedStylesUrl = sessionStorage.getItem("styles-return-url");
-        if (savedStylesUrl) {
-          // 解析URL获取路径和查询参数
-          const url = new URL(savedStylesUrl);
-          const pathAndQuery = url.pathname + url.search;
-          sessionStorage.removeItem("styles-return-url");
-          router.push(pathAndQuery);
-          return;
-        }
+        navigateBackOrFallback(router, {
+          href,
+          savedReturnUrlKey: "styles-return-url",
+          fallbackHref: "/styles",
+        });
+        return;
       }
       router.push(href);
     } else {
-      router.back();
+      navigateBackOrFallback(router, { fallbackHref: "/" });
     }
   };
 
