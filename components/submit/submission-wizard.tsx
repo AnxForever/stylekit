@@ -156,23 +156,31 @@ export function SubmissionWizard() {
   const [manifestMsg, setManifestMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [manifestCoverSvg, setManifestCoverSvg] = useState<string | null>(null);
   const [submissionPath, setSubmissionPath] = useState<SubmissionPath>("ai-manifest");
-  const lastFP = useRef("");
-  const text = pickLocale(locale, submitCopy);
-  const errors = useMemo(() => validate(fd, locale), [fd, locale]);
-
-  useEffect(() => { localStorage.setItem(LOCALE_KEY, locale); }, [locale]);
-
-  // Draft fingerprint init (ref-only, no setState needed — state uses lazy init)
-  useEffect(() => {
+  const [savedFingerprint, setSavedFingerprint] = useState(() => {
+    if (typeof window === "undefined") return "";
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
+      if (!raw) return "";
       const parsed = JSON.parse(raw);
-      if (parsed?.data && hasMeaningful(parsed.data)) {
-        lastFP.current = JSON.stringify(parsed.data);
-      }
-    } catch { /* ignore */ }
-  }, []);
+      return parsed?.data && hasMeaningful(parsed.data)
+        ? JSON.stringify(parsed.data)
+        : "";
+    } catch {
+      return "";
+    }
+  });
+  const lastFP = useRef(savedFingerprint);
+  const text = pickLocale(locale, submitCopy);
+  const errors = useMemo(() => validate(fd, locale), [fd, locale]);
+  const hasUnsavedChanges = useMemo(() => {
+    if (!hasMeaningful(fd)) return false;
+    return JSON.stringify(fd) !== savedFingerprint;
+  }, [fd, savedFingerprint]);
+  const leaveWarning = locale === "zh"
+    ? "你有尚未保存到草稿的修改，确定要离开当前页面吗？"
+    : "You have unsaved changes that have not been saved to draft yet. Leave this page?";
+
+  useEffect(() => { localStorage.setItem(LOCALE_KEY, locale); }, [locale]);
 
   // Auto-save (setState deferred to callbacks to avoid cascading renders)
   useEffect(() => {
@@ -183,24 +191,73 @@ export function SubmissionWizard() {
     const persist = setTimeout(() => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ data: fd, at: new Date().toISOString() }));
       lastFP.current = fp;
+      setSavedFingerprint(fp);
       setHasDraft(true);
       setSaveStatus("saved");
     }, 500);
     return () => { clearTimeout(showSaving); clearTimeout(persist); };
   }, [fd]);
 
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+      }
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const anchor = target.closest("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href || href.startsWith("#") || anchor.target === "_blank" || anchor.hasAttribute("download")) {
+        return;
+      }
+
+      if (window.confirm(leaveWarning)) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("click", handleDocumentClick, true);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleDocumentClick, true);
+    };
+  }, [hasUnsavedChanges, leaveWarning]);
+
   const loadDraft = () => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const p = JSON.parse(raw);
-      if (p?.data) { setFd({ ...initial, ...p.data }); setHasDraft(false); }
+      if (p?.data) {
+        const fingerprint = JSON.stringify(p.data);
+        lastFP.current = fingerprint;
+        setSavedFingerprint(fingerprint);
+        setFd({ ...initial, ...p.data });
+        setHasDraft(false);
+      }
     } catch { /* ignore */ }
   };
 
   const clearDraft = () => {
     localStorage.removeItem(STORAGE_KEY);
     setFd(initial); setHasDraft(false);
+    setSavedFingerprint("");
     setManifestCoverSvg(null);
     setTouched({}); setStepVal({}); setSaveStatus("idle");
     lastFP.current = "";
@@ -526,7 +583,15 @@ export function SubmissionWizard() {
       {/* Page Header */}
       <section className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-16">
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-6">
+          <button
+            onClick={() => {
+              if (hasUnsavedChanges && !window.confirm(leaveWarning)) {
+                return;
+              }
+              router.back();
+            }}
+            className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-6"
+          >
             <ChevronLeft className="w-4 h-4" />{text.back}
           </button>
           <div className="mb-6 flex justify-end">
