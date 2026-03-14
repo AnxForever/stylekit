@@ -44,7 +44,7 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
   const { t, locale } = useI18n();
 
   return (
-    <>
+    <div>
       {/* Header section -- editorial style */}
       <section className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 md:py-12">
@@ -177,7 +177,7 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
           )}
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
