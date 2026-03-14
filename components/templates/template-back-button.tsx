@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
 // ---------------------------------------------------------------------------
 // Variant styles (back button matching each template's design)
@@ -67,7 +68,13 @@ export function TemplateBackButton({
   return (
     <button
       type="button"
-      onClick={() => router.push("/templates")}
+      onClick={() =>
+        navigateBackOrFallback(router, {
+          href: "/templates",
+          savedReturnUrlKey: "templates-return-url",
+          fallbackHref: "/templates",
+        })
+      }
       className={`fixed top-3 right-4 z-[9999] inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}
     >
       <ArrowLeft className="w-4 h-4" />
