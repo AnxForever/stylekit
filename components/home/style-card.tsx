@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FavoriteButton } from "@/components/favorite-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import type { StyleMeta } from "@/lib/styles/meta";
+import { shouldUseLiveCoverPreview } from "./live-cover-preview-slugs";
 
 interface StyleCardProps {
   style: StyleMeta;
@@ -21,6 +22,7 @@ export const StyleCard = React.memo(function StyleCard({
   variant = "default",
 }: StyleCardProps) {
   const isCompact = variant === "compact";
+  const useLivePreview = isCompact && shouldUseLiveCoverPreview(style.slug);
   const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
@@ -41,7 +43,9 @@ export const StyleCard = React.memo(function StyleCard({
         className={cardClassName}
       >
         <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
-          {isCompact ? (
+          {useLivePreview ? (
+            <StyleCoverPreview styleSlug={style.slug} />
+          ) : isCompact ? (
             <Image
               src={style.cover}
               alt={`${style.nameEn} cover`}

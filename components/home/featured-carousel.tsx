@@ -6,6 +6,8 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
+import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { shouldUseLiveCoverPreview } from "./live-cover-preview-slugs";
 
 interface FeaturedCarouselProps {
   styles: StyleMeta[];
@@ -104,6 +106,8 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
     return null;
   }
 
+  const useLivePreview = shouldUseLiveCoverPreview(featuredStyle.slug);
+
   return (
     <div
       tabIndex={0}
@@ -127,15 +131,19 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
         className="block aspect-[16/11] sm:aspect-[4/3] border border-border overflow-hidden motion-safe:transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <div className="relative w-full h-full bg-zinc-100 dark:bg-zinc-900">
-          <Image
-            src={featuredStyle.cover}
-            alt={`${featuredStyle.nameEn} cover`}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-            priority={normalizedIndex === 0}
-            unoptimized
-          />
+          {useLivePreview ? (
+            <StyleCoverPreview styleSlug={featuredStyle.slug} />
+          ) : (
+            <Image
+              src={featuredStyle.cover}
+              alt={`${featuredStyle.nameEn} cover`}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+              priority={normalizedIndex === 0}
+              unoptimized
+            />
+          )}
         </div>
       </Link>
 
