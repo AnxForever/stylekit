@@ -40,6 +40,7 @@ export const scrollReveal: Animation = {
 }
 
 .scroll-reveal {
+  will-change: transform, opacity;
   opacity: 0;
 }
 
@@ -89,6 +90,11 @@ function useScrollReveal() {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: respect user's motion preferences
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// Use reduced ? { opacity: 0 } : { opacity: 0, y: 30 } for initial
 
 <motion.div
   initial={{ opacity: 0, y: 30 }}

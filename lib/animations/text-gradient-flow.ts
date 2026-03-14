@@ -78,6 +78,11 @@ export const textGradientFlow: Animation = {
       language: "tsx",
       code: `import { motion } from "framer-motion";
 
+// Tip: disable for users who prefer reduced motion
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// if (reduced) return <div className="static-fallback" />;
+
 <motion.h1
   animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}

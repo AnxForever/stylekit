@@ -40,21 +40,19 @@ export const staggerChildren: Animation = {
 }
 
 .stagger-children > * {
+  will-change: transform, opacity;
   opacity: 0;
   animation: stagger-fade-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--stagger-index, 0) * var(--stagger-delay, 75ms));
 }
 
-.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 75ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 150ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 225ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 300ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 375ms; }
-
-/* Or use CSS custom property for dynamic stagger:
-.stagger-children > * {
-  animation-delay: calc(var(--index, 0) * 75ms);
-} */`,
+/* Usage: set --stagger-index on each child via inline style
+   <div class="stagger-children">
+     <div style="--stagger-index: 0">...</div>
+     <div style="--stagger-index: 1">...</div>
+     <div style="--stagger-index: 2">...</div>
+   </div>
+   Override delay: style="--stagger-delay: 100ms" on parent */`,
     },
     {
       label: "Tailwind CSS",
@@ -89,6 +87,11 @@ function StaggerList({ items }: { items: string[] }) {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: respect user's motion preferences
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// Use reduced ? { opacity: 0 } : { opacity: 0, y: 15 } for initial
 
 const container = {
   hidden: { opacity: 0 },

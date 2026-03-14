@@ -64,6 +64,9 @@ export const hoverGlow: Animation = {
       language: "tsx",
       code: `import { motion } from "framer-motion";
 
+// Tip: consider disabling for reduced motion users
+// import { useReducedMotion } from "framer-motion";
+
 <motion.button
   whileHover={{
     boxShadow: "0 0 15px rgba(99,102,241,0.4), 0 0 30px rgba(99,102,241,0.2), 0 0 45px rgba(99,102,241,0.1)",
