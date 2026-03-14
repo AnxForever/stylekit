@@ -1,5 +1,6 @@
 import { getStyleBySlug as getStaticStyleBySlug } from "@/lib/styles";
 import type { ComponentTemplate, DesignStyle, ExamplePrompt } from "@/lib/styles";
+import { cache } from "react";
 import {
   getAllStylesMeta,
   type StyleCategory,
@@ -375,7 +376,7 @@ async function getApprovedSubmissionBySlugRuntime(
   return getLatestApprovedSubmissionBySlug(normalizedSlug);
 }
 
-export async function resolveStyleBySlug(
+export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
   slug: string
 ): Promise<RuntimeStyleResult | null> {
   const normalizedSlug = normalizeSlug(slug);
@@ -408,7 +409,7 @@ export async function resolveStyleBySlug(
     submissionId: submission.id,
     tokens: asStyleTokens(submission.tokens),
   };
-}
+});
 
 export async function listCatalogStylesMeta(): Promise<StyleMeta[]> {
   const staticMeta = getAllStylesMeta();

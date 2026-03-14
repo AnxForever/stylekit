@@ -261,7 +261,7 @@ function baseIdentity(userId: string): AuthorIdentity {
 async function lookupSeqIdMap(
   userIds: string[],
   lookup: SeqLookupFn
-): Promise<Map<string, number>> {
+): Promise<Map<string, number> | null> {
   const result = new Map<string, number>();
   if (userIds.length === 0) {
     return result;
@@ -270,7 +270,7 @@ async function lookupSeqIdMap(
   try {
     const { data, error } = await lookup(userIds);
     if (error || !Array.isArray(data)) {
-      return result;
+      return null;
     }
 
     for (const row of data) {
@@ -285,7 +285,7 @@ async function lookupSeqIdMap(
       result.set(userId, seqId);
     }
   } catch {
-    return result;
+    return null;
   }
 
   return result;
@@ -300,6 +300,14 @@ async function loadAuthorIdentities(
   if (userIds.length === 0) {
     return map;
   }
+
+  const seqLookupUserIds = Array.from(
+    new Set(userIds.filter((userId) => UUID_RE.test(userId)))
+  );
+  const seqIdMapPromise =
+    seqLookupUserIds.length > 0
+      ? lookupSeqIdMap(seqLookupUserIds, lookupSeqIds)
+      : Promise.resolve(new Map<string, number>());
 
   await Promise.all(
     userIds.map(async (userId) => {
@@ -326,14 +334,11 @@ async function loadAuthorIdentities(
     })
   );
 
-  const seqLookupUserIds = Array.from(
-    new Set(
-      Array.from(map.keys()).filter((userId) => UUID_RE.test(userId))
-    )
-  );
-
   if (seqLookupUserIds.length > 0) {
-    const seqIdMap = await lookupSeqIdMap(seqLookupUserIds, lookupSeqIds);
+    const seqIdMap = await seqIdMapPromise;
+    if (!seqIdMap) {
+      return map;
+    }
 
     for (const userId of seqLookupUserIds) {
       const current = map.get(userId);
@@ -497,7 +502,7 @@ export async function POST(
           error: (error as DbErrorLike | null) ?? null,
         };
       });
-      const seqId = seqMap.get(user.id);
+      const seqId = seqMap?.get(user.id);
       if (seqId != null) {
         identity = { ...identity, seqId };
       }
