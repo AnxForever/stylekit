@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { readdirSync } from "fs";
 import { join } from "path";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
@@ -33,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/dark-mode-ui-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/generate`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/create-style`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/animations`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/templates`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/community`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/compare`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
@@ -77,5 +79,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
-  return [...staticPages, ...stylePages, ...showcasePages, ...templatePages, ...promptPages];
+  const animationPages: MetadataRoute.Sitemap = getAllAnimationsMeta().map((anim) => ({
+    url: `${BASE_URL}/animations/${anim.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...stylePages, ...showcasePages, ...templatePages, ...promptPages, ...animationPages];
 }
