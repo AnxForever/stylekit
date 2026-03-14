@@ -9,12 +9,16 @@ interface ScrollBackButtonProps {
   label?: string;
   href?: string;
   className?: string;
+  savedReturnUrlKey?: string;
+  fallbackHref?: string;
 }
 
 export function ScrollBackButton({
   label = "返回",
   href,
   className = "",
+  savedReturnUrlKey,
+  fallbackHref,
 }: ScrollBackButtonProps) {
   const router = useRouter();
 
@@ -43,6 +47,15 @@ export function ScrollBackButton({
 
     // 返回到styles列表页面时，尝试恢复之前保存的URL（包含过滤器参数）
     if (href) {
+      if (savedReturnUrlKey) {
+        navigateBackOrFallback(router, {
+          href,
+          savedReturnUrlKey,
+          fallbackHref: fallbackHref ?? href,
+        });
+        return;
+      }
+
       // 如果指定了href，检查是否有保存的styles列表URL
       if (href === "/styles") {
         navigateBackOrFallback(router, {
@@ -54,7 +67,7 @@ export function ScrollBackButton({
       }
       router.push(href);
     } else {
-      navigateBackOrFallback(router, { fallbackHref: "/" });
+      navigateBackOrFallback(router, { fallbackHref: fallbackHref ?? "/" });
     }
   };
 
