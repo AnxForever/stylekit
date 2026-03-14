@@ -1,19 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, BookOpenText, Component, Sparkles, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { StyleCard } from "@/components/home/style-card";
+import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
-import { TrendingStyles } from "@/components/home/trending-styles";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { cn } from "@/lib/utils";
 
 interface HomeContentProps {
   styles: StyleMeta[];
 }
+
+const TrendingStyles = dynamic(
+  () => import("@/components/home/trending-styles").then((m) => ({ default: m.TrendingStyles })),
+  {
+    ssr: false,
+    loading: () => <TrendingStylesSkeleton />,
+  }
+);
 
 export function HomeContent({ styles }: HomeContentProps) {
   const { t, locale } = useI18n();
@@ -24,12 +32,16 @@ export function HomeContent({ styles }: HomeContentProps) {
   const mobileQuickJumpRef = useRef<HTMLDivElement>(null);
   const mobileQuickLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const lastScrollYRef = useRef(0);
-  const featuredStyles = styles
-    .filter((style, index, all) => {
-      if (!style.slug) return false;
-      return all.findIndex((candidate) => candidate.slug === style.slug) === index;
-    })
-    .slice(0, 8);
+  const featuredStyles = useMemo(
+    () =>
+      styles
+        .filter((style, index, all) => {
+          if (!style.slug) return false;
+          return all.findIndex((candidate) => candidate.slug === style.slug) === index;
+        })
+        .slice(0, 8),
+    [styles]
+  );
 
   const coreFeatures: Array<{
     title: string;
@@ -66,9 +78,10 @@ export function HomeContent({ styles }: HomeContentProps) {
     () => ["#home-core-features", "#home-trending", "#home-style-catalog"],
     []
   );
-  const heroStats = [
-    { value: `${styles.length}+`, label: t("home.metricStyles") },
-  ];
+  const heroStats = useMemo(
+    () => [{ value: `${styles.length}+`, label: t("home.metricStyles") }],
+    [styles.length, t]
+  );
   const quickLinks = useMemo(
     () => [
       { href: quickLinkTargets[0], label: t("home.coreFeatures") },
@@ -99,7 +112,9 @@ export function HomeContent({ styles }: HomeContentProps) {
     const handleHashChange = () => {
       const currentHash = window.location.hash;
       if (quickLinkTargets.some((href) => href === currentHash)) {
-        setActiveQuickLink((current) => (current === currentHash ? current : currentHash));
+        startTransition(() => {
+          setActiveQuickLink((current) => (current === currentHash ? current : currentHash));
+        });
       }
     };
 
@@ -129,7 +144,9 @@ export function HomeContent({ styles }: HomeContentProps) {
 
         if (!topEntry?.target.id) return;
         const nextHref = `#${topEntry.target.id}`;
-        setActiveQuickLink((current) => (current === nextHref ? current : nextHref));
+        startTransition(() => {
+          setActiveQuickLink((current) => (current === nextHref ? current : nextHref));
+        });
       },
       {
         threshold: [0.2, 0.35, 0.5, 0.7],
@@ -179,23 +196,31 @@ export function HomeContent({ styles }: HomeContentProps) {
         const revealThreshold = Math.max(heroSection.offsetTop + heroSection.offsetHeight - 72, 0);
         const shouldShowQuickJump = currentY >= revealThreshold;
 
-        setIsMobileQuickJumpVisible((current) => (
-          current === shouldShowQuickJump ? current : shouldShowQuickJump
-        ));
+        startTransition(() => {
+          setIsMobileQuickJumpVisible((current) => (
+            current === shouldShowQuickJump ? current : shouldShowQuickJump
+          ));
+        });
       } else {
-        setIsMobileQuickJumpVisible((current) => (current ? false : current));
+        startTransition(() => {
+          setIsMobileQuickJumpVisible((current) => (current ? false : current));
+        });
       }
 
       if (isMobileViewport) {
         const deltaY = currentY - lastScrollYRef.current;
         if (Math.abs(deltaY) >= 6) {
           const nextIsScrollingDown = deltaY > 0;
-          setIsMobileScrollDown((current) => (
-            current === nextIsScrollingDown ? current : nextIsScrollingDown
-          ));
+          startTransition(() => {
+            setIsMobileScrollDown((current) => (
+              current === nextIsScrollingDown ? current : nextIsScrollingDown
+            ));
+          });
         }
       } else {
-        setIsMobileScrollDown((current) => (current ? current : true));
+        startTransition(() => {
+          setIsMobileScrollDown((current) => (current ? current : true));
+        });
       }
       lastScrollYRef.current = currentY;
       if (!startSection || !endSection) return;
@@ -206,9 +231,11 @@ export function HomeContent({ styles }: HomeContentProps) {
       const rawProgress = ((currentY - startY) / range) * 100;
       const nextProgress = Math.max(0, Math.min(100, rawProgress));
 
-      setHomeScrollProgress((current) => (
-        Math.abs(current - nextProgress) >= minDeltaToUpdate ? nextProgress : current
-      ));
+      startTransition(() => {
+        setHomeScrollProgress((current) => (
+          Math.abs(current - nextProgress) >= minDeltaToUpdate ? nextProgress : current
+        ));
+      });
     };
 
     const handleScroll = () => {
@@ -505,12 +532,35 @@ export function HomeContent({ styles }: HomeContentProps) {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
             {featuredStyles.map((style, styleIndex) => (
               <RevealOnScroll key={style.slug} variant="upSubtle" delayMs={60 + styleIndex * 30} disableDelayOnMobile>
-                <StyleCard style={style} variant="compact" />
+                <HomeStyleCard style={style} />
               </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
     </>
+  );
+}
+
+function TrendingStylesSkeleton() {
+  return (
+    <section id="home-trending" className="border-b border-border scroll-mt-24" aria-busy="true">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">
+        <div className="mb-6 sm:mb-8 space-y-2">
+          <div className="h-3 w-28 rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-8 w-48 rounded bg-zinc-200 dark:bg-zinc-800" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="border border-border p-3 sm:p-4 animate-pulse">
+              <div className="h-4 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800 mb-3" />
+              <div className="h-1.5 bg-zinc-100 dark:bg-zinc-900 mb-3" />
+              <div className="h-3 w-1/2 rounded bg-zinc-200 dark:bg-zinc-800 mb-3" />
+              <div className="h-1.5 rounded bg-zinc-100 dark:bg-zinc-900" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

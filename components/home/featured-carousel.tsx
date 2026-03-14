@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
 
@@ -126,7 +126,17 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
         href={`/styles/${featuredStyle.slug}`}
         className="block aspect-[16/11] sm:aspect-[4/3] border border-border overflow-hidden motion-safe:transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <StyleCoverPreview styleSlug={featuredStyle.slug} />
+        <div className="relative w-full h-full bg-zinc-100 dark:bg-zinc-900">
+          <Image
+            src={featuredStyle.cover}
+            alt={`${featuredStyle.nameEn} cover`}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+            priority={normalizedIndex === 0}
+            unoptimized
+          />
+        </div>
       </Link>
 
       <div className="flex items-center justify-between mt-3">

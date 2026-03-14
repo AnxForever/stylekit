@@ -1,19 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { getAllStylesMeta } from "@/lib/styles/meta";
-import { renderStyleComponent, componentLabels, type ComponentType } from "@/lib/style-components";
 import { ChevronDown } from "lucide-react";
+
+type ComponentType = "button" | "card" | "input";
+
+const componentLabels: Record<ComponentType, string> = {
+  button: "按钮",
+  card: "卡片",
+  input: "输入框",
+};
+
+type RenderStyleComponentFn = (
+  styleSlug: string,
+  component: ComponentType
+) => React.ReactNode;
+
+let renderStyleComponentPromise: Promise<RenderStyleComponentFn> | null = null;
+
+function loadRenderStyleComponent(): Promise<RenderStyleComponentFn> {
+  if (!renderStyleComponentPromise) {
+    renderStyleComponentPromise = import("@/lib/style-components").then(
+      (module) => module.renderStyleComponent as RenderStyleComponentFn
+    );
+  }
+  return renderStyleComponentPromise;
+}
 
 export function StylePreviewSwitcher() {
   const styles = getAllStylesMeta();
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [renderStyleComponent, setRenderStyleComponent] = useState<RenderStyleComponentFn | null>(null);
   const { locale } = useI18n();
 
   const selectedStyle = styles.find((s) => s.slug === selectedSlug);
+  const isPreviewLoading = Boolean(selectedSlug) && !renderStyleComponent;
+
+  useEffect(() => {
+    if (!selectedSlug || renderStyleComponent) {
+      return;
+    }
+
+    let cancelled = false;
+
+    loadRenderStyleComponent()
+      .then((renderFn) => {
+        if (cancelled) {
+          return;
+        }
+
+        setRenderStyleComponent(() => renderFn);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [renderStyleComponent, selectedSlug]);
 
   return (
     <div className="border border-border bg-zinc-50 dark:bg-zinc-900/50">
@@ -54,8 +100,10 @@ export function StylePreviewSwitcher() {
                 <button
                   key={style.slug}
                   onClick={() => {
-                    setSelectedSlug(style.slug);
-                    setIsOpen(false);
+                    startTransition(() => {
+                      setSelectedSlug(style.slug);
+                      setIsOpen(false);
+                    });
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center gap-2 ${
                     selectedSlug === style.slug
@@ -78,16 +126,27 @@ export function StylePreviewSwitcher() {
       {/* Preview Content */}
       {selectedSlug ? (
         <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(Object.keys(componentLabels) as ComponentType[]).map((comp) => (
-              <div key={comp}>
-                <p className="text-xs text-muted mb-3">{componentLabels[comp]}</p>
-                <div className="p-4 bg-background rounded-lg border border-border flex items-center justify-center min-h-[120px]">
-                  {renderStyleComponent(selectedSlug, comp)}
+          {isPreviewLoading || !renderStyleComponent ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {(Object.keys(componentLabels) as ComponentType[]).map((comp) => (
+                <div key={comp}>
+                  <p className="text-xs text-muted mb-3">{componentLabels[comp]}</p>
+                  <div className="min-h-[120px] rounded-lg border border-border bg-background animate-pulse" />
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {(Object.keys(componentLabels) as ComponentType[]).map((comp) => (
+                <div key={comp}>
+                  <p className="text-xs text-muted mb-3">{componentLabels[comp]}</p>
+                  <div className="p-4 bg-background rounded-lg border border-border flex items-center justify-center min-h-[120px]">
+                    {renderStyleComponent(selectedSlug, comp)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="mt-6 flex items-center justify-between">
             <Link
               href={`/styles/${selectedSlug}`}
