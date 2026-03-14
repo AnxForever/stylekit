@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { Plus, Palette } from "lucide-react";
 import type { DesignStyle } from "@/lib/styles";
 import type { StoredCustomStyle } from "@/lib/style-creator/types";
@@ -318,14 +318,7 @@ export function StyleStep({
                 }`}
               >
                 <div className="aspect-[4/3] overflow-hidden relative">
-                  <Image
-                    src={style.cover}
-                    alt={`${style.nameEn} cover`}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                    className="object-cover"
-                    unoptimized
-                  />
+                  <StyleCoverPreview styleSlug={style.slug} />
                   {isSelected && (
                     <div className="absolute top-2 right-2 w-6 h-6 bg-foreground text-background rounded-full flex items-center justify-center">
                       <svg
