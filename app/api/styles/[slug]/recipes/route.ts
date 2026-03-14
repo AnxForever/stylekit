@@ -2,7 +2,17 @@ import { trackStyleUsage } from "@/lib/analytics";
 import { getStyleRecipes, type ComponentRecipe, type StyleRecipes } from "@/lib/recipes";
 import type { ComponentTemplate, DesignStyle } from "@/lib/styles";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+
+function trackStyleUsageNonBlocking(slug: string): void {
+  try {
+    after(() => {
+      trackStyleUsage(slug, "api");
+    });
+  } catch {
+    trackStyleUsage(slug, "api");
+  }
+}
 
 function inferComponentElement(componentId: string): ComponentRecipe["skeleton"]["element"] {
   switch (componentId) {
@@ -108,7 +118,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  trackStyleUsage(slug, "api");
+  trackStyleUsageNonBlocking(slug);
 
   const resolved = await resolveStyleBySlug(slug);
   const style = resolved?.style;

@@ -5,14 +5,22 @@ import { trackStyleUsage } from "@/lib/analytics";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { after, NextResponse } from "next/server";
 
+function trackStyleUsageNonBlocking(slug: string): void {
+  try {
+    after(() => {
+      trackStyleUsage(slug, "api");
+    });
+  } catch {
+    trackStyleUsage(slug, "api");
+  }
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  after(() => {
-    trackStyleUsage(slug, "api");
-  });
+  trackStyleUsageNonBlocking(slug);
   const resolved = await resolveStyleBySlug(slug);
   const style = resolved?.style;
 
