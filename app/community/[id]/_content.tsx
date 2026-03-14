@@ -61,7 +61,12 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
           <div className="flex items-center gap-4 mb-4">
-            <ScrollBackButton label={t("community.label")} href={backHref} />
+            <ScrollBackButton
+              label={t("community.label")}
+              href={backHref}
+              savedReturnUrlKey="community-return-url"
+              fallbackHref={backHref}
+            />
             <div className="flex items-center gap-2 text-sm text-muted">
               <Link
                 href="/community"

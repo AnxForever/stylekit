@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { LogIn, RefreshCw, Send } from "lucide-react";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
@@ -21,16 +22,33 @@ function formatDate(iso: string, locale: "zh" | "en"): string {
 
 interface CommunityContentProps {
   initialSlug?: string;
+  initialOffset?: number;
 }
 
-export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
+export function CommunityContent({
+  initialSlug = "",
+  initialOffset = 0,
+}: CommunityContentProps) {
   const { t, locale } = useI18n();
   const { user } = useUser();
-  const [offset, setOffset] = useState(0);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [offset, setOffset] = useState(initialOffset);
   const normalizedSlug = useMemo(
     () => initialSlug.trim().toLowerCase() || undefined,
     [initialSlug]
   );
+  const currentReturnUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (normalizedSlug) {
+      params.set("slug", normalizedSlug);
+    }
+    if (offset > 0) {
+      params.set("offset", String(offset));
+    }
+    const query = params.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }, [normalizedSlug, offset, pathname]);
 
   const { data, error, isLoading, mutate } = useCommunityFeed({
     limit: PAGE_SIZE,
@@ -42,6 +60,37 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
   const total = data?.total ?? 0;
   const hasPrev = offset > 0;
   const hasNext = offset + PAGE_SIZE < total;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("community-return-url", currentReturnUrl);
+  }, [currentReturnUrl]);
+
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem("community-scroll-position");
+    if (!savedScroll) return;
+
+    const y = Number.parseInt(savedScroll, 10);
+    if (Number.isNaN(y)) {
+      sessionStorage.removeItem("community-scroll-position");
+      return;
+    }
+
+    const id = window.setTimeout(() => {
+      window.scrollTo({ top: y, behavior: "instant" });
+      sessionStorage.removeItem("community-scroll-position");
+    }, 80);
+
+    return () => {
+      window.clearTimeout(id);
+    };
+  }, []);
+
+  const persistCommunityContext = () => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("community-scroll-position", window.scrollY.toString());
+    sessionStorage.setItem("community-return-url", currentReturnUrl);
+  };
 
   return (
     <section className="border-b border-border">
@@ -87,6 +136,9 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
             </span>
             <Link
               href="/community"
+              onClick={() => {
+                setOffset(0);
+              }}
               className="underline text-muted hover:text-foreground"
             >
               {t("community.clearFilter")}
@@ -143,7 +195,11 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                   key={item.id}
                   className="border border-border bg-background/80 hover:border-foreground transition-colors overflow-hidden"
                 >
-                  <Link href={`/community/${item.id}`} className="block aspect-[16/10] relative bg-zinc-100 dark:bg-zinc-900">
+                  <Link
+                    href={`/community/${item.id}`}
+                    onClick={persistCommunityContext}
+                    className="block aspect-[16/10] relative bg-zinc-100 dark:bg-zinc-900"
+                  >
                     {item.cover ? (
                       <Image
                         src={item.cover}
@@ -163,6 +219,7 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                     <div>
                       <Link
                         href={`/community/${item.id}`}
+                        onClick={persistCommunityContext}
                         className="text-lg hover:underline leading-tight"
                       >
                         {item.title}
@@ -219,7 +276,19 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => setOffset((current) => Math.max(0, current - PAGE_SIZE))}
+                  onClick={() => {
+                    const nextOffset = Math.max(0, offset - PAGE_SIZE);
+                    setOffset(nextOffset);
+                    const params = new URLSearchParams();
+                    if (normalizedSlug) {
+                      params.set("slug", normalizedSlug);
+                    }
+                    if (nextOffset > 0) {
+                      params.set("offset", String(nextOffset));
+                    }
+                    const query = params.toString();
+                    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+                  }}
                   disabled={!hasPrev}
                   className="px-3 py-1.5 text-sm border border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
@@ -227,7 +296,16 @@ export function CommunityContent({ initialSlug = "" }: CommunityContentProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setOffset((current) => current + PAGE_SIZE)}
+                  onClick={() => {
+                    const nextOffset = offset + PAGE_SIZE;
+                    setOffset(nextOffset);
+                    const params = new URLSearchParams();
+                    if (normalizedSlug) {
+                      params.set("slug", normalizedSlug);
+                    }
+                    params.set("offset", String(nextOffset));
+                    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+                  }}
                   disabled={!hasNext}
                   className="px-3 py-1.5 text-sm border border-border hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
