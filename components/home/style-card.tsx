@@ -34,83 +34,76 @@ export const StyleCard = React.memo(function StyleCard({
   };
 
   return (
-    <Link
-      href={`/styles/${style.slug}`}
-      onClick={handleClick}
-      className={cardClassName}
-    >
-      {/* Cover preview */}
-      <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
-        {isCompact ? (
-          <Image
-            src={style.cover}
-            alt={`${style.nameEn} cover`}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover"
-            unoptimized
-          />
-        ) : (
-          <StyleCoverPreview styleSlug={style.slug} />
-        )}
+    <div className="relative">
+      <Link
+        href={`/styles/${style.slug}`}
+        onClick={handleClick}
+        className={cardClassName}
+      >
+        <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
+          {isCompact ? (
+            <Image
+              src={style.cover}
+              alt={`${style.nameEn} cover`}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+              unoptimized
+            />
+          ) : (
+            <StyleCoverPreview styleSlug={style.slug} />
+          )}
 
-        {/* Type badge for layout styles */}
-        {style.styleType === "layout" && (
-          <span className="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 bg-black/60 text-white uppercase tracking-wider">
-            Layout
-          </span>
-        )}
-
-        {/* Favorite button */}
-        <div
-          className="absolute top-2 right-2"
-          onClick={(e) => e.preventDefault()}
-        >
-          <FavoriteButton
-            slug={style.slug}
-            size={isCompact ? "sm" : "md"}
-            className="bg-white/80 dark:bg-black/50 backdrop-blur-sm"
-          />
-        </div>
-      </div>
-
-      {/* Color bar */}
-      {style.colors && (
-        <div className="h-1.5 flex">
-          <div className="flex-1" style={{ backgroundColor: style.colors.primary }} />
-          <div className="flex-1" style={{ backgroundColor: style.colors.secondary }} />
-          {style.colors.accent?.slice(0, 2).map((color, i) => (
-            <div key={color || i} className="flex-1" style={{ backgroundColor: color }} />
-          ))}
-        </div>
-      )}
-
-      {/* Card content */}
-      <div className={isCompact ? "p-3 sm:p-4 md:p-5" : "p-4 md:p-6"}>
-        <div className={`flex items-center gap-2 mb-2 ${isCompact ? "min-w-0" : ""}`}>
-          <h3 className={`group-hover:text-accent group-focus-visible:text-accent transition-colors truncate leading-snug ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
-            {style.name}
-          </h3>
-          <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
-            {style.nameEn}
-          </span>
-        </div>
-        <p className="text-sm text-muted leading-relaxed line-clamp-2">
-          {style.description}
-        </p>
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {style.tags?.map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted uppercase tracking-wider"
-            >
-              {tag}
+          {style.styleType === "layout" && (
+            <span className="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 bg-black/60 text-white uppercase tracking-wider">
+              Layout
             </span>
-          ))}
+          )}
         </div>
+
+        {style.colors && (
+          <div className="h-1.5 flex">
+            <div className="flex-1" style={{ backgroundColor: style.colors.primary }} />
+            <div className="flex-1" style={{ backgroundColor: style.colors.secondary }} />
+            {style.colors.accent?.slice(0, 2).map((color, i) => (
+              <div key={color || i} className="flex-1" style={{ backgroundColor: color }} />
+            ))}
+          </div>
+        )}
+
+        <div className={isCompact ? "p-3 sm:p-4 md:p-5" : "p-4 md:p-6"}>
+          <div className={`flex items-center gap-2 mb-2 ${isCompact ? "min-w-0" : ""}`}>
+            <h3 className={`group-hover:text-accent group-focus-visible:text-accent transition-colors truncate leading-snug ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
+              {style.name}
+            </h3>
+            <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
+              {style.nameEn}
+            </span>
+          </div>
+          <p className="text-sm text-muted leading-relaxed line-clamp-2">
+            {style.description}
+          </p>
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {style.tags?.map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted uppercase tracking-wider"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </Link>
+
+      <div className="absolute top-2 right-2 z-10">
+        <FavoriteButton
+          slug={style.slug}
+          size={isCompact ? "sm" : "md"}
+          className="bg-white/80 dark:bg-black/50 backdrop-blur-sm"
+        />
       </div>
-    </Link>
+    </div>
   );
 });
 
