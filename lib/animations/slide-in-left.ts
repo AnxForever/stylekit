@@ -40,6 +40,7 @@ export const slideInLeft: Animation = {
 }
 
 .slide-in-left {
+  will-change: transform, opacity;
   animation: slide-in-left 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -58,6 +59,7 @@ export const slideInLeft: Animation = {
 }
 
 @utility animate-slide-in-left {
+  will-change: transform, opacity;
   animation: slide-in-left 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -65,6 +67,11 @@ export const slideInLeft: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: respect user's motion preferences
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// Use reduced ? { opacity: 0 } : { opacity: 0, x: -30 } for initial
 
 <motion.div
   initial={{ opacity: 0, x: -30 }}

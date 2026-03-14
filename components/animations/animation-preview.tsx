@@ -65,6 +65,14 @@ const previewMap: Record<string, ComponentType> = {
     () => import("@/lib/animations/previews/blur-in-preview").then((m) => m.BlurInPreview),
     { ssr: false }
   ),
+  "spotlight-card": dynamic(
+    () => import("@/lib/animations/previews/spotlight-card-preview").then((m) => m.SpotlightCardPreview),
+    { ssr: false }
+  ),
+  "magnetic-hover": dynamic(
+    () => import("@/lib/animations/previews/magnetic-hover-preview").then((m) => m.MagneticHoverPreview),
+    { ssr: false }
+  ),
 };
 
 interface AnimationPreviewProps {

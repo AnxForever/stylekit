@@ -42,11 +42,13 @@ export const typewriter: Animation = {
   overflow: hidden;
   white-space: nowrap;
   border-right: 2px solid currentColor;
-  /* Adjust steps() count to match character length */
   animation:
-    typewriter 3s steps(20, end) both,
+    typewriter 3s steps(var(--typewriter-chars, 20), end) both,
     blink-caret 0.75s step-end infinite;
-}`,
+}
+
+/* Usage: set --typewriter-chars to match text length
+   <span class="typewriter" style="--typewriter-chars: 13">Hello, World!</span> */`,
     },
     {
       label: "Tailwind CSS",
@@ -66,7 +68,7 @@ export const typewriter: Animation = {
   white-space: nowrap;
   border-right: 2px solid currentColor;
   animation:
-    typewriter 3s steps(20, end) both,
+    typewriter 3s steps(var(--typewriter-chars, 20), end) both,
     blink-caret 0.75s step-end infinite;
 }`,
     },
@@ -74,6 +76,11 @@ export const typewriter: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: show full text immediately for reduced motion
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// if (reduced) return <span>{text}</span>;
 
 const text = "Hello, World!";
 

@@ -40,6 +40,7 @@ export const scaleIn: Animation = {
 }
 
 .scale-in {
+  will-change: transform, opacity;
   animation: scale-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -58,6 +59,7 @@ export const scaleIn: Animation = {
 }
 
 @utility animate-scale-in {
+  will-change: transform, opacity;
   animation: scale-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -65,6 +67,11 @@ export const scaleIn: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: respect user's motion preferences
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// Use reduced ? { opacity: 0 } : { opacity: 0, scale: 0.9 } for initial
 
 <motion.div
   initial={{ opacity: 0, scale: 0.9 }}

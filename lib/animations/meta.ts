@@ -191,6 +191,30 @@ export const animationsMeta: AnimationMeta[] = [
     duration: "500ms",
     keywords: ["blur", "focus", "sharp", "entrance", "transition", "soft"],
   },
+  {
+    slug: "spotlight-card",
+    name: "聚光灯卡片",
+    nameEn: "Spotlight Card",
+    description: "鼠标在卡片上方移动时，呈现手电筒照亮卡片局部的光影跟随效果。",
+    category: "micro-interaction",
+    tags: ["hover", "spotlight", "glow", "mouse-tracking"],
+    trigger: "on-hover",
+    difficulty: "advanced",
+    duration: "continuous",
+    keywords: ["spotlight", "mouse tracking", "glow", "card effect", "lighting"],
+  },
+  {
+    slug: "magnetic-hover",
+    name: "磁吸悬浮",
+    nameEn: "Magnetic Hover",
+    description: "鼠标靠近目标元素时，元素会像被磁铁吸引一样向鼠标指针方向产生弹性位移。",
+    category: "micro-interaction",
+    tags: ["hover", "magnetic", "physics", "interactive"],
+    trigger: "on-hover",
+    difficulty: "intermediate",
+    duration: "continuous",
+    keywords: ["magnetic", "spring", "button hover", "physics", "attract"],
+  },
 ];
 
 export function getAllAnimationsMeta(): AnimationMeta[] {

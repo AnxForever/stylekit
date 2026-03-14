@@ -40,6 +40,7 @@ export const fadeInDown: Animation = {
 }
 
 .fade-in-down {
+  will-change: transform, opacity;
   animation: fade-in-down 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -58,6 +59,7 @@ export const fadeInDown: Animation = {
 }
 
 @utility animate-fade-in-down {
+  will-change: transform, opacity;
   animation: fade-in-down 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }`,
     },
@@ -65,6 +67,11 @@ export const fadeInDown: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: respect user's motion preferences
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// Use reduced ? { opacity: 0 } : { opacity: 0, y: -20 } for initial
 
 <motion.div
   initial={{ opacity: 0, y: -20 }}

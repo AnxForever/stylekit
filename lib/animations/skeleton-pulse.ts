@@ -64,6 +64,11 @@ export const skeletonPulse: Animation = {
       language: "tsx",
       code: `import { motion } from "framer-motion";
 
+// Tip: disable for users who prefer reduced motion
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// if (reduced) return <div className="static-fallback" />;
+
 <motion.div
   animate={{ opacity: [1, 0.4, 1] }}
   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}

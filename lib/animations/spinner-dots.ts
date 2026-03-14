@@ -40,6 +40,7 @@ export const spinnerDots: Animation = {
 }
 
 .spinner-dots {
+  will-change: transform, opacity;
   display: inline-flex;
   gap: 4px;
 }
@@ -71,6 +72,7 @@ export const spinnerDots: Animation = {
 }
 
 @utility animate-spinner-dot {
+  will-change: transform, opacity;
   animation: spinner-dot-bounce 1.4s ease-in-out infinite both;
 }
 
@@ -86,6 +88,11 @@ export const spinnerDots: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: disable for users who prefer reduced motion
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// if (reduced) return <div className="static-fallback" />;
 
 const dots = [0, 1, 2];
 
