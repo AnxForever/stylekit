@@ -73,6 +73,38 @@ const previewMap: Record<string, ComponentType> = {
     () => import("@/lib/animations/previews/magnetic-hover-preview").then((m) => m.MagneticHoverPreview),
     { ssr: false }
   ),
+  "bounce-in": dynamic(
+    () => import("@/lib/animations/previews/bounce-in-preview").then((m) => m.BounceInPreview),
+    { ssr: false }
+  ),
+  "slide-in-right": dynamic(
+    () => import("@/lib/animations/previews/slide-in-right-preview").then((m) => m.SlideInRightPreview),
+    { ssr: false }
+  ),
+  "rotate-in": dynamic(
+    () => import("@/lib/animations/previews/rotate-in-preview").then((m) => m.RotateInPreview),
+    { ssr: false }
+  ),
+  shake: dynamic(
+    () => import("@/lib/animations/previews/shake-preview").then((m) => m.ShakePreview),
+    { ssr: false }
+  ),
+  "flip-card": dynamic(
+    () => import("@/lib/animations/previews/flip-card-preview").then((m) => m.FlipCardPreview),
+    { ssr: false }
+  ),
+  "ripple-click": dynamic(
+    () => import("@/lib/animations/previews/ripple-click-preview").then((m) => m.RippleClickPreview),
+    { ssr: false }
+  ),
+  "counter-roll": dynamic(
+    () => import("@/lib/animations/previews/counter-roll-preview").then((m) => m.CounterRollPreview),
+    { ssr: false }
+  ),
+  "morph-shape": dynamic(
+    () => import("@/lib/animations/previews/morph-shape-preview").then((m) => m.MorphShapePreview),
+    { ssr: false }
+  ),
 };
 
 interface AnimationPreviewProps {
