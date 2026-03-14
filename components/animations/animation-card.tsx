@@ -159,6 +159,56 @@ export function AnimationCardPreviewStyles() {
         75% { transform: translate(2px, 1px); }
       }
 
+      @keyframes sk-mini-bounce {
+        0%, 100% { opacity: 0; transform: scale(0.3); }
+        18% { transform: scale(1.08); opacity: 1; }
+        28% { transform: scale(0.92); }
+        38%, 78% { transform: scale(1); opacity: 1; }
+      }
+
+      @keyframes sk-mini-slide-right {
+        0%, 100% { opacity: 0; transform: translateX(14px); }
+        18%, 78% { opacity: 1; transform: translateX(0); }
+      }
+
+      @keyframes sk-mini-rotate {
+        0%, 100% { opacity: 0; transform: rotate(-180deg) scale(0.6); }
+        18%, 78% { opacity: 1; transform: rotate(0) scale(1); }
+      }
+
+      @keyframes sk-mini-shake {
+        0%, 100% { transform: translateX(0); }
+        12% { transform: translateX(-6px); }
+        24% { transform: translateX(6px); }
+        36% { transform: translateX(-4px); }
+        48% { transform: translateX(4px); }
+        60% { transform: translateX(-2px); }
+        72%, 100% { transform: translateX(0); }
+      }
+
+      @keyframes sk-mini-flip {
+        0%, 40% { transform: perspective(400px) rotateY(0); }
+        50%, 90% { transform: perspective(400px) rotateY(180deg); }
+        100% { transform: perspective(400px) rotateY(0); }
+      }
+
+      @keyframes sk-mini-ripple {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0.5; }
+        100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+      }
+
+      @keyframes sk-mini-counter {
+        0%, 100% { transform: translateY(100%); opacity: 0; }
+        20%, 80% { transform: translateY(0); opacity: 1; }
+      }
+
+      @keyframes sk-mini-morph {
+        0%, 100% { border-radius: 40% 60% 70% 30% / 40% 30% 60% 70%; }
+        25% { border-radius: 60% 40% 30% 70% / 60% 70% 40% 30%; }
+        50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        75% { border-radius: 50% 40% 60% 50% / 30% 50% 70% 50%; }
+      }
+
       .sk-mini-fade-up { animation: sk-mini-fade-up 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
       .sk-mini-scale-in { animation: sk-mini-scale-in 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
       .sk-mini-hover-lift { animation: sk-mini-hover-lift 2.2s ease-in-out infinite; }
@@ -177,6 +227,14 @@ export function AnimationCardPreviewStyles() {
       .sk-mini-blur-in { animation: sk-mini-blur-in 3s ease-in-out infinite; }
       .sk-mini-spotlight { animation: sk-mini-spotlight 3s ease-in-out infinite; }
       .sk-mini-magnetic { animation: sk-mini-magnetic 2.5s ease-in-out infinite; }
+      .sk-mini-bounce { animation: sk-mini-bounce 2.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+      .sk-mini-slide-right { animation: sk-mini-slide-right 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-rotate { animation: sk-mini-rotate 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-shake { animation: sk-mini-shake 2.5s ease-in-out infinite; }
+      .sk-mini-flip { animation: sk-mini-flip 3.5s ease-in-out infinite; transform-style: preserve-3d; }
+      .sk-mini-ripple { animation: sk-mini-ripple 2s ease-out infinite; }
+      .sk-mini-counter { animation: sk-mini-counter 3s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-morph { animation: sk-mini-morph 8s ease-in-out infinite; }
     `}</style>
   );
 }
@@ -403,6 +461,64 @@ function MiniPreview({ slug }: { slug: string }) {
           <div
             className="sk-mini-anim sk-mini-magnetic rounded-full bg-foreground px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-background shadow-[0_16px_28px_-24px_rgba(15,23,42,0.9)]"
           />
+      );
+    case "bounce-in":
+      return (
+        <div className={`${previewPanelClass} sk-mini-bounce flex h-10 w-10 items-center justify-center rounded-[16px] bg-gradient-to-br from-rose-200 to-pink-300 dark:from-rose-500/28 dark:to-pink-500/22`}>
+          <div className="h-3 w-3 rounded-full bg-white/70 dark:bg-white/15" />
+        </div>
+      );
+    case "slide-in-right":
+      return (
+        <div className={`${previewPanelClass} sk-mini-slide-right h-9 w-14 rounded-[14px] bg-gradient-to-l from-cyan-100 to-blue-100 dark:from-cyan-500/25 dark:to-blue-500/18`}>
+          <div className="absolute inset-y-2 right-2 w-1 rounded-full bg-white/60 dark:bg-white/12" />
+        </div>
+      );
+    case "rotate-in":
+      return (
+        <div className={`${previewPanelClass} sk-mini-rotate h-10 w-10 rounded-[14px] bg-gradient-to-br from-amber-200 to-orange-300 dark:from-amber-500/28 dark:to-orange-500/22`} />
+      );
+    case "shake":
+      return (
+        <div className="sk-mini-anim sk-mini-shake border-2 border-red-400/60 bg-red-50 px-3 py-1.5 text-[10px] text-red-500 dark:bg-red-900/20 dark:border-red-500/30 dark:text-red-400">
+          Error
+        </div>
+      );
+    case "flip-card":
+      return (
+        <div className={`${previewPanelClass} sk-mini-flip h-10 w-14 rounded-[14px] bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-500/28 dark:to-purple-500/22`}>
+          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[8px]" />
+        </div>
+      );
+    case "ripple-click":
+      return (
+        <div className="relative flex h-9 w-16 items-center justify-center overflow-hidden bg-indigo-500 shadow-[0_14px_28px_-22px_rgba(79,70,229,0.9)]">
+          <span className="relative z-10 text-[10px] text-white uppercase tracking-wider">Click</span>
+          <span
+            className="sk-mini-anim sk-mini-ripple absolute left-1/2 top-1/2 h-3 w-3 rounded-full bg-white/30"
+          />
+        </div>
+      );
+    case "counter-roll":
+      return (
+        <div className="flex gap-0.5 font-mono text-base tabular-nums">
+          {["9", "8", "7"].map((n, i) => (
+            <span key={i} className="inline-block overflow-hidden h-[1.3em]">
+              <span
+                className="sk-mini-anim sk-mini-counter inline-block"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              >
+                {n}
+              </span>
+            </span>
+          ))}
+        </div>
+      );
+    case "morph-shape":
+      return (
+        <div
+          className="sk-mini-anim sk-mini-morph h-12 w-12 bg-gradient-to-br from-teal-300 to-cyan-400 shadow-[0_16px_28px_-22px_rgba(6,182,212,0.8)] dark:from-teal-500/40 dark:to-cyan-500/30"
+        />
       );
     default:
       return (

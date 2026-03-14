@@ -32,6 +32,14 @@ import { staggerChildren } from "./stagger-children";
 import { blurIn } from "./blur-in";
 import { spotlightCard } from "./spotlight-card";
 import { magneticHover } from "./magnetic-hover";
+import { bounceIn } from "./bounce-in";
+import { slideInRight } from "./slide-in-right";
+import { rotateIn } from "./rotate-in";
+import { shake } from "./shake";
+import { flipCard } from "./flip-card";
+import { rippleClick } from "./ripple-click";
+import { counterRoll } from "./counter-roll";
+import { morphShape } from "./morph-shape";
 
 export const animations: Animation[] = [
   fadeInUp,
@@ -51,6 +59,14 @@ export const animations: Animation[] = [
   blurIn,
   spotlightCard,
   magneticHover,
+  bounceIn,
+  slideInRight,
+  rotateIn,
+  shake,
+  flipCard,
+  rippleClick,
+  counterRoll,
+  morphShape,
 ];
 
 export function getAllAnimations(): Animation[] {
