@@ -12,7 +12,9 @@ import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator
 import {
   isSupabaseConfigured,
   createSubmissionSupabase,
+  hasActiveSubmissionSlugSupabase,
 } from "@/lib/submit/reviewer-supabase";
+import { hasActiveSubmissionSlug } from "@/lib/submit/reviewer";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import {
   checkRateLimit,
@@ -21,6 +23,7 @@ import {
 } from "@/lib/security/rate-limit";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
+import { getStyleBySlug } from "@/lib/styles";
 
 const SUBMISSIONS_DIR = path.join(process.cwd(), "data", "submissions");
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
@@ -317,6 +320,15 @@ export async function POST(request: Request) {
 
     const { data, source, coverSvg } = parsed.value;
     const normalizedSlug = data.slug.trim().toLowerCase();
+    if (getStyleBySlug(normalizedSlug)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "This slug is already used by a built-in style.",
+        },
+        { status: 409 }
+      );
+    }
 
     const qualityIssues = validateSubmissionQuality(data, source);
     if (qualityIssues) {
@@ -327,6 +339,20 @@ export async function POST(request: Request) {
           details: qualityIssues,
         },
         { status: 400 }
+      );
+    }
+
+    const useSupabase = isSupabaseConfigured();
+    const hasActiveSlug = useSupabase
+      ? await hasActiveSubmissionSlugSupabase(normalizedSlug)
+      : await hasActiveSubmissionSlug(normalizedSlug);
+    if (hasActiveSlug) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "This slug is already pending review or approved.",
+        },
+        { status: 409 }
       );
     }
 
@@ -354,7 +380,6 @@ export async function POST(request: Request) {
     };
 
     // Use Supabase when configured, otherwise fall back to file system
-    const useSupabase = isSupabaseConfigured();
     if (useSupabase) {
       const ip = getClientIpAddress(request);
       const result = await createSubmissionSupabase(
