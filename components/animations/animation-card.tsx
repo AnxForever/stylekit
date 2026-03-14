@@ -347,6 +347,43 @@ function MiniPreview({ slug }: { slug: string }) {
           />
         </>
       );
+    case "spotlight-card":
+      return (
+        <>
+          <style>{`
+            @keyframes mini-spotlight {
+              0%, 100% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+            }
+          `}</style>
+          <div className="relative w-20 h-14 bg-zinc-800 border border-white/10 overflow-hidden">
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 60%)",
+                animation: "mini-spotlight 3s ease-in-out infinite",
+              }}
+            />
+          </div>
+        </>
+      );
+    case "magnetic-hover":
+      return (
+        <>
+          <style>{`
+            @keyframes mini-magnetic {
+              0%, 100% { transform: translate(0, 0); }
+              25% { transform: translate(3px, -2px); }
+              50% { transform: translate(-2px, 3px); }
+              75% { transform: translate(2px, 1px); }
+            }
+          `}</style>
+          <div
+            className="w-14 h-8 bg-foreground"
+            style={{ animation: "mini-magnetic 2.5s ease-in-out infinite" }}
+          />
+        </>
+      );
     default:
       return (
         <div className="w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-700 animate-pulse" />

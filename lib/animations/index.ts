@@ -30,6 +30,8 @@ import { spinnerDots } from "./spinner-dots";
 import { backgroundGradientShift } from "./background-gradient-shift";
 import { staggerChildren } from "./stagger-children";
 import { blurIn } from "./blur-in";
+import { spotlightCard } from "./spotlight-card";
+import { magneticHover } from "./magnetic-hover";
 
 export const animations: Animation[] = [
   fadeInUp,
@@ -47,6 +49,8 @@ export const animations: Animation[] = [
   backgroundGradientShift,
   staggerChildren,
   blurIn,
+  spotlightCard,
+  magneticHover,
 ];
 
 export function getAllAnimations(): Animation[] {

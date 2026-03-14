@@ -28,8 +28,8 @@ export const parallaxFloat: Animation = {
     {
       label: "CSS Keyframes",
       language: "css",
-      code: `/* Pure CSS parallax using perspective */
-.parallax-container {
+      code: `.parallax-container {
+  will-change: transform;
   perspective: 1px;
   height: 100vh;
   overflow-x: hidden;
@@ -93,6 +93,11 @@ function useParallax(speed = 0.5) {
       language: "tsx",
       code: `import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+
+// Tip: disable parallax for reduced motion users
+// import { useReducedMotion } from "framer-motion";
+// const reduced = useReducedMotion();
+// const y = reduced ? 0 : useTransform(...);
 
 function ParallaxSection() {
   const ref = useRef(null);

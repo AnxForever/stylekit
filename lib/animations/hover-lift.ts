@@ -29,6 +29,7 @@ export const hoverLift: Animation = {
       label: "CSS Keyframes",
       language: "css",
       code: `.hover-lift {
+  will-change: transform, box-shadow;
   transition: transform 200ms cubic-bezier(0.33, 1, 0.68, 1),
               box-shadow 200ms cubic-bezier(0.33, 1, 0.68, 1);
 }
@@ -50,6 +51,7 @@ export const hoverLift: Animation = {
 
 /* Or define a custom utility in Tailwind v4 */
 @utility hover-lift {
+  will-change: transform, box-shadow;
   transition: transform 200ms cubic-bezier(0.33, 1, 0.68, 1),
               box-shadow 200ms cubic-bezier(0.33, 1, 0.68, 1);
   &:hover {
@@ -64,6 +66,9 @@ export const hoverLift: Animation = {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
+
+// Tip: consider disabling for reduced motion users
+// import { useReducedMotion } from "framer-motion";
 
 <motion.div
   whileHover={{ y: -4, boxShadow: "0 12px 20px -8px rgba(0,0,0,0.15)" }}
