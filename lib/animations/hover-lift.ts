@@ -39,6 +39,13 @@ export const hoverLift: Animation = {
   box-shadow:
     0 12px 20px -8px rgba(0, 0, 0, 0.15),
     0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift {
+    animation: none;
+    transition: none;
+  }
 }`,
     },
     {
@@ -59,6 +66,13 @@ export const hoverLift: Animation = {
     box-shadow:
       0 12px 20px -8px rgba(0, 0, 0, 0.15),
       0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift {
+    animation: none;
+    transition: none;
   }
 }`,
     },

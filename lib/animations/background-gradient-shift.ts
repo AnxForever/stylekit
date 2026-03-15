@@ -12,8 +12,8 @@ export const backgroundGradientShift: Animation = {
   difficulty: "beginner",
   duration: "8s",
   easing: "linear",
-  cssProperties: ["background-position"],
-  isGPUAccelerated: false,
+  cssProperties: ["transform"],
+  isGPUAccelerated: true,
   previewBg: "dark",
   keywords: ["background", "gradient", "shift", "ambient", "flow", "color change"],
   useCases: [
@@ -28,43 +28,65 @@ export const backgroundGradientShift: Animation = {
     {
       label: "CSS Keyframes",
       language: "css",
-      code: `@keyframes bg-gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+      code: `.bg-gradient-shift {
+  position: relative;
+  overflow: hidden;
 }
 
-.bg-gradient-shift {
-  background: linear-gradient(
-    -45deg,
-    #ee7752, #e73c7e, #23a6d5, #23d5ab
-  );
-  background-size: 400% 400%;
+.bg-gradient-shift::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  will-change: transform;
   animation: bg-gradient-shift 8s ease infinite;
+}
+
+@keyframes bg-gradient-shift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-25%, -10%); }
+  50% { transform: translate(-10%, -25%); }
+  75% { transform: translate(-25%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-gradient-shift::before {
+    animation: none;
+  }
 }`,
     },
     {
       label: "Tailwind CSS",
       language: "css",
       code: `@keyframes bg-gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-25%, -10%); }
+  50% { transform: translate(-10%, -25%); }
+  75% { transform: translate(-25%, 0); }
 }
 
 @utility animate-bg-gradient-shift {
-  background: linear-gradient(
-    -45deg,
-    #ee7752, #e73c7e, #23a6d5, #23d5ab
-  );
-  background-size: 400% 400%;
-  animation: bg-gradient-shift 8s ease infinite;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    will-change: transform;
+    animation: bg-gradient-shift 8s ease infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-gradient-shift::before {
+    animation: none;
+  }
 }`,
     },
     {

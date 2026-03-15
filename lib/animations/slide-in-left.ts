@@ -40,8 +40,19 @@ export const slideInLeft: Animation = {
 }
 
 .slide-in-left {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: slide-in-left 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-in-left var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-in-left {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -59,8 +70,19 @@ export const slideInLeft: Animation = {
 }
 
 @utility animate-slide-in-left {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: slide-in-left 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-in-left var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-in-left {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

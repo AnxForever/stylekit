@@ -40,8 +40,19 @@ export const fadeInDown: Animation = {
 }
 
 .fade-in-down {
+  --sk-duration: 600ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: fade-in-down 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-in-down var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-down {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -59,8 +70,19 @@ export const fadeInDown: Animation = {
 }
 
 @utility animate-fade-in-down {
+  --sk-duration: 600ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: fade-in-down 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-in-down var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-down {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

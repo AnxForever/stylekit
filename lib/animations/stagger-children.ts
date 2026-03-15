@@ -52,7 +52,15 @@ export const staggerChildren: Animation = {
      <div style="--stagger-index: 1">...</div>
      <div style="--stagger-index: 2">...</div>
    </div>
-   Override delay: style="--stagger-delay: 100ms" on parent */`,
+   Override delay: style="--stagger-delay: 100ms" on parent */
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-children {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}`,
     },
     {
       label: "Tailwind CSS",

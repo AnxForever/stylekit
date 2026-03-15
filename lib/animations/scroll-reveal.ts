@@ -40,12 +40,23 @@ export const scrollReveal: Animation = {
 }
 
 .scroll-reveal {
+  --sk-duration: 600ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
   opacity: 0;
 }
 
 .scroll-reveal.is-visible {
-  animation: scroll-reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: scroll-reveal var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

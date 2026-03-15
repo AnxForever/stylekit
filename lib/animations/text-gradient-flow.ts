@@ -50,6 +50,12 @@ export const textGradientFlow: Animation = {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: text-gradient-flow 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-flow {
+    animation: none;
+  }
 }`,
     },
     {
@@ -71,6 +77,12 @@ export const textGradientFlow: Animation = {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: text-gradient-flow 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-flow {
+    animation: none;
+  }
 }`,
     },
     {

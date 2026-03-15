@@ -61,6 +61,14 @@ export const counterRoll: Animation = {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .counter-roll-digit {
+    animation: none;
+    overflow: visible;
+    width: auto;
+  }
 }`,
     },
     {
@@ -87,6 +95,14 @@ export const counterRoll: Animation = {
   will-change: transform;
   animation: counter-roll 2s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--digit-index, 0) * 150ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .counter-roll-digit {
+    animation: none;
+    overflow: visible;
+    width: auto;
+  }
 }`,
     },
     {
