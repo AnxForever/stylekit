@@ -13,8 +13,6 @@ export function RippleClickPreview() {
     const btn = btnRef.current;
     if (!el || !btn) return;
 
-    let timer: ReturnType<typeof setInterval>;
-
     const spawnRipple = () => {
       const rect = btn.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
@@ -29,7 +27,7 @@ export function RippleClickPreview() {
       ripple.addEventListener("animationend", () => ripple.remove());
     };
 
-    timer = setInterval(spawnRipple, 1800);
+    const timer = setInterval(spawnRipple, 1800);
     // Fire one immediately
     const initial = setTimeout(spawnRipple, 300);
 
