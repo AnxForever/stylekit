@@ -98,6 +98,42 @@ const previewMap: Record<string, ComponentType> = {
   "morph-shape": dynamicPreview(
     () => import("@/lib/animations/previews/morph-shape-preview").then((m) => m.MorphShapePreview)
   ),
+  "fade-out-down": dynamicPreview(
+    () => import("@/lib/animations/previews/fade-out-down-preview").then((m) => m.FadeOutDownPreview)
+  ),
+  "scale-out": dynamicPreview(
+    () => import("@/lib/animations/previews/scale-out-preview").then((m) => m.ScaleOutPreview)
+  ),
+  "slide-out-right": dynamicPreview(
+    () => import("@/lib/animations/previews/slide-out-right-preview").then((m) => m.SlideOutRightPreview)
+  ),
+  collapse: dynamicPreview(
+    () => import("@/lib/animations/previews/collapse-preview").then((m) => m.CollapsePreview)
+  ),
+  crossfade: dynamicPreview(
+    () => import("@/lib/animations/previews/crossfade-preview").then((m) => m.CrossfadePreview)
+  ),
+  "slide-swap": dynamicPreview(
+    () => import("@/lib/animations/previews/slide-swap-preview").then((m) => m.SlideSwapPreview)
+  ),
+  "morph-transition": dynamicPreview(
+    () => import("@/lib/animations/previews/morph-transition-preview").then((m) => m.MorphTransitionPreview)
+  ),
+  "text-reveal": dynamicPreview(
+    () => import("@/lib/animations/previews/text-reveal-preview").then((m) => m.TextRevealPreview)
+  ),
+  "underline-draw": dynamicPreview(
+    () => import("@/lib/animations/previews/underline-draw-preview").then((m) => m.UnderlineDrawPreview)
+  ),
+  "progress-bar": dynamicPreview(
+    () => import("@/lib/animations/previews/progress-bar-preview").then((m) => m.ProgressBarPreview)
+  ),
+  "elastic-scale": dynamicPreview(
+    () => import("@/lib/animations/previews/elastic-scale-preview").then((m) => m.ElasticScalePreview)
+  ),
+  "pulse-ring": dynamicPreview(
+    () => import("@/lib/animations/previews/pulse-ring-preview").then((m) => m.PulseRingPreview)
+  ),
 };
 
 interface AnimationPreviewProps {

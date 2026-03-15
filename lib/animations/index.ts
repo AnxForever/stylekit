@@ -40,6 +40,25 @@ import { flipCard } from "./flip-card";
 import { rippleClick } from "./ripple-click";
 import { counterRoll } from "./counter-roll";
 import { morphShape } from "./morph-shape";
+import { fadeOutDown } from "./fade-out-down";
+import { zoomIn } from "./zoom-in";
+import { marqueeScroll } from "./marquee-scroll";
+import { shimmer } from "./shimmer";
+import { pulse } from "./pulse";
+import { elasticSnap } from "./elastic-snap";
+import { borderTrace } from "./border-trace";
+import { glitchText } from "./glitch-text";
+import { scaleOut } from "./scale-out";
+import { slideOutRight } from "./slide-out-right";
+import { collapse } from "./collapse";
+import { crossfade } from "./crossfade";
+import { slideSwap } from "./slide-swap";
+import { morphTransition } from "./morph-transition";
+import { textReveal } from "./text-reveal";
+import { underlineDraw } from "./underline-draw";
+import { progressBar } from "./progress-bar";
+import { elasticScale } from "./elastic-scale";
+import { pulseRing } from "./pulse-ring";
 
 export const animations: Animation[] = [
   fadeInUp,
@@ -67,6 +86,25 @@ export const animations: Animation[] = [
   rippleClick,
   counterRoll,
   morphShape,
+  fadeOutDown,
+  zoomIn,
+  marqueeScroll,
+  shimmer,
+  pulse,
+  elasticSnap,
+  borderTrace,
+  glitchText,
+  scaleOut,
+  slideOutRight,
+  collapse,
+  crossfade,
+  slideSwap,
+  morphTransition,
+  textReveal,
+  underlineDraw,
+  progressBar,
+  elasticScale,
+  pulseRing,
 ];
 
 export function getAllAnimations(): Animation[] {
