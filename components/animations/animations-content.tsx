@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
+import { useDeferredValue, useMemo, useState } from "react";
+import { Loader2, Search } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { AnimationCard, AnimationCardPreviewStyles } from "@/components/animations/animation-card";
 import type { AnimationMeta, AnimationCategory, AnimationTrigger } from "@/lib/animations/types";
@@ -58,6 +58,7 @@ export function AnimationsContent({
   const [trigger, setTrigger] = useState<TriggerFilter>(initialTrigger);
   const [difficulty, setDifficulty] = useState<DifficultyFilter>(initialDifficulty);
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
 
   const filtered = useMemo(() => {
     let result = allAnimations;
@@ -71,8 +72,8 @@ export function AnimationsContent({
     if (difficulty !== "all") {
       result = result.filter((a) => a.difficulty === difficulty);
     }
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
+    if (deferredSearch.trim()) {
+      const q = deferredSearch.trim().toLowerCase();
       result = result.filter(
         (a) =>
           a.name.toLowerCase().includes(q) ||
@@ -84,7 +85,8 @@ export function AnimationsContent({
     }
 
     return result;
-  }, [allAnimations, category, trigger, difficulty, search]);
+  }, [allAnimations, category, trigger, difficulty, deferredSearch]);
+  const isSearching = search !== deferredSearch;
 
   return (
     <>
@@ -174,16 +176,28 @@ export function AnimationsContent({
                 className="w-full pl-10 pr-4 py-2 text-sm border border-border bg-background text-foreground placeholder:text-muted focus:outline-none focus:border-foreground transition-colors"
               />
             </div>
-            <p className="text-sm text-muted">
-              {filtered.length} {t("animations.results")}
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-muted">
+                {filtered.length} {t("animations.results")}
+              </p>
+              {isSearching && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Grid */}
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((anim) => (
-                <AnimationCard key={anim.slug} animation={anim} />
+                <div
+                  key={anim.slug}
+                  className="[content-visibility:auto] [contain-intrinsic-size:1px_380px]"
+                >
+                  <AnimationCard animation={anim} />
+                </div>
               ))}
             </div>
           ) : (

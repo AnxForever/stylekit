@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { PreviewContainer, ReplayButton, useReplay } from "./_shared";
 
 export function BounceInPreview() {
