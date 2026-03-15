@@ -188,7 +188,11 @@ export function useCommunityFeed(query: CommunityFeedQuery = {}) {
   if (query.slug?.trim()) {
     params.set("slug", query.slug.trim().toLowerCase());
   }
-  return useSWR<CommunityFeedData>(`/api/community/feed?${params.toString()}`);
+  return useSWR<CommunityFeedData>(`/api/community/feed?${params.toString()}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
