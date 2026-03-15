@@ -12,8 +12,8 @@ export const hoverGlow: Animation = {
   difficulty: "beginner",
   duration: "300ms",
   easing: "ease-out",
-  cssProperties: ["box-shadow"],
-  isGPUAccelerated: false,
+  cssProperties: ["box-shadow", "opacity"],
+  isGPUAccelerated: true,
   previewBg: "dark",
   keywords: ["hover", "glow", "border glow", "neon", "CTA", "button hover"],
   useCases: [
@@ -29,33 +29,60 @@ export const hoverGlow: Animation = {
       label: "CSS Keyframes",
       language: "css",
       code: `.hover-glow {
-  transition: box-shadow 300ms ease-out;
+  position: relative;
 }
 
-.hover-glow:hover {
-  box-shadow:
-    0 0 15px rgba(99, 102, 241, 0.4),
-    0 0 30px rgba(99, 102, 241, 0.2),
-    0 0 45px rgba(99, 102, 241, 0.1);
+.hover-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hover-glow:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-glow {
+    animation: none;
+    transition: none;
+  }
 }`,
     },
     {
       label: "Tailwind CSS",
       language: "css",
-      code: `/* Use with Tailwind utilities */
-/* <button class="transition-shadow duration-300
-                  hover:shadow-[0_0_15px_rgba(99,102,241,0.4),0_0_30px_rgba(99,102,241,0.2)]">
-     Click me
-   </button> */
-
-/* Or define a custom utility in Tailwind v4 */
+      code: `/* GPU-optimized: animates opacity on pseudo-element instead of box-shadow */
 @utility hover-glow {
-  transition: box-shadow 300ms ease-out;
-  &:hover {
-    box-shadow:
-      0 0 15px rgba(99, 102, 241, 0.4),
-      0 0 30px rgba(99, 102, 241, 0.2),
-      0 0 45px rgba(99, 102, 241, 0.1);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-glow {
+    animation: none;
+    transition: none;
   }
 }`,
     },

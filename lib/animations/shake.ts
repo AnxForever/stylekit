@@ -52,6 +52,12 @@ export const shake: Animation = {
 .shake {
   will-change: transform;
   animation: shake 500ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
 }`,
     },
     {
@@ -82,6 +88,12 @@ export const shake: Animation = {
 @utility animate-shake {
   will-change: transform;
   animation: shake 500ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
 }`,
     },
     {

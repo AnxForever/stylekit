@@ -62,6 +62,13 @@ export const flipCard: Animation = {
 .flip-card-back {
   background: var(--card-bg-alt, hsl(0 0% 96%));
   transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-card {
+    animation: none;
+    transition: none;
+  }
 }`,
     },
     {
@@ -94,50 +101,44 @@ export const flipCard: Animation = {
 
 @utility flip-card-back {
   transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-card {
+    animation: none;
+    transition: none;
+  }
 }`,
     },
     {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
-import { useState } from "react";
 
-// Tip: respect user's motion preferences
+// Tip: consider disabling for reduced motion users
 // import { useReducedMotion } from "framer-motion";
-// const reduced = useReducedMotion();
-// If reduced, swap content instantly without rotation
 
-function FlipCard() {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  return (
-    <div
-      style={{ perspective: 1000 }}
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-    >
-      <motion.div
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d", position: "relative" }}
-      >
-        <div style={{ backfaceVisibility: "hidden" }}>
-          Front
-        </div>
-        <div
-          style={{
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            position: "absolute",
-            inset: 0,
-          }}
-        >
-          Back
-        </div>
-      </motion.div>
+<div style={{ perspective: "800px" }}>
+  <motion.div
+    style={{ transformStyle: "preserve-3d" }}
+    whileHover={{ rotateY: 180 }}
+    transition={{ duration: 0.6, ease: "easeInOut" }}
+  >
+    {/* Front face */}
+    <div style={{ backfaceVisibility: "hidden" }}>
+      Front Content
     </div>
-  );
-}`,
+    {/* Back face */}
+    <div style={{
+      backfaceVisibility: "hidden",
+      transform: "rotateY(180deg)",
+      position: "absolute",
+      inset: 0,
+    }}>
+      Back Content
+    </div>
+  </motion.div>
+</div>`,
     },
   ],
 };

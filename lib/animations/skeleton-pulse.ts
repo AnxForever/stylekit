@@ -41,6 +41,12 @@ export const skeletonPulse: Animation = {
   background-color: #e5e7eb;
   border-radius: 0.375rem;
   animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-pulse {
+    animation: none;
+  }
 }`,
     },
     {
@@ -57,6 +63,12 @@ export const skeletonPulse: Animation = {
 
 @utility animate-skeleton-pulse {
   animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-pulse {
+    animation: none;
+  }
 }`,
     },
     {

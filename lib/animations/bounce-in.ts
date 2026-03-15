@@ -47,8 +47,19 @@ export const bounceIn: Animation = {
 }
 
 .bounce-in {
+  --sk-duration: 600ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform, opacity;
-  animation: bounce-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: bounce-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bounce-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -74,8 +85,19 @@ export const bounceIn: Animation = {
 }
 
 @utility animate-bounce-in {
+  --sk-duration: 600ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform, opacity;
-  animation: bounce-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: bounce-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bounce-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

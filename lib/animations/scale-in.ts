@@ -40,8 +40,19 @@ export const scaleIn: Animation = {
 }
 
 .scale-in {
+  --sk-duration: 400ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: scale-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: scale-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scale-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -59,8 +70,19 @@ export const scaleIn: Animation = {
 }
 
 @utility animate-scale-in {
+  --sk-duration: 400ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: scale-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: scale-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scale-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

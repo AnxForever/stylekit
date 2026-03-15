@@ -54,6 +54,12 @@ export const parallaxFloat: Animation = {
 .parallax-layer-front {
   position: absolute;
   inset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-container {
+    animation: none;
+  }
 }`,
     },
     {

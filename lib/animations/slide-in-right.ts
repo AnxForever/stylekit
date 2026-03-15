@@ -40,15 +40,29 @@ export const slideInRight: Animation = {
 }
 
 .slide-in-right {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: slide-in-right 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-in-right var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
 }
 
 /* Staggered variant using CSS custom property */
 .slide-in-right-stagger {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: slide-in-right 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-in-right var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
   animation-delay: calc(var(--stagger-index, 0) * 80ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-in-right {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -67,8 +81,19 @@ export const slideInRight: Animation = {
 }
 
 @utility animate-slide-in-right {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: slide-in-right 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-in-right var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-in-right {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
