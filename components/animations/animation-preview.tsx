@@ -4,106 +4,99 @@ import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import { PreviewContainer } from "@/lib/animations/previews/_shared";
 
+function PreviewLoadingFallback() {
+  return (
+    <PreviewContainer bg="light">
+      <div className="w-full max-w-[220px] animate-pulse space-y-3">
+        <div className="h-20 rounded-xl bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-2 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800 mx-auto" />
+      </div>
+    </PreviewContainer>
+  );
+}
+
+function dynamicPreview(loader: () => Promise<ComponentType>) {
+  return dynamic(loader, {
+    ssr: false,
+    loading: () => <PreviewLoadingFallback />,
+  });
+}
+
 const previewMap: Record<string, ComponentType> = {
-  "fade-in-up": dynamic(
-    () => import("@/lib/animations/previews/fade-in-up-preview").then((m) => m.FadeInUpPreview),
-    { ssr: false }
+  "fade-in-up": dynamicPreview(
+    () => import("@/lib/animations/previews/fade-in-up-preview").then((m) => m.FadeInUpPreview)
   ),
-  "fade-in-down": dynamic(
-    () => import("@/lib/animations/previews/fade-in-down-preview").then((m) => m.FadeInDownPreview),
-    { ssr: false }
+  "fade-in-down": dynamicPreview(
+    () => import("@/lib/animations/previews/fade-in-down-preview").then((m) => m.FadeInDownPreview)
   ),
-  "scale-in": dynamic(
-    () => import("@/lib/animations/previews/scale-in-preview").then((m) => m.ScaleInPreview),
-    { ssr: false }
+  "scale-in": dynamicPreview(
+    () => import("@/lib/animations/previews/scale-in-preview").then((m) => m.ScaleInPreview)
   ),
-  "slide-in-left": dynamic(
-    () => import("@/lib/animations/previews/slide-in-left-preview").then((m) => m.SlideInLeftPreview),
-    { ssr: false }
+  "slide-in-left": dynamicPreview(
+    () => import("@/lib/animations/previews/slide-in-left-preview").then((m) => m.SlideInLeftPreview)
   ),
-  "hover-lift": dynamic(
-    () => import("@/lib/animations/previews/hover-lift-preview").then((m) => m.HoverLiftPreview),
-    { ssr: false }
+  "hover-lift": dynamicPreview(
+    () => import("@/lib/animations/previews/hover-lift-preview").then((m) => m.HoverLiftPreview)
   ),
-  "hover-glow": dynamic(
-    () => import("@/lib/animations/previews/hover-glow-preview").then((m) => m.HoverGlowPreview),
-    { ssr: false }
+  "hover-glow": dynamicPreview(
+    () => import("@/lib/animations/previews/hover-glow-preview").then((m) => m.HoverGlowPreview)
   ),
-  "scroll-reveal": dynamic(
-    () => import("@/lib/animations/previews/scroll-reveal-preview").then((m) => m.ScrollRevealPreview),
-    { ssr: false }
+  "scroll-reveal": dynamicPreview(
+    () => import("@/lib/animations/previews/scroll-reveal-preview").then((m) => m.ScrollRevealPreview)
   ),
-  "parallax-float": dynamic(
-    () => import("@/lib/animations/previews/parallax-float-preview").then((m) => m.ParallaxFloatPreview),
-    { ssr: false }
+  "parallax-float": dynamicPreview(
+    () => import("@/lib/animations/previews/parallax-float-preview").then((m) => m.ParallaxFloatPreview)
   ),
-  typewriter: dynamic(
-    () => import("@/lib/animations/previews/typewriter-preview").then((m) => m.TypewriterPreview),
-    { ssr: false }
+  typewriter: dynamicPreview(
+    () => import("@/lib/animations/previews/typewriter-preview").then((m) => m.TypewriterPreview)
   ),
-  "text-gradient-flow": dynamic(
-    () => import("@/lib/animations/previews/text-gradient-flow-preview").then((m) => m.TextGradientFlowPreview),
-    { ssr: false }
+  "text-gradient-flow": dynamicPreview(
+    () => import("@/lib/animations/previews/text-gradient-flow-preview").then((m) => m.TextGradientFlowPreview)
   ),
-  "skeleton-pulse": dynamic(
-    () => import("@/lib/animations/previews/skeleton-pulse-preview").then((m) => m.SkeletonPulsePreview),
-    { ssr: false }
+  "skeleton-pulse": dynamicPreview(
+    () => import("@/lib/animations/previews/skeleton-pulse-preview").then((m) => m.SkeletonPulsePreview)
   ),
-  "spinner-dots": dynamic(
-    () => import("@/lib/animations/previews/spinner-dots-preview").then((m) => m.SpinnerDotsPreview),
-    { ssr: false }
+  "spinner-dots": dynamicPreview(
+    () => import("@/lib/animations/previews/spinner-dots-preview").then((m) => m.SpinnerDotsPreview)
   ),
-  "background-gradient-shift": dynamic(
-    () => import("@/lib/animations/previews/background-gradient-shift-preview").then((m) => m.BackgroundGradientShiftPreview),
-    { ssr: false }
+  "background-gradient-shift": dynamicPreview(
+    () => import("@/lib/animations/previews/background-gradient-shift-preview").then((m) => m.BackgroundGradientShiftPreview)
   ),
-  "stagger-children": dynamic(
-    () => import("@/lib/animations/previews/stagger-children-preview").then((m) => m.StaggerChildrenPreview),
-    { ssr: false }
+  "stagger-children": dynamicPreview(
+    () => import("@/lib/animations/previews/stagger-children-preview").then((m) => m.StaggerChildrenPreview)
   ),
-  "blur-in": dynamic(
-    () => import("@/lib/animations/previews/blur-in-preview").then((m) => m.BlurInPreview),
-    { ssr: false }
+  "blur-in": dynamicPreview(
+    () => import("@/lib/animations/previews/blur-in-preview").then((m) => m.BlurInPreview)
   ),
-  "spotlight-card": dynamic(
-    () => import("@/lib/animations/previews/spotlight-card-preview").then((m) => m.SpotlightCardPreview),
-    { ssr: false }
+  "spotlight-card": dynamicPreview(
+    () => import("@/lib/animations/previews/spotlight-card-preview").then((m) => m.SpotlightCardPreview)
   ),
-  "magnetic-hover": dynamic(
-    () => import("@/lib/animations/previews/magnetic-hover-preview").then((m) => m.MagneticHoverPreview),
-    { ssr: false }
+  "magnetic-hover": dynamicPreview(
+    () => import("@/lib/animations/previews/magnetic-hover-preview").then((m) => m.MagneticHoverPreview)
   ),
-  "bounce-in": dynamic(
-    () => import("@/lib/animations/previews/bounce-in-preview").then((m) => m.BounceInPreview),
-    { ssr: false }
+  "bounce-in": dynamicPreview(
+    () => import("@/lib/animations/previews/bounce-in-preview").then((m) => m.BounceInPreview)
   ),
-  "slide-in-right": dynamic(
-    () => import("@/lib/animations/previews/slide-in-right-preview").then((m) => m.SlideInRightPreview),
-    { ssr: false }
+  "slide-in-right": dynamicPreview(
+    () => import("@/lib/animations/previews/slide-in-right-preview").then((m) => m.SlideInRightPreview)
   ),
-  "rotate-in": dynamic(
-    () => import("@/lib/animations/previews/rotate-in-preview").then((m) => m.RotateInPreview),
-    { ssr: false }
+  "rotate-in": dynamicPreview(
+    () => import("@/lib/animations/previews/rotate-in-preview").then((m) => m.RotateInPreview)
   ),
-  shake: dynamic(
-    () => import("@/lib/animations/previews/shake-preview").then((m) => m.ShakePreview),
-    { ssr: false }
+  shake: dynamicPreview(
+    () => import("@/lib/animations/previews/shake-preview").then((m) => m.ShakePreview)
   ),
-  "flip-card": dynamic(
-    () => import("@/lib/animations/previews/flip-card-preview").then((m) => m.FlipCardPreview),
-    { ssr: false }
+  "flip-card": dynamicPreview(
+    () => import("@/lib/animations/previews/flip-card-preview").then((m) => m.FlipCardPreview)
   ),
-  "ripple-click": dynamic(
-    () => import("@/lib/animations/previews/ripple-click-preview").then((m) => m.RippleClickPreview),
-    { ssr: false }
+  "ripple-click": dynamicPreview(
+    () => import("@/lib/animations/previews/ripple-click-preview").then((m) => m.RippleClickPreview)
   ),
-  "counter-roll": dynamic(
-    () => import("@/lib/animations/previews/counter-roll-preview").then((m) => m.CounterRollPreview),
-    { ssr: false }
+  "counter-roll": dynamicPreview(
+    () => import("@/lib/animations/previews/counter-roll-preview").then((m) => m.CounterRollPreview)
   ),
-  "morph-shape": dynamic(
-    () => import("@/lib/animations/previews/morph-shape-preview").then((m) => m.MorphShapePreview),
-    { ssr: false }
+  "morph-shape": dynamicPreview(
+    () => import("@/lib/animations/previews/morph-shape-preview").then((m) => m.MorphShapePreview)
   ),
 };
 

@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Clock, Zap, Code } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { AnimationPreview } from "@/components/animations/animation-preview";
-import { AnimationCodeTabs } from "@/components/animations/animation-code-tabs";
-import { AnimationPlayground } from "@/components/animations/animation-playground";
-import { RecommendedStyles } from "@/components/animations/recommended-styles";
 import type { Animation } from "@/lib/animations/types";
 
 interface AnimationDetailContentProps {
@@ -39,6 +37,28 @@ const difficultyI18nMap: Record<string, string> = {
   intermediate: "animations.difficultyIntermediate",
   advanced: "animations.difficultyAdvanced",
 };
+
+const AnimationCodeTabs = dynamic(
+  () => import("@/components/animations/animation-code-tabs").then((m) => ({ default: m.AnimationCodeTabs })),
+  {
+    ssr: false,
+    loading: () => <SectionSkeleton className="min-h-[280px]" />,
+  }
+);
+const AnimationPlayground = dynamic(
+  () => import("@/components/animations/animation-playground").then((m) => ({ default: m.AnimationPlayground })),
+  {
+    ssr: false,
+    loading: () => <SectionSkeleton className="min-h-[360px]" />,
+  }
+);
+const RecommendedStyles = dynamic(
+  () => import("@/components/animations/recommended-styles").then((m) => ({ default: m.RecommendedStyles })),
+  {
+    ssr: false,
+    loading: () => <SectionSkeleton className="min-h-[160px]" />,
+  }
+);
 
 export function AnimationDetailContent({ animation }: AnimationDetailContentProps) {
   const { t, locale } = useI18n();
@@ -91,7 +111,7 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
       <section>
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 md:py-16">
           {/* Preview */}
-          <div className="mb-12">
+          <div className="mb-12 [content-visibility:auto] [contain-intrinsic-size:1px_380px]">
             <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
               {t("animations.previewTab")}
             </h2>
@@ -99,7 +119,7 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
           </div>
 
           {/* Code snippets */}
-          <div className="mb-12">
+          <div className="mb-12 [content-visibility:auto] [contain-intrinsic-size:1px_420px]">
             <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
               <Code className="w-4 h-4 inline-block mr-2 -mt-0.5" />
               {t("animations.codeTab")}
@@ -108,7 +128,9 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
           </div>
 
           {/* Playground */}
-          <AnimationPlayground animation={animation} />
+          <div className="[content-visibility:auto] [contain-intrinsic-size:1px_440px]">
+            <AnimationPlayground animation={animation} />
+          </div>
 
           {/* Metadata grid */}
           <div className="mb-12">
@@ -171,12 +193,25 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
 
           {/* Recommended Styles */}
           {animation.recommendedStyles && animation.recommendedStyles.length > 0 && (
-            <div>
+            <div className="[content-visibility:auto] [contain-intrinsic-size:1px_220px]">
               <RecommendedStyles slugs={animation.recommendedStyles} />
             </div>
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function SectionSkeleton({ className = "min-h-[240px]" }: { className?: string }) {
+  return (
+    <div className={`border border-border overflow-hidden animate-pulse ${className}`}>
+      <div className="h-12 border-b border-border bg-muted/30" />
+      <div className="p-6 space-y-4">
+        <div className="h-24 rounded bg-muted/20" />
+        <div className="h-3 w-3/4 rounded bg-muted/20" />
+        <div className="h-3 w-1/2 rounded bg-muted/20" />
+      </div>
     </div>
   );
 }
