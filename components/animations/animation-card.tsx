@@ -235,6 +235,100 @@ export function AnimationCardPreviewStyles() {
       .sk-mini-ripple { animation: sk-mini-ripple 2s ease-out infinite; }
       .sk-mini-counter { animation: sk-mini-counter 3s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
       .sk-mini-morph { animation: sk-mini-morph 8s ease-in-out infinite; }
+
+      @keyframes sk-mini-fade-out-down {
+        0%, 20% { opacity: 1; transform: translateY(0) scale(1); }
+        50%, 100% { opacity: 0; transform: translateY(10px) scale(0.96); }
+      }
+
+      @keyframes sk-mini-scale-out {
+        0%, 20% { opacity: 1; transform: scale(1); }
+        50%, 100% { opacity: 0; transform: scale(0.7); }
+      }
+
+      @keyframes sk-mini-slide-out-r {
+        0%, 20% { opacity: 1; transform: translateX(0); }
+        50%, 100% { opacity: 0; transform: translateX(16px); }
+      }
+
+      @keyframes sk-mini-collapse {
+        0%, 30% { max-height: 40px; opacity: 1; }
+        60%, 100% { max-height: 0; opacity: 0; }
+      }
+
+      @keyframes sk-mini-crossfade-a {
+        0%, 45% { opacity: 1; }
+        55%, 95% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes sk-mini-crossfade-b {
+        0%, 45% { opacity: 0; }
+        55%, 95% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes sk-mini-slide-swap {
+        0%, 15% { opacity: 1; transform: translateX(0); }
+        30% { opacity: 0; transform: translateX(-14px); }
+        31% { opacity: 0; transform: translateX(14px); }
+        50%, 85% { opacity: 1; transform: translateX(0); }
+        100% { opacity: 0; transform: translateX(-14px); }
+      }
+
+      @keyframes sk-mini-morph-trans {
+        0%, 100% { width: 28px; height: 28px; border-radius: 50%; background: #6366f1; }
+        50% { width: 52px; height: 22px; border-radius: 6px; background: #ec4899; }
+      }
+
+      @keyframes sk-mini-text-reveal {
+        0%, 100% { clip-path: inset(100% 0 0 0); opacity: 0; }
+        20%, 78% { clip-path: inset(0 0 0 0); opacity: 1; }
+      }
+
+      @keyframes sk-mini-underline {
+        0%, 100% { transform: scaleX(0); transform-origin: right; }
+        30%, 70% { transform: scaleX(1); transform-origin: left; }
+      }
+
+      @keyframes sk-mini-progress {
+        0% { width: 0; }
+        60%, 85% { width: 100%; }
+        100% { width: 0; }
+      }
+
+      @keyframes sk-mini-progress-shimmer {
+        from { background-position: -200% 0; }
+        to { background-position: 200% 0; }
+      }
+
+      @keyframes sk-mini-elastic {
+        0%, 100% { opacity: 0; transform: scale(0); }
+        20% { transform: scale(1.18); opacity: 1; }
+        30% { transform: scale(0.9); }
+        40% { transform: scale(1.06); }
+        50%, 78% { transform: scale(1); opacity: 1; }
+      }
+
+      @keyframes sk-mini-pulse-ring {
+        0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+        70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+        100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+      }
+
+      .sk-mini-fade-out-down { animation: sk-mini-fade-out-down 2.6s ease-in-out infinite; }
+      .sk-mini-scale-out { animation: sk-mini-scale-out 2.4s ease-in-out infinite; }
+      .sk-mini-slide-out-r { animation: sk-mini-slide-out-r 2.6s ease-in-out infinite; }
+      .sk-mini-collapse { animation: sk-mini-collapse 2.8s ease-in-out infinite; overflow: hidden; }
+      .sk-mini-crossfade-a { animation: sk-mini-crossfade-a 3s ease-in-out infinite; }
+      .sk-mini-crossfade-b { animation: sk-mini-crossfade-b 3s ease-in-out infinite; position: absolute; inset: 0; }
+      .sk-mini-slide-swap { animation: sk-mini-slide-swap 3s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-morph-trans { animation: sk-mini-morph-trans 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+      .sk-mini-text-reveal { animation: sk-mini-text-reveal 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-underline { animation: sk-mini-underline 2.4s ease-in-out infinite; }
+      .sk-mini-progress { animation: sk-mini-progress 2.5s ease-in-out infinite, sk-mini-progress-shimmer 1.5s linear infinite; background: linear-gradient(90deg, #6366f1, #818cf8, #6366f1); background-size: 200% 100%; }
+      .sk-mini-elastic { animation: sk-mini-elastic 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+      .sk-mini-pulse-ring { animation: sk-mini-pulse-ring 2s ease-out infinite; }
     `}</style>
   );
 }
@@ -519,6 +613,97 @@ function MiniPreview({ slug }: { slug: string }) {
         <div
           className="sk-mini-anim sk-mini-morph h-12 w-12 bg-gradient-to-br from-teal-300 to-cyan-400 shadow-[0_16px_28px_-22px_rgba(6,182,212,0.8)] dark:from-teal-500/40 dark:to-cyan-500/30"
         />
+      );
+    case "fade-out-down":
+      return (
+        <div className={`${previewPanelClass} sk-mini-fade-out-down h-10 w-14 rounded-[14px] bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-500/28 dark:to-rose-500/20`}>
+          <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-white/65 dark:bg-white/12" />
+        </div>
+      );
+    case "scale-out":
+      return (
+        <div className={`${previewPanelClass} sk-mini-scale-out flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-orange-100 to-amber-200 dark:from-orange-500/28 dark:to-amber-500/20`}>
+          <div className="h-4 w-4 rounded-full bg-white/60 dark:bg-white/12" />
+        </div>
+      );
+    case "slide-out-right":
+      return (
+        <div className={`${previewPanelClass} sk-mini-slide-out-r h-9 w-14 rounded-[14px] bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-500/25 dark:to-pink-500/18`}>
+          <div className="absolute inset-y-2 right-2 w-1 rounded-full bg-white/60 dark:bg-white/12" />
+        </div>
+      );
+    case "collapse":
+      return (
+        <div className="w-16 space-y-0.5">
+          <div className="h-3 rounded-t bg-zinc-200 dark:bg-zinc-700" />
+          <div className="sk-mini-anim sk-mini-collapse rounded-b bg-zinc-100 dark:bg-zinc-800">
+            <div className="h-2 w-10 rounded-full bg-zinc-300/80 dark:bg-zinc-600/50 mx-auto my-1" />
+          </div>
+        </div>
+      );
+    case "crossfade":
+      return (
+        <div className="relative h-9 w-14">
+          <div className="sk-mini-anim sk-mini-crossfade-a flex h-full w-full items-center justify-center rounded-[14px] bg-indigo-100 dark:bg-indigo-500/25">
+            <span className="text-[9px] font-medium text-indigo-600 dark:text-indigo-300">A</span>
+          </div>
+          <div className="sk-mini-crossfade-b flex items-center justify-center rounded-[14px] bg-pink-100 dark:bg-pink-500/25">
+            <span className="text-[9px] font-medium text-pink-600 dark:text-pink-300">B</span>
+          </div>
+        </div>
+      );
+    case "slide-swap":
+      return (
+        <div className={`${previewPanelClass} sk-mini-slide-swap h-9 w-14 rounded-[14px] bg-gradient-to-r from-sky-100 to-indigo-100 dark:from-sky-500/25 dark:to-indigo-500/18`}>
+          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[8px]" />
+        </div>
+      );
+    case "morph-transition":
+      return (
+        <div className="sk-mini-anim sk-mini-morph-trans shadow-[0_14px_28px_-22px_rgba(99,102,241,0.8)]" />
+      );
+    case "text-reveal":
+      return (
+        <div className="space-y-0.5">
+          {[0, 0.15, 0.3].map((d) => (
+            <div
+              key={d}
+              className="sk-mini-anim sk-mini-text-reveal h-2 rounded-full bg-white/90 dark:bg-white/25"
+              style={{ animationDelay: `${d}s`, width: d === 0.3 ? 32 : 52 }}
+            />
+          ))}
+        </div>
+      );
+    case "underline-draw":
+      return (
+        <div className="relative">
+          <span className="text-[11px] font-medium text-foreground">Link</span>
+          <div className="sk-mini-anim sk-mini-underline mt-0.5 h-[2px] w-full bg-foreground" />
+        </div>
+      );
+    case "progress-bar":
+      return (
+        <div className="w-16 space-y-1.5">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+            <div className="sk-mini-anim sk-mini-progress h-full rounded-full" />
+          </div>
+          <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+            <div className="sk-mini-anim sk-mini-progress h-full rounded-full" style={{ animationDelay: "0.3s" }} />
+          </div>
+        </div>
+      );
+    case "elastic-scale":
+      return (
+        <div className={`${previewPanelClass} sk-mini-elastic flex h-10 w-10 items-center justify-center rounded-[16px] bg-gradient-to-br from-emerald-200 to-teal-300 dark:from-emerald-500/28 dark:to-teal-500/22`}>
+          <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-200">!</span>
+        </div>
+      );
+    case "pulse-ring":
+      return (
+        <div className="flex items-center gap-4">
+          <span className="sk-mini-anim sk-mini-pulse-ring h-3 w-3 rounded-full bg-green-500" />
+          <span className="text-[10px] text-muted-foreground">Online</span>
+        </div>
       );
     default:
       return (
