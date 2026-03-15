@@ -61,17 +61,17 @@ export function RippleClickPreview() {
         }
         .sk-ripple-effect {
           position: absolute;
-          width: 10px;
-          height: 10px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
-          background: rgba(99, 102, 241, 0.4);
+          background: rgba(255, 255, 255, 0.4);
           transform: translate(-50%, -50%) scale(0);
           animation: sk-ripple-expand 600ms ease-out forwards;
           pointer-events: none;
         }
         @keyframes sk-ripple-expand {
           to {
-            transform: translate(-50%, -50%) scale(14);
+            transform: translate(-50%, -50%) scale(20);
             opacity: 0;
           }
         }
