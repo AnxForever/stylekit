@@ -134,6 +134,27 @@ const previewMap: Record<string, ComponentType> = {
   "pulse-ring": dynamicPreview(
     () => import("@/lib/animations/previews/pulse-ring-preview").then((m) => m.PulseRingPreview)
   ),
+  "zoom-in": dynamicPreview(
+    () => import("@/lib/animations/previews/zoom-in-preview").then((m) => m.ZoomInPreview)
+  ),
+  "marquee-scroll": dynamicPreview(
+    () => import("@/lib/animations/previews/marquee-scroll-preview").then((m) => m.MarqueeScrollPreview)
+  ),
+  shimmer: dynamicPreview(
+    () => import("@/lib/animations/previews/shimmer-preview").then((m) => m.ShimmerPreview)
+  ),
+  pulse: dynamicPreview(
+    () => import("@/lib/animations/previews/pulse-preview").then((m) => m.PulsePreview)
+  ),
+  "elastic-snap": dynamicPreview(
+    () => import("@/lib/animations/previews/elastic-snap-preview").then((m) => m.ElasticSnapPreview)
+  ),
+  "border-trace": dynamicPreview(
+    () => import("@/lib/animations/previews/border-trace-preview").then((m) => m.BorderTracePreview)
+  ),
+  "glitch-text": dynamicPreview(
+    () => import("@/lib/animations/previews/glitch-text-preview").then((m) => m.GlitchTextPreview)
+  ),
 };
 
 interface AnimationPreviewProps {
