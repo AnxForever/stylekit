@@ -48,6 +48,12 @@ export const morphShape: Animation = {
   height: 300px;
   background: var(--morph-gradient, linear-gradient(135deg, hsl(220 70% 60%), hsl(280 70% 60%)));
   animation: morph-shape 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .morph-shape {
+    animation: none;
+  }
 }`,
     },
     {
@@ -71,6 +77,12 @@ export const morphShape: Animation = {
 
 @utility animate-morph-shape {
   animation: morph-shape 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .morph-shape {
+    animation: none;
+  }
 }`,
     },
     {

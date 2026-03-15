@@ -48,7 +48,15 @@ export const typewriter: Animation = {
 }
 
 /* Usage: set --typewriter-chars to match text length
-   <span class="typewriter" style="--typewriter-chars: 13">Hello, World!</span> */`,
+   <span class="typewriter" style="--typewriter-chars: 13">Hello, World!</span> */
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter {
+    animation: none;
+    overflow: visible;
+    width: auto;
+  }
+}`,
     },
     {
       label: "Tailwind CSS",
@@ -70,6 +78,14 @@ export const typewriter: Animation = {
   animation:
     typewriter 3s steps(var(--typewriter-chars, 20), end) both,
     blink-caret 0.75s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter {
+    animation: none;
+    overflow: visible;
+    width: auto;
+  }
 }`,
     },
     {

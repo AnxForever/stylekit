@@ -40,8 +40,19 @@ export const rotateIn: Animation = {
 }
 
 .rotate-in {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: rotate-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rotate-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -60,8 +71,19 @@ export const rotateIn: Animation = {
 }
 
 @utility animate-rotate-in {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
-  animation: rotate-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rotate-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

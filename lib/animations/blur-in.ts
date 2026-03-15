@@ -40,8 +40,19 @@ export const blurIn: Animation = {
 }
 
 .blur-in {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: filter, opacity;
-  animation: blur-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: blur-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blur-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {
@@ -59,8 +70,19 @@ export const blurIn: Animation = {
 }
 
 @utility animate-blur-in {
+  --sk-duration: 500ms;
+  --sk-delay: 0ms;
+  --sk-ease: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: filter, opacity;
-  animation: blur-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: blur-in var(--sk-duration) var(--sk-ease) var(--sk-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blur-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }`,
     },
     {

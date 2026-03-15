@@ -55,6 +55,12 @@ export const rippleClick: Animation = {
   will-change: transform, opacity;
   animation: ripple-click 600ms ease-out forwards;
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ripple-effect {
+    animation: none;
+  }
 }`,
     },
     {
@@ -88,6 +94,12 @@ export const rippleClick: Animation = {
   will-change: transform, opacity;
   animation: ripple-click 600ms ease-out forwards;
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ripple-effect {
+    animation: none;
+  }
 }`,
     },
     {

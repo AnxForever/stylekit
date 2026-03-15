@@ -55,7 +55,13 @@ export const spinnerDots: Animation = {
 
 .spinner-dots span:nth-child(1) { animation-delay: -0.32s; }
 .spinner-dots span:nth-child(2) { animation-delay: -0.16s; }
-.spinner-dots span:nth-child(3) { animation-delay: 0s; }`,
+.spinner-dots span:nth-child(3) { animation-delay: 0s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-dots {
+    animation: none;
+  }
+}`,
     },
     {
       label: "Tailwind CSS",
@@ -82,7 +88,13 @@ export const spinnerDots: Animation = {
   <span class="w-2 h-2 rounded-full bg-current animate-spinner-dot [animation-delay:-0.16s]" />
   <span class="w-2 h-2 rounded-full bg-current animate-spinner-dot" />
 </div>
-*/`,
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-dots {
+    animation: none;
+  }
+}`,
     },
     {
       label: "Framer Motion",
