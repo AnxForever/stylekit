@@ -329,6 +329,56 @@ export function AnimationCardPreviewStyles() {
       .sk-mini-progress { animation: sk-mini-progress 2.5s ease-in-out infinite, sk-mini-progress-shimmer 1.5s linear infinite; background: linear-gradient(90deg, #6366f1, #818cf8, #6366f1); background-size: 200% 100%; }
       .sk-mini-elastic { animation: sk-mini-elastic 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
       .sk-mini-pulse-ring { animation: sk-mini-pulse-ring 2s ease-out infinite; }
+
+      @keyframes sk-mini-zoom-in {
+        0%, 100% { opacity: 0; transform: scale(0.4); }
+        18%, 78% { opacity: 1; transform: scale(1); }
+      }
+
+      @keyframes sk-mini-marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+
+      @keyframes sk-mini-shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      @keyframes sk-mini-pulse-beat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+      }
+
+      @keyframes sk-mini-elastic-snap {
+        0%, 100% { transform: scaleX(1); }
+        20% { transform: scaleX(1.22); }
+        40% { transform: scaleX(0.92); }
+        55% { transform: scaleX(1.06); }
+        70% { transform: scaleX(0.98); }
+      }
+
+      @keyframes sk-mini-border-draw {
+        0% { stroke-dashoffset: 200; }
+        50%, 80% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: 200; }
+      }
+
+      @keyframes sk-mini-glitch {
+        0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+        20% { clip-path: inset(20% 0 60% 0); transform: translate(-2px, 1px); }
+        40% { clip-path: inset(50% 0 20% 0); transform: translate(2px, -1px); }
+        60% { clip-path: inset(30% 0 40% 0); transform: translate(-1px, 2px); }
+        80% { clip-path: inset(60% 0 10% 0); transform: translate(1px, -1px); }
+      }
+
+      .sk-mini-zoom-in { animation: sk-mini-zoom-in 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+      .sk-mini-marquee { animation: sk-mini-marquee 4s linear infinite; }
+      .sk-mini-shimmer { animation: sk-mini-shimmer 2s ease-in-out infinite; }
+      .sk-mini-pulse-beat { animation: sk-mini-pulse-beat 2s ease-in-out infinite; }
+      .sk-mini-elastic-snap { animation: sk-mini-elastic-snap 2.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; }
+      .sk-mini-border-draw { animation: sk-mini-border-draw 3s ease-in-out infinite; }
+      .sk-mini-glitch { animation: sk-mini-glitch 3s steps(2, end) infinite; }
     `}</style>
   );
 }
@@ -634,21 +684,27 @@ function MiniPreview({ slug }: { slug: string }) {
       );
     case "collapse":
       return (
-        <div className="w-16 space-y-0.5">
-          <div className="h-3 rounded-t bg-zinc-200 dark:bg-zinc-700" />
-          <div className="sk-mini-anim sk-mini-collapse rounded-b bg-zinc-100 dark:bg-zinc-800">
-            <div className="h-2 w-10 rounded-full bg-zinc-300/80 dark:bg-zinc-600/50 mx-auto my-1" />
+        <div className="w-20 space-y-0.5">
+          <div className="flex items-center justify-between rounded-t-[10px] border border-black/10 bg-zinc-100 px-2 py-1.5 dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-8 rounded-full bg-zinc-400/50 dark:bg-zinc-500/40" />
+            <div className="h-2 w-2 rounded-sm bg-zinc-400/40 dark:bg-zinc-500/30" />
+          </div>
+          <div className="sk-mini-anim sk-mini-collapse rounded-b-[10px] border border-t-0 border-black/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-900">
+            <div className="space-y-1 px-2 py-1.5">
+              <div className="h-1 w-full rounded-full bg-zinc-200/80 dark:bg-zinc-700/50" />
+              <div className="h-1 w-3/4 rounded-full bg-zinc-200/80 dark:bg-zinc-700/50" />
+            </div>
           </div>
         </div>
       );
     case "crossfade":
       return (
-        <div className="relative h-9 w-14">
-          <div className="sk-mini-anim sk-mini-crossfade-a flex h-full w-full items-center justify-center rounded-[14px] bg-indigo-100 dark:bg-indigo-500/25">
-            <span className="text-[9px] font-medium text-indigo-600 dark:text-indigo-300">A</span>
+        <div className="relative h-10 w-16 overflow-hidden rounded-[14px] border border-black/10 shadow-[0_14px_28px_-22px_rgba(15,23,42,0.9)] dark:border-white/10">
+          <div className="sk-mini-anim sk-mini-crossfade-a absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-100 to-violet-200 dark:from-indigo-500/30 dark:to-violet-500/20">
+            <div className="h-4 w-4 rounded-full bg-indigo-400/60 dark:bg-indigo-300/30" />
           </div>
-          <div className="sk-mini-crossfade-b flex items-center justify-center rounded-[14px] bg-pink-100 dark:bg-pink-500/25">
-            <span className="text-[9px] font-medium text-pink-600 dark:text-pink-300">B</span>
+          <div className="sk-mini-crossfade-b flex items-center justify-center bg-gradient-to-br from-pink-100 to-rose-200 dark:from-pink-500/30 dark:to-rose-500/20">
+            <div className="h-3 w-6 rounded-[6px] bg-pink-400/60 dark:bg-pink-300/30" />
           </div>
         </div>
       );
@@ -664,21 +720,34 @@ function MiniPreview({ slug }: { slug: string }) {
       );
     case "text-reveal":
       return (
-        <div className="space-y-0.5">
-          {[0, 0.15, 0.3].map((d) => (
-            <div
-              key={d}
-              className="sk-mini-anim sk-mini-text-reveal h-2 rounded-full bg-white/90 dark:bg-white/25"
-              style={{ animationDelay: `${d}s`, width: d === 0.3 ? 32 : 52 }}
-            />
-          ))}
+        <div className="relative overflow-hidden rounded-[14px] border border-white/10 bg-zinc-900 px-3 py-2.5 shadow-[0_18px_34px_-26px_rgba(0,0,0,0.9)]">
+          <div className="space-y-1">
+            {[0, 0.15, 0.3].map((d) => (
+              <div
+                key={d}
+                className="sk-mini-anim sk-mini-text-reveal h-1.5 rounded-full"
+                style={{
+                  animationDelay: `${d}s`,
+                  width: d === 0.3 ? 24 : d === 0.15 ? 40 : 48,
+                  background: d === 0 ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)",
+                }}
+              />
+            ))}
+          </div>
         </div>
       );
     case "underline-draw":
       return (
-        <div className="relative">
-          <span className="text-[11px] font-medium text-foreground">Link</span>
-          <div className="sk-mini-anim sk-mini-underline mt-0.5 h-[2px] w-full bg-foreground" />
+        <div className="flex gap-3">
+          {["Home", "Blog"].map((t, i) => (
+            <div key={t} className="relative">
+              <span className="text-[10px] font-medium tracking-wide text-foreground">{t}</span>
+              <div
+                className="sk-mini-anim sk-mini-underline mt-0.5 h-[2px] w-full bg-foreground"
+                style={{ animationDelay: `${i * 0.4}s` }}
+              />
+            </div>
+          ))}
         </div>
       );
     case "progress-bar":
@@ -700,9 +769,74 @@ function MiniPreview({ slug }: { slug: string }) {
       );
     case "pulse-ring":
       return (
-        <div className="flex items-center gap-4">
-          <span className="sk-mini-anim sk-mini-pulse-ring h-3 w-3 rounded-full bg-green-500" />
-          <span className="text-[10px] text-muted-foreground">Online</span>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2">
+            <span className="sk-mini-anim sk-mini-pulse-ring h-2.5 w-2.5 rounded-full bg-green-500" />
+            <span className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Online</span>
+          </div>
+          <span className="sk-mini-anim sk-mini-pulse-ring h-2.5 w-2.5 rounded-full bg-blue-500" style={{ animationDelay: "0.5s" }} />
+          <span className="sk-mini-anim sk-mini-pulse-ring h-2.5 w-2.5 rounded-full bg-red-500" style={{ animationDelay: "1s" }} />
+        </div>
+      );
+    case "zoom-in":
+      return (
+        <div className={`${previewPanelClass} sk-mini-zoom-in h-11 w-11 rounded-[16px] bg-gradient-to-br from-sky-200 to-blue-300 dark:from-sky-500/28 dark:to-blue-500/22`}>
+          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[10px]" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-white/60 dark:bg-white/15" />
+        </div>
+      );
+    case "marquee-scroll":
+      return (
+        <div className="w-20 overflow-hidden">
+          <div className="sk-mini-anim sk-mini-marquee flex whitespace-nowrap gap-3">
+            {["A", "B", "C", "D", "A", "B", "C", "D"].map((l, i) => (
+              <span key={i} className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[6px] bg-purple-200/90 text-[8px] font-bold text-purple-600 dark:bg-purple-500/25 dark:text-purple-300">{l}</span>
+            ))}
+          </div>
+        </div>
+      );
+    case "shimmer":
+      return (
+        <div className="w-20 space-y-1.5">
+          {[1, 0.7, 0.5].map((w, i) => (
+            <div key={i} className="relative overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700" style={{ height: 6, width: `${w * 100}%` }}>
+              <div className="sk-mini-anim sk-mini-shimmer absolute inset-y-0 -left-full w-full bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/10" style={{ animationDelay: `${i * 0.2}s` }} />
+            </div>
+          ))}
+        </div>
+      );
+    case "pulse":
+      return (
+        <div className="flex items-center gap-3">
+          <div className="sk-mini-anim sk-mini-pulse-beat h-7 w-7 rounded-xl bg-gradient-to-br from-red-400 to-rose-500 shadow-[0_12px_24px_-18px_rgba(239,68,68,0.9)] dark:from-red-500/50 dark:to-rose-500/40">
+            <div className="flex h-full items-center justify-center">
+              <span className="text-[8px] font-bold text-white">3</span>
+            </div>
+          </div>
+          <div className="sk-mini-anim sk-mini-pulse-beat h-2 w-2 rounded-full bg-red-500" style={{ animationDelay: "0.5s" }} />
+        </div>
+      );
+    case "elastic-snap":
+      return (
+        <div className="sk-mini-anim sk-mini-elastic-snap rounded-[10px] bg-foreground px-5 py-2 text-[10px] uppercase tracking-[0.2em] text-background shadow-[0_14px_28px_-22px_rgba(15,23,42,0.9)]">
+          Snap
+        </div>
+      );
+    case "border-trace":
+      return (
+        <div className="relative h-10 w-16">
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 64 40">
+            <rect x="1" y="1" width="62" height="38" rx="8" fill="none" stroke="#6366f1" strokeWidth="2" strokeDasharray="200" className="sk-mini-anim sk-mini-border-draw" />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[9px] text-indigo-500 dark:text-indigo-400">Hover</span>
+          </div>
+        </div>
+      );
+    case "glitch-text":
+      return (
+        <div className="relative overflow-hidden rounded-[14px] border border-cyan-500/15 bg-[#0a0e14] px-3 py-2 shadow-[0_18px_34px_-26px_rgba(0,200,255,0.5)]">
+          <span className="sk-mini-anim sk-mini-glitch text-[11px] font-bold tracking-wider text-cyan-400">GLITCH</span>
         </div>
       );
     default:
