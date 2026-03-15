@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Check, ClipboardCopy, Code2, Download, X } from "lucide-react";
+import { Check, ClipboardCopy, Code2, Download, Loader2, X } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -476,13 +476,17 @@ export default function TemplatesPage() {
   const templateCardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const queryParam = searchParams.get("q") || "";
   const [searchQuery, setSearchQuery] = useState(queryParam);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const trimmedSearchQuery = searchQuery.trim();
+  const trimmedDeferredSearchQuery = deferredSearchQuery.trim();
   const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
+  const deferredActiveType = useDeferredValue(activeType);
   const sortParam = searchParams.get("sort");
   const validSorts: TemplateSort[] = ["recommended", "name-asc", "name-desc"];
   const activeSort: TemplateSort = validSorts.includes(sortParam as TemplateSort)
     ? (sortParam as TemplateSort)
     : "recommended";
+  const deferredActiveSort = useDeferredValue(activeSort);
   const hasActiveControls =
     activeType !== "all" ||
     activeSort !== "recommended" ||
@@ -598,10 +602,10 @@ export default function TemplatesPage() {
   };
 
   const filteredTemplates = useMemo(() => {
-    const normalizedQuery = trimmedSearchQuery.toLowerCase();
+    const normalizedQuery = trimmedDeferredSearchQuery.toLowerCase();
 
     const matchedTemplates = templates
-      .filter((template) => activeType === "all" || template.type === activeType)
+      .filter((template) => deferredActiveType === "all" || template.type === deferredActiveType)
       .filter((template) => {
         if (!normalizedQuery) return true;
 
@@ -623,7 +627,7 @@ export default function TemplatesPage() {
         return searchableText.includes(normalizedQuery);
       });
 
-    if (activeSort === "recommended") return matchedTemplates;
+    if (deferredActiveSort === "recommended") return matchedTemplates;
 
     const sortedTemplates = [...matchedTemplates].sort((left, right) => {
       const leftName = pickLocale(locale, left.name).toLowerCase();
@@ -631,12 +635,16 @@ export default function TemplatesPage() {
       return leftName.localeCompare(rightName);
     });
 
-    if (activeSort === "name-desc") {
+    if (deferredActiveSort === "name-desc") {
       sortedTemplates.reverse();
     }
 
     return sortedTemplates;
-  }, [activeType, trimmedSearchQuery, activeSort, locale]);
+  }, [deferredActiveSort, deferredActiveType, locale, trimmedDeferredSearchQuery]);
+  const isFiltering =
+    searchQuery !== deferredSearchQuery ||
+    activeType !== deferredActiveType ||
+    activeSort !== deferredActiveSort;
 
   useEffect(() => {
     templateCardRefs.current = templateCardRefs.current.slice(0, filteredTemplates.length);
@@ -837,6 +845,11 @@ export default function TemplatesPage() {
                 >
                   {filteredTemplates.length} {t("templates.results")}
                 </p>
+                {isFiltering && (
+                  <div className="inline-flex items-center gap-1.5 text-xs text-muted">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <label htmlFor="templates-sort" className="text-sm text-muted">
                     {t("templates.sort")}:
@@ -873,7 +886,7 @@ export default function TemplatesPage() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            <div className={`grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 transition-opacity ${isFiltering ? "opacity-75" : ""}`}>
               {filteredTemplates.map((template, index) => {
                 const style = styleMap.get(template.styleSlug);
                 const previewColors = style
@@ -893,7 +906,7 @@ export default function TemplatesPage() {
                 return (
                   <div
                     key={template.id}
-                    className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors"
+                    className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                   >
                     <Link
                       href={template.href}

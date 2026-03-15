@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo, useCallback, useRef, useEffect, useId, type ReactNode } from "react";
+import { useState, useTransition, useDeferredValue, useMemo, useCallback, useRef, useEffect, useId, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
@@ -40,6 +40,19 @@ export function StylesContent({
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
+  const activeTagsKey = activeTags.join(",");
+  const deferredActiveType = useDeferredValue(activeType);
+  const deferredShowFavorites = useDeferredValue(showFavorites);
+  const deferredSortBy = useDeferredValue(sortBy);
+  const deferredActiveTagsKey = useDeferredValue(activeTagsKey);
+  const deferredActiveTags = useMemo(
+    () => (
+      deferredActiveTagsKey.length > 0
+        ? (deferredActiveTagsKey.split(",") as StyleTag[])
+        : []
+    ),
+    [deferredActiveTagsKey]
+  );
 
   // 点击外部关闭下拉框
   useEffect(() => {
@@ -188,15 +201,15 @@ export function StylesContent({
 
   const filteredStyles = useMemo(() => {
     const base = allStyles
-      .filter((s) => !showFavorites || favoriteSet.has(s.slug))
-      .filter((s) => activeType === "all" || s.styleType === activeType)
+      .filter((s) => !deferredShowFavorites || favoriteSet.has(s.slug))
+      .filter((s) => deferredActiveType === "all" || s.styleType === deferredActiveType)
       .filter(
         (s) =>
-          activeTags.length === 0 ||
-          activeTags.some((tag) => s.tags?.includes(tag))
+          deferredActiveTags.length === 0 ||
+          deferredActiveTags.some((tag) => s.tags?.includes(tag))
       );
 
-    if (sortBy === "recommended") return base;
+    if (deferredSortBy === "recommended") return base;
 
     const sorted = [...base].sort((left, right) => {
       const leftName = (left.nameEn || left.name).toLowerCase();
@@ -204,18 +217,31 @@ export function StylesContent({
       return leftName.localeCompare(rightName);
     });
 
-    if (sortBy === "name-desc") {
+    if (deferredSortBy === "name-desc") {
       sorted.reverse();
     }
 
     return sorted;
-  }, [allStyles, showFavorites, favoriteSet, activeType, activeTags, sortBy]);
+  }, [
+    allStyles,
+    deferredActiveTags,
+    deferredActiveType,
+    deferredShowFavorites,
+    deferredSortBy,
+    favoriteSet,
+  ]);
 
   const hasActiveFilters =
     activeType !== "all" ||
     activeTags.length > 0 ||
     showFavorites ||
     sortBy !== "recommended";
+  const isFiltering =
+    isPending ||
+    activeType !== deferredActiveType ||
+    showFavorites !== deferredShowFavorites ||
+    sortBy !== deferredSortBy ||
+    activeTagsKey !== deferredActiveTagsKey;
 
   return (
     <>
@@ -349,9 +375,16 @@ export function StylesContent({
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
-            <p className="text-sm text-muted">
-              {filteredStyles.length} {t("styles.results")}
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-muted">
+                {filteredStyles.length} {t("styles.results")}
+              </p>
+              {isFiltering && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                </span>
+              )}
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               <label htmlFor="styles-sort" className="text-sm text-muted">
                 {t("styles.sort")}:
@@ -380,14 +413,9 @@ export function StylesContent({
           {/* Styles List with loading indicator */}
           <div
             className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 transition-opacity ${
-              isPending ? "opacity-60" : ""
+              isFiltering ? "opacity-70" : ""
             }`}
           >
-            {isPending && (
-              <div className="col-span-full flex justify-center py-4">
-                <Loader2 className="w-5 h-5 animate-spin text-muted" />
-              </div>
-            )}
             {filteredStyles.length === 0 ? (
               <div className="col-span-full py-12 text-center text-muted">
                 {showFavorites && favorites.length === 0 ? (
@@ -400,7 +428,12 @@ export function StylesContent({
               </div>
             ) : (
               filteredStyles.map((style) => (
-                <StyleCard key={style.slug} style={style} variant="compact" />
+                <div
+                  key={style.slug}
+                  className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
+                >
+                  <StyleCard style={style} variant="compact" />
+                </div>
               ))
             )}
           </div>

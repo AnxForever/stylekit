@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LogIn, RefreshCw, Send } from "lucide-react";
+import { Loader2, LogIn, RefreshCw, Send } from "lucide-react";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
@@ -50,7 +50,7 @@ export function CommunityContent({
     return query ? `${pathname}?${query}` : pathname;
   }, [normalizedSlug, offset, pathname]);
 
-  const { data, error, isLoading, mutate } = useCommunityFeed({
+  const { data, error, isLoading, isValidating, mutate } = useCommunityFeed({
     limit: PAGE_SIZE,
     offset,
     slug: normalizedSlug,
@@ -60,6 +60,7 @@ export function CommunityContent({
   const total = data?.total ?? 0;
   const hasPrev = offset > 0;
   const hasNext = offset + PAGE_SIZE < total;
+  const isRefreshing = isValidating && !isLoading;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -193,7 +194,9 @@ export function CommunityContent({
               {items.map((item) => (
                 <article
                   key={item.id}
-                  className="border border-border bg-background/80 hover:border-foreground transition-colors overflow-hidden"
+                  className={`border border-border bg-background/80 hover:border-foreground transition-colors overflow-hidden [content-visibility:auto] [contain-intrinsic-size:1px_420px] ${
+                    isRefreshing ? "opacity-75" : ""
+                  }`}
                 >
                   <Link
                     href={`/community/${item.id}`}
@@ -268,11 +271,18 @@ export function CommunityContent({
             </div>
 
             <div className="flex items-center justify-between border-t border-border pt-4">
-              <p className="text-sm text-muted">
-                {t("community.showing")} {Math.min(offset + 1, total)}-{Math.min(offset + PAGE_SIZE, total)}
-                {" "}
-                {t("community.of")} {total}
-              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-sm text-muted">
+                  {t("community.showing")} {Math.min(offset + 1, total)}-{Math.min(offset + PAGE_SIZE, total)}
+                  {" "}
+                  {t("community.of")} {total}
+                </p>
+                {isRefreshing && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  </span>
+                )}
+              </div>
               <div className="flex gap-2">
                 <button
                   type="button"
