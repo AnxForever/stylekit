@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#fff8e7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fff8e7"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Ornate top border -->
   <path d="M0,30 Q50,0 100,30 Q150,0 200,30 Q250,0 300,30 Q350,0 400,30 Q450,0 500,30 Q550,0 600,30 Q650,0 700,30 Q750,0 800,30" fill="none" stroke="#d4af37" stroke-width="2"/>
   <path d="M0,40 Q50,10 100,40 Q150,10 200,40 Q250,10 300,40 Q350,10 400,40 Q450,10 500,40 Q550,10 600,40 Q650,10 700,40 Q750,10 800,40" fill="none" stroke="#e63946" stroke-width="1.5"/>
@@ -52,4 +53,5 @@
   <circle cx="700" cy="330" r="3" fill="#e63946"/>
   <!-- Title -->
   <text x="400" y="385" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#e63946" font-weight="bold" letter-spacing="2">Indian Festive</text>
+  </g>
 </svg>

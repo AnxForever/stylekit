@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#1e3a5f"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1e3a5f"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Grid lines -->
   <g stroke="#4a90d9" opacity="0.15" stroke-width="0.5">
     <line x1="0" y1="40" x2="800" y2="40"/><line x1="0" y1="80" x2="800" y2="80"/>
@@ -53,4 +54,5 @@
   <text x="645" y="322" text-anchor="middle" font-family="monospace" font-size="16" font-weight="bold" fill="#ffffff">BLUEPRINT</text>
   <text x="645" y="348" text-anchor="middle" font-family="monospace" font-size="10" fill="#4a90d9">TECHNICAL DRAWING STYLE</text>
   <text x="645" y="367" text-anchor="middle" font-family="monospace" font-size="9" fill="#4a90d9">SCALE 1:1 | REV A</text>
+  </g>
 </svg>

@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Concentric circles - left group -->
   <g transform="translate(250,200)">
     <circle r="160" fill="none" stroke="#000000" stroke-width="10"/>
@@ -32,4 +33,5 @@
   <line x1="400" y1="0" x2="400" y2="400" stroke="#ff3300" stroke-width="2"/>
   <!-- Title -->
   <text x="400" y="390" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#000000" font-weight="bold" letter-spacing="6">OP ART</text>
+  </g>
 </svg>

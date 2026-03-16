@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#fffde7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fffde7"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Palm leaf left -->
   <g transform="translate(50,20)">
     <path d="M80 200 Q40 100 0 0" fill="none" stroke="#00897b" stroke-width="3"/>
@@ -44,4 +45,5 @@
   <!-- Style name -->
   <text x="400" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#00897b">Tropical</text>
   <text x="400" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="#ff6f61">Paradise</text>
+  </g>
 </svg>
