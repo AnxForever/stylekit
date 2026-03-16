@@ -70,14 +70,9 @@ export function GitHubStarButton({
   variant = "default",
   className = "",
 }: GitHubStarButtonProps) {
-  const [count, setCount] = useState<number | null>(null);
+  const [count, setCount] = useState<number | null>(() => getCachedCount());
 
   useEffect(() => {
-    const cached = getCachedCount();
-    if (cached !== null) {
-      setCount(cached);
-    }
-
     fetch(`https://api.github.com/repos/${REPO}`, {
       headers: { Accept: "application/vnd.github.v3+json" },
     })
