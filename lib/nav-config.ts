@@ -34,6 +34,7 @@ export const mainNav: NavItem[] = [
   { href: "/community", labelKey: "nav.community" },
   { href: "/generate", labelKey: "nav.generator" },
   { href: "/assets", labelKey: "nav.assets" },
+  { href: "/gradients", labelKey: "nav.gradients" },
 ];
 
 // Tools dropdown menu (temporarily disabled — items not yet validated)

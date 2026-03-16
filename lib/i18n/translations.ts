@@ -594,6 +594,17 @@ const en = {
     // Generator
     "nav.generator": "Generator",
     "nav.assets": "Assets",
+    "nav.gradients": "Gradients",
+
+    // Gradients page
+    "gradients.subtitle": "Gradient Library",
+    "gradients.title": "Gradient Collection",
+    "gradients.description": "Beautiful gradient presets for your design system. Copy CSS or Tailwind classes with one click.",
+    "gradients.searchPlaceholder": "Search gradients...",
+    "gradients.filterAll": "All",
+    "gradients.showing": "Showing",
+    "gradients.gradients": "gradients",
+    "gradients.noResults": "No gradients found.",
     "generator.title": "Template Generator",
     "generator.subtitle": "Template Generator",
         "generator.description": "Finish in 3 steps: choose style, choose template, edit content, then download code.",
@@ -1284,6 +1295,17 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.community": "社区",
   "nav.generator": "生成器",
   "nav.assets": "素材库",
+  "nav.gradients": "渐变库",
+
+  // Gradients page
+  "gradients.subtitle": "渐变库",
+  "gradients.title": "渐变色集合",
+  "gradients.description": "精选渐变色预设，一键复制 CSS 或 Tailwind 代码，直接用于你的设计系统。",
+  "gradients.searchPlaceholder": "搜索渐变色...",
+  "gradients.filterAll": "全部",
+  "gradients.showing": "共",
+  "gradients.gradients": "个渐变",
+  "gradients.noResults": "没有找到匹配的渐变色。",
   "nav.createStyle": "创建/导入风格",
   "nav.developers": "开发者",
   "nav.guide": "指南",
