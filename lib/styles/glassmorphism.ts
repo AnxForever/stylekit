@@ -2,375 +2,413 @@ import { DesignStyle } from "./index";
 
 export const glassmorphism: DesignStyle = {
   slug: "glassmorphism",
-  name: "玻璃拟态",
-  nameEn: "Glassmorphism",
+  name: "Liquid Glass",
+  nameEn: "Liquid Glass",
   description:
-    "半透明毛玻璃效果，通过 backdrop-blur 模糊背景、柔和边框和微妙阴影，创造现代感十足的层叠界面。",
+    "Apple Liquid Glass 风格的高级毛玻璃效果。通过高斯模糊、饱和度增强、多层内发光和色散边缘，创造出光在玻璃中流动的真实质感。",
   descriptionEn:
-    "Semi-transparent frosted glass effect using backdrop-blur for blurred backgrounds, soft borders and subtle shadows, creating a modern layered interface.",
+    "Premium frosted glass inspired by Apple Liquid Glass. High gaussian blur, saturation boost, multi-layer inner glow and chromatic edges create the sensation of light flowing through real glass.",
   cover: "/styles/glassmorphism.svg",
   styleType: "visual",
   tags: ["modern"],
   category: "modern",
   colors: {
-    primary: "rgba(255, 255, 255, 0.25)",
-    secondary: "rgba(255, 255, 255, 0.18)",
+    primary: "rgba(255, 255, 255, 0.15)",
+    secondary: "rgba(255, 255, 255, 0.10)",
     accent: ["#667eea", "#764ba2", "#f093fb", "#f5576c"],
   },
-  keywords: ["毛玻璃", "透明", "模糊", "现代", "层叠"],
+  keywords: ["liquid glass", "frosted", "blur", "refraction", "translucent"],
 
-  philosophy: `Glassmorphism（玻璃拟态）是一种源于 iOS 和 macOS 设计语言的现代 UI 风格，通过半透明背景和背景模糊效果创造出类似磨砂玻璃的视觉感受。
+  philosophy: `Liquid Glass 是 Apple 在 WWDC25 推出的设计语言的精髓提炼。它不是简单的半透明加模糊，而是模拟真实玻璃的光学特性：折射、色散、内发光、高光边缘。
 
 核心理念：
-- 层次感：通过透明度区分前后层级
-- 现代感：模糊效果营造高端科技氛围
-- 轻盈感：半透明元素减少视觉重量
-- 深度感：微妙阴影增强空间层次`,
+- 光学真实感：高模糊 + 饱和度增强，让背景色彩在玻璃中"活"起来
+- 内发光：顶部白色渐变模拟光线从上方照射玻璃的效果
+- 色散边缘：边框在交互时呈现微妙的彩虹色散
+- 深度层级：多层玻璃叠加，每层透明度和模糊度不同
+- 流体动效：所有过渡使用 spring easing，模拟玻璃的物理惯性`,
 
-  philosophyEn: `Glassmorphism is a modern UI style originating from iOS and macOS design language, creating a frosted glass visual effect through semi-transparent backgrounds and background blur.
+  philosophyEn: `Liquid Glass distills the design language Apple introduced at WWDC25. It goes beyond simple translucency plus blur to simulate real glass optics: refraction, chromatic dispersion, inner luminance, and specular edges.
 
 Core principles:
-- Layering: Distinguish front and back layers through transparency
-- Modernity: Blur effects create a high-end tech atmosphere
-- Lightness: Semi-transparent elements reduce visual weight
-- Depth: Subtle shadows enhance spatial layering`,
+- Optical realism: High blur + saturation boost makes background colors "live" inside the glass
+- Inner luminance: Top-down white gradient simulates light hitting the glass surface from above
+- Chromatic edges: Borders reveal subtle rainbow dispersion on interaction
+- Depth layering: Multiple glass layers with varying opacity and blur
+- Fluid motion: All transitions use spring easing to simulate glass physical inertia`,
 
   doList: [
-    "使用半透明背景 bg-white/20 或 bg-white/10",
-    "添加背景模糊 backdrop-blur-md 或 backdrop-blur-xl",
-    "使用细微边框 border border-white/20",
-    "添加柔和阴影 shadow-lg 或 shadow-xl",
-    "使用渐变背景作为底层 bg-gradient-to-br",
-    "圆角适中 rounded-xl 或 rounded-2xl",
-    "文字使用高对比度确保可读性",
-    "交互时加入单次扫光高光层并提升边框亮度",
+    "使用高模糊值 backdrop-blur-[40px] 或 backdrop-blur-[60px]",
+    "添加饱和度增强 backdrop-saturate-[180%]",
+    "使用多层阴影：外层深度 + inset 顶部高光 + 边缘光晕",
+    "添加内发光渐变 background-image: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent)",
+    "边框使用 border-white/20，hover 时提升到 border-white/40",
+    "圆角使用 rounded-2xl 或 rounded-3xl",
+    "过渡使用 duration-500 + cubic-bezier(0.16,1,0.3,1) spring easing",
+    "hover 时轻微上浮 -translate-y-0.5 并增强阴影",
+    "使用丰富的渐变背景作为底层",
   ],
 
   doListEn: [
-    "Use semi-transparent backgrounds bg-white/20 or bg-white/10",
-    "Add background blur backdrop-blur-md or backdrop-blur-xl",
-    "Use subtle borders border border-white/20",
-    "Add soft shadows shadow-lg or shadow-xl",
-    "Use gradient backgrounds as the base layer bg-gradient-to-br",
-    "Moderate rounded corners rounded-xl or rounded-2xl",
-    "Use high-contrast text to ensure readability",
-    "Add a single-sweep highlight layer on interaction and increase border brightness",
+    "Use high blur values backdrop-blur-[40px] or backdrop-blur-[60px]",
+    "Add saturation boost backdrop-saturate-[180%]",
+    "Use multi-layer shadows: outer depth + inset top highlight + edge glow",
+    "Add inner luminance gradient background-image: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent)",
+    "Borders use border-white/20, increase to border-white/40 on hover",
+    "Rounded corners use rounded-2xl or rounded-3xl",
+    "Transitions use duration-500 + cubic-bezier(0.16,1,0.3,1) spring easing",
+    "Slight lift on hover -translate-y-0.5 with enhanced shadows",
+    "Use rich gradient backgrounds as the base layer",
   ],
 
   dontList: [
-    "禁止在纯白或纯色背景上使用（需要渐变或图片背景）",
-    "禁止过度透明导致内容不可读",
-    "禁止使用硬边缘阴影",
-    "禁止省略 backdrop-blur（这是核心效果）",
-    "禁止在低对比度环境下使用浅色文字",
+    "禁止在纯色背景上使用（必须有渐变或图片背景）",
+    "禁止使用低模糊值 backdrop-blur-sm 或 backdrop-blur",
+    "禁止省略 backdrop-saturate（饱和度增强是 Liquid Glass 的关键）",
+    "禁止使用不透明背景 bg-white, bg-black",
+    "禁止使用直角或小圆角 rounded-none, rounded-sm",
+    "禁止使用快速过渡 duration-100, duration-150",
+    "禁止使用单层扁平阴影（必须多层）",
     "禁止使用频闪或高频循环发光动画",
   ],
 
   dontListEn: [
-    "Do not use on solid white or solid color backgrounds (requires gradient or image background)",
-    "Do not make elements too transparent causing unreadable content",
-    "Do not use hard-edge shadows",
-    "Do not omit backdrop-blur (this is the core effect)",
-    "Do not use light text in low-contrast environments",
+    "Do not use on solid color backgrounds (requires gradient or image background)",
+    "Do not use low blur values backdrop-blur-sm or backdrop-blur",
+    "Do not omit backdrop-saturate (saturation boost is key to Liquid Glass)",
+    "Do not use opaque backgrounds bg-white, bg-black",
+    "Do not use sharp or small corners rounded-none, rounded-sm",
+    "Do not use fast transitions duration-100, duration-150",
+    "Do not use single-layer flat shadows (must be multi-layer)",
     "Do not use strobing or high-frequency looping glow animations",
   ],
 
   components: {
     button: {
-      name: "按钮",
-      description: "玻璃拟态风格按钮，带有半透明背景和模糊效果",
+      name: "Button",
+      description: "Liquid Glass button with inner luminance, specular sweep, and chromatic hover",
       code: `<button className="group relative
   px-6 py-3
-  bg-white/20 backdrop-blur-md
+  bg-white/20 backdrop-blur-[40px] backdrop-saturate-[180%]
   border border-white/25
-  rounded-xl
+  rounded-2xl
   text-white font-medium
-  shadow-[0_4px_15px_rgba(0,0,0,0.1)]
-  hover:bg-white/25 hover:border-white/45
-  hover:shadow-[0_10px_26px_rgba(0,0,0,0.16)]
+  shadow-[0_4px_16px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.3)]
+  hover:bg-white/28 hover:border-white/40
+  hover:shadow-[0_8px_32px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)]
   hover:-translate-y-0.5
-  active:scale-[0.98]
-  transition-all duration-300 ease-out
+  active:scale-[0.97]
+  transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
   overflow-hidden
 ">
-  <span className="absolute inset-0 -translate-x-[140%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/35 to-transparent group-hover:translate-x-[140%] transition-transform duration-700 ease-out" />
-  <span className="relative z-10">Glass Button</span>
+  <span className="absolute inset-0 bg-gradient-to-b from-white/18 to-transparent pointer-events-none" />
+  <span className="absolute inset-0 -translate-x-[150%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[150%] transition-transform duration-700 ease-out pointer-events-none" />
+  <span className="relative z-10">Liquid Glass</span>
 </button>`,
     },
     card: {
-      name: "卡片",
-      description: "毛玻璃卡片，适合在渐变背景上展示内容",
+      name: "Card",
+      description: "Liquid Glass card with refraction gradient, multi-layer shadows, and depth hover",
       code: `<div className="group relative
   p-6 md:p-8
-  bg-white/20 backdrop-blur-xl
-  border border-white/25
-  rounded-2xl
-  shadow-[0_8px_32px_rgba(0,0,0,0.1)]
-  hover:border-white/45
-  hover:shadow-[0_16px_48px_rgba(0,0,0,0.16)]
-  hover:-translate-y-2
-  transition-all duration-300 ease-out
+  bg-white/15 backdrop-blur-[60px] backdrop-saturate-[180%]
+  border border-white/20
+  rounded-3xl
+  shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.35)]
+  hover:border-white/35
+  hover:shadow-[0_16px_56px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.45)]
+  hover:-translate-y-1
+  transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
   overflow-hidden
 ">
-  <span className="absolute inset-0 -translate-x-[150%] skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-[150%] transition-transform duration-1000 ease-out" />
+  <span className="absolute inset-0 bg-gradient-to-b from-white/18 to-transparent pointer-events-none" />
+  <span className="absolute inset-0 -translate-x-[150%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/15 to-transparent group-hover:translate-x-[150%] transition-transform duration-1000 ease-out pointer-events-none" />
   <div className="relative z-10">
     <h3 className="text-xl font-semibold text-white mb-2">
-      Glass Card
+      Liquid Glass Card
     </h3>
-    <p className="text-white/80">
-      毛玻璃效果的卡片内容
+    <p className="text-white/75">
+      Light flows through layered glass surfaces
     </p>
   </div>
 </div>`,
     },
     input: {
-      name: "输入框",
-      description: "玻璃拟态输入框",
+      name: "Input",
+      description: "Liquid Glass input with inner shadow and focus luminance",
       code: `<input
   type="text"
-  placeholder="请输入..."
+  placeholder="Type here..."
   className="
-    w-full px-4 py-3
-    bg-white/10 backdrop-blur-md
+    w-full px-5 py-3.5
+    bg-white/10 backdrop-blur-[40px] backdrop-saturate-[180%]
     border border-white/20
-    rounded-xl
-    text-white placeholder-white/50
-    focus:outline-none focus:border-white/40
-    focus:bg-white/20
-    transition-all
+    rounded-2xl
+    text-white placeholder-white/40
+    shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]
+    focus:outline-none focus:border-white/40 focus:bg-white/18
+    focus:shadow-[0_0_0_3px_rgba(255,255,255,0.15),inset_0_1px_0_rgba(255,255,255,0.3)]
+    transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
   "
 />`,
     },
     nav: {
-      name: "导航栏",
-      description: "固定顶部的毛玻璃导航栏",
+      name: "Navigation",
+      description: "Fixed Liquid Glass navigation bar with subtle depth",
       code: `<nav className="
   fixed top-0 left-0 right-0 z-50
-  px-6 py-4
-  bg-white/10 backdrop-blur-xl
+  px-6 py-3
+  bg-white/10 backdrop-blur-[60px] backdrop-saturate-[180%]
   border-b border-white/10
+  shadow-[0_1px_0_rgba(255,255,255,0.1)]
 ">
   <div className="max-w-6xl mx-auto flex items-center justify-between">
-    <a href="/" className="text-white font-bold text-xl">
+    <a href="/" className="text-white font-bold text-lg tracking-tight">
       Logo
     </a>
-    <div className="flex gap-6">
-      <a href="#" className="text-white/80 hover:text-white transition-colors">
-        首页
+    <div className="flex items-center gap-1">
+      <a href="#" className="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300">
+        Home
       </a>
-      <a href="#" className="text-white/80 hover:text-white transition-colors">
-        关于
+      <a href="#" className="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300">
+        About
       </a>
     </div>
   </div>
 </nav>`,
     },
     hero: {
-      name: "Hero 区块",
-      description: "带渐变背景的 Hero 展示区域",
+      name: "Hero",
+      description: "Liquid Glass hero section with layered depth and ambient orbs",
       code: `<section className="
-  min-h-screen
+  relative min-h-screen
   flex items-center justify-center
-  bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400
-  px-6
+  bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500
+  px-6 overflow-hidden
 ">
+  <div className="absolute top-20 right-[-60px] w-[400px] h-[400px] rounded-full bg-pink-400/30 blur-3xl" />
+  <div className="absolute bottom-20 left-[-80px] w-[500px] h-[500px] rounded-full bg-blue-400/25 blur-3xl" />
   <div className="
-    max-w-2xl mx-auto text-center
-    p-8 md:p-12
-    bg-white/10 backdrop-blur-xl
+    relative max-w-2xl mx-auto text-center
+    p-10 md:p-14
+    bg-white/12 backdrop-blur-[60px] backdrop-saturate-[180%]
     border border-white/20
     rounded-3xl
-    shadow-2xl
+    shadow-[0_16px_64px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.35)]
+    overflow-hidden
   ">
-    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-      Glassmorphism
+    <span className="absolute inset-0 bg-gradient-to-b from-white/15 to-transparent pointer-events-none" />
+    <h1 className="relative text-4xl md:text-6xl font-bold text-white mb-6">
+      Liquid Glass
     </h1>
-    <p className="text-lg text-white/80 mb-8">
-      现代感十足的毛玻璃设计风格
+    <p className="relative text-lg text-white/75 mb-8">
+      Light flows through layered translucent surfaces
     </p>
     <button className="
-      px-8 py-4
-      bg-white/20 backdrop-blur-md
-      border border-white/30
-      rounded-full
+      relative px-8 py-4
+      bg-white/20 backdrop-blur-[40px] backdrop-saturate-[180%]
+      border border-white/25
+      rounded-2xl
       text-white font-semibold
-      hover:bg-white/30
-      transition-all
+      shadow-[0_4px_16px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.3)]
+      hover:bg-white/28 hover:border-white/40
+      transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
     ">
-      开始探索
+      Explore
     </button>
   </div>
 </section>`,
     },
   },
 
-  globalCss: `/* Glassmorphism 全局样式 */
+  globalCss: `/* Liquid Glass Global Styles */
 
-/* 渐变背景变量 */
 :root {
-  --glass-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-blur: 40px;
+  --glass-blur-heavy: 60px;
+  --glass-saturate: 180%;
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-hover: rgba(255, 255, 255, 0.22);
   --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --glass-shadow-hover: 0 16px 56px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  --glass-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 基础毛玻璃类 */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
 }
 
-/* 渐变背景容器 */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
 .glass-container {
-  background: var(--glass-gradient);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   min-height: 100vh;
 }`,
 
-  aiRules: `你是一个 Glassmorphism 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `你是一个 Liquid Glass 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
 
 ## 绝对禁止
 
 - 在纯色背景上使用玻璃效果（必须有渐变或图片背景）
-- 省略 backdrop-blur 属性
-- 使用硬边缘阴影 shadow-[Xpx_Xpx_0px]
+- 省略 backdrop-blur 或使用低模糊值（最低 backdrop-blur-[40px]）
+- 省略 backdrop-saturate（必须 backdrop-saturate-[180%]）
 - 使用不透明背景 bg-white, bg-black
-- 使用直角 rounded-none
+- 使用直角或小圆角 rounded-none, rounded-sm
+- 使用单层扁平阴影
+- 使用快速过渡 duration-100, duration-150
 
 ## 必须遵守
 
-- 半透明背景 bg-white/10 到 bg-white/30
-- 背景模糊 backdrop-blur-md 或 backdrop-blur-xl
-- 细微边框 border border-white/20
-- 柔和阴影 shadow-lg, shadow-xl
-- 圆角 rounded-xl 或 rounded-2xl
-- 渐变背景容器 bg-gradient-to-br
+### 玻璃面板三层结构
+1. 半透明背景 bg-white/10 到 bg-white/20 + backdrop-blur-[40px] + backdrop-saturate-[180%]
+2. 内发光渐变 background-image: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent)
+3. 多层阴影 shadow-[外层深度, inset_顶部高光]
+
+### 边框
+- 默认 border-white/20
+- hover 提升到 border-white/35 ~ border-white/40
+
+### 过渡
+- duration-500 + ease-[cubic-bezier(0.16,1,0.3,1)] spring easing
+- hover 上浮 -translate-y-0.5 到 -translate-y-1
+
+### 交互
+- 扫光高光层：skew-x-[-20deg] 渐变从 -translate-x-[150%] 到 translate-x-[150%]
+- 阴影在 hover 时同步增强
+- active 缩放 scale-[0.97]
 
 ## 配色
 
 渐变背景推荐：
-- 紫粉: from-purple-600 via-pink-500 to-orange-400
-- 蓝紫: from-blue-600 via-purple-600 to-pink-500
-- 青蓝: from-cyan-400 via-blue-500 to-purple-600
+- 靛紫粉: from-indigo-600 via-purple-600 to-pink-500
+- 蓝紫: from-blue-500 via-purple-500 to-pink-500
+- 青蓝: from-cyan-400 via-blue-500 to-indigo-600
 
 玻璃元素：
-- 背景: bg-white/10, bg-white/20
-- 边框: border-white/20, border-white/30
-- 文字: text-white, text-white/80
-
-## 层级结构
-
-1. 底层：渐变背景或图片
-2. 中层：毛玻璃容器
-3. 顶层：内容元素
-
-## Animation & Interaction Rules
-
-- Optical Glint: 使用倾斜渐变高光层（sweep）模拟玻璃折射，保持单次扫光，避免频闪。
-- Floating Depth: hover 可使用轻微上浮（如 \`-translate-y-0.5\` 到 \`-translate-y-2\`）并同步放大阴影扩散范围。
-- Edge Illumination: 边框透明度在交互时从 \`border-white/20\` 提升到 \`border-white/40+\`，强调玻璃切边。
-- Smooth Translucency: 过渡优先 \`duration-300\` 与 \`ease-out\`，营造光学变化的丝滑感。
+- 背景: bg-white/10 到 bg-white/20
+- 边框: border-white/20 到 border-white/40
+- 文字: text-white, text-white/85, text-white/50
 
 ## 自检
 
 每次生成代码后检查：
 1. 有渐变或图片背景
-2. 有 backdrop-blur
-3. 使用半透明背景色
-4. 有柔和阴影
-5. 文字可读性良好`,
+2. 有 backdrop-blur-[40px] 或更高
+3. 有 backdrop-saturate-[180%]
+4. 有多层阴影（外层 + inset）
+5. 有内发光渐变叠加层
+6. 过渡使用 spring easing
+7. 文字可读性良好`,
 
-  aiRulesEn: `You are a Glassmorphism design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRulesEn: `You are a Liquid Glass design style frontend development expert. All generated code must strictly follow these constraints:
 
 ## Absolutely Forbidden
 
 - Using glass effects on solid color backgrounds (must have gradient or image background)
-- Omitting the backdrop-blur property
-- Using hard-edge shadows shadow-[Xpx_Xpx_0px]
+- Omitting backdrop-blur or using low blur values (minimum backdrop-blur-[40px])
+- Omitting backdrop-saturate (must use backdrop-saturate-[180%])
 - Using opaque backgrounds bg-white, bg-black
-- Using sharp corners rounded-none
+- Using sharp or small corners rounded-none, rounded-sm
+- Using single-layer flat shadows
+- Using fast transitions duration-100, duration-150
 
 ## Must Follow
 
-- Semi-transparent backgrounds bg-white/10 to bg-white/30
-- Background blur backdrop-blur-md or backdrop-blur-xl
-- Subtle borders border border-white/20
-- Soft shadows shadow-lg, shadow-xl
-- Rounded corners rounded-xl or rounded-2xl
-- Gradient background container bg-gradient-to-br
+### Glass Panel Three-Layer Structure
+1. Semi-transparent background bg-white/10 to bg-white/20 + backdrop-blur-[40px] + backdrop-saturate-[180%]
+2. Inner luminance gradient background-image: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent)
+3. Multi-layer shadows shadow-[outer depth, inset_top highlight]
+
+### Borders
+- Default border-white/20
+- Hover increase to border-white/35 ~ border-white/40
+
+### Transitions
+- duration-500 + ease-[cubic-bezier(0.16,1,0.3,1)] spring easing
+- Hover lift -translate-y-0.5 to -translate-y-1
+
+### Interactions
+- Specular sweep layer: skew-x-[-20deg] gradient from -translate-x-[150%] to translate-x-[150%]
+- Shadows enhance synchronously on hover
+- Active scale scale-[0.97]
 
 ## Color Palette
 
 Recommended gradient backgrounds:
-- Purple-pink: from-purple-600 via-pink-500 to-orange-400
-- Blue-purple: from-blue-600 via-purple-600 to-pink-500
-- Cyan-blue: from-cyan-400 via-blue-500 to-purple-600
+- Indigo-purple-pink: from-indigo-600 via-purple-600 to-pink-500
+- Blue-purple: from-blue-500 via-purple-500 to-pink-500
+- Cyan-blue: from-cyan-400 via-blue-500 to-indigo-600
 
 Glass elements:
-- Background: bg-white/10, bg-white/20
-- Border: border-white/20, border-white/30
-- Text: text-white, text-white/80
-
-## Layer Structure
-
-1. Base layer: Gradient background or image
-2. Middle layer: Frosted glass container
-3. Top layer: Content elements
-
-## Animation & Interaction Rules
-
-- Optical Glint: Use a skewed gradient highlight layer (sweep) to simulate glass refraction, keep it single-sweep, avoid strobing.
-- Floating Depth: Hover can use slight lift (e.g. -translate-y-0.5 to -translate-y-2) with synchronized shadow spread expansion.
-- Edge Illumination: Border opacity increases from border-white/20 to border-white/40+ on interaction, emphasizing glass cut edges.
-- Smooth Translucency: Transitions prefer duration-300 with ease-out, creating a silky optical change feel.
+- Background: bg-white/10 to bg-white/20
+- Border: border-white/20 to border-white/40
+- Text: text-white, text-white/85, text-white/50
 
 ## Self-Check
 
 After generating code, verify:
 1. Has gradient or image background
-2. Has backdrop-blur
-3. Uses semi-transparent background colors
-4. Has soft shadows
-5. Text readability is good`,
+2. Has backdrop-blur-[40px] or higher
+3. Has backdrop-saturate-[180%]
+4. Has multi-layer shadows (outer + inset)
+5. Has inner luminance gradient overlay
+6. Transitions use spring easing
+7. Text readability is good`,
 
   examplePrompts: [
     {
-      title: "登录/注册页",
-      titleEn: "Login/Register Page",
-      description: "毛玻璃风格的认证页面",
-      descriptionEn: "Glassmorphic authentication page",
-      prompt: `用 Glassmorphism 风格创建一个登录页面，要求：
-1. 背景：全屏渐变（紫粉或蓝紫色系）
-2. 登录卡片：居中，bg-white/10 backdrop-blur-xl，圆角 rounded-2xl
-3. 表单：输入框半透明背景，focus 时边框发光
-4. 按钮：渐变背景或半透明白色，hover 时更亮
-5. 装饰：添加一些模糊的圆形光斑作为背景装饰`,
+      title: "Liquid Glass Dashboard",
+      titleEn: "Liquid Glass Dashboard",
+      description: "Apple 风格的毛玻璃数据面板",
+      descriptionEn: "Apple-style frosted glass data dashboard",
+      prompt: `Create a Liquid Glass dashboard with:
+1. Background: full-screen gradient from-indigo-600 via-purple-600 to-pink-500 with floating ambient orbs
+2. Top nav: fixed, bg-white/10 backdrop-blur-[60px] backdrop-saturate-[180%], border-b border-white/10
+3. Stat cards: bg-white/15 backdrop-blur-[60px], multi-layer shadows, inner luminance gradient overlay, hover lift with enhanced glow
+4. Chart area: large glass panel with inset shadow, gradient overlay from top
+5. All transitions: duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+6. Specular sweep on card hover`,
     },
     {
-      title: "音乐播放器",
-      titleEn: "Music Player",
-      description: "现代感音乐播放界面",
-      descriptionEn: "Modern music player interface",
-      prompt: `用 Glassmorphism 风格设计一个音乐播放器界面，要求：
-1. 背景：当前播放歌曲的模糊封面图
-2. 播放卡片：毛玻璃效果，显示封面、歌曲信息
-3. 控制栏：播放/暂停/上下曲按钮，半透明背景
-4. 进度条：渐变色轨道，毛玻璃滑块
-5. 播放列表：侧边栏，半透明背景，每行歌曲 hover 时更亮`,
+      title: "Liquid Glass Login",
+      titleEn: "Liquid Glass Login",
+      description: "高级毛玻璃登录页",
+      descriptionEn: "Premium frosted glass login page",
+      prompt: `Create a Liquid Glass login page with:
+1. Background: gradient from-violet-600 via-purple-600 to-fuchsia-500 with blurred ambient orbs
+2. Login card: centered, bg-white/12 backdrop-blur-[60px] backdrop-saturate-[180%], rounded-3xl, multi-layer shadow with inset top highlight
+3. Inner luminance: gradient overlay from-white/18 to transparent at top
+4. Inputs: bg-white/10, inset shadow, focus glow ring
+5. Submit button: bg-white/20 with specular sweep on hover
+6. All corners rounded-2xl or rounded-3xl, spring easing transitions`,
     },
     {
-      title: "天气应用",
-      titleEn: "Weather App",
-      description: "精美的天气展示界面",
-      descriptionEn: "Beautiful weather display interface",
-      prompt: `用 Glassmorphism 风格创建一个天气应用界面，要求：
-1. 背景：根据天气变化的渐变（晴天蓝黄、阴天灰蓝等）
-2. 主卡片：当前天气，大温度数字，天气图标
-3. 小时预报：横向滚动，每个时间点一个小卡片
-4. 周预报：列表形式，每行一天
-5. 所有卡片：backdrop-blur, bg-white/20, rounded-xl, shadow-lg`,
+      title: "Liquid Glass Music Player",
+      titleEn: "Liquid Glass Music Player",
+      description: "沉浸式毛玻璃音乐播放器",
+      descriptionEn: "Immersive frosted glass music player",
+      prompt: `Create a Liquid Glass music player with:
+1. Background: blurred album art with gradient overlay
+2. Player card: bg-white/15 backdrop-blur-[60px] backdrop-saturate-[180%], rounded-3xl
+3. Album art: rounded-2xl with glass frame border and shadow
+4. Controls: glass buttons with inner luminance, specular sweep on hover
+5. Progress bar: glass track with gradient fill, glass thumb
+6. Playlist: glass sidebar with hover-highlighted rows
+7. All transitions spring easing, multi-layer shadows throughout`,
     },
   ],
 };
+
