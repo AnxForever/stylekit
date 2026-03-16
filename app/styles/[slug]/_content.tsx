@@ -48,6 +48,18 @@ export function StyleDetailContent({
 }: Props) {
   const { t, locale } = useI18n();
   const [isSeoExpanded, setIsSeoExpanded] = useState(false);
+  const localizedDescription = localizedString(
+    locale,
+    style.description,
+    style.descriptionEn
+  );
+  const localizedPhilosophy = localizedString(
+    locale,
+    style.philosophy,
+    style.philosophyEn
+  );
+  const localizedDos = localizedList(locale, style.doList, style.doListEn);
+  const localizedDonts = localizedList(locale, style.dontList, style.dontListEn);
   const detailSections = [
     {
       href: "#style-overview",
@@ -64,6 +76,23 @@ export function StyleDetailContent({
     {
       href: "#style-feedback",
       label: t("styleDetail.ratingsFeedback"),
+    },
+  ];
+  const summaryCards = [
+    {
+      label: locale === "zh" ? "适合场景" : "Best For",
+      value:
+        style.keywords.length > 0
+          ? style.keywords.slice(0, 3).join(" / ")
+          : localizedDescription,
+    },
+    {
+      label: locale === "zh" ? "设计重点" : "Primary Move",
+      value: localizedDos[0] ?? localizedPhilosophy.split("\n\n")[0] ?? localizedDescription,
+    },
+    {
+      label: locale === "zh" ? "注意事项" : "Watch Out",
+      value: localizedDonts[0] ?? localizedDescription,
     },
   ];
 
@@ -118,7 +147,7 @@ export function StyleDetailContent({
                 )}
               </div>
               <p className="text-lg text-muted leading-relaxed mb-6">
-                {localizedString(locale, style.description, style.descriptionEn)}
+                {localizedDescription}
               </p>
               <div className="flex flex-wrap gap-2">
                 {style.keywords.map((keyword) => (
@@ -146,6 +175,22 @@ export function StyleDetailContent({
                   {t("nav.templates")}
                 </Link>
                 <TokensExportButton style={style} />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
+                {summaryCards.map((card) => (
+                  <article
+                    key={card.label}
+                    className="border border-border bg-background/60 px-4 py-4"
+                  >
+                    <p className="text-[10px] tracking-[0.16em] uppercase text-muted mb-2">
+                      {card.label}
+                    </p>
+                    <p className="text-sm leading-relaxed line-clamp-3">
+                      {card.value}
+                    </p>
+                  </article>
+                ))}
               </div>
             </div>
 
@@ -221,7 +266,7 @@ export function StyleDetailContent({
           </p>
           <div className="max-w-3xl">
             <div className="prose prose-lg">
-              {localizedString(locale, style.philosophy, style.philosophyEn).split("\n\n").map((paragraph, i) => (
+              {localizedPhilosophy.split("\n\n").map((paragraph, i) => (
                 <p key={i} className="text-muted leading-relaxed mb-4 last:mb-0">
                   {paragraph}
                 </p>
@@ -240,7 +285,7 @@ export function StyleDetailContent({
                 {t("styleDetail.dos")}
               </p>
               <ul className="space-y-3">
-                {localizedList(locale, style.doList, style.doListEn).map((item, i) => (
+                {localizedDos.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
                     <span className="text-sm leading-relaxed">{item}</span>
@@ -253,7 +298,7 @@ export function StyleDetailContent({
                 {t("styleDetail.donts")}
               </p>
               <ul className="space-y-3">
-                {localizedList(locale, style.dontList, style.dontListEn).map((item, i) => (
+                {localizedDonts.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
                     <span className="text-sm leading-relaxed">{item}</span>
@@ -272,7 +317,7 @@ export function StyleDetailContent({
             {t("styleDetail.componentTemplates")}
           </p>
           <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
-          <ComponentPreview components={style.components} />
+          <ComponentPreview components={style.components} defaultShowCode={false} />
         </div>
       </section>
 
