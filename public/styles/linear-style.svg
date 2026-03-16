@@ -1,32 +1,166 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#0a0a0f"/>
-  <!-- Subtle grid -->
-  <line x1="0" y1="100" x2="800" y2="100" stroke="#1a1a2e" stroke-width="0.5"/>
-  <line x1="0" y1="200" x2="800" y2="200" stroke="#1a1a2e" stroke-width="0.5"/>
-  <line x1="0" y1="300" x2="800" y2="300" stroke="#1a1a2e" stroke-width="0.5"/>
-  <line x1="200" y1="0" x2="200" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
-  <line x1="400" y1="0" x2="400" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
-  <line x1="600" y1="0" x2="600" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
-  <!-- Card elements -->
-  <rect x="120" y="100" width="240" height="60" rx="8" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
-  <rect x="120" y="175" width="240" height="60" rx="8" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
-  <rect x="120" y="250" width="240" height="60" rx="8" fill="#14141f" stroke="#5e6ad2" stroke-width="1"/>
-  <!-- Status indicators -->
-  <circle cx="150" cy="130" r="5" fill="#5e6ad2"/>
-  <circle cx="150" cy="205" r="5" fill="#3b9b6d"/>
-  <circle cx="150" cy="280" r="5" fill="#5e6ad2"/>
-  <!-- Text placeholders -->
-  <rect x="170" y="122" width="100" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
-  <rect x="170" y="138" width="60" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
-  <rect x="170" y="197" width="120" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
-  <rect x="170" y="213" width="80" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
-  <rect x="170" y="272" width="90" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
-  <rect x="170" y="288" width="70" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
-  <!-- Right panel -->
-  <rect x="440" y="100" width="240" height="210" rx="10" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
-  <text x="560" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="600" fill="#e0e0e8">Linear</text>
-  <text x="560" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5e6ad2">Minimal dark design</text>
-  <!-- Accent line -->
-  <rect x="480" y="220" width="160" height="36" rx="6" fill="#5e6ad2" opacity="0.15"/>
-  <text x="560" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#5e6ad2">Get Started</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <filter id="subtle-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="50" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#0f0f18"/>
+    </linearGradient>
+    <linearGradient id="card-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a28" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#14141f" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="accent-line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5e6ad2" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#5e6ad2" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#5e6ad2" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle ambient glow -->
+  <circle cx="300" cy="315" r="300" fill="#5e6ad2" opacity="0.03" filter="url(#subtle-glow)"/>
+  <circle cx="900" cy="200" r="200" fill="#5e6ad2" opacity="0.02" filter="url(#subtle-glow)"/>
+
+  <!-- Grid lines -->
+  <g stroke="#ffffff" stroke-opacity="0.03" stroke-width="1">
+    <line x1="0" y1="157" x2="1200" y2="157"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="473" x2="1200" y2="473"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+
+  <!-- Left sidebar panel -->
+  <rect x="60" y="80" width="260" height="470" rx="12" fill="url(#card-fill)" stroke="#2a2a3e" stroke-width="1"/>
+
+  <!-- Sidebar header -->
+  <rect x="80" y="108" width="16" height="16" rx="4" fill="#5e6ad2" opacity="0.8"/>
+  <rect x="104" y="110" width="80" height="10" rx="3" fill="#e0e0e8" opacity="0.6"/>
+  <line x1="80" y1="140" x2="300" y2="140" stroke="#2a2a3e" stroke-width="1"/>
+
+  <!-- Sidebar items -->
+  <g>
+    <rect x="80" y="156" width="220" height="36" rx="6" fill="#5e6ad2" opacity="0.1"/>
+    <circle cx="98" cy="174" r="4" fill="#5e6ad2" opacity="0.8"/>
+    <rect x="112" y="169" width="100" height="8" rx="3" fill="#e0e0e8" opacity="0.5"/>
+    <rect x="248" y="169" width="32" height="8" rx="3" fill="#5e6ad2" opacity="0.3"/>
+  </g>
+  <g>
+    <circle cx="98" cy="214" r="4" fill="#8888a0" opacity="0.3"/>
+    <rect x="112" y="209" width="80" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+  <g>
+    <circle cx="98" cy="250" r="4" fill="#8888a0" opacity="0.3"/>
+    <rect x="112" y="245" width="110" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+  <g>
+    <circle cx="98" cy="286" r="4" fill="#8888a0" opacity="0.3"/>
+    <rect x="112" y="281" width="70" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+
+  <!-- Sidebar section divider -->
+  <line x1="80" y1="316" x2="300" y2="316" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="80" y="332" width="60" height="6" rx="3" fill="#8888a0" opacity="0.15"/>
+
+  <g>
+    <circle cx="98" cy="362" r="4" fill="#3b9b6d" opacity="0.5"/>
+    <rect x="112" y="357" width="90" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+  <g>
+    <circle cx="98" cy="398" r="4" fill="#eb5757" opacity="0.5"/>
+    <rect x="112" y="393" width="75" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+  <g>
+    <circle cx="98" cy="434" r="4" fill="#f2c94c" opacity="0.5"/>
+    <rect x="112" y="429" width="105" height="8" rx="3" fill="#8888a0" opacity="0.2"/>
+  </g>
+
+  <!-- User avatar -->
+  <circle cx="98" cy="510" r="14" fill="#2a2a3e" stroke="#3a3a4e" stroke-width="1"/>
+  <rect x="120" y="504" width="70" height="8" rx="3" fill="#8888a0" opacity="0.25"/>
+
+  <!-- Main content area -->
+  <rect x="360" y="80" width="780" height="470" rx="12" fill="url(#card-fill)" stroke="#2a2a3e" stroke-width="1"/>
+
+  <!-- Content header bar -->
+  <rect x="390" y="108" width="120" height="10" rx="3" fill="#e0e0e8" opacity="0.5"/>
+  <rect x="1040" y="104" width="72" height="28" rx="6" fill="#5e6ad2" opacity="0.15" stroke="#5e6ad2" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="1076" y="123" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="500" fill="#5e6ad2" opacity="0.8">New</text>
+  <line x1="390" y1="140" x2="1110" y2="140" stroke="#2a2a3e" stroke-width="1"/>
+
+  <!-- Issue rows -->
+  <g>
+    <rect x="390" y="156" width="720" height="52" rx="0" fill="transparent"/>
+    <circle cx="410" cy="182" r="7" fill="none" stroke="#5e6ad2" stroke-width="1.5"/>
+    <rect x="430" y="172" width="200" height="10" rx="3" fill="#e0e0e8" opacity="0.55"/>
+    <rect x="430" y="190" width="120" height="7" rx="3" fill="#8888a0" opacity="0.18"/>
+    <rect x="1020" y="176" width="50" height="6" rx="3" fill="#8888a0" opacity="0.15"/>
+    <circle cx="1094" cy="182" r="10" fill="#2a2a3e"/>
+    <line x1="390" y1="208" x2="1110" y2="208" stroke="#2a2a3e" stroke-width="0.5"/>
+  </g>
+  <g>
+    <circle cx="410" cy="234" r="7" fill="#5e6ad2" opacity="0.2"/>
+    <circle cx="410" cy="234" r="3" fill="#5e6ad2" opacity="0.6"/>
+    <rect x="430" y="224" width="180" height="10" rx="3" fill="#e0e0e8" opacity="0.45"/>
+    <rect x="430" y="242" width="140" height="7" rx="3" fill="#8888a0" opacity="0.18"/>
+    <rect x="620" y="226" width="48" height="16" rx="4" fill="#3b9b6d" opacity="0.12"/>
+    <text x="644" y="238" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#3b9b6d" opacity="0.7">done</text>
+    <circle cx="1094" cy="234" r="10" fill="#2a2a3e"/>
+    <line x1="390" y1="260" x2="1110" y2="260" stroke="#2a2a3e" stroke-width="0.5"/>
+  </g>
+  <g>
+    <circle cx="410" cy="286" r="7" fill="none" stroke="#f2c94c" stroke-width="1.5" opacity="0.5"/>
+    <rect x="430" y="276" width="240" height="10" rx="3" fill="#e0e0e8" opacity="0.45"/>
+    <rect x="430" y="294" width="100" height="7" rx="3" fill="#8888a0" opacity="0.18"/>
+    <rect x="680" y="278" width="60" height="16" rx="4" fill="#f2c94c" opacity="0.1"/>
+    <text x="710" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#f2c94c" opacity="0.6">urgent</text>
+    <circle cx="1094" cy="286" r="10" fill="#2a2a3e"/>
+    <line x1="390" y1="312" x2="1110" y2="312" stroke="#2a2a3e" stroke-width="0.5"/>
+  </g>
+  <g>
+    <circle cx="410" cy="338" r="7" fill="none" stroke="#8888a0" stroke-width="1.5" opacity="0.3"/>
+    <rect x="430" y="328" width="160" height="10" rx="3" fill="#e0e0e8" opacity="0.35"/>
+    <rect x="430" y="346" width="90" height="7" rx="3" fill="#8888a0" opacity="0.15"/>
+    <circle cx="1094" cy="338" r="10" fill="#2a2a3e"/>
+    <line x1="390" y1="364" x2="1110" y2="364" stroke="#2a2a3e" stroke-width="0.5"/>
+  </g>
+
+  <!-- Accent gradient line -->
+  <rect x="390" y="390" width="720" height="1" fill="url(#accent-line)"/>
+
+  <!-- Main title overlay -->
+  <text x="600" y="440"
+    font-family="'SF Pro Display', 'Inter', Arial, sans-serif"
+    font-size="56" font-weight="600" letter-spacing="-2" fill="#e0e0e8" opacity="0.9">
+    Linear Style.
+  </text>
+
+  <!-- Tagline -->
+  <text x="600" y="478"
+    font-family="'SF Pro Display', 'Inter', Arial, sans-serif"
+    font-size="20" font-weight="400" letter-spacing="-0.3" fill="#8888a0" opacity="0.5">
+    Precision. Restraint. Developer aesthetics.
+  </text>
+
+  <!-- Color palette dots -->
+  <circle cx="600" cy="520" r="8" fill="#5e6ad2"/>
+  <circle cx="628" cy="520" r="8" fill="#0a0a0b"/>
+  <circle cx="656" cy="520" r="8" fill="#f2c94c" opacity="0.8"/>
+  <circle cx="684" cy="520" r="8" fill="#27ae60" opacity="0.8"/>
+  <circle cx="712" cy="520" r="8" fill="#eb5757" opacity="0.8"/>
+  <circle cx="740" cy="520" r="8" fill="#2d9cdb" opacity="0.8"/>
+
+  <!-- Bottom rule -->
+  <line x1="60" y1="592" x2="1140" y2="592" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+  <text x="600" y="614" text-anchor="middle"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="12" font-weight="400" letter-spacing="0.3" fill="#ffffff" opacity="0.15">
+    Minimal. Precise. Intentional.
+  </text>
 </svg>
