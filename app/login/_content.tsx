@@ -12,6 +12,8 @@ export function LoginContent() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const authError = searchParams.get("auth_error");
+  const nextParam = searchParams.get("next");
+  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : "/profile";
   const [dismissed, setDismissed] = useState(false);
 
   if (loading) {
@@ -32,7 +34,7 @@ export function LoginContent() {
       <div className="max-w-md mx-auto px-6 py-24 text-center">
         <p className="text-muted mb-6">{t("auth.alreadySignedIn")}</p>
         <Link
-          href="/"
+          href={nextPath}
           className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-medium hover:opacity-90 transition-opacity"
         >
           {t("auth.goHome")}
@@ -73,7 +75,7 @@ export function LoginContent() {
 
       <div className="space-y-3">
         <button
-          onClick={signInWithGitHub}
+          onClick={() => signInWithGitHub(nextPath)}
           className="w-full flex items-center justify-center gap-3 px-6 py-3 border border-border text-foreground font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
         >
           <Github className="w-5 h-5" />
@@ -81,7 +83,7 @@ export function LoginContent() {
         </button>
 
         <button
-          onClick={signInWithLinuxDo}
+          onClick={() => signInWithLinuxDo(nextPath)}
           className="w-full flex items-center justify-center gap-3 px-6 py-3 border border-border text-foreground font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
         >
           <LogIn className="w-5 h-5" />

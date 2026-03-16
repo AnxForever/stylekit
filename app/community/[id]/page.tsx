@@ -38,6 +38,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `${baseUrl}/community/${id}`,
     },
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 

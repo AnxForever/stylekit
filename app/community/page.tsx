@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/community`,
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 interface CommunityPageProps {

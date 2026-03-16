@@ -52,10 +52,10 @@ export function Footer() {
                 {t("nav.templates")}
               </Link>
               <Link
-                href="/compare"
+                href="/guide"
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
-                {t("nav.compare")}
+                {t("nav.guide")}
               </Link>
             </nav>
           </div>

@@ -113,6 +113,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
   const userName = user?.user_metadata?.user_name ?? user?.user_metadata?.full_name ?? "";
   const userAvatar = user?.user_metadata?.avatar_url ?? "";
+  const loginHref = `/login?next=${encodeURIComponent(`/styles/${slug}`)}`;
 
   const getProviderLabel = (provider: Comment["author_provider"] | undefined): string => {
     switch (provider) {
@@ -329,7 +330,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         <div className="rounded-md border border-border bg-background/50 px-4 py-3 text-sm text-muted">
           {t("styleComments.signInPrompt")}
           {" "}
-          <Link href="/login" className="underline hover:text-foreground">
+          <Link href={loginHref} className="underline hover:text-foreground">
             {t("styleComments.signInAction")}
           </Link>
         </div>

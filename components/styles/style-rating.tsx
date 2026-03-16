@@ -69,6 +69,7 @@ export function StyleRating({ slug }: StyleRatingProps) {
   }
 
   const displayRating = hoveredStar || userRating;
+  const loginHref = `/login?next=${encodeURIComponent(`/styles/${slug}`)}`;
 
   // Anonymous users: show read-only stars + sign-in link
   if (!user) {
@@ -93,7 +94,7 @@ export function StyleRating({ slug }: StyleRatingProps) {
           </span>
         )}
         <Link
-          href="/login"
+          href={loginHref}
           className="text-xs text-muted hover:text-foreground transition-colors underline"
         >
           {t("rating.signInToRate")}

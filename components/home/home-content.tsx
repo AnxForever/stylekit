@@ -51,22 +51,28 @@ export function HomeContent({ styles }: HomeContentProps) {
     icon: LucideIcon;
   }> = [
     {
+      title: t("nav.styles"),
+      description:
+        locale === "zh"
+          ? "先从风格目录开始，按关键词、标签和布局方向筛选成熟方案。"
+          : "Start in the style catalog and narrow by keywords, tags, and layout direction.",
+      href: "/styles",
+      icon: Sparkles,
+    },
+    {
+      title: t("nav.templates"),
+      description:
+        locale === "zh"
+          ? "直接查看可落地的页面模板，优先走已经打磨完成的参考路径。"
+          : "Open production-ready page templates instead of jumping into unfinished flows.",
+      href: "/templates",
+      icon: Component,
+    },
+    {
       title: t("home.feature.docs.title"),
       description: t("home.feature.docs.desc"),
       href: "/guide",
       icon: BookOpenText,
-    },
-    {
-      title: t("home.feature.preview.title"),
-      description: t("home.feature.preview.desc"),
-      href: "/components",
-      icon: Component,
-    },
-    {
-      title: t("home.feature.export.title"),
-      description: t("home.feature.export.desc"),
-      href: "/generate",
-      icon: Sparkles,
     },
   ];
   const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
@@ -281,8 +287,26 @@ export function HomeContent({ styles }: HomeContentProps) {
               </h1>
               <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
               <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/styles"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
+                >
+                  {t("nav.styles")}
+                </Link>
+                <Link
+                  href="/templates"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
+                >
+                  {t("nav.templates")}
+                </Link>
+                <Link href="/guide" className={smallLinkClassName}>
+                  {t("nav.guide")}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
                 <GitHubStarButton />
-                <p className="text-sm text-muted">{locale === "zh" ? "你的 Star 是对我最好的支持！" : "Your star is the best support for me!"}</p>
+                <p className="text-sm text-muted">{locale === "zh" ? "开源仓库会持续更新，但对外入口先聚焦已打磨完成的浏览与参考链路。" : "The repo keeps evolving, but public entry points now focus on the polished browse-and-reference flows."}</p>
               </div>
 
               <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
@@ -334,7 +358,7 @@ export function HomeContent({ styles }: HomeContentProps) {
             </RevealOnScroll>
 
             <RevealOnScroll instant className="w-full max-w-xl lg:max-w-none lg:justify-self-end">
-              <FeaturedCarousel styles={styles} />
+              <FeaturedCarousel styles={featuredStyles} />
             </RevealOnScroll>
           </div>
         </div>

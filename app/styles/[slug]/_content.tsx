@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
@@ -21,12 +20,10 @@ import { StyleComments } from "@/components/styles/style-comments";
 import { StyleSEOSection } from "@/components/style-preview/style-seo-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
-import { useCommunityFeed } from "@/lib/swr";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
-import type { CommunityFeedItem } from "@/lib/community/feed";
 
 interface Props {
   style: DesignStyle;
@@ -37,7 +34,6 @@ interface Props {
   accessibilityScore: AccessibilityScore | null;
   version?: string;
   changelog?: StyleVersion[];
-  communityVersions?: CommunityFeedItem[];
 }
 
 export function StyleDetailContent({
@@ -49,15 +45,8 @@ export function StyleDetailContent({
   accessibilityScore,
   version,
   changelog,
-  communityVersions = [],
 }: Props) {
   const { t, locale } = useI18n();
-  const { data: communityData } = useCommunityFeed({
-    slug: style.slug,
-    limit: 1,
-    offset: 0,
-  });
-  const communityAttribution = communityData?.items?.[0] ?? null;
 
   useEffect(() => {
     const sendAnalytics = () => {
@@ -112,37 +101,6 @@ export function StyleDetailContent({
               <p className="text-lg text-muted leading-relaxed mb-6">
                 {localizedString(locale, style.description, style.descriptionEn)}
               </p>
-              {communityAttribution && (
-                <Link
-                  href={`/community?slug=${style.slug}`}
-                  className="inline-flex items-center gap-3 border border-border bg-background/70 px-3 py-2 mb-6 hover:border-foreground transition-colors"
-                >
-                  {communityAttribution.author.avatarUrl ? (
-                    <Image
-                      src={communityAttribution.author.avatarUrl}
-                      alt={communityAttribution.author.handle}
-                      width={24}
-                      height={24}
-                      unoptimized
-                      className="w-6 h-6 rounded-full"
-                    />
-                  ) : (
-                    <span className="w-6 h-6 rounded-full bg-muted/30 inline-flex items-center justify-center text-[11px]">
-                      {communityAttribution.author.handle.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                  <span className="text-sm text-muted">
-                    {t("community.by")}
-                    {" "}
-                    <span className="text-foreground font-medium">
-                      @{communityAttribution.author.handle}
-                    </span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted border border-border px-1.5 py-0.5">
-                    {communityAttribution.author.provider}
-                  </span>
-                </Link>
-              )}
               <div className="flex flex-wrap gap-2">
                 {style.keywords.map((keyword) => (
                   <span
@@ -162,11 +120,11 @@ export function StyleDetailContent({
                   {t("styleDetail.viewShowcase")}
                 </Link>
                 <Link
-                  href={`/compare?a=${style.slug}`}
+                  href={`/templates?style=${style.slug}`}
                   className="inline-flex items-center gap-2 justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
                 >
-                  <ArrowLeftRight className="w-4 h-4" />
-                  {t("styleDetail.compareWith")}
+                  <ArrowRight className="w-4 h-4" />
+                  {t("nav.templates")}
                 </Link>
                 <TokensExportButton style={style} />
               </div>
@@ -393,57 +351,6 @@ export function StyleDetailContent({
           <StylePackExport style={style} />
         </div>
       </section>
-
-      {/* Community Versions — shown when built-in and community share a slug */}
-      {styleSource === "static" && communityVersions.length > 0 && (
-        <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              {t("community.label")}
-            </p>
-            <h2 className="text-2xl md:text-3xl mb-2">
-              {t("styleDetail.communityVersions")}
-            </h2>
-            <p className="text-muted mb-8 max-w-2xl">
-              {t("styleDetail.communityVersionsDesc")}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {communityVersions.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/community/${item.id}`}
-                  className="group block border border-border p-4 hover:border-foreground transition-colors"
-                >
-                  {item.cover && (
-                    <div className="aspect-video mb-3 overflow-hidden border border-border">
-                      <Image
-                        src={item.cover}
-                        alt={item.titleEn ?? item.title}
-                        width={400}
-                        height={225}
-                        unoptimized
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <p className="font-medium text-sm mb-1 group-hover:underline">
-                    {item.title}
-                  </p>
-                  <p className="text-xs text-muted">
-                    {t("styleDetail.communityVersionsBy").replace("{author}", item.author.handle)}
-                  </p>
-                </Link>
-              ))}
-            </div>
-            <Link
-              href={`/community?slug=${style.slug}`}
-              className="text-sm underline underline-offset-4 hover:no-underline"
-            >
-              {t("styleDetail.viewAllCommunityVersions")}
-            </Link>
-          </div>
-        </section>
-      )}
 
       {/* Community */}
       <section className="border-t border-border">
