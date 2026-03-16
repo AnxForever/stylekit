@@ -17,9 +17,16 @@ import { getAuthClient } from "./supabase-browser";
 interface AuthState {
   user: User | null;
   loading: boolean;
-  signInWithGitHub: () => Promise<void>;
-  signInWithLinuxDo: () => void;
+  signInWithGitHub: (nextPath?: string) => Promise<void>;
+  signInWithLinuxDo: (nextPath?: string) => void;
   signOut: () => Promise<void>;
+}
+
+function normalizeNextPath(nextPath?: string): string {
+  if (!nextPath || !nextPath.startsWith("/")) {
+    return "/profile";
+  }
+  return nextPath;
 }
 
 /** Check once at module level whether Supabase is available. */
@@ -72,20 +79,22 @@ export function useUser(): AuthState {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGitHub = useCallback(async () => {
+  const signInWithGitHub = useCallback(async (nextPath?: string) => {
     const client = getAuthClient();
     if (!client) return;
+    const safeNextPath = normalizeNextPath(nextPath);
 
     await client.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+        redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(safeNextPath)}`,
       },
     });
   }, []);
 
-  const signInWithLinuxDo = useCallback(() => {
-    window.location.href = "/api/auth/linuxdo?next=/profile";
+  const signInWithLinuxDo = useCallback((nextPath?: string) => {
+    const safeNextPath = normalizeNextPath(nextPath);
+    window.location.href = `/api/auth/linuxdo?next=${encodeURIComponent(safeNextPath)}`;
   }, []);
 
   const signOut = useCallback(async () => {

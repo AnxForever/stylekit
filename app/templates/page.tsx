@@ -481,6 +481,10 @@ export default function TemplatesPage() {
   const trimmedDeferredSearchQuery = deferredSearchQuery.trim();
   const activeType = (searchParams.get("type") as TemplateTypeFilter | null) || "all";
   const deferredActiveType = useDeferredValue(activeType);
+  const styleParam = searchParams.get("style") || "";
+  const activeStyleSlug = styleMap.has(styleParam) ? styleParam : "";
+  const deferredActiveStyleSlug = useDeferredValue(activeStyleSlug);
+  const activeStyleMeta = activeStyleSlug ? styleMap.get(activeStyleSlug) : undefined;
   const sortParam = searchParams.get("sort");
   const validSorts: TemplateSort[] = ["recommended", "name-asc", "name-desc"];
   const activeSort: TemplateSort = validSorts.includes(sortParam as TemplateSort)
@@ -488,11 +492,17 @@ export default function TemplatesPage() {
     : "recommended";
   const deferredActiveSort = useDeferredValue(activeSort);
   const hasActiveControls =
+    activeStyleSlug.length > 0 ||
     activeType !== "all" ||
     activeSort !== "recommended" ||
     queryParam.trim().length > 0;
   const activeFilterSummary = useMemo(() => {
     const parts: string[] = [];
+    if (activeStyleMeta) {
+      parts.push(
+        `${t("nav.styles")}: ${locale === "zh" ? activeStyleMeta.name : (activeStyleMeta.nameEn || activeStyleMeta.name)}`
+      );
+    }
     if (activeType !== "all") {
       parts.push(`${t("templates.type")}: ${t(templateTypeToTranslationKey(activeType))}`);
     }
@@ -506,7 +516,7 @@ export default function TemplatesPage() {
       parts.push(`${t("nav.search")}: ${queryParam}`);
     }
     return parts.join(" · ");
-  }, [activeType, activeSort, queryParam, t]);
+  }, [activeStyleMeta, activeType, activeSort, locale, queryParam, t]);
 
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("templates-scroll-position");
@@ -593,6 +603,7 @@ export default function TemplatesPage() {
   const handleResetFilters = () => {
     setSearchQuery("");
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("style");
     params.delete("type");
     params.delete("sort");
     params.delete("q");
@@ -605,6 +616,7 @@ export default function TemplatesPage() {
     const normalizedQuery = trimmedDeferredSearchQuery.toLowerCase();
 
     const matchedTemplates = templates
+      .filter((template) => !deferredActiveStyleSlug || template.styleSlug === deferredActiveStyleSlug)
       .filter((template) => deferredActiveType === "all" || template.type === deferredActiveType)
       .filter((template) => {
         if (!normalizedQuery) return true;
@@ -640,9 +652,10 @@ export default function TemplatesPage() {
     }
 
     return sortedTemplates;
-  }, [deferredActiveSort, deferredActiveType, locale, trimmedDeferredSearchQuery]);
+  }, [deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, trimmedDeferredSearchQuery]);
   const isFiltering =
     searchQuery !== deferredSearchQuery ||
+    activeStyleSlug !== deferredActiveStyleSlug ||
     activeType !== deferredActiveType ||
     activeSort !== deferredActiveSort;
 
@@ -801,6 +814,29 @@ export default function TemplatesPage() {
         <section className="py-10 md:py-14">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <TemplatesFilter />
+            {activeStyleMeta && (
+              <div className="mb-5 flex flex-wrap items-center gap-2 text-sm">
+                <span className="text-muted">{t("nav.styles")}:</span>
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 border border-border bg-background">
+                  <span>
+                    {locale === "zh" ? activeStyleMeta.name : (activeStyleMeta.nameEn || activeStyleMeta.name)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams.toString());
+                      params.delete("style");
+                      const query = params.toString();
+                      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+                    }}
+                    aria-label={t("styles.clearTags")}
+                    className="text-muted hover:text-foreground transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              </div>
+            )}
 
             <div className="mb-5 md:mb-7 space-y-3">
               <label htmlFor="templates-search" className="sr-only">

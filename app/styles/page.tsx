@@ -22,6 +22,7 @@ interface StylesPageProps {
     tags?: string;
     fav?: string;
     sort?: string;
+    q?: string;
   }>;
 }
 
@@ -39,6 +40,7 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
   const initialSort: StyleSort = validSorts.includes(params.sort as StyleSort)
     ? (params.sort as StyleSort)
     : "recommended";
+  const initialQuery = typeof params.q === "string" ? params.q : "";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -50,6 +52,7 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
           initialTags={initialTags}
           initialShowFavorites={initialShowFavorites}
           initialSort={initialSort}
+          initialQuery={initialQuery}
         />
       </main>
       <Footer />
