@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#1a0a2e"/>
+  <!-- Neon gradient blobs -->
+  <circle cx="200" cy="150" r="120" fill="#ff00ff" opacity="0.15"/>
+  <circle cx="600" cy="250" r="140" fill="#00ff88" opacity="0.12"/>
+  <circle cx="400" cy="200" r="100" fill="#ffee00" opacity="0.1"/>
+  <!-- Bold shapes -->
+  <rect x="80" y="100" width="180" height="120" rx="20" fill="#ff3366" opacity="0.9"/>
+  <rect x="300" y="80" width="200" height="140" rx="24" fill="#00ccff" opacity="0.85"/>
+  <rect x="540" y="120" width="180" height="100" rx="18" fill="#ffee00" opacity="0.9"/>
+  <!-- Accent circles -->
+  <circle cx="170" cy="160" r="30" fill="#ffffff" opacity="0.2"/>
+  <circle cx="400" cy="150" r="35" fill="#ffffff" opacity="0.15"/>
+  <circle cx="630" cy="170" r="25" fill="#ffffff" opacity="0.2"/>
+  <!-- Title -->
+  <text x="400" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="900" fill="#ffffff">DOPAMINE</text>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="rgba(255,255,255,0.5)">High-saturation neon design</text>
+  <!-- Decorative dots -->
+  <circle cx="100" cy="350" r="6" fill="#ff00ff" opacity="0.6"/>
+  <circle cx="130" cy="360" r="4" fill="#00ff88" opacity="0.5"/>
+  <circle cx="700" cy="340" r="5" fill="#ffee00" opacity="0.6"/>
+  <circle cx="670" cy="355" r="4" fill="#ff3366" opacity="0.5"/>
+</svg>

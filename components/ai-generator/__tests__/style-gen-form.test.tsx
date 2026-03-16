@@ -149,8 +149,10 @@ describe("StyleGenForm", () => {
     render(<StyleGenForm onGenerate={vi.fn()} />);
 
     await waitFor(() =>
-      expect(screen.getByRole("option", { name: "Neo Brutalist (Neo)" })).toBeInTheDocument()
+      expect(screen.getByText("aiGen.catalogSource: aiGen.catalogSourceNetwork")).toBeInTheDocument()
     );
+
+    expect(screen.getByRole("option", { name: "Neo Brutalist (Neo)" })).toBeInTheDocument();
 
     expect(
       screen.queryByRole("option", { name: "Apple Style (Apple)" })
