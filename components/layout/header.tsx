@@ -6,18 +6,18 @@ import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
-import { mainNav, secondaryNav, toolsDropdown } from "@/lib/nav-config";
+import { mainNav, secondaryNav, resourcesDropdown } from "@/lib/nav-config";
 import { ChevronDown } from "lucide-react";
 import { GitHubStarButton } from "@/components/github-star-button";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
-  const [expandedMobileToolsGroup, setExpandedMobileToolsGroup] = useState<number | null>(0);
+  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
+  const [expandedMobileResourcesGroup, setExpandedMobileResourcesGroup] = useState<number | null>(0);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { t } = useI18n();
-  const toolsRef = useRef<HTMLDivElement>(null);
+  const resourcesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
@@ -27,8 +27,8 @@ export function Header() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (toolsRef.current && !toolsRef.current.contains(event.target as Node)) {
-        setIsToolsOpen(false);
+      if (resourcesRef.current && !resourcesRef.current.contains(event.target as Node)) {
+        setIsResourcesOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -79,23 +79,23 @@ export function Header() {
               </Link>
             ))}
 
-            {/* Tools Dropdown (only when items exist) */}
-            {(toolsDropdown.groups?.length || toolsDropdown.items.length) > 0 && (
-            <div className="relative" ref={toolsRef}>
+            {/* Resources Dropdown */}
+            {(resourcesDropdown.groups?.length || resourcesDropdown.items.length) > 0 && (
+            <div className="relative" ref={resourcesRef}>
               <button
-                onClick={() => setIsToolsOpen((prev) => !prev)}
+                onClick={() => setIsResourcesOpen((prev) => !prev)}
                 className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
-                  isToolsOpen ? "text-foreground" : "text-muted hover:text-foreground"
+                  isResourcesOpen ? "text-foreground" : "text-muted hover:text-foreground"
                 }`}
               >
-                {t(toolsDropdown.labelKey)}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isToolsOpen ? "rotate-180" : ""}`} />
+                {t(resourcesDropdown.labelKey)}
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isResourcesOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {isToolsOpen && (
+              {isResourcesOpen && (
                 <div className="absolute top-full left-0 mt-2 py-2 min-w-[180px] bg-background border border-border shadow-lg z-50">
-                  {toolsDropdown.groups ? (
-                    toolsDropdown.groups.map((group, gi) => (
+                  {resourcesDropdown.groups ? (
+                    resourcesDropdown.groups.map((group, gi) => (
                       <div key={gi}>
                         {gi > 0 && <hr className="my-1.5 border-border" />}
                         {group.groupLabelKey && (
@@ -108,7 +108,7 @@ export function Header() {
                             key={item.href}
                             href={item.href}
                             className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                            onClick={() => setIsToolsOpen(false)}
+                            onClick={() => setIsResourcesOpen(false)}
                           >
                             {t(item.labelKey)}
                           </Link>
@@ -116,12 +116,12 @@ export function Header() {
                       </div>
                     ))
                   ) : (
-                    toolsDropdown.items.map((item) => (
+                    resourcesDropdown.items.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                        onClick={() => setIsToolsOpen(false)}
+                        onClick={() => setIsResourcesOpen(false)}
                       >
                         {t(item.labelKey)}
                       </Link>
@@ -225,32 +225,32 @@ export function Header() {
                 </Link>
               ))}
 
-              {/* Tools Section (only when items exist) */}
-              {(toolsDropdown.groups?.length || toolsDropdown.items.length) > 0 && (
+              {/* Resources Section */}
+              {(resourcesDropdown.groups?.length || resourcesDropdown.items.length) > 0 && (
               <div className="pt-2 border-t border-border">
                 <p className="text-xs uppercase tracking-widest text-muted mb-2">
-                  {t(toolsDropdown.labelKey)}
+                  {t(resourcesDropdown.labelKey)}
                 </p>
-                {toolsDropdown.groups ? (
-                  toolsDropdown.groups.map((group, gi) => (
+                {resourcesDropdown.groups ? (
+                  resourcesDropdown.groups.map((group, gi) => (
                     <div key={gi} className={gi > 0 ? "mt-3" : ""}>
                       {group.groupLabelKey ? (
                         <>
                           <button
                             onClick={() =>
-                              setExpandedMobileToolsGroup((prev) => (prev === gi ? null : gi))
+                              setExpandedMobileResourcesGroup((prev) => (prev === gi ? null : gi))
                             }
                             className="w-full flex items-center justify-between py-2 text-[10px] uppercase tracking-widest text-muted/70 hover:text-foreground transition-colors"
-                            aria-expanded={expandedMobileToolsGroup === gi}
+                            aria-expanded={expandedMobileResourcesGroup === gi}
                           >
                             <span>{t(group.groupLabelKey)}</span>
                             <ChevronDown
                               className={`w-3.5 h-3.5 transition-transform ${
-                                expandedMobileToolsGroup === gi ? "rotate-180" : ""
+                                expandedMobileResourcesGroup === gi ? "rotate-180" : ""
                               }`}
                             />
                           </button>
-                          {expandedMobileToolsGroup === gi && (
+                          {expandedMobileResourcesGroup === gi && (
                             <div className="mt-1">
                               {group.items.map((item) => (
                                 <Link
@@ -280,7 +280,7 @@ export function Header() {
                     </div>
                   ))
                 ) : (
-                  toolsDropdown.items.map((item) => (
+                  resourcesDropdown.items.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}

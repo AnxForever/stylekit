@@ -595,6 +595,7 @@ const en = {
     "nav.generator": "Generator",
     "nav.assets": "Assets",
     "nav.gradients": "Gradients",
+    "nav.resources": "Resources",
 
     // Gradients page
     "gradients.subtitle": "Gradient Library",
@@ -1296,6 +1297,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.generator": "生成器",
   "nav.assets": "素材库",
   "nav.gradients": "渐变库",
+  "nav.resources": "资源",
 
   // Gradients page
   "gradients.subtitle": "渐变库",
