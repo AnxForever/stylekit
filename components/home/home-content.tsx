@@ -69,8 +69,6 @@ export function HomeContent({ styles }: HomeContentProps) {
       icon: Sparkles,
     },
   ];
-  const ctaPrimaryClassName = "inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
-  const ctaSecondaryClassName = "inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
   const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
   const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
