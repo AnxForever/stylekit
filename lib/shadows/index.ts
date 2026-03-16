@@ -1,0 +1,335 @@
+// Shadow Library — curated box-shadow presets for design systems
+
+export interface Shadow {
+  id: string;
+  name: string;
+  nameZh: string;
+  value: string;
+  css: string;
+  tailwind: string;
+  category: ShadowCategory;
+  tags: string[];
+}
+
+export type ShadowCategory =
+  | "soft"
+  | "medium"
+  | "hard"
+  | "colored"
+  | "glow"
+  | "inner"
+  | "layered";
+
+export const shadows: Shadow[] = [
+  // === Soft ===
+  {
+    id: "soft-sm",
+    name: "Soft Small",
+    nameZh: "柔和小",
+    value: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+    css: "box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);",
+    tailwind: "shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)]",
+    category: "soft",
+    tags: ["subtle", "card", "minimal"],
+  },
+  {
+    id: "soft-md",
+    name: "Soft Medium",
+    nameZh: "柔和中",
+    value: "0 4px 12px rgba(0,0,0,0.08)",
+    css: "box-shadow: 0 4px 12px rgba(0,0,0,0.08);",
+    tailwind: "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
+    category: "soft",
+    tags: ["card", "panel", "clean"],
+  },
+  {
+    id: "soft-lg",
+    name: "Soft Large",
+    nameZh: "柔和大",
+    value: "0 8px 30px rgba(0,0,0,0.08)",
+    css: "box-shadow: 0 8px 30px rgba(0,0,0,0.08);",
+    tailwind: "shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
+    category: "soft",
+    tags: ["modal", "dropdown", "floating"],
+  },
+  {
+    id: "soft-xl",
+    name: "Soft Extra Large",
+    nameZh: "柔和超大",
+    value: "0 20px 60px rgba(0,0,0,0.1)",
+    css: "box-shadow: 0 20px 60px rgba(0,0,0,0.1);",
+    tailwind: "shadow-[0_20px_60px_rgba(0,0,0,0.1)]",
+    category: "soft",
+    tags: ["hero", "showcase", "dramatic"],
+  },
+
+  // === Medium ===
+  {
+    id: "medium-sm",
+    name: "Medium Small",
+    nameZh: "中等小",
+    value: "0 2px 8px rgba(0,0,0,0.15)",
+    css: "box-shadow: 0 2px 8px rgba(0,0,0,0.15);",
+    tailwind: "shadow-[0_2px_8px_rgba(0,0,0,0.15)]",
+    category: "medium",
+    tags: ["button", "badge", "chip"],
+  },
+  {
+    id: "medium-md",
+    name: "Medium",
+    nameZh: "中等",
+    value: "0 4px 16px rgba(0,0,0,0.15)",
+    css: "box-shadow: 0 4px 16px rgba(0,0,0,0.15);",
+    tailwind: "shadow-[0_4px_16px_rgba(0,0,0,0.15)]",
+    category: "medium",
+    tags: ["card", "panel", "general"],
+  },
+  {
+    id: "medium-lg",
+    name: "Medium Large",
+    nameZh: "中等大",
+    value: "0 10px 40px rgba(0,0,0,0.15)",
+    css: "box-shadow: 0 10px 40px rgba(0,0,0,0.15);",
+    tailwind: "shadow-[0_10px_40px_rgba(0,0,0,0.15)]",
+    category: "medium",
+    tags: ["modal", "popover", "overlay"],
+  },
+
+  // === Hard ===
+  {
+    id: "hard-sm",
+    name: "Hard Small",
+    nameZh: "硬朗小",
+    value: "2px 2px 0 rgba(0,0,0,1)",
+    css: "box-shadow: 2px 2px 0 rgba(0,0,0,1);",
+    tailwind: "shadow-[2px_2px_0_rgba(0,0,0,1)]",
+    category: "hard",
+    tags: ["brutalist", "retro", "bold"],
+  },
+  {
+    id: "hard-md",
+    name: "Hard Medium",
+    nameZh: "硬朗中",
+    value: "4px 4px 0 rgba(0,0,0,1)",
+    css: "box-shadow: 4px 4px 0 rgba(0,0,0,1);",
+    tailwind: "shadow-[4px_4px_0_rgba(0,0,0,1)]",
+    category: "hard",
+    tags: ["brutalist", "neo-brutalist", "graphic"],
+  },
+  {
+    id: "hard-lg",
+    name: "Hard Large",
+    nameZh: "硬朗大",
+    value: "8px 8px 0 rgba(0,0,0,1)",
+    css: "box-shadow: 8px 8px 0 rgba(0,0,0,1);",
+    tailwind: "shadow-[8px_8px_0_rgba(0,0,0,1)]",
+    category: "hard",
+    tags: ["brutalist", "poster", "statement"],
+  },
+  {
+    id: "hard-colored",
+    name: "Hard Colored",
+    nameZh: "硬朗彩色",
+    value: "4px 4px 0 #5e6ad2",
+    css: "box-shadow: 4px 4px 0 #5e6ad2;",
+    tailwind: "shadow-[4px_4px_0_#5e6ad2]",
+    category: "hard",
+    tags: ["brutalist", "playful", "accent"],
+  },
+
+  // === Colored ===
+  {
+    id: "colored-pink",
+    name: "Pink Glow",
+    nameZh: "粉色光晕",
+    value: "0 8px 30px rgba(255,0,110,0.35)",
+    css: "box-shadow: 0 8px 30px rgba(255,0,110,0.35);",
+    tailwind: "shadow-[0_8px_30px_rgba(255,0,110,0.35)]",
+    category: "colored",
+    tags: ["dopamine", "vibrant", "cta"],
+  },
+  {
+    id: "colored-purple",
+    name: "Purple Glow",
+    nameZh: "紫色光晕",
+    value: "0 8px 30px rgba(131,56,236,0.35)",
+    css: "box-shadow: 0 8px 30px rgba(131,56,236,0.35);",
+    tailwind: "shadow-[0_8px_30px_rgba(131,56,236,0.35)]",
+    category: "colored",
+    tags: ["creative", "premium", "cta"],
+  },
+  {
+    id: "colored-blue",
+    name: "Blue Glow",
+    nameZh: "蓝色光晕",
+    value: "0 8px 30px rgba(58,134,255,0.35)",
+    css: "box-shadow: 0 8px 30px rgba(58,134,255,0.35);",
+    tailwind: "shadow-[0_8px_30px_rgba(58,134,255,0.35)]",
+    category: "colored",
+    tags: ["tech", "trust", "professional"],
+  },
+  {
+    id: "colored-green",
+    name: "Green Glow",
+    nameZh: "绿色光晕",
+    value: "0 8px 30px rgba(6,214,160,0.35)",
+    css: "box-shadow: 0 8px 30px rgba(6,214,160,0.35);",
+    tailwind: "shadow-[0_8px_30px_rgba(6,214,160,0.35)]",
+    category: "colored",
+    tags: ["success", "nature", "fresh"],
+  },
+  {
+    id: "colored-orange",
+    name: "Orange Glow",
+    nameZh: "橙色光晕",
+    value: "0 8px 30px rgba(251,86,7,0.35)",
+    css: "box-shadow: 0 8px 30px rgba(251,86,7,0.35);",
+    tailwind: "shadow-[0_8px_30px_rgba(251,86,7,0.35)]",
+    category: "colored",
+    tags: ["warm", "energetic", "attention"],
+  },
+
+  // === Glow ===
+  {
+    id: "glow-cyan",
+    name: "Neon Cyan",
+    nameZh: "霓虹青",
+    value: "0 0 15px rgba(0,255,255,0.4), 0 0 30px rgba(0,255,255,0.2)",
+    css: "box-shadow: 0 0 15px rgba(0,255,255,0.4), 0 0 30px rgba(0,255,255,0.2);",
+    tailwind: "shadow-[0_0_15px_rgba(0,255,255,0.4),0_0_30px_rgba(0,255,255,0.2)]",
+    category: "glow",
+    tags: ["cyberpunk", "neon", "dark-mode"],
+  },
+  {
+    id: "glow-magenta",
+    name: "Neon Magenta",
+    nameZh: "霓虹品红",
+    value: "0 0 15px rgba(255,0,255,0.4), 0 0 30px rgba(255,0,255,0.2)",
+    css: "box-shadow: 0 0 15px rgba(255,0,255,0.4), 0 0 30px rgba(255,0,255,0.2);",
+    tailwind: "shadow-[0_0_15px_rgba(255,0,255,0.4),0_0_30px_rgba(255,0,255,0.2)]",
+    category: "glow",
+    tags: ["cyberpunk", "neon", "synthwave"],
+  },
+  {
+    id: "glow-white",
+    name: "White Glow",
+    nameZh: "白色辉光",
+    value: "0 0 20px rgba(255,255,255,0.25), 0 0 40px rgba(255,255,255,0.1)",
+    css: "box-shadow: 0 0 20px rgba(255,255,255,0.25), 0 0 40px rgba(255,255,255,0.1);",
+    tailwind: "shadow-[0_0_20px_rgba(255,255,255,0.25),0_0_40px_rgba(255,255,255,0.1)]",
+    category: "glow",
+    tags: ["ethereal", "glass", "dark-mode"],
+  },
+  {
+    id: "glow-gold",
+    name: "Gold Glow",
+    nameZh: "金色辉光",
+    value: "0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.15)",
+    css: "box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.15);",
+    tailwind: "shadow-[0_0_20px_rgba(255,215,0,0.3),0_0_40px_rgba(255,215,0,0.15)]",
+    category: "glow",
+    tags: ["luxury", "premium", "art-deco"],
+  },
+
+  // === Inner ===
+  {
+    id: "inner-sm",
+    name: "Inner Small",
+    nameZh: "内阴影小",
+    value: "inset 0 2px 4px rgba(0,0,0,0.1)",
+    css: "box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);",
+    tailwind: "shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]",
+    category: "inner",
+    tags: ["input", "pressed", "recessed"],
+  },
+  {
+    id: "inner-md",
+    name: "Inner Medium",
+    nameZh: "内阴影中",
+    value: "inset 0 4px 8px rgba(0,0,0,0.15)",
+    css: "box-shadow: inset 0 4px 8px rgba(0,0,0,0.15);",
+    tailwind: "shadow-[inset_0_4px_8px_rgba(0,0,0,0.15)]",
+    category: "inner",
+    tags: ["well", "container", "depth"],
+  },
+  {
+    id: "inner-neumorphism",
+    name: "Neumorphism Inner",
+    nameZh: "新拟态内凹",
+    value: "inset 5px 5px 10px rgba(0,0,0,0.08), inset -5px -5px 10px rgba(255,255,255,0.8)",
+    css: "box-shadow: inset 5px 5px 10px rgba(0,0,0,0.08), inset -5px -5px 10px rgba(255,255,255,0.8);",
+    tailwind: "shadow-[inset_5px_5px_10px_rgba(0,0,0,0.08),inset_-5px_-5px_10px_rgba(255,255,255,0.8)]",
+    category: "inner",
+    tags: ["neumorphism", "soft-ui", "pressed"],
+  },
+
+  // === Layered ===
+  {
+    id: "layered-realistic",
+    name: "Realistic Layered",
+    nameZh: "真实分层",
+    value: "0 1px 1px rgba(0,0,0,0.08), 0 2px 2px rgba(0,0,0,0.06), 0 4px 4px rgba(0,0,0,0.04), 0 8px 8px rgba(0,0,0,0.02)",
+    css: "box-shadow: 0 1px 1px rgba(0,0,0,0.08), 0 2px 2px rgba(0,0,0,0.06), 0 4px 4px rgba(0,0,0,0.04), 0 8px 8px rgba(0,0,0,0.02);",
+    tailwind: "shadow-[0_1px_1px_rgba(0,0,0,0.08),0_2px_2px_rgba(0,0,0,0.06),0_4px_4px_rgba(0,0,0,0.04),0_8px_8px_rgba(0,0,0,0.02)]",
+    category: "layered",
+    tags: ["realistic", "material", "depth"],
+  },
+  {
+    id: "layered-elevation",
+    name: "Material Elevation",
+    nameZh: "Material 抬升",
+    value: "0 3px 5px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.08)",
+    css: "box-shadow: 0 3px 5px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.08);",
+    tailwind: "shadow-[0_3px_5px_rgba(0,0,0,0.1),0_6px_20px_rgba(0,0,0,0.08)]",
+    category: "layered",
+    tags: ["material", "elevation", "card"],
+  },
+  {
+    id: "layered-dreamy",
+    name: "Dreamy Float",
+    nameZh: "梦幻悬浮",
+    value: "0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.08)",
+    css: "box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.08);",
+    tailwind: "shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.06),0_24px_48px_rgba(0,0,0,0.08)]",
+    category: "layered",
+    tags: ["dreamy", "floating", "premium"],
+  },
+  {
+    id: "layered-neumorphism",
+    name: "Neumorphism",
+    nameZh: "新拟态凸起",
+    value: "8px 8px 16px rgba(0,0,0,0.08), -8px -8px 16px rgba(255,255,255,0.8)",
+    css: "box-shadow: 8px 8px 16px rgba(0,0,0,0.08), -8px -8px 16px rgba(255,255,255,0.8);",
+    tailwind: "shadow-[8px_8px_16px_rgba(0,0,0,0.08),-8px_-8px_16px_rgba(255,255,255,0.8)]",
+    category: "layered",
+    tags: ["neumorphism", "soft-ui", "raised"],
+  },
+];
+
+const categoryLabels: Record<ShadowCategory, { en: string; zh: string }> = {
+  soft: { en: "Soft", zh: "柔和" },
+  medium: { en: "Medium", zh: "中等" },
+  hard: { en: "Hard", zh: "硬朗" },
+  colored: { en: "Colored", zh: "彩色" },
+  glow: { en: "Glow", zh: "辉光" },
+  inner: { en: "Inner", zh: "内阴影" },
+  layered: { en: "Layered", zh: "分层" },
+};
+
+export function getShadowsByCategory(category: ShadowCategory): Shadow[] {
+  return shadows.filter((s) => s.category === category);
+}
+
+export function getShadowById(id: string): Shadow | undefined {
+  return shadows.find((s) => s.id === id);
+}
+
+export function getShadowCategories() {
+  const categories = [...new Set(shadows.map((s) => s.category))];
+  return categories.map((cat) => ({
+    category: cat,
+    count: shadows.filter((s) => s.category === cat).length,
+    labelEn: categoryLabels[cat].en,
+    labelZh: categoryLabels[cat].zh,
+  }));
+}

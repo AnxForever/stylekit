@@ -595,6 +595,7 @@ const en = {
     "nav.generator": "Generator",
     "nav.assets": "Assets",
     "nav.gradients": "Gradients",
+    "nav.shadows": "Shadows",
     "nav.resources": "Resources",
 
     // Gradients page
@@ -606,6 +607,12 @@ const en = {
     "gradients.showing": "Showing",
     "gradients.gradients": "gradients",
     "gradients.noResults": "No gradients found.",
+
+    // Shadows page
+    "shadows.subtitle": "Shadow Library",
+    "shadows.title": "Shadow Collection",
+    "shadows.description": "Curated box-shadow presets from soft to hard, colored to glow. Copy CSS or Tailwind with one click.",
+    "shadows.filterAll": "All",
     "generator.title": "Template Generator",
     "generator.subtitle": "Template Generator",
         "generator.description": "Finish in 3 steps: choose style, choose template, edit content, then download code.",
@@ -1297,6 +1304,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.generator": "生成器",
   "nav.assets": "素材库",
   "nav.gradients": "渐变库",
+  "nav.shadows": "阴影库",
   "nav.resources": "资源",
 
   // Gradients page
@@ -1308,6 +1316,12 @@ const zh: { [K in keyof typeof en]: string } = {
   "gradients.showing": "共",
   "gradients.gradients": "个渐变",
   "gradients.noResults": "没有找到匹配的渐变色。",
+
+  // Shadows page
+  "shadows.subtitle": "阴影库",
+  "shadows.title": "阴影集合",
+  "shadows.description": "精选 box-shadow 预设，从柔和到硬朗、彩色到辉光。一键复制 CSS 或 Tailwind 代码。",
+  "shadows.filterAll": "全部",
   "nav.createStyle": "创建/导入风格",
   "nav.developers": "开发者",
   "nav.guide": "指南",
