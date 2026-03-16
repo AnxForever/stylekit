@@ -340,7 +340,55 @@ Primary:
 - Z-Index Popping: 悬停元素必须快速前置（hover:z-50）并放大旋转，主动从拥挤布局中“挤出”。
 - Sensory Overload: hover 可同时触发颜色反转、阴影暴增和角度变化，维持高压视觉刺激。
 - Snappy & Aggressive: 使用短时长（duration-100~200）快速切换，避免柔和优雅缓动。
-- Active Chaos: active 允许强烈压缩与角度突变，制造失控但可读的“爆裂反馈”。`,
+- Active Chaos: active 允许强烈压缩与角度突变，制造失控但可读的”爆裂反馈”。`,
+
+  aiRulesEn: `You are a Maximalism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Grayscale neutral backgrounds (gray-100 through gray-500)
+- Single font family throughout (must mix at least 2)
+- Thin 1px borders (border or border-[1px])
+- Excessive whitespace and minimal layouts
+- Low-saturation or muted color palettes
+- Pure white bg-white as primary background
+- Subtle, understated design choices
+
+## Must Follow
+
+- Deep navy background bg-[#1a0a2e] as base
+- Saturated accent colors: #d4145a, #ffbe0b, #3a86ff, #8338ec, #06d6a0
+- Thick borders border-4 with bold accent colors
+- Multi-layer offset shadows shadow-[4px_4px_0px_color,8px_8px_0px_color]
+- Mixed fonts: font-serif for headings, font-sans for body, font-mono for labels
+- Gradient backgrounds bg-gradient-to-br/to-r with multiple accent stops
+- uppercase tracking-widest on buttons and labels
+- Decorative elements: dashed borders, color badges, pattern backgrounds
+
+## Color Palette
+
+Primary:
+- Hot Pink: #d4145a
+- Deep Navy: #1a0a2e
+- Vivid Yellow: #ffbe0b
+- Electric Blue: #3a86ff
+- Vivid Purple: #8338ec
+- Emerald: #06d6a0
+
+## Unique Elements (Maximalism-Only)
+
+1. Multi-layer shadows: shadow-[4px_4px_0px_#ffbe0b,8px_8px_0px_#3a86ff] for stacked depth
+2. Gradient borders & backgrounds: from-[#d4145a] via-[#8338ec] to-[#3a86ff]
+3. Mixed typography: font-serif headings, font-sans body, font-mono labels on same page
+4. Decorative badges: colored tag spans with font-mono uppercase tracking
+5. Double/dashed border accents: border-dashed border-[#8338ec]/50 as section dividers
+
+## Animation & Interaction Rules
+
+- Z-Index Popping: Hovered elements must quickly come to front (hover:z-50) and scale up with rotation, actively “squeezing out” from the crowded layout.
+- Sensory Overload: Hover can simultaneously trigger color inversion, shadow explosion, and angle change, maintaining high-pressure visual stimulation.
+- Snappy & Aggressive: Use short durations (duration-100~200) for fast switching, avoiding soft elegant easing.
+- Active Chaos: Active allows strong compression and angle shifts, creating out-of-control but readable “burst feedback.”`,
 
   examplePrompts: [
     {

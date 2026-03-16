@@ -236,6 +236,47 @@ Animation & Interaction Rules:
 - Blueprint Highlight: 默认以蓝白为主，\`active\` 或确认态可短暂点亮工程橙 \`#ff6b35\`，但不能长时间占据主视觉。
 - Grid Interaction: 容器 hover 可轻微提高网格线可见度（白线到浅蓝线），仅作为测量反馈，不做情绪化动画。`,
 
+  aiRulesEn: `STYLE: Blueprint
+TYPE: Engineering technical drawing interface
+
+MUST USE:
+- Blueprint blue background: bg-[#1e3a5f]
+- White lines and text: text-white, border-white/30
+- Monospace font: font-mono for all text
+- uppercase tracking-widest for labels
+- Grid background pattern for coordinates
+- Orange annotations: text-[#ff6b35] for highlights
+- Light blue secondary: text-[#a0c4e8]
+- Corner markers on cards (L-shaped borders)
+- Dashed lines for auxiliary elements: border-dashed
+
+MUST AVOID:
+- Warm-toned backgrounds
+- Rounded/soft design elements
+- Gradient fills
+- Glow or neon effects
+- Serif or handwritten fonts
+- Large colored blocks
+- Large border-radius (rounded-2xl+)
+
+COLOR RULES:
+- White line: #ffffff (primary elements)
+- Blueprint blue: #1e3a5f (background)
+- Light blue: #4a90d9, #a0c4e8 (secondary elements)
+- Annotation orange: #ff6b35 (highlights, callouts)
+
+SPECIAL EFFECTS:
+- Grid background pattern (20px spacing)
+- Corner bracket markers on containers
+- Dimension lines with end markers
+- Coordinate labels as decorative elements
+
+Animation & Interaction Rules:
+- CAD Precision: Interaction effects must be crisp and precise, prefer duration-100 (adjustable within 75-150ms range), avoiding sluggish ease-in-out.
+- Crosshair Reveals: On hovering interactive elements, use before/after or corner markers to reveal crosshair and alignment hints.
+- Blueprint Highlight: Default blue-white palette; active or confirm states can briefly light up engineering orange #ff6b35, but it must not dominate the main visual for long.
+- Grid Interaction: Container hover can slightly increase grid line visibility (white lines to light blue lines), serving only as measurement feedback, not emotional animation.`,
+
   examplePrompts: [
     {
       title: "技术架构展示",
