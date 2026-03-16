@@ -8,13 +8,18 @@ import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
+  defaultShowCode?: boolean;
 }
 
-export function ComponentPreview({ components }: ComponentPreviewProps) {
+export function ComponentPreview({
+  components,
+  defaultShowCode = true,
+}: ComponentPreviewProps) {
   const componentKeys = Object.keys(components);
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
+  const [showCode, setShowCode] = useState(defaultShowCode);
   const activeComponent = components[activeTab];
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   // Tab labels with i18n support
   const getTabLabel = (key: string): string => {
@@ -57,11 +62,22 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
       </div>
 
       {/* Component Info */}
-      <div className="px-4 md:px-6 py-4 border-b border-border">
-        <h4 className="font-serif text-lg">{activeComponent.name}</h4>
-        <p className="text-sm text-muted mt-1">
-          {activeComponent.description}
-        </p>
+      <div className="px-4 md:px-6 py-4 border-b border-border flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h4 className="font-serif text-lg">{activeComponent.name}</h4>
+          <p className="text-sm text-muted mt-1">
+            {activeComponent.description}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowCode((current) => !current)}
+          className="inline-flex items-center justify-center px-3 py-1.5 text-xs tracking-wide border border-border text-muted hover:text-foreground hover:border-foreground transition-colors whitespace-nowrap"
+        >
+          {showCode
+            ? (locale === "zh" ? "收起代码" : "Hide Code")
+            : (locale === "zh" ? "查看代码" : "Show Code")}
+        </button>
       </div>
 
       {/* Preview Area */}
@@ -81,7 +97,7 @@ export function ComponentPreview({ components }: ComponentPreviewProps) {
       </div>
 
       {/* Code */}
-      <CodeBlock code={activeComponent.code} />
+      {showCode && <CodeBlock code={activeComponent.code} />}
     </div>
   );
 }
