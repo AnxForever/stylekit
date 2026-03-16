@@ -304,28 +304,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                 <GitHubStarButton className="col-span-2" />
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link href="/ui-prompts" className={smallLinkClassName}>
-                  {locale === "zh" ? "UI 设计提示词" : "UI Design Prompts"}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <Link href="/landing-page-prompts" className={smallLinkClassName}>
-                  {locale === "zh" ? "落地页提示词" : "Landing Page Prompts"}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <Link href="/dashboard-prompts" className={smallLinkClassName}>
-                  {locale === "zh" ? "Dashboard 提示词" : "Dashboard Prompts"}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <Link href="/tailwind-ui-prompts" className={smallLinkClassName}>
-                  {locale === "zh" ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <Link href="/dark-mode-ui-prompts" className={smallLinkClassName}>
-                  {locale === "zh" ? "暗黑模式提示词" : "Dark Mode UI Prompts"}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+              <p className="mt-4 text-sm text-muted">{locale === "zh" ? "你的 Star 是对我最好的支持！" : "Your star is the best support for me!"}</p>
 
               <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
