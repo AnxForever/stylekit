@@ -155,6 +155,15 @@ const previewMap: Record<string, ComponentType> = {
   "glitch-text": dynamicPreview(
     () => import("@/lib/animations/previews/glitch-text-preview").then((m) => m.GlitchTextPreview)
   ),
+  "text-scramble": dynamicPreview(
+    () => import("@/lib/animations/previews/text-scramble-preview").then((m) => m.TextScramblePreview)
+  ),
+  "tilt-3d": dynamicPreview(
+    () => import("@/lib/animations/previews/tilt-3d-preview").then((m) => m.Tilt3dPreview)
+  ),
+  "confetti-burst": dynamicPreview(
+    () => import("@/lib/animations/previews/confetti-burst-preview").then((m) => m.ConfettiBurstPreview)
+  ),
 };
 
 interface AnimationPreviewProps {

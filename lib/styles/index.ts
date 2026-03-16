@@ -240,6 +240,8 @@ import { witchcore } from "./witchcore";
 import { neonTokyo } from "./neon-tokyo";
 import { paperCraft } from "./paper-craft";
 import { blueprint } from "./blueprint";
+import { dopamineDesign } from "./dopamine-design";
+import { linearStyle } from "./linear-style";
 import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
@@ -387,6 +389,9 @@ const rawStyles: DesignStyle[] = [
   neonTokyo,
   paperCraft,
   blueprint,
+  // New styles - Batch 14
+  dopamineDesign,
+  linearStyle,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));
