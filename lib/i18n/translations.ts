@@ -596,6 +596,8 @@ const en = {
     "nav.assets": "Assets",
     "nav.gradients": "Gradients",
     "nav.shadows": "Shadows",
+    "nav.typography": "Typography",
+    "nav.backgrounds": "Backgrounds",
     "nav.resources": "Resources",
 
     // Gradients page
@@ -607,6 +609,26 @@ const en = {
     "gradients.showing": "Showing",
     "gradients.gradients": "gradients",
     "gradients.noResults": "No gradients found.",
+
+    // Backgrounds page
+    "backgrounds.subtitle": "Background Pattern Library",
+    "backgrounds.title": "Background Patterns",
+    "backgrounds.description": "CSS-only background patterns using gradients and repeating patterns. Copy CSS or Tailwind classes with one click.",
+    "backgrounds.searchPlaceholder": "Search patterns...",
+    "backgrounds.filterAll": "All",
+    "backgrounds.showing": "Showing",
+    "backgrounds.patterns": "patterns",
+    "backgrounds.noResults": "No patterns found.",
+
+    // Typography page
+    "typography.subtitle": "Font Pairing Library",
+    "typography.title": "Font Pairings",
+    "typography.description": "Curated font pairings for your design system. Preview heading and body combinations, then copy CSS or Tailwind classes.",
+    "typography.searchPlaceholder": "Search font pairings...",
+    "typography.filterAll": "All",
+    "typography.showing": "Showing",
+    "typography.pairings": "pairings",
+    "typography.noResults": "No font pairings found.",
 
     // Shadows page
     "shadows.subtitle": "Shadow Library",
@@ -1305,6 +1327,8 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.assets": "素材库",
   "nav.gradients": "渐变库",
   "nav.shadows": "阴影库",
+  "nav.typography": "字体配对",
+  "nav.backgrounds": "背景纹理",
   "nav.resources": "资源",
 
   // Gradients page
@@ -1316,6 +1340,26 @@ const zh: { [K in keyof typeof en]: string } = {
   "gradients.showing": "共",
   "gradients.gradients": "个渐变",
   "gradients.noResults": "没有找到匹配的渐变色。",
+
+  // Backgrounds page
+  "backgrounds.subtitle": "背景纹理库",
+  "backgrounds.title": "背景纹理集合",
+  "backgrounds.description": "纯 CSS 背景纹理，使用渐变和重复图案实现。一键复制 CSS 或 Tailwind 代码。",
+  "backgrounds.searchPlaceholder": "搜索纹理...",
+  "backgrounds.filterAll": "全部",
+  "backgrounds.showing": "共",
+  "backgrounds.patterns": "个纹理",
+  "backgrounds.noResults": "没有找到匹配的纹理。",
+
+  // Typography page
+  "typography.subtitle": "字体配对库",
+  "typography.title": "字体配对集合",
+  "typography.description": "精选字体配对方案，预览标题与正文组合效果，一键复制 CSS 或 Tailwind 代码。",
+  "typography.searchPlaceholder": "搜索字体配对...",
+  "typography.filterAll": "全部",
+  "typography.showing": "共",
+  "typography.pairings": "个配对",
+  "typography.noResults": "没有找到匹配的字体配对。",
 
   // Shadows page
   "shadows.subtitle": "阴影库",
