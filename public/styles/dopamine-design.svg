@@ -1,23 +1,119 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#1a0a2e"/>
-  <!-- Neon gradient blobs -->
-  <circle cx="200" cy="150" r="120" fill="#ff00ff" opacity="0.15"/>
-  <circle cx="600" cy="250" r="140" fill="#00ff88" opacity="0.12"/>
-  <circle cx="400" cy="200" r="100" fill="#ffee00" opacity="0.1"/>
-  <!-- Bold shapes -->
-  <rect x="80" y="100" width="180" height="120" rx="20" fill="#ff3366" opacity="0.9"/>
-  <rect x="300" y="80" width="200" height="140" rx="24" fill="#00ccff" opacity="0.85"/>
-  <rect x="540" y="120" width="180" height="100" rx="18" fill="#ffee00" opacity="0.9"/>
-  <!-- Accent circles -->
-  <circle cx="170" cy="160" r="30" fill="#ffffff" opacity="0.2"/>
-  <circle cx="400" cy="150" r="35" fill="#ffffff" opacity="0.15"/>
-  <circle cx="630" cy="170" r="25" fill="#ffffff" opacity="0.2"/>
-  <!-- Title -->
-  <text x="400" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="900" fill="#ffffff">DOPAMINE</text>
-  <text x="400" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="rgba(255,255,255,0.5)">High-saturation neon design</text>
-  <!-- Decorative dots -->
-  <circle cx="100" cy="350" r="6" fill="#ff00ff" opacity="0.6"/>
-  <circle cx="130" cy="360" r="4" fill="#00ff88" opacity="0.5"/>
-  <circle cx="700" cy="340" r="5" fill="#ffee00" opacity="0.6"/>
-  <circle cx="670" cy="355" r="4" fill="#ff3366" opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <filter id="glow-pink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="35" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f0024"/>
+      <stop offset="50%" stop-color="#1a0a2e"/>
+      <stop offset="100%" stop-color="#0a001a"/>
+    </linearGradient>
+    <linearGradient id="card-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Ambient glow blobs -->
+  <circle cx="180" cy="120" r="200" fill="#ff006e" opacity="0.12" filter="url(#glow-pink)"/>
+  <circle cx="1020" cy="500" r="180" fill="#3a86ff" opacity="0.1" filter="url(#glow-blue)"/>
+  <circle cx="600" cy="300" r="160" fill="#8338ec" opacity="0.08" filter="url(#glow-pink)"/>
+  <circle cx="900" cy="100" r="120" fill="#ffbe0b" opacity="0.07" filter="url(#glow-blue)"/>
+
+  <!-- Grid dots pattern -->
+  <g opacity="0.08">
+    <circle cx="60" cy="60" r="2" fill="#ffffff"/><circle cx="120" cy="60" r="2" fill="#ffffff"/>
+    <circle cx="180" cy="60" r="2" fill="#ffffff"/><circle cx="240" cy="60" r="2" fill="#ffffff"/>
+    <circle cx="300" cy="60" r="2" fill="#ffffff"/><circle cx="360" cy="60" r="2" fill="#ffffff"/>
+    <circle cx="60" cy="120" r="2" fill="#ffffff"/><circle cx="120" cy="120" r="2" fill="#ffffff"/>
+    <circle cx="180" cy="120" r="2" fill="#ffffff"/><circle cx="240" cy="120" r="2" fill="#ffffff"/>
+    <circle cx="900" cy="540" r="2" fill="#ffffff"/><circle cx="960" cy="540" r="2" fill="#ffffff"/>
+    <circle cx="1020" cy="540" r="2" fill="#ffffff"/><circle cx="1080" cy="540" r="2" fill="#ffffff"/>
+    <circle cx="1140" cy="540" r="2" fill="#ffffff"/>
+    <circle cx="900" cy="480" r="2" fill="#ffffff"/><circle cx="960" cy="480" r="2" fill="#ffffff"/>
+    <circle cx="1020" cy="480" r="2" fill="#ffffff"/><circle cx="1080" cy="480" r="2" fill="#ffffff"/>
+  </g>
+
+  <!-- Left: Neon color blocks stack -->
+  <rect x="80" y="120" width="200" height="140" rx="20" fill="#ff006e" opacity="0.92"/>
+  <rect x="80" y="120" width="200" height="140" rx="20" fill="none" stroke="#ff006e" stroke-width="1.5" opacity="0.5"/>
+  <rect x="100" y="148" width="120" height="10" rx="5" fill="#ffffff" opacity="0.35"/>
+  <rect x="100" y="170" width="80" height="8" rx="4" fill="#ffffff" opacity="0.2"/>
+  <rect x="100" y="210" width="140" height="32" rx="8" fill="#ffffff" opacity="0.15"/>
+  <text x="170" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#ffffff" opacity="0.7">GET STARTED</text>
+
+  <rect x="100" y="280" width="200" height="120" rx="20" fill="#3a86ff" opacity="0.88"/>
+  <rect x="100" y="280" width="200" height="120" rx="20" fill="none" stroke="#3a86ff" stroke-width="1.5" opacity="0.5"/>
+  <rect x="120" y="305" width="100" height="10" rx="5" fill="#ffffff" opacity="0.3"/>
+  <rect x="120" y="325" width="140" height="8" rx="4" fill="#ffffff" opacity="0.18"/>
+  <circle cx="270" cy="310" r="18" fill="#ffffff" opacity="0.12"/>
+
+  <rect x="60" y="420" width="180" height="100" rx="18" fill="#ffbe0b" opacity="0.9"/>
+  <rect x="60" y="420" width="180" height="100" rx="18" fill="none" stroke="#ffbe0b" stroke-width="1.5" opacity="0.5"/>
+  <rect x="80" y="448" width="90" height="10" rx="5" fill="#1a0a2e" opacity="0.4"/>
+  <rect x="80" y="468" width="60" height="8" rx="4" fill="#1a0a2e" opacity="0.25"/>
+
+  <!-- Center: Main card with glass effect -->
+  <rect x="360" y="100" width="480" height="430" rx="28" fill="url(#card-grad)" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5"/>
+
+  <!-- Card header -->
+  <text x="400" y="168"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="13" font-weight="500" letter-spacing="5" fill="#ff006e" opacity="0.9">
+    STYLEKIT
+  </text>
+
+  <!-- Main heading -->
+  <text x="400" y="250"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="72" font-weight="800" letter-spacing="-2" fill="#ffffff">
+    Dopamine
+  </text>
+  <text x="400" y="310"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="72" font-weight="800" letter-spacing="-2" fill="#ffffff">
+    Design.
+  </text>
+
+  <!-- Tagline -->
+  <text x="400" y="365"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="22" font-weight="400" letter-spacing="-0.3" fill="#ffffff" opacity="0.45">
+    High-saturation neon. Bold energy.
+  </text>
+
+  <!-- Divider -->
+  <line x1="400" y1="395" x2="790" y2="395" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+
+  <!-- Color palette row -->
+  <rect x="400" y="420" width="56" height="56" rx="14" fill="#ff006e"/>
+  <rect x="470" y="420" width="56" height="56" rx="14" fill="#8338ec"/>
+  <rect x="540" y="420" width="56" height="56" rx="14" fill="#ffbe0b"/>
+  <rect x="610" y="420" width="56" height="56" rx="14" fill="#3a86ff"/>
+  <rect x="680" y="420" width="56" height="56" rx="14" fill="#06d6a0"/>
+  <rect x="750" y="420" width="56" height="56" rx="14" fill="#fb5607"/>
+
+  <!-- Palette labels -->
+  <text x="428" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#ff006e</text>
+  <text x="498" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#8338ec</text>
+  <text x="568" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#ffbe0b</text>
+  <text x="638" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#3a86ff</text>
+  <text x="708" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#06d6a0</text>
+  <text x="778" y="498" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.3">#fb5607</text>
+
+  <!-- Bottom bar -->
+  <line x1="60" y1="592" x2="1140" y2="592" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+  <text x="600" y="614" text-anchor="middle"
+    font-family="'SF Pro Display', Arial, sans-serif"
+    font-size="12" font-weight="400" letter-spacing="0.3" fill="#ffffff" opacity="0.2">
+    Bold. Saturated. Energetic.
+  </text>
 </svg>

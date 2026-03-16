@@ -3428,11 +3428,21 @@ export const styleComponents: Record<
   },
   "dopamine-design": {
     coverPreview: () => (
-      <div className="w-full h-full bg-[#1a0a2e] flex items-center justify-center p-4">
-        <div className="flex gap-3">
-          <div className="w-16 h-20 rounded-xl bg-[#ff3366]" />
-          <div className="w-16 h-20 rounded-xl bg-[#00ccff]" />
-          <div className="w-16 h-20 rounded-xl bg-[#ffee00]" />
+      <div className="w-full h-full bg-[#1a0a2e] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-2 left-3 w-20 h-20 rounded-full bg-[#ff006e]/20 blur-xl" />
+        <div className="absolute bottom-4 right-4 w-16 h-16 rounded-full bg-[#3a86ff]/15 blur-xl" />
+        <div className="w-full max-w-[200px] relative">
+          <div className="rounded-2xl bg-[#ff006e] p-4 mb-2 shadow-lg">
+            <div className="h-2 w-16 rounded bg-white/30 mb-2" />
+            <div className="h-1.5 w-10 rounded bg-white/15" />
+          </div>
+          <div className="flex gap-1.5 justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#ff006e]" />
+            <div className="w-8 h-8 rounded-lg bg-[#8338ec]" />
+            <div className="w-8 h-8 rounded-lg bg-[#ffbe0b]" />
+            <div className="w-8 h-8 rounded-lg bg-[#3a86ff]" />
+            <div className="w-8 h-8 rounded-lg bg-[#06d6a0]" />
+          </div>
         </div>
       </div>
     ),
@@ -3440,11 +3450,31 @@ export const styleComponents: Record<
   "linear-style": {
     coverPreview: () => (
       <div className="w-full h-full bg-[#0a0a0f] flex items-center justify-center p-4">
-        <div className="w-full max-w-[200px] border border-[#2a2a3e] bg-[#14141f] rounded-lg p-4">
-          <div className="text-[#e0e0e8] text-sm font-medium mb-2">Linear</div>
+        <div className="w-full max-w-[200px] border border-[#2a2a3e] bg-[#14141f] rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-3 h-3 rounded bg-[#5e6ad2]/80" />
+            <div className="h-2 w-14 rounded bg-[#e0e0e8]/50" />
+          </div>
           <div className="h-px bg-[#2a2a3e] mb-3" />
-          <p className="text-[#5e6ad2] text-xs mb-3">Minimal dark design</p>
-          <button className="bg-[#5e6ad2]/15 text-[#5e6ad2] text-xs px-3 py-1 rounded">View</button>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full border border-[#5e6ad2]/60" />
+              <div className="h-1.5 w-24 rounded bg-[#e0e0e8]/30" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#5e6ad2]/30 flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-[#5e6ad2]" />
+              </div>
+              <div className="h-1.5 w-20 rounded bg-[#e0e0e8]/20" />
+              <div className="h-3 px-1.5 rounded bg-[#3b9b6d]/15 flex items-center">
+                <span className="text-[6px] text-[#3b9b6d]/70">done</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full border border-[#f2c94c]/40" />
+              <div className="h-1.5 w-28 rounded bg-[#e0e0e8]/20" />
+            </div>
+          </div>
         </div>
       </div>
     ),
