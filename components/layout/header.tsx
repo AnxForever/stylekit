@@ -6,8 +6,9 @@ import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
-import { mainNav, secondaryNav, toolsDropdown, externalNav } from "@/lib/nav-config";
+import { mainNav, secondaryNav, toolsDropdown } from "@/lib/nav-config";
 import { ChevronDown } from "lucide-react";
+import { GitHubStarButton } from "@/components/github-star-button";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -138,18 +139,8 @@ export function Header() {
               </Link>
             ))}
 
-            {/* External Links */}
-            {externalNav.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkClass}
-              >
-                {item.label}
-              </a>
-            ))}
+            {/* GitHub Star Button */}
+            <GitHubStarButton variant="compact" />
 
             {mounted && <LanguageSwitcher />}
             {mounted && (
@@ -319,18 +310,8 @@ export function Header() {
               </div>
               )}
 
-              {/* External Links */}
-              {externalNav.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={linkClass}
-                >
-                  {item.label}
-                </a>
-              ))}
+              {/* GitHub Star Button (Mobile) */}
+              <GitHubStarButton variant="compact" />
 
               <div className="pt-2 border-t border-border flex items-center gap-4">
                 <LanguageSwitcher />

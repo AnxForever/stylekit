@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
+import { GitHubStarButton } from "@/components/github-star-button";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { cn } from "@/lib/utils";
 
@@ -300,6 +301,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                 >
                   {t("home.ctaGenerate")}
                 </Link>
+                <GitHubStarButton className="col-span-2" />
               </div>
 
               <div className="mt-4 flex flex-wrap gap-3">
