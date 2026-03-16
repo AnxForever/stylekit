@@ -222,6 +222,49 @@ SPECIAL EFFECTS:
 - Stiff Paper Feel: 交互用 duration-200/300 + ease-out，避免 spring 弹性。
 - Offset Lift: 元素位移时阴影偏移应同步增加，保持纸片离面物理一致性。`,
 
+  aiRulesEn: `STYLE: Paper Craft
+TYPE: Handmade paper art interface
+
+MUST USE:
+- Warm paper background: bg-[#fdf6ee]
+- Paper offset shadows: shadow-[4px_4px_0px_rgba(0,0,0,0.08)]
+- Bright craft colors: #e85d75, #5cb8a5, #f5c040, #6b7fb5
+- Rounded corners: rounded-xl or rounded-2xl
+- Slight rotations: rotate-[1deg] for playful paper feel
+- Layered paper effect: multiple stacked divs with rotation
+- Dark text on light: text-[#2d2d2d]
+- Lift on hover: hover:-translate-y-1
+
+MUST AVOID:
+- Dark/black backgrounds
+- Neon or glow effects
+- Metallic or glass effects
+- Sharp precise corners
+- Fluorescent colors
+- Drop-shadow filters (use box-shadow)
+- Gradient glows
+
+COLOR RULES:
+- Craft Red: #e85d75 (primary)
+- Paper White: #fdf6ee (background)
+- Paper Teal: #5cb8a5
+- Paper Yellow: #f5c040
+- Paper Blue: #6b7fb5
+- Text: #2d2d2d
+
+SPECIAL EFFECTS:
+- Multi-layer paper stacking with rotation offsets
+- Inset shadows for cut-out/embossed feel
+- Active press-down: active:translate-y-0.5
+- Paper texture overlay for authenticity
+
+## Animation & Interaction Rules
+
+- Layer Separation: Multi-layer paper pieces on hover should fan out slightly in different directions, with increased inter-layer shadow offset.
+- Crisp Cutouts: Input focus or active feedback can deepen inset shadows, simulating cardboard cutout depth.
+- Stiff Paper Feel: Interactions use duration-200/300 + ease-out, avoiding spring elasticity.
+- Offset Lift: When elements shift, shadow offset should increase in sync, maintaining physical consistency of paper lifting off the surface.`,
+
   examplePrompts: [
     {
       title: "儿童教育平台",
