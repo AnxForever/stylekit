@@ -1869,6 +1869,38 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["蓝图", "工程", "技术", "图纸", "网格", "标注", "坐标"],
   },
+  {
+    slug: "dopamine-design",
+    name: "多巴胺设计",
+    nameEn: "Dopamine Design",
+    description: "高饱和度霓虹配色、大胆排版、充满能量感的视觉冲击力。2025-2026 年度设计趋势，用色彩直接刺激多巴胺分泌。",
+    cover: "/styles/dopamine-design.svg",
+    styleType: "visual",
+    tags: ["expressive", "modern", "high-contrast"],
+    category: "expressive",
+    colors: {
+      primary: "#ff006e",
+      secondary: "#8338ec",
+      accent: ["#ffbe0b", "#3a86ff", "#06d6a0", "#fb5607"],
+    },
+    keywords: ["多巴胺", "高饱和", "霓虹", "快乐", "大胆", "能量"],
+  },
+  {
+    slug: "linear-style",
+    name: "Linear 风格",
+    nameEn: "Linear Style",
+    description: "受 Linear 应用启发的极简暗色设计风格。精确的排版、克制的动效、开发者审美的极致表达。",
+    cover: "/styles/linear-style.svg",
+    styleType: "visual",
+    tags: ["minimal", "modern"],
+    category: "minimal",
+    colors: {
+      primary: "#5e6ad2",
+      secondary: "#0a0a0b",
+      accent: ["#f2c94c", "#27ae60", "#eb5757", "#2d9cdb"],
+    },
+    keywords: ["Linear", "极简", "暗色", "开发者", "精确", "工具"],
+  },
 ];
 
 /**
