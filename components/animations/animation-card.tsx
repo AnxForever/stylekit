@@ -379,6 +379,48 @@ export function AnimationCardPreviewStyles() {
       .sk-mini-elastic-snap { animation: sk-mini-elastic-snap 2.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; }
       .sk-mini-border-draw { animation: sk-mini-border-draw 3s ease-in-out infinite; }
       .sk-mini-glitch { animation: sk-mini-glitch 3s steps(2, end) infinite; }
+
+      @keyframes sk-mini-scramble {
+        0%, 100% { opacity: 0.4; letter-spacing: 0.15em; }
+        15% { opacity: 0.6; letter-spacing: 0.12em; }
+        50%, 80% { opacity: 1; letter-spacing: 0.08em; }
+      }
+
+      @keyframes sk-mini-tilt {
+        0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+        25% { transform: rotateX(-6deg) rotateY(8deg); }
+        50% { transform: rotateX(4deg) rotateY(-6deg); }
+        75% { transform: rotateX(-3deg) rotateY(5deg); }
+      }
+
+      @keyframes sk-mini-confetti-1 {
+        0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(-14px, 18px) rotate(180deg) scale(0.3); }
+      }
+      @keyframes sk-mini-confetti-2 {
+        0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(12px, 20px) rotate(-200deg) scale(0.3); }
+      }
+      @keyframes sk-mini-confetti-3 {
+        0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(-8px, -14px) rotate(140deg) scale(0.3); }
+      }
+      @keyframes sk-mini-confetti-4 {
+        0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(16px, -12px) rotate(-160deg) scale(0.3); }
+      }
+      @keyframes sk-mini-confetti-5 {
+        0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(0, -20px) rotate(220deg) scale(0.3); }
+      }
+
+      .sk-mini-scramble { animation: sk-mini-scramble 2.5s ease-in-out infinite; }
+      .sk-mini-tilt { animation: sk-mini-tilt 3s ease-in-out infinite; transform-style: preserve-3d; }
+      .sk-mini-confetti-1 { animation: sk-mini-confetti-1 1.2s cubic-bezier(0, 0.9, 0.57, 1) infinite; }
+      .sk-mini-confetti-2 { animation: sk-mini-confetti-2 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.05s infinite; }
+      .sk-mini-confetti-3 { animation: sk-mini-confetti-3 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.1s infinite; }
+      .sk-mini-confetti-4 { animation: sk-mini-confetti-4 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.15s infinite; }
+      .sk-mini-confetti-5 { animation: sk-mini-confetti-5 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.08s infinite; }
     `}</style>
   );
 }
@@ -837,6 +879,33 @@ function MiniPreview({ slug }: { slug: string }) {
       return (
         <div className="relative overflow-hidden rounded-[14px] border border-cyan-500/15 bg-[#0a0e14] px-3 py-2 shadow-[0_18px_34px_-26px_rgba(0,200,255,0.5)]">
           <span className="sk-mini-anim sk-mini-glitch text-[11px] font-bold tracking-wider text-cyan-400">GLITCH</span>
+        </div>
+      );
+    case "text-scramble":
+      return (
+        <div className="overflow-hidden rounded-[14px] border border-cyan-500/15 bg-[#0a0e14] px-3 py-2 shadow-[0_18px_34px_-26px_rgba(0,200,255,0.5)]">
+          <span className="sk-mini-anim sk-mini-scramble font-mono text-[11px] font-bold tracking-wider text-cyan-400">DECODE</span>
+        </div>
+      );
+    case "tilt-3d":
+      return (
+        <div style={{ perspective: 400 }}>
+          <div className={`${previewPanelClass} sk-mini-anim sk-mini-tilt h-11 w-16 rounded-[12px] bg-gradient-to-br from-indigo-200 to-violet-300 dark:from-indigo-500/30 dark:to-violet-500/25 shadow-[0_14px_28px_-22px_rgba(99,102,241,0.7)]`}>
+            <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-white/50 dark:bg-white/15" />
+            <div className="absolute bottom-2 left-2 h-1.5 w-6 rounded-full bg-white/40 dark:bg-white/10" />
+            <div className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-white/60 dark:bg-white/20" />
+          </div>
+        </div>
+      );
+    case "confetti-burst":
+      return (
+        <div className="relative flex items-center justify-center">
+          <div className="rounded-[10px] bg-foreground px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-background shadow-[0_14px_28px_-22px_rgba(15,23,42,0.9)]">Click</div>
+          <span className="sk-mini-anim sk-mini-confetti-1 absolute h-1.5 w-1.5 rounded-full bg-pink-500" />
+          <span className="sk-mini-anim sk-mini-confetti-2 absolute h-1.5 w-1.5 rounded-sm bg-yellow-400" />
+          <span className="sk-mini-anim sk-mini-confetti-3 absolute h-1.5 w-1.5 rounded-full bg-blue-500" />
+          <span className="sk-mini-anim sk-mini-confetti-4 absolute h-1.5 w-1.5 rounded-sm bg-green-400" />
+          <span className="sk-mini-anim sk-mini-confetti-5 absolute h-1.5 w-1.5 rounded-full bg-purple-500" />
         </div>
       );
     default:
