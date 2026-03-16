@@ -130,6 +130,9 @@ import { vhsAestheticRecipes } from "./vhs-aesthetic";
 import { scandinavianRecipes } from "./scandinavian";
 import { celShadingRecipes } from "./cel-shading";
 import { wabiSabiRecipes } from "./wabi-sabi";
+// New styles - Batch 13
+import { linearStyleRecipes } from "./linear-style";
+import { dopamineDesignRecipes } from "./dopamine-design";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -262,6 +265,9 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "scandinavian": scandinavianRecipes,
   "cel-shading": celShadingRecipes,
   "wabi-sabi": wabiSabiRecipes,
+  // New styles - Batch 13
+  "linear-style": linearStyleRecipes,
+  "dopamine-design": dopamineDesignRecipes,
 };
 
 /**

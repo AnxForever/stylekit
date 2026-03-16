@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#0a0a1a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0a1a"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Rain effect -->
   <line x1="50" y1="0" x2="50" y2="20" stroke="#00f0ff" stroke-width="0.5" opacity="0.3"/>
   <line x1="120" y1="30" x2="120" y2="55" stroke="#00f0ff" stroke-width="0.5" opacity="0.2"/>
@@ -49,4 +50,5 @@
   <!-- Vertical neon accents on buildings -->
   <line x1="190" y1="225" x2="190" y2="395" stroke="#ff1493" stroke-width="1.5" opacity="0.3"/>
   <line x1="600" y1="215" x2="600" y2="395" stroke="#00f0ff" stroke-width="1.5" opacity="0.3"/>
+  </g>
 </svg>

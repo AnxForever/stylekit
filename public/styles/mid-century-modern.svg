@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#f5f0e1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f0e1"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Starburst pattern -->
   <g transform="translate(200,200)">
     <line x1="0" y1="-120" x2="0" y2="120" stroke="#e8572a" stroke-width="3"/>
@@ -34,4 +35,5 @@
   <rect x="555" y="290" width="130" height="12" rx="2" fill="#2a6e5e"/>
   <!-- Title -->
   <text x="400" y="385" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#e8572a" font-weight="bold">Mid-Century Modern</text>
+  </g>
 </svg>

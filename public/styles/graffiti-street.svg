@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#1c1c1e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1c1c1e"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Spray paint splashes -->
   <circle cx="150" cy="180" r="80" fill="#ff2d55" opacity="0.7"/>
   <circle cx="200" cy="150" r="50" fill="#ff2d55" opacity="0.5"/>
@@ -34,4 +35,5 @@
   <!-- Style name -->
   <text x="400" y="220" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="52" font-weight="900" fill="#ff2d55" transform="rotate(-8 400 220)" stroke="#1c1c1e" stroke-width="2">GRAFFITI</text>
   <text x="400" y="270" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="36" font-weight="900" fill="#00e5ff" transform="rotate(-8 400 270)">STREET</text>
+  </g>
 </svg>

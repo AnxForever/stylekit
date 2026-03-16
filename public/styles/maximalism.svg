@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#1a0a2e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1a0a2e"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Busy layered patterns -->
   <!-- Large background shapes -->
   <circle cx="150" cy="200" r="180" fill="#8338ec" opacity="0.2"/>
@@ -37,4 +38,5 @@
   <path d="M420,50 Q480,50 480,100 Q480,140 440,140" fill="none" stroke="#ffbe0b" stroke-width="2" opacity="0.6"/>
   <!-- Title -->
   <text x="400" y="385" text-anchor="middle" font-family="'Impact', 'Arial Black', sans-serif" font-size="24" fill="#ffbe0b" font-weight="bold" letter-spacing="4">MAXIMALISM</text>
+  </g>
 </svg>

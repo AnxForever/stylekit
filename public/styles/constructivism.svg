@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#f2e8d5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f2e8d5"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Diagonal red wedge -->
   <polygon points="100,400 400,50 450,80 150,400" fill="#cc0000"/>
   <!-- Bold geometric blocks -->
@@ -21,4 +22,5 @@
   <rect x="750" y="30" width="15" height="340" fill="#cc0000"/>
   <!-- Title -->
   <text x="400" y="385" text-anchor="middle" font-family="'Impact', 'Arial Black', sans-serif" font-size="22" fill="#1a1a1a" font-weight="bold" letter-spacing="4">CONSTRUCTIVISM</text>
+  </g>
 </svg>

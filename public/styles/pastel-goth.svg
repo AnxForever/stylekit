@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#1a1225"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1a1225"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Dark purple overlay -->
-  <rect width="800" height="400" fill="#2d1b3d" opacity="0.5"/>
+  <rect width="1200" height="630" fill="#2d1b3d" opacity="0.5"/>
   <!-- Crescent moon -->
   <circle cx="200" cy="120" r="50" fill="#d4a5e3"/>
   <circle cx="220" cy="110" r="42" fill="#1a1225"/>
@@ -31,4 +32,5 @@
   <line x1="100" y1="340" x2="700" y2="340" stroke="#d4a5e3" stroke-width="0.5" opacity="0.3"/>
   <!-- Title -->
   <text x="400" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#f5a5b8" letter-spacing="3">Pastel Goth</text>
+  </g>
 </svg>

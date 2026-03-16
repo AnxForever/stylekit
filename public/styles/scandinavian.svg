@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F5F0EB" />
+  <!-- Top-left: Card -->
+  <g transform="translate(60,50)">
+    <rect width="320" height="210" rx="8" fill="#FFFFFF" stroke="#D6CFC7" stroke-width="1" />
+    <rect x="24" y="24" width="180" height="14" rx="3" fill="#2D3436" opacity="0.8" />
+    <rect x="24" y="52" width="272" height="10" rx="2" fill="#2D3436" opacity="0.2" />
+    <rect x="24" y="72" width="240" height="10" rx="2" fill="#2D3436" opacity="0.15" />
+    <rect x="24" y="120" width="60" height="3" rx="1.5" fill="#81B29A" />
+    <rect x="24" y="156" width="100" height="36" rx="6" fill="#2D3436" />
+    <text x="74" y="179" text-anchor="middle" fill="#F5F0EB" font-family="system-ui,sans-serif" font-size="13" font-weight="500">Explore</text>
+  </g>
+  <!-- Top-right: Form -->
+  <g transform="translate(820,50)">
+    <rect width="320" height="210" rx="8" fill="#FFFFFF" stroke="#D6CFC7" stroke-width="1" />
+    <rect x="24" y="24" width="272" height="40" rx="6" fill="none" stroke="#D6CFC7" stroke-width="1" />
+    <text x="40" y="49" fill="#B0A89E" font-family="system-ui,sans-serif" font-size="13">Search...</text>
+    <text x="24" y="100" fill="#2D3436" font-family="system-ui,sans-serif" font-size="13" opacity="0.7">Dark Mode</text>
+    <rect x="240" y="86" width="44" height="24" rx="12" fill="#81B29A" />
+    <circle cx="272" cy="98" r="10" fill="#FFFFFF" />
+    <text x="24" y="140" fill="#2D3436" font-family="system-ui,sans-serif" font-size="13" opacity="0.7">Notifications</text>
+    <rect x="256" y="126" width="18" height="18" rx="4" fill="none" stroke="#D6CFC7" stroke-width="1.5" />
+  </g>
+  <!-- Center title -->
+  <text x="600" y="330" text-anchor="middle" fill="#2D3436" font-family="system-ui,sans-serif" font-size="42" font-weight="300" letter-spacing="8">SCANDINAVIAN</text>
+  <text x="600" y="362" text-anchor="middle" fill="#81B29A" font-family="system-ui,sans-serif" font-size="14" font-weight="500" letter-spacing="4">LAGOM - JUST ENOUGH</text>
+  <!-- Bottom-left: Buttons -->
+  <g transform="translate(60,400)">
+    <rect width="320" height="180" rx="8" fill="#FFFFFF" stroke="#D6CFC7" stroke-width="1" />
+    <rect x="24" y="24" width="120" height="40" rx="6" fill="#2D3436" />
+    <text x="84" y="49" text-anchor="middle" fill="#F5F0EB" font-family="system-ui,sans-serif" font-size="13" font-weight="500">Primary</text>
+    <rect x="160" y="24" width="120" height="40" rx="6" fill="none" stroke="#2D3436" stroke-width="1.5" />
+    <text x="220" y="49" text-anchor="middle" fill="#2D3436" font-family="system-ui,sans-serif" font-size="13" font-weight="500">Secondary</text>
+    <rect x="24" y="80" width="120" height="40" rx="6" fill="#81B29A" />
+    <text x="84" y="105" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="13" font-weight="500">Accent</text>
+    <rect x="24" y="138" width="56" height="24" rx="12" fill="#81B29A" opacity="0.15" />
+    <text x="52" y="154" text-anchor="middle" fill="#81B29A" font-family="system-ui,sans-serif" font-size="11" font-weight="500">New</text>
+    <rect x="92" y="138" width="72" height="24" rx="12" fill="#E07A5F" opacity="0.15" />
+    <text x="128" y="154" text-anchor="middle" fill="#E07A5F" font-family="system-ui,sans-serif" font-size="11" font-weight="500">Popular</text>
+  </g>
+  <!-- Bottom-right: Colors -->
+  <g transform="translate(820,400)">
+    <rect width="320" height="180" rx="8" fill="#FFFFFF" stroke="#D6CFC7" stroke-width="1" />
+    <circle cx="52" cy="52" r="24" fill="#2D3436" />
+    <circle cx="112" cy="52" r="24" fill="#F5F0EB" stroke="#D6CFC7" stroke-width="1" />
+    <circle cx="172" cy="52" r="24" fill="#81B29A" />
+    <circle cx="232" cy="52" r="24" fill="#E07A5F" />
+    <circle cx="292" cy="52" r="24" fill="#3D405B" />
+    <text x="24" y="110" fill="#2D3436" font-family="system-ui,sans-serif" font-size="18" font-weight="300">Aa Heading</text>
+    <text x="24" y="134" fill="#2D3436" font-family="system-ui,sans-serif" font-size="13" opacity="0.6">Body text in system sans-serif</text>
+    <text x="24" y="158" fill="#81B29A" font-family="system-ui,sans-serif" font-size="11" font-weight="500">functional . minimal . warm</text>
+  </g>
+</svg>

@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#2c1810"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#2c1810"/>
+  <g transform="scale(1.5, 1.575)">
   <defs>
     <pattern id="kente1" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
       <rect width="40" height="40" fill="#c4501f"/>
@@ -32,4 +33,5 @@
   <rect x="775" y="15" width="10" height="370" fill="#f0c75e"/>
   <!-- Title -->
   <text x="400" y="388" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-size="18" fill="#f0c75e" font-weight="bold" letter-spacing="3">AFRICAN TEXTILE</text>
+  </g>
 </svg>
