@@ -3426,6 +3426,29 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "dopamine-design": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a0a2e] flex items-center justify-center p-4">
+        <div className="flex gap-3">
+          <div className="w-16 h-20 rounded-xl bg-[#ff3366]" />
+          <div className="w-16 h-20 rounded-xl bg-[#00ccff]" />
+          <div className="w-16 h-20 rounded-xl bg-[#ffee00]" />
+        </div>
+      </div>
+    ),
+  },
+  "linear-style": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0a0f] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#2a2a3e] bg-[#14141f] rounded-lg p-4">
+          <div className="text-[#e0e0e8] text-sm font-medium mb-2">Linear</div>
+          <div className="h-px bg-[#2a2a3e] mb-3" />
+          <p className="text-[#5e6ad2] text-xs mb-3">Minimal dark design</p>
+          <button className="bg-[#5e6ad2]/15 text-[#5e6ad2] text-xs px-3 py-1 rounded">View</button>
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

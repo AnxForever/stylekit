@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#0a0a0f"/>
+  <!-- Subtle grid -->
+  <line x1="0" y1="100" x2="800" y2="100" stroke="#1a1a2e" stroke-width="0.5"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="#1a1a2e" stroke-width="0.5"/>
+  <line x1="0" y1="300" x2="800" y2="300" stroke="#1a1a2e" stroke-width="0.5"/>
+  <line x1="200" y1="0" x2="200" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
+  <line x1="400" y1="0" x2="400" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
+  <line x1="600" y1="0" x2="600" y2="400" stroke="#1a1a2e" stroke-width="0.5"/>
+  <!-- Card elements -->
+  <rect x="120" y="100" width="240" height="60" rx="8" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="120" y="175" width="240" height="60" rx="8" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="120" y="250" width="240" height="60" rx="8" fill="#14141f" stroke="#5e6ad2" stroke-width="1"/>
+  <!-- Status indicators -->
+  <circle cx="150" cy="130" r="5" fill="#5e6ad2"/>
+  <circle cx="150" cy="205" r="5" fill="#3b9b6d"/>
+  <circle cx="150" cy="280" r="5" fill="#5e6ad2"/>
+  <!-- Text placeholders -->
+  <rect x="170" y="122" width="100" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
+  <rect x="170" y="138" width="60" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
+  <rect x="170" y="197" width="120" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
+  <rect x="170" y="213" width="80" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
+  <rect x="170" y="272" width="90" height="8" rx="4" fill="#8888a0" opacity="0.4"/>
+  <rect x="170" y="288" width="70" height="6" rx="3" fill="#8888a0" opacity="0.2"/>
+  <!-- Right panel -->
+  <rect x="440" y="100" width="240" height="210" rx="10" fill="#14141f" stroke="#2a2a3e" stroke-width="1"/>
+  <text x="560" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="600" fill="#e0e0e8">Linear</text>
+  <text x="560" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5e6ad2">Minimal dark design</text>
+  <!-- Accent line -->
+  <rect x="480" y="220" width="160" height="36" rx="6" fill="#5e6ad2" opacity="0.15"/>
+  <text x="560" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#5e6ad2">Get Started</text>
+</svg>
