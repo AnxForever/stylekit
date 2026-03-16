@@ -22,50 +22,52 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "tailwind-ui",
     "dark-mode",
   ]);
-  const now = new Date();
+  // Use meaningful dates instead of current time to avoid misleading crawlers
+  const CONTENT_UPDATED = new Date("2026-03-15");
+  const TOOLS_UPDATED = new Date("2026-03-01");
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE_URL}/styles`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/ui-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/landing-page-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/dashboard-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/tailwind-ui-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/dark-mode-ui-prompts`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/generate`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/create-style`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/animations`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/templates`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/community`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/compare`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/blend`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/analyze`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/assets`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${BASE_URL}/docs`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/developers`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/developers/api`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/guide`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/components`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${BASE_URL}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
+    { url: BASE_URL, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 1 },
+    { url: `${BASE_URL}/styles`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE_URL}/ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE_URL}/landing-page-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/dashboard-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/tailwind-ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/dark-mode-ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/generate`, lastModified: TOOLS_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/create-style`, lastModified: TOOLS_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/animations`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/templates`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/community`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/compare`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/blend`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/analyze`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/assets`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE_URL}/docs`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/developers`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/developers/api`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/guide`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/components`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE_URL}/about`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.4 },
   ];
 
   const stylePages: MetadataRoute.Sitemap = styles.map((style) => ({
     url: `${BASE_URL}/styles/${style.slug}`,
-    lastModified: now,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
   const showcasePages: MetadataRoute.Sitemap = styles.map((style) => ({
     url: `${BASE_URL}/styles/${style.slug}/showcase`,
-    lastModified: now,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const templatePages: MetadataRoute.Sitemap = getTemplateSlugs().map((slug) => ({
     url: `${BASE_URL}/templates/${slug}`,
-    lastModified: now,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -74,14 +76,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((slug) => !redirectedPromptSlugs.has(slug))
     .map((slug) => ({
       url: `${BASE_URL}/prompts/${slug}`,
-      lastModified: now,
+      lastModified: CONTENT_UPDATED,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
 
   const animationPages: MetadataRoute.Sitemap = getAllAnimationsMeta().map((anim) => ({
     url: `${BASE_URL}/animations/${anim.slug}`,
-    lastModified: now,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
