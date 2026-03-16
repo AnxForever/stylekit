@@ -50,6 +50,11 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
+    languages: {
+      "en": BASE_URL,
+      "zh-CN": BASE_URL,
+      "x-default": BASE_URL,
+    },
   },
   openGraph: {
     type: "website",
@@ -116,6 +121,20 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: "StyleKit Team",
               },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "StyleKit",
+              "url": BASE_URL,
+              "logo": `${BASE_URL}/icon.svg`,
+              "description": "AI-friendly design system with 130+ visual styles, design tokens, and AI prompts.",
+              "sameAs": [],
             }),
           }}
         />

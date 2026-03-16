@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { getStyleBySlug, styles } from "@/lib/styles";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
@@ -197,6 +198,15 @@ export default async function StyleDetailPage({
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
       <Header />
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Styles", href: "/styles" },
+            { label: style.nameEn },
+          ]}
+        />
+      </div>
 
       <DisableAutoScroll>
         <main className="flex-1">
