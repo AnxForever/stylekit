@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/generate`,
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 const GeneratorWizard = dynamic(

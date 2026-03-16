@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
-import { Heart, Layers, Paintbrush, Loader2, ChevronDown, X } from "lucide-react";
+import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
 
 type TypeFilter = StyleType | "all";
@@ -17,6 +17,7 @@ interface StylesContentProps {
   initialTags: StyleTag[];
   initialShowFavorites: boolean;
   initialSort: SortOption;
+  initialQuery: string;
 }
 
 export function StylesContent({
@@ -25,18 +26,22 @@ export function StylesContent({
   initialTags,
   initialShowFavorites,
   initialSort,
+  initialQuery,
 }: StylesContentProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const tagTriggerId = useId();
   const tagListboxId = useId();
   const { favorites } = useFavorites();
   const router = useRouter();
   const pathname = usePathname();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const hasMountedQuerySyncRef = useRef(false);
 
   const [activeType, setActiveType] = useState<TypeFilter>(initialType);
   const [activeTags, setActiveTags] = useState<StyleTag[]>(initialTags);
   const [showFavorites, setShowFavorites] = useState(initialShowFavorites);
   const [sortBy, setSortBy] = useState<SortOption>(initialSort);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
@@ -44,6 +49,9 @@ export function StylesContent({
   const deferredActiveType = useDeferredValue(activeType);
   const deferredShowFavorites = useDeferredValue(showFavorites);
   const deferredSortBy = useDeferredValue(sortBy);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const trimmedSearchQuery = searchQuery.trim();
+  const trimmedDeferredSearchQuery = deferredSearchQuery.trim().toLowerCase();
   const deferredActiveTagsKey = useDeferredValue(activeTagsKey);
   const deferredActiveTags = useMemo(
     () => (
@@ -104,13 +112,36 @@ export function StylesContent({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    const handleGlobalSearchShortcut = (event: KeyboardEvent) => {
+      if (event.key !== "/") return;
+
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      searchInputRef.current?.focus();
+    };
+
+    window.addEventListener("keydown", handleGlobalSearchShortcut);
+    return () => window.removeEventListener("keydown", handleGlobalSearchShortcut);
+  }, []);
+
   const syncToUrl = useCallback(
-    (type: TypeFilter, tags: StyleTag[], fav: boolean, sort: SortOption) => {
+    (type: TypeFilter, tags: StyleTag[], fav: boolean, sort: SortOption, query: string) => {
       const sp = new URLSearchParams();
       if (type && type !== "all") sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
       if (fav) sp.set("fav", "1");
       if (sort !== "recommended") sp.set("sort", sort);
+      if (query.trim().length > 0) sp.set("q", query.trim());
 
       const qs = sp.toString();
       const newUrl = qs ? `${pathname}?${qs}` : pathname;
@@ -151,7 +182,7 @@ export function StylesContent({
   const handleTypeChange = (type: TypeFilter) => {
     startTransition(() => {
       setActiveType(type);
-      syncToUrl(type, activeTags, showFavorites, sortBy);
+      syncToUrl(type, activeTags, showFavorites, sortBy, searchQuery);
     });
   };
 
@@ -161,14 +192,14 @@ export function StylesContent({
         ? activeTags.filter((t) => t !== tag)
         : [...activeTags, tag];
       setActiveTags(newTags);
-      syncToUrl(activeType, newTags, showFavorites, sortBy);
+      syncToUrl(activeType, newTags, showFavorites, sortBy, searchQuery);
     });
   };
 
   const handleClearTags = () => {
     startTransition(() => {
       setActiveTags([]);
-      syncToUrl(activeType, [], showFavorites, sortBy);
+      syncToUrl(activeType, [], showFavorites, sortBy, searchQuery);
     });
   };
 
@@ -176,14 +207,14 @@ export function StylesContent({
     startTransition(() => {
       const newFav = !showFavorites;
       setShowFavorites(newFav);
-      syncToUrl(activeType, activeTags, newFav, sortBy);
+      syncToUrl(activeType, activeTags, newFav, sortBy, searchQuery);
     });
   };
 
   const handleSortChange = (sort: SortOption) => {
     startTransition(() => {
       setSortBy(sort);
-      syncToUrl(activeType, activeTags, showFavorites, sort);
+      syncToUrl(activeType, activeTags, showFavorites, sort, searchQuery);
     });
   };
 
@@ -193,9 +224,23 @@ export function StylesContent({
       setActiveTags([]);
       setShowFavorites(false);
       setSortBy("recommended");
-      syncToUrl("all", [], false, "recommended");
+      setSearchQuery("");
+      syncToUrl("all", [], false, "recommended", "");
     });
   };
+
+  useEffect(() => {
+    if (!hasMountedQuerySyncRef.current) {
+      hasMountedQuerySyncRef.current = true;
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      syncToUrl(activeType, activeTags, showFavorites, sortBy, searchQuery);
+    }, 250);
+
+    return () => window.clearTimeout(timer);
+  }, [activeType, activeTags, searchQuery, showFavorites, sortBy, syncToUrl]);
 
   const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
 
@@ -207,7 +252,25 @@ export function StylesContent({
         (s) =>
           deferredActiveTags.length === 0 ||
           deferredActiveTags.some((tag) => s.tags?.includes(tag))
-      );
+      )
+      .filter((style) => {
+        if (!trimmedDeferredSearchQuery) return true;
+
+        const searchableText = [
+          style.slug,
+          style.name,
+          style.nameEn,
+          style.description,
+          style.styleType,
+          style.category,
+          ...style.tags,
+          ...style.keywords,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(trimmedDeferredSearchQuery);
+      });
 
     if (deferredSortBy === "recommended") return base;
 
@@ -229,15 +292,18 @@ export function StylesContent({
     deferredShowFavorites,
     deferredSortBy,
     favoriteSet,
+    trimmedDeferredSearchQuery,
   ]);
 
   const hasActiveFilters =
     activeType !== "all" ||
     activeTags.length > 0 ||
     showFavorites ||
-    sortBy !== "recommended";
+    sortBy !== "recommended" ||
+    trimmedSearchQuery.length > 0;
   const isFiltering =
     isPending ||
+    searchQuery !== deferredSearchQuery ||
     activeType !== deferredActiveType ||
     showFavorites !== deferredShowFavorites ||
     sortBy !== deferredSortBy ||
@@ -263,6 +329,48 @@ export function StylesContent({
       {/* Style Grid */}
       <section>
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="mb-5 md:mb-7 space-y-3">
+            <label htmlFor="styles-search" className="sr-only">
+              {t("nav.search")}
+            </label>
+            <div className="relative w-full md:max-w-md">
+              <Search className="pointer-events-none absolute left-3 top-1/2 w-4 h-4 -translate-y-1/2 text-muted" />
+              <input
+                ref={searchInputRef}
+                id="styles-search"
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setSearchQuery("");
+                  }
+                }}
+                aria-keyshortcuts="/"
+                placeholder={
+                  locale === "zh"
+                    ? "按名称、关键词或场景搜索风格"
+                    : "Search styles by name, keyword, or use case"
+                }
+                className="w-full h-10 pl-10 pr-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
+              />
+            </div>
+            <p className="text-xs text-muted">
+              {locale === "zh"
+                ? "提示：按 / 可快速聚焦搜索，按 Esc 可清空。"
+                : "Tip: press / to focus search, and Esc to clear."}
+            </p>
+            {trimmedSearchQuery.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="text-xs text-muted hover:text-foreground transition-colors"
+              >
+                {locale === "zh" ? "清空搜索" : "Clear Search"}
+              </button>
+            )}
+          </div>
+
           {/* Type Filter */}
           <div className="flex flex-wrap items-center gap-3 mb-4 text-sm">
             <span className="text-muted">{t("styles.type")}:</span>
