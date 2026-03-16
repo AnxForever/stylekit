@@ -59,6 +59,9 @@ import { underlineDraw } from "./underline-draw";
 import { progressBar } from "./progress-bar";
 import { elasticScale } from "./elastic-scale";
 import { pulseRing } from "./pulse-ring";
+import { textScramble } from "./text-scramble";
+import { tilt3d } from "./tilt-3d";
+import { confettiBurst } from "./confetti-burst";
 
 export const animations: Animation[] = [
   fadeInUp,
@@ -105,6 +108,9 @@ export const animations: Animation[] = [
   progressBar,
   elasticScale,
   pulseRing,
+  textScramble,
+  tilt3d,
+  confettiBurst,
 ];
 
 export function getAllAnimations(): Animation[] {
