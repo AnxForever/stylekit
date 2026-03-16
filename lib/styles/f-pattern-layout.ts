@@ -6,6 +6,8 @@ export const fPatternLayout: DesignStyle = {
   nameEn: "F-Pattern Layout",
   description:
     "基于眼动追踪研究的F型扫描布局，用户视线从左上角开始，沿顶部水平扫描后向下移动，适合内容密集型页面、博客文章和新闻列表。",
+  descriptionEn:
+    "An F-pattern scanning layout based on eye-tracking research, where the user's gaze starts from the top-left, scans horizontally across the top, then moves downward, ideal for content-heavy pages, blog posts, and news listings.",
   cover: "/styles/f-pattern-layout.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const fPatternLayout: DesignStyle = {
 - 信息密度：适合文字密集型内容的高效排列
 - 可扫描性：标题、摘要和正文形成清晰的层级`,
 
+  philosophyEn: `F-Pattern Layout is based on eye-tracking research by the Nielsen Norman Group, where users browse web pages with their gaze moving in an F-shape: first scanning horizontally across the top content, then moving down for a second (shorter) horizontal scan, and finally browsing vertically down the left side.
+
+Core principles:
+- Content priority: Most important content placed at the top and left
+- Visual guidance: Guiding user reading path through hierarchy and weight
+- Information density: Efficient arrangement for text-heavy content
+- Scannability: Headlines, summaries, and body text form clear hierarchy`,
+
   doList: [
     "将最重要的内容放在页面顶部（第一条水平线）",
     "在左侧放置导航或关键信息（垂直线）",
@@ -35,12 +45,29 @@ export const fPatternLayout: DesignStyle = {
     "使用 max-w-prose 限制行宽提升可读性",
   ],
 
+  doListEn: [
+    "Place the most important content at the top of the page (first horizontal line)",
+    "Place navigation or key information on the left side (vertical line)",
+    "Use clear heading hierarchy h1 > h2 > h3",
+    "Use lists and sections to increase scannability",
+    "Maintain left alignment text-left to match reading habits",
+    "Use max-w-prose to limit line width for readability",
+  ],
+
   dontList: [
     "禁止将重要内容放在右下角",
     "禁止居中对齐大段文字",
     "禁止忽视内容的优先级排列",
     "禁止使用过长的无分段文字",
     "禁止在左侧留白过多",
+  ],
+
+  dontListEn: [
+    "Do NOT place important content in the bottom-right corner",
+    "Do NOT center-align large blocks of text",
+    "Do NOT ignore content priority ordering",
+    "Do NOT use excessively long unsegmented text",
+    "Do NOT leave too much whitespace on the left side",
   ],
 
   components: {
@@ -266,6 +293,56 @@ export const fPatternLayout: DesignStyle = {
 - Fast Feedback: 资讯类交互建议 \`duration-150\` 到 \`duration-200\`，避免冗长过渡打断阅读。
 - Contrast Pop: 当前 hover 项可通过轻微阴影或边框对比强化，从信息流中短暂剥离。
 - Image Focus: 缩略图 hover 时可提升对比度或亮度，作为可点击反馈，但幅度必须克制。`,
+
+  aiRulesEn: `You are an F-Pattern Layout expert. All generated code must strictly follow these constraints:
+
+## Layout Rules
+
+- Place the most important information at the top of the page (logo, navigation, featured content)
+- Place secondary information on the second row (categories, search)
+- Place main content area on the left (article list)
+- Place auxiliary content on the right (sidebar)
+- All text left-aligned text-left
+
+## Content Hierarchy
+
+First layer (full-width top):
+- Navigation bar
+- Featured article/headline
+
+Second layer (secondary horizontal area):
+- Category tags
+- Search bar
+
+Third layer (left vertical list):
+- Article list
+- Content cards with thumbnails
+
+Auxiliary area (right side):
+- Trending recommendations
+- Tag cloud
+- Ad space
+
+## Responsive
+
+Desktop: Left main content + right sidebar
+Tablet: Full-width main content + collapsed sidebar
+Mobile: Single column stacked
+
+## Self-Check
+
+1. Most important content at top and top-left
+2. Clear heading hierarchy
+3. Text left-aligned
+4. Content quickly scannable
+5. Responsive adaptation complete
+
+## Animation & Interaction Rules
+
+- Eye-Tracking Guides: List item hover allows main title to slightly shift right (e.g., \`translate-x-1\`) or underline to appear, helping quickly lock on during scanning phase.
+- Fast Feedback: News-type interactions recommend \`duration-150\` to \`duration-200\`, avoiding lengthy transitions that interrupt reading.
+- Contrast Pop: Current hover item can be briefly separated from the information flow through slight shadow or border contrast enhancement.
+- Image Focus: Thumbnail hover can increase contrast or brightness as clickable feedback, but the magnitude must be restrained.`,
 
   examplePrompts: [
     {

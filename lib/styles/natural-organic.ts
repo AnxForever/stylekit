@@ -6,6 +6,8 @@ export const naturalOrganic: DesignStyle = {
   nameEn: "Natural Organic",
   description:
     "温暖自然的有机风格，大地色系、自然纹理、手工感元素。适合健康品牌、有机食品、环保产品、手工艺品。",
+  descriptionEn:
+    "Warm and natural organic style with earth tones, natural textures, and handcrafted elements. Ideal for health brands, organic food, eco-friendly products, and artisan crafts.",
   cover: "/styles/natural-organic.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -25,6 +27,14 @@ export const naturalOrganic: DesignStyle = {
 - 手工质感：避免过于工业化的冷感
 - 可持续美学：简约但不冷淡`,
 
+  philosophyEn: `Natural Organic style draws inspiration from the natural world, creating warm and inviting experiences through earth tones, organic shapes, and natural textures.
+
+Core principles:
+- Natural harmony: Colors and shapes come from nature
+- Warm and inviting: Make users feel comfortable and trusting
+- Handcrafted texture: Avoid overly industrial coldness
+- Sustainable aesthetics: Simple but not cold`,
+
   doList: [
     "使用大地色系 amber, stone, olive, sage",
     "背景使用温暖的米色 bg-[#faf6f1], bg-amber-50",
@@ -35,6 +45,16 @@ export const naturalOrganic: DesignStyle = {
     "图片使用自然/有机/手工内容",
   ],
 
+  doListEn: [
+    "Use earth tone colors amber, stone, olive, sage",
+    "Backgrounds use warm cream bg-[#faf6f1], bg-amber-50",
+    "Use irregular rounded corners rounded-[2rem] or blob shapes",
+    "Add paper/fabric textures (via CSS or SVG)",
+    "Use handwritten-style or serif fonts",
+    "Buttons use soft transitions hover:bg-stone-200",
+    "Images use natural/organic/handcrafted content",
+  ],
+
   dontList: [
     "禁止使用冷色调（蓝、紫除非作为辅助）",
     "禁止使用纯黑 #000000",
@@ -42,6 +62,15 @@ export const naturalOrganic: DesignStyle = {
     "禁止使用高科技感的设计元素",
     "禁止使用霓虹/高饱和度颜色",
     "禁止使用完美的圆形/矩形",
+  ],
+
+  dontListEn: [
+    "Do not use cool tones (blue, purple unless as auxiliary)",
+    "Do not use pure black #000000",
+    "Do not use sharp geometric shapes",
+    "Do not use high-tech design elements",
+    "Do not use neon/high-saturation colors",
+    "Do not use perfect circles/rectangles",
   ],
 
   components: {
@@ -151,6 +180,43 @@ TYPOGRAPHY:
 - Soft Earth Press: hover 可轻微下沉（translate-y-0.5）并加深土色层次，不做漂浮弹跳。
 - Botanical Slowness: 动画节奏建议 duration-500 以上 + ease-in-out，模拟自然生长速度。
 - Verdant Tint: 交互时文字/图标向深绿色缓慢过渡，表达植物被光照唤醒的生命感。`,
+
+  aiRulesEn: `STYLE: Natural Organic
+TYPE: Warm, earthy, nature-inspired design
+
+MUST USE:
+- Earth tones: stone, amber, olive, sage colors
+- Warm background: bg-[#faf6f1], bg-amber-50
+- Organic shapes: rounded-[2rem] and blob-style irregular radii
+- Serif fonts for headings: font-serif
+- Soft transitions: duration-300 to duration-700 with ease-in-out
+- Natural imagery and icons (leaves, plants, earth)
+
+MUST AVOID:
+- Cold colors (blue, purple as primary)
+- Pure black (#000000)
+- Sharp geometric shapes
+- High-tech design elements
+- Neon/high saturation colors
+- Perfect circles/rectangles
+
+COLOR PALETTE:
+- Primary: Stone/Brown (#5c4033)
+- Background: Warm cream (#faf6f1)
+- Accent: Sage green (#8b9d77)
+- Secondary: Warm tan (#d4a373)
+
+TYPOGRAPHY:
+- Headings: font-serif, tracking-tight
+- Body: font-sans, stone-600
+- Comfortable line-height
+
+## Animation & Interaction Rules
+
+- Organic Morphing: Use irregular rounded corners (blob) that slowly change during interaction, avoiding industrial standard rounded corners.
+- Soft Earth Press: Hover can slightly sink (translate-y-0.5) and deepen earth tone layers, no floating or bouncing.
+- Botanical Slowness: Animation rhythm recommends duration-500 and above + ease-in-out, simulating natural growth speed.
+- Verdant Tint: During interaction, text/icons slowly transition toward deep green, expressing the life force of plants awakened by light.`,
 
   examplePrompts: [
     {

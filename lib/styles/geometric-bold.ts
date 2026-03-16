@@ -6,6 +6,8 @@ export const geometricBold: DesignStyle = {
   nameEn: "Geometric Bold",
   description:
     "大胆的几何图形设计，强烈的形状对比、鲜明的色块、动态的构图。适合艺术展览、设计机构、创意品牌。",
+  descriptionEn:
+    "Bold geometric design with strong shape contrasts, vivid color blocks, and dynamic compositions. Ideal for art exhibitions, design agencies, and creative brands.",
   cover: "/styles/geometric-bold.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const geometricBold: DesignStyle = {
 - 动态平衡：通过不对称创造视觉张力
 - 艺术表达：每个页面都是一件艺术品`,
 
+  philosophyEn: `Geometric Bold style is influenced by Bauhaus and Constructivist art, creating visual impact through simple yet powerful geometric shapes.
+
+Core principles:
+- Shape first: Geometric shapes are the core design language
+- Bold contrast: Strong color and shape contrasts
+- Dynamic balance: Create visual tension through asymmetry
+- Artistic expression: Every page is a work of art`,
+
   doList: [
     "使用纯色色块 bg-black, bg-white, bg-red-500, bg-blue-600",
     "使用规则几何形状 circle, square, triangle",
@@ -35,6 +45,16 @@ export const geometricBold: DesignStyle = {
     "黑白为主，一到两种强调色",
   ],
 
+  doListEn: [
+    "Use solid color blocks bg-black, bg-white, bg-red-500, bg-blue-600",
+    "Use regular geometric shapes circle, square, triangle",
+    "Boldly use oversized typography text-6xl, text-8xl, text-[10rem]",
+    "Use absolute positioning to create overlapping effects",
+    "Corners use rounded-none or rounded-full",
+    "Use rotate-* to rotate elements for dynamic feel",
+    "Black and white primary, one to two accent colors",
+  ],
+
   dontList: [
     "禁止使用渐变色",
     "禁止使用柔和/低对比度的颜色",
@@ -42,6 +62,15 @@ export const geometricBold: DesignStyle = {
     "禁止使用阴影效果",
     "禁止过多颜色（最多3-4种）",
     "禁止对称/常规的布局",
+  ],
+
+  dontListEn: [
+    "Do not use gradient colors",
+    "Do not use soft/low-contrast colors",
+    "Do not use medium border-radius values like rounded-lg",
+    "Do not use shadow effects",
+    "Do not use too many colors (max 3-4)",
+    "Do not use symmetrical/conventional layouts",
   ],
 
   components: {
@@ -155,6 +184,43 @@ TYPOGRAPHY:
 - Shape Snapping: 几何装饰在 hover 时可瞬时旋转/放大，形成结构突变感。
 - Heavy Press: active 状态优先用位移与层级回弹表达按压，不依赖柔和缩放。
 - Linear & Fast: 统一使用 duration-100 + ease-linear，拒绝弹簧感和慢速拖尾。`,
+
+  aiRulesEn: `STYLE: Geometric Bold
+TYPE: Bold artistic design with strong shapes
+
+MUST USE:
+- Solid color blocks: bg-black, bg-white, bg-red-500, bg-blue-600
+- Regular geometric shapes: circles, squares, triangles
+- Large typography: text-6xl, text-8xl, text-[10rem]
+- Absolute positioning for overlapping elements
+- Corners: rounded-none OR rounded-full only
+- Rotation for dynamics: rotate-12, rotate-45
+- Limited palette: black, white + 1-2 accent colors
+
+MUST AVOID:
+- Gradients
+- Soft/low contrast colors
+- Medium border-radius (rounded-lg)
+- Shadows
+- Too many colors (max 3-4)
+- Symmetrical/conventional layouts
+
+COLOR RULES:
+- Base: Black and White
+- Accents: Primary colors (red, blue, yellow)
+- Maximum 3-4 colors per design
+
+TYPOGRAPHY:
+- Headings: font-black uppercase
+- Labels: text-xs tracking-[0.3em]
+- Numbers: Often used as design elements
+
+## Animation & Interaction Rules
+
+- Blocky Impact: Interactions use solid color hard-cuts and short displacement feedback, avoiding soft opacity transitions.
+- Shape Snapping: Geometric decorations can instantly rotate/scale on hover, creating a structural mutation feel.
+- Heavy Press: Active state prefers displacement and layer rebound to express pressing, not relying on soft scaling.
+- Linear & Fast: Uniformly use duration-100 + ease-linear, rejecting spring feel and slow trailing.`,
 
   examplePrompts: [
     {

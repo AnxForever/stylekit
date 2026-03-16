@@ -6,6 +6,8 @@ export const japaneseFresh: DesignStyle = {
   nameEn: "Japanese Fresh",
   description:
     "以Ma (间) 留白哲学、侘寂美学和极致呼吸感为核心，通过发丝级边框、植物线描装饰和极简温暖中性色，营造沉静治愈的设计体验。",
+  descriptionEn:
+    "Centered on Ma (space) philosophy, wabi-sabi aesthetics, and extreme breathing room, using hairline borders, botanical line-drawing accents, and minimal warm neutral colors to create a serene, healing design experience.",
   cover: "/styles/japanese-fresh.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -28,6 +30,17 @@ Core principles:
 - Bottom-line Inputs: Inputs use only a bottom border line, floating labels, no surrounding frame
 - No Shadows: Forms exist without shadow; they float in whitespace by their own presence`,
 
+  philosophyEn: `Japanese Fresh embodies Ma (space between) and wabi-sabi (beauty in imperfection). Design is not about what you add, but what you allow to breathe.
+
+Core principles:
+- Ma: Intentional, generous whitespace is the primary design element. Sections use py-32+ to create profound breathing room between content
+- Wabi-sabi: Embrace subtle imperfection -- asymmetric layouts, slightly off-center elements, and organic rather than rigid alignment
+- Hairline Borders: All borders are 0.5-1px maximum, using warm neutral colors like #d4d4cf at 30-40% opacity
+- Natural Textures: Subtle linen/paper grain texture backgrounds reference natural materials (washi paper, unbleached cotton)
+- Botanical Accents: Single delicate line-drawn botanical SVG elements per section -- one branch, one leaf, never crowded
+- Bottom-line Inputs: Inputs use only a bottom border line, floating labels, no surrounding frame
+- No Shadows: Forms exist without shadow; they float in whitespace by their own presence`,
+
   doList: [
     "Use extreme whitespace (py-32, py-40) between sections -- Ma is the primary design tool",
     "Use only hairline borders (border with opacity-30, never border-2)",
@@ -40,7 +53,30 @@ Core principles:
     "Use weightless hover feedback (subtle lift + transparent tint) instead of heavy depth",
   ],
 
+  doListEn: [
+    "Use extreme whitespace (py-32, py-40) between sections -- Ma is the primary design tool",
+    "Use only hairline borders (border with opacity-30, never border-2)",
+    "Include one delicate botanical SVG line drawing per major section",
+    "Use font-extralight/font-light exclusively for all text",
+    "Keep inputs as bottom-line only with floating labels",
+    "Use warm neutral border color #d4d4cf instead of harsh gray",
+    "Apply asymmetric element placement for wabi-sabi character",
+    "Use transition duration-500 for slow, meditative interactions",
+    "Use weightless hover feedback (subtle lift + transparent tint) instead of heavy depth",
+  ],
+
   dontList: [
+    "Never use bold or heavy font weights (font-bold, font-semibold)",
+    "Never use uppercase text -- it is too aggressive for this aesthetic",
+    "Never use border-2 or thicker -- only hairline borders",
+    "Never use visible shadows (shadow-lg/xl) -- elements float without weight",
+    "Never use dark or black backgrounds",
+    "Never use sharp corners (rounded-none) -- always gentle rounded-lg/xl",
+    "Never crowd sections together -- maintain extreme breathing room",
+    "Never use fast, abrupt interaction transitions under 200ms",
+  ],
+
+  dontListEn: [
     "Never use bold or heavy font weights (font-bold, font-semibold)",
     "Never use uppercase text -- it is too aggressive for this aesthetic",
     "Never use border-2 or thicker -- only hairline borders",
@@ -248,6 +284,59 @@ Primary:
 - Airy Transitions: 颜色变化采用 duration-500 + ease-in-out，像晨雾中缓慢显现。
 - Subtle Focus: 表单 focus 只调整发丝级边框颜色，不使用粗 ring 或强 glow。
 - Tactile Click: active 态优先微调透明度和背景层，不使用明显缩放。`,
+
+  aiRulesEn: `You are a Japanese Fresh design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Heavy borders (border-2 or thicker)
+- Neon or high-saturation colors
+- Dark or black backgrounds
+- Bold/heavy font weights (font-bold, font-semibold, font-black)
+- Sharp corners (rounded-none, rounded-sm)
+- Uppercase text
+- Visible shadows (shadow-lg, shadow-xl)
+- Crowded layouts without extreme whitespace
+
+## Must Follow
+
+- Rice-white background: bg-[#fafaf8] with optional linen texture
+- Ma-based extreme whitespace: py-32+ between sections (this is THE core principle)
+- Hairline borders only: border with opacity-30/40, warm neutral #d4d4cf
+- Font weight: font-extralight or font-light exclusively
+- Single botanical SVG line drawing accent per section
+- Bottom-line only inputs with floating labels
+- No shadows anywhere -- forms float in whitespace
+- Slow transitions: duration-500 for meditative feel
+- Warm neutral colors: #d4d4cf borders, #b0b8c4 muted text
+
+## Color Palette
+
+Primary:
+- Sky Blue: #64b5f6
+- Rice White: #fafaf8
+- Mint Green: #98d8c8
+- Gentle Pink: #ffb7c5
+- Powder Blue: #b8d4e3
+- Text: #4a5568
+- Secondary text: #7a8a9e
+- Muted: #b0b8c4
+- Border: #d4d4cf
+
+## Unique Elements
+
+- Ma-based extreme whitespace (py-32+ sections)
+- Hairline 0.5px borders at 30% opacity
+- Botanical line-drawing SVG accents (one per section)
+- Bottom-line only input fields with floating labels
+- Linen/paper texture background pattern
+
+## Animation & Interaction Rules
+
+- Weightless Float: Hover allows only extremely light upward float (about 0.5px), avoiding heavy shadows and large displacement.
+- Airy Transitions: Color changes use duration-500 + ease-in-out, appearing slowly like morning mist.
+- Subtle Focus: Form focus only adjusts hairline border color, no thick rings or strong glow.
+- Tactile Click: Active state prioritizes subtle opacity and background layer adjustments, no obvious scaling.`,
 
   examplePrompts: [
     {

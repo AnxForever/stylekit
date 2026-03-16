@@ -6,6 +6,8 @@ export const darkMode: DesignStyle = {
   nameEn: "Dark Mode",
   description:
     "优雅的深色界面设计，低对比度层次、微妙的边框和高亮。适合开发工具、专业应用、深夜阅读模式。",
+  descriptionEn:
+    "Elegant dark interface design with low-contrast layering, subtle borders and highlights. Ideal for developer tools, professional applications, and night reading mode.",
   cover: "/styles/dark-mode.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -25,6 +27,14 @@ export const darkMode: DesignStyle = {
 - 高亮聚焦：使用高亮色引导用户注意力
 - 专业氛围：传达技术感和专业感`,
 
+  philosophyEn: `Dark Mode design emphasizes creating a comfortable reading experience and clear information hierarchy on dark backgrounds.
+
+Core principles:
+- Eye comfort: Reduce screen brightness to minimize visual fatigue
+- Clear hierarchy: Distinguish levels through grayscale and transparency
+- Highlight focus: Use highlight colors to guide user attention
+- Professional atmosphere: Convey a sense of technology and professionalism`,
+
   doList: [
     "使用深色背景 bg-slate-900, bg-gray-900, bg-[#0f172a]",
     "卡片使用略浅的背景 bg-slate-800/50，hover 时提亮 hover:bg-slate-800",
@@ -38,6 +48,19 @@ export const darkMode: DesignStyle = {
     "使用 rounded-lg 或 rounded-xl 圆角",
   ],
 
+  doListEn: [
+    "Use dark backgrounds bg-slate-900, bg-gray-900, bg-[#0f172a]",
+    "Cards use slightly lighter backgrounds bg-slate-800/50, brighten on hover hover:bg-slate-800",
+    "Borders use low contrast border-slate-700, illuminate on hover hover:border-slate-500",
+    "Text uses text-slate-100 primary, text-slate-400 secondary, secondary text brightens on group-hover group-hover:text-slate-300",
+    "Highlight colors maintain high saturation blue-500, green-500",
+    "Buttons use inner glow shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] to simulate dark light source",
+    "Buttons must have active:scale-[0.98] tactile press confirmation",
+    "All interactive elements must have focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900",
+    "Card hover with hover:-translate-y-0.5 + dark outer shadow for elevation",
+    "Use rounded-lg or rounded-xl corners",
+  ],
+
   dontList: [
     "禁止使用纯白文字 text-white（过于刺眼）",
     "禁止使用高对比度边框",
@@ -47,6 +70,17 @@ export const darkMode: DesignStyle = {
     "禁止阴影使用浅色（深色背景上用浅色阴影无法体现层次）",
     "禁止按钮缺少 active:scale-[0.98]（按钮需要触觉确认，否则如同装饰）",
     "禁止 focus:ring 缺少 focus:ring-offset-slate-900（暗色背景上焦点环必须与元素分离才可见）",
+  ],
+
+  dontListEn: [
+    "Do not use pure white text text-white (too harsh)",
+    "Do not use high-contrast borders",
+    "Do not use pure black background #000000 (too dull)",
+    "Do not use dark text on dark backgrounds",
+    "Do not overuse highlight colors",
+    "Do not use light-colored shadows (light shadows cannot convey depth on dark backgrounds)",
+    "Do not omit active:scale-[0.98] on buttons (buttons need tactile confirmation, otherwise they feel like decoration)",
+    "Do not use focus:ring without focus:ring-offset-slate-900 (focus ring must separate from element to be visible on dark backgrounds)",
   ],
 
   components: {
@@ -294,6 +328,61 @@ TYPOGRAPHY:
 - Tactile Confirmation: ALL buttons must use active:scale-[0.98]. The 2% scale reduction is the minimum signal that a press occurred. Without it, a dark button feels completely unresponsive.
 - Focus Ring Visibility: ALWAYS pair focus:ring-2 with focus:ring-offset-2 focus:ring-offset-slate-900. Without ring-offset-slate-900, the ring merges with the dark background and becomes invisible — violating WCAG 2.1 AA.
 - Card Elevation: hover:-translate-y-0.5 + hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] — the deep dark shadow reinforces the dark environment. Never use light-colored shadows on dark backgrounds.
+- Easing: duration-200 ease-out for buttons and interactive controls. duration-300 ease-out for card-level transitions. Never exceed duration-300.
+
+## Self-Check
+
+After generating code, verify:
+1. All buttons have active:scale-[0.98]
+2. All focusable elements have focus:ring-2 focus:ring-{color}-500 focus:ring-offset-2 focus:ring-offset-slate-900
+3. Cards use group class; text uses group-hover:text-* for light-up
+4. Card hover: border brightens (hover:border-slate-500) + bg lightens (hover:bg-slate-800) + hover:-translate-y-0.5
+5. Button shadows use inset for glow, deep dark for elevation
+6. No light-colored shadows anywhere`,
+
+  aiRulesEn: `STYLE: Dark Mode
+TYPE: Professional dark interface design
+
+MUST USE:
+- Dark backgrounds: bg-slate-900, bg-gray-900, bg-[#0f172a]
+- Card backgrounds: bg-slate-800/50 (semi-transparent) at rest, bg-slate-800 on hover
+- Low contrast borders: border-slate-700 at rest, border-slate-500 on hover (border illumination)
+- Text hierarchy: text-slate-100 (primary), text-slate-400 (secondary); secondary brightens to group-hover:text-slate-300
+- Saturated accent colors: blue-500, green-500
+- Inset top-edge glow on buttons: shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
+- Hover states: hover:bg-slate-800, hover:bg-white/5
+- Standard rounded corners: rounded-lg, rounded-xl
+
+MUST AVOID:
+- Pure white text (too harsh)
+- High contrast borders
+- Pure black background (#000000)
+- Dark text on dark backgrounds
+- Too many highlight colors
+- Light-colored shadows (light shadows invisible on dark backgrounds)
+- Buttons without active:scale-[0.98] (no tactile confirmation)
+- focus:ring without focus:ring-offset-slate-900 (ring invisible on dark background)
+
+COLOR HIERARCHY:
+- Background: slate-900 (#0f172a)
+- Surface: slate-800/50 to slate-800 on hover
+- Border: slate-700 to slate-500 on hover
+- Text primary: slate-100 to white on group-hover
+- Text secondary: slate-400 to slate-300 on group-hover
+- Accent: blue-500, green-500
+
+TYPOGRAPHY:
+- Headings: font-semibold text-slate-100
+- Body: text-slate-300 or text-slate-400
+
+## Animation & Interaction Rules
+
+- Illumination Physics: On hover, borders brighten from slate-700 to slate-500 (hover:border-slate-500). This simulates a nearby light source illuminating the card's edge -- NOT a background change. Combined with hover:bg-slate-800 (surface rises slightly), the effect is of a surface catching light.
+- Text Light-Up: Secondary text (text-slate-400) transitions to group-hover:text-slate-300. Title text (text-slate-200) to group-hover:text-white. Use transition-colors duration-200. The card must use the group class.
+- Inset Glow Button: Primary buttons use shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] at rest (top edge highlight simulating overhead light). On hover: shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_10px_rgba(59,130,246,0.3)] -- glow intensifies and bleeds outward. On active: shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] -- inset depression shadow simulates the button being physically pressed down.
+- Tactile Confirmation: ALL buttons must use active:scale-[0.98]. The 2% scale reduction is the minimum signal that a press occurred. Without it, a dark button feels completely unresponsive.
+- Focus Ring Visibility: ALWAYS pair focus:ring-2 with focus:ring-offset-2 focus:ring-offset-slate-900. Without ring-offset-slate-900, the ring merges with the dark background and becomes invisible -- violating WCAG 2.1 AA.
+- Card Elevation: hover:-translate-y-0.5 + hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] -- the deep dark shadow reinforces the dark environment. Never use light-colored shadows on dark backgrounds.
 - Easing: duration-200 ease-out for buttons and interactive controls. duration-300 ease-out for card-level transitions. Never exceed duration-300.
 
 ## Self-Check

@@ -6,6 +6,8 @@ export const acidGraphics: DesignStyle = {
   nameEn: "Acid Graphics",
   description:
     "高饱和度荧光色彩、扭曲字体、液态流动形态和迷幻视觉。源于锐舞文化和地下俱乐部美学，以强烈的视觉冲击力呈现反叛与实验精神。",
+  descriptionEn:
+    "High-saturation fluorescent colors, distorted typography, liquid flowing forms, and psychedelic visuals. Rooted in rave culture and underground club aesthetics, presenting rebellion and experimentation through intense visual impact.",
   cover: "/styles/acid-graphics.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast", "modern"],
@@ -26,6 +28,15 @@ export const acidGraphics: DesignStyle = {
 - 视觉噪声：扫描线叠加、Op-Art 棋盘格、3D 线框网格
 - 多层叠加：文字和色彩的多层偏移堆叠，制造视觉干扰`,
 
+  philosophyEn: `Acid Graphics originates from 90s rave culture and underground club scenes, blending cyberpunk, psychedelic art, and experimental typography.
+
+Core principles:
+- Fluorescent colors: High-saturation fluorescent green, acid yellow, electric purple, and cyber pink
+- Dark base: Deep black backgrounds make fluorescent colors more glaring and prominent
+- Distorted morphing: Liquid distortion feel in typography and forms, tilted cards and elements
+- Visual noise: Scanline overlays, Op-Art checkerboards, 3D wireframe grids
+- Multi-layer stacking: Multi-layer offset stacking of text and color, creating visual interference`,
+
   doList: [
     "使用纯黑 #0a0a0a 作为主背景",
     "使用荧光色系（绿 #39ff14、黄 #e6ff00、紫 #a020f0、粉 #ff6ec7）",
@@ -39,6 +50,19 @@ export const acidGraphics: DesignStyle = {
     "悬停时加入故障感反馈（如 hover:-skew-x-6、瞬时反差变化）",
   ],
 
+  doListEn: [
+    "Use pure black #0a0a0a as main background",
+    "Use fluorescent color system (green #39ff14, yellow #e6ff00, purple #a020f0, pink #ff6ec7)",
+    "Use monospace fonts font-mono",
+    "Keep sharp edges (rounded-none)",
+    "Use hard-edge offset shadows (shadow-[Npx_Npx_0px_color])",
+    "All text uppercase tracking-widest",
+    "Add scanline overlay effects",
+    "Use skew/rotate to create distortion feel",
+    "Use ultra-short or no-transition harsh animations (duration-75 or duration-0)",
+    "Add glitch-feel feedback on hover (e.g., hover:-skew-x-6, instant contrast changes)",
+  ],
+
   dontList: [
     "禁止使用柔和的粉彩色或低饱和度色",
     "禁止使用圆角（rounded-md 及以上）",
@@ -47,6 +71,16 @@ export const acidGraphics: DesignStyle = {
     "禁止使用白色或浅色背景",
     "禁止使用渐变（所有颜色必须是纯平面荧光色）",
     "禁止使用平滑抛光感动效（ease-in-out、缓慢微交互）",
+  ],
+
+  dontListEn: [
+    "Do not use soft pastel or low-saturation colors",
+    "Do not use rounded corners (rounded-md and above)",
+    "Do not use serif fonts",
+    "Do not use soft shadows (shadow-md, shadow-lg, etc.)",
+    "Do not use white or light backgrounds",
+    "Do not use gradients (all colors must be flat fluorescent)",
+    "Do not use polished smooth animations (ease-in-out, slow micro-interactions)",
   ],
 
   components: {
@@ -230,6 +264,55 @@ export const acidGraphics: DesignStyle = {
 }`,
 
   aiRules: `You are an Acid Graphics design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Soft pastel colors, muted tones, or low-saturation colors
+- Rounded corners of any kind (rounded-md, rounded-lg, rounded-xl, rounded-full)
+- Serif fonts
+- Subtle or soft shadows (shadow-sm, shadow-md, shadow-lg)
+- Gradients of any kind (all colors must be flat fluorescent)
+- White or light backgrounds
+- Backdrop blur or frosted glass effects
+
+## Must Follow
+
+- Dark background: bg-[#0a0a0a] always
+- Fluorescent colors only: green #39ff14, yellow #e6ff00, purple #a020f0, pink #ff6ec7
+- Monospace fonts: font-mono for all text
+- All uppercase: uppercase tracking-widest
+- Sharp edges: rounded-none everywhere
+- Hard offset shadows: shadow-[Npx_Npx_0px_color] with fluorescent colors
+- Bold borders: border-2 with fluorescent colors
+- Skewed/rotated elements for distortion feel
+- Scanline/noise overlays for visual interference
+
+## Animation & Interaction Rules
+
+- Hard & glitchy only: use duration-75 or duration-0 for interaction transitions
+- Hover must feel unstable: skew, abrupt offset changes, or harsh color flips
+- Active state must be brutal: collapse shadow instantly and increase press translation
+- Avoid polished micro-interactions; interactions should feel raw and disruptive
+
+## Color Palette
+
+Primary:
+- Fluorescent Green: #39ff14 (main accent)
+- Black: #0a0a0a (backgrounds)
+- Acid Yellow: #e6ff00 (highlights)
+- Electric Purple: #a020f0 (shadows, secondary)
+- Cyber Pink: #ff6ec7 (accents)
+
+## Special Elements
+
+- Scanline overlay effects (repeating-linear-gradient)
+- Op-Art checkerboard patterns
+- Chrome text layering (multiple offset text copies)
+- 3D wireframe grid backgrounds
+- Skewed card layouts and tilted elements
+- Terminal-style form inputs with fluorescent cursors`,
+
+  aiRulesEn: `You are an Acid Graphics design style frontend development expert. All generated code must strictly follow these constraints:
 
 ## Absolutely Forbidden
 

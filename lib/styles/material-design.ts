@@ -6,6 +6,8 @@ export const materialDesign: DesignStyle = {
   nameEn: "Material Design",
   description:
     "Google 推出的设计系统，基于纸张和墨水的隐喻，强调层次、动效、大胆色彩和响应式交互，是现代移动端设计的标准。",
+  descriptionEn:
+    "Google's design system based on the metaphor of paper and ink, emphasizing hierarchy, motion, bold colors, and responsive interactions -- the standard for modern mobile design.",
   cover: "/styles/material-design.svg",
   styleType: "visual",
   tags: ["modern", "brand-inspired"],
@@ -25,6 +27,14 @@ export const materialDesign: DesignStyle = {
 - 大胆色彩：鲜明的主色和强调色
 - 有意义的动效：动画传达空间关系和反馈`,
 
+  philosophyEn: `Material Design is a design language launched by Google in 2014, comparing digital interfaces to paper and ink with physical properties.
+
+Core principles:
+- Material metaphor: Interfaces are like paper with thickness, stackable and movable
+- Elevation system: Expressing hierarchy through shadows
+- Bold colors: Vivid primary and accent colors
+- Meaningful motion: Animations convey spatial relationships and feedback`,
+
   doList: [
     "使用海拔阴影系统表达层次",
     "应用涟漪效果作为点击反馈",
@@ -38,6 +48,19 @@ export const materialDesign: DesignStyle = {
     "卡片 hover:-translate-y-1 配合海拔阴影升级（Z 轴物理抬升感）",
   ],
 
+  doListEn: [
+    "Use elevation shadow system to express hierarchy",
+    "Apply ripple effects as click feedback",
+    "Use bold vivid colors",
+    "Maintain 8dp spacing grid",
+    "Use Roboto font",
+    "Add meaningful micro-animations",
+    "Precise dual-layer elevation shadows: hover from dp2 to dp8, shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)] to shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] (Elevation Physics)",
+    "Use Material standard easing curve ease-[cubic-bezier(0.4,0,0.2,1)] duration-[250ms] (Deceleration Curve)",
+    "Button active:scale-[0.98] (Pseudo-Ripple, finger press ripple prelude)",
+    "Card hover:-translate-y-1 paired with elevation shadow upgrade (Z-axis physical lift feel)",
+  ],
+
   dontList: [
     "禁止使用不一致的阴影深度",
     "禁止使用过于柔和的配色",
@@ -46,6 +69,16 @@ export const materialDesign: DesignStyle = {
     "禁止按钮缺少 active:scale-[0.98]（Material Pseudo-Ripple 是触感真实性的核心）",
     "禁止使用非 Material 标准缓动曲线（必须使用 cubic-bezier(0.4,0,0.2,1)）",
     "禁止卡片 hover 时阴影不变深（海拔变化是 Material 物理规则，不可省略）",
+  ],
+
+  dontListEn: [
+    "Do NOT use inconsistent shadow depths",
+    "Do NOT use overly soft color schemes",
+    "Do NOT omit interaction feedback",
+    "Do NOT break the 8dp grid system",
+    "Do NOT omit active:scale-[0.98] on buttons (Material Pseudo-Ripple is core to tactile authenticity)",
+    "Do NOT use non-Material standard easing curves (must use cubic-bezier(0.4,0,0.2,1))",
+    "Do NOT keep card shadows unchanged on hover (elevation change is a Material physics rule, cannot be omitted)",
   ],
 
   components: {
@@ -235,6 +268,44 @@ export const materialDesign: DesignStyle = {
 - Pseudo-Ripple: active 状态至少包含 active:scale-[0.98] 或明暗下压反馈，模拟触控涟漪前奏。
 - Deceleration Curve: 交互过渡优先使用 ease-[cubic-bezier(0.4,0,0.2,1)]，时长 200-300ms。
 - Input Float: 输入框聚焦时标签必须平滑上浮并缩小，边框高亮同步过渡。`,
+
+  aiRulesEn: `You are a Material Design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using inconsistent shadow depths
+- Using overly soft muted color schemes
+- Omitting interaction feedback effects
+- Breaking the 8dp grid system
+
+## Must Follow
+
+- Elevation shadows shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)]
+- Primary color bg-[#6200ee] text-white
+- Accent color bg-[#03dac6]
+- Rounded cards rounded-xl
+- Uppercase button text uppercase tracking-wider
+
+## Color Palette
+
+- Primary: #6200ee (purple)
+- Primary variant: #3700b3
+- Secondary: #03dac6 (cyan)
+- Background: #fafafa
+- Surface: #ffffff
+- Error: #b00020
+
+## Spacing
+
+- Based on 8dp grid
+- p-2 (8px), p-4 (16px), p-6 (24px), p-8 (32px)
+
+## Animation & Interaction Rules
+
+- Elevation Physics: Hover lifts from low to high elevation shadow, optionally paired with slight -translate-y-1 to enhance Z-axis feel.
+- Pseudo-Ripple: Active state must include at least active:scale-[0.98] or brightness press feedback, simulating touch ripple prelude.
+- Deceleration Curve: Interaction transitions prefer ease-[cubic-bezier(0.4,0,0.2,1)], duration 200-300ms.
+- Input Float: On input focus, label must smoothly float up and shrink, with border highlight transitioning in sync.`,
 
   examplePrompts: [
     {

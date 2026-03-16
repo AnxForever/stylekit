@@ -6,6 +6,8 @@ export const comicStyle: DesignStyle = {
   nameEn: "Comic Style",
   description:
     "灵感源自漫画书和日式漫画的设计风格，浓重的墨线边框、网点填充、对话气泡、动作线和分镜面板布局，充满故事感和视觉冲击力。",
+  descriptionEn:
+    "A design style inspired by comic books and manga, featuring heavy ink-line borders, halftone fills, speech bubbles, action lines, and panel layouts, full of narrative and visual impact.",
   cover: "/styles/comic-style.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -26,6 +28,15 @@ export const comicStyle: DesignStyle = {
 - 叙事性：每个区块都像漫画的一帧，讲述故事
 - 情绪爆发：交互要像 POW! BAM! 一样夸张有力`,
 
+  philosophyEn: `Comic Style is a design style derived from comic books and manga, transforming interfaces into vivid comic panels through heavy ink-line borders, halftone dots, speech bubbles, and dynamic lines.
+
+Core principles:
+- Ink feel: Using thick black borders to outline element contours
+- Halftone effect: Using halftone dots to simulate comic print texture
+- Dynamism: Expressing energy and movement through speed lines and action lines
+- Narrative: Each section is like a comic frame, telling a story
+- Emotional burst: Interactions should be as exaggerated and powerful as POW! BAM!`,
+
   doList: [
     "使用粗黑色边框 border-4 border-black 模拟墨线",
     "使用硬边阴影 shadow-[4px_4px_0_#000] 模拟印刷偏移",
@@ -39,6 +50,19 @@ export const comicStyle: DesignStyle = {
     "hover 时背景网点（radial-gradient）浮现（group-hover:opacity-20）",
   ],
 
+  doListEn: [
+    "Use thick black borders border-4 border-black to simulate ink lines",
+    "Use hard-edge shadows shadow-[4px_4px_0_#000] to simulate print offset",
+    "Use speech bubble shapes to display information",
+    "Use halftone dots as background texture",
+    "Text uses uppercase bold uppercase font-black",
+    "Buttons use exaggerated hover effects",
+    "Hover with scale-110 + rotate(-3deg), like comic sound effect bubbles popping out",
+    "group-hover reveals hidden NEW! label from scale-0 to scale-100",
+    "Active instantly zeroes out shadow, creating ink pressure feel",
+    "Hover reveals background halftone dots (radial-gradient) (group-hover:opacity-20)",
+  ],
+
   dontList: [
     "禁止使用柔和阴影 shadow-lg",
     "禁止使用过细的边框 border",
@@ -47,6 +71,16 @@ export const comicStyle: DesignStyle = {
     "禁止缺少动态感和能量感",
     "禁止使用圆角（rounded-lg, rounded-xl），对话气泡除外",
     "禁止使用过长的 duration（最长 duration-100）",
+  ],
+
+  dontListEn: [
+    "Do NOT use soft shadows shadow-lg, shadow-xl, shadow-md",
+    "Do NOT use thin borders border, border-2",
+    "Do NOT use gradients as main visual effect",
+    "Do NOT use overly formal typography",
+    "Do NOT lack dynamism and energy",
+    "Do NOT use rounded cards (rounded-lg, rounded-xl), except speech bubbles",
+    "Do NOT use transition durations exceeding duration-100",
   ],
 
   components: {
@@ -338,6 +372,63 @@ export const comicStyle: DesignStyle = {
 4. 按钮 hover 有 scale-110 + rotate(-3deg) 爆发感
 5. 按钮 active 有 shadow-none 瞬间归零
 6. 卡片内有 group-hover 触发的隐藏元素`,
+
+  aiRulesEn: `You are a Comic Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using soft shadows shadow-lg, shadow-xl, shadow-md
+- Using thin borders border, border-2
+- Using gradients as main background bg-gradient-*
+- Using rounded cards rounded-lg, rounded-xl (except speech bubbles)
+- Using semi-transparent/blur effects backdrop-blur
+- Using transition durations exceeding duration-100
+
+## Must Follow
+
+- Thick black borders border-4 border-black
+- Hard-edge shadows shadow-[4px_4px_0_#000] or shadow-[6px_6px_0_#000]
+- No border radii rounded-none (except speech bubbles)
+- Uppercase bold text uppercase font-black
+- High-contrast solid colors
+- Button press effects (displacement + shadow disappears)
+
+## Animation & Interaction Rules
+
+- Pop-Art Explosion: Hover makes elements burst out exaggeratedly (hover:scale-110 hover:-rotate-3), like comic sound effect bubbles POW! BAM! exploding. Color inversion (e.g., hover:bg-[#ffcc00] hover:text-black) enhances drama.
+- Halftone Reveal: Buttons/cards have hidden halftone dot backgrounds (radial-gradient), revealed via group-hover:opacity-10 (note: must use group-hover not hover, as the layer has pointer-events-none).
+- Heavy Ink: On click (active), hard shadow instantly zeroes (active:shadow-none), paired with active:translate-x-2 active:translate-y-2, creating strong ink pressure feel.
+- Badge Pop: Card group-hover reveals hidden NEW! label from scale-0 instantly to scale-100 (transition-transform duration-100).
+- Shadow Amplification: Hover expands hard shadow from 8px to 16px, paired with -translate-y-2, enhancing comic "page flip" physical feel.
+
+## Color Palette
+
+Primary:
+- Black: #1a1a1a (ink lines)
+- White: #ffffff (panel background)
+
+Accent colors:
+- Red: #ff3333 (action, CTA)
+- Yellow: #ffcc00 (labels, highlights)
+- Blue: #3366ff (info, links)
+- Green: #33cc33 (success)
+
+## Special Effects
+
+Halftone dots: background-image: radial-gradient(circle, #000 1px, transparent 1px) + bg-[size:4px_4px]
+Speech bubbles: border-4 border-black rounded-3xl + triangle tail pseudo-element
+Action lines: repeating-linear-gradient
+Text effects: [text-shadow:3px_3px_0_#ff3333,-3px_-3px_0_#3366ff]
+
+## Self-Check
+
+After generating code, verify:
+1. All elements have thick black borders border-4
+2. Using hard-edge shadows not soft shadows
+3. Text is uppercase bold
+4. Button hover has scale-110 + rotate(-3deg) burst feel
+5. Button active has shadow-none instant zeroing
+6. Cards have group-hover triggered hidden elements`,
 
   examplePrompts: [
     {

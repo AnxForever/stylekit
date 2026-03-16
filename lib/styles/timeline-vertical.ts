@@ -6,6 +6,8 @@ export const timelineVertical: DesignStyle = {
   nameEn: "Vertical Timeline",
   description:
     "垂直时间轴布局，通过连接线串联时间节点，适合展示历史进程、项目里程碑、工作经历、流程步骤。",
+  descriptionEn:
+    "Vertical timeline layout connecting time nodes through a connecting line. Ideal for displaying historical progress, project milestones, work experience, and process steps.",
   cover: "/styles/timeline-vertical.svg",
   styleType: "layout",
   tags: ["modern", "minimal"],
@@ -26,6 +28,14 @@ export const timelineVertical: DesignStyle = {
 - 连接关系：视觉线条串联所有事件
 - 渐进展示：支持滚动触发动画`,
 
+  philosophyEn: `Vertical Timeline is a layout approach for displaying time sequences or process steps, guiding reading through visual connecting lines.
+
+Core principles:
+- Linear narrative: Clear chronological or process order
+- Node emphasis: Each important moment has a clear marker
+- Connected relationships: Visual lines link all events together
+- Progressive reveal: Supports scroll-triggered animations`,
+
   doList: [
     "使用伪元素或 div 创建中央连接线",
     "节点圆点与连接线对齐",
@@ -39,6 +49,19 @@ export const timelineVertical: DesignStyle = {
     "交互过渡使用 duration-200 ease-out，保障快速时间浏览",
   ],
 
+  doListEn: [
+    "Use pseudo-elements or divs to create the central connecting line",
+    "Node dots align with the connecting line",
+    "Alternating left-right layout adds visual variety",
+    "Mobile switches to single-side layout",
+    "Add scroll-triggered entrance animations",
+    "Nodes use consistent time/sequence number format",
+    "Connecting line uses soft colors to avoid stealing attention",
+    "Card hover must synchronize node highlight or scale, establishing axis linkage",
+    "Card hover can slightly shift along horizontal axis, expressing a historical node being pulled out for examination",
+    "Interaction transitions use duration-200 ease-out, ensuring fast timeline browsing",
+  ],
+
   dontList: [
     "禁止连接线断裂或不对齐",
     "禁止节点大小不一致",
@@ -47,6 +70,16 @@ export const timelineVertical: DesignStyle = {
     "禁止内容过长导致连接线过长",
     "禁止节点与卡片交互脱节（仅卡片变化）",
     "禁止使用迟缓或拖泥带水的过渡时序",
+  ],
+
+  dontListEn: [
+    "Do not break or misalign the connecting line",
+    "Do not use inconsistent node sizes",
+    "Do not keep alternating layout on mobile",
+    "Do not omit time/sequence labels",
+    "Do not make content too long causing excessively long connecting lines",
+    "Do not decouple node and card interactions (only card changes without node response)",
+    "Do not use sluggish or dragging transition timing",
   ],
 
   components: {
@@ -370,6 +403,77 @@ Scroll-triggered:
 - Pull-out Effect: 卡片 hover 可轻微上浮并沿水平轴外移（translate-x），模拟节点被拉出审视。
 - Sequential Smoothness: 过渡使用 duration-200 ease-out，支持快速滑动浏览时的稳定反馈。
 - Connected Focus: 聚焦卡片边框颜色需和时间轴主线一致，确保叙事连贯性。
+
+## Self-Check`,
+
+  aiRulesEn: `You are a frontend expert specializing in Vertical Timeline layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT break the connecting line
+- Do NOT use inconsistent node sizes
+- Do NOT keep alternating layout on mobile
+- Do NOT omit time/date labels
+- Do NOT make content too long per node
+
+## Must Follow
+
+- Central line: absolute positioned pseudo-element or div
+- Node dots: aligned with center line
+- Mobile: single-side layout (all items on right)
+- Desktop: can alternate left/right
+- Consistent spacing between nodes
+- Clear time/date indicators
+
+## Structure
+
+Container:
+- relative positioning
+- padding-left for line space (mobile)
+- centered line (desktop alternating)
+
+Central Line:
+- Pseudo-element or div
+- Absolute positioned
+- 2px width, subtle color
+
+Node:
+- Circular dot (w-4 h-4)
+- Aligned with line center
+- Different colors for status
+- White border for contrast
+
+Content Card:
+- Connected visually to node
+- Date/time label
+- Title and description
+- Optional action button
+
+## Responsive
+
+Mobile:
+- All items on one side
+- Line on left
+- Full-width cards
+
+Desktop:
+- Optional alternating sides
+- Line in center
+- Cards 50% width
+
+## Animation
+
+Scroll-triggered:
+- Items fade in on scroll
+- Stagger animation
+- Node pulse on current
+
+## Animation & Interaction Rules
+
+- Node Synchronization: When hovering a card, the timeline node must synchronize with highlight, scale, or glow, establishing a strong connection.
+- Pull-out Effect: Card hover can slightly lift and shift along the horizontal axis (translate-x), simulating a node being pulled out for examination.
+- Sequential Smoothness: Transitions use duration-200 ease-out, supporting stable feedback during fast scrolling browsing.
+- Connected Focus: Focused card border color must match the timeline main line, ensuring narrative continuity.
 
 ## Self-Check
 

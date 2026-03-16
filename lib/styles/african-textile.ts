@@ -6,6 +6,8 @@ export const africanTextile: DesignStyle = {
   nameEn: "African Textile",
   description:
     "西非Kente布和Adire扎染为灵感的设计风格，大胆的几何编织图案、大地色与鲜明色彩的碰撞、手工质感。",
+  descriptionEn:
+    "Design style inspired by West African Kente cloth and Adire tie-dye, featuring bold geometric weave patterns, earth tones clashing with vivid colors, and handcrafted textures.",
   cover: "/styles/african-textile.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -29,6 +31,18 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
 
 适用场景包括文化品牌、手工艺品电商、教育平台以及任何希望传达力量、传统与大地联结感的项目。`,
 
+  philosophyEn: `African Textile draws inspiration from West African Kente weaving and Adire indigo tie-dye, transforming centuries of textile craft traditions into a vibrant digital design language.
+
+Core concepts:
+- Bold geometry: The warp-and-weft weaving of Kente cloth produces strong geometric stripes and color blocks, with each pattern carrying specific cultural meaning and social status symbolism
+- Earth tones: Dark wood, terracotta orange, and sand gold form a warm and substantial color foundation, echoing the red soil and grasslands of the African continent
+- Handcrafted texture: Rough fabric textures and imperfect handmade edges give the interface a unique human warmth
+- Color collision: The vivid contrast between warm earth tones and forest green mimics the visual impact of bright stripes interspersed against dark backgrounds in Kente cloth
+
+Kente cloth is called "the cloth of kings" (nwentoma) in Akan culture, and its weaving techniques have been listed as UNESCO Intangible Cultural Heritage. Each color and pattern combination represents different proverbs, historical events, or philosophical concepts.
+
+Suitable for cultural brands, artisan e-commerce, educational platforms, and any project seeking to convey strength, tradition, and a connection to the earth.`,
+
   doList: [
     "使用Kente橙 bg-[#c4501f] 和金色 bg-[#f0c75e] 做强调元素",
     "使用深木色 bg-[#2c1810] 做主背景传达厚重感",
@@ -43,6 +57,20 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
     "悬停时允许局部织纹块轻微错位，模拟织物拉扯",
   ],
 
+  doListEn: [
+    "Use Kente orange bg-[#c4501f] and gold bg-[#f0c75e] for accent elements",
+    "Use dark wood bg-[#2c1810] as main background to convey weight",
+    "Use sand bg-[#e8d5b5] for secondary backgrounds and card base colors",
+    "Use forest green text-[#1a5632] for text and decorative color",
+    "Employ geometric stripes and color blocks as decorations to simulate weave patterns",
+    "Use thick borders border-2 or border-4 to convey the structural feel of fabric",
+    "Components use small rounded corners rounded-lg to keep handcrafted but not rough",
+    "Headings use font-bold uppercase tracking-widest to convey solemnity",
+    "Keep interaction rhythm steady, prefer duration-300",
+    "Add press damping on click (active:scale-[0.98] + active:brightness-90)",
+    "Allow localized weave blocks to shift slightly on hover, simulating fabric tension",
+  ],
+
   dontList: [
     "禁止使用霓虹色或高饱和荧光色 text-[#00ffff]",
     "禁止使用柔和粉彩色调 bg-pink-100, bg-purple-100",
@@ -51,6 +79,16 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
     "禁止使用玻璃拟态或模糊效果 backdrop-blur",
     "禁止省略几何装饰元素",
     "禁止使用轻飘快速交互（duration-75 + 大幅位移）",
+  ],
+
+  dontListEn: [
+    "Do not use neon or high-saturation fluorescent colors text-[#00ffff]",
+    "Do not use soft pastel tones bg-pink-100, bg-purple-100",
+    "Do not use very large rounded corners rounded-full or rounded-3xl",
+    "Do not use pure white backgrounds bg-white",
+    "Do not use glassmorphism or blur effects backdrop-blur",
+    "Do not omit geometric decorative elements",
+    "Do not use light, fast interactions (duration-75 + large displacement)",
   ],
 
   components: {
@@ -258,6 +296,53 @@ Kente布在阿坎族文化中被称为"国王之布"（nwentoma），其编织�
 - Use deliberate timing around duration-300 for primary hover/active feedback
 - Deep press on click: use active:scale-[0.98], active:brightness-90, and shadow collapse
 - Woven shifts: geometric accent blocks can move 1-2px on hover to mimic textile tension
+- Avoid glitch or jitter motion; movement must stay grounded and physical
+
+## Color Palette
+
+Primary:
+- Kente Orange: #c4501f
+- Dark Wood: #2c1810
+- Gold: #f0c75e
+- Forest Green: #1a5632
+- Sand: #e8d5b5
+
+## Special Elements
+
+- Kente stripe patterns (repeating color blocks)
+- Geometric square and rectangular decorations
+- Woven texture overlays
+- Bold color block dividers
+- Earth-tone gradients`,
+
+  aiRulesEn: `You are an African Textile design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Neon or fluorescent colors (text-[#00ffff], text-[#ff00ff])
+- Pastel or soft pink/purple tones (bg-pink-100, bg-purple-100)
+- Very round shapes (rounded-full, rounded-3xl)
+- Pure white backgrounds (bg-white)
+- Glass morphism or blur effects (backdrop-blur)
+- Thin hairline borders (border, border-[0.5px])
+
+## Must Follow
+
+- Kente orange #c4501f and gold #f0c75e as primary accents
+- Dark wood #2c1810 for backgrounds and text
+- Sand #e8d5b5 for card backgrounds
+- Forest green #1a5632 for secondary accents
+- Bold geometric decorations (stripes, blocks, squares)
+- Thick borders border-2 or border-4
+- Hard offset shadows shadow-[4px_4px_0px_#2c1810]
+- Uppercase bold headings with wide tracking
+
+## Animation & Interaction Rules
+
+- Heavy tactility: Interactions should feel weighted and handcrafted, not floating
+- Use deliberate timing around duration-300 for primary hover/active feedback
+- Deep press on click: use active:scale-[0.98], active:brightness-90, and shadow collapse
+- Woven shifts: Geometric accent blocks can move 1-2px on hover to mimic textile tension
 - Avoid glitch or jitter motion; movement must stay grounded and physical
 
 ## Color Palette

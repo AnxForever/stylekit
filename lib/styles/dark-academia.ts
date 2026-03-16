@@ -6,6 +6,8 @@ export const darkAcademia: DesignStyle = {
   nameEn: "Dark Academia",
   description:
     "古典大学图书馆、皮革装帧书籍、古典文学和老式校园美学。深棕与墨绿配色，暗金点缀，温暖而沉静的学术氛围。",
+  descriptionEn:
+    "Classical university libraries, leather-bound books, classical literature, and vintage campus aesthetics. Deep brown and dark green palette with antique gold accents -- a warm and contemplative scholarly atmosphere.",
   cover: "/styles/dark-academia.svg",
   styleType: "visual",
   tags: ["retro", "minimal"],
@@ -25,6 +27,14 @@ export const darkAcademia: DesignStyle = {
 - 温暖沉静：大地色系营造温暖而内敛的氛围
 - 知识崇拜：对学习、阅读和智慧的极致推崇`,
 
+  philosophyEn: `Dark Academia is an aesthetic movement centered on classical education, literature, and architecture, blending Greco-Roman culture, Gothic architecture, and Victorian-era scholarly atmosphere.
+
+Core principles:
+- Scholarly classicism: The solemn beauty of classical university buildings and libraries
+- Literary atmosphere: The romance of leather-bound antique books and handwritten scripts
+- Warm serenity: Earth tones create a warm yet introspective atmosphere
+- Knowledge worship: The ultimate reverence for learning, reading, and wisdom`,
+
   doList: [
     "使用深棕、墨绿、暗金为主色调",
     "使用奶白色作为背景或文字底色",
@@ -34,11 +44,27 @@ export const darkAcademia: DesignStyle = {
     "添加纸张质感或皮革质感暗示",
   ],
 
+  doListEn: [
+    "Use deep brown, dark green, and antique gold as primary colors",
+    "Use cream white as background or text base color",
+    "Use serif fonts to convey classical scholarly feel",
+    "Create a warm, serene, and introspective atmosphere",
+    "Use subtle shadows and borders",
+    "Add paper texture or leather texture hints",
+  ],
+
   dontList: [
     "禁止使用鲜艳的霓虹配色",
     "禁止使用现代科技感设计",
     "禁止使用过于花哨的动画效果",
     "禁止使用冰冷的灰蓝色调",
+  ],
+
+  dontListEn: [
+    "Do not use vivid neon colors",
+    "Do not use modern tech-feel design",
+    "Do not use overly flashy animation effects",
+    "Do not use cold blue-gray tones",
   ],
 
   components: {
@@ -222,6 +248,47 @@ export const darkAcademia: DesignStyle = {
 - Candlelight Reveal: 悬停时可使用极柔和径向光晕或内阴影变化，模拟烛光靠近，亮度变化需克制。
 - Antique Slowness: 过渡建议 \`duration-700\` 到 \`duration-1000\`，并使用 \`ease-in-out\` 呈现厚重时间感。
 - Ink & Gold: 文本与装饰线在墨黑与暗金之间缓慢过渡，不使用高对比闪烁或突然反转。`,
+
+  aiRulesEn: `You are a Dark Academia design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Vivid neon colors
+- Modern tech-feel design
+- Overly flashy animation effects
+- Cold blue-gray tones
+
+## Must Follow
+
+- Deep brown and dark green palette bg-[#3d2b1f], bg-[#2d4a3e]
+- Antique gold decorations text-[#8b7355], border-[#8b7355]
+- Cream white background bg-[#f5f0e1]
+- Serif fonts font-serif
+- Subtle shadows shadow-sm
+- Warm atmosphere
+
+## Color Palette
+
+Primary:
+- Deep Brown: #3d2b1f
+- Dark Green: #2d4a3e
+- Antique Gold: #8b7355
+- Cream White: #f5f0e1
+- Dark Umber: #5c4033
+
+## Special Elements
+
+- Paper texture backgrounds
+- Book spine decorative lines
+- Classical divider lines
+- Serif typography
+
+## Animation & Interaction Rules
+
+- Library Stillness: No jumping, scaling, or any frivolous displacement (like \`translate\`). The interface should maintain the composure of ancient tomes.
+- Candlelight Reveal: Hover may use extremely soft radial glow or inner shadow changes, simulating candlelight approaching -- brightness changes must be restrained.
+- Antique Slowness: Transitions should use \`duration-700\` to \`duration-1000\` with \`ease-in-out\` for a weighty sense of time.
+- Ink & Gold: Text and decorative lines transition slowly between ink black and antique gold, without high-contrast flashing or sudden inversions.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const fullPageScroll: DesignStyle = {
   nameEn: "Full Page Scroll",
   description:
     "每一屏占满整个视口的沉浸式滚动体验，通过滚动切换完整场景，适合品牌故事、产品介绍、作品集展示。",
+  descriptionEn:
+    "Immersive scrolling experience where each screen fills the entire viewport, switching complete scenes on scroll. Ideal for brand stories, product introductions, and portfolio showcases.",
   cover: "/styles/full-page-scroll.svg",
   styleType: "layout",
   tags: ["modern", "expressive"],
@@ -26,6 +28,14 @@ export const fullPageScroll: DesignStyle = {
 - 焦点集中：一次只展示一个核心信息
 - 记忆深刻：场景化展示更易被记住`,
 
+  philosophyEn: `Full Page Scroll is a layout approach that expands each content block to fill the entire viewport, creating a cinematic narrative experience.
+
+Core principles:
+- Immersive experience: Each screen is a complete visual scene
+- Narrative rhythm: Scrolling equals page-turning, controlling information pacing
+- Focused attention: Only one core message displayed at a time
+- Memorable: Scene-based presentation is easier to remember`,
+
   doList: [
     "每个 section 设置 min-h-screen 或 h-screen",
     "使用 scroll-snap 实现平滑吸附 scroll-snap-type: y mandatory",
@@ -40,6 +50,20 @@ export const fullPageScroll: DesignStyle = {
     "内容层使用不同 delay（delay-0 / delay-75 / delay-150）制造错落视差",
   ],
 
+  doListEn: [
+    "Each section set to min-h-screen or h-screen",
+    "Use scroll-snap for smooth snapping scroll-snap-type: y mandatory",
+    "Center content vertically and horizontally flex items-center justify-center",
+    "Add scroll indicators and page navigation dots",
+    "Use CSS scroll-behavior: smooth",
+    "Consider adding enter/exit animations",
+    "Provide skip or quick navigation options",
+    "Sections use group class, content elements use group-hover for parallax effects",
+    "Navigation dots expand from circle to capsule on hover (hover:h-6) to hint interactive hierarchy",
+    "Background radial gradient scales to 110% on group-hover (breathing background)",
+    "Content layers use different delays (delay-0 / delay-75 / delay-150) to create staggered parallax",
+  ],
+
   dontList: [
     "禁止内容超出单屏视口（需要滚动才能看完）",
     "禁止没有滚动提示（用户可能不知道往下滚）",
@@ -47,6 +71,15 @@ export const fullPageScroll: DesignStyle = {
     "禁止锁定滚动时间过长",
     "禁止忽略移动端体验",
     "禁止所有内容元素使用相同的 transition delay（必须错落才能产生景深感）",
+  ],
+
+  dontListEn: [
+    "Do not let content overflow beyond viewport height (should not need scrolling to see everything)",
+    "Do not omit scroll indicators (users may not know to scroll down)",
+    "Do not use overly complex animations causing performance issues",
+    "Do not lock scroll for too long",
+    "Do not ignore mobile experience",
+    "Do not use the same transition delay for all content elements (staggering is required for depth perception)",
   ],
 
   components: {
@@ -390,6 +423,65 @@ Each section:
 - Breathing Background: Every section includes an absolute background div (radial-gradient or other atmospheric effect) with group-hover:scale-110 transition-transform duration-1000 ease-out. The scale is slow (1000ms) and subtle — creates a "room breathing" or "portal opening" sensation without being jarring.
 - Capsule Nav Dots: Side navigation dots are circles (w-3 h-3 rounded-full) by default. On hover: hover:h-6 (the dot extends vertically into a capsule/pill shape). The active section's dot is permanently tall (h-10 rounded-full). These indicate section hierarchy and interactivity without needing labels.
 - Heading Scale: The main heading uses group-hover:scale-105 in addition to translation — creates a subtle zoom-in that reinforces the "content approaching" cinematic parallax.
+- Scroll Indicator: animate-bounce, positioned absolute bottom-8 left-1/2 -translate-x-1/2. Always present on the first section.
+- Easing: Content parallax uses duration-700 ease-out. Background breathing uses duration-1000 ease-out. Nav dots use duration-300.
+
+## Navigation
+
+Side dots:
+- Fixed position on right side, vertical center
+- Active: w-3 h-10 rounded-full bg-white (tall capsule)
+- Inactive: w-3 h-3 rounded-full bg-white/30 hover:bg-white/80 hover:h-6 (expands to capsule on hover)
+- transition-all duration-300 for smooth shape morph
+
+## Self-Check
+
+After generating code, verify:
+1. All sections have group class
+2. Content elements inside sections have DIFFERENT delay values (delay-0, delay-75, delay-150)
+3. Each section has a breathing background div (group-hover:scale-110)
+4. Navigation dots use hover:h-6 to morph into capsules
+5. Active nav dot is permanently h-10 (tall capsule)
+6. All sections are exactly viewport height (min-h-screen)
+7. Scroll snapping enabled (scroll-snap-type y mandatory on container)`,
+
+  aiRulesEn: `You are a frontend expert specializing in Full Page Scroll layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT let content overflow beyond viewport height
+- Do NOT omit scroll indicators
+- Do NOT use heavy animations that hurt performance
+- Do NOT lock scroll for too long
+- Do NOT ignore mobile experience
+- Do NOT use the same transition delay for all content elements (staggering is mandatory for parallax depth)
+
+## Must Follow
+
+- Container: h-screen overflow-y-auto scroll-snap-type: y mandatory
+- Sections: min-h-screen snap-start group (MUST use group class for hover parallax)
+- Content: centered with flex items-center justify-center
+- Navigation: fixed capsule dots on right side (hover:h-6 to expand)
+- Scroll indicator: at bottom of first section
+- Smooth scrolling: scroll-behavior: smooth
+
+## Section Structure
+
+Each section:
+- min-h-screen (full viewport height)
+- snap-start (snap to section start)
+- group (required for group-hover parallax)
+- overflow-hidden (required for breathing background)
+- Content centered both ways
+- Distinct background color/gradient
+- Number indicator (01, 02, etc.)
+
+## Animation & Interaction Rules
+
+- Staggered Parallax: Content layers inside a group section must use DIFFERENT transition delays to create depth. Use delay-0 for the eyebrow/label (fastest, frontmost), delay-75 for the heading (middle layer), delay-150 for body text (slowest, deepest). All use group-hover:-translate-y-N with transition-transform duration-700 ease-out. This creates the illusion that elements are on different Z-planes flying toward the viewer as the section is hovered/focused.
+- Breathing Background: Every section includes an absolute background div (radial-gradient or other atmospheric effect) with group-hover:scale-110 transition-transform duration-1000 ease-out. The scale is slow (1000ms) and subtle -- creates a "room breathing" or "portal opening" sensation without being jarring.
+- Capsule Nav Dots: Side navigation dots are circles (w-3 h-3 rounded-full) by default. On hover: hover:h-6 (the dot extends vertically into a capsule/pill shape). The active section's dot is permanently tall (h-10 rounded-full). These indicate section hierarchy and interactivity without needing labels.
+- Heading Scale: The main heading uses group-hover:scale-105 in addition to translation -- creates a subtle zoom-in that reinforces the "content approaching" cinematic parallax.
 - Scroll Indicator: animate-bounce, positioned absolute bottom-8 left-1/2 -translate-x-1/2. Always present on the first section.
 - Easing: Content parallax uses duration-700 ease-out. Background breathing uses duration-1000 ease-out. Nav dots use duration-300.
 

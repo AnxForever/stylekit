@@ -6,6 +6,8 @@ export const neoBrutalistPlayful: DesignStyle = {
   nameEn: "Neo-Brutalist Playful",
   description:
     "Neo-Brutalist 的活泼版本。保留核心特征，加入更多色彩、旋转倾斜元素、图标化装饰和有趣的微交互，适合年轻化品牌。",
+  descriptionEn:
+    "A lively version of Neo-Brutalist. Retains core characteristics while adding more colors, rotated/tilted elements, icon decorations, and playful micro-interactions -- ideal for youth-oriented brands.",
   cover: "/styles/neo-brutalist-playful.svg",
   styleType: "visual",
   tags: ["expressive"],
@@ -28,6 +30,17 @@ export const neoBrutalistPlayful: DesignStyle = {
 
 适用场景：年轻化品牌、创意工作室、儿童产品、趣味应用`,
 
+  philosophyEn: `Neo-Brutalist Playful is a lively variant of the original Neo-Brutalist. While maintaining the hard-edge, no-rounded-corner structural foundation, it adds fun through:
+
+Distinctive elements:
+- Slight element rotation rotate-[-2deg] or rotate-[1deg]
+- Multi-colored block combinations
+- Appropriate use of icons as decoration (Lucide React, etc.)
+- More lively hover animations (scale, bounce)
+- Handwritten-style decorative text
+
+Use case: Youth-oriented brands, creative studios, children's products, fun applications`,
+
   doList: [
     "保持无圆角 rounded-none",
     "使用纯黑边框 border-4 border-black",
@@ -38,6 +51,16 @@ export const neoBrutalistPlayful: DesignStyle = {
     "阴影可使用彩色 shadow-[...rgba(255,107,107,1)]",
   ],
 
+  doListEn: [
+    "Keep no rounded corners rounded-none",
+    "Use pure black borders border-4 border-black",
+    "Add slight rotation to elements rotate-[-2deg] rotate-[1deg]",
+    "Use multiple accent colors, rich palette",
+    "Hover can use scale-105 enlargement effect",
+    "Appropriate use of icon decorations (Lucide React, etc.)",
+    "Shadows can use colors shadow-[...rgba(255,107,107,1)]",
+  ],
+
   dontList: [
     "禁止圆角",
     "禁止模糊阴影",
@@ -45,6 +68,15 @@ export const neoBrutalistPlayful: DesignStyle = {
     "禁止旋转超过 3 度",
     "禁止使用 emoji 或符号字符",
     "禁止使用柔和的灰色",
+  ],
+
+  dontListEn: [
+    "Do not use rounded corners",
+    "Do not use blurred shadows",
+    "Do not use gradients",
+    "Do not rotate more than 3 degrees",
+    "Do not use emoji or symbol characters",
+    "Do not use soft grays",
   ],
 
   components: {
@@ -303,6 +335,57 @@ h1, h2, h3, h4, h5, h6 {
 - 模糊阴影
 - 渐变
 - 灰暗配色`,
+
+  aiRulesEn: `You are a Neo-Brutalist Playful design style frontend development expert. This is the lively version of Neo-Brutalist.
+
+## Core Retained
+
+- No rounded corners rounded-none
+- Thick borders border-4 border-black
+- Hard-edge shadows
+- Hover displacement effects
+
+## Playful Elements
+
+Rotation:
+- Add slight rotation to elements rotate-[-2deg] rotate-[1deg] rotate-[-1deg]
+- Never exceed 3 degrees
+
+Colored shadows:
+- shadow-[6px_6px_0px_0px_rgba(255,107,107,1)]
+- shadow-[6px_6px_0px_0px_rgba(78,205,196,1)]
+- Shadow color changes on hover
+
+Colors (multi-colored):
+- Red: #ff6b6b
+- Teal: #4ecdc4
+- Yellow: #ffe66d
+- Mint: #95e1d3
+- Coral: #f38181
+
+Icons & Decorations:
+- Do not use emoji characters
+- May use Lucide React line icons as accents
+- Decorative elements prefer geometric shapes (squares, dots, lines)
+
+Interaction effects:
+- hover:scale-105 enlargement
+- hover:-translate-y-2 float up
+- transition-all duration-300
+
+## Animation & Interaction Rules
+
+- Toy Spring: Use duration-300 + ease-[cubic-bezier(0.34,1.56,0.64,1)] for spring-bounce displacement and rotation, distinguishing from the original's hard-cut feedback.
+- Tilt Exaggeration: Initial slight tilt switches to a larger reverse angle on hover (still within 3 degrees), keeping it playful but controlled.
+- Color Ping-Pong: Hard-edge shadows jump between teal, pink, and yellow, maintaining brutalist structure while enhancing toy-like feel.
+- Joyful Press: :active needs "squish" feedback: shadow-to-zero + equal displacement + slight scale (active:scale-95).
+
+## Forbidden
+
+- Rounded corners
+- Blurred shadows
+- Gradients
+- Dull/dark colors`,
 
   examplePrompts: [
     {

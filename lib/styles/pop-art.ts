@@ -6,6 +6,8 @@ export const popArt: DesignStyle = {
   nameEn: "Pop Art",
   description:
     "大胆鲜明的波普艺术风格，灵感来自 Andy Warhol 和 Roy Lichtenstein。粗黑轮廓、半色调网点、漫画式对话泡泡、高饱和度色块。适合创意品牌、潮流文化、艺术展示。",
+  descriptionEn:
+    "Bold and vivid Pop Art style inspired by Andy Warhol and Roy Lichtenstein. Thick black outlines, halftone Ben-Day dots, comic-style speech bubbles, and highly saturated color blocks. Ideal for creative brands, pop culture, and art showcases.",
   cover: "/styles/pop-art.svg",
   styleType: "visual",
   tags: ["expressive", "retro", "high-contrast"],
@@ -25,6 +27,14 @@ export const popArt: DesignStyle = {
 - 半色调网点：Ben-Day dots 是波普艺术的标志性纹理
 - 漫画风格：对话泡泡、动作线条等漫画元素融入界面`,
 
+  philosophyEn: `Pop Art style originates from the 1960s Pop Art movement, represented by Andy Warhol and Roy Lichtenstein, creating visual impact through bold color blocks, thick black outlines, and halftone Ben-Day dots.
+
+Core principles:
+- Thick black outlines: All elements use thick black borders to emphasize shapes
+- Highly saturated color blocks: Yellow, pink, blue and other pure flat color fills
+- Halftone Ben-Day dots: Ben-Day dots are the signature texture of Pop Art
+- Comic style: Speech bubbles, action lines, and other comic elements integrated into the interface`,
+
   doList: [
     "背景使用高饱和纯色 bg-[#ffdd00] 或 bg-white",
     "所有元素使用粗黑边框 border-4 border-black",
@@ -39,6 +49,20 @@ export const popArt: DesignStyle = {
     "Active Snap: `active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]` — inward press pushes shadow back toward zero",
   ],
 
+  doListEn: [
+    "Use highly saturated solid backgrounds bg-[#ffdd00] or bg-white",
+    "All elements use thick black borders border-4 border-black",
+    "Use Ben-Day halftone dots as background texture",
+    "Text uses bold font-black uppercase",
+    "Buttons and cards use hard shadows shadow-[4px_4px_0_#000]",
+    "Use high-contrast colors: yellow #ffdd00, pink #ff69b4, blue #00bfff",
+    "Hover state increases shadow offset hover:shadow-[6px_6px_0_#000]",
+    "Comic Pow!: hover:scale-110 hover:-rotate-3 -- exaggerated tilt + scale like a comic SFX panel bursting out of the frame",
+    "Ben-Day Dynamics: use dual dot layers -- base black dots deepen opacity-10 to opacity-30, and a second red dot layer opacity-0 to opacity-20 appears offset by half a grid on hover",
+    "Punchy Motion: duration-100 ease-out -- rubber-stamp speed, snappy but not instantaneous",
+    "Active Snap: active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000] -- inward press pushes shadow back toward zero",
+  ],
+
   dontList: [
     "禁止使用渐变色（必须是纯色平涂）",
     "禁止使用低饱和度/灰色系颜色",
@@ -49,6 +73,18 @@ export const popArt: DesignStyle = {
     "禁止使用 `duration-200` 或更长的 hover/active 过渡（波普艺术要求 `duration-100 ease-out` 的冲击速度）",
     "禁止 Ben-Day 纹理只用单层（必须双层叠加才有颜色变换的网点效果）",
     "禁止 hover 只使用 `translate-y` 而不配合 `scale` 和 `rotate`（Comic Pow! 三者缺一不可）",
+  ],
+
+  dontListEn: [
+    "No gradient colors (must be flat solid fills)",
+    "No low-saturation/gray-tone colors",
+    "No thin borders (must be border-2 or above)",
+    "No soft shadows shadow-md (must be hard shadows)",
+    "No overly rounded corners rounded-full (keep rounded-none or rounded-lg)",
+    "No minimalist/undecorated design language",
+    "No duration-200 or longer hover/active transitions (Pop Art demands duration-100 ease-out impact speed)",
+    "No single-layer Ben-Day texture (must use dual-layer overlay for color-shifting dot effect)",
+    "No hover using only translate-y without scale and rotate (Comic Pow! requires all three)",
   ],
 
   components: {
@@ -172,6 +208,47 @@ SPECIAL EFFECTS:
 - Ben-Day Dynamics: Use dual dot layers. Base black dots: \`opacity-10 group-hover:opacity-30\`. Secondary red dots offset by half a grid: \`opacity-0 group-hover:opacity-20\`. Together they simulate the Ben-Day color shift characteristic of Lichtenstein prints.
 - Punchy Motion: All transitions \`duration-100 ease-out\` — rubber-stamp speed, not smooth. Never use \`duration-200\` or slower for hover/active states.
 - Active Snap: \`active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]\` — the inward press pushes shadow back toward zero, creating a punchy click feel.`,
+
+  aiRulesEn: `STYLE: Pop Art
+TYPE: Bold comic-book inspired interface
+
+MUST USE:
+- Thick black borders: border-4 border-black
+- Hard offset shadows: shadow-[4px_4px_0_#000]
+- Bold flat colors: bg-[#ffdd00], bg-[#ff69b4], bg-[#00bfff]
+- Heavy typography: font-black uppercase tracking-wider
+- Ben-Day dot patterns as background texture
+- White or bright color backgrounds
+- Comic-style elements (speech bubbles, action words)
+
+MUST AVOID:
+- Gradients (use flat color fills only)
+- Low saturation / muted colors
+- Thin borders (border must be border-2+)
+- Soft shadows (shadow-md, shadow-lg)
+- Rounded-full shapes
+- Minimal / clean design language
+
+COLOR RULES:
+- Primary: Yellow (#ffdd00)
+- Secondary: Hot Pink (#ff69b4)
+- Accent: Electric Blue (#00bfff)
+- Borders: Black (#000000)
+- Background: White (#ffffff) or bright colors
+- Text: Black on light, White on dark colors
+
+SPECIAL EFFECTS:
+- Hard shadow offset increases on hover
+- Translate shift on hover for depth effect
+- Ben-Day dots overlay for pop art texture
+- Active state presses shadow inward
+
+## Animation & Interaction Rules
+
+- Comic Pow!: Hover applies exaggerated scale + tilt: hover:scale-110 hover:-rotate-3 -- like a comic SFX panel bursting out of the frame. Never use hover:translate-y alone without scale and rotate.
+- Ben-Day Dynamics: Use dual dot layers. Base black dots: opacity-10 group-hover:opacity-30. Secondary red dots offset by half a grid: opacity-0 group-hover:opacity-20. Together they simulate the Ben-Day color shift characteristic of Lichtenstein prints.
+- Punchy Motion: All transitions duration-100 ease-out -- rubber-stamp speed, not smooth. Never use duration-200 or slower for hover/active states.
+- Active Snap: active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000] -- the inward press pushes shadow back toward zero, creating a punchy click feel.`,
 
   examplePrompts: [
     {

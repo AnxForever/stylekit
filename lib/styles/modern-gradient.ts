@@ -6,6 +6,8 @@ export const modernGradient: DesignStyle = {
   nameEn: "Modern Gradient",
   description:
     "充满活力的现代渐变风格，多彩渐变背景、玻璃质感卡片、动态光影效果。适合创业公司、数字产品、活动页面。",
+  descriptionEn:
+    "Vibrant modern gradient style with colorful gradient backgrounds, glass-textured cards, and dynamic lighting effects. Ideal for startups, digital products, and event pages.",
   cover: "/styles/modern-gradient.svg",
   styleType: "visual",
   tags: ["expressive", "modern"],
@@ -25,6 +27,14 @@ export const modernGradient: DesignStyle = {
 - 现代科技：传达创新和前沿的品牌形象
 - 情感共鸣：色彩激发积极的情感反应`,
 
+  philosophyEn: `Modern Gradient style creates visual impact and vitality through rich gradient colors and lighting effects.
+
+Core principles:
+- Visual vitality: Gradient colors bring dynamism and energy
+- Depth and layers: Create depth through gradients and transparency
+- Modern tech: Convey an innovative and cutting-edge brand image
+- Emotional resonance: Colors evoke positive emotional responses`,
+
   doList: [
     "使用 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 等渐变",
     "卡片使用 backdrop-blur-xl bg-white/10 的玻璃效果",
@@ -35,6 +45,16 @@ export const modernGradient: DesignStyle = {
     "添加光晕效果 blur-3xl opacity-30 作为装饰",
   ],
 
+  doListEn: [
+    "Use bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 and similar gradients",
+    "Cards use backdrop-blur-xl bg-white/10 glass effect",
+    "Buttons use gradient + hover gradient shift effect",
+    "Dark backgrounds bg-slate-950 or bg-[#1e1b4b]",
+    "Text uses bg-gradient-to-r bg-clip-text text-transparent gradient effect",
+    "Use rounded-2xl or rounded-3xl corners",
+    "Add glow orb effects blur-3xl opacity-30 as decoration",
+  ],
+
   dontList: [
     "禁止使用纯色背景（主要区域）",
     "禁止使用单调的灰色调",
@@ -42,6 +62,15 @@ export const modernGradient: DesignStyle = {
     "禁止使用老式渐变（如垂直渐变的按钮）",
     "禁止过度使用渐变导致视觉混乱",
     "禁止在深色渐变上使用深色文字",
+  ],
+
+  dontListEn: [
+    "Do not use solid color backgrounds (main areas)",
+    "Do not use monotone gray schemes",
+    "Do not use sharp corners rounded-none",
+    "Do not use old-style gradients (e.g. vertical button gradients)",
+    "Do not overuse gradients causing visual clutter",
+    "Do not use dark text on dark gradients",
   ],
 
   components: {
@@ -159,6 +188,44 @@ TYPOGRAPHY:
 - Neon Dispersion: hover 时彩色阴影扩散半径显著增加，强化未来感光晕。
 - Zero-Gravity Float: 卡片与按钮可轻微上浮并微缩放，建议 duration-500 + ease-out。
 - Luminous Borders: 半透明边框在 hover 时提亮到品牌色透明度，形成被内部光线点亮的边缘。`,
+
+  aiRulesEn: `STYLE: Modern Gradient
+TYPE: Vibrant, energetic gradient design
+
+MUST USE:
+- Gradient backgrounds: bg-gradient-to-r from-violet-500 to-fuchsia-500
+- Glass morphism cards: backdrop-blur-xl bg-white/10 border-white/20
+- Dark base background: bg-slate-950 or bg-[#1e1b4b]
+- Gradient text: bg-gradient-to-r bg-clip-text text-transparent
+- Colored shadows: shadow-violet-500/25
+- Large rounded corners: rounded-2xl, rounded-3xl
+- Glow orbs for decoration: blur-3xl opacity-30
+
+MUST AVOID:
+- Solid color backgrounds (main areas)
+- Monotone gray schemes
+- Sharp corners (rounded-none)
+- Old-style gradients (vertical button gradients)
+- Visual clutter from too many gradients
+- Dark text on dark gradients
+
+COLOR COMBOS:
+- Violet to Fuchsia: from-violet-500 to-fuchsia-500
+- Cyan to Blue: from-cyan-500 to-blue-500
+- Pink to Orange: from-pink-500 to-orange-500
+- Multi-color: from-violet-500 via-fuchsia-500 to-cyan-500
+
+TYPOGRAPHY:
+- Headings: White or gradient text
+- Body: text-white/70 or text-white/80
+- Font weight: font-medium to font-semibold
+
+## Animation & Interaction Rules
+
+- Gradient Flow: Gradient interactions should include color band shifting (e.g. bg-[length:200%_auto] + hover:bg-right), avoid static brightening/darkening.
+- Neon Dispersion: On hover, colored shadow spread radius increases significantly, reinforcing futuristic glow halo.
+- Zero-Gravity Float: Cards and buttons can slightly lift and micro-scale, recommend duration-500 + ease-out.
+- Luminous Borders: Semi-transparent borders brighten to brand color opacity on hover, creating edges lit by internal light.`,
 
   examplePrompts: [
     {

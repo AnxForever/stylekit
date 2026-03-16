@@ -6,6 +6,8 @@ export const cyberpunkNeon: DesignStyle = {
   nameEn: "Cyberpunk Neon",
   description:
     "未来感十足的赛博朋克风格，霓虹发光效果、深色背景、高科技感的 UI 元素。适合游戏、科技产品、创意工作室。",
+  descriptionEn:
+    "A futuristic cyberpunk style with neon glow effects, dark backgrounds, and high-tech UI elements. Ideal for games, tech products, and creative studios.",
   cover: "/styles/cyberpunk-neon.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -25,6 +27,14 @@ export const cyberpunkNeon: DesignStyle = {
 - 高科技感：使用网格、扫描线等元素增加科技感
 - 色彩冲击：青色、品红、黄色等高饱和度颜色`,
 
+  philosophyEn: `Cyberpunk Neon style draws from cyberpunk sci-fi aesthetics, creating a futuristic feel through neon glow, dark backgrounds, and high contrast.
+
+Core principles:
+- Neon glow: Core elements stand out with glow effects
+- Dark dominance: Near-black backgrounds make neon colors more striking
+- High-tech feel: Grids, scanlines, and other elements enhance the tech atmosphere
+- Color impact: Cyan, magenta, yellow, and other high-saturation colors`,
+
   doList: [
     "背景使用深色 bg-[#0a0a0f] 或 bg-gray-950",
     "使用 shadow-[0_0_20px_rgba(0,255,255,0.5)] 创造发光效果",
@@ -35,6 +45,16 @@ export const cyberpunkNeon: DesignStyle = {
     "渐变文字 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent",
   ],
 
+  doListEn: [
+    "Use dark backgrounds bg-[#0a0a0f] or bg-gray-950",
+    "Use shadow-[0_0_20px_rgba(0,255,255,0.5)] to create glow effects",
+    "Text glow with [text-shadow:0_0_10px_currentColor]",
+    "Glowing borders with border border-cyan-400 shadow-[0_0_10px_rgba(0,255,255,0.3)]",
+    "Use scanline background effects for tech feel",
+    "Enhance glow on button hover hover:shadow-[0_0_30px_rgba(0,255,255,0.7)]",
+    "Gradient text bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent",
+  ],
+
   dontList: [
     "禁止使用浅色/白色背景",
     "禁止使用低饱和度颜色",
@@ -42,6 +62,15 @@ export const cyberpunkNeon: DesignStyle = {
     "禁止使用暖色调（除非作为警告/错误色）",
     "禁止圆角过大 rounded-2xl, rounded-3xl",
     "禁止使用柔和/温暖的设计语言",
+  ],
+
+  dontListEn: [
+    "Do not use light/white backgrounds",
+    "Do not use low-saturation colors",
+    "Do not use regular shadows like shadow-md (must use glow shadows)",
+    "Do not use warm color schemes (unless for warning/error colors)",
+    "Do not use overly large border radius rounded-2xl, rounded-3xl",
+    "Do not use soft/warm design language",
   ],
 
   components: {
@@ -152,6 +181,44 @@ Animation & Interaction Rules:
 - Glitch Press: \`:active\` 优先使用错位平移（如 \`translate-x\` + \`-translate-y\`）与颜色反转，避免常规按钮缩放反馈。
 - CRT Scanline: 大面积卡片在 hover 时提升扫描线密度或可见度，强调终端正在扫描的状态变化。
 - Fast & Raw: 常规交互响应建议 \`duration-100\` 到 \`duration-150\`；仅扫描扫光可放宽到 \`duration-300\` 以内。`,
+
+  aiRulesEn: `STYLE: Cyberpunk Neon
+TYPE: Futuristic sci-fi interface
+
+MUST USE:
+- Dark background: bg-[#0a0a0f] or bg-gray-950
+- Neon glow shadows: shadow-[0_0_20px_rgba(0,255,255,0.5)]
+- Text glow: style={{textShadow: '0 0 10px currentColor'}}
+- Glowing borders: border border-cyan-400 shadow-[0_0_10px...]
+- High saturation colors: cyan-400, fuchsia-500, yellow-400
+- font-mono for tech text
+- uppercase tracking-wider for labels
+
+MUST AVOID:
+- Light/white backgrounds
+- Low saturation colors
+- Regular shadows (shadow-md)
+- Warm color schemes
+- Large rounded corners (rounded-2xl+)
+- Soft/friendly design language
+
+COLOR RULES:
+- Primary: Cyan (#00ffff)
+- Accent: Magenta (#ff00ff)
+- Background: Near-black (#0a0a0f)
+- Text: White with glow
+- Borders: Primary color with glow
+
+SPECIAL EFFECTS:
+- Scan line overlay for tech feel
+- Pulsing elements with animate-pulse
+- Glow intensifies on hover
+
+Animation & Interaction Rules:
+- Unstable Neon: Glow effects may carry subtle pulsing and intensity fluctuations, but must not flicker at high frequency to the point of affecting readability.
+- Glitch Press: \`:active\` should prioritize offset translation (e.g., \`translate-x\` + \`-translate-y\`) with color inversion, avoiding standard button scale feedback.
+- CRT Scanline: Large cards increase scanline density or visibility on hover, emphasizing the terminal-scanning state change.
+- Fast & Raw: Standard interaction response should use \`duration-100\` to \`duration-150\`; only scan sweeps may extend up to \`duration-300\`.`,
 
   examplePrompts: [
     {

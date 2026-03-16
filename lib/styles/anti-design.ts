@@ -6,6 +6,8 @@ export const antiDesign: DesignStyle = {
   nameEn: "Anti-Design",
   description:
     "故意打破传统UI规范的粗野主义实验风格，极粗边框、高饱和色彩与不规则排版",
+  descriptionEn:
+    "An experimental brutalist style that deliberately breaks traditional UI conventions, with ultra-thick borders, high-saturation colors, and irregular typography.",
   cover: "/styles/anti-design.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -37,6 +39,18 @@ Core principles:
 - Intentional visual conflict between adjacent elements
 - Hard offset shadows only - no soft shadows ever`,
 
+  philosophyEn: `Anti-Design deliberately breaks every UI convention. Where traditional design seeks harmony, Anti-Design seeks visual conflict.
+
+Core principles:
+- Ultra-thick black borders (4-8px) on every element
+- Sharp corners only (border-radius: 0) - nothing is ever rounded
+- High-saturation primary colors: red, blue, yellow, magenta, cyan, green
+- Rotated text and elements at odd angles (-3deg to 5deg)
+- Dramatically mixed font sizes within the same section
+- Asymmetric, uneven borders (thicker on right/bottom)
+- Intentional visual conflict between adjacent elements
+- Hard offset shadows only - no soft shadows ever`,
+
   doList: [
     "Use ultra-thick black borders (4-8px) on everything",
     "Use sharp corners only (border-radius: 0)",
@@ -52,7 +66,33 @@ Core principles:
     "Prefer transition-none or linear timing for raw feedback",
   ],
 
+  doListEn: [
+    "Use ultra-thick black borders (4-8px) on everything",
+    "Use sharp corners only (border-radius: 0)",
+    "Apply high-saturation primary colors (red, blue, yellow, magenta)",
+    "Rotate text and elements at odd angles (-3deg to 5deg)",
+    "Mix font sizes dramatically within the same section",
+    "Use asymmetric, uneven borders (thicker on right/bottom)",
+    "Create intentional visual conflict between adjacent elements",
+    "Use hard offset shadows only (e.g., shadow-[8px_8px_0_#000])",
+    "Use font-black weight and uppercase for emphasis",
+    "Use aggressive hover states with abrupt color flips and border jumps",
+    "Break alignment on interaction using translate/rotate/size shifts",
+    "Prefer transition-none or linear timing for raw feedback",
+  ],
+
   dontList: [
+    "Don't use rounded corners of any kind",
+    "Don't use subtle or muted colors",
+    "Don't use consistent spacing or alignment",
+    "Don't use drop shadows or soft shadows",
+    "Don't use gradients (flat colors only)",
+    "Don't make things pretty or harmonious",
+    "Don't use backdrop-blur or translucency",
+    "Don't use smooth polished easing (ease-in-out, spring, bounce)",
+  ],
+
+  dontListEn: [
     "Don't use rounded corners of any kind",
     "Don't use subtle or muted colors",
     "Don't use consistent spacing or alignment",
@@ -265,6 +305,32 @@ Primary:
 - Dramatically mixed font sizes
 - Asymmetric border widths
 - Alternating high-saturation section backgrounds`,
+
+  aiRulesEn: `You are an Anti-Design style frontend development expert. All generated code must strictly follow these constraints:
+
+Absolutely Forbidden:
+- Rounded corners of any kind (rounded-sm, rounded-md, rounded-lg, rounded-xl, rounded-full)
+- Subtle or muted colors (grays, pastels, earth tones)
+- Soft shadows (shadow-sm, shadow-md, shadow-lg, shadow-xl)
+- Gradients of any kind (all colors must be flat high-saturation)
+- Backdrop blur or translucency effects
+- Consistent spacing or alignment that looks "designed"
+- Harmonious color combinations
+
+Must Follow:
+- Borders: Always 4-8px solid black. Thicker on right and bottom for depth
+- Border-radius: ALWAYS 0. Never round anything
+- Colors: Only high-saturation primaries - #FF0000, #0000FF, #FFFF00, #FF00FF, #00FF00, #00FFFF
+- Backgrounds: Alternate between white, yellow, and other bright colors per section
+- Shadows: Hard offset only (e.g., shadow-[8px_8px_0_#000]). No soft shadows
+- Text: Mix sizes dramatically. Use font-black weight. Uppercase for emphasis
+- Layout: Intentionally break grid alignment. Rotate elements (-3deg to 5deg)
+
+Animation & Interaction Rules:
+- Aggressive hover only: abrupt color collisions, border-thickness jumps, and harsh offsets
+- Broken layout on interaction is encouraged: alignment can intentionally fail on hover/focus
+- Zero polish: use transition-none or linear with near-zero duration; no smooth easing curves
+- Focus states should be louder than default states (thicker borders, stronger shadows, rotation/shift)`,
 
   examplePrompts: [
     {

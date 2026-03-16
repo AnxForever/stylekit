@@ -6,6 +6,8 @@ export const splitScreen: DesignStyle = {
   nameEn: "Split Screen",
   description:
     "左右对称或不对称的分屏布局，通过对比和平衡创造视觉张力，常用于产品展示、品牌故事、比较页面。",
+  descriptionEn:
+    "Symmetric or asymmetric split-screen layout creating visual tension through contrast and balance. Commonly used for product showcases, brand stories, and comparison pages.",
   cover: "/styles/split-screen.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const splitScreen: DesignStyle = {
 - 叙事引导：引导用户视线在两侧之间流动
 - 空间利用：充分利用宽屏显示器的优势`,
 
+  philosophyEn: `Split Screen is a layout approach that divides the viewport into two or more regions, creating visual tension and narrative effect through contrast.
+
+Core principles:
+- Contrast emphasis: Highlight differences or connections through left-right contrast
+- Visual balance: Maintain visual weight balance even when asymmetric
+- Narrative guidance: Guide the user's gaze to flow between both sides
+- Space utilization: Fully leverage the advantages of widescreen displays`,
+
   doList: [
     "使用 CSS Grid 或 Flexbox 实现分屏 grid grid-cols-2",
     "大屏幕保持分屏，小屏幕堆叠 lg:grid-cols-2 grid-cols-1",
@@ -36,12 +46,30 @@ export const splitScreen: DesignStyle = {
     "考虑分屏滚动锁定效果",
   ],
 
+  doListEn: [
+    "Use CSS Grid or Flexbox for split screen grid grid-cols-2",
+    "Large screens maintain split, small screens stack lg:grid-cols-2 grid-cols-1",
+    "Use contrasting or complementary content",
+    "Visual elements on one side, text content on the other",
+    "Maintain visual weight balance between both sides",
+    "Add transition animations to enhance experience",
+    "Consider split-screen scroll locking effects",
+  ],
+
   dontList: [
     "禁止两侧内容完全相同（无意义分屏）",
     "禁止移动端仍保持分屏（太窄）",
     "禁止两侧视觉重量严重失衡",
     "禁止忽略内容阅读顺序",
     "禁止分割线过于突兀",
+  ],
+
+  dontListEn: [
+    "Do not have identical content on both sides (pointless split)",
+    "Do not keep split layout on mobile (too narrow)",
+    "Do not create severe visual weight imbalance between sides",
+    "Do not ignore content reading order",
+    "Do not make divider lines too harsh",
   ],
 
   components: {
@@ -337,6 +365,73 @@ After generating code, verify:
 - Sharp Editorial Cuts: button hover uses direct black-white inversion with short duration and no gradient easing tricks.
 - Screen-Spanning Lines: center divider or split seam can briefly intensify on focus change, but motion stays minimal.
 - Static Text: descriptive text blocks must stay position-stable; avoid translate or scale on body copy.`,
+
+  aiRulesEn: `You are a frontend expert specializing in Split Screen layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT keep split layout on mobile (too narrow)
+- Do NOT have identical content on both sides
+- Do NOT create visual imbalance between panels
+- Do NOT ignore content reading order
+- Do NOT use harsh divider lines
+
+## Must Follow
+
+- Use CSS Grid: grid grid-cols-1 lg:grid-cols-2
+- Mobile: stack vertically (grid-cols-1)
+- Desktop: side by side (lg:grid-cols-2)
+- Each panel: min-h-[50vh] on mobile, min-h-screen on desktop
+- Balance visual weight between panels
+- One side visual, one side content
+
+## Layout Patterns
+
+50/50 Split:
+- grid-cols-1 lg:grid-cols-2
+- Both panels equal width
+
+60/40 Split:
+- grid-cols-1 lg:grid-cols-[60fr_40fr]
+- Emphasize one side
+
+Sticky Split:
+- One panel sticky (position: sticky, top: 0)
+- Other panel scrolls
+
+## Panel Content
+
+Visual Panel:
+- Full background image/color/video
+- Minimal text overlay
+- Center-aligned content
+
+Content Panel:
+- Ample padding (p-8 lg:p-16)
+- Left-aligned text
+- Clear hierarchy
+
+## Responsive
+
+Mobile: Stack vertically, visual panel first
+Tablet: May start splitting at md:
+Desktop: Full split with proper ratios
+
+## Animation & Interaction Rules
+
+- Counter-Weight Focus: Hover one panel while the opposite panel gently desaturates or fades in prominence.
+- Sharp Editorial Cuts: Button hover uses direct black-white inversion with short duration and no gradient easing tricks.
+- Screen-Spanning Lines: Center divider or split seam can briefly intensify on focus change, but motion stays minimal.
+- Static Text: Descriptive text blocks must stay position-stable; avoid translate or scale on body copy.
+
+## Self-Check
+
+After generating code, verify:
+1. Mobile layout stacks properly
+2. Panels have contrasting content
+3. Visual balance maintained
+4. Reading order makes sense
+5. Transitions are smooth`,
 
   examplePrompts: [
     {

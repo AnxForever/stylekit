@@ -6,6 +6,8 @@ export const koreanMinimal: DesignStyle = {
   nameEn: "Korean Minimal",
   description:
     "韩国极简设计美学，受K-beauty和韩国建筑影响。柔和的粉彩色调、大量留白、精致的圆角和克制的装饰。",
+  descriptionEn:
+    "Korean minimalist design aesthetic influenced by K-beauty and Korean architecture. Soft pastel tones, generous whitespace, refined rounded corners, and restrained ornamentation.",
   cover: "/styles/korean-minimal.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -29,6 +31,18 @@ export const koreanMinimal: DesignStyle = {
 
 适用场景包括美妆品牌、生活方式电商、个人博客、摄影作品集以及任何追求精致宁静氛围的数字产品。`,
 
+  philosophyEn: `Korean Minimal originates from the deep pursuit of "whitespace" and "restraint" in Korean contemporary design aesthetics, blending the soft textures of K-beauty with the clean lines of modern Korean architecture.
+
+Core concepts:
+- Whitespace as beauty: Large areas of blank space are not emptiness but a sense of breathing. Korean Minimal treats whitespace as the most important design element, allowing content to emerge naturally in tranquility
+- Pastel warmth: Unlike the cold gray tones of Nordic minimalism, Korean Minimal chooses pastels with a slightly warm undertone -- blush pink, sage green, sand -- giving the interface a soft yet not cold personality
+- Restrained decoration: Decorative elements are compressed to the extreme -- a thin line, a subtle rounded corner, a faint shadow is all there is. One more is too much, one less is too little
+- Refined touch: Influenced by K-beauty product design, every interaction pursues a silky, refined, and premium feel
+
+Korean Minimal's influence in the global design world is growing, especially in beauty, lifestyle, and premium consumer goods. It proves that minimalism need not be cold -- it can be warm and soft while maintaining elegant restraint.
+
+Suitable for beauty brands, lifestyle e-commerce, personal blogs, photography portfolios, and any digital product pursuing a refined and serene atmosphere.`,
+
   doList: [
     "使用大量留白 p-8 md:p-12 lg:p-16 营造呼吸感",
     "使用温暖白 bg-[#faf9f7] 作为主背景色",
@@ -40,6 +54,17 @@ export const koreanMinimal: DesignStyle = {
     "字体轻盈干净 font-light 或 font-normal, tracking-wide",
   ],
 
+  doListEn: [
+    "Use generous whitespace p-8 md:p-12 lg:p-16 to create a breathing feel",
+    "Use warm white bg-[#faf9f7] as the main background color",
+    "Use slate blue text-[#3d4a5c] as the primary text color",
+    "Use pastel colors for subtle accents text-[#d4a5a5], bg-[#a8c5b8]/10",
+    "Use refined large rounded corners rounded-2xl or rounded-3xl",
+    "Use ultra-thin borders border border-[#3d4a5c]/10",
+    "Use soft shadows shadow-sm or custom light shadows",
+    "Fonts should be light and clean font-light or font-normal, tracking-wide",
+  ],
+
   dontList: [
     "禁止使用高饱和度的纯色 bg-red-500, bg-blue-600",
     "禁止使用粗重边框 border-2, border-4",
@@ -48,6 +73,16 @@ export const koreanMinimal: DesignStyle = {
     "禁止使用深色/黑色背景 bg-black, bg-[#0a0a0a]",
     "禁止过度装饰和元素堆叠",
     "禁止使用霓虹色或荧光色",
+  ],
+
+  dontListEn: [
+    "Do not use high-saturation pure colors bg-red-500, bg-blue-600",
+    "Do not use thick borders border-2, border-4",
+    "Do not use strong shadows shadow-xl, shadow-2xl",
+    "Do not use uppercase and tracking-widest (too aggressive)",
+    "Do not use dark/black backgrounds bg-black, bg-[#0a0a0a]",
+    "Do not over-decorate or stack elements excessively",
+    "Do not use neon or fluorescent colors",
   ],
 
   components: {
@@ -243,6 +278,53 @@ Primary:
 - Micro Lift: hover 位移保持在 -translate-y-0.5 量级，通过超浅暖色阴影扩散表达层次。
 - Muted Whisper: 文字与边框只做同色系微差过渡，避免高对比跳色破坏安静氛围。
 - Soft Press: active 反馈优先使用背景轻微加深，不依赖明显缩放与弹跳。`,
+
+  aiRulesEn: `You are a Korean Minimal design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- High saturation pure colors (bg-red-500, bg-blue-600, bg-green-500)
+- Thick borders (border-2, border-4)
+- Heavy shadows (shadow-xl, shadow-2xl)
+- Uppercase text and ultra-wide tracking (uppercase tracking-widest)
+- Dark/black backgrounds (bg-black, bg-[#0a0a0a])
+- Neon or fluorescent colors
+- Excessive decorations or visual clutter
+
+## Must Follow
+
+- Warm white background bg-[#faf9f7]
+- Slate blue text text-[#3d4a5c]
+- Generous whitespace and padding (p-8, p-10, p-12)
+- Delicate rounded corners rounded-2xl
+- Ultra-thin borders border border-[#3d4a5c]/8 or /10
+- Soft subtle shadows shadow-sm
+- Light font weights font-light or font-normal
+- Wide but gentle tracking tracking-wide
+
+## Color Palette
+
+Primary:
+- Slate Blue: #3d4a5c
+- Warm White: #faf9f7
+- Blush Pink: #d4a5a5
+- Sage Green: #a8c5b8
+- Sand: #e8d4b8
+
+## Design Principles
+
+- Whitespace is the primary design element
+- Less is always more
+- Subtle is always better than obvious
+- Every element must have room to breathe
+- Decorations should be minimal (thin lines, small dots)
+
+## Animation & Interaction Rules
+
+- Lazy Breathing: Transitions should use duration-700 or above with ease-in-out, maintaining a languid, steady pace without short, snappy feedback.
+- Micro Lift: Hover displacement stays at the -translate-y-0.5 level, expressing layers through ultra-shallow warm-toned shadow spread.
+- Muted Whisper: Text and borders only do same-hue micro-difference transitions, avoiding high-contrast color jumps that break the quiet atmosphere.
+- Soft Press: Active feedback primarily uses slight background darkening, not relying on obvious scaling or bouncing.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const marbleLuxury: DesignStyle = {
   nameEn: "Marble Luxury",
   description:
     "大理石纹理与金色装饰的高端设计风格，白色大理石质感背景、金色线条分隔、黑色文字。适合奢侈品牌、酒店、高端地产。",
+  descriptionEn:
+    "High-end design style with marble textures and gold accents, featuring white marble-textured backgrounds, gold line separators, and black text. Ideal for luxury brands, hotels, and premium real estate.",
   cover: "/styles/marble-luxury.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -31,6 +33,20 @@ export const marbleLuxury: DesignStyle = {
 
 设计关键：克制是奢华的最高表达。金色越少，越显珍贵。空间越多，越显从容。`,
 
+  philosophyEn: `Marble Luxury design style originates from the material aesthetics of high-end architecture and interior design. Since ancient Rome, marble has symbolized power, wealth, and timeless beauty, with its natural gray veining against a warm white base creating a uniquely rhythmic visual pattern.
+
+In digital design, Marble Luxury pursues "restrained luxury" -- not ostentatious gilded splendor, but conveying premium quality through refined material suggestions and perfectly placed gold accents. White marble #f8f6f3 as the background base is warmer and more textured than pure white; pure black #1a1a1a for text creates ultimate readability contrast.
+
+Core concepts:
+- Material suggestion: Subtle radial-gradient and linear-gradient overlays simulate the color variation and veining of marble texture
+- Gold restraint: Antique gold #c9a96e used only for dividers, borders, and key decorations -- never in large areas
+- Extreme whitespace: Generous padding and margin create breathing room; low information density but every element is meticulously placed
+- Elegant typography: Thin or regular-weight serif fonts convey the composure and confidence of luxury brands
+
+Marble Luxury style suits high-end hotel websites, luxury brand showcases, premium real estate, fine jewelry, and high-end beauty brands -- any scenario needing to convey quality and exclusivity.
+
+Design key: Restraint is the highest expression of luxury. The less gold, the more precious it appears. The more space, the more composed it feels.`,
+
   doList: [
     "使用大理石白 bg-[#f8f6f3] 作为主背景底色",
     "使用纯黑 text-[#1a1a1a] 作为主要文字颜色",
@@ -42,6 +58,17 @@ export const marbleLuxury: DesignStyle = {
     "微妙的 hover 过渡效果 duration-500 以上，缓慢而从容",
   ],
 
+  doListEn: [
+    "Use marble white bg-[#f8f6f3] as the main background base",
+    "Use pure black text-[#1a1a1a] as the primary text color",
+    "Use antique gold border-[#c9a96e] for dividers and fine border decorations",
+    "Generous whitespace: py-20 or more for section spacing, px-12 or more for container padding",
+    "Use serif fonts font-serif and maintain thin font weights (font-normal or font-light visual feel)",
+    "Use tracking-[0.2em] or wider letter spacing for a luxurious typographic feel",
+    "Use 1px fine line separators: border-t border-[#c9a96e]/30 as elegant dividers",
+    "Subtle hover transitions duration-500 or more, slow and composed",
+  ],
+
   dontList: [
     "禁止使用饱和度高的霓虹色或荧光色",
     "禁止使用粗边框（border-4 以上）",
@@ -50,6 +77,16 @@ export const marbleLuxury: DesignStyle = {
     "禁止使用密集的信息布局或小间距",
     "禁止使用卡通、手绘或粗犷的视觉元素",
     "禁止使用纯白 bg-white（应使用更温暖的 #f8f6f3）",
+  ],
+
+  dontListEn: [
+    "Do not use high-saturation neon or fluorescent colors",
+    "Do not use thick borders (border-4 and above)",
+    "Do not use hard offset shadows (shadow-[Npx_Npx_0px])",
+    "Do not use bold aggressive typography (font-black uppercase)",
+    "Do not use dense information layouts or small spacing",
+    "Do not use cartoon, hand-drawn, or rough visual elements",
+    "Do not use pure white bg-white (use the warmer #f8f6f3)",
   ],
 
   components: {

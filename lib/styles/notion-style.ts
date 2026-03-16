@@ -6,6 +6,8 @@ export const notionStyle: DesignStyle = {
   nameEn: "Notion Style",
   description:
     "极简清爽的文档工具风格，强调内容可读性和功能性，使用微妙的边框、柔和的悬停效果和清晰的文字层级。",
+  descriptionEn:
+    "A minimalist and clean document tool style emphasizing content readability and functionality, using subtle borders, gentle hover effects, and clear typographic hierarchy.",
   cover: "/styles/notion-style.svg",
   styleType: "visual",
   tags: ["minimal"],
@@ -25,6 +27,14 @@ export const notionStyle: DesignStyle = {
 - 微妙交互：悬停和点击反馈轻柔自然
 - 层级分明：通过字体大小和颜色区分信息层级`,
 
+  philosophyEn: `Notion Style is a minimalist design style originating from the Notion app, emphasizing content readability and intuitive functionality. Through subtle visual elements and clear hierarchical structure, it lets users focus on the content itself.
+
+Core principles:
+- Content first: Design serves content, never overshadowing it
+- Functional clarity: Every element has a clear functional purpose
+- Subtle interactions: Hover and click feedback are gentle and natural
+- Clear hierarchy: Information levels distinguished through font size and color`,
+
   doList: [
     "使用 Notion 标志性的米色背景 #f7f6f3",
     "使用微妙的边框 border-gray-200",
@@ -39,6 +49,20 @@ export const notionStyle: DesignStyle = {
     "按钮使用透明底色 bg-transparent，hover:bg-[#efedea] active:bg-[#e3e1db]（Ultimate Restraint，无浮起无缩放）",
   ],
 
+  doListEn: [
+    "Use Notion's signature beige background #f7f6f3",
+    "Use subtle borders border-gray-200",
+    "Use light gray background for hover effects hover:bg-gray-100",
+    "Maintain clear typographic hierarchy",
+    "Use system font stack for readability",
+    "Use clean linear-style icons",
+    "Cards use group class, hover reveals drag handle from opacity-0 to opacity-100 (Drag Handle Illusion, Notion's signature UX pattern)",
+    "Hover background only shifts from #f7f6f3 to #efedea (Block Highlighting, extremely low signal-to-noise ratio feedback)",
+    "Active state only deepens background to #e3e1db, no displacement or scaling allowed (Micro-click, restrained tactile feel for document tools)",
+    "All transitions duration-150, maintaining the instant responsiveness of an efficiency tool",
+    "Buttons use transparent background bg-transparent, hover:bg-[#efedea] active:bg-[#e3e1db] (Ultimate Restraint, no float no scale)",
+  ],
+
   dontList: [
     "禁止使用大圆角 rounded-2xl 或更大",
     "禁止使用渐变背景",
@@ -48,6 +72,17 @@ export const notionStyle: DesignStyle = {
     "禁止任何 translate 或 scale 动画（破坏文档工具的阅读稳定性）",
     "禁止 hover 时出现边框变化或阴影跳变（信噪比过高，干扰用户专注内容）",
     "禁止按钮使用 hover:-translate-y-* 上浮效果（Notion 是平铺文档，无漂浮感）",
+  ],
+
+  dontListEn: [
+    "Do NOT use large border radii rounded-2xl or larger",
+    "Do NOT use gradient backgrounds",
+    "Do NOT use heavy shadows",
+    "Do NOT use overly vibrant colors",
+    "Do NOT over-decorate",
+    "Do NOT use any translate or scale animations (breaks reading stability of document tools)",
+    "Do NOT add border changes or shadow jumps on hover (signal-to-noise ratio too high, distracts user focus on content)",
+    "Do NOT use hover:-translate-y-* float effects on buttons (Notion is a flat document, no floating feel)",
   ],
 
   components: {
@@ -257,6 +292,58 @@ body {
 2. 圆角适中（rounded-md 或 rounded-lg）
 3. 阴影轻柔（shadow-sm 或 shadow-md）
 4. 整体感觉简洁清爽`,
+
+  aiRulesEn: `You are a Notion Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using large radii rounded-2xl, rounded-3xl, rounded-full
+- Using gradient backgrounds bg-gradient-*
+- Using heavy shadows shadow-xl, shadow-2xl
+- Using overly vibrant colors
+- Excessive decoration and animation
+
+## Must Follow
+
+- Notion beige background bg-[#f7f6f3]
+- Subtle borders border border-gray-200
+- Small radii rounded-md or rounded-lg
+- Gentle hover hover:bg-gray-100
+- Clear typographic hierarchy
+
+## Color Palette
+
+Primary:
+- Text: text-[#37352f] (Notion dark gray)
+- Background: bg-white, bg-[#f7f6f3]
+- Border: border-gray-200
+
+Accent colors:
+- Blue: text-[#2eaadc], bg-blue-50
+- Red: text-[#eb5757], bg-red-50
+- Green: text-[#0f7b6c], bg-green-50
+- Yellow: text-[#dfab01], bg-yellow-50
+
+## Interactions
+
+- Hover: hover:bg-[#efedea] (Block Highlighting, extremely low signal-to-noise)
+- Selected: bg-[#e3e1db] (Micro-click, only deepens background)
+- Focus: focus:ring-2 focus:ring-blue-500/30
+
+## Animation & Interaction Rules
+
+- Ultimate Restraint: Strictly prohibit any translate or scale animations; document tools require absolute visual stability.
+- Block Highlighting: Hover background shifts from #f7f6f3 to #efedea (about 5% brightness change), transition-colors duration-150, signal-to-noise ratio intentionally kept extremely low.
+- Drag Handle Illusion: Cards/list items use group class, left-side drag handle opacity-0 group-hover:opacity-100 transition-opacity duration-150, this is Notion's signature UX pattern.
+- Micro-click: Active state only deepens background to #e3e1db, no other visual changes, embodying the restraint of an efficiency tool.
+
+## Self-Check
+
+After generating code, verify:
+1. No gradients used
+2. Moderate radii (rounded-md or rounded-lg)
+3. Gentle shadows (shadow-sm or shadow-md)
+4. Overall feel is clean and refreshing`,
 
   examplePrompts: [
     {

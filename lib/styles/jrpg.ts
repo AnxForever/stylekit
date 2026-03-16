@@ -6,6 +6,8 @@ export const jrpg: DesignStyle = {
   nameEn: "JRPG",
   description:
     "经典日式 RPG 菜单与对话框美学，斜面边框、渐变背景、状态栏、华丽框架。适合游戏界面、互动叙事、奇幻风格产品。",
+  descriptionEn:
+    "Classic Japanese RPG menu and dialogue box aesthetics with beveled borders, gradient backgrounds, status bars, and ornate frames. Ideal for game interfaces, interactive narratives, and fantasy-style products.",
   cover: "/styles/jrpg.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -25,6 +27,14 @@ export const jrpg: DesignStyle = {
 - 状态可视化：HP/MP/EXP 条形图直观展示数值
 - 华丽装饰：边角纹饰和框架增强奇幻世界感`,
 
+  philosophyEn: `JRPG style originates from the menu and UI design of classic Japanese role-playing games, recreating the retro gaming experience through beveled borders, gradient backgrounds, and ornate frames.
+
+Core principles:
+- Beveled borders: Inner and outer shadows with gradients simulate 3D raised buttons and panels
+- Dark base: Deep navy blue backgrounds paired with gold and crystal white highlights
+- Status visualization: HP/MP/EXP bar charts for intuitive numerical display
+- Ornate decoration: Corner ornaments and frames enhance the fantasy world atmosphere`,
+
   doList: [
     "背景使用深海军蓝 bg-[#0f172a] 或 bg-slate-900",
     "使用 border-2 border-[#1e40af] 搭配内阴影模拟斜面效果",
@@ -36,6 +46,17 @@ export const jrpg: DesignStyle = {
     "菜单交互使用硬切反馈（duration-75 到 120）模拟手柄选中节奏",
   ],
 
+  doListEn: [
+    "Use deep navy blue backgrounds bg-[#0f172a] or bg-slate-900",
+    "Use border-2 border-[#1e40af] with inset shadows for beveled effect",
+    "Gold highlight text text-[#fbbf24] for titles and important info",
+    "Use gradient backgrounds bg-gradient-to-b from-blue-900 to-slate-900",
+    "Status bars use bg-[#22c55e] for HP, bg-blue-500 for MP",
+    "Card panels use double-layer borders ring-1 ring-blue-400/20 border-2 border-blue-800",
+    "Buttons use inset shadow shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] for raised effect",
+    "Menu interactions use hard-cut feedback (duration-75 to 120) simulating controller selection rhythm",
+  ],
+
   dontList: [
     "禁止使用极简扁平风格（无边框、无阴影）",
     "禁止使用白色或浅色背景",
@@ -44,6 +65,16 @@ export const jrpg: DesignStyle = {
     "禁止使用透明/无底色的面板",
     "禁止使用低对比度配色",
     "禁止使用慢速网页化过渡（duration-300+）稀释游戏菜单手感",
+  ],
+
+  dontListEn: [
+    "No minimalist flat style (no borders, no shadows)",
+    "No white or light backgrounds",
+    "No modern sans-serif fonts only (must pair with serif or pixel fonts)",
+    "No overly rounded rounded-full buttons",
+    "No transparent/borderless panels",
+    "No low-contrast color combinations",
+    "No slow web-style transitions (duration-300+) that dilute game menu feel",
   ],
 
   components: {
@@ -172,6 +203,48 @@ Animation & Interaction Rules:
 - Retro Confirm Press: active 必须有按键下压感（scale + translate-y + inset shadow 切换）。
 - Menu Hover State: hover 时点亮金色边框或高亮条，保持高对比确认反馈。
 - Flashing Prompts: 提示性标签可使用轻量 pulse，避免大面积动画干扰读数。`,
+
+  aiRulesEn: `STYLE: JRPG
+TYPE: Classic Japanese RPG menu interface
+
+MUST USE:
+- Dark background: bg-[#0f172a] or bg-slate-900
+- Beveled borders: border-2 with inset shadows
+- Gold accent text: text-[#fbbf24]
+- Crystal white text: text-[#f0f9ff]
+- Gradient panels: bg-gradient-to-b from-slate-800 to-slate-900
+- HP/MP bars with colored gradients
+- Corner decorations on panels
+- Shadow depth: shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]
+
+MUST AVOID:
+- White/light backgrounds
+- Flat minimal design without borders
+- Modern sans-serif only typography
+- rounded-full buttons
+- Transparent/borderless panels
+- Low contrast color combinations
+
+COLOR RULES:
+- Primary: Royal Blue (#1e40af)
+- Accent: Gold (#fbbf24)
+- Background: Dark Navy (#0f172a)
+- Text: Crystal White (#f0f9ff)
+- HP: Green (#22c55e)
+- MP: Blue (#3b82f6)
+- Borders: Blue shades with glow
+
+SPECIAL EFFECTS:
+- Inset shadows for beveled/raised look
+- Corner ornaments on panels
+- Gradient overlays for depth
+- Stat bar animations
+
+Animation & Interaction Rules:
+- Cursor Snap: Interaction feedback prioritizes hard-cut, using duration-75 to 120, simulating D-pad menu item selection.
+- Retro Confirm Press: Active must have key press-down feel (scale + translate-y + inset shadow switch).
+- Menu Hover State: Hover lights up gold border or highlight bar, maintaining high-contrast confirmation feedback.
+- Flashing Prompts: Prompt labels can use lightweight pulse, avoiding large-area animations that interfere with readouts.`,
 
   examplePrompts: [
     {

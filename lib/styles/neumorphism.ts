@@ -6,6 +6,8 @@ export const neumorphism: DesignStyle = {
   nameEn: "Neumorphism",
   description:
     "柔和的内凹外凸立体效果，通过双重阴影模拟光源，浅色背景配同色系元素，营造精致的立体感。",
+  descriptionEn:
+    "Soft concave and convex 3D effects using dual shadows to simulate light sources. Light backgrounds with same-tone elements create a refined sense of depth.",
   cover: "/styles/neumorphism.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -25,6 +27,14 @@ export const neumorphism: DesignStyle = {
 - 触感直觉：凸起表示可交互，凹陷表示已激活或输入区
 - 克制装饰：避免过多颜色和对比，保持整体柔和感`,
 
+  philosophyEn: `Neumorphism is a style between flat design and skeuomorphism, creating the visual effect of elements being "extruded" or "recessed" from the background through soft shadows.
+
+Core principles:
+- Soft dimensionality: Simulate natural light sources through dual shadows (light/dark)
+- Monochromatic unity: Elements and background use the same or similar colors
+- Tactile intuition: Raised indicates interactive, recessed indicates activated or input area
+- Restrained decoration: Avoid excessive colors and contrast, maintain overall softness`,
+
   doList: [
     "使用浅色背景 bg-[#e0e5ec] 或 bg-[#f0f0f3]",
     "使用双重阴影 shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]",
@@ -40,6 +50,21 @@ export const neumorphism: DesignStyle = {
     "光源方向始终固定为左上亮、右下暗（Fixed Illuminant）：负 X/Y 偏移 = 白色高光，正 X/Y 偏移 = 暗色阴影",
   ],
 
+  doListEn: [
+    "Use light backgrounds bg-[#e0e5ec] or bg-[#f0f0f3]",
+    "Use dual shadows shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]",
+    "Recessed effect uses inset shadows shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]",
+    "Use medium rounded corners rounded-xl (12-24px)",
+    "Interactive elements switch from raised to recessed when pressed",
+    "Keep elements in the same color family as the background",
+    "Responsive shadow sizes with md: prefix for larger values",
+    "Button hover reduces outer shadow (Hover Shadowing, finger approaching blocks light): from shadow-[8px_8px_16px...] down to shadow-[4px_4px_8px...]",
+    "Button active must switch from raised to recessed (Extrude to Intrude): active:shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff], no translate displacement allowed",
+    "All transitions use duration-300 ease-in-out (Smooth Molding, soft plastic flexibility)",
+    "Input focus reduces inner shadow depth (inert contraction, not enhancement): from inset 6px down to inset 2px, suggesting the input channel opens",
+    "Light source direction always fixed as upper-left bright, lower-right dark (Fixed Illuminant): negative X/Y offset = white highlight, positive X/Y offset = dark shadow",
+  ],
+
   dontList: [
     "禁止使用纯黑或纯白背景",
     "禁止使用硬边缘阴影 shadow-[Xpx_Xpx_0px]",
@@ -51,6 +76,19 @@ export const neumorphism: DesignStyle = {
     "禁止 hover 时增大阴影（与光影物理规律相悖，手指靠近应使阴影缩小）",
     "禁止打破光源方向（亮阴影必须在左上 -X/-Y，暗阴影必须在右下 +X/+Y）",
     "禁止输入框 focus 时增大内阴影（应减小，模拟通道开放而非加压）",
+  ],
+
+  dontListEn: [
+    "Do not use pure black or pure white backgrounds",
+    "Do not use hard-edge shadows shadow-[Xpx_Xpx_0px]",
+    "Do not use high-contrast color schemes",
+    "Do not use thick borders border-2 and above",
+    "Do not use gradient backgrounds bg-gradient-*",
+    "Do not use sharp corners rounded-none",
+    "Do not use any translate displacement on buttons (neumorphic elements grow from the background, they cannot float)",
+    "Do not enlarge shadows on hover (contradicts light physics, finger approaching should shrink shadows)",
+    "Do not break light source direction (bright shadow must be upper-left -X/-Y, dark shadow must be lower-right +X/+Y)",
+    "Do not enlarge inner shadow on input focus (should reduce, simulating channel opening not pressurizing)",
   ],
 
   components: {
@@ -261,6 +299,57 @@ export const neumorphism: DesignStyle = {
 - Hover Shadowing: hover 时减小外阴影（从 16px 减至 8px），模拟手指靠近遮挡光源——与常规相反，阴影应缩小不扩大。
 - Smooth Molding: 所有过渡使用 duration-300 ease-in-out，模拟软橡胶/软塑料的柔韧弹性。
 - Fixed Illuminant: 光源方向锁定左上（负 X/Y 偏移 = 白色），右下为暗（正 X/Y 偏移 = #b8bcc2），禁止任何破坏光方向的阴影配置。`,
+
+  aiRulesEn: `# Neumorphism Design Specification
+
+## Core Principles
+You are using the Neumorphism design style. This style creates a sense of depth through soft dual shadows.
+
+## Must Follow
+1. Background color uses light gray bg-[#e0e5ec] or bg-[#f0f0f3]
+2. Raised effect: shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+3. Recessed effect: shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]
+4. Rounded corners use rounded-xl or rounded-2xl (12-24px)
+5. Buttons switch from raised to recessed when pressed (active: pseudo-class)
+6. Input fields use recessed effect to indicate input areas
+7. Keep same color family: element colors close to background
+8. Responsive shadows: reduce shadow size on mobile
+
+## Forbidden
+1. Pure black/pure white backgrounds
+2. Hard-edge shadows shadow-[Xpx_Xpx_0px]
+3. High-contrast color schemes
+4. Thick borders border-2 and above
+5. Gradient backgrounds
+6. Sharp corners rounded-none
+
+## Shadow Parameter Guide
+- Light shadow direction: upper-left (-X, -Y), color close to white #ffffff
+- Dark shadow direction: lower-right (X, Y), color darker than background #b8bcc2
+- Shadow blur is typically 1.5-2x the offset value
+
+## Color Scheme
+- Main background: #e0e5ec
+- Light background: #f0f0f3
+- Dark shadow: #b8bcc2
+- Light shadow: #ffffff
+- Accent: #6d5dfc (purple)
+- Text: #333333
+- Secondary text: #6b7280
+
+## Interaction States
+- Default: Raised shadow
+- Hover: Shadow shrinks (Hover Shadowing, finger approaching blocks light)
+- Active/Pressed: Switches to recessed shadow (Extrude to Intrude, no translate allowed)
+- Focus: Input inner shadow reduces (channel opening feel)
+- Disabled: Shadow weakens, opacity reduces
+
+## Animation & Interaction Rules
+
+- Extrude to Intrude: Button active state must switch from raised to recessed (active:shadow-[inset_...]), strictly no translate displacement allowed -- elements grow from the background material.
+- Hover Shadowing: Hover reduces outer shadow (from 16px to 8px), simulating finger approaching and blocking light source -- opposite to convention, shadows should shrink not grow.
+- Smooth Molding: All transitions use duration-300 ease-in-out, simulating soft rubber/plastic flexibility.
+- Fixed Illuminant: Light source direction locked to upper-left (negative X/Y offset = white), lower-right is dark (positive X/Y offset = #b8bcc2), no shadow configuration that breaks light direction allowed.`,
 
   examplePrompts: [
     {

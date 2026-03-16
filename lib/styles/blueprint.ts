@@ -6,6 +6,8 @@ export const blueprint: DesignStyle = {
   nameEn: "Blueprint",
   description:
     "工程蓝图与技术图纸风格，蓝底白线、网格坐标、标注线和尺寸标记。适合建筑、工程、科技和教育领域。",
+  descriptionEn:
+    "Engineering blueprint and technical drawing style with white lines on blue, grid coordinates, annotation lines, and dimension markers. Ideal for architecture, engineering, tech, and education.",
   cover: "/styles/blueprint.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -29,6 +31,18 @@ export const blueprint: DesignStyle = {
 
 适合场景：建筑设计事务所、工程咨询公司、科技产品发布页、教育机构、技术文档网站。`,
 
+  philosophyEn: `Blueprint draws design inspiration from traditional cyanotype blueprint printing and modern engineering drafting. White lines on a blue background are its most iconic visual feature, while grid systems, annotation lines, and dimension markers give the interface a precise, professional, and trustworthy character.
+
+Core concepts:
+- Blue background with white lines: The classic blueprint color scheme -- white lines and text on a deep blue background
+- Grid system: Background grids suggest a precise coordinate system and measurement units
+- Annotation language: Annotation lines, dimension markers, and coordinate labels serve as both decorative and navigational elements
+- Technical font: Monospace fonts reinforce the precision feel of engineering drafting
+
+Blueprint style naturally conveys "carefully planned" and "professionally reliable" messaging. It suits any scenario that needs to demonstrate technical depth and engineering thinking. UI elements should look as if drawn on drafting paper -- buttons like legend buttons, cards like detail zoom boxes on drawings, input fields like annotation columns.
+
+Suitable for: architecture firms, engineering consultancies, tech product launch pages, educational institutions, and technical documentation websites.`,
+
   doList: [
     "背景使用蓝图蓝 bg-[#1e3a5f] 搭配网格线背景效果",
     "文字和线条使用白色 text-white 或浅蓝色 text-[#a0c4e8]",
@@ -40,6 +54,17 @@ export const blueprint: DesignStyle = {
     "使用虚线元素 border-dashed 模拟辅助线",
   ],
 
+  doListEn: [
+    "Use blueprint blue bg-[#1e3a5f] for backgrounds paired with grid line background effects",
+    "Use white text-white or light blue text-[#a0c4e8] for text and lines",
+    "Use monospace font font-mono to enhance the technical drafting feel",
+    "Use white/light blue thin line borders border border-white/30",
+    "Use orange text-[#ff6b35] for annotation highlight markers",
+    "Cards use semi-transparent backgrounds bg-[#1e3a5f]/60 backdrop-blur-sm",
+    "Add grid backgrounds bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]",
+    "Use dashed elements border-dashed to simulate auxiliary lines",
+  ],
+
   dontList: [
     "禁止使用暖色调背景",
     "禁止使用圆润、柔和的设计元素",
@@ -48,6 +73,16 @@ export const blueprint: DesignStyle = {
     "禁止使用衬线字体或手写体",
     "禁止使用大面积的彩色色块",
     "禁止使用圆角过大的元素 rounded-2xl rounded-3xl",
+  ],
+
+  dontListEn: [
+    "Do not use warm-toned backgrounds",
+    "Do not use rounded, soft design elements",
+    "Do not use gradient color fills (lines and fills should be solid colors)",
+    "Do not use glow effects or neon shadows",
+    "Do not use serif fonts or handwritten fonts",
+    "Do not use large areas of colored blocks",
+    "Do not use elements with overly large rounded corners rounded-2xl rounded-3xl",
   ],
 
   components: {

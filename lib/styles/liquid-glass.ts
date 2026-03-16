@@ -6,6 +6,8 @@ export const liquidGlass: DesignStyle = {
   nameEn: "Apple Liquid Glass",
   description:
     "Apple WWDC 2025 发布的全新设计语言，通过 SVG 折射滤镜、彩虹边缘光晕、流体形变动画和多层玻璃堆叠，创造出超越传统毛玻璃的有机流动视觉体验。",
+  descriptionEn:
+    "Apple's revolutionary design language from WWDC 2025, creating an organic, fluid visual experience beyond traditional frosted glass through SVG refraction filters, rainbow edge halos, fluid morphing animations, and multi-layer glass stacking.",
   cover: "/styles/liquid-glass.svg",
   styleType: "visual",
   tags: ["modern", "brand-inspired"],
@@ -61,6 +63,50 @@ export const liquidGlass: DesignStyle = {
 | 描边 | 无 | 3px青色霓虹描边 |
 | 阴影 | 普通投影 | 3D偏移+发光组合 |`,
 
+  philosophyEn: `Liquid Glass is Apple's revolutionary design language released at WWDC 2025, transcending traditional frosted glass effects to create truly organic, fluid visual experiences through light refraction, rainbow edges, and fluid animations.
+
+Core principles:
+- Neon stroke text: Titles use text-stroke with cyan glow stroke for a neon effect
+- Gradient fill text: Purple-to-magenta gradient fill with 3D shadow for dimensional feel
+- Rainbow refraction edges: Edges display prismatic effects with red-orange-yellow-green-cyan-blue-purple spectrum gradients
+- Fluid morphing: Border radius produces liquid deformation animations during interaction
+- Multi-layer depth: 3+ glass layers stacked for rich spatial hierarchy
+- High saturation: backdrop-saturate-180 makes background colors more vivid
+
+## Typography Design Core (Most Important Visual Element)
+
+### Hero Title (Main Title)
+Purple gradient fill + thick cyan stroke (3px) + 3D offset shadow:
+- background: linear-gradient(to right, #a855f7, #ff2d92, #a855f7)
+- -webkit-text-stroke: 3px #4ecdc4
+- text-shadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)
+- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
+
+### Subtitle (Cyan Glow)
+White/cyan text + glow effect (no stroke):
+- color: white or gradient cyan
+- text-shadow: 0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)
+
+### h1/h2 Titles
+Thinner stroke (2px) + glow + slight 3D:
+- -webkit-text-stroke: 2px #4ecdc4
+- text-shadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)
+
+### Body Text
+High-contrast white for readability:
+- color: text-white/80 to text-white/90
+
+Differences from Glassmorphism:
+| Feature | Glassmorphism | Liquid Glass |
+|---------|---------------|--------------|
+| Border | border-white/20 | Rainbow gradient border |
+| Blur | blur-2xl | blur-3xl + saturate-180 |
+| Animation | Simple transitions | Liquid morph |
+| Depth | Single layer | Multi-layer stacking |
+| Text | Plain white | Gradient + thick stroke + 3D shadow |
+| Stroke | None | 3px cyan neon stroke |
+| Shadow | Standard drop | 3D offset + glow combo |`,
+
   doList: [
     "Hero标题使用粗描边 -webkit-text-stroke: 3px #4ecdc4",
     "Hero标题使用3D偏移阴影 text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
@@ -73,6 +119,18 @@ export const liquidGlass: DesignStyle = {
     "使用流体动画 transition-all duration-500 ease-out",
   ],
 
+  doListEn: [
+    "Hero titles use thick stroke -webkit-text-stroke: 3px #4ecdc4",
+    "Hero titles use 3D offset shadow text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
+    "Hero titles use gradient fill bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7]",
+    "Subtitles use cyan glow text-shadow: 0 0 20px rgba(78, 205, 196, 0.8)",
+    "Use ultra-high blur values backdrop-blur-[40px] or backdrop-blur-3xl",
+    "Add saturation enhancement backdrop-saturate-[1.8] or backdrop-saturate-200",
+    "Use rainbow gradient borders to simulate light refraction effects",
+    "Use extra-large rounded corners rounded-3xl or rounded-[24px]",
+    "Use fluid animations transition-all duration-500 ease-out",
+  ],
+
   dontList: [
     "禁止使用普通白色标题（必须使用渐变+粗描边+3D阴影）",
     "禁止省略3D偏移阴影（4px 4px是必须的）",
@@ -82,6 +140,17 @@ export const liquidGlass: DesignStyle = {
     "禁止省略饱和度增强（颜色会显得暗淡）",
     "禁止使用直角或小圆角（rounded-none, rounded-sm）",
     "禁止使用快速过渡（duration-100, duration-150）",
+  ],
+
+  dontListEn: [
+    "No plain white titles (must use gradient + thick stroke + 3D shadow)",
+    "No omitting 3D offset shadow (4px 4px is mandatory)",
+    "No thin strokes (Hero must be 3px, h1/h2 at least 2px)",
+    "No omitting text glow effects (loses neon feel)",
+    "No low blur values backdrop-blur-sm (too weak)",
+    "No omitting saturation enhancement (colors will appear dull)",
+    "No right angles or small rounded corners (rounded-none, rounded-sm)",
+    "No fast transitions (duration-100, duration-150)",
   ],
 
   components: {
@@ -459,6 +528,101 @@ export const liquidGlass: DesignStyle = {
 8. 使用 rounded-[24px] 或更大圆角
 9. 过渡时间 >= 500ms
 10. 文字可读性良好`,
+
+  aiRulesEn: `You are an Apple Liquid Glass design style frontend development expert. This is Apple's brand-new design language released at WWDC 2025. All generated code must strictly follow these constraints:
+
+## Typography Design (Most Important!)
+
+### Hero Title - Must use these styles:
+- font-black with gradient fill from-[#a855f7] via-[#ff2d92] to-[#a855f7]
+- WebkitTextStroke: 3px #4ecdc4
+- textShadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6), 0 0 50px rgba(168,85,247,0.4)
+- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
+
+### Subtitle - Cyan glow white text:
+- font-bold text-white
+- textShadow: 0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)
+
+### h2/h3 Titles - Thinner stroke (2px):
+- WebkitTextStroke: 2px #4ecdc4
+- textShadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)
+
+## Absolutely Forbidden
+
+- Plain white titles (must have stroke + 3D shadow + glow)
+- Thin strokes (Hero must be 3px, h2 at least 2px)
+- Omitting 3D offset shadow (4px 4px is mandatory)
+- Low blur values backdrop-blur-sm, backdrop-blur (too weak)
+- Omitting saturation enhancement backdrop-saturate
+- Right angles or small rounded corners rounded-none, rounded-sm, rounded
+- Single-color borders (should use rainbow gradients)
+- Fast transitions duration-100, duration-150
+- Solid opaque backgrounds bg-white, bg-black
+- Light backgrounds as container base layer (should use dark gradients)
+
+## Must Follow
+
+- Hero title: 3px cyan stroke + purple gradient fill + 3D shadow (4px 4px) + glow
+- Subtitle: white + cyan glow shadow
+- Ultra-high blur backdrop-blur-[40px], backdrop-blur-3xl
+- High saturation enhancement backdrop-saturate-[1.8], backdrop-saturate-200
+- Rainbow gradient borders from-[#ff6b6b] via-[#4ecdc4] to-[#a855f7]
+- Top highlight gradient from-white/20 to-transparent
+- Extra-large rounded corners rounded-3xl, rounded-[24px]
+- Fluid transitions transition-all duration-500 ease-out
+- Semi-transparent backgrounds bg-white/10 to bg-white/15
+- Multi-layer stacking using z-index and different opacities
+
+## Rainbow Colors
+
+Edge refraction gradient:
+- Red: #ff6b6b
+- Orange: #ffd93d
+- Green: #6bcb77
+- Cyan: #4ecdc4
+- Purple: #a855f7
+
+Recommended backgrounds:
+- Dark gradient: from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
+- Apple Blue: #007AFF
+- Apple Pink: #FF2D55
+
+## Layer Structure
+
+1. Base: Dark gradient background
+2. Middle: Liquid glass container (backdrop-blur-[40px] backdrop-saturate-[1.8])
+3. Border layer: Rainbow gradient pseudo-element before:
+4. Highlight layer: Top gradient pseudo-element after:
+5. Top: Content elements
+
+## Core Effects
+
+1. Rainbow border: before pseudo-element + gradient background + p-[1px]
+2. Top highlight: after pseudo-element + white-to-transparent gradient
+3. Liquid animation: animation: liquid-morph 8s ease-in-out infinite
+4. Glow effect: hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
+5. Compression feedback: active:scale-[0.98]
+
+## Animation & Interaction Rules
+
+- Fluid Refraction: Simulate fluid refraction through sliding highlight layers and internal gradient clouds, not just blur but "light in motion."
+- Spatial Push: Hover needs slight forward push (scale about 1.01-1.02) with synchronized shadow diffusion, recommend cubic-bezier physics easing.
+- Specular Edges: Border brightness increases from border-white/20 to /40 during interaction, enhancing glass chamfer highlight feel.
+- Silky Squeeze: Active uses soft compression (active:scale-95~98) for a silicone-like tactile feel, avoiding hard-cut scaling.
+
+## Self-Check
+
+After each code generation, verify:
+1. Hero title has 3px cyan stroke and 3D offset shadow
+2. Subtitle has cyan glow effect
+3. Has dark gradient background container
+4. Has backdrop-blur-[40px] or backdrop-blur-3xl
+5. Has backdrop-saturate-[1.8] or higher
+6. Has rainbow gradient border
+7. Has top highlight bar
+8. Uses rounded-[24px] or larger corners
+9. Transition time >= 500ms
+10. Text readability is good`,
 
   examplePrompts: [
     {

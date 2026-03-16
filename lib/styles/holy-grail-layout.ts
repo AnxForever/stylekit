@@ -6,6 +6,8 @@ export const holyGrailLayout: DesignStyle = {
   nameEn: "Holy Grail Layout",
   description:
     "经典的三栏式网页布局，由固定页头、三列中间区域（左侧导航、主内容、右侧边栏）和固定页脚组成，是Web设计的基础布局范式。",
+  descriptionEn:
+    "The classic three-column web layout consisting of a fixed header, a three-column middle section (left navigation, main content, right sidebar), and a fixed footer -- a foundational layout paradigm in web design.",
   cover: "/styles/holy-grail-layout.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const holyGrailLayout: DesignStyle = {
 - 等高列：三列无论内容多少都保持等高
 - 灵活适配：侧边栏固定宽度，主内容区自适应`,
 
+  philosophyEn: `Holy Grail Layout is the long-sought classic layout solution in web design, featuring a fixed header and footer with a three-column content area in between. The name originates from the difficulty of implementing this layout in the early days of CSS.
+
+Core principles:
+- Clear structure: Header, three-column content, and footer -- five regions each serving a distinct purpose
+- Content-first: Main content precedes sidebars in HTML source for better SEO
+- Equal-height columns: All three columns maintain equal height regardless of content
+- Flexible adaptation: Sidebars have fixed widths while the main content area is fluid`,
+
   doList: [
     "使用 CSS Grid 或 Flexbox 实现等高三列",
     "固定页头和页脚 sticky top-0 / sticky bottom-0",
@@ -40,6 +50,20 @@ export const holyGrailLayout: DesignStyle = {
     "所有动画 duration-150 ease-out（生产力工具要求响应利落）",
   ],
 
+  doListEn: [
+    "Use CSS Grid or Flexbox for equal-height three columns",
+    "Sticky header and footer with sticky top-0 / sticky bottom-0",
+    "Main content area uses flex-1 for fluid width",
+    "Left navigation bar with fixed width w-60 or w-64",
+    "Right sidebar with fixed width w-64 or w-72",
+    "Main content precedes sidebars in source order",
+    "Responsive sidebar collapsing",
+    "All buttons use active:scale-[0.98] active:translate-y-0 + focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2",
+    "Content cards use hover:-translate-y-0.5 hover:shadow-md (lightweight lift without disrupting reading)",
+    "Sidebar navigation uses left-border highlight on hover hover:border-l-2 hover:border-[#3b82f6] (no vertical displacement, maintaining anchored feel)",
+    "All animations use duration-150 ease-out (productivity tools demand crisp response)",
+  ],
+
   dontList: [
     "禁止三列高度不一致",
     "禁止主内容区域过窄",
@@ -50,6 +74,18 @@ export const holyGrailLayout: DesignStyle = {
     "禁止动画 duration 超过 200ms（生产力工具应当响应利落）",
     "禁止按钮缺少 active:scale-[0.98]（无触觉确认）",
     "禁止侧边导航 hover 时有垂直位移（锚定感要求无移动）",
+  ],
+
+  dontListEn: [
+    "Do not allow unequal column heights",
+    "Do not make the main content area too narrow",
+    "Do not ignore responsive collapsing",
+    "Do not let sidebar width change with content",
+    "Do not leave header and footer unfixed",
+    "Do not use large displacement animations on cards (large motion disrupts focus in reading contexts)",
+    "Do not use animation duration exceeding 200ms (productivity tools should feel crisp)",
+    "Do not omit active:scale-[0.98] on buttons (no tactile confirmation)",
+    "Do not add vertical displacement to sidebar navigation on hover (anchoring feel requires no movement)",
   ],
 
   components: {
@@ -307,6 +343,62 @@ export const holyGrailLayout: DesignStyle = {
 4. 侧边栏固定宽度
 5. 页脚始终在底部
 6. 响应式折叠正确`,
+
+  aiRulesEn: `You are a Holy Grail Layout expert. All generated code must strictly follow these constraints:
+
+## Layout Structure
+
+Five regions:
+1. Header: Fixed top, brand + navigation
+2. Left Sidebar: Fixed width, navigation menu
+3. Main Content: Fluid width, primary content
+4. Right Sidebar: Fixed width, auxiliary information
+5. Footer: Fixed bottom, copyright information
+
+## Implementation Rules
+
+- Use Flexbox: outer flex flex-col min-h-screen
+- Three-column area: flex flex-1
+- Sidebars: fixed width w-60 / w-64 flex-shrink-0
+- Main content: flex-1 min-w-0
+- Header: sticky top-0 z-50
+- Equal-height columns: three columns auto equal height
+
+## Responsive
+
+Large screens (>1024px): Full three columns
+Medium screens (768-1024px): Hide right sidebar
+Small screens (<768px): All columns stack vertically
+
+## Animation & Interaction Rules
+
+### Content Supremacy (Card Float)
+- Cards in main content: hover:-translate-y-0.5 hover:shadow-md -- minimal, non-distracting float
+- NEVER use hover:-translate-y-2 or larger (breaks reading focus)
+- Transition: duration-150 ease-out (crisp productivity tool rhythm)
+
+### Navigation Anchoring (Sidebar Links)
+- Inactive nav items: hover:border-l-2 hover:border-[#3b82f6] hover:bg-gray-50 -- left-border highlight ONLY
+- NEVER add vertical displacement to sidebar nav (anchoring feel requires stability)
+- Active item: bg-[#3b82f6]/10 text-[#3b82f6] -- always-visible active state
+
+### Crisp Performance (Duration Standard)
+- All transitions: duration-150 ease-out -- productivity tools must feel instant
+- NEVER exceed duration-200 for any interactive element
+
+### Button Physics
+- Hover: hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(59,130,246,0.4)]
+- Active: active:scale-[0.98] active:translate-y-0 active:shadow-none -- tactile micropress
+- Focus: focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 (WCAG 2.1 AA)
+
+## Self-check
+
+1. Header fixed at top
+2. Three columns equal height
+3. Main content area is fluid
+4. Sidebars have fixed width
+5. Footer always at bottom
+6. Responsive collapsing works correctly`,
 
   examplePrompts: [
     {

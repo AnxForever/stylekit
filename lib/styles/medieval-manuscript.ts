@@ -6,6 +6,8 @@ export const medievalManuscript: DesignStyle = {
   nameEn: "Medieval Manuscript",
   description:
     "中世纪泥金手抄本风格，花体首字母、羊皮纸质感、金色与深红装饰性边框。哥特式黑体字与插画元素相结合。",
+  descriptionEn:
+    "Medieval illuminated manuscript style with ornate drop-cap initials, parchment textures, gold and deep-red decorative borders. Gothic blackletter combined with illustrative elements.",
   cover: "/styles/medieval-manuscript.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -31,6 +33,20 @@ export const medievalManuscript: DesignStyle = {
 
 字体选择至关重要：衬线字体（font-serif）贯穿始终，标题使用粗体大写以模拟哥特式黑体字的视觉重量，正文使用常规字重保证可读性。`,
 
+  philosophyEn: `The Medieval Illuminated Manuscript represents the pinnacle of Western book art, born in the scriptoria of monasteries. Every page is a union of faith and aesthetics -- gold-leaf decorated initials, intricate vine-scroll patterns, deep red and deep green mineral pigments, and the warm texture unique to parchment.
+
+In digital design, the manuscript style recreates the solemnity and refinement of that era: parchment color #f0e6d0 as the base, simulating the warm tones of animal hide; deep red #8b1a1a for headings and decorations, symbolizing cinnabar among mineral pigments; gold #c9a74e for borders, dividers, and important decorations, echoing the gilding craft.
+
+Core concepts:
+- Gilded decoration: Gold borders and dividers simulate the gold-leaf application effect, with key elements highlighted in gold
+- Ornate drop caps: Enlarged first letters of headings (text-6xl and above), using serif fonts to simulate the Gothic blackletter effect
+- Parchment texture: bg-[#f0e6d0] base color with subtle radial-gradient to simulate the color variation of parchment
+- Decorative borders: Double-line borders (border-double), corner decorations, and vine-scroll pattern suggestions
+
+Manuscript style suits historical museum websites, classical literature projects, medieval-themed game interfaces, wine and artisan brands, and other scenarios requiring a classical, solemn atmosphere.
+
+Font choice is crucial: serif fonts (font-serif) throughout, headings in bold uppercase to simulate the visual weight of Gothic blackletter, body text in regular weight to ensure readability.`,
+
   doList: [
     "使用羊皮纸色 bg-[#f0e6d0] 作为主背景底色",
     "使用金色 border-[#c9a74e] 和 text-[#c9a74e] 作为装饰和高亮",
@@ -46,6 +62,21 @@ export const medievalManuscript: DesignStyle = {
     "按钮悬停：hover:shadow-[5px_5px_0px_#3d2b1f]（阴影加重，压印加深预告）",
   ],
 
+  doListEn: [
+    "Use parchment color bg-[#f0e6d0] as the main background base",
+    "Use gold border-[#c9a74e] and text-[#c9a74e] for decorations and highlights",
+    "Use deep red text-[#8b1a1a] for headings and important text",
+    "Use border-double border-4 or border-[3px] to simulate manuscript double-line borders",
+    "Heading first letters use text-5xl or larger for drop cap effect",
+    "Use serif fonts font-serif throughout for classical consistency",
+    "Use dark brown #3d2b1f for body text and secondary border color",
+    "Add corner decoration hints: pseudo-elements or small icons simulating vine-scroll patterns",
+    "Button :active shifts to lower-right: active:translate-x-[3px] active:translate-y-[3px] active:shadow-[1px_1px_0px_#3d2b1f] (Wax Seal Impact -- wax seal press feel)",
+    "Gold borders slowly brighten on hover: hover:border-[#dfbf66] transition-all duration-700 ease-in-out (Gold Leaf Shimmer -- candlelight reflecting on gold leaf)",
+    "Cards use group class; corner decorations group-hover:opacity-100, drop cap group-hover:drop-shadow-[0_0_8px_rgba(201,167,78,0.6)] gold leaf emergence",
+    "Button hover: hover:shadow-[5px_5px_0px_#3d2b1f] (shadow deepens, press preview)",
+  ],
+
   dontList: [
     "禁止使用无衬线字体 font-sans 作为主字体",
     "禁止使用现代渐变（bg-gradient-to-r 等现代配色渐变）",
@@ -57,6 +88,19 @@ export const medievalManuscript: DesignStyle = {
     "禁止按钮使用 hover:-translate-y-*（羊皮纸是平铺的，无悬浮感）",
     "禁止按钮缺少 active:translate-x-[3px] active:translate-y-[3px]（Wax Seal Impact 是核心交互特征）",
     "禁止动画 duration < 300ms（手抄本的庄重感需要缓慢、从容的过渡）",
+  ],
+
+  dontListEn: [
+    "Do not use sans-serif fonts font-sans as the primary font",
+    "Do not use modern gradients (bg-gradient-to-r with modern neon/tech colors)",
+    "Do not use neon, fluorescent, or high-saturation modern colors",
+    "Do not use frosted glass effects (backdrop-blur)",
+    "Do not use pure black bg-black or pure white bg-white backgrounds",
+    "Do not use rounded corners rounded-xl or larger modern rounded corners",
+    "Do not use tech or futuristic design elements",
+    "Do not use hover:-translate-y-* on buttons (parchment is laid flat, no floating feel)",
+    "Do not omit active:translate-x-[3px] active:translate-y-[3px] on buttons (Wax Seal Impact is a core interaction feature)",
+    "Do not use animation duration < 300ms (the solemnity of manuscripts requires slow, composed transitions)",
   ],
 
   components: {
@@ -307,6 +351,53 @@ Primary:
 - Wax Seal Impact: active 反馈用硬阴影+右下位移，模拟火漆印章下压。
 - Gold Leaf Shimmer: 金色边框与首字母在 hover 时缓慢提亮，建议 duration-700 ease-in-out。
 - Ink Saturation: 红褐文字与装饰线条应渐进加深，避免突兀跳变。`,
+
+  aiRulesEn: `You are a Medieval Manuscript design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Sans-serif fonts (font-sans) as primary font
+- Modern gradients (bg-gradient-to-r with modern neon/tech colors)
+- Neon, fluorescent, or high-saturation modern colors
+- Backdrop blur effects (backdrop-blur)
+- Pure black bg-black or pure white bg-white backgrounds
+- Large rounded corners (rounded-xl, rounded-2xl, rounded-full)
+- Futuristic or tech-style design elements
+
+## Must Follow
+
+- Parchment background bg-[#f0e6d0] as base
+- Deep red #8b1a1a for headings and important text
+- Gold #c9a74e for borders, decorations, and highlights
+- Dark brown #3d2b1f for body text and secondary borders
+- Serif fonts font-serif throughout
+- Double-line borders border-double border-4 for ornate frames
+- Corner decorations on cards and containers
+- Drop cap effect on hero titles (first letter enlarged)
+
+## Color Palette
+
+Primary:
+- Deep Red: #8b1a1a
+- Parchment: #f0e6d0
+- Gold Leaf: #c9a74e
+- Monastery Green: #2d4a2d
+- Dark Brown: #3d2b1f
+
+## Unique Elements (Medieval Manuscript-Only)
+
+1. Drop cap: first letter of headings enlarged (text-5xl+) in gold #c9a74e
+2. Double-line borders: border-double border-4 border-[#c9a74e] for ornate framing
+3. Corner flourishes: small border-t/l/r/b decorations at card corners
+4. Parchment texture: radial-gradient overlays simulating skin variation
+5. Gold dividers: border-t-2 border-[#c9a74e] horizontal separators
+
+## Animation & Interaction Rules
+
+- Parchment Stillness: No light floating or elastic scaling; maintain solemn stillness on the parchment plane.
+- Wax Seal Impact: Active feedback uses hard shadow + lower-right displacement, simulating a wax seal press.
+- Gold Leaf Shimmer: Gold borders and drop caps slowly brighten on hover, recommend duration-700 ease-in-out.
+- Ink Saturation: Red-brown text and decorative lines should deepen progressively, avoiding abrupt jumps.`,
 
   examplePrompts: [
     {

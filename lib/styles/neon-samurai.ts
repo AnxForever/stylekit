@@ -6,6 +6,8 @@ export const neonSamurai: DesignStyle = {
   nameEn: "Neon Samurai",
   description:
     "日本传统武士美学与霓虹赛博朋克的碰撞融合，刀锋斜切线条、朱红的鸟居门框架、书法笔触与双色霓虹光效交织，浮世绘遇见霓虹灯的未来都市武道。",
+  descriptionEn:
+    "A collision of traditional Japanese samurai aesthetics with neon cyberpunk, weaving katana slash lines, vermillion torii gate frames, calligraphy brushstrokes, and dual-color neon glow effects -- ukiyo-e meets neon lights in a futuristic urban bushido.",
   cover: "/styles/neon-samurai.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -28,6 +30,17 @@ Core principles:
 - Calligraphy brush strokes: neon-lit brush-stroke underlines and dividers
 - Smoke/mist overlays: atmospheric depth through translucent background wisps`,
 
+  philosophyEn: `Neon Samurai fuses Japanese bushido aesthetics with cyberpunk neon luminance, forging a style of relentless tension and kinetic energy.
+
+Core principles:
+- Katana slash geometry: Diagonal tapered strokes cut across layouts as decorative dividers
+- Torii gate framing: Section containers shaped like sacred gate structures
+- Dual-color glow: Stroke color differs from its glow halo (purple stroke, blue glow)
+- Armor-plate panels: Angular card shapes inspired by samurai yoroi plate segments
+- Ink splatter accents: Burst particles on hover and interaction states
+- Calligraphy brush strokes: Neon-lit brush-stroke underlines and dividers
+- Smoke/mist overlays: Atmospheric depth through translucent background wisps`,
+
   doList: [
     "Use dark navy backgrounds (bg-[#080818])",
     "Add katana diagonal slash-stroke decorations",
@@ -38,7 +51,25 @@ Core principles:
     "Use calligraphy brush-stroke dividers with neon glow",
   ],
 
+  doListEn: [
+    "Use dark navy backgrounds (bg-[#080818])",
+    "Add katana diagonal slash-stroke decorations",
+    "Use torii gate shapes as section frames",
+    "Apply dual-color glow (stroke != glow color)",
+    "Use armor-plate angular card shapes",
+    "Add ink splatter burst accents on hover",
+    "Use calligraphy brush-stroke dividers with neon glow",
+  ],
+
   dontList: [
+    "No soft pastel colors or light backgrounds",
+    "No rounded-full or large border radius",
+    "No organic/irregular rounded shapes",
+    "No serif fonts",
+    "No standard drop shadows (use neon glow only)",
+  ],
+
+  dontListEn: [
     "No soft pastel colors or light backgrounds",
     "No rounded-full or large border radius",
     "No organic/irregular rounded shapes",
@@ -264,6 +295,52 @@ Primary:
 - Target Lock: corner markers should brighten and contract on hover to simulate lock-on feedback.
 - Lethal Glow: glow stays concentrated and high-saturation (red/purple), avoiding broad soft haze.
 - Instant Parry: active state should snap with slight X-axis jolt or immediate color inversion, never soft scaling.`,
+
+  aiRulesEn: `You are a Neon Samurai design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Soft pastel colors or light backgrounds
+- rounded-full or large border radius
+- Organic/irregular shapes
+- Serif fonts
+- Light mode backgrounds (bg-white, bg-gray-50, etc.)
+- Standard drop shadows (shadow-md, shadow-lg)
+
+## Must Follow
+
+- Dark navy backgrounds: bg-[#080818] or similar near-black
+- Neon red primary: #dc2626 with glow effects
+- Dual-color glow: stroke color differs from glow (e.g., purple text with blue glow halo)
+- Katana slash diagonal lines as decorative elements
+- Torii gate shapes for section framing
+- Armor-plate angular clip-paths on cards
+- Brush-stroke style underlines (not solid box borders for inputs)
+- Ink splatter burst accents on hover
+
+## Color Palette
+
+Primary:
+- Neon Red: #dc2626
+- Dark Navy: #080818
+- Electric Purple: #a020f0
+- Neon Blue: #38bdf8
+- Gold: #fbbf24
+
+## Unique Elements
+
+- Katana diagonal slash stroke decorations (tapered SVG paths)
+- Torii gate shaped frames (double-beam top border)
+- Dual-color glow effect (stroke color != glow color)
+- Armor-plate angular card clip-paths
+- Calligraphy brush-stroke neon dividers
+
+## Animation & Interaction Rules
+
+- Katana Slash: Interactions must resolve in 75ms to 100ms, with slash-line sweeps that feel like a single blade pass.
+- Target Lock: Corner markers should brighten and contract on hover to simulate lock-on feedback.
+- Lethal Glow: Glow stays concentrated and high-saturation (red/purple), avoiding broad soft haze.
+- Instant Parry: Active state should snap with slight X-axis jolt or immediate color inversion, never soft scaling.`,
 
   examplePrompts: [
     {

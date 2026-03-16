@@ -6,6 +6,8 @@ export const warmDashboard: DesignStyle = {
   nameEn: "Warm Dashboard",
   description:
     "温暖柔和的仪表盘设计风格，采用珊瑚/赤陶色背景、奶油白卡片、柔和阴影，营造舒适专业的数据展示体验。",
+  descriptionEn:
+    "A warm and soft dashboard design style with coral/terracotta backgrounds, cream-white cards, and gentle shadows, creating a comfortable and professional data display experience.",
   cover: "/styles/warm-dashboard.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -26,6 +28,15 @@ export const warmDashboard: DesignStyle = {
 - 专业可读：深灰文字确保数据可读性
 - 点缀色彩：青绿、金黄作为数据高亮和图表色`,
 
+  philosophyEn: `Warm Dashboard is a warm, professional interface design style that makes data presentation more approachable and friendly through warm-toned backgrounds and soft card designs.
+
+Core principles:
+- Warm comfort: Coral/terracotta backgrounds convey warmth
+- Clear hierarchy: Cream-white cards form clear contrast on warm backgrounds
+- Soft touch: Large rounded corners and diffused shadows create soft visuals
+- Professional readability: Dark gray text ensures data readability
+- Accent colors: Teal and golden yellow as data highlights and chart colors`,
+
   doList: [
     "背景使用暖色调 bg-[#d4a088] 或 bg-[#c9967a]",
     "卡片使用奶油白 bg-[#faf8f5] 或 bg-white",
@@ -37,6 +48,17 @@ export const warmDashboard: DesignStyle = {
     "数据高亮使用点缀色圆形背景",
   ],
 
+  doListEn: [
+    "Use warm-toned backgrounds bg-[#d4a088] or bg-[#c9967a]",
+    "Cards use cream white bg-[#faf8f5] or bg-white",
+    "Use large rounded corners rounded-2xl or rounded-3xl",
+    "Use soft diffused shadows shadow-xl shadow-black/10",
+    "Charts use teal #4a9d9a and golden #e8b86d colors",
+    "Text uses dark gray text-gray-800 or text-gray-600",
+    "Sidebar uses semi-transparent white bg-white/80 backdrop-blur",
+    "Data highlights use accent-colored circular backgrounds",
+  ],
+
   dontList: [
     "禁止使用冷色背景（蓝色、紫色）",
     "禁止使用纯黑文字 text-black",
@@ -44,6 +66,15 @@ export const warmDashboard: DesignStyle = {
     "禁止使用硬边阴影",
     "禁止使用高饱和度霓虹色",
     "禁止使用粗边框 border-2 及以上",
+  ],
+
+  dontListEn: [
+    "No cool-toned backgrounds (blue, purple)",
+    "No pure black text text-black",
+    "No sharp corners rounded-none rounded-sm",
+    "No hard-edge shadows",
+    "No highly saturated neon colors",
+    "No thick borders border-2 or above",
   ],
 
   components: {
@@ -350,6 +381,59 @@ body {
 - Tinted Diffusion: 抛弃死黑色的阴影。悬停高光操作（如主按钮）时，必须散发出与主色同色系的柔和光晕（如 \`hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)]\`），维持整体的温暖氛围。
 - Data Pulse: 增强数据易读性。当悬停在数据卡片上时，可令内部的关键指标（KPI 数值）快速地微量放大（\`group-hover:scale-105\`）或切换为强调色（青绿或金黄），帮助用户锁定核心信息。
 - Warm Utility: 所有状态过渡需兼顾高效与柔和，推荐使用 \`duration-200 ease-out\`。`,
+
+  aiRulesEn: `You are a Warm Dashboard design style frontend development expert.
+
+## Core Features
+
+Background:
+- Main background: bg-[#d4a088] coral/terracotta
+- Optional variants: bg-[#c9967a] darker, bg-[#e0b8a4] lighter
+
+Cards:
+- Background: bg-[#faf8f5] cream white or bg-white
+- Rounded corners: rounded-2xl or rounded-3xl
+- Shadows: shadow-xl shadow-black/8 (soft diffused)
+- hover: hover:shadow-2xl hover:-translate-y-1
+
+Color System:
+- Teal (primary accent): #4a9d9a - for primary buttons, positive data
+- Golden (chart primary): #e8b86d - for charts, highlights
+- Coral (secondary accent): #c17767 - for negative data, warnings
+- Sage (auxiliary): #6b8e8e - for secondary elements
+
+Text:
+- Headings: text-gray-800 font-semibold/bold
+- Body: text-gray-600
+- Secondary: text-gray-500 text-gray-400
+- On warm background: text-white
+
+## Layout
+
+Sidebar:
+- bg-white/80 backdrop-blur-xl
+- Width w-60
+- Contains logo, avatar, navigation
+
+Main area:
+- bg-[#d4a088] warm background
+- p-6 md:p-8 lg:p-10
+- Stats card grid + chart cards
+
+## Forbidden
+
+- Cool backgrounds (blue, purple, gray)
+- Pure black text
+- Sharp corners
+- Hard-edge shadows
+- Neon colors
+- Thick borders
+
+## Animation & Interaction Rules
+- Micro-Focus: As a data-dense dashboard, card interactions must never cause dramatic visual jumps. Hover allows only very slight upward float (hover:-translate-y-0.5), with enhanced shadow (shadow-xl to shadow-2xl) to focus attention.
+- Tinted Diffusion: Abandon dead-black shadows. Hover highlight operations (like primary buttons) must emit a soft halo in the same color family as the primary color (e.g., hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)]), maintaining the overall warm atmosphere.
+- Data Pulse: Enhance data readability. When hovering on data cards, key metrics (KPI values) can quickly micro-scale (group-hover:scale-105) or switch to accent color (teal or golden), helping users lock onto core information.
+- Warm Utility: All state transitions must balance efficiency and softness, recommended duration-200 ease-out.`,
 
   examplePrompts: [
     {

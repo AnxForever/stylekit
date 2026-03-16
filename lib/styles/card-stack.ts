@@ -6,6 +6,8 @@ export const cardStack: DesignStyle = {
   nameEn: "Card Stack",
   description:
     "卡片前后重叠的立体布局，通过 Z 轴层叠和偏移创造深度感，适合轮播、步骤展示、卡组选择。",
+  descriptionEn:
+    "3D layout with overlapping cards, creating depth through Z-axis stacking and offsets. Ideal for carousels, step-by-step displays, and card deck selection.",
   cover: "/styles/card-stack.svg",
   styleType: "layout",
   tags: ["modern", "expressive"],
@@ -27,6 +29,15 @@ export const cardStack: DesignStyle = {
 - 空间节省：在有限空间展示多个选项
 - 洗牌动感：hover 时牌堆像手持扑克般散开`,
 
+  philosophyEn: `Card Stack is a layout approach that creates depth perception using the Z-axis, with multiple cards overlapping front to back to form visual layers.
+
+Core principles:
+- Depth perception: Layering implies more content beneath
+- Focus guidance: The frontmost card receives the most attention
+- Interaction expectation: Implies the ability to flip or switch cards
+- Space efficiency: Display multiple options in limited space
+- Shuffle dynamics: On hover, the deck fans out like holding a hand of cards`,
+
   doList: [
     "使用 transform 和 z-index 创建层叠效果",
     "后方卡片缩小和偏移 scale-95 translate-y-4",
@@ -39,6 +50,18 @@ export const cardStack: DesignStyle = {
     "顶层卡片 hover 时显著上浮 + shadow-2xl，模拟揭牌感",
   ],
 
+  doListEn: [
+    "Use transform and z-index to create stacking effects",
+    "Back cards scale down and offset scale-95 translate-y-4",
+    "Add progressive opacity opacity-80, opacity-60",
+    "Support drag or click to switch cards",
+    "Add smooth transition animations transition-all duration-[400ms]",
+    "Limit visible card count (typically 3-5 cards)",
+    "Provide visual hints indicating interactivity",
+    "On group-hover, back cards fan out to sides (different rotate and translate-x values)",
+    "Top card on hover significantly lifts + shadow-2xl, simulating card reveal feel",
+  ],
+
   dontList: [
     "禁止堆叠过多卡片导致混乱",
     "禁止卡片完全重叠看不出层次",
@@ -46,6 +69,15 @@ export const cardStack: DesignStyle = {
     "禁止动画过于复杂影响性能",
     "禁止在移动端使用过于复杂的手势",
     "禁止底层卡片在 hover 时静止不动（缺乏景深感）",
+  ],
+
+  dontListEn: [
+    "Do not stack too many cards causing clutter",
+    "Do not completely overlap cards hiding layer distinction",
+    "Do not ignore interaction feedback",
+    "Do not use overly complex animations affecting performance",
+    "Do not use overly complex gestures on mobile",
+    "Do not leave back cards static on hover (lacks depth perception)",
   ],
 
   components: {
@@ -285,6 +317,59 @@ export const cardStack: DesignStyle = {
 }`,
 
   aiRules: `You are a frontend expert specializing in Card Stack layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT stack too many visible cards (max 3-5)
+- Do NOT overlap cards completely (need visual distinction)
+- Do NOT forget interaction feedback
+- Do NOT use overly complex animations
+- Do NOT use complex gestures on mobile
+- Do NOT leave back cards static during hover (kills depth illusion)
+
+## Must Follow
+
+- Use transform for positioning: scale, translateY, rotate
+- Use z-index for layering: z-30, z-20, z-10
+- Progressive opacity: 100%, 80%, 60%
+- Smooth transitions: transition-all duration-[400ms] ease-out
+- Clear hover/active states
+- Limit visible cards: 3-5 maximum
+
+## Animation & Interaction Rules
+
+- Deck Shuffling: On group-hover, back cards fan out sideways with different rotate + translate-x values, like shuffling a deck of cards.
+- 3D Peeling: Top card on hover should significantly lift (group-hover:-translate-y-6 group-hover:scale-105 group-hover:shadow-2xl), simulating physical card being raised.
+- Smooth Return: Use ease-out so cards snap back naturally from fast to slow.
+- Stack Peek: Slightly change back card opacity on hover to hint their presence.
+
+## Stack Structure
+
+Container:
+- relative position with group class for sibling interactions
+- flex center alignment
+- Fixed height for consistent layout
+
+Cards (front to back):
+- Card 1 (front): z-30, scale-100, opacity-100
+- Card 2 (mid): z-20, scale-95, translateY-4, rotate-2, opacity-80
+- Card 3 (back): z-10, scale-90, translateY-8, rotate(-3), opacity-60
+
+On group-hover:
+- Card 1: -translate-y-6, scale-105, shadow-2xl
+- Card 2: rotate-6, translate-x-(-5), translate-y-8
+- Card 3: -rotate-6, translate-x-5, translate-y-14
+
+## Self-Check
+
+After generating code, verify:
+1. Cards are visually layered with different scale + opacity
+2. group-hover fans back cards out to the sides
+3. Front card lifts dramatically on hover
+4. Max 3-5 visible cards
+5. Mobile-friendly touch targets`,
+
+  aiRulesEn: `You are a frontend expert specializing in Card Stack layout. All generated code must strictly follow these constraints:
 
 ## Absolute Prohibitions
 

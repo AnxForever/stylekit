@@ -6,6 +6,8 @@ export const wabiSabi: DesignStyle = {
   nameEn: "Wabi-Sabi",
   description:
     "日本侘寂美学的数字化呈现，崇尚不完美之美、自然衰老之雅和极致留白之禅，以墨色、茶色和纸张质感传递东方诗意。",
+  descriptionEn:
+    "A digital expression of Japanese Wabi-Sabi aesthetics, celebrating the beauty of imperfection, the elegance of natural aging, and the zen of extreme whitespace, conveyed through ink tones, tea hues, and paper textures.",
   cover: "/styles/wabi-sabi.svg",
   styleType: "visual",
   tags: ["minimal", "expressive"],
@@ -26,6 +28,15 @@ export const wabiSabi: DesignStyle = {
 - 朴素之深：在极致的简约中发现深邃
 - 一期一会：此刻即是唯一，不可再现`,
 
+  philosophyEn: `Wabi-Sabi is the deepest philosophical concept in Japanese traditional aesthetics.
+
+Core principles:
+- Beauty of imperfection: cracks, wear, and irregularity are gifts bestowed by time
+- Ma (space): whitespace is not emptiness, but meaningful space
+- Natural decay: the process of growth, aging, and fading is itself beautiful
+- Depth in simplicity: discovering profundity in ultimate simplicity
+- Ichigo ichie: this moment is the only one, never to be repeated`,
+
   doList: [
     "使用温暖的纸张色背景 bg-[#f7f3ec] bg-[#f2ede4]",
     "墨色为主要文字色 text-[#3a3a3a]",
@@ -35,11 +46,27 @@ export const wabiSabi: DesignStyle = {
     "缓慢的渐入动画 transition-opacity duration-1000",
   ],
 
+  doListEn: [
+    "Use warm paper-toned backgrounds bg-[#f7f3ec] bg-[#f2ede4]",
+    "Ink color as primary text color text-[#3a3a3a]",
+    "Extreme whitespace and spacing py-32 px-8",
+    "Use serif fonts font-serif",
+    "Ultra-thin divider lines border-[#d4cdc5]/30",
+    "Slow fade-in animations transition-opacity duration-1000",
+  ],
+
   dontList: [
     "禁止使用鲜艳色彩和高饱和度",
     "禁止使用厚重阴影和粗边框",
     "禁止密集排列元素",
     "禁止使用装饰性动画和弹跳效果",
+  ],
+
+  dontListEn: [
+    "Do not use vivid colors or high saturation",
+    "Do not use heavy shadows or thick borders",
+    "Do not densely arrange elements",
+    "Do not use decorative animations or bounce effects",
   ],
 
   components: {
@@ -100,4 +127,22 @@ export const wabiSabi: DesignStyle = {
 - Shadowless Void: 放弃所有营造现代立体感的 \`box-shadow\`。界面的层次仅通过大量留白和非常微弱的边框线来表达。
 - Dust Breathing: 所有交互必须极其极其缓慢。强制使用 \`duration-1000\` 甚至更长的过渡时间（如 \`duration-[1500ms]\`），配合 \`ease-in-out\`。让背景颜色的加深看起来像自然光线缓慢变暗。
 - Ink Fading: 悬停（Hover）时，文本的颜色不要发生突变，而是通过改变透明度（如从 \`opacity-60\` 缓慢过渡到 \`opacity-100\`），模拟墨迹在时间中的显现。`,
+
+  aiRulesEn: `You are designing in Wabi-Sabi style.
+- Warm paper-toned backgrounds: #f7f3ec, #f2ede4
+- Ink-like text color: #3a3a3a
+- Muted natural accents: moss green #8a9a7b, tea brown #b5a78c
+- Always use serif fonts (font-serif)
+- Extreme whitespace: py-32, large gaps between sections
+- Ultra-thin borders: border-[#d4cdc5]/30
+- Slow transitions: duration-500 or longer
+- No bold colors, no heavy shadows, no decorative elements
+- Embrace asymmetry and imperfection
+- Think "zen garden" and "ceramic pottery"
+
+Animation & Interaction Rules:
+- Absolute Stillness: The core of Wabi-Sabi is tranquility. Absolutely no translate (displacement), scale (scaling), or spring animations. Elements must remain still like stones.
+- Shadowless Void: Abandon all box-shadow for modern depth. Layer hierarchy is expressed only through generous whitespace and very faint border lines.
+- Dust Breathing: All interactions must be extremely slow. Use duration-1000 or longer transitions (e.g., duration-[1500ms]) with ease-in-out. Let background color deepening look like natural light slowly dimming.
+- Ink Fading: On hover, text color should not change abruptly but transition through opacity changes (e.g., from opacity-60 slowly to opacity-100), simulating ink appearing through time.`,
 };

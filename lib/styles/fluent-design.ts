@@ -6,6 +6,8 @@ export const fluentDesign: DesignStyle = {
   nameEn: "Fluent Design",
   description:
     "微软推出的设计系统，融合了光效、深度、动效、材质和缩放五大元素，打造自然直观的跨平台体验。",
+  descriptionEn:
+    "Microsoft's design system integrating five key elements -- light, depth, motion, material, and scale -- to create natural and intuitive cross-platform experiences.",
   cover: "/styles/fluent-design.svg",
   styleType: "visual",
   tags: ["modern", "brand-inspired"],
@@ -26,6 +28,15 @@ export const fluentDesign: DesignStyle = {
 - Material（材质）：亚克力等半透明材质
 - Scale（缩放）：适应不同尺寸的设备`,
 
+  philosophyEn: `Fluent Design System is a design language launched by Microsoft in 2017, aimed at creating consistent experiences across devices.
+
+Core five elements:
+- Light: Using light effects to indicate focus and interaction
+- Depth: Creating hierarchy and spatial awareness
+- Motion: Natural and fluid transition animations
+- Material: Semi-transparent materials like acrylic
+- Scale: Adapting to devices of different sizes`,
+
   doList: [
     "使用亚克力（Acrylic）半透明效果 bg-white/70 backdrop-blur-xl",
     "添加 Reveal 高亮边框效果（hover 时 border-white/60）",
@@ -39,6 +50,19 @@ export const fluentDesign: DesignStyle = {
     "图标容器 hover 时蓝色填充 + group-hover:scale-105 微交互",
   ],
 
+  doListEn: [
+    "Use acrylic (Acrylic) semi-transparent effect bg-white/70 backdrop-blur-xl",
+    "Add Reveal highlight border effect (hover border-white/60)",
+    "Use Microsoft's signature blue bg-[#0078d4]",
+    "Maintain clean modern layouts",
+    "Use Z-axis depth: hover:-translate-y-0.5 paired with shadow level elevation",
+    "Use Segoe UI font style",
+    "Button active:scale-[0.97] tactile press confirmation",
+    "All interactive elements focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2",
+    "Card hover:-translate-y-1 + shadow expansion (acrylic material floating)",
+    "Icon container hover with blue fill + group-hover:scale-105 micro-interaction",
+  ],
+
   dontList: [
     "禁止过度使用亚克力效果",
     "禁止使用不协调的配色",
@@ -47,6 +71,16 @@ export const fluentDesign: DesignStyle = {
     "禁止按钮缺少 active:scale-[0.97]（无触觉确认）",
     "禁止 focus:ring 缺少 focus:ring-offset-2",
     "禁止动画超过 duration-200（Fluent 是流畅利落的，不是缓慢漂移的）",
+  ],
+
+  dontListEn: [
+    "Do NOT overuse acrylic effects",
+    "Do NOT use clashing color schemes",
+    "Do NOT ignore focus states",
+    "Do NOT use heavy shadows (Fluent shadows are soft and layered)",
+    "Do NOT omit active:scale-[0.97] on buttons (no tactile confirmation)",
+    "Do NOT omit focus:ring-offset-2 from focus:ring",
+    "Do NOT exceed duration-200 for animations (Fluent is fluid and crisp, not slow and drifting)",
   ],
 
   components: {
@@ -284,6 +318,56 @@ export const fluentDesign: DesignStyle = {
 - Icon Scale: Icon containers use group class. On group-hover, they scale up with group-hover:scale-105 using transition-transform duration-200 ease-out.
 - Button Float + Press: Buttons rise hover:-translate-y-0.5 and shadow intensifies. On active:scale-[0.97] active:translate-y-0 active:shadow-none — compressed back to surface. The combination creates a physical button feel.
 - Press Scale Precision: Fluent uses active:scale-[0.97] (not 0.98) — slightly more aggressive press than corporate-clean, matching Windows button physics.
+- Snappy Easing: duration-150 ease-out for buttons and controls. duration-200 ease-out for cards. Never exceed 200ms.
+
+## Color Palette
+
+- Primary Blue: #0078d4 (buttons, links, focus rings)
+- Dark Blue: #106ebe (hover state)
+- Deeper Blue: #005a9e (active state)
+- Accent Yellow: #ffb900
+- Accent Red: #e81123
+- Accent Green: #00cc6a
+- Text: gray-900 (headings), gray-700 (body), gray-500 (secondary)
+
+## Self-Check
+
+After generating code, verify:
+1. All buttons have active:scale-[0.97] active:translate-y-0
+2. All focusable elements have focus:ring-2 focus:ring-offset-2
+3. Cards have hover:-translate-y-1 + shadow expansion
+4. Cards use group class; icon containers have group-hover:scale-105
+5. No duration above 200ms
+6. Acrylic used selectively, not on everything`,
+
+  aiRulesEn: `You are a Fluent Design System frontend development expert. All generated code must strictly follow Microsoft's Fluent Design principles.
+
+## Absolutely Forbidden
+
+- Buttons without active:scale-[0.97] (no tactile press confirmation)
+- focus:ring without focus:ring-offset-2 (ring merges with background, fails WCAG)
+- Animation duration above 200ms (Fluent is fluid, not slow)
+- Flat shadows without layering (Fluent shadows are always multi-layer)
+- Cards without hover Z-axis lift (hover:-translate-y-1)
+- Overcrowded acrylic effects (use selectively)
+- Harsh solid borders (borders should be white/20 to white/50 on glass)
+
+## Must Follow
+
+- Microsoft Blue: bg-[#0078d4] for all primary actions
+- Acrylic: bg-white/70 backdrop-blur-xl for cards and panels
+- Rounded: rounded-sm for buttons, rounded-lg for cards
+- Shadow layering: shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] at rest
+- Focus ring: focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 on ALL focusable elements
+- All buttons: hover:-translate-y-0.5, active:scale-[0.97], active:translate-y-0
+
+## Animation & Interaction Rules
+
+- Acrylic Depth Lift: Cards hover with hover:-translate-y-1 plus shadow expansion (shadow doubles). The transition is transition-all duration-200 ease-out. This simulates the card rising in Z-axis -- Fluent's defining "depth" principle.
+- Reveal Brightening: On hover, card background brightens (bg-white/70 to bg-white/85) and border brightens (border-white/30 to border-white/50). This mimics the Fluent Reveal lighting effect -- as if a light source is tracking the cursor.
+- Icon Scale: Icon containers use group class. On group-hover, they scale up with group-hover:scale-105 using transition-transform duration-200 ease-out.
+- Button Float + Press: Buttons rise hover:-translate-y-0.5 and shadow intensifies. On active:scale-[0.97] active:translate-y-0 active:shadow-none -- compressed back to surface. The combination creates a physical button feel.
+- Press Scale Precision: Fluent uses active:scale-[0.97] (not 0.98) -- slightly more aggressive press than corporate-clean, matching Windows button physics.
 - Snappy Easing: duration-150 ease-out for buttons and controls. duration-200 ease-out for cards. Never exceed 200ms.
 
 ## Color Palette

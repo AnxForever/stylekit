@@ -6,6 +6,8 @@ export const cyberChinese: DesignStyle = {
   nameEn: "Cyber Chinese",
   description:
     "传统中华美学与赛博朋克科幻的碰撞融合，朱红金黄搭配霓虹蓝紫，龙凤印章与霓虹灯笼交织的未来东方幻想。",
+  descriptionEn:
+    "A collision and fusion of traditional Chinese aesthetics with cyberpunk sci-fi -- vermilion and gold paired with neon blue-purple, dragon-phoenix seals intertwined with neon lanterns in a futuristic Eastern fantasy.",
   cover: "/styles/cyber-chinese.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -25,6 +27,14 @@ export const cyberChinese: DesignStyle = {
 - 霓虹灯笼：传统灯笼造型发出赛博光芒
 - 锐利线条：直角硬朗造型体现科技感`,
 
+  philosophyEn: `Cyber Chinese is a fusion of traditional Chinese aesthetics with cyberpunk sci-fi style, reinterpreting classic Eastern elements with neon light effects on a dark base.
+
+Core principles:
+- Ancient meets modern: Traditional vermilion and gold coexist with neon blue and purple
+- Eastern future: Dragon-phoenix totems and seal patterns are cyber-reconstructed
+- Neon lanterns: Traditional lantern forms emit cybernetic glow
+- Sharp lines: Right-angled bold forms embody tech feel`,
+
   doList: [
     "使用朱红 #d4553a 和金黄 #c9a227 为主色调",
     "搭配霓虹蓝 #00d4ff 和霓虹紫 #a020f0",
@@ -36,6 +46,17 @@ export const cyberChinese: DesignStyle = {
     "可在 hover/focus 使用短时扫描光带或云纹流光，强化东方赛博反馈",
   ],
 
+  doListEn: [
+    "Use vermilion #d4553a and gold #c9a227 as primary colors",
+    "Pair with neon blue #00d4ff and neon purple #a020f0",
+    "Use sharp right-angled no-rounded-corner forms",
+    "Add neon glow effects",
+    "Incorporate traditional Chinese pattern elements (seals, cloud motifs)",
+    "Dark backgrounds as main base tone",
+    "Interaction effects maintain ceremonial feel: hover brightens gold borders and neon, active presses down 1-2px",
+    "May use brief scan light bands or cloud-motif shimmer on hover/focus to reinforce Eastern cyber feedback",
+  ],
+
   dontList: [
     "禁止使用明亮白色背景",
     "禁止使用柔和圆润的造型",
@@ -43,6 +64,15 @@ export const cyberChinese: DesignStyle = {
     "禁止使用过于西式的装饰元素",
     "禁止使用弹簧回弹、俏皮抖动或大幅缩放动画",
     "禁止控制类组件使用超过 400ms 的缓慢过渡",
+  ],
+
+  dontListEn: [
+    "Do not use bright white backgrounds",
+    "Do not use soft rounded forms",
+    "Do not omit neon glow effects",
+    "Do not use overly Western decorative elements",
+    "Do not use spring-bounce, playful jitter, or large-scale animations",
+    "Do not use transitions slower than 400ms on control components",
   ],
 
   components: {
@@ -239,6 +269,50 @@ export const cyberChinese: DesignStyle = {
 - 云纹装饰
 - 灯笼造型
 - 赛博网格`,
+
+  aiRulesEn: `You are a Cyber Chinese design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Bright white backgrounds
+- Soft rounded forms (rounded-lg, rounded-full)
+- Omitting neon glow effects
+- Overly Western decorative elements
+- Emoji
+
+## Must Follow
+
+- Vermilion #d4553a and gold #c9a227 as primary colors
+- Neon blue #00d4ff and neon purple #a020f0 as secondary colors
+- Dark black background bg-[#0a0a0a]
+- Sharp no-rounded-corners rounded-none
+- Neon glow effects shadow-[0_0_Xpx_rgba(...)]
+- Traditional Chinese pattern elements
+
+## Animation & Interaction Rules
+
+- Interaction rhythm should be short and restrained: 180-300ms, preferring combined transitions of transform, box-shadow, and border-color
+- Hover focuses on "neon warming": border and glow intensify, allowing 1-2px slight lift, no large displacement
+- Active must convey "seal press" feedback: press down 1-3px or slight scale to 0.98, with synchronized glow tightening
+- Scan light bands/cloud-motif shimmer should be trigger-based short animations (hover/focus), avoiding infinite loops that create noise
+- No spring-bounce, cute jitter, slow fade-in/out, or other interactions conflicting with the bold cyber tone
+
+## Color Palette
+
+Primary:
+- Vermilion: #d4553a
+- Gold: #c9a227
+- Dark Black: #0a0a0a
+- Neon Blue: #00d4ff
+- Neon Purple: #a020f0
+
+## Special Elements
+
+- Seal patterns
+- Dragon-phoenix totems
+- Cloud motif decorations
+- Lantern forms
+- Cyber grid`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const zPatternLayout: DesignStyle = {
   nameEn: "Z-Pattern Layout",
   description:
     "基于眼动追踪的Z型扫描布局，视线从左上到右上，斜穿到左下再到右下，形成Z字路径。适合着陆页、营销页面和简洁信息展示。",
+  descriptionEn:
+    "A Z-pattern scanning layout based on eye-tracking, where the gaze moves from top-left to top-right, diagonally to bottom-left, then to bottom-right, forming a Z-path. Ideal for landing pages, marketing pages, and concise information displays.",
   cover: "/styles/z-pattern-layout.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const zPatternLayout: DesignStyle = {
 - 简洁明了：适合内容较少但需要强转化的页面
 - 层层推进：每一行都是一个信息层级`,
 
+  philosophyEn: `Z-Pattern Layout is based on the user's natural scanning path on visually clean pages. The gaze moves from the top-left (logo/brand) to the top-right (CTA), then diagonally to the bottom-left, and finally to the bottom-right (final CTA).
+
+Core principles:
+- Visual guidance: Using the Z-path to guide users through a preset information reception sequence
+- Key positions: The four corners are the most important information placement points
+- Clean and clear: Suitable for pages with less content but strong conversion needs
+- Progressive layers: Each row is an information hierarchy level`,
+
   doList: [
     "左上角放置 logo/品牌标识",
     "右上角放置导航或首要 CTA",
@@ -35,12 +45,29 @@ export const zPatternLayout: DesignStyle = {
     "每一行信息独立完整，层层递进",
   ],
 
+  doListEn: [
+    "Place logo/brand identity in the top-left corner",
+    "Place navigation or primary CTA in the top-right corner",
+    "Place core value proposition in the middle area",
+    "Place auxiliary information or trust badges in the bottom-left",
+    "Place the final CTA button in the bottom-right",
+    "Each row of information is independently complete, progressively layered",
+  ],
+
   dontList: [
     "禁止在Z路径上放置不重要的内容",
     "禁止打断Z型视觉流动",
     "禁止使用过多的内容干扰路径",
     "禁止将 CTA 放在路径之外",
     "禁止让页面过于复杂和拥挤",
+  ],
+
+  dontListEn: [
+    "Do NOT place unimportant content on the Z-path",
+    "Do NOT interrupt the Z-shaped visual flow",
+    "Do NOT use too much content that interferes with the path",
+    "Do NOT place CTAs outside the path",
+    "Do NOT make the page overly complex and crowded",
   ],
 
   components: {
@@ -245,6 +272,53 @@ Z型路径的四个关键点：
 - CTA 磁力（CTA Magnetism）：位于Z路径关键节点的行动按钮，悬停时必须使用弹性放大（\`hover:scale-[1.02]\`）结合品牌色光晕，让按钮产生磁铁般的吸引力。
 - 干脆利落（Crisp Progression）：商业落地页不允许拖沓动效。强制使用 \`duration-200 ease-out\`，确保反馈干脆，不打断用户的Z型扫视节奏。
 - 焦点暗示（Clear Focus）：输入框聚焦时，在光圈外发光的基础上，将背景从灰/透明提亮至纯白，给出清晰的数据输入暗示。`,
+
+  aiRulesEn: `You are a Z-Pattern Layout expert. All generated code must strictly follow these constraints:
+
+## Layout Rules
+
+Z-path four key points:
+1. Top-left: Logo / brand identity
+2. Top-right: Navigation / primary CTA
+3. Middle diagonal: Core value proposition / main content
+4. Bottom-left: Trust badges / social proof
+5. Bottom-right: Final CTA button
+
+## Content Rules
+
+- Each row of information is independently complete
+- First row establishes brand awareness
+- Diagonal area delivers core value
+- Last row drives conversion
+- Content is concise, avoiding path interference
+
+## Visual Guidance
+
+- Use contrasting colors to highlight CTAs
+- Use whitespace to guide visual flow
+- Center layout for middle area
+- Use flex justify-between for header and footer
+
+## Responsive
+
+Desktop: Complete Z-path
+Tablet: Maintain Z-path, reduce spacing
+Mobile: Vertical stack, maintain priority order
+
+## Self-Check
+
+1. Logo at top-left, CTA at top-right
+2. Core content centered
+3. Final CTA at bottom-right
+4. Visual path is clear and fluid
+5. Page is clean and uncluttered
+
+## Animation & Interaction Rules
+
+- Funnel Focus: When hovering core areas (feature cards, inputs), must use noticeable float (\`hover:-translate-y-1\`) and shadow expansion (\`hover:shadow-xl\`) to firmly lock user attention, reinforcing conversion node presence.
+- CTA Magnetism: Action buttons at Z-path key nodes must use elastic scaling (\`hover:scale-[1.02]\`) combined with brand color halo on hover, making buttons feel magnetically attractive.
+- Crisp Progression: Business landing pages do not allow sluggish animations. Mandatory \`duration-200 ease-out\`, ensuring feedback is crisp without interrupting the user's Z-scan rhythm.
+- Clear Focus: On input focus, beyond the outer ring glow, brighten background from gray/transparent to pure white, providing clear data input indication.`,
 
   examplePrompts: [
     {
