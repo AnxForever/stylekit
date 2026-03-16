@@ -136,6 +136,8 @@ import { witchcoreTokens } from "./witchcore-tokens";
 import { neonTokyoTokens } from "./neon-tokyo-tokens";
 import { paperCraftTokens } from "./paper-craft-tokens";
 import { blueprintTokens } from "./blueprint-tokens";
+import { dopamineDesignTokens } from "./dopamine-design-tokens";
+import { linearStyleTokens } from "./linear-style-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -273,6 +275,8 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "neon-tokyo": neonTokyoTokens,
   "paper-craft": paperCraftTokens,
   "blueprint": blueprintTokens,
+  "dopamine-design": dopamineDesignTokens,
+  "linear-style": linearStyleTokens,
 };
 
 // Get tokens for a style by slug

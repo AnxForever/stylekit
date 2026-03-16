@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#0d0b14"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0d0b14"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Stars scattered -->
   <circle cx="100" cy="50" r="1.5" fill="#c9a74e" opacity="0.8"/>
   <circle cx="200" cy="30" r="1" fill="#c9a74e" opacity="0.6"/>
@@ -36,4 +37,5 @@
   <!-- Style name -->
   <text x="400" y="210" text-anchor="middle" font-family="Georgia, serif" font-size="44" fill="#c9a74e" letter-spacing="8">WITCHCORE</text>
   <line x1="250" y1="225" x2="550" y2="225" stroke="#4a1942" stroke-width="1"/>
+  </g>
 </svg>

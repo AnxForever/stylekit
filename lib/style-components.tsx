@@ -3039,6 +3039,28 @@ export const styleComponents: Record<
     ),
   },
   holographic: {
+    button: () => (
+      <button className="px-6 py-3 bg-[#0A1628]/80 text-[#00D4FF] font-semibold tracking-wide border border-[#00D4FF]/40 shadow-[0_0_15px_rgba(0,212,255,0.3)] hover:shadow-[0_0_25px_rgba(0,212,255,0.5)] hover:border-[#00D4FF]/70 transition-all backdrop-blur-sm">
+        Activate
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0A1628]/60 backdrop-blur-md border border-[#00D4FF]/30 shadow-[0_0_20px_rgba(0,212,255,0.15)]">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-2 w-2 rounded-full bg-[#00D4FF] shadow-[0_0_8px_rgba(0,212,255,0.6)]" />
+          <div className="text-xs font-semibold tracking-[0.2em] text-[#00D4FF]/80">HOLOGRAPHIC</div>
+        </div>
+        <h3 className="font-semibold text-lg mb-2 text-white/90">Holo Card</h3>
+        <p className="text-sm text-[#00D4FF]/60">Transparent sci-fi panels</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Enter command..."
+        className="w-full px-4 py-3 bg-[#0A1628]/50 backdrop-blur-sm border border-[#00D4FF]/30 text-[#00D4FF] placeholder-[#00D4FF]/30 focus:outline-none focus:border-[#00D4FF]/60 focus:shadow-[0_0_12px_rgba(0,212,255,0.2)] transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-[#12022a] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.22),transparent_45%)]" />
@@ -3066,6 +3088,27 @@ export const styleComponents: Record<
     ),
   },
   particle: {
+    button: () => (
+      <button className="px-6 py-3 bg-[#6366F1] text-white font-semibold tracking-wide border border-[#6366F1]/50 shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_25px_rgba(99,102,241,0.5)] transition-all relative overflow-hidden">
+        Launch
+      </button>
+    ),
+    card: () => (
+      <div className="p-6 bg-[#0F172A] border border-[#6366F1]/30 relative overflow-hidden">
+        <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-[#6366F1]/60" />
+        <div className="absolute top-6 right-8 w-1 h-1 rounded-full bg-[#818CF8]/40" />
+        <div className="absolute bottom-4 left-6 w-1 h-1 rounded-full bg-[#6366F1]/50" />
+        <h3 className="font-semibold text-lg mb-2 text-white/90">Particle Card</h3>
+        <p className="text-sm text-[#6366F1]/70">Connected nodes and lines</p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Enter data..."
+        className="w-full px-4 py-3 bg-[#0F172A] border border-[#6366F1]/30 text-white placeholder-[#6366F1]/30 focus:outline-none focus:border-[#6366F1]/60 focus:shadow-[0_0_12px_rgba(99,102,241,0.2)] transition-all"
+      />
+    ),
     coverPreview: () => (
       <div className="w-full h-full bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute w-2 h-2 rounded-full bg-cyan-400/70 top-8 left-10 shadow-[0_0_12px_rgba(34,211,238,0.5)]" />

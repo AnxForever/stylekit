@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Top nav bar -->
-  <rect x="0" y="0" width="800" height="48" fill="#24292f"/>
+  <rect x="0" y="0" width="1200" height="48" fill="#24292f"/>
   <circle cx="30" cy="24" r="14" fill="#ffffff" opacity="0.15"/>
   <rect x="60" y="16" width="60" height="16" rx="3" fill="#ffffff" opacity="0.1"/>
   <rect x="130" y="16" width="50" height="16" rx="3" fill="#ffffff" opacity="0.1"/>
@@ -43,4 +44,5 @@
   <text x="230" y="333" font-family="Arial, sans-serif" font-size="14" fill="#0969da">Pull Request #42</text>
   <!-- Style name -->
   <text x="640" y="333" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#24292f">GitHub Style</text>
+  </g>
 </svg>

@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="800" height="400" fill="#fdf6ee"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fdf6ee"/>
+  <g transform="scale(1.5, 1.575)">
   <!-- Back layer shapes with shadow -->
   <g transform="translate(2,3)" opacity="0.15">
     <rect x="80" y="60" width="180" height="140" rx="4" fill="#333"/>
@@ -47,4 +48,5 @@
   <polygon points="700,360 710,375 690,375" fill="#e85d75" opacity="0.5"/>
   <!-- Style name -->
   <text x="400" y="230" text-anchor="middle" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="42" font-weight="bold" fill="#e85d75">Paper Craft</text>
+  </g>
 </svg>
