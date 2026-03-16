@@ -6,6 +6,8 @@ export const cubism: DesignStyle = {
   nameEn: "Cubism",
   description:
     "毕加索和布拉克的立体主义运动，几何碎片化构图、多视角叠加、棱角分明的形状与沉稳的大地色调。",
+  descriptionEn:
+    "The Cubism movement of Picasso and Braque, featuring geometric fragmented compositions, multi-perspective overlays, angular shapes, and subdued earth-tone palettes.",
   cover: "/styles/cubism.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -29,6 +31,18 @@ export const cubism: DesignStyle = {
 
 设计时应注重几何元素的层叠与交错，通过不同角度的平面暗示深度，而非使用传统的透视或阴影。色彩克制但构图大胆，这是立体主义的核心矛盾与魅力所在。`,
 
+  philosophyEn: `Cubism is one of the most revolutionary art movements of the 20th century, pioneered by Picasso and Braque around 1907. It completely broke with the single-point perspective tradition since the Renaissance, redefining visual expression through geometric fragments and multi-perspective overlays.
+
+Core concepts:
+- Geometric fragmentation: Decomposing objects into basic geometric shapes -- triangles, rectangles, irregular polygons
+- Multi-perspective overlay: Presenting multiple angles of an object in the same composition, breaking the limitation of a single viewpoint
+- Earth-tone palette: Subdued browns, ochres, and steel blues, originating from the restrained color use of the Analytical Cubism period
+- Angular tension: Creating visual tension through sharp edges and asymmetric compositions
+
+In digital design, Cubism style is suitable for art galleries, creative agencies, cultural events, and high-end brands. It conveys intellectualism, avant-garde thinking, and a spirit of challenging tradition.
+
+When designing, focus on the layering and interweaving of geometric elements, suggesting depth through planes at different angles rather than using traditional perspective or shadows. Colors are restrained but compositions are bold -- this is the core paradox and charm of Cubism.`,
+
   doList: [
     "使用棱角分明的几何形状，多采用 skew 和 rotate 变换",
     "主色调使用大地色系 #5c4033 和 #e8dcc8",
@@ -41,6 +55,18 @@ export const cubism: DesignStyle = {
     "交互反馈保持硬朗：hover/active 以 1-4px 平移和阴影位移为主，duration 控制在 150-200ms",
   ],
 
+  doListEn: [
+    "Use angular geometric shapes with skew and rotate transforms",
+    "Use earth-tone palette #5c4033 and #e8dcc8 as primary colors",
+    "Use thick line borders border-2 paired with dark border colors",
+    "Use small rounded corners rounded or rounded-sm to maintain angularity",
+    "Cards and containers use asymmetric layouts and tilted angles",
+    "Simulate multi-perspective effects through z-index and overlapping elements",
+    "Text uses font-bold and uppercase to emphasize geometric feel",
+    "Use clip-path or transform to create fragmented visuals",
+    "Keep interaction feedback crisp: hover/active primarily use 1-4px displacement and shadow offset, duration kept at 150-200ms",
+  ],
+
   dontList: [
     "禁止使用大圆角 rounded-2xl, rounded-full",
     "禁止使用柔和的渐变或模糊效果",
@@ -50,6 +76,17 @@ export const cubism: DesignStyle = {
     "禁止使用轻薄的细线边框 border",
     "禁止使用过于柔和的阴影",
     "禁止使用弹簧回弹、漂浮循环或大幅缩放动效（如 hover:scale-110）",
+  ],
+
+  dontListEn: [
+    "Do not use large rounded corners rounded-2xl, rounded-full",
+    "Do not use soft gradients or blur effects",
+    "Do not use neon or fluorescent colors",
+    "Do not use symmetrical centered traditional layouts",
+    "Do not use circular or organic curved shapes",
+    "Do not use thin hairline borders border",
+    "Do not use overly soft shadows",
+    "Do not use spring bounce, floating loops, or large-scale animations (e.g., hover:scale-110)",
   ],
 
   components: {
@@ -241,6 +278,50 @@ export const cubism: DesignStyle = {
 - 硬边阴影 (无模糊)
 - 不对称构图
 - 粗体大写字母排版`,
+
+  aiRulesEn: `You are a Cubism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Large rounded corners rounded-2xl, rounded-full
+- Soft gradients or blur effects
+- Neon or fluorescent colors
+- Fully symmetrical centered traditional layouts
+- Organic curves or circular shapes
+- Thin hairline borders border (must be border-2 or thicker)
+
+## Must Follow
+
+- Earth-tone palette: #5c4033 (burnt sienna), #e8dcc8 (canvas)
+- Borders use border-2 paired with rounded-sm
+- Hard shadows shadow-[Npx_Npx_0px_color]
+- font-bold uppercase tracking-widest to emphasize geometric feel
+- Create fragmented visuals through skew, rotate, clip-path
+- Overlapping elements and asymmetric layouts
+
+## Animation & Interaction Rules
+
+- Motion must be short and crisp: transition duration kept at 100-200ms, prefer combined transitions of transform, box-shadow, and border-color
+- Hover feedback primarily uses geometric displacement: 1-2px shift + shadow offset + slight angular disturbance (1-3deg)
+- Active state must have a "stamp" feel: 3-4px displacement with shadow significantly shrinking or removed
+- No spring bounce, floating loops, slow fade-in/out, or large-scale animations
+- One-time light-band/slice sweep effects are allowed but must not steal focus or introduce blur softening
+
+## Color Palette
+
+Primary:
+- Sienna: #5c4033
+- Canvas: #e8dcc8
+- Khaki: #8b7355
+- Steel blue: #3d5c6e
+- Terracotta: #9b3d25
+
+## Special Elements
+
+- Geometric fragment decorations (clip-path, skew, rotate)
+- Hard-edge shadows (no blur)
+- Asymmetric compositions
+- Bold uppercase letter typography`,
 
   examplePrompts: [
     {

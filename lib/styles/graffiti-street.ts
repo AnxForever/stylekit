@@ -6,6 +6,8 @@ export const graffitiStreet: DesignStyle = {
   nameEn: "Graffiti Street",
   description:
     "街头涂鸦艺术风格，喷漆质感、大胆的撞色、手写体标签、砖墙背景。都市文化与反叛精神的视觉表达。",
+  descriptionEn:
+    "Street graffiti art style with spray-paint textures, bold clashing colors, hand-lettered tags, and brick-wall backgrounds. A visual expression of urban culture and rebellious spirit.",
   cover: "/styles/graffiti-street.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -31,6 +33,20 @@ export const graffitiStreet: DesignStyle = {
 
 关键原则：涂鸦从不对齐，从不温和，从不请求许可。每一个元素都应该有"直接喷上去"的即兴感和力量感。`,
 
+  philosophyEn: `Graffiti Street style originates from the graffiti culture of 1960s New York subways and Philadelphia streets, one of the four elements of hip-hop culture. From early simple "tag" signatures to later "wildstyle" and "piece" (masterpiece) works, graffiti has always been a symbol of urban youth self-expression and rebellious spirit.
+
+In digital design, graffiti style recreates the raw energy of the streets: dark gray/near-black #1c1c1e simulates asphalt and brick-wall base colors; spray-paint red #ff2d55 and neon cyan #00e5ff are signature high-saturation clash colors; bold uppercase letters and tilted text mimic the spontaneity of spray-painted writing.
+
+Core concepts:
+- Spray-paint texture: text-shadow and drop-shadow simulate the fuzzy edges of spray-paint diffusion
+- Bold color clashing: Red, cyan, yellow, purple, and orange in high-saturation collision -- rejecting harmony, pursuing impact
+- Hand-lettered tags: Tilted text -rotate-[N deg], bold uppercase, and irregular spacing mimic hand-sprayed tags
+- Brick-wall background: Dark gray base with subtle grid textures suggesting brick or concrete walls
+
+Graffiti style suits music label websites, streetwear brands, skateboard culture communities, and indie musician homepages -- any scenario that needs to express urban rebellious spirit and youth cultural identity.
+
+Key principle: Graffiti never aligns, never softens, never asks permission. Every element should have the spontaneous feel and raw power of being "sprayed directly on."`,
+
   doList: [
     "使用深灰/近黑 bg-[#1c1c1e] 作为主背景模拟砖墙/沥青",
     "使用高饱和度撞色：text-[#ff2d55], text-[#00e5ff], text-[#ffea00], text-[#b620e0]",
@@ -42,6 +58,17 @@ export const graffitiStreet: DesignStyle = {
     "混用超大字号（text-7xl+）和超小字号（text-xs）形成对比",
   ],
 
+  doListEn: [
+    "Use dark gray/near-black bg-[#1c1c1e] as main background simulating brick walls/asphalt",
+    "Use high-saturation clash colors: text-[#ff2d55], text-[#00e5ff], text-[#ffea00], text-[#b620e0]",
+    "Text uses font-black uppercase with random rotation -rotate-[N deg]",
+    "Use text-shadow or drop-shadow to simulate spray-paint diffusion effect",
+    "Buttons and tags use thick borders border-4 and hard offset shadows shadow-[Npx_Npx_0px]",
+    "Add skew-x or skew-y transforms to elements for street dynamic feel",
+    "Use different colored underlines underline decoration to simulate spray-paint lines",
+    "Mix extra-large font sizes (text-7xl+) and extra-small sizes (text-xs) for contrast",
+  ],
+
   dontList: [
     "禁止使用柔和的粉彩色（pastel colors）",
     "禁止使用纤细字体（font-light, font-thin）",
@@ -50,6 +77,16 @@ export const graffitiStreet: DesignStyle = {
     "禁止使用毛玻璃效果（backdrop-blur）",
     "禁止使用柔和阴影（shadow-sm, shadow-md）",
     "禁止使用温暖舒适的配色方案",
+  ],
+
+  dontListEn: [
+    "Do not use soft pastel colors",
+    "Do not use thin fonts (font-light, font-thin)",
+    "Do not use symmetrical, neatly aligned grid layouts",
+    "Do not use rounded cute elements (rounded-full on cards)",
+    "Do not use frosted glass effects (backdrop-blur)",
+    "Do not use soft shadows (shadow-sm, shadow-md)",
+    "Do not use warm, cozy color schemes",
   ],
 
   components: {
@@ -329,6 +366,54 @@ Primary:
 - Vandalism Snap: 交互允许更激进的旋转/倾斜切换，强调未经许可的街头破坏感。
 - Hard Contrast: active 需瞬间移除硬阴影并大幅位移，制造“盖章撞墙”式冲击。
 - Zero Polish: 动画保持短促硬切（duration-100/150 + ease-linear），避免优雅顺滑风格。`,
+
+  aiRulesEn: `You are a Graffiti Street design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Pastel or soft colors (pink-200, blue-200, etc.)
+- Thin fonts (font-light, font-thin, font-normal)
+- Perfectly aligned symmetric grid layouts
+- Rounded cute elements (rounded-full on cards)
+- Backdrop blur effects (backdrop-blur)
+- Soft shadows (shadow-sm, shadow-md, shadow-lg)
+- Warm cozy color schemes
+
+## Must Follow
+
+- Dark asphalt background bg-[#1c1c1e] as base
+- High-saturation spray colors: #ff2d55, #00e5ff, #ffea00, #b620e0, #ff6d00
+- Extra-bold fonts font-black uppercase throughout
+- Random rotation and skew transforms on elements
+- Thick borders border-4 with hard offset shadows shadow-[Npx_Npx_0px]
+- Text shadow for spray paint glow effect
+- Asymmetric, non-grid layouts preferred
+- No rounded corners: rounded-none throughout
+
+## Color Palette
+
+Primary:
+- Spray Red: #ff2d55
+- Asphalt: #1c1c1e
+- Cyan Spray: #00e5ff
+- Neon Yellow: #ffea00
+- Purple: #b620e0
+- Orange: #ff6d00
+
+## Unique Elements (Graffiti-Only)
+
+1. Spray paint transforms: style={{ transform: "rotate(Ndeg) skewX(Ndeg)" }} on text and cards
+2. Drip decorations: thin vertical div elements simulating paint drips
+3. Brick wall texture: repeating-linear-gradient grid pattern in the background
+4. Stencil text: font-black uppercase with letter-spacing and optional stroke
+5. Color tag badges: inline colored spans with font-black uppercase labels
+
+## Animation & Interaction Rules
+
+- Paint Drip: On hover, drip decorations stretch along the Y axis, simulating fresh spray paint running.
+- Vandalism Snap: Interactions allow more aggressive rotation/tilt switching, emphasizing the unauthorized street vandalism feel.
+- Hard Contrast: Active must instantly remove hard shadows and shift significantly, creating a "stamp-hitting-wall" impact.
+- Zero Polish: Animations stay short and hard-cut (duration-100/150 + ease-linear), avoiding elegant smooth styles.`,
 
   examplePrompts: [
     {

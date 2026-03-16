@@ -6,6 +6,8 @@ export const collageArt: DesignStyle = {
   nameEn: "Collage Art",
   description:
     "杂志拼贴和混合材料美学，纸片剪切、多层叠加、撕纸边缘和混搭字体，营造充满创意和手工感的视觉冲击。",
+  descriptionEn:
+    "Magazine collage and mixed-media aesthetics with paper cutouts, multi-layer stacking, torn paper edges, and mixed typography, creating a visually impactful handcrafted creative experience.",
   cover: "/styles/collage-art.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -36,6 +38,16 @@ export const collageArt: DesignStyle = {
 - 硬偏移阴影：shadow-[Npx_Npx_0px] 纯色偏移阴影创造纸片层叠的物理深度
 - 纸张物理感：hover 时纸片被掀起（scale-105 + 旋转微调），active 时被按压在桌面（阴影骤减）`,
 
+  philosophyEn: `Collage Art style originates from the mixed-media traditions of Dadaism and Pop Art, emphasizing the collision and fusion of different materials, fonts, and images.
+
+Core principles:
+- Random rotation: Each element has subtle rotate transforms (0.5-2deg), simulating the imprecision of hand-pasting
+- Washi tape decoration: repeating-linear-gradient striped pseudo-elements simulate semi-transparent washi tape
+- Mixed typography: Alternating font-serif, font-sans, font-mono on the same page creates a magazine clipping feel
+- Torn paper edges: polygon clip-path creates irregular jagged torn paper edges
+- Hard offset shadows: shadow-[Npx_Npx_0px] solid offset shadows create physical depth of layered paper scraps
+- Paper physicality: On hover, paper scraps lift up (scale-105 + rotation adjustment); on active, pressed down onto the desk (shadow collapses)`,
+
   doList: [
     "使用混合字体（衬线 font-serif + 无衬线 font-sans + 等宽 font-mono 交替）",
     "元素使用 Tailwind 任意值旋转 rotate-[Ndeg] 而非内联 style transform（避免与 hover 冲突）",
@@ -49,6 +61,19 @@ export const collageArt: DesignStyle = {
     "使用 group + group-hover:* 让胶带装饰响应卡片悬停，产生视差效果",
   ],
 
+  doListEn: [
+    "Use mixed fonts (serif font-serif + sans-serif font-sans + monospace font-mono alternating)",
+    "Use Tailwind arbitrary value rotation rotate-[Ndeg] instead of inline style transform (avoid hover conflicts)",
+    "Use hard offset shadows shadow-[Npx_Npx_0px_color] for layered depth",
+    "Add washi tape decorations: repeating-linear-gradient striped color blocks",
+    "Use polygon clip-path to create torn paper edge effects",
+    "Keep aged paper color bg-[#f5f0e8] as base",
+    "Boldly use contrasting color blocks (red/blue/yellow/purple)",
+    "Use solid and dashed borders to simulate cut marks",
+    "On hover, paper lifts with -translate-y-2 + rotation change + shadow expansion; on active, shadow collapses simulating press-down",
+    "Use group + group-hover:* to make tape decorations respond to card hover, creating parallax effect",
+  ],
+
   dontList: [
     "禁止使用平滑渐变（bg-gradient-to-*）",
     "禁止使用柔和圆角（rounded-lg 以上）",
@@ -56,6 +81,15 @@ export const collageArt: DesignStyle = {
     "禁止使用柔和阴影（shadow-[0_Npx_Npx]）",
     "禁止使用统一整齐的对齐方式",
     "禁止对有 hover/group-hover Tailwind 变换的元素使用 style={{ transform }} 内联属性（会导致 transform 冲突）",
+  ],
+
+  dontListEn: [
+    "No smooth gradients (bg-gradient-to-*)",
+    "No soft rounded corners (rounded-lg or above)",
+    "No frosted glass effects (backdrop-blur)",
+    "No soft shadows (shadow-[0_Npx_Npx])",
+    "No uniform, perfectly aligned layouts",
+    "Never use style={{ transform }} inline property on elements with hover/group-hover Tailwind transforms (causes transform conflicts)",
   ],
 
   components: {
@@ -280,6 +314,47 @@ export const collageArt: DesignStyle = {
   column-gap: 20px;
   column-rule: 1px solid var(--col-dark);
 }`,
+
+  aiRulesEn: `You are a Collage Art design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Smooth gradients (bg-gradient-to-*)
+- Soft rounded corners (rounded-lg, rounded-xl, rounded-2xl, rounded-full)
+- Backdrop blur effects (backdrop-blur)
+- Soft blur shadows (shadow-[0_Npx_Npx])
+- Uniform, perfectly aligned layouts
+- Single font family throughout
+- NEVER mix style={{ transform: "rotate(Ndeg)" }} with Tailwind hover/group-hover transform classes -- this causes transform conflicts where the inline style overrides Tailwind's CSS variables. Always use rotate-[Ndeg] Tailwind arbitrary class instead.
+
+## Must Follow
+
+- Aged paper background bg-[#f5f0e8]
+- Dark charcoal #2d2d2d for borders and text
+- Hard offset shadows shadow-[Npx_Npx_0px_#color]
+- Sharp corners rounded-sm or rounded-none
+- Random rotation via Tailwind arbitrary class rotate-[0.5deg] to rotate-[2deg] (NOT inline style when hover transforms are also applied)
+- Mix font families: font-serif, font-sans, font-mono across sections
+- Thick borders border-2 border-[#2d2d2d]
+- Wrap interactive cards in group div so washi tape can respond via group-hover
+
+## Color Palette
+
+Primary:
+- Dark Charcoal: #2d2d2d
+- Aged Paper: #f5f0e8
+- Cut Red: #e74c3c
+- Magazine Blue: #3498db
+- Paste Yellow: #f39c12
+- Scrap Purple: #9b59b6
+
+## Animation & Interaction Rules
+
+- Paper Lift: On hover, elements should feel physically raised. Use hover:scale-[1.02] combined with a rotation change and shadow expansion. This simulates a piece of paper being pinched up off a surface.
+- Tape Parallax: The washi tape decoration on a card should react slightly differently from the card itself. Wrap the whole component in a group div. The tape has group-hover:-translate-y-1 group-hover:rotate-[6deg], while the card has group-hover:-translate-y-2 group-hover:-rotate-[1deg].
+- Desk Press: On :active, the shadow must sharply collapse and the element shifts slightly down, simulating pressing a paper scrap firmly onto a corkboard.
+- Snappy Easing: Use duration-200 ease-out or duration-300 ease-out for all paper interactions.
+- Transform Rules: ALWAYS use Tailwind rotate-[Xdeg] arbitrary class for initial rotation. NEVER use style={{ transform: "rotate(Xdeg)" }} on elements that also use Tailwind hover/group-hover transforms.`,
 
   aiRules: `You are a Collage Art design style frontend development expert. All generated code must strictly follow these constraints:
 

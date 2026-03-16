@@ -6,6 +6,8 @@ export const maximalism: DesignStyle = {
   nameEn: "Maximalism",
   description:
     "极繁主义设计——更多就是更多。层叠图案、混搭字体、饱和色彩、装饰性边框。与极简主义形成鲜明对比，拥抱丰富、华丽和视觉冲击。",
+  descriptionEn:
+    "Maximalist design -- more is more. Layered patterns, mixed fonts, saturated colors, and decorative borders. A stark contrast to minimalism, embracing richness, opulence, and visual impact.",
   cover: "/styles/maximalism.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -31,6 +33,20 @@ export const maximalism: DesignStyle = {
 
 设计极繁主义作品的关键在于——虽然一切都很"满"，但并非毫无逻辑。颜色之间需要有对比关系，字体之间需要有层级关系，装饰元素需要有节奏韵律。极繁，但不混乱。`,
 
+  philosophyEn: `Maximalism is a direct rebellion against minimalism. It believes "more is more," rejecting the restraint of whitespace and embracing layering, decoration, and visual richness. From Baroque palaces to Bohemian interior design, maximalism has always been a natural product of human expressive desire.
+
+In digital design, maximalism manifests as bold clashing color combinations, mixed use of multiple fonts, layered decorative borders, and patterned backgrounds. Every inch of screen space is given visual meaning, every element competes for attention, yet achieves a kind of chaotic harmony in the overall composition.
+
+Core concepts:
+- Layered richness: Multiple visual element layers stacked together -- background patterns, decorative borders, shadows, and gradients used in combination
+- Saturated color clashing: Hot pink, bright yellow, electric blue, vivid purple, and emerald green in bold combinations, rejecting grayscale neutrals
+- Mixed typography: Mixing serif, sans-serif, and handwritten fonts on the same page, with each area having its own typographic personality
+- Decoration above all: Borders using double lines, dashed lines, wavy lines, and other varied styles; buttons and cards with additional decorative layers
+
+Maximalism suits fashion brands, art exhibitions, music festival websites, and creative portfolios -- any scenario requiring strong visual expression. It is not suited for efficiency-focused tool products.
+
+The key to designing maximalist work: although everything is "full," it is not without logic. Colors need contrast relationships, fonts need hierarchical relationships, and decorative elements need rhythmic patterns. Maximal, but not chaotic.`,
+
   doList: [
     "使用饱和撞色组合：bg-[#d4145a], bg-[#ffbe0b], bg-[#3a86ff], bg-[#8338ec], bg-[#06d6a0]",
     "混搭字体：标题 font-serif font-black，正文 font-sans，标签 font-mono",
@@ -42,6 +58,17 @@ export const maximalism: DesignStyle = {
     "使用 rotate 和 skew 变换增加动态感",
   ],
 
+  doListEn: [
+    "Use saturated clash color combinations: bg-[#d4145a], bg-[#ffbe0b], bg-[#3a86ff], bg-[#8338ec], bg-[#06d6a0]",
+    "Mix fonts: headings font-serif font-black, body font-sans, labels font-mono",
+    "Use double borders or decorative borders: border-4 border-double, border-[3px] border-dashed",
+    "Add multi-layer shadows: shadow-[4px_4px_0px_#ffbe0b,8px_8px_0px_#3a86ff]",
+    "Use gradient background overlays: bg-gradient-to-br from-[#d4145a] via-[#8338ec] to-[#3a86ff]",
+    "Boldly use uppercase tracking-widest and extra-large font sizes text-6xl and above",
+    "Add decorative pseudo-elements and pattern backgrounds to cards and containers",
+    "Use rotate and skew transforms to add dynamic feel",
+  ],
+
   dontList: [
     "禁止使用灰度中性色（gray-300, gray-400, gray-500）作为主色",
     "禁止使用过多留白（gap-16 以上的间距）",
@@ -50,6 +77,16 @@ export const maximalism: DesignStyle = {
     "禁止使用低饱和度配色（opacity-30 以下的主色）",
     "禁止使用极简的无装饰设计",
     "禁止使用纯白 bg-white 作为大面积背景",
+  ],
+
+  dontListEn: [
+    "Do not use grayscale neutral colors (gray-300, gray-400, gray-500) as primary colors",
+    "Do not use excessive whitespace (gap-16 or larger spacing)",
+    "Do not use a single font throughout the entire page",
+    "Do not use 1px thin borders (border or border-[1px])",
+    "Do not use low-saturation color palettes (opacity-30 or lower on primary colors)",
+    "Do not use minimal undecorated designs",
+    "Do not use pure white bg-white as large-area backgrounds",
   ],
 
   components: {

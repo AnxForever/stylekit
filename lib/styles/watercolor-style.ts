@@ -6,6 +6,8 @@ export const watercolorStyle: DesignStyle = {
   nameEn: "Watercolor Style",
   description:
     "灵感源自水彩画的设计风格，柔和的颜色渐变、模糊的边缘效果、纸张质感背景和流动的色彩扩散，传递艺术感与诗意。",
+  descriptionEn:
+    "A design style inspired by watercolor painting, featuring soft color gradients, blurred edge effects, paper texture backgrounds, and flowing color diffusion, conveying artistry and poetry.",
   cover: "/styles/watercolor-style.svg",
   styleType: "visual",
   tags: ["expressive", "minimal"],
@@ -25,6 +27,14 @@ export const watercolorStyle: DesignStyle = {
 - 纸张质感：底层保留水彩纸的温暖纹理
 - 透明叠加：水彩的半透明特性，颜色层层叠加`,
 
+  philosophyEn: `Watercolor Style is a design style simulating watercolor painting effects, injecting artistic atmosphere and poetic feeling into interfaces through soft color gradients, blurred edges, and flowing color diffusion.
+
+Core principles:
+- Fluidity: Colors naturally permeate and diffuse like watercolors
+- Soft edges: No hard boundary lines, everything transitions softly
+- Paper texture: Underlying warm watercolor paper texture preserved
+- Transparent layering: Watercolor's semi-transparent nature, colors layered upon each other`,
+
   doList: [
     "使用柔和的渐变 bg-gradient-to-* 模拟水彩渗透",
     "使用半透明色彩 opacity 或 rgba 模拟水彩透明",
@@ -34,12 +44,29 @@ export const watercolorStyle: DesignStyle = {
     "使用衬线字体增加艺术感",
   ],
 
+  doListEn: [
+    "Use soft gradients bg-gradient-to-* to simulate watercolor permeation",
+    "Use semi-transparent colors opacity or rgba to simulate watercolor transparency",
+    "Use large border radii rounded-3xl or rounded-full to soften edges",
+    "Use warm paper-colored background bg-[#faf8f5]",
+    "Use soft shadows shadow-lg with low opacity",
+    "Use serif fonts to add artistic feel",
+  ],
+
   dontList: [
     "禁止使用硬边框 border-4 border-black",
     "禁止使用硬边阴影 shadow-[px_px_0_color]",
     "禁止使用纯黑色背景",
     "禁止使用直角 rounded-none",
     "禁止使用过于饱和或刺眼的颜色",
+  ],
+
+  dontListEn: [
+    "Do NOT use hard borders border-4 border-black",
+    "Do NOT use hard-edge shadows shadow-[px_px_0_color]",
+    "Do NOT use pure black backgrounds",
+    "Do NOT use sharp corners rounded-none",
+    "Do NOT use overly saturated or glaring colors",
   ],
 
   components: {
@@ -258,6 +285,61 @@ export const watercolorStyle: DesignStyle = {
 - 湿纸效果（Damp Paper）：卡片悬停时背景微微提亮或加深（如 from-[#e8a87c]/20 加深至 /30），模拟纸张吸水后的质感变化。
 - 液态缓动（Liquid Slowness）：水彩流动是缓慢的，强制使用 \`duration-500\` 配合 \`ease-in-out\`，禁止使用 \`duration-150\` 或 \`ease-linear\` 等快速缓动。
 - 柔和按压（Soft Press）：点击时 \`active:scale-[0.98]\` 配合内阴影加深，模拟湿润纸面上的轻柔按压感，避免剧烈的弹簧回弹。`,
+
+  aiRulesEn: `You are a Watercolor Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using hard borders border-4 border-black
+- Using hard-edge shadows shadow-[px_px_0_color]
+- Using pure black backgrounds bg-black
+- Using sharp corners rounded-none
+- Using overly saturated colors
+- Using bold sans-serif uppercase text
+
+## Must Follow
+
+- Paper-colored background bg-[#faf8f5]
+- Soft gradients bg-gradient-to-br using semi-transparent colors
+- Large border radii rounded-3xl or rounded-full
+- Soft shadows shadow-lg with low-opacity color
+- Serif italic fonts font-serif italic
+- Semi-transparent color overlay effects
+
+## Color Palette
+
+Primary:
+- Blue-gray: #4a6fa5 (text and main elements)
+- Paper: #faf8f5 (background)
+
+Watercolor colors (used semi-transparently):
+- Peach: #e8a87c
+- Teal: #85cdca
+- Rose: #c38d94
+- Sand: #d4a373
+
+## Special Effects
+
+Watercolor wash: Using multiple radial-gradient overlays
+Color diffusion: Using blur-3xl large color blocks
+Soft edges: rounded-3xl + low-opacity borders
+Paper texture: Warm-toned background + subtle texture
+
+## Self-Check
+
+After generating code, verify:
+1. No hard borders or sharp corners
+2. Using soft gradients and semi-transparent colors
+3. Background is warm paper color
+4. Text uses serif italic
+5. Overall feel is like a watercolor painting
+
+## Animation & Interaction Rules
+
+- Pigment Bloom: On hover, instead of rigid float (translate-y), let same-hue colored shadow spread outward significantly (e.g., \`hover:shadow-[0_10px_40px_rgba(74,111,165,0.35)]\`), simulating watercolor pigment blooming on wet paper.
+- Damp Paper: On card hover, background slightly brightens or deepens (e.g., from-[#e8a87c]/20 deepens to /30), simulating paper texture change after absorbing water.
+- Liquid Slowness: Watercolor flow is slow, mandatory \`duration-500\` with \`ease-in-out\`, prohibit \`duration-150\` or \`ease-linear\` fast easing.
+- Soft Press: On click \`active:scale-[0.98]\` with deepened inner shadow, simulating gentle press on damp paper surface, avoiding violent spring bounce-back.`,
 
   examplePrompts: [
     {

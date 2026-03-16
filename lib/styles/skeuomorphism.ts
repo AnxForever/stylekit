@@ -6,6 +6,8 @@ export const skeuomorphism: DesignStyle = {
   nameEn: "Skeuomorphism",
   description:
     "模拟真实世界物体的数字设计风格，通过纹理、光影、材质模仿现实物品，带来熟悉感和直觉性体验。",
+  descriptionEn:
+    "A digital design style that simulates real-world objects through textures, lighting, and materials to mimic physical items, bringing familiarity and intuitive experiences.",
   cover: "/styles/skeuomorphism.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const skeuomorphism: DesignStyle = {
 - 光影深度：通过高光、阴影创造立体感
 - 熟悉直觉：利用用户对现实世界的认知减少学习成本`,
 
+  philosophyEn: `Skeuomorphism is a design approach that simulates the appearance and behavior of real-world objects, widely used in early iOS and digital products.
+
+Core principles:
+- Realistic simulation: Interface elements mimic the appearance and feel of real objects
+- Material textures: Real material textures like leather, wood, and metal
+- Light and shadow depth: Creating dimensionality through highlights and shadows
+- Familiar intuition: Leveraging users' real-world knowledge to reduce learning costs`,
+
   doList: [
     "使用真实材质纹理（皮革、木材、金属）",
     "添加逼真的光影效果",
@@ -34,11 +44,27 @@ export const skeuomorphism: DesignStyle = {
     "模拟真实物品的形态和比例",
   ],
 
+  doListEn: [
+    "Use real material textures (leather, wood, metal)",
+    "Add realistic light and shadow effects",
+    "Simulate physical button press feedback",
+    "Use gradients to create dimensionality",
+    "Add delicate edge highlights",
+    "Simulate the form and proportions of real objects",
+  ],
+
   dontList: [
     "禁止使用纯扁平的色块",
     "禁止省略阴影和高光",
     "禁止使用过于简化的图标",
     "禁止忽视材质细节",
+  ],
+
+  dontListEn: [
+    "Do NOT use flat solid color blocks",
+    "Do NOT omit shadows and highlights",
+    "Do NOT use overly simplified icons",
+    "Do NOT ignore material and texture details",
   ],
 
   components: {
@@ -198,6 +224,44 @@ export const skeuomorphism: DesignStyle = {
 - Fixed Illuminant: 顶部高光和底部暗边在 hover 与 active 中保持稳定，确保光源始终来自上方。
 - Texture Shimmer: 材质层允许轻微 background-position 位移，表达金属拉丝或皮革纹理的受光变化。
 - Embossed Focus: 输入焦点优先加深 inset 阴影，而不是强烈外发光轮廓。`,
+
+  aiRulesEn: `You are a Skeuomorphism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using flat solid color blocks
+- Omitting shadow and highlight effects
+- Using overly simplified icons
+- Ignoring material and texture details
+
+## Must Follow
+
+- Gradient backgrounds bg-gradient-to-b from-gray-100 to-gray-300
+- Complex shadows shadow-[0_4px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.8)]
+- Border layers border border-gray-400
+- Moderate radii rounded-lg
+- Press feedback active:translate-y-[1px]
+
+## Color Palette
+
+- Use natural material tones
+- Leather brown: #8b7355
+- Wood beige: #d4c4a8
+- Metal silver: #c0c0c0
+- Paper white: #f5f5dc
+
+## Light & Shadow Principles
+
+- Top highlight (inset 0 1px 0 rgba(255,255,255,0.8))
+- Bottom dark edge (inset 0 -1px 0 rgba(0,0,0,0.1))
+- Outer drop shadow (0 4px 8px rgba(0,0,0,0.3))
+
+## Animation & Interaction Rules
+
+- Tactile Resistance: Active state uses short press and tighter outer shadow, simulating key damping, no bouncy scaling.
+- Fixed Illuminant: Top highlight and bottom dark edge remain stable in hover and active, ensuring light source always comes from above.
+- Texture Shimmer: Material layer allows slight background-position shift, expressing light changes on brushed metal or leather texture.
+- Embossed Focus: Input focus prioritizes deepening inset shadow rather than strong outer glow outline.`,
 
   examplePrompts: [
     {

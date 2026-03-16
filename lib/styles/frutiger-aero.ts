@@ -6,6 +6,8 @@ export const frutigerAero: DesignStyle = {
   nameEn: "Frutiger Aero",
   description:
     "Windows Vista/7时代的玻璃质感美学，天空蓝渐变、半透明毛玻璃面板与自然元素融合，营造清新通透的数字自然感。",
+  descriptionEn:
+    "Glass-textured aesthetics from the Windows Vista/7 era, blending sky-blue gradients, translucent frosted glass panels, and natural elements for a fresh, airy digital-nature feel.",
   cover: "/styles/frutiger-aero.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -18,6 +20,14 @@ export const frutigerAero: DesignStyle = {
   keywords: ["aero glass", "translucent", "sky blue", "glossy", "Vista", "Y2K", "nature", "bubbles"],
 
   philosophy: `Frutiger Aero draws inspiration from the Windows Vista/7 Aero glass aesthetic -- sky-blue gradients, frosted glass panels, water droplets, and a feeling of floating in clean air.
+
+Core principles:
+- Translucency: Semi-transparent white panels over bright sky gradients
+- Nature meets technology: Organic shapes, bubbles, and leaves blended with digital UI
+- Light and airy: Generous whitespace, soft shadows, rounded corners everywhere
+- Glossy reflections: Subtle gradient highlights that simulate light on glass surfaces`,
+
+  philosophyEn: `Frutiger Aero draws inspiration from the Windows Vista/7 Aero glass aesthetic -- sky-blue gradients, frosted glass panels, water droplets, and a feeling of floating in clean air.
 
 Core principles:
 - Translucency: Semi-transparent white panels over bright sky gradients
@@ -38,6 +48,19 @@ Core principles:
     "focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 focus:ring-offset-sky-500 for all focusable elements",
   ],
 
+  doListEn: [
+    "Use sky blue gradient backgrounds (from-sky-300 to-sky-500)",
+    "Apply backdrop-blur and translucent white panels (bg-white/30 to bg-white/50)",
+    "Use large rounded corners (rounded-2xl to rounded-3xl)",
+    "Add glossy top-half highlight div (absolute, bg-gradient-to-b from-white/60 to-white/10, h-1/2) on buttons and cards",
+    "Include nature-inspired decorative elements (bubbles, leaves, water) as absolute positioned blur divs",
+    "Use clean sans-serif typography",
+    "Aurora orbs on cards: two absolute blur-3xl divs (green + sky-blue) that group-hover:scale-150",
+    "Buttons use active:scale-95 for bouncy jelly press physics",
+    "Luminous glow on button hover: hover:shadow-[0_8px_20px_rgba(2,132,199,0.6)]",
+    "focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 focus:ring-offset-sky-500 for all focusable elements",
+  ],
+
   dontList: [
     "Don't use dark or black backgrounds",
     "Don't use sharp corners or angular shapes",
@@ -45,6 +68,16 @@ Core principles:
     "Don't use monospace fonts",
     "Don't use flat/matte surfaces without any glass effect",
     "Don't use active:scale-[0.98] — use active:scale-95 for the jelly bounce physics",
+    "Don't use focus:ring without focus:ring-offset-sky-500 (focus ring invisible on sky blue background)",
+  ],
+
+  dontListEn: [
+    "Don't use dark or black backgrounds",
+    "Don't use sharp corners or angular shapes",
+    "Don't use neon or harsh colors",
+    "Don't use monospace fonts",
+    "Don't use flat/matte surfaces without any glass effect",
+    "Don't use active:scale-[0.98] -- use active:scale-95 for the jelly bounce physics",
     "Don't use focus:ring without focus:ring-offset-sky-500 (focus ring invisible on sky blue background)",
   ],
 
@@ -362,6 +395,34 @@ After generating code verify:
 5. active:scale-95 (not scale-[0.98] or scale-[0.97])
 6. focus:ring-offset-sky-500 on all focusable elements
 7. Large rounded corners on all elements (rounded-2xl+)`,
+
+  aiRulesEn: `You are a Frutiger Aero design style expert. All generated code must follow these rules:
+
+Absolute Forbidden:
+- Dark or black backgrounds (bg-black, bg-gray-900, bg-slate-900)
+- Sharp corners (rounded-none, rounded-sm)
+- Monospace fonts (font-mono)
+- Neon glow effects or harsh saturated colors
+- Flat/matte surfaces without glass effect
+- active:scale-[0.98] -- use active:scale-95 instead (Aero has jelly bounce physics)
+- focus:ring without focus:ring-offset-sky-500 (ring invisible on sky-blue background)
+
+Must Follow:
+- Background: Sky blue gradients (from-sky-300 to-sky-500)
+- Cards: Semi-transparent white (bg-white/30 to bg-white/70) with backdrop-blur-xl
+- Borders: Subtle white borders (border-white/30 to border-white/60)
+- Rounded corners: Always large (rounded-2xl or rounded-3xl)
+- Glossy highlight: Absolute div with h-1/2 bg-gradient-to-b from-white/60 to-white/10 on buttons and cards
+- Glass effect is mandatory on all cards and panels
+- Generous padding and airy spacing
+
+Animation & Interaction Rules:
+- Aero Glossy Layer: Every button and major card MUST include an absolute div positioned at top-0 left-0 right-0 h-1/2 with bg-gradient-to-b from-white/60 to-white/10. On group-hover, this brightens to from-white/80 to-white/20. Simulates classic Web 2.0 glossy top-half glass reflection.
+- Aurora Orbs: Cards use two absolutely-positioned blur-3xl rounded-full divs (green + sky-blue). On group-hover, both scale to group-hover:scale-150 and intensify.
+- Luminous Glow: Primary buttons hover to multi-shadow creating luminous aqua water glow.
+- Jelly Bounce: active:scale-95 (not 0.98 or 0.97). The 5% compression is the Aero "jelly" squash.
+- Card Float: hover:-translate-y-2 hover:scale-[1.02] -- more dramatic because glass panels feel lighter.
+- Focus Ring on Sky: focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 focus:ring-offset-sky-500.`,
 
   examplePrompts: [
     {

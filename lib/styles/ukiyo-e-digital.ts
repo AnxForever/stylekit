@@ -6,6 +6,8 @@ export const ukiyoEDigital: DesignStyle = {
   nameEn: "Ukiyo-e Digital",
   description:
     "灵感源自日本浮世绘木版画，以靛蓝、朱红、金叶为主色调，扁平化设计、强烈的轮廓线、波浪纹样和北斋式构图，将传统东方美学融入现代数字界面。",
+  descriptionEn:
+    "Inspired by Japanese ukiyo-e woodblock prints, featuring indigo, vermilion, and gold leaf as primary colors, flat design, bold outlines, wave patterns, and Hokusai-style composition -- blending traditional Eastern aesthetics into modern digital interfaces.",
   cover: "/styles/ukiyo-e-digital.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const ukiyoEDigital: DesignStyle = {
 - 自然意象：波浪、山川、花鸟的装饰性表达
 - 东方韵味：含蓄、留白与意境的美学追求`,
 
+  philosophyEn: `Ukiyo-e Digital transforms Edo-period woodblock print art into a modern digital design language, preserving its distinctive flat perspective and color-blocking techniques.
+
+Core principles:
+- Flat perspective: Layered composition without depth
+- Color blocking: Large areas of solid color fill with bold outlines
+- Natural imagery: Decorative expression of waves, mountains, flowers, and birds
+- Eastern charm: Aesthetic pursuit of subtlety, negative space, and artistic conception`,
+
   doList: [
     "使用靛蓝、朱红、金叶为主色调",
     "采用扁平设计和强烈的轮廓线",
@@ -37,6 +47,18 @@ export const ukiyoEDigital: DesignStyle = {
     "交互节奏保持短促硬切（duration-75~100, ease-linear）",
   ],
 
+  doListEn: [
+    "Use indigo, vermilion, and gold leaf as primary colors",
+    "Adopt flat design with bold outlines",
+    "Use hard-edge shadows to simulate woodblock print texture",
+    "Add wave and natural pattern decorations",
+    "Rice white background for washi paper texture",
+    "Use bold text with wide letter spacing",
+    "Hover uses woodblock offset: hard-edge offset shadow + slight displacement, no blur",
+    "Active simulates stamp press: cancel shadow and switch to vermilion border/text feedback",
+    "Interaction rhythm stays short and hard-cut (duration-75~100, ease-linear)",
+  ],
+
   dontList: [
     "禁止使用渐变阴影或柔和模糊",
     "禁止使用透明度和玻璃效果",
@@ -44,6 +66,15 @@ export const ukiyoEDigital: DesignStyle = {
     "禁止使用霓虹色或高饱和度现代色彩",
     "禁止弹簧式回弹和现代 App 的丝滑动效",
     "禁止软阴影与 glassmorphism 破坏木版硬朗质感",
+  ],
+
+  dontListEn: [
+    "Do not use gradient shadows or soft blur",
+    "Do not use transparency and glass effects",
+    "Do not use Western-style rounded corners and circular buttons",
+    "Do not use neon or high-saturation modern colors",
+    "Do not use spring-bounce or modern app silky-smooth animations",
+    "Do not use soft shadows and glassmorphism that break the woodblock's crisp texture",
   ],
 
   components: {
@@ -233,6 +264,45 @@ export const ukiyoEDigital: DesignStyle = {
 - Stamp Press: active 瞬间取消阴影与位移，并切换朱红边框/文字反馈，表现印章压印。
 - Zero Fluidity: 使用 duration-75 ease-linear 或 transition-none，拒绝现代丝滑动效。
 - Motif Reveal: 波纹/云纹等传统图案可在 hover 进行不透明度硬切，强化版面层次。`,
+
+  aiRulesEn: `You are a Ukiyo-e Digital design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Gradient shadows or soft blur effects
+- Transparency and glassmorphism
+- Large rounded corners or circular buttons
+- Neon or high-saturation modern colors
+
+## Must Follow
+
+- Indigo #1a3055 as primary, vermilion #d4553a as accent
+- Rice white #f5f0e1 as background (washi paper texture)
+- Use hard-edge shadows shadow-[Xpx_Ypx_0px_color]
+- Use small rounded corners rounded-sm or sharp corners
+- Bold borders border-2 for woodblock outline feel
+
+## Color Palette
+
+Primary:
+- Indigo: #1a3055
+- Vermilion: #d4553a
+- Gold Leaf: #c9a227
+- Rice White: #f5f0e1
+
+## Special Elements
+
+- Wave pattern SVG decorations
+- Hard-edge shadows simulating woodblock print texture
+- Vermilion seal/stamp effect decorations
+- Large flat color blocks
+
+## Animation & Interaction Rules
+
+- Woodblock Offset: Hover must use hard-edge offset shadow (no blur) + slight displacement, simulating woodblock misregistration overprint.
+- Stamp Press: Active instantly cancels shadow and displacement, switching to vermilion border/text feedback to represent stamp pressing.
+- Zero Fluidity: Use duration-75 ease-linear or transition-none, rejecting modern silky-smooth animations.
+- Motif Reveal: Traditional patterns like waves/clouds can use opacity hard-cut on hover to reinforce layout hierarchy.`,
 
   examplePrompts: [
     {

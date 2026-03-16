@@ -6,6 +6,8 @@ export const risograph: DesignStyle = {
   nameEn: "Risograph",
   description:
     "Risograph 印刷机的独特美学，2-3色套印效果、半调网点、套印错位和有限色彩，呈现独特的印刷质感和手工批量感。",
+  descriptionEn:
+    "The distinctive aesthetics of Risograph printing -- 2-3 color overprint effects, halftone dots, registration misalignment, and limited palette, presenting a unique print texture and handmade batch feel.",
   cover: "/styles/risograph.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const risograph: DesignStyle = {
 - 半调网点：可见的网点纹理和颗粒感
 - 印刷美学：拥抱印刷的不完美和独特性`,
 
+  philosophyEn: `Risograph is a rapid printing technology originating from Japan, widely adopted by artists and designers for its distinctive visual effects.
+
+Core principles:
+- Limited colors: Typically using only 2-3 ink colors layered together
+- Registration misalignment: Intentional subtle offset between color layers
+- Halftone dots: Visible dot textures and grain
+- Print aesthetics: Embracing the imperfections and uniqueness of printing`,
+
   doList: [
     "限制使用2-3种主色调",
     "添加套印错位效果（offset shadow）",
@@ -38,6 +48,19 @@ export const risograph: DesignStyle = {
     "Registration Shift: green corner element uses `translate-x-2 -translate-y-2` at rest and `group-hover:translate-x-0 group-hover:translate-y-0` on hover — the registration mark locks into place as the press completes its cycle",
   ],
 
+  doListEn: [
+    "Limit to 2-3 primary colors",
+    "Add overprint misregistration effects (offset shadow)",
+    "Use bold monospace or sans-serif fonts",
+    "Keep flat color blocks without gradients",
+    "Add grain/dot texture feel",
+    "Use off-white/cream paper background",
+    "Misregistration Offset: hover must use dual-direction shadows simulating two Riso ink plates out of register: `hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]` -- one shadow goes bottom-right (blue plate), the other top-left (orange plate)",
+    "Instant Print: all transitions use `duration-100 ease-linear` -- mechanical printing press speed, not organic motion",
+    "Overprint Illusion: active state switches background to the secondary ink color `active:bg-[#2563eb]`, simulating two Riso ink layers fully overlapping at the press point",
+    "Registration Shift: green corner element uses `translate-x-2 -translate-y-2` at rest and `group-hover:translate-x-0 group-hover:translate-y-0` on hover -- the registration mark locks into place as the press completes its cycle",
+  ],
+
   dontList: [
     "禁止使用复杂的渐变效果",
     "禁止使用太多颜色（最多3-4种）",
@@ -47,6 +70,17 @@ export const risograph: DesignStyle = {
     "禁止使用 `ease-in-out` 或 `ease`（印刷机是机械的，必须 `ease-linear`）",
     "禁止在阴影中使用 blur（所有偏移必须是零模糊的硬边）",
     "禁止用 opacity 过渡实现 hover 颜色变化（必须是印刷机瞬间切换）",
+  ],
+
+  dontListEn: [
+    "Do not use complex gradient effects",
+    "Do not use too many colors (maximum 3-4)",
+    "Do not use realistic shadows or lighting effects",
+    "Do not use smooth rounded corner design",
+    "Do not use single-direction shadows (Riso always has two ink plates, shadows must be bidirectional)",
+    "Do not use `ease-in-out` or `ease` (printing press is mechanical, must use `ease-linear`)",
+    "Do not use blur in shadows (all offsets must be zero-blur hard edges)",
+    "Do not use opacity transitions for hover color changes (must be instant printing press switching)",
   ],
 
   components: {
@@ -220,6 +254,47 @@ Primary:
 - Instant Print: All transitions \`duration-100 ease-linear\` — mechanical printing press speed. Never use \`ease-in-out\` or organic curves.
 - Overprint Illusion: Active state switches background to the secondary ink color \`active:bg-[#2563eb]\`, simulating the moment two Riso ink layers fully overlap at the point of contact.
 - Registration Shift: Green corner element uses \`translate-x-2 -translate-y-2\` at rest and \`group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear\` on hover — the registration mark locks into place as the press completes its cycle.`,
+
+  aiRulesEn: `You are a Risograph design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Complex gradients or realistic shadows
+- More than 3-4 colors in total
+- Rounded corners (use rounded-sm only)
+- Realistic lighting or 3D effects
+
+## Must Follow
+
+- Limited palette: pink #ff6b9d, blue #2563eb, orange #ff8a00, green #22c55e
+- Paper-white background bg-[#fffbf0]
+- Monospace fonts font-mono
+- Offset shadows shadow-[3px_3px_0px_color]
+- Bold borders border-2 border-[#1a1a1a]
+- Flat colors only, no gradients
+
+## Color Palette
+
+Primary:
+- Fluorescent Pink: #ff6b9d
+- Blue: #2563eb
+- Fluorescent Orange: #ff8a00
+- Green: #22c55e
+- Paper: #fffbf0
+
+## Special Elements
+
+- Overprint offset effects
+- Grain/noise texture overlays
+- Halftone dot patterns
+- Registration marks as decoration
+
+## Animation & Interaction Rules
+
+- Misregistration Offset: Hover must use dual-direction shadows simulating two ink plates out of register: \`hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]\`. One shadow goes bottom-right (blue plate), the other goes top-left (orange plate). Single-direction shadows break the print illusion.
+- Instant Print: All transitions \`duration-100 ease-linear\` -- mechanical printing press speed. Never use \`ease-in-out\` or organic curves.
+- Overprint Illusion: Active state switches background to the secondary ink color \`active:bg-[#2563eb]\`, simulating the moment two Riso ink layers fully overlap at the point of contact.
+- Registration Shift: Green corner element uses \`translate-x-2 -translate-y-2\` at rest and \`group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear\` on hover -- the registration mark locks into place as the press completes its cycle.`,
 
   examplePrompts: [
     {

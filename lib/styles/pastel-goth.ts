@@ -6,6 +6,8 @@ export const pastelGoth: DesignStyle = {
   nameEn: "Pastel Goth",
   description:
     "柔暗美学与糖果色的独特融合，粉紫粉蓝等柔和色彩搭配骷髅、十字架等暗系元素。暗色背景+粉彩高亮。",
+  descriptionEn:
+    "A unique fusion of dark aesthetics and candy colors, pairing soft hues like pastel purple and pastel blue with gothic elements such as skulls and crosses. Dark backgrounds with pastel highlights.",
   cover: "/styles/pastel-goth.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -29,6 +31,18 @@ export const pastelGoth: DesignStyle = {
 
 在数字设计中，粉彩哥特通过深紫黑背景搭配粉色、薰衣草色的文本和装饰，创造出既有视觉冲击力又有柔和触感的界面体验。`,
 
+  philosophyEn: `Pastel Goth is a unique aesthetic subculture born from Tumblr in the 2010s, creating a subversive fusion of traditional gothic dark elements with sweet candy colors.
+
+Core concepts:
+- Dark-sweet collision: The somber deep purple-black base contrasts vividly yet harmoniously with soft candy colors like lavender, pastel blue, and pastel pink. This sense of contradiction is the soul of Pastel Goth
+- Gothic symbols: Traditional gothic symbols like skulls, crosses, bats, and moons are "cutified" -- recolored in pastels, dissolving fear while preserving mystery
+- Soft glow effect: Pastel colors on dark backgrounds produce a soft, fluorescent-like glow, creating a dreamy yet slightly eerie atmosphere
+- Subcultural attitude: Rejecting the binary opposition of mainstream aesthetics -- neither fully cute nor fully dark, but creating a third space between the two
+
+Pastel Goth aesthetics reflect a challenge to traditional aesthetic boundaries: who says darkness cannot be sweet? Who says cuteness cannot be deep? This style suits brands pursuing unique individuality, indie music projects, subcultural communities, and any creative project seeking balance between darkness and sweetness.
+
+In digital design, Pastel Goth creates an interface experience with both visual impact and soft tactility through deep purple-black backgrounds paired with pink and lavender text and decorations.`,
+
   doList: [
     "使用深紫 bg-[#2d1b3d] 和近黑 bg-[#1a1225] 作为背景色",
     "使用薰衣草紫 text-[#d4a5e3] 和粉蓝 text-[#7ec8c8] 做主文本色",
@@ -43,6 +57,20 @@ export const pastelGoth: DesignStyle = {
     "卡片角落点缀元素可轻微错位或旋转，强化 Occult Hover 的亚文化气质",
   ],
 
+  doListEn: [
+    "Use deep purple bg-[#2d1b3d] and near-black bg-[#1a1225] as background colors",
+    "Use lavender text-[#d4a5e3] and pastel blue text-[#7ec8c8] as main text colors",
+    "Use pink text-[#f5a5b8] and periwinkle text-[#b8a5f5] as decorative colors",
+    "Add soft pastel glow effects shadow-[0_0_20px_rgba(212,165,227,0.3)]",
+    "Use medium rounded corners rounded-xl to keep soft but not overly cute",
+    "Use semi-transparent pastel borders border border-[#d4a5e3]/30",
+    "Headings can use font-bold but paired with pastel colors to soften",
+    "Use gradients bg-gradient-to-r to transition between pastel colors where appropriate",
+    "On hover, let pastel purple and teal glows layer and spread, creating a Toxic Glow contrast of sweet-dark",
+    "Use duration-300 to 500 for interaction rhythm, maintaining Creepy Softness languid atmosphere",
+    "Card corner accent elements can shift or rotate slightly, reinforcing the Occult Hover subcultural quality",
+  ],
+
   dontList: [
     "禁止使用明亮白色或纯白背景 bg-white, bg-gray-50",
     "禁止使用高饱和的纯色 bg-red-500, bg-blue-600",
@@ -53,6 +81,18 @@ export const pastelGoth: DesignStyle = {
     "禁止使用过于明亮的绿色 text-green-400, bg-green-500",
     "禁止只做单一紫色光晕（需要粉紫/粉青/粉粉的冲突层次）",
     "禁止使用过快的 100ms 级动画（会失去诡异柔软感）",
+  ],
+
+  dontListEn: [
+    "Do not use bright white or pure white backgrounds bg-white, bg-gray-50",
+    "Do not use high-saturation pure colors bg-red-500, bg-blue-600",
+    "Do not use earth tones bg-[#8b7355], text-amber-700",
+    "Do not use overly sunny warm tones bg-yellow-300, bg-orange-400",
+    "Do not use sharp corners without rounding rounded-none",
+    "Do not omit pastel highlights -- pure darkness is not Pastel Goth",
+    "Do not use overly bright greens text-green-400, bg-green-500",
+    "Do not use only a single purple glow (need conflicting layers of pastel purple/teal/pink)",
+    "Do not use overly fast 100ms-level animations (loses the eerie softness)",
   ],
 
   components: {
@@ -292,6 +332,53 @@ Primary:
 - Creepy Softness: 交互保持 duration-300 到 500，允许轻微上浮但避免过度弹跳。
 - Sweet Rebellious Press: active 状态可短暂反转边框/光晕色彩，突出亚文化叛逆感。
 - Occult Hover: 角落装饰或微符号可轻微错位和提亮，营造不安又可爱的氛围。`,
+
+  aiRulesEn: `You are a Pastel Goth design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- White or light backgrounds (bg-white, bg-gray-50, bg-[#faf9f7])
+- Pure saturated colors (bg-red-500, bg-blue-600)
+- Earth tones (bg-amber-700, text-[#8b7355])
+- Warm sunny colors (bg-yellow-300, bg-orange-400)
+- Sharp corners (rounded-none)
+- Pure dark without pastel highlights
+- Bright green (text-green-400, bg-green-500)
+
+## Must Follow
+
+- Dark purple #2d1b3d and near-black #1a1225 as backgrounds
+- Lavender #d4a5e3 as primary text/accent color
+- Pastel teal #7ec8c8, pastel pink #f5a5b8, periwinkle #b8a5f5 as secondary accents
+- Soft pastel glow effects shadow-[0_0_Xpx_rgba(212,165,227,...)]
+- Rounded corners rounded-xl
+- Semi-transparent pastel borders border-[#d4a5e3]/20 or /30
+- Gradient text using pastel colors for headings
+
+## Color Palette
+
+Primary:
+- Dark Purple: #2d1b3d
+- Near Black: #1a1225
+- Lavender: #d4a5e3
+- Pastel Teal: #7ec8c8
+- Pastel Pink: #f5a5b8
+- Periwinkle: #b8a5f5
+
+## Special Elements
+
+- Pastel glow orbs (blurred circles)
+- Cross and gothic symbols in pastel
+- Gradient text (lavender to pink to periwinkle)
+- Small pastel dots as decorations
+- Semi-transparent borders with pastel glow
+
+## Animation & Interaction Rules
+
+- Toxic Glow: Hover glow must reflect conflicting layers of pastel purple, teal, and pink, not single-color glow.
+- Creepy Softness: Interactions maintain duration-300 to 500, allowing slight float-up but avoiding excessive bouncing.
+- Sweet Rebellious Press: Active state can briefly invert border/glow colors, highlighting subcultural rebelliousness.
+- Occult Hover: Corner decorations or micro-symbols can shift and brighten slightly, creating an uneasy yet cute atmosphere.`,
 
   examplePrompts: [
     {

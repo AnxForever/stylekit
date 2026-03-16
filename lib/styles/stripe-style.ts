@@ -6,6 +6,8 @@ export const stripeStyle: DesignStyle = {
   nameEn: "Stripe Style",
   description:
     "精致专业的金融科技风格，以 Stripe 紫为主色调，配合渐变网格背景、精致卡片阴影和流畅动画，适合支付产品和开发者工具。",
+  descriptionEn:
+    "A refined and professional fintech style featuring Stripe purple as the primary color, complemented by gradient grid backgrounds, elegant card shadows, and smooth animations, ideal for payment products and developer tools.",
   cover: "/styles/stripe-style.svg",
   styleType: "visual",
   tags: ["modern"],
@@ -25,6 +27,14 @@ export const stripeStyle: DesignStyle = {
 - 品牌一致：Stripe 紫贯穿整个设计
 - 流畅体验：微妙的动画增强交互感`,
 
+  philosophyEn: `Stripe Style is a refined design style originating from Stripe, known for its signature purple and professional visual language. Through gradient grid backgrounds, elegant card shadows, and smooth animations, it conveys trust and technical prowess.
+
+Core principles:
+- Professional trust: Refined design conveys reliability
+- Technical feel: Grid backgrounds and code elements showcase technical capability
+- Brand consistency: Stripe purple runs throughout the entire design
+- Smooth experience: Subtle animations enhance interactivity`,
+
   doList: [
     "使用 Stripe 紫 #635bff 作为主色调",
     "添加渐变网格背景增加技术感",
@@ -38,6 +48,19 @@ export const stripeStyle: DesignStyle = {
     "Hairline Crispness: active press uses `active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]` — button physically depresses on click, inset shadow replaces outer glow",
   ],
 
+  doListEn: [
+    "Use Stripe purple #635bff as the primary color",
+    "Add gradient grid backgrounds for a technical feel",
+    "Use refined multi-layer shadows",
+    "Maintain moderate border radii rounded-lg or rounded-xl",
+    "Use smooth transition animations",
+    "Use dark backgrounds for code blocks",
+    "Fluid SaaS Motion: button hover uses `hover:-translate-y-0.5 transition-all duration-[300ms] ease-out` -- SaaS products feel responsive but never jarring, always smooth and controlled",
+    "Floating Matrix: card hover lifts with `hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[400ms] ease-out` -- the card floats up as if becoming interactive",
+    "Liquid Gradient Focus: button uses inset highlight `shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]` -- simulates light catching the convex surface of a real button",
+    "Hairline Crispness: active press uses `active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]` -- button physically depresses on click, inset shadow replaces outer glow",
+  ],
+
   dontList: [
     "禁止使用过于鲜艳的配色",
     "禁止使用过大的圆角",
@@ -48,6 +71,18 @@ export const stripeStyle: DesignStyle = {
     "禁止省略 inset 高光阴影（Liquid Gradient Focus 是 Stripe 按钮质感的核心，不可省略）",
     "禁止使用 `ease-in-out` 或 `ease`（Stripe 动画总是 `ease-out`——出发快、落地轻）",
     "禁止在 active 状态保留外部阴影（Hairline Crispness 要求 active 时仅用 inset shadow）",
+  ],
+
+  dontListEn: [
+    "Do NOT use overly vibrant color schemes",
+    "Do NOT use excessively large border radii",
+    "Do NOT use rough shadows",
+    "Do NOT ignore grid background elements",
+    "Do NOT use unprofessional fonts",
+    "Do NOT use `hover:scale-*` (Stripe buttons only float up, never scale -- scaling breaks the precision feel)",
+    "Do NOT omit inset highlight shadow (Liquid Gradient Focus is the core of Stripe button texture, cannot be omitted)",
+    "Do NOT use `ease-in-out` or `ease` (Stripe animations are always `ease-out` -- fast departure, gentle landing)",
+    "Do NOT keep outer shadow in active state (Hairline Crispness requires only inset shadow on active)",
   ],
 
   components: {
@@ -289,6 +324,67 @@ background-size: 40px 40px;
 - Floating Matrix: Card hover lifts with \`hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[400ms] ease-out\`. The icon area uses \`group-hover:scale-110 transition-transform duration-[400ms]\` — the card becomes interactive, the icon celebrates.
 - Liquid Gradient Focus: Button uses inset highlight \`shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]\` at rest, maintained on hover — simulates convex glass surface catching light. Never use a flat-color button with no shadow.
 - Hairline Crispness: Active press is \`active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]\` — the button physically depresses. The outer glow disappears; only the inset concave shadow remains.`,
+
+  aiRulesEn: `You are a Stripe Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using non-Stripe brand colors as primary
+- Using excessively large radii rounded-3xl, rounded-full (except buttons)
+- Using rough single-layer shadows
+- Ignoring grid background elements
+- Using unprofessional color schemes
+
+## Must Follow
+
+- Primary color Stripe purple #635bff
+- Dark text #0a2540
+- Background color #f6f9fc
+- Refined multi-layer shadows
+- Moderate radii rounded-lg, rounded-xl
+- Smooth transition animations
+
+## Color Palette
+
+Primary:
+- Stripe purple: bg-[#635bff], text-[#635bff]
+- Dark blue: text-[#0a2540]
+- Background: bg-[#f6f9fc]
+
+Accent colors:
+- Cyan: #00d4ff
+- Light purple: #7a73ff
+- Bright cyan: #80e9ff
+
+## Shadows
+
+Card shadow:
+shadow-[0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)]
+
+Button shadow:
+shadow-[0_2px_4px_rgba(99,91,255,0.2),0_4px_8px_rgba(99,91,255,0.2)]
+
+## Grid Background
+
+Use CSS linear gradients to create grid:
+background-image: linear-gradient(to right, rgba(99,91,255,0.1) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(99,91,255,0.1) 1px, transparent 1px);
+background-size: 40px 40px;
+
+## Self-Check
+
+After generating code, verify:
+1. Stripe purple used as primary color
+2. Shadows are refined and multi-layered
+3. Grid background elements present
+4. Overall feel is professional and trustworthy
+
+## Animation & Interaction Rules
+
+- Fluid SaaS Motion: Button hover uses \`hover:-translate-y-0.5 transition-all duration-[300ms] ease-out\` -- SaaS feels responsive but never jarring. Never use \`ease-in-out\` (too slow) or instantaneous cuts.
+- Floating Matrix: Card hover lifts with \`hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[400ms] ease-out\`. The icon area uses \`group-hover:scale-110 transition-transform duration-[400ms]\` -- the card becomes interactive, the icon celebrates.
+- Liquid Gradient Focus: Button uses inset highlight \`shadow-[0_2px_5px_rgba(99,91,255,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]\` at rest, maintained on hover -- simulates convex glass surface catching light. Never use a flat-color button with no shadow.
+- Hairline Crispness: Active press is \`active:scale-[0.98] active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]\` -- the button physically depresses. The outer glow disappears; only the inset concave shadow remains.`,
 
   examplePrompts: [
     {

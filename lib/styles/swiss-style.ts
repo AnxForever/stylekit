@@ -6,6 +6,8 @@ export const swissStyle: DesignStyle = {
   nameEn: "Swiss International",
   description:
     "源于瑞士的理性主义设计风格，强调网格系统、无衬线字体、清晰层次和客观信息传达，是现代平面设计的基石。",
+  descriptionEn:
+    "A rationalist design style originating from Switzerland, emphasizing grid systems, sans-serif typography, clear hierarchy, and objective information delivery -- a cornerstone of modern graphic design.",
   cover: "/styles/swiss-style.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -25,6 +27,14 @@ export const swissStyle: DesignStyle = {
 - 负空间：大量留白增强可读性
 - 客观传达：设计服务于信息，而非装饰`,
 
+  philosophyEn: `Swiss International Style is a design movement developed in Switzerland in the 1950s, emphasizing clear, objective, and rational visual communication.
+
+Core principles:
+- Grid system: Strict mathematical grids controlling layout
+- Sans-serif typography: Clear and readable fonts like Helvetica
+- Negative space: Generous whitespace enhancing readability
+- Objective communication: Design serves information, not decoration`,
+
   doList: [
     "使用严格的网格系统",
     "选用 Helvetica 或类似的无衬线字体",
@@ -38,6 +48,19 @@ export const swissStyle: DesignStyle = {
     "Clean Cut Transitions: use `duration-150 ease-out` — Swiss style is precise and efficient, not slow nor instantaneous",
   ],
 
+  doListEn: [
+    "Use strict grid systems",
+    "Choose Helvetica or similar sans-serif fonts",
+    "Maintain generous negative space",
+    "Use black and white as primary colors",
+    "Left-align text, avoid centering",
+    "Use clean geometric shapes",
+    "Rational Restraint: only color and border-color change on interaction -- zero translate, scale, or shadow added. The grid must not be disturbed",
+    "Guide Line Extension: left border changes from gray to red `hover:border-[#ff0000]` and background shifts to `hover:bg-[#f0f0f0]` -- the structure becomes activated, not decorated",
+    "Hierarchy Focus: category label turns red `group-hover:text-[#ff0000]` on hover -- the taxonomic label is highlighted, reinforcing information hierarchy",
+    "Clean Cut Transitions: use `duration-150 ease-out` -- Swiss style is precise and efficient, not slow nor instantaneous",
+  ],
+
   dontList: [
     "禁止使用装饰性元素",
     "禁止使用衬线字体作为正文",
@@ -47,6 +70,17 @@ export const swissStyle: DesignStyle = {
     "禁止 hover 时引入新颜色以外的装饰（只允许颜色和边框色变化，不添加阴影或变形）",
     "禁止使用 `duration-300` 或更长（Swiss Style 精准高效，`duration-150 ease-out` 是上限）",
     "禁止按钮不带箭头图标（Swiss Style 按钮必须包含方向性，`→` 是排版的一部分）",
+  ],
+
+  dontListEn: [
+    "Do NOT use decorative elements",
+    "Do NOT use serif fonts for body text",
+    "Do NOT over-decorate or use gradients",
+    "Do NOT break the grid system",
+    "Do NOT use any `translate`, `scale`, or `shadow` changes (Rational Restraint -- the grid must not be disturbed)",
+    "Do NOT introduce decorations beyond color changes on hover (only color and border-color changes allowed, no shadows or transforms)",
+    "Do NOT use `duration-300` or longer (Swiss Style is precise and efficient, `duration-150 ease-out` is the upper limit)",
+    "Do NOT omit arrow icons on buttons (Swiss Style buttons must include directionality, `->` is part of the typography)",
   ],
 
   components: {
@@ -214,6 +248,46 @@ export const swissStyle: DesignStyle = {
 - Guide Line Extension: The left border activates from \`border-[#cccccc]\` to \`hover:border-[#ff0000]\` and background shifts to \`hover:bg-[#f0f0f0]\` — the structural grid line becomes a red typographic accent, making the module feel "selected" on the layout.
 - Hierarchy Focus: The category/label element turns \`group-hover:text-[#ff0000] transition-colors duration-150 ease-out\` — the taxonomic hierarchy is highlighted, reinforcing Swiss style's belief that information structure is the highest design value.
 - Clean Cut Transitions: Use \`duration-150 ease-out\` for color changes. Button arrow icon uses \`group-hover:translate-x-2 transition-transform duration-150 ease-out\` — the arrow is the only permitted movement, indicating directionality as a typographic element.`,
+
+  aiRulesEn: `You are a Swiss International Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using decorative elements
+- Using serif fonts
+- Over-decorating or gradient effects
+- Breaking the grid system
+
+## Must Follow
+
+- 12-column grid system grid-cols-12
+- Sans-serif fonts font-sans
+- Generous whitespace p-8, gap-8
+- Black and white primary bg-black, text-white, bg-white, text-black
+- Red accent bg-red-600, text-red-600
+- Uppercase labels uppercase tracking-[0.2em]
+- Left-aligned text
+
+## Color Palette
+
+Only use:
+- Black: #000000
+- White: #ffffff
+- Red: #ff0000 (accent)
+- Blue: #0057b8 (optional accent)
+
+## Typography
+
+- Headings: Extra-large size, bold, tight line height
+- Labels: Small, uppercase, wide letter spacing
+- Body: Moderate size, generous line height
+
+## Animation & Interaction Rules
+
+- Rational Restraint: Only color and border-color change on hover -- zero \`translate\`, \`scale\`, or new \`shadow\`. The grid is a rational system; its geometry must not be disturbed by interaction. Forbidden: \`hover:-translate-y-*\`, \`hover:scale-*\`, \`hover:shadow-*\`.
+- Guide Line Extension: The left border activates from \`border-[#cccccc]\` to \`hover:border-[#ff0000]\` and background shifts to \`hover:bg-[#f0f0f0]\` -- the structural grid line becomes a red typographic accent, making the module feel "selected" on the layout.
+- Hierarchy Focus: The category/label element turns \`group-hover:text-[#ff0000] transition-colors duration-150 ease-out\` -- the taxonomic hierarchy is highlighted, reinforcing Swiss style's belief that information structure is the highest design value.
+- Clean Cut Transitions: Use \`duration-150 ease-out\` for color changes. Button arrow icon uses \`group-hover:translate-x-2 transition-transform duration-150 ease-out\` -- the arrow is the only permitted movement, indicating directionality as a typographic element.`,
 
   examplePrompts: [
     {

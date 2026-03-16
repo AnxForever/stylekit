@@ -6,6 +6,8 @@ export const mecha: DesignStyle = {
   nameEn: "Mecha",
   description:
     "灵感源自高达/EVA等机甲动画的设计风格，科技面板、警告标识、机械质感，军绿和深蓝底色搭配警告黄和危险红，充满工业力量感。",
+  descriptionEn:
+    "Design style inspired by mecha anime like Gundam/EVA -- tech panels, warning signs, mechanical textures, military green and navy blue base with warning yellow and danger red, brimming with industrial power.",
   cover: "/styles/mecha.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -25,6 +27,14 @@ export const mecha: DesignStyle = {
 - 军事工业：军绿、深蓝海军色的工业配色
 - 技术标注：等宽字体的技术参数和编号标识`,
 
+  philosophyEn: `Mecha is a design aesthetic originating from Japanese mecha anime (Gundam, EVA, etc.), blending military-industrial style with sci-fi panel interfaces.
+
+Core principles:
+- Armor panels: Panel design simulating mecha outer shell segments
+- Warning system: Yellow warning and red danger signal system
+- Military-industrial: Military green and navy blue industrial palette
+- Technical annotations: Monospace font technical parameters and unit number labels`,
+
   doList: [
     "使用军绿、深蓝海军色为底色",
     "添加警告黄和危险红的强调色",
@@ -34,11 +44,27 @@ export const mecha: DesignStyle = {
     "使用硬边阴影和边框线条",
   ],
 
+  doListEn: [
+    "Use military green and navy blue as base colors",
+    "Add warning yellow and danger red accent colors",
+    "Use monospace fonts and uppercase letters",
+    "Design sharp no-rounded-corner panel elements",
+    "Add technical annotations and unit number decorations",
+    "Use hard-edge shadows and border lines",
+  ],
+
   dontList: [
     "禁止使用柔和的圆角设计",
     "禁止使用柔和的粉色或浅色调",
     "禁止使用花哨的渐变或毛玻璃效果",
     "禁止使用手写体或花体字",
+  ],
+
+  dontListEn: [
+    "Do not use soft rounded corner design",
+    "Do not use soft pink or light tones",
+    "Do not use flashy gradients or frosted glass effects",
+    "Do not use handwritten or decorative script fonts",
   ],
 
   components: {
@@ -265,6 +291,47 @@ Primary:
 - Armor Shifting: hover 可通过 clip-path 缺角变化与边框厚度突变，模拟装甲板咬合滑动。
 - Hazard Flashing: 关键控件在 hover 需要出现警告色脉冲（红/黄）与斜纹提示，强化工业警戒感。
 - Tactical Lock-on: active 使用干脆的直线位移与阴影回落，像扣动重型扳机后的锁定反馈。`,
+
+  aiRulesEn: `You are a Mecha design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Soft rounded corners (use rounded-none)
+- Pastel or soft colors
+- Glassmorphism or blur effects
+- Handwritten or decorative fonts
+
+## Must Follow
+
+- Dark base colors: navy #1a2744, military green #4a5c3a
+- Warning accents: yellow #fbbf24, red #ef4444
+- Monospace fonts font-mono with uppercase tracking-widest
+- No border radius rounded-none
+- Hard-edge shadows shadow-[4px_4px_0px_color]
+- Border-2 for panel edges
+
+## Color Palette
+
+Primary:
+- Navy: #1a2744
+- Military Green: #4a5c3a
+- Warning Yellow: #fbbf24
+- Danger Red: #ef4444
+
+## Special Elements
+
+- Tech grid backgrounds
+- Warning stripe patterns
+- Status indicators with square dots
+- Technical annotations and unit numbers
+- Panel borders with offset outlines
+
+## Animation & Interaction Rules
+
+- Hydraulic Rigidness: Interactions should use duration-100~150 + ease-linear mechanical hard-cuts, not soft spring easing.
+- Armor Shifting: Hover can use clip-path corner changes and border thickness mutations to simulate armor plate engagement sliding.
+- Hazard Flashing: Key controls need warning color pulses (red/yellow) and diagonal stripe hints on hover, reinforcing industrial alertness.
+- Tactical Lock-on: Active uses crisp linear displacement with shadow fallback, like the lock-on feedback after pulling a heavy trigger.`,
 
   examplePrompts: [
     {

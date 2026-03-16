@@ -6,6 +6,8 @@ export const neonGradient: DesignStyle = {
   nameEn: "Neon Gradient",
   description:
     "深色背景上的鲜艳渐变卡片，配合粗彩色边框和霓虹发光效果，适合科技产品、SaaS 着陆页、年轻化品牌。",
+  descriptionEn:
+    "Vivid gradient cards on dark backgrounds with thick colored borders and neon glow effects. Ideal for tech products, SaaS landing pages, and youth-oriented brands.",
   cover: "/styles/neon-gradient.svg",
   styleType: "visual",
   tags: ["expressive"],
@@ -28,6 +30,17 @@ export const neonGradient: DesignStyle = {
 
 适用场景：SaaS 产品、开发者工具、游戏平台、年轻化品牌`,
 
+  philosophyEn: `Neon Gradient is a bold, modern design style that uses vivid gradient cards and thick colored borders on dark backgrounds to create a futuristic and tech-forward feel.
+
+Core principles:
+- Dark canvas: Deep purple/dark blue backgrounds as the perfect backdrop for neon colors
+- Vivid gradients: Purple-pink, cyan-green, yellow-green and other highly saturated gradient fills
+- Thick colored borders: 3-4px bright borders for enhanced visual impact
+- Glow effects: box-shadow simulating neon light halos
+- Floating elements: Stars, rockets, geometric shapes as decorations
+
+Use cases: SaaS products, developer tools, gaming platforms, youth-oriented brands`,
+
   doList: [
     "使用深色背景 bg-[#0f0a1e] 或 bg-slate-900",
     "卡片使用渐变填充 bg-gradient-to-br from-purple-500 to-pink-500",
@@ -39,6 +52,17 @@ export const neonGradient: DesignStyle = {
     "按钮使用渐变背景 + 发光效果",
   ],
 
+  doListEn: [
+    "Use dark backgrounds bg-[#0f0a1e] or bg-slate-900",
+    "Cards use gradient fills bg-gradient-to-br from-purple-500 to-pink-500",
+    "Add thick colored borders border-4 border-yellow-400",
+    "Use rounded corners rounded-2xl or rounded-3xl",
+    "Add glow shadows shadow-[0_0_30px_rgba(168,85,247,0.5)]",
+    "Titles use gradient text or pure white",
+    "Decorative elements use Lucide icons (Star, Rocket, Sparkles)",
+    "Buttons use gradient backgrounds + glow effects",
+  ],
+
   dontList: [
     "禁止使用浅色背景",
     "禁止使用低饱和度颜色",
@@ -46,6 +70,15 @@ export const neonGradient: DesignStyle = {
     "禁止使用灰色调卡片",
     "禁止省略发光效果",
     "禁止使用 emoji（用 Lucide 图标替代）",
+  ],
+
+  dontListEn: [
+    "No light backgrounds",
+    "No low-saturation colors",
+    "No thin borders border or border-2",
+    "No gray-toned cards",
+    "No omitting glow effects",
+    "No emoji (use Lucide icons instead)",
   ],
 
   components: {
@@ -515,6 +548,72 @@ body {
 - 细边框（border, border-2）
 - 灰色调
 - emoji 字符（用图标替代）`,
+
+  aiRulesEn: `You are a Neon Gradient design style frontend development expert.
+
+## Core Features
+
+Background:
+- Dark: bg-[#0f0a1e] or bg-slate-900
+- Can add radial gradient: bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20
+
+Cards:
+- Gradient fill: bg-gradient-to-br from-purple-500 to-pink-500
+- Thick borders: border-4 border-yellow-400 (contrast color)
+- Rounded corners: rounded-2xl or rounded-3xl
+- Glow: shadow-[0_0_30px_rgba(168,85,247,0.4)]
+
+Color System:
+- Purple: #a855f7 - primary
+- Pink: #ec4899 - accent
+- Cyan: #22d3ee - contrast
+- Yellow: #fbbf24 - border highlight
+- Green: #a3e635 - auxiliary
+
+Gradient Combinations:
+- Purple-pink: from-purple-500 via-pink-500 to-rose-500
+- Cyan-green: from-cyan-400 via-teal-500 to-green-500
+- Cyan-pink: from-cyan-400 to-pink-500
+- Yellow-green: from-yellow-400 via-green-400 to-cyan-400
+
+Border Colors (contrast principle):
+- Purple-pink card -> border-yellow-400 or border-cyan-400
+- Cyan-green card -> border-pink-400 or border-yellow-400
+- Pink card -> border-cyan-400
+
+## Decorative Elements
+
+Use Lucide React icons:
+- Star - with fill-current
+- Rocket
+- Sparkles
+- Zap
+- Shield
+
+Position: absolute, scattered across the page
+Effects: animate-pulse, animate-bounce
+
+## Interactions
+
+- hover:shadow-[0_0_40px_...] glow enhancement
+- hover:scale-105 enlarge
+- hover:-translate-y-2 float up
+- transition-all duration-300
+
+## Animation & Interaction Rules
+
+- Fluid Luminescence: Gradient backgrounds need bg-[length:200%_auto] and switch bg-position on hover, creating a color flow sliding effect inside the tube.
+- Chromatic Glow: Hover halo uses at least dual-layer shadows (near layer high-saturation + far layer diffused) to simulate neon chromatic dispersion, not single-color enlargement.
+- Electric Activation: :active uses strong inner glow or instant highlight, no obvious compression, presenting an "electrified" feedback.
+- Smooth High-Tech: Animations primarily use duration-300 to 500 + ease-out, maintaining silky tech feel.
+
+## Forbidden
+
+- Light backgrounds
+- Low-saturation colors
+- Thin borders (border, border-2)
+- Gray tones
+- Emoji characters (use icons instead)`,
 
   examplePrompts: [
     {

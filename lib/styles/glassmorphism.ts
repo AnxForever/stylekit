@@ -6,6 +6,8 @@ export const glassmorphism: DesignStyle = {
   nameEn: "Glassmorphism",
   description:
     "半透明毛玻璃效果，通过 backdrop-blur 模糊背景、柔和边框和微妙阴影，创造现代感十足的层叠界面。",
+  descriptionEn:
+    "Semi-transparent frosted glass effect using backdrop-blur for blurred backgrounds, soft borders and subtle shadows, creating a modern layered interface.",
   cover: "/styles/glassmorphism.svg",
   styleType: "visual",
   tags: ["modern"],
@@ -25,6 +27,14 @@ export const glassmorphism: DesignStyle = {
 - 轻盈感：半透明元素减少视觉重量
 - 深度感：微妙阴影增强空间层次`,
 
+  philosophyEn: `Glassmorphism is a modern UI style originating from iOS and macOS design language, creating a frosted glass visual effect through semi-transparent backgrounds and background blur.
+
+Core principles:
+- Layering: Distinguish front and back layers through transparency
+- Modernity: Blur effects create a high-end tech atmosphere
+- Lightness: Semi-transparent elements reduce visual weight
+- Depth: Subtle shadows enhance spatial layering`,
+
   doList: [
     "使用半透明背景 bg-white/20 或 bg-white/10",
     "添加背景模糊 backdrop-blur-md 或 backdrop-blur-xl",
@@ -36,6 +46,17 @@ export const glassmorphism: DesignStyle = {
     "交互时加入单次扫光高光层并提升边框亮度",
   ],
 
+  doListEn: [
+    "Use semi-transparent backgrounds bg-white/20 or bg-white/10",
+    "Add background blur backdrop-blur-md or backdrop-blur-xl",
+    "Use subtle borders border border-white/20",
+    "Add soft shadows shadow-lg or shadow-xl",
+    "Use gradient backgrounds as the base layer bg-gradient-to-br",
+    "Moderate rounded corners rounded-xl or rounded-2xl",
+    "Use high-contrast text to ensure readability",
+    "Add a single-sweep highlight layer on interaction and increase border brightness",
+  ],
+
   dontList: [
     "禁止在纯白或纯色背景上使用（需要渐变或图片背景）",
     "禁止过度透明导致内容不可读",
@@ -43,6 +64,15 @@ export const glassmorphism: DesignStyle = {
     "禁止省略 backdrop-blur（这是核心效果）",
     "禁止在低对比度环境下使用浅色文字",
     "禁止使用频闪或高频循环发光动画",
+  ],
+
+  dontListEn: [
+    "Do not use on solid white or solid color backgrounds (requires gradient or image background)",
+    "Do not make elements too transparent causing unreadable content",
+    "Do not use hard-edge shadows",
+    "Do not omit backdrop-blur (this is the core effect)",
+    "Do not use light text in low-contrast environments",
+    "Do not use strobing or high-frequency looping glow animations",
   ],
 
   components: {
@@ -251,6 +281,59 @@ export const glassmorphism: DesignStyle = {
 3. 使用半透明背景色
 4. 有柔和阴影
 5. 文字可读性良好`,
+
+  aiRulesEn: `You are a Glassmorphism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Using glass effects on solid color backgrounds (must have gradient or image background)
+- Omitting the backdrop-blur property
+- Using hard-edge shadows shadow-[Xpx_Xpx_0px]
+- Using opaque backgrounds bg-white, bg-black
+- Using sharp corners rounded-none
+
+## Must Follow
+
+- Semi-transparent backgrounds bg-white/10 to bg-white/30
+- Background blur backdrop-blur-md or backdrop-blur-xl
+- Subtle borders border border-white/20
+- Soft shadows shadow-lg, shadow-xl
+- Rounded corners rounded-xl or rounded-2xl
+- Gradient background container bg-gradient-to-br
+
+## Color Palette
+
+Recommended gradient backgrounds:
+- Purple-pink: from-purple-600 via-pink-500 to-orange-400
+- Blue-purple: from-blue-600 via-purple-600 to-pink-500
+- Cyan-blue: from-cyan-400 via-blue-500 to-purple-600
+
+Glass elements:
+- Background: bg-white/10, bg-white/20
+- Border: border-white/20, border-white/30
+- Text: text-white, text-white/80
+
+## Layer Structure
+
+1. Base layer: Gradient background or image
+2. Middle layer: Frosted glass container
+3. Top layer: Content elements
+
+## Animation & Interaction Rules
+
+- Optical Glint: Use a skewed gradient highlight layer (sweep) to simulate glass refraction, keep it single-sweep, avoid strobing.
+- Floating Depth: Hover can use slight lift (e.g. -translate-y-0.5 to -translate-y-2) with synchronized shadow spread expansion.
+- Edge Illumination: Border opacity increases from border-white/20 to border-white/40+ on interaction, emphasizing glass cut edges.
+- Smooth Translucency: Transitions prefer duration-300 with ease-out, creating a silky optical change feel.
+
+## Self-Check
+
+After generating code, verify:
+1. Has gradient or image background
+2. Has backdrop-blur
+3. Uses semi-transparent background colors
+4. Has soft shadows
+5. Text readability is good`,
 
   examplePrompts: [
     {

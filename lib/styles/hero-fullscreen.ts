@@ -6,6 +6,8 @@ export const heroFullscreen: DesignStyle = {
   nameEn: "Fullscreen Hero",
   description:
     "以全屏大图或视频为背景的英雄区布局，通过震撼的视觉效果抓住注意力，适合品牌展示、产品发布、活动宣传。",
+  descriptionEn:
+    "A hero section layout with fullscreen images or video backgrounds that captures attention through stunning visuals, ideal for brand showcases, product launches, and event promotions.",
   cover: "/styles/hero-fullscreen.svg",
   styleType: "layout",
   tags: ["expressive", "modern"],
@@ -26,6 +28,14 @@ export const heroFullscreen: DesignStyle = {
 - 聚焦核心：突出最重要的信息和行动
 - 情感连接：通过视觉建立情感共鸣`,
 
+  philosophyEn: `Fullscreen Hero is a layout approach centered on visual impact, using fullscreen images or video to create an immersive first impression.
+
+Core principles:
+- First impression: Capture visitors immediately with stunning visuals
+- Brand expression: Convey brand identity through imagery
+- Focus on essentials: Highlight the most important information and actions
+- Emotional connection: Build emotional resonance through visuals`,
+
   doList: [
     "使用 h-screen 或 min-h-screen 确保全屏",
     "图片使用 object-cover 保持比例填充",
@@ -40,6 +50,20 @@ export const heroFullscreen: DesignStyle = {
     "所有按钮 active:scale-[0.98] active:translate-y-0 + focus:ring-2 focus:ring-white/80 focus:ring-offset-2",
   ],
 
+  doListEn: [
+    "Use h-screen or min-h-screen to ensure fullscreen coverage",
+    "Use object-cover on images to maintain aspect ratio fill",
+    "Add gradient or semi-transparent overlays to ensure text readability",
+    "Position content absolutely or center with flex",
+    "Provide scroll indicators to guide users downward",
+    "Mute and autoplay video backgrounds",
+    "Provide fallback solutions (image replacing video)",
+    "Primary CTA button hover:-translate-y-1 + hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] (gravity float effect)",
+    "Feature cards use group class + hover:-translate-y-2 + hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]",
+    "Icon container group-hover:scale-110 micro-interaction",
+    "All buttons active:scale-[0.98] active:translate-y-0 + focus:ring-2 focus:ring-white/80 focus:ring-offset-2",
+  ],
+
   dontList: [
     "禁止文字直接放在复杂背景上无遮罩",
     "禁止使用低质量或拉伸的图片",
@@ -48,6 +72,16 @@ export const heroFullscreen: DesignStyle = {
     "禁止视频有声音自动播放",
     "禁止按钮缺少 active:scale-[0.98]（全屏背景下按钮无触觉确认感极差）",
     "禁止卡片无 group 类（图标 group-hover:scale-110 微交互依赖 group）",
+  ],
+
+  dontListEn: [
+    "Do NOT place text directly on complex backgrounds without an overlay",
+    "Do NOT use low-quality or stretched images",
+    "Do NOT ignore mobile responsiveness",
+    "Do NOT fill the entire space with content and no whitespace",
+    "Do NOT autoplay video with sound",
+    "Do NOT omit active:scale-[0.98] on buttons (buttons without tactile confirmation feel terrible on fullscreen backgrounds)",
+    "Do NOT omit group class on cards (icon group-hover:scale-110 micro-interaction depends on group)",
   ],
 
   components: {
@@ -418,6 +452,101 @@ Desktop:
 
 ### Tactile Confirmation
 - All buttons: active:scale-[0.98] — required for perceived responsiveness on dark overlay
+- Duration: 200ms ease-out for all interactive elements
+
+## Self-Check
+
+After generating code, verify:
+1. Hero is full viewport height
+2. Text is readable on background
+3. Overlay provides contrast
+4. Scroll indicator visible
+5. Mobile layout works`,
+
+  aiRulesEn: `You are a frontend expert specializing in Fullscreen Hero layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT place text on busy backgrounds without overlay
+- Do NOT use low-quality or stretched images
+- Do NOT ignore mobile responsiveness
+- Do NOT fill entire viewport with no breathing room
+- Do NOT autoplay video with sound
+
+## Must Follow
+
+- Container: min-h-screen or h-screen
+- Background: object-cover for images
+- Overlay: gradient or solid for text readability
+- Content: centered with max-width constraint
+- Scroll indicator: at bottom of hero
+- Navigation: absolute positioned, transparent
+
+## Structure
+
+Layers (bottom to top):
+1. Background image/video (absolute, full cover)
+2. Overlay (gradient or solid color)
+3. Content (relative z-10, centered)
+4. Navigation (absolute top)
+5. Scroll indicator (absolute bottom)
+
+## Background Options
+
+Image:
+- object-fit: cover
+- Full viewport coverage
+- High quality, relevant imagery
+
+Video:
+- Muted, autoplay, loop
+- Fallback poster image
+- Pause on mobile (optional)
+
+Overlay types:
+- Solid: bg-black/50
+- Gradient: from-black/80 via-transparent to-black/30
+- Color: bg-brand/70 mix-blend-multiply
+
+## Content
+
+- Badge/label (optional)
+- Main headline (large, bold)
+- Subheadline (medium)
+- CTA buttons (prominent)
+- Max-width container (4xl recommended)
+
+## Responsive
+
+Mobile:
+- Smaller text sizes
+- Stacked CTA buttons
+- Simpler background (may hide video)
+
+Desktop:
+- Full visual impact
+- Side-by-side buttons
+- All animations enabled
+
+## Animation & Interaction Rules
+
+### Gravity Focus (CTA Button)
+- Resting: shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+- Hover: hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] -- gravity float with shadow burst
+- Active: active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] -- tactile press
+- Focus: focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+
+### Floating Glass (Feature Cards)
+- Always use group class on card container
+- Hover: hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] -- dramatic float
+- Icon container: group-hover:scale-110 transition-transform duration-300 ease-out
+
+### Text Reveal on Hover
+- h3: group-hover:text-white/95 transition-colors duration-200
+- p: group-hover:text-white/85 transition-colors duration-200
+
+### Tactile Confirmation
+- All buttons: active:scale-[0.98] -- required for perceived responsiveness on dark overlay
 - Duration: 200ms ease-out for all interactive elements
 
 ## Self-Check

@@ -6,6 +6,8 @@ export const surrealism: DesignStyle = {
   nameEn: "Surrealism",
   description:
     "灵感源自Dali等超现实主义大师，梦境般的场景构成、不合逻辑的空间关系、融化变形的形态和意想不到的色彩组合，营造神秘而引人入胜的视觉体验。",
+  descriptionEn:
+    "Inspired by surrealist masters like Dali -- dreamlike scene compositions, illogical spatial relationships, melting and morphing forms, and unexpected color combinations create a mysterious and captivating visual experience.",
   cover: "/styles/surrealism.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -25,6 +27,14 @@ export const surrealism: DesignStyle = {
 - 变形流动：融化、扭曲的形态
 - 潜意识探索：深层心理的视觉表达`,
 
+  philosophyEn: `Surrealism is an early 20th-century art movement dedicated to unleashing the creative power of the subconscious, breaking the boundaries between the rational and irrational.
+
+Core principles:
+- Dream logic: Visual narratives that transcend reality
+- Unexpected juxtaposition: Wondrous combinations of unrelated elements
+- Morphing fluidity: Melting, distorted forms
+- Subconscious exploration: Visual expression of deep psychology`,
+
   doList: [
     "使用午夜蓝和沙漠金的配色",
     "创造梦境般的柔和渐变",
@@ -38,6 +48,19 @@ export const surrealism: DesignStyle = {
     "Color Melting: blurred orb decorations expand on hover `group-hover:scale-150 transition-transform duration-[2000ms]` — colors slowly bleed and melt across the canvas",
   ],
 
+  doListEn: [
+    "Use midnight blue and desert gold palette",
+    "Create dreamlike soft gradients",
+    "Use unexpected element combinations",
+    "Add soft shadows for depth",
+    "Use serif fonts and italics",
+    "Maintain a mysterious yet elegant atmosphere",
+    "Dream-like Distortion: hover applies subtle geometric reality-bending `hover:skew-x-2 hover:-rotate-1` -- as if the element is being pulled through a dream portal",
+    "Timeless Easing: all transitions use `duration-700 ease-in-out` or `duration-1000 ease-in-out` -- surrealist time is elastic, never hurried",
+    "Abyssal Glow: hover shadow uses large diffuse rose/gold `hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]` -- light emerges from deep within, never black drop shadows",
+    "Color Melting: blurred orb decorations expand on hover `group-hover:scale-150 transition-transform duration-[2000ms]` -- colors slowly bleed and melt across the canvas",
+  ],
+
   dontList: [
     "禁止使用过于明亮的纯色",
     "禁止使用严格对称的网格布局",
@@ -47,6 +70,17 @@ export const surrealism: DesignStyle = {
     "禁止使用黑色投影（Abyssal Glow 使用玫瑰/金色漫射光晕，黑色阴影会破坏梦境感）",
     "禁止使用 `duration-200` 或更短的过渡（Timeless Easing 要求 `duration-700` 以上——梦境时间是弹性的）",
     "禁止在卡片装饰光球上使用 `transition-none`（Color Melting 需要缓慢的 `duration-[2000ms]` 扩散）",
+  ],
+
+  dontListEn: [
+    "Do not use overly bright pure colors",
+    "Do not use strictly symmetrical grid layouts",
+    "Do not use modern minimalist undecorated design",
+    "Do not use harsh neon colors",
+    "Do not use `hover:scale-105` (surrealism uses `skew` and `rotate` to distort reality, not scaling)",
+    "Do not use black drop shadows (Abyssal Glow uses rose/gold diffuse glow -- black shadows break the dream feel)",
+    "Do not use `duration-200` or shorter transitions (Timeless Easing requires `duration-700` or above -- dream time is elastic)",
+    "Do not use `transition-none` on card decorative orbs (Color Melting requires slow `duration-[2000ms]` expansion)",
   ],
 
   components: {
@@ -218,6 +252,45 @@ export const surrealism: DesignStyle = {
 - Timeless Easing: All transitions use \`duration-700 ease-in-out\` minimum, preferring \`duration-1000 ease-in-out\` — surrealist time is elastic. Never use \`duration-200\` or faster; urgency is a rational concept.
 - Abyssal Glow: Hover shadow uses large diffuse rose/gold \`hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]\` — light wells up from within the dream. Never use black drop shadows; they belong to the rational world.
 - Color Melting: Blurred orb decorations slowly expand \`group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out\` — colors bleed across the canvas over 2 full seconds. The expanding underline \`group-hover:w-full transition-all duration-1000\` and heading \`group-hover:tracking-widest transition-all duration-1000\` melt together.`,
+
+  aiRulesEn: `You are a Surrealism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Pure white backgrounds
+- Strictly symmetrical grid layouts
+- Bright neon colors
+- Overly regular geometric shapes
+
+## Must Follow
+
+- Midnight blue #1a1a3e as dark base tone
+- Desert gold #d4a574 and rose pink #c38d94 as accent colors
+- Cream white #f0ece4 as light background
+- Use font-serif italic for a dreamy feel
+- Soft gradients and blurred glow effects
+
+## Color Palette
+
+Primary:
+- Midnight Blue: #1a1a3e
+- Desert Gold: #d4a574
+- Rose Pink: #c38d94
+- Cream White: #f0ece4
+
+## Special Elements
+
+- Blurred glow background decorations
+- Asymmetric layouts and organic shapes
+- Soft transition animations (duration-500)
+- Unexpected color gradient combinations
+
+## Animation & Interaction Rules
+
+- Dream-like Distortion: Hover applies geometric reality-bending \`hover:skew-x-2 hover:-rotate-1\` -- as if the element is being pulled through a dream portal. Never use \`hover:scale-105\` alone; distortion (skew/rotate) is how surrealism deforms reality.
+- Timeless Easing: All transitions use \`duration-700 ease-in-out\` minimum, preferring \`duration-1000 ease-in-out\` -- surrealist time is elastic. Never use \`duration-200\` or faster; urgency is a rational concept.
+- Abyssal Glow: Hover shadow uses large diffuse rose/gold \`hover:shadow-[0_0_50px_rgba(195,141,148,0.3)]\` -- light wells up from within the dream. Never use black drop shadows; they belong to the rational world.
+- Color Melting: Blurred orb decorations slowly expand \`group-hover:scale-150 transition-transform duration-[2000ms] ease-in-out\` -- colors bleed across the canvas over 2 full seconds. The expanding underline \`group-hover:w-full transition-all duration-1000\` and heading \`group-hover:tracking-widest transition-all duration-1000\` melt together.`,
 
   examplePrompts: [
     {

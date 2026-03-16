@@ -6,6 +6,8 @@ export const neoBrutalistSoft: DesignStyle = {
   nameEn: "Neo-Brutalist Soft",
   description:
     "Neo-Brutalist 的温和版本。保留硬边缘阴影和无圆角特性，但使用更柔和的配色、较细的边框和更温和的对比度。",
+  descriptionEn:
+    "A gentler version of Neo-Brutalist. Retains hard-edge shadows and no-rounded-corner characteristics, but uses softer colors, thinner borders, and milder contrast.",
   cover: "/styles/neo-brutalist-soft.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -27,6 +29,16 @@ export const neoBrutalistSoft: DesignStyle = {
 
 适用场景：需要野兽派风格但目标用户偏好温和视觉的产品`,
 
+  philosophyEn: `Neo-Brutalist Soft is a gentler variant of the original Neo-Brutalist. It retains the core structural features -- no rounded corners, hard-edge shadows, hover displacement effects -- but softens the visual impact through:
+
+Adjustment strategy:
+- Borders reduced from 4px to 2px
+- Shadow colors use gray instead of pure black
+- Palette uses soft macaron tones
+- Contrast moderately reduced for easier viewing
+
+Use case: Products that need brutalist style but target users who prefer gentler visuals`,
+
   doList: [
     "保持无圆角 rounded-none",
     "使用较细边框 border-2 border-gray-800（非纯黑）",
@@ -37,6 +49,16 @@ export const neoBrutalistSoft: DesignStyle = {
     "文字使用深灰 text-gray-800 而非纯黑",
   ],
 
+  doListEn: [
+    "Keep no rounded corners rounded-none",
+    "Use thinner borders border-2 border-gray-800 (not pure black)",
+    "Use gray shadows shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]",
+    "Use softer color versions (e.g., pink-400 instead of #ff006e)",
+    "Hover shadow disappears + displacement effect retained",
+    "Use light gray background bg-gray-50 instead of pure white",
+    "Use dark gray text text-gray-800 instead of pure black",
+  ],
+
   dontList: [
     "禁止圆角",
     "禁止模糊阴影 shadow-lg",
@@ -44,6 +66,15 @@ export const neoBrutalistSoft: DesignStyle = {
     "禁止高饱和度的纯色",
     "禁止纯黑背景",
     "禁止渐变",
+  ],
+
+  dontListEn: [
+    "Do not use rounded corners",
+    "Do not use blurred shadows shadow-lg",
+    "Do not use pure black borders border-black",
+    "Do not use high-saturation pure colors",
+    "Do not use pure black backgrounds",
+    "Do not use gradients",
   ],
 
   components: {
@@ -267,6 +298,47 @@ body {
 - 高饱和纯色
 - 圆角
 - 模糊阴影`,
+
+  aiRulesEn: `You are a Neo-Brutalist Soft design style frontend development expert. This is the gentler version of Neo-Brutalist.
+
+## Core Retained
+
+- No rounded corners rounded-none
+- Hard-edge shadows (but using gray/semi-transparent)
+- Hover displacement effects
+
+## Adjustment Rules
+
+Borders:
+- Use border-2 (not border-4)
+- Use border-gray-800 (not border-black)
+
+Shadows:
+- Use shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]
+- Colored shadows use semi-transparent: rgba(244,114,182,0.4)
+
+Colors:
+- Background: #f5f5f5 (light gray)
+- Text: #1a1a1a (dark gray, not pure black)
+- Pink: #f472b6 (pink-400)
+- Green: #a3e635 (lime-400)
+- Blue: #38bdf8 (sky-400)
+- Yellow: #fbbf24 (amber-400)
+
+## Animation & Interaction Rules
+
+- Paper Lift: Hover uses small -translate with semi-transparent colored shadow expansion, simulating a thick paper card being gently lifted.
+- Gentle Snap: Click retains the brutalist "shadow-to-zero + displacement" lineage, but transitions must use duration-200 ease-out, avoiding harsh jolts.
+- Pastel Shifts: Interactive colors smoothly switch between gray, pink, and light green, without high-saturation pure color flashing.
+- Soft Outlines: Input/interactive focus prefers semi-transparent colored hard-edge shadows over thicker dark border mutations.
+
+## Forbidden
+
+- Pure black borders border-black
+- Pure black shadows rgba(0,0,0,1)
+- High-saturation pure colors
+- Rounded corners
+- Blurred shadows`,
 
   examplePrompts: [
     {

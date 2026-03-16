@@ -6,6 +6,8 @@ export const masonryFlow: DesignStyle = {
   nameEn: "Masonry Flow",
   description:
     "Pinterest 风格的不等高卡片瀑布流布局，通过 CSS columns 或 masonry grid 实现自然流动的视觉效果，适合图片展示、作品集、社交媒体。",
+  descriptionEn:
+    "Pinterest-style masonry layout with variable-height cards, achieved through CSS columns or masonry grid for a naturally flowing visual effect. Ideal for image galleries, portfolios, and social media.",
   cover: "/styles/masonry-flow.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const masonryFlow: DesignStyle = {
 - 视觉节奏：不规则高度创造有趣的视觉韵律
 - 无限滚动：天然适合加载更多内容的交互模式`,
 
+  philosophyEn: `Masonry Flow is a layout that mimics brickwork, where cards are arranged in columns with varying heights, creating a naturally flowing visual effect.
+
+Core principles:
+- Natural flow: Content height is determined by the content itself, no forced equal heights
+- Space utilization: Maximize visible area usage, reduce wasted whitespace
+- Visual rhythm: Irregular heights create an interesting visual cadence
+- Infinite scroll: Naturally suited for load-more interaction patterns`,
+
   doList: [
     "使用 CSS columns 实现简单瀑布流 columns-2 md:columns-3 lg:columns-4",
     "或使用 CSS Grid masonry（需浏览器支持）grid-rows-[masonry]",
@@ -40,6 +50,20 @@ export const masonryFlow: DesignStyle = {
     "filter 筛选按钮 duration-200 确保即时响应（Action Snappiness）",
   ],
 
+  doListEn: [
+    "Use CSS columns for simple masonry columns-2 md:columns-3 lg:columns-4",
+    "Or use CSS Grid masonry (requires browser support) grid-rows-[masonry]",
+    "Cards add break-inside-avoid to prevent content breaking",
+    "Uniform card widths, height adapts to content",
+    "Maintain consistent column gaps gap-4 or gap-6",
+    "Add loading animations and lazy-loaded images",
+    "Responsive column count columns-1 sm:columns-2 lg:columns-3",
+    "Cards use group class, images inside overflow-hidden use group-hover:scale-105 duration-700 ease-out (Confined Zoom, never breaks container)",
+    "Card hover: hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] (Subtle Elevation, light without breaking masonry flow visual continuity)",
+    "Action buttons translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 (Overlay Reveal, overlay drawer emergence)",
+    "Filter buttons duration-200 for instant response (Action Snappiness)",
+  ],
+
   dontList: [
     "禁止强制所有卡片等高（失去瀑布流特色）",
     "禁止卡片宽度不一致",
@@ -49,6 +73,17 @@ export const masonryFlow: DesignStyle = {
     "禁止图片放大突破 overflow-hidden 容器（Confined Zoom 必须保持边界）",
     "禁止卡片使用生硬的深色边框作为 hover 反馈（用阴影和位移代替）",
     "禁止 hover 位移超过 -translate-y-1（过大的浮起会打断瀑布流视觉连贯性）",
+  ],
+
+  dontListEn: [
+    "Do not force all cards to equal height (loses masonry character)",
+    "Do not use inconsistent card widths",
+    "Do not use inconsistent spacing",
+    "Do not ignore image loading states",
+    "Do not use too many columns on small screens",
+    "Do not let image zoom break the overflow-hidden container (Confined Zoom must maintain boundaries)",
+    "Do not use harsh dark borders as hover feedback on cards (use shadows and displacement instead)",
+    "Do not let hover displacement exceed -translate-y-1 (excessive lift breaks masonry flow visual continuity)",
   ],
 
   components: {
@@ -315,6 +350,59 @@ Desktop (1024px+): columns-3 or columns-4
 - Subtle Elevation: hover 位移控制在 -translate-y-1，并用弥散阴影而非硬边框表达聚焦。
 - Overlay Reveal: 图片覆盖层和操作按钮使用 opacity + translate 的组合渐显，不改变卡片主尺寸。
 - Action Snappiness: 顶部筛选和分类按钮使用 duration-200，确保快速切换反馈。
+
+## Self-Check`,
+
+  aiRulesEn: `You are a frontend expert specializing in Masonry Flow layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT make all cards the same height (defeats masonry purpose)
+- Do NOT use inconsistent card widths
+- Do NOT use inconsistent gaps
+- Do NOT ignore image loading states
+- Do NOT use too many columns on mobile
+
+## Must Follow
+
+- Use CSS columns: columns-2 md:columns-3 lg:columns-4
+- Prevent break: break-inside-avoid on cards
+- Consistent gap: gap-4 or column-gap equivalent
+- Card widths: 100% of column
+- Card heights: auto (content-driven)
+- Responsive columns: reduce on smaller screens
+
+## Layout Structure
+
+Container:
+- columns-1 sm:columns-2 lg:columns-3 xl:columns-4
+- gap-4 (use column-gap and margin-bottom)
+
+Card:
+- break-inside-avoid
+- mb-4 (margin bottom for spacing)
+- rounded-xl overflow-hidden
+- Full width within column
+
+## Image Handling
+
+- Always use aspect-ratio or height constraints
+- Add loading="lazy" for performance
+- Show placeholder during load
+- Use object-cover for consistent fit
+
+## Responsive
+
+Mobile (< 640px): columns-1
+Tablet (640px - 1024px): columns-2
+Desktop (1024px+): columns-3 or columns-4
+
+## Animation & Interaction Rules
+
+- Confined Zoom: Image scaling must occur within overflow-hidden container, recommend group-hover:scale-105 + duration-700.
+- Subtle Elevation: Hover displacement limited to -translate-y-1, using diffused shadow rather than hard borders to express focus.
+- Overlay Reveal: Image overlay and action buttons use opacity + translate combination for gradual reveal, without changing card main dimensions.
+- Action Snappiness: Top filter and category buttons use duration-200, ensuring fast switching feedback.
 
 ## Self-Check
 

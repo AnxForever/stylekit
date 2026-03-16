@@ -6,6 +6,8 @@ export const sketchStyle: DesignStyle = {
   nameEn: "Sketch Style",
   description:
     "模拟铅笔手绘的设计风格，不规则线条边框、纸张纹理背景、手写字体感、素描阴影和涂鸦装饰，传达亲切温暖的手工质感。",
+  descriptionEn:
+    "A design style simulating pencil hand-drawing, with irregular line borders, paper texture backgrounds, handwritten font feel, sketch shadows, and doodle decorations, conveying a warm and approachable handcrafted texture.",
   cover: "/styles/sketch-style.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -25,6 +27,14 @@ export const sketchStyle: DesignStyle = {
 - 铅笔线条：边框使用不均匀的手绘风格线条
 - 素描阴影：使用交叉线条（cross-hatching）模拟阴影效果`,
 
+  philosophyEn: `Sketch Style is a design style simulating hand-drawn pencil sketches, injecting warm handcrafted texture into digital interfaces through irregular lines, paper textures, and handwritten-feel elements.
+
+Core principles:
+- Handcrafted feel: Lines and shapes don't pursue perfect alignment, preserving the irregularity of hand-drawing
+- Paper texture: Warm beige backgrounds simulating sketchbook paper
+- Pencil lines: Borders use uneven hand-drawn style lines
+- Sketch shadows: Using cross-hatching to simulate shadow effects`,
+
   doList: [
     "使用纸张色背景 bg-[#f5f0e8]",
     "边框使用不规则风格 border-2 border-dashed 或 wavy",
@@ -37,6 +47,18 @@ export const sketchStyle: DesignStyle = {
     "active 状态强化按压感：减少阴影并增加轻微倾斜抖动",
   ],
 
+  doListEn: [
+    "Use paper-colored background bg-[#f5f0e8]",
+    "Use irregular style borders border-2 border-dashed or wavy",
+    "Use handwritten-style or serif fonts",
+    "Use cross-hatching effects for shadows instead of solid colors",
+    "Keep elements slightly tilted rotate-[-1deg] for hand-drawn feel",
+    "Use pencil gray #2c2c2c as primary color",
+    "Hover can simulate pencil shading: quickly transition from transparent to pencil gray background with inverted white text",
+    "Title and link emphasis lines use dashed/wavy hand-drawn underlines instead of perfect straight lines",
+    "Active state enhances press feel: reduce shadow and add slight tilt jitter",
+  ],
+
   dontList: [
     "禁止使用完美的直线和圆角",
     "禁止使用纯白背景（应使用纸张色）",
@@ -45,6 +67,16 @@ export const sketchStyle: DesignStyle = {
     "禁止使用过于饱和的颜色",
     "禁止长时间平滑动画（手绘反馈应短促直接）",
     "禁止过度规则的 hover 变化（需保留笔触粗糙感）",
+  ],
+
+  dontListEn: [
+    "Do NOT use perfect straight lines and rounded corners",
+    "Do NOT use pure white backgrounds (should use paper color)",
+    "Do NOT use gradient effects",
+    "Do NOT use glass blur effects",
+    "Do NOT use overly saturated colors",
+    "Do NOT use long smooth animations (hand-drawn feedback should be short and direct)",
+    "Do NOT use overly regular hover changes (need to preserve rough brush stroke feel)",
   ],
 
   components: {
@@ -292,6 +324,61 @@ export const sketchStyle: DesignStyle = {
 - Stroke Jitter: 交互允许轻微旋转和位移抖动，保留手绘笔触不稳定感。
 - Scribble Reveal: 文本强调优先使用虚线/波浪下划线或手绘轨迹样式。
 - Paper Press: active 状态应减少阴影并增强倾斜，表现笔尖压纸阻尼感。`,
+
+  aiRulesEn: `You are a Sketch Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using perfect straight-line borders border-solid (prefer border-dashed)
+- Using pure white backgrounds bg-white
+- Using gradients bg-gradient-*
+- Using glass blur backdrop-blur
+- Using perfect rounded corners rounded-xl, rounded-2xl
+- Using overly saturated colors
+
+## Must Follow
+
+- Paper-colored background bg-[#f5f0e8]
+- Dashed or irregular borders border-2 border-dashed border-[#2c2c2c]
+- Serif italic fonts font-serif italic
+- Slight tilt rotate-[-0.5deg] or rotate-[0.5deg]
+- Pencil gray primary color #2c2c2c
+- Hand-drawn feel shadows shadow-[3px_3px_0_rgba(44,44,44,0.15)]
+
+## Color Palette
+
+Primary:
+- Pencil gray: #2c2c2c
+- Paper beige: #f5f0e8
+
+Accent colors (low saturation):
+- Red: #e74c3c
+- Blue: #3498db
+- Green: #27ae60
+- Yellow: #f39c12
+
+## Special Effects
+
+Paper texture: Using SVG texture backgrounds
+Cross-hatching shadows: Line-style semi-transparent shadows
+Hand-drawn annotations: Dashed circles, wavy underlines
+Irregular arrangement: Elements slightly tilted
+
+## Self-Check
+
+After generating code, verify:
+1. Using paper-colored background not pure white
+2. Borders are dashed or irregular style
+3. Text uses serif italic
+4. Elements have slight tilt
+5. Overall feel is like a hand-drawn sketchbook
+
+## Animation & Interaction Rules
+
+- Pencil Shading: Hover can quickly shade line elements to pencil gray with inverted white text, simulating pencil smudging.
+- Stroke Jitter: Interactions allow slight rotation and displacement jitter, preserving hand-drawn brush stroke instability.
+- Scribble Reveal: Text emphasis prioritizes dashed/wavy underlines or hand-drawn trajectory styles.
+- Paper Press: Active state should reduce shadow and enhance tilt, expressing pen-tip paper-pressing damping feel.`,
 
   examplePrompts: [
     {

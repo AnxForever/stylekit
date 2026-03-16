@@ -6,6 +6,8 @@ export const swissPoster: DesignStyle = {
   nameEn: "Swiss Poster",
   description:
     "大胆排版、网格对齐、原色色块和实验性布局。源于瑞士国际主义海报设计传统，以超大字体和强烈的视觉层次构建信息传达。与 swiss-style 的区别在于更注重海报级别的实验性大排版。",
+  descriptionEn:
+    "Bold typography, grid alignment, primary color blocks, and experimental layouts. Rooted in the Swiss International Style poster design tradition, building information delivery through oversized type and strong visual hierarchy. Differs from swiss-style by focusing more on poster-level experimental large-scale typography.",
   cover: "/styles/swiss-poster.svg",
   styleType: "visual",
   tags: ["modern", "minimal", "high-contrast"],
@@ -27,6 +29,16 @@ export const swissPoster: DesignStyle = {
 - 零间距：gap-0 让元素边缘紧贴，以边框线作为视觉分隔
 - 无装饰：没有圆角、阴影、渐变、模糊，只有纯色和线条`,
 
+  philosophyEn: `Swiss Poster style originates from the poster tradition of the Swiss International Style design movement, pursuing the ultimate in typographic expressiveness.
+
+Core principles:
+- Oversized typography: Using extreme font sizes to create visual impact (160px headings vs 10px labels)
+- 12-column grid system: All content strictly aligned to grid-cols-12, using asymmetric column splits
+- Primary color blocks: Black and white as primary, with red, blue, and yellow as large-area color block accents
+- Border separation: Using border-2 border-[#000000] to divide regions, not shadows or spacing
+- Zero spacing: gap-0 keeps element edges flush, using border lines as visual separators
+- No decoration: No rounded corners, shadows, gradients, or blur -- only solid colors and lines`,
+
   doList: [
     "使用超大号无衬线粗体字（font-sans font-black）",
     "严格遵循 12 列网格对齐（grid-cols-12）",
@@ -43,6 +55,22 @@ export const swissPoster: DesignStyle = {
     "Typographic Highlighting: year/label element switches to `group-hover:text-[#ff0000] transition-none` on hover — the red typographic accent activates like a stamp",
   ],
 
+  doListEn: [
+    "Use oversized bold sans-serif type (font-sans font-black)",
+    "Strictly follow 12-column grid alignment (grid-cols-12)",
+    "Use black and white as primary colors",
+    "Use primary colors (red #ff0000, blue #0057b8, yellow #ffcc00) as color block accents",
+    "Keep sharp edges (rounded-none)",
+    "All text uppercase (uppercase tracking-widest)",
+    "Use border-2 border-[#000000] to divide regions",
+    "Use gap-0 to keep elements flush",
+    "Use asymmetric layouts (e.g., 3/9, 8/4 column splits)",
+    "Absolute Objectivity: zero translate, scale, or shadow on any element -- Swiss Poster communicates through color and typography alone, motion is noise",
+    "Snap Transitions: all interactions use `transition-none` -- color changes are instantaneous hard cuts, like ink stamped onto paper",
+    "Color Block Invasion: hover replaces background with solid black `hover:bg-[#000000]` and text inverts to white `hover:text-[#ffffff]` -- the color block takes over the entire element",
+    "Typographic Highlighting: year/label element switches to `group-hover:text-[#ff0000] transition-none` on hover -- the red typographic accent activates like a stamp",
+  ],
+
   dontList: [
     "禁止使用装饰性字体或等宽字体",
     "禁止使用超过 rounded-sm 的圆角",
@@ -54,6 +82,19 @@ export const swissPoster: DesignStyle = {
     "禁止使用 `active:scale-[0.98]` 或任何 scale（海报不会因为被触碰而缩放）",
     "禁止使用 `transition-all duration-*` 中任何非零延迟（必须 `transition-none` — 印刷颜色切换是瞬时的）",
     "禁止 hover 只改变文字颜色而不改变背景（Color Block Invasion 要求整块颜色翻转，不只是文字变色）",
+  ],
+
+  dontListEn: [
+    "Do not use decorative, script, or monospace fonts",
+    "Do not use rounded corners larger than rounded-sm",
+    "Do not use any shadows (shadow-sm and above)",
+    "Do not use gradients",
+    "Do not use dashed borders (border-dashed)",
+    "Do not use element spacing (gap-4, etc.) -- use gap-0 + borders",
+    "Do not use any `translate`, `scale`, or `rotate` animations (Absolute Objectivity -- Swiss Poster communicates through color and typography, not motion)",
+    "Do not use `active:scale-[0.98]` or any scale (posters do not shrink when touched)",
+    "Do not use any non-zero delay in `transition-all duration-*` (must use `transition-none` -- print color switching is instantaneous)",
+    "Do not change only text color on hover without changing background (Color Block Invasion requires full color block inversion, not just text color change)",
   ],
 
   components: {
@@ -249,6 +290,59 @@ Primary:
 - Snap Transitions: All state changes use \`transition-none\` — color flips are instantaneous, like ink stamped onto paper in a single press. Never use \`duration-100\` or any timed transition.
 - Color Block Invasion: Hover replaces the entire background with solid black \`hover:bg-[#000000]\` and text inverts to \`hover:text-[#ffffff] transition-none\`. The color block takes over completely — no partial fills, no gradients.
 - Typographic Highlighting: The year/category label activates to \`group-hover:text-[#ff0000] transition-none\` on hover — the red typographic accent fires like a stamp imprint, the only color note in a black-and-white composition.`,
+
+  aiRulesEn: `You are a Swiss Poster design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Decorative, script, or monospace fonts
+- Rounded corners larger than rounded-sm (use rounded-none)
+- Any shadows (shadow-sm, shadow-md, shadow-lg, etc.) - Swiss Poster has NO shadows
+- Gradients of any kind
+- Dashed borders (border-dashed) - use border-solid only
+- Element spacing/gaps (gap-4, gap-6) - use gap-0 with border dividers
+- Backdrop blur or glass effects
+- Decorative elements or embellishments
+
+## Must Follow
+
+- Black and white as primary palette: #000000, #ffffff
+- Accent color blocks: red #ff0000, blue #0057b8, yellow #ffcc00
+- Extra bold sans-serif: font-sans font-black
+- All uppercase: uppercase tracking-widest
+- Sharp edges: rounded-none everywhere
+- 12-column grid alignment: grid-cols-12 with asymmetric splits
+- Borders as dividers: border-2 border-[#000000]
+- Zero gaps: gap-0, elements butt against each other
+- Extreme type scale contrast (160px heading vs 10px label)
+- Non-symmetric layouts (3/9, 8/4 column splits)
+
+## Color Palette
+
+Primary:
+- Black: #000000 (text, borders, backgrounds)
+- White: #ffffff (backgrounds)
+- Red: #ff0000 (color blocks, hover states)
+- Blue: #0057b8 (color blocks)
+- Yellow: #ffcc00 (color blocks)
+
+## Special Elements
+
+- 12-column grid system with visible structural lines
+- Asymmetric column splits (not 6/6 - use 3/9, 8/4, etc.)
+- Color block backgrounds (full sections in red/blue/yellow)
+- Visible grid column markers
+- Extreme font size contrasts (160px vs 10px)
+- Edge-to-edge button groups (gap-0, border-l-0)
+- Vertical text using writing-mode: vertical-lr
+- Section borders as visual separators instead of spacing
+
+## Animation & Interaction Rules
+
+- Absolute Objectivity: Zero \`translate\`, \`scale\`, or \`shadow\` changes on any interactive element. Swiss Poster communicates through color and typography alone -- motion is visual noise that undermines the grid's authority.
+- Snap Transitions: All state changes use \`transition-none\` -- color flips are instantaneous, like ink stamped onto paper in a single press. Never use \`duration-100\` or any timed transition.
+- Color Block Invasion: Hover replaces the entire background with solid black \`hover:bg-[#000000]\` and text inverts to \`hover:text-[#ffffff] transition-none\`. The color block takes over completely -- no partial fills, no gradients.
+- Typographic Highlighting: The year/category label activates to \`group-hover:text-[#ff0000] transition-none\` on hover -- the red typographic accent fires like a stamp imprint, the only color note in a black-and-white composition.`,
 
   examplePrompts: [
     {

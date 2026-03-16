@@ -6,6 +6,8 @@ export const terracotta: DesignStyle = {
   nameEn: "Terracotta",
   description:
     "地中海赤陶与暖色大地的设计风格，温暖的陶土色调、粗糙手工质感和自然纹理。适合生活方式品牌、餐饮、旅行和手工艺品展示。",
+  descriptionEn:
+    "A Mediterranean terracotta and warm earth design style with warm clay tones, rough handcrafted textures, and natural patterns. Ideal for lifestyle brands, dining, travel, and artisan product showcases.",
   cover: "/styles/terracotta.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -26,6 +28,15 @@ export const terracotta: DesignStyle = {
 - 生命气息：橄榄绿（#8b9d77）作为植物色彩点缀，赋予设计生机
 - 朴素之美：拒绝过度装饰，让材质与色彩本身说话`,
 
+  philosophyEn: `Terracotta originates from the millennia-old pottery traditions of the Mediterranean coast, infusing the warm hues of fired earth into digital design.
+
+Core principles:
+- Warmth of earth: terracotta (#b5654a) as the primary color, conveying the warmth of clay tempered by flame
+- Handcrafted texture: rounded corners and soft shadows simulate the tactile feel of handmade goods
+- Natural harmony: cream white base with earth-tone accents, like sunlight falling on pottery
+- Breath of life: olive green (#8b9d77) as a botanical accent, giving the design vitality
+- Beauty of simplicity: rejecting over-decoration, letting materials and colors speak for themselves`,
+
   doList: [
     "使用温暖的奶油色背景 bg-[#faf5ef]",
     "用赤陶色作为主要强调色 text-[#b5654a]",
@@ -38,6 +49,18 @@ export const terracotta: DesignStyle = {
     "表单焦点边框使用赤陶或橄榄绿，避免冷色高亮外圈",
   ],
 
+  doListEn: [
+    "Use warm cream backgrounds bg-[#faf5ef]",
+    "Use terracotta as the primary accent color text-[#b5654a]",
+    "Rounded corners for handcrafted texture rounded-lg rounded-xl",
+    "Warm soft shadows shadow-md shadow-[#b5654a]/10",
+    "Natural comfortable spacing py-20 px-6",
+    "Use earth-tone gradient layers #d4a373 #7a6350",
+    "Add warm glow and steady transitions on interaction, simulating sun-baked clay warmth",
+    "Click feedback uses press-down displacement (active:translate-y) rather than elastic scaling",
+    "Form focus borders use terracotta or olive green, avoiding cold-color highlight rings",
+  ],
+
   dontList: [
     "禁止使用冷色调如蓝色、紫色 bg-blue-* bg-purple-*",
     "禁止使用尖锐的直角 rounded-none rounded-sm",
@@ -45,6 +68,15 @@ export const terracotta: DesignStyle = {
     "禁止使用厚重的纯黑色 text-black bg-black",
     "禁止使用 bounce/spring 等轻飘弹性动画",
     "禁止使用刺眼的冷色 focus ring",
+  ],
+
+  dontListEn: [
+    "Do not use cool tones like blue or purple bg-blue-* bg-purple-*",
+    "Do not use sharp right angles rounded-none rounded-sm",
+    "Do not use neon or high-saturation fluorescent colors",
+    "Do not use heavy pure black text-black bg-black",
+    "Do not use bounce/spring elastic animations",
+    "Do not use harsh cold-color focus rings",
   ],
 
   components: {
@@ -140,4 +172,19 @@ export const terracotta: DesignStyle = {
 - Clay Press: active 禁止弹性缩放，使用 translate-y 与 inset shadow 呈现坚硬材质下压阻力。
 - Handcrafted Slowness: 交互使用 duration-300 ease-out，避免现代感过强的弹跳反馈。
 - Earthy Focus: 表单 focus 以赤陶或橄榄绿边框强化状态，避免刺眼蓝色外圈。`,
+
+  aiRulesEn: `You are designing in Terracotta style inspired by Mediterranean clay craftsmanship.
+- Use warm earth tones: cream #faf5ef, terracotta #b5654a, sand #d4a373, earth #7a6350
+- Accent with olive green #8b9d77 for natural vitality
+- Rounded corners (rounded-lg, rounded-xl) to evoke handcrafted ceramics
+- Warm, soft shadows using terracotta-tinted shadow colors
+- Generous spacing for a relaxed, inviting feel
+- No cool blues, purples, or neon colors
+- No sharp corners or heavy black elements
+
+Animation & Interaction Rules:
+- Sun-Baked Glow: On hover, use warm glow and background deepening to simulate the warm radiance of sun-heated clay.
+- Clay Press: Active state forbids elastic scaling; use translate-y with inset shadow to convey hard material press-down resistance.
+- Handcrafted Slowness: Interactions use duration-300 ease-out, avoiding overly modern bouncy feedback.
+- Earthy Focus: Form focus uses terracotta or olive green borders to reinforce state, avoiding harsh blue rings.`,
 };

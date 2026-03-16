@@ -6,6 +6,8 @@ export const constructivism: DesignStyle = {
   nameEn: "Constructivism",
   description:
     "苏联构成主义海报风格，强烈的红黑配色、对角线构图、几何块面、宣传性排版。",
+  descriptionEn:
+    "Soviet Constructivist poster style with bold red-and-black color schemes, diagonal compositions, geometric planes, and agitprop typography.",
   cover: "/styles/constructivism.svg",
   styleType: "visual",
   tags: ["retro", "high-contrast"],
@@ -27,6 +29,16 @@ export const constructivism: DesignStyle = {
 
 在现代界面设计中，构成主义风格适合需要强烈视觉冲击的场景。倾斜的色块、硬边几何、大胆排版——这些元素让页面像一张革命海报，每个元素都在大声呼喊。`,
 
+  philosophyEn: `Constructivism originated from the Russian avant-garde art movement of the 1910s, reaching its peak in the Soviet Union during the 1920s-30s. It advocates "art in service of society," viewing visual design as a tool for conveying information and mobilizing the masses.
+
+The core visual language of Constructivism includes: bold diagonal compositions, colliding geometric planes, and high-contrast red-and-black color schemes. These elements together build a visual experience full of energy and urgency that viewers cannot ignore.
+
+Typography plays a key role in Constructivism. Text is not merely a content carrier but a compositional element. Large bold headings often appear diagonally or vertically, with extreme weight contrast -- oversized titles against small body text create dramatic tension.
+
+The color palette is strictly limited: Soviet red (#cc0000), pure black (#1a1a1a), and yellowed paper (#f2e8d5) form the basic triad. Gold and brown serve as accents, hinting at revolutionary-era printing techniques and aged paper.
+
+In modern interface design, Constructivism is suited for scenarios requiring strong visual impact. Tilted color blocks, hard-edge geometry, bold typography -- these elements make the page feel like a revolutionary poster, with every element shouting loudly.`,
+
   doList: [
     "使用红黑高对比配色 bg-[#cc0000] text-[#1a1a1a] 搭配泛黄底 bg-[#f2e8d5]",
     "使用对角线和倾斜元素 -rotate-6 rotate-3 skew-x-3",
@@ -38,6 +50,17 @@ export const constructivism: DesignStyle = {
     "利用 transform 和 rotate 制造动态对角线构图",
   ],
 
+  doListEn: [
+    "Use red-black high-contrast palette bg-[#cc0000] text-[#1a1a1a] with yellowed base bg-[#f2e8d5]",
+    "Use diagonals and tilted elements -rotate-6 rotate-3 skew-x-3",
+    "Use ultra-bold fonts font-black text-6xl uppercase for visual impact",
+    "Use sharp right angles rounded-none to maintain geometric hard edges",
+    "Use hard-edge shadows shadow-[4px_4px_0_#1a1a1a] to simulate printmaking effect",
+    "Maintain extreme font-weight contrast -- dramatic difference between large titles and small body text",
+    "Use border-4 border-[#1a1a1a] to emphasize block division",
+    "Leverage transform and rotate to create dynamic diagonal compositions",
+  ],
+
   dontList: [
     "禁止使用柔和圆角 rounded-lg rounded-xl rounded-full",
     "禁止使用柔和渐变 bg-gradient-to-r",
@@ -46,6 +69,16 @@ export const constructivism: DesignStyle = {
     "禁止使用柔和字重 font-light font-normal",
     "禁止使用大面积留白削弱紧迫感",
     "禁止使用曲线和有机形状",
+  ],
+
+  dontListEn: [
+    "Do not use soft rounded corners rounded-lg rounded-xl rounded-full",
+    "Do not use soft gradients bg-gradient-to-r",
+    "Do not use soft shadows shadow-sm shadow-md",
+    "Do not use more colors beyond the three-color system of red, black, and yellowed paper",
+    "Do not use soft font weights font-light font-normal font-medium",
+    "Do not use large whitespace that weakens urgency",
+    "Do not use curves and organic shapes",
   ],
 
   components: {
@@ -268,6 +301,36 @@ export const constructivism: DesignStyle = {
 3. active 配色翻转（红与黑双向切换），shadow-none
 4. 所有动画 duration-75/100 ease-linear
 5. 无任何圆角、柔和阴影、渐变`,
+
+  aiRulesEn: `You are a Constructivism design style frontend development expert. All generated code must strictly follow these constraints:
+
+Absolutely Forbidden:
+- Rounded corners rounded-lg rounded-xl rounded-full
+- Soft shadows shadow-sm shadow-md
+- Gradients bg-gradient-to-*
+- Soft font weights font-light font-normal font-medium
+- More than three-color system palette
+- Curves and organic shapes
+- Transitions longer than duration-100 (Constructivism is mechanical, not fluid)
+
+Must Follow:
+- Soviet red bg-[#cc0000] text-[#cc0000]
+- Pure black bg-[#1a1a1a] text-[#1a1a1a] border-[#1a1a1a]
+- Yellowed paper bg-[#f2e8d5]
+- Sharp right angles rounded-none
+- Hard-edge shadows shadow-[4px_4px_0_#1a1a1a] or shadow-[6px_6px_0_#1a1a1a]
+- Ultra-bold fonts font-black uppercase
+- Wide letter-spacing tracking-wider tracking-[0.2em] tracking-[0.3em]
+- Thick borders border-4 border-[#1a1a1a]
+- Diagonal elements -rotate-2 skew-x-3
+- Interactive buttons must use group wrapper for invasion block support
+
+Animation & Interaction Rules:
+- Block Invasion: Buttons must have an absolute inset-0 black overlay (bg-[#1a1a1a] or bg-[#cc0000]), initially -translate-x-full, group-hover:translate-x-0, using transition-transform duration-100 ease-linear to sweep across. Text sits in a relative z-10 span.
+- Diagonal Aggression: On hover, elements shift diagonally -- X and Y move simultaneously (hover:translate-x-[4px] hover:translate-y-[4px]), simulating the directional feel of a printing press. Shadow shrinks in sync (shadow-[6px] to shadow-[2px]).
+- Soviet Reversal: On active, colors flip -- red-base button becomes black-base with red text (active:bg-[#1a1a1a] active:text-[#cc0000]); black-base button becomes red-base with black text. Shadow snaps to zero (active:shadow-none).
+- Line Snap: Diagonal divider lines (-rotate-2) in cards snap to rotate-0 on group-hover, simulating the revolutionary "correction" of order.
+- Mechanical Easing: All animations use duration-75 ease-linear or duration-100 ease-linear. Strictly no ease-in-out or ease (too soft).`,
 
   examplePrompts: [
     {

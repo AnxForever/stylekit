@@ -6,6 +6,8 @@ export const softUI: DesignStyle = {
   nameEn: "Soft UI",
   description:
     "温和友好的界面风格，柔和的阴影、圆润的边角、低饱和度的配色。适合消费类应用、社交产品、生活服务类 App。",
+  descriptionEn:
+    "Gentle and friendly interface style with soft shadows, rounded corners, and low-saturation colors. Ideal for consumer apps, social products, and lifestyle service apps.",
   cover: "/styles/soft-ui.svg",
   styleType: "visual",
   tags: ["modern", "minimal"],
@@ -25,6 +27,14 @@ export const softUI: DesignStyle = {
 - 触感设计：让界面元素看起来可以触摸
 - 情感连接：通过设计传达温暖和关怀`,
 
+  philosophyEn: `Soft UI design style emphasizes a friendly, approachable, and comfortable visual experience that makes users feel relaxed and delighted.
+
+Core principles:
+- Warm and friendly: Convey approachability through soft shadows and rounded corners
+- Low contrast: Avoid strong contrasts, use gentle color transitions
+- Tactile design: Make interface elements look touchable
+- Emotional connection: Convey warmth and care through design`,
+
   doList: [
     "使用 rounded-2xl 或 rounded-3xl 作为主要圆角",
     "使用 shadow-lg 或 shadow-xl 配合透明度 shadow-[accent]/20",
@@ -35,6 +45,16 @@ export const softUI: DesignStyle = {
     "图标使用圆形背景 rounded-full bg-[color]/10",
   ],
 
+  doListEn: [
+    "Use rounded-2xl or rounded-3xl as primary border radius",
+    "Use shadow-lg or shadow-xl with transparency shadow-[accent]/20",
+    "Backgrounds use light tones bg-slate-50, bg-gray-50",
+    "Use low-saturation primary colors",
+    "Buttons use hover:shadow-xl hover:-translate-y-0.5 floating effect",
+    "Generous spacing between cards gap-6 or gap-8",
+    "Icons use circular backgrounds rounded-full bg-[color]/10",
+  ],
+
   dontList: [
     "禁止使用尖锐边角 rounded-none",
     "禁止使用纯黑色 #000000",
@@ -42,6 +62,15 @@ export const softUI: DesignStyle = {
     "禁止使用硬边框 border-black",
     "禁止使用硬阴影（无模糊的阴影）",
     "禁止元素间距过于紧凑",
+  ],
+
+  dontListEn: [
+    "Do not use sharp corners rounded-none",
+    "Do not use pure black #000000",
+    "Do not use high-saturation pure colors",
+    "Do not use hard borders border-black",
+    "Do not use hard shadows (shadows without blur)",
+    "Do not use tight element spacing",
   ],
 
   components: {
@@ -141,6 +170,43 @@ SPACING:
 - Pillow Press: active 状态用轻微缩放和内阴影，呈现按入枕面的柔软反馈。
 - Friendly Viscosity: 交互节奏推荐 duration-300 和 ease-in-out，避免突兀速度变化。
 - Halo Focus: 表单 focus 使用大半径低不透明度 ring 与柔光阴影，不依赖硬边框。`,
+
+  aiRulesEn: `STYLE: Soft UI
+TYPE: Friendly, approachable interface design
+
+MUST USE:
+- rounded-2xl or rounded-3xl for all components
+- shadow-lg with color tint: shadow-[color]/20
+- Soft backgrounds: bg-slate-50, bg-gray-50
+- Hover lift effect: hover:-translate-y-0.5 hover:shadow-xl
+- Low saturation primary colors
+- Circular icon backgrounds: rounded-full bg-[color]/10
+
+MUST AVOID:
+- Sharp corners (rounded-none, rounded-sm)
+- Pure black (#000000)
+- High saturation pure colors
+- Hard borders (border-black, border-2)
+- Hard shadows (no blur)
+- Tight spacing
+
+COLOR RULES:
+- Primary: Indigo/Purple tones (indigo-500)
+- Background: Slate/Gray soft (slate-50, gray-50)
+- Text: Gray-800 for headings, gray-500 for body
+- Shadows: Always with color tint and opacity
+
+SPACING:
+- Card padding: p-6 md:p-8
+- Section padding: py-16 md:py-24
+- Gap: gap-6 md:gap-8
+
+## Animation & Interaction Rules
+
+- Cloud Float: Hover primarily uses lift with shadow spread, shadows stay colored and soft, avoid dirty gray hard shadows.
+- Pillow Press: Active state uses slight scale and inner shadow, presenting a soft pillow-press feedback.
+- Friendly Viscosity: Interaction rhythm recommends duration-300 and ease-in-out, avoiding abrupt speed changes.
+- Halo Focus: Form focus uses large-radius low-opacity ring with soft glow shadow, not relying on hard borders.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const neonTokyo: DesignStyle = {
   nameEn: "Neon Tokyo",
   description:
     "东京歌舞伎町霓虹夜景风格，湿润的街道倒影、叠层霓虹招牌、赛博朋克城市夜色。不同于cyberpunk-neon的科幻感，更偏向真实都市夜景。",
+  descriptionEn:
+    "Tokyo Kabukicho neon nightscape style with rain-slicked street reflections, layered neon signage, and cyberpunk urban night vibes. Unlike cyberpunk-neon's sci-fi feel, this leans toward authentic urban nightscapes.",
   cover: "/styles/neon-tokyo.svg",
   styleType: "visual",
   tags: ["modern", "high-contrast"],
@@ -29,6 +31,18 @@ export const neonTokyo: DesignStyle = {
 
 适合场景：夜生活应用、音乐流媒体、潮流品牌、城市摄影作品集、日式居酒屋菜单。`,
 
+  philosophyEn: `Neon Tokyo draws inspiration from the neon nightscapes of Tokyo's Kabukicho, Shinjuku, and Shibuya. Unlike Cyberpunk Neon's sci-fi futurism, this style is closer to authentic urban nightscapes -- rain-soaked streets reflecting layered neon signs, warm and cool colors intertwining on wet asphalt.
+
+Core concepts:
+- Urban nightscape: A near-black deep blue-gray base simulating Tokyo's late-night city skyline
+- Neon signage: Multi-color neon lights layered together, with pink, cyan, orange, and purple flickering in alternation
+- Wet reflections: Elements carry a subtle reflective quality, like neon reflections on rain-slicked streets
+- Layered depth: Bright foreground and dark background, simulating the visual depth of city alleyways
+
+The key difference from Cyberpunk Neon: Neon Tokyo is warmer, more organic, and closer to real photography aesthetics. It does not pursue cold technological vibes but instead captures the lonely romance of a late-night wanderer in a neon jungle.
+
+Suitable for: nightlife apps, music streaming, streetwear brands, urban photography portfolios, Japanese izakaya menus.`,
+
   doList: [
     "背景使用深夜蓝黑 bg-[#0a0a1a] 或 bg-gradient-to-b from-[#0a0a1a] to-[#12041e]",
     "霓虹粉色文字 text-[#ff1493] 搭配发光 [text-shadow:0_0_10px_rgba(255,20,147,0.6)]",
@@ -40,6 +54,17 @@ export const neonTokyo: DesignStyle = {
     "使用 box-shadow 多层叠加模拟霓虹灯管的光晕扩散",
   ],
 
+  doListEn: [
+    "Use deep night blue-black background bg-[#0a0a1a] or bg-gradient-to-b from-[#0a0a1a] to-[#12041e]",
+    "Neon pink text text-[#ff1493] with glow [text-shadow:0_0_10px_rgba(255,20,147,0.6)]",
+    "Alternate multi-color neon borders border-[#ff1493], border-[#00f0ff], border-[#ff6b00]",
+    "Enhance neon glow on hover hover:shadow-[0_0_30px_rgba(255,20,147,0.5)]",
+    "Use sans-serif bold fonts paired with Japanese kana decorative elements",
+    "Add semi-transparent card backgrounds bg-[#0a0a1a]/80 backdrop-blur-md to simulate glass reflections",
+    "Gradient text effect bg-gradient-to-r from-[#ff1493] to-[#00f0ff] bg-clip-text text-transparent",
+    "Use multi-layered box-shadow to simulate neon tube glow diffusion",
+  ],
+
   dontList: [
     "禁止使用白色或浅色背景",
     "禁止使用低饱和度、灰暗的颜色",
@@ -48,6 +73,16 @@ export const neonTokyo: DesignStyle = {
     "禁止使用衬线字体（除非作为日式装饰元素）",
     "禁止使用过于规整、企业化的布局",
     "禁止使用单一颜色的霓虹（必须多色交织）",
+  ],
+
+  dontListEn: [
+    "Do not use white or light backgrounds",
+    "Do not use low-saturation, dull colors",
+    "Do not use regular shadows shadow-md (must be colored glow shadows)",
+    "Do not use soft gradients (such as soft pink, pale blue)",
+    "Do not use serif fonts (except as Japanese decorative elements)",
+    "Do not use overly neat, corporate layouts",
+    "Do not use single-color neon (must be multi-color interweaving)",
   ],
 
   components: {
@@ -193,6 +228,49 @@ DIFFERENCE FROM CYBERPUNK-NEON:
 - Signboard Flicker: primary neon headings can use subtle irregular flicker to mimic aging street signage.
 - Bleeding Glows: hover state should expand pink/cyan/orange glow layers simultaneously so light bleeds at the edges.
 - Damp Atmosphere: transitions stay smooth (duration-300 to 500) to preserve wet-night ambience rather than sharp arcade motion.`,
+
+  aiRulesEn: `STYLE: Neon Tokyo
+TYPE: Urban nightscape interface
+
+MUST USE:
+- Dark night sky background: bg-[#0a0a1a]
+- Multi-color neon glows (not single-color)
+- Primary pink: text-[#ff1493], border-[#ff1493]
+- Cyan accent: text-[#00f0ff]
+- Warm neon: text-[#ff6b00]
+- Purple neon: text-[#bc13fe]
+- Glow shadows with color: shadow-[0_0_20px_rgba(255,20,147,0.5)]
+- backdrop-blur for glass/reflection effect
+- font-bold uppercase tracking-wider for labels
+- rounded-sm for subtle edge softness
+
+MUST AVOID:
+- Light/white backgrounds
+- Low saturation or muted colors
+- Regular shadows (shadow-md)
+- Serif fonts (except for Japanese decorative text)
+- Single-color neon palettes
+- Corporate or overly clean layouts
+
+COLOR RULES:
+- Neon Pink: #ff1493 (primary)
+- Night Sky: #0a0a1a (background)
+- Cyan Neon: #00f0ff
+- Warm Neon: #ff6b00
+- Purple Neon: #bc13fe
+
+DIFFERENCE FROM CYBERPUNK-NEON:
+- Warmer, more organic feel
+- Multi-color neon mixing (not cyan-dominant)
+- Street photography aesthetic, not sci-fi
+- Wet reflections, not scan lines
+
+## Animation & Interaction Rules
+
+- Rain-Slicked Reflections: Bottom reflection gradients should intensify on hover with higher opacity and mixed-color refraction.
+- Signboard Flicker: Primary neon headings can use subtle irregular flicker to mimic aging street signage.
+- Bleeding Glows: Hover state should expand pink/cyan/orange glow layers simultaneously so light bleeds at the edges.
+- Damp Atmosphere: Transitions stay smooth (duration-300 to 500) to preserve wet-night ambience rather than sharp arcade motion.`,
 
   examplePrompts: [
     {

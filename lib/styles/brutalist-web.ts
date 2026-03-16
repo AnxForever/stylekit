@@ -6,6 +6,8 @@ export const brutalistWeb: DesignStyle = {
   nameEn: "Brutalist Web",
   description:
     "回归90年代早期互联网的原始HTML美学，系统字体、蓝色下划线链接、纯白背景、无装饰，内容优先于形式。",
+  descriptionEn:
+    "A return to the raw HTML aesthetics of the early 90s internet, with system fonts, blue underlined links, pure white backgrounds, and zero decoration -- content over form.",
   cover: "/styles/brutalist-web.svg",
   styleType: "visual",
   tags: ["retro", "minimal"],
@@ -41,6 +43,20 @@ Core principles:
 - Minimal or zero padding - content touches edges
 - No visual hierarchy tricks - the document structure IS the hierarchy`,
 
+  philosophyEn: `Brutalist Web embraces the raw aesthetics of the early 1990s internet. Content is king; decoration is irrelevant.
+
+Core principles:
+- Content over decoration - every element serves an informational purpose
+- System fonts and monospace stacks - no custom web fonts needed
+- Unstyled HTML feel - as if CSS barely exists
+- Intentional lo-fi appearance - the roughness is the design
+- Blue underlined links, purple visited links - classic browser defaults
+- Times New Roman or Georgia for headings, system sans-serif or monospace for body
+- Pure white backgrounds with black text - maximum readability
+- Thin 1px borders only - no thick borders, no decorative frames
+- Minimal or zero padding - content touches edges
+- No visual hierarchy tricks - the document structure IS the hierarchy`,
+
   doList: [
     "Use pure white (#ffffff) backgrounds for all sections",
     "Use system font stacks: font-mono or system-ui, sans-serif for body text",
@@ -56,6 +72,21 @@ Core principles:
     "输入框聚焦时用 focus:bg-[#ffffcc] 黄色高亮，模拟90年代浏览器选中感",
   ],
 
+  doListEn: [
+    "Use pure white (#ffffff) backgrounds for all sections",
+    "Use system font stacks: font-mono or system-ui, sans-serif for body text",
+    "Use Times New Roman or Georgia (font-serif) for headings",
+    "Use blue (#0000ff) underlined links as the primary interactive element",
+    "Use thin 1px solid borders for structural separation",
+    "Use no border-radius anywhere (border-radius: 0 or rounded-none)",
+    "Keep layout linear and document-like - single column preferred",
+    "Use minimal spacing - tight margins and padding",
+    "Let HTML structure define visual hierarchy (h1 > h2 > h3 > p)",
+    "Use plain black (#000000) text on white background",
+    "Buttons use transition-none for zero-delay state switching",
+    "Input focus uses focus:bg-[#ffffcc] yellow highlight, simulating 90s browser selection feel",
+  ],
+
   dontList: [
     "Don't use rounded corners of any kind",
     "Don't use box shadows or text shadows",
@@ -67,6 +98,19 @@ Core principles:
     "Don't use large padding or excessive whitespace",
     "Don't use card-based layouts with visual embellishment",
     "Don't use focus:ring — use focus:outline-dotted instead",
+  ],
+
+  dontListEn: [
+    "Don't use rounded corners of any kind",
+    "Don't use box shadows or text shadows",
+    "Don't use gradients or background images",
+    "Don't use CSS animations or transitions of any kind (transition-none is the rule)",
+    "Don't use hover effects beyond underline or color changes",
+    "Don't use custom web fonts or icon fonts",
+    "Don't use background colors other than white",
+    "Don't use large padding or excessive whitespace",
+    "Don't use card-based layouts with visual embellishment",
+    "Don't use focus:ring -- use focus:outline-dotted instead",
   ],
 
   components: {
@@ -317,6 +361,37 @@ th, td {
 ## Visual References
 
 Think of: early Craigslist, academic personal homepages, W3C specification pages, plain HTML with minimal CSS. The page should look like it was made in Notepad and uploaded via FTP.`,
+
+  aiRulesEn: `You are a Brutalist Web style frontend development expert. All generated code must recreate the raw, unstyled feel of 1990s early internet HTML pages.
+
+Absolutely Forbidden:
+- Rounded corners of any kind
+- Box shadows or text shadows of any kind
+- Gradients of any kind (backgrounds must be flat white)
+- CSS animations, transitions, or transforms -- use transition-none everywhere
+- Hover effects beyond underline or color changes
+- Custom web fonts or icon fonts (system fonts only)
+- Background colors other than white or #dfdfdf (system silver)
+- Thick borders (max 2px for bevel effect, else 1px)
+- Large padding or spacing that feels "designed"
+- Card-style layouts with decorative embellishment
+- focus:ring-* (use focus:outline-dotted instead)
+
+Must Follow:
+- Backgrounds: Pure white (#ffffff) everywhere, #dfdfdf for system UI elements
+- Text: Black (#000000) only, no gray shades
+- Links: Blue (#0000ff) underlined, visited links purple (#551a8b), hover red (#ff0000)
+- Borders: 1px solid black for content; 2px bevel for buttons
+- Border-radius: ALWAYS 0, never round anything
+- Headings: Times New Roman or Georgia (font-serif), bold
+- Body text: System monospace or sans-serif font stack
+- Layout: Linear, document-flow, single-column preferred
+
+Animation & Interaction Rules:
+- Zero Transition: ALL state changes must be instant. Always add transition-none. Hover, active, focus state switches happen at 0ms.
+- Native Button Bevel: Buttons use Windows 95 raised border illusion. On :active, reverse the bevel. No shadow, no scale, no translate.
+- Raw Focus: Never use focus:ring. Use focus:outline-dotted. For inputs, add focus:bg-[#ffffcc] for 90s yellow highlight.
+- Link Hover: Only color change (blue to red) and existing underline. No other effects.`,
 
   examplePrompts: [
     {

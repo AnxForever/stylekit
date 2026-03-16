@@ -6,6 +6,8 @@ export const claymorphism: DesignStyle = {
   nameEn: "Claymorphism",
   description:
     "柔软的粘土质感设计，通过超大圆角、内外阴影组合和柔和渐变，创造出可爱的 3D 立体效果，适合儿童应用和趣味产品。",
+  descriptionEn:
+    "A soft clay-textured design that creates adorable 3D effects through extra-large border radii, combined inner and outer shadows, and gentle gradients, ideal for children's apps and playful products.",
   cover: "/styles/claymorphism.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -26,6 +28,15 @@ export const claymorphism: DesignStyle = {
 - 触感：设计元素看起来像可以触摸和捏揉
 - Q弹物理：按压时发生挤压形变，松开后弹性回弹`,
 
+  philosophyEn: `Claymorphism is a UI design style that simulates the texture of clay or plasticine, creating soft, adorable 3D effects through extra-large border radii, combined inner and outer shadows, and gentle gradient colors.
+
+Core principles:
+- Softness: Extra-large radii and gentle shadows create a squishy texture
+- Dimensionality: Inner shadow + outer shadow combination simulates 3D effects
+- Playfulness: Candy color palette and rounded shapes convey joyful emotions
+- Tactility: Design elements look touchable and squeezable
+- Bouncy physics: Squash deformation on press, elastic bounce-back on release`,
+
   doList: [
     "使用超大圆角 rounded-3xl 或 rounded-full",
     "组合内阴影和外阴影创造立体感",
@@ -38,6 +49,18 @@ export const claymorphism: DesignStyle = {
     "按压时加深内阴影、减小外阴影，模拟凹陷",
   ],
 
+  doListEn: [
+    "Use extra-large border radii rounded-3xl or rounded-full",
+    "Combine inner and outer shadows to create dimensionality",
+    "Use soft candy color palette",
+    "Add subtle gradient backgrounds to simulate lighting",
+    "Maintain sufficient spacing between elements",
+    "Use rounded icons and fonts",
+    "Use Squash & Stretch on press: active:scale-x-105 active:scale-y-90",
+    "Use spring easing ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-300",
+    "Deepen inner shadow and reduce outer shadow on press to simulate indentation",
+  ],
+
   dontList: [
     "禁止使用尖锐的直角 rounded-none",
     "禁止使用硬边缘阴影 shadow-[Xpx_Xpx_0px]",
@@ -46,6 +69,16 @@ export const claymorphism: DesignStyle = {
     "禁止元素过于拥挤",
     "禁止使用单纯的 translate-y 代替真实的形变物理",
     "禁止使用线性 ease 或 ease-in-out（无弹性感）",
+  ],
+
+  dontListEn: [
+    "Do NOT use sharp corners rounded-none",
+    "Do NOT use hard-edge shadows shadow-[Xpx_Xpx_0px]",
+    "Do NOT use high-contrast dark color schemes",
+    "Do NOT use overly complex gradients",
+    "Do NOT overcrowd elements",
+    "Do NOT use plain translate-y instead of real deformation physics",
+    "Do NOT use linear ease or ease-in-out (lacks bounciness)",
   ],
 
   components: {
@@ -282,6 +315,61 @@ shadow-[2px_2px_4px_rgba(0,0,0,0.05),inset_8px_8px_16px_rgba(0,0,0,0.15),inset_-
 3. 使用柔和的渐变色
 4. 按压时有 scale-x-105 scale-y-90 形变
 5. 使用弹簧缓动而非线性缓动`,
+
+  aiRulesEn: `You are a Claymorphism design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using sharp corners rounded-none or small radii rounded-sm
+- Using hard-edge shadows shadow-[Xpx_Xpx_0px]
+- Using high-contrast dark color schemes
+- Using pure black text text-black
+- Omitting inner shadow effects
+- Using plain translation instead of deformation physics (cannot only use translate-y)
+- Using linear easing (must use spring easing)
+
+## Must Follow
+
+- Extra-large radii rounded-3xl, rounded-[32px], rounded-full
+- Combined shadows: outer shadow + inner highlight + inner shadow
+- Soft gradient backgrounds bg-gradient-to-b, bg-gradient-to-br
+- Candy color palette (pink, yellow, green, purple, orange)
+
+## Animation & Interaction Rules
+
+- Squishy Physics: On click (:active) use Squash & Stretch deformation -- active:scale-x-105 active:scale-y-90, simulating clay being pressed and deformed.
+- Deep Impression: On press, significantly increase inner shadow (inset shadow from 4px to 8px) while reducing outer shadow, simulating a finger pressing clay inward.
+- Bouncy Easing: Must use spring easing ease-[cubic-bezier(0.34,1.56,0.64,1)] with duration-300, giving elements an elastic bounce-back feel on release.
+- Floating Hover: On hover, float up -translate-y-1 with slightly expanded outer shadow, expressing the element being gently lifted.
+
+## Color Palette
+
+Primary colors:
+- Pink: from-pink-300 to-pink-400, text-pink-600
+- Cream: from-amber-100 to-amber-200, text-amber-700
+- Mint: from-green-200 to-green-300, text-green-700
+- Lavender: from-purple-200 to-purple-300, text-purple-700
+- Lemon: from-yellow-200 to-yellow-300, text-yellow-700
+
+## Shadow Formula
+
+Raised elements (buttons, cards):
+shadow-[8px_8px_16px_rgba(0,0,0,0.08),inset_4px_4px_8px_rgba(255,255,255,0.6),inset_-2px_-2px_4px_rgba(0,0,0,0.08)]
+
+Inset elements (inputs):
+shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
+
+Pressed state (active):
+shadow-[2px_2px_4px_rgba(0,0,0,0.05),inset_8px_8px_16px_rgba(0,0,0,0.15),inset_-4px_-4px_8px_rgba(255,255,255,0.5)]
+
+## Self-Check
+
+After generating code, verify:
+1. Border radii are large enough (at least rounded-2xl)
+2. Has combined inner and outer shadows
+3. Uses soft gradient colors
+4. Has scale-x-105 scale-y-90 deformation on press
+5. Uses spring easing instead of linear easing`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const cyberAnime: DesignStyle = {
   nameEn: "Cyber Anime",
   description:
     "融合赛博朋克科幻UI与动漫美学，以HUD抬头显示、全息投影面板、机甲边框和多层霓虹光效，打造未来感十足的动漫界面风格。",
+  descriptionEn:
+    "Fusing cyberpunk sci-fi UI with anime aesthetics, featuring HUD overlays, holographic projection panels, mecha-frame borders, and multi-layer neon glow effects for a futuristic anime interface style.",
   cover: "/styles/cyber-anime.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -27,6 +29,16 @@ Core principles:
 - Neural Data Streams: Monospace text readouts, status indicators, and data visualization patterns fill negative space
 - Hexagonal Grid: The background grid uses hexagons, not squares, referencing sci-fi energy field patterns`,
 
+  philosophyEn: `Cyber Anime fuses cyberpunk HUD interfaces with anime's expressive power. Every panel is a data terminal, every border a mecha frame.
+
+Core principles:
+- HUD Overlay: Corner frame decorations, targeting brackets, and data readout overlays create the feel of piloting a mecha cockpit
+- Holographic Panels: Vertical scan line textures layered over glassmorphic surfaces simulate flickering holographic displays
+- Mecha Borders: Angled clip-path corners on panels reference mechanical armor plating and cockpit instrument frames
+- Multi-layer Neon: Purple, cyan, and pink neon glows stack in multiple layers for depth - never a single flat glow
+- Neural Data Streams: Monospace text readouts, status indicators, and data visualization patterns fill negative space
+- Hexagonal Grid: The background grid uses hexagons, not squares, referencing sci-fi energy field patterns`,
+
   doList: [
     "Use HUD corner frame decorations on major containers (angled bracket corners)",
     "Layer vertical scan line overlays on holographic panels",
@@ -38,7 +50,28 @@ Core principles:
     "Use cockpit-like micro interactions: fast hover lift, active press, and glow amplification within 180-280ms",
   ],
 
+  doListEn: [
+    "Use HUD corner frame decorations on major containers (angled bracket corners)",
+    "Layer vertical scan line overlays on holographic panels",
+    "Apply multi-layer neon glow (2-3 shadow layers with decreasing opacity)",
+    "Use mecha-style angled corners via clip-path on panel borders",
+    "Include terminal/data readout style text with monospace font",
+    "Use hexagonal grid background pattern instead of square grid",
+    "Keep all backgrounds dark (#0f0f1a) with semi-transparent overlays",
+    "Use cockpit-like micro interactions: fast hover lift, active press, and glow amplification within 180-280ms",
+  ],
+
   dontList: [
+    "Never use soft pastel colors or natural organic tones",
+    "Never use serif fonts - only geometric sans-serif or monospace",
+    "Never use rounded-full - all shapes must be angular/geometric",
+    "Never use light or white backgrounds as primary surfaces",
+    "Never use standard shadow-sm/md/lg - only neon glow shadows",
+    "Never use bouncy spring animations or playful elastic motion",
+    "Never use slow cinematic transitions over 400ms for controls",
+  ],
+
+  dontListEn: [
     "Never use soft pastel colors or natural organic tones",
     "Never use serif fonts - only geometric sans-serif or monospace",
     "Never use rounded-full - all shapes must be angular/geometric",
@@ -227,6 +260,56 @@ Core principles:
 }`,
 
   aiRules: `You are a Cyber Anime design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Soft pastel colors (no light pink, baby blue, etc.)
+- Serif fonts of any kind
+- Natural organic colors (brown, beige, olive, etc.)
+- rounded-full on buttons or containers
+- White or light backgrounds as primary surfaces
+- Standard shadow-sm/md/lg (only neon glow shadows)
+
+## Must Follow
+
+- Dark background: bg-[#0f0f1a] as primary surface
+- Primary purple: #7c3aed for key elements with multi-layer glow
+- Cyan-green accent: #06d6a0 for highlights, borders, and HUD frames
+- Hot pink accent: #ff006e for alerts and emphasis
+- HUD corner frame decorations on major containers
+- Vertical scan line overlay on holographic panels
+- Mecha-style angled corners via clip-path on cards and panels
+- Monospace terminal text for data readouts
+- Hexagonal grid background pattern
+- Multi-layer neon glow: shadow-[0_0_Xpx_rgba(...),0_0_Ypx_rgba(...)]
+
+## Animation & Interaction Rules
+
+- Motion must feel like cockpit controls: quick and precise, usually 160-280ms with ease-out
+- Hover states should amplify HUD feedback through slight lift (1-2px), stronger neon glow, and brighter bracket borders
+- Active states should feel tactile: brief press-down (1-2px or scale to 0.97-0.99) with compressed glow
+- Use directional holographic sweeps or scan pulses triggered by hover/focus; keep them short and state-based
+- Avoid bouncy spring motion, long cinematic fades, or decorative animations that reduce data legibility
+
+## Color Palette
+
+Primary:
+- Deep Purple: #7c3aed
+- Dark Background: #0f0f1a
+- Cyan-Green: #06d6a0
+- Hot Pink: #ff006e
+- Sky Blue: #38bdf8
+- Light Text: #e0e0ff
+
+## Unique Elements
+
+- HUD corner frame decorations (bracket-style corners)
+- Holographic vertical scan line texture overlays
+- Mecha-style angular clip-path panel borders
+- Neural network data visualization patterns
+- Terminal-style data readout text blocks`,
+
+  aiRulesEn: `You are a Cyber Anime design style frontend development expert. All generated code must strictly follow these constraints:
 
 ## Absolutely Forbidden
 

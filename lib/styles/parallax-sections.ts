@@ -6,6 +6,8 @@ export const parallaxSections: DesignStyle = {
   nameEn: "Parallax Sections",
   description:
     "通过固定背景和滚动内容创造深度视差效果的沉浸式布局，每个全屏区块都有独立的背景层，适合品牌故事、产品展示和沉浸式体验页面。",
+  descriptionEn:
+    "An immersive layout creating depth parallax effects through fixed backgrounds and scrolling content, with each full-screen section having its own background layer. Ideal for brand stories, product showcases, and immersive experience pages.",
   cover: "/styles/parallax-sections.svg",
   styleType: "layout",
   tags: ["modern", "expressive", "responsive"],
@@ -26,6 +28,14 @@ export const parallaxSections: DesignStyle = {
 - 节奏控制：通过全屏区块控制用户的浏览节奏
 - 视觉焦点：每个区块突出一个主要信息点`,
 
+  philosophyEn: `Parallax Sections creates depth through differential scrolling speeds between background and foreground, letting users experience a layered visual journey while scrolling.
+
+Core principles:
+- Depth layering: Fixed backgrounds with scrolling content create a three-dimensional spatial feel
+- Immersive experience: Each section stands as its own scene, like flipping through a picture book
+- Rhythm control: Full-screen sections control the user's browsing pace
+- Visual focus: Each section highlights one primary information point`,
+
   doList: [
     "使用 bg-fixed 创造固定背景视差效果",
     "每个区块使用 min-h-screen 全屏高度",
@@ -38,6 +48,18 @@ export const parallaxSections: DesignStyle = {
     "统一使用较长缓动 duration-500/700 营造电影式叙事节奏",
   ],
 
+  doListEn: [
+    "Use bg-fixed to create fixed background parallax effect",
+    "Each section uses min-h-screen full-screen height",
+    "Content areas use semi-transparent backgrounds bg-white/90 for readability",
+    "Use sticky top-0 for sticky scroll effects",
+    "Background images use bg-cover bg-center to maintain proportions",
+    "Transition sections use gradient or blur effects",
+    "Interactions prioritize opacity and blur changes to express depth of field, avoiding large displacement animations that cause dizziness",
+    "Cards can add slow sweep light layers (Glass Glare) to enhance lens reflection feel",
+    "Uniformly use longer easing duration-500/700 for cinematic narrative rhythm",
+  ],
+
   dontList: [
     "禁止背景图片和内容对比度不足",
     "禁止区块高度不一致破坏节奏",
@@ -46,6 +68,16 @@ export const parallaxSections: DesignStyle = {
     "禁止内容过于密集破坏焦点",
     "禁止卡片 hover 大幅上下跳动（背景已有位移，前景应克制）",
     "禁止短促急促动画（会破坏沉浸叙事）",
+  ],
+
+  dontListEn: [
+    "No insufficient contrast between background images and content",
+    "No inconsistent section heights that break rhythm",
+    "No excessive parallax layers causing performance issues",
+    "No ignoring mobile parallax degradation handling",
+    "No overly dense content that breaks focus",
+    "No large vertical card hover jumps (background already has displacement, foreground should be restrained)",
+    "No short, abrupt animations (would break immersive narrative)",
   ],
 
   components: {
@@ -182,4 +214,23 @@ export const parallaxSections: DesignStyle = {
 - Glass Glare: 可使用渐变扫光层在 hover 时缓慢浮现，模拟镜头反光。
 - Cinematic Slowness: 交互节奏使用 duration-500 到 700，保持叙事连贯和沉浸感。
 - Immersive Focus: active 反馈优先背景明暗变化，避免明显缩放破坏排版稳定。`,
+
+  aiRulesEn: `You are a Parallax Sections layout expert. Generated code must follow:
+
+## Layout Rules
+- Each section uses min-h-screen full-screen height
+- Backgrounds use bg-fixed bg-cover bg-center
+- Content uses semi-transparent backgrounds (bg-white/90 or bg-black/40 depending on scene) with backdrop-blur
+- Navigation uses fixed + backdrop-blur-lg
+
+## Forbidden
+- Using bg-scroll (breaks parallax effect)
+- Inconsistent section heights
+- Insufficient contrast between background and content
+
+## Animation & Interaction Rules
+- Decoupled Depth: Foreground cards avoid large Y-axis floating, prioritize opacity and blur to reinforce depth of field feedback.
+- Glass Glare: Can use gradient sweep layers that slowly appear on hover, simulating lens reflection.
+- Cinematic Slowness: Interaction rhythm uses duration-500 to 700, maintaining narrative continuity and immersion.
+- Immersive Focus: Active feedback prioritizes background brightness changes, avoiding obvious scaling that breaks layout stability.`,
 };

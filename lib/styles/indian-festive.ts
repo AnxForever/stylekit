@@ -6,6 +6,8 @@ export const indianFestive: DesignStyle = {
   nameEn: "Indian Festive",
   description:
     "印度排灯节与色彩节的绚丽美学，丰富的金色装饰、宝石色调、曼荼罗纹饰。适合庆典、活动、生活方式品牌。",
+  descriptionEn:
+    "The dazzling aesthetics of Indian Diwali and Holi festivals, with rich gold ornamentation, jewel-tone palettes, and mandala motifs. Ideal for celebrations, events, and lifestyle brands.",
   cover: "/styles/indian-festive.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -29,6 +31,18 @@ export const indianFestive: DesignStyle = {
 
 适用场景包括庆典活动页面、生活方式品牌、文化教育平台以及任何需要传达热情、多元与丰饶感的数字产品。`,
 
+  philosophyEn: `Indian Festive draws from the dazzling visual language of Diwali (Festival of Lights) and Holi (Festival of Colors), transforming thousands of years of South Asian color traditions into modern digital interfaces.
+
+Core concepts:
+- Dazzling exuberance: Bold use of high-saturation jewel tones -- vermillion, saffron orange, royal purple, peacock teal -- expressing the fervor and vitality of festivals
+- Gold ornamentation: Gold lines, borders, and glows are the soul of Indian decorative arts, representing the sacred and prosperity
+- Mandala motifs: Symmetrical geometric floral patterns serve as both meditative vehicles and visual hierarchy builders
+- Light and hope: Diwali is the "festival of lights," with warm radiance permeating every interactive detail
+
+In design expression, Indian Festive style does not hold back on layering and clashing colors. Unlike Western minimalism's restraint, it embraces richness, layering, and decorativeness, treating every interface element as a visual celebration.
+
+Suitable for celebration event pages, lifestyle brands, cultural education platforms, and any digital product needing to convey passion, diversity, and abundance.`,
+
   doList: [
     "使用朱红 bg-[#e63946] 和藏红花橙 bg-[#ff9f1c] 作为主要强调色",
     "大量使用金色 text-[#d4af37] 和 border-[#d4af37] 做装饰线和光晕",
@@ -45,6 +59,22 @@ export const indianFestive: DesignStyle = {
     "focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#fff8e7]",
   ],
 
+  doListEn: [
+    "Use vermillion bg-[#e63946] and saffron orange bg-[#ff9f1c] as primary accent colors",
+    "Generously use gold text-[#d4af37] and border-[#d4af37] for decorative lines and glows",
+    "Use warm ivory bg-[#fff8e7] as the base background",
+    "Use royal purple text-[#7b2d8e] and peacock teal text-[#2a9d8f] as supporting colors",
+    "Components use medium rounded corners rounded-xl for a soft festive atmosphere",
+    "Add gold box-shadow glow effects shadow-[0_0_20px_rgba(212,175,55,0.3)]",
+    "Use gradient backgrounds bg-gradient-to-r to enhance color expressiveness",
+    "Headings use bold with wider tracking font-bold tracking-wide",
+    "Button hover triggers gold glow burst: hover:shadow-[0_0_35px_rgba(212,175,55,0.8)]",
+    "Button hover:-translate-y-1 hover:scale-[1.03] (festive upward jubilation)",
+    "Button active:scale-95 active:translate-y-0 active:shadow-[0_0_16px_rgba(212,175,55,0.4)]",
+    "Cards use group class; color strip expands from w-12 to group-hover:w-full (duration-500, ribbon unfurling)",
+    "focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#fff8e7]",
+  ],
+
   dontList: [
     "禁止使用冰冷的蓝灰色调 bg-gray-100, bg-slate-50",
     "禁止使用纯黑背景 bg-black, bg-[#000]",
@@ -55,6 +85,18 @@ export const indianFestive: DesignStyle = {
     "禁止使用单色方案，应当多色叠加",
     "禁止按钮缺少 active:scale-95（节日按钮必须有欢腾的弹跳感）",
     "禁止 focus:ring 缺少 focus:ring-offset-[#fff8e7]（象牙白背景上焦点环需与元素分离）",
+  ],
+
+  dontListEn: [
+    "Do not use cold blue-gray tones bg-gray-100, bg-slate-50",
+    "Do not use pure black backgrounds bg-black, bg-[#000]",
+    "Do not use sharp corners without rounding rounded-none",
+    "Do not use low-saturation or dull colors",
+    "Do not use overly tech-feel neon blue-green text-[#00ffff]",
+    "Do not omit gold decorative elements",
+    "Do not use monochromatic schemes; colors should be layered",
+    "Do not omit active:scale-95 on buttons (festive buttons must have a jubilant bounce feel)",
+    "Do not omit focus:ring-offset-[#fff8e7] on focus:ring (focus ring must separate from ivory background)",
   ],
 
   components: {

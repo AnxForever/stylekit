@@ -6,6 +6,8 @@ export const cyberWafuu: DesignStyle = {
   nameEn: "Cyber Wafuu",
   description:
     "青海波纹样与电路走线融合、鸟居门导航框架、麻叶纹网格、金继ぎ金色修复线、障子屏风格栅面板、传统纹样被科技'侵入'的日式赛博美学。",
+  descriptionEn:
+    "A Japanese cyber aesthetic where seigaiha wave patterns merge with circuit traces, torii gate navigation frames, asanoha hemp leaf grids, kintsugi gold repair lines, and shoji screen grid panels -- traditional patterns 'hacked' by technology.",
   cover: "/styles/cyber-wafuu.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -28,6 +30,17 @@ Core principles:
 - Cherry blossom + neon: organic sakura forms outlined in electric light
 - Pattern collision: traditional repeating patterns visibly intersecting with digital traces`,
 
+  philosophyEn: `Cyber Wafuu reimagines traditional Japanese visual culture through digital disruption, creating a sophisticated fusion where heritage patterns are "hacked" by technology.
+
+Core principles:
+- Seigaiha digital waves: The classic wave pattern overlaid with circuit board traces
+- Torii gate navigation: Sacred gate structure reborn as navigation frames
+- Asanoha grid: Hemp leaf geometric grid as layout scaffolding
+- Kintsugi gold repair: Golden crack lines as decorative borders and accents
+- Shoji screen panels: Traditional sliding door grids as card frame systems
+- Cherry blossom + neon: Organic sakura forms outlined in electric light
+- Pattern collision: Traditional repeating patterns visibly intersecting with digital traces`,
+
   doList: [
     "Use dark indigo backgrounds (bg-[#080814])",
     "Add seigaiha wave pattern backgrounds with CSS repeating-radial-gradient",
@@ -40,7 +53,29 @@ Core principles:
     "Trigger directional circuit sweeps or shoji-line brightening on hover/focus for ritual feedback",
   ],
 
+  doListEn: [
+    "Use dark indigo backgrounds (bg-[#080814])",
+    "Add seigaiha wave pattern backgrounds with CSS repeating-radial-gradient",
+    "Use shoji screen grid as card frame structure",
+    "Apply kintsugi gold crack line borders and accents",
+    "Use torii gate shape for navigation framing",
+    "Add circuit trace connecting lines between elements",
+    "Layer traditional patterns with digital overlay effects",
+    "Use restrained interaction motion: subtle hover lift (1-2px) with circuit-glow amplification",
+    "Trigger directional circuit sweeps or shoji-line brightening on hover/focus for ritual feedback",
+  ],
+
   dontList: [
+    "No soft pastel colors",
+    "No organic irregular rounded shapes",
+    "No Western serif fonts",
+    "No rounded-full borders",
+    "No light backgrounds (bg-white, bg-gray-50)",
+    "No bouncy spring motion or large scale transforms",
+    "No slow dreamy transitions beyond 320ms on interactive controls",
+  ],
+
+  dontListEn: [
     "No soft pastel colors",
     "No organic irregular rounded shapes",
     "No Western serif fonts",
@@ -242,6 +277,53 @@ Core principles:
 }`,
 
   aiRules: `You are a Cyber Wafuu design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Soft pastel colors
+- Organic irregular shapes
+- Western serif fonts
+- rounded-full borders
+- Light backgrounds (bg-white, bg-gray-50, etc.)
+- Standard drop shadows (use glow effects only)
+
+## Must Follow
+
+- Dark indigo backgrounds: bg-[#080814] or bg-[#1e3a5f]
+- Seigaiha wave pattern as background texture (repeating-radial-gradient)
+- Shoji screen grid frame structure for cards
+- Kintsugi gold crack lines as border accents
+- Torii gate shapes for navigation frames
+- Circuit trace line connections between elements
+- Electric blue accent: #38bdf8 with glow effects
+- Vermillion #c41e3a and gold #c9a227 for traditional accents
+
+## Animation & Interaction Rules
+
+- Motion should feel ceremonial and precise, not playful: keep transitions in the 200-320ms range with ease-out
+- Hover should use subtle lift (1-2px), circuit-glow expansion, and shoji line brightening
+- Active states should compress gently (press-down 1px or scale 0.98-0.99) while tightening glow
+- Prefer directional sweeps (circuit trace / wave shimmer) triggered by hover or focus, then stop
+- Avoid infinite decorative loops on core controls, bounce springs, or oversized transforms that break the calm discipline
+
+## Color Palette
+
+Primary:
+- Indigo: #1e3a5f
+- Dark Background: #080814
+- Vermillion: #c41e3a
+- Gold Foil: #c9a227
+- Electric Blue: #38bdf8
+
+## Unique Elements
+
+- Seigaiha wave pattern (CSS repeating-radial-gradient)
+- Kintsugi gold crack line accents (gradient border decorations)
+- Shoji screen grid card frames (CSS grid overlays)
+- Torii gate navigation frames
+- Asanoha hemp leaf pattern background`,
+
+  aiRulesEn: `You are a Cyber Wafuu design style frontend development expert. All generated code must strictly follow these constraints:
 
 ## Absolutely Forbidden
 

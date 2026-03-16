@@ -6,6 +6,8 @@ export const editorial: DesignStyle = {
   nameEn: "Editorial",
   description:
     "优雅的杂志排版风格，衬线标题、无衬线正文、精致的留白和网格系统。灵感来自高端时尚杂志和报纸排版。暖米色背景、柔和黑文字、精细的透明度层次和动画下划线交互。",
+  descriptionEn:
+    "Elegant magazine typography style with serif headings, sans-serif body text, refined whitespace and grid systems. Inspired by high-end fashion magazines and newspaper layouts. Warm cream background, soft black text, fine opacity hierarchy and animated underline interactions.",
   cover: "/styles/editorial.svg",
   styleType: "visual",
   tags: ["minimal"],
@@ -26,6 +28,15 @@ export const editorial: DesignStyle = {
 - 单色克制：仅使用 #1C1C1C 配合不同透明度（/60 /40 /10）构建视觉层次，拒绝彩色装饰
 - 微妙动效：hover-underline 动画、clip-path reveal、group-hover:italic 等克制而精致的交互`,
 
+  philosophyEn: `Editorial design style originates from the typographic aesthetics of traditional print media, particularly the design language of high-end fashion magazines and newspapers. This style emphasizes content hierarchy, refined font pairing, and generous whitespace.
+
+Core principles:
+- Content is king: Design serves content, never overshadowing it. UI whispers, it does not shout
+- Typographic hierarchy: Serif headings contrast with sans-serif body text; labels use uppercase tracking for breathing room
+- Whitespace is beauty: Proper negative space lets content breathe; section spacing starts at py-24 md:py-40
+- Monochrome restraint: Only #1C1C1C with varying opacities (/60 /40 /10) to build visual hierarchy; no colored decoration
+- Subtle motion: Restrained yet refined interactions like hover-underline animations, clip-path reveals, and group-hover:italic`,
+
   doList: [
     "标题使用衬线字体 font-serif，正文使用无衬线字体 font-sans",
     "背景使用暖米色 bg-[#F9F8F6]，文字使用柔和黑 text-[#1C1C1C]",
@@ -39,6 +50,19 @@ export const editorial: DesignStyle = {
     "hover 交互使用 group-hover:italic 和微妙的 transition-all duration-500",
   ],
 
+  doListEn: [
+    "Headings use serif font font-serif, body text uses sans-serif font-sans",
+    "Background uses warm cream bg-[#F9F8F6], text uses soft black text-[#1C1C1C]",
+    "Use opacity hierarchy for grayscale: text-[#1C1C1C]/60 (secondary), /40 (auxiliary), /10 (borders)",
+    "Label style uses font-sans text-xs tracking-[0.2em] uppercase",
+    "Section spacing at least py-24 md:py-40, container padding px-6 md:px-12",
+    "Links and buttons use hover-underline animated underline effect",
+    "Headings use tracking-tighter tight letter spacing, hero titles start at text-6xl md:text-8xl",
+    "Italic for subtitles or decorative text: italic text-[#1C1C1C]/60",
+    "Forms use bottom-line inputs + floating labels (peer-focus pattern)",
+    "Hover interactions use group-hover:italic and subtle transition-all duration-500",
+  ],
+
   dontList: [
     "禁止使用彩色强调色（红、蓝、绿等），保持纯单色体系",
     "禁止使用粗边框或阴影（shadow-*）",
@@ -48,6 +72,17 @@ export const editorial: DesignStyle = {
     "禁止元素堆积，保持呼吸感",
     "禁止使用渐变、背景图案或装饰性几何元素",
     "禁止使用大圆角 rounded-xl 以上",
+  ],
+
+  dontListEn: [
+    "Do not use colored accents (red, blue, green, etc.), maintain pure monochrome system",
+    "Do not use thick borders or shadows (shadow-*)",
+    "Do not use #0a0a0a pure black or #fafafa cool white as primary colors",
+    "Do not use sans-serif fonts for headings",
+    "Do not use small line heights, body text at least leading-relaxed",
+    "Do not crowd elements, maintain breathing room",
+    "Do not use gradients, background patterns, or decorative geometric elements",
+    "Do not use large rounded corners rounded-xl or above",
   ],
 
   components: {
@@ -297,6 +332,71 @@ h1, h2, h3, h4, h5, h6 {
 - Brutal Contrast: 交互对比应果断，但仅在既有调色盘中反转（\`#1C1C1C\` 与 \`#F9F8F6\`），禁止回退到纯黑纯白。
 - Text Restraint: 文字本体不位移；hover 提示优先使用细线延展、字色加深等排版型反馈。
 - Layout Lines: 分隔线 hover 时可从 \`/10\` 加深至 \`/40\`，用于强调网格骨架，不添加阴影和炫技动画。`,
+
+  aiRulesEn: `You are an Editorial design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Core Palette
+
+- Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
+- Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
+- Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
+- NO colored accents. This style is purely monochromatic.
+
+## Typography
+
+- Headings: font-serif, tracking-tighter, weight 400 (never bold)
+- Hero titles: text-6xl md:text-8xl lg:text-[9rem] leading-[0.9]
+- Labels: font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/40
+- Body: font-sans text-sm or text-base leading-relaxed text-[#1C1C1C]/80
+- Italic for decorative subtitles: italic text-[#1C1C1C]/60
+
+## Layout
+
+- Section spacing: py-24 md:py-40 minimum
+- Container: max-w-7xl mx-auto px-6 md:px-12
+- Generous gaps: gap-12 lg:gap-24
+- Content width: max-w-xs or max-w-md for body text
+- Use 12-column grids: grid-cols-12 with col-span-5/col-span-7 splits
+
+## Interactions
+
+- Links: hover-underline animation (scaleX from right-to-left on hover)
+- Titles: group-hover:italic transition-all duration-500
+- Images: group-hover:scale-105 transition-transform duration-1000
+- Arrows: group-hover:translate-x-2 transition-transform
+- Borders: border-[#1C1C1C]/10, hover:bg-[#1C1C1C]/[0.02]
+
+## Form Fields
+
+- Bottom-border only: border-b border-[#1C1C1C]/20
+- Floating labels with peer-focus pattern
+- Input text: font-serif text-xl
+- Focus: focus:border-[#1C1C1C] (no outline, no shadow, no ring)
+
+## Navigation
+
+- Fixed: fixed top-0 z-50 bg-[#F9F8F6]/90 backdrop-blur-sm
+- Logo: font-serif text-lg tracking-[0.3em] uppercase
+- Links: font-sans text-xs tracking-[0.2em] uppercase text-[#1C1C1C]/60
+
+## Absolutely Forbidden
+
+- Colored accents (red, blue, green) - this is a monochrome style
+- Box shadows (shadow-*)
+- Thick borders (border-2 and above)
+- Large border-radius (rounded-xl and above)
+- Gradients or background patterns
+- Bold font weights on headings (font-bold, font-semibold)
+- Pure black #000 or #0a0a0a
+- Pure white #fff or #fafafa as background
+- Decorative geometric shapes or icons
+
+## Animation & Interaction Rules
+
+- Cinematic Image Zoom: Image areas should use container clipping + slow child element zoom (e.g. group-hover:scale-105 duration-1000), maintaining a fashion editorial gaze feel.
+- Brutal Contrast: Interaction contrast should be decisive, but only invert within the existing palette (#1C1C1C and #F9F8F6), never fall back to pure black or pure white.
+- Text Restraint: Text itself does not displace; hover hints prefer fine line extension, text color deepening, and other typographic feedback.
+- Layout Lines: Dividers on hover can deepen from /10 to /40, used to emphasize grid skeleton, without adding shadows or flashy animations.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const magazineGrid: DesignStyle = {
   nameEn: "Magazine Grid",
   description:
     "灵感来自印刷杂志的多栏网格布局，通过不同大小的内容块创造丰富的视觉层次，适合新闻、博客、内容聚合。",
+  descriptionEn:
+    "Multi-column grid layout inspired by print magazines, creating rich visual hierarchy through varied content block sizes. Ideal for news, blogs, and content aggregation.",
   cover: "/styles/magazine-grid.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const magazineGrid: DesignStyle = {
 - 空间节奏：大小交替创造阅读节奏
 - 专业感：传递权威性和可信度`,
 
+  philosophyEn: `Magazine Grid borrows the typographic wisdom of traditional print magazines, creating professional editorial effects through multi-column and mixed-size content blocks.
+
+Core principles:
+- Visual hierarchy: Large images grab attention, small blocks fill in details
+- Scan-friendly: Readers can quickly browse to find content of interest
+- Spatial rhythm: Alternating large and small creates reading rhythm
+- Professionalism: Conveys authority and credibility`,
+
   doList: [
     "使用 CSS Grid 创建复杂网格 grid-template-areas",
     "特色内容使用更大的网格区域 col-span-2 row-span-2",
@@ -40,6 +50,20 @@ export const magazineGrid: DesignStyle = {
     "标题 group-hover:text-red-600 transition-colors duration-200 ease-out（Crisp Typographic Shift，干脆切色）",
   ],
 
+  doListEn: [
+    "Use CSS Grid to create complex grids grid-template-areas",
+    "Featured content uses larger grid areas col-span-2 row-span-2",
+    "Maintain baseline alignment and consistent spacing",
+    "Use different sized content blocks to create hierarchy",
+    "Mobile switches to single column or simplified grid",
+    "Add clear category labels and timestamps",
+    "Consider reserving space for ad placements",
+    "All article cards use group class to trigger child element linkage",
+    "Images default to grayscale-[20%], group-hover:grayscale-0 group-hover:scale-105 (Color Awakening, instant full-color eye-catch)",
+    "Category label followed by decorative line: w-4 h-px group-hover:w-12 transition-all duration-300 ease-out (Editorial Stretch, typographic skeleton extension)",
+    "Title group-hover:text-red-600 transition-colors duration-200 ease-out (Crisp Typographic Shift, clean color switch)",
+  ],
+
   dontList: [
     "禁止所有内容块大小相同",
     "禁止忽略移动端布局适配",
@@ -48,6 +72,16 @@ export const magazineGrid: DesignStyle = {
     "禁止忽略图片裁切比例",
     "禁止对正文段落施加任何位移动画（阅读稳定性优先）",
     "禁止标题 hover 使用发光或阴影效果（应直接切换颜色，干脆利落）",
+  ],
+
+  dontListEn: [
+    "Do not make all content blocks the same size",
+    "Do not ignore mobile layout adaptation",
+    "Do not overcrowd content without whitespace",
+    "Do not use inconsistent category labels",
+    "Do not ignore image cropping ratios",
+    "Do not apply any displacement animations to body text paragraphs (reading stability first)",
+    "Do not use glow or shadow effects on title hover (should directly switch colors, clean and crisp)",
   ],
 
   components: {
@@ -399,6 +433,67 @@ Use distinct colors per category:
 - Editorial Stretch: 分类标签旁装饰线可由 w-4 平滑延展到 w-12，强调排版骨架。
 - Crisp Typographic Shift: 标题 hover 直接切主色（如 red-600），使用 duration-200 ease-out。
 - Readability First: 段落正文禁止位移动画，保证阅读稳定与扫描效率。
+
+## Self-Check`,
+
+  aiRulesEn: `You are a frontend expert specializing in Magazine Grid layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT make all content blocks same size
+- Do NOT ignore mobile responsive layout
+- Do NOT overcrowd content without whitespace
+- Do NOT use inconsistent category styling
+- Do NOT ignore image aspect ratios
+
+## Must Follow
+
+- Use CSS Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-4
+- Featured content: col-span-2 row-span-2
+- Consistent gaps: gap-6
+- Category labels on all articles
+- Image hover effects
+- Line clamping for excerpts
+
+## Grid Structure
+
+Desktop (4 columns):
+- Featured: 2x2 grid area
+- Regular: 1x1 grid cells
+- Mix large and small for variety
+
+Tablet (2 columns):
+- Featured: 2x1 or 1x2
+- Regular: 1x1
+
+Mobile (1 column):
+- All items full width
+- Stack vertically
+
+## Article Card
+
+Required elements:
+1. Image with aspect ratio
+2. Category label (colored)
+3. Title (clamped)
+4. Excerpt (optional, clamped)
+5. Meta (author, date, read time)
+
+## Category Colors
+
+Use distinct colors per category:
+- Tech: blue
+- Business: green
+- Culture: amber
+- Opinion: purple
+- Featured: red
+
+## Animation & Interaction Rules
+
+- Color Awakening: Default images can have slight grayscale (e.g. grayscale-[20%]), restoring full color and scale-105 on hover.
+- Editorial Stretch: Category label decorative line can smoothly extend from w-4 to w-12, emphasizing typographic skeleton.
+- Crisp Typographic Shift: Title hover directly switches to primary color (e.g. red-600), using duration-200 ease-out.
+- Readability First: Body text paragraphs must not have displacement animations, ensuring reading stability and scanning efficiency.
 
 ## Self-Check
 

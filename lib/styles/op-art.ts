@@ -6,6 +6,8 @@ export const opArt: DesignStyle = {
   nameEn: "Op Art",
   description:
     "光学艺术运动风格，利用几何图案制造视觉幻象和运动感。黑白对比为核心，辅以振动色彩对。",
+  descriptionEn:
+    "Op Art movement style that uses geometric patterns to create optical illusions and a sense of motion. Black-and-white contrast at its core, supplemented by vibrating color pairs.",
   cover: "/styles/op-art.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -27,6 +29,16 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
 
 排版追求极简与几何感：无衬线字体、均匀字重、严格网格对齐。文字本身不应与光学图案竞争注意力，而是作为图案海洋中的"安全岛"——清晰、稳定、可读。`,
 
+  philosophyEn: `Op Art (Optical Art) emerged in the 1960s, championed by Bridget Riley and Victor Vasarely. It uses precisely calculated geometric patterns to create visual illusions of movement, vibration, and depth on a two-dimensional surface, challenging the viewer's perceptual system.
+
+The core of Op Art lies in "visual tension": when black and white alternate at specific frequencies and angles, the human eye perceives the illusion of motion. Concentric circles, checkerboards, moire fringes, and gradient lines -- these seemingly simple elements, after meticulous calculation, can make a static image come alive.
+
+In terms of color, Op Art is grounded in the extreme contrast of pure black and pure white. When color is needed, "vibrating color pairs" are chosen -- red and blue, yellow and purple -- complementary colors that, when juxtaposed, produce an oscillating effect on the retina, giving the viewer a sense of restless energy.
+
+In interface design, Op Art must be used with restraint. Large areas of optical patterns can easily cause visual fatigue, so they typically appear as localized decorations or background textures, paired with generous whitespace and clear information hierarchy.
+
+Typography pursues minimalism and geometric precision: sans-serif fonts, uniform weight, and strict grid alignment. Text should not compete with optical patterns for attention but instead serve as a "safe island" in a sea of patterns -- clear, stable, and readable.`,
+
   doList: [
     "使用纯黑白高对比 bg-black text-white bg-white text-black",
     "使用几何图案元素——同心圆、条纹、棋盘格作为装饰",
@@ -42,6 +54,21 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
     "active 状态瞬间切换为警示红：active:bg-[#ff3300] active:border-[#ff3300]（Brutal Action，刺目光爆）",
   ],
 
+  doListEn: [
+    "Use pure black-and-white high contrast bg-black text-white bg-white text-black",
+    "Use geometric pattern elements -- concentric circles, stripes, checkerboards as decoration",
+    "Use vibrating color pairs as accents text-[#ff3300] bg-[#0066ff] text-[#ffcc00]",
+    "Use minimal sans-serif fonts font-sans font-medium",
+    "Use strict grid alignment grid grid-cols-* items-center justify-center",
+    "Maintain large areas of whitespace to balance the visual intensity of optical patterns",
+    "Use border-2 border-black to emphasize geometric lines",
+    "Use rounded-none to maintain sharp geometric edges",
+    "Cards use group class; on hover, inner concentric circle decorations trigger rotation: group-hover:animate-[spin_4s_linear_infinite] (Illusion Generation -- static geometry becomes dynamic illusion)",
+    "On hover, content area inverts black-and-white: hover:bg-black hover:text-white transition-colors duration-150 (Harsh Strobe -- extreme collision)",
+    "Headings on group-hover apply perspective distortion: group-hover:-skew-x-12 transition-transform duration-150 (Warp & Distort -- spatial illusion)",
+    "Active state instantly switches to warning red: active:bg-[#ff3300] active:border-[#ff3300] (Brutal Action -- blinding flash)",
+  ],
+
   dontList: [
     "禁止在大面积使用密集光学图案导致视觉疲劳",
     "禁止使用柔和渐变 bg-gradient-to-r 削弱对比度",
@@ -53,6 +80,19 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
     "禁止 hover 时使用平滑渐变过渡（必须是黑白硬切，duration-100 或 duration-150）",
     "禁止光学图案在 hover 时保持静止（旋转或动效是制造错觉的来源，静止则丧失 Op Art 精髓）",
     "禁止 active 状态使用平滑过渡颜色（警示红应为瞬间闪现，非渐变）",
+  ],
+
+  dontListEn: [
+    "Do not use dense optical patterns over large areas causing visual fatigue",
+    "Do not use soft gradients bg-gradient-to-r that weaken contrast",
+    "Do not use soft shadows shadow-sm shadow-md that break the flat feel",
+    "Do not use rounded corners rounded-lg rounded-xl rounded-full",
+    "Do not use serif fonts font-serif",
+    "Do not use more than two accent colors; keep black-and-white as the dominant palette",
+    "Do not use semi-transparency or blur effects opacity-50 backdrop-blur",
+    "Do not use smooth gradient transitions on hover (must be hard black-white cuts, duration-100 or duration-150)",
+    "Do not keep optical patterns static on hover (rotation or motion effects are the source of illusion; static loses the Op Art essence)",
+    "Do not use smooth transition colors on active state (warning red should flash instantly, not gradient)",
   ],
 
   components: {
@@ -391,6 +431,54 @@ Op Art的核心在于"视觉张力"：当黑与白以特定频率和角度交替
 - Harsh Strobe: hover 时整体黑白反转 hover:bg-black hover:text-white transition-colors duration-150，必须是硬切，禁止平滑渐变。
 - Warp & Distort: 标题在 group-hover 时施加 skew 扭曲 group-hover:-skew-x-12 transition-transform duration-150，制造空间错觉。
 - Brutal Action: active 状态瞬间切换警示红 active:bg-[#ff3300] active:border-[#ff3300]，无过渡，模拟刺目光爆。`,
+
+  aiRulesEn: `You are an Op Art design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Rounded corners rounded-lg rounded-xl rounded-full
+- Soft shadows shadow-sm shadow-md shadow-lg
+- Gradients bg-gradient-to-*
+- Serif fonts font-serif
+- Semi-transparency and blur effects opacity-50 backdrop-blur
+- Dense optical patterns over large areas (causes visual fatigue)
+
+## Must Follow
+
+- Pure black bg-black text-black border-black
+- Pure white bg-white text-white
+- Sharp geometry rounded-none
+- Sans-serif fonts font-sans font-medium
+- Wide letter spacing tracking-wider tracking-[0.3em]
+- Uppercase typography uppercase
+- Large areas of whitespace to balance visual intensity
+- Optical patterns as localized decoration, not full coverage
+
+## Color Palette
+
+Black and white dominant (90% area):
+- Pure black: #000000
+- Pure white: #ffffff
+
+Vibrating color pairs (10% accents):
+- Red: #ff3300
+- Blue: #0066ff
+- Yellow: #ffcc00
+
+## Decorative Elements
+
+- Concentric circle patterns
+- Checkerboards
+- Stripe patterns
+- Moire fringes
+- Geometric lines
+
+## Animation & Interaction Rules
+
+- Illusion Generation: Cards use group class; inner concentric circle decorations group-hover:animate-[spin_4s_linear_infinite], static geometry becomes dynamic illusion. Do not rotate in non-hover state (avoid visual pollution).
+- Harsh Strobe: On hover, invert black-and-white hover:bg-black hover:text-white transition-colors duration-150. Must be a hard cut, no smooth gradients.
+- Warp & Distort: Headings on group-hover apply skew distortion group-hover:-skew-x-12 transition-transform duration-150, creating spatial illusion.
+- Brutal Action: Active state instantly switches to warning red active:bg-[#ff3300] active:border-[#ff3300], no transition, simulating a blinding flash.`,
 
   examplePrompts: [
     {

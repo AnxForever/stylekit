@@ -6,6 +6,8 @@ export const y2k: DesignStyle = {
   nameEn: "Y2K",
   description:
     "2000年代初的未来主义美学，金属质感、透明塑料、气泡元素、银色和彩虹渐变，充满对数字时代的乐观想象。",
+  descriptionEn:
+    "Early-2000s futuristic aesthetic with metallic textures, transparent plastics, bubble elements, silver and rainbow gradients, brimming with optimistic visions of the digital age.",
   cover: "/styles/y2k.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const y2k: DesignStyle = {
 - 透明元素：透明塑料、气泡、水滴效果
 - 彩虹渐变：全息效果、彩虹反光`,
 
+  philosophyEn: `Y2K is the design aesthetic of the late 1990s to early 2000s, reflecting people's optimistic imagination of the new millennium and the digital future.
+
+Core concepts:
+- Futurism: Optimistic visions of the digital age
+- Metallic texture: Silver, chrome alloy, reflective materials
+- Transparent elements: Clear plastics, bubbles, water-drop effects
+- Rainbow gradients: Holographic effects, rainbow reflections`,
+
   doList: [
     "使用银色/金属渐变 bg-gradient-to-r from-gray-300 via-white to-gray-300",
     "添加气泡/球体装饰元素",
@@ -34,11 +44,27 @@ export const y2k: DesignStyle = {
     "添加星星、闪光装饰",
   ],
 
+  doListEn: [
+    "Use silver/metallic gradients bg-gradient-to-r from-gray-300 via-white to-gray-300",
+    "Add bubble/sphere decorative elements",
+    "Use transparent/semi-transparent effects bg-white/30 backdrop-blur",
+    "Rainbow gradient text effects",
+    "Rounded futuristic shapes rounded-full",
+    "Add star and sparkle decorations",
+  ],
+
   dontList: [
     "禁止使用暗沉的配色",
     "禁止使用过于扁平的设计",
     "禁止省略光泽/反光效果",
     "禁止使用粗糙的纹理",
+  ],
+
+  dontListEn: [
+    "Do not use dull, muted color schemes",
+    "Do not use overly flat design",
+    "Do not omit gloss/reflection effects",
+    "Do not use rough textures",
   ],
 
   components: {
@@ -210,6 +236,45 @@ export const y2k: DesignStyle = {
 - 气泡弹跳（Bubble Pop）：Y2K 充满乐观和玩具感。必须使用弹性自定义缓动 \`ease-[cubic-bezier(0.34,1.56,0.64,1)]\`，悬停时夸张放大（\`hover:scale-105\` 或 \`hover:-translate-y-1\`），点击时如果冻般挤压（\`active:scale-90\`）。
 - 镭射炫光（CD Glare）：阴影颜色必须使用高饱和度青色（#00ffff）和粉色（#ff69b4）的混合光晕，模拟 CD 光盘的镭射反光。禁止使用黑色阴影。
 - 熔岩灯效果：卡片内的圆形气泡装饰在悬停时产生非对称移动或拉伸，就像熔岩灯中的液滴上升。`,
+
+  aiRulesEn: `You are a Y2K design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Dull, muted color schemes
+- Overly flat design
+- Omitting gloss and reflection effects
+- Sharp right angles
+
+## Must Follow
+
+- Metallic gradients bg-gradient-to-b from-gray-200 via-white to-gray-300
+- Rounded shapes rounded-full, rounded-3xl
+- Transparent effects bg-white/60 backdrop-blur
+- Rainbow gradients from-pink-400 via-purple-400 to-cyan-400
+- Bubble/sphere decorative elements
+
+## Color Palette
+
+Primary:
+- Silver: #c0c0c0, from-gray-300
+- Pink: #ff69b4, from-pink-400
+- Cyan: #00ffff, from-cyan-400
+- Purple: #ff00ff, from-purple-400
+
+## Decorative Elements
+
+- Star/sparkle decorations
+- Bubble spheres
+- Rainbow gradients
+- Transparent plastic textures
+
+## Animation & Interaction Rules
+
+- Chrome Liquid: Interactions must convey a "liquid metal" or "plastic jelly" texture. On hover, metallic gradients enhance through highlight inner shadows (e.g., hover:shadow-[inset_0_4px_8px_rgba(255,255,255,1)]), simulating a 3D reflective sheen sliding across a metallic surface.
+- Bubble Pop: Y2K is full of optimism and toy-like feel. Must use elastic custom easing ease-[cubic-bezier(0.34,1.56,0.64,1)], exaggerated scaling on hover (hover:scale-105 or hover:-translate-y-1), and jelly-like squish on click (active:scale-90).
+- CD Glare: Shadow colors must use high-saturation cyan (#00ffff) and pink (#ff69b4) mixed glow, simulating CD disc laser reflections. No black shadows allowed.
+- Lava Lamp Effect: Circular bubble decorations inside cards produce asymmetric movement or stretching on hover, like liquid droplets rising in a lava lamp.`,
 
   examplePrompts: [
     {

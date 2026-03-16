@@ -6,6 +6,8 @@ export const zenGarden: DesignStyle = {
   nameEn: "Zen Garden",
   description:
     "日本枯山水庭园的数字化诠释，以砂纹、石组、苔藓为灵感，追求极致静谧与冥想感。沙白与苔绿的搭配传递出自然之道的宁静力量。",
+  descriptionEn:
+    "A digital interpretation of Japanese Karesansui dry landscape gardens, inspired by raked sand patterns, stone arrangements, and moss, pursuing ultimate tranquility and meditative calm. The pairing of sand white and moss green conveys the serene power of nature.",
   cover: "/styles/zen-garden.svg",
   styleType: "visual",
   tags: ["minimal", "expressive"],
@@ -26,6 +28,15 @@ export const zenGarden: DesignStyle = {
 - 冥想之境：整座庭园是一个供人静观、内省的空间
 - 借景与留白：将周围自然纳入构图，空间本身即是表达`,
 
+  philosophyEn: `Karesansui (Zen Garden) is the highest expression of Japanese Zen Buddhist garden art.
+
+Core principles:
+- Sand as water: patterns raked in white sand symbolize ripples and waves on water -- waterless yet water is seen
+- Beauty of stone arrangements: carefully placed stone groups represent mountains and islands, achieving more with less
+- Life of moss: moss green is the trace of time's passage, a vitality of stillness in motion
+- Realm of meditation: the entire garden is a space for quiet contemplation and introspection
+- Borrowed scenery and whitespace: incorporating surrounding nature into the composition, where space itself is expression`,
+
   doList: [
     "使用沙白色背景 bg-[#f5f3ee]",
     "苔藓绿作为重点色 text-[#8a9a7b]",
@@ -35,11 +46,27 @@ export const zenGarden: DesignStyle = {
     "非常缓慢的过渡动画 transition duration-700",
   ],
 
+  doListEn: [
+    "Use sand-white backgrounds bg-[#f5f3ee]",
+    "Moss green as accent color text-[#8a9a7b]",
+    "Extreme whitespace with generous vertical spacing py-32",
+    "Delicate natural borders border-[#c4bba8]/30",
+    "Serif fonts with light weight font-serif font-light",
+    "Very slow transition animations transition duration-700",
+  ],
+
   dontList: [
     "禁止使用明亮鲜艳的色彩",
     "禁止使用厚重边框和粗线条",
     "禁止使用快速动画和弹跳效果",
     "禁止密集排列元素，留白是核心",
+  ],
+
+  dontListEn: [
+    "Do not use bright vivid colors",
+    "Do not use heavy borders or thick lines",
+    "Do not use fast animations or bounce effects",
+    "Do not densely arrange elements -- whitespace is the core",
   ],
 
   components: {
@@ -127,4 +154,22 @@ Animation & Interaction Rules:
 - Zero Displacement: 禁止使用 \`translate\`、\`rotate\`，避免任何物理位移动效；焦点应通过显隐与色阶变化表达。
 - Ephemeral Fades: 仅使用低对比度的颜色加深、透明度浮现、或极淡阴影淡入淡出，不做弹跳与高对比闪烁。
 - Quiet Focus: 文本可默认半透明（如 \`text-[#4a5548]/70\`），hover/focus 时缓慢趋于清晰，保持冥想式节奏。`,
+
+  aiRulesEn: `You are designing in Zen Garden (Karesansui) style.
+- Sand-white backgrounds: #f5f3ee, #ede9e1
+- Moss-green primary text: #4a5548
+- Muted natural accents: moss #8a9a7b, sand #c4bba8, stone #7a7062
+- Always use serif fonts with light weight (font-serif font-light)
+- Extreme whitespace: py-32, generous gaps between all sections
+- Ultra-thin borders: border-[#c4bba8]/30
+- Very slow transitions: duration-700 or longer
+- No bright colors, no heavy borders, no fast animations
+- Think raked sand patterns, carefully placed stones, quiet moss
+- Every element should feel like it was placed with meditative intention
+
+Animation & Interaction Rules:
+- Meditative Slowness: Interactions must be slow and restrained, using duration-700 to duration-1000 with ease-in-out.
+- Zero Displacement: No translate or rotate allowed; avoid any physical displacement animations. Focus should be expressed through show/hide and tonal changes.
+- Ephemeral Fades: Use only low-contrast color deepening, opacity emergence, or very faint shadow fade-ins. No bouncing or high-contrast flashing.
+- Quiet Focus: Text can default to semi-transparent (e.g., text-[#4a5548]/70), slowly becoming clear on hover/focus, maintaining a meditative rhythm.`,
 };

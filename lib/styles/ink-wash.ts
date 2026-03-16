@@ -6,6 +6,8 @@ export const inkWash: DesignStyle = {
   nameEn: "Ink Wash",
   description:
     "源自中国传统水墨画的设计风格，以墨色浓淡干湿变化营造空灵意境，大量留白表达'气韵生动'，适合文化品牌、茶道、书法和东方美学项目。",
+  descriptionEn:
+    "A design style rooted in traditional Chinese ink wash painting, creating ethereal moods through variations in ink density and moisture, with generous whitespace expressing 'vivid spirit resonance'. Ideal for cultural brands, tea ceremony, calligraphy, and Eastern aesthetics projects.",
   cover: "/styles/ink-wash.svg",
   styleType: "visual",
   tags: ["minimal", "expressive"],
@@ -26,6 +28,15 @@ export const inkWash: DesignStyle = {
 - 以形写神：不求形似，但求神韵，超越表象触及本质
 - 气韵贯通：笔断意连，形散神聚，整体气韵一脉相承`,
 
+  philosophyEn: `Ink Wash originates from the millennia-old aesthetic system of traditional Chinese painting, interpreting all things through "ink divided into five tones."
+
+Core principles:
+- Vivid spirit resonance: the foremost of Xie He's Six Principles, pursuing the vitality and spiritual quality of the composition
+- Five tones of ink: scorched, dense, heavy, light, and clear -- expressing rich layers through ink density alone
+- Counting white as black: whitespace is not absence, but an extension of mood and space for imagination
+- Capturing spirit through form: not seeking likeness of form, but pursuing spiritual essence, transcending appearance to touch the core
+- Continuous qi flow: where the brush breaks, the intent continues; form scatters but spirit gathers, the overall qi flows as one`,
+
   doList: [
     "使用宣纸色温暖背景 bg-[#f8f5f0]",
     "墨色为主要文字色 text-[#2c2c2c]",
@@ -36,12 +47,30 @@ export const inkWash: DesignStyle = {
     "交互反馈以墨色渐深和边界渗透为主，避免明显位移动画",
   ],
 
+  doListEn: [
+    "Use xuan-paper warm backgrounds bg-[#f8f5f0]",
+    "Ink color as primary text color text-[#2c2c2c]",
+    "Generous whitespace to create mood py-32 px-8",
+    "Use serif fonts for calligraphic texture font-serif",
+    "Ink-wash thin border dividers border-[#2c2c2c]/20",
+    "Slow transition animations mimicking ink diffusion transition-all duration-700",
+    "Interaction feedback focuses on ink color deepening and border bleeding, avoiding obvious displacement animations",
+  ],
+
   dontList: [
     "禁止使用鲜艳饱和色彩，水墨以灰调为主",
     "禁止使用厚重阴影，破坏空灵意境",
     "禁止使用粗边框，水墨线条应如毛笔般纤细",
     "禁止使用装饰性动画和弹跳效果，保持静谧",
     "禁止 spring 或 bounce 交互曲线，避免机械弹性",
+  ],
+
+  dontListEn: [
+    "Do not use vivid saturated colors -- ink wash is primarily gray-toned",
+    "Do not use heavy shadows -- they break the ethereal mood",
+    "Do not use thick borders -- ink wash lines should be as delicate as brush strokes",
+    "Do not use decorative animations or bounce effects -- maintain tranquility",
+    "Do not use spring or bounce interaction curves -- avoid mechanical elasticity",
   ],
 
   components: {
@@ -130,4 +159,22 @@ export const inkWash: DesignStyle = {
 - Calligraphic Press: active 状态优先使用深色内阴影，模拟落笔压纸，不使用机械缩放。
 - Flow of Qi: 交互节奏使用 duration-700 到 1000，配合 ease-in-out 保持空灵呼吸感。
 - Whispering Text: 文本可从低对比缓慢过渡到清晰墨色，避免跳变式强化。`,
+
+  aiRulesEn: `You are designing in Ink Wash (Chinese ink painting) style.
+- Warm xuan-paper backgrounds: #f8f5f0, #f3efe8
+- Ink-black text color: #2c2c2c
+- Muted natural accents: moss green #6b7b6e, tea brown #a89279, sand #c4b9a8
+- Always use serif fonts (font-serif) for calligraphic feel
+- Extreme whitespace: py-32, large gaps between sections for "qi" flow
+- Ultra-thin ink borders: border-[#2c2c2c]/20
+- Slow transitions: duration-700 to mimic ink diffusion
+- No bright saturated colors, no heavy shadows, no decorative elements
+- Embrace generous emptiness -- whitespace IS the design
+- Think "ink on xuan paper" and "mountain mist landscape"
+
+Animation & Interaction Rules:
+- Ink Bleed: On hover, use color deepening and faint diffusion shadows to simulate ink bleeding, without obvious displacement.
+- Calligraphic Press: Active state prioritizes dark inner shadows, simulating brush pressing on paper, without mechanical scaling.
+- Flow of Qi: Interaction rhythm uses duration-700 to 1000 with ease-in-out, maintaining ethereal breathing feel.
+- Whispering Text: Text can slowly transition from low contrast to clear ink color, avoiding abrupt intensification.`,
 };

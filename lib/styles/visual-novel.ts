@@ -6,6 +6,8 @@ export const visualNovel: DesignStyle = {
   nameEn: "Visual Novel",
   description:
     "借鉴ADV视觉小说游戏UI的设计风格，半透明对话框面板、角色铭牌徽章、装饰性边角框线、分支选项按钮和存档界面，打造沉浸式交互故事体验。",
+  descriptionEn:
+    "A design style inspired by ADV visual novel game UI, featuring semi-transparent dialogue panels, character nameplate badges, ornate corner decorations, branching choice buttons, and save screen interfaces for an immersive interactive storytelling experience.",
   cover: "/styles/visual-novel.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -27,6 +29,16 @@ export const visualNovel: DesignStyle = {
 - 场景氛围渲染：通过天空渐变、剪影、柔光营造时间和情感氛围
 - 存档界面设计：带装饰边角的暗色面板，包含输入框和操作按钮`,
 
+  philosophyEn: `Visual Novel style originates from the UI design of Japanese ADV (Adventure) visual novel games, emphasizing narrative immersion and character interaction.
+
+Core principles:
+- ADV dialogue system: Bottom-fixed semi-transparent dark panels carrying character dialogue text
+- Character nameplate badges: Colored small labels above the dialogue box identifying the speaking character
+- Ornate corner decorations: L-shaped decorative lines at the four corners of dialogue panels, creating an elegant frame feel
+- Branching choice buttons: Center-aligned frosted glass buttons representing story branches
+- Scene atmosphere rendering: Sky gradients, silhouettes, and soft light create time and emotional atmosphere
+- Save screen design: Dark panels with ornate corners, containing input fields and action buttons`,
+
   doList: [
     "使用半透明暗色面板 bg-[#1a202c]/85 作为对话框",
     "使用半透明亮色面板 bg-white/70 作为信息卡片",
@@ -38,6 +50,17 @@ export const visualNovel: DesignStyle = {
     "使用圆角 rounded-lg 保持柔和界面感",
   ],
 
+  doListEn: [
+    "Use semi-transparent dark panels bg-[#1a202c]/85 as dialogue boxes",
+    "Use semi-transparent light panels bg-white/70 as info cards",
+    "Add frosted glass effect backdrop-blur-md to all panels",
+    "Use serif font font-serif for narrative/dialogue text",
+    "Use sans-serif font font-sans for UI labels and buttons",
+    "Add character nameplate badges (colored small labels inline-block px-3 py-0.5 bg-[color] rounded-sm)",
+    "Add L-shaped ornate corners to dialogue panels (border-l/t/r/b combinations)",
+    "Use rounded-lg corners to maintain soft interface feel",
+  ],
+
   dontList: [
     "禁止使用粗重的野蛮主义边框（border-4+）",
     "禁止使用霓虹灯 RGB 分离阴影效果",
@@ -45,6 +68,15 @@ export const visualNovel: DesignStyle = {
     "禁止使用纯黑背景 bg-black",
     "禁止使用全大写加宽字距的终端风格文字",
     "禁止使用直角 rounded-none（除铭牌 rounded-sm 外）",
+  ],
+
+  dontListEn: [
+    "No heavy brutalist borders (border-4+)",
+    "No neon RGB split shadow effects",
+    "No pixel art style or monospace fonts for main content",
+    "No pure black background bg-black",
+    "No all-caps wide-tracking terminal-style text",
+    "No sharp corners rounded-none (except nameplate rounded-sm)",
   ],
 
   components: {
@@ -230,6 +262,55 @@ export const visualNovel: DesignStyle = {
 .vn-scene-sunset {
   background: linear-gradient(180deg, #4a6fa5 0%, #7b9cc7 40%, #c4a882 70%, #e8c19a 100%);
 }`,
+
+  aiRulesEn: `You are a Visual Novel design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Heavy brutalist borders (border-4+)
+- Neon glow or RGB split shadow effects
+- Pixel art style elements
+- Harsh, highly saturated neon colors
+- Monospace fonts for main content
+- Pure black backgrounds
+- Sharp edges without rounding (rounded-none)
+- Terminal-style uppercase with tracking-widest
+
+## Must Follow
+
+- Dark dialog panels: bg-[#1a202c]/85 with backdrop-blur-md
+- Light info panels: bg-white/70 with backdrop-blur-md
+- Serif font for all narrative/dialog text (font-serif)
+- Sans-serif font for UI elements (font-sans font-medium)
+- Rounded corners: rounded-lg on all panels and buttons
+- Soft shadows: shadow-sm, shadow-md
+- Ornate L-shaped corner decorations on dialog panels
+- Character nameplate badges: colored inline-block with rounded-sm
+
+## Color Palette
+
+Primary:
+- Slate: #4a5568 (text, borders)
+- Light BG: #f7fafc (page background)
+- Dark Panel: #1a202c (dialog backgrounds at /85 or /90 opacity)
+- Indigo: #6366f1 (primary accent, nameplates, borders)
+- Pink: #ec4899 (secondary accent, alternate nameplates)
+- Emerald: #10b981 (tertiary accent, alternate nameplates)
+
+## Unique Elements
+
+- ADV-format dialogue panel: dark semi-transparent panel fixed to bottom with ornate corner decorations and character nameplate
+- Character nameplate badges: small colored rectangle positioned overlapping the card border (absolute -top-3 left-6)
+- Ornate corner decorations: L-shaped border patterns (border-l + border-t) at panel corners
+- Choice button grid: full-width frosted glass buttons with ChevronRight icon and left-aligned text
+- Scene background: sky gradient with character silhouettes (rounded-t-full ellipse shapes)
+- Save screen panel: dark panel with ornate corners, form inputs, and dual action buttons
+
+## Animation & Interaction Rules
+- Dialogue Focus: Simulates in-game "choice branches." On hover over choice buttons, deepen background blur (backdrop-blur) and overlay a very subtle white or theme-color gradient (e.g., hover:bg-white/10), creating an immersive spotlight effect on the selected option.
+- Cursor Prompt: On hover, reveal a small indicator (e.g., triangle or diamond) to the left of text with a slight displacement animation (opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0), faithfully recreating visual novel UI characteristics.
+- Sprite Breathing: Transition animations must be extremely smooth (duration-300 ease-in-out). On card hover, allow very subtle and slow upward float (hover:-translate-y-0.5), simulating the breathing motion of game character sprites.
+- Story Text: On click (:active), choice boxes can shift slightly horizontally (active:translate-x-2) to indicate confirmation, rather than traditional press-down.`,
 
   aiRules: `You are a Visual Novel design style frontend development expert. All generated code must strictly follow these constraints:
 

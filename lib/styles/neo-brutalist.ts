@@ -6,6 +6,8 @@ export const neoBrutalist: DesignStyle = {
   nameEn: "Neo-Brutalist",
   description:
     "大胆的黑色粗边框、硬边缘阴影、无圆角、高对比度配色。源于建筑野兽派，强调功能与原始美学。",
+  descriptionEn:
+    "Bold black thick borders, hard-edge shadows, no rounded corners, high-contrast color schemes. Inspired by architectural Brutalism, emphasizing function and raw aesthetics.",
   cover: "/styles/neo-brutalist.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -73,6 +75,14 @@ export const neoBrutalist: DesignStyle = {
 - 大胆直接：用视觉冲击力传达信息
 - 反对圆滑：拒绝过度精致，拥抱粗犷`,
 
+  philosophyEn: `Neo-Brutalist design style originates from the Brutalist movement in architecture, emphasizing raw, unadorned functional aesthetics. In web design, this style is expressed through bold black borders, hard-edge shadows, sharp right angles, and high-contrast color schemes.
+
+Core principles:
+- Function first: Every element has a clear purpose
+- Honest expression: No hiding structure, no disguising function
+- Bold and direct: Communicate through visual impact
+- Anti-polish: Reject over-refinement, embrace rawness`,
+
   doList: [
     "使用纯黑边框 border-black border-2 md:border-4",
     "使用硬边缘阴影 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
@@ -86,6 +96,19 @@ export const neoBrutalist: DesignStyle = {
     "按钮 hover 时增大阴影并向左上角偏移：hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]",
   ],
 
+  doListEn: [
+    "Use pure black borders border-black border-2 md:border-4",
+    "Use hard-edge shadows shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+    "Keep sharp corners rounded-none",
+    "Use high-contrast color schemes (black and white primary + vivid accent colors)",
+    "Headings use font-black, body text uses font-mono",
+    "All styles include mobile and desktop responsive values",
+    "Button active:translate-x-[6px] active:translate-y-[6px] active:shadow-none, displacement must equal original shadow pixel value (Physical Crushing, fully flattened)",
+    "Hover instantly switches to high-contrast background color (e.g. hover:bg-[#ffff00]) and enlarges shadow (Brutal Snap, no gradients or opacity transitions allowed)",
+    "Card hover uses ease-out duration-150, maintaining raw collision feel",
+    "Button hover enlarges shadow and offsets toward upper-left: hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]",
+  ],
+
   dontList: [
     "禁止使用圆角 rounded-lg, rounded-md, rounded-xl",
     "禁止使用模糊阴影 shadow-lg, shadow-xl, shadow-2xl",
@@ -96,6 +119,18 @@ export const neoBrutalist: DesignStyle = {
     "禁止按钮 active 状态位移量小于原始阴影像素值（未完全压平，失去碾压感）",
     "禁止 hover 背景色切换使用渐变或 opacity 过渡（必须是硬切，duration-150 ease-out）",
     "禁止按钮 hover 时仅用位移替代阴影消失（hover 应增大阴影强调力量，active 才是完全压平）",
+  ],
+
+  dontListEn: [
+    "Do not use rounded corners rounded-lg, rounded-md, rounded-xl",
+    "Do not use blurred shadows shadow-lg, shadow-xl, shadow-2xl",
+    "Do not use gradients bg-gradient-*",
+    "Do not use gray borders border-gray-*, border-slate-*",
+    "Do not use fade-in/fade-out semi-transparent effects",
+    "Do not use rounded-full (except for decorative circles)",
+    "Do not let button active state displacement be less than original shadow pixel value (not fully flattened, loses crushing feel)",
+    "Do not use gradients or opacity transitions for hover background color switch (must be hard-cut, duration-150 ease-out)",
+    "Do not use only displacement to replace shadow disappearance on button hover (hover should enlarge shadow to emphasize power, active is for full flattening)",
   ],
 
   components: {
@@ -307,6 +342,58 @@ body {
 3. 边框是纯黑
 4. active 位移量等于阴影像素值
 5. 有 md: 响应式前缀`,
+
+  aiRulesEn: `You are a Neo-Brutalist design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Rounded corners: rounded-lg, rounded-md, rounded-xl, rounded-full (except for decorative circles)
+- Blurred shadows: shadow-lg, shadow-xl, shadow-2xl, shadow-md
+- Gradients: bg-gradient-*
+- Gray borders: border-gray-*, border-slate-*
+- Fade-in/fade-out semi-transparent effects
+
+## Must Follow
+
+- No rounded corners or rounded-none
+- Hard-edge shadows shadow-[Xpx_Xpx_0px_0px_rgba(0,0,0,1)]
+- Pure black borders border-black
+- Hover: shadow disappears + translate displacement
+- Headings font-black, body text font-mono
+
+## Color Palette
+
+Primary: Black #000000, White #ffffff
+Accent colors:
+- accent-pink: #ff006e (CTA, hover)
+- accent-green: #ccff00 (success, decoration)
+- accent-blue: #00d9ff (links, info)
+- accent-yellow: #ff9500 (tags, warnings)
+
+## Responsive Rules
+
+All styles must include both mobile and desktop values:
+- Spacing: p-4 md:p-8, py-12 md:py-32
+- Borders: border-2 md:border-4
+- Shadows: shadow-[4px] md:shadow-[8px]
+- Font size: text-sm md:text-base, text-xl md:text-3xl
+- Mobile is approximately 50% of desktop
+
+## Animation & Interaction Rules
+
+- Physical Crushing: Button active:translate-x-[Npx] active:translate-y-[Npx] active:shadow-none, N must equal original shadow pixel value for a fully flattened crushing feel.
+- Brutal Snap: Hover instantly switches to high-contrast background color (e.g. hover:bg-[#ffff00]), duration-150 ease-out, no gradients or opacity transitions -- must be a hard cut.
+- Zero Rounding Easing: All transitions ease-out duration-150, maintaining raw collision feel, rejecting softening.
+- Heavy Focus: Card hover enlarges shadow and switches to colored (rgba(255,0,110,1)), with background color change, emphasizing physical impact.
+
+## Self-Check
+
+After generating code, verify:
+1. No rounded corners
+2. No blurred shadows
+3. Borders are pure black
+4. Active displacement equals shadow pixel value
+5. Has md: responsive prefixes`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const gothic: DesignStyle = {
   nameEn: "Gothic",
   description:
     "中世纪哥特建筑美学，尖拱、玫瑰窗、手抄本装饰、大教堂氛围。深紫与血红配色，金色装饰线条，充满黑暗而庄严的神秘气息。",
+  descriptionEn:
+    "Medieval Gothic architectural aesthetics -- pointed arches, rose windows, manuscript decorations, and cathedral atmosphere. Deep purple and blood red palette with gold ornamental lines, filled with dark and solemn mystery.",
   cover: "/styles/gothic.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const gothic: DesignStyle = {
 - 金色点缀：以金色装饰线条和细节突出奢华感
 - 手抄本风格：繁复的装饰边框和花体字`,
 
+  philosophyEn: `Gothic design draws inspiration from late medieval cathedral architecture and manuscript illumination art, emphasizing vertical lines, pointed arch structures, and intricate decorative patterns.
+
+Core principles:
+- Cathedral aesthetics: The structural beauty of pointed arches, flying buttresses, and rose windows
+- Dark solemnity: Deep tones create a mysterious and solemn atmosphere
+- Gold accents: Gold ornamental lines and details highlight a sense of luxury
+- Manuscript style: Elaborate decorative borders and calligraphic lettering`,
+
   doList: [
     "使用深紫、血红、黑色为主色调",
     "添加金色装饰线条和边框",
@@ -35,12 +45,30 @@ export const gothic: DesignStyle = {
     "交互以缓慢光影增强为主，保持庄严厚重感",
   ],
 
+  doListEn: [
+    "Use deep purple, blood red, and black as primary colors",
+    "Add gold ornamental lines and borders",
+    "Use serif fonts to convey classical feel",
+    "Create a dark, mysterious atmosphere",
+    "Use pointed arch shapes and Gothic patterns",
+    "Add intricate decorative patterns",
+    "Interactions focus on slow light-and-shadow enhancement, maintaining solemn gravitas",
+  ],
+
   dontList: [
     "禁止使用明亮欢快的配色",
     "禁止使用圆润可爱的元素",
     "禁止使用现代无衬线字体作为主标题",
     "禁止使用过于简约的设计",
     "禁止快速抖动、弹性跳动等轻浮动效",
+  ],
+
+  dontListEn: [
+    "Do not use bright cheerful colors",
+    "Do not use round cute elements",
+    "Do not use modern sans-serif fonts for main headings",
+    "Do not use overly minimalist design",
+    "Do not use rapid jitter, elastic bounce, or other frivolous animations",
   ],
 
   components: {
@@ -216,6 +244,45 @@ export const gothic: DesignStyle = {
 - Divine Illumination: 金色边框与文字在 hover 时缓慢增强发光，模拟烛火与神圣光晕。
 - Stone Mechanism: \`:active\` 通过深色内阴影增强按压阻尼感，而非常规缩放反馈。
 - Eternal Slowness: 动画建议 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`，维持庄严厚重气质。`,
+
+  aiRulesEn: `You are a Gothic design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Bright white backgrounds
+- Cheerful, cute design elements
+- Sans-serif fonts for main headings
+- Large rounded corners
+
+## Must Follow
+
+- Deep purple, blood red, black palette bg-[#2d1b4e], bg-[#8b1a1a], bg-[#0a0a0a]
+- Gold decorations text-[#c9a227], border-[#c9a227]
+- Serif fonts font-serif
+- Dark backgrounds bg-[#0a0a0a]
+- Intricate border decorations
+
+## Color Palette
+
+Primary:
+- Deep Purple: #2d1b4e
+- Blood Red: #8b1a1a
+- Pure Black: #0a0a0a
+- Gold: #c9a227
+
+## Special Elements
+
+- Pointed arch shapes
+- Gold ornamental lines
+- Intricate borders
+- Rose window patterns
+
+## Animation & Interaction Rules
+
+- Cathedral Weight: No frivolous bouncing or rapid displacement; interactions should focus on slow changes in light, shadow, and color gradation.
+- Divine Illumination: Gold borders and text slowly intensify their glow on hover, simulating candlelight and divine halos.
+- Stone Mechanism: \`:active\` enhances press resistance through deep inner shadows rather than conventional scale feedback.
+- Eternal Slowness: Animations should use \`duration-500\` to \`duration-700\` with \`ease-in-out\`, maintaining solemn gravitas.`,
 
   examplePrompts: [
     {

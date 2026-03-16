@@ -6,6 +6,8 @@ export const arcadeCrt: DesignStyle = {
   nameEn: "Arcade CRT",
   description:
     "80-90年代街机显示器美学，包含扫描线、屏幕曲率、霓虹辉光和RGB色差效果。适合游戏、复古科技、创意项目。",
+  descriptionEn:
+    "80-90s arcade monitor aesthetics featuring scanlines, screen curvature, neon glow, and RGB chromatic aberration effects. Ideal for gaming, retro tech, and creative projects.",
   cover: "/styles/arcade-crt.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -27,6 +29,16 @@ export const arcadeCrt: DesignStyle = {
 - RGB色差：标题使用品红和青色偏移的 text-shadow
 - 高饱和度：仅使用高饱和度霓虹色`,
 
+  philosophyEn: `Arcade CRT style recreates the nostalgic glow of 80-90s arcade CRT monitors.
+
+Core principles:
+- Scanline overlay: all content areas use repeating-linear-gradient scanline effects
+- Neon glow: key elements use text-shadow/box-shadow glow effects
+- Pixel fonts: all text uses monospace fonts
+- Ultra-dark backgrounds: near-pure black backgrounds maximize neon contrast
+- RGB chromatic aberration: headings use magenta and cyan offset text-shadow
+- High saturation: only high-saturation neon colors are used`,
+
   doList: [
     "Use scanline overlay on all content areas",
     "Apply neon glow (text-shadow/box-shadow) to key elements",
@@ -36,7 +48,24 @@ export const arcadeCrt: DesignStyle = {
     "Use high-saturation neon colors only",
   ],
 
+  doListEn: [
+    "Use scanline overlay on all content areas",
+    "Apply neon glow (text-shadow/box-shadow) to key elements",
+    "Use monospace/pixel fonts for all text",
+    "Keep backgrounds near-black to maximize neon contrast",
+    "Add RGB chromatic aberration on headlines",
+    "Use high-saturation neon colors only",
+  ],
+
   dontList: [
+    "Don't use pastel or muted colors",
+    "Don't use serif or sans-serif body fonts",
+    "Don't use rounded corners larger than 4px",
+    "Don't use subtle shadows - only neon glows",
+    "Don't use gradients that aren't neon-to-dark",
+  ],
+
+  dontListEn: [
     "Don't use pastel or muted colors",
     "Don't use serif or sans-serif body fonts",
     "Don't use rounded corners larger than 4px",
@@ -204,6 +233,33 @@ Animation & Interaction Rules:
 - Arcade Button Press: 点击状态 (\`:active\`) 必须模拟真实的物理街机按键被用力砸下的感觉。使用强烈位移 \`active:translate-y-[4px]\`，并瞬间改变阴影大小。
 - CRT Distortion: 交互时，可以通过改变 text-shadow 的偏移量，瞬间放大 RGB 色差（如洋红和青色分离距离）。
 - Instant Feedback: CRT 没有平滑物理惯性，交互响应时间应偏短，如 \`duration-100\` 或 \`duration-150\`。`,
+
+  aiRulesEn: `STYLE: Arcade CRT
+TYPE: Retro gaming CRT monitor aesthetic
+
+MUST USE:
+- Background: Always near-black (#050505 or #0a0a0a)
+- Primary accent: Neon green (#39ff14) for main interactive elements
+- Secondary accents: Magenta (#ff00ff), Cyan (#00ffff), Red (#ff2a2a), Yellow (#FFFF00)
+- All text must use monospace or pixel fonts (font-mono)
+- Scanline overlay: repeating-linear-gradient on content areas
+- RGB chromatic aberration: text-shadow with offset magenta and cyan on headlines
+- Neon glow: box-shadow with color matching the element
+- uppercase text with wide letter-spacing for labels
+
+MUST AVOID:
+- Light/white backgrounds
+- Pastel or muted colors
+- Serif or sans-serif fonts
+- Large border-radius (max 4px)
+- Subtle/standard shadows (use neon glow only)
+- Gradients that aren't neon-to-dark
+
+Animation & Interaction Rules:
+- Neon Breathing: On hover, outer glow (box-shadow) must visibly expand, optionally with subtle animate-pulse to simulate voltage instability flicker.
+- Arcade Button Press: Active state (:active) must simulate the feel of a real arcade button being slammed down hard. Use strong displacement active:translate-y-[4px] and instantly change shadow size.
+- CRT Distortion: On interaction, RGB chromatic aberration can be amplified by changing text-shadow offsets (magenta and cyan separation distance).
+- Instant Feedback: CRT has no smooth physical inertia; interaction response time should be short, such as duration-100 or duration-150.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const watercolorArt: DesignStyle = {
   nameEn: "Watercolor Art",
   description:
     "真实水彩画美学，有机的晕染边缘、颜料池化效果、纸张纹理叠加和植物水彩装饰，营造如同手绘水彩画般的自然有机视觉体验。",
+  descriptionEn:
+    "Authentic watercolor aesthetics with organic bleeding edges, pigment pooling effects, paper texture overlays, and botanical watercolor accents, creating a natural and organic visual experience reminiscent of hand-painted watercolors.",
   cover: "/styles/watercolor-art.svg",
   styleType: "visual",
   tags: ["expressive", "minimal"],
@@ -26,6 +28,15 @@ export const watercolorArt: DesignStyle = {
 - 植物装饰：叶片和花朵形态的水彩点缀增添自然气息
 - 湿染技法：色彩在湿润表面自然扩散、融合、产生意外之美`,
 
+  philosophyEn: `Watercolor Art style pursues the natural, organic aesthetics of real watercolor painting, emphasizing the flow, seepage, and pooling of pigment on wet paper.
+
+Core principles:
+- Organic edges: SVG feTurbulence + feDisplacementMap simulate authentic watercolor bleeding edges
+- Pigment pooling: Colors concentrate and deepen at edges while center areas remain transparent and layered
+- Paper texture: Warm handmade paper base with subtle fiber texture
+- Botanical accents: Leaf and flower-shaped watercolor touches add a natural atmosphere
+- Wet-on-wet technique: Colors naturally spread, merge, and create unexpected beauty on wet surfaces`,
+
   doList: [
     "使用超柔和的阴影和极低透明度（0.08-0.18）的边框",
     "背景使用纸张纹理叠加（feTurbulence grain overlay）",
@@ -36,6 +47,16 @@ export const watercolorArt: DesignStyle = {
     "色彩始终保持透明感，避免实色填充",
   ],
 
+  doListEn: [
+    "Use ultra-soft shadows and extremely low opacity (0.08-0.18) borders",
+    "Use paper texture overlay on backgrounds (feTurbulence grain overlay)",
+    "Use radial-gradient on buttons to simulate pigment pooling from center to edges",
+    "Use organic corners rounded-3xl and very faint borders on cards",
+    "Use serif font (font-serif) with generous letter spacing",
+    "Generous whitespace to let watercolor elements breathe",
+    "Colors must always maintain transparency, avoid solid fills",
+  ],
+
   dontList: [
     "禁止使用锐利边角（rounded-none/rounded-sm）",
     "禁止使用硬边偏移阴影（shadow-[Npx_Npx_0px]）",
@@ -43,6 +64,15 @@ export const watercolorArt: DesignStyle = {
     "禁止使用纯黑背景或高饱和度霓虹色",
     "禁止使用等宽字体（font-mono）",
     "禁止使用大写文字（uppercase）",
+  ],
+
+  dontListEn: [
+    "No sharp corners (rounded-none/rounded-sm)",
+    "No hard offset shadows (shadow-[Npx_Npx_0px])",
+    "No thick borders (border-2 or above)",
+    "No pure black backgrounds or highly saturated neon colors",
+    "No monospace fonts (font-mono)",
+    "No uppercase text (uppercase)",
   ],
 
   components: {
@@ -173,6 +203,55 @@ export const watercolorArt: DesignStyle = {
   border-radius: 0 100% 0 100%;
   filter: blur(4px);
 }`,
+
+  aiRulesEn: `You are a Watercolor Art design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Sharp edges (rounded-none, rounded-sm)
+- Hard offset shadows (shadow-[Npx_Npx_0px])
+- Thick borders (border-2 or higher)
+- Neon or highly saturated colors
+- Monospace fonts (font-mono)
+- Uppercase text (uppercase)
+- Pure black backgrounds (bg-black)
+
+## Must Follow
+
+- Warm paper background bg-[#faf6f0]
+- Rose pink as primary color #d4a0a0
+- Serif fonts font-serif with generous tracking
+- Soft organic corners rounded-2xl (buttons) / rounded-3xl (cards)
+- Ultra-soft shadows using rgba with low opacity (0.08-0.18)
+- Delicate borders with 15-25% opacity
+- Radial gradient backgrounds for watercolor wash effects
+- Generous whitespace throughout
+
+## Color Palette
+
+Primary:
+- Rose Wash: #d4a0a0
+- Warm Paper: #faf6f0
+- Cerulean: #7bb8d4
+- Sage Green: #8cc5a8
+- Lavender Bloom: #c3a0d4
+- Ochre Gold: #e8c87a
+- Text: #5a3e3e
+
+## Unique Elements
+
+- Paper grain texture overlay (feTurbulence SVG filter)
+- Radial gradient buttons simulating pigment pooling
+- Watercolor wash section backgrounds (multiple radial-gradients)
+- Botanical watercolor accent decorations (leaf/flower shapes)
+- Organic blob-like border-radius values
+
+## Animation & Interaction Rules
+
+- Pigment Bloom: Abandon hard 3D translate on hover. The core interaction simulates "watercolor bleeding." Use a large, soft, same-palette colored shadow that spreads outward on hover, like pigment dissolving on wet paper. Never use hover:scale or hover:-translate-y.
+- Damp Paper Effect: On card hover, shift background opacity or tint slightly, simulating paper absorbing moisture.
+- Liquid Slowness: Watercolor flows slowly. Enforce long transitions: duration-500 or duration-700 with ease-in-out.
+- Soft Press: On :active, do not use aggressive scale-down. Add a subtle inset shadow to simulate a brush pressing gently on damp paper surface.`,
 
   aiRules: `You are a Watercolor Art design style frontend development expert. All generated code must strictly follow these constraints:
 

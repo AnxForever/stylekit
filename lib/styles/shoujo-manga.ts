@@ -6,6 +6,8 @@ export const shoujoManga: DesignStyle = {
   nameEn: "Shoujo Manga",
   description:
     "少女漫画特有的浪漫美学，网点纹理背景、花朵框线装饰、缎带横幅标题、多角星闪光效果、蕾丝边框和爱心元素，以粉色主色调呈现梦幻柔美的视觉体验。",
+  descriptionEn:
+    "The distinctive romantic aesthetics of shoujo manga, featuring screentone texture backgrounds, flower frame decorations, ribbon banner titles, multi-point sparkle effects, lace borders, and heart elements, presented in a pink-dominant palette for a dreamy, soft visual experience.",
   cover: "/styles/shoujo-manga.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -28,6 +30,17 @@ export const shoujoManga: DesignStyle = {
 - 漫画分格：asymmetric manga panel grid 模拟漫画页面排版
 - 樱花飘落：cherry blossom petal 作为散点装饰元素`,
 
+  philosophyEn: `Shoujo Manga style originates from the classic visual language of Japanese girls' manga, with romance, dreaminess, and soft beauty at its core.
+
+Core principles:
+- Screentone texture: Screentone dot patterns as signature decorative backgrounds for panels and areas
+- Flower frame borders: Five-petal flowers as panel corner decorations, creating a picture frame feel
+- Ribbon banners: Ribbon banners as chapter titles and dividers
+- Multi-point sparkles: 4/6/8-point sparkle stars in gold for a dreamy effect
+- Lace borders: Scalloped lace borders as card top/bottom decorations
+- Manga panels: Asymmetric manga panel grid simulating manga page layout
+- Cherry blossom petals: Cherry blossom petals as scattered decorative elements`,
+
   doList: [
     "使用粉色系作为主色调（樱花粉 #ffb7c5）",
     "添加网点纹理背景 screentone（radial-gradient 实现圆点图案）",
@@ -43,6 +56,21 @@ export const shoujoManga: DesignStyle = {
     "active 状态使用柔软回弹和低冲击反馈，保持梦幻基调",
   ],
 
+  doListEn: [
+    "Use pink as the dominant color (sakura pink #ffb7c5)",
+    "Add screentone texture background (radial-gradient for dot patterns)",
+    "Use flower icon Flower2 as panel corner decorations",
+    "Use ribbon banners (ribbon banner with clip-path tails) as chapter titles",
+    "Add multi-point sparkle effects (gold #fde68a dots with glow shadow)",
+    "Use lace scallop borders (radial-gradient for wave edges)",
+    "Use rounded design (rounded-full buttons, rounded-2xl cards, rounded-3xl panels)",
+    "Keep light backgrounds (pearl white #fff5f7, white #ffffff)",
+    "Use asymmetric manga panel grid layout (grid-cols-12 span mixing)",
+    "Interactions use soft expansion and pink glow halo, simulating shoujo manga heartbeat feel (Dokidoki Bounce)",
+    "Screentone texture can slightly brighten or shift on hover, enhancing page-turning feel",
+    "Active state uses soft bounce-back and low-impact feedback, maintaining dreamy tone",
+  ],
+
   dontList: [
     "禁止使用深色或暗色调背景",
     "禁止使用尖角或锐利边角（rounded-none, rounded-sm）",
@@ -52,6 +80,17 @@ export const shoujoManga: DesignStyle = {
     "禁止使用纯黑背景或深灰背景",
     "禁止使用短促生硬的 100ms 动画和机械下沉反馈",
     "禁止用高对比硬光代替柔焦粉彩阴影",
+  ],
+
+  dontListEn: [
+    "No dark or dark-toned backgrounds",
+    "No sharp or pointed corners (rounded-none, rounded-sm)",
+    "No brutalist-style thick borders",
+    "No monospace fonts font-mono",
+    "No strong hard shadows or RGB split shadows",
+    "No pure black or dark gray backgrounds",
+    "No short, stiff 100ms animations or mechanical press-down feedback",
+    "No high-contrast hard light replacing soft-focus pastel shadows",
   ],
 
   components: {
@@ -277,6 +316,51 @@ export const shoujoManga: DesignStyle = {
 .shoujo-glow {
   box-shadow: 0 0 20px rgba(255, 183, 197, 0.3);
 }`,
+
+  aiRulesEn: `You are a Shoujo Manga design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Dark colors or dark backgrounds (bg-black, bg-gray-900, bg-slate-900)
+- Sharp corners (rounded-sm, rounded-none)
+- Brutalist style elements (thick borders border-4+, hard offset shadows)
+- Monospace fonts (font-mono)
+- RGB split shadows or neon glow effects
+- CMY color scheme (cyan, magenta, yellow on black)
+
+## Must Follow
+
+- Pink-dominant palette: sakura pink #ffb7c5, pearl white #fff5f7
+- Fully rounded elements: rounded-full (buttons), rounded-2xl (cards), rounded-3xl (panels)
+- Soft sans-serif fonts: font-sans font-bold for headings, font-sans for body
+- Gentle colored shadows: shadow-[0_4px_15px_color/opacity]
+- Light backgrounds: bg-[#fff5f7] or bg-white/80
+- Border width: border-2 for panels, border for inputs
+
+## Color Palette
+
+Primary:
+- Sakura Pink: #ffb7c5 (main accent, buttons, borders)
+- Pearl White: #fff5f7 (card backgrounds)
+- Lavender Purple: #c4b5fd (secondary accent)
+- Gold Sparkle: #fde68a (sparkle effects, decorative)
+- Rose: #fecdd3 (tertiary, subtle accents)
+
+## Unique Elements
+
+- Screentone dot pattern: radial-gradient(circle, #ffb7c5 0.6px, transparent 0.6px) with 10px spacing at ~6% opacity
+- Flower frame corners: Lucide Flower2 icons positioned at absolute corners of panels
+- Ribbon banner titles: clip-path polygon tails with soft pink background for section headers
+- Sparkle stars: gold #fde68a dots with glow shadow (shadow-[0_0_8px_#fde68a])
+- Lace scallop borders: radial-gradient wave pattern at top/bottom of form cards
+- Manga panel grid: asymmetric grid-cols-12 layout with col-span mixing for panel arrangement
+- Cherry blossom petals: rotated rounded-[50%_0_50%_50%] divs as floating decorations
+
+## Animation & Interaction Rules
+- Dokidoki Bounce: Hover uses soft scale-105 and slow expansion, expressing a heartbeat-like rhythm.
+- Soft Focus Glow: Use large-area low-opacity pink shadows, avoiding hard-edge high-contrast glow.
+- Screentone Shimmer: Screentone texture increases opacity or shifts slightly on hover, enhancing manga page-turning feel.
+- Soft Squish: Active only uses gentle scale-95, no mechanical hard press-down.`,
 
   aiRules: `You are a Shoujo Manga design style frontend development expert. All generated code must strictly follow these constraints:
 

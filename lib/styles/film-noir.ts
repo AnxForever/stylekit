@@ -6,6 +6,8 @@ export const filmNoir: DesignStyle = {
   nameEn: "Film Noir",
   description:
     "源自 1940-50 年代经典黑色电影的戏剧性视觉风格。极致的明暗对比、深沉的灰阶层次、斜线光影和神秘氛围，适合故事驱动的产品、摄影作品集和高端品牌。",
+  descriptionEn:
+    "A dramatic visual style drawn from classic 1940-50s film noir. Extreme light-dark contrast, deep grayscale layers, diagonal shadows, and a mysterious atmosphere, suited for story-driven products, photography portfolios, and premium brands.",
   cover: "/styles/film-noir.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -26,6 +28,15 @@ export const filmNoir: DesignStyle = {
 - 排版古典：使用衬线标题 + 无衬线正文，呼应老式报刊美学
 - 神秘氛围：信息隐约可见，吸引用户深入探索`,
 
+  philosophyEn: `Film Noir style draws from the visual language of 1940-50s Hollywood film noir.
+
+Core principles:
+- Extreme contrast: almost no middle ground between deep black and bright white, creating dramatic tension
+- Light and shadow narrative: diagonal shadows, window-blind light patterns, and spotlight effects tell stories
+- Grayscale dominance: black, white, and gray as primary tones, with only minimal accent colors (crimson, gold)
+- Classical typography: serif headings + sans-serif body text, echoing vintage newspaper aesthetics
+- Mysterious atmosphere: information is barely visible, drawing users to explore deeper`,
+
   doList: [
     "背景使用深黑 bg-[#0a0a0a] 或 bg-neutral-950",
     "文字使用灰白色 text-neutral-100 text-neutral-300",
@@ -41,6 +52,21 @@ export const filmNoir: DesignStyle = {
     "猩红色血线：w-12 h-[2px] bg-[#c41e3a]，group-hover:w-full 扩展（duration-700）",
   ],
 
+  doListEn: [
+    "Use deep black backgrounds bg-[#0a0a0a] or bg-neutral-950",
+    "Text uses gray-white colors text-neutral-100 text-neutral-300",
+    "Use serif fonts for headings font-serif italic",
+    "Cards use extremely subtle gray to distinguish layers bg-neutral-900 bg-neutral-800",
+    "Emphasis elements use crimson text-[#c41e3a] (very sparingly)",
+    "Use linear gradients to simulate light and shadow effects",
+    "Borders are ultra-thin or absent border-neutral-800",
+    "Hover effects use brightness changes rather than color changes",
+    "Buttons use group wrapper with inner light beam sweep layer (-translate-x-[200%] to group-hover:translate-x-[200%])",
+    "active:scale-[0.98] for tactile press confirmation",
+    "focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-neutral-950",
+    "Crimson bleed line: w-12 h-[2px] bg-[#c41e3a], expanding to group-hover:w-full (duration-700)",
+  ],
+
   dontList: [
     "禁止使用彩色背景",
     "禁止使用高饱和度颜色（猩红仅作点缀）",
@@ -51,6 +77,18 @@ export const filmNoir: DesignStyle = {
     "禁止按钮缺少 active:scale-[0.98]（无触觉确认=按钮如同装饰）",
     "禁止 focus:ring 缺少 focus:ring-offset-neutral-950（深色背景上焦点环必须与元素分离才可见）",
     "禁止动画 duration 低于 300ms（Noir 节奏是慢戏剧性的，不是利落的）",
+  ],
+
+  dontListEn: [
+    "Do not use colorful backgrounds",
+    "Do not use high-saturation colors (crimson only as accent)",
+    "Do not use overly large rounded corners rounded-2xl+",
+    "Do not use cartoon/cute elements",
+    "Do not use glow effects",
+    "Do not use gradient buttons",
+    "Do not omit active:scale-[0.98] from buttons (no tactile confirmation = button is decorative)",
+    "Do not use focus:ring without focus:ring-offset-neutral-950 (focus ring must separate from element on dark backgrounds)",
+    "Do not use animation duration below 300ms (Noir rhythm is slow and dramatic, not snappy)",
   ],
 
   components: {
@@ -349,6 +387,39 @@ After generating code, verify:
 5. Cards have crimson bleed line (w-12 → group-hover:w-full)
 6. No animation duration below 300ms
 7. No rounded-2xl or larger`,
+
+  aiRulesEn: `STYLE: Film Noir
+TYPE: Dramatic high-contrast monochrome interface
+
+MUST USE:
+- Deep black background: bg-[#0a0a0a] or bg-neutral-950
+- Grayscale palette: neutral-100 through neutral-950
+- Serif italic headings: font-serif italic
+- Extremely subtle layer separation: bg-neutral-900 vs bg-neutral-800
+- Minimal crimson accent: text-[#c41e3a] / bg-[#c41e3a] (sparingly)
+- Diagonal gradient light effects for drama
+- Thin or no borders: border-neutral-800
+- Uppercase small tracking labels: text-xs uppercase tracking-[0.2em]
+
+MUST AVOID:
+- Colorful backgrounds
+- High saturation colors (crimson only as rare accent)
+- Large rounded corners (rounded-2xl+)
+- Cartoon/cute elements
+- Glow effects (forbidden -- breaks the noir darkness)
+- Gradient buttons
+- Buttons without active:scale-[0.98]
+- focus:ring without focus:ring-offset-neutral-950
+- Animation duration below 300ms (Noir is slow and dramatic, not snappy)
+
+Animation & Interaction Rules:
+- Light Shaft Sweep: ALL buttons use group class. Inside, an absolute div with bg-gradient-to-r from-transparent via-white/30 to-transparent starts at -translate-x-[200%] skew-x-[-20deg] and sweeps to translate-x-[200%] on group-hover. Use transition-transform duration-700 ease-in-out.
+- Harsh Monochrome Swap: Primary button hover does hover:bg-neutral-100 hover:text-neutral-950 hover:border-neutral-100. Complete binary inversion (dark to light).
+- Venetian Blinds Pattern: Cards have an absolute overlay with repeating-linear-gradient at opacity-0, transitioning to group-hover:opacity-[0.06]. Barely perceptible -- like light filtering through half-closed window blinds.
+- Crimson Bleed: Cards include a horizontal line w-12 h-[2px] bg-[#c41e3a] that expands to group-hover:w-full over duration-700 ease-out.
+- Tactile Confirmation: ALL buttons must use active:scale-[0.98].
+- Focus Ring Dark: Always use focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-neutral-950.
+- Slow Easing: Buttons use duration-500. Cards use duration-700. NEVER use duration below 300ms.`,
 
   examplePrompts: [
     {
