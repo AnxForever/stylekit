@@ -43,7 +43,6 @@ export const resourcesDropdown: NavDropdown = {
     { href: "/shadows", labelKey: "nav.shadows" },
     { href: "/typography", labelKey: "nav.typography" },
     { href: "/backgrounds", labelKey: "nav.backgrounds" },
-    { href: "/assets", labelKey: "nav.assets" },
   ],
 };
 
