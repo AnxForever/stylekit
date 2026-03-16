@@ -282,29 +282,10 @@ export function HomeContent({ styles }: HomeContentProps) {
                 <span className="italic">{t("home.title.line3")}</span>
               </h1>
               <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
-              <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
-                <Link
-                  href="/create-style"
-                  className={`${ctaPrimaryClassName} col-span-2`}
-                >
-                  {t("home.ctaPathA")}
-                </Link>
-                <Link
-                  href="/styles"
-                  className={ctaSecondaryClassName}
-                >
-                  {t("home.ctaPathB")}
-                </Link>
-                <Link
-                  href="/generate"
-                  className={ctaSecondaryClassName}
-                >
-                  {t("home.ctaGenerate")}
-                </Link>
-                <GitHubStarButton className="col-span-2" />
+              <div className="flex flex-wrap items-center gap-3">
+                <GitHubStarButton />
+                <p className="text-sm text-muted">{locale === "zh" ? "你的 Star 是对我最好的支持！" : "Your star is the best support for me!"}</p>
               </div>
-
-              <p className="mt-4 text-sm text-muted">{locale === "zh" ? "你的 Star 是对我最好的支持！" : "Your star is the best support for me!"}</p>
 
               <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
