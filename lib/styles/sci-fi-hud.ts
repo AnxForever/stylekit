@@ -6,6 +6,8 @@ export const sciFiHud: DesignStyle = {
   nameEn: "Sci-Fi HUD",
   description:
     "源自星际飞船驾驶舱和战术指挥中心的全息显示界面。深空背景、青色发光边框、半透明玻璃面板、雷达扫描动效，营造'正在操作高科技设备'的沉浸体验。",
+  descriptionEn:
+    "A holographic display interface inspired by starship cockpits and tactical command centers. Deep space backgrounds, cyan glowing borders, translucent glass panels, and radar sweep animations create an immersive experience of operating high-tech equipment.",
   cover: "/styles/sci-fi-hud.svg",
   styleType: "visual",
   tags: ["expressive", "modern", "high-contrast"],
@@ -26,6 +28,15 @@ export const sciFiHud: DesignStyle = {
 - 实时动态：雷达扫描、数据流滚动、状态脉冲传递"系统运行中"的感觉
 - 半透明材质：面板使用玻璃态效果 + 模糊背景`,
 
+  philosophyEn: `Sci-Fi HUD style draws from futuristic tech interfaces in movies and games, where "information IS the interface."
+
+Design principles:
+- Deep space background: extremely deep blue-gray backgrounds simulate a space command room
+- Glowing geometry: all elements use cyan/teal glowing borders to create a holographic projection feel
+- Information density: layering and modularization maintain readability of large amounts of real-time data
+- Real-time dynamics: radar sweeps, data stream scrolling, and status pulses convey a "system running" feeling
+- Translucent materials: panels use glassmorphism effects with backdrop blur`,
+
   doList: [
     "背景使用深空色 bg-[#020617] 或 bg-slate-950",
     "面板使用半透明 bg-slate-900/85 backdrop-blur-xl",
@@ -40,6 +51,20 @@ export const sciFiHud: DesignStyle = {
     "active 状态使用高亮内发光反馈全息点击而非重力下沉",
   ],
 
+  doListEn: [
+    "Use deep space backgrounds bg-[#020617] or bg-slate-950",
+    "Panels use translucent bg-slate-900/85 backdrop-blur-xl",
+    "Borders use glow effects border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.5)]",
+    "Text uses cool tones text-[#E5F2FF] or text-slate-300",
+    "Use font-mono uppercase tracking-wider for a tech feel",
+    "Corner decorations use L-shaped borders border-t-2 border-l-2",
+    "Status indicators use glowing pulse animations",
+    "Progress bars use gradient fills with glow sweep effects",
+    "On interaction, corner brackets perform lock displacement (contract/expand) for Tactical Lock feel",
+    "Scanlines on hover increase contrast or shift, simulating data overload",
+    "Active state uses bright inner glow feedback for holographic click rather than gravity sink",
+  ],
+
   dontList: [
     "禁止使用浅色/白色背景",
     "禁止使用暖色调（橙、粉等暖色仅限警告状态）",
@@ -49,6 +74,17 @@ export const sciFiHud: DesignStyle = {
     "禁止大圆角 rounded-2xl+",
     "禁止面板交互只有普通阴影加深（缺少系统激活感）",
     "禁止状态灯静止不动（HUD 需持续脉冲或闪烁）",
+  ],
+
+  dontListEn: [
+    "Do not use light/white backgrounds",
+    "Do not use warm tones (orange, pink, etc. -- warm colors only for warning states)",
+    "Do not use regular shadows shadow-md (must use glow shadows)",
+    "Do not use serif fonts",
+    "Do not use cute/rounded design language",
+    "Do not use large border-radius rounded-2xl+",
+    "Do not let panel interactions only deepen regular shadows (lacks system activation feel)",
+    "Do not let status lights remain static (HUD requires continuous pulse or flicker)",
   ],
 
   components: {
@@ -215,6 +251,33 @@ SPECIAL EFFECTS:
 - Data Overload: 悬停时提升扫描线可见度与发光强度，模拟数据过载。
 - Holographic Pierce: active 状态优先高亮内发光反馈，不做重力式下沉。
 - Terminal Blinking: 状态灯和关键提示保持脉冲或闪烁，维持系统在线感。`,
+
+  aiRulesEn: `STYLE: Sci-Fi HUD
+TYPE: Futuristic command center interface
+
+MUST USE:
+- Deep space background: bg-[#020617] or bg-slate-950
+- Semi-transparent panels: bg-slate-900/85 backdrop-blur-xl
+- Cyan glow borders: border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.5)]
+- L-shaped corner decorations on important panels
+- font-mono uppercase tracking-wider for labels
+- Status indicators with pulse animation
+- Scanline overlays for tech atmosphere
+- Progress bars with gradient fill and glow
+
+MUST AVOID:
+- Light/white backgrounds
+- Warm color schemes (except for warning/danger status)
+- Regular shadows (shadow-md, shadow-lg)
+- Serif fonts
+- Cute/rounded design language
+- Large border-radius (rounded-2xl+)
+
+Animation & Interaction Rules:
+- Tactical Lock: On hover, L-shaped corner brackets perform short lock displacement (duration-150).
+- Data Overload: On hover, increase scanline visibility and glow intensity to simulate data overload.
+- Holographic Pierce: Active state prioritizes bright inner glow feedback over gravity-style sinking.
+- Terminal Blinking: Status lights and key indicators maintain pulse or flicker to sustain system-online feel.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const minimalistFlat: DesignStyle = {
   nameEn: "Minimalist Flat",
   description:
     "极致简约的扁平设计，无阴影无渐变，通过颜色和留白创造层次。适合作品集、创意机构、艺术网站。",
+  descriptionEn:
+    "Ultra-minimal flat design with no shadows or gradients, creating hierarchy through color and whitespace. Ideal for portfolios, creative agencies, and art websites.",
   cover: "/styles/minimalist-flat.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -25,6 +27,14 @@ export const minimalistFlat: DesignStyle = {
 - 颜色说话：用色彩区分层次而非光影
 - 大量留白：让设计呼吸，突出核心内容`,
 
+  philosophyEn: `Minimalist Flat style pursues the essence of design, removing all unnecessary decoration and letting content take center stage.
+
+Core principles:
+- Less is more: Every element must have a reason to exist
+- Flat purity: Reject shadows, gradients, and other skeuomorphic effects
+- Color speaks: Use color to distinguish layers rather than light and shadow
+- Generous whitespace: Let the design breathe and highlight core content`,
+
   doList: [
     "使用纯色背景 bg-white, bg-black, bg-[accent]",
     "边框使用 border-2 border-black 或无边框",
@@ -35,6 +45,16 @@ export const minimalistFlat: DesignStyle = {
     "悬停使用颜色变化而非阴影",
   ],
 
+  doListEn: [
+    "Use solid color backgrounds bg-white, bg-black, bg-[accent]",
+    "Borders use border-2 border-black or no border",
+    "Keep border radius consistent: all rounded-none or all rounded-full",
+    "Use high-contrast color schemes",
+    "Generous whitespace space-y-12 md:space-y-24",
+    "Text uses pure black or pure white text-black, text-white",
+    "Hover uses color changes rather than shadows",
+  ],
+
   dontList: [
     "禁止使用任何阴影 shadow-*",
     "禁止使用渐变 bg-gradient-*",
@@ -42,6 +62,15 @@ export const minimalistFlat: DesignStyle = {
     "禁止混用不同的圆角值",
     "禁止使用灰色文字（除非是有意为之）",
     "禁止使用图案背景",
+  ],
+
+  dontListEn: [
+    "Do not use any shadows shadow-*",
+    "Do not use gradients bg-gradient-*",
+    "Do not use colors with opacity below 0.5",
+    "Do not mix different border-radius values",
+    "Do not use gray text (unless intentional)",
+    "Do not use pattern backgrounds",
   ],
 
   components: {
@@ -156,6 +185,43 @@ TYPOGRAPHY:
 - High-Contrast Inversion: hover 以前景/背景反色为主，保证视觉反馈干脆明确。
 - Instant Sharpness: 交互优先 transition-none 或 duration-75 的短反馈，不做柔和过渡。
 - Border Dynamics: 聚焦或 hover 通过边框粗细/底线变化建立层次，替代阴影与位移。`,
+
+  aiRulesEn: `STYLE: Minimalist Flat
+TYPE: Ultra-minimal flat design
+
+MUST USE:
+- Pure colors only: bg-white, bg-black, bg-[accent]
+- border-2 border-black for defined edges
+- Consistent corners: all rounded-none OR all rounded-full
+- High contrast: black/white with one accent
+- Generous whitespace: space-y-12 md:space-y-24
+- Color hover states: hover:bg-black hover:text-white
+
+MUST AVOID:
+- ANY shadows (shadow-sm, shadow-md, etc.)
+- ANY gradients (bg-gradient-*)
+- Low opacity colors
+- Gray text (unless intentional muted text)
+- Mixed border-radius values
+- Pattern backgrounds
+
+COLOR RULES:
+- Primary: Black (#000000)
+- Background: White (#ffffff)
+- Accent: One vibrant color (e.g., #ff3366)
+- No grays except for intentional muted elements
+
+TYPOGRAPHY:
+- Headers: font-bold tracking-tight
+- Body: Regular weight, good line-height
+- Labels: text-xs uppercase tracking-widest
+
+## Animation & Interaction Rules
+
+- Strict 2D Flatness: No translate, scale, or shadow Z-axis feedback allowed; all interactions stay within the 2D plane.
+- High-Contrast Inversion: Hover primarily uses foreground/background color inversion, ensuring crisp and clear visual feedback.
+- Instant Sharpness: Interactions prefer transition-none or duration-75 short feedback, no soft transitions.
+- Border Dynamics: Focus or hover establishes hierarchy through border thickness/underline changes, replacing shadows and displacement.`,
 
   examplePrompts: [
     {

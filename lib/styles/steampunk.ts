@@ -6,6 +6,8 @@ export const steampunk: DesignStyle = {
   nameEn: "Steampunk",
   description:
     "维多利亚时代工业机械美学，黄铜与铜质金属元素、齿轮机关装饰、蒸汽管道铆钉细节。适合复古科幻、工业风格、创意展示项目。",
+  descriptionEn:
+    "Victorian-era industrial machinery aesthetics with brass and copper metallic elements, gear mechanism decorations, and steam pipe rivet details. Ideal for retro sci-fi, industrial style, and creative showcase projects.",
   cover: "/styles/steampunk.svg",
   styleType: "visual",
   tags: ["expressive", "retro", "high-contrast"],
@@ -25,6 +27,14 @@ export const steampunk: DesignStyle = {
 - 维多利亚优雅：使用衬线字体和装饰性边框保持古典优雅
 - 做旧纹理：深棕色背景与泛黄纸张色营造年代感`,
 
+  philosophyEn: `Steampunk style originates from the aesthetic imagination of the Victorian-era Industrial Revolution, creating a retro-futuristic feel through brass/copper metallic textures, gear mechanism elements, and precision mechanical details.
+
+Core principles:
+- Metallic texture: Brass and copper as core color tones, presenting warm metallic luster
+- Mechanical decoration: Gears, pipes, rivets, and other industrial elements integrated into interface design
+- Victorian elegance: Serif fonts and ornamental borders maintain classical elegance
+- Aged texture: Dark brown backgrounds and yellowed paper tones create a period atmosphere`,
+
   doList: [
     "背景使用深棕色 bg-[#3d2b1f] 或 bg-[#2a1f15]",
     "使用 shadow-[0_0_15px_rgba(181,166,66,0.3)] 创造黄铜光泽效果",
@@ -35,6 +45,16 @@ export const steampunk: DesignStyle = {
     "使用 font-serif 衬线字体体现维多利亚风格",
   ],
 
+  doListEn: [
+    "Use dark brown backgrounds bg-[#3d2b1f] or bg-[#2a1f15]",
+    "Use shadow-[0_0_15px_rgba(181,166,66,0.3)] for brass luster effects",
+    "Use copper-toned borders border border-[#b87333]/50",
+    "Use cream text text-[#f5f0e1] or brass text text-[#b5a642]",
+    "Use ornamental borders and rivet-style dot elements",
+    "Use brass gradient on buttons bg-gradient-to-b from-[#b5a642] to-[#8a7d32]",
+    "Use font-serif serif fonts for Victorian style",
+  ],
+
   dontList: [
     "禁止使用纯白色背景或现代极简风格",
     "禁止使用霓虹色或高饱和度荧光色",
@@ -42,6 +62,15 @@ export const steampunk: DesignStyle = {
     "禁止使用现代无衬线字体作为标题",
     "禁止使用过大圆角 rounded-2xl, rounded-3xl",
     "禁止使用冷色调蓝色/紫色作为主色",
+  ],
+
+  dontListEn: [
+    "No pure white backgrounds or modern minimalist style",
+    "No neon or highly saturated fluorescent colors",
+    "No flat, textureless design",
+    "No modern sans-serif fonts for headings",
+    "No overly large rounded corners rounded-2xl, rounded-3xl",
+    "No cool-toned blue/purple as primary colors",
   ],
 
   components: {
@@ -169,6 +198,49 @@ SPECIAL EFFECTS:
 - Steam Release: active 时执行干脆下沉并压平阴影，释放时恢复黄铜高光，形成短促阀门反馈。
 - Rivet Glint: 铆钉使用滑动渐变制造慢速反光流转，强调金属工艺细节。
 - Brass Oxidation: hover 时深棕底色略加深，黄铜描边与文本同步提亮，拉开材质对比。`,
+
+  aiRulesEn: `STYLE: Steampunk
+TYPE: Victorian industrial machinery aesthetic
+
+MUST USE:
+- Dark brown background: bg-[#2a1f15] or bg-[#3d2b1f]
+- Brass color: text-[#b5a642], bg-[#b5a642]
+- Copper color: text-[#b87333], border-[#b87333]
+- Cream text: text-[#f5f0e1]
+- Metallic gradients: bg-gradient-to-b from-[#b5a642] to-[#8a7d32]
+- Brass glow shadows: shadow-[0_0_15px_rgba(181,166,66,0.3)]
+- font-serif for Victorian feel
+- uppercase tracking-wider for labels
+- Rivet decorations: small gradient circles at corners
+- Ornate borders: border-2 with copper/brass colors
+
+MUST AVOID:
+- White/light backgrounds
+- Neon or fluorescent colors
+- Flat design without texture
+- Modern sans-serif fonts for headings
+- Large rounded corners (rounded-2xl+)
+- Cold blue/purple color schemes
+
+COLOR RULES:
+- Primary: Brass (#b5a642)
+- Secondary: Copper (#b87333)
+- Background: Dark Brown (#2a1f15, #3d2b1f)
+- Text: Cream (#f5f0e1)
+- Iron accent: (#4a4a4a)
+
+SPECIAL EFFECTS:
+- Corner rivet decorations (small brass circles)
+- Metallic inset shadows for depth
+- Warm glow on hover interactions
+- Gradient overlays for metal texture
+
+## Animation & Interaction Rules
+
+- Clockwork Grind: Motion rhythm is short and linear, simulating gear and lever mechanical engagement, no soft bounce-back.
+- Steam Release: Active state performs a crisp press-down and flattens shadow, restoring brass highlight on release, forming a brief valve feedback.
+- Rivet Glint: Rivets use sliding gradients for slow reflective shimmer, emphasizing metallic craftsmanship detail.
+- Brass Oxidation: On hover, dark brown base slightly deepens while brass strokes and text brighten simultaneously, widening material contrast.`,
 
   examplePrompts: [
     {

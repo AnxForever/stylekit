@@ -6,6 +6,8 @@ export const monochrome: DesignStyle = {
   nameEn: "Monochrome",
   description:
     "纯黑白灰的极致单色设计，通过精确的灰阶层次、字重对比和负空间构建视觉层次，不依赖任何色彩即达到高级感。适合摄影、建筑和高端品牌。",
+  descriptionEn:
+    "An ultimate monochrome design in pure black, white, and gray, building visual hierarchy through precise grayscale levels, font-weight contrast, and negative space without relying on any color. Ideal for photography, architecture, and premium brands.",
   cover: "/styles/monochrome.svg",
   styleType: "visual",
   tags: ["minimal", "high-contrast"],
@@ -26,6 +28,15 @@ export const monochrome: DesignStyle = {
 - 负空间构图：大量留白不是空白，是设计的一部分
 - 网格秩序：严格的网格系统确保每一个元素都有精确的位置`,
 
+  philosophyEn: `Monochrome is the complete abandonment of color, building a full visual hierarchy solely through the precise orchestration of black, white, and gray.
+
+Core principles:
+- Zero hue dependency: no colors with any hue are used; all visual information is conveyed through grayscale
+- Grayscale hierarchy: precise gray gradients from #111111 to #fafafa establish information priority
+- Font-weight contrast: differences between font-light and font-bold replace color differentiation
+- Negative space composition: generous whitespace is not empty -- it is part of the design
+- Grid order: strict grid systems ensure every element has a precise position`,
+
   doList: [
     "使用纯灰色调背景 bg-[#fafafa] 或 bg-white",
     "主要文字使用深灰 text-[#111111]，次要文字 text-[#666666]",
@@ -35,11 +46,27 @@ export const monochrome: DesignStyle = {
     "网格布局对齐 grid-based layout",
   ],
 
+  doListEn: [
+    "Use pure grayscale backgrounds bg-[#fafafa] or bg-white",
+    "Primary text uses dark gray text-[#111111], secondary text text-[#666666]",
+    "Build hierarchy through font-light and font-bold weight contrast",
+    "Generous negative space whitespace py-24 px-8",
+    "Ultra-thin border dividers border-[#e5e5e5]",
+    "Grid-based layout alignment",
+  ],
+
   dontList: [
     "禁止使用任何带色相的颜色（无 blue/red/green/pink 等）",
     "禁止使用 rounded-full 圆形圆角",
     "禁止使用重阴影 shadow-lg shadow-xl shadow-2xl",
     "禁止使用渐变 bg-gradient-to-*",
+  ],
+
+  dontListEn: [
+    "Do not use any color with hue (no blue/red/green/pink, etc.)",
+    "Do not use rounded-full circular corners",
+    "Do not use heavy shadows shadow-lg shadow-xl shadow-2xl",
+    "Do not use gradients bg-gradient-to-*",
   ],
 
   components: {
@@ -125,4 +152,21 @@ export const monochrome: DesignStyle = {
 - Grayscale Breathing: 仅允许相邻灰阶过渡（如 #111111 到 #2a2a2a），保持克制。
 - Line Growth: 优先使用细线延展作为交互提示，减少大面积反差切换。
 - Static Elevation: 避免 translate 和重阴影，维持安静二维平面感。`,
+
+  aiRulesEn: `You are designing in Monochrome style.
+- Use ONLY grayscale colors: #111111, #333333, #666666, #999999, #cccccc, #e5e5e5, #f5f5f5, #fafafa, #ffffff
+- NEVER use any color with hue (no blue, red, green, pink, orange, etc.)
+- Build hierarchy with font-weight contrast: font-light for body, font-bold for headings
+- Use generous negative space (py-24, px-8) for breathing room
+- Borders must be subtle: grayscale borders in the #e5e5e5 to #cccccc range
+- No rounded-full, no heavy shadows, no gradients
+- Keep corners sharp: rounded-sm or rounded-none
+- Uppercase tracking-wider for labels and small text
+- Grid-based alignment for all layouts
+
+Animation & Interaction Rules:
+- Deliberate Slowness: Interactions should use duration-500 to 700 slow rhythm, avoiding fast jumps.
+- Grayscale Breathing: Only allow adjacent grayscale transitions (e.g., #111111 to #2a2a2a), maintaining restraint.
+- Line Growth: Prefer thin line extension as interaction hints, reducing large-area contrast switching.
+- Static Elevation: Avoid translate and heavy shadows, maintaining a quiet two-dimensional plane feel.`,
 };

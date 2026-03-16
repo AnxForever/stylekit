@@ -6,6 +6,8 @@ export const vaporwave: DesignStyle = {
   nameEn: "Neon Retro",
   description:
     "80-90年代复古未来主义美学，粉紫渐变、霓虹色彩、故障艺术效果。包含蒸汽波、合成波、赛博朋克三种变体。",
+  descriptionEn:
+    "80s-90s retro-futuristic aesthetics with pink-purple gradients, neon colors, and glitch art effects. Includes Vaporwave, Synthwave, and Cyberpunk variants.",
   cover: "/styles/vaporwave.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -85,6 +87,14 @@ body { background: #0a0a0f; }
 - 霓虹色彩：粉色、青色、紫色的渐变组合
 - 故障美学：VHS 故障、扫描线、色差效果`,
 
+  philosophyEn: `Vaporwave is an internet subculture aesthetic originating from the early 2010s, blending 80s-90s consumerism symbols, Japanese cultural elements, and early internet aesthetics.
+
+Core principles:
+- Nostalgia: Parody and homage to 80s-90s commercial aesthetics
+- Surrealism: Surreal combinations of Greek sculptures, palm trees, sunsets
+- Neon colors: Pink, cyan, and purple gradient combinations
+- Glitch aesthetics: VHS glitches, scan lines, chromatic aberration effects`,
+
   doList: [
     "使用粉紫青渐变 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500",
     "添加霓虹发光效果 shadow-[0_0_20px_rgba(255,113,206,0.5)]",
@@ -97,6 +107,18 @@ body { background: #0a0a0f; }
     "霓虹光晕强调粉+青双色散射，形成 Aesthetic 重影效果",
   ],
 
+  doListEn: [
+    "Use pink-purple-cyan gradients bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500",
+    "Add neon glow effects shadow-[0_0_20px_rgba(255,113,206,0.5)]",
+    "Use glitch/scan line effects as decoration",
+    "Incorporate Japanese text or Greek sculpture elements",
+    "Use grid line backgrounds for retro feel",
+    "Use bold or pixel-style fonts",
+    "Hover introduces psychedelic warp: slight rotation, displacement, and gradient flow",
+    "Click uses error-popup-style offset displacement, creating old system glitch feedback",
+    "Neon glow emphasizes pink + cyan dual-color scattering, forming Aesthetic ghosting effect",
+  ],
+
   dontList: [
     "禁止使用单调的灰色配色",
     "禁止使用过于现代简约的设计",
@@ -104,6 +126,15 @@ body { background: #0a0a0f; }
     "禁止使用过于正式的字体",
     "禁止仅用单色 glow，必须体现粉青双色发光重影",
     "禁止所有交互都过快，hover 需保留漂浮式慢节奏",
+  ],
+
+  dontListEn: [
+    "Do NOT use monotone gray color schemes",
+    "Do NOT use overly modern minimalist designs",
+    "Do NOT omit neon glow effects",
+    "Do NOT use overly formal fonts",
+    "Do NOT use only single-color glow, must reflect pink-cyan dual-color glowing ghosting",
+    "Do NOT make all interactions too fast, hover should retain a floating slow pace",
   ],
 
   components: {
@@ -286,6 +317,46 @@ body { background: #0a0a0f; }
 - Glitch/Error Snap: active 使用突兀错位（如 translate-x / -translate-y），模拟旧系统故障弹窗反馈。
 - Dual-Color Irradiation: 发光必须呈现粉色 #ff71ce 与青色 #01cdfe 双重散射重影。
 - Floating Slowness: 非点击动画使用 duration-500 左右，营造互联网废墟中的缓慢漂浮感。`,
+
+  aiRulesEn: `You are a Vaporwave design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using monotone gray or black-and-white color schemes
+- Using overly modern minimalist designs
+- Omitting neon glow effects
+- Using formal serif fonts
+
+## Must Follow
+
+- Pink-purple-cyan gradients bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500
+- Neon glow shadow-[0_0_20px_rgba(255,113,206,0.5)]
+- Dark backgrounds bg-purple-900, bg-pink-900
+- Grid line background decoration
+- Uppercase letters and wide tracking uppercase tracking-wider
+
+## Color Palette
+
+Primary:
+- Pink: #ff71ce, from-pink-500
+- Cyan: #01cdfe, from-cyan-500
+- Purple: #b967ff, from-purple-500
+- Green: #05ffa1
+- Yellow: #fffb96
+
+## Special Elements
+
+- Japanese text decoration
+- Greek sculpture imagery
+- Palm trees, sunset elements
+- VHS glitch effects
+
+## Animation & Interaction Rules
+
+- Aesthetic Warp: Hover introduces slight rotation and displacement, driving gradient flow (e.g., bg-[length:200%_auto] + hover:bg-right).
+- Glitch/Error Snap: Active uses abrupt offset (e.g., translate-x / -translate-y), simulating old system error popup feedback.
+- Dual-Color Irradiation: Glow must present pink #ff71ce and cyan #01cdfe dual scattering ghosting.
+- Floating Slowness: Non-click animations use around duration-500, creating a slow floating feel in internet ruins.`,
 
   examplePrompts: [
     {

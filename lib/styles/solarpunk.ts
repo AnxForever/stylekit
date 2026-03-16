@@ -6,6 +6,8 @@ export const solarpunk: DesignStyle = {
   nameEn: "Solarpunk",
   description:
     "乐观的生态未来主义风格，融合自然与科技的和谐美学。有机曲线、植物元素、温暖渐变、柔和圆角。适合环保、可持续发展、绿色科技产品。",
+  descriptionEn:
+    "An optimistic eco-futurism style blending nature and technology in harmonious aesthetics. Organic curves, plant elements, warm gradients, and soft rounded corners. Ideal for eco-friendly, sustainable development, and green tech products.",
   cover: "/styles/solarpunk.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -25,6 +27,14 @@ export const solarpunk: DesignStyle = {
 - 有机曲线：使用柔和圆角和流动线条
 - 乐观情感：明亮、清新、充满生命力的视觉语言`,
 
+  philosophyEn: `Solarpunk style originates from an optimistic imagination of the future, depicting a world where humans and nature coexist harmoniously. It conveys hope and vitality through organic curves, plant elements, and warm color tones.
+
+Core principles:
+- Nature fusion: Organically combining plant and technology elements
+- Warm tones: Leaf green, golden yellow, and sky blue form a warm color palette
+- Organic curves: Soft rounded corners and flowing lines
+- Optimistic emotion: Bright, fresh, and vibrant visual language`,
+
   doList: [
     "背景使用温暖浅色 bg-[#fef3c7] 或 bg-green-50",
     "主色调使用叶绿 text-green-400 或 bg-green-400",
@@ -35,6 +45,16 @@ export const solarpunk: DesignStyle = {
     "使用柔和阴影 shadow-lg shadow-green-200/50",
   ],
 
+  doListEn: [
+    "Use warm light backgrounds bg-[#fef3c7] or bg-green-50",
+    "Use leaf green as primary color text-green-400 or bg-green-400",
+    "Use golden yellow as accent text-amber-400 or bg-amber-400",
+    "Use large rounded corners rounded-2xl or rounded-3xl for organic feel",
+    "Use warm gradients bg-gradient-to-br from-green-400 to-amber-400",
+    "Add plant-themed decorative elements to cards",
+    "Use soft shadows shadow-lg shadow-green-200/50",
+  ],
+
   dontList: [
     "禁止使用纯黑背景或暗色主题",
     "禁止使用尖锐直角 rounded-none",
@@ -42,6 +62,15 @@ export const solarpunk: DesignStyle = {
     "禁止使用高对比度霓虹发光效果",
     "禁止使用反乌托邦、废土元素",
     "禁止使用灰暗压抑的配色方案",
+  ],
+
+  dontListEn: [
+    "No pure black backgrounds or dark themes",
+    "No sharp right angles rounded-none",
+    "No cold industrial elements",
+    "No high-contrast neon glow effects",
+    "No dystopian or wasteland elements",
+    "No gloomy, oppressive color schemes",
   ],
 
   components: {
@@ -168,6 +197,47 @@ SPECIAL EFFECTS:
 - Solar Flare: 主按钮 hover 时从绿色向暖金提亮，并释放更大暖色光晕。
 - Organic Unfolding: 装饰斑块和叶形元素用较长时长展开，推荐 duration-700 与 ease-in-out。
 - Soft Glass Resonance: active 状态优先通过透明度和阴影密度变化反馈，不使用机械硬压感。`,
+
+  aiRulesEn: `STYLE: Solarpunk
+TYPE: Eco-futurism organic interface
+
+MUST USE:
+- Light warm background: bg-[#f0fdf4] or bg-green-50 or bg-[#fef3c7]
+- Organic gradients: bg-gradient-to-r from-green-400 to-emerald-500
+- Soft shadows: shadow-lg shadow-green-200/50
+- Large rounded corners: rounded-2xl or rounded-3xl
+- Plant-themed icons: Leaf, Sun, Sprout, TreePine from Lucide
+- Warm color palette: green-400, amber-400, sky-400
+- Semi-transparent backgrounds: bg-white/80 backdrop-blur-sm
+
+MUST AVOID:
+- Dark/black backgrounds
+- Sharp corners (rounded-none, rounded-sm)
+- Industrial cold design
+- Neon glow effects
+- Dystopian or harsh aesthetics
+- Gray/muted color schemes
+
+COLOR RULES:
+- Primary: Leaf Green (#4ade80)
+- Secondary: Solar Gold (#fbbf24)
+- Accent: Sky Blue (#38bdf8)
+- Background: Warm cream (#fef3c7) or green-50
+- Text: Dark green or gray-800
+- Borders: Green-200 with subtle tint
+
+SPECIAL EFFECTS:
+- Organic gradient decorations
+- Subtle backdrop blur for depth
+- Hover lift with shadow enhancement
+- Smooth transitions duration-300
+
+## Animation & Interaction Rules
+
+- Phototropic Lift: Elements float upward with slight tilt on hover, simulating growth toward light, keeping amplitude gentle to avoid instability.
+- Solar Flare: Primary button brightens from green toward warm gold on hover, releasing a larger warm-toned halo.
+- Organic Unfolding: Decorative patches and leaf elements unfold with longer duration, recommended duration-700 with ease-in-out.
+- Soft Glass Resonance: Active state prioritizes feedback through opacity and shadow density changes, no mechanical hard-press feel.`,
 
   examplePrompts: [
     {

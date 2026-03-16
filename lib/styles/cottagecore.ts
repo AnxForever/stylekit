@@ -6,6 +6,8 @@ export const cottagecore: DesignStyle = {
   nameEn: "Cottagecore",
   description:
     "田园乡村美学，花卉图案、刺绣质感、蘑菇元素和温馨家庭感。柔和的衬线字体、圆润边角、温暖自然的配色，唤起对简单田园生活的向往。",
+  descriptionEn:
+    "Pastoral countryside aesthetics with floral patterns, embroidery textures, mushroom elements, and cozy homey feel. Soft serif fonts, rounded corners, and warm natural colors evoke a longing for simple rural life.",
   cover: "/styles/cottagecore.svg",
   styleType: "visual",
   tags: ["retro", "minimal"],
@@ -25,6 +27,14 @@ export const cottagecore: DesignStyle = {
 - 自然亲密：花卉、蘑菇、蜜蜂、莓果等自然元素
 - 家庭舒适：温暖的色调和柔软的材质感`,
 
+  philosophyEn: `Cottagecore is a romanticized pastoral countryside living aesthetic movement, originating from late 2010s internet culture.
+
+Core principles:
+- Pastoral poetry: A romanticized imagination of simple rural life
+- Handmade warmth: The handcrafted texture of embroidery, knitting, and handwritten fonts
+- Nature intimacy: Natural elements like flowers, mushrooms, bees, and berries
+- Domestic comfort: Warm tones and soft material textures`,
+
   doList: [
     "使用温暖的大地色和花卉色调",
     "采用圆润的边角和柔和的阴影",
@@ -34,11 +44,27 @@ export const cottagecore: DesignStyle = {
     "保持温馨舒适的整体氛围",
   ],
 
+  doListEn: [
+    "Use warm earth tones and floral colors",
+    "Use rounded corners and soft shadows",
+    "Use serif fonts to convey classical feel",
+    "Add flower, leaf, and other natural decorative elements",
+    "Use linen/paper texture backgrounds",
+    "Maintain a warm and cozy overall atmosphere",
+  ],
+
   dontList: [
     "禁止使用冰冷的蓝灰色调",
     "禁止使用尖锐的直角和硬边框",
     "禁止使用霓虹色或高饱和荧光色",
     "禁止使用科技感或工业风元素",
+  ],
+
+  dontListEn: [
+    "Do not use cold blue-gray tones",
+    "Do not use sharp right angles and hard borders",
+    "Do not use neon or high-saturation fluorescent colors",
+    "Do not use tech-feel or industrial-style elements",
   ],
 
   components: {
@@ -202,6 +228,46 @@ Primary:
 - Handmade Imperfection: 悬停可加入非常轻微的旋转（建议不超过 1deg）和小幅放大，避免机械式直上直下。
 - Soft Cushion Press: 点击反馈以柔和按压为主，推荐 \`active:scale-[0.97]\`；\`0.95\` 仅用于大面积元素，避免显得卡通化。
 - Botanical Sway: 装饰性花叶图标可在 hover 时微幅摆动，幅度需克制，不能变成明显抖动动画。`,
+
+  aiRulesEn: `You are a Cottagecore design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Cold blue-gray tones
+- Sharp corners or hard angular borders
+- Neon or high-saturation fluorescent colors
+- Tech or industrial style elements
+
+## Must Follow
+
+- Warm earth tones: green #5a8f5a, yellow #f5d75f, brown #8b7355, pink #d4a0a0
+- Cream/linen backgrounds bg-[#faf6f0]
+- Serif fonts for headings font-serif
+- Rounded corners rounded-full, rounded-2xl, rounded-xl
+- Soft shadows shadow-md, shadow-lg
+
+## Color Palette
+
+Primary:
+- Grass Green: #5a8f5a
+- Daisy Yellow: #f5d75f
+- Earth Brown: #8b7355
+- Flower Pink: #d4a0a0
+- Cream: #faf6f0
+
+## Special Elements
+
+- Floral and botanical decorations
+- Linen/paper texture backgrounds
+- Hand-drawn or embroidery style accents
+- Mushroom and berry motifs
+
+## Animation & Interaction Rules
+
+- Gentle & Breezy: Animation rhythm should be soft and soothing, preferring \`duration-500\` to \`duration-700\` with \`ease-in-out\`.
+- Handmade Imperfection: Hover may include very slight rotation (recommended no more than 1deg) and small scaling, avoiding mechanical straight up-and-down motion.
+- Soft Cushion Press: Click feedback should be a gentle press, recommended \`active:scale-[0.97]\`; \`0.95\` only for large elements to avoid looking cartoonish.
+- Botanical Sway: Decorative floral/leaf icons may sway slightly on hover, but amplitude must be restrained -- no obvious shaking animations.`,
 
   examplePrompts: [
     {

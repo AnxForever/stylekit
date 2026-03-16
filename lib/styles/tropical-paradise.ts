@@ -6,6 +6,8 @@ export const tropicalParadise: DesignStyle = {
   nameEn: "Tropical Paradise",
   description:
     "热带度假风设计，棕榈叶、鲜艳花卉色彩、阳光沙滩的明快基调。适合旅游、度假村、生活方式和餐饮品牌。",
+  descriptionEn:
+    "Tropical resort-inspired design with palm leaves, vivid floral colors, and a bright sun-and-sand tone. Ideal for travel, resorts, lifestyle, and food-and-beverage brands.",
   cover: "/styles/tropical-paradise.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -29,6 +31,18 @@ export const tropicalParadise: DesignStyle = {
 
 设计时应大胆使用鲜艳色彩但保持协调，通过圆润的形状和充足的留白让画面保持通透感。热带风格不是杂乱无章的色彩堆砌，而是像热带花园一样——缤纷却有秩序，热烈却不失优雅。`,
 
+  philosophyEn: `Tropical Paradise draws from the natural colors and resort atmosphere of tropical islands, infusing the vibrant energy of sunshine, ocean, palm leaves, and tropical flowers into digital interfaces.
+
+Core concepts:
+- Bright colors: Bold combinations of coral red, mango yellow, palm green, and teal convey tropical vitality and passion
+- Sunny tone: A warm pale-yellow base color like sunlight on a sandy beach, evoking relaxation and joy
+- Natural inspiration: The organic forms of palm leaves and the colorful blooms of tropical flowers are woven into design elements
+- Resort experience: The overall atmosphere conveys a relaxed, carefree, and anticipation-filled vacation feeling
+
+This style is ideal for travel resorts, tropical dining, surf brands, tropical fruit beverages, island wedding planning, and outdoor lifestyle brands.
+
+When designing, use vivid colors boldly while maintaining harmony. Rounded shapes and generous whitespace keep the composition airy and transparent. Tropical style is not a chaotic pile of colors but rather like a tropical garden -- colorful yet orderly, passionate yet elegant.`,
+
   doList: [
     "使用蓝绿主色 #00897b 搭配暖黄底色 #fffde7",
     "强调色使用珊瑚红 #ff6f61 和芒果黄 #ffc107",
@@ -43,6 +57,20 @@ export const tropicalParadise: DesignStyle = {
     "卡片装饰点在 hover 时可做微幅弹动，模拟海风拂动",
   ],
 
+  doListEn: [
+    "Use teal primary #00897b paired with warm yellow base #fffde7",
+    "Use coral red #ff6f61 and mango yellow #ffc107 as accent colors",
+    "Use rounded-2xl or rounded-full for rounded corners conveying a soft resort feel",
+    "Use warm colored shadows like shadow-[0_4px_20px_rgba(0,137,123,0.2)]",
+    "Use large rounded fonts; headings can pair font-bold with tracking-tight",
+    "Interactive states should be bright and lively: use vivid color changes on hover",
+    "Backgrounds can use subtle warm gradients from-[#fffde7] to-[#fff8e1]",
+    "Maintain generous whitespace and transparency",
+    "Hover uses wave-drift feel (gentle rotation + float up + slight scale), avoid mechanical displacement",
+    "Shadows emphasize tropical sun colors (teal/coral) rather than gray-black shadows",
+    "Card decoration dots can do subtle bouncing on hover, simulating a sea breeze",
+  ],
+
   dontList: [
     "禁止使用深色/黑色背景主题",
     "禁止使用灰色调为主的配色",
@@ -53,6 +81,18 @@ export const tropicalParadise: DesignStyle = {
     "禁止使用过于正式的衬线字体",
     "禁止使用僵硬的短促线性动画破坏度假松弛感",
     "禁止使用暗灰重阴影替代热带彩色光晕",
+  ],
+
+  dontListEn: [
+    "Do not use dark/black background themes",
+    "Do not use gray-dominant color schemes",
+    "Do not use sharp right angles and hard edges rounded-none",
+    "Do not use dull dark tones",
+    "Do not use overly dense layouts",
+    "Do not use cool-toned shadows",
+    "Do not use overly formal serif fonts",
+    "Do not use stiff, short linear animations that break the resort relaxation feel",
+    "Do not use dark gray heavy shadows instead of tropical colored glows",
   ],
 
   components: {
@@ -254,6 +294,49 @@ export const tropicalParadise: DesignStyle = {
 - Tropical Sun Glow: 悬停阴影扩散需采用 teal/coral 等热带色，不用暗灰阴影。
 - Breeze Response: 彩色装饰点在 hover 产生短促微弹动，模拟海风吹拂。
 - Fluid Clicks: active 使用柔和 scale-95 与阴影收敛，营造踩在沙滩上的下压感。`,
+
+  aiRulesEn: `You are a Tropical Paradise design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Dark/black backgrounds
+- Gray-dominant color schemes
+- rounded-none sharp corners
+- Dull dark tones
+- Cool-toned shadows
+- Serif fonts
+
+## Must Follow
+
+- Teal primary #00897b, warm yellow base #fffde7
+- Accent colors: coral red #ff6f61, mango yellow #ffc107, palm green #4caf50
+- Use rounded-2xl or rounded-full for soft rounded corners
+- Warm colored shadows shadow-[0_4px_20px_rgba(0,137,123,0.15)]
+- Generous whitespace and transparency
+- Hover effects use -translate-y float up
+
+## Color Palette
+
+Primary:
+- Teal: #00897b
+- Sunshine white: #fffde7
+- Coral red: #ff6f61
+- Mango yellow: #ffc107
+- Palm green: #4caf50
+
+## Special Elements
+
+- Circular decorative blur orbs (blur-3xl)
+- Colorful small dot decorations
+- Gradient backgrounds from-[#fffde7] to-[#fff8e1]
+- Bright hover float-up animations
+
+## Animation & Interaction Rules
+
+- Wave Drift: Hover uses gentle rotation + float up + micro scale (e.g., -translate-y-2 rotate-1 scale-[1.02]), paired with duration-500 ease-in-out.
+- Tropical Sun Glow: Hover shadow spread should use tropical colors like teal/coral, not dark gray shadows.
+- Breeze Response: Colored decoration dots produce brief micro-bounces on hover, simulating a sea breeze.
+- Fluid Clicks: Active uses soft scale-95 with shadow convergence, creating a sand-stepping press-down feel.`,
 
   examplePrompts: [
     {

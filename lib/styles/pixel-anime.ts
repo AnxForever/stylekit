@@ -6,6 +6,8 @@ export const pixelAnime: DesignStyle = {
   nameEn: "Pixel Anime",
   description:
     "将经典JRPG游戏UI与像素动漫美学融合，以RPG对话框、状态条、像素边框和NES色板打造怀旧8-bit游戏界面风格。",
+  descriptionEn:
+    "Merging classic JRPG game UI with pixel anime aesthetics, featuring RPG dialogue boxes, status bars, pixel borders, and NES color palette for a nostalgic 8-bit game interface style.",
   cover: "/styles/pixel-anime.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -18,6 +20,16 @@ export const pixelAnime: DesignStyle = {
   keywords: ["像素动漫", "JRPG", "8-bit", "RPG对话框", "像素", "NES色板"],
 
   philosophy: `Pixel Anime merges classic JRPG game UI with pixel-art anime aesthetics. Every element feels like it belongs in a 16-bit RPG menu screen.
+
+Core principles:
+- RPG Dialogue Boxes: Window frames with chunky borders and corner block decorations, referencing Final Fantasy and Dragon Quest menu systems
+- Health/Status Bars: HP, MP, and EXP progress bars with pixel-precise flat fills and bordered containers
+- Pixel Borders: All borders are 2px+ solid with hard edges, using image-rendering: pixelated where applicable
+- NES/SNES Palette: Limited color palette of bold primary colors (blue, red, gold, green) on deep purple backgrounds
+- Step-based Interactions: Hover states use translate-x/y in pixel-aligned steps, not smooth transforms
+- Blinking Cursor: Selection arrows and continue prompts use blinking pixel arrows`,
+
+  philosophyEn: `Pixel Anime merges classic JRPG game UI with pixel-art anime aesthetics. Every element feels like it belongs in a 16-bit RPG menu screen.
 
 Core principles:
 - RPG Dialogue Boxes: Window frames with chunky borders and corner block decorations, referencing Final Fantasy and Dragon Quest menu systems
@@ -41,6 +53,20 @@ Core principles:
     "Corner Blink: card corner pixel squares use `group-hover:animate-pulse` to simulate game UI idle standby animation; never animate in non-hover state",
   ],
 
+  doListEn: [
+    "Use RPG dialogue box frames with 4px borders and corner block decorations",
+    "Include HP/MP/EXP status bar UI elements with flat fills",
+    "Apply hard offset shadows (4px_4px_0px) for pixel depth",
+    "Use monospace font exclusively for all text",
+    "Keep interactions step-based (translate-x/y in 2px increments)",
+    "Use NES-palette colors: blue #4a90d9, red #ff6b6b, gold #ffd93d, green #50c878",
+    "Add pixel corner block decorations on major containers",
+    "Framerate Drop: use duration-75 ease-linear for all transitions to simulate 15fps GBA/NDS-era animation cadence",
+    "Blocky Aura: hover glow must be hard-edge multi-directional colored shadows with zero blur: hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]",
+    "Anime Action: button active state applies squash-and-stretch active:scale-x-110 active:scale-y-90 -- classic Japanese animation physics on press",
+    "Corner Blink: card corner pixel squares use group-hover:animate-pulse to simulate game UI idle standby animation; never animate in non-hover state",
+  ],
+
   dontList: [
     "Never use smooth gradients (linear-gradient, radial-gradient)",
     "Never use rounded corners (rounded-lg/xl/full)",
@@ -50,6 +76,17 @@ Core principles:
     "Never use `ease-in-out` or `ease` curves — only `ease-linear` or `transition-none` (pixel animations are abrupt, not organic)",
     "Never use blurred glow shadows for the Blocky Aura effect — zero blur is mandatory for 8-bit authenticity",
     "Never trigger Corner Blink animation outside of `group-hover` state — idle blinking on load creates visual noise",
+  ],
+
+  dontListEn: [
+    "Never use smooth gradients (linear-gradient, radial-gradient)",
+    "Never use rounded corners (rounded-lg/xl/full)",
+    "Never use blur effects (blur, backdrop-blur)",
+    "Never use serif fonts",
+    "Never use soft shadows (shadow-sm/md/lg/xl)",
+    "Never use ease-in-out or ease curves -- only ease-linear or transition-none (pixel animations are abrupt, not organic)",
+    "Never use blurred glow shadows for the Blocky Aura effect -- zero blur is mandatory for 8-bit authenticity",
+    "Never trigger Corner Blink animation outside of group-hover state -- idle blinking on load creates visual noise",
   ],
 
   components: {
@@ -256,6 +293,54 @@ Primary:
 - Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur: \`hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]\`. No \`blur()\` or \`drop-shadow()\` ever.
 - Anime Action: Button active state applies squash-and-stretch: \`active:scale-x-110 active:scale-y-90\` — Japanese animation physics on press, not a translate drop.
 - Corner Blink: Card corner pixel squares must use \`group-hover:animate-pulse\` to simulate idle game UI animation. Never animate in non-hover state — blink only when the player's cursor is over the card.`,
+
+  aiRulesEn: `You are a Pixel Anime design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Smooth gradients (linear-gradient, radial-gradient for decoration)
+- Rounded corners (rounded-lg, rounded-xl, rounded-full)
+- Blur effects (blur, backdrop-blur)
+- Serif fonts
+- Soft shadows (shadow-sm, shadow-md, shadow-lg, shadow-xl)
+
+## Must Follow
+
+- Dark purple background: bg-[#2d1b69] as primary, bg-[#1a1040] as secondary
+- RPG dialogue box frames with 2-4px borders and corner block decorations
+- HP/MP/EXP status bar UI elements with flat color fills
+- Hard offset pixel shadows: shadow-[4px_4px_0px_#1a1040]
+- Monospace font: font-mono for ALL text
+- Bold 2px borders: border-2 border-[#1a1040]
+- Flat colors only, no gradients
+- Step-based hover: hover:translate-x-[2px] hover:translate-y-[2px]
+- Linear easing: ease-linear, duration-75
+
+## Color Palette (NES-inspired)
+
+Primary:
+- Pixel Blue: #4a90d9
+- Dark Purple: #2d1b69
+- Deep Dark: #1a1040
+- Pixel Red: #ff6b6b
+- Pixel Gold: #ffd93d
+- Pixel Green: #50c878
+- Light Text: #e0e0ff
+
+## Unique Elements
+
+- RPG dialogue box frame with corner block decorations
+- HP/MP/EXP status bar progress indicators
+- Pixel-grid background pattern (8px grid)
+- Blinking pixel arrow cursor/continue indicators
+- Step-based pixel-aligned hover translations
+
+## Animation & Interaction Rules
+
+- Framerate Drop: All transitions must use duration-75 ease-linear to simulate 15fps GBA/NDS-era animation. Never use ease-in-out or smooth bezier curves -- pixel animations are abrupt state changes.
+- Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur. No blur() or drop-shadow() ever.
+- Anime Action: Button active state applies squash-and-stretch: active:scale-x-110 active:scale-y-90 -- Japanese animation physics on press, not a translate drop.
+- Corner Blink: Card corner pixel squares must use group-hover:animate-pulse to simulate idle game UI animation. Never animate in non-hover state -- blink only when the player's cursor is over the card.`,
 
   examplePrompts: [
     {

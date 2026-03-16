@@ -6,6 +6,8 @@ export const paperCraft: DesignStyle = {
   nameEn: "Paper Craft",
   description:
     "纸艺与剪纸风格，层叠纸张效果、柔和阴影暗示深度、手作质感边缘。适合儿童品牌、教育产品、创意工作室。",
+  descriptionEn:
+    "Paper craft and paper-cut style with layered paper effects, soft shadows suggesting depth, and handmade textured edges. Ideal for children's brands, educational products, and creative studios.",
   cover: "/styles/paper-craft.svg",
   styleType: "visual",
   tags: ["expressive", "modern"],
@@ -29,6 +31,18 @@ export const paperCraft: DesignStyle = {
 
 适合场景：儿童教育应用、手工创意商店、幼儿园网站、创意工作室作品集、DIY 教程平台。`,
 
+  philosophyEn: `Paper Craft draws design inspiration from paper-cutting art, origami, and handmade collage. Through layered paper effects, soft shadows, and irregular handmade edges, it creates a warm, tactile visual experience.
+
+Core concepts:
+- Paper layering: Multiple layers of shadows and subtle offsets create a realistic stacked-paper feel
+- Handmade texture: Slightly irregular edges avoid an overly digital precision
+- Soft colors: Warm paper-like base colors paired with bright but non-glaring colored paper pieces
+- Depth suggestion: Shadow direction and intensity convey front-to-back layer relationships
+
+This style deliberately avoids the cold, hard precision of the digital world, instead embracing the warmth of handmade craftsmanship. Every UI element should look as if it were cut, folded, and glued from colored paper -- buttons are raised paper pieces, cards are stacked paper layers, input fields are cutout grooves in paper.
+
+Suitable for: children's education apps, handmade craft shops, kindergarten websites, creative studio portfolios, and DIY tutorial platforms.`,
+
   doList: [
     "背景使用纸白色 bg-[#fdf6ee] 或柔和暖白",
     "卡片使用纸张阴影 shadow-[4px_4px_0px_rgba(0,0,0,0.08)] 模拟凸起效果",
@@ -43,6 +57,20 @@ export const paperCraft: DesignStyle = {
     "输入框 focus 使用更深 inset 阴影模拟纸板切口（Cutout Depth）",
   ],
 
+  doListEn: [
+    "Use paper white bg-[#fdf6ee] or soft warm white for backgrounds",
+    "Cards use paper shadows shadow-[4px_4px_0px_rgba(0,0,0,0.08)] to simulate raised effects",
+    "Buttons use offset shadows shadow-[3px_3px_0px_rgba(0,0,0,0.1)] to simulate paper piece elevation",
+    "Use rounded but imperfect corners rounded-xl paired with slight rotation rotate-[1deg]",
+    "Color blocks use bright craft colors bg-[#e85d75], bg-[#5cb8a5], bg-[#f5c040]",
+    "Text uses dark color text-[#2d2d2d] paired with handwritten-feel or rounded sans-serif fonts",
+    "Layering effects use multiple divs with absolute positioning and different shadow depths",
+    "On hover, slightly lift hover:-translate-y-1 hover:shadow-[5px_5px_0px_rgba(0,0,0,0.12)]",
+    "Multi-layer cards on hover let bottom paper layers fan out in different directions (Layer Separation)",
+    "When buttons and cards shift, shadow offset distance increases in sync, emphasizing paper lifting off the surface",
+    "Input focus uses deeper inset shadow to simulate cardboard cutout (Cutout Depth)",
+  ],
+
   dontList: [
     "禁止使用深色/黑色背景",
     "禁止使用发光效果或霓虹阴影",
@@ -53,6 +81,18 @@ export const paperCraft: DesignStyle = {
     "禁止使用 drop-shadow 滤镜（使用 box-shadow 模拟纸张阴影）",
     "禁止使用弹簧回弹曲线（纸片轻但不橡胶）",
     "禁止层叠纸片在 hover 时完全同向运动（会丢失手工剥离感）",
+  ],
+
+  dontListEn: [
+    "Do not use dark/black backgrounds",
+    "Do not use glow effects or neon shadows",
+    "Do not use metallic textures or glassmorphism",
+    "Do not use overly precise right-angle edges (looks too digital)",
+    "Do not use high-saturation fluorescent colors",
+    "Do not use gradient glow effects",
+    "Do not use drop-shadow filters (use box-shadow to simulate paper shadows)",
+    "Do not use spring bounce curves (paper is light but not rubbery)",
+    "Do not let layered paper pieces all move in the same direction on hover (loses the handmade peeling feel)",
   ],
 
   components: {

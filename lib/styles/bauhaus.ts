@@ -6,6 +6,8 @@ export const bauhaus: DesignStyle = {
   nameEn: "Bauhaus",
   description:
     "德国包豪斯学派的设计理念，强调功能主义、几何形式和原色运用，形式追随功能的现代主义经典。",
+  descriptionEn:
+    "The design philosophy of the German Bauhaus school, emphasizing functionalism, geometric forms, and primary color usage -- a modernist classic where form follows function.",
   cover: "/styles/bauhaus.svg",
   styleType: "visual",
   tags: ["modern", "minimal", "high-contrast"],
@@ -26,6 +28,15 @@ export const bauhaus: DesignStyle = {
 - 统一性：艺术与工艺的结合
 - 机械精密：交互如精密仪器运转，短促有力`,
 
+  philosophyEn: `Bauhaus is a design school founded in Germany in 1919, whose core principle "form follows function" profoundly influenced modern design.
+
+Core principles:
+- Functionalism: Design serves function, removing excess decoration
+- Geometric forms: Pure use of circles, squares, and triangles
+- Primary colors: Red, yellow, blue primaries + black and white
+- Unity: The combination of art and craft
+- Mechanical precision: Interactions operate like precision instruments, short and powerful`,
+
   doList: [
     "使用原色（红、黄、蓝）+ 黑白",
     "运用基础几何形状（圆、方、三角）",
@@ -39,6 +50,19 @@ export const bauhaus: DesignStyle = {
     "几何装饰元素在悬停时 scale 或 rotate",
   ],
 
+  doListEn: [
+    "Use primary colors (red, yellow, blue) + black and white",
+    "Apply basic geometric shapes (circle, square, triangle)",
+    "Maintain clean functional design",
+    "Use sans-serif fonts",
+    "Emphasize grid and alignment",
+    "Remove unnecessary decoration",
+    "Use very short duration-150 or duration-200",
+    "Color interactions are hard switches between primaries, no opacity gradients",
+    "Use pseudo-elements for geometric color block slide-in/overlay animations",
+    "Geometric decorative elements scale or rotate on hover",
+  ],
+
   dontList: [
     "禁止使用复杂的渐变",
     "禁止使用装饰性元素",
@@ -47,6 +71,16 @@ export const bauhaus: DesignStyle = {
     "禁止使用柔和缓慢的 duration-500 以上过渡",
     "禁止使用 ease-in-out（使用 ease-out）",
     "禁止使用圆角（rounded-lg 等），仅允许 rounded-full 用于圆形",
+  ],
+
+  dontListEn: [
+    "Do NOT use complex gradients",
+    "Do NOT use decorative elements",
+    "Do NOT use serif fonts",
+    "Do NOT use complex non-primary color schemes",
+    "Do NOT use soft slow duration-500+ transitions",
+    "Do NOT use ease-in-out (use ease-out)",
+    "Do NOT use border radii (rounded-lg etc.), only rounded-full for circles",
   ],
 
   components: {
@@ -239,6 +273,49 @@ export const bauhaus: DesignStyle = {
 - 圆形 rounded-full
 - 方形（无圆角）
 - 三角形（用 border 实现）`,
+
+  aiRulesEn: `You are a Bauhaus design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using complex gradient effects
+- Using decorative elements
+- Using serif fonts
+- Using complex non-primary color schemes
+- Using soft slow ease-in-out or duration-500+
+- Using border radii (rounded-lg, rounded-xl), only rounded-full for pure circles
+
+## Must Follow
+
+- Primary color scheme bg-red-600, bg-yellow-400, bg-blue-600
+- Black and white base bg-black, bg-white, text-black
+- Thick borders border-4 border-black
+- Sans-serif fonts font-bold, font-black
+- Uppercase letters uppercase
+- Geometric shape decorations
+
+## Animation & Interaction Rules
+
+- Structural Shifts: Animations reveal "structure", using sharp displacement or large solid color overlays.
+- Mechanical Precision: Transition times are short and powerful duration-150 or duration-200, using ease-out.
+- Primary Color Swaps: Interactions flip between red(#ff0000), yellow(#ffcc00), blue(#0000ff), black, and white in high-contrast color inversions.
+- Geometric Reveals: Use pseudo-elements (e.g., absolute inset-0 bg-yellow-400) that slide in like a rail from -translate-x-full to translate-x-0 on hover, covering the original color block.
+- Geometric Animation: Geometric decorative elements scale-125 or rotate-45 on hover, expressing mechanical operation feel.
+
+## Color Palette
+
+Only use:
+- Red: #ff0000, bg-red-600
+- Yellow: #ffcc00, bg-yellow-400
+- Blue: #0000ff, bg-blue-600
+- Black: #000000, bg-black
+- White: #ffffff, bg-white
+
+## Geometric Elements
+
+- Circle rounded-full
+- Square (no border radii)
+- Triangle (using border)`,
 
   examplePrompts: [
     {

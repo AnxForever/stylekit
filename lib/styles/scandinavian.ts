@@ -6,6 +6,8 @@ export const scandinavian: DesignStyle = {
   nameEn: "Scandinavian Minimalism",
   description:
     "源自北欧的温暖极简设计，强调自然材质、舒适留白、木质色调和Hygge生活美学，营造宁静温馨的视觉体验。",
+  descriptionEn:
+    "Warm minimalist design rooted in Scandinavian tradition, emphasizing natural materials, generous whitespace, wood tones, and Hygge living aesthetics for a serene, cozy visual experience.",
   cover: "/styles/scandinavian.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -26,6 +28,15 @@ export const scandinavian: DesignStyle = {
 - 功能之美：实用性与美感的完美平衡
 - 光的崇拜：大量留白模拟北欧的自然光线`,
 
+  philosophyEn: `Scandinavian Minimalism originates from the design traditions of Nordic countries such as Denmark, Sweden, Norway, and Finland.
+
+Core principles:
+- Less is more: every element has a reason to exist
+- Connection to nature: using tones of natural materials like wood and linen
+- Hygge spirit: creating a warm, comfortable, and happy atmosphere
+- Beauty in function: a perfect balance of utility and aesthetics
+- Worship of light: generous whitespace simulates Nordic natural light`,
+
   doList: [
     "使用温暖的灰白色背景 bg-[#f5f0eb]",
     "选择自然木质色系 text-[#a89279]",
@@ -38,6 +49,18 @@ export const scandinavian: DesignStyle = {
     "次级文本在 hover 时缓慢提亮，强化排版呼吸感",
   ],
 
+  doListEn: [
+    "Use warm gray-white backgrounds bg-[#f5f0eb]",
+    "Choose natural wood tone colors text-[#a89279]",
+    "Create breathing room with generous whitespace py-28 px-6",
+    "Use delicate font weights font-extralight font-light",
+    "Minimal borders and dividers border-[#d4cdc5]/40",
+    "Smooth, slow transition animations transition-colors duration-500",
+    "Interactions should focus on brightness and color temperature adjustments, simulating the warm touch of wool and wood",
+    "Hover hints should use subtle border or background changes, avoiding strong shadows and obvious displacement",
+    "Secondary text should slowly brighten on hover, enhancing typographic breathing rhythm",
+  ],
+
   dontList: [
     "禁止使用高饱和度的鲜艳色彩",
     "禁止使用粗重的边框和阴影",
@@ -45,6 +68,15 @@ export const scandinavian: DesignStyle = {
     "禁止使用装饰性字体或过大字号",
     "禁止弹跳、回弹或快速 scale 动效",
     "禁止使用强烈按压反馈（active 仅允许细微明暗变化）",
+  ],
+
+  dontListEn: [
+    "Do not use highly saturated vivid colors",
+    "Do not use heavy borders and shadows",
+    "Do not densely arrange elements -- maintain ample whitespace",
+    "Do not use decorative fonts or oversized type",
+    "Do not use bounce, spring, or fast scale animations",
+    "Do not use strong press feedback (active state allows only subtle brightness changes)",
   ],
 
   components: {
@@ -127,4 +159,19 @@ export const scandinavian: DesignStyle = {
 - Morning Fog: 过渡建议使用 duration-700 + ease-in-out，像晨雾散去般缓慢显现。
 - Silent Elevation: hover 提示优先边框和底色细微变化，阴影保持极轻或省略。
 - No Impact: active 状态仅做轻微明暗反馈，不做明显形变。`,
+
+  aiRulesEn: `You are designing in Scandinavian Minimalism style.
+- Use warm neutral tones: birch white #f5f0eb, charcoal #3d3d3d, wool gray #d4cdc5
+- Accent with natural colors: pine green #5a7a6b, fjord blue #7ba0b8
+- Font weights: extralight and light only
+- Generous whitespace and breathing room
+- Subtle borders and transitions
+- No bright colors, no heavy shadows
+- Lowercase text for a calm, approachable feel
+
+Animation & Interaction Rules:
+- Warm Texture: Animations should convey natural material touch, prioritizing brightness/color temperature adjustments over bouncing and scaling.
+- Morning Fog: Transitions should use duration-700 + ease-in-out, revealing slowly like morning mist dissipating.
+- Silent Elevation: Hover hints should prioritize subtle border and background changes, keeping shadows extremely light or omitted.
+- No Impact: Active state should only provide slight brightness feedback, with no noticeable deformation.`,
 };

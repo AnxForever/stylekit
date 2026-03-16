@@ -6,6 +6,8 @@ export const synthwave: DesignStyle = {
   nameEn: "Synthwave",
   description:
     "80年代复古未来主义音乐美学，霓虹粉紫配色、网格地平线、日落渐变和复古科技感，充满怀旧的未来想象。",
+  descriptionEn:
+    "80s retro-futuristic music aesthetic with neon pink-purple palette, grid horizon, sunset gradients, and vintage tech feel -- brimming with nostalgic visions of the future.",
   cover: "/styles/synthwave.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const synthwave: DesignStyle = {
 - 网格地平线：透视网格延伸至地平线
 - 日落渐变：橙粉紫的日落天空`,
 
+  philosophyEn: `Synthwave is an electronic music genre and visual aesthetic originating in the mid-2000s, paying homage to 80s sci-fi films, video games, and synthesizer music.
+
+Core principles:
+- Retro-futurism: Nostalgia for the 80s vision of the future
+- Neon aesthetics: Pink, purple, and cyan neon light effects
+- Grid horizon: Perspective grid extending to the horizon
+- Sunset gradient: Orange-pink-purple sunset sky`,
+
   doList: [
     "使用粉紫青霓虹配色",
     "添加透视网格背景",
@@ -38,6 +48,19 @@ export const synthwave: DesignStyle = {
     "Overvoltage Press: active state causes power surge `active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]` — all neon goes white as the circuit overloads at the moment of contact",
   ],
 
+  doListEn: [
+    "Use pink-purple-cyan neon palette",
+    "Add perspective grid background",
+    "Use sunset gradient (orange to pink to purple)",
+    "Add neon glow effects",
+    "Use retro-style fonts",
+    "Add sun/mountain silhouette elements",
+    "Arcade Pulse: neon border and glow elements use `hover:animate-pulse` or flicker on hover -- the arcade machine's CRT screen energizes when touched",
+    "Multidimensional Neon: button uses simultaneous inset cyan + outer pink shadows `shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]` -- two neon tubes glow from opposite directions, intensify together on hover",
+    "Virtual Grid Shift: background pixel grid uses `group-hover:opacity-30 group-hover:scale-110 transition-all duration-500` -- the virtual space expands as the player approaches",
+    "Overvoltage Press: active state causes power surge `active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]` -- all neon goes white as the circuit overloads at the moment of contact",
+  ],
+
   dontList: [
     "禁止使用明亮的白色背景",
     "禁止使用现代简约的设计",
@@ -47,6 +70,17 @@ export const synthwave: DesignStyle = {
     "禁止 hover 只改变一个 shadow 值（必须同时增强 inset cyan 和 outer pink 双轨）",
     "禁止 active 状态保留彩色（Overvoltage Press 要求 `active:bg-white active:text-black` — 过载一切归零）",
     "禁止 Virtual Grid 在非 group-hover 时变化（网格只在玩家接近时才激活）",
+  ],
+
+  dontListEn: [
+    "Do not use bright white backgrounds",
+    "Do not use modern minimalist design",
+    "Do not omit neon glow effects",
+    "Do not use overly formal fonts",
+    "Do not use single-direction neon (Multidimensional Neon requires inset + outer dual-direction simultaneous glow)",
+    "Do not change only one shadow value on hover (must intensify both inset cyan and outer pink tracks simultaneously)",
+    "Do not retain color in active state (Overvoltage Press requires `active:bg-white active:text-black` -- overload resets everything)",
+    "Do not animate Virtual Grid outside of group-hover (grid only activates when the player approaches)",
   ],
 
   components: {
@@ -236,6 +270,45 @@ export const synthwave: DesignStyle = {
 - Multidimensional Neon: Button uses simultaneous inset cyan + outer pink: \`shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]\` at rest. On hover BOTH intensify together: \`hover:shadow-[0_0_30px_rgba(0,255,255,0.8),inset_0_0_20px_rgba(255,0,255,0.6)]\`. Never single-direction neon — two tubes always glow from opposite directions.
 - Virtual Grid Shift: Background pixel grid uses \`group-hover:opacity-30 group-hover:scale-110 transition-all duration-500\` — the virtual space expands as the player approaches, creating depth through the monitor glass.
 - Overvoltage Press: Active state causes a power surge: \`active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]\` — all neon color drains to white as the circuit overloads at the moment of contact. The entire color system collapses to pure electricity.`,
+
+  aiRulesEn: `You are a Synthwave design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Bright white backgrounds
+- Modern minimalist design
+- Omitting neon glow effects
+- Formal fonts
+
+## Must Follow
+
+- Pink-purple-cyan palette from-pink-500, from-purple-500, from-cyan-500
+- Dark backgrounds bg-purple-900, bg-black
+- Neon glow shadow-[0_0_20px_rgba(255,0,255,0.5)]
+- Grid background decorations
+- Sunset gradient from-orange-500 via-pink-500 to-purple-500
+
+## Color Palette
+
+Primary:
+- Pink: #ff00ff, from-pink-500
+- Cyan: #00ffff, from-cyan-500
+- Purple: #7b68ee, from-purple-500
+- Orange: #ff6ec7
+
+## Special Elements
+
+- Perspective grid floor
+- Sunset sun
+- Mountain silhouettes
+- Scanline effects
+
+## Animation & Interaction Rules
+
+- Arcade Pulse: Neon border elements use \`hover:animate-pulse\` -- the arcade machine's CRT screen flickers to life when touched. Only trigger on hover, never on load.
+- Multidimensional Neon: Button uses simultaneous inset cyan + outer pink: \`shadow-[0_0_15px_rgba(255,0,255,0.4),inset_0_0_10px_rgba(0,255,255,0.2)]\` at rest. On hover BOTH intensify together: \`hover:shadow-[0_0_30px_rgba(0,255,255,0.8),inset_0_0_20px_rgba(255,0,255,0.6)]\`. Never single-direction neon -- two tubes always glow from opposite directions.
+- Virtual Grid Shift: Background pixel grid uses \`group-hover:opacity-30 group-hover:scale-110 transition-all duration-500\` -- the virtual space expands as the player approaches, creating depth through the monitor glass.
+- Overvoltage Press: Active state causes a power surge: \`active:scale-90 active:bg-white active:text-black active:shadow-[0_0_50px_#ffffff]\` -- all neon color drains to white as the circuit overloads at the moment of contact. The entire color system collapses to pure electricity.`,
 
   examplePrompts: [
     {

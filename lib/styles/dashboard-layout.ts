@@ -6,6 +6,8 @@ export const dashboardLayout: DesignStyle = {
   nameEn: "Dashboard Layout",
   description:
     "数据驱动的仪表盘布局，包含侧边导航、顶部工具栏、多模块数据面板和图表区域，适合后台管理系统、数据分析平台和监控面板。",
+  descriptionEn:
+    "A data-driven dashboard layout featuring side navigation, top toolbar, multi-module data panels, and chart areas -- ideal for admin systems, data analytics platforms, and monitoring dashboards.",
   cover: "/styles/dashboard-layout.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const dashboardLayout: DesignStyle = {
 - 密度控制：在信息密度和可读性之间取得平衡
 - 实时性：布局支持数据的实时更新和刷新`,
 
+  philosophyEn: `Dashboard Layout is a layout solution centered on data presentation, enabling users to efficiently monitor and analyze multi-dimensional data through side navigation, multi-module data panels, and a flexible grid system.
+
+Core principles:
+- Data first: All layout decisions serve efficient data presentation
+- Modular: Each data panel is an independent module that can be flexibly combined
+- Density control: Striking a balance between information density and readability
+- Real-time: Layout supports real-time data updates and refreshes`,
+
   doList: [
     "使用深色侧边导航栏 bg-gray-900 w-64",
     "顶部工具栏包含搜索、通知和用户信息",
@@ -35,12 +45,29 @@ export const dashboardLayout: DesignStyle = {
     "使用颜色编码区分数据状态（绿增红减）",
   ],
 
+  doListEn: [
+    "Use dark side navigation bar bg-gray-900 w-64",
+    "Top toolbar includes search, notifications, and user info",
+    "Use CSS Grid for data panels grid grid-cols-4",
+    "KPI cards use large font numbers to display key metrics",
+    "Chart areas use appropriate ratios aspect-video or aspect-square",
+    "Use color coding to distinguish data states (green for increase, red for decrease)",
+  ],
+
   dontList: [
     "禁止侧边栏和内容区比例失调",
     "禁止数据面板间距不一致",
     "禁止忽略加载状态和空状态",
     "禁止所有面板大小完全相同",
     "禁止使用过多的装饰性元素分散注意力",
+  ],
+
+  dontListEn: [
+    "Do not allow disproportionate sidebar-to-content ratios",
+    "Do not use inconsistent spacing between data panels",
+    "Do not ignore loading states and empty states",
+    "Do not make all panels exactly the same size",
+    "Do not use excessive decorative elements that distract attention",
   ],
 
   components: {
@@ -322,6 +349,56 @@ export const dashboardLayout: DesignStyle = {
 - KPI Focus: KPI 卡片 hover 时可轻微上浮，并通过 \`group-hover\` 让核心数字微放大或变色，强化视线聚焦。
 - Hover Hinting: 数据卡片、数据行、可操作面板在悬停时必须提供明确底色反馈（如 \`hover:bg-gray-50\`）。
 - Action Precision: 按钮点击应有明确按下反馈（如 \`active:scale-[0.97]\`），并保留可见 focus ring 以满足 a11y。`,
+
+  aiRulesEn: `You are a Dashboard Layout expert. All generated code must strictly follow these constraints:
+
+## Layout Structure
+
+- Left: Dark side navigation bar w-64 bg-gray-900
+- Top: White toolbar (search, notifications, user)
+- Main: KPI cards + chart panels + data tables
+
+## KPI Cards
+
+- Use grid grid-cols-4 layout
+- Each card includes: label, value, trend change
+- Growth uses green text-green-500
+- Decline uses red text-red-500
+- Stable uses yellow text-yellow-500
+
+## Chart Area
+
+- Main chart takes 2/3 width col-span-2
+- Secondary chart takes 1/3 width
+- Use aspect-ratio to maintain proportions
+
+## Side Navigation
+
+- Dark background bg-gray-900
+- Current page highlighted bg-white/10
+- Icon + text menu items
+- User info at bottom
+
+## Responsive
+
+Large screens: Sidebar + 4-column KPI + charts
+Medium screens: Sidebar + 2-column KPI
+Small screens: Hidden sidebar + 1-column KPI
+
+## Self-check
+
+1. Side navigation is dark and fixed
+2. KPI card data is clear
+3. Chart area proportions are appropriate
+4. Status color coding is correct
+5. Responsive adaptation is complete
+
+## Animation & Interaction Rules
+
+- Crisp SaaS Feel: All micro-interactions should be fast and clear, preferring \`duration-150\` + \`ease-out\`.
+- KPI Focus: KPI cards may slightly lift on hover, using \`group-hover\` to micro-scale or recolor the core number for visual focus.
+- Hover Hinting: Data cards, data rows, and actionable panels must provide clear background feedback on hover (e.g., \`hover:bg-gray-50\`).
+- Action Precision: Button clicks should have clear press feedback (e.g., \`active:scale-[0.97]\`), with visible focus ring for a11y.`,
 
   examplePrompts: [
     {

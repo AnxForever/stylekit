@@ -6,6 +6,8 @@ export const handDrawnDoodle: DesignStyle = {
   nameEn: "Hand-Drawn Doodle",
   description:
     "手绘线条、涂鸦插画、不规则形状和手写字体。像在笔记本上随手画出的设计，充满创意和趣味性，传达温暖亲切的手工感。",
+  descriptionEn:
+    "Hand-drawn lines, doodle illustrations, irregular shapes, and handwritten fonts. Like designs casually sketched in a notebook -- full of creativity and fun, conveying a warm and approachable handmade feel.",
   cover: "/styles/hand-drawn-doodle.svg",
   styleType: "visual",
   tags: ["expressive", "minimal"],
@@ -27,6 +29,16 @@ export const handDrawnDoodle: DesignStyle = {
 - 装饰元素：胶带、图钉、回形针、咖啡渍等纸张装饰
 - 涂鸦点缀：随手画的星星、波浪线、箭头等装饰`,
 
+  philosophyEn: `Hand-Drawn Doodle style simulates the texture of hand-crafted drawing, creating a warm, approachable, and creatively rich visual experience.
+
+Core principles:
+- Notebook paper: Cream-white background simulating real notebooks, with blue ruled lines and red margin lines
+- Hand-drawn lines: Dashed borders simulating hand-drawn strokes, avoiding precise geometry
+- Irregular forms: Subtle rotations and offsets create a handmade feel
+- Marker pen colors: Red, teal, and yellow three-color marker pen accents
+- Decorative elements: Tape, pushpins, paperclips, coffee stain rings, and other paper decorations
+- Doodle accents: Casually drawn stars, squiggly lines, arrows, and other decorations`,
+
   doList: [
     "使用虚线边框（border-dashed）模拟手绘线条",
     "使用奶白纸张色 #fffef5 背景",
@@ -38,6 +50,17 @@ export const handDrawnDoodle: DesignStyle = {
     "使用胶带/图钉/回形针等装饰元素",
   ],
 
+  doListEn: [
+    "Use dashed borders (border-dashed) to simulate hand-drawn lines",
+    "Use cream paper color #fffef5 background",
+    "Use ink black #2c2c2c as primary color",
+    "Add subtle rotation (rotate) to simulate hand-drawn irregularity",
+    "Use marker pen colors: red #ff6b6b, teal #4ecdc4, yellow #ffd93d",
+    "Use sans-serif fonts, maintaining a casual feel",
+    "Add notebook ruled-line backgrounds",
+    "Use tape/pushpin/paperclip decorative elements",
+  ],
+
   dontList: [
     "禁止使用精确的几何形状和直角（rounded-none）",
     "禁止使用渐变效果",
@@ -45,6 +68,15 @@ export const handDrawnDoodle: DesignStyle = {
     "禁止使用等宽字体",
     "禁止使用实线边框（border-solid）",
     "禁止使用大圆角（rounded-lg 及以上）",
+  ],
+
+  dontListEn: [
+    "Do not use precise geometric shapes and right angles (rounded-none)",
+    "Do not use gradient effects",
+    "Do not use precise shadows (shadow-md, etc.)",
+    "Do not use monospace fonts",
+    "Do not use solid borders (border-solid)",
+    "Do not use large border radius (rounded-lg and above)",
   ],
 
   components: {
@@ -293,6 +325,57 @@ Primary:
 - Ink Filling: 可增强边框粗细或颜色对比来模拟“补笔”，但仍保持 border-dashed 手绘语义。
 - Offset Smudge: 仅使用硬边偏移阴影，hover 时改变偏移量与标记笔颜色，像二次描边。
 - Paper Press: active 状态压平阴影并轻微缩放（如 scale-[0.98]），呈现手指按纸反馈。`,
+
+  aiRulesEn: `You are a Hand-Drawn Doodle design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Sharp geometric precision (rounded-none) - use rounded-sm instead
+- Gradients of any kind (bg-gradient)
+- Precise shadows (shadow-md, shadow-lg) - use hard offset shadows only
+- Monospace fonts (font-mono)
+- Solid borders (border-solid) - always use border-dashed
+- Large border radius (rounded-lg and above)
+- Dark backgrounds - always use paper-white
+
+## Must Follow
+
+- Paper-white background: bg-[#fffef5]
+- Ink black text: text-[#2c2c2c]
+- Dashed borders everywhere: border-2 border-dashed
+- Sans-serif fonts only: font-sans
+- Subtle rotations on elements for hand-drawn feel (rotate-[Ndeg])
+- Marker colors: red #ff6b6b, teal #4ecdc4, yellow #ffd93d
+- Offset shadows with marker colors: shadow-[Npx_Npx_0px_color]
+- Notebook line backgrounds for sections
+
+## Color Palette
+
+Primary:
+- Ink Black: #2c2c2c (text, borders)
+- Paper White: #fffef5 (backgrounds)
+- Red Marker: #ff6b6b (accents, highlights)
+- Teal Marker: #4ecdc4 (shadows, accents)
+- Yellow Marker: #ffd93d (highlights, tape)
+
+## Special Elements
+
+- Notebook line backgrounds (repeating-linear-gradient)
+- Red margin line decorations
+- Wavy underlines (text-decoration-style: wavy)
+- Marker highlight effects
+- Tape, pushpin, and paperclip decorations on cards
+- Subtle element rotations for sketchy feel
+- Spiral binding holes on left edge
+- Coffee stain ring decorations
+- Hand-drawn stars and squiggles via SVG
+
+## Animation & Interaction Rules
+
+- Stop-Motion Jitter: Hover creates hand-drawn tremor feel through tiny rotations and displacements, avoiding smooth mechanical motion.
+- Ink Filling: May enhance border thickness or color contrast to simulate "re-inking", while maintaining border-dashed hand-drawn semantics.
+- Offset Smudge: Only use hard-edge offset shadows; hover changes offset amount and marker pen color, like a second stroke.
+- Paper Press: Active state flattens shadow with slight scale (e.g., scale-[0.98]), presenting finger-pressing-paper feedback.`,
 
   examplePrompts: [
     {

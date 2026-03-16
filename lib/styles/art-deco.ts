@@ -6,6 +6,8 @@ export const artDeco: DesignStyle = {
   nameEn: "Art Deco",
   description:
     "1920-30年代的奢华设计风格，几何对称图案、金色装饰、优雅线条和高端质感，传达精致与繁荣。",
+  descriptionEn:
+    "A luxurious design style from the 1920s-30s featuring geometric symmetrical patterns, gold decorations, elegant lines, and premium textures, conveying sophistication and prosperity.",
   cover: "/styles/art-deco.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const artDeco: DesignStyle = {
 - 精致工艺：细腻的线条和装饰细节
 - 现代与传统：机械时代美学与古典优雅的结合`,
 
+  philosophyEn: `Art Deco is a design style popular in the 1920s-30s, blending modernist geometric forms with the luxury of traditional craftsmanship.
+
+Core principles:
+- Geometric symmetry: Radial lines, repeating geometric patterns
+- Luxury: High-end color schemes of gold, black, and deep blue
+- Refined craftsmanship: Delicate lines and decorative details
+- Modern meets traditional: Machine age aesthetics combined with classical elegance`,
+
   doList: [
     "使用金色和深色的高对比配色",
     "添加几何对称图案和放射状线条",
@@ -34,11 +44,27 @@ export const artDeco: DesignStyle = {
     "使用细腻的线条装饰",
   ],
 
+  doListEn: [
+    "Use high-contrast gold and dark color schemes",
+    "Add geometric symmetrical patterns and radial lines",
+    "Use elegant serif fonts",
+    "Add gold borders and decorative lines",
+    "Maintain symmetrical and balanced layouts",
+    "Use delicate line decorations",
+  ],
+
   dontList: [
     "禁止使用过于鲜艳的配色",
     "禁止使用不对称的混乱布局",
     "禁止使用过于现代的无衬线字体",
     "禁止省略装饰性元素",
+  ],
+
+  dontListEn: [
+    "Do NOT use overly vibrant modern color schemes",
+    "Do NOT use asymmetrical chaotic layouts",
+    "Do NOT use overly modern sans-serif fonts",
+    "Do NOT omit decorative elements",
   ],
 
   components: {
@@ -290,6 +316,46 @@ export const artDeco: DesignStyle = {
 - Golden Shimmer: 悬停时，通过背景渐变位置移动（如 \`bg-[length:200%_auto] hover:bg-right\`）模拟黄金材质反光与流泽。
 - Symmetrical Expansion: 交互时，尽量保持对称性。例如悬停卡片时，四角装饰线框可以产生向外轻微扩张（通过 \`group-hover:translate\` 实现）。
 - Subtle Lift: 采用极轻微上浮和金色光晕放大效果。`,
+
+  aiRulesEn: `You are an Art Deco design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using overly vibrant modern color schemes
+- Using asymmetrical chaotic layouts
+- Using rounded modern fonts
+- Omitting decorative borders and lines
+
+## Must Follow
+
+- Gold color scheme text-yellow-500, border-yellow-500
+- Dark backgrounds bg-slate-900, bg-slate-800
+- Serif fonts font-serif
+- Wide letter spacing tracking-wider, tracking-[0.3em]
+- Symmetrical layouts and center alignment
+- Geometric decorative elements
+
+## Color Palette
+
+Primary:
+- Gold: #d4af37, text-yellow-500, border-yellow-500
+- Deep blue: #1a1a2e, bg-slate-900
+- Navy: #2d2d44, bg-slate-800
+- Cream: #f5f5dc
+
+## Decorative Elements
+
+- Corner decorative borders
+- Radial lines
+- Gradient dividers
+- Geometric patterns
+
+## Animation & Interaction Rules
+
+- Elegant & Slow: Animations must appear noble and unhurried. Use longer durations like \`duration-500\` or \`duration-700\`, never with a hasty bouncy feel.
+- Golden Shimmer: On hover, simulate gold material reflection and luster through background gradient position movement (e.g., \`bg-[length:200%_auto] hover:bg-right\`).
+- Symmetrical Expansion: During interaction, maintain symmetry. For example, on card hover, corner decorative frames can slightly expand outward (via \`group-hover:translate\`).
+- Subtle Lift: Use very slight float and gold halo expansion effects.`,
 
   examplePrompts: [
     {

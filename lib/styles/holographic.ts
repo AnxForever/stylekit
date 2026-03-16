@@ -6,6 +6,8 @@ export const holographic: DesignStyle = {
   nameEn: "Holographic",
   description:
     "彩虹光谱虹彩渐变美学，模拟全息投影的棱镜折射与动态光效，营造超凡脱俗的虹彩体验。",
+  descriptionEn:
+    "Rainbow spectrum iridescent gradient aesthetics simulating holographic prismatic refraction and dynamic light effects for an otherworldly iridescent experience.",
   cover: "/styles/holographic.svg",
   styleType: "visual",
   tags: ["modern", "expressive", "high-contrast"],
@@ -36,6 +38,14 @@ export const holographic: DesignStyle = {
 - 动态光效：渐变位移动画模拟全息箔片的角度变化
 - 半透明层叠：玻璃质感卡片配合背景模糊`,
 
+  philosophyEn: `Holographic simulates the prismatic beauty of holographic foil -- rainbow spectrum gradients that shift and flow with viewing angle, creating an otherworldly iridescent experience.
+
+Core principles:
+- Prismatic refraction: multi-color spectrum gradients with 3+ color stops
+- Cosmic deep space: dark backgrounds make holographic elements leap forward
+- Dynamic light effects: gradient position animation simulates holographic foil angle changes
+- Translucent layering: glass-textured cards with backdrop blur`,
+
   doList: [
     "Use multi-color gradient backgrounds (linear-gradient with 3+ color stops)",
     "Apply background-size animation for moving gradient effects",
@@ -49,6 +59,19 @@ export const holographic: DesignStyle = {
     "Card gradient text uses bg-[length:200%_auto] + group-hover:bg-right for synchronized color shift",
   ],
 
+  doListEn: [
+    "Use multi-color gradient backgrounds (linear-gradient with 3+ color stops)",
+    "Apply background-size animation for moving gradient effects",
+    "Use semi-transparent cards over dark cosmic backgrounds",
+    "Add prismatic box-shadow with multiple colored glows",
+    "Include holographic sticker badges with full spectrum gradients",
+    "Use dark purple/navy backgrounds (#0a0a1f, #1a0b2e) to make holographic elements pop",
+    "Spectrum Shift: use bg-[length:200%_auto] on gradient buttons + hover:bg-right for lateral color flow",
+    "Prismatic Glow: buttons hover to multi-color shadow",
+    "Buttons must have active:scale-95 + focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]",
+    "Card gradient text uses bg-[length:200%_auto] + group-hover:bg-right for synchronized color shift",
+  ],
+
   dontList: [
     "Don't use flat solid colors without gradient",
     "Don't use light/white backgrounds (kills the holographic effect)",
@@ -56,6 +79,17 @@ export const holographic: DesignStyle = {
     "Don't use sharp corners without any glow",
     "Don't use more than 2 non-gradient elements in a row",
     "Don't use hover:scale-105 alone — always combine with gradient shift (hover:bg-right) and prismatic shadow",
+    "Don't omit active:scale-95 from buttons (no tactile confirmation)",
+    "Don't use focus:ring without focus:ring-offset-[#0a0a1f] (ring invisible on dark cosmic background)",
+  ],
+
+  dontListEn: [
+    "Don't use flat solid colors without gradient",
+    "Don't use light/white backgrounds (kills the holographic effect)",
+    "Don't use muted or desaturated colors",
+    "Don't use sharp corners without any glow",
+    "Don't use more than 2 non-gradient elements in a row",
+    "Don't use hover:scale-105 alone -- always combine with gradient shift and prismatic shadow",
     "Don't omit active:scale-95 from buttons (no tactile confirmation)",
     "Don't use focus:ring without focus:ring-offset-[#0a0a1f] (ring invisible on dark cosmic background)",
   ],
@@ -273,6 +307,25 @@ export const holographic: DesignStyle = {
 ### Duration
 - Button transitions: duration-500 ease-out (slow = luxurious holographic feel)
 - Card transitions: duration-300 ease-out`,
+
+  aiRulesEn: `Holographic Style Rules:
+- Background: Deep dark (#0a0a1f or #1a0b2e) - cosmic/space feel
+- Primary effect: Rainbow spectrum gradients using linear-gradient with 3+ stops
+- Gradient colors: #ff0080 -> #ff6b00 -> #ffd700 -> #00ff88 -> #00d4ff -> #6366f1 -> #a855f7
+- Cards: Semi-transparent (bg-white/5 to bg-white/10) with backdrop-blur
+- Text highlights: Use bg-clip-text with gradient for headings
+- Borders: Subtle white/10 to white/20 with purple/prismatic glow on hover
+- Animate gradients: Use background-size: 200% and animate background-position
+- All interactive elements should have prismatic box-shadow on hover
+- Never use light/white backgrounds
+- Never use flat solid colors without gradient treatment
+
+Animation & Interaction Rules:
+- Spectrum Shift: Apply bg-[length:200%_auto] to all gradient buttons and card headings. On hover: hover:bg-right -- gradient slides laterally, simulating angle-dependent holographic foil color shift.
+- Prismatic Glow: Button hover uses dual cyan+magenta glows. Card hover uses purple prism glow.
+- Liquid Glass: Always use group class on card containers. Cards hover:-translate-y-2 with synchronized heading Spectrum Shift via group-hover:bg-right.
+- Jelly Press: All buttons: active:scale-95 active:translate-y-0. Focus: focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f].
+- Duration: Button transitions duration-500 ease-out. Card transitions duration-300 ease-out.`,
 
   examplePrompts: [
     {

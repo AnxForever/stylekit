@@ -6,6 +6,8 @@ export const witchcore: DesignStyle = {
   nameEn: "Witchcore",
   description:
     "神秘学美学风格，塔罗牌、月相符号、水晶与草药元素。深紫色调搭配金色神秘符文，暗色背景上闪烁的星尘效果。",
+  descriptionEn:
+    "Occult aesthetic style with tarot cards, moon phase symbols, crystals, and herbal elements. Deep purple tones paired with golden mystical runes and shimmering stardust effects on dark backgrounds.",
   cover: "/styles/witchcore.svg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -29,6 +31,18 @@ export const witchcore: DesignStyle = {
 
 适合场景：神秘学应用、塔罗占卜平台、水晶疗愈商店、暗黑美学博客、独立游戏界面。`,
 
+  philosophyEn: `Witchcore design draws inspiration from the occult, tarot, and natural magic traditions, constructing a visual world filled with ritual and mystical power through deep, dark purple tones and shimmering golden runes.
+
+Core concepts:
+- Mystical atmosphere: Deep purple and midnight black as the foundation, creating a dark and profound sense of space
+- Rune decoration: Golden runes and moon phase symbols as core decorative elements, imbuing the interface with a sense of ritual
+- Stardust texture: Faint glowing particles scattered across backgrounds, like dust shimmering in a starlit sky
+- Natural magic: Herb green and amethyst purple as supporting colors, bridging the natural and the supernatural
+
+The design language blends medieval alchemical manuscripts, Victorian-era divination aesthetics, and modern dark interface design. Every interactive element should feel like casting a spell -- buttons like activating runes, cards like turning tarot cards, input fields like inscribing prophecies.
+
+Suitable for: occult apps, tarot reading platforms, crystal healing shops, dark aesthetic blogs, indie game interfaces.`,
+
   doList: [
     "背景使用深紫至午夜黑渐变 bg-gradient-to-b from-[#4a1942] to-[#0d0b14]",
     "金色符文文字 text-[#c9a74e] 搭配微光效果 [text-shadow:0_0_8px_rgba(201,167,78,0.4)]",
@@ -40,6 +54,17 @@ export const witchcore: DesignStyle = {
     "使用紫水晶色 text-[#7b68ae] 作为次要信息色",
   ],
 
+  doListEn: [
+    "Use deep purple to midnight black gradient backgrounds bg-gradient-to-b from-[#4a1942] to-[#0d0b14]",
+    "Gold rune text text-[#c9a74e] with subtle glow [text-shadow:0_0_8px_rgba(201,167,78,0.4)]",
+    "Use semi-transparent gold borders border border-[#c9a74e]/30 hover:border-[#c9a74e]/60",
+    "Card backgrounds use bg-[#0d0b14]/80 backdrop-blur-sm for a hazy feel",
+    "Stardust background effects using radial-gradient with subtle light accents",
+    "Use serif fonts font-serif paired with tracking-wider for a ritualistic feel",
+    "Interactive elements enhance gold glow on hover hover:shadow-[0_0_20px_rgba(201,167,78,0.3)]",
+    "Use amethyst color text-[#7b68ae] as secondary information color",
+  ],
+
   dontList: [
     "禁止使用明亮白色或浅灰色背景",
     "禁止使用高饱和度的霓虹色（如 cyan、lime）",
@@ -48,6 +73,16 @@ export const witchcore: DesignStyle = {
     "禁止使用普通阴影 shadow-md（必须是发光阴影或深色阴影）",
     "禁止使用欢快明亮的渐变（如粉蓝、粉紫渐变）",
     "禁止使用扁平化设计语言，所有元素需有层次与深度",
+  ],
+
+  dontListEn: [
+    "Do not use bright white or light gray backgrounds",
+    "Do not use high-saturation neon colors (such as cyan, lime)",
+    "Do not use rounded cute design elements (such as rounded-full buttons)",
+    "Do not use modern sans-serif fonts as main headings",
+    "Do not use regular shadows shadow-md (must be glow shadows or deep shadows)",
+    "Do not use bright cheerful gradients (such as pink-blue, pink-purple gradients)",
+    "Do not use flat design language; all elements need layers and depth",
   ],
 
   components: {
@@ -133,6 +168,46 @@ export const witchcore: DesignStyle = {
 }`,
 
   aiRules: `STYLE: Witchcore
+TYPE: Occult mystical interface
+
+MUST USE:
+- Dark backgrounds: bg-[#0d0b14] or bg-[#4a1942]
+- Gold rune text: text-[#c9a74e]
+- Text glow: style={{textShadow: '0 0 10px rgba(201,167,78,0.3)'}}
+- Glowing gold borders: border border-[#c9a74e]/30
+- Serif fonts: font-serif for all text
+- uppercase tracking-wider for labels
+- Amethyst secondary: text-[#7b68ae]
+- Herb green accent: text-[#3d8b6e]
+
+MUST AVOID:
+- Light/white backgrounds
+- Neon/high-saturation modern colors
+- Sans-serif fonts for headings
+- Regular shadows (shadow-md)
+- Rounded/cute elements (rounded-full)
+- Bright cheerful gradients
+
+COLOR RULES:
+- Primary: Mystic purple (#4a1942)
+- Secondary: Midnight (#0d0b14)
+- Gold rune: #c9a74e
+- Amethyst: #7b68ae
+- Herb green: #3d8b6e
+
+SPECIAL EFFECTS:
+- Stardust particle overlays
+- Rune glow pulsing animation
+- Moon phase symbols as decorative elements
+- Radial gradient for mystical light sources
+
+ANIMATION & INTERACTION RULES:
+- Ritual Levitation: Cards and primary elements must NOT bounce quickly. Use extremely slow upfloat (hover:-translate-y-2) with duration-1000 ease-in-out. Simulate the feeling of ritual levitation, not a spring.
+- Occult Glow: On hover, the gold rune glow (text-shadow or box-shadow using #c9a74e) must expand and pulse as if imbued with magic. Use drop-shadow CSS filter on headings for text glow enhancement.
+- Shadow Engulf: On dark backgrounds (#0d0b14), hover should expand a deep purple/amethyst outer glow outward, simulating dark matter or mystical fog spreading.
+- Talisman Press: On :active, cancel the glow and add a deep inset shadow (active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]) plus slight downward translate (active:translate-y-1), simulating pressing a heavy talisman or ritual object.`,
+
+  aiRulesEn: `STYLE: Witchcore
 TYPE: Occult mystical interface
 
 MUST USE:

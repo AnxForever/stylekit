@@ -6,6 +6,8 @@ export const midCenturyModern: DesignStyle = {
   nameEn: "Mid-Century Modern",
   description:
     "50年代原子时代设计美学，几何图案、有机曲线、饱和色彩。Eames椅、原子钟、星芒图案为灵感。",
+  descriptionEn:
+    "1950s Atomic Age design aesthetics with geometric patterns, organic curves, and saturated colors. Inspired by Eames chairs, atomic clocks, and starburst motifs.",
   cover: "/styles/mid-century-modern.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -27,6 +29,16 @@ export const midCenturyModern: DesignStyle = {
 
 在界面设计中，Mid-Century Modern 强调留白、网格对齐与视觉层次。卡片和容器使用微妙的圆角（而非尖锐直角），阴影柔和克制，整体传达一种既复古又永不过时的优雅感。`,
 
+  philosophyEn: `Mid-Century Modern is a design movement that flourished from the 1940s to 1960s, born at the intersection of post-war optimism and the Space Age. It pursues the perfect unity of form and function, believing that good design should serve everyday life.
+
+Its core aesthetic derives from "organic modernism": the fusion of geometric forms with natural curves. Ovals, kidney shapes, starbursts, and atomic models appear repeatedly, reflecting that era's dual faith in scientific progress and natural harmony.
+
+The color palette favors saturated yet non-glaring warm tones -- burnt orange, mustard yellow, olive green, peacock blue -- paired with cream white and deep charcoal neutral bases. These colors, drawn from nature and modern materials, are both warm and restrained.
+
+Typography emphasizes clarity and readability, favoring sans-serif fonts with moderate weight and generous spacing. Headings often use uppercase with wide letter-spacing, while body text maintains comfortable line height.
+
+In interface design, Mid-Century Modern emphasizes whitespace, grid alignment, and visual hierarchy. Cards and containers use subtle rounded corners (not sharp right angles), shadows are soft and restrained, conveying an elegance that is both retro and timeless.`,
+
   doList: [
     "使用饱和暖色调 bg-[#e8572a] text-[#2a6e5e] 搭配奶油底 bg-[#f5f0e1]",
     "使用中等圆角 rounded-lg rounded-xl 模拟有机曲线",
@@ -38,6 +50,17 @@ export const midCenturyModern: DesignStyle = {
     "利用 grid 和 flexbox 实现对称均衡的布局",
   ],
 
+  doListEn: [
+    "Use saturated warm tones bg-[#e8572a] text-[#2a6e5e] paired with cream base bg-[#f5f0e1]",
+    "Use medium rounded corners rounded-lg rounded-xl to simulate organic curves",
+    "Use wide letter-spacing tracking-wide tracking-wider for retro typography feel",
+    "Add subtle soft shadows shadow-md shadow-lg for depth",
+    "Use sans-serif fonts font-sans for modern clarity",
+    "Maintain ample whitespace p-8 p-12 gap-8 to let the design breathe",
+    "Use border-2 with style colors border-[#e8572a] to emphasize geometric structure",
+    "Leverage grid and flexbox for symmetrical balanced layouts",
+  ],
+
   dontList: [
     "禁止使用荧光色或霓虹色 bg-pink-500 text-cyan-400",
     "禁止使用尖锐直角 rounded-none 或极大圆角 rounded-full",
@@ -46,6 +69,16 @@ export const midCenturyModern: DesignStyle = {
     "禁止使用渐变背景 bg-gradient-to-r 破坏平面色块感",
     "禁止密集排列内容，缺乏留白",
     "禁止使用纯黑背景 bg-black",
+  ],
+
+  dontListEn: [
+    "Do not use fluorescent or neon colors bg-pink-500 text-cyan-400",
+    "Do not use sharp right angles rounded-none or extreme rounded-full",
+    "Do not use heavy shadows shadow-2xl or glow effects",
+    "Do not use serif fonts font-serif or handwritten fonts",
+    "Do not use gradient backgrounds bg-gradient-to-r that break the flat color block feel",
+    "Do not densely arrange content without whitespace",
+    "Do not use pure black backgrounds bg-black",
   ],
 
   components: {
@@ -263,6 +296,33 @@ export const midCenturyModern: DesignStyle = {
 - Brass Shimmer: 黄铜装饰（如星芒）在 hover 轻微旋转并加深色泽，营造金属反光。
 - Retro Elevation: 卡片 hover 通过硬边阴影加长与轻微反向位移强化版画式层级。
 - Warm Dimming: 奶油底色在交互时仅做轻微变暗，避免高对比闪烁或现代霓虹感。`,
+
+  aiRulesEn: `You are a Mid-Century Modern design style frontend development expert. All generated code must strictly follow these constraints:
+
+Absolutely Forbidden:
+- Fluorescent or neon colors (pink-500, cyan-400, lime-400)
+- Sharp right angles rounded-none
+- Pure black backgrounds bg-black
+- Gradients bg-gradient-to-*
+- Serif fonts font-serif
+- Heavy shadows or glow effects
+
+Must Follow:
+- Cream base bg-[#f5f0e1]
+- Burnt orange primary text-[#e8572a] bg-[#e8572a]
+- Teal accent text-[#2a6e5e] bg-[#2a6e5e]
+- Gold decoration text-[#c4a35a]
+- Charcoal text text-[#3d3d3d]
+- Medium rounded corners rounded-lg rounded-xl
+- Sans-serif fonts font-sans
+- Wide letter-spacing tracking-wide tracking-wider
+- Ample whitespace p-8 gap-8
+
+Animation & Interaction Rules:
+- Analog Switch: Interactions should simulate retro mechanical button presses; active uses hard displacement + shadow disappearance for damped feedback.
+- Brass Shimmer: Brass decorations (like starbursts) slightly rotate and deepen in color on hover, creating metallic reflection.
+- Retro Elevation: Card hover enhances hard-edge shadow extension with slight reverse displacement for printmaking-style layering.
+- Warm Dimming: Cream base only slightly darkens on interaction, avoiding high-contrast flashing or modern neon feel.`,
 
   examplePrompts: [
     {

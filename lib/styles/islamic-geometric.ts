@@ -6,6 +6,8 @@ export const islamicGeometric: DesignStyle = {
   nameEn: "Islamic Geometric",
   description:
     "伊斯兰几何纹理设计风格，精密的几何镶嵌图案、阿拉伯式花纹、金色与深蓝的经典配色。",
+  descriptionEn:
+    "Islamic geometric pattern design style with precise tessellation patterns, arabesque motifs, and the classic pairing of gold and deep blue.",
   cover: "/styles/islamic-geometric.svg",
   styleType: "visual",
   tags: ["expressive", "modern"],
@@ -27,6 +29,16 @@ export const islamicGeometric: DesignStyle = {
 
 界面设计中，几何镶嵌图案通常作为边框装饰、分隔线或背景纹理出现，而非覆盖整个画面。核心是"框架感"——精美的几何边框围绕内容区域，如同清真寺穹顶的马赛克镶嵌围绕中央空间。`,
 
+  philosophyEn: `Islamic geometric art is one of the most precise decorative systems in human civilization, still awe-inspiring after a millennium. It is based on strict mathematical principles -- tessellation of regular polygons, star-shaped multi-pointed patterns, and arabesque scrollwork -- constructing an infinitely extending visual universe.
+
+The core philosophy is "Unity in Multiplicity." Simple geometric elements, through rotation, symmetry, and repetition, generate dazzlingly complex patterns. This process of "from simple to complex" is regarded as a meditation on the beauty of creation.
+
+The color palette follows the classic Persian-Arabic tradition: deep blue (lapis lazuli) as the base, gold (gilding) as accents, and ivory white as breathing space. Emerald green and deep red appear as supporting colors in specific areas, adding layers and depth.
+
+In typography, Islamic geometric style favors elegant and substantial fonts. Headings use medium-weight sans-serif fonts with moderate letter spacing, conveying solemnity and refinement. Body text maintains comfortable line height and spacing.
+
+In interface design, geometric tessellation patterns typically appear as border decorations, dividers, or background textures rather than covering the entire surface. The core is a "framing" sensibility -- exquisite geometric borders surrounding content areas, like the mosaic inlays of a mosque dome surrounding the central space.`,
+
   doList: [
     "使用深蓝金色经典配色 bg-[#1a3a5c] text-[#c9a74e] 搭配象牙白 bg-[#f5ecd7]",
     "使用几何镶嵌图案作为边框和装饰元素",
@@ -39,6 +51,18 @@ export const islamicGeometric: DesignStyle = {
     "交互动效保持对称扩张与金色辉光，避免无序位移",
   ],
 
+  doListEn: [
+    "Use deep blue and gold classic palette bg-[#1a3a5c] text-[#c9a74e] paired with ivory bg-[#f5ecd7]",
+    "Use geometric tessellation patterns as border and decorative elements",
+    "Use symmetrical layouts text-center items-center justify-center",
+    "Use elegant border decorations border-2 border-[#c9a74e]",
+    "Maintain a dignified font style font-sans font-semibold tracking-wide",
+    "Use subtle gold shadows shadow-[0_4px_12px_rgba(201,167,78,0.2)]",
+    "Use rounded-lg or rounded-xl to create an arch-like feel",
+    "Maintain generous whitespace to let geometric decorations breathe",
+    "Keep interaction effects symmetrically expanding with gold radiance, avoiding disordered displacement",
+  ],
+
   dontList: [
     "禁止使用荧光色或霓虹色 bg-pink-500 text-cyan-400",
     "禁止使用不对称的混乱布局",
@@ -48,6 +72,17 @@ export const islamicGeometric: DesignStyle = {
     "禁止使用纯黑背景 bg-black（使用深蓝代替）",
     "禁止密集堆叠内容，缺乏结构分隔",
     "禁止弹跳式 spring 动效，保持庄重稳定",
+  ],
+
+  dontListEn: [
+    "Do not use fluorescent or neon colors bg-pink-500 text-cyan-400",
+    "Do not use asymmetric chaotic layouts",
+    "Do not use overly minimal undecorated designs -- moderate decoration is core",
+    "Do not use heavy shadows shadow-2xl that break the refined feel",
+    "Do not use handwritten or cartoon fonts",
+    "Do not use pure black backgrounds bg-black (use deep blue instead)",
+    "Do not densely stack content without structural separation",
+    "Do not use bouncy spring effects; maintain solemn stability",
   ],
 
   components: {
@@ -318,6 +353,56 @@ export const islamicGeometric: DesignStyle = {
 - Divine Illumination: 金色边框和分隔线可缓慢增强辉光，避免突兀闪烁。
 - Tessellation Reveal: 几何纹样在 hover/focus 时提升可见度，体现秩序被揭示的层次感。
 - Elegant Easing: 推荐 duration-500 + ease-out，保持庄重且优雅的节奏。`,
+
+  aiRulesEn: `You are an Islamic Geometric design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Fluorescent or neon colors (pink-500, cyan-400, lime-400)
+- Asymmetric chaotic layouts
+- Pure black backgrounds bg-black (use deep blue bg-[#1a3a5c])
+- Handwritten or cartoon fonts
+- Overly minimal undecorated designs
+- Heavy shadows shadow-2xl
+
+## Must Follow
+
+- Deep blue base bg-[#1a3a5c]
+- Ivory white bg-[#f5ecd7]
+- Gold decorations text-[#c9a74e] border-[#c9a74e]
+- Symmetrical centered layouts text-center
+- Elegant borders border-2 border-[#c9a74e]
+- Geometric corner decorations
+- Gold gradient divider lines
+- Moderate rounded corners rounded-lg rounded-xl
+- Sans-serif fonts font-sans font-semibold
+- Relaxed letter spacing tracking-wide tracking-wider
+
+## Color Palette
+
+Core three colors:
+- Deep blue (lapis lazuli): #1a3a5c
+- Ivory white: #f5ecd7
+- Gold: #c9a74e
+
+Supporting colors:
+- Emerald: #2d7d46
+- Deep red: #8b2332
+
+## Decorative Elements
+
+- Geometric tessellation patterns
+- Star textures
+- Corner border decorations
+- Gold gradient divider lines
+- Arch-shaped containers
+
+## Animation & Interaction Rules
+
+- Sacred Symmetry: Interaction effects maintain strict symmetry; corner decorations expand outward slightly in sync on hover.
+- Divine Illumination: Gold borders and dividers can slowly enhance their glow, avoiding abrupt flashing.
+- Tessellation Reveal: Geometric patterns increase visibility on hover/focus, embodying the layered sense of order being revealed.
+- Elegant Easing: Recommend duration-500 + ease-out, maintaining a solemn and elegant rhythm.`,
 
   examplePrompts: [
     {

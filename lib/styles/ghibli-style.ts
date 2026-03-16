@@ -6,6 +6,8 @@ export const ghibliStyle: DesignStyle = {
   nameEn: "Ghibli Style",
   description:
     "灵感源自吉卜力工作室动画的设计风格，温暖柔和的色调、手绘质感、自然元素和梦幻氛围，传递治愈与诗意。",
+  descriptionEn:
+    "A design style inspired by Studio Ghibli animations, featuring warm soft tones, hand-drawn textures, natural elements, and a dreamy atmosphere that conveys healing and poetry.",
   cover: "/styles/ghibli-style.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -25,6 +27,14 @@ export const ghibliStyle: DesignStyle = {
 - 柔和色调：温暖的大地色系和天空色
 - 梦幻氛围：创造宁静治愈的视觉体验`,
 
+  philosophyEn: `Ghibli Style is influenced by Japan's Studio Ghibli animations, known for its warm, healing, and poetic visual language.
+
+Core principles:
+- Hand-drawn texture: Preserving the warmth and imperfection of hand-crafted work
+- Natural themes: Clouds, forests, skies, and other natural elements
+- Soft tones: Warm earth tones and sky colors
+- Dreamy atmosphere: Creating serene and healing visual experiences`,
+
   doList: [
     "使用柔和温暖的色调",
     "添加手绘风格的插图或边框",
@@ -35,12 +45,30 @@ export const ghibliStyle: DesignStyle = {
     "交互动效保持微风感（duration-500 到 700，轻微浮动和小角度旋转）",
   ],
 
+  doListEn: [
+    "Use warm soft tones",
+    "Add hand-drawn style illustrations or borders",
+    "Incorporate natural elements (clouds, trees, flowers)",
+    "Use rounded soft shapes",
+    "Add subtle texture effects",
+    "Create dreamy gradient backgrounds",
+    "Keep interaction animations breezy (duration-500 to 700, slight floating and small-angle rotation)",
+  ],
+
   dontList: [
     "禁止使用过于锐利的边缘",
     "禁止使用高对比的刺眼配色",
     "禁止使用冰冷的科技感元素",
     "禁止过于复杂的动效",
     "禁止快速硬切与突兀的高频动效",
+  ],
+
+  dontListEn: [
+    "Do NOT use sharp hard edges",
+    "Do NOT use high-contrast glaring color schemes",
+    "Do NOT use cold tech-feel elements",
+    "Do NOT use overly complex animations",
+    "Do NOT use fast hard cuts and abrupt high-frequency animations",
   ],
 
   components: {
@@ -213,6 +241,47 @@ export const ghibliStyle: DesignStyle = {
 - Watercolor Glow: 阴影应使用本体色的柔和扩散（如鼠尾草绿系），避免厚重黑影破坏水彩质地。
 - Soft Cushion: 点击反馈使用温和按压（如 \`active:scale-[0.98]\`），避免机械式快速收缩。
 - Magic Longing: 交互节奏建议 \`duration-500\` 到 \`duration-700\`，搭配 \`ease-in-out\` 保持童话般从容。`,
+
+  aiRulesEn: `You are a Ghibli Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using sharp straight edges
+- Using high-contrast glaring color schemes
+- Using cold tech-feel elements
+- Overly complex animations
+
+## Must Follow
+
+- Soft tones from-[#7cb9a8], bg-[#f4e4bc]
+- Rounded shapes rounded-full, rounded-3xl, rounded-2xl
+- Gentle gradients bg-gradient-to-b, bg-gradient-to-br
+- Soft shadows shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+- Natural element decorations
+
+## Color Palette
+
+Primary:
+- Sage green: #7cb9a8
+- Cream: #f4e4bc
+- Coral orange: #e8a87c
+- Sky blue: #85cdca
+- Rose pink: #c38d94
+- Dark brown: #5a4a3a (text)
+
+## Decorative Elements
+
+- Cloud shapes
+- Soft circles
+- Natural patterns
+- Gradient backgrounds
+
+## Animation & Interaction Rules
+
+- Gentle Breeze: Hover animations should be gentle and restrained, using tiny floating and low-angle rotation (within about 1deg) to simulate natural wind.
+- Watercolor Glow: Shadows should use soft diffusion of the element's own color (e.g., sage green series), avoiding heavy black shadows that break the watercolor texture.
+- Soft Cushion: Click feedback uses gentle press (e.g., \`active:scale-[0.98]\`), avoiding mechanical rapid contraction.
+- Magic Longing: Interaction rhythm recommends \`duration-500\` to \`duration-700\`, paired with \`ease-in-out\` to maintain fairy-tale composure.`,
 
   examplePrompts: [
     {

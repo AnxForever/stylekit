@@ -6,6 +6,8 @@ export const appleStyle: DesignStyle = {
   nameEn: "Apple Style",
   description:
     "极致简约的高端设计风格，大量留白、精致圆角、微妙阴影和 SF Pro 风格字体，传达高端科技产品的品质感。",
+  descriptionEn:
+    "An ultra-minimalist premium design style with generous whitespace, refined border radii, subtle shadows, and SF Pro-style typography, conveying the quality feel of high-end tech products.",
   cover: "/styles/apple-style.svg",
   styleType: "visual",
   tags: ["minimal"],
@@ -25,6 +27,14 @@ export const appleStyle: DesignStyle = {
 - 精致细节：每个像素都经过精心设计
 - 克制配色：黑白灰为主，蓝色点缀`,
 
+  philosophyEn: `Apple Style is an ultra-minimalist style derived from Apple's design language, conveying the quality and trust of premium tech products through generous whitespace, refined details, and restrained color usage.
+
+Core principles:
+- Ultimate simplicity: Remove all unnecessary elements
+- Generous whitespace: Let content breathe, highlight key points
+- Refined details: Every pixel is carefully designed
+- Restrained colors: Black, white, and gray as primary, blue as accent`,
+
   doList: [
     "使用大量留白，让内容呼吸",
     "使用 Apple 灰 #f5f5f7 作为背景",
@@ -34,12 +44,29 @@ export const appleStyle: DesignStyle = {
     "使用 SF Pro 风格字体（-apple-system）",
   ],
 
+  doListEn: [
+    "Use generous whitespace to let content breathe",
+    "Use Apple gray #f5f5f7 as background",
+    "Use Apple blue #0071e3 as accent color",
+    "Use refined border radii rounded-xl or rounded-2xl",
+    "Use subtle shadows",
+    "Use SF Pro-style fonts (-apple-system)",
+  ],
+
   dontList: [
     "禁止使用过多颜色",
     "禁止使用渐变背景",
     "禁止使用重阴影",
     "禁止元素过于拥挤",
     "禁止使用花哨的装饰",
+  ],
+
+  dontListEn: [
+    "Do NOT use too many colors",
+    "Do NOT use gradient backgrounds",
+    "Do NOT use heavy shadows",
+    "Do NOT overcrowd elements",
+    "Do NOT use flashy decorations",
   ],
 
   components: {
@@ -280,6 +307,64 @@ body {
 2. 配色克制（黑白灰 + 蓝色点缀）
 3. 没有渐变
 4. 整体感觉高端简约`,
+
+  aiRulesEn: `You are an Apple Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using gradient backgrounds
+- Using too many colors (more than 3)
+- Using heavy shadows shadow-xl, shadow-2xl
+- Overcrowding elements
+- Using flashy decorations and animations
+
+## Must Follow
+
+- Generous whitespace
+- Apple gray background bg-[#f5f5f7]
+- Apple blue accent text-[#0071e3], bg-[#0071e3]
+- Refined radii rounded-xl, rounded-2xl, rounded-full
+- Subtle shadows shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+- SF Pro-style fonts
+
+## Color Palette
+
+Primary:
+- Black: text-black, bg-black
+- White: text-white, bg-white
+- Apple gray: bg-[#f5f5f7]
+
+Accent colors:
+- Apple blue: #0071e3
+- Apple green: #34c759
+- Apple red: #ff3b30
+
+## Typography
+
+- Headings: font-semibold tracking-tight
+- Body: font-normal
+- Links: text-[#0071e3] hover:underline
+
+## Layout
+
+- Max width: max-w-5xl or max-w-[980px]
+- Generous whitespace: py-20, py-24
+- Center alignment: text-center, mx-auto
+
+## Animation & Interaction Rules
+
+- Spring Physics: Never use default linear or basic ease. Must use silky deceleration curves like \`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]\`.
+- Haptic Touch: All interactive elements (buttons, cards) must have physical press damping, mandatory \`active:scale-[0.98]\` or \`active:scale-[0.96]\`.
+- Contextual Depth: On card hover, use \`group-hover\` to create subtle zoom on inner images or icons (\`scale-105\`), creating parallax depth.
+- Subtle Blurs: Interactions can include smooth transitions of background blur or opacity.
+
+## Self-Check
+
+After generating code, verify:
+1. Whitespace is generous enough
+2. Colors are restrained (black/white/gray + blue accent)
+3. No gradients
+4. Overall feel is premium and minimalist`,
 
   examplePrompts: [
     {

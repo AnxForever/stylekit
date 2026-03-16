@@ -6,6 +6,8 @@ export const githubStyle: DesignStyle = {
   nameEn: "GitHub Style",
   description:
     "GitHub设计语言风格，简洁的界面层次、柔和的灰度系统、蓝色交互色、等宽代码字体与开发者友好的信息架构。",
+  descriptionEn:
+    "GitHub design language style with clean interface hierarchy, a refined grayscale system, blue interactive color, monospace code fonts, and developer-friendly information architecture.",
   cover: "/styles/github-style.svg",
   styleType: "visual",
   tags: ["modern", "brand-inspired"],
@@ -29,6 +31,18 @@ export const githubStyle: DesignStyle = {
 
 GitHub 的设计证明了一个道理：在信息密集的场景中，克制的视觉设计反而能创造最好的用户体验。每一个像素的装饰都必须有明确的功能理由，否则就不应该存在。`,
 
+  philosophyEn: `GitHub Style is a design language originating from the GitHub platform, providing clear, efficient, and distraction-free working interfaces for tens of millions of developers worldwide. Its design philosophy is "let the content speak."
+
+Core concepts:
+- Content first: Code and documentation are the protagonists; UI is the supporting cast. All design decisions serve content readability and actionability
+- Grayscale system: A refined grayscale hierarchy builds visual layers -- from #1f2328 (text) to #f6f8fa (background), each shade of gray has a clear semantic role
+- Blue interaction: #0969da as the sole primary interaction color, precisely guiding user attention in a gray world
+- Semantic functional colors: Green for success/merge, yellow for warning/pending, red for danger/delete -- each color has a clear meaning
+
+This style is suitable for developer tools, code platforms, technical documentation, project management, and any product targeting a technical audience.
+
+GitHub's design proves a truth: in information-dense scenarios, restrained visual design actually creates the best user experience. Every pixel of decoration must have a clear functional reason, or it should not exist.`,
+
   doList: [
     "使用 GitHub 蓝 #0969da 作为主交互色",
     "背景使用白色 #ffffff 和浅灰 bg-[#f6f8fa]",
@@ -40,6 +54,17 @@ GitHub 的设计证明了一个道理：在信息密集的场景中，克制的�
     "保持紧凑但清晰的间距",
   ],
 
+  doListEn: [
+    "Use GitHub blue #0969da as the primary interaction color",
+    "Use white #ffffff and light gray bg-[#f6f8fa] for backgrounds",
+    "Use #1f2328 (dark gray) and #656d76 (secondary gray) for text",
+    "Unify borders with border-[#d0d7de]",
+    "Use rounded-md (6px) for consistent rounded corners",
+    "Use monospace font font-mono and bg-[#f6f8fa] for code blocks",
+    "Use semantic functional colors: green #1f883d, yellow #9a6700, red #cf222e",
+    "Maintain compact but clear spacing",
+  ],
+
   dontList: [
     "禁止使用渐变背景或彩色装饰",
     "禁止使用大圆角 rounded-2xl, rounded-full（除头像外）",
@@ -48,6 +73,16 @@ GitHub 的设计证明了一个道理：在信息密集的场景中，克制的�
     "禁止使用衬线字体",
     "禁止使用过大的字体或过宽的间距",
     "禁止使用动感十足的动画效果",
+  ],
+
+  dontListEn: [
+    "Do not use gradient backgrounds or colorful decorations",
+    "Do not use large rounded corners rounded-2xl, rounded-full (except for avatars)",
+    "Do not use heavy shadows shadow-lg, shadow-xl",
+    "Do not use non-semantic decorative colors",
+    "Do not use serif fonts",
+    "Do not use oversized fonts or overly wide spacing",
+    "Do not use dynamic, flashy animation effects",
   ],
 
   components: {
@@ -300,6 +335,61 @@ body {
 3. 阴影极轻或无
 4. 颜色使用语义正确
 5. 整体感觉简洁专业`,
+
+  aiRulesEn: `You are a GitHub Style design frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Gradient backgrounds bg-gradient-*
+- Large rounded corners rounded-2xl, rounded-3xl (except avatars)
+- Heavy shadows shadow-lg, shadow-xl
+- Non-semantic decorative colors
+- Serif fonts
+- Oversized fonts or overly wide spacing
+- Dynamic flashy animations
+
+## Must Follow
+
+- Blue #0969da as the primary interaction color
+- Backgrounds: #ffffff, #f6f8fa
+- Text: #1f2328 (primary), #656d76 (secondary)
+- Borders: border-[#d0d7de]
+- Rounded corners: rounded-md (6px)
+- Code: font-mono bg-[#f6f8fa]
+
+## Semantic Functional Colors
+
+- Success/merge: #1f883d (green)
+- Warning/pending: #9a6700 (yellow)
+- Danger/delete: #cf222e (red)
+- Interaction/link: #0969da (blue)
+
+## Color Palette
+
+Grayscale system:
+- Text: #1f2328
+- Secondary text: #656d76
+- Light text: #8b949e
+- Border: #d0d7de
+- Light background: #f6f8fa
+- Background: #ffffff
+- Dark navigation: #24292f
+
+## Animation & Interaction Rules
+
+- Extreme Utility: Interactions prioritize state expression, avoiding eye-catching displacement/scaling effects. Duration kept at 75 to 150.
+- Micro-Tactility: Button press provides only slight confirmation (e.g., active:scale-[0.98] + background darkening), not overly skeuomorphic.
+- A11y Focus Rings: Focus state must provide clear ring (focus:ring-4 + brand blue/green transparency), not just border color change.
+- Subtle Borders: Card hover primarily adjusts background and border shade, not using obvious shadows.
+
+## Self-Check
+
+After each code generation, verify:
+1. No gradients used
+2. Rounded corners consistently rounded-md
+3. Shadows extremely light or none
+4. Colors used with correct semantics
+5. Overall feel is clean and professional`,
 
   examplePrompts: [
     {

@@ -5,7 +5,9 @@ export const celShading: DesignStyle = {
   name: "赛璐璐动画风",
   nameEn: "Cel Shading",
   description:
-    "模拟传统动画赛璐璐片的渲染风格，粗黑轮廓线、平面色块填充、无渐变阴影和鲜艳饱和色彩，充满卡通游戏的活力感。",
+    "模拟传统动画赛璐璃片的渲染风格，粗黑轮廓线、平面色块填充、无渐变阴影和鲜艳饱和色彩，充满卡通游戏的活力感。",
+  descriptionEn:
+    "A rendering style inspired by traditional cel animation, featuring bold black outlines, flat color fills, hard shadows without gradients, and vivid saturated colors full of cartoon and game energy.",
   cover: "/styles/cel-shading.jpg",
   styleType: "visual",
   tags: ["expressive", "high-contrast"],
@@ -27,6 +29,16 @@ export const celShading: DesignStyle = {
 - 游戏化 UI：按钮、卡片像游戏菜单一样生动有趣
 - 动画抽帧感：交互极短促，模拟关键帧而非丝滑过渡`,
 
+  philosophyEn: `Cel Shading (Toon Shading) simulates the visual effect of traditional hand-drawn animation.
+
+Core principles:
+- Bold black outlines: all elements have distinct 3px black borders
+- Flat color fills: using solid colors with no gradients
+- Hard shadows: shadows are solid offsets, not blurred
+- High saturation: vivid colors with strong contrast
+- Game-like UI: buttons and cards feel lively like game menus
+- Frame-skipping feel: interactions are extremely brief, simulating keyframes rather than smooth transitions`,
+
   doList: [
     "所有元素使用3px粗黑边框 border-[3px] border-[#1a1a2e]",
     "硬阴影效果 shadow-[3px_3px_0_#1a1a2e]",
@@ -39,6 +51,18 @@ export const celShading: DesignStyle = {
     "hover 时白色高光斜条纹扫过按钮",
   ],
 
+  doListEn: [
+    "Use 3px bold black borders on all elements border-[3px] border-[#1a1a2e]",
+    "Hard shadow effect shadow-[3px_3px_0_#1a1a2e]",
+    "Use solid color fills, no gradients bg-[#e63946]",
+    "Bold fonts font-black uppercase",
+    "Click interaction: shadow shrinks + offset hover:translate-x-0.5",
+    "High-saturation palette: red, blue, green, yellow",
+    "Use extremely short duration-75 to simulate animation frame-skipping",
+    "On active, apply scale-x-110 scale-y-90 for Squash & Stretch",
+    "On hover, a white highlight diagonal stripe sweeps across the button",
+  ],
+
   dontList: [
     "禁止使用渐变色（保持平面色块）",
     "禁止使用模糊阴影 shadow-lg",
@@ -46,6 +70,15 @@ export const celShading: DesignStyle = {
     "禁止使用低饱和度或灰色调",
     "禁止使用丝滑的 duration-300 以上过渡（太柔和）",
     "禁止使用 ease-in-out（卡通物理用 linear 或 ease-in）",
+  ],
+
+  dontListEn: [
+    "Do not use gradient colors (maintain flat color fills)",
+    "Do not use blurred shadows shadow-lg",
+    "Do not use thin borders border",
+    "Do not use low-saturation or grayish tones",
+    "Do not use smooth transitions above duration-300 (too soft)",
+    "Do not use ease-in-out (cartoon physics uses linear or ease-in)",
   ],
 
   components: {
@@ -178,6 +211,22 @@ export const celShading: DesignStyle = {
 - Anime Physics: Use extremely short transitions (duration-75) to simulate 2D animation keyframes. Avoid silky smooth easing.
 - Squash & Stretch: On :active, use cartoon physics — active:scale-x-110 active:scale-y-90 — combined with translate toward click direction.
 - Zero-Blur Impact: On :active, hard shadow (shadow-[4px_4px_0_#1a1a2e]) must instantly snap to zero (active:shadow-none), creating a strong physical "hit" sensation.
+- Toon Highlight: On hover, a white diagonal stripe (bg-white/30 -skew-x-12) sweeps across the button via translate-x from off-screen to [200%], simulating cel shading's hard specular highlight.
+- Hover Lift: Elements can hover:-translate-y-1 with expanded shadow to "charge up" before clicking.`,
+
+  aiRulesEn: `You are designing in Cel Shading (Toon Shading) style.
+- All elements MUST have 3px solid black borders: border-[3px] border-[#1a1a2e]
+- Use hard offset shadows ONLY: shadow-[3px_3px_0_#1a1a2e] or shadow-[4px_4px_0_#1a1a2e]
+- NO gradients, NO blur shadows, NO soft edges
+- Flat saturated colors: #e63946, #4ea8de, #2ecc71, #f1c40f
+- Text is always bold/black weight and uppercase
+- Light background #fafaf5 with dark ink outlines
+- Think "video game menu" or "cartoon UI"
+
+Animation & Interaction Rules:
+- Anime Physics: Use extremely short transitions (duration-75) to simulate 2D animation keyframes. Avoid silky smooth easing.
+- Squash & Stretch: On :active, use cartoon physics -- active:scale-x-110 active:scale-y-90 -- combined with translate toward click direction.
+- Zero-Blur Impact: On :active, hard shadow must instantly snap to zero (active:shadow-none), creating a strong physical "hit" sensation.
 - Toon Highlight: On hover, a white diagonal stripe (bg-white/30 -skew-x-12) sweeps across the button via translate-x from off-screen to [200%], simulating cel shading's hard specular highlight.
 - Hover Lift: Elements can hover:-translate-y-1 with expanded shadow to "charge up" before clicking.`,
 };

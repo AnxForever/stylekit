@@ -6,6 +6,8 @@ export const pixelArt: DesignStyle = {
   nameEn: "Pixel Art",
   description:
     "复古 8-bit 像素游戏风格，无圆角、像素化边框、硬边阴影和鲜明的 8-bit 配色，适合游戏、复古应用和独立开发者项目。",
+  descriptionEn:
+    "A retro 8-bit pixel game style with no border radii, pixelated borders, hard-edge shadows, and vivid 8-bit color palettes, ideal for games, retro apps, and indie developer projects.",
   cover: "/styles/pixel-art.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const pixelArt: DesignStyle = {
 - 8-bit 配色：使用经典游戏机的调色板
 - 怀旧情感：唤起对经典游戏的美好回忆`,
 
+  philosophyEn: `Pixel Art is a retro design style originating from early video games, evoking nostalgic feelings for classic games through pixelated visual elements, hard-edge shadows, and vivid 8-bit color palettes.
+
+Core principles:
+- Pixel feel: All elements present pixelated sharp edges
+- Hard-edge shadows: Pure color offset shadows simulate pixel effects
+- 8-bit palette: Classic game console color palettes
+- Nostalgic emotion: Evoke fond memories of classic games`,
+
   doList: [
     "使用无圆角 rounded-none",
     "使用粗边框 border-4",
@@ -37,6 +47,18 @@ export const pixelArt: DesignStyle = {
     "Pixel Perfect Drop: active state must be `active:translate-x-[4px] active:translate-y-[4px] active:shadow-none` — displacement amount MUST exactly equal the shadow offset size",
   ],
 
+  doListEn: [
+    "Use no border radii rounded-none",
+    "Use thick borders border-4",
+    "Use hard-edge shadows shadow-[4px_4px_0_color]",
+    "Use 8-bit palette colors",
+    "Use pixel fonts or monospace fonts",
+    "Shadow disappears and element displaces on button press",
+    "Absolute Zero: use `transition-none` throughout -- pixel games run on a state machine, all visual state changes are instantaneous hard cuts",
+    "Palette Swap: hover directly replaces the primary palette color with another 8-bit color (e.g., `hover:bg-[#29adff]` replacing red with blue), no gradients or opacity fades",
+    "Pixel Perfect Drop: active state must be `active:translate-x-[4px] active:translate-y-[4px] active:shadow-none` -- displacement amount MUST exactly equal the shadow offset size",
+  ],
+
   dontList: [
     "禁止使用任何圆角",
     "禁止使用渐变",
@@ -46,6 +68,17 @@ export const pixelArt: DesignStyle = {
     "禁止使用任何 transition-* 除 transition-none（像素游戏是状态机，不是动画引擎）",
     "禁止在 Palette Swap 中使用 opacity 过渡或中间状态（颜色切换必须是硬切）",
     "禁止 active 位移量小于 shadow 偏移量（Pixel Perfect Drop 要求完全对齐，否则破坏像素感）",
+  ],
+
+  dontListEn: [
+    "Do NOT use any border radii",
+    "Do NOT use gradients",
+    "Do NOT use soft shadows",
+    "Do NOT use overly complex colors",
+    "Do NOT use thin borders",
+    "Do NOT use any transition-* except transition-none (pixel games are state machines, not animation engines)",
+    "Do NOT use opacity transitions or intermediate states in Palette Swap (color switches must be hard cuts)",
+    "Do NOT make active displacement smaller than shadow offset (Pixel Perfect Drop requires exact alignment, otherwise pixel feel is broken)",
   ],
 
   components: {
@@ -285,6 +318,68 @@ export const pixelArt: DesignStyle = {
 - Absolute Zero: Every element must use \`transition-none\` — pixel games run on a state machine, not an animation engine. All visual changes are instantaneous hard cuts with no easing.
 - Palette Swap: Hover replaces the primary palette color with another 8-bit color directly (e.g., \`hover:bg-[#29adff]\` replacing red with blue). Never use opacity transitions or intermediate states.
 - Pixel Perfect Drop: Active state must be \`active:translate-x-[4px] active:translate-y-[4px] active:shadow-none\` — the pixel displacement amount MUST exactly equal the shadow offset. Mismatched values break the illusion.
+- Outline Focus: Focus state uses inner color shadow instead of modern ring glow: \`focus:shadow-[inset_0_0_0_3px_#29adff]\`.`,
+
+  aiRulesEn: `You are a Pixel Art design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using any border radii rounded-* (must be rounded-none)
+- Using gradients bg-gradient-*
+- Using soft shadows shadow-lg, shadow-xl
+- Using thin borders border, border-2
+- Using non-8-bit palette colors
+
+## Must Follow
+
+- No border radii rounded-none
+- Thick borders border-4 border-[#1a1c2c]
+- Hard-edge shadows shadow-[4px_4px_0_#1a1c2c]
+- 8-bit palette colors
+- Uppercase letters uppercase
+- Button press effects
+
+## Color Palette (PICO-8)
+
+Primary:
+- Dark blue-black: #1a1c2c
+- Light gray: #f4f4f4
+
+Accent colors:
+- Red: #ff004d
+- Green: #00e436
+- Blue: #29adff
+- Yellow: #ffec27
+- Orange: #ffa300
+- Pink: #ff77a8
+- Purple: #7e2553
+
+## Shadows
+
+Standard shadow: shadow-[4px_4px_0_#1a1c2c]
+Hover shadow: shadow-[2px_2px_0_#1a1c2c]
+Colored shadow: shadow-[4px_4px_0_#ff004d]
+
+## Button Interaction
+
+Normal: shadow-[4px_4px_0_#1a1c2c]
+Hover: translate-x-1 translate-y-1 shadow-[2px_2px_0_#1a1c2c]
+Pressed: translate-x-1 translate-y-1 shadow-none
+
+## Self-Check
+
+After generating code, verify:
+1. No border radii anywhere
+2. Using thick borders border-4
+3. Using hard-edge shadows
+4. Colors from 8-bit palette
+5. Overall feel is retro and pixelated
+
+## Animation & Interaction Rules
+
+- Absolute Zero: Every element must use \`transition-none\` -- pixel games run on a state machine, not an animation engine. All visual changes are instantaneous hard cuts with no easing.
+- Palette Swap: Hover replaces the primary palette color with another 8-bit color directly (e.g., \`hover:bg-[#29adff]\` replacing red with blue). Never use opacity transitions or intermediate states.
+- Pixel Perfect Drop: Active state must be \`active:translate-x-[4px] active:translate-y-[4px] active:shadow-none\` -- the pixel displacement amount MUST exactly equal the shadow offset. Mismatched values break the illusion.
 - Outline Focus: Focus state uses inner color shadow instead of modern ring glow: \`focus:shadow-[inset_0_0_0_3px_#29adff]\`.`,
 
   examplePrompts: [

@@ -6,6 +6,8 @@ export const particle: DesignStyle = {
   nameEn: "Particle System",
   description:
     "深色科技背景上漂浮的粒子网络，以连线、脉冲和轨迹营造数据流动感。适合科技公司、数据可视化、创意作品集。",
+  descriptionEn:
+    "A floating particle network on deep dark tech backgrounds, using connection lines, pulses, and trails to create a sense of data flow. Ideal for tech companies, data visualization, and creative portfolios.",
   cover: "/styles/particle.svg",
   styleType: "visual",
   tags: ["modern", "expressive"],
@@ -18,6 +20,15 @@ export const particle: DesignStyle = {
   keywords: ["particles", "network", "connections", "floating", "tech", "nodes", "constellation"],
 
   philosophy: `A living network of floating particles and connection lines creates a sense of data flowing through space — tech-forward yet organic and mesmerizing.
+
+Core principles:
+- Deep dark backgrounds provide the canvas for luminous particle effects
+- Particles drift slowly and randomly, forming organic constellations
+- Connection lines appear between nearby particles at low opacity
+- Foreground content stays clean, readable, and unobstructed
+- Cool-toned accents (blue, teal, violet) reinforce the tech atmosphere`,
+
+  philosophyEn: `A living network of floating particles and connection lines creates a sense of data flowing through space -- tech-forward yet organic and mesmerizing.
 
 Core principles:
 - Deep dark backgrounds provide the canvas for luminous particle effects
@@ -39,7 +50,31 @@ Core principles:
     "前景组件响应要快（duration-150~200），与背景慢速粒子形成反差",
   ],
 
+  doListEn: [
+    "Use deep dark backgrounds (blue-black #0a0e1a or #0f1419)",
+    "Add floating particle elements as background decoration",
+    "Show connection lines between nearby particles at low opacity",
+    "Keep foreground content clean and highly readable",
+    "Use cool-toned accent colors (blue, teal, violet)",
+    "Apply subtle glow effects to particles and key UI elements",
+    "Use backdrop-blur for glass-like card surfaces",
+    "On hover, enhance node activation feel (corner highlights, thin border glow, localized current light)",
+    "Shadows maintain low opacity with wide spread for nebula-style ghost glow",
+    "Foreground components respond quickly (duration-150~200), contrasting with slow background particles",
+  ],
+
   dontList: [
+    "Don't let particles obscure content readability",
+    "Don't use warm or earthy colors for primary palette",
+    "Don't use heavy borders or thick outlines",
+    "Don't use patterns that compete with particle animation",
+    "Don't use light backgrounds",
+    "Don't use conventional box shadows (use glow effects instead)",
+    "Don't let hover glow become solid opaque blocks (must stay airy and translucent)",
+    "Don't apply long bouncy easing to controls (particle UI should feel precise)",
+  ],
+
+  dontListEn: [
     "Don't let particles obscure content readability",
     "Don't use warm or earthy colors for primary palette",
     "Don't use heavy borders or thick outlines",
@@ -200,6 +235,32 @@ PARTICLE LAYER:
 - Nebula Glow: 阴影采用低不透明度大范围蓝青扩散，避免厚重实体阴影。
 - Quantum Snap: 前景控件交互用 duration-150~200，保持精确快速反馈。
 - Text Illumination: 卡片 hover 时次要文本可从 white/50 提升到 white/70 或亮蓝色。`,
+
+  aiRulesEn: `STYLE: Particle System
+TYPE: Deep dark tech aesthetic with floating particle network
+
+MUST USE:
+- Background: Deep blue-black (#0a0e1a or #0f1419)
+- Particles: Small circles (1-6px) in semi-transparent white/blue/teal, slowly drifting
+- Connection lines: Thin lines between nearby particles, very low opacity
+- Text: Light blue-white (#e0e8ff) for primary, white/50 for secondary
+- Cards: Very dark glass (bg-[#0f1419]/80) with minimal borders (white/5)
+- Accents: Blue (#3b82f6), Teal (#14b8a6), Violet (#a78bfa)
+- Interactive elements: Subtle blue glow on hover
+- Backdrop blur on cards and overlays
+
+MUST AVOID:
+- Light backgrounds
+- Warm or earthy color palettes
+- Heavy borders or thick outlines
+- Conventional box shadows
+- Patterns that compete with particle animation
+
+Animation & Interaction Rules:
+- Node Excitation: On hover, use thin border highlights and corner micro-bright spots to express node activation and energy injection.
+- Nebula Glow: Shadows use low-opacity wide-spread blue-teal diffusion, avoiding heavy solid shadows.
+- Quantum Snap: Foreground control interactions use duration-150~200, maintaining precise fast feedback.
+- Text Illumination: On card hover, secondary text can brighten from white/50 to white/70 or bright blue.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const memphis: DesignStyle = {
   nameEn: "Memphis",
   description:
     "80年代意大利设计运动，大胆的几何图形、鲜艳的撞色、不规则形状和有趣的图案，打破传统设计规则。",
+  descriptionEn:
+    "An 80s Italian design movement featuring bold geometric shapes, vivid contrasting colors, irregular forms, and playful patterns that break traditional design rules.",
   cover: "/styles/memphis.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const memphis: DesignStyle = {
 - 几何图形：圆形、三角形、波浪线的自由组合
 - 趣味性：设计应该有趣、令人愉悦`,
 
+  philosophyEn: `Memphis is a design movement founded in the 1980s by Italian designer Ettore Sottsass, known for breaking traditions and embracing chaos and playfulness.
+
+Core principles:
+- Rebellion against tradition: Breaking the seriousness of functionalist design
+- Bold contrasting colors: Vivid, high-contrast color combinations
+- Geometric shapes: Free combinations of circles, triangles, and wavy lines
+- Playfulness: Design should be fun and delightful`,
+
   doList: [
     "使用鲜艳的撞色组合",
     "添加几何图形装饰（圆、三角、波浪）",
@@ -39,6 +49,20 @@ export const memphis: DesignStyle = {
     "按钮 hover 时换色并增大阴影：hover:bg-pink-400 hover:shadow-[8px_8px_0px_#000]（撞色波普强化）",
   ],
 
+  doListEn: [
+    "Use vivid contrasting color combinations",
+    "Add geometric shape decorations (circles, triangles, waves)",
+    "Use thick borders border-4",
+    "Irregular layouts and shapes",
+    "Add dot, stripe, and wave patterns",
+    "Use bold sans-serif fonts",
+    "Cards use group class, inner geometric decorations move in different directions on hover (Playful Chaos, playground liveliness)",
+    "Button active:translate-x-[6px] active:translate-y-[6px] active:shadow-none (Toy Button Physics, toy key tactile feel)",
+    "Titles and text instantly switch to high-saturation contrasting colors on group-hover (Pop Swap, pop color inversion), using transition-colors duration-150",
+    "All animations use duration-150 ease-out, maintaining pop toy crispness",
+    "Button hover changes color and increases shadow: hover:bg-pink-400 hover:shadow-[8px_8px_0px_#000] (contrasting pop reinforcement)",
+  ],
+
   dontList: [
     "禁止使用单调的配色",
     "禁止过于对称规整的布局",
@@ -47,6 +71,16 @@ export const memphis: DesignStyle = {
     "禁止几何装饰在 hover 时保持静止（失去孟菲斯游乐场的灵魂）",
     "禁止按钮 active 状态保留阴影（压下去就应该完全贴地，active:shadow-none 是必须的）",
     "禁止按钮 hover 使用位移减小阴影（应是增大阴影 + 换色，而非向阴影方向移动）",
+  ],
+
+  dontListEn: [
+    "Do NOT use monotone, low-saturation color schemes",
+    "Do NOT use overly symmetrical and orderly layouts",
+    "Do NOT use thin borders",
+    "Do NOT omit geometric decorative elements",
+    "Do NOT keep geometric decorations static on hover (loses the soul of Memphis playground)",
+    "Do NOT keep shadow on button active state (pressing down should fully flatten, active:shadow-none is mandatory)",
+    "Do NOT use displacement to reduce shadow on button hover (should increase shadow + change color, not move toward shadow direction)",
   ],
 
   components: {
@@ -231,6 +265,46 @@ export const memphis: DesignStyle = {
 - Toy Button Physics: 按钮 active 状态 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none，模拟玩具按键完全贴地。
 - Pop Swap: hover 时即刻切换高饱和撞色（hover:bg-pink-400），transition-colors duration-150，禁止使用渐变过渡。
 - Snappy Motion: 所有动画 duration-150 ease-out，保持波普玩具的干脆感。`,
+
+  aiRulesEn: `You are a Memphis design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Using monotone, low-saturation color schemes
+- Using overly symmetrical and orderly layouts
+- Using thin borders border
+- Omitting geometric decorative elements
+
+## Must Follow
+
+- Vivid contrasting colors bg-yellow-400, bg-pink-300, bg-cyan-400
+- Thick borders border-4 border-black
+- Hard-edge shadows shadow-[6px_6px_0px_#000]
+- Geometric decorations (circles, triangles, squares)
+- Bold fonts font-black, font-bold
+
+## Color Palette
+
+Primary:
+- Red: #ff6b6b, bg-red-500
+- Yellow: #feca57, bg-yellow-400
+- Cyan: #48dbfb, bg-cyan-400
+- Pink: #ff9ff3, bg-pink-300
+- Green: #1dd1a1, bg-green-400
+
+## Decorative Elements
+
+- Circles rounded-full
+- Triangles (using border)
+- Squares rotate-45
+- Wave, dot, and stripe patterns
+
+## Animation & Interaction Rules
+
+- Playful Chaos: Card inner decorative geometries use group class, each moving independently in different directions (circle: group-hover:translate-x-4 group-hover:-translate-y-2; triangle: group-hover:-translate-x-2 group-hover:rotate-12), uniform direction is forbidden.
+- Toy Button Physics: Button active state active:translate-x-[6px] active:translate-y-[6px] active:shadow-none, simulating toy key fully flattening.
+- Pop Swap: Hover instantly switches to high-saturation contrasting color (hover:bg-pink-400), transition-colors duration-150, gradient transitions are forbidden.
+- Snappy Motion: All animations duration-150 ease-out, maintaining pop toy crispness.`,
 
   examplePrompts: [
     {

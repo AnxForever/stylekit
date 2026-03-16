@@ -6,6 +6,8 @@ export const outrun: DesignStyle = {
   nameEn: "Outrun",
   description:
     "80年代日落、棕榈树剪影、跑车、网格地平线和复古浪潮美学。洋红与紫色霓虹、青色天空，充满速度感和怀旧未来主义。",
+  descriptionEn:
+    "80s sunsets, palm tree silhouettes, sports cars, grid horizons, and retro wave aesthetics. Magenta and purple neon with cyan skies -- brimming with speed and nostalgic futurism.",
   cover: "/styles/outrun.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -25,6 +27,14 @@ export const outrun: DesignStyle = {
 - 网格地平线：透视网格地板延伸向无限的地平线
 - 棕榈剪影：黑色棕榈树映衬渐变天空`,
 
+  philosophyEn: `Outrun is a visual aesthetic rooted in 80s pop culture, named after the eponymous video game. It fuses sunsets, sports cars, palm trees, and neon lights into an eternal retro-futuristic visual language.
+
+Core principles:
+- Sunset drive: An eternal road trip under the orange-pink-purple sunset sky
+- Neon speed: Magenta and purple neon lights expressing speed and passion
+- Grid horizon: Perspective grid floor extending toward an infinite horizon
+- Palm silhouettes: Black palm trees set against gradient skies`,
+
   doList: [
     "使用洋红、紫色、青色霓虹配色",
     "添加日落渐变天空背景",
@@ -37,6 +47,18 @@ export const outrun: DesignStyle = {
     "active 状态加入轻微屏幕闪烁（active:bg-[#ff006e]/20）与短促下压反馈",
   ],
 
+  doListEn: [
+    "Use magenta, purple, and cyan neon palette",
+    "Add sunset gradient sky background",
+    "Use perspective grid floor effect",
+    "Add neon glow effects",
+    "Use bold sans-serif fonts",
+    "Add palm tree or sports car silhouette elements",
+    "Interactions layer dual neon glow: hover:shadow-[0_0_20px_#ff006e,0_0_40px_#00d4ff] (Dual Neon Glow)",
+    "Grid or scanlines use bg-position shift on hover to create a rushing-toward-horizon feel (Perspective Drive)",
+    "Active state includes slight screen flash (active:bg-[#ff006e]/20) with short press feedback",
+  ],
+
   dontList: [
     "禁止使用明亮的白色背景",
     "禁止使用现代简约风格",
@@ -44,6 +66,15 @@ export const outrun: DesignStyle = {
     "禁止使用柔和低饱和配色",
     "禁止只使用单色发光（Outrun 必须有洋红+青色的色散层次）",
     "禁止完全静止的网格背景（缺少速度幻觉会丢失风格核心）",
+  ],
+
+  dontListEn: [
+    "Do not use bright white backgrounds",
+    "Do not use modern minimalist style",
+    "Do not omit neon glow effects",
+    "Do not use soft low-saturation palette",
+    "Do not use single-color glow only (Outrun must have magenta+cyan chromatic dispersion layers)",
+    "Do not use completely static grid backgrounds (lacking speed illusion loses the style's core)",
   ],
 
   components: {
@@ -247,6 +278,46 @@ export const outrun: DesignStyle = {
 - Dual Neon Glow: 悬停发光至少叠加洋红与青色两层阴影，形成复古霓虹色散。
 - CRT Jitter: active 状态允许短促闪烁和轻微下压，模拟老式屏幕反馈。
 - Horizon Tilt: 卡片交互可配合极轻微抬升和底部光带增强地平线动势。`,
+
+  aiRulesEn: `You are an Outrun retro-futuristic design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Bright white backgrounds
+- Modern minimalist design
+- Omitting neon glow effects
+- Formal fonts
+
+## Must Follow
+
+- Magenta-purple-cyan palette from-[#ff006e], from-[#a020f0], text-[#00d4ff]
+- Dark backgrounds bg-[#0a0a0a]
+- Neon glow shadow-[0_0_20px_rgba(255,0,110,0.5)]
+- Grid background decorations
+- Sunset gradient from-[#ff6b35] via-[#ff006e] to-[#a020f0]
+
+## Color Palette
+
+Primary:
+- Magenta: #ff006e
+- Purple: #a020f0
+- Cyan: #00d4ff
+- Black: #0a0a0a
+- Orange: #ff6b35
+
+## Special Elements
+
+- Perspective grid floor
+- Sunset sun
+- Palm tree silhouettes
+- Scanline effects
+
+## Animation & Interaction Rules
+
+- Perspective Drive: Grid or scanlines create a high-speed forward-rush illusion through bg-position shift on hover.
+- Dual Neon Glow: Hover glow layers at least magenta and cyan dual shadows for retro neon chromatic dispersion.
+- CRT Jitter: Active state allows brief flashing and slight press-down, simulating vintage screen feedback.
+- Horizon Tilt: Card interactions can pair with very slight lift and bottom light band enhancement for horizon momentum.`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const artNouveau: DesignStyle = {
   nameEn: "Art Nouveau",
   description:
     "源自19世纪末的有机曲线美学，以流动的藤蔓纹样、自然花卉元素、Mucha风格海报装饰和优雅的衬线字体为特征，传递自然与艺术的和谐统一。",
+  descriptionEn:
+    "Organic curve aesthetics from the late 19th century, characterized by flowing vine patterns, natural floral elements, Mucha-style poster decorations, and elegant serif typography -- conveying the harmony of nature and art.",
   cover: "/styles/art-nouveau.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -26,6 +28,15 @@ export const artNouveau: DesignStyle = {
 - 装饰之美：精致的装饰纹样赋予功能性物品以艺术价值
 - 生长律动：交互应如植物生长般缓慢、柔和、有机`,
 
+  philosophyEn: `Art Nouveau is an international art movement from the late 19th to early 20th century, drawing inspiration from organic forms in nature and pushing decorative art to its zenith.
+
+Core principles:
+- Organic curves: Flowing lines inspired by plants and flowers
+- Unity with nature: Harmonious fusion of art and nature
+- Holistic design: A unified aesthetic from architecture to furniture to posters
+- Beauty of ornamentation: Exquisite decorative patterns endow functional objects with artistic value
+- Growth rhythm: Interactions should be slow, soft, and organic like plant growth`,
+
   doList: [
     "使用有机曲线和流动线条",
     "采用深绿、金色、象牙白为主色调",
@@ -38,6 +49,18 @@ export const artNouveau: DesignStyle = {
     "装饰元素在悬停时轻微放大或旋转，像花朵绽放",
   ],
 
+  doListEn: [
+    "Use organic curves and flowing lines",
+    "Use deep green, gold, and ivory white as primary colors",
+    "Add vine, floral, and other natural decorative elements",
+    "Use serif or decorative fonts",
+    "Maintain an elegant and refined overall quality",
+    "Rounded corners and soft transitions",
+    "Use duration-500 or duration-700 with ease-in-out for natural rhythm",
+    "Soft glow expansion on hover (shadow grows larger and softer)",
+    "Decorative elements slightly scale up or rotate on hover, like flowers blooming",
+  ],
+
   dontList: [
     "禁止使用生硬的直角和几何形状",
     "禁止使用霓虹或高饱和度的现代色彩",
@@ -45,6 +68,15 @@ export const artNouveau: DesignStyle = {
     "禁止使用现代无衬线字体作为标题",
     "禁止使用短促生硬的 duration-150 或 duration-200",
     "禁止使用硬边阴影（shadow-[Xpx_Ypx_0]）",
+  ],
+
+  dontListEn: [
+    "Do not use rigid right angles and geometric shapes",
+    "Do not use neon or high-saturation modern colors",
+    "Do not use rough undecorated design",
+    "Do not use modern sans-serif fonts for headings",
+    "Do not use short abrupt duration-150 or duration-200",
+    "Do not use hard-edge shadows (shadow-[Xpx_Ypx_0])",
   ],
 
   components: {
@@ -250,6 +282,48 @@ export const artNouveau: DesignStyle = {
 - 藤蔓和花卉图案
 - 金色边框和光晕
 - 优雅的渐变过渡`,
+
+  aiRulesEn: `You are an Art Nouveau design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Rigid right angles and sharp geometric shapes
+- Neon or high-saturation modern colors
+- Sans-serif fonts for headings
+- Dark/black backgrounds
+- Short duration-150 or duration-200
+- Hard-edge shadows (shadow-[Xpx_Ypx_0px_color])
+
+## Must Follow
+
+- Use organic curves and rounded corners rounded-full, rounded-3xl
+- Deep green #2d5016 as primary, gold #c9a227 as accent
+- Ivory white #f5f0e1 as background
+- Use font-serif serif fonts
+- Add soft shadows and glow effects
+
+## Animation & Interaction Rules
+
+- Organic Flow: Animations must flow naturally like plant growth. Use duration-500 or duration-700 with smooth ease-in-out.
+- Soft Glow: Hover glow should expand softly outward (shadow grows from small to large, shallow to deep), avoiding rigid displacement.
+- Decorative Flourishes: Decorative elements produce slight scaling or rotation on hover (scale(1.1) rotate(5deg)), like flowers blooming.
+- Radial Highlight: Cards produce corner glow via radial-gradient pseudo-element on hover (opacity 0 -> 100).
+- Gentle Float: Cards float slightly upward on hover -translate-y-1, paired with shadow expansion.
+
+## Color Palette
+
+Primary:
+- Deep Green: #2d5016
+- Gold: #c9a227
+- Ivory White: #f5f0e1
+- Wisteria: #8b6db5
+
+## Special Elements
+
+- Organic curve SVG decorations
+- Vine and floral patterns
+- Gold borders and glow
+- Elegant gradient transitions`,
 
   examplePrompts: [
     {

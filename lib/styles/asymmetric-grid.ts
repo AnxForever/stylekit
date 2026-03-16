@@ -6,6 +6,8 @@ export const asymmetricGrid: DesignStyle = {
   nameEn: "Asymmetric Grid",
   description:
     "打破传统对称网格的布局方式，通过不规则的列宽、重叠元素和视觉张力创造动态有趣的页面结构，适合创意作品集、艺术展览和品牌展示。",
+  descriptionEn:
+    "A layout approach that breaks traditional symmetric grids, creating dynamic and engaging page structures through irregular column widths, overlapping elements, and visual tension. Ideal for creative portfolios, art exhibitions, and brand showcases.",
   cover: "/styles/asymmetric-grid.svg",
   styleType: "layout",
   tags: ["modern", "expressive", "high-contrast"],
@@ -27,6 +29,15 @@ export const asymmetricGrid: DesignStyle = {
 - 层次重叠：允许元素相互重叠产生深度感
 - 空间突围：交互时元素从杂乱网格中"跳"到最前面`,
 
+  philosophyEn: `Asymmetric Grid breaks the even distribution of traditional grids, creating visual tension through unequal column widths, element overlap, and whitespace contrast.
+
+Core principles:
+- Break symmetry: Intentionally use unequal column and row widths
+- Visual tension: Create dynamism through size contrast and position offset
+- Whitespace as content: Large whitespace areas contrast with dense regions
+- Layer overlap: Allow elements to overlap each other for depth
+- Spatial breakout: On interaction, elements "jump" to the foreground from the chaotic grid`,
+
   doList: [
     "使用 CSS Grid 的 grid-template-columns 定义不等宽列",
     "允许元素跨越多列多行 col-span-2 row-span-3",
@@ -39,6 +50,18 @@ export const asymmetricGrid: DesignStyle = {
     "卡片内部标题/标签以不同 delay 位移，创造视差错位",
   ],
 
+  doListEn: [
+    "Use CSS Grid grid-template-columns to define unequal column widths",
+    "Allow elements to span multiple columns and rows col-span-2 row-span-3",
+    "Use -translate and z-index to create overlap effects",
+    "Maintain sufficient whitespace contrasting with dense areas",
+    "Use clearly differentiated font size hierarchy",
+    "Let images and content blocks break grid boundaries",
+    "On hover, significantly raise z-index and scale, making elements pop out from the grid",
+    "Use hard-edge shadows (shadow-[Xpx_Ypx_0px_color]) to reinforce physical separation feel",
+    "Card internal titles/labels displace with different delays, creating parallax offset",
+  ],
+
   dontList: [
     "禁止所有列宽完全相等",
     "禁止元素整齐对齐毫无变化",
@@ -47,6 +70,16 @@ export const asymmetricGrid: DesignStyle = {
     "禁止所有元素大小相近",
     "禁止使用柔和阴影（shadow-sm, shadow-md）",
     "禁止使用过长的 duration（不超过 300ms）",
+  ],
+
+  dontListEn: [
+    "No perfectly equal column widths",
+    "No neatly aligned elements without variation",
+    "No ignoring mobile responsive adjustments",
+    "No excessive clutter that loses readability",
+    "No elements all similar in size",
+    "No soft shadows (shadow-sm, shadow-md)",
+    "No overly long duration (not exceeding 300ms)",
   ],
 
   components: {
@@ -189,4 +222,24 @@ export const asymmetricGrid: DesignStyle = {
 - 圆角设计（rounded-lg, rounded-xl）
 - 柔和阴影（shadow-sm, shadow-md）
 - 超过 duration-300 的过渡时间`,
+
+  aiRulesEn: `You are an Asymmetric Grid layout expert. Generated code must follow:
+
+## Layout Rules
+- Use CSS Grid 12-column system, but column widths must be unequal
+- Allow element overlap, use z-index to control layering
+- Use -translate to create offset effects
+- Maintain visual tension: large whitespace areas contrasting with dense regions
+
+## Animation & Interaction Rules
+- Spatial Tension: On hover, significantly raise z-index (z-50) and use scale-105, making elements "jump" to the foreground from the chaotic grid.
+- Hard Popping: Use crisp ease-out with duration-200 to duration-300, paired with high-contrast hard shadows (shadow-[8px_8px_0px_color]).
+- Parallax Content: Card internal titles, labels, and descriptions displace with different delays (delay-75, delay-100) and translate distances on hover, creating typographic offset.
+- Physical Feedback: Active state resets translate and shadow to zero, simulating press-and-bounce-back.
+
+## Forbidden
+- Symmetric layouts with all equal column widths
+- Rounded design (rounded-lg, rounded-xl)
+- Soft shadows (shadow-sm, shadow-md)
+- Transitions exceeding duration-300`,
 };

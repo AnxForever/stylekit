@@ -6,6 +6,8 @@ export const corporateClean: DesignStyle = {
   nameEn: "Corporate Clean",
   description:
     "专业简洁的企业风格，强调可读性、一致性和信任感。适合B2B SaaS、企业官网、后台管理系统。",
+  descriptionEn:
+    "Professional and clean enterprise style emphasizing readability, consistency and trustworthiness. Ideal for B2B SaaS, corporate websites, and admin dashboards.",
   cover: "/styles/corporate-clean.svg",
   styleType: "visual",
   tags: ["minimal", "modern"],
@@ -25,6 +27,14 @@ export const corporateClean: DesignStyle = {
 - 功能优先：设计服务于功能，不牺牲可用性
 - 响应迅速：流畅的交互和即时的视觉反馈`,
 
+  philosophyEn: `Corporate Clean design style originates from the design language of modern enterprise software, emphasizing professionalism, trustworthiness, and efficient information delivery.
+
+Core principles:
+- Professional and trustworthy: Build trust through consistent visual language
+- Information hierarchy: Clear heading, body, and auxiliary information levels
+- Function first: Design serves function without sacrificing usability
+- Responsive: Smooth interactions and immediate visual feedback`,
+
   doList: [
     "使用 rounded-lg 或 rounded-xl 作为主要圆角",
     "按钮使用 shadow-sm 增加层次感",
@@ -39,6 +49,20 @@ export const corporateClean: DesignStyle = {
     "表格行使用 hover:bg-gray-50 的悬停高亮",
   ],
 
+  doListEn: [
+    "Use rounded-lg or rounded-xl as primary border radius",
+    "Buttons use shadow-sm for added depth",
+    "Primary color uses blue tones (blue-600, blue-700) to convey professionalism",
+    "Backgrounds use light tones like bg-slate-50 or bg-gray-50",
+    "Cards use bg-white shadow-sm border border-gray-200",
+    "Button hover with slight lift hover:-translate-y-0.5 + subtle shadow upgrade hover:shadow",
+    "Button active with slight shrink active:scale-[0.98] for tactile press confirmation",
+    "Focus state uses focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 (ring-offset is key for WCAG compliance)",
+    "Card hover with hover:-translate-y-0.5 hover:shadow-md for floating feel",
+    "Icon container hover with hover:bg-blue-500 hover:scale-110 + icon color group-hover:text-white for micro-interaction",
+    "Table rows use hover:bg-gray-50 for hover highlight",
+  ],
+
   dontList: [
     "禁止使用过于鲜艳的颜色组合",
     "禁止使用 rounded-none 的尖锐边角",
@@ -49,6 +73,18 @@ export const corporateClean: DesignStyle = {
     "禁止使用超过 duration-200 的动画（企业 UI 要利落，不要飘逸）",
     "禁止 focus:ring 缺少 focus:ring-offset-2（ring-offset 让焦点环与元素分离，符合 WCAG）",
     "禁止按钮缺少 active:scale-[0.98]（没有按压反馈，按钮像装饰品）",
+  ],
+
+  dontListEn: [
+    "Do not use overly vivid color combinations",
+    "Do not use sharp corners rounded-none",
+    "Do not use heavy shadows shadow-2xl and above",
+    "Do not use gradient buttons (maintain flat design)",
+    "Do not use fancy fonts for body text",
+    "Do not use overly tight element spacing",
+    "Do not use animations exceeding duration-200 (enterprise UI should be crisp, not floaty)",
+    "Do not use focus:ring without focus:ring-offset-2 (ring-offset separates focus ring from element, required for WCAG)",
+    "Do not omit active:scale-[0.98] on buttons (no press feedback makes buttons feel like decoration)",
   ],
 
   components: {
@@ -268,6 +304,61 @@ export const corporateClean: DesignStyle = {
 ## Animation & Interaction Rules
 
 - Frictionless Float: On hover, elements rise slightly with hover:-translate-y-0.5 combined with shadow micro-upgrade (shadow-sm → shadow). This creates a "hover above the surface" sensation — professional and responsive.
+- Tactile Confirmation: On :active, ALL buttons must use active:scale-[0.98] combined with active:translate-y-0 and active:shadow-sm to create a "button pressed" sensation. Without this, buttons feel unresponsive. The scale-[0.98] is barely perceptible (2%) but critical.
+- Focus Ring Offset: Always use focus:ring-offset-2 alongside focus:ring-2. The offset separates the ring from the element border, meeting WCAG 2.1 AA contrast for focus indicators. Never use focus:ring alone.
+- Icon Micro-interaction: Icon containers use group class. On hover: bg transitions to brand color (hover:bg-blue-500), icon color transitions to white (group-hover:text-white), and container scales up (hover:scale-110). Use transition-all duration-200 ease-out.
+- Snappy Easing: Use duration-150 ease-out for buttons and interactive controls. Use duration-200 ease-out for cards and larger containers. Never go above 200ms.
+
+## Color Palette
+
+- Primary: Blue (blue-600 buttons, blue-50 backgrounds, blue-500 focus rings)
+- Secondary: Slate/Gray (slate-50 page bg, gray-50 input bg, gray-200 borders)
+- Success: Green (green-500/600)
+- Warning: Amber (amber-500/600)
+- Error: Red (red-500/600)
+- Text: gray-900 headings, gray-600 body, gray-500 secondary, gray-400 placeholder
+
+## Spacing
+
+- Card padding: p-6
+- Section padding: py-16 md:py-24
+- Gap between elements: gap-4 or gap-6
+
+## Self-Check
+
+After generating code, verify:
+1. All buttons have active:scale-[0.98] active:translate-y-0
+2. All focusable elements have focus:ring-2 focus:ring-{color}-500 focus:ring-offset-2
+3. Cards have hover:-translate-y-0.5 hover:shadow-md
+4. Icon containers use group + hover:bg-{color}-500 + group-hover:text-white
+5. No duration above 200ms
+6. No rounded-none anywhere`,
+
+  aiRulesEn: `You are a Corporate Clean style frontend development expert. All generated code must follow modern enterprise UI standards.
+
+## Absolutely Forbidden
+
+- rounded-none (too harsh for enterprise)
+- shadow-2xl or above (too heavy)
+- Gradient backgrounds on buttons
+- Neon or overly bright colors
+- Decorative/display fonts for body text
+- transition duration above 200ms (enterprise UI must feel snappy, not dreamy)
+- focus:ring without focus:ring-offset-2 (violates WCAG 2.1 AA contrast requirements for focus indicators)
+- Buttons without active:scale-[0.98] (no tactile confirmation = button feels like decoration)
+
+## Must Follow
+
+- rounded-lg or rounded-xl for all components
+- shadow-sm for cards and buttons at rest
+- Blue color palette (blue-600/700) for primary actions
+- Gray palette (gray-50/100/200/300) for backgrounds and borders
+- font-medium or font-semibold for interactive elements
+- focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 for ALL focusable elements
+
+## Animation & Interaction Rules
+
+- Frictionless Float: On hover, elements rise slightly with hover:-translate-y-0.5 combined with shadow micro-upgrade (shadow-sm to shadow). This creates a "hover above the surface" sensation -- professional and responsive.
 - Tactile Confirmation: On :active, ALL buttons must use active:scale-[0.98] combined with active:translate-y-0 and active:shadow-sm to create a "button pressed" sensation. Without this, buttons feel unresponsive. The scale-[0.98] is barely perceptible (2%) but critical.
 - Focus Ring Offset: Always use focus:ring-offset-2 alongside focus:ring-2. The offset separates the ring from the element border, meeting WCAG 2.1 AA contrast for focus indicators. Never use focus:ring alone.
 - Icon Micro-interaction: Icon containers use group class. On hover: bg transitions to brand color (hover:bg-blue-500), icon color transitions to white (group-hover:text-white), and container scales up (hover:scale-110). Use transition-all duration-200 ease-out.

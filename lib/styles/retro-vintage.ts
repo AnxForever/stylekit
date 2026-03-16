@@ -6,6 +6,8 @@ export const retroVintage: DesignStyle = {
   nameEn: "Retro Vintage",
   description:
     "怀旧复古的设计风格，老式排版、复古色调、手工质感元素。适合咖啡馆、复古品牌、独立杂志、音乐厂牌。",
+  descriptionEn:
+    "Nostalgic retro design style with vintage typography, retro color tones, and handcrafted texture elements. Ideal for cafes, vintage brands, indie magazines, and music labels.",
   cover: "/styles/retro-vintage.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -25,6 +27,14 @@ export const retroVintage: DesignStyle = {
 - 经典永恒：使用经过时间检验的设计元素
 - 文化底蕴：传达历史感和文化认同`,
 
+  philosophyEn: `Retro Vintage style draws inspiration from mid-20th century design aesthetics, creating a warm sense of time through vintage typography, aged textures, and nostalgic color tones.
+
+Core principles:
+- Time-worn patina: Design carries the warmth and stories of passing years
+- Handcrafted warmth: Avoid overly digital coldness
+- Timeless classics: Use design elements proven by time
+- Cultural depth: Convey a sense of history and cultural identity`,
+
   doList: [
     "使用复古色调 sepia, amber, brown 系列",
     "背景添加纸张纹理或做旧效果",
@@ -39,6 +49,20 @@ export const retroVintage: DesignStyle = {
     "Corner Reveal: decorative corner ornaments use `opacity-30 group-hover:opacity-100 transition-opacity duration-700` — historical details emerge slowly as readers lean in",
   ],
 
+  doListEn: [
+    "Use vintage color tones sepia, amber, brown series",
+    "Add paper texture or aged effects to backgrounds",
+    "Use serif fonts or vintage sans-serif fonts",
+    "Borders use border-2 or border-4 thick borders",
+    "Add decorative border elements (corner ornaments, dividers)",
+    "Use old-style typography (uppercase titles, letter spacing)",
+    "Images add aged filters sepia brightness-90",
+    "Antique Stillness: zero scale or translate-y — old paper lies flat, it does not float or bounce",
+    "Ink & Oxidation: hover slightly darkens background (hover:bg-[#eedbc2]) and deepens text (group-hover:text-[#5c2e0a]) — simulating paper yellowing and ink settling over decades",
+    "Slow Passage of Time: all transitions use duration-700 ease-in-out — historical materials change slowly, never use duration-150 or faster",
+    "Corner Reveal: decorative corner ornaments use opacity-30 group-hover:opacity-100 transition-opacity duration-700 — historical details emerge slowly as readers lean in",
+  ],
+
   dontList: [
     "禁止使用现代渐变效果",
     "禁止使用霓虹/高饱和度颜色",
@@ -49,6 +73,18 @@ export const retroVintage: DesignStyle = {
     "禁止使用任何 `scale` 或 `translate-y` 动画（Antique Stillness — 旧纸张不会浮起或弹跳）",
     "禁止使用 `duration-150` 或更快的过渡（Slow Passage — 氧化是地质过程，不是点击事件）",
     "禁止 hover 时引入新的饱和颜色（只能加深现有的复古色调，不能替换为现代色）",
+  ],
+
+  dontListEn: [
+    "Do not use modern gradient effects",
+    "Do not use neon/high-saturation colors",
+    "Do not use minimalist/flat modern design language",
+    "Do not use overly rounded corners",
+    "Do not use glassmorphism effects",
+    "Do not use excessive animation interactions",
+    "Do not use any scale or translate-y animations (Antique Stillness -- old paper does not float or bounce)",
+    "Do not use duration-150 or faster transitions (Slow Passage -- oxidation is a geological process, not a click event)",
+    "Do not introduce new saturated colors on hover (only deepen existing vintage tones, never replace with modern colors)",
   ],
 
   components: {
@@ -156,6 +192,43 @@ TYPOGRAPHY:
 - Ink & Oxidation: Hover subtly darkens the background (\`hover:bg-[#eedbc2]\`) and deepens text color (\`group-hover:text-[#5c2e0a]\`). This simulates paper yellowing and ink darkening over time — not a modern color swap.
 - Slow Passage of Time: All transitions must use \`duration-700 ease-in-out\` or longer. Historical materials change slowly. Never use \`duration-150\` or faster.
 - Corner Reveal: Decorative corner ornaments use \`opacity-30 group-hover:opacity-100 transition-opacity duration-700\` — as if readers discover hidden details by leaning in closely.`,
+
+  aiRulesEn: `STYLE: Retro Vintage
+TYPE: Nostalgic, classic design aesthetic
+
+MUST USE:
+- Vintage color palette: sepia, amber, brown tones
+- Paper texture or aged effects on backgrounds
+- Serif fonts or vintage sans-serif
+- Thick borders: border-2 or border-4
+- Decorative elements (corner ornaments, dividers)
+- Old-style typography: uppercase, tracking-widest
+- Image filters: sepia, brightness-90
+
+MUST AVOID:
+- Modern gradients
+- Neon/high saturation colors
+- Minimalist/flat modern design
+- Very rounded corners
+- Glass morphism effects
+- Heavy animations
+
+COLOR PALETTE:
+- Primary: Saddle brown (#8b4513)
+- Background: Cream/Parchment (#f5e6d3)
+- Accent: Rust red (#c94c4c), Forest green (#2e4a3f)
+
+TYPOGRAPHY:
+- Headings: font-serif, uppercase option
+- Labels: text-xs uppercase tracking-[0.2em]
+- Body: font-serif, relaxed leading
+
+## Animation & Interaction Rules
+
+- Antique Stillness: Absolutely zero scale or translate-y motion. Old parchment lies flat on the table -- it does not float, lift, or bounce. Forbidden: hover:-translate-y-*, hover:scale-*.
+- Ink & Oxidation: Hover subtly darkens the background (hover:bg-[#eedbc2]) and deepens text color (group-hover:text-[#5c2e0a]). This simulates paper yellowing and ink darkening over time -- not a modern color swap.
+- Slow Passage of Time: All transitions must use duration-700 ease-in-out or longer. Historical materials change slowly. Never use duration-150 or faster.
+- Corner Reveal: Decorative corner ornaments use opacity-30 group-hover:opacity-100 transition-opacity duration-700 -- as if readers discover hidden details by leaning in closely.`,
 
   examplePrompts: [
     {

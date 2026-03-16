@@ -6,6 +6,8 @@ export const gothicLolita: DesignStyle = {
   nameEn: "Gothic Lolita",
   description:
     "维多利亚蕾丝、黑色缎带、十字架与玫瑰的暗黑优雅，融合哥特式建筑装饰与洛丽塔精致细节的暗色浪漫美学。",
+  descriptionEn:
+    "Victorian lace, black ribbons, crosses and roses in dark elegance -- a dark romantic aesthetic blending Gothic architectural ornamentation with Lolita's exquisite details.",
   cover: "/styles/gothic-lolita.svg",
   styleType: "visual",
   tags: ["expressive", "retro"],
@@ -25,6 +27,14 @@ export const gothicLolita: DesignStyle = {
 - 维多利亚风情：繁复的衬线字体、对称的装饰花纹
 - 浪漫黑暗：玫瑰、烛台、哥特式拱门等元素`,
 
+  philosophyEn: `Gothic Lolita is a visual style blending Victorian-era and Gothic aesthetics, originating from Japanese street fashion.
+
+Core principles:
+- Dark elegance: Black as the main tone, accented with deep purple and blood red
+- Exquisite details: Lace trim, ribbon bows, cross decorations
+- Victorian charm: Elaborate serif fonts, symmetrical decorative patterns
+- Romantic darkness: Roses, candelabras, Gothic arches, and other elements`,
+
   doList: [
     "使用黑色深色为主背景",
     "搭配深紫 #4a1a4a 和血红 #8b1a2a 点缀",
@@ -34,11 +44,27 @@ export const gothicLolita: DesignStyle = {
     "保持精致典雅的整体氛围",
   ],
 
+  doListEn: [
+    "Use black and dark colors as main background",
+    "Accent with deep purple #4a1a4a and blood red #8b1a2a",
+    "Use decorative serif fonts",
+    "Add lace trim, ribbon, and other decorative elements",
+    "Use Gothic symmetrical patterns or cross motifs",
+    "Maintain an exquisite and elegant overall atmosphere",
+  ],
+
   dontList: [
     "禁止使用明亮鲜艳的颜色",
     "禁止使用可爱卡通风格元素",
     "禁止使用现代极简设计",
     "禁止使用过于圆润的形状",
+  ],
+
+  dontListEn: [
+    "Do not use bright vivid colors",
+    "Do not use cute cartoon-style elements",
+    "Do not use modern minimalist design",
+    "Do not use overly rounded shapes",
   ],
 
   components: {
@@ -225,6 +251,48 @@ export const gothicLolita: DesignStyle = {
 - Lace Elegance: 交互时长建议 duration-500 到 700，使用 ease-in-out 保持精致与克制。
 - Corset Press: active 使用轻微收束（scale-[0.98]）和内阴影加强，模拟束腰式阻尼反馈。
 - Silver Whisper: 边框与文字可在 hover 中缓慢浮现银白微光，增强暗黑华丽层次。`,
+
+  aiRulesEn: `You are a Gothic Lolita design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Bright vivid colors
+- Cute cartoon style
+- Modern minimalist design
+- Overly large rounded shapes
+- Emoji
+
+## Must Follow
+
+- Black dark backgrounds bg-[#0a0a0a], bg-[#1a0a1a]
+- Deep purple accents border-[#4a1a4a], text-[#4a1a4a]
+- Blood red emphasis border-[#8b1a2a], text-[#8b1a2a]
+- Silver white text text-[#e5e5e5]
+- Serif fonts font-serif
+- Intricate border decorations
+
+## Color Palette
+
+Primary:
+- Black: #0a0a0a
+- Deep Purple: #4a1a4a
+- Blood Red: #8b1a2a
+- Silver White: #e5e5e5
+
+## Special Elements
+
+- Lace trim patterns
+- Cross decorations
+- Rose patterns
+- Symmetrical decorative motifs
+- Gothic arches
+
+## Animation & Interaction Rules
+
+- Velvet Depth: Hover focuses on slow expansion of deep purple/blood red shadows, conveying velvet texture -- avoid frivolous bouncing.
+- Lace Elegance: Interaction duration should be duration-500 to 700, using ease-in-out to maintain refinement and restraint.
+- Corset Press: Active uses slight constriction (scale-[0.98]) with enhanced inner shadow, simulating corset-like damped feedback.
+- Silver Whisper: Borders and text may slowly reveal silver-white shimmer on hover, enhancing dark luxurious layering.`,
 
   examplePrompts: [
     {

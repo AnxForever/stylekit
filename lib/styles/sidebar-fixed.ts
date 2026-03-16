@@ -6,6 +6,8 @@ export const sidebarFixed: DesignStyle = {
   nameEn: "Fixed Sidebar",
   description:
     "固定位置的侧边导航栏与可滚动主内容区的应用布局，适合后台管理、文档站点、仪表盘、SaaS 应用。",
+  descriptionEn:
+    "Application layout with a fixed sidebar navigation and scrollable main content area. Ideal for admin dashboards, documentation sites, dashboards, and SaaS applications.",
   cover: "/styles/sidebar-fixed.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -26,6 +28,14 @@ export const sidebarFixed: DesignStyle = {
 - 层级清晰：侧边栏体现信息架构
 - 响应适配：小屏幕优雅收起`,
 
+  philosophyEn: `Fixed Sidebar is a classic layout for application-type interfaces, providing persistent visible navigation while maximizing content display space.
+
+Core principles:
+- Persistent navigation: Important entry points are always accessible
+- Content priority: Maximize the main area utilization
+- Clear hierarchy: The sidebar reflects information architecture
+- Responsive adaptation: Gracefully collapse on small screens`,
+
   doList: [
     "侧边栏使用 fixed 或 sticky 定位",
     "主内容区设置左边距 ml-64 或 pl-64",
@@ -39,6 +49,19 @@ export const sidebarFixed: DesignStyle = {
     "主内容卡片 hover 仅允许微弱抬升和轻量阴影扩散",
   ],
 
+  doListEn: [
+    "Sidebar uses fixed or sticky positioning",
+    "Main content area sets left margin ml-64 or pl-64",
+    "Mobile sidebar collapses to drawer or hamburger menu",
+    "Provide expand/collapse sidebar controls",
+    "Sidebar width unified at w-64 (256px) or w-72 (288px)",
+    "Current page highlighted in sidebar",
+    "Sidebar can include brand logo, navigation, user info",
+    "Navigation item interactions stay fast and restrained (duration-150), prioritize color and subtle icon displacement feedback",
+    "Active item uses stable anchor (e.g. left accent line) rather than floating animation",
+    "Main content cards hover only allows subtle lift and lightweight shadow spread",
+  ],
+
   dontList: [
     "禁止侧边栏过宽影响主内容区",
     "禁止移动端仍保持展开侧边栏",
@@ -47,6 +70,16 @@ export const sidebarFixed: DesignStyle = {
     "禁止侧边栏内容溢出无滚动",
     "禁止侧边栏菜单使用弹跳、旋转等花哨动画",
     "禁止激活项缺少清晰视觉锚点",
+  ],
+
+  dontListEn: [
+    "Do not make sidebar too wide affecting main content area",
+    "Do not keep sidebar expanded on mobile",
+    "Do not ignore current page state indication",
+    "Do not create overly deep navigation levels",
+    "Do not let sidebar content overflow without scrolling",
+    "Do not use bouncy, spinning, or flashy animations for sidebar menus",
+    "Do not leave active items without a clear visual anchor",
   ],
 
   components: {
@@ -381,6 +414,75 @@ After generating code, verify:
 - Magnetic Icon Shift: hover 时 icon 轻微右移（translate-x-0.5），引导视线进入主内容区。
 - Solid Active State: 当前项保持稳定锚点（左侧强调线或加粗边界），避免漂浮感。
 - Content Lift: 主区卡片 hover 仅允许 -translate-y-0.5 和轻量阴影，保证阅读稳定。`,
+
+  aiRulesEn: `You are a frontend expert specializing in Fixed Sidebar layout. All generated code must strictly follow these constraints:
+
+## Absolute Prohibitions
+
+- Do NOT make sidebar too wide (max 280px)
+- Do NOT keep sidebar expanded on mobile
+- Do NOT forget current page indicator
+- Do NOT create overly deep navigation
+- Do NOT ignore sidebar overflow scroll
+
+## Must Follow
+
+- Sidebar: fixed top-0 left-0 w-64 h-screen
+- Main content: ml-64 (matches sidebar width)
+- Mobile: sidebar hidden, hamburger menu trigger
+- Active state: highlight current page
+- Overflow: sidebar nav scrollable if needed
+
+## Structure
+
+Sidebar (top to bottom):
+1. Logo/Brand area
+2. Search (optional)
+3. Main navigation (scrollable)
+4. Secondary nav or settings
+5. User profile/account
+
+Main content:
+- Left margin matches sidebar width
+- Own scrolling context
+- Header area for page title
+- Content area below
+
+## Responsive
+
+Desktop (1024px+):
+- Full sidebar visible
+- Main content with left margin
+
+Tablet/Mobile (< 1024px):
+- Sidebar as off-canvas drawer
+- Hamburger menu button
+- Overlay when sidebar open
+- Main content full width
+
+## Navigation
+
+- Group related items
+- Use icons + labels
+- Highlight active item
+- Support nested items (accordion)
+- Tooltips when collapsed
+
+## Animation & Interaction Rules
+
+- Frictionless Utility: High-interaction areas uniformly use duration-150, avoiding flashy effects that interrupt efficiency.
+- Magnetic Icon Shift: On hover, icons slightly shift right (translate-x-0.5), guiding the eye toward the main content area.
+- Solid Active State: Current item maintains a stable anchor (left accent line or bold border), avoiding floating feel.
+- Content Lift: Main area cards hover only allows -translate-y-0.5 and lightweight shadow, ensuring reading stability.
+
+## Self-Check
+
+After generating code, verify:
+1. Sidebar is fixed position
+2. Main content has correct margin
+3. Mobile has hamburger menu
+4. Current page is highlighted
+5. Sidebar scrolls if content overflows`,
 
   examplePrompts: [
     {

@@ -6,6 +6,8 @@ export const kawaiiMinimal: DesignStyle = {
   nameEn: "Kawaii Minimal",
   description:
     "融合日系可爱文化与极简设计的温柔风格。柔和的粉彩色系、圆润形状、轻盈留白和细腻的微交互，适合生活方式应用、儿童产品和创意工具。",
+  descriptionEn:
+    "A gentle style blending Japanese kawaii culture with minimalist design. Soft pastel palettes, rounded shapes, airy whitespace, and delicate micro-interactions, ideal for lifestyle apps, children's products, and creative tools.",
   cover: "/styles/kawaii-minimal.svg",
   styleType: "visual",
   tags: ["minimal", "expressive"],
@@ -26,6 +28,15 @@ export const kawaiiMinimal: DesignStyle = {
 - 微交互：细腻的弹跳、摇摆动效增加趣味性
 - 功能优先：可爱但不杂乱，保持信息清晰`,
 
+  philosophyEn: `Kawaii Minimal blends the warmth of Japanese cute culture with the restraint of Nordic minimalism.
+
+Core principles:
+- Soft pastels: using low-saturation pink, purple, blue, and yellow tones to create a gentle atmosphere
+- Rounded shapes: large border-radius, circular elements, avoiding sharp edges
+- Airy whitespace: ample breathing room makes the interface feel relaxed and comfortable
+- Micro-interactions: delicate bounce and wiggle animations add playfulness
+- Function first: cute but not cluttered, keeping information clear`,
+
   doList: [
     "背景使用暖白 bg-[#FFF7ED] 或 bg-orange-50",
     "使用大圆角 rounded-2xl rounded-3xl rounded-full",
@@ -38,6 +49,18 @@ export const kawaiiMinimal: DesignStyle = {
     "交互加入果冻式挤压回弹（squash and stretch）增强软糯触感",
   ],
 
+  doListEn: [
+    "Use warm white backgrounds bg-[#FFF7ED] or bg-orange-50",
+    "Use large rounded corners rounded-2xl rounded-3xl rounded-full",
+    "Use soft shadows shadow-sm shadow-md (avoid dark strong shadows)",
+    "Text uses rounded sans-serif fonts font-sans font-medium",
+    "Buttons use pastel gradients or soft solid colors",
+    "Cards use light borders border-pink-200 or no borders",
+    "Interactions use bounce scaling hover:scale-105 active:scale-95",
+    "Generous spacing p-6 p-8 gap-6 gap-8",
+    "Add jelly-like squash and stretch to interactions for a soft, squishy feel",
+  ],
+
   dontList: [
     "禁止使用深色/黑色背景",
     "禁止使用尖锐边角 rounded-none rounded-sm",
@@ -46,6 +69,16 @@ export const kawaiiMinimal: DesignStyle = {
     "禁止使用粗体黑色边框",
     "禁止信息过密，保持留白",
     "禁止生硬线性过渡，优先使用带回弹感的缓动曲线",
+  ],
+
+  dontListEn: [
+    "Do not use dark/black backgrounds",
+    "Do not use sharp corners rounded-none rounded-sm",
+    "Do not use glow/neon effects",
+    "Do not use high-saturation fluorescent colors",
+    "Do not use bold black borders",
+    "Do not overcrowd information -- maintain whitespace",
+    "Do not use stiff linear transitions -- prefer easing curves with bounce feel",
   ],
 
   components: {
@@ -165,6 +198,33 @@ Animation & Interaction Rules:
 - Cloud Lift: 卡片可轻微上浮并增强粉彩阴影，保持轻盈愉悦的漂浮感。
 - Squishy Press: active 使用更明显按压（0.90-0.95）并收紧阴影，模拟软糯触感。
 - Spring Easing: 优先使用 cubic-bezier(0.34,1.56,0.64,1) 的回弹节奏，避免僵硬线性过渡。`,
+
+  aiRulesEn: `STYLE: Kawaii Minimal
+TYPE: Cute minimalist pastel interface
+
+MUST USE:
+- Warm light background: bg-[#FFF7ED] or bg-orange-50
+- Large rounded corners: rounded-2xl, rounded-3xl, rounded-full
+- Soft shadows: shadow-sm, shadow-md (not dark/strong)
+- Pastel colors: pink-300, purple-300, cyan-200, yellow-200
+- Bounce interactions: hover:scale-105 active:scale-95
+- Generous spacing: p-6, p-8, gap-6
+- font-sans font-medium for text
+- White cards with light borders
+
+MUST AVOID:
+- Dark/black backgrounds
+- Sharp corners (rounded-none, rounded-sm)
+- Glow/neon effects
+- High saturation neon colors
+- Bold black borders
+- Dense information layout
+
+Animation & Interaction Rules:
+- Jelly Bounce: Hover uses squash-and-stretch (non-uniform scale-x and scale-y changes) for gummy elasticity.
+- Cloud Lift: Cards can gently float upward with enhanced pastel shadows, maintaining a light, joyful floating feel.
+- Squishy Press: Active uses more pronounced compression (0.90-0.95) with tightened shadows, simulating a soft squishy touch.
+- Spring Easing: Prefer cubic-bezier(0.34,1.56,0.64,1) bounce rhythm, avoiding stiff linear transitions.`,
 
   examplePrompts: [
     {

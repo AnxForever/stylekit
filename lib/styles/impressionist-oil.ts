@@ -6,6 +6,8 @@ export const impressionistOil: DesignStyle = {
   nameEn: "Impressionist Oil",
   description:
     "受莫奈、雷诺阿等印象派大师启发，大胆的笔触纹理、斑驳光影、点彩色彩和温暖的画布质感，呈现如油画般的浓郁视觉体验。",
+  descriptionEn:
+    "Inspired by Impressionist masters like Monet and Renoir, featuring bold brushstroke textures, dappled light effects, pointillist colors, and warm canvas textures for a rich, oil-painting visual experience.",
   cover: "/styles/impressionist-oil.svg",
   styleType: "visual",
   tags: ["retro", "expressive"],
@@ -35,6 +37,15 @@ export const impressionistOil: DesignStyle = {
 - 画布质感：温暖的米白底色 #f5f0e1 配以 feTurbulence 织纹滤镜
 - 色彩调和：暖橙 #e8a87c、朱红 #c0392b、深蓝 #2c3e50、青绿 #1abc9c、金光 #f5d88a`,
 
+  philosophyEn: `The Impressionist Oil style draws from the essence of 19th-century French Impressionist painting, emphasizing the interplay of light and shadow and the spontaneous expression of color.
+
+Core principles:
+- Dappled light: Multiple radial-gradient overlays simulate sunlight filtering through leaves
+- Brushstroke texture: repeating-linear-gradient at varying angles creates visible brushstrokes on the canvas
+- Impasto layering: Layered box-shadow (solid color base + blur shadow) simulates the thick, voluminous feel of paint
+- Canvas texture: Warm cream base #f5f0e1 with feTurbulence weave filter
+- Color harmony: Warm orange #e8a87c, vermillion #c0392b, deep blue #2c3e50, turquoise #1abc9c, golden light #f5d88a`,
+
   doList: [
     "使用温暖的画布色 bg-[#f5f0e1] 作为背景",
     "按钮使用 linear-gradient 模拟颜料管挤出的渐变质感",
@@ -49,6 +60,20 @@ export const impressionistOil: DesignStyle = {
     "focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]",
   ],
 
+  doListEn: [
+    "Use warm canvas color bg-[#f5f0e1] as background",
+    "Use linear-gradient on buttons to simulate paint tube squeeze texture",
+    "Use layered box-shadow (solid base + blur spread) to simulate impasto shadows",
+    "Use repeating-linear-gradient as card background texture to simulate brushstroke direction",
+    "Add radial-gradient light spot overlays to simulate dappled light",
+    "Use bold serif font font-serif font-bold to convey artistic feel",
+    "Use rounded-lg corners to maintain soft canvas edges",
+    "Button hover:brightness-110 hover:contrast-125 (paint gleaming in sunlight)",
+    "Button active:translate-y-[3px] (pairs with 4px solid shadow for press-in feel)",
+    "Cards use group class, brushstroke underline expands from w-16 to group-hover:w-24 (duration-500)",
+    "focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]",
+  ],
+
   dontList: [
     "禁止使用纯平色块（应有纹理感和渐变）",
     "禁止使用锐利几何边角（rounded-none/rounded-sm）",
@@ -59,6 +84,18 @@ export const impressionistOil: DesignStyle = {
     "禁止按钮缺少 active:translate-y-[3px]（实色阴影不做陷入感 = 按钮失真）",
     "禁止 focus:ring 缺少 focus:ring-offset-[#f5f0e1]（画布色背景下焦点环需与元素分离）",
     "禁止动画 duration 低于 300ms（印象派节奏是缓慢流动的）",
+  ],
+
+  dontListEn: [
+    "No flat solid color fills (must have texture and gradients)",
+    "No sharp geometric corners (rounded-none/rounded-sm)",
+    "No neon or fluorescent colors",
+    "No monospace fonts (font-mono)",
+    "No uppercase text (uppercase)",
+    "No pixel-precise offset shadows (shadow-[Npx_Npx_0px])",
+    "Buttons must not lack active:translate-y-[3px] (solid shadow without press-in feel = inauthentic button)",
+    "focus:ring must not lack focus:ring-offset-[#f5f0e1] (focus ring needs offset separation on canvas background)",
+    "Animation duration must not be below 300ms (Impressionist rhythm is slow and flowing)",
   ],
 
   components: {
@@ -255,6 +292,72 @@ export const impressionistOil: DesignStyle = {
   background-position: 0 0, 4px 4px;
   opacity: 0.06;
 }`,
+
+  aiRulesEn: `You are an Impressionist Oil design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Flat solid fills without texture or gradient
+- Sharp geometric edges (rounded-none, rounded-sm)
+- Pixel-perfect offset shadows (shadow-[Npx_Npx_0px])
+- Neon or fluorescent colors
+- Monospace fonts (font-mono)
+- Uppercase text (uppercase)
+- Pure black backgrounds (bg-black)
+
+## Must Follow
+
+- Canvas cream background bg-[#f5f0e1]
+- Warm orange #e8a87c as primary, use linear-gradient fills on buttons
+- Serif fonts font-serif font-bold for all text
+- Rounded corners rounded-lg
+- Layered box-shadows: solid color base + blur shadow (e.g. 0 4px 0 #c0392b, 0 6px 16px rgba())
+- Brushstroke texture via repeating-linear-gradient at angled degrees
+- Dappled light via multiple radial-gradient overlays
+
+## Color Palette
+
+Primary:
+- Warm Orange: #e8a87c
+- Canvas Cream: #f5f0e1
+- Vermillion Red: #c0392b
+- Deep Blue: #2c3e50
+- Turquoise Green: #1abc9c
+- Golden Light: #f5d88a
+
+## Unique Elements (Impressionist-Only)
+
+1. Brushstroke texture: repeating-linear-gradient at 25-40deg angles with 0.02 opacity color stops
+2. Dappled light: multiple radial-gradient(circle Npx at X% Y%, rgba(...,0.05-0.08)) scattered across surfaces
+3. Impasto shadows: layered box-shadow with solid color base layer + blurred spread layer
+
+## Animation & Interaction Rules
+
+### Dancing Light (Button Hover)
+- hover:brightness-110 hover:contrast-125 -- simulates sunlight illuminating pigment
+- Combined with hover:-translate-y-0.5 for subtle lift
+- NEVER use flat color hover (defeats the impressionist light-play concept)
+
+### Impasto Depression (Active Press)
+- active:translate-y-[3px] -- button sinks into the 4px solid vermillion shadow layer
+- NEVER use active:scale-* alone (scaling doesn't simulate physical impasto depth)
+- The translate must match or nearly match the solid shadow offset (currently 4px)
+
+### Brushstroke Reveal (Card Underline)
+- Card heading underline: w-16 h-[3px] bg-[#e8a87c] rounded-full
+- On group-hover: group-hover:w-24 -- brushstroke extends like paint spreading
+- Transition: duration-500 ease-out (slow, painterly rhythm)
+- Always use group class on card container
+
+### Slow Easing Standard
+- Minimum duration: 300ms (impressionist rhythm is slow and flowing)
+- Button transitions: duration-300 ease-out
+- Underline reveals: duration-500 ease-out
+- NEVER use duration < 300ms
+
+### Focus Ring
+- focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
+- ring-offset-[#f5f0e1] mandatory -- canvas cream background needs matching offset`,
 
   aiRules: `You are an Impressionist Oil design style frontend development expert. All generated code must strictly follow these constraints:
 

@@ -6,6 +6,8 @@ export const vhsAesthetic: DesignStyle = {
   nameEn: "VHS Aesthetic",
   description:
     "80-90年代VHS录像带视觉美学，色彩失真、扫描线噪点与信号故障效果。适合怀旧、复古科技、创意影像项目。",
+  descriptionEn:
+    "80-90s VHS tape visual aesthetics with color distortion, scanline noise, and signal glitch effects. Ideal for nostalgia, retro tech, and creative video projects.",
   cover: "/styles/vhs-aesthetic.svg",
   styleType: "visual",
   tags: ["retro", "expressive", "high-contrast"],
@@ -39,6 +41,17 @@ export const vhsAesthetic: DesignStyle = {
 - 单色字体：所有文字使用 monospace 字体，大写优先
 - 极暗背景：黑色或深紫色背景最大化霓虹对比度`,
 
+  philosophyEn: `VHS Aesthetic recreates the analog warmth and beautiful imperfections of 80-90s VHS tapes.
+
+Core principles:
+- Scanline overlay: all content areas use repeating-linear-gradient horizontal scanlines
+- RGB chromatic aberration: text uses magenta and cyan offset text-shadow to simulate color separation
+- Noise texture: low-opacity noise/grain overlay layer
+- Signal glitch: horizontal offset tracking distortion effects on hover
+- VHS markers: REC indicator, timestamps, counters, and other tape UI elements
+- Monospace fonts: all text uses monospace fonts, uppercase preferred
+- Ultra-dark backgrounds: black or deep purple backgrounds maximize neon contrast`,
+
   doList: [
     "Apply horizontal scanline overlay on all content areas",
     "Use RGB color separation on text (magenta + cyan offset shadows)",
@@ -50,7 +63,27 @@ export const vhsAesthetic: DesignStyle = {
     "Use uppercase text with wide letter-spacing for labels",
   ],
 
+  doListEn: [
+    "Apply horizontal scanline overlay on all content areas",
+    "Use RGB color separation on text (magenta + cyan offset shadows)",
+    "Add noise/grain texture overlay with low opacity",
+    "Include VHS-style timestamps and REC indicators",
+    "Use monospace fonts throughout",
+    "Keep backgrounds dark (black or deep purple #1a0a2e)",
+    "Add tracking distortion effects on hover",
+    "Use uppercase text with wide letter-spacing for labels",
+  ],
+
   dontList: [
+    "Don't use clean, crisp typography",
+    "Don't use light backgrounds",
+    "Don't use modern sans-serif fonts",
+    "Don't use smooth gradients",
+    "Don't use rounded corners larger than 2px",
+    "Don't use subtle, refined effects",
+  ],
+
+  dontListEn: [
     "Don't use clean, crisp typography",
     "Don't use light backgrounds",
     "Don't use modern sans-serif fonts",
@@ -230,6 +263,35 @@ SPECIAL EFFECTS:
 - Chroma Split Glow: 霓虹阴影不能只是发光，必须是"错位"的。悬停时，洋红（Magenta）和青色（Cyan）的 \`text-shadow\` 或 \`box-shadow\` 必须向相反方向剧烈拉开距离，模拟磁带色散。
 - Scanline Distortion: 卡片上覆盖的扫描线（Scanline）在容器被悬停时，应加快垂直滚动的速度，或者瞬间改变不透明度（如从 \`opacity-10\` 变为 \`opacity-30\`）。
 - Playback Snap: 点击 (\`:active\`) 状态应该模拟按下了沉重的录像机物理按键。消除所有光晕，并产生生硬的下沉（\`active:scale-95 active:shadow-none\`）。`,
+
+  aiRulesEn: `STYLE: VHS Aesthetic
+TYPE: 80-90s VHS tape visual aesthetic
+
+MUST USE:
+- Background: Black (#000000) or deep purple (#1a0a2e)
+- Primary accent: Magenta (#ff00ff) for borders, glows, highlights
+- Secondary accent: Cyan (#00ffff) for text, secondary elements
+- Tertiary: Yellow (#ffff00) for warnings/timestamps, Green (#00ff00) for status
+- All text: Monospace font, uppercase preferred
+- Scanlines: Apply repeating-linear-gradient overlay
+- Color separation: Use text-shadow with offset magenta and cyan
+- Timestamps: Show "REC" indicator, date/time in corner
+- Noise: Add grain/noise texture overlay with low opacity
+- Tracking distortion: Slight horizontal offset on hover/animation
+
+MUST AVOID:
+- Light/white backgrounds
+- Pastel or muted colors
+- Serif or sans-serif body fonts
+- Large border-radius (max 2px)
+- Smooth gradients
+- Subtle/standard shadows (use neon glow only)
+
+Animation & Interaction Rules:
+- Tape Tracking Jitter: Completely abandon smooth animations. On hover, use extremely short duration-75 for crisp, even slightly harsh visual feedback (e.g., instant skew-x-2 or translate-x-1), simulating VHS tape tracking errors.
+- Chroma Split Glow: Neon shadows must not just glow -- they must be "misaligned." On hover, magenta and cyan text-shadow or box-shadow must pull apart in opposite directions, simulating tape color dispersion.
+- Scanline Distortion: Scanline overlays on cards should speed up vertical scrolling or instantly change opacity (e.g., from opacity-10 to opacity-30) when the container is hovered.
+- Playback Snap: Active (:active) state should simulate pressing a heavy VCR physical button. Eliminate all glow and produce a harsh sink (active:scale-95 active:shadow-none).`,
 
   examplePrompts: [
     {

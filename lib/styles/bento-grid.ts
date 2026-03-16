@@ -6,6 +6,8 @@ export const bentoGrid: DesignStyle = {
   nameEn: "Bento Grid",
   description:
     "灵感源于日式便当盒的不规则网格布局，通过大小不一的卡片组合创造视觉层次，常用于作品集和产品展示。",
+  descriptionEn:
+    "Irregular grid layout inspired by Japanese bento boxes, creating visual hierarchy through varied card sizes. Commonly used for portfolios and product showcases.",
   cover: "/styles/bento-grid.svg",
   styleType: "layout",
   tags: ["modern", "responsive"],
@@ -27,6 +29,15 @@ export const bentoGrid: DesignStyle = {
 - 响应式：在不同屏幕上优雅适配
 - Widget 把玩感：每张卡片如独立的 iOS 小组件`,
 
+  philosophyEn: `Bento Grid is a modern layout style inspired by the compartmentalized design of Japanese bento boxes. Through combining cards of different sizes within a grid, it creates visual effects that are both orderly and varied.
+
+Core principles:
+- Modularity: Each block is independent yet interconnected
+- Hierarchy: Emphasize key content through size differences
+- Whitespace: Appropriate gaps let the layout breathe
+- Responsive: Gracefully adapt across different screen sizes
+- Widget playfulness: Each card feels like an independent iOS widget`,
+
   doList: [
     "使用 CSS Grid 布局 grid grid-cols-4",
     "卡片跨越多行或多列 col-span-2, row-span-2",
@@ -40,6 +51,19 @@ export const bentoGrid: DesignStyle = {
     "使用类弹簧缓动 ease-out，duration-200 到 300",
   ],
 
+  doListEn: [
+    "Use CSS Grid layout grid grid-cols-4",
+    "Cards span multiple rows or columns col-span-2, row-span-2",
+    "Maintain consistent gaps gap-4 or gap-6",
+    "Use rounded corners rounded-xl or rounded-2xl",
+    "Place primary content in large cards, secondary info in small cards",
+    "Use aspect-ratio to maintain card proportions",
+    "Smooth hover lift + micro-scale hover:-translate-y-1 hover:scale-[1.01]",
+    "Shadow expands from compact to wide on hover (shadow-sm -> shadow-xl)",
+    "Card inner icons independently change color or scale-110 on group-hover",
+    "Use spring-like easing ease-out, duration-200 to 300",
+  ],
+
   dontList: [
     "禁止所有卡片大小相同（失去 Bento 特色）",
     "禁止间隙不一致",
@@ -48,6 +72,16 @@ export const bentoGrid: DesignStyle = {
     "禁止在卡片内堆砌过多内容",
     "禁止使用硬边阴影（shadow-[Xpx_Ypx_0px]）",
     "禁止使用直角（需要圆角）",
+  ],
+
+  dontListEn: [
+    "Do not make all cards the same size (loses Bento character)",
+    "Do not use inconsistent gaps",
+    "Do not overcrowd cards without whitespace",
+    "Do not ignore responsive adaptation",
+    "Do not cram too much content inside cards",
+    "Do not use hard-edge shadows (shadow-[Xpx_Ypx_0px])",
+    "Do not use sharp corners (rounded corners required)",
   ],
 
   components: {
@@ -300,6 +334,71 @@ export const bentoGrid: DesignStyle = {
 5. 圆角统一
 6. 卡片有 hover 上浮 + 微放大效果
 7. 内部图标有 group-hover 联动`,
+
+  aiRulesEn: `You are a Bento Grid design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- All cards being the same size (must have size variation)
+- Ignoring responsive adaptation
+- Inconsistent gaps between cards
+- Overcrowded card content
+- Using sharp corners (rounded corners required)
+- Using hard-edge shadows (shadow-[Xpx_Ypx_0px])
+
+## Must Follow
+
+- Use CSS Grid: grid grid-cols-4
+- Card spanning: col-span-2, row-span-2
+- Consistent gaps: gap-4 or gap-6
+- Rounded corners: rounded-xl, rounded-2xl, rounded-3xl
+- Responsive: md:grid-cols-2, lg:grid-cols-4
+
+## Animation & Interaction Rules
+
+- Widget Feel: Each card feels like an independent iOS widget. Smooth hover lift + micro-scale (hover:-translate-y-1 hover:scale-[1.01]), with soft wide shadow (hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]).
+- Micro-interactions: Card inner icons respond independently on group-hover: color swap (bg swap), scale up (scale-110).
+- Snappy Easing: Use ease-out with duration-200 to duration-300, making interactions responsive and modern.
+- Active Feedback: Press with active:scale-95 or active:scale-98, simulating physical press.
+- Smooth Focus: Input focus ring transition is ultra-smooth (transition-all duration-200).
+
+## Layout Rules
+
+Large cards (col-span-2 row-span-2):
+- Place primary content or featured functions
+- Can use gradient backgrounds
+- Recommend 1-2 cards
+
+Medium cards (col-span-2 or row-span-2):
+- Secondary important content
+- Recommend 2-3 cards
+
+Small cards (1x1):
+- Icons, numbers, tags and other brief content
+- Fill remaining space
+
+## Color Suggestions
+
+Backgrounds:
+- Gradient: bg-gradient-to-br from-blue-500 to-purple-600
+- Light: bg-zinc-50, bg-zinc-100
+- Colored: bg-orange-50, bg-green-50, bg-blue-50
+
+Text:
+- Primary: text-zinc-900
+- Secondary: text-zinc-500, text-zinc-600
+- White: text-white (on dark backgrounds)
+
+## Self-Check
+
+After generating code, verify:
+1. Cards have varying sizes
+2. Uses CSS Grid
+3. Consistent gaps
+4. Has responsive handling
+5. Unified rounded corners
+6. Cards have hover lift + micro-scale effect
+7. Inner icons have group-hover linkage`,
 
   examplePrompts: [
     {

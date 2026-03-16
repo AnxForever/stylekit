@@ -6,6 +6,8 @@ export const victorianBotanical: DesignStyle = {
   nameEn: "Victorian Botanical",
   description:
     "维多利亚时代植物学插画风格，精细的线描植物、花卉纹饰、自然历史博物馆的优雅。暗绿与金色的经典搭配。",
+  descriptionEn:
+    "Victorian-era botanical illustration style with delicate line-drawn plants, floral ornaments, and the elegance of a natural history museum. A classic pairing of dark green and gold.",
   cover: "/styles/victorian-botanical.svg",
   styleType: "visual",
   tags: ["retro", "minimal"],
@@ -29,6 +31,18 @@ export const victorianBotanical: DesignStyle = {
 
 设计时应注重细节的雕琢而非视觉冲击，让每一个元素都像植物标本一样精心安排，在看似低调的表面之下蕴含丰富的信息层次。`,
 
+  philosophyEn: `Victorian Botanical style originates from the natural history research craze of 19th-century Victorian England. Botanists and illustrators of the era used delicate line drawings to document plant specimens from around the world -- these illustrations were not only scientific documents but also artistic treasures.
+
+Core concepts:
+- Delicate line drawing: Precise lines reminiscent of copperplate engravings, each stroke carrying the rigor of a scientist
+- Natural history aesthetics: The composure and elegance of a museum specimen room, a unity of knowledge and beauty
+- Dark green and gold: The classic color pairing of Victorian interior design, deep yet richly layered
+- Paper texture: The warm base color of aged parchment, lending digital interfaces a sense of historical weight
+
+This style is suitable for museums, libraries, tea brands, botanical gardens, premium stationery, and nature-themed cultural products. It translates the Victorian era's reverence for the natural world into a contemporary design language, recreating the refinement and restraint of that golden age in digital interfaces.
+
+When designing, focus on the meticulous crafting of details rather than visual impact. Let every element be as carefully arranged as a botanical specimen, containing rich layers of information beneath a seemingly understated surface.`,
+
   doList: [
     "使用暗绿 #2d4a2d 作为主色调，搭配金色 #8b6914 强调元素",
     "背景使用仿旧纸色 bg-[#faf5ef]，营造羊皮纸质感",
@@ -40,6 +54,17 @@ export const victorianBotanical: DesignStyle = {
     "交互状态使用金色高亮 hover:border-[#8b6914]",
   ],
 
+  doListEn: [
+    "Use dark green #2d4a2d as the primary color, paired with gold #8b6914 accent elements",
+    "Use aged paper color bg-[#faf5ef] for backgrounds, creating a parchment texture",
+    "Use serif fonts font-serif; add tracking-wide letter spacing to headings",
+    "Use fine-line borders border border-[#2d4a2d]/30, echoing line-drawn illustrations",
+    "Keep rounded corners moderate rounded-lg; do not use fully rounded corners",
+    "Use warm-toned shadows shadow-[0_2px_8px_rgba(45,74,45,0.1)]",
+    "Add delicate decorative lines and separator elements",
+    "Use gold highlights for interactive states hover:border-[#8b6914]",
+  ],
+
   dontList: [
     "禁止使用霓虹色或高饱和度荧光色",
     "禁止使用纯黑背景或深色主题",
@@ -48,6 +73,16 @@ export const victorianBotanical: DesignStyle = {
     "禁止使用渐变背景或彩虹色彩",
     "禁止使用过大的阴影 shadow-xl, shadow-2xl",
     "禁止使用动感十足的动画效果",
+  ],
+
+  dontListEn: [
+    "Do not use neon or high-saturation fluorescent colors",
+    "Do not use pure black backgrounds or dark themes",
+    "Do not use rounded-full fully rounded buttons",
+    "Do not use bold sans-serif fonts as headings",
+    "Do not use gradient backgrounds or rainbow colors",
+    "Do not use oversized shadows shadow-xl, shadow-2xl",
+    "Do not use dynamic, flashy animation effects",
   ],
 
   components: {
@@ -227,6 +262,48 @@ export const victorianBotanical: DesignStyle = {
 - Magnifying Inspection: 悬停（Hover）卡片时，内部的标题、首字母或插图可以有非常缓慢的内部放大（如 \`group-hover:scale-105\`），模拟学者拿着放大镜仔细观察标本的视觉。
 - Gilded Reveal: 交互时，暗绿色的文字或极其纤细的边框，应当极其缓慢地（\`duration-700\`）过渡到古典金色（\`#8b6914\`），模拟书页上的金箔在光线下的反射。
 - Ink Deepening: 点击 (\`:active\`) 时，不要缩小，通过加深文字颜色或背景的纸张颜色，模拟用蘸水笔在旧纸上重重地做下标记。`,
+
+  aiRulesEn: `You are a Victorian Botanical design style frontend development expert. All generated code must strictly follow these constraints:
+
+## Absolutely Forbidden
+
+- Neon or high-saturation fluorescent colors
+- Pure black backgrounds or dark themes
+- rounded-full fully rounded corners
+- Sans-serif fonts as heading fonts
+- Gradient backgrounds or rainbow colors
+- Large shadows shadow-xl, shadow-2xl
+
+## Must Follow
+
+- Primary color #2d4a2d (dark green), accent #8b6914 (gold)
+- Background color #faf5ef (aged paper)
+- Use font-serif serif fonts
+- Fine-line borders border border-[#2d4a2d]/20
+- Moderate rounded corners rounded-lg
+- Warm-toned and restrained shadows
+
+## Color Palette
+
+Primary:
+- Dark green: #2d4a2d
+- Aged paper: #faf5ef
+- Gold: #8b6914
+- Dried rose: #6b3a3a
+- Fern green: #3d5c3d
+
+## Special Elements
+
+- Delicate decorative separator lines
+- Serif font italic for botanical name annotations
+- tracking-wide and tracking-[0.3em] for labels
+- Subtle paper texture backgrounds
+
+## Animation & Interaction Rules
+- Specimen Stillness: Specimens are pinned to paper. Strictly no hover:-translate-y (float-up) effects. Interactions must stay on the 2D plane, conveyed only through color and subtle light-shadow changes.
+- Magnifying Inspection: On hover, inner titles, initials, or illustrations can have very slow internal scaling (e.g., group-hover:scale-105), simulating a scholar examining a specimen with a magnifying glass.
+- Gilded Reveal: During interaction, dark green text or ultra-fine borders should transition extremely slowly (duration-700) to classical gold (#8b6914), simulating gold leaf reflecting candlelight on a book page.
+- Ink Deepening: On :active, do not shrink. Instead, deepen text color or background paper color, simulating pressing a dip pen firmly onto old paper to make a mark.`,
 
   examplePrompts: [
     {
