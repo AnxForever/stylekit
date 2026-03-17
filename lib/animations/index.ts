@@ -62,6 +62,8 @@ import { pulseRing } from "./pulse-ring";
 import { textScramble } from "./text-scramble";
 import { tilt3d } from "./tilt-3d";
 import { confettiBurst } from "./confetti-burst";
+import { scrollPageTurn } from "./scroll-page-turn";
+import { scrollPeelAway } from "./scroll-peel-away";
 
 export const animations: Animation[] = [
   fadeInUp,
@@ -111,6 +113,8 @@ export const animations: Animation[] = [
   textScramble,
   tilt3d,
   confettiBurst,
+  scrollPageTurn,
+  scrollPeelAway,
 ];
 
 export function getAllAnimations(): Animation[] {

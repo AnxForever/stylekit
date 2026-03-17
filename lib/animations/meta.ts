@@ -575,6 +575,30 @@ export const animationsMeta: AnimationMeta[] = [
     duration: "1.2s",
     keywords: ["confetti", "celebration", "particle", "burst", "success", "reward"],
   },
+  {
+    slug: "scroll-page-turn",
+    name: "滚动翻页",
+    nameEn: "Scroll Page Turn",
+    description: "滚动驱动的 3D 翻页效果，页面像书页一样沿 Y 轴翻转剥离，露出下一页内容。",
+    category: "scroll",
+    tags: ["scroll", "3d", "page-turn", "perspective", "sticky", "apple"],
+    trigger: "on-scroll",
+    difficulty: "advanced",
+    duration: "continuous",
+    keywords: ["page turn", "book flip", "scroll animation", "3D", "perspective", "apple", "sticky scroll", "cinematic"],
+  },
+  {
+    slug: "scroll-peel-away",
+    name: "滚动剥离",
+    nameEn: "Scroll Peel Away",
+    description: "滚动驱动的页面剥离效果，当前页面像贴纸一样从右上角卷起剥离，露出下一层内容。",
+    category: "scroll",
+    tags: ["scroll", "3d", "peel", "curl", "paper", "sticky", "apple"],
+    trigger: "on-scroll",
+    difficulty: "advanced",
+    duration: "continuous",
+    keywords: ["peel", "curl", "paper", "sticker", "scroll animation", "3D", "apple", "page transition"],
+  },
 ];
 
 export function getAllAnimationsMeta(): AnimationMeta[] {
