@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowLeft, Clock, Zap } from "lucide-react";
+import { ArrowLeft, Clock, Zap, Code } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { AnimationPreview } from "@/components/animations/animation-preview";
 import type { Animation } from "@/lib/animations/types";
 
 interface AnimationDetailContentProps {
@@ -37,11 +38,18 @@ const difficultyI18nMap: Record<string, string> = {
   advanced: "animations.difficultyAdvanced",
 };
 
-const AnimationSandbox = dynamic(
-  () => import("@/components/animations/animation-sandbox").then((m) => ({ default: m.AnimationSandbox })),
+const AnimationCodeTabs = dynamic(
+  () => import("@/components/animations/animation-code-tabs").then((m) => ({ default: m.AnimationCodeTabs })),
   {
     ssr: false,
-    loading: () => <SectionSkeleton className="min-h-[420px]" />,
+    loading: () => <SectionSkeleton className="min-h-[280px]" />,
+  }
+);
+const AnimationPlayground = dynamic(
+  () => import("@/components/animations/animation-playground").then((m) => ({ default: m.AnimationPlayground })),
+  {
+    ssr: false,
+    loading: () => <SectionSkeleton className="min-h-[360px]" />,
   }
 );
 const RecommendedStyles = dynamic(
@@ -57,28 +65,29 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
 
   return (
     <div>
-      {/* Header -- compact */}
+      {/* Header section -- editorial style */}
       <section className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 py-6 md:py-8">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 md:py-12">
           <Link
             href="/animations"
-            className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
             {t("animations.backToList")}
           </Link>
 
-          <h1 className="text-2xl md:text-3xl lg:text-4xl mb-1.5">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl mb-2">
             {locale === "zh" ? animation.name : animation.nameEn}
           </h1>
-          <p className="text-xs text-muted mb-2">
+          <p className="text-xs text-muted mb-3">
             {locale === "zh" ? animation.nameEn : animation.name}
           </p>
-          <p className="text-sm text-muted max-w-2xl mb-3">
+          <p className="text-base text-muted max-w-2xl mb-4">
             {locale === "zh" ? animation.description : animation.descriptionEn}
           </p>
 
-          <div className="flex flex-wrap gap-2">
+          {/* Tags -- editorial uppercase style */}
+          <div className="flex flex-wrap gap-3">
             <span className="text-[10px] uppercase tracking-wider text-muted px-2 py-1 border border-border">
               {t(categoryI18nMap[animation.category] as Parameters<typeof t>[0])}
             </span>
@@ -98,93 +107,96 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
         </div>
       </section>
 
-      {/* Sandbox Panel */}
+      {/* Content */}
       <section>
-        <div className="max-w-6xl mx-auto px-6 md:px-12 py-8 md:py-12">
-          <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
-            {t("animations.sandbox")}
-          </h2>
-          <AnimationSandbox animation={animation} />
-        </div>
-      </section>
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          {/* Preview */}
+          <div className="mb-12 [content-visibility:auto] [contain-intrinsic-size:1px_380px]">
+            <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("animations.previewTab")}
+            </h2>
+            <AnimationPreview slug={animation.slug} bg={animation.previewBg} />
+          </div>
 
-      {/* Metadata + Use Cases -- 2-column layout */}
-      <section>
-        <div className="max-w-6xl mx-auto px-6 md:px-12 pb-8 md:pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Metadata grid */}
-            <div>
-              <div className="grid grid-cols-1 gap-px bg-border border border-border">
-                <MetaCard
-                  label={t("animations.duration")}
-                  icon={<Clock className="w-3.5 h-3.5" />}
-                  value={animation.duration}
-                />
-                <MetaCard
-                  label={t("animations.easing")}
-                  value={animation.easing}
-                />
-                <MetaCard
-                  label={t("animations.cssProperties")}
-                  value={animation.cssProperties.join(", ")}
-                />
+          {/* Code snippets */}
+          <div className="mb-12 [content-visibility:auto] [contain-intrinsic-size:1px_420px]">
+            <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+              <Code className="w-4 h-4 inline-block mr-2 -mt-0.5" />
+              {t("animations.codeTab")}
+            </h2>
+            <AnimationCodeTabs snippets={animation.codeSnippets} />
+          </div>
+
+          {/* Playground */}
+          <div className="[content-visibility:auto] [contain-intrinsic-size:1px_440px]">
+            <AnimationPlayground animation={animation} />
+          </div>
+
+          {/* Metadata grid */}
+          <div className="mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border border border-border">
+              <MetaCard
+                label={t("animations.duration")}
+                icon={<Clock className="w-3.5 h-3.5" />}
+                value={animation.duration}
+              />
+              <MetaCard
+                label={t("animations.easing")}
+                value={animation.easing}
+              />
+              <MetaCard
+                label={t("animations.cssProperties")}
+                value={animation.cssProperties.join(", ")}
+              />
+            </div>
+          </div>
+
+          {/* Use Cases */}
+          {animation.useCases.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+                {t("animations.useCases")}
+              </h2>
+              <ul className="space-y-2">
+                {animation.useCases.map((useCase) => (
+                  <li
+                    key={useCase}
+                    className="flex items-start gap-2 text-sm text-muted"
+                  >
+                    <span className="mt-1.5 h-1 w-4 shrink-0 bg-foreground/20" />
+                    {useCase}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Related Animations */}
+          {animation.relatedAnimations && animation.relatedAnimations.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+                {t("animations.relatedAnimations")}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {animation.relatedAnimations.map((slug) => (
+                  <Link
+                    key={slug}
+                    href={`/animations/${slug}`}
+                    className="px-3 py-1.5 text-sm border border-border text-foreground hover:border-foreground transition-colors"
+                  >
+                    {slug}
+                  </Link>
+                ))}
               </div>
             </div>
+          )}
 
-            {/* Use Cases */}
-            {animation.useCases.length > 0 && (
-              <div>
-                <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
-                  {t("animations.useCases")}
-                </h2>
-                <ul className="space-y-2">
-                  {animation.useCases.map((useCase) => (
-                    <li
-                      key={useCase}
-                      className="flex items-start gap-2 text-sm text-muted"
-                    >
-                      <span className="mt-1.5 h-1 w-4 shrink-0 bg-foreground/20" />
-                      {useCase}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Related + Styles */}
-      <section>
-        <div className="max-w-6xl mx-auto px-6 md:px-12 pb-12 md:pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Related Animations */}
-            {animation.relatedAnimations && animation.relatedAnimations.length > 0 && (
-              <div>
-                <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
-                  {t("animations.relatedAnimations")}
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {animation.relatedAnimations.map((slug) => (
-                    <Link
-                      key={slug}
-                      href={`/animations/${slug}`}
-                      className="px-3 py-1.5 text-sm border border-border text-foreground hover:border-foreground transition-colors"
-                    >
-                      {slug}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Recommended Styles */}
-            {animation.recommendedStyles && animation.recommendedStyles.length > 0 && (
-              <div className="[content-visibility:auto] [contain-intrinsic-size:1px_220px]">
-                <RecommendedStyles slugs={animation.recommendedStyles} />
-              </div>
-            )}
-          </div>
+          {/* Recommended Styles */}
+          {animation.recommendedStyles && animation.recommendedStyles.length > 0 && (
+            <div className="[content-visibility:auto] [contain-intrinsic-size:1px_220px]">
+              <RecommendedStyles slugs={animation.recommendedStyles} />
+            </div>
+          )}
         </div>
       </section>
     </div>
