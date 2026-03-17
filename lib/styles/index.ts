@@ -247,6 +247,11 @@ import { shopifyClean } from "./shopify-clean";
 import { luxuryRetail } from "./luxury-retail";
 import { freshMarket } from "./fresh-market";
 import { dataDense } from "./data-dense";
+// New styles - Animation Batch
+import { cardFlip } from "./card-flip";
+import { voiceRecorder } from "./voice-recorder";
+import { retroRadio } from "./retro-radio";
+import { weatherCard } from "./weather-card";
 import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
@@ -403,6 +408,11 @@ const rawStyles: DesignStyle[] = [
   luxuryRetail,
   freshMarket,
   dataDense,
+  // New styles - Animation Batch
+  cardFlip,
+  voiceRecorder,
+  retroRadio,
+  weatherCard,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));
