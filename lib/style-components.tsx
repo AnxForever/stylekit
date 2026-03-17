@@ -3642,9 +3642,161 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "card-flip": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#d4a574] text-[#0a0e27] font-semibold rounded-lg hover:bg-[#d4a574]/90 transition-all duration-200 shadow-[0_4px_16px_rgba(212,165,116,0.2)]">
+        Flip Card
+      </button>
+    ),
+    card: () => (
+      <div className="w-full max-w-[200px] bg-[#1a1f3a] border border-[#d4a574]/30 rounded-xl p-4 mx-auto" style={{ perspective: "600px" }}>
+        <div className="h-2 w-16 rounded bg-[#d4a574] mb-3" />
+        <div className="h-1.5 w-28 rounded bg-white/30 mb-2" />
+        <div className="flex gap-2 mb-3">
+          <div className="h-4 w-8 rounded bg-[#d4a574]/40 font-mono text-[8px] text-[#d4a574] flex items-center justify-center">1234</div>
+          <div className="h-4 w-8 rounded bg-[#d4a574]/40 font-mono text-[8px] text-[#d4a574] flex items-center justify-center">5678</div>
+        </div>
+        <div className="h-1.5 w-20 rounded bg-white/20" />
+      </div>
+    ),
+    input: () => (
+      <input className="w-full px-4 py-2.5 bg-[#0a0e27] border border-[#d4a574]/30 rounded-lg text-white/90 text-sm placeholder:text-white/30 focus:outline-none focus:border-[#d4a574] transition-all" placeholder="Card number..." />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0a0e27] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-[#1a1f3a] border border-[#d4a574]/30 rounded-xl p-4" style={{ perspective: "600px" }}>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-6 h-4 rounded-sm bg-[#d4a574]" />
+            <div className="h-1.5 w-12 rounded bg-white/20" />
+          </div>
+          <div className="flex gap-1.5 mb-3">
+            <div className="h-2 w-10 rounded bg-[#d4a574]/30" />
+            <div className="h-2 w-10 rounded bg-[#d4a574]/30" />
+            <div className="h-2 w-10 rounded bg-[#d4a574]/30" />
+          </div>
+          <div className="h-1.5 w-20 rounded bg-white/15" />
+        </div>
+      </div>
+    ),
+  },
+  "voice-recorder": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#00ff41]/10 text-[#00ff41] font-mono uppercase tracking-wider border border-[#00ff41]/50 hover:bg-[#00ff41] hover:text-black transition-all duration-200 shadow-[0_0_12px_rgba(0,255,65,0.2)]">
+        REC
+      </button>
+    ),
+    card: () => (
+      <div className="w-full max-w-[200px] bg-[#0d1117] border border-[#00ff41]/30 p-4 relative overflow-hidden mx-auto">
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,65,0.04)_2px,rgba(0,255,65,0.04)_4px)] pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-[#00ff41] shadow-[0_0_6px_rgba(0,255,65,0.6)]" />
+            <div className="h-1.5 w-12 rounded bg-[#00ff41]/40 font-mono" />
+          </div>
+          <div className="flex gap-0.5 items-end h-8 mb-2">
+            {[3,5,8,6,4,7,5,3,6,8,4,5].map((h,i) => (
+              <div key={i} className="flex-1 bg-[#00ff41]/60 rounded-t" style={{ height: `${h * 10}%` }} />
+            ))}
+          </div>
+          <div className="h-1.5 w-20 rounded bg-[#00ff41]/20" />
+        </div>
+      </div>
+    ),
+    input: () => (
+      <input className="w-full px-4 py-2.5 bg-[#080b10] border border-[#00ff41]/30 text-[#00ff41] font-mono text-sm placeholder:text-[#00ff41]/30 focus:outline-none focus:border-[#00ff41] focus:shadow-[0_0_8px_rgba(0,255,65,0.2)] transition-all" placeholder="> input..." />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0d1117] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-[#080b10] border border-[#00ff41]/30 p-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,65,0.03)_2px,rgba(0,255,65,0.03)_4px)] pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-3 h-3 rounded-full bg-[#00ff41] shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
+              <div className="h-1.5 w-10 rounded bg-[#00ff41]/40" />
+            </div>
+            <div className="flex gap-0.5 items-end h-10">
+              {[4,6,9,7,5,8,6,4,7,9].map((h,i) => (
+                <div key={i} className="flex-1 bg-[#00ff41]/50 rounded-t" style={{ height: `${h * 10}%` }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "retro-radio": {
+    button: () => (
+      <button className="px-6 py-3 bg-[#d4a017] text-[#3d2b1f] font-serif font-bold rounded-lg border-2 border-[#d4a017]/60 hover:bg-[#d4a017]/90 transition-all duration-200 shadow-[0_4px_12px_rgba(61,43,31,0.3)]">
+        Tune In
+      </button>
+    ),
+    card: () => (
+      <div className="w-full max-w-[200px] bg-[#3d2b1f] border-2 border-[#d4a017]/30 rounded-lg p-4 mx-auto">
+        <div className="bg-[#f5e6d3] rounded p-3 mb-3">
+          <div className="h-1 w-full rounded bg-[#d4a017]/40 mb-2" />
+          <div className="h-1.5 w-16 rounded bg-[#3d2b1f]/60 mx-auto" />
+        </div>
+        <div className="flex justify-center gap-3">
+          <div className="w-5 h-5 rounded-full bg-[#d4a017] shadow-[0_0_8px_rgba(212,160,23,0.3)]" />
+          <div className="w-5 h-5 rounded-full bg-[#d4a017]/60" />
+        </div>
+      </div>
+    ),
+    input: () => (
+      <input className="w-full px-4 py-2.5 bg-[#f5e6d3] border-2 border-[#d4a017]/40 rounded-lg text-[#3d2b1f] text-sm placeholder:text-[#3d2b1f]/40 focus:outline-none focus:border-[#d4a017] transition-all" placeholder="Search frequency..." />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#3d2b1f] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-[#3d2b1f] border-2 border-[#d4a017]/30 rounded-lg p-4">
+          <div className="bg-[#f5e6d3] rounded p-3 mb-3">
+            <div className="h-0.5 w-full rounded bg-[#d4a017]/30 mb-1.5" />
+            <div className="h-2 w-12 rounded bg-[#3d2b1f]/50 mx-auto" />
+          </div>
+          <div className="flex justify-center gap-4">
+            <div className="w-6 h-6 rounded-full bg-[#d4a017] shadow-[0_0_10px_rgba(212,160,23,0.3)]" />
+            <div className="w-6 h-6 rounded-full bg-[#d4a017]/50" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "weather-card": {
+    button: () => (
+      <button className="px-6 py-3 bg-gradient-to-r from-[#87CEEB] to-[#5bb5e0] text-white font-medium rounded-xl hover:shadow-[0_4px_16px_rgba(135,206,235,0.3)] transition-all duration-200">
+        Check Weather
+      </button>
+    ),
+    card: () => (
+      <div className="w-full max-w-[200px] bg-white/60 backdrop-blur-md border border-white/40 rounded-2xl p-4 mx-auto shadow-[0_4px_16px_rgba(135,206,235,0.15)]">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-6 h-6 rounded-full bg-[#ff6b35]/20 flex items-center justify-center">
+            <div className="w-3 h-3 rounded-full bg-[#ff6b35]" />
+          </div>
+          <div className="h-1.5 w-10 rounded bg-[#87CEEB]/40" />
+        </div>
+        <div className="h-6 w-16 rounded bg-gray-800/10 mb-2 flex items-center justify-center font-bold text-gray-700 text-xs">24C</div>
+        <div className="h-1.5 w-24 rounded bg-[#87CEEB]/30" />
+      </div>
+    ),
+    input: () => (
+      <input className="w-full px-4 py-2.5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl text-gray-800 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#87CEEB] focus:shadow-[0_0_0_3px_rgba(135,206,235,0.2)] transition-all" placeholder="Search city..." />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-gradient-to-b from-[#87CEEB] to-[#b8e0f5] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white/50 backdrop-blur-md border border-white/40 rounded-2xl p-4 shadow-[0_4px_16px_rgba(135,206,235,0.2)]">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-[#ff6b35]/20 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-[#ff6b35]" />
+            </div>
+            <div className="h-1.5 w-12 rounded bg-gray-600/30" />
+          </div>
+          <div className="h-3 w-12 rounded bg-gray-800/20 mb-2" />
+          <div className="h-1.5 w-20 rounded bg-[#87CEEB]/30" />
+        </div>
+      </div>
+    ),
+  },
 };
-
-// 渲染指定风格的指定组件
 export function renderStyleComponent(styleSlug: string, component: ComponentType): React.ReactNode {
   const styleRenderer = styleComponents[styleSlug];
   if (!styleRenderer) {

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <filter id="gold-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="soft-gold" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4a574"/>
+      <stop offset="50%" stop-color="#f0d9b5"/>
+      <stop offset="100%" stop-color="#d4a574"/>
+    </linearGradient>
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4a574" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#f0d9b5" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#d4a574" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="card-face" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1f3a"/>
+      <stop offset="100%" stop-color="#141833"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a0e27"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.04">
+    <line x1="0" y1="0" x2="0" y2="630" stroke="#d4a574" stroke-width="1"/>
+    <line x1="120" y1="0" x2="120" y2="630" stroke="#d4a574" stroke-width="1"/>
+    <line x1="240" y1="0" x2="240" y2="630" stroke="#d4a574" stroke-width="1"/>
+    <line x1="360" y1="0" x2="360" y2="630" stroke="#d4a574" stroke-width="1"/>
+    <line x1="480" y1="0" x2="480" y2="630" stroke="#d4a574" stroke-width="1"/>
+  </g>
+
+  <!-- Card - back face (rotated, behind) -->
+  <g transform="translate(600, 280)" opacity="0.3">
+    <rect x="-180" y="-110" width="360" height="220" rx="16" fill="url(#card-face)" stroke="#d4a574" stroke-opacity="0.2" stroke-width="1.5" transform="rotate(12)"/>
+  </g>
+
+  <!-- Card - front face (main) -->
+  <g transform="translate(600, 290)">
+    <!-- Card shadow -->
+    <rect x="-185" y="-105" width="370" height="230" rx="18" fill="#000" opacity="0.3" filter="url(#soft-gold)"/>
+    <!-- Card body -->
+    <rect x="-180" y="-110" width="360" height="220" rx="16" fill="url(#card-face)" stroke="#d4a574" stroke-opacity="0.4" stroke-width="1.5"/>
+
+    <!-- Chip -->
+    <rect x="-140" y="-60" width="45" height="35" rx="6" fill="#d4a574" opacity="0.8"/>
+    <line x1="-140" y1="-42" x2="-95" y2="-42" stroke="#0a0e27" stroke-width="0.8" opacity="0.4"/>
+    <line x1="-117" y1="-60" x2="-117" y2="-25" stroke="#0a0e27" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- Card number -->
+    <text x="-140" y="20" font-family="monospace" font-size="22" fill="white" opacity="0.9" letter-spacing="4">4532  ****  ****  7890</text>
+
+    <!-- Card holder -->
+    <text x="-140" y="60" font-family="sans-serif" font-size="10" fill="#d4a574" opacity="0.6" letter-spacing="2">CARD HOLDER</text>
+    <text x="-140" y="80" font-family="sans-serif" font-size="14" fill="white" opacity="0.7">STYLEKIT PREMIUM</text>
+
+    <!-- Expiry -->
+    <text x="100" y="60" font-family="sans-serif" font-size="10" fill="#d4a574" opacity="0.6" letter-spacing="2">EXPIRES</text>
+    <text x="100" y="80" font-family="monospace" font-size="14" fill="white" opacity="0.7">12/28</text>
+
+    <!-- Shimmer line -->
+    <rect x="-180" y="-110" width="360" height="220" rx="16" fill="url(#shimmer)" opacity="0.15"/>
+  </g>
+
+  <!-- 3D rotation arrow hint -->
+  <g transform="translate(600, 440)" opacity="0.4">
+    <path d="M-30,0 A30,30 0 0,1 30,0" fill="none" stroke="#d4a574" stroke-width="1.5"/>
+    <polygon points="30,-5 38,0 30,5" fill="#d4a574"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="530" font-family="sans-serif" font-size="48" font-weight="700" fill="white" text-anchor="middle" filter="url(#gold-glow)">Card Flip</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="565" font-family="sans-serif" font-size="18" fill="#d4a574" fill-opacity="0.7" text-anchor="middle">3D Animation Style</text>
+
+  <!-- Corner accents -->
+  <path d="M30,30 L30,60 M30,30 L60,30" stroke="#d4a574" stroke-width="1.5" opacity="0.3"/>
+  <path d="M1170,30 L1170,60 M1170,30 L1140,30" stroke="#d4a574" stroke-width="1.5" opacity="0.3"/>
+  <path d="M30,600 L30,570 M30,600 L60,600" stroke="#d4a574" stroke-width="1.5" opacity="0.3"/>
+  <path d="M1170,600 L1170,570 M1170,600 L1140,600" stroke="#d4a574" stroke-width="1.5" opacity="0.3"/>
+</svg>
