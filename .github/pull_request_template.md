@@ -1,60 +1,60 @@
 ## Summary
 
-- What changed:
-- Why this change is needed:
+**What changed:**
+
+**Why:**
 
 ## Change Type
 
-- [ ] `feat`
-- [ ] `fix`
-- [ ] `refactor`
-- [ ] `docs`
-- [ ] `chore`
+- [ ] `feat` — new feature or style
+- [ ] `fix` — bug fix
+- [ ] `refactor` — code improvement (no behavior change)
+- [ ] `docs` — documentation only
+- [ ] `chore` — build, CI, or tooling
 
 ## Scope
 
-- [ ] API
-- [ ] UI
-- [ ] Styles
-- [ ] Build/CI
-- [ ] Docs
-- [ ] Security
+- [ ] Styles / Recipes / Tokens
+- [ ] UI Components
+- [ ] API Endpoints
+- [ ] Templates / Animations
+- [ ] Build / CI
+- [ ] Documentation
 
-## Style Contribution (if applicable)
+## Style Contribution Checklist
 
-- Style slug:
-- [ ] I followed `docs/STYLE_ADDITION_CHECKLIST.md`
-- [ ] I updated required registries and metadata
-- [ ] I verified `/styles/<slug>` and `/styles/<slug>/showcase`
-- [ ] I attached screenshots/GIFs
+> Skip this section if your PR doesn't add a new style.
+
+- Style slug: `___`
+- [ ] Followed [`docs/STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) completely
+- [ ] Created all 6 required files (definition, tokens, recipes, showcase page + content, cover SVG)
+- [ ] Updated all 4 registration files (index, meta, recipes/index, style-components)
+- [ ] Verified `/styles/<slug>` loads correctly
+- [ ] Verified `/styles/<slug>/showcase` renders all 12+ sections
+- [ ] Attached screenshots below
 
 ## Validation
 
-- [ ] `npm run security:secrets`
-- [ ] `npm run lint`
-- [ ] `npx tsc --noEmit`
-- [ ] `npm run test`
-- [ ] `npm run build`
-- [ ] `npm run test:style-extractor:ci` (if relevant)
+- [ ] `pnpm run security:secrets` — no secrets detected
+- [ ] `pnpm run lint` — no errors
+- [ ] `npx tsc --noEmit` — no type errors
+- [ ] `pnpm test` — all tests pass
+- [ ] `pnpm build` — builds successfully
 
-## Security Checklist
+## Security
 
-- [ ] No secrets or credentials were added
-- [ ] No `.env` files were committed
-- [ ] Sensitive values are only read via `process.env`
+- [ ] No secrets, credentials, or `.env` files committed
+- [ ] Server-side values are not exposed via `NEXT_PUBLIC_`
 
 ## Breaking Changes
 
-- [ ] No breaking changes
-- [ ] Breaking changes included below
+- [ ] None
+- [ ] Yes (describe below)
 
-Details:
+## Screenshots
 
-## Screenshots / GIFs (for UI changes)
-
-<!-- Attach images here -->
+<!-- Attach screenshots or GIFs for any UI changes. Required for style contributions. -->
 
 ## Notes for Reviewers
 
-- Key files to review:
-- Known risks / follow-ups:
+<!-- Key files to review, known risks, follow-up items, etc. -->

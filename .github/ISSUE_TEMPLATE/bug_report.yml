@@ -1,0 +1,93 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in StyleKit.
+title: "[Bug] "
+labels:
+  - bug
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please fill out the sections below so we can reproduce and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear description of what went wrong.
+      placeholder: "When I click the 'Export' button on the glassmorphism style page, nothing happens."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the behavior.
+      placeholder: |
+        1. Go to /styles/glassmorphism
+        2. Click "Export Style Pack"
+        3. Select "Tailwind Preset"
+        4. Nothing downloads
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+      placeholder: "A .json file should download with the Tailwind preset configuration."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of StyleKit is affected?
+      options:
+        - Style pages (/styles/*)
+        - Showcase pages
+        - Templates
+        - Animations
+        - API endpoints
+        - Export / Download
+        - Authentication
+        - Search / Filtering
+        - Mobile / Responsive
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: The URL where the bug occurs (if applicable).
+      placeholder: "https://www.stylekit.top/styles/glassmorphism"
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Mobile Safari
+        - Mobile Chrome
+        - Other
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Attach screenshots or screen recordings if helpful.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other information that might help (console errors, network tab, etc.).
