@@ -10,7 +10,7 @@
 
 // Type definitions (duplicated to avoid importing from index.ts)
 export type StyleCategory = "modern" | "retro" | "minimal" | "expressive";
-export type StyleType = "visual" | "layout" | "animation";
+export type StyleType = "visual" | "layout";
 export type StyleTag =
   | "modern"
   | "retro"
@@ -1981,70 +1981,6 @@ export const stylesMeta: StyleMeta[] = [
       accent: ["#3b82f6", "#ef4444", "#22c55e", "#64748b"],
     },
     keywords: ["后台管理", "数据表格", "高密度", "管理面板", "运营", "admin"],
-  },
-  {
-    slug: "card-flip",
-    name: "卡片翻转",
-    nameEn: "Card Flip",
-    description: "3D卡片翻转动画风格，数字滚动计数器，深海军蓝+金色奢华配色。适合银行卡、会员卡、交互式展示。",
-    cover: "/styles/card-flip.svg",
-    styleType: "animation",
-    tags: ["modern", "expressive"],
-    category: "modern",
-    colors: {
-      primary: "#0a0e27",
-      secondary: "#1a1f3a",
-      accent: ["#d4a574"],
-    },
-    keywords: ["3D翻转", "卡片动画", "数字滚动", "银行卡", "交互", "card flip", "3d"],
-  },
-  {
-    slug: "voice-recorder",
-    name: "语音录制",
-    nameEn: "Voice Recorder",
-    description: "CRT终端风格语音录制界面，波形动画条、扫描线效果、矩阵绿配色。适合音频、播客、黑客终端主题。",
-    cover: "/styles/voice-recorder.svg",
-    styleType: "animation",
-    tags: ["retro", "expressive"],
-    category: "retro",
-    colors: {
-      primary: "#0d1117",
-      secondary: "#080b10",
-      accent: ["#00ff41"],
-    },
-    keywords: ["语音录制", "波形", "CRT", "终端", "扫描线", "voice recorder", "waveform"],
-  },
-  {
-    slug: "retro-radio",
-    name: "复古收音机",
-    nameEn: "Retro Radio",
-    description: "复古收音机风格，频率拨盘、木纹质感、黄铜旋钮，温暖模拟感。适合音乐、播客、怀旧主题。",
-    cover: "/styles/retro-radio.svg",
-    styleType: "animation",
-    tags: ["retro", "expressive"],
-    category: "retro",
-    colors: {
-      primary: "#3d2b1f",
-      secondary: "#f5e6d3",
-      accent: ["#d4a017"],
-    },
-    keywords: ["复古收音机", "频率拨盘", "木纹", "黄铜", "怀旧", "retro radio", "vintage"],
-  },
-  {
-    slug: "weather-card",
-    name: "诗意天气",
-    nameEn: "Weather Card",
-    description: "诗意天气卡片风格，大气动画效果、毛玻璃叠加层、天空渐变。适合天气应用、仪表盘、信息展示。",
-    cover: "/styles/weather-card.svg",
-    styleType: "animation",
-    tags: ["modern", "minimal"],
-    category: "modern",
-    colors: {
-      primary: "#87CEEB",
-      secondary: "#f0f0f0",
-      accent: ["#ff6b35"],
-    },
-    keywords: ["天气卡片", "大气动画", "毛玻璃", "天空", "诗意", "weather card", "atmospheric"],
   },
 ];
 

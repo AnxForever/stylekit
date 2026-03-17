@@ -63,7 +63,7 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const TOTAL_STEPS = 7;
 const CATEGORY_VALUES: StyleCategory[] = ["modern", "minimal", "expressive", "retro"];
-const STYLE_TYPE_VALUES: StyleType[] = ["visual", "layout", "animation"];
+const STYLE_TYPE_VALUES: StyleType[] = ["visual", "layout"];
 const TAG_VALUES: StyleTag[] = [
   "modern",
   "minimal",
