@@ -60,8 +60,16 @@ export function StyleDetailContent({
 
   useEffect(() => {
     updateShowcaseScale();
-    window.addEventListener("resize", updateShowcaseScale);
-    return () => window.removeEventListener("resize", updateShowcaseScale);
+    let rafId = 0;
+    const throttledUpdate = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateShowcaseScale);
+    };
+    window.addEventListener("resize", throttledUpdate);
+    return () => {
+      window.removeEventListener("resize", throttledUpdate);
+      cancelAnimationFrame(rafId);
+    };
   }, [updateShowcaseScale]);
   const localizedDescription = localizedString(
     locale,

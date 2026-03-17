@@ -29,10 +29,9 @@ export function ScrollBackButton({
       const savedScroll = sessionStorage.getItem(`scroll-${pathname}`);
       if (savedScroll) {
         const y = parseInt(savedScroll, 10);
-        // 延迟一小段时间以确保DOM完全加载
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           window.scrollTo({ top: y, behavior: "instant" });
-        }, 50);
+        });
         sessionStorage.removeItem(`scroll-${pathname}`);
       }
     }

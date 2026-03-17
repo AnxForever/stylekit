@@ -13,8 +13,17 @@ export function ShowcaseBackBar() {
   const slug = match[1];
 
   const handleClick = () => {
-    sessionStorage.setItem(`scroll-${pathname}`, window.scrollY.toString());
-    router.push(`/styles/${slug}`);
+    // Use browser back when the previous page is same-origin (instant navigation)
+    const canGoBack =
+      window.history.length > 1 &&
+      (!document.referrer ||
+        new URL(document.referrer).origin === window.location.origin);
+
+    if (canGoBack) {
+      router.back();
+    } else {
+      router.push(`/styles/${slug}`);
+    }
   };
 
   return (
